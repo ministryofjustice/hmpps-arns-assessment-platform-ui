@@ -236,27 +236,19 @@ const advancedSettingsField = field({
 ```
 
 ## 4. Item() - Collection Item References
-> [!WARNING]  
-> I think I need some way to consistently refer to an Item's index value. Any suggestions appreciated.
-
-> [!WARNING]  
-> In general, I don't think `Item()` is right. Really, there needs to be some kind of way to climb up
-> the scope frames. For example, if you've got collections blocks in collections blocks, this falls apart because you can't
-> currently reference the outer colleciton loop. Any suggestions appreciated as I'm heading towards some kind of Scope fluent API thing
-
-References the current item when inside a collection context. 
-Used within CollectionBlock templates to access properties of the item being iterated over.
+References the current item when inside a collection context. Provides its own fluent API for
+referring to properties, parent, and index of the current iterating item in a Collection.
 
 ### Referencing the Entire Item
 
 ```typescript
 // Reference the whole current item
-when(Item('value').match(Condition.MatchesValue('Durandal')))
+when(Item().value().match(Condition.MatchesValue({ someProperty: '1', someOtherProperty: '2' ))
 
-// Use in field codes within collections
+// Referencing the index for use in field codes
 field({
   variant: 'text',
-  code: Format('item_%1_notes', Item('id')),
+  code: Format('item_%1_notes', Item().index()),
   label: 'Notes'
 })
 ```
@@ -265,17 +257,19 @@ field({
 
 ```typescript
 // Reference specific properties of the current item
-when(Item('status').match(Condition.Equals('active')))
+when(Item().property('isAdmin').match(Condition.MatchesValue(true)))
   .then('Show edit controls')
+```
 
-// Conditional fields based on item type
-field({
-  variant: 'number',
-  code: Format('item_%1_quantity', Item('id')),
-  label: 'Quantity',
-  dependent: when(Item('type').match(Condition.Equals('physical'))),
-  max: Item('maxQuantity'), // Use item property as field constraint
-})
+### Referencing Parent
+For when you have collections within collections
+
+```typescript
+code: Format('org_%1_dept_%2_emp_%3_name',
+  Item().parent.parent.property('organisationId'),  // Organization ID
+  Item().parent.property('departmentId'),           // Department ID  
+  Item().property('employeeId')                     // Employee ID
+),
 ```
 
 ### Complex Item Logic
@@ -284,9 +278,9 @@ field({
 // Multiple item property checks
 dependent: when(
   and(
-    Item('available').match(Condition.MatchesValue(true)),
-    Item('stock').match(Condition.GreaterThan(0)),
-    Item('category').not.match(Condition.Equals('restricted'))
+    Item.property('available').match(Condition.MatchesValue(true)),
+    Item.index().match(Condition.GreaterThan(0)),
+    Item.property('category').not.match(Condition.MatchesValue('restricted'))
   )
 )
 
@@ -294,34 +288,18 @@ dependent: when(
 validate: [
   when(
     and(
-      Item('required').match(Condition.MatchesValue(true)),
+      Item.property('required').match(Condition.MatchesValue(true)),
       Self().not.match(Condition.IsRequired())
     )
   ).then('This item requires a value'),
   
   when(
     and(
-      Item('maxLength').match(Condition.IsRequired()),
-      Self().not.match(Condition.HasMaxLength(Item('maxLength')))
+      Item.property('maxLength').match(Condition.IsRequired()),
+      Self().not.match(Condition.HasMaxLength(Item.property('maxLength')))
     )
-  ).then(Format('Must be %1 characters or less', Item('maxLength')))
+  ).then(Format('Must be %1 characters or less', Item.property('maxLength')))
 ]
-```
-
-### JSON Output
-
-```typescript
-// Item() reference (entire item)
-{
-  type: 'reference',
-  path: ['@item']
-}
-
-// Item('status') reference (item property)
-{
-  type: 'reference',
-  path: ['@item', 'status']
-}
 ```
 
 ## 5. Request Data References
