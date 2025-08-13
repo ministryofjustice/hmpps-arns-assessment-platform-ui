@@ -21,7 +21,7 @@ There are 2 types of transitions, validated, and non-validated
 Used when you need to ensure data integrity before proceeding. The transition
 will validate all fields in the current step and branch based on the validation result.
 
-```
+```typescript
 transition({
   when?: PredicateExpr,      // Trigger condition (usually button action)
   guard?: PredicateExpr,     // Access control condition
@@ -43,7 +43,7 @@ transition({
 #### Non-validated Transition
 Used for actions that don't require validation, such as saving drafts,
 navigation without data entry, or collection management operations.
-```
+```typescript
 transition({
   when?: PredicateExpr,      // Trigger condition (usually button action)
   guard?: PredicateExpr,     // Access control condition
@@ -237,9 +237,10 @@ transition({
 ```
 
 ### 3. Collection Management
-> [!CAUTION]
+> [!WARNING]
 > I'm still trying to figure out a neat way to do Collections,
 > specifically the mapping of fields to collection values. Any suggestions would be great.
+
 Handle add/edit/delete operations on collections without validation:
 
 ```typescript
