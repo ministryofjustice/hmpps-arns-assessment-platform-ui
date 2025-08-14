@@ -71,12 +71,7 @@ const main = () => {
     })
   }
 
-  /** @type {string | null} */
-  let serverEnv = null
-  if (args.includes('--dev-server')) serverEnv = '.env'
-  if (args.includes('--dev-test-server')) serverEnv = 'feature.env'
-
-  if (serverEnv) {
+  if (args.includes('--dev-server')) {
     /** @type {childProcess.ChildProcess | null} */
     let serverProcess = null
     chokidar.watch(['dist']).on(
@@ -84,7 +79,7 @@ const main = () => {
       debounce(() => {
         if (serverProcess) serverProcess.kill()
         process.stderr.write('Restarting server...\n')
-        serverProcess = childProcess.spawn('node', [`--env-file=${serverEnv}`, 'dist/server.js'], { stdio: 'inherit' })
+        serverProcess = childProcess.spawn('node', ['--inspect=0.0.0.0', '--enable-source-maps', 'dist/server.js'], { stdio: 'inherit' })
       }),
     )
   }
