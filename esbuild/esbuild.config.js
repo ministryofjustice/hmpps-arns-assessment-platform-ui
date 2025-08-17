@@ -79,7 +79,9 @@ const main = () => {
       debounce(() => {
         if (serverProcess) serverProcess.kill()
         process.stderr.write('Restarting server...\n')
-        serverProcess = childProcess.spawn('node', ['--inspect=0.0.0.0', '--enable-source-maps', 'dist/server.js'], { stdio: 'inherit' })
+        serverProcess = childProcess.spawn('node', ['--inspect=0.0.0.0', '--enable-source-maps', 'dist/server.js'], {
+          stdio: 'inherit',
+        })
       }),
     )
   }

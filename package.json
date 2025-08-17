@@ -40,7 +40,7 @@
       "server/**/*.{ts,js,jsx,mjs}"
     ],
     "testMatch": [
-      "<rootDir>/(server|job)/**/?(*.)(cy|test).{ts,js,jsx,mjs}"
+      "<rootDir>/(server|job|packages)/**/?(*.)(cy|test).{ts,js,jsx,mjs}"
     ],
     "testEnvironment": "node",
     "reporters": [
