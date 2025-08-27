@@ -1,5 +1,3 @@
-import type { BuildResult } from 'esbuild'
-
 export interface BuildConfig {
   isProduction: boolean
 

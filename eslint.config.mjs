@@ -8,5 +8,19 @@ export default [
       '@typescript-eslint/no-param-reassign': 'off',
       'import/prefer-default-export': 'off',
     },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: './tsconfig.json',
+        },
+      },
+    },
+  },
+  {
+    files: ['**/test-utils/**/*.ts', '**/test-utils/**/*.js'],
+    rules: {
+      'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    },
   },
 ]
