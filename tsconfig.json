@@ -12,7 +12,7 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
-    "typeRoots": ["./server/@types", "./node_modules/@types"]
+    "typeRoots": ["./server/@types", "./node_modules/@types", "./packages/form-engine/@types"]
   },
   "exclude": [
     "node_modules",

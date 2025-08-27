@@ -42,6 +42,9 @@
     "testMatch": [
       "<rootDir>/(server|job|packages)/**/?(*.)(cy|test).{ts,js,jsx,mjs}"
     ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/packages/form-engine/src/test-utils/matchers.ts"
+    ],
     "testEnvironment": "node",
     "reporters": [
       "default",
