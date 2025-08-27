@@ -12,7 +12,12 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
-    "typeRoots": ["./server/@types", "./node_modules/@types"]
+    "typeRoots": ["./server/@types", "./node_modules/@types"],
+    "baseUrl": ".",
+    "paths": {
+      "@form-engine/*": ["packages/form-engine/src/*"],
+      "@strength-and-needs-form/*": ["packages/strength-and-needs-form/*"],
+    }
   },
   "exclude": [
     "node_modules",
