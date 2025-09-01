@@ -16,7 +16,6 @@
     "baseUrl": ".",
     "paths": {
       "@form-engine/*": ["packages/form-engine/src/*"],
-      "@strength-and-needs-form/*": ["packages/strength-and-needs-form/*"],
     }
   },
   "exclude": [
