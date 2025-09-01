@@ -53,10 +53,6 @@ jobs:
       - name: Run npm ci
         run: npm ci
 
-      - name: Stand up a test environment
-        run: |
-          make test-up
-
       - name: Run split Cypress tests
         run: |
           make e2e-headless
