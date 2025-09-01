@@ -1,5 +1,6 @@
 import { defineConfig } from 'cypress'
 import { resetStubs } from './integration_tests/mockApis/wiremock'
+import cypressSplit from 'cypress-split'
 import auth from './integration_tests/mockApis/auth'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import exampleApi from './integration_tests/mockApis/exampleApi'
@@ -15,13 +16,14 @@ export default defineConfig({
   },
   taskTimeout: 60000,
   e2e: {
-    setupNodeEvents(on) {
+    setupNodeEvents(on, config) {
       on('task', {
         reset: resetStubs,
         ...auth,
         ...tokenVerification,
         ...exampleApi,
       })
+      cypressSplit(on, config)
     },
     baseUrl: 'http://localhost:3007',
     excludeSpecPattern: '**/!(*.cy).ts',
