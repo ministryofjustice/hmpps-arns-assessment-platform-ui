@@ -9,31 +9,17 @@ on:
         required: true
         options:
           - dev
-          - preprod
-          - prod
         default: 'dev'
-      version:
-        description: version to be deployed to the environment - must already exist.
-        required: true
+      image_tag:
+        description: Optional image tag to deploy. If left blank, a new image will be built, pushed and deployed
+        required: false
         default: ''
         type: string
 
-permissions:
-  contents: read
-
 jobs:
-  helm_lint:
-    name: helm lint
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/test_helm_lint.yml@v2 # WORKFLOW_VERSION
+  deploy_to_env:
+    uses: ministryofjustice/hmpps-assess-risks-and-needs-github-actions/.github/workflows/deploy_to_env.yml@v1
     secrets: inherit
     with:
       environment: ${{ inputs.environment }}
-  deploy_env:
-    name: Deploy to environment
-    needs:
-      - helm_lint
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
-    secrets: inherit
-    with:
-      environment: ${{ inputs.environment }}
-      app_version: ${{ inputs.version }}
+      image_tag: ${{ inputs.image_tag }}
