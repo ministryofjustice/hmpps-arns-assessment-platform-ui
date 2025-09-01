@@ -18,10 +18,9 @@ services:
       WIREMOCK_URL: 'http://wiremock:8080'
     working_dir: /cypress
     entrypoint: sh
-    command: -c "npm ci && npx cypress run"
+    command: -c "npm i && npx cypress run"
     volumes:
-      - ../package.json:/cypress/package.json
-      - ../package-lock.json:/cypress/package-lock.json
+      - ./cypress-package.json:/cypress/package.json
       - ../cypress.config.ts:/cypress/cypress.config.ts
       - ../reporter-config.json:/cypress/reporter-config.json
       - ../integration_tests:/cypress/integration_tests

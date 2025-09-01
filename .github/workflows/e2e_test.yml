@@ -55,7 +55,7 @@ jobs:
 
       - name: Run split Cypress tests
         run: |
-          SPLIT=true make e2e-headless
+          make e2e-headless
         env:
           SPLIT: ${{ inputs.job-total }}
           SPLIT_INDEX: ${{ inputs.job-index }}
@@ -78,7 +78,7 @@ jobs:
 
       - name: Export container logs
         if: failure()
-        run: make save-logs PROJECT_NAME="hmpps-sentence-plan-test" OUTPUT_LOGS_DIR=${{ runner.temp }}/docker-logs
+        run: make save-logs PROJECT_NAME="hmpps-arns-test" OUTPUT_LOGS_DIR=${{ runner.temp }}/docker-logs
 
       - name: Upload docker logs
         if: failure()

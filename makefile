@@ -47,17 +47,17 @@ e2e: ## Run the end-to-end tests using Cypress
 	npx cypress open --e2e -c experimentalInteractiveRunEvents=true
 
 e2e-headless: ## Run the end-to-end tests using Cypress (headless)
-	@if [ "$(SPLIT)" = "true" ]; then \
-		echo "Running Cypress in headless mode with split testing (SPLIT=$(SPLIT), SPLIT_INDEX=$(SPLIT_INDEX))..."; \
-		docker compose $(TEST_HEADLESS_COMPOSE_FILES) run --quiet-pull --rm \
-			-e SPLIT=$(SPLIT) \
-			-e SPLIT_INDEX=$(SPLIT_INDEX) \
-			-e SPEC="integration_tests/e2e/e2e-tests/**/*.cy.ts" \
-			cypress; \
-	else \
-		echo "Running Cypress in headless mode..."; \
-		docker compose $(TEST_HEADLESS_COMPOSE_FILES) run --quiet-pull --rm cypress; \
-	fi
+	@if [ -n "$(SPLIT)" ]; then \
+    echo "Running Cypress in headless mode with split testing (SPLIT=$(SPLIT), SPLIT_INDEX=$(SPLIT_INDEX))..."; \
+    docker compose $(TEST_HEADLESS_COMPOSE_FILES) run --quiet-pull --rm \
+      -e SPLIT=$(SPLIT) \
+      -e SPLIT_INDEX=$(SPLIT_INDEX) \
+      -e SPEC="/cypress/integration_tests/e2e/**/*.cy.ts" \
+      cypress; \
+  else \
+    echo "Running Cypress in headless mode..."; \
+    docker compose $(TEST_HEADLESS_COMPOSE_FILES) run --quiet-pull --rm cypress; \
+  fi
 
 lint: ## Runs the linter.
 	docker compose exec ${SERVICE_NAME} npm run lint
