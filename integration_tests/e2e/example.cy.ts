@@ -16,6 +16,6 @@ context('Example feature', () => {
 
     cy.signIn({ failOnStatusCode: false })
 
-    cy.get('h1').contains('Internal Server Error')
+    cy.get('h1').contains('Something went wrong.')
   })
 })

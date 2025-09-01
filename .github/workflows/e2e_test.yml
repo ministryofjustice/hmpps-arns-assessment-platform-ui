@@ -59,7 +59,7 @@ jobs:
 
       - name: Run split Cypress tests
         run: |
-          make e2e-ci
+          make e2e-headless
         env:
           SPLIT: ${{ inputs.job-total }}
           SPLIT_INDEX: ${{ inputs.job-index }}
