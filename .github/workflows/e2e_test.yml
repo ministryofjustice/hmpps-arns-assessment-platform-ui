@@ -44,15 +44,6 @@ jobs:
         run: |
           docker load --input ${{ runner.temp }}/build_image.tar
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
-
-      - name: Run npm ci
-        run: npm ci
-
       - name: Run split Cypress tests
         run: |
           make e2e-headless
