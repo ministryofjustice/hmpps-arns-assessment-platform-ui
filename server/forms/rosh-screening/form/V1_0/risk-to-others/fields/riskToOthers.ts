@@ -21,6 +21,7 @@ export const possessionUseWeaponsDetails = field<GovUKRadioInput>({
       message: 'Select yes or no',
     }),
   ],
+  dependent: Answer('previous_convicted_offences').match(Condition.Equals('POSSESSION_USE_WEAPONS')),
 })
 
 export const otherSeriousOffenceDetails = field<GovUKCharacterCount>({
@@ -109,7 +110,6 @@ export const previouslyConvictedOffences = field<GovUKCheckboxInput>({
   ],
 })
 
-// TODO: Do we really need to export this if used in another question?
 export const significantBehavioursOrEvents = field<GovUKCheckboxInput>({
   code: 'significant_behaviours_events',
   variant: 'govukCheckboxInput',
