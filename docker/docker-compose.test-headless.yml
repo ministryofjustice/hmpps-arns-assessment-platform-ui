@@ -9,7 +9,7 @@ services:
       HMPPS_AUTH_EXTERNAL_URL: http://wiremock:8080/auth
 
   cypress:
-    image: cypress/included
+    image: cypress/included:15.0.0
     depends_on:
       - wiremock
       - ui
