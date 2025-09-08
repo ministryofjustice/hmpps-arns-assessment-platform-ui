@@ -27,6 +27,7 @@ export default function nunjucksSetup(app: express.Express): void {
 
   const njkEnv = nunjucks.configure(
     [
+      path.join(__dirname, 'server/views'),
       path.join(__dirname, '../../server/views'),
       'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
