@@ -32,9 +32,7 @@ const buildConfig = {
 
   app: {
     outDir: path.join(cwd, 'dist'),
-    entryPoints: glob
-      .sync([path.join(cwd, '*.ts'), path.join(cwd, 'server/**/*.ts'), path.join(cwd, 'packages/**/*.ts')])
-      .filter(file => !file.endsWith('.test.ts')),
+    entryPoints: path.join(cwd, 'server.ts'),
     copy: [
       {
         from: path.join(cwd, 'server/views/**/*'),
