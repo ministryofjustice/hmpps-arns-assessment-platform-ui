@@ -26,6 +26,7 @@ services:
       TOKEN_VERIFICATION_API_URL: http://localhost:9090/verification
       HMPPS_AUTH_URL: http://hmpps-auth:8080/auth
       HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
+      EXAMPLE_API_URL: http://localhost:3000
 
 volumes:
   node_modules:
