@@ -70,7 +70,7 @@ export const previouslyConvictedOffences = field<GovUKCheckboxInput>({
     { text: 'Aggravated burglary', value: 'AGGRAVATED_BURGLARY' },
     { text: 'Robbery', value: 'ROBBERY' },
     {
-      text: 'Any other serious offence (for example, blackmail, harassment, stalking, indecent images of children, child neglect or abduction',
+      text: 'Any other serious offence (for example, blackmail, harassment, stalking, indecent images of children, child neglect or abduction)',
       value: 'OTHER_SERIOUS_OFFENCE',
       block: otherSeriousOffenceDetails,
     },
