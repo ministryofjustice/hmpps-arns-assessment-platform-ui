@@ -55,7 +55,8 @@
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
     "redis": "^5.8.0",
-    "superagent": "^10.2.3"
+    "superagent": "^10.2.3",
+    "zod": "^4.1.5"
   },
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.3",
