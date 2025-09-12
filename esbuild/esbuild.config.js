@@ -32,9 +32,7 @@ const buildConfig = {
 
   app: {
     outDir: path.join(cwd, 'dist'),
-    entryPoints: glob
-      .sync([path.join(cwd, '*.ts'), path.join(cwd, 'server/**/*.ts'), path.join(cwd, 'packages/**/*.ts')])
-      .filter(file => !file.endsWith('.test.ts')),
+    entryPoints: path.join(cwd, 'server.ts'),
     copy: [
       {
         from: path.join(cwd, 'server/views/**/*'),
@@ -95,10 +93,12 @@ const main = () => {
     )
 
     // App
-    chokidar.watch(['server/.'], { ...chokidarOptions, ignored: filePath => filePath.endsWith('.test.ts') }).on(
-      'all',
-      debounce(() => buildApp(buildConfig).catch(e => process.stderr.write(`${e}\n`))),
-    )
+    chokidar
+      .watch(['server/.', 'packages/.'], { ...chokidarOptions, ignored: filePath => filePath.endsWith('.test.ts') })
+      .on(
+        'all',
+        debounce(() => buildApp(buildConfig).catch(e => process.stderr.write(`${e}\n`))),
+      )
   }
 }
 
