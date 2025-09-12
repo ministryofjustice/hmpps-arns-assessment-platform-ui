@@ -2,6 +2,7 @@ const { copy } = require('esbuild-plugin-copy')
 const { typecheckPlugin } = require('@jgoz/esbuild-plugin-typecheck')
 const esbuild = require('esbuild')
 const glob = require('glob')
+const pkg = require('../package.json')
 
 /**
  * Build typescript application into CommonJS
@@ -11,10 +12,11 @@ const buildApp = buildConfig => {
   return esbuild.build({
     entryPoints: glob.sync(buildConfig.app.entryPoints),
     outdir: buildConfig.app.outDir,
-    bundle: false,
+    bundle: true,
     sourcemap: true,
     platform: 'node',
     format: 'cjs',
+    external: [...Object.keys(pkg.dependencies || {}), ...Object.keys(pkg.peerDependencies || {})],
     plugins: [
       typecheckPlugin(),
       copy({
