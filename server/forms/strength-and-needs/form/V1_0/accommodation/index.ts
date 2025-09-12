@@ -5,6 +5,7 @@ import {
   Data,
   journey,
   loadTransition,
+  next,
   Post,
   step,
   submitTransition,
@@ -85,7 +86,7 @@ export default journey({
   onAccess: [
     accessTransition({
       guards: Data('user.role').match(Condition.Equals(['READ_WRITE'])),
-      redirect: [{ goto: '/unauthorized' }],
+      redirect: [next({ goto: '/unauthorized' })],
     }),
   ],
 
@@ -102,33 +103,33 @@ export default journey({
             effects: [StrengthsAndNeedsEffect.Save()],
             next: [
               // Navigate to settled accommodation
-              {
+              next({
                 when: Answer('current_accommodation').match(Condition.Equals('SETTLED')),
                 goto: URL.settledAccommodation,
-              },
+              }),
               // Navigate to temporary accommodation (short term or immigration)
-              {
+              next({
                 when: or(
                   Answer('type_of_temporary_accommodation').match(Condition.Equals('SHORT_TERM')),
                   Answer('type_of_temporary_accommodation').match(Condition.Equals('IMMIGRATION')),
                 ),
                 goto: URL.temporaryAccommodation,
-              },
+              }),
               // Navigate to temporary accommodation CAS/AP (all other temporary types)
-              {
+              next({
                 when: Answer('current_accommodation').match(Condition.Equals('TEMPORARY')),
                 goto: URL.temporaryAccommodationCasAp,
-              },
+              }),
               // Navigate to no accommodation
-              {
+              next({
                 when: Answer('current_accommodation').match(Condition.Equals('NO_ACCOMMODATION')),
                 goto: URL.noAccommodation,
-              },
+              }),
             ],
           },
           onInvalid: {
             effects: [StrengthsAndNeedsEffect.Save()],
-            next: [{ goto: URL.currentAccommodation }],
+            next: [next({ goto: URL.currentAccommodation })],
           },
         }),
       ],
@@ -150,11 +151,11 @@ export default journey({
           validate: true,
           onValid: {
             effects: [StrengthsAndNeedsEffect.Save()],
-            next: [{ goto: URL.summary }],
+            next: [next({ goto: URL.summary })],
           },
           onInvalid: {
             effects: [StrengthsAndNeedsEffect.SaveDraft()],
-            next: [{ goto: URL.settledAccommodation }],
+            next: [next({ goto: URL.settledAccommodation })],
           },
         }),
       ],
@@ -178,11 +179,11 @@ export default journey({
           validate: true,
           onValid: {
             effects: [StrengthsAndNeedsEffect.Save()],
-            next: [{ goto: URL.summary }],
+            next: [next({ goto: URL.summary })],
           },
           onInvalid: {
             effects: [StrengthsAndNeedsEffect.SaveDraft()],
-            next: [{ goto: URL.temporaryAccommodation }],
+            next: [next({ goto: URL.temporaryAccommodation })],
           },
         }),
       ],
@@ -204,11 +205,11 @@ export default journey({
           validate: true,
           onValid: {
             effects: [StrengthsAndNeedsEffect.Save()],
-            next: [{ goto: URL.summary }],
+            next: [next({ goto: URL.summary })],
           },
           onInvalid: {
             effects: [StrengthsAndNeedsEffect.SaveDraft()],
-            next: [{ goto: URL.temporaryAccommodationCasAp }],
+            next: [next({ goto: URL.temporaryAccommodationCasAp })],
           },
         }),
       ],
@@ -229,11 +230,11 @@ export default journey({
           validate: true,
           onValid: {
             effects: [StrengthsAndNeedsEffect.Save()],
-            next: [{ goto: URL.summary }],
+            next: [next({ goto: URL.summary })],
           },
           onInvalid: {
             effects: [StrengthsAndNeedsEffect.SaveDraft()],
-            next: [{ goto: URL.noAccommodation }],
+            next: [next({ goto: URL.noAccommodation })],
           },
         }),
       ],
@@ -253,10 +254,10 @@ export default journey({
           validate: true,
           onValid: {
             effects: [StrengthsAndNeedsEffect.Save(), StrengthsAndNeedsEffect.CompleteSection('accommodation')],
-            next: [{ goto: `${URL.analysis}#practitioner-analysis` }],
+            next: [next({ goto: `${URL.analysis}#practitioner-analysis` })],
           },
           onInvalid: {
-            next: [{ goto: URL.summary }],
+            next: [next({ goto: URL.summary })],
           },
         }),
       ],
