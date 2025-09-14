@@ -1,18 +1,14 @@
-import { isBlockStructNode, isJourneyStructNode, isStepStructNode } from '@form-engine/core/typeguards/structure-nodes'
-import { isFunctionExprNode, isPredicateExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import { ASTNode } from '@form-engine/core/types/engine.type'
-import { isTransitionNode } from '@form-engine/core/typeguards/transition-nodes'
+import { ASTNodeType } from '@form-engine/core/types/enums'
 
 /**
  * Check if a value is an AST node
  */
-export function isASTNode(node: any): node is ASTNode {
+export function isASTNode(value: any): value is ASTNode {
   return (
-    isBlockStructNode(node) ||
-    isPredicateExprNode(node) ||
-    isFunctionExprNode(node) ||
-    isTransitionNode(node) ||
-    isJourneyStructNode(node) ||
-    isStepStructNode(node)
+    value != null &&
+    typeof value === 'object' &&
+    typeof value.type === 'string' &&
+    Object.values(ASTNodeType).includes(value.type)
   )
 }
