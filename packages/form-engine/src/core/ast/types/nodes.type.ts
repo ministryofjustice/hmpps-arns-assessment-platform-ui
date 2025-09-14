@@ -50,7 +50,6 @@ export interface ExpressionASTNode extends ASTNode {
  */
 export interface ReferenceASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.REFERENCE
-  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -58,7 +57,6 @@ export interface ReferenceASTNode extends ExpressionASTNode {
  */
 export interface PipelineASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.PIPELINE
-  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -66,7 +64,6 @@ export interface PipelineASTNode extends ExpressionASTNode {
  */
 export interface ConditionalASTNode extends ExpressionASTNode {
   expressionType: LogicType.CONDITIONAL
-  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -74,7 +71,6 @@ export interface ConditionalASTNode extends ExpressionASTNode {
  */
 export interface PredicateASTNode extends ExpressionASTNode {
   expressionType: LogicType
-  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -82,7 +78,6 @@ export interface PredicateASTNode extends ExpressionASTNode {
  */
 export interface FunctionASTNode extends ExpressionASTNode {
   expressionType: FunctionType
-  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -90,7 +85,6 @@ export interface FunctionASTNode extends ExpressionASTNode {
  */
 export interface ValidationASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.VALIDATION
-  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -107,7 +101,6 @@ export interface TransitionASTNode extends ASTNode {
  */
 export interface LoadTransitionASTNode extends TransitionASTNode {
   transitionType: TransitionType.LOAD
-  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -115,7 +108,6 @@ export interface LoadTransitionASTNode extends TransitionASTNode {
  */
 export interface AccessTransitionASTNode extends TransitionASTNode {
   transitionType: TransitionType.ACCESS
-  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -123,5 +115,4 @@ export interface AccessTransitionASTNode extends TransitionASTNode {
  */
 export interface SubmitTransitionASTNode extends TransitionASTNode {
   transitionType: TransitionType.SUBMIT
-  properties: Map<string, ASTNode | any>
 }
