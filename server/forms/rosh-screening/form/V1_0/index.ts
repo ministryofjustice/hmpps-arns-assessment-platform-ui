@@ -1,4 +1,4 @@
-import { journey, Post, step, submitTransition } from '@form-engine/form/builders'
+import { journey, next, Post, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import * as riskToOthersIndex from './risk-to-others/index'
 
@@ -17,11 +17,11 @@ export const roshScreening = journey({
           validate: true,
           onValid: {
             // TODO: Save data
-            next: [{ goto: '/rosh-screening/risk-to-children' }], // TODO: Update to correct URL when page exists
+            next: [next({ goto: '/rosh-screening/risk-to-children' })], // TODO: Update to correct URL when page exists
           },
           onInvalid: {
             // TODO: Save data
-            next: [{ goto: '@self' }],
+            next: [next({ goto: '@self' })],
           },
         }),
       ],
