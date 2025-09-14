@@ -1,13 +1,3 @@
-import {
-  ASTNode,
-  ConditionalASTNode,
-  ExpressionASTNode,
-  FunctionASTNode,
-  PipelineASTNode,
-  PredicateASTNode,
-  ReferenceASTNode,
-  ValidationASTNode,
-} from '@form-engine/core/ast/types/nodes.type'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { ExpressionType, LogicType } from '@form-engine/form/types/enums'
 import { transformNode, transformValue } from '@form-engine/core/ast/transformer/transformToAst'
@@ -18,14 +8,24 @@ import {
   isPredicateOrExpr,
   isPredicateTestExpr,
   isPredicateXorExpr,
-} from '@form-engine/typeguards/predicates'
+} from '@form-engine/form/typeguards/predicates'
 import {
   isConditionalExpr,
   isPipelineExpr,
   isReferenceExpr,
   isValidationExpr,
-} from '@form-engine/typeguards/expressions'
-import { isFunctionExpr } from '@form-engine/typeguards/functions'
+} from '@form-engine/form/typeguards/expressions'
+import { isFunctionExpr } from '@form-engine/form/typeguards/functions'
+import {
+  ConditionalASTNode,
+  ExpressionASTNode,
+  FunctionASTNode,
+  PipelineASTNode,
+  PredicateASTNode,
+  ReferenceASTNode,
+  ValidationASTNode,
+} from '@form-engine/core/types/expressions.type'
+import { ASTNode } from '@form-engine/core/types/engine.type'
 
 /**
  * Transform Expression node: Dynamic values and logic
