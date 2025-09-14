@@ -25,11 +25,11 @@ export const roshScreening = journey({
           validate: true,
           onValid: {
             // TODO: Save data
-            next: next({ goto: '/rosh-screening/risk-to-children' }),
+            next: [next({ goto: '/rosh-screening/risk-to-children' })],
           },
           onInvalid: {
             // TODO: Save data
-            next: next({ goto: '@self' }),
+            next: [next({ goto: '@self' })],
           },
         }),
       ],
@@ -44,12 +44,12 @@ export const roshScreening = journey({
           onValid: {
             // TODO: Save data
             effects: [],
-            next: next({ goto: '/rosh-screening/rosh-confirmation' }), // TODO: branching logic for following pages
+            next: [next({ goto: '/rosh-screening/rosh-confirmation' })], // TODO: branching logic for following pages
           },
           onInvalid: {
             // TODO: Save data
             effects: [],
-            next: next({ goto: '@self' }),
+            next: [next({ goto: '@self' })],
           },
         }),
       ],
