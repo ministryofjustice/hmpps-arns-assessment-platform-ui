@@ -18,4 +18,4 @@ export interface ASTNode {
   raw?: any
 }
 
-export type CompiledAst = object
+export type CompiledAST = object
