@@ -82,11 +82,14 @@ export function transformExpression(json: any, path: string[]): ExpressionASTNod
  * Transform Reference expression: Points to data in context
  * Examples: Answer('field'), Data('external.value'), Self(), Item()
  */
-export function transformReference(json: any, _path: string[]): ReferenceASTNode {
+export function transformReference(json: any, path: string[]): ReferenceASTNode {
   const properties = new Map<string, ASTNode | any>()
 
-  // Path segments for data resolution (e.g., ['answers', 'email'])
-  properties.set('path', json.path)
+  const transformedPath = Array.isArray(json.path)
+    ? json.path.map((segment: any, i: number) => transformValue(segment, [...path, 'path', i.toString()]))
+    : json.path
+
+  properties.set('path', transformedPath)
 
   return {
     type: ASTNodeType.EXPRESSION,
