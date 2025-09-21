@@ -24,6 +24,7 @@ import ExampleFormShowcase from './forms/example-form'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
+  const formEngine = new FormEngine({}, logger).registerForm(ExampleFormShowcase)
 
   app.set('json spaces', 2)
   app.set('trust proxy', true)
@@ -42,9 +43,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCurrentUser())
 
   app.use(routes(services))
-
-  const formEngine = new FormEngine({}, logger)
-  formEngine.registerForm(ExampleFormShowcase)
+  app.use(formEngine.getRouter())
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
