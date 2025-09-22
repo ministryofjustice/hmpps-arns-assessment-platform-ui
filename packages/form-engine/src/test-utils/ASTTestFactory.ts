@@ -553,8 +553,6 @@ export class ExpressionBuilder {
       id: nodeId,
       expressionType: this.expressionType,
       properties: this.properties,
-    } as ExpressionASTNode
+    }
   }
 }
-
-export default ASTTestFactory
