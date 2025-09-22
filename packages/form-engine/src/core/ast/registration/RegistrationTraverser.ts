@@ -69,12 +69,3 @@ export default class RegistrationTraverser {
     return this.counter
   }
 }
-
-/**
- * Convenience function to assign IDs to an AST
- * @param root The root node of the AST
- * @returns The NodeRegistry containing all nodes with assigned IDs
- */
-export function assignIds(root: ASTNode): NodeRegistry {
-  return RegistrationTraverser.buildRegistry(root)
-}
