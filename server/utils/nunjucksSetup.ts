@@ -17,8 +17,18 @@ export default function nunjucksSetup(app: express.Express): void {
   let assetManifest: Record<string, string> = {}
 
   try {
-    const assetMetadataPath = path.resolve(__dirname, '../../assets/manifest.json')
-    assetManifest = JSON.parse(fs.readFileSync(assetMetadataPath, 'utf8'))
+    const paths = [
+      path.resolve(__dirname, '../../assets/manifest.json'),
+      path.resolve(__dirname, 'assets/manifest.json'),
+    ]
+
+    const validPath = paths.find(p => fs.existsSync(p))
+
+    if (!validPath) {
+      throw new Error('Asset manifest not found')
+    }
+
+    assetManifest = JSON.parse(fs.readFileSync(validPath, 'utf8'))
   } catch (e) {
     if (process.env.NODE_ENV !== 'test') {
       logger.error(e, 'Could not read asset manifest file')
@@ -29,6 +39,8 @@ export default function nunjucksSetup(app: express.Express): void {
     [
       path.join(__dirname, 'server/views'),
       path.join(__dirname, '../../server/views'),
+      path.join(__dirname, 'packages/form-engine/src/diagnostics/inspector/templates'),
+      path.join(__dirname, '../../packages/form-engine/src/diagnostics/inspector/templates'),
       'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
     ],
