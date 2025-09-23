@@ -35,8 +35,12 @@ const buildConfig = {
     entryPoints: path.join(cwd, 'server.ts'),
     copy: [
       {
-        from: path.join(cwd, 'server/views/**/*'),
-        to: path.join(cwd, 'dist/server/views'),
+        from: path.join(cwd, 'server/**/*.njk'),
+        to: path.join(cwd, 'dist/server'),
+      },
+      {
+        from: path.join(cwd, 'packages/**/*.njk'),
+        to: path.join(cwd, 'dist/packages'),
       },
     ],
   },
