@@ -8,13 +8,15 @@ import CompiledAST from '@form-engine/core/ast/CompiledAST'
 import { FormInstanceDependencies, ASTNode } from '@form-engine/core/types/engine.type'
 import { isJourneyStructNode, isStepStructNode } from '@form-engine/core/typeguards/structure-nodes'
 import { JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
+import { FormEngineOptions } from '@form-engine/core/FormEngine'
 
 export interface GeneratedRoute {
   path: string
   method: 'GET' | 'POST'
-  stepNode: StepASTNode
-  journeyNode: JourneyASTNode
+  stepNode?: StepASTNode
+  journeyNode?: JourneyASTNode
   handler: express.RequestHandler
+  isDebugRoute: boolean
 }
 
 export interface RouteGenerationResult {
@@ -35,30 +37,27 @@ export default class RouteGenerator {
 
   private currentJourney: JourneyASTNode | null = null
 
-  private cachedResult: RouteGenerationResult | null = null
-
   constructor(
     private readonly compiledAst: CompiledAST,
     private readonly dependencies: FormInstanceDependencies,
+    private readonly options: FormEngineOptions,
   ) {}
 
   /**
-   * Generate all routes from the compiled AST (cached after first generation)
+   * Generate all routes from the compiled AST
    */
   generateRoutes(): RouteGenerationResult {
-    if (this.cachedResult) {
-      return this.cachedResult
-    }
-
     const visitor = this.createVisitor()
     structuralTraverse(this.compiledAst.getRoot(), visitor)
 
-    this.cachedResult = {
+    if (this.options.debug) {
+      this.routes.push(this.generateDebugRoute())
+    }
+
+    return {
       routes: this.routes,
       routeMap: this.routeMap,
     }
-
-    return this.cachedResult
   }
 
   /**
@@ -182,6 +181,7 @@ export default class RouteGenerator {
       stepNode,
       journeyNode: this.currentJourney!,
       handler,
+      isDebugRoute: false,
     }
   }
 
@@ -228,6 +228,23 @@ export default class RouteGenerator {
       } catch (error) {
         next(error)
       }
+    }
+  }
+
+  /**
+   * Generate a debug route that shows AST and dependency information
+   */
+  private generateDebugRoute(): GeneratedRoute {
+    const rootNode = this.compiledAst.getRoot()
+    const debugPath = `${rootNode.properties.get('path')}/debug`
+
+    this.dependencies.logger.debug(`Creating debug route: ${debugPath}`)
+
+    return {
+      path: debugPath,
+      method: 'GET',
+      handler: new DiagnosticsRouter(this.compiledAst, undefined, this.routes.slice()).GET,
+      isDebugRoute: true,
     }
   }
 }

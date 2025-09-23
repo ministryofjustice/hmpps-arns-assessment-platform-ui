@@ -1,8 +1,8 @@
-import RouteGenerator from '@form-engine/core/ast/RouteGenerator'
-import CompiledAST from '@form-engine/core/ast/CompiledAST'
+import RouteGenerator from '@form-engine/core/runtime/routes/RouteGenerator'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { FormInstanceDependencies } from '@form-engine/core/types/engine.type'
 import { JourneyASTNode } from '@form-engine/core/types/structures.type'
+import { FormEngineOptions } from '@form-engine/core/FormEngine'
 
 describe('RouteGenerator', () => {
   const mockDependencies: FormInstanceDependencies = {
@@ -18,11 +18,30 @@ describe('RouteGenerator', () => {
     } as any,
   }
 
+  const mockOptions: FormEngineOptions = {
+    disableBuiltInFunctions: false,
+    disableBuiltInComponents: false,
+    basePath: '/forms',
+    debug: false,
+  }
+
   const createMockCompiledAST = (root: JourneyASTNode) => {
     return {
       getRoot: () => root,
-      getNodeRegistry: () => ({}),
-    } as CompiledAST
+      getNodeRegistry: () => ({
+        size: () => 10,
+      }),
+      getAnalysis: () => ({
+        topoOrder: [1, 2, 3],
+        nodes: new Map(),
+        pseudoNodes: new Map(),
+        graph: {
+          adjacency: new Map(),
+        },
+        cycles: [] as any[],
+      }),
+      getVisualizationData: () => ({}),
+    } as any
   }
 
   beforeEach(() => {
@@ -41,10 +60,15 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(journey)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       expect(result.routes).toHaveLength(4) // 2 steps * 2 methods (GET, POST)
+
+      // Check isDebugRoute flag
+      result.routes.forEach(route => {
+        expect(route.isDebugRoute).toBe(false)
+      })
 
       const routePaths = result.routes.map(r => r.path)
       expect(routePaths).toContain('/step-one')
@@ -66,7 +90,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(journey)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       const routePaths = result.routes.map(r => r.path)
@@ -83,7 +107,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(journey)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       const routePaths = result.routes.map(r => r.path)
@@ -111,7 +135,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(parentJourney)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       const routePaths = result.routes.map(r => r.path)
@@ -135,7 +159,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(parentJourney)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       const routePaths = result.routes.map(r => r.path)
@@ -167,7 +191,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(level1)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       const routePaths = result.routes.map(r => r.path)
@@ -186,7 +210,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(journey)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       expect(result.routeMap.has('/app/step-a')).toBe(true)
@@ -206,7 +230,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(journey)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       generator.generateRoutes()
 
       expect(mockDependencies.logger.warn).toHaveBeenCalledWith('Duplicate route path detected: /duplicate')
@@ -222,7 +246,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(journey)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       const getRoute = result.routes.find(r => r.method === 'GET' && r.path === '/test-step')
@@ -252,7 +276,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(journey)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       const route = result.routes[0]
@@ -281,7 +305,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(journey)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       expect(result.routes).toHaveLength(0)
@@ -296,7 +320,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(journey)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       expect(result.routes).toHaveLength(0)
@@ -310,7 +334,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(journey)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       expect(result.routes).toHaveLength(0)
@@ -328,7 +352,7 @@ describe('RouteGenerator', () => {
       }
 
       const mockCompiledAst = createMockCompiledAST(minimalForm)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       expect(result.routes.length).toBeGreaterThan(0)
@@ -346,7 +370,7 @@ describe('RouteGenerator', () => {
       }
 
       const mockCompiledAst = createMockCompiledAST(withValidation)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       expect(result.routes.length).toBeGreaterThan(0)
@@ -364,7 +388,7 @@ describe('RouteGenerator', () => {
       })
 
       const mockCompiledAst = createMockCompiledAST(withCollection)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       expect(result.routes.length).toBeGreaterThan(0)
@@ -394,7 +418,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(journey)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       const routePaths = result.routes.map(r => r.path)
@@ -413,7 +437,7 @@ describe('RouteGenerator', () => {
         .build()
 
       const mockCompiledAst = createMockCompiledAST(journey)
-      const generator = new RouteGenerator(mockCompiledAst, mockDependencies)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
       const result = generator.generateRoutes()
 
       // Check that the step has the correct journey context
@@ -421,6 +445,119 @@ describe('RouteGenerator', () => {
       expect(route).toBeDefined()
       expect(route?.journeyNode.id).toBe(1)
       expect(route?.stepNode.id).toBe(2)
+    })
+  })
+
+  describe('Debug route', () => {
+    it('should not generate debug route when debug is false', () => {
+      const journey = ASTTestFactory.journey()
+        .withProperty('code', 'test-journey')
+        .withProperty('title', 'Test Journey')
+        .withProperty('path', '/app')
+        .withStep(step => step.withProperty('path', '/step1'))
+        .build()
+
+      const mockCompiledAst = createMockCompiledAST(journey)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, mockOptions)
+      const result = generator.generateRoutes()
+
+      const debugRoute = result.routes.find(r => r.isDebugRoute === true)
+      expect(debugRoute).toBeUndefined()
+    })
+
+    it('should generate debug route when debug is true', () => {
+      const journey = ASTTestFactory.journey()
+        .withProperty('code', 'test-journey')
+        .withProperty('title', 'Test Journey')
+        .withProperty('path', '/app')
+        .withStep(step => step.withProperty('path', '/step1'))
+        .build()
+
+      const debugOptions = { ...mockOptions, debug: true }
+      const mockCompiledAst = createMockCompiledAST(journey)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, debugOptions)
+      const result = generator.generateRoutes()
+
+      const debugRoute = result.routes.find(r => r.isDebugRoute === true)
+      expect(debugRoute).toBeDefined()
+      expect(debugRoute?.path).toBe('/app/debug')
+      expect(debugRoute?.method).toBe('GET')
+    })
+
+    it('should handle debug route handler correctly', async () => {
+      const journey = ASTTestFactory.journey()
+        .withProperty('code', 'test-journey')
+        .withProperty('title', 'Test Journey')
+        .withProperty('path', '/test')
+        .withProperty('name', 'Test Form')
+        .build()
+
+      const debugOptions = { ...mockOptions, debug: true }
+      const mockCompiledAst = createMockCompiledAST(journey)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, debugOptions)
+      const result = generator.generateRoutes()
+
+      const debugRoute = result.routes.find(r => r.isDebugRoute === true)
+      expect(debugRoute).toBeDefined()
+
+      const req: any = {
+        path: '/test/debug',
+      }
+      const res: any = {
+        json: jest.fn(),
+      }
+      const next = jest.fn()
+
+      await debugRoute!.handler(req, res, next)
+
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Debug route for form instance',
+          formCode: 'test-journey',
+          formTitle: 'Test Form',
+          visualizationData: expect.any(Object),
+          analysis: expect.objectContaining({
+            executionOrder: expect.any(Array),
+            dependencyGraph: expect.objectContaining({
+              nodes: expect.any(Number),
+              pseudoNodes: expect.any(Number),
+              edges: expect.any(Number),
+              hasCycles: expect.any(Boolean),
+              cycleCount: expect.any(Number),
+            }),
+          }),
+          astStructure: expect.objectContaining({
+            root: expect.any(Number),
+            totalNodes: expect.any(Number),
+          }),
+          routes: expect.any(Array),
+        }),
+      )
+    })
+
+    it('debug route should filter itself from routes list', async () => {
+      const journey = ASTTestFactory.journey()
+        .withProperty('code', 'test-journey')
+        .withProperty('title', 'Test Journey')
+        .withProperty('path', '/app')
+        .withStep(step => step.withProperty('path', '/step1'))
+        .build()
+
+      const debugOptions = { ...mockOptions, debug: true }
+      const mockCompiledAst = createMockCompiledAST(journey)
+      const generator = new RouteGenerator(mockCompiledAst, mockDependencies, debugOptions)
+      const result = generator.generateRoutes()
+
+      const debugRoute = result.routes.find(r => r.isDebugRoute === true)
+      const req: any = { path: '/app/debug' }
+      const res: any = { json: jest.fn() }
+      const next = jest.fn()
+
+      await debugRoute!.handler(req, res, next)
+
+      const responseData = res.json.mock.calls[0][0]
+      // Should not include the debug route itself in the routes list
+      expect(responseData.routes.every((r: any) => r.path !== '/app/debug')).toBe(true)
     })
   })
 })
