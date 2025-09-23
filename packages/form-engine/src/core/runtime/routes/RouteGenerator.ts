@@ -50,10 +50,6 @@ export default class RouteGenerator {
     const visitor = this.createVisitor()
     structuralTraverse(this.compiledAst.getRoot(), visitor)
 
-    if (this.options.debug) {
-      this.routes.push(this.generateDebugRoute())
-    }
-
     return {
       routes: this.routes,
       routeMap: this.routeMap,
@@ -228,23 +224,6 @@ export default class RouteGenerator {
       } catch (error) {
         next(error)
       }
-    }
-  }
-
-  /**
-   * Generate a debug route that shows AST and dependency information
-   */
-  private generateDebugRoute(): GeneratedRoute {
-    const rootNode = this.compiledAst.getRoot()
-    const debugPath = `${rootNode.properties.get('path')}/debug`
-
-    this.dependencies.logger.debug(`Creating debug route: ${debugPath}`)
-
-    return {
-      path: debugPath,
-      method: 'GET',
-      handler: new DiagnosticsRouter(this.compiledAst, undefined, this.routes.slice()).GET,
-      isDebugRoute: true,
     }
   }
 }
