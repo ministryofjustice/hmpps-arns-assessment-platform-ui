@@ -261,7 +261,7 @@ export interface CollectionExpr<T = any> {
    * The data source to iterate over.
    * Can be a reference expression or a static array.
    */
-  collection: ValueExpr | any[]
+  collection: ReferenceExpr | PipelineExpr | any[]
 
   /**
    * Template blocks to render for each item in the collection.

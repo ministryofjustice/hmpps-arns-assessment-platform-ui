@@ -57,7 +57,7 @@ export const PipelineExprSchema = z.looseObject({
  */
 export const CollectionExprSchema: z.ZodType<any> = z.looseObject({
   type: z.literal(ExpressionType.COLLECTION),
-  collection: z.union([ValueExprSchema, z.array(z.any())]),
+  collection: z.union([ReferenceExprSchema, PipelineExprSchema, z.array(z.any())]),
   template: z.array(z.any()),
   fallback: z.array(z.any()).optional(),
 })
