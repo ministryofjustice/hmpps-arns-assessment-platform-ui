@@ -25,6 +25,7 @@ services:
 
   hmpps-arns-assessment-platform-ui:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:${APP_VERSION:-latest}
+    container_name: hmpps-arns-assessment-platform-ui
     networks:
       - hmpps
     depends_on:
