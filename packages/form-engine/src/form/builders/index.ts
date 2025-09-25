@@ -12,12 +12,14 @@ import {
 } from '../types/structures.type'
 import {
   AccessTransition,
+  CollectionExpr,
   FormatExpr,
   LoadTransition,
   NextExpr,
   SkipValidationTransition,
   SubmitTransition,
   ValidatingTransition,
+  ValueExpr,
 } from '../types/expressions.type'
 import { ExpressionType, StructureType, TransitionType } from '../types/enums'
 
@@ -171,5 +173,39 @@ export const Format = (text: string, ...args: ConditionalString[]): FormatExpr =
     type: ExpressionType.FORMAT,
     text,
     args,
+  }
+}
+
+/**
+ * Creates a collection expression that iterates over data to produce repeated templates.
+ * Collections allow dynamic generation of form elements based on arrays of data.
+ *
+ * @param collection - The data source to iterate over (array or expression)
+ * @param template - Template blocks to render for each item
+ * @param fallback - Optional fallback blocks when collection is empty
+ * @returns Collection expression
+ *
+ * @example
+ * // With fallback
+ * Collection({
+ *   collection: Data('items'),
+ *   template: [field({ code: 'item_name', variant: 'text' })],
+ *   fallback: [block({ variant: 'html', content: 'No items found' })]
+ * })
+ */
+export const Collection = <T = any>({
+  collection,
+  template,
+  fallback,
+}: {
+  collection: ValueExpr | any[]
+  template: T[]
+  fallback?: T[]
+}): CollectionExpr<T> => {
+  return {
+    type: ExpressionType.COLLECTION,
+    collection,
+    template,
+    fallback,
   }
 }
