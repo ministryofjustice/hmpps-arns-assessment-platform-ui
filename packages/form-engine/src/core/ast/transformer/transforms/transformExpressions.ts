@@ -146,12 +146,12 @@ export function transformConditional(json: any, path: string[]): ConditionalASTN
     properties.set('predicate', transformNode(json.predicate, [...path, 'predicate']))
   }
 
-  if (json.then !== undefined) {
-    properties.set('thenValue', transformValue(json.then, [...path, 'then']))
+  if (json.thenValue !== undefined) {
+    properties.set('thenValue', transformValue(json.thenValue, [...path, 'thenValue']))
   }
 
-  if (json.else !== undefined) {
-    properties.set('elseValue', transformValue(json.else, [...path, 'else']))
+  if (json.elseValue !== undefined) {
+    properties.set('elseValue', transformValue(json.elseValue, [...path, 'elseValue']))
   }
 
   return {
