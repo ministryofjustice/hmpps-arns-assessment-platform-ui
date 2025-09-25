@@ -17,6 +17,7 @@ services:
       HMPPS_AUTH_URL: http://hmpps-auth:8080/auth
       HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
       EXAMPLE_API_URL: http://localhost:3000
+      NODE_ENV: 'development'
 
 volumes:
   node_modules:

@@ -1,6 +1,6 @@
 import { BuildableReference, createReference } from '@form-engine/form/builders/utils/createReference'
 import { createScopedReference, CreateScopedReference } from '@form-engine/form/builders/utils/createScopedReference'
-import { isFieldBlockDefinition } from '@form-engine/typeguards/structures'
+import { isFieldBlockDefinition } from '@form-engine/form/typeguards/structures'
 import { finaliseBuilders } from './utils/finaliseBuilders'
 import {
   BlockDefinition,
@@ -12,6 +12,7 @@ import {
 } from '../types/structures.type'
 import {
   AccessTransition,
+  FormatExpr,
   LoadTransition,
   NextExpr,
   SkipValidationTransition,
@@ -162,5 +163,13 @@ export const Item = (): CreateScopedReference => createScopedReference(0)
 export const Self = (): BuildableReference =>
   createReference({
     type: ExpressionType.REFERENCE,
-    path: ['@self'],
+    path: ['answers', '@self'],
   })
+
+export const Format = (text: string, ...args: ConditionalString[]): FormatExpr => {
+  return {
+    type: ExpressionType.FORMAT,
+    text,
+    args,
+  }
+}
