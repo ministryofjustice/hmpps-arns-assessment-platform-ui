@@ -2,7 +2,7 @@
 # for integration testing in a completely headless deployment.
 
 services:
-  hmpps-arns-assessment-platform-ui:
+  ui:
     environment:
       INGRESS_URL: http://ui:3000
       HMPPS_AUTH_URL: http://wiremock:8080/auth

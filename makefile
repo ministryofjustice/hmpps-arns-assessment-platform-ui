@@ -4,7 +4,7 @@ SHELL = '/bin/bash'
 PROJECT_NAME = hmpps-arns-assessment-platform
 
 ## Must match name of container in Docker
-SERVICE_NAME = hmpps-arns-assessment-platform-ui
+SERVICE_NAME = ui
 
 APP_VERSION ?= local
 

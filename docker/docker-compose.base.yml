@@ -2,7 +2,7 @@
 # Other compose files (local, test) extend or override these settings as needed.
 
 services:
-  hmpps-auth:
+  auth:
     image: quay.io/hmpps/hmpps-auth:latest
     networks:
       - hmpps
@@ -23,14 +23,13 @@ services:
     environment:
       ALLOW_EMPTY_PASSWORD: yes
 
-  hmpps-arns-assessment-platform-ui:
+  ui:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:${APP_VERSION:-latest}
-    container_name: hmpps-arns-assessment-platform-ui
     networks:
       - hmpps
     depends_on:
       - redis
-      - hmpps-arns-assessment-platform-api
+      - api
     build:
       context: ../
       target: production
@@ -54,11 +53,10 @@ services:
       CLIENT_CREDS_CLIENT_ID: hmpps-typescript-template-system
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
 
-  hmpps-arns-assessment-platform-api:
+  api:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
     networks:
       - hmpps
-    container_name: hmpps-arns-assessment-platform-api
     ports:
       - "8080:8080"
     healthcheck:
@@ -70,7 +68,7 @@ services:
       - DATABASE_ENDPOINT=postgres:5432
     depends_on:
       - postgres
-      - hmpps-auth
+      - auth
 
   postgres:
     image: postgres:16
