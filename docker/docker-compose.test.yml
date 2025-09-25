@@ -7,7 +7,6 @@ services:
     image: wiremock/wiremock
     networks:
       - hmpps
-    container_name: wiremock
     restart: always
     ports:
       - "9091:8080"
