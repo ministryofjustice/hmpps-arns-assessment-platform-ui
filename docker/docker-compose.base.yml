@@ -2,17 +2,34 @@
 # Other compose files (local, test) extend or override these settings as needed.
 
 services:
+  hmpps-auth:
+    image: quay.io/hmpps/hmpps-auth:latest
+    networks:
+      - hmpps
+    ports:
+      - "9090:8080"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/auth/health" ]
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      APPLICATION_AUTHENTICATION_UI_ALLOWLIST: 0.0.0.0/0
+
   redis:
     image: redis:7.4
+    networks:
+      - hmpps
     ports:
       - "6379:6379"
     environment:
       ALLOW_EMPTY_PASSWORD: yes
 
-  ui:
+  hmpps-arns-assessment-platform-ui:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:${APP_VERSION:-latest}
+    networks:
+      - hmpps
     depends_on:
       - redis
+      - hmpps-arns-assessment-platform-api
     build:
       context: ../
       target: production
@@ -35,3 +52,34 @@ services:
       AUTH_CODE_CLIENT_SECRET: clientsecret
       CLIENT_CREDS_CLIENT_ID: hmpps-typescript-template-system
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
+
+  hmpps-arns-assessment-platform-api:
+    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
+    networks:
+      - hmpps
+    container_name: hmpps-arns-assessment-platform-api
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
+    environment:
+      - SERVER_PORT=8080
+      - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
+      - SPRING_PROFILES_ACTIVE=dev,postgres
+      - DATABASE_ENDPOINT=postgres:5432
+    depends_on:
+      - postgres
+      - hmpps-auth
+
+  postgres:
+    image: postgres:16
+    networks:
+      - hmpps
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: dev
+    tmpfs:
+      - /var/lib/postgresql
+
+networks:
+  hmpps:

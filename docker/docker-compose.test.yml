@@ -10,7 +10,7 @@ services:
     ports:
       - "9091:8080"
 
-  ui:
+  hmpps-arns-assessment-platform-ui:
     build:
       target: production
     depends_on:

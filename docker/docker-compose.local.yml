@@ -2,17 +2,7 @@
 # to support a fully self-contained local development environment.
 
 services:
-  hmpps-auth:
-    image: quay.io/hmpps/hmpps-auth:latest
-    ports:
-      - "9090:8080"
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/auth/health" ]
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-      APPLICATION_AUTHENTICATION_UI_ALLOWLIST: 0.0.0.0/0
-
-  ui:
+  hmpps-arns-assessment-platform-ui:
     build:
       target: development
     command: npm run start:dev
