@@ -80,7 +80,7 @@ describe('FormEngine', () => {
       }
 
       // eslint-disable-next-line no-new
-      new FormEngine(customOptions, mockLogger)
+      new FormEngine(customOptions)
 
       const mockComponentRegistry = (ComponentRegistry as jest.MockedClass<typeof ComponentRegistry>).mock.instances[0]
       const mockFunctionRegistry = (FunctionRegistry as jest.MockedClass<typeof FunctionRegistry>).mock.instances[0]
@@ -91,7 +91,7 @@ describe('FormEngine', () => {
 
     it('should register built-in functions and components by default', () => {
       // eslint-disable-next-line no-new
-      new FormEngine({}, mockLogger)
+      new FormEngine({})
 
       const mockComponentRegistry = (ComponentRegistry as jest.MockedClass<typeof ComponentRegistry>).mock.instances[0]
       const mockFunctionRegistry = (FunctionRegistry as jest.MockedClass<typeof FunctionRegistry>).mock.instances[0]
@@ -101,7 +101,7 @@ describe('FormEngine', () => {
     })
 
     it('should use custom logger when provided', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
 
       // Logger is stored and will be used in other methods
       expect(engine).toBeDefined()
@@ -110,7 +110,7 @@ describe('FormEngine', () => {
 
   describe('registerComponent', () => {
     it('should register a single component', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
       const mockComponent = buildComponent('test-component', async () => '<div>Test</div>')
 
       engine.registerComponent(mockComponent)
@@ -122,7 +122,7 @@ describe('FormEngine', () => {
 
   describe('registerComponents', () => {
     it('should register multiple components', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
       const mockComponents = [
         buildComponent('component-1', async () => '<div>1</div>'),
         buildComponent('component-2', async () => '<div>2</div>'),
@@ -137,7 +137,7 @@ describe('FormEngine', () => {
 
   describe('registerFunction', () => {
     it('should register a single function', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
       const mockFunction = createRegisterableFunction(FunctionType.CONDITION, 'test-function', () => true)
 
       engine.registerFunction(mockFunction)
@@ -149,7 +149,7 @@ describe('FormEngine', () => {
 
   describe('registerFunctions', () => {
     it('should register multiple functions', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
       const mockFunctions = [
         createRegisterableFunction(FunctionType.CONDITION, 'function-1', () => true),
         createRegisterableFunction(FunctionType.TRANSFORMER, 'function-2', x => x),
@@ -164,7 +164,7 @@ describe('FormEngine', () => {
 
   describe('registerForm', () => {
     it('should successfully register a form from string configuration', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({ logger: mockLogger })
       const formConfig = JSON.stringify({
         journey: 'test-journey',
         code: 'test-form',
@@ -206,7 +206,7 @@ describe('FormEngine', () => {
     })
 
     it('should successfully register a form from JourneyDefinition object', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
       const formConfig: JourneyDefinition = {
         journey: 'test-journey',
         code: 'test-form',
@@ -229,7 +229,7 @@ describe('FormEngine', () => {
         { method: 'PUT', path: '/update' },
       ])
 
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
       engine.registerForm('test-config')
 
       expect(formatBox).toHaveBeenCalledWith(
@@ -244,7 +244,7 @@ describe('FormEngine', () => {
     })
 
     it('should use custom base path in route paths', () => {
-      const engine = new FormEngine({ basePath: '/custom' }, mockLogger)
+      const engine = new FormEngine({ basePath: '/custom' })
       engine.registerForm('test-config')
 
       expect(mockRouter.use).toHaveBeenCalledWith('/custom', mockFormInstanceRouter)
@@ -263,7 +263,7 @@ describe('FormEngine', () => {
         throw error
       })
 
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({ logger: mockLogger })
       engine.registerForm('invalid-config')
 
       expect(mockLogger.error).toHaveBeenCalledWith(error)
@@ -279,7 +279,7 @@ describe('FormEngine', () => {
         throw aggregateError
       })
 
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({ logger: mockLogger })
       engine.registerForm('invalid-config')
 
       expect(mockLogger.error).toHaveBeenCalledWith('Multiple validation errors:')
@@ -297,7 +297,7 @@ describe('FormEngine', () => {
         throw aggregateError
       })
 
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({ logger: mockLogger })
       engine.registerForm('invalid-config')
 
       expect(mockLogger.error).toHaveBeenCalledWith('Mixed errors:')
@@ -306,7 +306,7 @@ describe('FormEngine', () => {
     })
 
     it('should store form instance after successful registration', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
       engine.registerForm('test-config')
 
       const instance = engine.getFormInstance('test-form')
@@ -316,7 +316,7 @@ describe('FormEngine', () => {
 
   describe('getRouter', () => {
     it('should return the main router', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
       const router = engine.getRouter()
 
       expect(router).toBe(mockRouter)
@@ -325,7 +325,7 @@ describe('FormEngine', () => {
 
   describe('getFormInstance', () => {
     it('should return a registered form instance', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
       engine.registerForm('test-config')
 
       const instance = engine.getFormInstance('test-form')
@@ -333,14 +333,14 @@ describe('FormEngine', () => {
     })
 
     it('should return undefined for non-existent form', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
 
       const instance = engine.getFormInstance('non-existent')
       expect(instance).toBeUndefined()
     })
 
     it('should handle multiple form registrations', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
 
       // First form
       engine.registerForm('config-1')
@@ -360,7 +360,7 @@ describe('FormEngine', () => {
 
   describe('fluent interface / method chaining', () => {
     it('should support method chaining for all registration methods', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({})
       const component1 = buildComponent('comp-1', async () => '<div>1</div>')
       const component2 = buildComponent('comp-2', async () => '<div>2</div>')
       const function1 = createRegisterableFunction(FunctionType.CONDITION, 'func-1', () => true)
@@ -379,7 +379,7 @@ describe('FormEngine', () => {
     })
 
     it('should support chaining even when form registration fails', () => {
-      const engine = new FormEngine({}, mockLogger)
+      const engine = new FormEngine({ logger: mockLogger })
       const component = buildComponent('comp', async () => '<div />')
 
       ;(FormInstance.createFromConfiguration as jest.Mock)
@@ -399,7 +399,7 @@ describe('FormEngine', () => {
     })
 
     it('should handle complete registration workflow with chaining', () => {
-      const engine = new FormEngine({ basePath: '/my-forms' }, mockLogger)
+      const engine = new FormEngine({ basePath: '/my-forms' })
       const customComponent = buildComponent('custom-input', async () => '<input />')
       const customFunction = createRegisterableFunction(
         FunctionType.CONDITION,

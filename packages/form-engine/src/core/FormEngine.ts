@@ -14,6 +14,7 @@ export interface FormEngineOptions {
   disableBuiltInComponents?: boolean
   basePath?: string
   debug?: boolean
+  logger: Logger | Console
 }
 
 export default class FormEngine {
@@ -22,6 +23,7 @@ export default class FormEngine {
     disableBuiltInComponents: false,
     basePath: '/forms',
     debug: false,
+    logger: console,
   }
 
   private readonly options = FormEngine.DEFAULT_OPTIONS
@@ -36,18 +38,13 @@ export default class FormEngine {
 
   private readonly router = express.Router({ mergeParams: true })
 
-  constructor(
-    constructorOptions = {} as Partial<FormEngineOptions>,
-    private readonly logger: Logger | Console = console,
-  ) {
+  constructor(constructorOptions: Partial<FormEngineOptions> = {}) {
     this.options = { ...FormEngine.DEFAULT_OPTIONS, ...constructorOptions }
-
-    this.logger = logger
 
     this.dependencies = {
       functionRegistry: this.functionRegistry,
       componentRegistry: this.componentRegistry,
-      logger: this.logger,
+      logger: this.options.logger,
     }
 
     if (!this.options.disableBuiltInFunctions) {
@@ -121,18 +118,18 @@ export default class FormEngine {
       message.push({ label: 'GET Paths', value: getRoutes.join('\n') })
     }
 
-    this.logger.info(formatBox(message, { title: 'FormEngine' }))
+    this.dependencies.logger.info(formatBox(message, { title: 'FormEngine' }))
   }
 
   private logRegistrationError(e: unknown) {
     if (e instanceof AggregateError) {
-      this.logger.error(`${e.message}:`)
+      this.dependencies.logger.error(`${e.message}:`)
 
       e.errors.forEach(error => {
-        this.logger.error(error?.toString ? error.toString() : String(error))
+        this.dependencies.logger.error(error?.toString ? error.toString() : String(error))
       })
     } else {
-      this.logger.error(e)
+      this.dependencies.logger.error(e)
     }
   }
 
