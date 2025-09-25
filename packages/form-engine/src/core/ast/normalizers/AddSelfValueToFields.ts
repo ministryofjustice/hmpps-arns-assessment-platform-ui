@@ -27,12 +27,6 @@ export function addSelfValueToFields(root: ASTNode): void {
         return StructuralVisitResult.CONTINUE
       }
 
-      // If there's already a value property, don't override it
-      const existingValue = node.properties.get('value')
-      if (existingValue !== undefined) {
-        return StructuralVisitResult.CONTINUE
-      }
-
       // Create a Self() reference node
       const selfReference: ReferenceASTNode = {
         type: ASTNodeType.EXPRESSION,

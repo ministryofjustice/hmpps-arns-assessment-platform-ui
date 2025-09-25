@@ -28,7 +28,7 @@ describe('AddSelfValueToFields', () => {
       expect(value.properties.get('path')).toEqual(['answers', '@self'])
     })
 
-    it('does not override existing value', () => {
+    it('overrides existing value with Self() reference', () => {
       const explicitValue = 'preset value'
       const field = ASTTestFactory.block('textInput', 'field')
         .withId(2)
@@ -39,7 +39,9 @@ describe('AddSelfValueToFields', () => {
 
       addSelfValueToFields(field)
 
-      expect(field.properties.get('value')).toBe(explicitValue)
+      const value = field.properties.get('value')
+      expect(isExpressionNode(value)).toBe(true)
+      expect(value.properties.get('path')).toEqual(['answers', '@self'])
     })
 
     it('ignores blocks without code (non-fields)', () => {
@@ -51,7 +53,7 @@ describe('AddSelfValueToFields', () => {
       expect(block.properties.get('value')).toBe(originalValue)
     })
 
-    it('handles fields with explicit undefined value', () => {
+    it('adds Self() even when value is undefined', () => {
       const field = ASTTestFactory.block('textInput', 'field')
         .withId(4)
         .withCode('username')
@@ -61,7 +63,6 @@ describe('AddSelfValueToFields', () => {
 
       addSelfValueToFields(field)
 
-      // undefined is treated as "no value", so should add Self()
       const value = field.properties.get('value')
       expect(isExpressionNode(value)).toBe(true)
       expect(value.properties.get('path')).toEqual(['answers', '@self'])
@@ -126,9 +127,10 @@ describe('AddSelfValueToFields', () => {
       expect(isExpressionNode(field1Value)).toBe(true)
       expect(field1Value.properties.get('path')).toEqual(['answers', '@self'])
 
-      // Second nested field should keep its existing value
+      // Second nested field should also have Self() added (overriding existing value)
       const field2Value = blocks[1].properties.get('value')
-      expect(field2Value).toBe('has value')
+      expect(isExpressionNode(field2Value)).toBe(true)
+      expect(field2Value.properties.get('path')).toEqual(['answers', '@self'])
     })
   })
 })
