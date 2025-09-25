@@ -12,7 +12,7 @@ services:
     image: cypress/included:15.0.0
     depends_on:
       - wiremock
-      - hmpps-arns-assessment-platform-ui
+      - ui
     environment:
       CYPRESS_BASE_URL: http://ui:3000
       WIREMOCK_URL: 'http://wiremock:8080'
