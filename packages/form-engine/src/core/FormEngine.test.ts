@@ -1,17 +1,15 @@
 import { buildComponent } from '@form-engine/registry/utils/buildComponent'
-import { createRegisterableFunction } from '@form-engine/registry/utils/createRegisterableFunction'
-import { FunctionType } from '@form-engine/form/types/enums'
 import { JourneyDefinition } from '@form-engine/form/types/structures.type'
 import { formatBox } from '@form-engine/logging/formatBox'
 import express from 'express'
-import FunctionRegistry from './registry/FunctionRegistry'
-import ComponentRegistry from './registry/ComponentRegistry'
+import ComponentRegistry from '@form-engine/registry/ComponentRegistry'
+import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
 import FormInstance from './FormInstance'
 import FormEngine from './FormEngine'
 
 jest.mock('./FormInstance')
-jest.mock('./registry/ComponentRegistry')
-jest.mock('./registry/FunctionRegistry')
+jest.mock('@form-engine/registry/ComponentRegistry')
+jest.mock('@form-engine/registry/FunctionRegistry')
 jest.mock('@form-engine/logging/formatBox')
 jest.mock('express')
 
@@ -135,30 +133,18 @@ describe('FormEngine', () => {
     })
   })
 
-  describe('registerFunction', () => {
-    it('should register a single function', () => {
-      const engine = new FormEngine({})
-      const mockFunction = createRegisterableFunction(FunctionType.CONDITION, 'test-function', () => true)
-
-      engine.registerFunction(mockFunction)
-
-      const mockFunctionRegistry = (FunctionRegistry as jest.MockedClass<typeof FunctionRegistry>).mock.instances[0]
-      expect(mockFunctionRegistry.registerMany).toHaveBeenCalledWith([mockFunction])
-    })
-  })
-
   describe('registerFunctions', () => {
-    it('should register multiple functions', () => {
+    it('should register a function registry object', () => {
       const engine = new FormEngine({})
-      const mockFunctions = [
-        createRegisterableFunction(FunctionType.CONDITION, 'function-1', () => true),
-        createRegisterableFunction(FunctionType.TRANSFORMER, 'function-2', x => x),
-      ]
+      const mockRegistry = {
+        Function1: { name: 'Function1', evaluate: () => true },
+        Function2: { name: 'Function2', evaluate: (x: any) => x },
+      }
 
-      engine.registerFunctions(mockFunctions)
+      engine.registerFunctions(mockRegistry)
 
       const mockFunctionRegistry = (FunctionRegistry as jest.MockedClass<typeof FunctionRegistry>).mock.instances[0]
-      expect(mockFunctionRegistry.registerMany).toHaveBeenCalledWith(mockFunctions)
+      expect(mockFunctionRegistry.register).toHaveBeenCalledWith(mockRegistry)
     })
   })
 
@@ -363,14 +349,18 @@ describe('FormEngine', () => {
       const engine = new FormEngine({})
       const component1 = buildComponent('comp-1', async () => '<div>1</div>')
       const component2 = buildComponent('comp-2', async () => '<div>2</div>')
-      const function1 = createRegisterableFunction(FunctionType.CONDITION, 'func-1', () => true)
-      const function2 = createRegisterableFunction(FunctionType.TRANSFORMER, 'func-2', x => x)
+      const functions1 = {
+        Func1: { name: 'Func1', evaluate: () => true },
+      }
+      const functions2 = {
+        Func2: { name: 'Func2', evaluate: (x: any) => x },
+      }
 
       const result = engine
         .registerComponent(component1)
         .registerComponents([component2])
-        .registerFunction(function1)
-        .registerFunctions([function2])
+        .registerFunctions(functions1)
+        .registerFunctions(functions2)
         .registerForm('config-1')
         .registerForm('config-2')
 
@@ -401,15 +391,16 @@ describe('FormEngine', () => {
     it('should handle complete registration workflow with chaining', () => {
       const engine = new FormEngine({ basePath: '/my-forms' })
       const customComponent = buildComponent('custom-input', async () => '<input />')
-      const customFunction = createRegisterableFunction(
-        FunctionType.CONDITION,
-        'custom-validator',
-        value => value !== null,
-      )
+      const customFunctions = {
+        CustomValidator: {
+          name: 'CustomValidator',
+          evaluate: (value: any) => value !== null,
+        },
+      }
 
       const result = engine
         .registerComponent(customComponent)
-        .registerFunction(customFunction)
+        .registerFunctions(customFunctions)
         .registerForm('test-config')
 
       // Verify chaining returns the engine
@@ -420,7 +411,7 @@ describe('FormEngine', () => {
       const mockFunctionRegistry = (FunctionRegistry as jest.MockedClass<typeof FunctionRegistry>).mock.instances[0]
 
       expect(mockComponentRegistry.registerMany).toHaveBeenCalledWith([customComponent])
-      expect(mockFunctionRegistry.registerMany).toHaveBeenCalledWith([customFunction])
+      expect(mockFunctionRegistry.register).toHaveBeenCalledWith(customFunctions)
       expect(engine.getFormInstance('test-form')).toBeDefined()
     })
   })

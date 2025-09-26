@@ -1,13 +1,13 @@
 import type Logger from 'bunyan'
-import FunctionRegistry from '@form-engine/core/registry/FunctionRegistry'
-import ComponentRegistry from '@form-engine/core/registry/ComponentRegistry'
-import { RegistryComponent } from '@form-engine/registry/utils/buildComponent'
-import { RegistryFunction } from '@form-engine/registry/utils/createRegisterableFunction'
 import { JourneyDefinition } from '@form-engine/form/types/structures.type'
 import { formatBox } from '@form-engine/logging/formatBox'
 import FormInstance from '@form-engine/core/FormInstance'
 import { FormInstanceDependencies } from '@form-engine/core/types/engine.type'
 import express from 'express'
+import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
+import ComponentRegistry from '@form-engine/registry/ComponentRegistry'
+import { RegistryComponent } from '@form-engine/registry/types/components.type'
+import { FunctionRegistryObject } from '@form-engine/registry/types/functions.type'
 
 export interface FormEngineOptions {
   disableBuiltInFunctions?: boolean
@@ -70,16 +70,9 @@ export default class FormEngine {
     return this
   }
 
-  /** Add a new condition or transformer to the form engine */
-  registerFunction(func: RegistryFunction<any>): this {
-    this.functionRegistry.registerMany([func])
-
-    return this
-  }
-
-  /** Add new conditions, transformers to the form engine */
-  registerFunctions(functions: RegistryFunction<any>[]): this {
-    this.functionRegistry.registerMany(functions)
+  /** Register functions from a registry object */
+  registerFunctions(functions: FunctionRegistryObject): this {
+    this.functionRegistry.register(functions)
 
     return this
   }
