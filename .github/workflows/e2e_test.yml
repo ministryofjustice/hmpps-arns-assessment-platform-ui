@@ -69,7 +69,7 @@ jobs:
 
       - name: Export container logs
         if: failure()
-        run: make save-logs PROJECT_NAME="hmpps-arns-test" OUTPUT_LOGS_DIR=${{ runner.temp }}/docker-logs
+        run: make save-logs OUTPUT_LOGS_DIR=${{ runner.temp }}/docker-logs
 
       - name: Upload docker logs
         if: failure()
