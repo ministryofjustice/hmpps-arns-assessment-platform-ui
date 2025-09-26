@@ -14,6 +14,7 @@ import {
   Post,
   Item,
   Format,
+  Collection,
 } from '@form-engine/form/builders'
 import { when } from '@form-engine/form/builders/ConditionalExprBuilder'
 import { and, or, xor, not } from '@form-engine/form/builders/PredicateTestExprBuilder'
@@ -261,46 +262,47 @@ export default journey({
         block<CollectionBlock>({
           variant: 'collection-block',
           // Collection source - could be from Data or Answer
-          collectionContext: {
+          collection: Collection({
             collection: Data('items'), // Assuming 'items' is an array in data
-          },
+            // Template blocks that gets repeated for each item
+            template: [
+              block<HtmlBlock>({
+                variant: 'html',
+                content: Format(`<h3>This is item $1</h3>`, Item().index()),
+              }),
 
-          // Template blocks that gets repeated for each item
-          template: [
-            block<HtmlBlock>({
-              variant: 'html',
-              content: Format(`<h3>This is item $1</h3>`, Item().index()),
-            }),
+              field<GovUKTextInput>({
+                code: 'item_field',
+                variant: 'govukTextInput',
+                label: when(Item().value().not.match(Condition.IsRequired())).then('Item: ').else('No item'),
+                // Item() references the current item in the collection
+                value: Item().value(),
+                hint: 'This field is generated for each item in the collection',
+              }),
+            ],
 
-            field<GovUKTextInput>({
-              code: 'item_field',
-              variant: 'govukTextInput',
-              label: when(Item().value().not.match(Condition.IsRequired())).then('Item: ').else('No item'),
-              // Item() references the current item in the collection
-              value: Item().value(),
-              hint: 'This field is generated for each item in the collection',
-            }),
-          ],
-
-          // Optional fallback when collection is empty
-          fallbackTemplate: block<HtmlBlock>({
-            variant: 'html',
-            content: 'No items available in the collection',
+            // Optional fallback when collection is empty
+            fallback: [
+              block<HtmlBlock>({
+                variant: 'html',
+                content: 'No items available in the collection',
+              }),
+            ],
           }),
         }),
 
         // Another collection example with multiple fields per item
         block<CollectionBlock>({
           variant: 'collection-block',
-          collectionContext: {
+          collection: Collection({
             collection: Answer('selected_items'), // Collection from user's answers
-          },
-          template: [
-            block<HtmlBlock>({
-              variant: 'html',
-              content: when(Item().value().match(Condition.IsRequired())).then('Valid item').else('Invalid item'),
-            }),
-          ],
+            template: [
+              block<HtmlBlock>({
+                variant: 'html',
+                content: when(Item().value().match(Condition.IsRequired())).then('Valid item').else('Invalid item'),
+              }),
+            ],
+          }),
         }),
 
         // Composite demonstration - Multiple fields grouped together

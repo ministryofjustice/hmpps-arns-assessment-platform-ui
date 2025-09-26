@@ -16,10 +16,11 @@ import {
   FormatExpr,
   LoadTransition,
   NextExpr,
+  PipelineExpr,
+  ReferenceExpr,
   SkipValidationTransition,
   SubmitTransition,
   ValidatingTransition,
-  ValueExpr,
 } from '../types/expressions.type'
 import { ExpressionType, StructureType, TransitionType } from '../types/enums'
 
@@ -198,7 +199,7 @@ export const Collection = <T = any>({
   template,
   fallback,
 }: {
-  collection: ValueExpr | any[]
+  collection: ReferenceExpr | PipelineExpr | any[]
   template: T[]
   fallback?: T[]
 }): CollectionExpr<T> => {
