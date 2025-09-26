@@ -10,6 +10,8 @@ services:
 
   cypress:
     image: cypress/included:15.0.0
+    networks:
+      - hmpps
     depends_on:
       - wiremock
       - ui
