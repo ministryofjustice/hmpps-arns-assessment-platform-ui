@@ -130,8 +130,8 @@ describe('Expression Transformations', () => {
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'equals', arguments: [true] as any[] },
         },
-        then: 'Show children fields',
-        else: 'Hide children fields',
+        thenValue: 'Show children fields',
+        elseValue: 'Hide children fields',
       }
 
       const result = transformConditional(conditional, ['test']) as ConditionalASTNode
