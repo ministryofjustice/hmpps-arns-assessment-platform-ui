@@ -24,7 +24,9 @@ import ExampleFormShowcase from './forms/example-form'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
-  const formEngine = new FormEngine({}, logger).registerForm(ExampleFormShowcase)
+  const formEngine = new FormEngine({
+    logger,
+  }).registerForm(ExampleFormShowcase)
 
   app.set('json spaces', 2)
   app.set('trust proxy', true)
