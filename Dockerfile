@@ -34,7 +34,7 @@ FROM base AS development
 FROM base AS build
 
 COPY package*.json ./
-RUN CYPRESS_INSTALL_BINARY=0 npm ci --no-audit
+RUN npm ci --no-audit
 
 COPY . .
 
