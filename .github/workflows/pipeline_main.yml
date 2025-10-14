@@ -51,16 +51,9 @@ jobs:
 
   e2e_test:
     needs: [ build_docker ]
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [ 1, 2, 3, 4, 5 ]
     uses: ./.github/workflows/e2e_test.yml
     with:
       app_version: ${{ needs.build_docker.outputs.app_version }}
-      job-index: ${{ strategy.job-index }}
-      job-total: ${{ strategy.job-total }}
-      matrix-container: ${{ matrix.containers }}
 
   publish-test-results:
     name: "Publish Tests Results"
@@ -88,13 +81,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-          pattern: test_results_*
+          pattern: test_results
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@170bf24d20d201b842d7a52403b73ed297e6645b # v2.18.0
         with:
           files: "artifacts/**/*.xml"
-          check_name: "Cypress Test Results"
+          check_name: "Playwright Test Results"
 
   publish_docker:
     name: Publish docker image

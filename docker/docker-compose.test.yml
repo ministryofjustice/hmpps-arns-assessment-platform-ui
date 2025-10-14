@@ -30,3 +30,25 @@ services:
       TOKEN_VERIFICATION_ENABLED: true
       EXAMPLE_API_URL: http://wiremock:8080/example-api
       ENVIRONMENT_NAME: dev
+
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.55.1-noble # Must match version in package-lock
+    networks:
+      - hmpps
+    depends_on:
+      - ui
+      - wiremock
+    environment:
+      CI: true
+      BASE_URL: http://ui:3000
+      WIREMOCK_URL: http://wiremock:8080/__admin
+      DEBUG: pw:browser
+    working_dir: /playwright
+    entrypoint: sh
+    command: -c "npm ci && npx playwright test"
+    volumes:
+      - ../package.json:/playwright/package.json
+      - ../package-lock.json:/playwright/package-lock.json
+      - ../playwright.config.ts:/playwright/playwright.config.ts
+      - ../integration_tests:/playwright/integration_tests
+      - ../test_results:/playwright/test_results
