@@ -12,7 +12,6 @@ APP_VERSION ?= local
 DEV_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.local.yml
 PROD_COMPOSE_FILES = -f docker/docker-compose.base.yml
 TEST_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml
-TEST_HEADLESS_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml -f docker/docker-compose.test-headless.yml
 
 export APP_VERSION
 export COMPOSE_PROJECT_NAME=${PROJECT_NAME}
@@ -40,24 +39,23 @@ down: ## Stops and removes all containers in the project.
 test: ## Runs the unit test suite.
 	docker compose exec ${SERVICE_NAME} npm run test
 
-e2e: ## Run the end-to-end tests using Cypress
-	echo "Running Cypress in interactive mode..."
-	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) --wait
-	npx cypress install
-	npx cypress open --e2e -c experimentalInteractiveRunEvents=true
+e2e: ## Run the end-to-end tests using Playwright (headless)
+	echo "Running Playwright tests in headless mode..."
+	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME)
+	docker compose $(TEST_COMPOSE_FILES) down
+	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
+# 	docker compose $(TEST_COMPOSE_FILES) run --rm playwright
 
-e2e-headless: ## Run the end-to-end tests using Cypress (headless)
-	@if [ -n "$(SPLIT)" ]; then \
-    echo "Running Cypress in headless mode with split testing (SPLIT=$(SPLIT), SPLIT_INDEX=$(SPLIT_INDEX))..."; \
-    docker compose $(TEST_HEADLESS_COMPOSE_FILES) run --quiet-pull --rm \
-      -e SPLIT=$(SPLIT) \
-      -e SPLIT_INDEX=$(SPLIT_INDEX) \
-      -e SPEC="/cypress/integration_tests/e2e/**/*.cy.ts" \
-      cypress; \
-  else \
-    echo "Running Cypress in headless mode..."; \
-    docker compose $(TEST_HEADLESS_COMPOSE_FILES) run --quiet-pull --rm cypress; \
-  fi
+pw:
+	docker compose $(TEST_COMPOSE_FILES) run --rm playwright
+
+
+e2e-ui: ## Run the end-to-end tests using Playwright (headed/UI mode)
+	echo "Running Playwright tests in UI mode..."
+	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME)
+	docker compose $(TEST_COMPOSE_FILES) down
+	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
+	npx playwright test --ui
 
 lint: ## Runs the linter.
 	docker compose exec ${SERVICE_NAME} npm run lint
@@ -67,7 +65,6 @@ lint-fix: ## Automatically fixes linting issues.
 
 install-node-modules: ## Installs Node modules into the Docker volume.
 	@docker run --rm \
-	  -e CYPRESS_INSTALL_BINARY=0 \
 	  -v ./package.json:/package.json \
 	  -v ./package-lock.json:/package-lock.json \
 	  -v ~/.npm:/npm_cache \
