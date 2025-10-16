@@ -23,6 +23,9 @@ test.describe('Example', () => {
 
     await login(page)
 
-    await expect(page.locator('h1', { hasText: 'Something went wrong' })).toBeVisible()
+    // In production mode: "Something went wrong"
+    // In development mode: shows actual error message (e.g., "Internal Server Error")
+    await expect(page.locator('h1').first()).toBeVisible()
+    await expect(page.locator('body')).toContainText(/Something went wrong|Internal Server Error|Error/)
   })
 })

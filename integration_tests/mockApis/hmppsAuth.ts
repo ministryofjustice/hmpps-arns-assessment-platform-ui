@@ -7,7 +7,7 @@ export interface UserToken {
   authSource?: 'nomis' | 'delius'
 }
 
-const baseUrl = process.env.BASE_URL || 'http://localhost:3007'
+const baseUrl = process.env.BASE_URL || 'http://localhost:3000'
 
 function createToken(userToken: UserToken) {
   const payload = {
@@ -71,7 +71,7 @@ export default {
         body: '<html lang="en"><body>Dummy Sign in page<h1>Sign in</h1></body></html>',
       },
     }),
-
+  //  http://wiremock:8080/auth/sign-out?client_id=clientid&redirect_uri=http://localhost:3000
   stubSignOutPage: () =>
     stubFor({
       request: {

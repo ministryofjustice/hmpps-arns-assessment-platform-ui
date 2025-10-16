@@ -41,21 +41,18 @@ test: ## Runs the unit test suite.
 
 e2e: ## Run the end-to-end tests using Playwright (headless)
 	echo "Running Playwright tests in headless mode..."
-	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME)
-	docker compose $(TEST_COMPOSE_FILES) down
-	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
-# 	docker compose $(TEST_COMPOSE_FILES) run --rm playwright
-
-pw:
+	export HMPPS_AUTH_EXTERNAL_URL=http://wiremock:8080/auth && \
+	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME) && \
+	docker compose $(TEST_COMPOSE_FILES) down && \
+	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait && \
 	docker compose $(TEST_COMPOSE_FILES) run --rm playwright
-
 
 e2e-ui: ## Run the end-to-end tests using Playwright (headed/UI mode)
 	echo "Running Playwright tests in UI mode..."
 	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME)
 	docker compose $(TEST_COMPOSE_FILES) down
 	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
-	npx playwright test --ui
+	npx playwright test
 
 lint: ## Runs the linter.
 	docker compose exec ${SERVICE_NAME} npm run lint
