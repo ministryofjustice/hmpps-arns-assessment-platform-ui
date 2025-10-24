@@ -28,10 +28,8 @@ export function buildAppInsightsClient(
     defaultClient.addTelemetryProcessor(({ tags, data }, contextObjects) => {
       const operationNameOverride = contextObjects.correlationContext?.customProperties?.getProperty('operationName')
       if (operationNameOverride) {
-        /*  eslint-disable no-param-reassign */
         tags['ai.operation.name'] = operationNameOverride
         data.baseData.name = operationNameOverride
-        /*  eslint-enable no-param-reassign */
       }
       return true
     })
