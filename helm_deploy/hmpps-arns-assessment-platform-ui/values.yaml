@@ -1,9 +1,9 @@
 generic-service:
   nameOverride: hmpps-arns-assessment-platform-ui
+  serviceAccountName: hmpps-arns-assessment-platform
   productId: 'HMPPS509' # productId for the product that this belongs too, i.e. DPS001, see README.md for details
 
   # the IRSA service account name for accessing AWS resources
-  # serviceAccountName: "hmpps-arns-assessment-platform-ui"
 
   replicaCount: 4
 
@@ -31,8 +31,9 @@ generic-service:
     REDIS_ENABLED: 'true'
     REDIS_TLS_ENABLED: 'true'
     TOKEN_VERIFICATION_ENABLED: 'true'
+    AUDIT_ENABLED: 'true'
     AUDIT_SQS_REGION: 'eu-west-2'
-    AUDIT_SERVICE_NAME: 'HMPPS509' # Your audit service name
+    AUDIT_SERVICE_NAME: 'hmpps-arns-assessment-platform-ui'
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
@@ -56,8 +57,9 @@ generic-service:
       APPLICATIONINSIGHTS_CONNECTION_STRING: "APPLICATIONINSIGHTS_CONNECTION_STRING"
     # This secret will need to be created in your namespace (note it isn't in hmpps-templates-dev)
     # IRSA configuration in your namespace will also be required, and then uncomment serviceAccountName above.
-    # sqs-hmpps-audit-secret:
-    #   AUDIT_SQS_QUEUE_URL: 'sqs_queue_url'
+    sqs-hmpps-audit-secret:
+      AUDIT_SQS_QUEUE_URL: 'sqs_queue_url'
+      AUDIT_SQS_QUEUE_NAME: 'sqs_queue_name'
 
   allowlist:
     groups:
