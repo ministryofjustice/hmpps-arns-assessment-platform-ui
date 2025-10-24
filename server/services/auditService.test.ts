@@ -1,56 +1,120 @@
-import AuditService, { Page } from './auditService'
-import HmppsAuditClient from '../data/hmppsAuditClient'
+import AuditService, { AuditEvent } from './auditService'
+import SessionService from './sessionService'
+import { ApplicationInfo } from '../applicationInfo'
 
-jest.mock('../data/hmppsAuditClient')
+jest.mock('@ministryofjustice/hmpps-audit-client', () => ({
+  auditService: {
+    sendAuditMessage: jest.fn(),
+  },
+}))
 
-describe('Audit service', () => {
-  let hmppsAuditClient: jest.Mocked<HmppsAuditClient>
+const { auditService: mockAuditClient } = jest.requireMock('@ministryofjustice/hmpps-audit-client')
+
+describe('AuditService', () => {
   let auditService: AuditService
+  let mockSessionService: jest.Mocked<SessionService>
+  let mockApplicationInfo: ApplicationInfo
 
   beforeEach(() => {
-    hmppsAuditClient = new HmppsAuditClient(null) as jest.Mocked<HmppsAuditClient>
-    auditService = new AuditService(hmppsAuditClient)
+    jest.clearAllMocks()
+
+    mockSessionService = {
+      getPrincipalDetails: jest.fn(),
+      getSubjectDetails: jest.fn(),
+      getAssessmentUuid: jest.fn(),
+      getAssessmentVersion: jest.fn(),
+    } as unknown as jest.Mocked<SessionService>
+
+    mockApplicationInfo = {
+      applicationName: 'test-app',
+      buildNumber: '1.0.0',
+      gitRef: 'abc123',
+      gitShortHash: 'abc',
+      branchName: 'main',
+      productId: 'TEST001',
+    }
+
+    auditService = new AuditService(mockApplicationInfo, mockSessionService, 'correlation-123')
   })
 
-  describe('logAuditEvent', () => {
-    it('sends audit message using audit client', async () => {
-      await auditService.logAuditEvent({
-        what: 'AUDIT_EVENT',
-        who: 'user1',
-        subjectId: 'subject123',
-        subjectType: 'exampleType',
-        correlationId: 'request123',
-        details: { extraDetails: 'example' },
+  describe('send', () => {
+    it('should send audit event with all fields populated from session', async () => {
+      mockSessionService.getPrincipalDetails.mockReturnValue({
+        identifier: 'user123',
+        username: 'testuser',
       })
+      mockSessionService.getSubjectDetails.mockReturnValue({
+        crn: 'CRN123',
+      })
+      mockSessionService.getAssessmentUuid.mockReturnValue('assessment-uuid-123')
+      mockSessionService.getAssessmentVersion.mockReturnValue(5)
 
-      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
-        what: 'AUDIT_EVENT',
-        who: 'user1',
-        subjectId: 'subject123',
-        subjectType: 'exampleType',
-        correlationId: 'request123',
-        details: { extraDetails: 'example' },
+      await auditService.send(AuditEvent.VIEW_ASSESSMENT, { customField: 'custom-value' })
+
+      expect(mockAuditClient.sendAuditMessage).toHaveBeenCalledWith({
+        action: 'VIEW_ASSESSMENT',
+        who: 'user123',
+        subjectId: 'CRN123',
+        subjectType: 'CRN',
+        service: 'test-app',
+        correlationId: 'correlation-123',
+        details: JSON.stringify({
+          assessmentUuid: 'assessment-uuid-123',
+          assessmentVersion: 5,
+          customField: 'custom-value',
+        }),
       })
     })
-  })
 
-  describe('logPageView', () => {
-    it('sends page view event audit message using audit client', async () => {
-      await auditService.logPageView(Page.EXAMPLE_PAGE, {
-        who: 'user1',
-        subjectId: 'subject123',
-        subjectType: 'exampleType',
-        correlationId: 'request123',
-        details: { extraDetails: 'example' },
+    it('should handle missing session data gracefully', async () => {
+      mockSessionService.getPrincipalDetails.mockReturnValue(undefined)
+      mockSessionService.getSubjectDetails.mockReturnValue(undefined)
+      mockSessionService.getAssessmentUuid.mockReturnValue(undefined)
+      mockSessionService.getAssessmentVersion.mockReturnValue(undefined)
+
+      await auditService.send(AuditEvent.VIEW_ASSESSMENT)
+
+      expect(mockAuditClient.sendAuditMessage).toHaveBeenCalledWith({
+        action: 'VIEW_ASSESSMENT',
+        who: undefined,
+        subjectId: undefined,
+        subjectType: 'CRN',
+        service: 'test-app',
+        correlationId: 'correlation-123',
+        details: JSON.stringify({
+          assessmentUuid: undefined,
+          assessmentVersion: undefined,
+        }),
+      })
+    })
+
+    it('should handle audit client errors gracefully', async () => {
+      mockSessionService.getPrincipalDetails.mockReturnValue({ identifier: 'user123' })
+      mockAuditClient.sendAuditMessage.mockRejectedValue(new Error('SQS unavailable'))
+
+      // Should not throw
+      await expect(auditService.send(AuditEvent.VIEW_ASSESSMENT)).resolves.not.toThrow()
+    })
+
+    it('should merge custom details with session context', async () => {
+      mockSessionService.getPrincipalDetails.mockReturnValue({ identifier: 'user123' })
+      mockSessionService.getAssessmentUuid.mockReturnValue('uuid-123')
+
+      await auditService.send(AuditEvent.VIEW_ASSESSMENT, {
+        field1: 'value1',
+        field2: 123,
+        nested: { data: 'example' },
       })
 
-      expect(hmppsAuditClient.sendMessage).toHaveBeenCalledWith({
-        what: 'PAGE_VIEW_EXAMPLE_PAGE',
-        who: 'user1',
-        subjectId: 'subject123',
-        subjectType: 'exampleType',
-        correlationId: 'request123',
-        details: { extraDetails: 'example' },
+      const call = mockAuditClient.sendAuditMessage.mock.calls[0][0]
+      const details = JSON.parse(call.details)
+
+      expect(details).toEqual({
+        assessmentUuid: 'uuid-123',
+        assessmentVersion: undefined,
+        field1: 'value1',
+        field2: 123,
+        nested: { data: 'example' },
       })
     })
   })

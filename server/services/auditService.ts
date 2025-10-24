@@ -1,29 +1,37 @@
-import HmppsAuditClient, { AuditEvent } from '../data/hmppsAuditClient'
+import { auditService } from '@ministryofjustice/hmpps-audit-client'
+import logger from '../../logger'
+import { ApplicationInfo } from '../applicationInfo'
+import SessionService from './sessionService'
 
-export enum Page {
-  EXAMPLE_PAGE = 'EXAMPLE_PAGE',
-}
-
-export interface PageViewEventDetails {
-  who: string
-  subjectId?: string
-  subjectType?: string
-  correlationId?: string
-  details?: object
+export enum AuditEvent {
+  VIEW_ASSESSMENT = 'VIEW_ASSESSMENT',
 }
 
 export default class AuditService {
-  constructor(private readonly hmppsAuditClient: HmppsAuditClient) {}
+  constructor(
+    private readonly applicationInfo: ApplicationInfo,
+    private readonly sessionService: SessionService,
+    private readonly correlationId: string,
+  ) {}
 
-  async logAuditEvent(event: AuditEvent) {
-    await this.hmppsAuditClient.sendMessage(event)
-  }
-
-  async logPageView(page: Page, eventDetails: PageViewEventDetails) {
-    const event: AuditEvent = {
-      ...eventDetails,
-      what: `PAGE_VIEW_${page}`,
+  async send(event: AuditEvent, details: any = {}) {
+    try {
+      await auditService.sendAuditMessage({
+        action: event,
+        who: this.sessionService.getPrincipalDetails()?.identifier,
+        subjectId: this.sessionService.getSubjectDetails()?.crn,
+        subjectType: 'CRN',
+        service: this.applicationInfo.applicationName,
+        correlationId: this.correlationId,
+        details: JSON.stringify({
+          assessmentUuid: this.sessionService.getAssessmentUuid(),
+          assessmentVersion: this.sessionService.getAssessmentVersion(),
+          ...details,
+        }),
+      })
+      logger.info(`HMPPS Audit event sent successfully (${event})`)
+    } catch (error) {
+      logger.error(`Error sending HMPPS Audit event (${event}):`, error)
     }
-    await this.hmppsAuditClient.sendMessage(event)
   }
 }
