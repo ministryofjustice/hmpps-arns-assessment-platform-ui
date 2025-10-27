@@ -31,7 +31,7 @@ jobs:
 
       - name: Run Playwright tests
         run: |
-          make e2e
+          make e2e-docker
 
       - name: Upload test results
         if: '!cancelled()'

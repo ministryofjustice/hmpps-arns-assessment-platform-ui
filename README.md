@@ -101,8 +101,8 @@ The form engine operates in two distinct phases:
 
 ```bash
 make test                   # Run unit tests
-make e2e                    # Run end-to-end tests using the Playwright interactive app
-make e2e-headless           # Run end-to-end tests using the Playwright CLI
+make e2e-docker             # Run Playwright tests in Docker container against application in Docker
+make e2e-local              # Run Playwright tests locally against application in Docker
 ```
 
 ## Deployment

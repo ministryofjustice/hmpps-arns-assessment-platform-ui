@@ -39,16 +39,16 @@ down: ## Stops and removes all containers in the project.
 test: ## Runs the unit test suite.
 	docker compose exec ${SERVICE_NAME} npm run test
 
-e2e: ## Run the end-to-end tests using Playwright (headless)
-	echo "Running Playwright tests in headless mode..."
+e2e-docker: ## Run Playwright tests in Docker container against application running in Docker
+	echo "Running Playwright tests in Docker container..."
 	export HMPPS_AUTH_EXTERNAL_URL=http://wiremock:8080/auth && \
 	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME) && \
 	docker compose $(TEST_COMPOSE_FILES) down && \
 	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait && \
 	docker compose $(TEST_COMPOSE_FILES) run --rm playwright
 
-e2e-ui: ## Run the end-to-end tests using Playwright (headed/UI mode)
-	echo "Running Playwright tests in UI mode..."
+e2e-local: ## Run Playwright tests locally against application running in Docker
+	echo "Running Playwright tests locally..."
 	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME)
 	docker compose $(TEST_COMPOSE_FILES) down
 	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
