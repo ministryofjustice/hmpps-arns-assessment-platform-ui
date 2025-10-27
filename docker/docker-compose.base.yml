@@ -30,6 +30,7 @@ services:
     depends_on:
       - redis
       - api
+      - localstack
     build:
       context: ../
       target: production
@@ -52,6 +53,13 @@ services:
       AUTH_CODE_CLIENT_SECRET: clientsecret
       CLIENT_CREDS_CLIENT_ID: hmpps-typescript-template-system
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AUDIT_ENABLED: true
+      AUDIT_SQS_QUEUE_URL: http://localstack:4566/000000000000/audit-queue
+      AUDIT_SQS_REGION: eu-west-2
+      AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
 
   api:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
@@ -79,6 +87,29 @@ services:
       POSTGRES_PASSWORD: dev
     tmpfs:
       - /var/lib/postgresql
+
+  localstack:
+    image: localstack/localstack:3
+    networks:
+      - hmpps
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=sqs
+      - LOCALSTACK_HOST=localstack:4566
+      - DEBUG=1
+      - DEFAULT_REGION=eu-west-2
+      - AWS_DEFAULT_REGION=eu-west-2
+      - USE_SSL=false
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "./scripts/localstack/init:/etc/localstack/init/ready.d"
+      - "./scripts/localstack/wait:/scripts/wait"
+    healthcheck:
+      test: ["CMD", "bash", "/scripts/wait/healthcheck.sh"]
+      interval: 5s
+      timeout: 10s
+      retries: 50
 
 networks:
   hmpps:

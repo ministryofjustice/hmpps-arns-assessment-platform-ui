@@ -125,3 +125,6 @@ integration_tests/screenshots/
 */*.iml
 **/Chart.lock
 **/.DS_Store
+
+# LocalStack volume data
+volume/
