@@ -1,6 +1,6 @@
 generic-service:
   nameOverride: hmpps-arns-assessment-platform-ui
-  serviceAccountName: hmpps-arns-assessment-platform
+  serviceAccountName: hmpps-arns-assessment-platform-service-account
   productId: 'HMPPS509' # productId for the product that this belongs too, i.e. DPS001, see README.md for details
 
   # the IRSA service account name for accessing AWS resources
@@ -47,7 +47,7 @@ generic-service:
       CLIENT_CREDS_CLIENT_SECRET: 'CLIENT_CREDS_CLIENT_SECRET'
     hmpps-arns-assessment-platform-ui-auth-code:
       AUTH_CODE_CLIENT_ID: 'AUTH_CODE_CLIENT_ID'
-      AUTH_CODE_CLIENT_SECRET: 'AUTH_CODE_CLIENT_SECRET'    
+      AUTH_CODE_CLIENT_SECRET: 'AUTH_CODE_CLIENT_SECRET'
     hmpps-arns-assessment-platform-ui-session-secret:
       SESSION_SECRET: 'SESSION_SECRET'
     hmpps-arns-assessment-platform-ui-elasticache-redis:
