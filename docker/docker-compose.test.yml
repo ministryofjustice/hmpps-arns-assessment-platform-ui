@@ -31,7 +31,7 @@ services:
       ENVIRONMENT_NAME: dev
 
   playwright:
-    image: mcr.microsoft.com/playwright:v1.55.1-noble # Must match version in package-lock
+    image: mcr.microsoft.com/playwright:v1.56.1-noble # Must match version in package-lock
     networks:
       - hmpps
     depends_on:
