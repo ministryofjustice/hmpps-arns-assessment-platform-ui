@@ -5,7 +5,7 @@ export default [
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-param-reassign': 'off',
+      'no-param-reassign': 'off',
       'import/prefer-default-export': 'off',
       'import/no-cycle': 'off',
     },
