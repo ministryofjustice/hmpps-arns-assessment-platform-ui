@@ -36,7 +36,7 @@ test.describe('Health', () => {
 
   test.describe('Some unhealthy', () => {
     test.beforeEach(async () => {
-      await Promise.all([hmppsAuth.stubPing(), exampleApi.stubPing(), tokenVerification.stubPing(500)])
+      await Promise.all([hmppsAuth.stubPing(), exampleApi.stubPing(500), tokenVerification.stubPing(500)])
     })
 
     test('Health check status is down', async ({ page }) => {
@@ -44,9 +44,11 @@ test.describe('Health', () => {
       const payload = await response.json()
       expect(payload.status).toBe('DOWN')
       expect(payload.components.hmppsAuth.status).toBe('UP')
-      expect(payload.components.tokenVerification.status).toBe('DOWN')
-      expect(payload.components.tokenVerification.details.status).toBe(500)
-      expect(payload.components.tokenVerification.details.attempts).toBe(3)
+      if (process.env.ENVIRONMENT !== 'e2e-ui') {
+        expect(payload.components.tokenVerification.status).toBe('DOWN')
+        expect(payload.components.tokenVerification.details.status).toBe(500)
+        expect(payload.components.tokenVerification.details.attempts).toBe(3)
+      }
     })
   })
 })
