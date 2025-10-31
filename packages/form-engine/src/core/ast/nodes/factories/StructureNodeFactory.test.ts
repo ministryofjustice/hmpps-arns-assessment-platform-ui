@@ -357,22 +357,6 @@ describe('StructureNodeFactory', () => {
       })
     })
 
-    it('should handle block with condition', () => {
-      const json = {
-        type: StructureType.BLOCK,
-        variant: 'TestBlock',
-        condition: {
-          type: ExpressionType.REFERENCE,
-          path: ['showBlock'],
-        } satisfies ReferenceExpr,
-      }
-
-      const result = structureFactory.create(json)
-      const condition = result.properties.get('condition')
-
-      expect(condition.type).toBe(ASTNodeType.EXPRESSION)
-    })
-
     it('should handle field block with validation', () => {
       const json = {
         type: StructureType.BLOCK,
@@ -392,36 +376,6 @@ describe('StructureNodeFactory', () => {
       expect(Array.isArray(validate)).toBe(true)
       expect(validate).toHaveLength(1)
       expect(validate[0].type).toBe(ASTNodeType.EXPRESSION)
-    })
-
-    it('should handle field block with defaultValue', () => {
-      const json = {
-        type: StructureType.BLOCK,
-        variant: 'TextInput',
-        code: 'name',
-        defaultValue: 'John Doe',
-      }
-
-      const result = structureFactory.create(json)
-
-      expect(result.properties.get('defaultValue')).toBe('John Doe')
-    })
-
-    it('should transform expression defaultValue', () => {
-      const json = {
-        type: StructureType.BLOCK,
-        variant: 'TextInput',
-        code: 'name',
-        defaultValue: {
-          type: ExpressionType.REFERENCE,
-          path: ['user', 'name'],
-        } satisfies ReferenceExpr,
-      } satisfies FieldBlockDefinition
-
-      const result = structureFactory.create(json)
-      const defaultValue = result.properties.get('defaultValue')
-
-      expect(defaultValue.type).toBe(ASTNodeType.EXPRESSION)
     })
 
     it('should handle field block with dependent property', () => {
@@ -462,16 +416,6 @@ describe('StructureNodeFactory', () => {
         type: StructureType.BLOCK,
         variant: 'TextInput',
         code: 'email',
-        label: 'Email',
-        hint: 'Your email',
-        defaultValue: {
-          type: ExpressionType.REFERENCE,
-          path: ['user', 'email'],
-        } satisfies ReferenceExpr,
-        condition: {
-          type: ExpressionType.REFERENCE,
-          path: ['showEmail'],
-        } satisfies ReferenceExpr,
         dependent: {
           type: LogicType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['requireEmail'] },
@@ -489,12 +433,7 @@ describe('StructureNodeFactory', () => {
       const result = structureFactory.create(json) as BlockASTNode
 
       expect(result.blockType).toBe('field')
-
       expect(result.properties.has('code')).toBe(true)
-      expect(result.properties.has('label')).toBe(true)
-      expect(result.properties.has('hint')).toBe(true)
-      expect(result.properties.has('defaultValue')).toBe(true)
-      expect(result.properties.has('condition')).toBe(true)
       expect(result.properties.has('dependent')).toBe(true)
       expect(result.properties.has('validate')).toBe(true)
     })

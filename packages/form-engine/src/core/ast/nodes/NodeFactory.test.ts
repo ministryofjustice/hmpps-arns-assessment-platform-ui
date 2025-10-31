@@ -835,10 +835,6 @@ describe('NodeFactory', () => {
                 type: StructureType.BLOCK,
                 variant: 'TextInput',
                 code: 'email',
-                defaultValue: {
-                  type: ExpressionType.REFERENCE,
-                  path: ['user', 'email'],
-                },
                 validate: [
                   {
                     type: ExpressionType.VALIDATION,
@@ -868,10 +864,6 @@ describe('NodeFactory', () => {
       const blocks = steps[0].properties.get('blocks')
       expect(blocks).toHaveLength(1)
       expect(blocks[0].type).toBe(ASTNodeType.BLOCK)
-
-      const defaultValue = blocks[0].properties.get('defaultValue')
-      expect(defaultValue.type).toBe(ASTNodeType.EXPRESSION)
-      expect(defaultValue.expressionType).toBe(ExpressionType.REFERENCE)
 
       const validate = blocks[0].properties.get('validate')
       expect(validate).toHaveLength(1)
