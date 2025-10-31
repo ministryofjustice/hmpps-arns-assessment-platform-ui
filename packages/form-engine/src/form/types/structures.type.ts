@@ -93,7 +93,7 @@ export interface FieldBlockDefinition extends BlockDefinition {
   code: ConditionalString
 
   /** Initial or computed value for the field */
-  value?: ConditionalString | ConditionalString[] | FunctionExpr<any>
+  defaultValue?: ConditionalString | ConditionalString[] | FunctionExpr<any>
 
   /** Array of transformers to format/process the field value */
   formatters?: TransformerFunctionExpr[]
