@@ -4,7 +4,6 @@ import type {
   StepDefinition,
   BlockDefinition,
   FieldBlockDefinition,
-  CompositeBlockDefinition,
   JourneyDefinition,
   ValidationExpr,
 } from '@form-engine/form/types/structures.type'
@@ -328,7 +327,7 @@ describe('StructureNodeFactory', () => {
       expect(result.properties.has('customProp')).toBe(true)
     })
 
-    it('should transform nested blocks in composite block', () => {
+    it('should transform nested blocks in block', () => {
       const json = {
         type: StructureType.BLOCK,
         variant: 'Fieldset',
@@ -344,7 +343,7 @@ describe('StructureNodeFactory', () => {
             code: 'field2',
           } satisfies FieldBlockDefinition,
         ],
-      } satisfies CompositeBlockDefinition<FieldBlockDefinition>
+      }
 
       const result = structureFactory.create(json)
       const blocks = result.properties.get('blocks')

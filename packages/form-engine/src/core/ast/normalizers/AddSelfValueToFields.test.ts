@@ -101,7 +101,7 @@ describe('AddSelfValueToFields', () => {
       expect(value.properties.get('path')).toEqual(['answers', '@self'])
     })
 
-    it('handles nested fields in composite blocks', () => {
+    it('handles nested fields in blocks', () => {
       const nestedField1 = ASTTestFactory.block('textInput', 'field')
         .withId(9)
         .withCode('nested1')
@@ -115,12 +115,12 @@ describe('AddSelfValueToFields', () => {
         .withProperty('value', 'has value')
         .build()
 
-      const compositeBlock = ASTTestFactory.block('group', 'composite')
+      const blockWithNestedFields = ASTTestFactory.block('group', 'basic')
         .withId(11)
         .withProperty('blocks', [nestedField1, nestedField2])
         .build()
 
-      const step = ASTTestFactory.step().withId(12).withProperty('blocks', [compositeBlock]).build()
+      const step = ASTTestFactory.step().withId(12).withProperty('blocks', [blockWithNestedFields]).build()
 
       addSelfValueToFields(step)
 

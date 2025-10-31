@@ -98,7 +98,7 @@ export class StructureNodeFactory {
   /**
    * Classify block for AST traversal optimization
    */
-  private determineBlockType(json: any): 'basic' | 'field' | 'composite' {
+  private determineBlockType(json: any): 'basic' | 'field' {
     if (isFieldBlockDefinition(json)) {
       return 'field'
     }
