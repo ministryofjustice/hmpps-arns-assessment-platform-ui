@@ -56,9 +56,7 @@ e2e-local: ## Run Playwright tests locally against application running in Docker
 
 e2e-ui: ## Run Playwright UI against application running in Docker
 	echo "Running Playwright tests locally..."
-	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME)
-	docker compose $(TEST_COMPOSE_FILES) down
-	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
+	docker compose $(DEV_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
 	npx playwright test --ui
 
 lint: ## Runs the linter.

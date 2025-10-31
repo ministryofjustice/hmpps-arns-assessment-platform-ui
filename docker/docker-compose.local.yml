@@ -20,6 +20,16 @@ services:
       EXAMPLE_API_URL: http://localhost:3000
       NODE_ENV: 'development'
 
+  wiremock:
+    image: wiremock/wiremock
+    networks:
+      - hmpps
+    restart: always
+    ports:
+      - "9091:8080"
+    environment:
+      WIREMOCK_OPTIONS: "--verbose --max-request-journal-entries=1000"
+
 volumes:
   node_modules:
     external: true # volume gets setup by `make install-node-modules`
