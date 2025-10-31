@@ -10,7 +10,6 @@ import type {
 import type {
   LoadTransition,
   AccessTransition,
-  ReferenceExpr,
   EffectFunctionExpr,
   SubmitTransition,
   NextExpr,

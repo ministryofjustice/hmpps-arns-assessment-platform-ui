@@ -20,11 +20,11 @@ export default class CompiledAST {
     const root = new NodeFactory().createNode(json)
 
     // Phase 1B: Normalize AST
-    attachParentNodes(root)
     addSelfValueToFields(root)
     resolveSelfReferences(root)
     attachValidationBlockCode(root)
     convertFormattersToPipeline(root)
+    attachParentNodes(root)
 
     // Phase 2: Register nodes with IDs
     const nodeRegistry = RegistrationTraverser.buildRegistry(root)

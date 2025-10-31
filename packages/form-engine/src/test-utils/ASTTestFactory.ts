@@ -53,12 +53,13 @@ export class ASTTestFactory {
   }
 
   /**
-   * Get the next available ID
+   * Get the next available ID in NodeIDGenerator format
+   * @param category - The ID category (defaults to 'compile_ast' for tests)
    */
-  static getId(): string {
+  static getId(category: string = 'compile_ast'): string {
     const id = this.nextId
     this.nextId += 1
-    return String(id)
+    return `${category}:${id}`
   }
 
   /**
@@ -373,8 +374,8 @@ export class JourneyBuilder {
 
   private properties: Map<string, any> = new Map()
 
-  withId(id: number): this {
-    this.id = String(id)
+  withId(id: string): this {
+    this.id = id
     return this
   }
 
@@ -418,8 +419,8 @@ export class StepBuilder {
 
   private properties: Map<string, any> = new Map()
 
-  withId(id: number): this {
-    this.id = String(id)
+  withId(id: string): this {
+    this.id = id
     return this
   }
 
@@ -473,8 +474,8 @@ export class BlockBuilder {
     private blockType: BlockType,
   ) {}
 
-  withId(id: number): this {
-    this.id = String(id)
+  withId(id: string): this {
+    this.id = id
     return this
   }
 
@@ -531,8 +532,8 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
 
   constructor(private expressionType: ExpressionType | FunctionType | LogicType) {}
 
-  withId(id: number): this {
-    this.id = String(id)
+  withId(id: string): this {
+    this.id = id
     return this
   }
 
