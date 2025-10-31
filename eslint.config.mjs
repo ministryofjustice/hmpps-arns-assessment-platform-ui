@@ -24,4 +24,10 @@ export default [
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     },
   },
+  {
+    files: ['playwright.config.ts'],
+    rules: {
+      'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    },
+  },
 ]
