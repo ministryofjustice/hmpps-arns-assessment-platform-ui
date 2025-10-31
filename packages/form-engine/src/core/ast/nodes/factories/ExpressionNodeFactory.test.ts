@@ -4,6 +4,7 @@ import {
   CollectionExpr,
   ConditionFunctionExpr,
   EffectFunctionExpr,
+  FormatExpr,
   PipelineExpr,
   PredicateTestExpr,
   ReferenceExpr,
@@ -41,6 +42,23 @@ describe('ExpressionNodeFactory', () => {
       expect(result.raw).toBe(json)
       expect(result.id).toBeDefined()
       expect(result.properties.has('path')).toBe(true)
+    })
+
+    it('should route to createFormat for Format expressions', () => {
+      const json = {
+        type: ExpressionType.FORMAT,
+        text: 'Hello %1',
+        args: ['World'],
+      } satisfies FormatExpr
+
+      const result = expressionFactory.create(json)
+
+      expect(result.type).toBe(ASTNodeType.EXPRESSION)
+      expect(result.expressionType).toBe(ExpressionType.FORMAT)
+      expect(result.raw).toBe(json)
+      expect(result.id).toBeDefined()
+      expect(result.properties.has('text')).toBe(true)
+      expect(result.properties.has('args')).toBe(true)
     })
 
     it('should route to createPipeline for Pipeline expressions', () => {
@@ -128,6 +146,7 @@ describe('ExpressionNodeFactory', () => {
         expect((error as UnknownNodeTypeError).nodeType).toBe('CustomExpression.Unknown')
         expect((error as UnknownNodeTypeError).validTypes).toEqual([
           'Reference',
+          'Format',
           'Pipeline',
           'Collection',
           'Validation',
@@ -136,6 +155,190 @@ describe('ExpressionNodeFactory', () => {
         ])
         expect((error as UnknownNodeTypeError).node).toBe(json)
       }
+    })
+  })
+
+  describe('createFormat', () => {
+    it('should create a Format expression with text and literal args', () => {
+      const json = {
+        type: ExpressionType.FORMAT,
+        text: 'Hello %1, welcome to %2',
+        args: ['World', 'Earth'],
+      } satisfies FormatExpr
+
+      const result = expressionFactory.create(json)
+
+      expect(result.id).toBeDefined()
+      expect(result.type).toBe(ASTNodeType.EXPRESSION)
+      expect(result.expressionType).toBe(ExpressionType.FORMAT)
+      expect(result.raw).toBe(json)
+
+      expect(result.properties.has('text')).toBe(true)
+      expect(result.properties.get('text')).toBe('Hello %1, welcome to %2')
+
+      expect(result.properties.has('args')).toBe(true)
+      const args = result.properties.get('args')
+      expect(Array.isArray(args)).toBe(true)
+      expect(args).toEqual(['World', 'Earth'])
+    })
+
+    it('should create a Format expression with single placeholder', () => {
+      const json = {
+        type: ExpressionType.FORMAT,
+        text: 'address_%1_street',
+        args: ['123'],
+      } satisfies FormatExpr
+
+      const result = expressionFactory.create(json)
+
+      expect(result.properties.get('text')).toBe('address_%1_street')
+
+      const args = result.properties.get('args')
+      expect(args).toHaveLength(1)
+      expect(args[0]).toBe('123')
+    })
+
+    it('should create a Format expression with expression arguments', () => {
+      const json = {
+        type: ExpressionType.FORMAT,
+        text: 'Item %1',
+        args: [{ type: ExpressionType.REFERENCE, path: ['user', 'id'] } satisfies ReferenceExpr],
+      } satisfies FormatExpr
+
+      const result = expressionFactory.create(json)
+
+      const args = result.properties.get('args')
+      expect(args).toHaveLength(1)
+
+      expect(args[0]).toHaveProperty('id')
+      expect(args[0]).toHaveProperty('type')
+      expect(args[0].type).toBe(ASTNodeType.EXPRESSION)
+      expect(args[0].expressionType).toBe(ExpressionType.REFERENCE)
+    })
+
+    it('should create a Format expression with multiple expression arguments', () => {
+      const json = {
+        type: ExpressionType.FORMAT,
+        text: '%1_%2_%3',
+        args: [
+          { type: ExpressionType.REFERENCE, path: ['field1'] } satisfies ReferenceExpr,
+          { type: ExpressionType.REFERENCE, path: ['field2'] } satisfies ReferenceExpr,
+          { type: ExpressionType.REFERENCE, path: ['field3'] } satisfies ReferenceExpr,
+        ],
+      } satisfies FormatExpr
+
+      const result = expressionFactory.create(json)
+
+      const args = result.properties.get('args')
+      expect(args).toHaveLength(3)
+
+      args.forEach((arg: any) => {
+        expect(arg.id).toBeDefined()
+        expect(arg.type).toBe(ASTNodeType.EXPRESSION)
+        expect(arg.expressionType).toBe(ExpressionType.REFERENCE)
+      })
+    })
+
+    it('should create a Format expression with mixed literal and expression arguments', () => {
+      const json = {
+        type: ExpressionType.FORMAT,
+        text: 'user_%1_%2',
+        args: ['prefix', { type: ExpressionType.REFERENCE, path: ['userId'] } satisfies ReferenceExpr],
+      } satisfies FormatExpr
+
+      const result = expressionFactory.create(json)
+
+      const args = result.properties.get('args')
+      expect(args).toHaveLength(2)
+
+      expect(args[0]).toBe('prefix')
+
+      expect(args[1]).toHaveProperty('id')
+      expect(args[1].type).toBe(ASTNodeType.EXPRESSION)
+      expect(args[1].expressionType).toBe(ExpressionType.REFERENCE)
+    })
+
+    it('should handle Format expression with HTML in text', () => {
+      const json = {
+        type: ExpressionType.FORMAT,
+        text: '<h3>This is item %1</h3>',
+        args: [{ type: ExpressionType.REFERENCE, path: ['itemName'] } satisfies ReferenceExpr],
+      } satisfies FormatExpr
+
+      const result = expressionFactory.create(json)
+
+      expect(result.properties.get('text')).toBe('<h3>This is item %1</h3>')
+
+      const args = result.properties.get('args')
+      expect(args).toHaveLength(1)
+      expect(args[0].type).toBe(ASTNodeType.EXPRESSION)
+    })
+
+    it('should create a Format expression with nested expression arguments', () => {
+      const json = {
+        type: ExpressionType.FORMAT,
+        text: 'Result: %1',
+        args: [
+          {
+            type: ExpressionType.PIPELINE,
+            input: { type: ExpressionType.REFERENCE, path: ['value'] } satisfies ReferenceExpr,
+            steps: [{ name: 'uppercase' }],
+          } satisfies PipelineExpr,
+        ],
+      } satisfies FormatExpr
+
+      const result = expressionFactory.create(json)
+
+      const args = result.properties.get('args')
+      expect(args).toHaveLength(1)
+
+      expect(args[0].id).toBeDefined()
+      expect(args[0].type).toBe(ASTNodeType.EXPRESSION)
+      expect(args[0].expressionType).toBe(ExpressionType.PIPELINE)
+    })
+
+    it('should handle Format expression with empty args array', () => {
+      const json = {
+        type: ExpressionType.FORMAT,
+        text: 'No placeholders here',
+        args: [] as any,
+      } satisfies FormatExpr
+
+      const result = expressionFactory.create(json)
+
+      expect(result.properties.get('text')).toBe('No placeholders here')
+
+      const args = result.properties.get('args')
+      expect(Array.isArray(args)).toBe(true)
+      expect(args).toHaveLength(0)
+    })
+
+    it('should handle Format expression with numeric literal arguments', () => {
+      const json = {
+        type: ExpressionType.FORMAT,
+        text: 'Page %1 of %2',
+        args: [1, 10],
+      } satisfies FormatExpr
+
+      const result = expressionFactory.create(json)
+
+      const args = result.properties.get('args')
+      expect(args).toEqual([1, 10])
+    })
+
+    it('should generate unique node IDs for Format expressions', () => {
+      const json = {
+        type: ExpressionType.FORMAT,
+        text: 'Item %1',
+        args: ['test'],
+      } satisfies FormatExpr
+
+      const result1 = expressionFactory.create(json)
+      const result2 = expressionFactory.create(json)
+
+      expect(result1.id).toBeDefined()
+      expect(result2.id).toBeDefined()
+      expect(result1.id).not.toBe(result2.id)
     })
   })
 

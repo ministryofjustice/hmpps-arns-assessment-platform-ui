@@ -1,5 +1,6 @@
 import {
   isReferenceExpr,
+  isFormatExpr,
   isPipelineExpr,
   isCollectionExpr,
   isValidationExpr,
@@ -11,6 +12,7 @@ import { ExpressionType } from '@form-engine/form/types/enums'
 import {
   ExpressionASTNode,
   ReferenceASTNode,
+  FormatASTNode,
   PipelineASTNode,
   CollectionASTNode,
   ValidationASTNode,
@@ -40,6 +42,10 @@ export class ExpressionNodeFactory {
       return this.createReference(json)
     }
 
+    if (isFormatExpr(json)) {
+      return this.createFormat(json)
+    }
+
     if (isPipelineExpr(json)) {
       return this.createPipeline(json)
     }
@@ -63,7 +69,7 @@ export class ExpressionNodeFactory {
     throw new UnknownNodeTypeError({
       nodeType: json?.type,
       node: json,
-      validTypes: ['Reference', 'Pipeline', 'Collection', 'Validation', 'Function', 'Next'],
+      validTypes: ['Reference', 'Format', 'Pipeline', 'Collection', 'Validation', 'Function', 'Next'],
     })
   }
 
@@ -84,6 +90,29 @@ export class ExpressionNodeFactory {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.EXPRESSION,
       expressionType: ExpressionType.REFERENCE,
+      properties,
+      raw: json,
+    }
+  }
+
+  /**
+   * Transform Format expression: String template with placeholders
+   * Replaces placeholders (%1, %2, etc.) with evaluated argument values
+   * Example: text: 'address_%1_street', args: [Item().id]
+   */
+  private createFormat(json: any): FormatASTNode {
+    const properties = new Map<string, ASTNode | any>()
+
+    properties.set('text', json.text)
+
+    const transformedArgs = json.args.map((arg: any) => this.nodeFactory.transformValue(arg))
+
+    properties.set('args', transformedArgs)
+
+    return {
+      id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
+      type: ASTNodeType.EXPRESSION,
+      expressionType: ExpressionType.FORMAT,
       properties,
       raw: json,
     }
