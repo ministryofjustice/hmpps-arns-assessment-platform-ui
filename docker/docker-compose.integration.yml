@@ -1,0 +1,74 @@
+# Integration test mode
+#
+# - target: production (compiled code, no source volumes)
+# - command: npm run start
+# - no volumes for UI (uses production build artifacts)
+# - depends_on: redis, localstack only (no real API or Auth)
+# - URLs: all point to wiremock (http://wiremock:8080) for mocking external services
+# - includes playwright service for running integration tests
+# - HMPPS_AUTH_EXTERNAL_URL driven by .env files
+#
+# Dependency tree (for pw in container):
+# playwright
+# ├── ui
+# │   ├── redis
+# │   └── localstack
+# └── wiremock
+
+services:
+  ui:
+    profiles:
+      - integration
+      - integration-local
+    build:
+      target: production
+    command: npm run start
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+      - localstack
+      - wiremock
+    environment:
+      ENVIRONMENT_NAME: test
+      REDIS_ENABLED: true
+      HMPPS_AUTH_URL: http://wiremock:8080/auth
+      HMPPS_AUTH_EXTERNAL_URL: ${HMPPS_AUTH_EXTERNAL_URL}
+      TOKEN_VERIFICATION_ENABLED: true
+      TOKEN_VERIFICATION_API_URL: http://wiremock:8080/verification
+      EXAMPLE_API_URL: http://wiremock:8080/example-api
+      AAP_API_URL: http://wiremock:8080
+
+  wiremock:
+    profiles:
+      - integration
+      - integration-local
+    image: wiremock/wiremock
+    restart: always
+    ports:
+      - "9091:8080"
+    networks:
+      - hmpps
+
+  playwright:
+    profiles:
+      - integration
+    image: mcr.microsoft.com/playwright:v1.56.1-noble
+    working_dir: /playwright
+    entrypoint: sh
+    command: -c "npm ci && npx playwright test"
+    networks:
+      - hmpps
+    volumes:
+      - ../package.json:/playwright/package.json
+      - ../package-lock.json:/playwright/package-lock.json
+      - ../playwright.config.ts:/playwright/playwright.config.ts
+      - ../integration_tests:/playwright/integration_tests
+      - ../test_results:/playwright/test_results
+    environment:
+      CI: true
+      BASE_URL: http://ui:3000
+      WIREMOCK_URL: http://wiremock:8080/__admin
+    depends_on:
+      - ui
+      - wiremock
