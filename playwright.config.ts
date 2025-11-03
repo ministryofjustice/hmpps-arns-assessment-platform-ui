@@ -8,19 +8,23 @@ import { defineConfig, devices } from '@playwright/test'
 // dotenv.config({ path: path.resolve(__dirname, '.env') })
 
 /**
+ * Custom configuration values for tests.
+ */
+export const baseUrl = process.env.BASE_URL || 'http://localhost:3000'
+export const wiremockUrl = process.env.WIREMOCK_URL || 'http://localhost:9091/__admin'
+
+// noinspection JSUnusedGlobalSymbols
+/**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
   outputDir: './test_results/playwright/test-output',
-  testDir: './integration_tests/specs',
   /* Maximum time one test can run for. (millis) */
   timeout: 3 * 60 * 1000,
   /* Maximum time test suite can run for. (millis) */
   globalTimeout: 60 * 60 * 1000,
   /* Run tests in files in parallel */
   fullyParallel: false,
-  /* Ensure tests run consecutively due to inability to share wiremock instance */
-  workers: 1,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -40,9 +44,22 @@ export default defineConfig({
     trace: process.env.CI ? 'off' : 'on',
     ...devices['Desktop Chrome'],
     testIdAttribute: 'data-qa',
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    baseURL: baseUrl,
   },
 
   /* Configure projects */
-  projects: [{ name: 'default' }],
+  projects: [
+    {
+      name: 'integration',
+      testDir: './integration_tests/specs',
+      /* Ensure tests run consecutively due to inability to share wiremock instance */
+      workers: 1,
+    },
+    {
+      name: 'e2e',
+      testDir: './e2e_tests/specs',
+      /* E2E tests can run in parallel against real services */
+      workers: 2,
+    },
+  ],
 })

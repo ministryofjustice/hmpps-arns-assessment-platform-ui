@@ -20,7 +20,7 @@ with advanced data versioning
 - **Form Engine**: Declarative form system with two-phase processing (compilation and runtime)
 - **Runtime**: Node.js with Express
 - **Frameworks**: GOV.UK Design System with Nunjucks templating
-- **Testing**: Jest for unit tests, Playwright for E2E testing
+- **Testing**: Jest for unit tests, Playwright for integration testing
 
 ## Quick Start
 
@@ -76,7 +76,7 @@ hmpps-arns-assessment-platform-ui/
 │   ├── forms/              # Form configurations
 │   ├── middleware/         # Auth, security, session handling
 │   └── services/           # Business logic and API clients
-├── integration_tests/      # Playwright E2E tests
+├── integration_tests/      # Playwright integration tests
 ├── docker/                 # Docker compose configurations
 └── helm_deploy/            # Kubernetes deployment configs
 ```
@@ -100,9 +100,11 @@ The form engine operates in two distinct phases:
 ## Testing
 
 ```bash
-make test                   # Run unit tests
-make e2e-docker             # Run Playwright tests in Docker container against application in Docker
-make e2e-local              # Run Playwright tests locally against application in Docker
+make test-unit              # Run unit tests
+make test-integration       # Run Playwright integration tests in Docker container against application in Docker
+make test-integration-local # Run Playwright integration tests locally against application in Docker
+make test-e2e               # Run Playwright E2E tests in Docker container against real services
+make test-e2e-local         # Run Playwright E2E tests locally against real services
 ```
 
 ## Deployment

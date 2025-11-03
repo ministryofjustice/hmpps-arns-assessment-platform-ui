@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import exampleApi from '../mockApis/exampleApi'
+import aapApi from '../mockApis/aapApi'
 import hmppsAuth from '../mockApis/hmppsAuth'
 import tokenVerification from '../mockApis/tokenVerification'
 
@@ -12,7 +12,7 @@ test.describe('Health', () => {
 
   test.describe('All healthy', () => {
     test.beforeEach(async () => {
-      await Promise.all([hmppsAuth.stubPing(), exampleApi.stubPing(), tokenVerification.stubPing()])
+      await Promise.all([hmppsAuth.stubPing(), aapApi.stubPing(), tokenVerification.stubPing()])
     })
 
     test('Health check is accessible and status is UP', async ({ page }) => {
@@ -36,7 +36,7 @@ test.describe('Health', () => {
 
   test.describe('Some unhealthy', () => {
     test.beforeEach(async () => {
-      await Promise.all([hmppsAuth.stubPing(), exampleApi.stubPing(500), tokenVerification.stubPing(500)])
+      await Promise.all([hmppsAuth.stubPing(), aapApi.stubPing(), tokenVerification.stubPing(500)])
     })
 
     test('Health check status is down', async ({ page }) => {
@@ -44,11 +44,9 @@ test.describe('Health', () => {
       const payload = await response.json()
       expect(payload.status).toBe('DOWN')
       expect(payload.components.hmppsAuth.status).toBe('UP')
-      if (process.env.ENVIRONMENT !== 'e2e-ui') {
-        expect(payload.components.tokenVerification.status).toBe('DOWN')
-        expect(payload.components.tokenVerification.details.status).toBe(500)
-        expect(payload.components.tokenVerification.details.attempts).toBe(3)
-      }
+      expect(payload.components.tokenVerification.status).toBe('DOWN')
+      expect(payload.components.tokenVerification.details.status).toBe(500)
+      expect(payload.components.tokenVerification.details.attempts).toBe(3)
     })
   })
 })

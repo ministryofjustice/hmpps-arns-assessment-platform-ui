@@ -1,0 +1,85 @@
+# E2E test mode
+#
+# - target: production (compiled code, no source volumes)
+# - command: npm run start
+# - no volumes for UI (uses production build artifacts)
+# - depends_on: api, redis, localstack (REAL backend services, not wiremock)
+# - URLs: all point to real services (auth:8080, api:8080) - NOT wiremock
+# - includes playwright service for running e2e tests
+# - HMPPS_AUTH_EXTERNAL_URL driven by .env files
+#
+# Dependency tree (for pw in container):
+# playwright
+# ├── ui
+# │   ├── api
+# │   │   ├── postgres
+# │   │   ├── auth
+# │   │   └── localstack
+# │   ├── redis
+# │   └── localstack
+
+
+services:
+  ui:
+    profiles:
+      - e2e
+      - e2e-local
+    build:
+      target: production
+    command: npm run start
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+      - redis
+      - localstack
+      - wiremock
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 45s
+    environment:
+      ENVIRONMENT_NAME: e2e
+      REDIS_ENABLED: true
+      HMPPS_AUTH_URL: http://auth:8080/auth
+      HMPPS_AUTH_EXTERNAL_URL: ${HMPPS_AUTH_EXTERNAL_URL}
+      TOKEN_VERIFICATION_ENABLED: true
+      TOKEN_VERIFICATION_API_URL: http://wiremock:8080/verification
+      AAP_API_URL: http://api:8080
+      INGRESS_URL: ${INGRESS_URL}
+
+  wiremock:
+    profiles:
+      - e2e
+      - e2e-local
+    image: wiremock/wiremock
+    restart: always
+    ports:
+      - "9091:8080"
+    networks:
+      - hmpps
+
+  playwright:
+    profiles:
+      - e2e
+    image: mcr.microsoft.com/playwright:v1.56.1-noble
+    working_dir: /playwright
+    entrypoint: sh
+    command: -c "npm ci && npx playwright test --project=e2e"
+    networks:
+      - hmpps
+    volumes:
+      - ../package.json:/playwright/package.json
+      - ../package-lock.json:/playwright/package-lock.json
+      - ../playwright.config.ts:/playwright/playwright.config.ts
+      - ../e2e_tests:/playwright/e2e_tests
+      - ../test_results:/playwright/test_results
+    environment:
+      CI: true
+      BASE_URL: http://ui:3000
+      WIREMOCK_URL: http://wiremock:8080/__admin
+    depends_on:
+      - ui
+      - wiremock

@@ -5,6 +5,7 @@ import SessionService from './sessionService'
 
 export enum AuditEvent {
   VIEW_ASSESSMENT = 'VIEW_ASSESSMENT',
+  CREATE_ASSESSMENT = 'CREATE_ASSESSMENT',
 }
 
 export default class AuditService {

@@ -1,13 +1,12 @@
 import superagent, { SuperAgentRequest, Response } from 'superagent'
-
-const url = process.env.WIREMOCK_URL || 'http://localhost:9091/__admin'
+import { wiremockUrl } from '../../playwright.config'
 
 const stubFor = (mapping: Record<string, unknown>): SuperAgentRequest =>
-  superagent.post(`${url}/mappings`).send(mapping)
+  superagent.post(`${wiremockUrl}/mappings`).send(mapping)
 
-const getMatchingRequests = (body: string | object) => superagent.post(`${url}/requests/find`).send(body)
+const getMatchingRequests = (body: string | object) => superagent.post(`${wiremockUrl}/requests/find`).send(body)
 
 const resetStubs = (): Promise<Array<Response>> =>
-  Promise.all([superagent.delete(`${url}/mappings`), superagent.delete(`${url}/requests`)])
+  Promise.all([superagent.delete(`${wiremockUrl}/mappings`), superagent.delete(`${wiremockUrl}/requests`)])
 
 export { stubFor, getMatchingRequests, resetStubs }

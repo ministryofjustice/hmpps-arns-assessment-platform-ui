@@ -1,17 +1,16 @@
 SHELL = '/bin/bash'
 
-## Useful to keep this the same for backend/frontend
+# Useful to keep this the same for backend/frontend
 PROJECT_NAME = hmpps-arns-assessment-platform
-
-## Must match name of container in Docker
-SERVICE_NAME = ui
 
 APP_VERSION ?= local
 
-## Compose files to stack on each other
-DEV_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.local.yml
-PROD_COMPOSE_FILES = -f docker/docker-compose.base.yml
-TEST_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml
+# Compose files to stack on each other
+BASE_COMPOSE_FILE = -f docker/docker-compose.yml
+DEV_COMPOSE_FILES = $(BASE_COMPOSE_FILE) -f docker/docker-compose.dev.yml
+UNIT_COMPOSE_FILES = $(BASE_COMPOSE_FILE) -f docker/docker-compose.unit.yml
+INTEGRATION_COMPOSE_FILES = $(BASE_COMPOSE_FILE) -f docker/docker-compose.integration.yml
+E2E_COMPOSE_FILES = $(BASE_COMPOSE_FILE) -f docker/docker-compose.e2e.yml
 
 export APP_VERSION
 export COMPOSE_PROJECT_NAME=${PROJECT_NAME}
@@ -21,75 +20,58 @@ default: help
 help: ## The help text you're reading.
 	@grep --no-filename -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-build: ## Builds a production image of the UI.
-	docker compose ${PROD_COMPOSE_FILES} build ui
+build: ## Builds a development image of the UI
+	docker compose $(DEV_COMPOSE_FILES) build
 
-dev-build: ## Builds a development image of the UI and installs Node dependencies.
-	@make install-node-modules
-	docker compose ${DEV_COMPOSE_FILES} build ui
-
-dev-up: ## Starts/restarts a development container. A remote debugger can be attached on port 9229.
-	@make install-node-modules
-	docker compose down ${SERVICE_NAME}
-	docker compose ${DEV_COMPOSE_FILES} up ${SERVICE_NAME} --wait
+dev-up: down ## Starts/restarts a development container. A remote debugger can be attached on port 9229.
+	docker compose $(DEV_COMPOSE_FILES) up -d
 
 down: ## Stops and removes all containers in the project.
-	docker compose down
+	docker compose $(DEV_COMPOSE_FILES) down
 
-test: ## Runs the unit test suite.
-	docker compose exec ${SERVICE_NAME} npm run test
+test-unit: ## Runs the unit test suite.
+	docker compose $(UNIT_COMPOSE_FILES) run --rm --no-deps ui
 
-e2e-docker: ## Run Playwright tests in Docker container against application running in Docker
-	echo "Running Playwright tests in Docker container..."
-	export HMPPS_AUTH_EXTERNAL_URL=http://wiremock:8080/auth && \
-	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME) && \
-	docker compose $(TEST_COMPOSE_FILES) down && \
-	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait && \
-	docker compose $(TEST_COMPOSE_FILES) run --rm playwright
+test-integration: ## Run Playwright tests in Docker container against application running in Docker
+	-docker compose $(INTEGRATION_COMPOSE_FILES) --env-file docker/env/integration.env --profile integration run --build --rm playwright
+	docker compose $(INTEGRATION_COMPOSE_FILES) --env-file docker/env/integration.env --profile integration down
 
-e2e-local: ## Run Playwright tests locally against application running in Docker
-	echo "Running Playwright tests locally..."
-	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME)
-	docker compose $(TEST_COMPOSE_FILES) down
-	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
-	npx playwright test
+test-integration-local: ## Run Playwright tests locally against application running in Docker
+	docker compose $(INTEGRATION_COMPOSE_FILES) --env-file docker/env/integration-local.env --profile integration-local up --build -d --wait
+	npx playwright test --project=integration --ui
+	docker compose $(INTEGRATION_COMPOSE_FILES) --env-file docker/env/integration-local.env --profile integration-local down
 
-e2e-ui: ## Run Playwright UI against application running in Docker
-	echo "Running Playwright tests locally..."
-	docker compose $(DEV_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
-	ENVIRONMENT='e2e-ui' npx playwright test --ui
+test-e2e: ## Run Playwright E2E smoke tests in Docker container against real services
+	docker compose $(E2E_COMPOSE_FILES) --env-file docker/env/e2e.env --profile e2e up -d --wait ui wiremock
+	-docker compose $(E2E_COMPOSE_FILES) --env-file docker/env/e2e.env --profile e2e run --build --rm playwright
+	docker compose $(E2E_COMPOSE_FILES) --env-file docker/env/e2e.env --profile e2e down
+
+test-e2e-local: ## Run Playwright E2E smoke tests locally against real services
+	docker compose $(E2E_COMPOSE_FILES) --env-file docker/env/e2e-local.env --profile e2e-local up --build -d --wait
+	npx playwright test --project=e2e --ui
+	docker compose $(E2E_COMPOSE_FILES) --env-file docker/env/e2e-local.env --profile e2e-local down
 
 lint: ## Runs the linter.
-	docker compose exec ${SERVICE_NAME} npm run lint
+	docker compose $(DEV_COMPOSE_FILES) exec ui npm run lint
 
 lint-fix: ## Automatically fixes linting issues.
-	docker compose exec ${SERVICE_NAME} npm run lint-fix
-
-install-node-modules: ## Installs Node modules into the Docker volume.
-	@docker run --rm \
-	  -v ./package.json:/package.json \
-	  -v ./package-lock.json:/package-lock.json \
-	  -v ~/.npm:/npm_cache \
-	  -v ${PROJECT_NAME}_node_modules:/node_modules \
-	  node:22-alpine \
-	  /bin/sh -c 'if [ ! -f /node_modules/.last-updated ] || [ /package.json -nt /node_modules/.last-updated ]; then \
-	    echo "Running npm ci as container node_modules is outdated or missing."; \
-	    npm ci --cache /npm_cache --prefer-offline; \
-	    touch /node_modules/.last-updated; \
-	  else \
-	    echo "Container node_modules is up-to-date."; \
-	  fi'
+	docker compose $(DEV_COMPOSE_FILES) exec ui npm run lint-fix
 
 clean: ## Stops and removes all project containers. Deletes local build/cache directories.
-	docker compose down
+	docker compose $(DEV_COMPOSE_FILES) down -v
 	docker images -q --filter=reference="ghcr.io/ministryofjustice/*:local" | xargs -r docker rmi
 	docker volume ls -qf "dangling=true" | xargs -r docker volume rm
 	rm -rf dist node_modules test_results
 
 update: ## Downloads the latest versions of container images.
-	docker compose ${DEV_COMPOSE_FILES} pull
+	docker compose $(DEV_COMPOSE_FILES) pull api auth postgres redis localstack
+	docker compose $(INTEGRATION_COMPOSE_FILES) pull wiremock playwright
+	docker compose $(DEV_COMPOSE_FILES) build --pull ui
 
-save-logs: ## Saves docker container logs in a directory defined by OUTPUT_LOGS_DIR=
+save-logs: ## Saves docker container logs (used in CI/CD) in a directory defined by OUTPUT_LOGS_DIR=
 	docker system info
 	mkdir -p ${OUTPUT_LOGS_DIR}
 	docker logs ${PROJECT_NAME}-ui-1 > ${OUTPUT_LOGS_DIR}/ui.log
+
+audit-watch: ## Watch the SQS audit queue live
+	docker exec -it ${PROJECT_NAME}-localstack-1 /usr/local/bin/audit-watch

@@ -1,15 +1,10 @@
 import { expect, test } from '@playwright/test'
 import hmppsAuth from '../mockApis/hmppsAuth'
-import exampleApi from '../mockApis/exampleApi'
 
 import { login, resetStubs } from '../testUtils'
 import HomePage from '../pages/homePage'
 
 test.describe('SignIn', () => {
-  test.beforeEach(async () => {
-    await exampleApi.stubExampleTime()
-  })
-
   test.afterEach(async () => {
     await resetStubs()
   })
@@ -41,7 +36,7 @@ test.describe('SignIn', () => {
 
     const homePage = await HomePage.verifyOnPage(page)
 
-    await expect(homePage.phaseBanner).toHaveText('dev')
+    await expect(homePage.phaseBanner).toHaveText('test')
   })
 
   test('User can sign out', async ({ page }) => {
@@ -65,14 +60,12 @@ test.describe('SignIn', () => {
   })
 
   test('Token verification failure takes user to sign in page', async ({ page }) => {
-    test.skip(process.env.ENVIRONMENT === 'e2e-ui', 'Only runs when auth is wiremock')
     await login(page, { active: false })
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')
   })
 
   test('Token verification failure clears user session', async ({ page }) => {
-    test.skip(process.env.ENVIRONMENT === 'e2e-ui', 'Only runs when auth is wiremock')
     await login(page, { name: 'A TestUser', active: false })
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')

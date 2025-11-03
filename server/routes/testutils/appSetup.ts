@@ -8,11 +8,13 @@ import errorHandler from '../../errorHandler'
 import type { Services, RequestServices } from '../../services'
 import AuditService from '../../services/auditService'
 import SessionService from '../../services/sessionService'
+import AssessmentService from '../../services/assessmentService'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
 
 jest.mock('../../services/auditService')
 jest.mock('../../services/sessionService')
+jest.mock('../../services/assessmentService')
 
 export const user: HmppsUser = {
   name: 'FIRST LAST',
@@ -42,8 +44,15 @@ function appSetup(
   app.use((req, res, next) => {
     req.user = userSupplier() as Express.User
     req.flash = flashProvider
+    const currentUser = req.user as HmppsUser
     res.locals = {
-      user: { ...req.user } as HmppsUser,
+      user: { ...currentUser },
+    }
+
+    req.session.principal = {
+      identifier: currentUser.userId,
+      username: currentUser.username,
+      displayName: currentUser.displayName,
     }
     next()
   })
@@ -58,6 +67,7 @@ function appSetup(
       req.services = {
         auditService: mockAuditService,
         sessionService: new SessionService(req) as jest.Mocked<SessionService>,
+        assessmentService: new AssessmentService(null, null, null) as jest.Mocked<AssessmentService>,
       } as RequestServices
       next()
     })
