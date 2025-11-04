@@ -9,6 +9,11 @@ export declare module 'express-session' {
     crn?: string
     assessmentUuid?: string
     assessmentVersion?: number
+    principal?: {
+      identifier: string
+      username: string
+      displayName: string
+    }
   }
 }
 

@@ -42,6 +42,7 @@ describe('AuditService', () => {
       mockSessionService.getPrincipalDetails.mockReturnValue({
         identifier: 'user123',
         username: 'testuser',
+        displayName: 'Test User',
       })
       mockSessionService.getSubjectDetails.mockReturnValue({
         crn: 'CRN123',
@@ -89,7 +90,11 @@ describe('AuditService', () => {
     })
 
     it('should handle audit client errors gracefully', async () => {
-      mockSessionService.getPrincipalDetails.mockReturnValue({ identifier: 'user123' })
+      mockSessionService.getPrincipalDetails.mockReturnValue({
+        identifier: 'user123',
+        username: 'testuser',
+        displayName: 'Test User',
+      })
       mockAuditClient.sendAuditMessage.mockRejectedValue(new Error('SQS unavailable'))
 
       // Should not throw
@@ -97,7 +102,11 @@ describe('AuditService', () => {
     })
 
     it('should merge custom details with session context', async () => {
-      mockSessionService.getPrincipalDetails.mockReturnValue({ identifier: 'user123' })
+      mockSessionService.getPrincipalDetails.mockReturnValue({
+        identifier: 'user123',
+        username: 'testuser',
+        displayName: 'Test User',
+      })
       mockSessionService.getAssessmentUuid.mockReturnValue('uuid-123')
 
       await auditService.send(AuditEvent.VIEW_ASSESSMENT, {

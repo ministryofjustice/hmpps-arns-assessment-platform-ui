@@ -3,6 +3,9 @@ import hmppsConfig from '@ministryofjustice/eslint-config-hmpps'
 export default [
   ...hmppsConfig(),
   {
+    ignores: ['test_results/**'],
+  },
+  {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       'no-param-reassign': 'off',
@@ -25,7 +28,7 @@ export default [
     },
   },
   {
-    files: ['playwright.config.ts'],
+    files: ['integration_tests/**/*.ts', 'playwright.config.ts'],
     rules: {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     },

@@ -60,7 +60,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/auth/oauth/authorize\\?response_type=code&redirect_uri=.+?&state=.+?&client_id=clientid',
+        urlPattern: '/auth/oauth/authorize\\?response_type=code&redirect_uri=.+?&state=.+?&client_id=.+',
       },
       response: {
         status: 200,
@@ -71,7 +71,7 @@ export default {
         body: '<html lang="en"><body>Dummy Sign in page<h1>Sign in</h1></body></html>',
       },
     }),
-  //  http://wiremock:8080/auth/sign-out?client_id=clientid&redirect_uri=http://localhost:3000
+
   stubSignOutPage: () =>
     stubFor({
       request: {

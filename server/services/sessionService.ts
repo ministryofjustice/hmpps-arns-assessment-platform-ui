@@ -2,7 +2,8 @@ import { Request } from 'express'
 
 export interface PrincipalDetails {
   identifier: string
-  username?: string
+  username: string
+  displayName: string
 }
 
 export interface SubjectDetails {
@@ -13,13 +14,7 @@ export default class SessionService {
   constructor(private readonly req: Request) {}
 
   getPrincipalDetails(): PrincipalDetails | undefined {
-    const user = this.req.res?.locals?.user
-    return user
-      ? {
-          identifier: user.userId || user.username,
-          username: user.username,
-        }
-      : undefined
+    return this.req.session?.principal
   }
 
   getSubjectDetails(): SubjectDetails | undefined {

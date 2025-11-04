@@ -2,23 +2,26 @@ import { Request } from 'express'
 import { dataAccess } from '../data'
 import AuditService from './auditService'
 import SessionService from './sessionService'
-import ExampleService from './exampleService'
+import AssessmentService from './assessmentService'
 
 export const services = () => {
-  const { applicationInfo, exampleApiClient } = dataAccess()
+  const { applicationInfo, assessmentPlatformApiClient } = dataAccess()
 
   return {
     applicationInfo,
-    exampleService: new ExampleService(exampleApiClient),
+    assessmentPlatformApiClient,
   }
 }
 
 export const requestServices = (appServices: Services) => ({
   sessionService: (req: Request) => new SessionService(req),
-  auditService: (req: Request) => {
-    const sessionService = new SessionService(req)
-    return new AuditService(appServices.applicationInfo, sessionService, req.id)
-  },
+  auditService: (req: Request) => new AuditService(appServices.applicationInfo, req.services.sessionService, req.id),
+  assessmentService: (req: Request) =>
+    new AssessmentService(
+      appServices.assessmentPlatformApiClient,
+      req.services.sessionService,
+      req.services.auditService,
+    ),
 })
 
 export type RequestServices = {
