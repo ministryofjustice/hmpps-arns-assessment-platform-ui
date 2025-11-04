@@ -1,0 +1,118 @@
+services:
+  ui:
+    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:${APP_VERSION:-latest}
+    build:
+      context: ..
+      args:
+        BUILD_NUMBER: "1.0.0"
+        GIT_REF: "a1b2c3"
+        GIT_BRANCH: main
+    networks:
+      - hmpps
+    environment:
+      NODE_ENV: development
+      PRODUCT_ID: UNASSIGNED
+      NO_HTTPS: true
+      INGRESS_URL: http://localhost:3000
+
+      REDIS_HOST: redis
+      SESSION_SECRET: somesecretvalue
+
+      AUTH_CODE_CLIENT_ID: clientid
+      AUTH_CODE_CLIENT_SECRET: clientsecret
+      CLIENT_CREDS_CLIENT_ID: clientid
+      CLIENT_CREDS_CLIENT_SECRET: clientsecret
+
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AUDIT_ENABLED: true
+      AUDIT_SQS_QUEUE_URL: http://localstack:4566/000000000000/audit-queue
+      AUDIT_SQS_REGION: eu-west-2
+      AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
+
+  api:
+    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
+    networks:
+      - hmpps
+    environment:
+      SERVER_PORT: 8080
+      HMPPS_AUTH_URL: http://auth:8080/auth
+      SPRING_PROFILES_ACTIVE: dev,postgres
+      DATABASE_ENDPOINT: postgres:5432
+      HMPPS_SQS_PROVIDER: localstack
+      HMPPS_SQS_LOCALSTACK_URL: http://localstack:4566
+      HMPPS_SQS_QUEUES_AUDIT_QUEUE_NAME: audit-queue
+    depends_on:
+      - postgres
+      - auth
+      - localstack
+
+  auth:
+    image: quay.io/hmpps/hmpps-auth:latest
+    ports:
+      - "9090:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/auth/health"]
+    networks:
+      - hmpps
+    volumes:
+      - ./auth_db:/auth_db
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      APPLICATION_AUTHENTICATION_UI_ALLOWLIST: 0.0.0.0/0
+      SPRING_FLYWAY_LOCATIONS: classpath:db/auth,db/auth_{vendor},db/dev/data/auth_{vendor},db/dev/data/auth,filesystem:/auth_db
+
+  postgres:
+    image: postgres:16
+    networks:
+      - hmpps
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: dev
+    tmpfs:
+      - /var/lib/postgresql
+
+  redis:
+    image: redis:8.2
+    ports:
+      - "6379:6379"
+    networks:
+      - hmpps
+    environment:
+      ALLOW_EMPTY_PASSWORD: yes
+
+  localstack:
+    image: localstack/localstack:4
+    networks:
+      - hmpps
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: sqs
+      LOCALSTACK_HOST: localstack:4566
+      DEBUG: 1
+      DEFAULT_REGION: eu-west-2
+      AWS_DEFAULT_REGION: eu-west-2
+      USE_SSL: false
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - ./scripts/localstack/init:/etc/localstack/init/ready.d
+      - ./scripts/localstack/wait:/scripts/wait
+      - ./scripts/localstack/audit_watch.py:/usr/local/bin/audit-watch:ro
+    healthcheck:
+      test: ["CMD", "bash", "/scripts/wait/healthcheck.sh"]
+      interval: 5s
+      timeout: 10s
+      retries: 50
+
+volumes:
+  node_modules:
+  localstack_data:
+
+networks:
+  hmpps:

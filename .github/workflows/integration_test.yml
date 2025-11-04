@@ -1,4 +1,4 @@
-name: Run end-to-end tests
+name: Run integration tests
 
 on:
   workflow_call:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  e2e_test:
+  integration_test:
     runs-on: ubuntu-latest
     env:
       APP_VERSION: ${{ inputs.app_version }}
@@ -31,7 +31,7 @@ jobs:
 
       - name: Run Playwright tests
         run: |
-          make e2e-docker
+          make test-integration
 
       - name: Upload test results
         if: '!cancelled()'
@@ -57,6 +57,6 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e_docker_logs
+          name: integration_docker_logs
           path: |
             ${{ runner.temp }}/docker-logs

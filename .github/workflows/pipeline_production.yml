@@ -50,15 +50,15 @@ jobs:
       upload_image_artifact: true
       image_artifact_retention_days: 10
 
-  e2e_test:
+  integration_test:
     needs: [ build_docker ]
-    uses: ./.github/workflows/e2e_test.yml
+    uses: ./.github/workflows/integration_test.yml
     with:
       app_version: ${{ needs.build_docker.outputs.app_version }}
 
   publish-test-results:
     name: "Publish Tests Results"
-    needs: [ e2e_test, node_unit_tests ]
+    needs: [ integration_test, node_unit_tests ]
     runs-on: ubuntu-latest
     permissions:
       checks: write
@@ -96,7 +96,7 @@ jobs:
       - helm_lint
       - node_build
       - node_unit_tests
-      - e2e_test
+      - integration_test
       - build_docker
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_push.yml@v2
     with:
@@ -109,7 +109,7 @@ jobs:
     name: Deploy to test environment
     needs:
       - build_docker
-      - e2e_test
+      - integration_test
       - publish_docker
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
     secrets: inherit
