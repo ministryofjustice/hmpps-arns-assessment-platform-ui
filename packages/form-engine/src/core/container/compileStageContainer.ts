@@ -26,8 +26,8 @@ export const createCompileStageContainer = (
   const nodeFactory = new NodeFactory(nodeIdGenerator)
   const pseudoNodeFactory = new PseudoNodeFactory(nodeIdGenerator)
 
-  const astNodeRegistry = new NodeRegistry() // For AST nodes
-  const pseudoNodeRegistry = new NodeRegistry() // For pseudo nodes
+  const astNodeRegistry = new NodeRegistry()
+  const pseudoNodeRegistry = new NodeRegistry()
 
   const dependencyGraph = new DependencyGraph()
   const scopeIndex = new ScopeIndex(astNodeRegistry)
