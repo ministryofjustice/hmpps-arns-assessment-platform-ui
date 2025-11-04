@@ -164,4 +164,4 @@ based on conditional logic. It serves two critical functions:
 
 1. Validation Control: When a field's dependent condition evaluates to false,
    the field will not be validated, even if it has validation rules
-3. Answer Management: When dependent is false, the field's value is automatically removed from form answers
+2. Answer Management: When dependent is false, the field's value is mark for removal
