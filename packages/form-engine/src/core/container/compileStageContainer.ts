@@ -11,6 +11,9 @@ import NodeRegistry from '@form-engine/core/ast/registration/NodeRegistry'
 import RegistrationTraverser from '@form-engine/core/ast/registration/RegistrationTraverser'
 import PseudoNodeTraverser from '@form-engine/core/ast/registration/PseudoNodeTraverser'
 import { PseudoNodeFactory } from '@form-engine/core/ast/nodes/PseudoNodeFactory'
+import DependencyGraph from '@form-engine/core/ast/dependencies/DependencyGraph'
+import ScopeIndex from '@form-engine/core/ast/dependencies/ScopeIndex'
+import DependencyWiringTraverser from '@form-engine/core/ast/dependencies/DependencyWiringTraverser'
 import type Logger from 'bunyan'
 
 export const createCompileStageContainer = (
@@ -23,8 +26,11 @@ export const createCompileStageContainer = (
   const nodeFactory = new NodeFactory(nodeIdGenerator)
   const pseudoNodeFactory = new PseudoNodeFactory(nodeIdGenerator)
 
-  const astNodeRegistry = new NodeRegistry()
-  const pseudoNodeRegistry = new NodeRegistry()
+  const astNodeRegistry = new NodeRegistry() // For AST nodes
+  const pseudoNodeRegistry = new NodeRegistry() // For pseudo nodes
+
+  const dependencyGraph = new DependencyGraph()
+  const scopeIndex = new ScopeIndex(astNodeRegistry)
 
   return {
     logger,
@@ -45,6 +51,11 @@ export const createCompileStageContainer = (
     registers: {
       configurationNodes: new RegistrationTraverser(astNodeRegistry),
       pseudoNodes: new PseudoNodeTraverser(pseudoNodeRegistry, pseudoNodeFactory),
+    },
+    dependency: {
+      dependencyGraph,
+      scopeIndex,
+      wiring: new DependencyWiringTraverser(astNodeRegistry, pseudoNodeRegistry, dependencyGraph, scopeIndex),
     },
   }
 }
