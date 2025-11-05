@@ -4,14 +4,10 @@ VALUES ('hmpps-arns-assessment-platform-ui', 3600, '{}', null, 'authorization_co
 
 -- Add system client (S2S calls) for local dev with ARNS roles. Client secret is clientsecret
 INSERT INTO oauth_client_details (client_id, access_token_validity, additional_information, authorities, authorized_grant_types, autoapprove, client_secret, refresh_token_validity, resource_ids, scope, web_server_redirect_uri)
-VALUES ('hmpps-arns-assessment-platform-ui-system', 1200, '{}', 'ROLE_ARNS_ASSESSMENT_PLATFORM_READ, ROLE_ARNS_ASSESSMENT_PLATFORM_WRITE', 'client_credentials', 'read,write', '$2a$10$lBwbziQlLfiCnn8Kj1PfMujEcLdsJYlYSNJvBRO638gCYTS9yN0xm', 43200, null, 'read,write', null);
+VALUES ('hmpps-arns-assessment-platform-ui-system', 1200, '{}', 'ROLE_AAP__FRONTEND_RW', 'client_credentials', 'read,write', '$2a$10$lBwbziQlLfiCnn8Kj1PfMujEcLdsJYlYSNJvBRO638gCYTS9yN0xm', 43200, null, 'read,write', null);
 -- Create custom roles for UI users
 INSERT INTO roles (role_id, role_code, role_name, create_datetime, role_description, admin_type)
 VALUES ('8efb8c07-4260-468c-9f39-8c9509a3b695', 'ARNS_ASSESSMENT_PLATFORM_READ', 'ARNS Assessment Platform Read', '2025-10-28 00:00:00.000000', 'Read access to ARNS Assessment Platform API', 'DPS_ADM');
 
 INSERT INTO roles (role_id, role_code, role_name, create_datetime, role_description, admin_type)
 VALUES ('8efb8c07-4260-468c-9f39-8c9509a3b696', 'ARNS_ASSESSMENT_PLATFORM_WRITE', 'ARNS Assessment Platform Write', '2025-10-28 00:00:00.000000', 'Write access to ARNS Assessment Platform API', 'DPS_ADM');
-
--- Assign roles to default test user AUTH_ADM
-INSERT INTO user_role (role_id, user_id) SELECT role_id, user_id from roles, users where username = 'AUTH_ADM' and role_code = 'ARNS_ASSESSMENT_PLATFORM_READ';
-INSERT INTO user_role (role_id, user_id) SELECT role_id, user_id from roles, users where username = 'AUTH_ADM' and role_code = 'ARNS_ASSESSMENT_PLATFORM_WRITE';

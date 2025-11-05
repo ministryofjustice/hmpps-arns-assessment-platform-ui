@@ -1,3 +1,9 @@
 title = "HMPPS Gitleaks configuration"
 [extend]
 path = "./node_modules/@ministryofjustice/hmpps-precommit-hooks/config.toml"
+
+[allowlist]
+description = "Local development secrets and false positives"
+paths = [
+  '''docker/auth_db/V1000_0__local_clients\.sql''',
+]

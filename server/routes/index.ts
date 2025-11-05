@@ -2,7 +2,7 @@ import { Router } from 'express'
 
 import type { Services } from '../services'
 
-export default function routes(_services: Services): Router {
+export default function routes({ assessmentService }: Services): Router {
   const router = Router()
 
   router.get('/', async (_req, res) => {
@@ -16,8 +16,8 @@ export default function routes(_services: Services): Router {
 
   router.get('/assessment', async (req, res, next) => {
     try {
-      const { assessmentUuid, message } = await req.services.assessmentService.createAssessment()
-      const assessment = await req.services.assessmentService.getAssessment(assessmentUuid)
+      const { assessmentUuid, message } = await assessmentService.createAssessment(res.locals.user, req.id)
+      const assessment = await assessmentService.getAssessment(res.locals.user, assessmentUuid, req.id)
 
       const currentTime = new Date().toLocaleString('en-GB', {
         dateStyle: 'full',

@@ -1,5 +1,0 @@
-# The Fingerprint of false positive alerts can be added here to be excluded from future scans.
-
-# Local development bcrypt hash for well-known "clientsecret" password used in auth_db seed files
-docker/auth_db/V1000_0__local_clients.sql:token:3
-docker/auth_db/V1000_0__local_clients.sql:token:7

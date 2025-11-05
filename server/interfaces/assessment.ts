@@ -1,4 +1,4 @@
-import { User } from './User'
+import { User } from './user'
 
 /**
  * CQRS Command and Query types for the Assessment Platform API.
