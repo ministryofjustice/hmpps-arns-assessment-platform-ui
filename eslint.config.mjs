@@ -33,4 +33,22 @@ export default [
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     },
   },
+  {
+    name: 'prettier-overrides',
+    rules: {
+      'prettier/prettier': [
+        'warn',
+        {
+          trailingComma: 'all',
+          singleQuote: true,
+          printWidth: 120,
+          semi: false,
+          arrowParens: 'avoid',
+          alignObjectProperties: 'none',
+          returnParentheses: false,
+          plugins: ['@yikes2000/prettier-plugin-merge-extras'],
+        },
+      ],
+    },
+  },
 ]

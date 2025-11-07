@@ -1,291 +1,317 @@
-import { convertFormattersToPipeline } from '@form-engine/core/ast/normalizers/ConvertFormattersToPipeline'
+import { ConvertFormattersToPipelineNormalizer } from '@form-engine/core/ast/normalizers/ConvertFormattersToPipeline'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { FunctionType, ExpressionType } from '@form-engine/form/types/enums'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { PipelineASTNode, ReferenceASTNode } from '@form-engine/core/types/expressions.type'
 import { isPipelineExprNode, isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import { isTransformerFunctionNode } from '@form-engine/core/typeguards/function-nodes'
+import { NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 
-describe('convertFormattersToPipeline', () => {
-  it('converts single formatter to pipeline with POST reference', () => {
-    const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
+describe('ConvertFormattersToPipelineNormalizer', () => {
+  let normalizer: ConvertFormattersToPipelineNormalizer
+  let mockNodeIDGenerator: jest.Mocked<NodeIDGenerator>
 
-    const field = ASTTestFactory.block('TextInput', 'field')
-      .withId(1)
-      .withCode('myField')
-      .withProperty('formatters', [formatter])
-      .build()
+  beforeEach(() => {
+    mockNodeIDGenerator = {
+      next: jest.fn().mockReturnValue('mock-id'),
+    } as unknown as jest.Mocked<NodeIDGenerator>
 
-    convertFormattersToPipeline(field)
-
-    const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
-    expect(isPipelineExprNode(formatPipeline)).toBe(true)
-
-    // Check input is POST reference
-    const input = formatPipeline.properties.get('input') as ReferenceASTNode
-    expect(isReferenceExprNode(input)).toBe(true)
-    expect(input.properties.get('path')).toEqual(['post', 'myField'])
-
-    // Check steps
-    const steps = formatPipeline.properties.get('steps') as any[]
-    const originalFormatters = field.properties.get('formatters') as any[]
-
-    expect(steps).toHaveLength(1)
-    expect(steps).not.toBe(originalFormatters)
-    expect(isTransformerFunctionNode(steps[0])).toBe(true)
-
-    const stepProps = steps[0].properties as Map<string, unknown>
-    expect(stepProps).not.toBe(formatter.properties)
-    expect(stepProps.get('name')).toBe('trim')
-    expect(stepProps.get('arguments')).toEqual([])
-
-    // Original formatters should still be present
-    expect(field.properties.get('formatters')).toEqual([formatter])
+    normalizer = new ConvertFormattersToPipelineNormalizer(mockNodeIDGenerator)
   })
 
-  it('converts multiple formatters to pipeline steps in order', () => {
-    const formatter1 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
-    const formatter2 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'toUpperCase')
-    const formatter3 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'removeSpaces')
+  describe('normalize()', () => {
+    it('converts single formatter to pipeline with POST reference', () => {
+      const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
 
-    const field = ASTTestFactory.block('TextInput', 'field')
-      .withId(2)
-      .withCode('userInput')
-      .withProperty('formatters', [formatter1, formatter2, formatter3])
-      .build()
+      const field = ASTTestFactory.block('TextInput', 'field')
+        .withId('compile_ast:1')
+        .withCode('myField')
+        .withProperty('formatters', [formatter])
+        .build()
 
-    convertFormattersToPipeline(field)
+      normalizer.normalize(field)
 
-    const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
-    const steps = formatPipeline.properties.get('steps') as any[]
+      const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
+      expect(isPipelineExprNode(formatPipeline)).toBe(true)
 
-    expect(steps).toHaveLength(3)
-    expect(stepName(steps[0])).toBe('trim')
-    expect(stepName(steps[1])).toBe('toUpperCase')
-    expect(stepName(steps[2])).toBe('removeSpaces')
-  })
+      // Check input is POST reference
+      const input = formatPipeline.properties.get('input') as ReferenceASTNode
+      expect(isReferenceExprNode(input)).toBe(true)
+      expect(input.properties.get('path')).toEqual(['post', 'myField'])
 
-  it('preserves formatter arguments in pipeline steps', () => {
-    const formatter1 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'substring', [0, 10])
-    const formatter2 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'padEnd', [20, '.'])
+      // Check steps
+      const steps = formatPipeline.properties.get('steps') as any[]
 
-    const field = ASTTestFactory.block('TextInput', 'field')
-      .withId(3)
-      .withCode('limitedText')
-      .withProperty('formatters', [formatter1, formatter2])
-      .build()
+      expect(steps).toHaveLength(1)
+      expect(steps[0]).toBe(formatter) // Now uses formatters directly
+      expect(isTransformerFunctionNode(steps[0])).toBe(true)
 
-    convertFormattersToPipeline(field)
+      const stepProps = steps[0].properties as Map<string, unknown>
+      expect(stepProps).toBe(formatter.properties) // Same reference since we use formatters directly
+      expect(stepProps.get('name')).toBe('trim')
+      expect(stepProps.get('arguments')).toEqual([])
 
-    const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
-    const steps = formatPipeline.properties.get('steps') as any[]
+      // Formatters property should be removed
+      expect(field.properties.has('formatters')).toBe(false)
+    })
 
-    expect(stepArgs(steps[0])).toEqual([0, 10])
-    expect(stepArgs(steps[1])).toEqual([20, '.'])
-  })
+    it('converts multiple formatters to pipeline steps in order', () => {
+      const formatter1 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
+      const formatter2 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'toUpperCase')
+      const formatter3 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'removeSpaces')
 
-  it('handles formatters with complex argument expressions', () => {
-    const refArg = ASTTestFactory.reference(['data', 'maxLength'])
-    const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'truncate', [refArg, '...'])
+      const field = ASTTestFactory.block('TextInput', 'field')
+        .withId('compile_ast:2')
+        .withCode('userInput')
+        .withProperty('formatters', [formatter1, formatter2, formatter3])
+        .build()
 
-    const field = ASTTestFactory.block('TextInput', 'field')
-      .withId(4)
-      .withCode('description')
-      .withProperty('formatters', [formatter])
-      .build()
+      normalizer.normalize(field)
 
-    convertFormattersToPipeline(field)
+      const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
+      const steps = formatPipeline.properties.get('steps') as any[]
 
-    const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
-    const steps = formatPipeline.properties.get('steps') as any[]
+      expect(steps).toHaveLength(3)
+      expect(stepName(steps[0])).toBe('trim')
+      expect(stepName(steps[1])).toBe('toUpperCase')
+      expect(stepName(steps[2])).toBe('removeSpaces')
+    })
 
-    expect(stepName(steps[0])).toBe('truncate')
-    const args = stepArgs(steps[0])
-    expect(args).toHaveLength(2)
-    expect(args[0]).toBe(refArg)
-    expect(args[1]).toBe('...')
-  })
+    it('preserves formatter arguments in pipeline steps', () => {
+      const formatter1 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'substring', [0, 10])
+      const formatter2 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'padEnd', [20, '.'])
 
-  it('does not modify fields without formatters', () => {
-    const field = ASTTestFactory.block('TextInput', 'field').withId(5).withCode('plainField').build()
+      const field = ASTTestFactory.block('TextInput', 'field')
+        .withId('compile_ast:3')
+        .withCode('limitedText')
+        .withProperty('formatters', [formatter1, formatter2])
+        .build()
 
-    const originalProps = new Map(field.properties)
-    convertFormattersToPipeline(field)
+      normalizer.normalize(field)
 
-    expect(field.properties.has('formatPipeline')).toBe(false)
-    expect(field.properties).toEqual(originalProps)
-  })
+      const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
+      const steps = formatPipeline.properties.get('steps') as any[]
 
-  it('does not modify fields with empty formatters array', () => {
-    const field = ASTTestFactory.block('TextInput', 'field')
-      .withId(6)
-      .withCode('emptyFormatters')
-      .withProperty('formatters', [])
-      .build()
+      expect(stepArgs(steps[0])).toEqual([0, 10])
+      expect(stepArgs(steps[1])).toEqual([20, '.'])
+    })
 
-    convertFormattersToPipeline(field)
+    it('handles formatters with complex argument expressions', () => {
+      const refArg = ASTTestFactory.reference(['data', 'maxLength'])
+      const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'truncate', [refArg, '...'])
 
-    expect(field.properties.has('formatPipeline')).toBe(false)
-  })
+      const field = ASTTestFactory.block('TextInput', 'field')
+        .withId('compile_ast:4')
+        .withCode('description')
+        .withProperty('formatters', [formatter])
+        .build()
 
-  it('processes multiple fields in a journey', () => {
-    const formatter1 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
-    const formatter2 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'toUpperCase')
+      normalizer.normalize(field)
 
-    const field1 = ASTTestFactory.block('TextInput', 'field')
-      .withId(7)
-      .withCode('field1')
-      .withProperty('formatters', [formatter1])
-      .build()
+      const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
+      const steps = formatPipeline.properties.get('steps') as any[]
 
-    const field2 = ASTTestFactory.block('TextInput', 'field')
-      .withId(8)
-      .withCode('field2')
-      .withProperty('formatters', [formatter2])
-      .build()
+      expect(stepName(steps[0])).toBe('truncate')
+      const args = stepArgs(steps[0])
+      expect(args).toHaveLength(2)
+      expect(args[0]).toBe(refArg)
+      expect(args[1]).toBe('...')
+    })
 
-    const field3 = ASTTestFactory.block('TextInput', 'field').withId(9).withCode('field3').build()
+    it('does not modify fields without formatters', () => {
+      const field = ASTTestFactory.block('TextInput', 'field').withId('compile_ast:5').withCode('plainField').build()
 
-    const step = ASTTestFactory.step().withId(10).withProperty('blocks', [field1, field2, field3]).build()
+      const originalProps = new Map(field.properties)
+      normalizer.normalize(field)
 
-    const journey = ASTTestFactory.journey().withId(11).withProperty('steps', [step]).build()
+      expect(field.properties.has('formatPipeline')).toBe(false)
+      expect(field.properties).toEqual(originalProps)
+    })
 
-    convertFormattersToPipeline(journey)
+    it('does not modify fields with empty formatters array', () => {
+      const field = ASTTestFactory.block('TextInput', 'field')
+        .withId('compile_ast:6')
+        .withCode('emptyFormatters')
+        .withProperty('formatters', [])
+        .build()
 
-    // Check field1
-    const pipeline1 = field1.properties.get('formatPipeline') as PipelineASTNode
-    expect(isPipelineExprNode(pipeline1)).toBe(true)
-    const input1 = pipeline1.properties.get('input') as ReferenceASTNode
-    expect(input1.properties.get('path')).toEqual(['post', 'field1'])
+      normalizer.normalize(field)
 
-    // Check field2
-    const pipeline2 = field2.properties.get('formatPipeline') as PipelineASTNode
-    expect(isPipelineExprNode(pipeline2)).toBe(true)
-    const input2 = pipeline2.properties.get('input') as ReferenceASTNode
-    expect(input2.properties.get('path')).toEqual(['post', 'field2'])
+      expect(field.properties.has('formatPipeline')).toBe(false)
+    })
 
-    // Check field3 has no pipeline
-    expect(field3.properties.has('formatPipeline')).toBe(false)
-  })
+    it('processes multiple fields in a journey', () => {
+      const formatter1 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
+      const formatter2 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'toUpperCase')
 
-  it('throws when field with formatters has no code', () => {
-    const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
+      const field1 = ASTTestFactory.block('TextInput', 'field')
+        .withId('compile_ast:7')
+        .withCode('field1')
+        .withProperty('formatters', [formatter1])
+        .build()
 
-    const field = ASTTestFactory.block('TextInput', 'field').withId(12).withProperty('formatters', [formatter]).build()
+      const field2 = ASTTestFactory.block('TextInput', 'field')
+        .withId('compile_ast:8')
+        .withCode('field2')
+        .withProperty('formatters', [formatter2])
+        .build()
 
-    expect(() => convertFormattersToPipeline(field)).toThrow(InvalidNodeError)
+      const field3 = ASTTestFactory.block('TextInput', 'field').withId('compile_ast:9').withCode('field3').build()
 
-    try {
-      convertFormattersToPipeline(field)
-    } catch (e) {
-      const err = e as InvalidNodeError
-      expect(err.message).toMatch(/Field with formatters must have a code property/)
-    }
-  })
+      const step = ASTTestFactory.step()
+        .withId('compile_ast:10')
+        .withProperty('blocks', [field1, field2, field3])
+        .build()
 
-  it('handles fields with dynamic code expressions', () => {
-    const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
+      const journey = ASTTestFactory.journey().withId('compile_ast:11').withProperty('steps', [step]).build()
 
-    const codeExpr = ASTTestFactory.expression(ExpressionType.FORMAT)
-      .withId(13)
-      .withProperty('text', 'address_%1')
-      .withProperty('args', [ASTTestFactory.reference(['@scope', '@index'])])
-      .build()
+      normalizer.normalize(journey)
 
-    const field = ASTTestFactory.block('TextInput', 'field')
-      .withId(14)
-      .withCode(codeExpr)
-      .withProperty('formatters', [formatter])
-      .build()
+      // Check field1
+      const pipeline1 = field1.properties.get('formatPipeline') as PipelineASTNode
+      expect(isPipelineExprNode(pipeline1)).toBe(true)
+      const input1 = pipeline1.properties.get('input') as ReferenceASTNode
+      expect(input1.properties.get('path')).toEqual(['post', 'field1'])
 
-    convertFormattersToPipeline(field)
+      // Check field2
+      const pipeline2 = field2.properties.get('formatPipeline') as PipelineASTNode
+      expect(isPipelineExprNode(pipeline2)).toBe(true)
+      const input2 = pipeline2.properties.get('input') as ReferenceASTNode
+      expect(input2.properties.get('path')).toEqual(['post', 'field2'])
 
-    const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
-    expect(isPipelineExprNode(formatPipeline)).toBe(true)
+      // Check field3 has no pipeline
+      expect(field3.properties.has('formatPipeline')).toBe(false)
+    })
 
-    // Check input is POST reference with the expression as the path segment
-    const input = formatPipeline.properties.get('input') as ReferenceASTNode
-    expect(isReferenceExprNode(input)).toBe(true)
-    const path = input.properties.get('path') as any[]
-    expect(path[0]).toBe('post')
-    expect(path[1]).toBe(codeExpr) // The expression node itself is used
+    it('throws when field with formatters has no code', () => {
+      const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
 
-    // Check steps
-    const steps = formatPipeline.properties.get('steps') as any[]
-    expect(steps).toHaveLength(1)
-    expect(stepName(steps[0])).toBe('trim')
-    expect(stepArgs(steps[0])).toEqual([])
-  })
+      const field = ASTTestFactory.block('TextInput', 'field')
+        .withId('compile_ast:12')
+        .withProperty('formatters', [formatter])
+        .build()
 
-  it('converts formatters for fields inside collection expression templates', () => {
-    const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
+      expect(() => normalizer.normalize(field)).toThrow(InvalidNodeError)
 
-    const templateField = ASTTestFactory.block('TextInput', 'field')
-      .withId(21)
-      .withCode('itemField')
-      .withProperty('formatters', [formatter])
-      .build()
+      try {
+        normalizer.normalize(field)
+      } catch (e) {
+        const err = e as InvalidNodeError
+        expect(err.message).toMatch(/Field with formatters must have a code property/)
+      }
+    })
 
-    const collectionExpr = ASTTestFactory.expression(ExpressionType.COLLECTION)
-      .withId(22)
-      .withCollection({ type: ExpressionType.REFERENCE, path: ['answers', 'items'] })
-      .withTemplate([templateField])
-      .build()
+    it('handles fields with dynamic code expressions', () => {
+      const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
 
-    const step = ASTTestFactory.step()
-      .withId(23)
-      .withBlock('container', 'basic', block => block.withId(24).withProperty('content', collectionExpr))
-      .build()
+      const codeExpr = ASTTestFactory.expression(ExpressionType.FORMAT)
+        .withId('compile_ast:13')
+        .withProperty('text', 'address_%1')
+        .withProperty('args', [ASTTestFactory.reference(['@scope', '@index'])])
+        .build()
 
-    const journey = ASTTestFactory.journey().withId(25).withProperty('steps', [step]).build()
+      const field = ASTTestFactory.block('TextInput', 'field')
+        .withId('compile_ast:14')
+        .withCode(codeExpr)
+        .withProperty('formatters', [formatter])
+        .build()
 
-    convertFormattersToPipeline(journey)
+      normalizer.normalize(field)
 
-    const steps = journey.properties.get('steps') as any[]
-    const containerBlock = steps[0].properties.get('blocks')[0]
-    const transformedCollection = containerBlock.properties.get('content')
-    const template = transformedCollection.properties.get('template') as any[]
-    const transformedField = template[0]
-    const pipeline = transformedField.properties.get('formatPipeline') as PipelineASTNode
+      const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
+      expect(isPipelineExprNode(formatPipeline)).toBe(true)
 
-    expect(isPipelineExprNode(pipeline)).toBe(true)
-    const input = pipeline.properties.get('input') as ReferenceASTNode
-    expect(isReferenceExprNode(input)).toBe(true)
-    expect(input.properties.get('path')).toEqual(['post', 'itemField'])
-  })
+      // Check input is POST reference with the expression as the path segment
+      const input = formatPipeline.properties.get('input') as ReferenceASTNode
+      expect(isReferenceExprNode(input)).toBe(true)
+      const path = input.properties.get('path') as any[]
+      expect(path[0]).toBe('post')
+      expect(path[1]).toBe(codeExpr) // The expression node itself is used
 
-  it('preserves all other field properties when adding formatPipeline', () => {
-    const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
+      // Check steps
+      const steps = formatPipeline.properties.get('steps') as any[]
+      expect(steps).toHaveLength(1)
+      expect(stepName(steps[0])).toBe('trim')
+      expect(stepArgs(steps[0])).toEqual([])
+    })
 
-    const validationExpr = ASTTestFactory.expression(ExpressionType.VALIDATION).withId(19).build()
+    it('converts formatters for fields inside collection expression templates', () => {
+      const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
 
-    const field = ASTTestFactory.block('TextInput', 'field')
-      .withId(20)
-      .withCode('fullField')
-      .withLabel('Full Field')
-      .withProperty('hint', 'Enter your text')
-      .withProperty('required', true)
-      .withProperty('validation', validationExpr)
-      .withProperty('formatters', [formatter])
-      .build()
+      const templateField = ASTTestFactory.block('TextInput', 'field')
+        .withId('compile_ast:21')
+        .withCode('itemField')
+        .withProperty('formatters', [formatter])
+        .build()
 
-    const originalKeys = Array.from(field.properties.keys())
+      const collectionExpr = ASTTestFactory.expression(ExpressionType.COLLECTION)
+        .withId('compile_ast:22')
+        .withCollection({ type: ExpressionType.REFERENCE, path: ['answers', 'items'] })
+        .withTemplate([templateField])
+        .build()
 
-    convertFormattersToPipeline(field)
+      const step = ASTTestFactory.step()
+        .withId('compile_ast:23')
+        .withBlock('container', 'basic', block =>
+          block.withId('compile_ast:24').withProperty('content', collectionExpr),
+        )
+        .build()
 
-    // All original properties should still exist
-    for (const key of originalKeys) {
-      expect(field.properties.has(key)).toBe(true)
-    }
+      const journey = ASTTestFactory.journey().withId('compile_ast:25').withProperty('steps', [step]).build()
 
-    // Plus the new formatPipeline
-    expect(field.properties.has('formatPipeline')).toBe(true)
+      normalizer.normalize(journey)
 
-    // Verify specific properties are unchanged
-    expect(field.properties.get('label')).toBe('Full Field')
-    expect(field.properties.get('hint')).toBe('Enter your text')
-    expect(field.properties.get('required')).toBe(true)
-    expect(field.properties.get('validation')).toBe(validationExpr)
+      const steps = journey.properties.get('steps') as any[]
+      const containerBlock = steps[0].properties.get('blocks')[0]
+      const transformedCollection = containerBlock.properties.get('content')
+      const template = transformedCollection.properties.get('template') as any[]
+      const transformedField = template[0]
+      const pipeline = transformedField.properties.get('formatPipeline') as PipelineASTNode
+
+      expect(isPipelineExprNode(pipeline)).toBe(true)
+      const input = pipeline.properties.get('input') as ReferenceASTNode
+      expect(isReferenceExprNode(input)).toBe(true)
+      expect(input.properties.get('path')).toEqual(['post', 'itemField'])
+    })
+
+    it('preserves all other field properties when adding formatPipeline', () => {
+      const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
+
+      const validationExpr = ASTTestFactory.expression(ExpressionType.VALIDATION).withId('compile_ast:19').build()
+
+      const field = ASTTestFactory.block('TextInput', 'field')
+        .withId('compile_ast:20')
+        .withCode('fullField')
+        .withLabel('Full Field')
+        .withProperty('hint', 'Enter your text')
+        .withProperty('required', true)
+        .withProperty('validate', validationExpr)
+        .withProperty('formatters', [formatter])
+        .build()
+
+      const originalKeys = Array.from(field.properties.keys())
+
+      normalizer.normalize(field)
+
+      // All original properties, apart from 'formatters' should still exist
+      for (const key of originalKeys) {
+        if (key !== 'formatters') {
+          expect(field.properties.has(key)).toBe(true)
+        }
+      }
+
+      // Formatters property should be removed
+      expect(field.properties.has('formatters')).toBe(false)
+
+      // Plus the new formatPipeline
+      expect(field.properties.has('formatPipeline')).toBe(true)
+
+      // Verify specific properties are unchanged
+      expect(field.properties.get('label')).toBe('Full Field')
+      expect(field.properties.get('hint')).toBe('Enter your text')
+      expect(field.properties.get('required')).toBe(true)
+      expect(field.properties.get('validate')).toBe(validationExpr)
+    })
   })
 })
 

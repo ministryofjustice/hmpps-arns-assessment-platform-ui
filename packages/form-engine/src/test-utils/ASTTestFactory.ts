@@ -1,11 +1,12 @@
 // eslint-disable-next-line max-classes-per-file
-import { ExpressionType, FunctionType, LogicType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, LogicType, TransitionType } from '@form-engine/form/types/enums'
 import { ASTNode } from '@form-engine/core/types/engine.type'
 import {
   ExpressionASTNode,
   FunctionASTNode,
   PredicateASTNode,
   ReferenceASTNode,
+  TransitionASTNode,
 } from '@form-engine/core/types/expressions.type'
 import { BlockASTNode, JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
 import { ASTNodeType } from '@form-engine/core/types/enums'
@@ -19,7 +20,7 @@ type PredicateBuilderConfig = {
   operand?: ExpressionASTNode
 }
 
-type BlockType = 'basic' | 'field' | 'composite'
+type BlockType = 'basic' | 'field'
 
 /**
  * Test data factory for creating AST nodes with fluent builders and automatic ID generation.
@@ -53,12 +54,13 @@ export class ASTTestFactory {
   }
 
   /**
-   * Get the next available ID
+   * Get the next available ID in NodeIDGenerator format
+   * @param category - The ID category (defaults to 'compile_ast' for tests)
    */
-  static getId(): number {
+  static getId(category: string = 'compile_ast'): string {
     const id = this.nextId
     this.nextId += 1
-    return id
+    return `${category}:${id}`
   }
 
   /**
@@ -87,6 +89,13 @@ export class ASTTestFactory {
    */
   static expression<T = ExpressionASTNode>(type: ExpressionType | FunctionType | LogicType): ExpressionBuilder<T> {
     return new ExpressionBuilder<T>(type)
+  }
+
+  /**
+   * Create a new TransitionBuilder for fluent transition construction
+   */
+  static transition(type: TransitionType): TransitionBuilder {
+    return new TransitionBuilder(type)
   }
 
   static reference(path: string[]): ReferenceASTNode {
@@ -218,7 +227,7 @@ export class ASTTestFactory {
             .build()
         }
 
-        return ASTTestFactory.block('Container', 'composite')
+        return ASTTestFactory.block('Container', 'basic')
           .withProperty('blocks', [createNestedBlock(level - 1)])
           .build()
       }
@@ -264,7 +273,7 @@ export class ASTTestFactory {
     /**
      * Find a node by ID
      */
-    findNodeById: (root: ASTNode, targetId: number): ASTNode | null => {
+    findNodeById: (root: ASTNode, targetId: string): ASTNode | null => {
       if (root.id === targetId) return root
 
       const traverse = (node: any): ASTNode | null => {
@@ -297,9 +306,7 @@ export class ASTTestFactory {
      * Check if value is an AST node
      */
     isASTNode: (value: any): value is ASTNode => {
-      return (
-        value != null && typeof value === 'object' && 'type' in value && Object.values(ASTNodeType).includes(value.type)
-      )
+      return value != null && typeof value === 'object' && 'type' in value && Object.values(ASTNodeType).includes(value.type)
     },
 
     /**
@@ -369,11 +376,11 @@ export class ASTTestFactory {
  * Fluent builder for Journey nodes
  */
 export class JourneyBuilder {
-  private id?: number
+  private id?: string
 
   private properties: Map<string, any> = new Map()
 
-  withId(id: number): this {
+  withId(id: string): this {
     this.id = id
     return this
   }
@@ -414,11 +421,11 @@ export class JourneyBuilder {
  * Fluent builder for Step nodes
  */
 export class StepBuilder {
-  private id?: number
+  private id?: string
 
   private properties: Map<string, any> = new Map()
 
-  withId(id: number): this {
+  withId(id: string): this {
     this.id = id
     return this
   }
@@ -464,7 +471,7 @@ export class StepBuilder {
  * Fluent builder for Block nodes
  */
 export class BlockBuilder {
-  private id?: number
+  private id?: string
 
   private properties: Map<string, any> = new Map()
 
@@ -473,7 +480,7 @@ export class BlockBuilder {
     private blockType: BlockType,
   ) {}
 
-  withId(id: number): this {
+  withId(id: string): this {
     this.id = id
     return this
   }
@@ -499,7 +506,7 @@ export class BlockBuilder {
   }
 
   withValidation(validation: ExpressionASTNode): this {
-    this.properties.set('validation', validation)
+    this.properties.set('validate', validation)
     return this
   }
 
@@ -525,13 +532,13 @@ export class BlockBuilder {
  * Fluent builder for Expression nodes
  */
 export class ExpressionBuilder<T = ExpressionASTNode> {
-  private id?: number
+  private id?: string
 
   private properties: Map<string, any> = new Map()
 
   constructor(private expressionType: ExpressionType | FunctionType | LogicType) {}
 
-  withId(id: number): this {
+  withId(id: string): this {
     this.id = id
     return this
   }
@@ -600,5 +607,37 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
       expressionType: this.expressionType,
       properties: this.properties,
     } as T
+  }
+}
+
+/**
+ * Fluent builder for Transition nodes
+ */
+export class TransitionBuilder {
+  private id?: string
+
+  private properties: Map<string, any> = new Map()
+
+  constructor(private transitionType: TransitionType) {}
+
+  withId(id: string): this {
+    this.id = id
+    return this
+  }
+
+  withProperty(key: string, value: any): this {
+    this.properties.set(key, value)
+    return this
+  }
+
+  build(): TransitionASTNode {
+    const nodeId = this.id ?? ASTTestFactory.getId()
+
+    return {
+      type: ASTNodeType.TRANSITION,
+      id: nodeId,
+      transitionType: this.transitionType,
+      properties: this.properties,
+    } as TransitionASTNode
   }
 }

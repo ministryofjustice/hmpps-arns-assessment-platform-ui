@@ -1,11 +1,12 @@
-import { ASTNode } from '@form-engine/core/types/engine.type'
+import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
 import { ASTNodeType } from '@form-engine/core/types/enums'
+import { PseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
 
 /**
  * Metadata stored for each registered node
  */
 export interface NodeRegistryEntry {
-  node: ASTNode
+  node: ASTNode | PseudoNode
   path: (string | number)[]
 }
 
@@ -13,7 +14,7 @@ export interface NodeRegistryEntry {
  * Registry for storing and retrieving AST nodes by their unique IDs.
  */
 export default class NodeRegistry {
-  private readonly nodes: Map<number, NodeRegistryEntry> = new Map()
+  private readonly nodes: Map<NodeId, NodeRegistryEntry> = new Map()
 
   /**
    * Register a node with its ID and path
@@ -22,10 +23,11 @@ export default class NodeRegistry {
    * @param path The structural path from root to this node
    * @throws Error if ID is already registered
    */
-  register(id: number, node: ASTNode, path: (string | number)[] = []): void {
+  register(id: NodeId, node: ASTNode | PseudoNode, path: (string | number)[] = []): void {
     if (this.nodes.has(id)) {
       throw new Error(`Node with ID "${id}" is already registered`)
     }
+
     this.nodes.set(id, { node, path })
   }
 
@@ -34,7 +36,7 @@ export default class NodeRegistry {
    * @param id The ID of the node to retrieve
    * @returns The node, or undefined if not found
    */
-  get(id: number): ASTNode | undefined {
+  get(id: NodeId): ASTNode | PseudoNode | undefined {
     return this.nodes.get(id)?.node
   }
 
@@ -43,7 +45,7 @@ export default class NodeRegistry {
    * @param id The ID of the node to retrieve
    * @returns The node entry with path, or undefined if not found
    */
-  getEntry(id: number): NodeRegistryEntry | undefined {
+  getEntry(id: NodeId): NodeRegistryEntry | undefined {
     return this.nodes.get(id)
   }
 
@@ -52,7 +54,7 @@ export default class NodeRegistry {
    * @param id The ID to check
    * @returns True if the ID is registered, false otherwise
    */
-  has(id: number): boolean {
+  has(id: NodeId): boolean {
     return this.nodes.has(id)
   }
 
@@ -60,11 +62,13 @@ export default class NodeRegistry {
    * Get all registered nodes
    * @returns Map of all nodes by ID
    */
-  getAll(): Map<number, ASTNode> {
-    const result = new Map<number, ASTNode>()
+  getAll(): Map<NodeId, ASTNode | PseudoNode> {
+    const result = new Map<NodeId, ASTNode | PseudoNode>()
+
     for (const [id, entry] of this.nodes) {
       result.set(id, entry.node)
     }
+
     return result
   }
 
@@ -72,7 +76,7 @@ export default class NodeRegistry {
    * Get all registered entries (nodes with paths)
    * @returns Map of all entries by ID
    */
-  getAllEntries(): Map<number, NodeRegistryEntry> {
+  getAllEntries(): Map<NodeId, NodeRegistryEntry> {
     return new Map(this.nodes)
   }
 
@@ -80,7 +84,7 @@ export default class NodeRegistry {
    * Get all registered node IDs
    * @returns Array of all registered IDs
    */
-  getIds(): number[] {
+  getIds(): NodeId[] {
     return Array.from(this.nodes.keys())
   }
 
@@ -97,13 +101,15 @@ export default class NodeRegistry {
    * @param type The node type symbol to search for
    * @returns Array of nodes matching the type
    */
-  findByType(type: ASTNodeType): ASTNode[] {
-    const results: ASTNode[] = []
+  findByType(type: ASTNodeType | PseudoNodeType): (ASTNode | PseudoNode)[] {
+    const results: (ASTNode | PseudoNode)[] = []
+
     for (const entry of this.nodes.values()) {
       if (entry.node.type === type) {
         results.push(entry.node)
       }
     }
+
     return results
   }
 
@@ -112,13 +118,15 @@ export default class NodeRegistry {
    * @param predicate Function to test each node
    * @returns Array of nodes matching the predicate
    */
-  findBy(predicate: (node: ASTNode) => boolean): ASTNode[] {
-    const results: ASTNode[] = []
+  findBy(predicate: (node: ASTNode | PseudoNode) => boolean): (ASTNode | PseudoNode)[] {
+    const results: (ASTNode | PseudoNode)[] = []
+
     for (const entry of this.nodes.values()) {
       if (predicate(entry.node)) {
         results.push(entry.node)
       }
     }
+
     return results
   }
 }

@@ -27,16 +27,6 @@ export interface BlockDefinition {
 }
 
 /**
- * Block definition for composite blocks that contain other blocks.
- * Used for grouping and layout purposes.
- * @template B - The type of child blocks
- */
-export interface CompositeBlockDefinition<B = BlockDefinition> extends BlockDefinition {
-  /** Array of child blocks contained within this composite block */
-  blocks: B[]
-}
-
-/**
  * Represents a validation rule for a form field.
  * Includes the validation logic, error message, and execution context.
  *
@@ -93,7 +83,7 @@ export interface FieldBlockDefinition extends BlockDefinition {
   code: ConditionalString
 
   /** Initial or computed value for the field */
-  value?: ConditionalString | ConditionalString[] | FunctionExpr<any>
+  defaultValue?: ConditionalString | ConditionalString[] | FunctionExpr<any>
 
   /** Array of transformers to format/process the field value */
   formatters?: TransformerFunctionExpr[]
@@ -222,7 +212,9 @@ export type EvaluatedBlock<T, IsRoot extends boolean = true> =
             : // 3) blocks: keep shape at root; collapse nested to RenderedBlock
               T extends BlockDefinition
               ? IsRoot extends true
-                ? { [K in keyof T]: K extends 'type' | 'variant' ? T[K] : EvaluatedBlock<T[K], false> }
+                ? { [K in keyof T]: K extends 'type' | 'variant' ? T[K] : EvaluatedBlock<T[K], false> } & {
+                    value?: unknown
+                  }
                 : RenderedBlock
               : // 4) plain objects
                 T extends object
