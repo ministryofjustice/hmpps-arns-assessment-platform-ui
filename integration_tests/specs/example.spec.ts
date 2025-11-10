@@ -15,7 +15,9 @@ test.describe('Example', () => {
 
     const examplePage = await ExamplePage.verifyOnPage(page)
 
-    expect(examplePage.timestamp).toHaveText('The time is currently 2025-01-01T12:00:00Z')
+    await expect(examplePage.timestamp).toHaveText('The time is currently 2025-01-01T12:00:00Z')
+    await expect(examplePage.sideNav).toContainText('ROSH Screening')
+    await expect(examplePage.formContent).toHaveText("What you'll need")
   })
 
   test('ExampleApi failure shows error page', async ({ page }) => {

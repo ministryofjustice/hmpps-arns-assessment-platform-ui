@@ -1,7 +1,9 @@
 import hmppsConfig from '@ministryofjustice/eslint-config-hmpps'
 
 export default [
-  ...hmppsConfig(),
+  ...hmppsConfig({
+    extraIgnorePaths: ['test_results/'],
+  }),
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
