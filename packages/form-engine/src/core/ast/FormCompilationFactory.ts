@@ -463,3 +463,5 @@ export default class FormCompilationFactory {
 }
 
 export type CompiledForm = ReturnType<FormCompilationFactory['compile']>
+export type StepArtefact = ReturnType<FormCompilationFactory['createStepArtefact']>
+export type JourneyMetadataArtefact = ReturnType<FormCompilationFactory['createJourneyMetadataArtefact']>
