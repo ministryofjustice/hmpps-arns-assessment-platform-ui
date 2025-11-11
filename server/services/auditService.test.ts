@@ -1,5 +1,4 @@
-import AuditService, { AuditEvent } from './auditService'
-import SessionService from './sessionService'
+import AuditService, { AuditEvent, AuditContext } from './auditService'
 import { ApplicationInfo } from '../applicationInfo'
 
 jest.mock('@ministryofjustice/hmpps-audit-client', () => ({
@@ -12,18 +11,10 @@ const { auditService: mockAuditClient } = jest.requireMock('@ministryofjustice/h
 
 describe('AuditService', () => {
   let auditService: AuditService
-  let mockSessionService: jest.Mocked<SessionService>
   let mockApplicationInfo: ApplicationInfo
 
   beforeEach(() => {
     jest.clearAllMocks()
-
-    mockSessionService = {
-      getPrincipalDetails: jest.fn(),
-      getSubjectDetails: jest.fn(),
-      getAssessmentUuid: jest.fn(),
-      getAssessmentVersion: jest.fn(),
-    } as unknown as jest.Mocked<SessionService>
 
     mockApplicationInfo = {
       applicationName: 'test-app',
@@ -34,26 +25,25 @@ describe('AuditService', () => {
       productId: 'TEST001',
     }
 
-    auditService = new AuditService(mockApplicationInfo, mockSessionService, 'correlation-123')
+    auditService = new AuditService(mockApplicationInfo)
   })
 
   describe('send', () => {
-    it('should send audit event with all fields populated from session', async () => {
-      mockSessionService.getPrincipalDetails.mockReturnValue({
-        identifier: 'user123',
+    it('should send audit event with all fields populated', async () => {
+      const context: AuditContext = {
         username: 'testuser',
-      })
-      mockSessionService.getSubjectDetails.mockReturnValue({
+        correlationId: 'correlation-123',
         crn: 'CRN123',
-      })
-      mockSessionService.getAssessmentUuid.mockReturnValue('assessment-uuid-123')
-      mockSessionService.getAssessmentVersion.mockReturnValue(5)
+        assessmentUuid: 'assessment-uuid-123',
+        assessmentVersion: 5,
+        details: { customField: 'custom-value' },
+      }
 
-      await auditService.send(AuditEvent.VIEW_ASSESSMENT, { customField: 'custom-value' })
+      await auditService.send(AuditEvent.VIEW_ASSESSMENT, context)
 
       expect(mockAuditClient.sendAuditMessage).toHaveBeenCalledWith({
         action: 'VIEW_ASSESSMENT',
-        who: 'user123',
+        who: 'testuser',
         subjectId: 'CRN123',
         subjectType: 'CRN',
         service: 'test-app',
@@ -66,19 +56,19 @@ describe('AuditService', () => {
       })
     })
 
-    it('should handle missing session data gracefully', async () => {
-      mockSessionService.getPrincipalDetails.mockReturnValue(undefined)
-      mockSessionService.getSubjectDetails.mockReturnValue(undefined)
-      mockSessionService.getAssessmentUuid.mockReturnValue(undefined)
-      mockSessionService.getAssessmentVersion.mockReturnValue(undefined)
+    it('should handle missing optional fields gracefully', async () => {
+      const context: AuditContext = {
+        username: 'testuser',
+        correlationId: 'correlation-123',
+      }
 
-      await auditService.send(AuditEvent.VIEW_ASSESSMENT)
+      await auditService.send(AuditEvent.VIEW_ASSESSMENT, context)
 
       expect(mockAuditClient.sendAuditMessage).toHaveBeenCalledWith({
         action: 'VIEW_ASSESSMENT',
-        who: undefined,
+        who: 'testuser',
         subjectId: undefined,
-        subjectType: 'CRN',
+        subjectType: undefined,
         service: 'test-app',
         correlationId: 'correlation-123',
         details: JSON.stringify({
@@ -89,32 +79,62 @@ describe('AuditService', () => {
     })
 
     it('should handle audit client errors gracefully', async () => {
-      mockSessionService.getPrincipalDetails.mockReturnValue({ identifier: 'user123' })
+      const context: AuditContext = {
+        username: 'testuser',
+        correlationId: 'correlation-123',
+      }
+
       mockAuditClient.sendAuditMessage.mockRejectedValue(new Error('SQS unavailable'))
 
       // Should not throw
-      await expect(auditService.send(AuditEvent.VIEW_ASSESSMENT)).resolves.not.toThrow()
+      await expect(auditService.send(AuditEvent.VIEW_ASSESSMENT, context)).resolves.not.toThrow()
     })
 
-    it('should merge custom details with session context', async () => {
-      mockSessionService.getPrincipalDetails.mockReturnValue({ identifier: 'user123' })
-      mockSessionService.getAssessmentUuid.mockReturnValue('uuid-123')
+    it('should merge custom details with context', async () => {
+      const context: AuditContext = {
+        username: 'testuser',
+        correlationId: 'correlation-123',
+        details: { key1: 'value1', key2: 'value2' },
+      }
 
-      await auditService.send(AuditEvent.VIEW_ASSESSMENT, {
-        field1: 'value1',
-        field2: 123,
-        nested: { data: 'example' },
+      await auditService.send(AuditEvent.CREATE_ASSESSMENT, context)
+
+      expect(mockAuditClient.sendAuditMessage).toHaveBeenCalledWith({
+        action: 'CREATE_ASSESSMENT',
+        who: 'testuser',
+        subjectId: undefined,
+        subjectType: undefined,
+        service: 'test-app',
+        correlationId: 'correlation-123',
+        details: JSON.stringify({
+          assessmentUuid: undefined,
+          assessmentVersion: undefined,
+          key1: 'value1',
+          key2: 'value2',
+        }),
       })
+    })
 
-      const call = mockAuditClient.sendAuditMessage.mock.calls[0][0]
-      const details = JSON.parse(call.details)
+    it('should send audit event without CRN subjectType when no CRN provided', async () => {
+      const context: AuditContext = {
+        username: 'testuser',
+        correlationId: 'correlation-123',
+        assessmentUuid: 'assessment-uuid-123',
+      }
 
-      expect(details).toEqual({
-        assessmentUuid: 'uuid-123',
-        assessmentVersion: undefined,
-        field1: 'value1',
-        field2: 123,
-        nested: { data: 'example' },
+      await auditService.send(AuditEvent.VIEW_ASSESSMENT, context)
+
+      expect(mockAuditClient.sendAuditMessage).toHaveBeenCalledWith({
+        action: 'VIEW_ASSESSMENT',
+        who: 'testuser',
+        subjectId: undefined,
+        subjectType: undefined,
+        service: 'test-app',
+        correlationId: 'correlation-123',
+        details: JSON.stringify({
+          assessmentUuid: 'assessment-uuid-123',
+          assessmentVersion: undefined,
+        }),
       })
     })
   })

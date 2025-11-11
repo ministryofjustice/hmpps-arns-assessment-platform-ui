@@ -30,6 +30,12 @@ export default function setUpCurrentUser() {
         res.locals.user.staffId = parseInt(userId, 10) || undefined
       }
 
+      req.session.principal = {
+        identifier: userId || res.locals.user.username,
+        username: res.locals.user.username,
+        displayName: convertToTitleCase(name),
+      }
+
       next()
     } catch (error) {
       logger.error(error, `Failed to populate user details for: ${res.locals.user && res.locals.user.username}`)

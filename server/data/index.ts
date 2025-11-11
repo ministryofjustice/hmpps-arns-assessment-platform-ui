@@ -14,7 +14,7 @@ buildAppInsightsClient(applicationInfo)
 import { createRedisClient } from './redisClient'
 import config from '../config'
 import logger from '../../logger'
-import ExampleApiClient from './exampleApiClient'
+import AssessmentPlatformApiClient from './assessmentPlatformApiClient'
 
 export const dataAccess = () => {
   const hmppsAuthClient = new AuthenticationClient(
@@ -26,10 +26,10 @@ export const dataAccess = () => {
   return {
     applicationInfo,
     hmppsAuthClient,
-    exampleApiClient: new ExampleApiClient(hmppsAuthClient),
+    assessmentPlatformApiClient: new AssessmentPlatformApiClient(hmppsAuthClient),
   }
 }
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { AuthenticationClient, ExampleApiClient }
+export { AuthenticationClient, AssessmentPlatformApiClient }

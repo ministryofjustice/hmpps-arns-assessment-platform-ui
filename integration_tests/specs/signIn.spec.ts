@@ -1,15 +1,10 @@
 import { expect, test } from '@playwright/test'
 import hmppsAuth from '../mockApis/hmppsAuth'
-import exampleApi from '../mockApis/exampleApi'
 
 import { login, resetStubs } from '../testUtils'
 import HomePage from '../pages/homePage'
 
 test.describe('SignIn', () => {
-  test.beforeEach(async () => {
-    await exampleApi.stubExampleTime()
-  })
-
   test.afterEach(async () => {
     await resetStubs()
   })

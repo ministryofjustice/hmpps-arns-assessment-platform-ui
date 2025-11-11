@@ -1,0 +1,67 @@
+{% extends "../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - Assessment" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+  <h1 class="govuk-heading-xl">Assessment Platform</h1>
+
+  {% if message %}
+    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+      <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
+      </div>
+      <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">{{ message }}</p>
+      </div>
+    </div>
+  {% endif %}
+
+  <h2 class="govuk-heading-l">Assessment Details</h2>
+
+  <dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Assessment UUID</dt>
+      <dd class="govuk-summary-list__value">{{ assessmentUuid }}</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Form Version</dt>
+      <dd class="govuk-summary-list__value">{{ assessment.formVersion }}</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Collaborators</dt>
+      <dd class="govuk-summary-list__value">
+        {% if assessment.collaborators.length > 0 %}
+          <ul class="govuk-list">
+            {% for collaborator in assessment.collaborators %}
+              <li>{{ collaborator.name }} ({{ collaborator.id }})</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <span class="govuk-hint">No collaborators</span>
+        {% endif %}
+      </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key">Answers</dt>
+      <dd class="govuk-summary-list__value">
+        {% if assessment.answers and (assessment.answers | length) > 0 %}
+          <details class="govuk-details">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">View answers ({{ assessment.answers | length }} questions)</span>
+            </summary>
+            <div class="govuk-details__text">
+              <pre><code>{{ assessment.answers | dump(2) }}</code></pre>
+            </div>
+          </details>
+        {% else %}
+          <span class="govuk-hint">No answers yet</span>
+        {% endif %}
+      </dd>
+    </div>
+  </dl>
+
+  <p class="govuk-body-s govuk-!-margin-top-6" data-qa="timestamp">Page loaded at {{ currentTime }}</p>
+
+{% endblock %}
