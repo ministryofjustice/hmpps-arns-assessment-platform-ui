@@ -53,7 +53,7 @@ describe('AttachValidationBlockCodeNormalizer', () => {
 
       expect(isExpressionNode(resolved)).toBe(true)
       expect(resolved).not.toBe(dynamicCode)
-      expect(resolved.properties.get('path')).toEqual(['answers', 'dynamicCode'])
+      expect(resolved.properties.path).toEqual(['answers', 'dynamicCode'])
     })
 
     it('omits resolved block code when block has no code', () => {

@@ -60,7 +60,7 @@ export default class PseudoNodeTraverser {
     this.nodeRegistry.findByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
       .filter(isReferenceExprNode)
       .forEach(referenceExpressionNode => {
-        const path = referenceExpressionNode.properties.get('path')
+        const path = referenceExpressionNode.properties.path
 
         if (Array.isArray(path) && path.length >= 2) {
           const [referenceSource, key] = path

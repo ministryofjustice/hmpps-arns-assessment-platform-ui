@@ -13,17 +13,22 @@ export interface ExpressionASTNode extends ASTNode {
 /**
  * Reference Expression AST node
  */
-export interface ReferenceASTNode extends ExpressionASTNode {
+export interface ReferenceASTNode extends Omit<ExpressionASTNode, 'properties'> {
   expressionType: ExpressionType.REFERENCE
-  properties: Map<string, ASTNode | any>
+  properties: {
+    path: (ASTNode | string | number)[]
+  }
 }
 
 /**
  * Next Expression AST node
  */
-export interface NextASTNode extends ExpressionASTNode {
+export interface NextASTNode extends Omit<ExpressionASTNode, 'properties'> {
   expressionType: ExpressionType.NEXT
-  properties: Map<string, ASTNode | any>
+  properties: {
+    when?: ASTNode
+    goto: ASTNode | string
+  }
 }
 
 /**

@@ -64,7 +64,9 @@ export class ConvertFormattersToPipelineNormalizer implements StructuralVisitor 
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.EXPRESSION,
       expressionType: ExpressionType.REFERENCE,
-      properties: new Map([['path', ['post', fieldCode]]]),
+      properties: {
+        path: ['post', fieldCode],
+      },
     }
 
     // Create the pipeline node manually with proper ID

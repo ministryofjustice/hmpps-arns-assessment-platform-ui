@@ -378,7 +378,7 @@ export default class FormCompilationFactory {
     }
 
     referenceNodes.forEach(refNode => {
-      const path = refNode.properties.get('path') as string[]
+      const path = refNode.properties.path as string[]
 
       if (!Array.isArray(path) || path.length < 2) {
         return

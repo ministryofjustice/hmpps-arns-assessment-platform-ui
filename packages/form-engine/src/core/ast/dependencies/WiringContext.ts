@@ -74,7 +74,7 @@ export class WiringContext {
       allExprNodes
         .filter(isReferenceExprNode)
         .filter(node => {
-          const path = node.properties.get('path')
+          const path = node.properties.path
 
           return Array.isArray(path) && path.length >= 2 && path[0] === referenceSource
         })

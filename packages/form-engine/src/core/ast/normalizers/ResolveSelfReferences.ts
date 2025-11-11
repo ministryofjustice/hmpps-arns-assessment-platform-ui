@@ -43,13 +43,13 @@ export class ResolveSelfReferencesNormalizer implements StructuralVisitor {
       return StructuralVisitResult.CONTINUE
     }
 
-    const props = (node as any).properties as Map<string, any> | undefined
+    const props = (node as any).properties
 
     if (!props) {
       return StructuralVisitResult.CONTINUE
     }
 
-    const refPath = props.get('path')
+    const refPath = props.path
 
     if (!Array.isArray(refPath)) {
       return StructuralVisitResult.CONTINUE
@@ -109,7 +109,6 @@ export class ResolveSelfReferencesNormalizer implements StructuralVisitor {
     // Replace the '@self' segment with a deep-cloned field code value
     // to avoid aliasing the same AST node in multiple locations.
     refPath[1] = cloneDeep(codeValue)
-    props.set('path', refPath)
 
     return StructuralVisitResult.CONTINUE
   }

@@ -16,6 +16,7 @@ import { NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
 import {
   CollectionASTNode,
+  ExpressionASTNode,
   FormatASTNode,
   FunctionASTNode,
   PipelineASTNode,
@@ -49,7 +50,7 @@ describe('ExpressionNodeFactory', () => {
       expect(result.expressionType).toBe(ExpressionType.REFERENCE)
       expect(result.raw).toBe(json)
       expect(result.id).toBeDefined()
-      expect(result.properties.has('path')).toBe(true)
+      expect(result.properties.path).toBeDefined()
     })
 
     it('should route to createFormat for Format expressions', () => {
@@ -362,9 +363,9 @@ describe('ExpressionNodeFactory', () => {
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(ExpressionType.REFERENCE)
-      expect(result.properties.has('path')).toBe(true)
+      expect(result.properties.path).toBeDefined()
 
-      const path = result.properties.get('path')
+      const path = result.properties.path
       expect(Array.isArray(path)).toBe(true)
       expect(path).toEqual(['field'])
 
@@ -379,7 +380,7 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as ReferenceASTNode
 
-      const path = result.properties.get('path')
+      const path = result.properties.path
       expect(path).toEqual(['data', 'user', 'name'])
     })
 
@@ -394,7 +395,7 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as ReferenceASTNode
 
-      const path = result.properties.get('path')
+      const path = result.properties.path
       expect(Array.isArray(path)).toBe(true)
       expect(path).toHaveLength(2)
       expect(path[0]).toBe('items')
@@ -402,7 +403,7 @@ describe('ExpressionNodeFactory', () => {
       // Second segment should be transformed to an AST node
       expect(path[1]).toHaveProperty('id')
       expect(path[1]).toHaveProperty('type')
-      expect(path[1].type).toBe(ASTNodeType.EXPRESSION)
+      expect((path[1] as ExpressionASTNode).type).toBe(ASTNodeType.EXPRESSION)
     })
 
     it('should handle non-array path values', () => {
@@ -412,7 +413,7 @@ describe('ExpressionNodeFactory', () => {
       }
 
       const result = expressionFactory.create(json) as ReferenceASTNode
-      const path = result.properties.get('path')
+      const path = result.properties.path
 
       expect(path).toBe('simpleString')
     })

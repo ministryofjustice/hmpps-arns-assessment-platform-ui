@@ -135,7 +135,7 @@ export default class AnswerPseudoNodeWiring {
     const answerRefs = this.wiringContext.findReferenceNodes('answers')
 
     answerRefs.forEach(refNode => {
-      const path = refNode.properties.get('path') as string[]
+      const path = refNode.properties.path
 
       if (path.length >= 2) {
         const referencedField = path[1] as string

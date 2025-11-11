@@ -79,19 +79,17 @@ export class ExpressionNodeFactory {
    * Examples: Answer('field'), Data('external.value'), Self(), Item()
    */
   private createReference(json: any): ReferenceASTNode {
-    const properties = new Map<string, ASTNode | any>()
-
     const transformedPath = Array.isArray(json.path)
       ? json.path.map((segment: any) => this.nodeFactory.transformValue(segment))
       : json.path
-
-    properties.set('path', transformedPath)
 
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.EXPRESSION,
       expressionType: ExpressionType.REFERENCE,
-      properties,
+      properties: {
+        path: transformedPath,
+      },
       raw: json,
     }
   }

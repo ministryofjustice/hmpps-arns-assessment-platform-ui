@@ -37,7 +37,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
       // Check input is POST reference
       const input = formatPipeline.properties.input as ReferenceASTNode
       expect(isReferenceExprNode(input)).toBe(true)
-      expect(input.properties.get('path')).toEqual(['post', 'myField'])
+      expect(input.properties.path).toEqual(['post', 'myField'])
 
       // Check steps
       const steps = formatPipeline.properties.steps as any[]
@@ -171,13 +171,13 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
       const pipeline1 = field1.properties.get('formatPipeline') as PipelineASTNode
       expect(isPipelineExprNode(pipeline1)).toBe(true)
       const input1 = pipeline1.properties.input as ReferenceASTNode
-      expect(input1.properties.get('path')).toEqual(['post', 'field1'])
+      expect(input1.properties.path).toEqual(['post', 'field1'])
 
       // Check field2
       const pipeline2 = field2.properties.get('formatPipeline') as PipelineASTNode
       expect(isPipelineExprNode(pipeline2)).toBe(true)
       const input2 = pipeline2.properties.input as ReferenceASTNode
-      expect(input2.properties.get('path')).toEqual(['post', 'field2'])
+      expect(input2.properties.path).toEqual(['post', 'field2'])
 
       // Check field3 has no pipeline
       expect(field3.properties.has('formatPipeline')).toBe(false)
@@ -224,7 +224,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
       // Check input is POST reference with the expression as the path segment
       const input = formatPipeline.properties.input as ReferenceASTNode
       expect(isReferenceExprNode(input)).toBe(true)
-      const path = input.properties.get('path') as any[]
+      const path = input.properties.path as any[]
       expect(path[0]).toBe('post')
       expect(path[1]).toBe(codeExpr) // The expression node itself is used
 
@@ -271,7 +271,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
       expect(isPipelineExprNode(pipeline)).toBe(true)
       const input = pipeline.properties.input as ReferenceASTNode
       expect(isReferenceExprNode(input)).toBe(true)
-      expect(input.properties.get('path')).toEqual(['post', 'itemField'])
+      expect(input.properties.path).toEqual(['post', 'itemField'])
     })
 
     it('preserves all other field properties when adding formatPipeline', () => {
