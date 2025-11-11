@@ -3,10 +3,12 @@
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
 
-{% block content %}
-
+{% block formContent %}
   <h1>This site is under construction...</h1>
   <p>Please check back later when there is content to view.</p>
   <p data-qa="timestamp">The time is currently {{ currentTime }}</p>
 
+  {% for htmlBlock in htmlBlocks %}
+    {{ htmlBlock | safe }}
+  {% endfor %}
 {% endblock %}

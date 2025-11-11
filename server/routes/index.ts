@@ -1,6 +1,7 @@
 import { Router } from 'express'
 
 import type { Services } from '../services'
+import { createNavigation, htmlBlocks } from '../utils/journeyUtils'
 
 export default function routes({ assessmentService }: Services): Router {
   const router = Router()
@@ -11,7 +12,12 @@ export default function routes({ assessmentService }: Services): Router {
       timeStyle: 'long',
     })
 
-    return res.render('pages/index', { currentTime })
+    res.locals.form = { backLink: '/', navigation: createNavigation() }
+
+    return res.render('pages/index', {
+      currentTime,
+      htmlBlocks,
+    })
   })
 
   router.get('/assessment', async (req, res, next) => {
