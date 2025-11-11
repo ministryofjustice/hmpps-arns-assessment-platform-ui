@@ -112,7 +112,6 @@ export interface ValidationASTNode extends Omit<ExpressionASTNode, 'properties'>
 export interface TransitionASTNode extends ASTNode {
   type: ASTNodeType.TRANSITION
   transitionType: TransitionType
-  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -140,6 +139,23 @@ export interface AccessTransitionASTNode extends Omit<TransitionASTNode, 'proper
 /**
  * Submit Transition AST node
  */
-export interface SubmitTransitionASTNode extends TransitionASTNode {
+export interface SubmitTransitionASTNode extends Omit<TransitionASTNode, 'properties'> {
   transitionType: TransitionType.SUBMIT
+  properties: {
+    when?: ASTNode
+    guards?: ASTNode
+    validate: boolean
+    onAlways?: {
+      effects?: ASTNode[]
+      next?: ASTNode[]
+    }
+    onValid?: {
+      effects?: ASTNode[]
+      next?: ASTNode[]
+    }
+    onInvalid?: {
+      effects?: ASTNode[]
+      next?: ASTNode[]
+    }
+  }
 }

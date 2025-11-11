@@ -813,6 +813,7 @@ export class TransitionBuilder {
 
     const isLoadType = this.transitionType === TransitionType.LOAD
     const isAccessType = this.transitionType === TransitionType.ACCESS
+    const isSubmitType = this.transitionType === TransitionType.SUBMIT
 
     let properties
     if (isLoadType) {
@@ -824,6 +825,15 @@ export class TransitionBuilder {
         guards: this.properties.get('guards'),
         effects: this.properties.get('effects'),
         redirect: this.properties.get('redirect'),
+      }
+    } else if (isSubmitType) {
+      properties = {
+        when: this.properties.get('when'),
+        guards: this.properties.get('guards'),
+        validate: this.properties.get('validate') ?? false,
+        onAlways: this.properties.get('onAlways'),
+        onValid: this.properties.get('onValid'),
+        onInvalid: this.properties.get('onInvalid'),
       }
     } else {
       // Legacy transition nodes still using Map properties (will be removed after migration)

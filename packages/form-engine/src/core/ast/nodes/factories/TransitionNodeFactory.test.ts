@@ -331,10 +331,10 @@ describe('TransitionNodeFactory', () => {
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.TRANSITION)
       expect(result.transitionType).toBe(TransitionType.SUBMIT)
-      expect(result.properties.has('when')).toBe(true)
+      expect(result.properties.when).toBeDefined()
 
       // Verify when is a real AST node
-      const whenNode = result.properties.get('when')
+      const whenNode = result.properties.when
       expect(whenNode.type).toBe(ASTNodeType.EXPRESSION)
     })
 
@@ -352,10 +352,10 @@ describe('TransitionNodeFactory', () => {
 
       const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
-      expect(result.properties.has('guards')).toBe(true)
+      expect(result.properties.guards).toBeDefined()
 
       // Verify guards is a real AST node
-      const guardsNode = result.properties.get('guards')
+      const guardsNode = result.properties.guards
       expect(guardsNode.type).toBe(ASTNodeType.EXPRESSION)
     })
 
@@ -367,7 +367,7 @@ describe('TransitionNodeFactory', () => {
 
       const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
-      expect(result.properties.get('validate')).toBe(true)
+      expect(result.properties.validate).toBe(true)
     })
 
     it('should set validate to false when explicitly false', () => {
@@ -378,25 +378,32 @@ describe('TransitionNodeFactory', () => {
 
       const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
-      expect(result.properties.get('validate')).toBe(false)
+      expect(result.properties.validate).toBe(false)
     })
 
-    it('should validate property defaults correctly when using !== false logic', () => {
-      const json = {
+    it('should set validate property correctly', () => {
+      // Test explicit true (ValidatingTransition)
+      const result1 = transitionFactory.create({
         type: TransitionType.SUBMIT,
-        validate: true, // Must be explicit for typeguard
-      }
+        validate: true,
+        onValid: {
+          next: [{ type: ExpressionType.NEXT, goto: '/valid' }],
+        },
+        onInvalid: {
+          next: [{ type: ExpressionType.NEXT, goto: '/invalid' }],
+        },
+      } as any) as SubmitTransitionASTNode
+      expect(result1.properties.validate).toBe(true)
 
-      const result = transitionFactory.create(json) as SubmitTransitionASTNode
-
-      expect(result.properties.get('validate')).toBe(true)
-
-      // Test that the implementation correctly sets false when explicit
+      // Test explicit false (SkipValidationTransition)
       const result2 = transitionFactory.create({
         type: TransitionType.SUBMIT,
         validate: false,
-      }) as SubmitTransitionASTNode
-      expect(result2.properties.get('validate')).toBe(false)
+        onAlways: {
+          next: [{ type: ExpressionType.NEXT, goto: '/next' }],
+        },
+      } as any) as SubmitTransitionASTNode
+      expect(result2.properties.validate).toBe(false)
     })
 
     it('should create a Submit transition with onAlways branch', () => {
@@ -411,8 +418,8 @@ describe('TransitionNodeFactory', () => {
 
       const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
-      expect(result.properties.has('onAlways')).toBe(true)
-      const onAlways = result.properties.get('onAlways')
+      expect(result.properties.onAlways).toBeDefined()
+      const onAlways = result.properties.onAlways
       expect(onAlways).toHaveProperty('effects')
       expect(onAlways).toHaveProperty('next')
       expect(Array.isArray(onAlways.effects)).toBe(true)
@@ -435,8 +442,8 @@ describe('TransitionNodeFactory', () => {
 
       const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
-      expect(result.properties.has('onValid')).toBe(true)
-      const onValid = result.properties.get('onValid')
+      expect(result.properties.onValid).toBeDefined()
+      const onValid = result.properties.onValid
       expect(onValid).toHaveProperty('effects')
       expect(onValid).toHaveProperty('next')
 
@@ -457,8 +464,8 @@ describe('TransitionNodeFactory', () => {
 
       const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
-      expect(result.properties.has('onInvalid')).toBe(true)
-      const onInvalid = result.properties.get('onInvalid')
+      expect(result.properties.onInvalid).toBeDefined()
+      const onInvalid = result.properties.onInvalid
       expect(onInvalid).toHaveProperty('effects')
       expect(onInvalid).toHaveProperty('next')
 
@@ -485,15 +492,15 @@ describe('TransitionNodeFactory', () => {
 
       const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
-      expect(result.properties.has('onAlways')).toBe(true)
-      expect(result.properties.has('onValid')).toBe(true)
-      expect(result.properties.has('onInvalid')).toBe(true)
+      expect(result.properties.onAlways).toBeDefined()
+      expect(result.properties.onValid).toBeDefined()
+      expect(result.properties.onInvalid).toBeDefined()
 
       // Verify all contain real AST nodes
-      expect(result.properties.get('onAlways').effects[0].type).toBe(ASTNodeType.EXPRESSION)
-      expect(result.properties.get('onValid').next[0].type).toBe(ASTNodeType.EXPRESSION)
-      expect(result.properties.get('onInvalid').effects[0].type).toBe(ASTNodeType.EXPRESSION)
-      expect(result.properties.get('onInvalid').next[0].type).toBe(ASTNodeType.EXPRESSION)
+      expect(result.properties.onAlways.effects[0].type).toBe(ASTNodeType.EXPRESSION)
+      expect(result.properties.onValid.next[0].type).toBe(ASTNodeType.EXPRESSION)
+      expect(result.properties.onInvalid.effects[0].type).toBe(ASTNodeType.EXPRESSION)
+      expect(result.properties.onInvalid.next[0].type).toBe(ASTNodeType.EXPRESSION)
     })
 
     it('should handle branch with only effects', () => {
@@ -507,7 +514,7 @@ describe('TransitionNodeFactory', () => {
 
       const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
-      const onAlways = result.properties.get('onAlways')
+      const onAlways = result.properties.onAlways
       expect(onAlways).toHaveProperty('effects')
       expect(onAlways).not.toHaveProperty('next')
     })
@@ -523,7 +530,7 @@ describe('TransitionNodeFactory', () => {
 
       const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
-      const onValid = result.properties.get('onValid')
+      const onValid = result.properties.onValid
       expect(onValid).toHaveProperty('next')
       expect(onValid).not.toHaveProperty('effects')
     })
@@ -536,9 +543,9 @@ describe('TransitionNodeFactory', () => {
 
       const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
-      expect(result.properties.has('onAlways')).toBe(false)
-      expect(result.properties.has('onValid')).toBe(false)
-      expect(result.properties.has('onInvalid')).toBe(false)
+      expect(result.properties.onAlways).toBeUndefined()
+      expect(result.properties.onValid).toBeUndefined()
+      expect(result.properties.onInvalid).toBeUndefined()
     })
 
     it('should not set branch effects if not an array', () => {
@@ -552,7 +559,7 @@ describe('TransitionNodeFactory', () => {
 
       const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
-      const onAlways = result.properties.get('onAlways')
+      const onAlways = result.properties.onAlways
       expect(onAlways).not.toHaveProperty('effects')
     })
 
@@ -567,7 +574,7 @@ describe('TransitionNodeFactory', () => {
 
       const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
-      const onValid = result.properties.get('onValid')
+      const onValid = result.properties.onValid
       expect(onValid).not.toHaveProperty('next')
     })
   })

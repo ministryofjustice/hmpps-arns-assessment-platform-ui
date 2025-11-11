@@ -6,10 +6,9 @@ import {
   LoadTransitionASTNode,
   SubmitTransitionASTNode,
 } from '@form-engine/core/types/expressions.type'
-import { ASTNode } from '@form-engine/core/types/engine.type'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
-import { AccessTransition, LoadTransition } from '@form-engine/form/types/expressions.type'
+import { AccessTransition, LoadTransition, SubmitTransition } from '@form-engine/form/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 
 /**
@@ -96,19 +95,19 @@ export class TransitionNodeFactory {
    * Transform Submit transition: Form submission handling
    * Manages validation, effects, and navigation on submit
    */
-  private createSubmitTransition(json: any): SubmitTransitionASTNode {
-    const properties = new Map<string, ASTNode | any>()
+  private createSubmitTransition(json: SubmitTransition): SubmitTransitionASTNode {
+    const properties: SubmitTransitionASTNode['properties'] = {
+      // Default to validation disabled unless explicitly true
+      validate: json.validate === true,
+    }
 
     if (json.when) {
-      properties.set('when', this.nodeFactory.createNode(json.when))
+      properties.when = this.nodeFactory.createNode(json.when)
     }
 
     if (json.guards) {
-      properties.set('guards', this.nodeFactory.createNode(json.guards))
+      properties.guards = this.nodeFactory.createNode(json.guards)
     }
-
-    // Default to validation enabled unless explicitly false
-    properties.set('validate', json.validate !== false)
 
     // Helper to transform submission branches (onAlways/onValid/onInvalid)
     const transformBranch = (branch: any) => {
@@ -130,15 +129,15 @@ export class TransitionNodeFactory {
     }
 
     if (json.onAlways) {
-      properties.set('onAlways', transformBranch(json.onAlways))
+      properties.onAlways = transformBranch(json.onAlways)
     }
 
     if (json.onValid) {
-      properties.set('onValid', transformBranch(json.onValid))
+      properties.onValid = transformBranch(json.onValid)
     }
 
     if (json.onInvalid) {
-      properties.set('onInvalid', transformBranch(json.onInvalid))
+      properties.onInvalid = transformBranch(json.onInvalid)
     }
 
     return {

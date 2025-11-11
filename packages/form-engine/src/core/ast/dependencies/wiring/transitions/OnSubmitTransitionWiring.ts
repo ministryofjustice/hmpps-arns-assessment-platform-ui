@@ -27,12 +27,13 @@ export default class OnSubmitTransitionWiring {
 
   private wireOnSubmitTransitions() {
     // Find all steps in the registry and wire their onSubmission transitions
-    this.wiringContext.findNodesByType<TransitionASTNode>(ASTNodeType.TRANSITION)
+    const submitTransitions = this.wiringContext.findNodesByType<TransitionASTNode>(ASTNodeType.TRANSITION)
       .filter(isSubmitTransitionNode)
-      .forEach(submitTransitionNode => {
-        this.wiringContext.graph.addNode(submitTransitionNode.id)
-        this.wireTransitionProperties(submitTransitionNode)
-      })
+
+    submitTransitions.forEach(submitTransitionNode => {
+      this.wiringContext.graph.addNode(submitTransitionNode.id)
+      this.wireTransitionProperties(submitTransitionNode)
+    })
   }
 
   private wireTransitionProperties(transition: SubmitTransitionASTNode) {
@@ -44,7 +45,7 @@ export default class OnSubmitTransitionWiring {
     this.wireValidationDependencies(transition)
 
     // Determine which transition type we have
-    const validate = transition.properties.get('validate')
+    const validate = transition.properties.validate
 
     if (validate === true) {
       // ValidatingTransition
@@ -60,7 +61,7 @@ export default class OnSubmitTransitionWiring {
    * Creates edge: when → transition
    */
   private wireWhenPredicate(transition: SubmitTransitionASTNode) {
-    const when = transition.properties.get('when')
+    const when = transition.properties.when
 
     if (when && typeof when === 'object' && 'id' in when) {
       this.wiringContext.graph.addEdge(when.id, transition.id, DependencyEdgeType.DATA_FLOW, {
@@ -74,7 +75,7 @@ export default class OnSubmitTransitionWiring {
    * Creates edge: guards → transition
    */
   private wireGuardsPredicate(transition: SubmitTransitionASTNode) {
-    const guards = transition.properties.get('guards')
+    const guards = transition.properties.guards
 
     if (guards && typeof guards === 'object' && 'id' in guards) {
       this.wiringContext.graph.addEdge(guards.id, transition.id, DependencyEdgeType.DATA_FLOW, {
@@ -88,7 +89,7 @@ export default class OnSubmitTransitionWiring {
    * Ensures all validations in the step are evaluated before the transition executes
    */
   private wireValidationDependencies(transition: SubmitTransitionASTNode) {
-    const validate = transition.properties.get('validate')
+    const validate = transition.properties.validate
 
     if (validate !== true) {
       return
@@ -162,14 +163,14 @@ export default class OnSubmitTransitionWiring {
    */
   private wireValidatingTransition(transition: SubmitTransitionASTNode) {
     // Wire onAlways (if present)
-    const onAlways = transition.properties.get('onAlways')
+    const onAlways = transition.properties.onAlways
 
     if (onAlways && typeof onAlways === 'object') {
       this.wireEffects(transition, onAlways.effects, 'onAlways')
     }
 
     // Wire onValid
-    const onValid = transition.properties.get('onValid')
+    const onValid = transition.properties.onValid
 
     if (onValid && typeof onValid === 'object') {
       this.wireEffects(transition, onValid.effects, 'onValid')
@@ -177,7 +178,7 @@ export default class OnSubmitTransitionWiring {
     }
 
     // Wire onInvalid
-    const onInvalid = transition.properties.get('onInvalid')
+    const onInvalid = transition.properties.onInvalid
 
     if (onInvalid && typeof onInvalid === 'object') {
       this.wireEffects(transition, onInvalid.effects, 'onInvalid')
@@ -190,7 +191,7 @@ export default class OnSubmitTransitionWiring {
    * Wires onAlways branch
    */
   private wireSkipValidationTransition(transition: SubmitTransitionASTNode) {
-    const onAlways = transition.properties.get('onAlways')
+    const onAlways = transition.properties.onAlways
 
     if (onAlways && typeof onAlways === 'object') {
       this.wireEffects(transition, onAlways.effects, 'onAlways')

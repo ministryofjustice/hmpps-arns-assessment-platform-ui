@@ -36,7 +36,7 @@ export function isSubmitTransitionNode(obj: any): obj is SubmitTransitionASTNode
  * Check if an AST node is a Skip Validation Transition node (Submit without validation)
  */
 export function isSkipValidationTransitionNode(obj: any): obj is SubmitTransitionASTNode {
-  return isSubmitTransitionNode(obj) && obj.properties != null && obj.properties.get('validate') === false
+  return isSubmitTransitionNode(obj) && obj.properties != null && obj.properties.validate === false
 }
 
 /**
@@ -44,5 +44,5 @@ export function isSkipValidationTransitionNode(obj: any): obj is SubmitTransitio
  */
 export function isValidatingTransitionNode(obj: any): obj is SubmitTransitionASTNode {
   return isSubmitTransitionNode(obj) &&
-    (obj.properties == null || obj.properties.get('validate') == null || obj.properties.get('validate') === true)
+    (obj.properties == null || obj.properties.validate == null || obj.properties.validate === true)
 }

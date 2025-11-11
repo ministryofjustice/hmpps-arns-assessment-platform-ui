@@ -588,6 +588,9 @@ export interface SkipValidationTransition extends SubmitTransitionBase {
     /** Required navigation rules for where to go next */
     next: NextExpr[]
   }
+
+  onValid?: never
+  onInvalid?: never
 }
 
 /**
