@@ -702,11 +702,12 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
   build(): T {
     const nodeId = this.id ?? ASTTestFactory.getId()
 
-    // Convert Map to object for FunctionASTNode, PipelineASTNode, ReferenceASTNode, and NextASTNode
+    // Convert Map to object for FunctionASTNode, PipelineASTNode, ReferenceASTNode, NextASTNode, and FormatASTNode
     const isFunctionType = Object.values(FunctionType).includes(this.expressionType as FunctionType)
     const isPipelineType = this.expressionType === ExpressionType.PIPELINE
     const isReferenceType = this.expressionType === ExpressionType.REFERENCE
     const isNextType = this.expressionType === ExpressionType.NEXT
+    const isFormatType = this.expressionType === ExpressionType.FORMAT
 
     let properties
     if (isFunctionType) {
@@ -732,6 +733,11 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
         nextProperties.when = when
       }
       properties = nextProperties
+    } else if (isFormatType) {
+      properties = {
+        template: this.properties.get('template'),
+        arguments: this.properties.get('arguments'),
+      }
     } else {
       properties = this.properties
     }

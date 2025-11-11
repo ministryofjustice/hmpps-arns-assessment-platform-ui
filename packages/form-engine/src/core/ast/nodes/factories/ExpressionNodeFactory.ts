@@ -97,22 +97,19 @@ export class ExpressionNodeFactory {
   /**
    * Transform Format expression: String template with placeholders
    * Replaces placeholders (%1, %2, etc.) with evaluated argument values
-   * Example: text: 'address_%1_street', args: [Item().id]
+   * Example: template: 'address_%1_street', arguments: [Item().id]
    */
   private createFormat(json: any): FormatASTNode {
-    const properties = new Map<string, ASTNode | any>()
-
-    properties.set('text', json.text)
-
-    const transformedArgs = json.args.map((arg: any) => this.nodeFactory.transformValue(arg))
-
-    properties.set('args', transformedArgs)
+    const transformedArgs = json.arguments.map((arg: any) => this.nodeFactory.transformValue(arg))
 
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.EXPRESSION,
       expressionType: ExpressionType.FORMAT,
-      properties,
+      properties: {
+        template: json.template,
+        arguments: transformedArgs,
+      },
       raw: json,
     }
   }

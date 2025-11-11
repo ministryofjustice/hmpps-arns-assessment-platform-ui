@@ -45,9 +45,12 @@ export interface PipelineASTNode extends Omit<ExpressionASTNode, 'properties'> {
 /**
  * Format Expression AST node
  */
-export interface FormatASTNode extends ExpressionASTNode {
+export interface FormatASTNode extends Omit<ExpressionASTNode, 'properties'> {
   expressionType: ExpressionType.FORMAT
-  properties: Map<string, ASTNode | any>
+  properties: {
+    template: string
+    arguments: (ASTNode | any)[]
+  }
 }
 
 /**

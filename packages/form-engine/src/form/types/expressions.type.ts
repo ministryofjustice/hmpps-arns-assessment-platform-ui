@@ -39,8 +39,8 @@ export interface ReferenceExpr {
  * // Simple string formatting
  * {
  *   type: 'ExpressionType.Format',
- *   text: 'Hello %1, you are %2 years old',
- *   args: [
+ *   template: 'Hello %1, you are %2 years old',
+ *   arguments: [
  *     { type: 'ExpressionType.Reference', path: ['answers', 'name'] },
  *     { type: 'ExpressionType.Reference', path: ['answers', 'age'] }
  *   ]
@@ -50,8 +50,8 @@ export interface ReferenceExpr {
  * // Dynamic field code generation in collections
  * {
  *   type: 'ExpressionType.Format',
- *   text: 'address_%1_street',
- *   args: [{ type: 'ExpressionType.Reference', path: ['@item', 'id'] }]
+ *   template: 'address_%1_street',
+ *   arguments: [{ type: 'ExpressionType.Reference', path: ['@item', 'id'] }]
  * }
  */
 export interface FormatExpr {
@@ -59,15 +59,15 @@ export interface FormatExpr {
 
   /**
    * Template string containing placeholders (%1, %2, etc.).
-   * Placeholders are 1-indexed and correspond to the args array.
+   * Placeholders are 1-indexed and correspond to the arguments array.
    */
-  text: string
+  template: string
 
   /**
    * Array of expressions whose values will replace the placeholders.
    * The first argument replaces %1, second replaces %2, and so on.
    */
-  args: ValueExpr[]
+  arguments: ValueExpr[]
 }
 
 /**
