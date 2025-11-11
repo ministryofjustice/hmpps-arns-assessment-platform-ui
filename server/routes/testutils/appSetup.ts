@@ -5,14 +5,14 @@ import { randomUUID } from 'crypto'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
-import type { Services, RequestServices } from '../../services'
+import type { Services } from '../../services'
 import AuditService from '../../services/auditService'
-import SessionService from '../../services/sessionService'
+import AssessmentService from '../../services/assessmentService'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
 
 jest.mock('../../services/auditService')
-jest.mock('../../services/sessionService')
+jest.mock('../../services/assessmentService')
 
 export const user: HmppsUser = {
   name: 'FIRST LAST',
@@ -27,12 +27,7 @@ export const user: HmppsUser = {
 
 export const flashProvider = jest.fn()
 
-function appSetup(
-  services: Services,
-  production: boolean,
-  userSupplier: () => HmppsUser,
-  mockAuditService?: jest.Mocked<AuditService>,
-): Express {
+function appSetup(services: Services, production: boolean, userSupplier: () => HmppsUser): Express {
   const app = express()
 
   app.set('view engine', 'njk')
@@ -42,8 +37,15 @@ function appSetup(
   app.use((req, res, next) => {
     req.user = userSupplier() as Express.User
     req.flash = flashProvider
+    const currentUser = req.user as HmppsUser
     res.locals = {
-      user: { ...req.user } as HmppsUser,
+      user: { ...currentUser },
+    }
+
+    req.session.principal = {
+      identifier: currentUser.userId,
+      username: currentUser.username,
+      displayName: currentUser.displayName,
     }
     next()
   })
@@ -51,17 +53,6 @@ function appSetup(
     req.id = randomUUID()
     next()
   })
-
-  // Setup request-scoped services for testing
-  if (mockAuditService) {
-    app.use((req, res, next) => {
-      req.services = {
-        auditService: mockAuditService,
-        sessionService: new SessionService(req) as jest.Mocked<SessionService>,
-      } as RequestServices
-      next()
-    })
-  }
 
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
@@ -74,13 +65,15 @@ function appSetup(
 
 export function appWithAllRoutes({
   production = false,
-  services = {},
+  services = {
+    auditService: new AuditService(null) as jest.Mocked<AuditService>,
+    assessmentService: new AssessmentService(null, null) as jest.Mocked<AssessmentService>,
+  },
   userSupplier = () => user,
 }: {
   production?: boolean
   services?: Partial<Services>
   userSupplier?: () => HmppsUser
 }): Express {
-  const mockAuditService = new AuditService(null, null, null) as jest.Mocked<AuditService>
-  return appSetup(services as Services, production, userSupplier, mockAuditService)
+  return appSetup(services as Services, production, userSupplier)
 }

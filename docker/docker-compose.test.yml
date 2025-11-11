@@ -27,7 +27,7 @@ services:
       HMPPS_AUTH_EXTERNAL_URL: ${HMPPS_AUTH_EXTERNAL_URL:-http://localhost:9091/auth}
       TOKEN_VERIFICATION_API_URL: http://wiremock:8080/verification
       TOKEN_VERIFICATION_ENABLED: true
-      EXAMPLE_API_URL: http://wiremock:8080/example-api
+      AAP_API_URL: http://wiremock:8080/aap-api
       ENVIRONMENT_NAME: dev
 
   playwright:
