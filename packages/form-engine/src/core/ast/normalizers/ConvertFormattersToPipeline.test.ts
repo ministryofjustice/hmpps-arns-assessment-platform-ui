@@ -46,10 +46,10 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
       expect(steps[0]).toBe(formatter) // Now uses formatters directly
       expect(isTransformerFunctionNode(steps[0])).toBe(true)
 
-      const stepProps = steps[0].properties as Map<string, unknown>
+      const stepProps = steps[0].properties
       expect(stepProps).toBe(formatter.properties) // Same reference since we use formatters directly
-      expect(stepProps.get('name')).toBe('trim')
-      expect(stepProps.get('arguments')).toEqual([])
+      expect(stepProps.name).toBe('trim')
+      expect(stepProps.arguments).toEqual([])
 
       // Formatters property should be removed
       expect(field.properties.has('formatters')).toBe(false)
@@ -317,7 +317,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
 
 function stepName(step: any): string | undefined {
   if (isTransformerFunctionNode(step)) {
-    return step.properties?.get('name')
+    return step.properties?.name
   }
 
   if (step && typeof step === 'object') {
@@ -329,7 +329,7 @@ function stepName(step: any): string | undefined {
 
 function stepArgs(step: any): unknown[] {
   if (isTransformerFunctionNode(step)) {
-    const args = step.properties?.get('arguments')
+    const args = step.properties?.arguments
     return Array.isArray(args) ? args : []
   }
 

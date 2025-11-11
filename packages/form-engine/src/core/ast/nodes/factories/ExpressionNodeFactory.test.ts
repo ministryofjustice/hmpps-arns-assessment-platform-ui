@@ -14,6 +14,14 @@ import {
 import { BlockDefinition, ValidationExpr } from '@form-engine/form/types/structures.type'
 import { NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
+import {
+  CollectionASTNode,
+  FormatASTNode,
+  FunctionASTNode,
+  PipelineASTNode,
+  ReferenceASTNode,
+  ValidationASTNode,
+} from '@form-engine/core/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 import { ExpressionNodeFactory } from './ExpressionNodeFactory'
 
@@ -35,7 +43,7 @@ describe('ExpressionNodeFactory', () => {
         path: ['field', 'value'],
       } satisfies ReferenceExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ReferenceASTNode
 
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(ExpressionType.REFERENCE)
@@ -51,7 +59,7 @@ describe('ExpressionNodeFactory', () => {
         args: ['World'],
       } satisfies FormatExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FormatASTNode
 
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(ExpressionType.FORMAT)
@@ -68,7 +76,7 @@ describe('ExpressionNodeFactory', () => {
         steps: [{ name: 'uppercase' }],
       } satisfies PipelineExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as PipelineASTNode
 
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(ExpressionType.PIPELINE)
@@ -83,7 +91,7 @@ describe('ExpressionNodeFactory', () => {
         template: [] as BlockDefinition[],
       } satisfies CollectionExpr<BlockDefinition>
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as CollectionASTNode
 
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(ExpressionType.COLLECTION)
@@ -107,7 +115,7 @@ describe('ExpressionNodeFactory', () => {
         } satisfies PredicateTestExpr,
       } satisfies ValidationExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ValidationASTNode
 
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(ExpressionType.VALIDATION)
@@ -122,7 +130,7 @@ describe('ExpressionNodeFactory', () => {
         arguments: [] as ValueExpr[],
       } satisfies ConditionFunctionExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FunctionASTNode
 
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(FunctionType.CONDITION)
@@ -166,7 +174,7 @@ describe('ExpressionNodeFactory', () => {
         args: ['World', 'Earth'],
       } satisfies FormatExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FormatASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
@@ -189,7 +197,7 @@ describe('ExpressionNodeFactory', () => {
         args: ['123'],
       } satisfies FormatExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FormatASTNode
 
       expect(result.properties.get('text')).toBe('address_%1_street')
 
@@ -205,7 +213,7 @@ describe('ExpressionNodeFactory', () => {
         args: [{ type: ExpressionType.REFERENCE, path: ['user', 'id'] } satisfies ReferenceExpr],
       } satisfies FormatExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FormatASTNode
 
       const args = result.properties.get('args')
       expect(args).toHaveLength(1)
@@ -227,7 +235,7 @@ describe('ExpressionNodeFactory', () => {
         ],
       } satisfies FormatExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FormatASTNode
 
       const args = result.properties.get('args')
       expect(args).toHaveLength(3)
@@ -246,7 +254,7 @@ describe('ExpressionNodeFactory', () => {
         args: ['prefix', { type: ExpressionType.REFERENCE, path: ['userId'] } satisfies ReferenceExpr],
       } satisfies FormatExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FormatASTNode
 
       const args = result.properties.get('args')
       expect(args).toHaveLength(2)
@@ -265,7 +273,7 @@ describe('ExpressionNodeFactory', () => {
         args: [{ type: ExpressionType.REFERENCE, path: ['itemName'] } satisfies ReferenceExpr],
       } satisfies FormatExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FormatASTNode
 
       expect(result.properties.get('text')).toBe('<h3>This is item %1</h3>')
 
@@ -287,7 +295,7 @@ describe('ExpressionNodeFactory', () => {
         ],
       } satisfies FormatExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FormatASTNode
 
       const args = result.properties.get('args')
       expect(args).toHaveLength(1)
@@ -304,7 +312,7 @@ describe('ExpressionNodeFactory', () => {
         args: [] as any,
       } satisfies FormatExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FormatASTNode
 
       expect(result.properties.get('text')).toBe('No placeholders here')
 
@@ -320,7 +328,7 @@ describe('ExpressionNodeFactory', () => {
         args: [1, 10],
       } satisfies FormatExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FormatASTNode
 
       const args = result.properties.get('args')
       expect(args).toEqual([1, 10])
@@ -333,8 +341,8 @@ describe('ExpressionNodeFactory', () => {
         args: ['test'],
       } satisfies FormatExpr
 
-      const result1 = expressionFactory.create(json)
-      const result2 = expressionFactory.create(json)
+      const result1 = expressionFactory.create(json) as FormatASTNode
+      const result2 = expressionFactory.create(json) as FormatASTNode
 
       expect(result1.id).toBeDefined()
       expect(result2.id).toBeDefined()
@@ -349,7 +357,7 @@ describe('ExpressionNodeFactory', () => {
         path: ['field'],
       } satisfies ReferenceExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ReferenceASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
@@ -369,7 +377,7 @@ describe('ExpressionNodeFactory', () => {
         path: ['data', 'user', 'name'],
       } satisfies ReferenceExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ReferenceASTNode
 
       const path = result.properties.get('path')
       expect(path).toEqual(['data', 'user', 'name'])
@@ -384,7 +392,7 @@ describe('ExpressionNodeFactory', () => {
         ],
       }
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ReferenceASTNode
 
       const path = result.properties.get('path')
       expect(Array.isArray(path)).toBe(true)
@@ -403,7 +411,7 @@ describe('ExpressionNodeFactory', () => {
         path: 'simpleString',
       }
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ReferenceASTNode
       const path = result.properties.get('path')
 
       expect(path).toBe('simpleString')
@@ -415,8 +423,8 @@ describe('ExpressionNodeFactory', () => {
         path: ['field'],
       } satisfies ReferenceExpr
 
-      const result1 = expressionFactory.create(json)
-      const result2 = expressionFactory.create(json)
+      const result1 = expressionFactory.create(json) as ReferenceASTNode
+      const result2 = expressionFactory.create(json) as ReferenceASTNode
 
       expect(result1.id).toBeDefined()
       expect(result2.id).toBeDefined()
@@ -432,7 +440,7 @@ describe('ExpressionNodeFactory', () => {
         steps: [{ name: 'trim' }, { name: 'uppercase' }],
       } satisfies PipelineExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as PipelineASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
@@ -451,7 +459,7 @@ describe('ExpressionNodeFactory', () => {
         steps: [{ name: 'trim' }],
       } satisfies PipelineExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as PipelineASTNode
       const input = result.properties.get('input')
 
       expect(input.type).toBe(ASTNodeType.EXPRESSION)
@@ -468,7 +476,7 @@ describe('ExpressionNodeFactory', () => {
         ],
       } satisfies PipelineExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as PipelineASTNode
 
       const steps = result.properties.get('steps')
       expect(Array.isArray(steps)).toBe(true)
@@ -496,7 +504,7 @@ describe('ExpressionNodeFactory', () => {
         ],
       } satisfies PipelineExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as PipelineASTNode
 
       const steps = result.properties.get('steps')
       expect(steps).toHaveLength(1)
@@ -517,7 +525,7 @@ describe('ExpressionNodeFactory', () => {
         steps: [{ name: 'trim' }, { name: 'uppercase' }],
       } satisfies PipelineExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as PipelineASTNode
       const steps = result.properties.get('steps')
 
       expect(steps[0]).toEqual({ name: 'trim' })
@@ -533,7 +541,7 @@ describe('ExpressionNodeFactory', () => {
         template: [{ type: 'StructureType.Block', fields: [] as any }],
       }
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as CollectionASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
@@ -551,7 +559,7 @@ describe('ExpressionNodeFactory', () => {
         template: [] as any,
       }
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as CollectionASTNode
       const collection = result.properties.get('collection')
 
       expect(collection.type).toBe(ASTNodeType.EXPRESSION)
@@ -566,7 +574,7 @@ describe('ExpressionNodeFactory', () => {
         template: [templateBlock],
       }
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as CollectionASTNode
 
       const template = result.properties.get('template')
       expect(Array.isArray(template)).toBe(true)
@@ -585,7 +593,7 @@ describe('ExpressionNodeFactory', () => {
         template: [block1, block2],
       }
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as CollectionASTNode
 
       const template = result.properties.get('template')
       expect(template).toHaveLength(2)
@@ -604,7 +612,7 @@ describe('ExpressionNodeFactory', () => {
         fallback: [{ type: 'StructureType.Block', fields: [] as any }],
       }
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as CollectionASTNode
       const fallback = result.properties.get('fallback')
 
       expect(result.properties.has('fallback')).toBe(true)
@@ -621,7 +629,7 @@ describe('ExpressionNodeFactory', () => {
         collection: { type: ExpressionType.REFERENCE, path: ['users'] },
       }
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as CollectionASTNode
 
       expect(result.properties.has('collection')).toBe(true)
       expect(result.properties.has('template')).toBe(false)
@@ -635,7 +643,7 @@ describe('ExpressionNodeFactory', () => {
         template: [] as any,
       }
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as CollectionASTNode
 
       expect(result.properties.has('template')).toBe(true)
       expect(result.properties.has('fallback')).toBe(false)
@@ -655,7 +663,7 @@ describe('ExpressionNodeFactory', () => {
         } satisfies PredicateTestExpr,
       } satisfies ValidationExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ValidationASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
@@ -684,7 +692,7 @@ describe('ExpressionNodeFactory', () => {
         message: 'Invalid value',
       } satisfies ValidationExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ValidationASTNode
       const when = result.properties.get('when')
 
       expect(result.id).toBeDefined()
@@ -709,7 +717,7 @@ describe('ExpressionNodeFactory', () => {
         submissionOnly: true,
       } satisfies ValidationExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ValidationASTNode
 
       expect(result.properties.has('submissionOnly')).toBe(true)
       expect(result.properties.get('submissionOnly')).toBe(true)
@@ -732,7 +740,7 @@ describe('ExpressionNodeFactory', () => {
         submissionOnly: false,
       } satisfies ValidationExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ValidationASTNode
 
       expect(result.properties.has('submissionOnly')).toBe(true)
       expect(result.properties.get('submissionOnly')).toBe(false)
@@ -754,7 +762,7 @@ describe('ExpressionNodeFactory', () => {
         } satisfies PredicateTestExpr,
       } satisfies ValidationExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ValidationASTNode
 
       expect(result.properties.has('submissionOnly')).toBe(false)
     })
@@ -776,7 +784,7 @@ describe('ExpressionNodeFactory', () => {
         details: { code: 'VALIDATION_001', severity: 'error' },
       } satisfies ValidationExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ValidationASTNode
 
       expect(result.properties.has('details')).toBe(true)
       expect(result.properties.get('details')).toEqual({
@@ -801,7 +809,7 @@ describe('ExpressionNodeFactory', () => {
         } satisfies PredicateTestExpr,
       } satisfies ValidationExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ValidationASTNode
 
       expect(result.properties.has('details')).toBe(false)
     })
@@ -822,7 +830,7 @@ describe('ExpressionNodeFactory', () => {
         } satisfies PredicateTestExpr,
       } satisfies ValidationExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ValidationASTNode
 
       expect(result.properties.get('message')).toBe('')
     })
@@ -845,7 +853,7 @@ describe('ExpressionNodeFactory', () => {
         details: { code: 'ERR_001' },
       } satisfies ValidationExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as ValidationASTNode
 
       expect(result.properties.has('when')).toBe(true)
       expect(result.properties.has('message')).toBe(true)
@@ -866,16 +874,16 @@ describe('ExpressionNodeFactory', () => {
         arguments: [] as ValueExpr[],
       }
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FunctionASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(FunctionType.CONDITION)
       expect(result.raw).toBe(json)
 
-      expect(result.properties.has('name')).toBe(true)
-      expect(result.properties.get('name')).toBe('IsTrue')
-      expect(result.properties.has('arguments')).toBe(true)
+      expect(result.properties.name).toBe('IsTrue')
+      expect(result.properties.arguments).toBeDefined()
+      expect(Array.isArray(result.properties.arguments)).toBe(true)
     })
 
     it('should create a Function expression with Transformer type', () => {
@@ -885,10 +893,10 @@ describe('ExpressionNodeFactory', () => {
         arguments: [] as ValueExpr[],
       } satisfies TransformerFunctionExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FunctionASTNode
 
       expect(result.expressionType).toBe(FunctionType.TRANSFORMER)
-      expect(result.properties.get('name')).toBe('Uppercase')
+      expect(result.properties.name).toBe('Uppercase')
     })
 
     it('should create a Function expression with Effect type', () => {
@@ -898,10 +906,10 @@ describe('ExpressionNodeFactory', () => {
         arguments: [] as ValueExpr[],
       } satisfies EffectFunctionExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FunctionASTNode
 
       expect(result.expressionType).toBe(FunctionType.EFFECT)
-      expect(result.properties.get('name')).toBe('SaveData')
+      expect(result.properties.name).toBe('SaveData')
     })
 
     it('should create a Function expression with Generator type', () => {
@@ -911,10 +919,10 @@ describe('ExpressionNodeFactory', () => {
         arguments: [] as ValueExpr[],
       }
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FunctionASTNode
 
       expect(result.expressionType).toBe(FunctionType.GENERATOR)
-      expect(result.properties.get('name')).toBe('GenerateID')
+      expect(result.properties.name).toBe('GenerateID')
     })
 
     it('should transform literal arguments', () => {
@@ -924,8 +932,8 @@ describe('ExpressionNodeFactory', () => {
         arguments: ['value1', 42, true],
       } satisfies ConditionFunctionExpr
 
-      const result = expressionFactory.create(json)
-      const args = result.properties.get('arguments')
+      const result = expressionFactory.create(json) as FunctionASTNode
+      const args = result.properties.arguments
 
       expect(Array.isArray(args)).toBe(true)
       expect(args).toEqual(['value1', 42, true])
@@ -941,8 +949,8 @@ describe('ExpressionNodeFactory', () => {
         ],
       } satisfies ConditionFunctionExpr
 
-      const result = expressionFactory.create(json)
-      const args = result.properties.get('arguments')
+      const result = expressionFactory.create(json) as FunctionASTNode
+      const args = result.properties.arguments
 
       expect(args).toHaveLength(2)
 
@@ -964,8 +972,8 @@ describe('ExpressionNodeFactory', () => {
         ],
       } satisfies TransformerFunctionExpr
 
-      const result = expressionFactory.create(json)
-      const args = result.properties.get('arguments')
+      const result = expressionFactory.create(json) as FunctionASTNode
+      const args = result.properties.arguments
 
       expect(args).toHaveLength(3)
       expect(args[0]).toBe('searchString')
@@ -992,9 +1000,9 @@ describe('ExpressionNodeFactory', () => {
         ],
       } satisfies ConditionFunctionExpr
 
-      const result = expressionFactory.create(json)
+      const result = expressionFactory.create(json) as FunctionASTNode
 
-      const args = result.properties.get('arguments')
+      const args = result.properties.arguments
       expect(args).toHaveLength(2)
 
       // Nested functions should be transformed to AST nodes
@@ -1002,8 +1010,8 @@ describe('ExpressionNodeFactory', () => {
         expect(arg).toHaveProperty('id')
         expect(arg).toHaveProperty('type')
         expect(arg.type).toBe(ASTNodeType.EXPRESSION)
-        expect(arg.properties.has('name')).toBe(true)
-        expect(arg.properties.has('arguments')).toBe(true)
+        expect(arg.properties.name).toBeDefined()
+        expect(arg.properties.arguments).toBeDefined()
       })
     })
   })

@@ -139,11 +139,11 @@ describe('TransitionNodeFactory', () => {
       // Verify that effects were transformed into real AST nodes
       expect(effects[0].type).toBe(ASTNodeType.EXPRESSION)
       expect(effects[0].expressionType).toBe(FunctionType.EFFECT)
-      expect(effects[0].properties.get('name')).toBe('effect1')
+      expect(effects[0].properties.name).toBe('effect1')
 
       expect(effects[1].type).toBe(ASTNodeType.EXPRESSION)
       expect(effects[1].expressionType).toBe(FunctionType.EFFECT)
-      expect(effects[1].properties.get('name')).toBe('effect2')
+      expect(effects[1].properties.name).toBe('effect2')
     })
 
     it('should generate unique node IDs from the ID generator', () => {

@@ -22,6 +22,7 @@ import {
 import { ASTNode } from '@form-engine/core/types/engine.type'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
+import { FunctionExpr } from '@form-engine/form/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 
 /**
@@ -37,7 +38,7 @@ export class ExpressionNodeFactory {
   /**
    * Create an expression node based on the JSON type
    */
-  create(json: any): ExpressionASTNode {
+  create(json: any): ExpressionASTNode | FunctionASTNode {
     if (isReferenceExpr(json)) {
       return this.createReference(json)
     }
@@ -222,22 +223,20 @@ export class ExpressionNodeFactory {
    * Transform Function expression: Registered function calls
    * Types: Condition (boolean), Transformer (value), Effect (side-effect)
    */
-  private createFunction(json: any): FunctionASTNode {
+  private createFunction(json: FunctionExpr<any>): FunctionASTNode {
     const funcType = json.type
-    const properties = new Map<string, ASTNode | any>()
-
-    properties.set('name', json.name)
 
     // Transform arguments recursively
     const args = json.arguments.map((arg: any) => this.nodeFactory.transformValue(arg))
-
-    properties.set('arguments', args)
 
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.EXPRESSION,
       expressionType: funcType,
-      properties,
+      properties: {
+        name: json.name,
+        arguments: args,
+      },
       raw: json,
     }
   }

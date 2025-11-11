@@ -8,7 +8,6 @@ import { ASTNode } from '@form-engine/core/types/engine.type'
 export interface ExpressionASTNode extends ASTNode {
   type: ASTNodeType.EXPRESSION
   expressionType: ExpressionType | FunctionType | LogicType
-  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -16,6 +15,7 @@ export interface ExpressionASTNode extends ASTNode {
  */
 export interface ReferenceASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.REFERENCE
+  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -23,6 +23,7 @@ export interface ReferenceASTNode extends ExpressionASTNode {
  */
 export interface NextASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.NEXT
+  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -30,6 +31,7 @@ export interface NextASTNode extends ExpressionASTNode {
  */
 export interface PipelineASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.PIPELINE
+  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -37,6 +39,7 @@ export interface PipelineASTNode extends ExpressionASTNode {
  */
 export interface FormatASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.FORMAT
+  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -44,6 +47,7 @@ export interface FormatASTNode extends ExpressionASTNode {
  */
 export interface CollectionASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.COLLECTION
+  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -51,6 +55,7 @@ export interface CollectionASTNode extends ExpressionASTNode {
  */
 export interface ConditionalASTNode extends ExpressionASTNode {
   expressionType: LogicType.CONDITIONAL
+  properties: Map<string, ASTNode | any>
 }
 
 /**
@@ -64,8 +69,12 @@ export interface PredicateASTNode extends ExpressionASTNode {
 /**
  * Function Expression AST node
  */
-export interface FunctionASTNode extends ExpressionASTNode {
+export interface FunctionASTNode extends Omit<ExpressionASTNode, 'properties'> {
   expressionType: FunctionType
+  properties: {
+    name: string
+    arguments: (ASTNode | any)[]
+  }
 }
 
 /**
@@ -73,6 +82,7 @@ export interface FunctionASTNode extends ExpressionASTNode {
  */
 export interface ValidationASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.VALIDATION
+  properties: Map<string, ASTNode | any>
 }
 
 /**

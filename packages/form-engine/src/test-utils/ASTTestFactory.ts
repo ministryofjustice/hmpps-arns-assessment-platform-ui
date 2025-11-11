@@ -125,10 +125,10 @@ export class ASTTestFactory {
   }
 
   static functionExpression(type: FunctionType, name: string, args: unknown[] = []): FunctionASTNode {
-    return ASTTestFactory.expression(type)
+    return ASTTestFactory.expression<FunctionASTNode>(type)
       .withProperty('name', name)
       .withProperty('arguments', args)
-      .build() as FunctionASTNode
+      .build()
   }
 
   static predicate(type: LogicType, config: PredicateBuilderConfig = {}): PredicateASTNode {
@@ -702,11 +702,20 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
   build(): T {
     const nodeId = this.id ?? ASTTestFactory.getId()
 
+    // Convert Map to object for FunctionASTNode
+    const isFunctionType = Object.values(FunctionType).includes(this.expressionType as FunctionType)
+    const properties = isFunctionType
+      ? {
+          name: this.properties.get('name'),
+          arguments: this.properties.get('arguments'),
+        }
+      : this.properties
+
     return {
       type: ASTNodeType.EXPRESSION,
       id: nodeId,
       expressionType: this.expressionType,
-      properties: this.properties,
+      properties,
     } as T
   }
 }

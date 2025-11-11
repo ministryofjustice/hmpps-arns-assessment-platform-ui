@@ -3,6 +3,7 @@ import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { ExpressionType } from '@form-engine/form/types/enums'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
+import { PipelineASTNode, ReferenceASTNode } from '@form-engine/core/types/expressions.type'
 
 describe('ResolveSelfReferencesNormalizer', () => {
   let normalizer: ResolveSelfReferencesNormalizer
@@ -35,12 +36,12 @@ describe('ResolveSelfReferencesNormalizer', () => {
     })
 
     it('replaces @self with a deep-cloned code expression when code is dynamic', () => {
-      const codeExpr = ASTTestFactory.expression(ExpressionType.PIPELINE)
+      const codeExpr = ASTTestFactory.expression<PipelineASTNode>(ExpressionType.PIPELINE)
         .withId('compile_ast:3')
         .withSteps([{ name: 'trim' }])
         .build()
 
-      const ref = ASTTestFactory.expression(ExpressionType.REFERENCE)
+      const ref = ASTTestFactory.expression<ReferenceASTNode>(ExpressionType.REFERENCE)
         .withId('compile_ast:4')
         .withPath(['answers', '@self'])
         .build()
