@@ -12,7 +12,14 @@ import { ConditionalASTNode, PredicateASTNode } from '@form-engine/core/types/ex
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
-import { ConditionalExpr } from '@form-engine/form/types/expressions.type'
+import {
+  ConditionalExpr,
+  PredicateAndExpr,
+  PredicateNotExpr,
+  PredicateOrExpr,
+  PredicateTestExpr,
+  PredicateXorExpr,
+} from '@form-engine/form/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 
 /**
@@ -33,14 +40,16 @@ export class LogicNodeFactory {
       return this.createConditional(json)
     }
 
-    if (
-      isPredicateTestExpr(json) ||
-      isPredicateNotExpr(json) ||
-      isPredicateAndExpr(json) ||
-      isPredicateOrExpr(json) ||
-      isPredicateXorExpr(json)
-    ) {
-      return this.createPredicate(json)
+    if (isPredicateTestExpr(json)) {
+      return this.createTestPredicate(json)
+    }
+
+    if (isPredicateNotExpr(json)) {
+      return this.createNotPredicate(json)
+    }
+
+    if (isPredicateAndExpr(json) || isPredicateOrExpr(json) || isPredicateXorExpr(json)) {
+      return this.createLogicalPredicate(json)
     }
 
     throw new UnknownNodeTypeError({
@@ -79,32 +88,54 @@ export class LogicNodeFactory {
   }
 
   /**
-   * Transform Predicate expression: Boolean logic operators
-   * Handles TEST, AND, OR, XOR, NOT operations
+   * Transform TEST predicate: subject.condition with optional negation
    */
-  private createPredicate(json: any): PredicateASTNode {
-    const predicateType = json.type
+  private createTestPredicate(json: PredicateTestExpr): PredicateASTNode {
     const properties = new Map<string, any>()
 
-    // TEST: subject.condition with optional negation
-    if (isPredicateTestExpr(json)) {
-      properties.set('subject', this.nodeFactory.createNode(json.subject))
-      properties.set('negate', json.negate)
-      properties.set('condition', this.nodeFactory.createNode(json.condition))
-    } else if (isPredicateNotExpr(json)) {
-      // NOT: Single operand negation
-      properties.set('operand', this.nodeFactory.createNode(json.operand))
-    } else if (isPredicateAndExpr(json) || isPredicateOrExpr(json) || isPredicateXorExpr(json)) {
-      // AND/OR/XOR: Multiple operands (min 2)
-      const operands = json.operands.map((operand: any) => this.nodeFactory.createNode(operand))
-
-      properties.set('operands', operands)
-    }
+    properties.set('subject', this.nodeFactory.createNode(json.subject))
+    properties.set('negate', json.negate)
+    properties.set('condition', this.nodeFactory.createNode(json.condition))
 
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.EXPRESSION,
-      expressionType: predicateType,
+      expressionType: LogicType.TEST,
+      properties,
+      raw: json,
+    }
+  }
+
+  /**
+   * Transform NOT predicate: Single operand negation
+   */
+  private createNotPredicate(json: PredicateNotExpr): PredicateASTNode {
+    const properties = new Map<string, any>()
+
+    properties.set('operand', this.nodeFactory.createNode(json.operand))
+
+    return {
+      id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
+      type: ASTNodeType.EXPRESSION,
+      expressionType: LogicType.NOT,
+      properties,
+      raw: json,
+    }
+  }
+
+  /**
+   * Transform AND/OR/XOR predicate: Multiple operands (min 2)
+   */
+  private createLogicalPredicate(json: PredicateAndExpr | PredicateOrExpr | PredicateXorExpr): PredicateASTNode {
+    const properties = new Map<string, any>()
+    const operands = json.operands.map((operand: any) => this.nodeFactory.createNode(operand))
+
+    properties.set('operands', operands)
+
+    return {
+      id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
+      type: ASTNodeType.EXPRESSION,
+      expressionType: json.type,
       properties,
       raw: json,
     }
