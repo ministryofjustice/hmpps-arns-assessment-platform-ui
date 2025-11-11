@@ -456,21 +456,21 @@ describe('PseudoNodeTraverser', () => {
           id: 'compile_ast:1',
           type: ASTNodeType.EXPRESSION,
           expressionType: ExpressionType.REFERENCE,
-          properties: new Map([['path', ['query']]]),
+          properties: { path: ['query'] },
         }
 
         const nonArrayRef: ReferenceASTNode = {
           id: 'compile_ast:2',
           type: ASTNodeType.EXPRESSION,
           expressionType: ExpressionType.REFERENCE,
-          properties: new Map([['path', 'query.returnUrl']]),
+          properties: { path: ['query.returnUrl'] },
         }
 
         const nonStringKeyRef: ReferenceASTNode = {
           id: 'compile_ast:3',
           type: ASTNodeType.EXPRESSION,
           expressionType: ExpressionType.REFERENCE,
-          properties: new Map([['path', ['query', 123]]]),
+          properties: { path: ['query', 123] },
         }
 
         when(mockNodeRegistry.findByType)

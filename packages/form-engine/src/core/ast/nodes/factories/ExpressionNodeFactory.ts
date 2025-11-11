@@ -232,13 +232,13 @@ export class ExpressionNodeFactory {
    * Contains optional condition and destination path
    */
   private createNext(json: any): NextASTNode {
-    const properties = new Map<string, ASTNode | any>()
-
-    if (json.when) {
-      properties.set('when', this.nodeFactory.createNode(json.when))
+    const properties: { when?: ASTNode; goto: ASTNode | any } = {
+      goto: this.nodeFactory.transformValue(json.goto),
     }
 
-    properties.set('goto', this.nodeFactory.transformValue(json.goto))
+    if (json.when) {
+      properties.when = this.nodeFactory.createNode(json.when)
+    }
 
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
