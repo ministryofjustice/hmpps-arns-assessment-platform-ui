@@ -10,7 +10,9 @@ import { ASTNodeType } from '@form-engine/core/types/enums'
 import { LogicType } from '@form-engine/form/types/enums'
 import { ConditionalASTNode, PredicateASTNode } from '@form-engine/core/types/expressions.type'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
+import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
+import { ConditionalExpr } from '@form-engine/form/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 
 /**
@@ -51,27 +53,27 @@ export class LogicNodeFactory {
   /**
    * Transform Conditional expression: If-then-else logic
    * Evaluates predicate to choose between two values
+   * Defaults: thenValue = true, elseValue = false
    */
-  private createConditional(json: any): ConditionalASTNode {
-    const properties = new Map<string, any>()
-
-    if (json.predicate) {
-      properties.set('predicate', this.nodeFactory.createNode(json.predicate))
-    }
-
-    if (json.thenValue !== undefined) {
-      properties.set('thenValue', this.nodeFactory.transformValue(json.thenValue))
-    }
-
-    if (json.elseValue !== undefined) {
-      properties.set('elseValue', this.nodeFactory.transformValue(json.elseValue))
+  private createConditional(json: ConditionalExpr): ConditionalASTNode {
+    if (!json.predicate) {
+      throw new InvalidNodeError({
+        message: 'Conditional expression requires a predicate',
+        node: json,
+        expected: 'predicate property',
+        actual: 'undefined',
+      })
     }
 
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.EXPRESSION,
       expressionType: LogicType.CONDITIONAL,
-      properties,
+      properties: {
+        predicate: this.nodeFactory.createNode(json.predicate),
+        thenValue: json.thenValue !== undefined ? this.nodeFactory.transformValue(json.thenValue) : true,
+        elseValue: json.elseValue !== undefined ? this.nodeFactory.transformValue(json.elseValue) : false,
+      },
       raw: json,
     }
   }

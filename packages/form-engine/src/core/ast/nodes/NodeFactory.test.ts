@@ -643,6 +643,12 @@ describe('NodeFactory', () => {
       it('should transform Conditional expressions', () => {
         const json = {
           type: LogicType.CONDITIONAL,
+          predicate: {
+            type: LogicType.TEST,
+            subject: { type: ExpressionType.REFERENCE, path: ['field'] },
+            negate: false,
+            condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
+          } satisfies PredicateTestExpr,
           thenValue: 'yes',
           elseValue: 'no',
         }
@@ -933,7 +939,7 @@ describe('NodeFactory', () => {
 
       expect(result.expressionType).toBe(LogicType.CONDITIONAL)
 
-      const predicate = result.properties.get('predicate')
+      const predicate = result.properties.predicate as PredicateASTNode
       expect(predicate.expressionType).toBe(LogicType.AND)
 
       const operands = predicate.properties.get('operands')
@@ -941,11 +947,11 @@ describe('NodeFactory', () => {
       expect(operands[0].expressionType).toBe(LogicType.TEST)
       expect(operands[1].expressionType).toBe(LogicType.NOT)
 
-      const thenValue = result.properties.get('thenValue')
+      const thenValue = result.properties.thenValue
       expect(thenValue.type).toBe(ASTNodeType.EXPRESSION)
       expect(thenValue.expressionType).toBe(ExpressionType.REFERENCE)
 
-      const elseValue = result.properties.get('elseValue')
+      const elseValue = result.properties.elseValue
       expect(elseValue.type).toBe(ASTNodeType.EXPRESSION)
       expect(elseValue.expressionType).toBe(ExpressionType.REFERENCE)
     })

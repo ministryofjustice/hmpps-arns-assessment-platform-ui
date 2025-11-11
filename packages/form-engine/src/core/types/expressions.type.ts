@@ -68,9 +68,13 @@ export interface CollectionASTNode extends Omit<ExpressionASTNode, 'properties'>
 /**
  * Conditional Expression AST node
  */
-export interface ConditionalASTNode extends ExpressionASTNode {
+export interface ConditionalASTNode extends Omit<ExpressionASTNode, 'properties'> {
   expressionType: LogicType.CONDITIONAL
-  properties: Map<string, ASTNode | any>
+  properties: {
+    predicate: ASTNode
+    thenValue?: ASTNode | any
+    elseValue?: ASTNode | any
+  }
 }
 
 /**

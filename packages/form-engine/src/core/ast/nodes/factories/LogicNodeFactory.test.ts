@@ -11,7 +11,8 @@ import type {
 } from '@form-engine/form/types/expressions.type'
 import { NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
-import { ExpressionASTNode } from '@form-engine/core/types/expressions.type'
+import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
+import { ConditionalASTNode, ExpressionASTNode, PredicateASTNode } from '@form-engine/core/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 import { LogicNodeFactory } from './LogicNodeFactory'
 
@@ -40,14 +41,14 @@ describe('LogicNodeFactory', () => {
         elseValue: 'no',
       } satisfies ConditionalExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as ConditionalASTNode
 
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(LogicType.CONDITIONAL)
       expect(result.raw).toBe(json)
       expect(result.id).toBeDefined()
 
-      expect(result.properties.has('predicate')).toBe(true)
+      expect(result.properties.predicate).toBeDefined()
     })
 
     it('should route to createPredicate for Test predicates', () => {
@@ -198,16 +199,16 @@ describe('LogicNodeFactory', () => {
         elseValue: 'no',
       } satisfies ConditionalExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as ConditionalASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(LogicType.CONDITIONAL)
       expect(result.raw).toBe(json)
 
-      expect(result.properties.has('predicate')).toBe(true)
-      expect(result.properties.has('thenValue')).toBe(true)
-      expect(result.properties.has('elseValue')).toBe(true)
+      expect(result.properties.predicate).toBeDefined()
+      expect(result.properties.thenValue).toBeDefined()
+      expect(result.properties.elseValue).toBeDefined()
     })
 
     it('should transform predicate using real nodeFactory', () => {
@@ -225,8 +226,8 @@ describe('LogicNodeFactory', () => {
         elseValue: 'no',
       } satisfies ConditionalExpr
 
-      const result = logicFactory.create(json)
-      const predicate = result.properties.get('predicate')
+      const result = logicFactory.create(json) as ConditionalASTNode
+      const predicate = result.properties.predicate as PredicateASTNode
 
       expect(predicate.type).toBe(ASTNodeType.EXPRESSION)
       expect(predicate.expressionType).toBe(LogicType.TEST)
@@ -245,10 +246,10 @@ describe('LogicNodeFactory', () => {
         elseValue: 'literalElse',
       } satisfies ConditionalExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as ConditionalASTNode
 
-      expect(result.properties.get('thenValue')).toBe('literalThen')
-      expect(result.properties.get('elseValue')).toBe('literalElse')
+      expect(result.properties.thenValue).toBe('literalThen')
+      expect(result.properties.elseValue).toBe('literalElse')
     })
 
     it('should transform expression thenValue and elseValue', () => {
@@ -264,31 +265,17 @@ describe('LogicNodeFactory', () => {
         elseValue: { type: ExpressionType.REFERENCE, path: ['elseField'] },
       } satisfies ConditionalExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as ConditionalASTNode
 
-      const thenValue = result.properties.get('thenValue')
-      const elseValue = result.properties.get('elseValue')
+      const thenValue = result.properties.thenValue
+      const elseValue = result.properties.elseValue
 
       expect(thenValue.type).toBe(ASTNodeType.EXPRESSION)
 
       expect(elseValue.type).toBe(ASTNodeType.EXPRESSION)
     })
 
-    it('should handle conditional without predicate', () => {
-      const json = {
-        type: LogicType.CONDITIONAL,
-        thenValue: 'yes',
-        elseValue: 'no',
-      }
-
-      const result = logicFactory.create(json)
-
-      expect(result.properties.has('predicate')).toBe(false)
-      expect(result.properties.has('thenValue')).toBe(true)
-      expect(result.properties.has('elseValue')).toBe(true)
-    })
-
-    it('should handle conditional without thenValue', () => {
+    it('should default thenValue to true when omitted', () => {
       const json = {
         type: LogicType.CONDITIONAL,
         predicate: {
@@ -300,14 +287,14 @@ describe('LogicNodeFactory', () => {
         elseValue: 'no',
       }
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as ConditionalASTNode
 
-      expect(result.properties.has('predicate')).toBe(true)
-      expect(result.properties.has('thenValue')).toBe(false)
-      expect(result.properties.has('elseValue')).toBe(true)
+      expect(result.properties.predicate).toBeDefined()
+      expect(result.properties.thenValue).toBe(true)
+      expect(result.properties.elseValue).toBe('no')
     })
 
-    it('should handle conditional without elseValue', () => {
+    it('should default elseValue to false when omitted', () => {
       const json = {
         type: LogicType.CONDITIONAL,
         predicate: {
@@ -319,45 +306,43 @@ describe('LogicNodeFactory', () => {
         thenValue: 'yes',
       }
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as ConditionalASTNode
 
-      expect(result.properties.has('predicate')).toBe(true)
-      expect(result.properties.has('thenValue')).toBe(true)
-      expect(result.properties.has('elseValue')).toBe(false)
-    })
-
-    it('should not store undefined values explicitly set', () => {
-      const json = {
-        type: LogicType.CONDITIONAL,
-        predicate: {
-          type: LogicType.TEST,
-          subject: { type: ExpressionType.REFERENCE, path: ['field'] },
-          negate: false,
-          condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
-        } satisfies PredicateTestExpr,
-        thenValue: undefined as ValueExpr | undefined,
-        elseValue: undefined as ValueExpr | undefined,
-      }
-
-      const result = logicFactory.create(json)
-
-      expect(result.properties.has('thenValue')).toBe(false)
-      expect(result.properties.has('elseValue')).toBe(false)
+      expect(result.properties.predicate).toBeDefined()
+      expect(result.properties.thenValue).toBe('yes')
+      expect(result.properties.elseValue).toBe(false)
     })
 
     it('should generate unique node IDs', () => {
       const json = {
         type: LogicType.CONDITIONAL,
+        predicate: {
+          type: LogicType.TEST,
+          subject: { type: ExpressionType.REFERENCE, path: ['field'] },
+          negate: false,
+          condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
+        } satisfies PredicateTestExpr,
         thenValue: 'yes',
         elseValue: 'no',
       }
 
-      const result1 = logicFactory.create(json)
-      const result2 = logicFactory.create(json)
+      const result1 = logicFactory.create(json) as ConditionalASTNode
+      const result2 = logicFactory.create(json) as ConditionalASTNode
 
       expect(result1.id).toBeDefined()
       expect(result2.id).toBeDefined()
       expect(result1.id).not.toBe(result2.id)
+    })
+
+    it('should throw InvalidNodeError when predicate is missing', () => {
+      const json = {
+        type: LogicType.CONDITIONAL,
+        thenValue: 'yes',
+        elseValue: 'no',
+      } as any
+
+      expect(() => logicFactory.create(json)).toThrow(InvalidNodeError)
+      expect(() => logicFactory.create(json)).toThrow('Conditional expression requires a predicate')
     })
   })
 
@@ -370,7 +355,7 @@ describe('LogicNodeFactory', () => {
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       } satisfies PredicateTestExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
@@ -390,7 +375,7 @@ describe('LogicNodeFactory', () => {
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       } satisfies PredicateTestExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
       const subject = result.properties.get('subject')
 
       expect(subject.type).toBe(ASTNodeType.EXPRESSION)
@@ -405,7 +390,7 @@ describe('LogicNodeFactory', () => {
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       } satisfies PredicateTestExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
       const condition = result.properties.get('condition')
 
       expect(condition.type).toBe(ASTNodeType.EXPRESSION)
@@ -420,7 +405,7 @@ describe('LogicNodeFactory', () => {
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       } satisfies PredicateTestExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
 
       expect(result.properties.get('negate')).toBe(true)
     })
@@ -433,7 +418,7 @@ describe('LogicNodeFactory', () => {
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       } satisfies PredicateTestExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
 
       expect(result.properties.get('negate')).toBe(false)
     })
@@ -445,7 +430,7 @@ describe('LogicNodeFactory', () => {
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       }
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
 
       expect(result.properties.get('negate')).toBeUndefined()
     })
@@ -463,7 +448,7 @@ describe('LogicNodeFactory', () => {
         } satisfies PredicateTestExpr,
       } satisfies PredicateNotExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
@@ -483,7 +468,7 @@ describe('LogicNodeFactory', () => {
         } satisfies PredicateTestExpr,
       } satisfies PredicateNotExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
       const operand = result.properties.get('operand')
 
       expect(operand.type).toBe(ASTNodeType.EXPRESSION)
@@ -504,7 +489,7 @@ describe('LogicNodeFactory', () => {
         } satisfies PredicateNotExpr,
       } satisfies PredicateNotExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
       const outerOperand = result.properties.get('operand')
       const innerOperand = outerOperand.properties.get('operand')
 
@@ -533,7 +518,7 @@ describe('LogicNodeFactory', () => {
         ],
       } satisfies PredicateAndExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
       const operands = result.properties.get('operands')
 
       expect(result.id).toBeDefined()
@@ -565,7 +550,7 @@ describe('LogicNodeFactory', () => {
         ],
       } satisfies PredicateAndExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
       const operands = result.properties.get('operands')
 
       operands.forEach((operand: ExpressionASTNode) => {
@@ -593,7 +578,7 @@ describe('LogicNodeFactory', () => {
         ],
       } satisfies PredicateOrExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
       const operands = result.properties.get('operands')
 
       expect(result.expressionType).toBe(LogicType.OR)
@@ -619,7 +604,7 @@ describe('LogicNodeFactory', () => {
         ],
       } satisfies PredicateXorExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
       const operands = result.properties.get('operands')
 
       expect(result.expressionType).toBe(LogicType.XOR)
@@ -656,7 +641,7 @@ describe('LogicNodeFactory', () => {
         ],
       } satisfies PredicateAndExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
       const operands = result.properties.get('operands')
 
       expect(operands[0].expressionType).toBe(LogicType.AND)
@@ -702,7 +687,7 @@ describe('LogicNodeFactory', () => {
         ],
       } satisfies PredicateAndExpr
 
-      const result = logicFactory.create(json)
+      const result = logicFactory.create(json) as PredicateASTNode
       const operands = result.properties.get('operands')
 
       expect(operands).toHaveLength(3)
