@@ -118,8 +118,11 @@ export interface TransitionASTNode extends ASTNode {
 /**
  * Load Transition AST node
  */
-export interface LoadTransitionASTNode extends TransitionASTNode {
+export interface LoadTransitionASTNode extends Omit<TransitionASTNode, 'properties'> {
   transitionType: TransitionType.LOAD
+  properties: {
+    effects: ASTNode[]
+  }
 }
 
 /**

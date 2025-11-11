@@ -5,11 +5,11 @@ import {
   AccessTransitionASTNode,
   LoadTransitionASTNode,
   SubmitTransitionASTNode,
-  TransitionASTNode,
 } from '@form-engine/core/types/expressions.type'
 import { ASTNode } from '@form-engine/core/types/engine.type'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
+import { LoadTransition } from '@form-engine/form/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 
 /**
@@ -26,7 +26,7 @@ export class TransitionNodeFactory {
    * Transform Transition node: Lifecycle event handlers
    * Routes to specific transition type (Load, Access, Submit)
    */
-  create(json: any): TransitionASTNode {
+  create(json: any): LoadTransitionASTNode | AccessTransitionASTNode | SubmitTransitionASTNode {
     if (isLoadTransition(json)) {
       return this.createLoadTransition(json)
     }
@@ -50,18 +50,16 @@ export class TransitionNodeFactory {
    * Transform Load transition: Data loading on step/journey access
    * Executes effects before rendering
    */
-  private createLoadTransition(json: any): LoadTransitionASTNode {
-    const properties = new Map<string, ASTNode | any>()
-
+  private createLoadTransition(json: LoadTransition): LoadTransitionASTNode {
     const effects = json.effects.map((effect: any) => this.nodeFactory.createNode(effect))
-
-    properties.set('effects', effects)
 
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.TRANSITION,
       transitionType: TransitionType.LOAD,
-      properties,
+      properties: {
+        effects,
+      },
       raw: json,
     }
   }

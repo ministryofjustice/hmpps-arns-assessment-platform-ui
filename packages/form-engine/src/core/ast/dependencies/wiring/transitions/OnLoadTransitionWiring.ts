@@ -139,7 +139,7 @@ export default class OnLoadTransitionWiring {
    * Note: Effect arguments are wired by FunctionExpressionWiring since effects are FunctionASTNodes
    */
   private wireTransitionEffects(transition: LoadTransitionASTNode) {
-    const effects = transition.properties.get('effects') as FunctionASTNode[]
+    const effects = transition.properties.effects as FunctionASTNode[]
 
     if (!Array.isArray(effects)) {
       return

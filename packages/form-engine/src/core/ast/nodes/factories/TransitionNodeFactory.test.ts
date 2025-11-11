@@ -1,7 +1,12 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { TransitionType, FunctionType, LogicType, ExpressionType } from '@form-engine/form/types/enums'
 import { NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
-import { FunctionASTNode } from '@form-engine/core/types/expressions.type'
+import {
+  FunctionASTNode,
+  SubmitTransitionASTNode,
+  LoadTransitionASTNode,
+  AccessTransitionASTNode,
+} from '@form-engine/core/types/expressions.type'
 import {
   LoadTransition,
   AccessTransition,
@@ -33,13 +38,13 @@ describe('TransitionNodeFactory', () => {
         effects: [{ type: FunctionType.EFFECT, name: 'loadData', arguments: [] as ValueExpr[] }],
       } satisfies LoadTransition
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as LoadTransitionASTNode
 
       expect(result.type).toBe(ASTNodeType.TRANSITION)
       expect(result.transitionType).toBe(TransitionType.LOAD)
       expect(result.raw).toBe(json)
       expect(result.id).toBeDefined()
-      expect(result.properties.has('effects')).toBe(true)
+      expect(result.properties.effects !== undefined).toBe(true)
     })
 
     it('should route to createAccessTransition for Access transitions', () => {
@@ -53,7 +58,7 @@ describe('TransitionNodeFactory', () => {
         } satisfies PredicateTestExpr,
       } satisfies AccessTransition
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as AccessTransitionASTNode
 
       expect(result.type).toBe(ASTNodeType.TRANSITION)
       expect(result.transitionType).toBe(TransitionType.ACCESS)
@@ -92,14 +97,14 @@ describe('TransitionNodeFactory', () => {
         ],
       } satisfies LoadTransition
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as LoadTransitionASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.TRANSITION)
       expect(result.transitionType).toBe(TransitionType.LOAD)
-      expect(result.properties.has('effects')).toBe(true)
+      expect(result.properties.effects !== undefined).toBe(true)
 
-      const effects = result.properties.get('effects') as FunctionASTNode[]
+      const effects = result.properties.effects as FunctionASTNode[]
       expect(Array.isArray(effects)).toBe(true)
       expect(effects).toHaveLength(2)
 
@@ -131,9 +136,9 @@ describe('TransitionNodeFactory', () => {
         effects: [effect1, effect2],
       } satisfies LoadTransition
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as LoadTransitionASTNode
 
-      const effects = result.properties.get('effects')
+      const effects = result.properties.effects as FunctionASTNode[]
       expect(effects).toHaveLength(2)
 
       // Verify that effects were transformed into real AST nodes
@@ -173,7 +178,7 @@ describe('TransitionNodeFactory', () => {
         guards,
       } satisfies AccessTransition
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as AccessTransitionASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.TRANSITION)
@@ -195,7 +200,7 @@ describe('TransitionNodeFactory', () => {
         effects: [{ type: FunctionType.EFFECT, name: 'trackPageView', arguments: [] as ValueExpr[] }],
       } satisfies AccessTransition
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as AccessTransitionASTNode
 
       expect(result.properties.has('effects')).toBe(true)
       const effects = result.properties.get('effects')
@@ -224,7 +229,7 @@ describe('TransitionNodeFactory', () => {
         ],
       } satisfies AccessTransition
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as AccessTransitionASTNode
 
       expect(result.properties.has('redirect')).toBe(true)
       const redirect = result.properties.get('redirect')
@@ -260,7 +265,7 @@ describe('TransitionNodeFactory', () => {
         ],
       } satisfies AccessTransition
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as AccessTransitionASTNode
 
       expect(result.properties.has('guards')).toBe(true)
       expect(result.properties.has('effects')).toBe(true)
@@ -277,7 +282,7 @@ describe('TransitionNodeFactory', () => {
         type: TransitionType.ACCESS,
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as AccessTransitionASTNode
 
       expect(result.properties.has('guards')).toBe(false)
       expect(result.properties.has('effects')).toBe(false)
@@ -290,7 +295,7 @@ describe('TransitionNodeFactory', () => {
         effects: 'not-an-array',
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as AccessTransitionASTNode
 
       expect(result.properties.has('effects')).toBe(false)
     })
@@ -301,7 +306,7 @@ describe('TransitionNodeFactory', () => {
         redirect: 'not-an-array',
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as AccessTransitionASTNode
 
       expect(result.properties.has('redirect')).toBe(false)
     })
@@ -320,7 +325,7 @@ describe('TransitionNodeFactory', () => {
         when,
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.TRANSITION)
@@ -344,7 +349,7 @@ describe('TransitionNodeFactory', () => {
         guards,
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       expect(result.properties.has('guards')).toBe(true)
 
@@ -359,7 +364,7 @@ describe('TransitionNodeFactory', () => {
         validate: true,
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       expect(result.properties.get('validate')).toBe(true)
     })
@@ -370,7 +375,7 @@ describe('TransitionNodeFactory', () => {
         validate: false,
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       expect(result.properties.get('validate')).toBe(false)
     })
@@ -381,11 +386,15 @@ describe('TransitionNodeFactory', () => {
         validate: true, // Must be explicit for typeguard
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
+
       expect(result.properties.get('validate')).toBe(true)
 
       // Test that the implementation correctly sets false when explicit
-      const result2 = transitionFactory.create({ type: TransitionType.SUBMIT, validate: false })
+      const result2 = transitionFactory.create({
+        type: TransitionType.SUBMIT,
+        validate: false,
+      }) as SubmitTransitionASTNode
       expect(result2.properties.get('validate')).toBe(false)
     })
 
@@ -399,7 +408,7 @@ describe('TransitionNodeFactory', () => {
         },
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       expect(result.properties.has('onAlways')).toBe(true)
       const onAlways = result.properties.get('onAlways')
@@ -423,7 +432,7 @@ describe('TransitionNodeFactory', () => {
         },
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       expect(result.properties.has('onValid')).toBe(true)
       const onValid = result.properties.get('onValid')
@@ -445,7 +454,7 @@ describe('TransitionNodeFactory', () => {
         },
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       expect(result.properties.has('onInvalid')).toBe(true)
       const onInvalid = result.properties.get('onInvalid')
@@ -473,7 +482,7 @@ describe('TransitionNodeFactory', () => {
         },
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       expect(result.properties.has('onAlways')).toBe(true)
       expect(result.properties.has('onValid')).toBe(true)
@@ -495,7 +504,7 @@ describe('TransitionNodeFactory', () => {
         },
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       const onAlways = result.properties.get('onAlways')
       expect(onAlways).toHaveProperty('effects')
@@ -511,7 +520,7 @@ describe('TransitionNodeFactory', () => {
         },
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       const onValid = result.properties.get('onValid')
       expect(onValid).toHaveProperty('next')
@@ -524,7 +533,7 @@ describe('TransitionNodeFactory', () => {
         validate: true,
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       expect(result.properties.has('onAlways')).toBe(false)
       expect(result.properties.has('onValid')).toBe(false)
@@ -540,7 +549,7 @@ describe('TransitionNodeFactory', () => {
         },
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       const onAlways = result.properties.get('onAlways')
       expect(onAlways).not.toHaveProperty('effects')
@@ -555,7 +564,7 @@ describe('TransitionNodeFactory', () => {
         },
       }
 
-      const result = transitionFactory.create(json)
+      const result = transitionFactory.create(json) as SubmitTransitionASTNode
 
       const onValid = result.properties.get('onValid')
       expect(onValid).not.toHaveProperty('next')

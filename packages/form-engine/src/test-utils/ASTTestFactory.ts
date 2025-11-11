@@ -6,7 +6,9 @@ import {
   FunctionASTNode,
   PredicateASTNode,
   ReferenceASTNode,
-  TransitionASTNode,
+  LoadTransitionASTNode,
+  AccessTransitionASTNode,
+  SubmitTransitionASTNode,
 } from '@form-engine/core/types/expressions.type'
 import { BlockASTNode, JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
 import { ASTNodeType } from '@form-engine/core/types/enums'
@@ -802,14 +804,30 @@ export class TransitionBuilder {
     return this
   }
 
-  build(): TransitionASTNode {
+  build(): LoadTransitionASTNode | AccessTransitionASTNode | SubmitTransitionASTNode {
     const nodeId = this.id ?? ASTTestFactory.getId()
+
+    // TODO: Simplify this once all AST transition nodes have been migrated to use plain object properties
+    //  Currently we need to convert Map to object for migrated node types during the transition period
+    //  After migration is complete, remove all these conditionals and always use object properties directly
+
+    const isLoadType = this.transitionType === TransitionType.LOAD
+
+    let properties
+    if (isLoadType) {
+      properties = {
+        effects: this.properties.get('effects'),
+      }
+    } else {
+      // Legacy transition nodes still using Map properties (will be removed after migration)
+      properties = this.properties
+    }
 
     return {
       type: ASTNodeType.TRANSITION,
       id: nodeId,
       transitionType: this.transitionType,
-      properties: this.properties,
-    } as TransitionASTNode
+      properties,
+    } as LoadTransitionASTNode | AccessTransitionASTNode | SubmitTransitionASTNode
   }
 }
