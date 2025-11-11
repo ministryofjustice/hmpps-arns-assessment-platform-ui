@@ -32,9 +32,9 @@ export class AttachValidationBlockCodeNormalizer implements StructuralVisitor {
     const resolvedCode = resolveBlockCode(owningBlock)
 
     if (resolvedCode === undefined) {
-      node.properties.delete('resolvedBlockCode')
+      delete node.properties.resolvedBlockCode
     } else {
-      node.properties.set('resolvedBlockCode', resolvedCode)
+      node.properties.resolvedBlockCode = resolvedCode
     }
 
     return StructuralVisitResult.CONTINUE
@@ -60,7 +60,7 @@ function findOwningBlock(ancestors: any[]): BlockASTNode | undefined {
   return undefined
 }
 
-function resolveBlockCode(block: BlockASTNode): string | unknown | undefined {
+function resolveBlockCode(block: BlockASTNode): string | ASTNode | undefined {
   const { properties } = block
 
   const code = properties.get('code')

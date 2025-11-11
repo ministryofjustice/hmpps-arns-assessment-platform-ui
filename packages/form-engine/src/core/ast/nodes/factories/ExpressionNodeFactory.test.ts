@@ -681,8 +681,8 @@ describe('ExpressionNodeFactory', () => {
       expect(result.expressionType).toBe(ExpressionType.VALIDATION)
       expect(result.raw).toBe(json)
 
-      expect(result.properties.has('message')).toBe(true)
-      expect(result.properties.get('message')).toBe('Field is required')
+      expect(result.properties.message !== undefined).toBe(true)
+      expect(result.properties.message).toBe('Field is required')
     })
 
     it('should create a Validation expression with when condition', () => {
@@ -704,11 +704,11 @@ describe('ExpressionNodeFactory', () => {
       } satisfies ValidationExpr
 
       const result = expressionFactory.create(json) as ValidationASTNode
-      const when = result.properties.get('when')
+      const when = result.properties.when
 
       expect(result.id).toBeDefined()
       expect(when.type).toBe(ASTNodeType.EXPRESSION)
-      expect(result.properties.has('when')).toBe(true)
+      expect(result.properties.when !== undefined).toBe(true)
     })
 
     it('should set submissionOnly flag when provided', () => {
@@ -730,8 +730,8 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as ValidationASTNode
 
-      expect(result.properties.has('submissionOnly')).toBe(true)
-      expect(result.properties.get('submissionOnly')).toBe(true)
+      expect(result.properties.submissionOnly !== undefined).toBe(true)
+      expect(result.properties.submissionOnly).toBe(true)
     })
 
     it('should set submissionOnly to false when explicitly false', () => {
@@ -753,11 +753,11 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as ValidationASTNode
 
-      expect(result.properties.has('submissionOnly')).toBe(true)
-      expect(result.properties.get('submissionOnly')).toBe(false)
+      expect(result.properties.submissionOnly !== undefined).toBe(true)
+      expect(result.properties.submissionOnly).toBe(false)
     })
 
-    it('should not set submissionOnly when undefined', () => {
+    it('should default submissionOnly to false when undefined', () => {
       const json = {
         type: ExpressionType.VALIDATION,
         message: 'Error',
@@ -775,7 +775,7 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as ValidationASTNode
 
-      expect(result.properties.has('submissionOnly')).toBe(false)
+      expect(result.properties.submissionOnly).toBe(false)
     })
 
     it('should set details when provided', () => {
@@ -797,8 +797,8 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as ValidationASTNode
 
-      expect(result.properties.has('details')).toBe(true)
-      expect(result.properties.get('details')).toEqual({
+      expect(result.properties.details !== undefined).toBe(true)
+      expect(result.properties.details).toEqual({
         code: 'VALIDATION_001',
         severity: 'error',
       })
@@ -822,7 +822,7 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as ValidationASTNode
 
-      expect(result.properties.has('details')).toBe(false)
+      expect(result.properties.details !== undefined).toBe(false)
     })
 
     it('should default message to empty string when not provided', () => {
@@ -843,7 +843,7 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as ValidationASTNode
 
-      expect(result.properties.get('message')).toBe('')
+      expect(result.properties.message).toBe('')
     })
 
     it('should create a Validation expression with all properties', () => {
@@ -866,14 +866,14 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as ValidationASTNode
 
-      expect(result.properties.has('when')).toBe(true)
-      expect(result.properties.has('message')).toBe(true)
-      expect(result.properties.has('submissionOnly')).toBe(true)
-      expect(result.properties.has('details')).toBe(true)
+      expect(result.properties.when !== undefined).toBe(true)
+      expect(result.properties.message !== undefined).toBe(true)
+      expect(result.properties.submissionOnly !== undefined).toBe(true)
+      expect(result.properties.details !== undefined).toBe(true)
 
-      expect(result.properties.get('message')).toBe('Custom error message')
-      expect(result.properties.get('submissionOnly')).toBe(true)
-      expect(result.properties.get('details')).toEqual({ code: 'ERR_001' })
+      expect(result.properties.message).toBe('Custom error message')
+      expect(result.properties.submissionOnly).toBe(true)
+      expect(result.properties.details).toEqual({ code: 'ERR_001' })
     })
   })
 

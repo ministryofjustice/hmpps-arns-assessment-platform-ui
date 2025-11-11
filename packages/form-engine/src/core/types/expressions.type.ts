@@ -95,9 +95,15 @@ export interface FunctionASTNode extends Omit<ExpressionASTNode, 'properties'> {
 /**
  * Validation Expression AST node
  */
-export interface ValidationASTNode extends ExpressionASTNode {
+export interface ValidationASTNode extends Omit<ExpressionASTNode, 'properties'> {
   expressionType: ExpressionType.VALIDATION
-  properties: Map<string, ASTNode | any>
+  properties: {
+    when: ASTNode // Required: the predicate that determines if validation passes
+    message: ASTNode | string // Can be a plain string or a ConditionalString expression
+    submissionOnly?: boolean
+    details?: Record<string, any>
+    resolvedBlockCode?: string | ASTNode // Computed during normalization
+  }
 }
 
 /**

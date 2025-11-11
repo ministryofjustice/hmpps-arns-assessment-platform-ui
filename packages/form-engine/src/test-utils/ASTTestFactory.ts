@@ -706,13 +706,14 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
     //  Currently we need to convert Map to object for migrated node types during the transition period
     //  After migration is complete, remove all these conditionals and always use object properties directly
 
-    // Convert Map to object for migrated nodes: FunctionASTNode, PipelineASTNode, ReferenceASTNode, NextASTNode, FormatASTNode, and CollectionASTNode
+    // Convert Map to object for migrated nodes: FunctionASTNode, PipelineASTNode, ReferenceASTNode, NextASTNode, FormatASTNode, CollectionASTNode, and ValidationASTNode
     const isFunctionType = Object.values(FunctionType).includes(this.expressionType as FunctionType)
     const isPipelineType = this.expressionType === ExpressionType.PIPELINE
     const isReferenceType = this.expressionType === ExpressionType.REFERENCE
     const isNextType = this.expressionType === ExpressionType.NEXT
     const isFormatType = this.expressionType === ExpressionType.FORMAT
     const isCollectionType = this.expressionType === ExpressionType.COLLECTION
+    const isValidationType = this.expressionType === ExpressionType.VALIDATION
 
     let properties
     if (isFunctionType) {
@@ -753,6 +754,20 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
         collectionProperties.fallback = fallback
       }
       properties = collectionProperties
+    } else if (isValidationType) {
+      const validationProperties: { when: any; message: any; submissionOnly?: boolean; details?: any } = {
+        when: this.properties.get('when'),
+        message: this.properties.get('message'),
+      }
+      const submissionOnly = this.properties.get('submissionOnly')
+      if (submissionOnly !== undefined) {
+        validationProperties.submissionOnly = submissionOnly
+      }
+      const details = this.properties.get('details')
+      if (details !== undefined) {
+        validationProperties.details = details
+      }
+      properties = validationProperties
     } else {
       // Legacy nodes still using Map properties (will be removed after migration)
       properties = this.properties

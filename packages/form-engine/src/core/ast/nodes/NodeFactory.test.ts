@@ -270,7 +270,7 @@ describe('NodeFactory', () => {
         const json = {
           type: ExpressionType.PIPELINE,
           input: { type: ExpressionType.REFERENCE, path: ['value'] } satisfies ReferenceExpr,
-          steps: [{ type: FunctionType.TRANSFORMER, name: 'trim', arguments: [] as any }],
+          steps: [{ type: FunctionType.TRANSFORMER, name: 'trim', arguments: [] as ValueExpr[] as any }],
         } satisfies PipelineExpr
 
         const result = nodeFactory.createNode(json) as PredicateASTNode
@@ -625,6 +625,12 @@ describe('NodeFactory', () => {
       it('should transform Validation expressions', () => {
         const json = {
           type: ExpressionType.VALIDATION,
+          when: {
+            type: LogicType.TEST,
+            subject: { type: ExpressionType.REFERENCE, path: ['@self'] },
+            negate: true,
+            condition: { type: FunctionType.CONDITION, name: 'IsRequired', arguments: [] as ValueExpr[] },
+          },
           message: 'Required',
         }
 
@@ -839,6 +845,12 @@ describe('NodeFactory', () => {
                 validate: [
                   {
                     type: ExpressionType.VALIDATION,
+                    when: {
+                      type: LogicType.TEST,
+                      subject: { type: ExpressionType.REFERENCE, path: ['@self'] },
+                      negate: true,
+                      condition: { type: FunctionType.CONDITION, name: 'IsRequired', arguments: [] as ValueExpr[] },
+                    },
                     message: 'Email is required',
                   },
                 ],

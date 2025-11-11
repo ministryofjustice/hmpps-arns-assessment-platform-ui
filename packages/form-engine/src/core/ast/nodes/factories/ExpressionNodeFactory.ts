@@ -22,7 +22,15 @@ import {
 import { ASTNode } from '@form-engine/core/types/engine.type'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
-import { FunctionExpr, PipelineExpr } from '@form-engine/form/types/expressions.type'
+import {
+  CollectionExpr,
+  FormatExpr,
+  FunctionExpr,
+  NextExpr,
+  PipelineExpr,
+  ReferenceExpr,
+} from '@form-engine/form/types/expressions.type'
+import { ValidationExpr } from '@form-engine/form/types/structures.type'
 import { NodeFactory } from '../NodeFactory'
 
 /**
@@ -78,7 +86,7 @@ export class ExpressionNodeFactory {
    * Transform Reference expression: Points to data in context
    * Examples: Answer('field'), Data('external.value'), Self(), Item()
    */
-  private createReference(json: any): ReferenceASTNode {
+  private createReference(json: ReferenceExpr): ReferenceASTNode {
     const transformedPath = Array.isArray(json.path)
       ? json.path.map((segment: any) => this.nodeFactory.transformValue(segment))
       : json.path
@@ -99,7 +107,7 @@ export class ExpressionNodeFactory {
    * Replaces placeholders (%1, %2, etc.) with evaluated argument values
    * Example: template: 'address_%1_street', arguments: [Item().id]
    */
-  private createFormat(json: any): FormatASTNode {
+  private createFormat(json: FormatExpr): FormatASTNode {
     const transformedArgs = json.arguments.map((arg: any) => this.nodeFactory.transformValue(arg))
 
     return {
@@ -146,7 +154,7 @@ export class ExpressionNodeFactory {
    * with actual item data before node creation.
    *
    */
-  private createCollection(json: any): CollectionASTNode {
+  private createCollection(json: CollectionExpr): CollectionASTNode {
     const properties: {
       collection: ASTNode | any
       template: any
@@ -176,21 +184,24 @@ export class ExpressionNodeFactory {
    * Transform Validation expression: Field validation rules
    * Contains predicate condition and error message
    */
-  private createValidation(json: any): ValidationASTNode {
-    const properties = new Map<string, ASTNode | any>()
-
-    if (json.when) {
-      properties.set('when', this.nodeFactory.createNode(json.when))
+  private createValidation(json: ValidationExpr): ValidationASTNode {
+    const properties: {
+      when: ASTNode
+      message: ASTNode | string
+      submissionOnly?: boolean
+      details?: Record<string, any>
+    } = {
+      when: this.nodeFactory.createNode(json.when),
+      message: this.nodeFactory.transformValue(json.message || ''),
+      submissionOnly: false, // Default to false
     }
 
-    properties.set('message', json.message || '')
-
     if (json.submissionOnly !== undefined) {
-      properties.set('submissionOnly', json.submissionOnly)
+      properties.submissionOnly = json.submissionOnly
     }
 
     if (json.details) {
-      properties.set('details', json.details)
+      properties.details = json.details
     }
 
     return {
@@ -228,7 +239,7 @@ export class ExpressionNodeFactory {
    * Transform Next expression: Navigation target
    * Contains optional condition and destination path
    */
-  private createNext(json: any): NextASTNode {
+  private createNext(json: NextExpr): NextASTNode {
     const properties: { when?: ASTNode; goto: ASTNode | any } = {
       goto: this.nodeFactory.transformValue(json.goto),
     }

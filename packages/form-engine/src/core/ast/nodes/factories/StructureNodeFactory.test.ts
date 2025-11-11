@@ -364,6 +364,12 @@ describe('StructureNodeFactory', () => {
         validate: [
           {
             type: ExpressionType.VALIDATION,
+            when: {
+              type: LogicType.TEST,
+              subject: { type: ExpressionType.REFERENCE, path: ['@self'] },
+              negate: true,
+              condition: { type: FunctionType.CONDITION, name: 'IsRequired', arguments: [] as ValueExpr[] },
+            },
             message: 'Email is required',
           },
         ] as ValidationExpr[],
@@ -424,6 +430,12 @@ describe('StructureNodeFactory', () => {
         validate: [
           {
             type: ExpressionType.VALIDATION,
+            when: {
+              type: LogicType.TEST,
+              subject: { type: ExpressionType.REFERENCE, path: ['@self'] },
+              negate: true,
+              condition: { type: FunctionType.CONDITION, name: 'IsRequired', arguments: [] as ValueExpr[] },
+            },
             message: 'Required',
           },
         ],

@@ -31,7 +31,7 @@ describe('AttachValidationBlockCodeNormalizer', () => {
       const block = steps[0].properties.get('blocks')[0]
       const validation = block.properties.get('validate')
 
-      expect(validation.properties.get('resolvedBlockCode')).toBe('nickname')
+      expect(validation.properties.resolvedBlockCode).toBe('nickname')
     })
 
     it('attaches cloned dynamic code expressions to validation nodes', () => {
@@ -49,7 +49,7 @@ describe('AttachValidationBlockCodeNormalizer', () => {
       const block = steps[0].properties.get('blocks')[0]
       const validation = block.properties.get('validate')
 
-      const resolved = validation.properties.get('resolvedBlockCode')
+      const resolved = validation.properties.resolvedBlockCode
 
       expect(isExpressionNode(resolved)).toBe(true)
       expect(resolved).not.toBe(dynamicCode)
@@ -69,7 +69,7 @@ describe('AttachValidationBlockCodeNormalizer', () => {
       const block = steps[0].properties.get('blocks')[0]
       const validation = block.properties.get('validate')
 
-      expect(validation.properties.has('resolvedBlockCode')).toBe(false)
+      expect(validation.properties.resolvedBlockCode !== undefined).toBe(false)
     })
   })
 })
