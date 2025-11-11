@@ -75,6 +75,7 @@ export interface FieldBlockASTNode extends ASTNode {
     validate?: ValidationASTNode[]
     dependent?: ASTNode
     value?: ASTNode // Added by normalizer (Self reference)
+    metadata?: Record<string, any>
 
     // Component-specific arbitrary parameters
     [key: string]: any

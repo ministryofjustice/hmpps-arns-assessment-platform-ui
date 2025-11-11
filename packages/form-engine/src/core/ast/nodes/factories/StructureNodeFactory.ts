@@ -214,6 +214,10 @@ export class StructureNodeFactory {
       properties[key] = this.nodeFactory.transformValue(value)
     })
 
+    if (dataProperties.metadata !== undefined) {
+      properties.metadata = dataProperties.metadata
+    }
+
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.BLOCK,
@@ -262,6 +266,10 @@ export class StructureNodeFactory {
 
     if (dataProperties.dependent !== undefined) {
       properties.dependent = this.nodeFactory.transformValue(dataProperties.dependent)
+    }
+
+    if (dataProperties.metadata !== undefined) {
+      properties.metadata = dataProperties.metadata
     }
 
     // This gets injected by the AddSelfValueToFields normalizer, so doesn't appear on the type.

@@ -24,6 +24,11 @@ export interface BlockDefinition {
 
   /** The specific variant/type of block (e.g., 'text', 'number', 'radio', etc.) */
   variant: string
+
+  /** Optional metadata regarding the step */
+  metadata?: {
+    [key: string]: any
+  }
 }
 
 /**
