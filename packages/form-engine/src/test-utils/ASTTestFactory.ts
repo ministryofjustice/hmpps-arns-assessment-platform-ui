@@ -702,12 +702,17 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
   build(): T {
     const nodeId = this.id ?? ASTTestFactory.getId()
 
-    // Convert Map to object for FunctionASTNode, PipelineASTNode, ReferenceASTNode, NextASTNode, and FormatASTNode
+    // TODO: Simplify this once all AST nodes have been migrated to use plain object properties
+    //  Currently we need to convert Map to object for migrated node types during the transition period
+    //  After migration is complete, remove all these conditionals and always use object properties directly
+
+    // Convert Map to object for migrated nodes: FunctionASTNode, PipelineASTNode, ReferenceASTNode, NextASTNode, FormatASTNode, and CollectionASTNode
     const isFunctionType = Object.values(FunctionType).includes(this.expressionType as FunctionType)
     const isPipelineType = this.expressionType === ExpressionType.PIPELINE
     const isReferenceType = this.expressionType === ExpressionType.REFERENCE
     const isNextType = this.expressionType === ExpressionType.NEXT
     const isFormatType = this.expressionType === ExpressionType.FORMAT
+    const isCollectionType = this.expressionType === ExpressionType.COLLECTION
 
     let properties
     if (isFunctionType) {
@@ -738,7 +743,18 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
         template: this.properties.get('template'),
         arguments: this.properties.get('arguments'),
       }
+    } else if (isCollectionType) {
+      const collectionProperties: { collection: any; template: any; fallback?: any } = {
+        collection: this.properties.get('collection'),
+        template: this.properties.get('template'),
+      }
+      const fallback = this.properties.get('fallback')
+      if (fallback !== undefined) {
+        collectionProperties.fallback = fallback
+      }
+      properties = collectionProperties
     } else {
+      // Legacy nodes still using Map properties (will be removed after migration)
       properties = this.properties
     }
 

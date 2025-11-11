@@ -56,9 +56,13 @@ export interface FormatASTNode extends Omit<ExpressionASTNode, 'properties'> {
 /**
  * Collection Expression AST node
  */
-export interface CollectionASTNode extends ExpressionASTNode {
+export interface CollectionASTNode extends Omit<ExpressionASTNode, 'properties'> {
   expressionType: ExpressionType.COLLECTION
-  properties: Map<string, ASTNode | any>
+  properties: {
+    collection: ASTNode
+    template: any
+    fallback?: ASTNode[]
+  }
 }
 
 /**

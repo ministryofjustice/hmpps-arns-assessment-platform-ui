@@ -147,20 +147,20 @@ export class ExpressionNodeFactory {
    *
    */
   private createCollection(json: any): CollectionASTNode {
-    const properties = new Map<string, ASTNode | any>()
-
-    // Transform the collection data source (this IS an expression that needs evaluation)
-    properties.set('collection', this.nodeFactory.transformValue(json.collection))
-
-    // Store template as raw JSON - will be instantiated at runtime per collection item
-    if (json.template) {
-      properties.set('template', json.template)
+    const properties: {
+      collection: ASTNode | any
+      template: any
+      fallback?: ASTNode[]
+    } = {
+      // Transform the collection data source (this IS an expression that needs evaluation)
+      collection: this.nodeFactory.transformValue(json.collection),
+      // Store template as raw JSON - will be instantiated at runtime per collection item
+      template: json.template,
     }
 
     // Transform fallback blocks normally - they're shown when collection is empty
     if (json.fallback) {
-      const fallback = json.fallback.map((item: any) => this.nodeFactory.createNode(item))
-      properties.set('fallback', fallback)
+      properties.fallback = json.fallback.map((item: any) => this.nodeFactory.createNode(item))
     }
 
     return {

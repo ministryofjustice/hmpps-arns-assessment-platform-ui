@@ -264,7 +264,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
       const steps = journey.properties.get('steps') as any[]
       const containerBlock = steps[0].properties.get('blocks')[0]
       const transformedCollection = containerBlock.properties.get('content')
-      const template = transformedCollection.properties.get('template') as any[]
+      const template = transformedCollection.properties.template as any[]
       const transformedField = template[0]
       const pipeline = transformedField.properties.get('formatPipeline') as PipelineASTNode
 

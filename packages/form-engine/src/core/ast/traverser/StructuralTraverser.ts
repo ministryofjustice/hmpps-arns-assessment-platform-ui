@@ -446,27 +446,44 @@ export function structuralTraverse(
       // Traverse node.properties if present
       const props = (node as any).properties
 
-      if (props && isMapValue(props)) {
-        // Order node property keys using the node as owner (not the Map),
-        // so consumers can decide order based on node type.
-        const keys = opts.propertyOrder(node, Array.from(props.keys()))
+      if (props) {
+        // TODO: Remove Map handling once all AST nodes have been migrated to use plain object properties
+        //  After migration is complete, remove the isMapValue branch and only keep object property handling
+        let keys: string[]
+        let getValue: (key: string) => any
+
+        if (isMapValue(props)) {
+          // Handle Map properties (legacy nodes - remove after migration)
+          keys = Array.from(props.keys())
+          getValue = (key: string) => props.get(key)
+        } else if (typeof props === 'object') {
+          // Handle plain object properties (target state)
+          keys = Object.keys(props)
+          getValue = (key: string) => props[key]
+        } else {
+          keys = []
+          getValue = () => undefined
+        }
+
+        // Order node property keys using the node as owner
+        const orderedKeys = opts.propertyOrder(node, keys)
 
         withAncestor(node, base.isLast, () => {
-          for (let i = 0; i < keys.length; i += 1) {
+          for (let i = 0; i < orderedKeys.length; i += 1) {
             if (stopped) {
               return
             }
 
-            const key = keys[i]
-            const value = props.get(key)
+            const key = orderedKeys[i]
+            const value = getValue(key)
 
             const propCtx: StructuralContext = {
-              ...buildBaseCtx('property', [...path, key], depth + 1, keys, i),
+              ...buildBaseCtx('property', [...path, key], depth + 1, orderedKeys, i),
               key,
-              propertyKeys: keys,
+              propertyKeys: orderedKeys,
               propertyIndex: i,
               isFirstProperty: i === 0,
-              isLastProperty: i === keys.length - 1,
+              isLastProperty: i === orderedKeys.length - 1,
               parent: node,
               parentType: 'node',
               ancestors: [...frames.ancestors],

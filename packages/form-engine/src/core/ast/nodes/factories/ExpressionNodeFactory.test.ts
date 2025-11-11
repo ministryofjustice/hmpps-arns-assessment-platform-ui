@@ -559,8 +559,8 @@ describe('ExpressionNodeFactory', () => {
       expect(result.expressionType).toBe(ExpressionType.COLLECTION)
       expect(result.raw).toBe(json)
 
-      expect(result.properties.has('collection')).toBe(true)
-      expect(result.properties.has('template')).toBe(true)
+      expect(result.properties.collection).toBeDefined()
+      expect(result.properties.template).toBeDefined()
     })
 
     it('should transform collection data source', () => {
@@ -571,7 +571,7 @@ describe('ExpressionNodeFactory', () => {
       }
 
       const result = expressionFactory.create(json) as CollectionASTNode
-      const collection = result.properties.get('collection')
+      const collection = result.properties.collection as ExpressionASTNode
 
       expect(collection.type).toBe(ASTNodeType.EXPRESSION)
       expect(collection.expressionType).toBe(ExpressionType.REFERENCE)
@@ -587,7 +587,7 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as CollectionASTNode
 
-      const template = result.properties.get('template')
+      const template = result.properties.template
       expect(Array.isArray(template)).toBe(true)
       expect(template).toHaveLength(1)
 
@@ -606,7 +606,7 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as CollectionASTNode
 
-      const template = result.properties.get('template')
+      const template = result.properties.template
       expect(template).toHaveLength(2)
 
       expect(template[0]).toBe(block1)
@@ -624,9 +624,9 @@ describe('ExpressionNodeFactory', () => {
       }
 
       const result = expressionFactory.create(json) as CollectionASTNode
-      const fallback = result.properties.get('fallback')
+      const fallback = result.properties.fallback
 
-      expect(result.properties.has('fallback')).toBe(true)
+      expect(result.properties.fallback !== undefined).toBe(true)
       expect(Array.isArray(fallback)).toBe(true)
       expect(fallback).toHaveLength(1)
 
@@ -642,9 +642,9 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as CollectionASTNode
 
-      expect(result.properties.has('collection')).toBe(true)
-      expect(result.properties.has('template')).toBe(false)
-      expect(result.properties.has('fallback')).toBe(false)
+      expect(result.properties.collection).toBeDefined()
+      expect(result.properties.template).toBeUndefined()
+      expect(result.properties.fallback).toBeUndefined()
     })
 
     it('should handle collection without fallback', () => {
@@ -656,8 +656,8 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as CollectionASTNode
 
-      expect(result.properties.has('template')).toBe(true)
-      expect(result.properties.has('fallback')).toBe(false)
+      expect(result.properties.template).toBeDefined()
+      expect(result.properties.fallback).toBeUndefined()
     })
   })
 
