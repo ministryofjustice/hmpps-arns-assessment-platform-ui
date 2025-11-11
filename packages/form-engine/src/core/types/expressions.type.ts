@@ -128,8 +128,13 @@ export interface LoadTransitionASTNode extends Omit<TransitionASTNode, 'properti
 /**
  * Access Transition AST node
  */
-export interface AccessTransitionASTNode extends TransitionASTNode {
+export interface AccessTransitionASTNode extends Omit<TransitionASTNode, 'properties'> {
   transitionType: TransitionType.ACCESS
+  properties: {
+    guards?: ASTNode
+    effects?: ASTNode[]
+    redirect?: ASTNode[]
+  }
 }
 
 /**

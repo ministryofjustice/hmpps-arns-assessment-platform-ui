@@ -812,11 +812,18 @@ export class TransitionBuilder {
     //  After migration is complete, remove all these conditionals and always use object properties directly
 
     const isLoadType = this.transitionType === TransitionType.LOAD
+    const isAccessType = this.transitionType === TransitionType.ACCESS
 
     let properties
     if (isLoadType) {
       properties = {
         effects: this.properties.get('effects'),
+      }
+    } else if (isAccessType) {
+      properties = {
+        guards: this.properties.get('guards'),
+        effects: this.properties.get('effects'),
+        redirect: this.properties.get('redirect'),
       }
     } else {
       // Legacy transition nodes still using Map properties (will be removed after migration)

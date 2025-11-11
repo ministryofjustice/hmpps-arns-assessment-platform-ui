@@ -9,7 +9,7 @@ import {
 import { ASTNode } from '@form-engine/core/types/engine.type'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
-import { LoadTransition } from '@form-engine/form/types/expressions.type'
+import { AccessTransition, LoadTransition } from '@form-engine/form/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 
 /**
@@ -68,23 +68,19 @@ export class TransitionNodeFactory {
    * Transform Access transition: Guards and analytics
    * Controls access and tracks user navigation
    */
-  private createAccessTransition(json: any): AccessTransitionASTNode {
-    const properties = new Map<string, ASTNode | any>()
+  private createAccessTransition(json: AccessTransition): AccessTransitionASTNode {
+    const properties: AccessTransitionASTNode['properties'] = {}
 
     if (json.guards) {
-      properties.set('guards', this.nodeFactory.createNode(json.guards))
+      properties.guards = this.nodeFactory.createNode(json.guards)
     }
 
     if (Array.isArray(json.effects)) {
-      const effects = json.effects.map((effect: any) => this.nodeFactory.createNode(effect))
-
-      properties.set('effects', effects)
+      properties.effects = json.effects.map((effect: any) => this.nodeFactory.createNode(effect))
     }
 
     if (Array.isArray(json.redirect)) {
-      const redirect = json.redirect.map((r: any) => this.nodeFactory.createNode(r))
-
-      properties.set('redirect', redirect)
+      properties.redirect = json.redirect.map((r: any) => this.nodeFactory.createNode(r))
     }
 
     return {
