@@ -1,85 +1,67 @@
 import AssessmentPlatformApiClient from '../data/assessmentPlatformApiClient'
+import { CommandsRequest, QueriesRequest } from '../interfaces/aap-api/request';
 import {
-  AssessmentVersionQueryResult,
-  CommandsRequest,
-  CommandsResponse,
+  AddCollectionItemCommandResult,
+  CommandResult,
   CreateAssessmentCommandResult,
-  QueriesRequest,
-  QueriesResponse,
-} from '../interfaces/assessment'
-import { User } from '../interfaces/user'
-import { HmppsUser } from '../interfaces/hmppsUser'
-import AuditService, { AuditEvent } from './auditService'
+  CreateCollectionCommandResult
+} from '../interfaces/aap-api/commandResult';
+import {
+  AssessmentTimelineQueryResult,
+  AssessmentVersionQueryResult,
+  CollectionQueryResult,
+} from '../interfaces/aap-api/queryResult';
+import {
+  AddCollectionItemCommand, Commands,
+  CreateAssessmentCommand,
+  CreateCollectionCommand, RemoveCollectionItemCommand, ReorderCollectionItemCommand,
+  RollBackAssessmentAnswersCommand,
+  UpdateAssessmentAnswersCommand,
+  UpdateAssessmentPropertiesCommand,
+  UpdateCollectionItemAnswersCommand, UpdateCollectionItemPropertiesCommand,
+  UpdateFormVersionCommand
+} from '../interfaces/aap-api/command';
+import { AssessmentTimelineQuery, AssessmentVersionQuery, CollectionQuery } from '../interfaces/aap-api/query';
+
+interface CommandMap {
+  CreateAssessment: { cmd: CreateAssessmentCommand; res: CreateAssessmentCommandResult }
+  UpdateAssessmentAnswers: { cmd: UpdateAssessmentAnswersCommand; res: CommandResult }
+  RollBackAssessmentAnswers: { cmd: RollBackAssessmentAnswersCommand; res: CommandResult }
+  UpdateAssessmentProperties: { cmd: UpdateAssessmentPropertiesCommand; res: CommandResult }
+  UpdateFormVersion: { cmd: UpdateFormVersionCommand; res: CommandResult }
+  CreateCollection: { cmd: CreateCollectionCommand; res: CreateCollectionCommandResult }
+  AddCollectionItem: { cmd: AddCollectionItemCommand; res: AddCollectionItemCommandResult }
+  UpdateCollectionItemAnswers: { cmd: UpdateCollectionItemAnswersCommand; res: CommandResult }
+  UpdateCollectionItemProperties: { cmd: UpdateCollectionItemPropertiesCommand; res: CommandResult }
+  RemoveCollectionItem: { cmd: RemoveCollectionItemCommand; res: CommandResult }
+  ReorderCollectionItem: { cmd: ReorderCollectionItemCommand; res: CommandResult }
+}
+
+interface QueryMap {
+  AssessmentVersion: { query: AssessmentVersionQuery, res: AssessmentVersionQueryResult }
+  AssessmentTimeline: { query: AssessmentTimelineQuery, res: AssessmentTimelineQueryResult }
+  Collection: { query: CollectionQuery, res: CollectionQueryResult }
+}
 
 export default class AssessmentService {
   constructor(
     private readonly assessmentPlatformApiClient: AssessmentPlatformApiClient,
-    private readonly auditService: AuditService,
   ) {}
 
-  async createAssessment(
-    hmppsUser: HmppsUser,
-    correlationId: string,
-  ): Promise<{ assessmentUuid: string; message: string }> {
-    const user: User = {
-      id: hmppsUser.userId,
-      name: hmppsUser.displayName,
-    }
-
-    const request: CommandsRequest = {
-      commands: [
-        {
-          type: 'CreateAssessmentCommand',
-          user,
-        },
-      ],
-    }
-
-    const response = await this.assessmentPlatformApiClient.executeCommand<CommandsResponse>(request)
-    const commandResult = response.commands[0].result as CreateAssessmentCommandResult
-
-    await this.auditService.send(AuditEvent.CREATE_ASSESSMENT, {
-      username: hmppsUser.username,
-      correlationId,
-      assessmentUuid: commandResult.assessmentUuid,
-    })
-
-    return {
-      assessmentUuid: commandResult.assessmentUuid,
-      message: commandResult.message,
-    }
+  async command<T extends keyof CommandMap>(cmd: CommandMap[T]['cmd']): Promise<CommandMap[T]['res']> {
+    const request: CommandsRequest = { commands: [cmd] }
+    const response = await this.assessmentPlatformApiClient.executeCommands(request)
+    return response.commands[0].result as CommandMap[T]['res']
   }
 
-  async getAssessment(
-    hmppsUser: HmppsUser,
-    assessmentUuid: string,
-    correlationId: string,
-    timestamp?: string,
-  ): Promise<AssessmentVersionQueryResult> {
-    const user: User = {
-      id: hmppsUser.userId,
-      name: hmppsUser.displayName,
-    }
+  async commands(commands: Array<Commands>) {
+    const request: CommandsRequest = { commands }
+    await this.assessmentPlatformApiClient.executeCommands(request)
+  }
 
-    const request: QueriesRequest = {
-      queries: [
-        {
-          type: 'AssessmentVersionQuery',
-          user,
-          assessmentUuid,
-          ...(timestamp && { timestamp }),
-        },
-      ],
-    }
-
-    const response = await this.assessmentPlatformApiClient.executeQuery<QueriesResponse>(request)
-
-    await this.auditService.send(AuditEvent.VIEW_ASSESSMENT, {
-      username: hmppsUser.username,
-      correlationId,
-      assessmentUuid,
-    })
-
-    return response.queries[0].result as AssessmentVersionQueryResult
+  async query<T extends keyof QueryMap>(query: QueryMap[T]['query']): Promise<QueryMap[T]['res']> {
+    const request: QueriesRequest = { queries: [query] }
+    const response = await this.assessmentPlatformApiClient.executeQueries(request)
+    return response.queries[0].result as QueryMap[T]['res']
   }
 }

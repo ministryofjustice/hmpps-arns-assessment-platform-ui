@@ -1,21 +1,11 @@
 import AssessmentService from './assessmentService'
 import AssessmentPlatformApiClient from '../data/assessmentPlatformApiClient'
-import AuditService from './auditService'
-import {
-  CommandsRequest,
-  CommandsResponse,
-  QueriesRequest,
-  QueriesResponse,
-  AssessmentVersionQueryResult,
-  CreateAssessmentCommandResult,
-} from '../interfaces/assessment'
 import { User } from '../interfaces/user'
 import { HmppsUser } from '../interfaces/hmppsUser'
 
 describe('AssessmentService', () => {
   let assessmentService: AssessmentService
   let mockAssessmentPlatformApiClient: jest.Mocked<AssessmentPlatformApiClient>
-  let mockAuditService: jest.Mocked<AuditService>
 
   const mockHmppsUser: HmppsUser = {
     name: 'Test User',
@@ -68,9 +58,9 @@ describe('AssessmentService', () => {
         ],
       }
 
-      mockAssessmentPlatformApiClient.executeCommand.mockResolvedValue(mockResponse)
+      mockAssessmentPlatformApiClient.executeCommands.mockResolvedValue(mockResponse)
 
-      const result = await assessmentService.createAssessment(mockHmppsUser, correlationId)
+      const result = await assessmentService.command(mockHmppsUser, correlationId)
 
       expect(result).toEqual({
         assessmentUuid: 'assessment-uuid-123',
@@ -95,9 +85,9 @@ describe('AssessmentService', () => {
         ],
       }
 
-      mockAssessmentPlatformApiClient.executeCommand.mockResolvedValue(mockResponse)
+      mockAssessmentPlatformApiClient.executeCommands.mockResolvedValue(mockResponse)
 
-      await assessmentService.createAssessment(mockHmppsUser, correlationId)
+      await assessmentService.command(mockHmppsUser, correlationId)
 
       const expectedRequest: CommandsRequest = {
         commands: [
@@ -108,13 +98,13 @@ describe('AssessmentService', () => {
         ],
       }
 
-      expect(mockAssessmentPlatformApiClient.executeCommand).toHaveBeenCalledWith(expectedRequest)
+      expect(mockAssessmentPlatformApiClient.executeCommands).toHaveBeenCalledWith(expectedRequest)
     })
 
     it('should throw error when API call fails', async () => {
-      mockAssessmentPlatformApiClient.executeCommand.mockRejectedValue(new Error('API Error'))
+      mockAssessmentPlatformApiClient.executeCommands.mockRejectedValue(new Error('API Error'))
 
-      await expect(assessmentService.createAssessment(mockHmppsUser, correlationId)).rejects.toThrow('API Error')
+      await expect(assessmentService.command(mockHmppsUser, correlationId)).rejects.toThrow('API Error')
     })
   })
 
@@ -139,7 +129,7 @@ describe('AssessmentService', () => {
         ],
       }
 
-      mockAssessmentPlatformApiClient.executeQuery.mockResolvedValue(mockResponse)
+      mockAssessmentPlatformApiClient.executeQueries.mockResolvedValue(mockResponse)
 
       const result = await assessmentService.getAssessment(mockHmppsUser, 'assessment-uuid-123', correlationId)
 
@@ -166,7 +156,7 @@ describe('AssessmentService', () => {
         ],
       }
 
-      mockAssessmentPlatformApiClient.executeQuery.mockResolvedValue(mockResponse)
+      mockAssessmentPlatformApiClient.executeQueries.mockResolvedValue(mockResponse)
 
       await assessmentService.getAssessment(mockHmppsUser, 'assessment-uuid-123', correlationId)
 
@@ -180,7 +170,7 @@ describe('AssessmentService', () => {
         ],
       }
 
-      expect(mockAssessmentPlatformApiClient.executeQuery).toHaveBeenCalledWith(expectedRequest)
+      expect(mockAssessmentPlatformApiClient.executeQueries).toHaveBeenCalledWith(expectedRequest)
     })
 
     it('should call executeQuery with correct request structure with timestamp', async () => {
@@ -204,7 +194,7 @@ describe('AssessmentService', () => {
         ],
       }
 
-      mockAssessmentPlatformApiClient.executeQuery.mockResolvedValue(mockResponse)
+      mockAssessmentPlatformApiClient.executeQueries.mockResolvedValue(mockResponse)
 
       await assessmentService.getAssessment(mockHmppsUser, 'assessment-uuid-123', correlationId, '2024-01-01T12:00:00Z')
 
@@ -219,11 +209,11 @@ describe('AssessmentService', () => {
         ],
       }
 
-      expect(mockAssessmentPlatformApiClient.executeQuery).toHaveBeenCalledWith(expectedRequest)
+      expect(mockAssessmentPlatformApiClient.executeQueries).toHaveBeenCalledWith(expectedRequest)
     })
 
     it('should throw error when API call fails', async () => {
-      mockAssessmentPlatformApiClient.executeQuery.mockRejectedValue(new Error('API Error'))
+      mockAssessmentPlatformApiClient.executeQueries.mockRejectedValue(new Error('API Error'))
 
       await expect(
         assessmentService.getAssessment(mockHmppsUser, 'assessment-uuid-123', correlationId),
@@ -257,7 +247,7 @@ describe('AssessmentService', () => {
         ],
       }
 
-      mockAssessmentPlatformApiClient.executeQuery.mockResolvedValue(mockResponse)
+      mockAssessmentPlatformApiClient.executeQueries.mockResolvedValue(mockResponse)
 
       const result = await assessmentService.getAssessment(mockHmppsUser, 'assessment-uuid-456', correlationId)
 
