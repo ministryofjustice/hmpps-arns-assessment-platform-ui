@@ -73,7 +73,7 @@ describe('ExpressionNodeFactory', () => {
       const json = {
         type: ExpressionType.PIPELINE,
         input: { type: ExpressionType.REFERENCE, path: ['value'] } satisfies ReferenceExpr,
-        steps: [{ name: 'uppercase' }],
+        steps: [{ type: FunctionType.TRANSFORMER, name: 'uppercase', arguments: [] as any }],
       } satisfies PipelineExpr
 
       const result = expressionFactory.create(json) as PipelineASTNode
@@ -290,7 +290,7 @@ describe('ExpressionNodeFactory', () => {
           {
             type: ExpressionType.PIPELINE,
             input: { type: ExpressionType.REFERENCE, path: ['value'] } satisfies ReferenceExpr,
-            steps: [{ name: 'uppercase' }],
+            steps: [{ type: FunctionType.TRANSFORMER, name: 'uppercase', arguments: [] as any }],
           } satisfies PipelineExpr,
         ],
       } satisfies FormatExpr
@@ -437,7 +437,10 @@ describe('ExpressionNodeFactory', () => {
       const json = {
         type: ExpressionType.PIPELINE,
         input: { type: ExpressionType.REFERENCE, path: ['value'] } satisfies ReferenceExpr,
-        steps: [{ name: 'trim' }, { name: 'uppercase' }],
+        steps: [
+          { type: FunctionType.TRANSFORMER, name: 'trim', arguments: [] as any },
+          { type: FunctionType.TRANSFORMER, name: 'uppercase', arguments: [] as any },
+        ],
       } satisfies PipelineExpr
 
       const result = expressionFactory.create(json) as PipelineASTNode
@@ -447,8 +450,9 @@ describe('ExpressionNodeFactory', () => {
       expect(result.expressionType).toBe(ExpressionType.PIPELINE)
       expect(result.raw).toBe(json)
 
-      expect(result.properties.has('input')).toBe(true)
-      expect(result.properties.has('steps')).toBe(true)
+      expect(result.properties.input).toBeDefined()
+      expect(result.properties.steps).toBeDefined()
+      expect(Array.isArray(result.properties.steps)).toBe(true)
     })
 
     it('should transform input using real nodeFactory', () => {
@@ -456,11 +460,11 @@ describe('ExpressionNodeFactory', () => {
       const json = {
         type: ExpressionType.PIPELINE,
         input: inputJson,
-        steps: [{ name: 'trim' }],
+        steps: [{ type: FunctionType.TRANSFORMER, name: 'trim', arguments: [] as any }],
       } satisfies PipelineExpr
 
       const result = expressionFactory.create(json) as PipelineASTNode
-      const input = result.properties.get('input')
+      const input = result.properties.input
 
       expect(input.type).toBe(ASTNodeType.EXPRESSION)
       expect(input.expressionType).toBe(ExpressionType.REFERENCE)
@@ -471,22 +475,22 @@ describe('ExpressionNodeFactory', () => {
         type: ExpressionType.PIPELINE,
         input: { type: ExpressionType.REFERENCE, path: ['value'] } satisfies ReferenceExpr,
         steps: [
-          { name: 'pad', args: [10, '0'] },
-          { name: 'substring', args: [0, 5] },
+          { type: FunctionType.TRANSFORMER, name: 'pad', arguments: [10, '0'] },
+          { type: FunctionType.TRANSFORMER, name: 'substring', arguments: [0, 5] },
         ],
       } satisfies PipelineExpr
 
       const result = expressionFactory.create(json) as PipelineASTNode
 
-      const steps = result.properties.get('steps')
+      const steps = result.properties.steps as FunctionASTNode[]
       expect(Array.isArray(steps)).toBe(true)
       expect(steps).toHaveLength(2)
 
-      expect(steps[0].name).toBe('pad')
-      expect(steps[0].args).toEqual([10, '0'])
+      expect(steps[0].properties.name).toBe('pad')
+      expect(steps[0].properties.arguments).toEqual([10, '0'])
 
-      expect(steps[1].name).toBe('substring')
-      expect(steps[1].args).toEqual([0, 5])
+      expect(steps[1].properties.name).toBe('substring')
+      expect(steps[1].properties.arguments).toEqual([0, 5])
     })
 
     it('should transform step arguments that are expressions', () => {
@@ -495,8 +499,9 @@ describe('ExpressionNodeFactory', () => {
         input: { type: ExpressionType.REFERENCE, path: ['value'] } satisfies ReferenceExpr,
         steps: [
           {
+            type: FunctionType.TRANSFORMER,
             name: 'replace',
-            args: [
+            arguments: [
               'old',
               { type: ExpressionType.REFERENCE, path: ['replacement'] } satisfies ReferenceExpr, // Expression argument
             ],
@@ -506,30 +511,35 @@ describe('ExpressionNodeFactory', () => {
 
       const result = expressionFactory.create(json) as PipelineASTNode
 
-      const steps = result.properties.get('steps')
+      const steps = result.properties.steps as FunctionASTNode[]
       expect(steps).toHaveLength(1)
-      expect(steps[0].name).toBe('replace')
-      expect(steps[0].args).toHaveLength(2)
-      expect(steps[0].args[0]).toBe('old')
+      expect(steps[0].properties.name).toBe('replace')
+      expect(steps[0].properties.arguments).toHaveLength(2)
+      expect(steps[0].properties.arguments[0]).toBe('old')
 
       // Second argument should be transformed to AST node
-      expect(steps[0].args[1]).toHaveProperty('id')
-      expect(steps[0].args[1]).toHaveProperty('type')
-      expect(steps[0].args[1].type).toBe(ASTNodeType.EXPRESSION)
+      expect(steps[0].properties.arguments[1]).toHaveProperty('id')
+      expect(steps[0].properties.arguments[1]).toHaveProperty('type')
+      expect(steps[0].properties.arguments[1].type).toBe(ASTNodeType.EXPRESSION)
     })
 
     it('should handle steps without arguments', () => {
       const json = {
         type: ExpressionType.PIPELINE,
         input: { type: ExpressionType.REFERENCE, path: ['value'] } satisfies ReferenceExpr,
-        steps: [{ name: 'trim' }, { name: 'uppercase' }],
+        steps: [
+          { type: FunctionType.TRANSFORMER, name: 'trim', arguments: [] as any },
+          { type: FunctionType.TRANSFORMER, name: 'uppercase', arguments: [] as any },
+        ],
       } satisfies PipelineExpr
 
       const result = expressionFactory.create(json) as PipelineASTNode
-      const steps = result.properties.get('steps')
+      const steps = result.properties.steps as FunctionASTNode[]
 
-      expect(steps[0]).toEqual({ name: 'trim' })
-      expect(steps[1]).toEqual({ name: 'uppercase' })
+      expect(steps[0].properties.name).toBe('trim')
+      expect(steps[0].properties.arguments).toEqual([])
+      expect(steps[1].properties.name).toBe('uppercase')
+      expect(steps[1].properties.arguments).toEqual([])
     })
   })
 

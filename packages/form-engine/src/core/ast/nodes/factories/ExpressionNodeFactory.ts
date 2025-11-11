@@ -22,7 +22,7 @@ import {
 import { ASTNode } from '@form-engine/core/types/engine.type'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
-import { FunctionExpr } from '@form-engine/form/types/expressions.type'
+import { FunctionExpr, PipelineExpr } from '@form-engine/form/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 
 /**
@@ -123,33 +123,21 @@ export class ExpressionNodeFactory {
    * Transform Pipeline expression: Sequential data transformations
    * Input flows through each step: input -> step1 -> step2 -> output
    */
-  private createPipeline(json: any): PipelineASTNode {
-    const properties = new Map<string, ASTNode | any>()
-
+  private createPipeline(json: PipelineExpr): PipelineASTNode {
     // Initial value to transform
-    properties.set('input', this.nodeFactory.createNode(json.input))
+    const input = this.nodeFactory.createNode(json.input)
 
     // Transform each pipeline step
-    const steps = json.steps.map((step: any) => {
-      const result: any = {
-        name: step.name,
-      }
-
-      // Optional arguments for transformer functions
-      if (step.args) {
-        result.args = step.args.map((arg: any) => this.nodeFactory.transformValue(arg))
-      }
-
-      return result
-    })
-
-    properties.set('steps', steps)
+    const steps = json.steps.map((arg: any) => this.nodeFactory.transformValue(arg))
 
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.EXPRESSION,
       expressionType: ExpressionType.PIPELINE,
-      properties,
+      properties: {
+        input,
+        steps,
+      },
       raw: json,
     }
   }

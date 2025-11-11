@@ -29,9 +29,12 @@ export interface NextASTNode extends ExpressionASTNode {
 /**
  * Pipeline Expression AST node
  */
-export interface PipelineASTNode extends ExpressionASTNode {
+export interface PipelineASTNode extends Omit<ExpressionASTNode, 'properties'> {
   expressionType: ExpressionType.PIPELINE
-  properties: Map<string, ASTNode | any>
+  properties: {
+    input: ASTNode | any
+    steps: ASTNode[]
+  }
 }
 
 /**

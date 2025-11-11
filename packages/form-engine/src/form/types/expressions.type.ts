@@ -81,9 +81,9 @@ export interface FormatExpr {
  *   type: 'ExpressionType.Pipeline',
  *   input: { type: 'ExpressionType.Reference', path: ['answers', 'email'] },
  *   steps: [
- *     { name: 'trim' },
- *     { name: 'toLowerCase' },
- *     { name: 'validateEmail' }
+ *     { type: 'FunctionType.Transformer', name: 'trim', arguments: [] },
+ *     { type: 'FunctionType.Transformer', name: 'toLowerCase', arguments: [] },
+ *     { type: 'FunctionType.Transformer', name: 'validateEmail', arguments: [] }
  *   ]
  * }
  *
@@ -93,9 +93,9 @@ export interface FormatExpr {
  *   type: 'ExpressionType.Pipeline',
  *   input: { type: 'ExpressionType.Reference', path: ['answers', 'price'] },
  *   steps: [
- *     { name: 'multiply', args: [1.2] },
- *     { name: 'round', args: [2] },
- *     { name: 'formatCurrency', args: ['GBP'] }
+ *     { type: 'FunctionType.Transformer', name: 'multiply', arguments: [1.2] },
+ *     { type: 'FunctionType.Transformer', name: 'round', arguments: [2] },
+ *     { type: 'FunctionType.Transformer', name: 'formatCurrency', arguments: ['GBP'] }
  *   ]
  * }
  */
@@ -112,13 +112,7 @@ export interface PipelineExpr {
    * Ordered array of transformation steps.
    * Each step receives the output of the previous step as its input.
    */
-  steps: {
-    /** Name of the registered transformer function */
-    name: string
-
-    /** Optional arguments for the transformer (beyond the piped value) */
-    args?: ValueExpr[]
-  }[]
+  steps: TransformerFunctionExpr[]
 }
 
 /**

@@ -141,7 +141,7 @@ function cloneDeep<T>(value: T): T {
     // Remove id if already present to ensure a fresh assignment later
     delete cloned.id
 
-    const props: Map<string, any> | undefined = (value as any).properties
+    const props = (value as any).properties
     if (props instanceof Map) {
       const newMap = new Map<string, any>()
 
@@ -150,6 +150,14 @@ function cloneDeep<T>(value: T): T {
       }
 
       cloned.properties = newMap
+    } else if (props && typeof props === 'object') {
+      // Handle plain object properties (FunctionASTNode, PipelineASTNode)
+      const newProps: any = {}
+      for (const [k, v] of Object.entries(props)) {
+        newProps[k] = cloneDeep(v)
+      }
+
+      cloned.properties = newProps
     }
 
     return cloned

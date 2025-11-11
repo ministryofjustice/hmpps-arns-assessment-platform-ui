@@ -72,10 +72,10 @@ export class ConvertFormattersToPipelineNormalizer implements StructuralVisitor 
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.EXPRESSION,
       expressionType: ExpressionType.PIPELINE,
-      properties: new Map<string, any>([
-        ['input', postReference],
-        ['steps', formatters],
-      ]),
+      properties: {
+        input: postReference,
+        steps: formatters,
+      },
     }
 
     // Store the pipeline as formatPipeline property, remove old field

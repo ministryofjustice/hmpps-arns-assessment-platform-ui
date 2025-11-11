@@ -30,6 +30,7 @@ import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import {
   ConditionalASTNode,
   ExpressionASTNode,
+  FunctionASTNode,
   PipelineASTNode,
   PredicateASTNode,
   TransitionASTNode,
@@ -269,7 +270,7 @@ describe('NodeFactory', () => {
         const json = {
           type: ExpressionType.PIPELINE,
           input: { type: ExpressionType.REFERENCE, path: ['value'] } satisfies ReferenceExpr,
-          steps: [{ name: 'trim' }],
+          steps: [{ type: FunctionType.TRANSFORMER, name: 'trim', arguments: [] as any }],
         } satisfies PipelineExpr
 
         const result = nodeFactory.createNode(json) as PredicateASTNode
@@ -946,8 +947,9 @@ describe('NodeFactory', () => {
         },
         steps: [
           {
+            type: FunctionType.TRANSFORMER,
             name: 'replace',
-            args: ['old', { type: ExpressionType.REFERENCE, path: ['replacement'] }],
+            arguments: ['old', { type: ExpressionType.REFERENCE, path: ['replacement'] }],
           },
         ],
       }
@@ -956,13 +958,13 @@ describe('NodeFactory', () => {
 
       expect(result.expressionType).toBe(ExpressionType.PIPELINE)
 
-      const input = result.properties.get('input')
+      const input = result.properties.input
       expect(input.type).toBe(ASTNodeType.EXPRESSION)
       expect(input.expressionType).toBe(ExpressionType.REFERENCE)
 
-      const steps = result.properties.get('steps')
-      expect(steps[0].args[0]).toBe('old')
-      expect(steps[0].args[1].type).toBe(ASTNodeType.EXPRESSION)
+      const steps = result.properties.steps as FunctionASTNode[]
+      expect(steps[0].properties.arguments[0]).toBe('old')
+      expect(steps[0].properties.arguments[1].type).toBe(ASTNodeType.EXPRESSION)
     })
   })
 
