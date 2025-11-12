@@ -1,5 +1,5 @@
 import { LogicType } from '@form-engine/form/types/enums'
-import { PredicateASTNode, TestPredicateASTNode } from '@form-engine/core/types/expressions.type'
+import { PredicateASTNode, TestPredicateASTNode, NotPredicateASTNode } from '@form-engine/core/types/expressions.type'
 
 /**
  * Check if an AST node is a Predicate expression node
@@ -42,6 +42,6 @@ export function isPredicateXorNode(obj: any): obj is PredicateASTNode {
 /**
  * Check if an AST node is a Predicate NOT node
  */
-export function isPredicateNotNode(obj: any): obj is PredicateASTNode {
+export function isPredicateNotNode(obj: any): obj is NotPredicateASTNode {
   return obj != null && obj.expressionType === LogicType.NOT
 }

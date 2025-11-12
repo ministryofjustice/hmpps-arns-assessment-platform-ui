@@ -787,6 +787,11 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
         negate: this.properties.get('negate') ?? false,
       }
       properties = testProperties
+    } else if (this.expressionType === LogicType.NOT) {
+      const notProperties: { operand: any } = {
+        operand: this.properties.get('operand'),
+      }
+      properties = notProperties
     } else {
       // Legacy nodes still using Map properties (will be removed after migration)
       properties = this.properties

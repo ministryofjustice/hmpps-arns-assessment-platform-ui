@@ -90,6 +90,16 @@ export interface TestPredicateASTNode extends Omit<ExpressionASTNode, 'propertie
 }
 
 /**
+ * Not Predicate Expression AST node
+ */
+export interface NotPredicateASTNode extends Omit<ExpressionASTNode, 'properties'> {
+  expressionType: LogicType.NOT
+  properties: {
+    operand: ASTNode
+  }
+}
+
+/**
  * Predicate Expression AST node
  */
 export interface PredicateASTNode extends ExpressionASTNode {

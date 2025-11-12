@@ -425,7 +425,7 @@ describe('LogicExpressionWiring', () => {
         const notExpr = ASTTestFactory.expression<PredicateASTNode>(LogicType.NOT).build()
 
         // Remove operand property
-        notExpr.properties.delete('operand')
+        delete (notExpr.properties as any).operand
 
         when(mockWiringContext.findNodesByType)
           .calledWith(ASTNodeType.EXPRESSION)

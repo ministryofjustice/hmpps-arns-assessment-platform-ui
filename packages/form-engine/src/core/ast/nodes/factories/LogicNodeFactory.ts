@@ -8,7 +8,12 @@ import {
 import { isConditionalExpr } from '@form-engine/form/typeguards/expressions'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { LogicType } from '@form-engine/form/types/enums'
-import { ConditionalASTNode, PredicateASTNode, TestPredicateASTNode } from '@form-engine/core/types/expressions.type'
+import {
+  ConditionalASTNode,
+  PredicateASTNode,
+  TestPredicateASTNode,
+  NotPredicateASTNode,
+} from '@form-engine/core/types/expressions.type'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
@@ -35,7 +40,7 @@ export class LogicNodeFactory {
   /**
    * Create a logic node based on the JSON type
    */
-  create(json: any): ConditionalASTNode | TestPredicateASTNode | PredicateASTNode {
+  create(json: any): ConditionalASTNode | TestPredicateASTNode | NotPredicateASTNode | PredicateASTNode {
     if (isConditionalExpr(json)) {
       return this.createConditional(json)
     }
@@ -126,16 +131,23 @@ export class LogicNodeFactory {
   /**
    * Transform NOT predicate: Single operand negation
    */
-  private createNotPredicate(json: PredicateNotExpr): PredicateASTNode {
-    const properties = new Map<string, any>()
-
-    properties.set('operand', this.nodeFactory.createNode(json.operand))
+  private createNotPredicate(json: PredicateNotExpr): NotPredicateASTNode {
+    if (!json.operand) {
+      throw new InvalidNodeError({
+        message: 'Not predicate requires an operand',
+        node: json,
+        expected: 'operand property',
+        actual: 'undefined',
+      })
+    }
 
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.EXPRESSION,
       expressionType: LogicType.NOT,
-      properties,
+      properties: {
+        operand: this.nodeFactory.createNode(json.operand),
+      },
       raw: json,
     }
   }

@@ -1,7 +1,12 @@
 import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
 import { DependencyEdgeType } from '@form-engine/core/ast/dependencies/DependencyGraph'
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionASTNode, PredicateASTNode, TestPredicateASTNode } from '@form-engine/core/types/expressions.type'
+import {
+  ExpressionASTNode,
+  PredicateASTNode,
+  TestPredicateASTNode,
+  NotPredicateASTNode,
+} from '@form-engine/core/types/expressions.type'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import { LogicType } from '@form-engine/form/types/enums'
 import { isPredicateNode } from '@form-engine/core/typeguards/predicate-nodes'
@@ -100,10 +105,11 @@ export default class LogicExpressionWiring {
    * Creates edge: operand → operator
    */
   private wireUnaryOperator(predicateNode: PredicateASTNode) {
-    const operand = predicateNode.properties.get('operand')
+    const notNode = predicateNode as unknown as NotPredicateASTNode
+    const operand = notNode.properties.operand
 
     if (isASTNode(operand)) {
-      this.wiringContext.graph.addEdge(operand.id, predicateNode.id, DependencyEdgeType.DATA_FLOW, {
+      this.wiringContext.graph.addEdge(operand.id, notNode.id, DependencyEdgeType.DATA_FLOW, {
         property: 'operand',
       })
     }

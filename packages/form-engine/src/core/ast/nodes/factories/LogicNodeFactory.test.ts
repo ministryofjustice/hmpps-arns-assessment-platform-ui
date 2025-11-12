@@ -17,6 +17,7 @@ import {
   ExpressionASTNode,
   PredicateASTNode,
   TestPredicateASTNode,
+  NotPredicateASTNode,
 } from '@form-engine/core/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 import { LogicNodeFactory } from './LogicNodeFactory'
@@ -473,13 +474,13 @@ describe('LogicNodeFactory', () => {
         } satisfies PredicateTestExpr,
       } satisfies PredicateNotExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
+      const result = logicFactory.create(json) as NotPredicateASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(LogicType.NOT)
       expect(result.raw).toBe(json)
-      expect(result.properties.has('operand')).toBe(true)
+      expect(result.properties.operand).toBeDefined()
     })
 
     it('should transform operand using real nodeFactory', () => {
@@ -493,8 +494,8 @@ describe('LogicNodeFactory', () => {
         } satisfies PredicateTestExpr,
       } satisfies PredicateNotExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
-      const operand = result.properties.get('operand')
+      const result = logicFactory.create(json) as NotPredicateASTNode
+      const operand = result.properties.operand as ExpressionASTNode
 
       expect(operand.type).toBe(ASTNodeType.EXPRESSION)
       expect(operand.expressionType).toBe(LogicType.TEST)
@@ -514,12 +515,21 @@ describe('LogicNodeFactory', () => {
         } satisfies PredicateNotExpr,
       } satisfies PredicateNotExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
-      const outerOperand = result.properties.get('operand')
-      const innerOperand = outerOperand.properties.get('operand')
+      const result = logicFactory.create(json) as NotPredicateASTNode
+      const outerOperand = result.properties.operand as NotPredicateASTNode
+      const innerOperand = outerOperand.properties.operand as ExpressionASTNode
 
       expect(outerOperand.expressionType).toBe(LogicType.NOT)
       expect(innerOperand.expressionType).toBe(LogicType.TEST)
+    })
+
+    it('should throw InvalidNodeError when operand is missing', () => {
+      const json = {
+        type: LogicType.NOT,
+      } as any
+
+      expect(() => logicFactory.create(json)).toThrow(InvalidNodeError)
+      expect(() => logicFactory.create(json)).toThrow('Not predicate requires an operand')
     })
   })
 
