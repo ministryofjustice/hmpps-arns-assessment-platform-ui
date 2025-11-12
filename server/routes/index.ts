@@ -2,8 +2,9 @@ import { Router } from 'express'
 
 import type { Services } from '../services'
 import { createNavigation, htmlBlocks } from '../utils/journeyUtils'
+import { AuditEvent } from '../services/auditService'
 
-export default function routes({ assessmentService }: Services): Router {
+export default function routes({ assessmentService, auditService }: Services): Router {
   const router = Router()
 
   router.get('/', async (_req, res) => {
@@ -43,6 +44,18 @@ export default function routes({ assessmentService }: Services): Router {
       const currentTime = new Date().toLocaleString('en-GB', {
         dateStyle: 'full',
         timeStyle: 'long',
+      })
+
+      await auditService.send(AuditEvent.CREATE_ASSESSMENT, {
+        username: user.id,
+        correlationId: req.id,
+        assessmentUuid,
+      })
+
+      await auditService.send(AuditEvent.VIEW_ASSESSMENT, {
+        username: user.id,
+        correlationId: req.id,
+        assessmentUuid,
       })
 
       return res.render('pages/assessment', {
@@ -138,7 +151,7 @@ export default function routes({ assessmentService }: Services): Router {
       })
 
       // Add another Step to the Goal
-      const { collectionItemUuid: step2Uuid } = await assessmentService.command<'AddCollectionItem'>({
+      await assessmentService.command<'AddCollectionItem'>({
         type: 'AddCollectionItemCommand',
         collectionUuid: stepsCollectionUuid,
         properties: {

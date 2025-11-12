@@ -12,7 +12,7 @@ export default class AssessmentPlatformApiClient extends RestClient {
 
   // CQRS Command endpoint - for write operations
   async executeCommands(request: CommandsRequest): Promise<CommandsResponse> {
-    return this.post({ path: '/command', data: request as unknown as Record<string, unknown>}, asSystem())
+    return this.post({ path: '/command', data: request as unknown as Record<string, unknown> }, asSystem())
   }
 
   // CQRS Query endpoint - for read operations

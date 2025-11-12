@@ -4,12 +4,11 @@ import AssessmentService from './assessmentService'
 
 export const services = () => {
   const { applicationInfo, assessmentPlatformApiClient } = dataAccess()
-  const auditService = new AuditService(applicationInfo)
 
   return {
     applicationInfo,
-    auditService,
-    assessmentService: new AssessmentService(assessmentPlatformApiClient, auditService),
+    auditService: new AuditService(applicationInfo),
+    assessmentService: new AssessmentService(assessmentPlatformApiClient),
   }
 }
 

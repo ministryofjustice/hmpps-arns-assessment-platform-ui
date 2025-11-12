@@ -1,4 +1,4 @@
-import { User } from '../user';
+import { User } from '../user'
 
 export interface Query {
   type: string
@@ -24,7 +24,4 @@ export interface CollectionQuery extends Query {
   depth: number
 }
 
-export type Queries =
-  | AssessmentVersionQuery
-  | AssessmentTimelineQuery
-  | CollectionQuery
+export type Queries = AssessmentVersionQuery | AssessmentTimelineQuery | CollectionQuery

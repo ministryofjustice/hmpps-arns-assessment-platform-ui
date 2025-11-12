@@ -6,9 +6,9 @@ export interface Properties {
   [key: string]: string[]
 }
 
-export interface QuestionCodes extends Array<string> {}
+export type QuestionCodes = Array<string>
 
-export interface PropertyKeys extends Array<string> {}
+export type PropertyKeys = Array<string>
 
 export interface CollectionItem {
   uuid: string

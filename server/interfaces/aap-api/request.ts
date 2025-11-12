@@ -1,5 +1,5 @@
-import { Commands } from './command';
-import { Queries } from './query';
+import { Commands } from './command'
+import { Queries } from './query'
 
 export interface CommandsRequest {
   commands: Commands[]

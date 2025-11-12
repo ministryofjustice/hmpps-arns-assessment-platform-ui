@@ -1,0 +1,55 @@
+{# Recursive macro to render any JSON structure using GOV.UK styles #}
+{% macro render(value) %}
+  {% if value is string %}
+    "<span class="govuk-!-color-blue">{{ value }}</span>"
+    {% elif value is number %}
+    <span class="govuk-!-color-green">{{ value }}</span>
+    {% elif value is boolean %}
+    <span class="govuk-!-color-purple">{{ value }}</span>
+    {% elif value is null %}
+    <span class="govuk-!-color-dark-grey">null</span>
+    {% elif value is iterable and value is not string %}
+    {% if value is mapping %}
+      <div class="govuk-!-margin-left-4">
+        <span>{</span>
+        <ul class="govuk-list govuk-!-margin-left-2 govuk-!-margin-bottom-1 govuk-!-font-size-16">
+          {% for key, val in value %}
+            <li>
+              <strong class="govuk-!-color-dark-grey">{{ key }}</strong>: {{ render(val) }}
+            </li>
+          {% endfor %}
+        </ul>
+        <span>}</span>
+      </div>
+    {% else %}
+      <div class="govuk-!-margin-left-4">
+        <span>[</span>
+        <ul class="govuk-list govuk-!-margin-left-2 govuk-!-margin-bottom-1 govuk-!-font-size-16">
+          {% for item in value %}
+            <li>{{ render(item) }}</li>
+          {% endfor %}
+        </ul>
+        <span>]</span>
+      </div>
+    {% endif %}
+  {% else %}
+    <span class="govuk-!-color-dark-grey">{{ value }}</span>
+  {% endif %}
+{% endmacro %}
+
+{% extends "../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - Sentence Plan" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+  <h1 class="govuk-heading-xl">Sentence Plan Demo</h1>
+
+  <h2 class="govuk-heading-l">Full plan data</h2>
+
+  <div class="govuk-body govuk-!-font-size-16 govuk-!-font-family-monospace">
+    {{ render(data) }}
+  </div>
+
+{% endblock %}

@@ -1,27 +1,31 @@
 import AssessmentPlatformApiClient from '../data/assessmentPlatformApiClient'
-import { CommandsRequest, QueriesRequest } from '../interfaces/aap-api/request';
+import { CommandsRequest, QueriesRequest } from '../interfaces/aap-api/request'
 import {
   AddCollectionItemCommandResult,
   CommandResult,
   CreateAssessmentCommandResult,
-  CreateCollectionCommandResult
-} from '../interfaces/aap-api/commandResult';
+  CreateCollectionCommandResult,
+} from '../interfaces/aap-api/commandResult'
 import {
   AssessmentTimelineQueryResult,
   AssessmentVersionQueryResult,
   CollectionQueryResult,
-} from '../interfaces/aap-api/queryResult';
+} from '../interfaces/aap-api/queryResult'
 import {
-  AddCollectionItemCommand, Commands,
+  AddCollectionItemCommand,
+  Commands,
   CreateAssessmentCommand,
-  CreateCollectionCommand, RemoveCollectionItemCommand, ReorderCollectionItemCommand,
+  CreateCollectionCommand,
+  RemoveCollectionItemCommand,
+  ReorderCollectionItemCommand,
   RollBackAssessmentAnswersCommand,
   UpdateAssessmentAnswersCommand,
   UpdateAssessmentPropertiesCommand,
-  UpdateCollectionItemAnswersCommand, UpdateCollectionItemPropertiesCommand,
-  UpdateFormVersionCommand
-} from '../interfaces/aap-api/command';
-import { AssessmentTimelineQuery, AssessmentVersionQuery, CollectionQuery } from '../interfaces/aap-api/query';
+  UpdateCollectionItemAnswersCommand,
+  UpdateCollectionItemPropertiesCommand,
+  UpdateFormVersionCommand,
+} from '../interfaces/aap-api/command'
+import { AssessmentTimelineQuery, AssessmentVersionQuery, CollectionQuery } from '../interfaces/aap-api/query'
 
 interface CommandMap {
   CreateAssessment: { cmd: CreateAssessmentCommand; res: CreateAssessmentCommandResult }
@@ -38,15 +42,13 @@ interface CommandMap {
 }
 
 interface QueryMap {
-  AssessmentVersion: { query: AssessmentVersionQuery, res: AssessmentVersionQueryResult }
-  AssessmentTimeline: { query: AssessmentTimelineQuery, res: AssessmentTimelineQueryResult }
-  Collection: { query: CollectionQuery, res: CollectionQueryResult }
+  AssessmentVersion: { query: AssessmentVersionQuery; res: AssessmentVersionQueryResult }
+  AssessmentTimeline: { query: AssessmentTimelineQuery; res: AssessmentTimelineQueryResult }
+  Collection: { query: CollectionQuery; res: CollectionQueryResult }
 }
 
 export default class AssessmentService {
-  constructor(
-    private readonly assessmentPlatformApiClient: AssessmentPlatformApiClient,
-  ) {}
+  constructor(private readonly assessmentPlatformApiClient: AssessmentPlatformApiClient) {}
 
   async command<T extends keyof CommandMap>(cmd: CommandMap[T]['cmd']): Promise<CommandMap[T]['res']> {
     const request: CommandsRequest = { commands: [cmd] }

@@ -1,7 +1,7 @@
-import { Commands } from './command';
-import { CommandResults } from './commandResult';
-import { QueryResults } from './queryResult';
-import { Queries } from './query';
+import { Commands } from './command'
+import { CommandResults } from './commandResult'
+import { QueryResults } from './queryResult'
+import { Queries } from './query'
 
 export interface CommandResponse {
   request: Commands
