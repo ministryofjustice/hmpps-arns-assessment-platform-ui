@@ -887,7 +887,7 @@ describe('NodeFactory', () => {
 
       expect(result.type).toBe(ASTNodeType.JOURNEY)
 
-      const steps = result.properties.get('steps')
+      const steps = result.properties.steps
       expect(steps).toHaveLength(1)
       expect(steps[0].type).toBe(ASTNodeType.STEP)
 

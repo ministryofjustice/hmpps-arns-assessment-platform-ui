@@ -482,7 +482,7 @@ export class ASTTestFactory {
 export class JourneyBuilder {
   private id?: string
 
-  private properties: Map<string, any> = new Map()
+  private properties: any = {}
 
   withId(id: string): this {
     this.id = id
@@ -490,7 +490,17 @@ export class JourneyBuilder {
   }
 
   withProperty(key: string, value: any): this {
-    this.properties.set(key, value)
+    this.properties[key] = value
+    return this
+  }
+
+  withCode(code: string): this {
+    this.properties.code = code
+    return this
+  }
+
+  withTitle(title: string): this {
+    this.properties.title = title
     return this
   }
 
@@ -498,15 +508,17 @@ export class JourneyBuilder {
     const stepBuilder = new StepBuilder()
     const step = configFn ? configFn(stepBuilder).build() : stepBuilder.build()
 
-    const steps = this.properties.get('steps') || []
-    steps.push(step)
-    this.properties.set('steps', steps)
+    if (!this.properties.steps) {
+      this.properties.steps = []
+    }
+
+    this.properties.steps.push(step)
 
     return this
   }
 
   withMetadata(metadata: Record<string, any>): this {
-    this.properties.set('metadata', metadata)
+    this.properties.metadata = metadata
     return this
   }
 

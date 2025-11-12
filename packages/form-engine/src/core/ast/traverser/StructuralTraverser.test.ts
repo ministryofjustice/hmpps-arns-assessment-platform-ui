@@ -39,8 +39,8 @@ describe('StructuralTraverser', () => {
     step1.properties.blocks = [block1, block2]
     step2.properties.title = 'Step 2 Title'
 
-    journey.properties.set('steps', [step1, step2])
-    journey.properties.set('metadata', { version: '1.0' })
+    journey.properties.steps = [step1, step2]
+    journey.properties.metadata = { version: '1.0' }
 
     return journey
   }
@@ -352,7 +352,7 @@ describe('StructuralTraverser', () => {
       const step2 = ASTTestFactory.step().withId('compile_ast:20').build()
       const steps = [step1, step2]
 
-      node.properties.set('steps', steps)
+      node.properties.steps = steps
 
       let s1Context: StructuralContext | null = null
       let s2Context: StructuralContext | null = null

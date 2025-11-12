@@ -27,7 +27,7 @@ describe('AttachValidationBlockCodeNormalizer', () => {
 
       normalizer.normalize(ast)
 
-      const steps = ast.properties.get('steps')
+      const steps = ast.properties.steps
       const block = steps[0].properties.blocks[0]
       const validation = block.properties.validate
 
@@ -45,7 +45,7 @@ describe('AttachValidationBlockCodeNormalizer', () => {
 
       normalizer.normalize(ast)
 
-      const steps = ast.properties.get('steps')
+      const steps = ast.properties.steps
       const block = steps[0].properties.blocks[0]
       const validation = block.properties.validate
 
@@ -65,7 +65,7 @@ describe('AttachValidationBlockCodeNormalizer', () => {
 
       normalizer.normalize(ast)
 
-      const steps = ast.properties.get('steps')
+      const steps = ast.properties.steps
       const block = steps[0].properties.blocks[0]
       const validation = block.properties.validate
 

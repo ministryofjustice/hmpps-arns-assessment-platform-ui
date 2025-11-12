@@ -43,6 +43,7 @@ describe('StructureNodeFactory', () => {
       const json = {
         type: StructureType.JOURNEY,
         code: 'test-journey',
+        path: 'test-journey',
         title: 'Test Journey',
         steps: [] as StepDefinition[],
       } satisfies JourneyDefinition
@@ -88,6 +89,7 @@ describe('StructureNodeFactory', () => {
       const json = {
         type: StructureType.JOURNEY,
         code: 'test-journey',
+        path: 'test-journey',
         title: 'Test Journey',
         steps: [] as StepDefinition[],
       } satisfies JourneyDefinition
@@ -98,15 +100,16 @@ describe('StructureNodeFactory', () => {
       expect(result.type).toBe(ASTNodeType.JOURNEY)
       expect(result.raw).toBe(json)
 
-      expect(result.properties.has('title')).toBe(true)
-      expect(result.properties.get('title')).toBe('Test Journey')
-      expect(result.properties.has('steps')).toBe(true)
+      expect('title' in result.properties).toBe(true)
+      expect(result.properties.title).toBe('Test Journey')
+      expect('steps' in result.properties).toBe(true)
     })
 
     it('should transform nested steps using real nodeFactory', () => {
       const json = {
         type: StructureType.JOURNEY,
         code: 'test-journey',
+        path: 'test-journey',
         title: 'Test Journey',
         steps: [
           {
@@ -125,7 +128,7 @@ describe('StructureNodeFactory', () => {
       } satisfies JourneyDefinition
 
       const result = structureFactory.create(json) as JourneyASTNode
-      const steps = result.properties.get('steps')
+      const steps = result.properties.steps
 
       expect(Array.isArray(steps)).toBe(true)
       expect(steps).toHaveLength(2)
@@ -139,20 +142,22 @@ describe('StructureNodeFactory', () => {
       const json = {
         type: StructureType.JOURNEY,
         code: 'test-journey',
+        path: 'test-journey',
         title: 'Test Journey',
         steps: [] as StepDefinition[],
       } satisfies JourneyDefinition
 
       const result = structureFactory.create(json) as JourneyASTNode
 
-      expect(result.properties.has('type')).toBe(false)
-      expect(result.properties.has('title')).toBe(true)
+      expect('type' in result.properties).toBe(false)
+      expect('title' in result.properties).toBe(true)
     })
 
     it('should generate unique node IDs', () => {
       const json = {
         type: StructureType.JOURNEY,
         code: 'test-journey',
+        path: 'test-journey',
         title: 'Test Journey',
         steps: [] as StepDefinition[],
       } satisfies JourneyDefinition

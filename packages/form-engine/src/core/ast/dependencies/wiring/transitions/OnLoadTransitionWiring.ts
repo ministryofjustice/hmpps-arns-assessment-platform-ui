@@ -33,7 +33,7 @@ export default class OnLoadTransitionWiring {
       .filter(journey => this.wiringContext.metadataRegistry.get(journey.id, 'isAncestorOfStep'))
 
     ancestorJourneys.forEach(journey => {
-      const onLoadTransitions = journey.properties.get('onLoad') as LoadTransitionASTNode[]
+      const onLoadTransitions = journey.properties.onLoad
       this.wireTransitionsArray(onLoadTransitions)
     })
 
@@ -122,7 +122,7 @@ export default class OnLoadTransitionWiring {
     const onLoad =
       node.type === ASTNodeType.STEP
         ? (node as StepASTNode).properties.onLoad
-        : ((node as JourneyASTNode).properties.get('onLoad') as LoadTransitionASTNode[] | undefined)
+        : (node as JourneyASTNode).properties.onLoad
 
     return onLoad?.at(0)
   }
@@ -135,7 +135,7 @@ export default class OnLoadTransitionWiring {
     const onLoad =
       node.type === ASTNodeType.STEP
         ? (node as StepASTNode).properties.onLoad
-        : ((node as JourneyASTNode).properties.get('onLoad') as LoadTransitionASTNode[] | undefined)
+        : (node as JourneyASTNode).properties.onLoad
 
     return onLoad?.at(-1)
   }

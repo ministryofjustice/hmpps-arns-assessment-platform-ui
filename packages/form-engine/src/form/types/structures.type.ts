@@ -108,23 +108,11 @@ export interface FieldBlockDefinition extends BlockDefinition {
 export interface JourneyDefinition {
   type: StructureType.JOURNEY
 
+  /** URL path segment for the journey */
+  path: string
+
   /** Unique identifier for the journey */
   code: string
-
-  /** Display title for the journey */
-  title: string
-
-  /** Optional description of the journey's purpose */
-  description?: string
-
-  /** URL path segment for the journey */
-  path?: string
-
-  /** Version identifier for journey versioning */
-  version?: string
-
-  /** Optional custom Express controller applied to all steps */
-  controller?: string
 
   /** Load foundational data when journey is accessed */
   onLoad?: LoadTransition[]
@@ -137,6 +125,17 @@ export interface JourneyDefinition {
 
   /** Nested child journeys for hierarchical flows */
   children?: JourneyDefinition[]
+
+  /** Display title for the journey */
+  title: string
+
+  /** Optional description of the journey's purpose */
+  description?: string
+
+  /** Optional metadata regarding the journey */
+  metadata?: {
+    [key: string]: any
+  }
 }
 
 /**

@@ -155,7 +155,7 @@ export class WiringContext {
       }
 
       if (isJourneyStructNode(currentNode)) {
-        const onLoad = currentNode.properties.get('onLoad') as LoadTransitionASTNode[]
+        const onLoad = currentNode.properties.onLoad
 
         if (Array.isArray(onLoad) && onLoad.length > 0) {
           return onLoad.at(-1)

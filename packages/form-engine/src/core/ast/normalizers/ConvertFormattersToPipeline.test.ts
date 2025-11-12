@@ -6,6 +6,7 @@ import { PipelineASTNode, ReferenceASTNode } from '@form-engine/core/types/expre
 import { isPipelineExprNode, isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import { isTransformerFunctionNode } from '@form-engine/core/typeguards/function-nodes'
 import { NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
+import { StepASTNode } from '@form-engine/core/types/structures.type'
 
 describe('ConvertFormattersToPipelineNormalizer', () => {
   let normalizer: ConvertFormattersToPipelineNormalizer
@@ -261,7 +262,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
 
       normalizer.normalize(journey)
 
-      const steps = journey.properties.get('steps') as any[]
+      const steps = journey.properties.steps as StepASTNode[]
       const containerBlock = steps[0].properties.blocks[0]
       const transformedCollection = containerBlock.properties.content
       const template = transformedCollection.properties.template as any[]

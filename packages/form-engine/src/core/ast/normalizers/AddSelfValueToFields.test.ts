@@ -2,6 +2,7 @@ import { ExpressionType } from '@form-engine/form/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { NodeFactory } from '@form-engine/core/ast/nodes/NodeFactory'
 import { ASTNode } from '@form-engine/core/types/engine.type'
+import { StepASTNode } from '@form-engine/core/types/structures.type'
 import { AddSelfValueToFieldsNormalizer } from './AddSelfValueToFields'
 
 describe('AddSelfValueToFields', () => {
@@ -110,7 +111,7 @@ describe('AddSelfValueToFields', () => {
 
       normalizer.normalize(journey)
 
-      const steps = journey.properties.get('steps') as any[]
+      const steps = journey.properties.steps as StepASTNode[]
       const containerBlock = steps[0].properties.blocks[0]
       const transformedCollection = containerBlock.properties.content
       const template = transformedCollection.properties.template as any[]

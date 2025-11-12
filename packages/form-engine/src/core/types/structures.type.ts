@@ -10,9 +10,20 @@ import {
 /**
  * Journey AST node - represents the top-level form journey
  */
-export interface JourneyASTNode extends ASTNode {
+export interface JourneyASTNode extends Omit<ASTNode, 'properties'> {
   type: ASTNodeType.JOURNEY
-  properties: Map<string, ASTNode | any>
+  properties: {
+    path: string
+    code: string
+    onLoad?: LoadTransitionASTNode[]
+    onAccess?: AccessTransitionASTNode[]
+    steps?: StepASTNode[]
+    children?: JourneyASTNode[]
+    title: string
+    description?: string
+    version?: string
+    metadata?: Record<string, any>
+  }
 }
 
 /**
