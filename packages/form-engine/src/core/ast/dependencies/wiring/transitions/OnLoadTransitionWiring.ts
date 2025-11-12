@@ -38,7 +38,9 @@ export default class OnLoadTransitionWiring {
     })
 
     // Wire the current step's array of on load transitions together
-    const stepOnLoadTransitions = this.wiringContext.getStepNode().properties.get('onLoad') as LoadTransitionASTNode[]
+    const stepOnLoadTransitions = this.wiringContext.getStepNode().properties.onLoad as
+      | LoadTransitionASTNode[]
+      | undefined
     this.wireTransitionsArray(stepOnLoadTransitions)
   }
 
@@ -117,7 +119,10 @@ export default class OnLoadTransitionWiring {
    * Returns undefined if no transitions exist
    */
   private getFirstTransition(node: JourneyASTNode | StepASTNode): LoadTransitionASTNode | undefined {
-    const onLoad = node.properties.get('onLoad') as LoadTransitionASTNode[] | undefined
+    const onLoad =
+      node.type === ASTNodeType.STEP
+        ? (node as StepASTNode).properties.onLoad
+        : ((node as JourneyASTNode).properties.get('onLoad') as LoadTransitionASTNode[] | undefined)
 
     return onLoad?.at(0)
   }
@@ -127,7 +132,10 @@ export default class OnLoadTransitionWiring {
    * Returns undefined if no transitions exist
    */
   private getLastTransition(node: JourneyASTNode | StepASTNode): LoadTransitionASTNode | undefined {
-    const onLoad = node.properties.get('onLoad') as LoadTransitionASTNode[] | undefined
+    const onLoad =
+      node.type === ASTNodeType.STEP
+        ? (node as StepASTNode).properties.onLoad
+        : ((node as JourneyASTNode).properties.get('onLoad') as LoadTransitionASTNode[] | undefined)
 
     return onLoad?.at(-1)
   }

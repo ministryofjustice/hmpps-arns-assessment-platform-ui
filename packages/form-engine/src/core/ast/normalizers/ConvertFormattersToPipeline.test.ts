@@ -262,7 +262,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
       normalizer.normalize(journey)
 
       const steps = journey.properties.get('steps') as any[]
-      const containerBlock = steps[0].properties.get('blocks')[0]
+      const containerBlock = steps[0].properties.blocks[0]
       const transformedCollection = containerBlock.properties.content
       const template = transformedCollection.properties.template as any[]
       const transformedField = template[0]

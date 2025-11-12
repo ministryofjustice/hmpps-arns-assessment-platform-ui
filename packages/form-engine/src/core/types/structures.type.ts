@@ -1,6 +1,11 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { ASTNode } from '@form-engine/core/types/engine.type'
-import { ValidationASTNode } from '@form-engine/core/types/expressions.type'
+import {
+  AccessTransitionASTNode,
+  LoadTransitionASTNode,
+  SubmitTransitionASTNode,
+  ValidationASTNode,
+} from '@form-engine/core/types/expressions.type'
 
 /**
  * Journey AST node - represents the top-level form journey
@@ -13,9 +18,21 @@ export interface JourneyASTNode extends ASTNode {
 /**
  * Step AST node - represents a single page/step in the journey
  */
-export interface StepASTNode extends ASTNode {
+export interface StepASTNode extends Omit<ASTNode, 'properties'> {
   type: ASTNodeType.STEP
-  properties: Map<string, ASTNode | any>
+  properties: {
+    path: string
+    onLoad?: LoadTransitionASTNode[]
+    onAccess?: AccessTransitionASTNode[]
+    onSubmission?: SubmitTransitionASTNode[]
+    blocks?: BlockASTNode[]
+    title: string
+    description?: string
+    template?: string
+    isEntryPoint?: boolean
+    backlink?: string
+    metadata?: Record<string, any>
+  }
 }
 
 /**

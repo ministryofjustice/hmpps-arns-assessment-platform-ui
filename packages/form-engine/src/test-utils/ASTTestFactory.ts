@@ -527,7 +527,7 @@ export class JourneyBuilder {
 export class StepBuilder {
   private id?: string
 
-  private properties: Map<string, any> = new Map()
+  private properties: any = {}
 
   withId(id: string): this {
     this.id = id
@@ -535,7 +535,12 @@ export class StepBuilder {
   }
 
   withProperty(key: string, value: any): this {
-    this.properties.set(key, value)
+    this.properties[key] = value
+    return this
+  }
+
+  withPath(path: string): this {
+    this.properties.path = path
     return this
   }
 
@@ -543,20 +548,22 @@ export class StepBuilder {
     const blockBuilder = new BlockBuilder(variant, blockType)
     const block = configFn ? configFn(blockBuilder).build() : blockBuilder.build()
 
-    const blocks = this.properties.get('blocks') || []
-    blocks.push(block)
-    this.properties.set('blocks', blocks)
+    if (!this.properties.blocks) {
+      this.properties.blocks = []
+    }
+
+    this.properties.blocks.push(block)
 
     return this
   }
 
   withTitle(title: string): this {
-    this.properties.set('title', title)
+    this.properties.title = title
     return this
   }
 
   withDescription(description: string): this {
-    this.properties.set('description', description)
+    this.properties.description = description
     return this
   }
 

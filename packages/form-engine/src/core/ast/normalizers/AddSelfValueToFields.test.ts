@@ -111,7 +111,7 @@ describe('AddSelfValueToFields', () => {
       normalizer.normalize(journey)
 
       const steps = journey.properties.get('steps') as any[]
-      const containerBlock = steps[0].properties.get('blocks')[0]
+      const containerBlock = steps[0].properties.blocks[0]
       const transformedCollection = containerBlock.properties.content
       const template = transformedCollection.properties.template as any[]
       const transformedField = template[0]
@@ -149,7 +149,7 @@ describe('AddSelfValueToFields', () => {
 
       normalizer.normalize(step)
 
-      const blocks = step.properties.get('blocks')[0].properties.blocks
+      const blocks = step.properties.blocks[0].properties.blocks
 
       expect(mockNodeFactory.createNode).toHaveBeenCalledTimes(2)
       expect(mockNodeFactory.createNode).toHaveBeenCalledWith({

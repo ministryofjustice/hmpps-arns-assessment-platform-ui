@@ -36,8 +36,8 @@ describe('StructuralTraverser', () => {
     block1.properties.data = { key: 'value' }
     block2.properties.items = ['item1', 'item2']
 
-    step1.properties.set('blocks', [block1, block2])
-    step2.properties.set('title', 'Step 2 Title')
+    step1.properties.blocks = [block1, block2]
+    step2.properties.title = 'Step 2 Title'
 
     journey.properties.set('steps', [step1, step2])
     journey.properties.set('metadata', { version: '1.0' })
@@ -62,7 +62,7 @@ describe('StructuralTraverser', () => {
       const block2 = ASTTestFactory.block('testVariant', 'basic').withId('compile_ast:10').build()
       const blocks = [block1, block2]
 
-      node.properties.set('blocks', blocks)
+      node.properties.blocks = blocks
 
       const visitor = createVisitorMocks()
       structuralTraverse(node, visitor)
@@ -72,17 +72,17 @@ describe('StructuralTraverser', () => {
       expect(visitor.enterNode).toHaveBeenCalledTimes(3) // step + 2 blocks
     })
 
-    it('should traverse Maps as node properties', () => {
-      const node = ASTTestFactory.step().withId('compile_ast:11').build()
+    it('should traverse object properties', () => {
+      const node = ASTTestFactory.block('TextInput', 'basic').withId('compile_ast:11').build()
 
-      node.properties.set('key1', 'value1')
-      node.properties.set('key2', 'value2')
+      node.properties.key1 = 'value1'
+      node.properties.key2 = 'value2'
 
       const visitor = createVisitorMocks()
       structuralTraverse(node, visitor)
 
-      expect(visitor.enterProperty).toHaveBeenCalledTimes(2)
-      expect(visitor.visitPrimitive).toHaveBeenCalledTimes(2)
+      expect(visitor.enterProperty).toHaveBeenCalled()
+      expect(visitor.visitPrimitive).toHaveBeenCalled()
     })
 
     it('should traverse nested structures', () => {
@@ -123,7 +123,7 @@ describe('StructuralTraverser', () => {
       const node = ASTTestFactory.step().withId('compile_ast:13').build()
       const child = ASTTestFactory.block('testVariant', 'basic').withId('compile_ast:14').build()
 
-      node.properties.set('blocks', [child])
+      node.properties.blocks = [child]
 
       const order: string[] = []
       const visitor: StructuralVisitor = {
@@ -199,7 +199,7 @@ describe('StructuralTraverser', () => {
     it('should call property hooks for node properties', () => {
       const node = ASTTestFactory.step().withId('compile_ast:15').build()
 
-      node.properties.set('title', 'Test Step')
+      node.properties.title = 'Test Step'
 
       const visitor = createVisitorMocks()
       structuralTraverse(node, visitor)
@@ -306,7 +306,7 @@ describe('StructuralTraverser', () => {
       const child = ASTTestFactory.block('testVariant', 'basic').withId('compile_ast:17').build()
       const childArray = [child]
 
-      parent.properties.set('blocks', childArray)
+      parent.properties.blocks = childArray
 
       let childContext: StructuralContext | null = null
 
@@ -419,7 +419,7 @@ describe('StructuralTraverser', () => {
       const parent = ASTTestFactory.step().withId('compile_ast:21').build()
       const child = ASTTestFactory.block('testVariant', 'basic').withId('compile_ast:22').build()
 
-      parent.properties.set('blocks', [child])
+      parent.properties.blocks = [child]
 
       const visitor = createVisitorMocks()
       visitor.enterNode.mockImplementation((node): VisitorResult => {

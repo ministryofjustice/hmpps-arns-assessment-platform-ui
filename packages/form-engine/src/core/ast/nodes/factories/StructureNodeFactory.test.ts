@@ -22,6 +22,7 @@ import {
   BasicBlockASTNode,
   FieldBlockASTNode,
   StepASTNode,
+  JourneyASTNode,
 } from '@form-engine/core/types/structures.type'
 import { NodeFactory } from '../NodeFactory'
 import { StructureNodeFactory } from './StructureNodeFactory'
@@ -57,6 +58,7 @@ describe('StructureNodeFactory', () => {
       const json = {
         type: StructureType.STEP,
         path: 'test-step',
+        title: 'test-step',
         blocks: [] as BlockDefinition[],
       } satisfies StepDefinition
 
@@ -90,7 +92,7 @@ describe('StructureNodeFactory', () => {
         steps: [] as StepDefinition[],
       } satisfies JourneyDefinition
 
-      const result = structureFactory.create(json)
+      const result = structureFactory.create(json) as JourneyASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.JOURNEY)
@@ -110,17 +112,19 @@ describe('StructureNodeFactory', () => {
           {
             type: StructureType.STEP,
             path: 'step1',
+            title: 'step1',
             blocks: [] as BlockDefinition[],
           } satisfies StepDefinition,
           {
             type: StructureType.STEP,
             path: 'step2',
+            title: 'step2',
             blocks: [] as BlockDefinition[],
           } satisfies StepDefinition,
         ],
       } satisfies JourneyDefinition
 
-      const result = structureFactory.create(json)
+      const result = structureFactory.create(json) as JourneyASTNode
       const steps = result.properties.get('steps')
 
       expect(Array.isArray(steps)).toBe(true)
@@ -139,7 +143,7 @@ describe('StructureNodeFactory', () => {
         steps: [] as StepDefinition[],
       } satisfies JourneyDefinition
 
-      const result = structureFactory.create(json)
+      const result = structureFactory.create(json) as JourneyASTNode
 
       expect(result.properties.has('type')).toBe(false)
       expect(result.properties.has('title')).toBe(true)
@@ -167,24 +171,26 @@ describe('StructureNodeFactory', () => {
       const json = {
         type: StructureType.STEP,
         path: 'test-step',
+        title: 'test-step',
         blocks: [] as BlockDefinition[],
       } satisfies StepDefinition
 
-      const result = structureFactory.create(json)
+      const result = structureFactory.create(json) as StepASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.STEP)
       expect(result.raw).toBe(json)
 
-      expect(result.properties.has('path')).toBe(true)
-      expect(result.properties.get('path')).toBe('test-step')
-      expect(result.properties.has('blocks')).toBe(true)
+      expect('path' in result.properties).toBe(true)
+      expect(result.properties.path).toBe('test-step')
+      expect('blocks' in result.properties).toBe(true)
     })
 
     it('should transform nested blocks using real nodeFactory', () => {
       const json = {
         type: StructureType.STEP,
         path: 'test-step',
+        title: 'test-step',
         blocks: [
           {
             type: StructureType.BLOCK,
@@ -197,8 +203,8 @@ describe('StructureNodeFactory', () => {
         ],
       } satisfies StepDefinition
 
-      const result = structureFactory.create(json)
-      const blocks = result.properties.get('blocks')
+      const result = structureFactory.create(json) as StepASTNode
+      const blocks = result.properties.blocks
 
       expect(Array.isArray(blocks)).toBe(true)
       expect(blocks).toHaveLength(2)
@@ -212,6 +218,7 @@ describe('StructureNodeFactory', () => {
       const json = {
         type: StructureType.STEP,
         path: 'test-step',
+        title: 'test-step',
         blocks: [] as BlockDefinition[],
         onLoad: [
           {
@@ -221,8 +228,8 @@ describe('StructureNodeFactory', () => {
         ],
       } satisfies StepDefinition
 
-      const result = structureFactory.create(json)
-      const onLoad = result.properties.get('onLoad')
+      const result = structureFactory.create(json) as StepASTNode
+      const onLoad = result.properties.onLoad
 
       expect(Array.isArray(onLoad)).toBe(true)
       expect(onLoad).toHaveLength(1)
@@ -232,6 +239,7 @@ describe('StructureNodeFactory', () => {
       const json = {
         type: StructureType.STEP,
         path: 'test-step',
+        title: 'test-step',
         blocks: [] as BlockDefinition[],
         onAccess: [
           {
@@ -240,8 +248,8 @@ describe('StructureNodeFactory', () => {
         ],
       } satisfies StepDefinition
 
-      const result = structureFactory.create(json)
-      const onAccess = result.properties.get('onAccess')
+      const result = structureFactory.create(json) as StepASTNode
+      const onAccess = result.properties.onAccess
 
       expect(Array.isArray(onAccess)).toBe(true)
       expect(onAccess).toHaveLength(1)
@@ -251,6 +259,7 @@ describe('StructureNodeFactory', () => {
       const json = {
         type: StructureType.STEP,
         path: 'test-step',
+        title: 'test-step',
         blocks: [] as BlockDefinition[],
         onSubmission: [
           {
@@ -263,8 +272,8 @@ describe('StructureNodeFactory', () => {
         ],
       } satisfies StepDefinition
 
-      const result = structureFactory.create(json)
-      const onSubmit = result.properties.get('onSubmission')
+      const result = structureFactory.create(json) as StepASTNode
+      const onSubmit = result.properties.onSubmission
 
       expect(Array.isArray(onSubmit)).toBe(true)
       expect(onSubmit).toHaveLength(1)
@@ -274,13 +283,14 @@ describe('StructureNodeFactory', () => {
       const json = {
         type: StructureType.STEP,
         path: 'test-step',
+        title: 'test-step',
         blocks: [] as BlockDefinition[],
       } satisfies StepDefinition
 
       const result = structureFactory.create(json)
 
-      expect(result.properties.has('type')).toBe(false)
-      expect(result.properties.has('path')).toBe(true)
+      expect('type' in result.properties).toBe(false)
+      expect('path' in result.properties).toBe(true)
     })
   })
 

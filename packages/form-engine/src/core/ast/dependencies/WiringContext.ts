@@ -146,7 +146,15 @@ export class WiringContext {
     let currentNode = this.nodeRegistry.get(nodeId)
 
     while (currentNode) {
-      if (isJourneyStructNode(currentNode) || isStepStructNode(currentNode)) {
+      if (isStepStructNode(currentNode)) {
+        const onLoad = currentNode.properties.onLoad as LoadTransitionASTNode[] | undefined
+
+        if (Array.isArray(onLoad) && onLoad.length > 0) {
+          return onLoad.at(-1)
+        }
+      }
+
+      if (isJourneyStructNode(currentNode)) {
         const onLoad = currentNode.properties.get('onLoad') as LoadTransitionASTNode[]
 
         if (Array.isArray(onLoad) && onLoad.length > 0) {

@@ -20,6 +20,7 @@ import {
 } from '@form-engine/form/types/expressions.type'
 import {
   BlockDefinition,
+  FieldBlockDefinition,
   JourneyDefinition,
   StepDefinition,
   ValidationExpr,
@@ -54,6 +55,7 @@ describe('NodeFactory', () => {
         const json = {
           type: StructureType.JOURNEY,
           code: 'test-journey',
+          path: 'test-journey',
           title: 'Test Journey',
           steps: [] as StepDefinition[],
         } satisfies JourneyDefinition
@@ -62,7 +64,7 @@ describe('NodeFactory', () => {
 
         expect(result.type).toBe(ASTNodeType.JOURNEY)
         expect(result.id).toBeDefined()
-        expect(result.properties.get('title')).toBe('Test Journey')
+        expect(result.properties.title).toBe('Test Journey')
       })
 
       it('should route Step definitions to StructureNodeFactory', () => {
@@ -70,13 +72,14 @@ describe('NodeFactory', () => {
           type: StructureType.STEP,
           path: 'test-step',
           blocks: [] as BlockDefinition[],
+          title: 'test-step',
         } satisfies StepDefinition
 
         const result = nodeFactory.createNode(json) as StepASTNode
 
         expect(result.type).toBe(ASTNodeType.STEP)
         expect(result.id).toBeDefined()
-        expect(result.properties.get('path')).toBe('test-step')
+        expect(result.properties.path).toBe('test-step')
       })
 
       it('should route Block definitions to StructureNodeFactory', () => {
@@ -839,11 +842,14 @@ describe('NodeFactory', () => {
     it('should transform a complete Journey with nested structures', () => {
       const json = {
         type: StructureType.JOURNEY,
+        code: 'test-journey',
+        path: 'test-journey',
         title: 'Test Journey',
         steps: [
           {
             type: StructureType.STEP,
-            slug: 'step1',
+            path: 'step1',
+            title: 'step1',
             blocks: [
               {
                 type: StructureType.BLOCK,
@@ -861,17 +867,21 @@ describe('NodeFactory', () => {
                     message: 'Email is required',
                   },
                 ],
-              },
+              } as FieldBlockDefinition,
             ],
-            onSubmit: [
+            onSubmission: [
               {
                 type: TransitionType.SUBMIT,
-                validate: true,
+                validate: false,
+                onAlways: {
+                  effects: [] as EffectFunctionExpr[],
+                  next: [] as NextExpr[],
+                },
               },
             ],
           },
         ],
-      }
+      } satisfies JourneyDefinition
 
       const result = nodeFactory.createNode(json) as JourneyASTNode
 
@@ -881,7 +891,7 @@ describe('NodeFactory', () => {
       expect(steps).toHaveLength(1)
       expect(steps[0].type).toBe(ASTNodeType.STEP)
 
-      const blocks = steps[0].properties.get('blocks')
+      const blocks = steps[0].properties.blocks
       expect(blocks).toHaveLength(1)
       expect(blocks[0].type).toBe(ASTNodeType.BLOCK)
 
@@ -890,7 +900,7 @@ describe('NodeFactory', () => {
       expect(validate[0].type).toBe(ASTNodeType.EXPRESSION)
       expect(validate[0].expressionType).toBe(ExpressionType.VALIDATION)
 
-      const onSubmit = steps[0].properties.get('onSubmit')
+      const onSubmit = steps[0].properties.onSubmission
       expect(onSubmit).toHaveLength(1)
       expect(onSubmit[0].type).toBe(ASTNodeType.TRANSITION)
     })
