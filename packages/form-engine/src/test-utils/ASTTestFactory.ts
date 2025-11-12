@@ -214,13 +214,13 @@ export class ASTTestFactory {
   /**
    * Create an ANSWER_LOCAL pseudo node
    */
-  static answerLocalPseudoNode(baseFieldCode: string, fieldNodeId: NodeId): AnswerLocalPseudoNode {
+  static answerLocalPseudoNode(baseFieldCode: string, fieldNodeId?: NodeId): AnswerLocalPseudoNode {
     return {
       id: ASTTestFactory.getPseudoId(),
       type: PseudoNodeType.ANSWER_LOCAL,
       properties: {
         baseFieldCode,
-        fieldNodeId,
+        fieldNodeId: fieldNodeId ?? ASTTestFactory.getId(),
       },
     }
   }
@@ -351,8 +351,7 @@ export class ASTTestFactory {
       const traverse = (node: any) => {
         if (!node) return
 
-        const propertyValues =
-          node.properties instanceof Map ? Array.from(node.properties.values()) : Object.values(node.properties || {})
+        const propertyValues = Object.values(node.properties || {})
 
         propertyValues.forEach(value => {
           if (ASTTestFactory.utils.isASTNode(value)) {
@@ -383,8 +382,7 @@ export class ASTTestFactory {
         if (!node) return null
         if (node.id === targetId) return node
 
-        const propertyValues =
-          node.properties instanceof Map ? Array.from(node.properties.values()) : Object.values(node.properties || {})
+        const propertyValues = Object.values(node.properties || {})
 
         for (const value of propertyValues) {
           if (ASTTestFactory.utils.isASTNode(value)) {
@@ -422,8 +420,7 @@ export class ASTTestFactory {
 
         let maxDepth = currentDepth
 
-        const propertyValues =
-          node.properties instanceof Map ? Array.from(node.properties.values()) : Object.values(node.properties || {})
+        const propertyValues = Object.values(node.properties || {})
 
         propertyValues.forEach(value => {
           if (ASTTestFactory.utils.isASTNode(value)) {
@@ -452,8 +449,7 @@ export class ASTTestFactory {
       const traverse = (node: any) => {
         if (!node) return
 
-        const propertyValues =
-          node.properties instanceof Map ? Array.from(node.properties.values()) : Object.values(node.properties || {})
+        const propertyValues = Object.values(node.properties || {})
 
         propertyValues.forEach(value => {
           if (ASTTestFactory.utils.isASTNode(value)) {
@@ -657,7 +653,7 @@ export class BlockBuilder {
 export class ExpressionBuilder<T = ExpressionASTNode> {
   private id?: string
 
-  private properties: Map<string, any> = new Map()
+  private properties: any = {}
 
   constructor(private expressionType: ExpressionType | FunctionType | LogicType) {}
 
@@ -667,176 +663,68 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
   }
 
   withProperty(key: string, value: any): this {
-    this.properties.set(key, value)
+    this.properties[key] = value
     return this
   }
 
   withPath(path: any[]): this {
-    this.properties.set('path', path)
+    this.properties.path = path
     return this
   }
 
   withSubject(subject: ExpressionASTNode): this {
-    this.properties.set('subject', subject)
+    this.properties.subject = subject
     return this
   }
 
   withCondition(condition: any): this {
-    this.properties.set('condition', condition)
+    this.properties.condition = condition
     return this
   }
 
   withPredicate(predicate: ExpressionASTNode): this {
-    this.properties.set('predicate', predicate)
+    this.properties.predicate = predicate
     return this
   }
 
   withThenValue(value: any): this {
-    this.properties.set('thenValue', value)
+    this.properties.thenValue = value
     return this
   }
 
   withElseValue(value: any): this {
-    this.properties.set('elseValue', value)
+    this.properties.elseValue = value
     return this
   }
 
   withSteps(steps: any[]): this {
-    this.properties.set('steps', steps)
+    this.properties.steps = steps
     return this
   }
 
   withCollection(collection: ReferenceExpr | PipelineExpr | any[]): this {
-    this.properties.set('collection', collection)
+    this.properties.collection = collection
     return this
   }
 
   withTemplate(nodes: ASTNode[]): this {
-    this.properties.set('template', nodes)
+    this.properties.template = nodes
     return this
   }
 
   withFallback(node: ASTNode): this {
-    this.properties.set('fallback', node)
+    this.properties.fallback = node
     return this
   }
 
   build(): T {
     const nodeId = this.id ?? ASTTestFactory.getId()
 
-    // TODO: Simplify this once all AST nodes have been migrated to use plain object properties
-    //  Currently we need to convert Map to object for migrated node types during the transition period
-    //  After migration is complete, remove all these conditionals and always use object properties directly
-
-    // Convert Map to object for migrated nodes: FunctionASTNode, PipelineASTNode, ReferenceASTNode, NextASTNode, FormatASTNode, CollectionASTNode, and ValidationASTNode
-    const isFunctionType = Object.values(FunctionType).includes(this.expressionType as FunctionType)
-    const isPipelineType = this.expressionType === ExpressionType.PIPELINE
-    const isReferenceType = this.expressionType === ExpressionType.REFERENCE
-    const isNextType = this.expressionType === ExpressionType.NEXT
-    const isFormatType = this.expressionType === ExpressionType.FORMAT
-    const isCollectionType = this.expressionType === ExpressionType.COLLECTION
-    const isValidationType = this.expressionType === ExpressionType.VALIDATION
-
-    let properties
-    if (isFunctionType) {
-      properties = {
-        name: this.properties.get('name'),
-        arguments: this.properties.get('arguments'),
-      }
-    } else if (isPipelineType) {
-      properties = {
-        input: this.properties.get('input'),
-        steps: this.properties.get('steps'),
-      }
-    } else if (isReferenceType) {
-      properties = {
-        path: this.properties.get('path'),
-      }
-    } else if (isNextType) {
-      const nextProperties: { goto: any; when?: any } = {
-        goto: this.properties.get('goto'),
-      }
-      const when = this.properties.get('when')
-      if (when !== undefined) {
-        nextProperties.when = when
-      }
-      properties = nextProperties
-    } else if (isFormatType) {
-      properties = {
-        template: this.properties.get('template'),
-        arguments: this.properties.get('arguments'),
-      }
-    } else if (isCollectionType) {
-      const collectionProperties: { collection: any; template: any; fallback?: any } = {
-        collection: this.properties.get('collection'),
-        template: this.properties.get('template'),
-      }
-      const fallback = this.properties.get('fallback')
-      if (fallback !== undefined) {
-        collectionProperties.fallback = fallback
-      }
-      properties = collectionProperties
-    } else if (isValidationType) {
-      const validationProperties: { when: any; message: any; submissionOnly?: boolean; details?: any } = {
-        when: this.properties.get('when'),
-        message: this.properties.get('message'),
-      }
-      const submissionOnly = this.properties.get('submissionOnly')
-      if (submissionOnly !== undefined) {
-        validationProperties.submissionOnly = submissionOnly
-      }
-      const details = this.properties.get('details')
-      if (details !== undefined) {
-        validationProperties.details = details
-      }
-      properties = validationProperties
-    } else if (this.expressionType === LogicType.CONDITIONAL) {
-      const conditionalProperties: { predicate: any; thenValue: any; elseValue?: any } = {
-        predicate: this.properties.get('predicate'),
-        thenValue: this.properties.get('thenValue'),
-      }
-      const elseValue = this.properties.get('elseValue')
-      if (elseValue !== undefined) {
-        conditionalProperties.elseValue = elseValue
-      }
-      properties = conditionalProperties
-    } else if (this.expressionType === LogicType.TEST) {
-      const testProperties: { subject: any; condition: any; negate: boolean } = {
-        subject: this.properties.get('subject'),
-        condition: this.properties.get('condition'),
-        negate: this.properties.get('negate') ?? false,
-      }
-      properties = testProperties
-    } else if (this.expressionType === LogicType.NOT) {
-      const notProperties: { operand: any } = {
-        operand: this.properties.get('operand'),
-      }
-      properties = notProperties
-    } else if (this.expressionType === LogicType.AND) {
-      const andProperties: { operands: any[] } = {
-        operands: this.properties.get('operands') || [],
-      }
-      properties = andProperties
-    } else if (this.expressionType === LogicType.OR) {
-      const orProperties: { operands: any[] } = {
-        operands: this.properties.get('operands') || [],
-      }
-      properties = orProperties
-    } else if (this.expressionType === LogicType.XOR) {
-      const xorProperties: { operands: any[] } = {
-        operands: this.properties.get('operands') || [],
-      }
-      properties = xorProperties
-    } else {
-      // Legacy nodes still using Map properties (will be removed after migration)
-      properties = this.properties
-    }
-
     return {
       type: ASTNodeType.EXPRESSION,
       id: nodeId,
       expressionType: this.expressionType,
-      properties,
+      properties: this.properties,
     } as T
   }
 }
@@ -847,7 +735,7 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
 export class TransitionBuilder {
   private id?: string
 
-  private properties: Map<string, any> = new Map()
+  private properties: any = {}
 
   constructor(private transitionType: TransitionType) {}
 
@@ -857,51 +745,18 @@ export class TransitionBuilder {
   }
 
   withProperty(key: string, value: any): this {
-    this.properties.set(key, value)
+    this.properties[key] = value
     return this
   }
 
   build(): LoadTransitionASTNode | AccessTransitionASTNode | SubmitTransitionASTNode {
     const nodeId = this.id ?? ASTTestFactory.getId()
 
-    // TODO: Simplify this once all AST transition nodes have been migrated to use plain object properties
-    //  Currently we need to convert Map to object for migrated node types during the transition period
-    //  After migration is complete, remove all these conditionals and always use object properties directly
-
-    const isLoadType = this.transitionType === TransitionType.LOAD
-    const isAccessType = this.transitionType === TransitionType.ACCESS
-    const isSubmitType = this.transitionType === TransitionType.SUBMIT
-
-    let properties
-    if (isLoadType) {
-      properties = {
-        effects: this.properties.get('effects'),
-      }
-    } else if (isAccessType) {
-      properties = {
-        guards: this.properties.get('guards'),
-        effects: this.properties.get('effects'),
-        redirect: this.properties.get('redirect'),
-      }
-    } else if (isSubmitType) {
-      properties = {
-        when: this.properties.get('when'),
-        guards: this.properties.get('guards'),
-        validate: this.properties.get('validate') ?? false,
-        onAlways: this.properties.get('onAlways'),
-        onValid: this.properties.get('onValid'),
-        onInvalid: this.properties.get('onInvalid'),
-      }
-    } else {
-      // Legacy transition nodes still using Map properties (will be removed after migration)
-      properties = this.properties
-    }
-
     return {
       type: ASTNodeType.TRANSITION,
       id: nodeId,
       transitionType: this.transitionType,
-      properties,
+      properties: this.properties,
     } as LoadTransitionASTNode | AccessTransitionASTNode | SubmitTransitionASTNode
   }
 }

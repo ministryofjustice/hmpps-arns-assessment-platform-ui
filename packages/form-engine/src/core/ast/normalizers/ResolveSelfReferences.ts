@@ -5,11 +5,11 @@ import {
   StructuralVisitor,
   StructuralContext,
 } from '@form-engine/core/ast/traverser/StructuralTraverser'
-import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { isFieldBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
 import { FieldBlockASTNode } from '@form-engine/core/types/structures.type'
+import { cloneASTValue } from '@form-engine/core/ast/utils/cloneASTValue'
 
 function findContainingField(ancestors: any[], self: ASTNode): FieldBlockASTNode | undefined {
   for (let i = ancestors.length - 1; i >= 0; i -= 1) {
@@ -109,7 +109,7 @@ export class ResolveSelfReferencesNormalizer implements StructuralVisitor {
 
     // Replace the '@self' segment with a deep-cloned field code value
     // to avoid aliasing the same AST node in multiple locations.
-    refPath[1] = cloneDeep(codeValue)
+    refPath[1] = cloneASTValue(codeValue)
 
     return StructuralVisitResult.CONTINUE
   }
@@ -120,63 +120,4 @@ export class ResolveSelfReferencesNormalizer implements StructuralVisitor {
   normalize(root: ASTNode): void {
     structuralTraverse(root, this)
   }
-}
-
-function cloneDeep<T>(value: T): T {
-  if (value === null || value === undefined) {
-    return value
-  }
-
-  if (typeof value !== 'object') {
-    return value
-  }
-
-  if (Array.isArray(value)) {
-    return value.map(v => cloneDeep(v)) as unknown as T
-  }
-
-  if (isASTNode(value)) {
-    const cloned: any = { ...value }
-
-    // Remove id if already present to ensure a fresh assignment later
-    delete cloned.id
-
-    const props = (value as any).properties
-    if (props instanceof Map) {
-      const newMap = new Map<string, any>()
-
-      for (const [k, v] of props.entries()) {
-        newMap.set(k, cloneDeep(v))
-      }
-
-      cloned.properties = newMap
-    } else if (props && typeof props === 'object') {
-      // Handle plain object properties (FunctionASTNode, PipelineASTNode)
-      const newProps: any = {}
-      for (const [k, v] of Object.entries(props)) {
-        newProps[k] = cloneDeep(v)
-      }
-
-      cloned.properties = newProps
-    }
-
-    return cloned
-  }
-
-  if (value instanceof Map) {
-    const newMap = new Map<any, any>()
-    for (const [k, v] of value.entries()) {
-      newMap.set(k, cloneDeep(v))
-    }
-
-    return newMap as unknown as T
-  }
-
-  // Plain object
-  const out: any = {}
-  for (const [k, v] of Object.entries(value as Record<string, any>)) {
-    out[k] = cloneDeep(v)
-  }
-
-  return out
 }

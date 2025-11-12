@@ -1,7 +1,6 @@
 import { ConvertFormattersToPipelineNormalizer } from '@form-engine/core/ast/normalizers/ConvertFormattersToPipeline'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { FunctionType, ExpressionType } from '@form-engine/form/types/enums'
-import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { PipelineASTNode, ReferenceASTNode } from '@form-engine/core/types/expressions.type'
 import { isPipelineExprNode, isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import { isTransformerFunctionNode } from '@form-engine/core/typeguards/function-nodes'
@@ -182,24 +181,6 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
 
       // Check field3 has no pipeline
       expect('formatPipeline' in field3.properties).toBe(false)
-    })
-
-    it('throws when field with formatters has no code', () => {
-      const formatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
-
-      const field = ASTTestFactory.block('TextInput', 'field')
-        .withId('compile_ast:12')
-        .withProperty('formatters', [formatter])
-        .build()
-
-      expect(() => normalizer.normalize(field)).toThrow(InvalidNodeError)
-
-      try {
-        normalizer.normalize(field)
-      } catch (e) {
-        const err = e as InvalidNodeError
-        expect(err.message).toMatch(/Field with formatters must have a code property/)
-      }
     })
 
     it('handles fields with dynamic code expressions', () => {

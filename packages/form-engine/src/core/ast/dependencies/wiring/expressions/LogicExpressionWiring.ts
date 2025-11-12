@@ -3,18 +3,15 @@ import { DependencyEdgeType } from '@form-engine/core/ast/dependencies/Dependenc
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import {
   ExpressionASTNode,
-  PredicateASTNode,
   TestPredicateASTNode,
   NotPredicateASTNode,
+  AndPredicateASTNode,
+  OrPredicateASTNode,
+  XorPredicateASTNode,
 } from '@form-engine/core/types/expressions.type'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import { LogicType } from '@form-engine/form/types/enums'
-import {
-  isPredicateAndNode,
-  isPredicateOrNode,
-  isPredicateXorNode,
-  isPredicateNode,
-} from '@form-engine/core/typeguards/predicate-nodes'
+import { isPredicateNode } from '@form-engine/core/typeguards/predicate-nodes'
 
 /**
  * LogicExpressionWiring: Wires logic/predicate expressions to their operands
@@ -44,17 +41,17 @@ export default class LogicExpressionWiring {
       .forEach(predicateNode => {
         switch (predicateNode.expressionType) {
           case LogicType.TEST:
-            this.wireTestPredicate(predicateNode)
+            this.wireTestPredicate(predicateNode as TestPredicateASTNode)
             break
 
           case LogicType.AND:
           case LogicType.OR:
           case LogicType.XOR:
-            this.wireLogicOperator(predicateNode)
+            this.wireLogicOperator(predicateNode as AndPredicateASTNode | OrPredicateASTNode | XorPredicateASTNode)
             break
 
           case LogicType.NOT:
-            this.wireUnaryOperator(predicateNode)
+            this.wireUnaryOperator(predicateNode as NotPredicateASTNode)
             break
 
           default:
@@ -68,8 +65,7 @@ export default class LogicExpressionWiring {
    *
    * Creates edges: subject → test, condition → test
    */
-  private wireTestPredicate(predicateNode: PredicateASTNode) {
-    const testNode = predicateNode as unknown as TestPredicateASTNode
+  private wireTestPredicate(testNode: TestPredicateASTNode) {
     const subject = testNode.properties.subject
     const condition = testNode.properties.condition
 
@@ -88,47 +84,19 @@ export default class LogicExpressionWiring {
 
   /**
    * Wire a logic operator (AND, OR, XOR) to its operands
+   * All three operators have identical structure and are handled the same way
    *
    * Creates edges: operands[i] → operator
    */
-  private wireLogicOperator(predicateNode: PredicateASTNode) {
-    if (isPredicateAndNode(predicateNode)) {
-      const andNode = predicateNode
-      const operands = andNode.properties.operands
+  private wireLogicOperator(predicateNode: AndPredicateASTNode | OrPredicateASTNode | XorPredicateASTNode) {
+    const operands = predicateNode.properties.operands
 
-      operands.filter(isASTNode).forEach((operand, index) => {
-        this.wiringContext.graph.addEdge(operand.id, andNode.id, DependencyEdgeType.DATA_FLOW, {
-          property: 'operands',
-          index,
-        })
+    operands.filter(isASTNode).forEach((operand, index) => {
+      this.wiringContext.graph.addEdge(operand.id, predicateNode.id, DependencyEdgeType.DATA_FLOW, {
+        property: 'operands',
+        index,
       })
-      return
-    }
-
-    if (isPredicateOrNode(predicateNode)) {
-      const orNode = predicateNode
-      const operands = orNode.properties.operands
-
-      operands.filter(isASTNode).forEach((operand, index) => {
-        this.wiringContext.graph.addEdge(operand.id, orNode.id, DependencyEdgeType.DATA_FLOW, {
-          property: 'operands',
-          index,
-        })
-      })
-      return
-    }
-
-    if (isPredicateXorNode(predicateNode)) {
-      const xorNode = predicateNode
-      const operands = xorNode.properties.operands
-
-      operands.filter(isASTNode).forEach((operand, index) => {
-        this.wiringContext.graph.addEdge(operand.id, xorNode.id, DependencyEdgeType.DATA_FLOW, {
-          property: 'operands',
-          index,
-        })
-      })
-    }
+    })
   }
 
   /**
@@ -136,8 +104,7 @@ export default class LogicExpressionWiring {
    *
    * Creates edge: operand → operator
    */
-  private wireUnaryOperator(predicateNode: PredicateASTNode) {
-    const notNode = predicateNode as unknown as NotPredicateASTNode
+  private wireUnaryOperator(notNode: NotPredicateASTNode) {
     const operand = notNode.properties.operand
 
     if (isASTNode(operand)) {

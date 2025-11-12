@@ -13,7 +13,7 @@ export interface ExpressionASTNode extends ASTNode {
 /**
  * Reference Expression AST node
  */
-export interface ReferenceASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface ReferenceASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.REFERENCE
   properties: {
     path: (ASTNode | string | number)[]
@@ -23,7 +23,7 @@ export interface ReferenceASTNode extends Omit<ExpressionASTNode, 'properties'> 
 /**
  * Next Expression AST node
  */
-export interface NextASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface NextASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.NEXT
   properties: {
     when?: ASTNode
@@ -34,7 +34,7 @@ export interface NextASTNode extends Omit<ExpressionASTNode, 'properties'> {
 /**
  * Pipeline Expression AST node
  */
-export interface PipelineASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface PipelineASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.PIPELINE
   properties: {
     input: ASTNode | any
@@ -45,7 +45,7 @@ export interface PipelineASTNode extends Omit<ExpressionASTNode, 'properties'> {
 /**
  * Format Expression AST node
  */
-export interface FormatASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface FormatASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.FORMAT
   properties: {
     template: string
@@ -56,7 +56,7 @@ export interface FormatASTNode extends Omit<ExpressionASTNode, 'properties'> {
 /**
  * Collection Expression AST node
  */
-export interface CollectionASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface CollectionASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.COLLECTION
   properties: {
     collection: ASTNode
@@ -68,7 +68,7 @@ export interface CollectionASTNode extends Omit<ExpressionASTNode, 'properties'>
 /**
  * Conditional Expression AST node
  */
-export interface ConditionalASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface ConditionalASTNode extends ExpressionASTNode {
   expressionType: LogicType.CONDITIONAL
   properties: {
     predicate: ASTNode
@@ -80,7 +80,7 @@ export interface ConditionalASTNode extends Omit<ExpressionASTNode, 'properties'
 /**
  * Test Predicate Expression AST node
  */
-export interface TestPredicateASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface TestPredicateASTNode extends ExpressionASTNode {
   expressionType: LogicType.TEST
   properties: {
     subject: ASTNode
@@ -92,7 +92,7 @@ export interface TestPredicateASTNode extends Omit<ExpressionASTNode, 'propertie
 /**
  * Not Predicate Expression AST node
  */
-export interface NotPredicateASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface NotPredicateASTNode extends ExpressionASTNode {
   expressionType: LogicType.NOT
   properties: {
     operand: ASTNode
@@ -102,7 +102,7 @@ export interface NotPredicateASTNode extends Omit<ExpressionASTNode, 'properties
 /**
  * And Predicate Expression AST node
  */
-export interface AndPredicateASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface AndPredicateASTNode extends ExpressionASTNode {
   expressionType: LogicType.AND
   properties: {
     operands: ASTNode[]
@@ -112,7 +112,7 @@ export interface AndPredicateASTNode extends Omit<ExpressionASTNode, 'properties
 /**
  * Or Predicate Expression AST node
  */
-export interface OrPredicateASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface OrPredicateASTNode extends ExpressionASTNode {
   expressionType: LogicType.OR
   properties: {
     operands: ASTNode[]
@@ -122,7 +122,7 @@ export interface OrPredicateASTNode extends Omit<ExpressionASTNode, 'properties'
 /**
  * Xor Predicate Expression AST node
  */
-export interface XorPredicateASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface XorPredicateASTNode extends ExpressionASTNode {
   expressionType: LogicType.XOR
   properties: {
     operands: ASTNode[]
@@ -130,17 +130,19 @@ export interface XorPredicateASTNode extends Omit<ExpressionASTNode, 'properties
 }
 
 /**
- * Predicate Expression AST node
+ * Union type for all Predicate Expression AST nodes
  */
-export interface PredicateASTNode extends ExpressionASTNode {
-  expressionType: LogicType
-  properties: Map<string, ASTNode | any>
-}
+export type PredicateASTNode =
+  | TestPredicateASTNode
+  | NotPredicateASTNode
+  | AndPredicateASTNode
+  | OrPredicateASTNode
+  | XorPredicateASTNode
 
 /**
  * Function Expression AST node
  */
-export interface FunctionASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface FunctionASTNode extends ExpressionASTNode {
   expressionType: FunctionType
   properties: {
     name: string
@@ -151,7 +153,7 @@ export interface FunctionASTNode extends Omit<ExpressionASTNode, 'properties'> {
 /**
  * Validation Expression AST node
  */
-export interface ValidationASTNode extends Omit<ExpressionASTNode, 'properties'> {
+export interface ValidationASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.VALIDATION
   properties: {
     when: ASTNode // Required: the predicate that determines if validation passes
@@ -173,7 +175,7 @@ export interface TransitionASTNode extends ASTNode {
 /**
  * Load Transition AST node
  */
-export interface LoadTransitionASTNode extends Omit<TransitionASTNode, 'properties'> {
+export interface LoadTransitionASTNode extends TransitionASTNode {
   transitionType: TransitionType.LOAD
   properties: {
     effects: ASTNode[]
@@ -183,7 +185,7 @@ export interface LoadTransitionASTNode extends Omit<TransitionASTNode, 'properti
 /**
  * Access Transition AST node
  */
-export interface AccessTransitionASTNode extends Omit<TransitionASTNode, 'properties'> {
+export interface AccessTransitionASTNode extends TransitionASTNode {
   transitionType: TransitionType.ACCESS
   properties: {
     guards?: ASTNode
@@ -195,7 +197,7 @@ export interface AccessTransitionASTNode extends Omit<TransitionASTNode, 'proper
 /**
  * Submit Transition AST node
  */
-export interface SubmitTransitionASTNode extends Omit<TransitionASTNode, 'properties'> {
+export interface SubmitTransitionASTNode extends TransitionASTNode {
   transitionType: TransitionType.SUBMIT
   properties: {
     when?: ASTNode

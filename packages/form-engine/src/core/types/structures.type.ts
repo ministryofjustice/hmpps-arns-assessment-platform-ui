@@ -10,7 +10,7 @@ import {
 /**
  * Journey AST node - represents the top-level form journey
  */
-export interface JourneyASTNode extends Omit<ASTNode, 'properties'> {
+export interface JourneyASTNode extends ASTNode {
   type: ASTNodeType.JOURNEY
   properties: {
     path: string
@@ -29,7 +29,7 @@ export interface JourneyASTNode extends Omit<ASTNode, 'properties'> {
 /**
  * Step AST node - represents a single page/step in the journey
  */
-export interface StepASTNode extends Omit<ASTNode, 'properties'> {
+export interface StepASTNode extends ASTNode {
   type: ASTNodeType.STEP
   properties: {
     path: string
@@ -49,7 +49,7 @@ export interface StepASTNode extends Omit<ASTNode, 'properties'> {
 /**
  * Basic Block AST node - for non-field UI components (HTML, dividers, etc.)
  */
-export interface BasicBlockASTNode extends Omit<ASTNode, 'properties'> {
+export interface BasicBlockASTNode extends ASTNode {
   type: ASTNodeType.BLOCK
   variant: string
   blockType: 'basic'
@@ -62,7 +62,7 @@ export interface BasicBlockASTNode extends Omit<ASTNode, 'properties'> {
 /**
  * Field Block AST node - for input fields with validation
  */
-export interface FieldBlockASTNode extends Omit<ASTNode, 'properties'> {
+export interface FieldBlockASTNode extends ASTNode {
   type: ASTNodeType.BLOCK
   variant: string
   blockType: 'field'

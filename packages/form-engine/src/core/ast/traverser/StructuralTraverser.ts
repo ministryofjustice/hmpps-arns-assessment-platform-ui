@@ -447,23 +447,8 @@ export function structuralTraverse(
       const props = (node as any).properties
 
       if (props) {
-        // TODO: Remove Map handling once all AST nodes have been migrated to use plain object properties
-        //  After migration is complete, remove the isMapValue branch and only keep object property handling
-        let keys: string[]
-        let getValue: (key: string) => any
-
-        if (isMapValue(props)) {
-          // Handle Map properties (legacy nodes - remove after migration)
-          keys = Array.from(props.keys())
-          getValue = (key: string) => props.get(key)
-        } else if (typeof props === 'object') {
-          // Handle plain object properties (target state)
-          keys = Object.keys(props)
-          getValue = (key: string) => props[key]
-        } else {
-          keys = []
-          getValue = () => undefined
-        }
+        const keys = Object.keys(props)
+        const getValue = (key: string) => props[key]
 
         // Order node property keys using the node as owner
         const orderedKeys = opts.propertyOrder(node, keys)
