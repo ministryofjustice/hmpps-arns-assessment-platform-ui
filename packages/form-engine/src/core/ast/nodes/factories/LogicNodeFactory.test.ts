@@ -19,6 +19,7 @@ import {
   TestPredicateASTNode,
   NotPredicateASTNode,
   AndPredicateASTNode,
+  OrPredicateASTNode,
 } from '@form-engine/core/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 import { LogicNodeFactory } from './LogicNodeFactory'
@@ -613,10 +614,15 @@ describe('LogicNodeFactory', () => {
         ],
       } satisfies PredicateOrExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
-      const operands = result.properties.get('operands')
+      const result = logicFactory.create(json) as OrPredicateASTNode
+      const operands = result.properties.operands
 
+      expect(result.id).toBeDefined()
+      expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(LogicType.OR)
+      expect(result.raw).toBe(json)
+
+      expect(Array.isArray(operands)).toBe(true)
       expect(operands).toHaveLength(2)
     })
 
@@ -749,6 +755,25 @@ describe('LogicNodeFactory', () => {
 
       expect(() => logicFactory.create(json)).toThrow(InvalidNodeError)
       expect(() => logicFactory.create(json)).toThrow('And predicate requires a non-empty operands array')
+    })
+
+    it('should throw InvalidNodeError when Or operands is missing', () => {
+      const json = {
+        type: LogicType.OR,
+      } as any
+
+      expect(() => logicFactory.create(json)).toThrow(InvalidNodeError)
+      expect(() => logicFactory.create(json)).toThrow('Or predicate requires a non-empty operands array')
+    })
+
+    it('should throw InvalidNodeError when Or operands is empty', () => {
+      const json = {
+        type: LogicType.OR,
+        operands: [],
+      } as any
+
+      expect(() => logicFactory.create(json)).toThrow(InvalidNodeError)
+      expect(() => logicFactory.create(json)).toThrow('Or predicate requires a non-empty operands array')
     })
   })
 })

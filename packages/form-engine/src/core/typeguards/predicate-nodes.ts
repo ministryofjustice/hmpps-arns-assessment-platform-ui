@@ -4,6 +4,7 @@ import {
   TestPredicateASTNode,
   NotPredicateASTNode,
   AndPredicateASTNode,
+  OrPredicateASTNode,
 } from '@form-engine/core/types/expressions.type'
 
 /**
@@ -33,7 +34,7 @@ export function isPredicateAndNode(obj: any): obj is AndPredicateASTNode {
 /**
  * Check if an AST node is a Predicate OR node
  */
-export function isPredicateOrNode(obj: any): obj is PredicateASTNode {
+export function isPredicateOrNode(obj: any): obj is OrPredicateASTNode {
   return obj != null && obj.expressionType === LogicType.OR
 }
 

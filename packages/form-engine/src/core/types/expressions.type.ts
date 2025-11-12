@@ -110,6 +110,16 @@ export interface AndPredicateASTNode extends Omit<ExpressionASTNode, 'properties
 }
 
 /**
+ * Or Predicate Expression AST node
+ */
+export interface OrPredicateASTNode extends Omit<ExpressionASTNode, 'properties'> {
+  expressionType: LogicType.OR
+  properties: {
+    operands: ASTNode[]
+  }
+}
+
+/**
  * Predicate Expression AST node
  */
 export interface PredicateASTNode extends ExpressionASTNode {
