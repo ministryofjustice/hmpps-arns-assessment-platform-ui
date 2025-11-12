@@ -120,6 +120,16 @@ export interface OrPredicateASTNode extends Omit<ExpressionASTNode, 'properties'
 }
 
 /**
+ * Xor Predicate Expression AST node
+ */
+export interface XorPredicateASTNode extends Omit<ExpressionASTNode, 'properties'> {
+  expressionType: LogicType.XOR
+  properties: {
+    operands: ASTNode[]
+  }
+}
+
+/**
  * Predicate Expression AST node
  */
 export interface PredicateASTNode extends ExpressionASTNode {

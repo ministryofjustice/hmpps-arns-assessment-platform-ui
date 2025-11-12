@@ -10,11 +10,11 @@ import { ASTNodeType } from '@form-engine/core/types/enums'
 import { LogicType } from '@form-engine/form/types/enums'
 import {
   ConditionalASTNode,
-  PredicateASTNode,
   TestPredicateASTNode,
   NotPredicateASTNode,
   AndPredicateASTNode,
   OrPredicateASTNode,
+  XorPredicateASTNode,
 } from '@form-engine/core/types/expressions.type'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
@@ -50,7 +50,7 @@ export class LogicNodeFactory {
     | NotPredicateASTNode
     | AndPredicateASTNode
     | OrPredicateASTNode
-    | PredicateASTNode {
+    | XorPredicateASTNode {
     if (isConditionalExpr(json)) {
       return this.createConditional(json)
     }
@@ -72,7 +72,7 @@ export class LogicNodeFactory {
     }
 
     if (isPredicateXorExpr(json)) {
-      return this.createLogicalPredicate(json)
+      return this.createXorPredicate(json)
     }
 
     throw new UnknownNodeTypeError({
@@ -221,17 +221,23 @@ export class LogicNodeFactory {
   /**
    * Transform XOR predicate: Multiple operands (min 2)
    */
-  private createLogicalPredicate(json: PredicateXorExpr): PredicateASTNode {
-    const properties = new Map<string, any>()
-    const operands = json.operands.map((operand: any) => this.nodeFactory.createNode(operand))
-
-    properties.set('operands', operands)
+  private createXorPredicate(json: PredicateXorExpr): XorPredicateASTNode {
+    if (!json.operands || !Array.isArray(json.operands) || json.operands.length === 0) {
+      throw new InvalidNodeError({
+        message: 'Xor predicate requires a non-empty operands array',
+        node: json,
+        expected: 'operands array with at least one element',
+        actual: json.operands ? `array with ${json.operands.length} elements` : 'undefined',
+      })
+    }
 
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.EXPRESSION,
-      expressionType: json.type,
-      properties,
+      expressionType: LogicType.XOR,
+      properties: {
+        operands: json.operands.map((operand: any) => this.nodeFactory.createNode(operand)),
+      },
       raw: json,
     }
   }

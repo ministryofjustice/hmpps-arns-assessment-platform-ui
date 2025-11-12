@@ -9,7 +9,12 @@ import {
 } from '@form-engine/core/types/expressions.type'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import { LogicType } from '@form-engine/form/types/enums'
-import { isPredicateAndNode, isPredicateOrNode, isPredicateNode } from '@form-engine/core/typeguards/predicate-nodes'
+import {
+  isPredicateAndNode,
+  isPredicateOrNode,
+  isPredicateXorNode,
+  isPredicateNode,
+} from '@form-engine/core/typeguards/predicate-nodes'
 
 /**
  * LogicExpressionWiring: Wires logic/predicate expressions to their operands
@@ -113,11 +118,12 @@ export default class LogicExpressionWiring {
       return
     }
 
-    const operands = predicateNode.properties.get('operands')
+    if (isPredicateXorNode(predicateNode)) {
+      const xorNode = predicateNode
+      const operands = xorNode.properties.operands
 
-    if (Array.isArray(operands)) {
       operands.filter(isASTNode).forEach((operand, index) => {
-        this.wiringContext.graph.addEdge(operand.id, predicateNode.id, DependencyEdgeType.DATA_FLOW, {
+        this.wiringContext.graph.addEdge(operand.id, xorNode.id, DependencyEdgeType.DATA_FLOW, {
           property: 'operands',
           index,
         })
