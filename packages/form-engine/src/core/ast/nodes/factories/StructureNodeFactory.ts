@@ -5,10 +5,18 @@ import {
   isFieldBlockDefinition,
 } from '@form-engine/form/typeguards/structures'
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { BlockASTNode, JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
+import {
+  BlockASTNode,
+  BasicBlockASTNode,
+  FieldBlockASTNode,
+  JourneyASTNode,
+  StepASTNode,
+} from '@form-engine/core/types/structures.type'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
+import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import { NodeFactory } from '@form-engine/core/ast/nodes/NodeFactory'
+import { BlockDefinition, FieldBlockDefinition } from '@form-engine/form/types/structures.type'
 
 /**
  * StructureNodeFactory: Creates structure nodes (Journey, Step, Block)
@@ -30,6 +38,10 @@ export class StructureNodeFactory {
 
     if (isStepDefinition(json)) {
       return this.createStep(json)
+    }
+
+    if (isFieldBlockDefinition(json)) {
+      return this.createFieldBlock(json)
     }
 
     if (isBlockDefinition(json)) {
@@ -79,30 +91,83 @@ export class StructureNodeFactory {
    * Transform Block node: UI components that render in steps
    * Determines block category and preserves variant for rendering
    */
-  private createBlock(json: any): BlockASTNode {
+  private createBlock(json: BlockDefinition): BlockASTNode {
     const { variant, type, ...dataProperties } = json
-    const properties = this.nodeFactory.transformProperties(dataProperties)
+    const properties: BasicBlockASTNode['properties'] = {}
 
-    const blockType = this.determineBlockType(json)
+    Object.entries(dataProperties).forEach(([key, value]) => {
+      properties[key] = this.nodeFactory.transformValue(value)
+    })
 
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.BLOCK,
       variant,
-      blockType,
+      blockType: 'basic',
       properties,
       raw: json,
     }
   }
 
   /**
-   * Classify block for AST traversal optimization
+   * Create a field block with typed properties
    */
-  private determineBlockType(json: any): 'basic' | 'field' {
-    if (isFieldBlockDefinition(json)) {
-      return 'field'
+  private createFieldBlock(json: FieldBlockDefinition): FieldBlockASTNode {
+    const { variant, type, ...dataProperties } = json
+
+    // Field blocks MUST have a code property to identify where data is stored
+    if (dataProperties.code === undefined) {
+      throw new InvalidNodeError({
+        message: 'Field block requires a code property',
+        node: json,
+        expected: 'code property',
+        actual: 'undefined',
+      })
     }
 
-    return 'basic'
+    const properties: FieldBlockASTNode['properties'] = {}
+
+    properties.code = this.nodeFactory.transformValue(dataProperties.code)
+
+    if (dataProperties.defaultValue !== undefined) {
+      properties.defaultValue = this.nodeFactory.transformValue(dataProperties.defaultValue)
+    }
+
+    if (dataProperties.formatters !== undefined) {
+      properties.formatters = this.nodeFactory.transformValue(dataProperties.formatters)
+    }
+
+    if (dataProperties.hidden !== undefined) {
+      properties.hidden = this.nodeFactory.transformValue(dataProperties.hidden)
+    }
+
+    if (dataProperties.validate !== undefined) {
+      properties.validate = this.nodeFactory.transformValue(dataProperties.validate)
+    }
+
+    if (dataProperties.dependent !== undefined) {
+      properties.dependent = this.nodeFactory.transformValue(dataProperties.dependent)
+    }
+
+    // This gets injected by the AddSelfValueToFields normalizer, so doesn't appear on the type.
+    if ((dataProperties as any).value !== undefined) {
+      properties.value = this.nodeFactory.transformValue((dataProperties as any).value)
+    }
+
+    // Transform all other properties as component-specific params
+    Object.entries(dataProperties).forEach(([key, value]) => {
+      if (!['code', 'defaultValue', 'formatters', 'hidden', 'validate', 'dependent', 'value'].includes(key)) {
+        properties[key] = this.nodeFactory.transformValue(value)
+      }
+    })
+
+    return {
+      id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
+      type: ASTNodeType.BLOCK,
+      variant,
+      blockType: 'field',
+      properties,
+      raw: json,
+    }
   }
 }

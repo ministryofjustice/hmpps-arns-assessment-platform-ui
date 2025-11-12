@@ -29,7 +29,7 @@ describe('AttachValidationBlockCodeNormalizer', () => {
 
       const steps = ast.properties.get('steps')
       const block = steps[0].properties.get('blocks')[0]
-      const validation = block.properties.get('validate')
+      const validation = block.properties.validate
 
       expect(validation.properties.resolvedBlockCode).toBe('nickname')
     })
@@ -47,7 +47,7 @@ describe('AttachValidationBlockCodeNormalizer', () => {
 
       const steps = ast.properties.get('steps')
       const block = steps[0].properties.get('blocks')[0]
-      const validation = block.properties.get('validate')
+      const validation = block.properties.validate
 
       const resolved = validation.properties.resolvedBlockCode
 
@@ -67,7 +67,7 @@ describe('AttachValidationBlockCodeNormalizer', () => {
 
       const steps = ast.properties.get('steps')
       const block = steps[0].properties.get('blocks')[0]
-      const validation = block.properties.get('validate')
+      const validation = block.properties.validate
 
       expect(validation.properties.resolvedBlockCode !== undefined).toBe(false)
     })

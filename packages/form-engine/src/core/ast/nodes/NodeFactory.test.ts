@@ -885,7 +885,7 @@ describe('NodeFactory', () => {
       expect(blocks).toHaveLength(1)
       expect(blocks[0].type).toBe(ASTNodeType.BLOCK)
 
-      const validate = blocks[0].properties.get('validate')
+      const validate = blocks[0].properties.validate
       expect(validate).toHaveLength(1)
       expect(validate[0].type).toBe(ASTNodeType.EXPRESSION)
       expect(validate[0].expressionType).toBe(ExpressionType.VALIDATION)

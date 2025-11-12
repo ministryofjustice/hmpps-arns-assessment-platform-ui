@@ -6,8 +6,8 @@ import {
   StructuralContext,
 } from '@form-engine/core/ast/traverser/StructuralTraverser'
 import { isValidationExprNode } from '@form-engine/core/typeguards/expression-nodes'
-import { BlockASTNode } from '@form-engine/core/types/structures.type'
-import { isBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
+import { FieldBlockASTNode } from '@form-engine/core/types/structures.type'
+import { isFieldBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 
 /**
@@ -48,11 +48,11 @@ export class AttachValidationBlockCodeNormalizer implements StructuralVisitor {
   }
 }
 
-function findOwningBlock(ancestors: any[]): BlockASTNode | undefined {
+function findOwningBlock(ancestors: any[]): FieldBlockASTNode | undefined {
   for (let i = ancestors.length - 1; i >= 0; i -= 1) {
     const candidate = ancestors[i]
 
-    if (isBlockStructNode(candidate)) {
+    if (isFieldBlockStructNode(candidate)) {
       return candidate
     }
   }
@@ -60,10 +60,8 @@ function findOwningBlock(ancestors: any[]): BlockASTNode | undefined {
   return undefined
 }
 
-function resolveBlockCode(block: BlockASTNode): string | ASTNode | undefined {
-  const { properties } = block
-
-  const code = properties.get('code')
+function resolveBlockCode(block: FieldBlockASTNode): string | ASTNode | undefined {
+  const code = block.properties.code
 
   return cloneValue(code)
 }

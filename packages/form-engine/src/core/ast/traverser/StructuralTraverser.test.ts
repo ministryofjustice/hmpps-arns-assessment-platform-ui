@@ -32,9 +32,9 @@ describe('StructuralTraverser', () => {
     const block2 = ASTTestFactory.block('testVariant', 'basic').withId('compile_ast:5').build()
     const expr1 = ASTTestFactory.expression(ExpressionType.REFERENCE).withId('compile_ast:6').build()
 
-    block1.properties.set('expression', expr1)
-    block1.properties.set('data', { key: 'value' })
-    block2.properties.set('items', ['item1', 'item2'])
+    block1.properties.expression = expr1
+    block1.properties.data = { key: 'value' }
+    block2.properties.items = ['item1', 'item2']
 
     step1.properties.set('blocks', [block1, block2])
     step2.properties.set('title', 'Step 2 Title')

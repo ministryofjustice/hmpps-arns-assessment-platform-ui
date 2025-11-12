@@ -27,7 +27,7 @@ describe('ResolveSelfReferencesNormalizer', () => {
 
       normalizer.normalize(field)
 
-      const valueExpr = field.properties.get('value')
+      const valueExpr = field.properties.value
       const path = valueExpr.properties.path as any[]
 
       expect(Array.isArray(path)).toBe(true)
@@ -56,7 +56,7 @@ describe('ResolveSelfReferencesNormalizer', () => {
 
       normalizer.normalize(field)
 
-      const valueExpr = field.properties.get('value')
+      const valueExpr = field.properties.value
       const path = valueExpr.properties.path as any[]
       const seg = path[1]
 

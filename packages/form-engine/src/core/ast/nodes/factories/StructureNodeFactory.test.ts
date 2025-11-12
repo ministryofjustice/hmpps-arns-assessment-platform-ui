@@ -17,7 +17,12 @@ import type {
   ValueExpr,
 } from '@form-engine/form/types/expressions.type'
 import { NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
-import { BlockASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
+import {
+  BlockASTNode,
+  BasicBlockASTNode,
+  FieldBlockASTNode,
+  StepASTNode,
+} from '@form-engine/core/types/structures.type'
 import { NodeFactory } from '../NodeFactory'
 import { StructureNodeFactory } from './StructureNodeFactory'
 
@@ -308,8 +313,8 @@ describe('StructureNodeFactory', () => {
       expect(result.variant).toBe('TextInput')
       expect(result.blockType).toBe('field')
 
-      expect(result.properties.has('code')).toBe(true)
-      expect(result.properties.get('code')).toBe('email')
+      expect('code' in result.properties).toBe(true)
+      expect(result.properties.code).toBe('email')
     })
 
     it('should exclude type and variant from properties', () => {
@@ -321,9 +326,9 @@ describe('StructureNodeFactory', () => {
 
       const result = structureFactory.create(json)
 
-      expect(result.properties.has('type')).toBe(false)
-      expect(result.properties.has('variant')).toBe(false)
-      expect(result.properties.has('customProp')).toBe(true)
+      expect('type' in result.properties).toBe(false)
+      expect('variant' in result.properties).toBe(false)
+      expect('customProp' in result.properties).toBe(true)
     })
 
     it('should transform nested blocks in block', () => {
@@ -344,8 +349,8 @@ describe('StructureNodeFactory', () => {
         ],
       }
 
-      const result = structureFactory.create(json)
-      const blocks = result.properties.get('blocks')
+      const result = structureFactory.create(json) as BasicBlockASTNode
+      const blocks = result.properties.blocks
 
       expect(Array.isArray(blocks)).toBe(true)
       expect(blocks).toHaveLength(2)
@@ -375,8 +380,8 @@ describe('StructureNodeFactory', () => {
         ] as ValidationExpr[],
       } satisfies FieldBlockDefinition
 
-      const result = structureFactory.create(json)
-      const validate = result.properties.get('validate')
+      const result = structureFactory.create(json) as FieldBlockASTNode
+      const validate = result.properties.validate
 
       expect(Array.isArray(validate)).toBe(true)
       expect(validate).toHaveLength(1)
@@ -396,8 +401,8 @@ describe('StructureNodeFactory', () => {
         } satisfies PredicateTestExpr,
       } satisfies FieldBlockDefinition
 
-      const result = structureFactory.create(json)
-      const dependent = result.properties.get('dependent')
+      const result = structureFactory.create(json) as FieldBlockASTNode
+      const dependent = result.properties.dependent
 
       expect(dependent.type).toBe(ASTNodeType.EXPRESSION)
     })
@@ -411,9 +416,9 @@ describe('StructureNodeFactory', () => {
         hint: 'Enter your email',
       } satisfies FieldBlockDefinition & { label: string; hint: string }
 
-      const result = structureFactory.create(json)
+      const result = structureFactory.create(json) as FieldBlockASTNode
 
-      expect(result.properties.get('label')).toBe('Email Address')
+      expect(result.properties.label).toBe('Email Address')
     })
 
     it('should handle block with all properties', () => {
@@ -444,9 +449,9 @@ describe('StructureNodeFactory', () => {
       const result = structureFactory.create(json) as BlockASTNode
 
       expect(result.blockType).toBe('field')
-      expect(result.properties.has('code')).toBe(true)
-      expect(result.properties.has('dependent')).toBe(true)
-      expect(result.properties.has('validate')).toBe(true)
+      expect('code' in result.properties).toBe(true)
+      expect('dependent' in result.properties).toBe(true)
+      expect('validate' in result.properties).toBe(true)
     })
   })
 

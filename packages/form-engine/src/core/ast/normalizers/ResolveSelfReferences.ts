@@ -8,13 +8,14 @@ import {
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
-import { isBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
+import { isFieldBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
+import { FieldBlockASTNode } from '@form-engine/core/types/structures.type'
 
-function findContainingField(ancestors: any[], self: ASTNode): ASTNode | undefined {
+function findContainingField(ancestors: any[], self: ASTNode): FieldBlockASTNode | undefined {
   for (let i = ancestors.length - 1; i >= 0; i -= 1) {
     const a = ancestors[i]
 
-    if (a !== self && isBlockStructNode(a) && a.blockType === 'field') {
+    if (a !== self && isFieldBlockStructNode(a)) {
       return a
     }
   }
@@ -78,9 +79,9 @@ export class ResolveSelfReferencesNormalizer implements StructuralVisitor {
       })
     }
 
-    const fieldProps = (field as any).properties as Map<string, any> | undefined
+    const fieldProps = (field as any).properties
 
-    const codeValue = fieldProps?.get('code')
+    const codeValue = fieldProps?.code
 
     if (codeValue === undefined) {
       throw new InvalidNodeError({

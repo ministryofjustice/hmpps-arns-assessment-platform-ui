@@ -5,7 +5,7 @@ import {
   StructuralVisitor,
   StructuralContext,
 } from '@form-engine/core/ast/traverser/StructuralTraverser'
-import { isBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
+import { isFieldBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { ExpressionType } from '@form-engine/form/types/enums'
 import { PipelineASTNode, ReferenceASTNode } from '@form-engine/core/types/expressions.type'
@@ -32,7 +32,7 @@ export class ConvertFormattersToPipelineNormalizer implements StructuralVisitor 
    */
   enterNode(node: ASTNode, ctx: StructuralContext): StructuralVisitResult {
     // Only process field blocks
-    if (!isBlockStructNode(node) || node.blockType !== 'field') {
+    if (!isFieldBlockStructNode(node)) {
       return StructuralVisitResult.CONTINUE
     }
 
@@ -41,14 +41,14 @@ export class ConvertFormattersToPipelineNormalizer implements StructuralVisitor 
     }
 
     // Check if field has formatters
-    const formatters = node.properties.get('formatters')
+    const formatters = node.properties.formatters
 
     if (!Array.isArray(formatters) || formatters.length === 0) {
       return StructuralVisitResult.CONTINUE
     }
 
     // Get field code for POST reference
-    const fieldCode = node.properties.get('code')
+    const fieldCode = node.properties.code
 
     if (!fieldCode) {
       throw new InvalidNodeError({
@@ -81,8 +81,8 @@ export class ConvertFormattersToPipelineNormalizer implements StructuralVisitor 
     }
 
     // Store the pipeline as formatPipeline property, remove old field
-    node.properties.set('formatPipeline', pipelineNode)
-    node.properties.delete('formatters')
+    node.properties.formatPipeline = pipelineNode
+    delete node.properties.formatters
 
     return StructuralVisitResult.CONTINUE
   }

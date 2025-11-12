@@ -31,7 +31,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
 
       normalizer.normalize(field)
 
-      const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
+      const formatPipeline = field.properties.formatPipeline as PipelineASTNode
       expect(isPipelineExprNode(formatPipeline)).toBe(true)
 
       // Check input is POST reference
@@ -52,7 +52,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
       expect(stepProps.arguments).toEqual([])
 
       // Formatters property should be removed
-      expect(field.properties.has('formatters')).toBe(false)
+      expect('formatters' in field.properties).toBe(false)
     })
 
     it('converts multiple formatters to pipeline steps in order', () => {
@@ -68,7 +68,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
 
       normalizer.normalize(field)
 
-      const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
+      const formatPipeline = field.properties.formatPipeline as PipelineASTNode
       const steps = formatPipeline.properties.steps as any[]
 
       expect(steps).toHaveLength(3)
@@ -89,7 +89,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
 
       normalizer.normalize(field)
 
-      const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
+      const formatPipeline = field.properties.formatPipeline as PipelineASTNode
       const steps = formatPipeline.properties.steps as any[]
 
       expect(stepArgs(steps[0])).toEqual([0, 10])
@@ -108,7 +108,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
 
       normalizer.normalize(field)
 
-      const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
+      const formatPipeline = field.properties.formatPipeline as PipelineASTNode
       const steps = formatPipeline.properties.steps as any[]
 
       expect(stepName(steps[0])).toBe('truncate')
@@ -121,10 +121,10 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
     it('does not modify fields without formatters', () => {
       const field = ASTTestFactory.block('TextInput', 'field').withId('compile_ast:5').withCode('plainField').build()
 
-      const originalProps = new Map(field.properties)
+      const originalProps = { ...field.properties }
       normalizer.normalize(field)
 
-      expect(field.properties.has('formatPipeline')).toBe(false)
+      expect('formatPipeline' in field.properties).toBe(false)
       expect(field.properties).toEqual(originalProps)
     })
 
@@ -137,7 +137,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
 
       normalizer.normalize(field)
 
-      expect(field.properties.has('formatPipeline')).toBe(false)
+      expect('formatPipeline' in field.properties).toBe(false)
     })
 
     it('processes multiple fields in a journey', () => {
@@ -168,19 +168,19 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
       normalizer.normalize(journey)
 
       // Check field1
-      const pipeline1 = field1.properties.get('formatPipeline') as PipelineASTNode
+      const pipeline1 = field1.properties.formatPipeline as PipelineASTNode
       expect(isPipelineExprNode(pipeline1)).toBe(true)
       const input1 = pipeline1.properties.input as ReferenceASTNode
       expect(input1.properties.path).toEqual(['post', 'field1'])
 
       // Check field2
-      const pipeline2 = field2.properties.get('formatPipeline') as PipelineASTNode
+      const pipeline2 = field2.properties.formatPipeline as PipelineASTNode
       expect(isPipelineExprNode(pipeline2)).toBe(true)
       const input2 = pipeline2.properties.input as ReferenceASTNode
       expect(input2.properties.path).toEqual(['post', 'field2'])
 
       // Check field3 has no pipeline
-      expect(field3.properties.has('formatPipeline')).toBe(false)
+      expect('formatPipeline' in field3.properties).toBe(false)
     })
 
     it('throws when field with formatters has no code', () => {
@@ -218,7 +218,7 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
 
       normalizer.normalize(field)
 
-      const formatPipeline = field.properties.get('formatPipeline') as PipelineASTNode
+      const formatPipeline = field.properties.formatPipeline as PipelineASTNode
       expect(isPipelineExprNode(formatPipeline)).toBe(true)
 
       // Check input is POST reference with the expression as the path segment
@@ -263,10 +263,10 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
 
       const steps = journey.properties.get('steps') as any[]
       const containerBlock = steps[0].properties.get('blocks')[0]
-      const transformedCollection = containerBlock.properties.get('content')
+      const transformedCollection = containerBlock.properties.content
       const template = transformedCollection.properties.template as any[]
       const transformedField = template[0]
-      const pipeline = transformedField.properties.get('formatPipeline') as PipelineASTNode
+      const pipeline = transformedField.properties.formatPipeline as PipelineASTNode
 
       expect(isPipelineExprNode(pipeline)).toBe(true)
       const input = pipeline.properties.input as ReferenceASTNode
@@ -289,28 +289,28 @@ describe('ConvertFormattersToPipelineNormalizer', () => {
         .withProperty('formatters', [formatter])
         .build()
 
-      const originalKeys = Array.from(field.properties.keys())
+      const originalKeys = Object.keys(field.properties)
 
       normalizer.normalize(field)
 
       // All original properties, apart from 'formatters' should still exist
       for (const key of originalKeys) {
         if (key !== 'formatters') {
-          expect(field.properties.has(key)).toBe(true)
+          expect(key in field.properties).toBe(true)
         }
       }
 
       // Formatters property should be removed
-      expect(field.properties.has('formatters')).toBe(false)
+      expect('formatters' in field.properties).toBe(false)
 
       // Plus the new formatPipeline
-      expect(field.properties.has('formatPipeline')).toBe(true)
+      expect('formatPipeline' in field.properties).toBe(true)
 
       // Verify specific properties are unchanged
-      expect(field.properties.get('label')).toBe('Full Field')
-      expect(field.properties.get('hint')).toBe('Enter your text')
-      expect(field.properties.get('required')).toBe(true)
-      expect(field.properties.get('validate')).toBe(validationExpr)
+      expect(field.properties.label).toBe('Full Field')
+      expect(field.properties.hint).toBe('Enter your text')
+      expect(field.properties.required).toBe(true)
+      expect(field.properties.validate).toBe(validationExpr)
     })
   })
 })

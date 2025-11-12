@@ -351,22 +351,22 @@ export class ASTTestFactory {
       const traverse = (node: any) => {
         if (!node) return
 
-        if (node.properties instanceof Map) {
-          for (const value of node.properties.values()) {
-            if (ASTTestFactory.utils.isASTNode(value)) {
-              count += 1
-              traverse(value)
-            } else if (Array.isArray(value)) {
-              // eslint-disable-next-line no-loop-func
-              value.forEach(item => {
-                if (ASTTestFactory.utils.isASTNode(item)) {
-                  count += 1
-                  traverse(item)
-                }
-              })
-            }
+        const propertyValues =
+          node.properties instanceof Map ? Array.from(node.properties.values()) : Object.values(node.properties || {})
+
+        propertyValues.forEach(value => {
+          if (ASTTestFactory.utils.isASTNode(value)) {
+            count += 1
+            traverse(value)
+          } else if (Array.isArray(value)) {
+            value.forEach(item => {
+              if (ASTTestFactory.utils.isASTNode(item)) {
+                count += 1
+                traverse(item)
+              }
+            })
           }
-        }
+        })
       }
 
       traverse(root)
@@ -383,17 +383,18 @@ export class ASTTestFactory {
         if (!node) return null
         if (node.id === targetId) return node
 
-        if (node.properties instanceof Map) {
-          for (const value of node.properties.values()) {
-            if (ASTTestFactory.utils.isASTNode(value)) {
-              const found = traverse(value)
-              if (found) return found
-            } else if (Array.isArray(value)) {
-              for (const item of value) {
-                if (ASTTestFactory.utils.isASTNode(item)) {
-                  const found = traverse(item)
-                  if (found) return found
-                }
+        const propertyValues =
+          node.properties instanceof Map ? Array.from(node.properties.values()) : Object.values(node.properties || {})
+
+        for (const value of propertyValues) {
+          if (ASTTestFactory.utils.isASTNode(value)) {
+            const found = traverse(value)
+            if (found) return found
+          } else if (Array.isArray(value)) {
+            for (const item of value) {
+              if (ASTTestFactory.utils.isASTNode(item)) {
+                const found = traverse(item)
+                if (found) return found
               }
             }
           }
@@ -421,20 +422,20 @@ export class ASTTestFactory {
 
         let maxDepth = currentDepth
 
-        if (node.properties instanceof Map) {
-          for (const value of node.properties.values()) {
-            if (ASTTestFactory.utils.isASTNode(value)) {
-              maxDepth = Math.max(maxDepth, traverse(value, currentDepth + 1))
-            } else if (Array.isArray(value)) {
-              // eslint-disable-next-line no-loop-func
-              value.forEach(item => {
-                if (ASTTestFactory.utils.isASTNode(item)) {
-                  maxDepth = Math.max(maxDepth, traverse(item, currentDepth + 1))
-                }
-              })
-            }
+        const propertyValues =
+          node.properties instanceof Map ? Array.from(node.properties.values()) : Object.values(node.properties || {})
+
+        propertyValues.forEach(value => {
+          if (ASTTestFactory.utils.isASTNode(value)) {
+            maxDepth = Math.max(maxDepth, traverse(value, currentDepth + 1))
+          } else if (Array.isArray(value)) {
+            value.forEach(item => {
+              if (ASTTestFactory.utils.isASTNode(item)) {
+                maxDepth = Math.max(maxDepth, traverse(item, currentDepth + 1))
+              }
+            })
           }
-        }
+        })
 
         return maxDepth
       }
@@ -451,22 +452,22 @@ export class ASTTestFactory {
       const traverse = (node: any) => {
         if (!node) return
 
-        if (node.properties instanceof Map) {
-          for (const value of node.properties.values()) {
-            if (ASTTestFactory.utils.isASTNode(value)) {
-              if (value.type === type) count += 1
-              traverse(value)
-            } else if (Array.isArray(value)) {
-              // eslint-disable-next-line no-loop-func
-              value.forEach(item => {
-                if (ASTTestFactory.utils.isASTNode(item)) {
-                  if (item.type === type) count += 1
-                  traverse(item)
-                }
-              })
-            }
+        const propertyValues =
+          node.properties instanceof Map ? Array.from(node.properties.values()) : Object.values(node.properties || {})
+
+        propertyValues.forEach(value => {
+          if (ASTTestFactory.utils.isASTNode(value)) {
+            if (value.type === type) count += 1
+            traverse(value)
+          } else if (Array.isArray(value)) {
+            value.forEach(item => {
+              if (ASTTestFactory.utils.isASTNode(item)) {
+                if (item.type === type) count += 1
+                traverse(item)
+              }
+            })
           }
-        }
+        })
       }
 
       traverse(root)
@@ -576,7 +577,7 @@ export class StepBuilder {
 export class BlockBuilder {
   private id?: string
 
-  private properties: Map<string, any> = new Map()
+  private properties: any = {}
 
   constructor(
     private variant: string,
@@ -589,32 +590,32 @@ export class BlockBuilder {
   }
 
   withProperty(key: string, value: any): this {
-    this.properties.set(key, value)
+    this.properties[key] = value
     return this
   }
 
   withCode(code: string | ExpressionASTNode): this {
-    this.properties.set('code', code)
+    this.properties.code = code
     return this
   }
 
   withLabel(label: string): this {
-    this.properties.set('label', label)
+    this.properties.label = label
     return this
   }
 
   withValue(value: any): this {
-    this.properties.set('value', value)
+    this.properties.value = value
     return this
   }
 
   withValidation(validation: ExpressionASTNode): this {
-    this.properties.set('validate', validation)
+    this.properties.validate = validation
     return this
   }
 
   withShowWhen(condition: ExpressionASTNode): this {
-    this.properties.set('showWhen', condition)
+    this.properties.showWhen = condition
     return this
   }
 
