@@ -12,7 +12,12 @@ import type {
 import { NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
-import { ConditionalASTNode, ExpressionASTNode, PredicateASTNode } from '@form-engine/core/types/expressions.type'
+import {
+  ConditionalASTNode,
+  ExpressionASTNode,
+  PredicateASTNode,
+  TestPredicateASTNode,
+} from '@form-engine/core/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 import { LogicNodeFactory } from './LogicNodeFactory'
 
@@ -355,16 +360,16 @@ describe('LogicNodeFactory', () => {
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       } satisfies PredicateTestExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
+      const result = logicFactory.create(json) as TestPredicateASTNode
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(LogicType.TEST)
       expect(result.raw).toBe(json)
 
-      expect(result.properties.has('subject')).toBe(true)
-      expect(result.properties.has('condition')).toBe(true)
-      expect(result.properties.has('negate')).toBe(true)
+      expect(result.properties.subject).toBeDefined()
+      expect(result.properties.condition).toBeDefined()
+      expect(result.properties.negate).toBeDefined()
     })
 
     it('should transform subject using real nodeFactory', () => {
@@ -375,8 +380,8 @@ describe('LogicNodeFactory', () => {
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       } satisfies PredicateTestExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
-      const subject = result.properties.get('subject')
+      const result = logicFactory.create(json) as TestPredicateASTNode
+      const subject = result.properties.subject as ExpressionASTNode
 
       expect(subject.type).toBe(ASTNodeType.EXPRESSION)
       expect(subject.expressionType).toBe(ExpressionType.REFERENCE)
@@ -390,8 +395,8 @@ describe('LogicNodeFactory', () => {
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       } satisfies PredicateTestExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
-      const condition = result.properties.get('condition')
+      const result = logicFactory.create(json) as TestPredicateASTNode
+      const condition = result.properties.condition as ExpressionASTNode
 
       expect(condition.type).toBe(ASTNodeType.EXPRESSION)
       expect(condition.expressionType).toBe(FunctionType.CONDITION)
@@ -405,9 +410,9 @@ describe('LogicNodeFactory', () => {
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       } satisfies PredicateTestExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
+      const result = logicFactory.create(json) as TestPredicateASTNode
 
-      expect(result.properties.get('negate')).toBe(true)
+      expect(result.properties.negate).toBe(true)
     })
 
     it('should handle negate as false', () => {
@@ -418,21 +423,41 @@ describe('LogicNodeFactory', () => {
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       } satisfies PredicateTestExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
+      const result = logicFactory.create(json) as TestPredicateASTNode
 
-      expect(result.properties.get('negate')).toBe(false)
+      expect(result.properties.negate).toBe(false)
     })
 
-    it('should handle negate as undefined', () => {
+    it('should default negate to false when omitted', () => {
       const json = {
         type: LogicType.TEST,
         subject: { type: ExpressionType.REFERENCE, path: ['field'] },
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       }
 
-      const result = logicFactory.create(json) as PredicateASTNode
+      const result = logicFactory.create(json) as TestPredicateASTNode
 
-      expect(result.properties.get('negate')).toBeUndefined()
+      expect(result.properties.negate).toBe(false)
+    })
+
+    it('should throw InvalidNodeError when subject is missing', () => {
+      const json = {
+        type: LogicType.TEST,
+        condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
+      } as any
+
+      expect(() => logicFactory.create(json)).toThrow(InvalidNodeError)
+      expect(() => logicFactory.create(json)).toThrow('Test predicate requires a subject')
+    })
+
+    it('should throw InvalidNodeError when condition is missing', () => {
+      const json = {
+        type: LogicType.TEST,
+        subject: { type: ExpressionType.REFERENCE, path: ['field'] },
+      } as any
+
+      expect(() => logicFactory.create(json)).toThrow(InvalidNodeError)
+      expect(() => logicFactory.create(json)).toThrow('Test predicate requires a condition')
     })
   })
 

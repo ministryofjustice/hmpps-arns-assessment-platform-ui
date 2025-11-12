@@ -378,7 +378,7 @@ describe('LogicExpressionWiring', () => {
           .build()
 
         // Remove subject property
-        testExpr.properties.delete('subject')
+        delete (testExpr.properties as any).subject
 
         when(mockWiringContext.findNodesByType)
           .calledWith(ASTNodeType.EXPRESSION)
@@ -404,7 +404,7 @@ describe('LogicExpressionWiring', () => {
           .build()
 
         // Remove condition property
-        testExpr.properties.delete('condition')
+        delete (testExpr.properties as any).condition
 
         when(mockWiringContext.findNodesByType)
           .calledWith(ASTNodeType.EXPRESSION)

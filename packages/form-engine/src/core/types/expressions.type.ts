@@ -78,6 +78,18 @@ export interface ConditionalASTNode extends Omit<ExpressionASTNode, 'properties'
 }
 
 /**
+ * Test Predicate Expression AST node
+ */
+export interface TestPredicateASTNode extends Omit<ExpressionASTNode, 'properties'> {
+  expressionType: LogicType.TEST
+  properties: {
+    subject: ASTNode
+    condition: ASTNode
+    negate: boolean
+  }
+}
+
+/**
  * Predicate Expression AST node
  */
 export interface PredicateASTNode extends ExpressionASTNode {

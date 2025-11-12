@@ -8,7 +8,7 @@ import {
 import { isConditionalExpr } from '@form-engine/form/typeguards/expressions'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { LogicType } from '@form-engine/form/types/enums'
-import { ConditionalASTNode, PredicateASTNode } from '@form-engine/core/types/expressions.type'
+import { ConditionalASTNode, PredicateASTNode, TestPredicateASTNode } from '@form-engine/core/types/expressions.type'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
@@ -35,7 +35,7 @@ export class LogicNodeFactory {
   /**
    * Create a logic node based on the JSON type
    */
-  create(json: any): ConditionalASTNode | PredicateASTNode {
+  create(json: any): ConditionalASTNode | TestPredicateASTNode | PredicateASTNode {
     if (isConditionalExpr(json)) {
       return this.createConditional(json)
     }
@@ -89,19 +89,36 @@ export class LogicNodeFactory {
 
   /**
    * Transform TEST predicate: subject.condition with optional negation
+   * Defaults: negate = false
    */
-  private createTestPredicate(json: PredicateTestExpr): PredicateASTNode {
-    const properties = new Map<string, any>()
+  private createTestPredicate(json: PredicateTestExpr): TestPredicateASTNode {
+    if (!json.subject) {
+      throw new InvalidNodeError({
+        message: 'Test predicate requires a subject',
+        node: json,
+        expected: 'subject property',
+        actual: 'undefined',
+      })
+    }
 
-    properties.set('subject', this.nodeFactory.createNode(json.subject))
-    properties.set('negate', json.negate)
-    properties.set('condition', this.nodeFactory.createNode(json.condition))
+    if (!json.condition) {
+      throw new InvalidNodeError({
+        message: 'Test predicate requires a condition',
+        node: json,
+        expected: 'condition property',
+        actual: 'undefined',
+      })
+    }
 
     return {
       id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
       type: ASTNodeType.EXPRESSION,
       expressionType: LogicType.TEST,
-      properties,
+      properties: {
+        subject: this.nodeFactory.createNode(json.subject),
+        condition: this.nodeFactory.createNode(json.condition),
+        negate: json.negate ?? false,
+      },
       raw: json,
     }
   }

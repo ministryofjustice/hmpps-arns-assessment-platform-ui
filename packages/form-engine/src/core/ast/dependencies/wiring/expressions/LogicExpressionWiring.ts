@@ -1,7 +1,7 @@
 import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
 import { DependencyEdgeType } from '@form-engine/core/ast/dependencies/DependencyGraph'
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionASTNode, PredicateASTNode } from '@form-engine/core/types/expressions.type'
+import { ExpressionASTNode, PredicateASTNode, TestPredicateASTNode } from '@form-engine/core/types/expressions.type'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import { LogicType } from '@form-engine/form/types/enums'
 import { isPredicateNode } from '@form-engine/core/typeguards/predicate-nodes'
@@ -59,17 +59,18 @@ export default class LogicExpressionWiring {
    * Creates edges: subject → test, condition → test
    */
   private wireTestPredicate(predicateNode: PredicateASTNode) {
-    const subject = predicateNode.properties.get('subject')
-    const condition = predicateNode.properties.get('condition')
+    const testNode = predicateNode as unknown as TestPredicateASTNode
+    const subject = testNode.properties.subject
+    const condition = testNode.properties.condition
 
     if (isASTNode(subject)) {
-      this.wiringContext.graph.addEdge(subject.id, predicateNode.id, DependencyEdgeType.DATA_FLOW, {
+      this.wiringContext.graph.addEdge(subject.id, testNode.id, DependencyEdgeType.DATA_FLOW, {
         property: 'subject',
       })
     }
 
     if (isASTNode(condition)) {
-      this.wiringContext.graph.addEdge(condition.id, predicateNode.id, DependencyEdgeType.DATA_FLOW, {
+      this.wiringContext.graph.addEdge(condition.id, testNode.id, DependencyEdgeType.DATA_FLOW, {
         property: 'condition',
       })
     }

@@ -780,6 +780,13 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
         conditionalProperties.elseValue = elseValue
       }
       properties = conditionalProperties
+    } else if (this.expressionType === LogicType.TEST) {
+      const testProperties: { subject: any; condition: any; negate: boolean } = {
+        subject: this.properties.get('subject'),
+        condition: this.properties.get('condition'),
+        negate: this.properties.get('negate') ?? false,
+      }
+      properties = testProperties
     } else {
       // Legacy nodes still using Map properties (will be removed after migration)
       properties = this.properties
