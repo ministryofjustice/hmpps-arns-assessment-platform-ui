@@ -13,6 +13,7 @@ import {
   PredicateASTNode,
   TestPredicateASTNode,
   NotPredicateASTNode,
+  AndPredicateASTNode,
 } from '@form-engine/core/types/expressions.type'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
@@ -40,7 +41,9 @@ export class LogicNodeFactory {
   /**
    * Create a logic node based on the JSON type
    */
-  create(json: any): ConditionalASTNode | TestPredicateASTNode | NotPredicateASTNode | PredicateASTNode {
+  create(
+    json: any,
+  ): ConditionalASTNode | TestPredicateASTNode | NotPredicateASTNode | AndPredicateASTNode | PredicateASTNode {
     if (isConditionalExpr(json)) {
       return this.createConditional(json)
     }
@@ -53,7 +56,11 @@ export class LogicNodeFactory {
       return this.createNotPredicate(json)
     }
 
-    if (isPredicateAndExpr(json) || isPredicateOrExpr(json) || isPredicateXorExpr(json)) {
+    if (isPredicateAndExpr(json)) {
+      return this.createAndPredicate(json)
+    }
+
+    if (isPredicateOrExpr(json) || isPredicateXorExpr(json)) {
       return this.createLogicalPredicate(json)
     }
 
@@ -153,9 +160,33 @@ export class LogicNodeFactory {
   }
 
   /**
-   * Transform AND/OR/XOR predicate: Multiple operands (min 2)
+   * Transform AND predicate: Multiple operands (min 2)
    */
-  private createLogicalPredicate(json: PredicateAndExpr | PredicateOrExpr | PredicateXorExpr): PredicateASTNode {
+  private createAndPredicate(json: PredicateAndExpr): AndPredicateASTNode {
+    if (!json.operands || !Array.isArray(json.operands) || json.operands.length === 0) {
+      throw new InvalidNodeError({
+        message: 'And predicate requires a non-empty operands array',
+        node: json,
+        expected: 'operands array with at least one element',
+        actual: json.operands ? `array with ${json.operands.length} elements` : 'undefined',
+      })
+    }
+
+    return {
+      id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
+      type: ASTNodeType.EXPRESSION,
+      expressionType: LogicType.AND,
+      properties: {
+        operands: json.operands.map((operand: any) => this.nodeFactory.createNode(operand)),
+      },
+      raw: json,
+    }
+  }
+
+  /**
+   * Transform OR/XOR predicate: Multiple operands (min 2)
+   */
+  private createLogicalPredicate(json: PredicateOrExpr | PredicateXorExpr): PredicateASTNode {
     const properties = new Map<string, any>()
     const operands = json.operands.map((operand: any) => this.nodeFactory.createNode(operand))
 

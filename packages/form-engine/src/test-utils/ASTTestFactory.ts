@@ -792,6 +792,11 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
         operand: this.properties.get('operand'),
       }
       properties = notProperties
+    } else if (this.expressionType === LogicType.AND) {
+      const andProperties: { operands: any[] } = {
+        operands: this.properties.get('operands') || [],
+      }
+      properties = andProperties
     } else {
       // Legacy nodes still using Map properties (will be removed after migration)
       properties = this.properties

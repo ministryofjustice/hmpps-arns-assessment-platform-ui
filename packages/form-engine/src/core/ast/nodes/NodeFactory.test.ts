@@ -33,6 +33,7 @@ import {
   FunctionASTNode,
   PipelineASTNode,
   PredicateASTNode,
+  AndPredicateASTNode,
   TransitionASTNode,
 } from '@form-engine/core/types/expressions.type'
 import { JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
@@ -939,13 +940,13 @@ describe('NodeFactory', () => {
 
       expect(result.expressionType).toBe(LogicType.CONDITIONAL)
 
-      const predicate = result.properties.predicate as PredicateASTNode
+      const predicate = result.properties.predicate as AndPredicateASTNode
       expect(predicate.expressionType).toBe(LogicType.AND)
 
-      const operands = predicate.properties.get('operands')
+      const operands = predicate.properties.operands
       expect(operands).toHaveLength(2)
-      expect(operands[0].expressionType).toBe(LogicType.TEST)
-      expect(operands[1].expressionType).toBe(LogicType.NOT)
+      expect((operands[0] as ExpressionASTNode).expressionType).toBe(LogicType.TEST)
+      expect((operands[1] as ExpressionASTNode).expressionType).toBe(LogicType.NOT)
 
       const thenValue = result.properties.thenValue
       expect(thenValue.type).toBe(ASTNodeType.EXPRESSION)

@@ -18,6 +18,7 @@ import {
   PredicateASTNode,
   TestPredicateASTNode,
   NotPredicateASTNode,
+  AndPredicateASTNode,
 } from '@form-engine/core/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
 import { LogicNodeFactory } from './LogicNodeFactory'
@@ -553,15 +554,14 @@ describe('LogicNodeFactory', () => {
         ],
       } satisfies PredicateAndExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
-      const operands = result.properties.get('operands')
+      const result = logicFactory.create(json) as AndPredicateASTNode
+      const operands = result.properties.operands
 
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
       expect(result.expressionType).toBe(LogicType.AND)
       expect(result.raw).toBe(json)
 
-      expect(result.properties.has('operands')).toBe(true)
       expect(Array.isArray(operands)).toBe(true)
       expect(operands).toHaveLength(2)
     })
@@ -585,8 +585,8 @@ describe('LogicNodeFactory', () => {
         ],
       } satisfies PredicateAndExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
-      const operands = result.properties.get('operands')
+      const result = logicFactory.create(json) as AndPredicateASTNode
+      const operands = result.properties.operands
 
       operands.forEach((operand: ExpressionASTNode) => {
         expect(operand.type).toBe(ASTNodeType.EXPRESSION)
@@ -676,11 +676,11 @@ describe('LogicNodeFactory', () => {
         ],
       } satisfies PredicateAndExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
-      const operands = result.properties.get('operands')
+      const result = logicFactory.create(json) as AndPredicateASTNode
+      const operands = result.properties.operands
 
-      expect(operands[0].expressionType).toBe(LogicType.AND)
-      expect(operands[1].expressionType).toBe(LogicType.TEST)
+      expect((operands[0] as ExpressionASTNode).expressionType).toBe(LogicType.AND)
+      expect((operands[1] as ExpressionASTNode).expressionType).toBe(LogicType.TEST)
     })
 
     it('should handle mixed operand types', () => {
@@ -722,14 +722,33 @@ describe('LogicNodeFactory', () => {
         ],
       } satisfies PredicateAndExpr
 
-      const result = logicFactory.create(json) as PredicateASTNode
-      const operands = result.properties.get('operands')
+      const result = logicFactory.create(json) as AndPredicateASTNode
+      const operands = result.properties.operands
 
       expect(operands).toHaveLength(3)
 
-      expect(operands[0].expressionType).toBe(LogicType.TEST)
-      expect(operands[1].expressionType).toBe(LogicType.NOT)
-      expect(operands[2].expressionType).toBe(LogicType.OR)
+      expect((operands[0] as ExpressionASTNode).expressionType).toBe(LogicType.TEST)
+      expect((operands[1] as ExpressionASTNode).expressionType).toBe(LogicType.NOT)
+      expect((operands[2] as ExpressionASTNode).expressionType).toBe(LogicType.OR)
+    })
+
+    it('should throw InvalidNodeError when operands is missing', () => {
+      const json = {
+        type: LogicType.AND,
+      } as any
+
+      expect(() => logicFactory.create(json)).toThrow(InvalidNodeError)
+      expect(() => logicFactory.create(json)).toThrow('And predicate requires a non-empty operands array')
+    })
+
+    it('should throw InvalidNodeError when operands is empty', () => {
+      const json = {
+        type: LogicType.AND,
+        operands: [],
+      } as any
+
+      expect(() => logicFactory.create(json)).toThrow(InvalidNodeError)
+      expect(() => logicFactory.create(json)).toThrow('And predicate requires a non-empty operands array')
     })
   })
 })
