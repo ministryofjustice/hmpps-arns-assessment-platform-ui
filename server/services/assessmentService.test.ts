@@ -96,6 +96,8 @@ describe('AssessmentService', () => {
 
       const expectedResult: AssessmentVersionQueryResult = {
         type: 'AssessmentVersionQueryResult',
+        assessmentUuid: '',
+        aggregateUuid: '',
         formVersion: '1',
         createdAt: '2025-02-11T00:00:00',
         updatedAt: '2025-02-11T00:00:00',
