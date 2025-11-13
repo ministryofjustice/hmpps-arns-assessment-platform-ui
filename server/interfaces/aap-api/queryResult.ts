@@ -1,5 +1,5 @@
 import { User } from '../user'
-import { Answers, Collection, Properties, TimelineItem } from './dataModel'
+import { Answers, Collection, CollectionItem, Properties, TimelineItem } from './dataModel'
 
 export interface QueryResult {
   type: string
@@ -26,6 +26,11 @@ export interface AssessmentTimelineQueryResult extends QueryResult {
 export interface CollectionQueryResult extends QueryResult {
   type: 'CollectionQueryResult'
   collection: Collection
+}
+
+export interface CollectionItemQueryResult extends QueryResult {
+  type: 'CollectionItemQueryResult'
+  collectionItem: CollectionItem
 }
 
 export type QueryResults = AssessmentVersionQueryResult | AssessmentTimelineQueryResult | CollectionQueryResult

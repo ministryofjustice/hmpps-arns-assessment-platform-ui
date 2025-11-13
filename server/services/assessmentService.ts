@@ -8,7 +8,7 @@ import {
 } from '../interfaces/aap-api/commandResult'
 import {
   AssessmentTimelineQueryResult,
-  AssessmentVersionQueryResult,
+  AssessmentVersionQueryResult, CollectionItemQueryResult,
   CollectionQueryResult,
 } from '../interfaces/aap-api/queryResult'
 import {
@@ -25,7 +25,12 @@ import {
   UpdateCollectionItemPropertiesCommand,
   UpdateFormVersionCommand,
 } from '../interfaces/aap-api/command'
-import { AssessmentTimelineQuery, AssessmentVersionQuery, CollectionQuery } from '../interfaces/aap-api/query'
+import {
+  AssessmentTimelineQuery,
+  AssessmentVersionQuery,
+  CollectionItemQuery,
+  CollectionQuery
+} from '../interfaces/aap-api/query'
 
 interface CommandMap {
   CreateAssessment: { cmd: CreateAssessmentCommand; res: CreateAssessmentCommandResult }
@@ -45,6 +50,7 @@ interface QueryMap {
   AssessmentVersion: { query: AssessmentVersionQuery; res: AssessmentVersionQueryResult }
   AssessmentTimeline: { query: AssessmentTimelineQuery; res: AssessmentTimelineQueryResult }
   Collection: { query: CollectionQuery; res: CollectionQueryResult }
+  CollectionItem: { query: CollectionItemQuery; res: CollectionItemQueryResult }
 }
 
 export default class AssessmentService {

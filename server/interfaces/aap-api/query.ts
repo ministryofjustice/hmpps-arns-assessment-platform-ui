@@ -13,7 +13,7 @@ export interface AssessmentVersionQuery extends Query {
 
 export interface AssessmentTimelineQuery extends Query {
   type: 'AssessmentTimelineQuery'
-  timelineType?: string
+  timelineTypes?: string[]
   timestamp?: string
 }
 
@@ -24,4 +24,11 @@ export interface CollectionQuery extends Query {
   depth: number
 }
 
-export type Queries = AssessmentVersionQuery | AssessmentTimelineQuery | CollectionQuery
+export interface CollectionItemQuery extends Query {
+  type: 'CollectionItemQuery'
+  timestamp?: string
+  collectionItemUuid: string
+  depth: number
+}
+
+export type Queries = AssessmentVersionQuery | AssessmentTimelineQuery | CollectionQuery | CollectionItemQuery

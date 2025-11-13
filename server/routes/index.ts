@@ -101,11 +101,86 @@ export default function routes({ assessmentService, auditService }: Services): R
         ),
       )
 
+      const goalsUuid = sentencePlan.collections[0].uuid
+      const goalUuid = sentencePlan.collections[0].items[1].uuid
+
+      const goalsResult = await assessmentService.query<'Collection'>({
+        type: 'CollectionQuery',
+        collectionUuid: goalsUuid,
+        depth: 0,
+        assessmentUuid,
+        user,
+      })
+
+      const goalsWithSteps = await assessmentService.query<'Collection'>({
+        type: 'CollectionQuery',
+        collectionUuid: goalsUuid,
+        depth: 1,
+        assessmentUuid,
+        user,
+      })
+
+      const goalResult = await assessmentService.query<'CollectionItem'>({
+        type: 'CollectionItemQuery',
+        collectionItemUuid: goalUuid,
+        depth: 0,
+        assessmentUuid,
+        user,
+      })
+
+      const goalWithSteps = await assessmentService.query<'CollectionItem'>({
+        type: 'CollectionItemQuery',
+        collectionItemUuid: goalUuid,
+        depth: 1,
+        assessmentUuid,
+        user,
+      })
+
+      const stepsTimelineResult = await assessmentService.query<'AssessmentTimeline'>({
+        type: 'AssessmentTimelineQuery',
+        timelineTypes: ['STEP_ADDED'],
+        assessmentUuid,
+        user,
+      })
+
+      const goalsWithStepsPointInTime = await assessmentService.query<'Collection'>({
+        type: 'CollectionQuery',
+        collectionUuid: goalsUuid,
+        depth: 1,
+        timestamp: stepsTimelineResult.timeline[0].createdAt,
+        assessmentUuid,
+        user,
+      })
+
+      const goalWithStepsPointInTime = await assessmentService.query<'CollectionItem'>({
+        type: 'CollectionItemQuery',
+        collectionItemUuid: goalUuid,
+        depth: 1,
+        timestamp: stepsTimelineResult.timeline[0].createdAt,
+        assessmentUuid,
+        user,
+      })
+
+      const timelinePointInTime = await assessmentService.query<'AssessmentTimeline'>({
+        type: 'AssessmentTimelineQuery',
+        timestamp: timelineResult.timeline[1].createdAt,
+        assessmentUuid,
+        user,
+      })
+
       return res.render('pages/sentence-plan', {
         assessmentUuid,
         sentencePlan,
         timelineResult,
         versions,
+        goalsResult,
+        goalsWithSteps,
+        goalsWithStepsPointInTime,
+        goalResult,
+        goalWithSteps,
+        goalWithStepsPointInTime,
+        stepsTimelineResult,
+        timelinePointInTime,
       })
     } catch (error) {
       return next(error)
@@ -223,6 +298,10 @@ export default function routes({ assessmentService, auditService }: Services): R
           STATUS: ['NOT_STARTED'],
           DESCRIPTION: ['Create a budget'],
           ACTOR: ['Person on probation'],
+        },
+        timeline: {
+          type: 'STEP_ADDED',
+          data: {},
         },
         assessmentUuid,
         user,
@@ -343,11 +422,83 @@ export default function routes({ assessmentService, auditService }: Services): R
         ),
       )
 
+      const goalsResult = await assessmentService.query<'Collection'>({
+        type: 'CollectionQuery',
+        collectionUuid: goalsCollectionUuid,
+        depth: 0,
+        assessmentUuid,
+        user,
+      })
+
+      const goalsWithSteps = await assessmentService.query<'Collection'>({
+        type: 'CollectionQuery',
+        collectionUuid: goalsCollectionUuid,
+        depth: 1,
+        assessmentUuid,
+        user,
+      })
+
+      const goalResult = await assessmentService.query<'CollectionItem'>({
+        type: 'CollectionItemQuery',
+        collectionItemUuid: goalUuid,
+        depth: 0,
+        assessmentUuid,
+        user,
+      })
+
+      const goalWithSteps = await assessmentService.query<'CollectionItem'>({
+        type: 'CollectionItemQuery',
+        collectionItemUuid: goalUuid,
+        depth: 1,
+        assessmentUuid,
+        user,
+      })
+
+      const stepsTimelineResult = await assessmentService.query<'AssessmentTimeline'>({
+        type: 'AssessmentTimelineQuery',
+        timelineTypes: ['STEP_ADDED'],
+        assessmentUuid,
+        user,
+      })
+
+      const goalsWithStepsPointInTime = await assessmentService.query<'Collection'>({
+        type: 'CollectionQuery',
+        collectionUuid: goalsCollectionUuid,
+        depth: 1,
+        timestamp: stepsTimelineResult.timeline[0].createdAt,
+        assessmentUuid,
+        user,
+      })
+
+      const goalWithStepsPointInTime = await assessmentService.query<'CollectionItem'>({
+        type: 'CollectionItemQuery',
+        collectionItemUuid: goalUuid,
+        depth: 1,
+        timestamp: stepsTimelineResult.timeline[0].createdAt,
+        assessmentUuid,
+        user,
+      })
+
+      const timelinePointInTime = await assessmentService.query<'AssessmentTimeline'>({
+        type: 'AssessmentTimelineQuery',
+        timestamp: timelineResult.timeline[1].createdAt,
+        assessmentUuid,
+        user,
+      })
+
       return res.render('pages/sentence-plan', {
         assessmentUuid,
         sentencePlan,
         timelineResult,
         versions,
+        goalsResult,
+        goalsWithSteps,
+        goalsWithStepsPointInTime,
+        goalResult,
+        goalWithSteps,
+        goalWithStepsPointInTime,
+        stepsTimelineResult,
+        timelinePointInTime,
       })
     } catch (error) {
       return next(error)
