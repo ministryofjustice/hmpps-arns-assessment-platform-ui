@@ -7,6 +7,8 @@ export interface QueryResult {
 
 export interface AssessmentVersionQueryResult extends QueryResult {
   type: 'AssessmentVersionQueryResult'
+  assessmentUuid: string
+  aggregateUuid: string
   formVersion?: string
   createdAt: string
   updatedAt: string
