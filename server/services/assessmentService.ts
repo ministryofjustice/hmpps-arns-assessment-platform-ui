@@ -8,7 +8,8 @@ import {
 } from '../interfaces/aap-api/commandResult'
 import {
   AssessmentTimelineQueryResult,
-  AssessmentVersionQueryResult, CollectionItemQueryResult,
+  AssessmentVersionQueryResult,
+  CollectionItemQueryResult,
   CollectionQueryResult,
 } from '../interfaces/aap-api/queryResult'
 import {
@@ -29,7 +30,7 @@ import {
   AssessmentTimelineQuery,
   AssessmentVersionQuery,
   CollectionItemQuery,
-  CollectionQuery
+  CollectionQuery,
 } from '../interfaces/aap-api/query'
 
 interface CommandMap {

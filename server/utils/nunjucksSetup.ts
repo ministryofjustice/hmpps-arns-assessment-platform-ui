@@ -51,7 +51,5 @@ export default function nunjucksSetup(app: express.Express): void {
 
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
-  njkEnv.addFilter('json', function (obj, spaces = 2) {
-    return JSON.stringify(obj, null, spaces)
-  })
+  njkEnv.addFilter('json', (obj, spaces = 2) => JSON.stringify(obj, null, spaces))
 }
