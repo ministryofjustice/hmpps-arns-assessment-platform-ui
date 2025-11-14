@@ -31,7 +31,7 @@ dev-build: ## Builds a development image of the UI and installs Node dependencie
 dev-up: ## Starts/restarts a development container. A remote debugger can be attached on port 9229.
 	@make install-node-modules
 	docker compose down ${SERVICE_NAME}
-	docker compose ${DEV_COMPOSE_FILES} up ${SERVICE_NAME} --wait
+	docker compose ${DEV_COMPOSE_FILES} up ${SERVICE_NAME} --wait --no-recreate
 
 down: ## Stops and removes all containers in the project.
 	docker compose down
