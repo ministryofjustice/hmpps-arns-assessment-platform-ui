@@ -57,6 +57,8 @@ e2e-local: ## Run Playwright tests locally against application running in Docker
 
 e2e-ui: ## Run Playwright UI against application running in Docker
 	echo "Running Playwright tests locally..."
+	export HMPPS_ARNS_HANDOVER_URL=http://wiremock:8080 && \
+	export HMPPS_ARNS_HANDOVER_EXTERNAL_URL=http://localhost:9091 && \
 	docker compose $(DEV_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
 	ENVIRONMENT='e2e-ui' npx playwright test --ui
 
