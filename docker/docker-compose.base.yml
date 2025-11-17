@@ -56,6 +56,11 @@ services:
       AUTH_CODE_CLIENT_SECRET: clientsecret
       CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-system
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
+      HMPPS_ARNS_HANDOVER_URL: http://arns-handover:7070
+      HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
+      HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
+      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: aap-secret
+      OASYS_URL: http://localhost:7072
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
       AWS_ENDPOINT_URL: http://localstack:4566

@@ -8,6 +8,27 @@ import { HmppsUser } from '../interfaces/hmppsUser'
 import generateOauthClientToken from '../utils/clientCredentials'
 import logger from '../../logger'
 
+const strategies = {
+  handover: 'handover-oauth2',
+  hmppsAuth: 'hmpps-auth-oauth2',
+}
+
+const authPaths = {
+  signIn: '/sign-in',
+  handover: '/sign-in/handover',
+  handoverCallback: '/sign-in/handover/callback',
+  hmppsAuth: '/sign-in/hmpps-auth',
+  hmppsAuthCallback: '/sign-in/hmpps-auth/callback',
+  authError: '/autherror',
+  signOut: '/sign-out',
+  accountDetails: '/account-details',
+
+  handoverAuthorize: '/oauth2/authorize',
+  handoverToken: '/oauth2/token',
+  hmppsAuthorize: '/oauth/authorize',
+  hmppsToken: '/oauth/token',
+}
+
 passport.serializeUser((user, done) => {
   // Not used but required for Passport
   done(null, user)
@@ -19,17 +40,47 @@ passport.deserializeUser((user, done) => {
 })
 
 passport.use(
+  strategies.handover,
   new Strategy(
     {
-      authorizationURL: `${config.apis.hmppsAuth.externalUrl}/oauth/authorize`,
-      tokenURL: `${config.apis.hmppsAuth.url}/oauth/token`,
+      authorizationURL: `${config.apis.arnsHandover.externalUrl}${authPaths.handoverAuthorize}`,
+      tokenURL: `${config.apis.arnsHandover.url}${authPaths.handoverToken}`,
+      clientID: config.apis.arnsHandover.clientId,
+      clientSecret: config.apis.arnsHandover.clientSecret,
+      callbackURL: `${config.ingressUrl}${authPaths.handoverCallback}`,
+      state: true,
+      customHeaders: {
+        Authorization: generateOauthClientToken(
+          config.apis.arnsHandover.clientId,
+          config.apis.arnsHandover.clientSecret,
+        ),
+      },
+      scope: 'openid profile',
+    },
+    (token, _refreshToken, params, _profile, done) => {
+      return done(null, { token, username: params.user_name, authSource: 'handover' })
+    },
+  ),
+)
+
+passport.use(
+  strategies.hmppsAuth,
+  new Strategy(
+    {
+      authorizationURL: `${config.apis.hmppsAuth.externalUrl}${authPaths.hmppsAuthorize}`,
+      tokenURL: `${config.apis.hmppsAuth.url}${authPaths.hmppsToken}`,
       clientID: config.apis.hmppsAuth.authClientId,
       clientSecret: config.apis.hmppsAuth.authClientSecret,
-      callbackURL: `${config.ingressUrl}/sign-in/callback`,
+      callbackURL: `${config.ingressUrl}${authPaths.hmppsAuthCallback}`,
       state: true,
-      customHeaders: { Authorization: generateOauthClientToken() },
+      customHeaders: {
+        Authorization: generateOauthClientToken(
+          config.apis.hmppsAuth.authClientId,
+          config.apis.hmppsAuth.authClientSecret,
+        ),
+      },
     },
-    (token, refreshToken, params, profile, done) => {
+    (token, _refreshToken, params, _profile, done) => {
       return done(null, { token, username: params.user_name, authSource: params.auth_source })
     },
   ),
@@ -43,25 +94,36 @@ export default function setupAuthentication() {
   router.use(passport.session())
   router.use(flash())
 
-  router.get('/autherror', (req, res) => {
+  router.get(authPaths.authError, (_req, res) => {
     res.status(401)
     return res.render('autherror')
   })
 
-  router.get('/sign-in', passport.authenticate('oauth2'))
+  router.get(authPaths.handover, passport.authenticate(strategies.handover))
 
-  router.get('/sign-in/callback', (req, res, next) =>
-    passport.authenticate('oauth2', {
+  router.get(authPaths.handoverCallback, (req, res, next) =>
+    passport.authenticate(strategies.handover, {
       successReturnToOrRedirect: req.session.returnTo || '/',
-      failureRedirect: '/autherror',
+      failureRedirect: authPaths.authError,
     })(req, res, next),
   )
+
+  router.get(authPaths.hmppsAuth, passport.authenticate(strategies.hmppsAuth))
+
+  router.get(authPaths.hmppsAuthCallback, (req, res, next) =>
+    passport.authenticate(strategies.hmppsAuth, {
+      successReturnToOrRedirect: req.session.returnTo || '/',
+      failureRedirect: authPaths.authError,
+    })(req, res, next),
+  )
+
+  router.get(authPaths.signIn, passport.authenticate(strategies.hmppsAuth))
 
   const authUrl = config.apis.hmppsAuth.externalUrl
   const authParameters = `client_id=${config.apis.hmppsAuth.authClientId}&redirect_uri=${config.ingressUrl}`
 
-  router.use('/sign-out', (req, res, next) => {
-    const authSignOutUrl = `${authUrl}/sign-out?${authParameters}`
+  router.use(authPaths.signOut, (req, res, next) => {
+    const authSignOutUrl = `${authUrl}${authPaths.signOut}?${authParameters}`
     if (req.user) {
       req.logout(err => {
         if (err) return next(err)
@@ -70,16 +132,20 @@ export default function setupAuthentication() {
     } else res.redirect(authSignOutUrl)
   })
 
-  router.use('/account-details', (req, res) => {
-    res.redirect(`${authUrl}/account-details?${authParameters}`)
+  router.use(authPaths.accountDetails, (_req, res) => {
+    res.redirect(`${authUrl}${authPaths.accountDetails}?${authParameters}`)
   })
 
   router.use(async (req, res, next) => {
+    if (req.isAuthenticated() && req.user.authSource === 'handover') {
+      return next()
+    }
+
     if (req.isAuthenticated() && (await tokenVerificationClient.verifyToken(req as unknown as AuthenticatedRequest))) {
       return next()
     }
     req.session.returnTo = req.originalUrl
-    return res.redirect('/sign-in')
+    return res.redirect(authPaths.signIn)
   })
 
   router.use((req, res, next) => {

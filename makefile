@@ -42,6 +42,7 @@ test: ## Runs the unit test suite.
 e2e-docker: ## Run Playwright tests in Docker container against application running in Docker
 	echo "Running Playwright tests in Docker container..."
 	export HMPPS_AUTH_EXTERNAL_URL=http://wiremock:8080/auth && \
+	export HMPPS_ARNS_HANDOVER_EXTERNAL_URL=http://wiremock:8080 && \
 	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME) && \
 	docker compose $(TEST_COMPOSE_FILES) down && \
 	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait && \
