@@ -8,9 +8,9 @@ import { HmppsUser } from '../interfaces/hmppsUser'
 import generateOauthClientToken from '../utils/clientCredentials'
 import logger from '../../logger'
 
-const strategies = {
-  handover: 'handover-oauth2',
-  hmppsAuth: 'hmpps-auth-oauth2',
+enum AuthStrategy {
+  HANDOVER = 'handover-oauth2',
+  HMPPS_AUTH = 'hmpps-auth-oauth2',
 }
 
 const authPaths = {
@@ -40,7 +40,7 @@ passport.deserializeUser((user, done) => {
 })
 
 passport.use(
-  strategies.handover,
+  AuthStrategy.HANDOVER,
   new Strategy(
     {
       authorizationURL: `${config.apis.arnsHandover.externalUrl}${authPaths.handoverAuthorize}`,
@@ -64,7 +64,7 @@ passport.use(
 )
 
 passport.use(
-  strategies.hmppsAuth,
+  AuthStrategy.HMPPS_AUTH,
   new Strategy(
     {
       authorizationURL: `${config.apis.hmppsAuth.externalUrl}${authPaths.hmppsAuthorize}`,
@@ -99,25 +99,25 @@ export default function setupAuthentication() {
     return res.render('autherror')
   })
 
-  router.get(authPaths.handover, passport.authenticate(strategies.handover))
+  router.get(authPaths.handover, passport.authenticate(AuthStrategy.HANDOVER))
 
   router.get(authPaths.handoverCallback, (req, res, next) =>
-    passport.authenticate(strategies.handover, {
+    passport.authenticate(AuthStrategy.HANDOVER, {
       successReturnToOrRedirect: req.session.returnTo || '/',
       failureRedirect: authPaths.authError,
     })(req, res, next),
   )
 
-  router.get(authPaths.hmppsAuth, passport.authenticate(strategies.hmppsAuth))
+  router.get(authPaths.hmppsAuth, passport.authenticate(AuthStrategy.HMPPS_AUTH))
 
   router.get(authPaths.hmppsAuthCallback, (req, res, next) =>
-    passport.authenticate(strategies.hmppsAuth, {
+    passport.authenticate(AuthStrategy.HMPPS_AUTH, {
       successReturnToOrRedirect: req.session.returnTo || '/',
       failureRedirect: authPaths.authError,
     })(req, res, next),
   )
 
-  router.get(authPaths.signIn, passport.authenticate(strategies.hmppsAuth))
+  router.get(authPaths.signIn, passport.authenticate(AuthStrategy.HMPPS_AUTH))
 
   const authUrl = config.apis.hmppsAuth.externalUrl
   const authParameters = `client_id=${config.apis.hmppsAuth.authClientId}&redirect_uri=${config.ingressUrl}`
