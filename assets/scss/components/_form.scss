@@ -1,0 +1,11 @@
+.section-heading {
+  @include govuk-clearfix;
+}
+
+.section-heading__heading {
+  float: left;
+}
+
+.section-heading__status {
+  float: right;
+}

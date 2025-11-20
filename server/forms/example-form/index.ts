@@ -72,6 +72,7 @@ export default journey({
      */
     step({
       path: '/expressions',
+      title: 'expressions',
       blocks: [
         // Block Type 1: Regular block
         block({
@@ -154,6 +155,7 @@ export default journey({
      */
     step({
       path: '/predicates',
+      title: 'predicates',
       blocks: [
         // Field with OR predicate
         field<GovUKRadioInput>({
@@ -237,6 +239,7 @@ export default journey({
      */
     step({
       path: '/collections',
+      title: 'collections',
       blocks: [
         // Field with deeply nested conditional
         field<GovUKTextInput>({
@@ -354,6 +357,7 @@ export default journey({
      */
     step({
       path: '/complete',
+      title: 'complete',
       blocks: [
         block({
           variant: 'panel',
@@ -363,6 +367,7 @@ export default journey({
 
     step({
       path: '/admin-complete',
+      title: 'admin-complete',
       blocks: [
         block({
           variant: 'panel',
@@ -372,6 +377,7 @@ export default journey({
 
     step({
       path: '/unauthorized',
+      title: 'unauthorized',
       blocks: [
         block({
           variant: 'warning',

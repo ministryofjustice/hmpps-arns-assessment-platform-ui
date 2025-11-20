@@ -1,105 +1,143 @@
-import { ExpressionType } from '@form-engine/form/types/enums'
-import { ASTNode } from '@form-engine/core/types/engine.type'
+import { ASTNodeType } from '@form-engine/core/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
+import { ExpressionType } from '@form-engine/form/types/enums'
+import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
+import { ASTNode } from '@form-engine/core/types/engine.type'
 import RegistrationTraverser from './RegistrationTraverser'
+import NodeRegistry from './NodeRegistry'
 
 describe('RegistrationTraverser', () => {
-  describe('buildRegistry', () => {
-    it('should assign IDs in depth-first order and register all nodes', () => {
-      const tree = ASTTestFactory.scenarios.withValidation() as ASTNode & { properties: any }
-      const registry = RegistrationTraverser.buildRegistry(tree)
+  let mockRegistry: jest.Mocked<NodeRegistry>
+  let traverser: RegistrationTraverser
 
-      // Verify depth-first ID assignment pattern
-      expect(tree.id).toBe(1)
+  beforeEach(() => {
+    ASTTestFactory.resetIds()
 
-      const steps = tree.properties.get('steps')
-      expect(steps[0].id).toBe(2)
+    mockRegistry = {
+      register: jest.fn(),
+    } as unknown as jest.Mocked<NodeRegistry>
 
-      const blocks = steps[0].properties.get('blocks')
-      expect(blocks[0].id).toBe(3)
+    traverser = new RegistrationTraverser(mockRegistry)
+  })
 
-      // The withValidation scenario has a validation expression
-      const validation = blocks[0].properties.get('validation')
-      expect(validation.id).toBeDefined()
-      expect(validation.id).toBeGreaterThan(3)
+  describe('register', () => {
+    it('should register journey node with empty path', () => {
+      // Arrange
+      const journey = ASTTestFactory.journey().build()
 
-      // Verify all nodes are registered
-      // withValidation creates: 1 journey + 1 step + 1 block + validation expressions
-      expect(registry.size()).toBeGreaterThanOrEqual(4)
+      // Act
+      traverser.register(journey)
 
-      // Verify we can look up nodes by ID
-      expect(registry.get(1)).toBe(tree)
-      expect(registry.get(2)).toBe(steps[0])
-      expect(registry.get(3)).toBe(blocks[0])
+      // Assert
+      expect(mockRegistry.register).toHaveBeenCalledWith(journey.id, journey, [])
     })
 
-    it('should handle single node', () => {
-      const node = ASTTestFactory.block('TextField', 'field').build()
-      const registry = RegistrationTraverser.buildRegistry(node)
-
-      expect(node.id).toBe(1)
-      expect(registry.size()).toBe(1)
-    })
-
-    it('should handle deeply nested structures', () => {
-      const root = ASTTestFactory.scenarios.deeplyNested(10)
-      const registry = RegistrationTraverser.buildRegistry(root)
-
-      // Count nodes: 1 journey + 1 step + 11 nested blocks (10 containers + 1 field)
-      expect(registry.size()).toBe(13)
-    })
-
-    it('should handle nodes with no properties', () => {
-      const node = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
-      // Expression with minimal properties
-      const registry = RegistrationTraverser.buildRegistry(node)
-
-      expect(node.id).toBe(1)
-      expect(registry.size()).toBe(1)
-    })
-
-    it('should handle arrays with multiple nodes', () => {
-      const blocks = Array.from({ length: 5 }, (_, i) =>
-        ASTTestFactory.block('TextField', 'field').withCode(`field_${i}`).build(),
-      )
-      const root = ASTTestFactory.step().withProperty('blocks', blocks).build()
-
-      const registry = RegistrationTraverser.buildRegistry(root)
-
-      expect(registry.size()).toBe(6) // root + 5 blocks
-      blocks.forEach((block, index) => {
-        expect(block.id).toBe(index + 2) // IDs start at 2 for blocks
-      })
-    })
-
-    it('should handle mixed content in properties', () => {
-      const root = ASTTestFactory.journey()
-        .withMetadata({ version: '1.0' })
-        .withProperty('count', 42)
-        .withStep(step => step.withTitle('Test Step').withBlock('TextField', 'field', block => block))
+    it('should register all nodes in nested structure with correct paths', () => {
+      // Arrange
+      const expr = ASTTestFactory
+        .expression(ExpressionType.REFERENCE)
+        .withId('compile_ast:5')
+        .withPath(['answers', 'test'])
         .build()
 
-      const registry = RegistrationTraverser.buildRegistry(root)
+      const journey = ASTTestFactory
+        .journey()
+        .withStep(step =>
+          step
+            .withId('compile_ast:2')
+            .withBlock('TextInput', 'field', block =>
+              block
+                .withId('compile_ast:3')
+                .withCode('firstName')
+                .withLabel('First Name'),
+            )
+            .withBlock('TextInput', 'field', block =>
+              block
+                .withId('compile_ast:4')
+                .withCode('testField')
+                .withLabel('Test Field')
+                .withProperty('defaultValue', expr),
+            ),
+        )
+        .build()
 
-      // Should only count actual nodes, not other values
-      expect(registry.size()).toBe(3) // root + step + block
+      // Act
+      traverser.register(journey)
+
+      // Assert
+      expect(mockRegistry.register).toHaveBeenCalledWith(journey.id, journey, [])
+      expect(mockRegistry.register).toHaveBeenCalledWith(
+        'compile_ast:2',
+        expect.objectContaining({ id: 'compile_ast:2' }),
+        ['steps', 0],
+      )
+      expect(mockRegistry.register).toHaveBeenCalledWith(
+        'compile_ast:3',
+        expect.objectContaining({ id: 'compile_ast:3' }),
+        ['steps', 0, 'blocks', 0],
+      )
+      expect(mockRegistry.register).toHaveBeenCalledWith(
+        'compile_ast:4',
+        expect.objectContaining({ id: 'compile_ast:4' }),
+        ['steps', 0, 'blocks', 1],
+      )
+      expect(mockRegistry.register).toHaveBeenCalledWith('compile_ast:5', expr, [
+        'steps',
+        0,
+        'blocks',
+        1,
+        'defaultValue',
+      ])
+      expect(mockRegistry.register).toHaveBeenCalledTimes(5)
     })
+  })
 
-    it('should handle minimal scenario', () => {
-      const tree = ASTTestFactory.scenarios.minimal()
-      const registry = RegistrationTraverser.buildRegistry(tree)
+  describe('error handling', () => {
+    it('should throw InvalidNodeError when any node lacks ID', () => {
+      // Arrange - Root node without ID
+      const rootWithoutId = {
+        type: ASTNodeType.STEP,
+        id: undefined as any,
+        properties: {},
+      } as ASTNode
 
-      expect(tree.id).toBe(1)
-      expect(registry.size()).toBeGreaterThanOrEqual(3) // journey + step + field
-    })
+      // Act & Assert - Root node
+      try {
+        traverser.register(rootWithoutId)
 
-    it('should handle withConditionals scenario', () => {
-      const tree = ASTTestFactory.scenarios.withConditionals()
-      const registry = RegistrationTraverser.buildRegistry(tree)
+        fail('Expected InvalidNodeError for root node')
+      } catch (error) {
+        expect(error).toBeInstanceOf(InvalidNodeError)
+        expect(error.message).toMatch(/Node is missing ID/)
 
-      expect(tree.id).toBe(1)
-      // Has conditional expressions
-      expect(registry.size()).toBeGreaterThan(4) // journey + step + 2 blocks + expressions
+        if (error instanceof InvalidNodeError) {
+          expect(error.node).toBe(rootWithoutId)
+        }
+      }
+
+      // Arrange - Nested node without ID
+      const exprWithoutId = {
+        type: ASTNodeType.EXPRESSION,
+        id: undefined as any,
+        expressionType: ExpressionType.REFERENCE,
+        properties: { path: ['answers', 'test'] },
+      } as ASTNode
+
+      const block = ASTTestFactory
+        .block('TextInput', 'field')
+        .withId('compile_ast:2')
+        .withProperty('defaultValue', exprWithoutId)
+        .build()
+
+      const step = ASTTestFactory
+        .step()
+        .withId('compile_ast:1')
+        .withProperty('blocks', [block])
+        .build()
+
+      // Act & Assert - Nested node with path in error message
+      expect(() => traverser.register(step)).toThrow(InvalidNodeError)
+      expect(() => traverser.register(step)).toThrow(/blocks\.0\.defaultValue/)
     })
   })
 })
