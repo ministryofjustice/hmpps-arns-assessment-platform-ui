@@ -1,8 +1,9 @@
-{% extends "govuk/template.njk" %}
+{%- extends "govuk/template.njk" -%}
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
 
-{% block head %}
+{%- block head -%}
   <link href="{{ '/assets/css/index.css' | assetMap }}" rel="stylesheet"/>
-{% endblock %}
+{%- endblock -%}
 
 {% block pageTitle %}{{pageTitle | default(applicationName)}}{% endblock %}
 
@@ -13,6 +14,44 @@
 {% block bodyStart %}
 {% endblock %}
 
-{% block bodyEnd %}
-  <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
+{% block content %}
+<div class="govuk-grid-row">
+  {% if form.navigation %}
+    <div class="govuk-grid-column-one-quarter">
+      <nav class="moj-side-navigation side-navigation" aria-label="Side navigation">
+        <ul class="moj-side-navigation__list">
+          {% for link in form.navigation %}
+            <li class="moj-side-navigation__item{% if link.active %} moj-side-navigation__item--active{% endif %}">
+              <a href="{{ link.url }}"{% if link.active %} aria-current="location"{% endif %}>
+                <span class="section-label">{{ link.label }}</span>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    </div>
+  {% endif %}
+    <div class="govuk-grid-column-three-quarters">
+      {% block backLink %}{% endblock %}
+      <div class="section-heading">
+        <div class="section-heading__heading">
+          <h2 class="govuk-body-l govuk-!-margin-0">{{ form.navigation[0].label }}</h2>
+        </div>
+        {% if sectionProgress[options.section] %}
+          <div class="section-heading__status">
+            {{ govukTag({ text: "Complete" }) }}
+          </div>
+        {% else %}
+          <div class="section-heading__status">
+            {{ govukTag({ text: "Incomplete", classes: "govuk-tag--grey" }) }}
+          </div>
+        {% endif %}
+      </div>
+      {% block formContent %}{% endblock %}
+    </div>
+</div>
 {% endblock %}
+
+{%- block bodyEnd -%}
+  <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
+{%- endblock -%}

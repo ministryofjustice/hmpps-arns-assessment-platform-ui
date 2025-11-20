@@ -10,9 +10,12 @@ services:
       - "9090:8080"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/auth/health" ]
+    volumes:
+      - ./auth_db:/auth_db
     environment:
       SPRING_PROFILES_ACTIVE: dev
       APPLICATION_AUTHENTICATION_UI_ALLOWLIST: 0.0.0.0/0
+      SPRING_FLYWAY_LOCATIONS: classpath:db/auth,db/auth_{vendor},db/dev/data/auth_{vendor},db/dev/data/auth,filesystem:/auth_db
 
   redis:
     image: redis:8.2
@@ -49,9 +52,9 @@ services:
       SESSION_SECRET: somesecretvalue
       INGRESS_URL: http://localhost:3000
       NO_HTTPS: true
-      AUTH_CODE_CLIENT_ID: hmpps-typescript-template
+      AUTH_CODE_CLIENT_ID: hmpps-arns-assessment-platform-ui
       AUTH_CODE_CLIENT_SECRET: clientsecret
-      CLIENT_CREDS_CLIENT_ID: hmpps-typescript-template-system
+      CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-system
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
@@ -71,12 +74,16 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
     environment:
       - SERVER_PORT=8080
-      - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
+      - HMPPS_AUTH_URL=http://auth:8080/auth
       - SPRING_PROFILES_ACTIVE=dev,postgres
       - DATABASE_ENDPOINT=postgres:5432
+      - HMPPS_SQS_PROVIDER=localstack
+      - HMPPS_SQS_LOCALSTACK_URL=http://localstack:4566
+      - HMPPS_SQS_QUEUES_AUDIT_QUEUE_NAME=audit-queue
     depends_on:
       - postgres
       - auth
+      - localstack
 
   postgres:
     image: postgres:16
@@ -89,7 +96,7 @@ services:
       - /var/lib/postgresql
 
   localstack:
-    image: localstack/localstack:3
+    image: localstack/localstack:4
     networks:
       - hmpps
     ports:
