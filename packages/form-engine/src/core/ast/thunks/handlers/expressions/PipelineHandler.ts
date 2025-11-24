@@ -2,6 +2,7 @@ import { NodeId } from '@form-engine/core/types/engine.type'
 import { PipelineASTNode } from '@form-engine/core/types/expressions.type'
 import { ThunkHandler, ThunkInvocationAdapter, HandlerResult } from '@form-engine/core/ast/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
+import ThunkEvaluationError from '@form-engine/errors/ThunkEvaluationError'
 import {
   evaluateOperandWithErrorTracking,
   evaluateWithScope,
@@ -44,13 +45,13 @@ export default class PipelineHandler implements ThunkHandler {
     const inputResult = await evaluateOperandWithErrorTracking(input, context, invoker)
 
     if (inputResult.failed) {
-      return {
-        error: {
-          type: 'EVALUATION_FAILED',
-          nodeId: this.nodeId,
-          message: 'Pipeline input evaluation failed',
-        },
-      }
+      const error = ThunkEvaluationError.failed(
+        this.nodeId,
+        new Error('Pipeline input evaluation failed'),
+        'PipelineHandler',
+      )
+
+      return { error: error.toThunkError() }
     }
 
     // Apply each transformation step sequentially
@@ -65,13 +66,13 @@ export default class PipelineHandler implements ThunkHandler {
       )
 
       if (stepResult.failed) {
-        return {
-          error: {
-            type: 'EVALUATION_FAILED',
-            nodeId: this.nodeId,
-            message: `Pipeline step ${i} evaluation failed`,
-          },
-        }
+        const error = ThunkEvaluationError.failed(
+          this.nodeId,
+          new Error(`Pipeline step ${i} evaluation failed`),
+          'PipelineHandler',
+        )
+
+        return { error: error.toThunkError() }
       }
 
       currentValue = stepResult.value

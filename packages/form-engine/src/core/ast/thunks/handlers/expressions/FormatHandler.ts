@@ -2,6 +2,7 @@ import { NodeId } from '@form-engine/core/types/engine.type'
 import { FormatASTNode } from '@form-engine/core/types/expressions.type'
 import { ThunkHandler, ThunkInvocationAdapter, HandlerResult } from '@form-engine/core/ast/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
+import ThunkEvaluationError from '@form-engine/errors/ThunkEvaluationError'
 import { evaluateOperand } from '@form-engine/core/ast/thunks/handlers/utils/evaluation'
 
 /**
@@ -44,18 +45,10 @@ export default class FormatHandler implements ThunkHandler {
 
       return { value: result }
     } catch (cause) {
-      return {
-        error: {
-          type: 'EVALUATION_FAILED',
-          nodeId: this.nodeId,
-          message: `Format expression failed: ${cause instanceof Error ? cause.message : String(cause)}`,
-          cause: cause instanceof Error ? cause : new Error(String(cause)),
-          context: {
-            template,
-            arguments: evaluatedArguments,
-          },
-        },
-      }
+      const wrappedCause = cause instanceof Error ? cause : new Error(String(cause))
+      const error = ThunkEvaluationError.failed(this.nodeId, wrappedCause, 'FormatHandler')
+
+      return { error: error.toThunkError() }
     }
   }
 
