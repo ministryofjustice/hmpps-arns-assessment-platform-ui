@@ -31,7 +31,7 @@ dev-build: ## Builds a development image of the UI and installs Node dependencie
 dev-up: ## Starts/restarts a development container. A remote debugger can be attached on port 9229.
 	@make install-node-modules
 	docker compose down ${SERVICE_NAME}
-	docker compose ${DEV_COMPOSE_FILES} up ${SERVICE_NAME} --wait
+	docker compose ${DEV_COMPOSE_FILES} up ${SERVICE_NAME} --wait --no-recreate
 
 down: ## Stops and removes all containers in the project.
 	docker compose down
@@ -42,6 +42,7 @@ test: ## Runs the unit test suite.
 e2e-docker: ## Run Playwright tests in Docker container against application running in Docker
 	echo "Running Playwright tests in Docker container..."
 	export HMPPS_AUTH_EXTERNAL_URL=http://wiremock:8080/auth && \
+	export HMPPS_ARNS_HANDOVER_EXTERNAL_URL=http://wiremock:8080 && \
 	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME) && \
 	docker compose $(TEST_COMPOSE_FILES) down && \
 	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait && \
@@ -56,6 +57,8 @@ e2e-local: ## Run Playwright tests locally against application running in Docker
 
 e2e-ui: ## Run Playwright UI against application running in Docker
 	echo "Running Playwright tests locally..."
+	export HMPPS_ARNS_HANDOVER_URL=http://wiremock:8080 && \
+	export HMPPS_ARNS_HANDOVER_EXTERNAL_URL=http://localhost:9091 && \
 	docker compose $(DEV_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
 	ENVIRONMENT='e2e-ui' npx playwright test --ui
 

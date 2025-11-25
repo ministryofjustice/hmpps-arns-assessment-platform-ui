@@ -3,13 +3,14 @@
 
 generic-service:
   ingress:
-    host: arns-assessment-platform-ui.hmpps.service.justice.gov.uk
+    host: arns-assessment-platform.hmpps.service.justice.gov.uk
 
   env:
-    INGRESS_URL: "https://arns-assessment-platform-ui.hmpps.service.justice.gov.uk"
+    INGRESS_URL: "https://arns-assessment-platform.hmpps.service.justice.gov.uk"
     HMPPS_AUTH_URL: "https://sign-in.hmpps.service.justice.gov.uk/auth"
+    HMPPS_ARNS_HANDOVER_URL: "https://arns-handover-service.hmpps.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
-    EXAMPLE_API_URL: 'https://template-kotlin.hmpps.service.justice.gov.uk'
+    AAP_API_URL: "https://arns-assessment-platform-api.hmpps.service.justice.gov.uk"
     AUDIT_ENABLED: "false"
 
 generic-prometheus-alerts:

@@ -13,6 +13,7 @@ function createToken(userToken: UserToken) {
   const payload = {
     name: userToken.name || 'john smith',
     user_name: 'USER1',
+    user_id: 'USER1',
     scope: ['read', 'write'],
     auth_source: 'nomis',
     authorities: userToken.roles,
@@ -31,7 +32,7 @@ export default {
     }).then(data => {
       const { requests } = data.body
       const stateValue = requests[requests.length - 1].queryParams.state.values[0]
-      return `/sign-in/callback?code=codexxxx&state=${stateValue}`
+      return `/sign-in/hmpps-auth/callback?code=codexxxx&state=${stateValue}`
     }),
 
   favicon: () =>
@@ -60,18 +61,18 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/auth/oauth/authorize\\?response_type=code&redirect_uri=.+?&state=.+?&client_id=clientid',
+        urlPattern: '/auth/oauth/authorize\\?response_type=code&redirect_uri=.+?&state=.+?&client_id=.+',
       },
       response: {
         status: 200,
         headers: {
           'Content-Type': 'text/html',
-          Location: `${baseUrl}/sign-in/callback?code=codexxxx&state=stateyyyy`,
+          Location: `${baseUrl}/sign-in/hmpps-auth/callback?code=codexxxx&state=stateyyyy`,
         },
         body: '<html lang="en"><body>Dummy Sign in page<h1>Sign in</h1></body></html>',
       },
     }),
-  //  http://wiremock:8080/auth/sign-out?client_id=clientid&redirect_uri=http://localhost:3000
+
   stubSignOutPage: () =>
     stubFor({
       request: {
@@ -112,7 +113,7 @@ export default {
         status: 200,
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
-          Location: `${baseUrl}/sign-in/callback?code=codexxxx&state=stateyyyy`,
+          Location: `${baseUrl}/sign-in/hmpps-auth/callback?code=codexxxx&state=stateyyyy`,
         },
         jsonBody: {
           access_token: createToken(userToken),
