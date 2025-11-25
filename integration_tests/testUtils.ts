@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test'
 import tokenVerification from './mockApis/tokenVerification'
 import hmppsAuth, { type UserToken } from './mockApis/hmppsAuth'
+import handover, { type UserToken as HandoverUserToken } from './mockApis/handover'
 
 export { resetStubs } from './mockApis/wiremock'
 
@@ -18,6 +19,14 @@ export const attemptHmppsAuthLogin = async (page: Page) => {
   }
 }
 
+export const attemptHandoverLogin = async (page: Page) => {
+  await page.goto('/sign-in/handover')
+  page.locator('h1', { hasText: 'Sign in' })
+
+  const url = await handover.getSignInUrl()
+  await page.goto(url)
+}
+
 export const login = async (
   page: Page,
   { name, roles = DEFAULT_ROLES, active = true, authSource = 'nomis' }: UserToken & { active?: boolean } = {},
@@ -30,6 +39,11 @@ export const login = async (
     tokenVerification.stubVerifyToken(active),
   ])
   await attemptHmppsAuthLogin(page)
+}
+
+export const loginHandover = async (page: Page, { name, roles = DEFAULT_ROLES }: HandoverUserToken = {}) => {
+  await Promise.all([handover.favicon(), handover.stubSignInPage(), handover.token({ name, roles })])
+  await attemptHandoverLogin(page)
 }
 
 const authSignIn = async (page: Page) => {
