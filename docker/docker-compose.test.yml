@@ -25,9 +25,14 @@ services:
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
       HMPPS_AUTH_URL: http://wiremock:8080/auth
       HMPPS_AUTH_EXTERNAL_URL: ${HMPPS_AUTH_EXTERNAL_URL:-http://localhost:9091/auth}
+      HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080
+      HMPPS_ARNS_HANDOVER_EXTERNAL_URL: ${HMPPS_ARNS_HANDOVER_EXTERNAL_URL:-http://localhost:9091}
+      HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
+      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: aap-secret
       TOKEN_VERIFICATION_API_URL: http://wiremock:8080/verification
       TOKEN_VERIFICATION_ENABLED: true
       AAP_API_URL: http://wiremock:8080/aap-api
+      INGRESS_URL: http://ui:3000
       ENVIRONMENT_NAME: dev
 
   playwright:
