@@ -38,10 +38,6 @@
     {
       "matchManagers": ["github-actions"],
       "fileMatch": ["^\\.github/workflows/.*\\.yml$"]
-    },
-    {
-      "matchFiles": ["docker/cypress-package.json"],
-      "matchManagers": ["npm"]
     }
   ],
   "vulnerabilityAlerts": {

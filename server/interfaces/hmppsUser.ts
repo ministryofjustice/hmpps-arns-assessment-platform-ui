@@ -1,4 +1,4 @@
-export type AuthSource = 'nomis' | 'delius' | 'external' | 'azuread'
+export type AuthSource = 'nomis' | 'delius' | 'external' | 'azuread' | 'handover'
 
 /**
  * These are the details that all user types share.
@@ -56,4 +56,13 @@ export interface AzureADUser extends BaseUser {
   authSource: 'azuread'
 }
 
-export type HmppsUser = PrisonUser | ProbationUser | ExternalUser | AzureADUser
+/**
+ * Handover users are authenticated via the Handover service, which provides
+ * authentication for users coming from OASys or other external systems.
+ * The Handover service handles the OAuth2 flow and provides user context.
+ */
+export interface HandoverUser extends BaseUser {
+  authSource: 'handover'
+}
+
+export type HmppsUser = PrisonUser | ProbationUser | ExternalUser | AzureADUser | HandoverUser

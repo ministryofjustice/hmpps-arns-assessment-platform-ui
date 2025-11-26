@@ -48,6 +48,9 @@ generic-service:
     hmpps-arns-assessment-platform-ui-auth-code:
       AUTH_CODE_CLIENT_ID: 'AUTH_CODE_CLIENT_ID'
       AUTH_CODE_CLIENT_SECRET: 'AUTH_CODE_CLIENT_SECRET'
+    hmpps-arns-assessment-platform-ui-arns-handover:
+      HMPPS_ARNS_HANDOVER_CLIENT_ID: 'HMPPS_ARNS_HANDOVER_CLIENT_ID'
+      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: 'HMPPS_ARNS_HANDOVER_CLIENT_SECRET'
     hmpps-arns-assessment-platform-ui-session-secret:
       SESSION_SECRET: 'SESSION_SECRET'
     hmpps-arns-assessment-platform-ui-elasticache-redis:
