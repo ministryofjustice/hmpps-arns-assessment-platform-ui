@@ -1,0 +1,138 @@
+{# Recursive macro to render any JSON structure using GOV.UK styles #}
+{% macro render(value) %}
+  {% if value is string %}
+    "<span class="govuk-!-color-blue">{{ value }}</span>"
+  {% elif value is number %}
+    <span class="govuk-!-color-green">{{ value }}</span>
+  {% elif value === true or value === false %}
+    <span class="govuk-!-color-purple">{{ value }}</span>
+  {% elif value is null %}
+    <span class="govuk-!-color-dark-grey">null</span>
+  {% elif value is iterable and value is not string %}
+    {% if value is mapping %}
+      <div class="govuk-!-margin-left-4">
+        <span>{</span>
+        <ul class="govuk-list govuk-!-margin-left-2 govuk-!-margin-bottom-1 govuk-!-font-size-16">
+          {% for key, val in value %}
+            <li>
+              <strong class="govuk-!-color-dark-grey">{{ key }}</strong>: {{ render(val) }}
+            </li>
+          {% endfor %}
+        </ul>
+        <span>}</span>
+      </div>
+    {% else %}
+      <div class="govuk-!-margin-left-4">
+        <span>[</span>
+        <ul class="govuk-list govuk-!-margin-left-2 govuk-!-margin-bottom-1 govuk-!-font-size-16">
+          {% for item in value %}
+            <li>{{ render(item) }}</li>
+          {% endfor %}
+        </ul>
+        <span>]</span>
+      </div>
+    {% endif %}
+  {% else %}
+    <span class="govuk-!-color-dark-grey">{{ value }}</span>
+  {% endif %}
+{% endmacro %}
+
+{% extends "../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - Sentence Plan" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% set colours = [
+  "govuk-tag--blue",
+  "govuk-tag--green",
+  "govuk-tag--yellow",
+  "govuk-tag--red",
+  "govuk-tag--purple"
+] %}
+
+{% set index = -1 %}
+
+{%- macro colour(index) -%}
+  {% set i = index % (colours | length) %}
+  {{ colours[i] }}
+{%- endmacro -%}
+
+{% block content %}
+
+  <h1 class="govuk-heading-xl">Sentence Plan Demo</h1>
+
+  <div class="govuk-body govuk-!-font-size-16 govuk-!-font-family-monospace">
+    {% set index = index + 1 %}
+    <div class="{{ colour(index) }}">
+
+      <h2 class="govuk-heading-l">Latest plan data</h2>
+      <pre>{{ sentencePlan | json }}</pre>
+    </div>
+
+    {% set index = index + 1 %}
+    <div class="{{ colour(index) }}">
+      <h2 class="govuk-heading-l">Latest timeline</h2>
+      <pre>{{ timelineResult | json }}</pre>
+    </div>
+
+    <h2 class="govuk-heading-l">Versions at each timeline item's point in time</h2>
+
+    {% for version in versions %}
+      {% set index = index + 1 %}
+      <div class="{{ colour(index) }}">
+        <h3>Version at {{ version.updatedAt }}</h3>
+        <pre>{{ version | json }}</pre>
+      </div>
+    {% endfor %}
+
+    {% set index = index + 1 %}
+    <div class="{{ colour(index) }}">
+      <h2 class="govuk-heading-l">Goals - Latest</h2>
+      <pre>{{ goalsResult | json }}</pre>
+    </div>
+
+    {% set index = index + 1 %}
+    <div class="{{ colour(index) }}">
+      <h2 class="govuk-heading-l">Goals with steps - Latest</h2>
+      <pre>{{ goalsWithSteps | json }}</pre>
+    </div>
+
+    {% set index = index + 1 %}
+    <div class="{{ colour(index) }}">
+      <h2 class="govuk-heading-l">Goals with steps - Version at {{ goalsWithStepsPointInTime.collection.updatedAt }}</h2>
+      <pre>{{ goalsWithStepsPointInTime | json }}</pre>
+    </div>
+
+    {% set index = index + 1 %}
+    <div class="{{ colour(index) }}">
+      <h2 class="govuk-heading-l">Goal 1 - Latest</h2>
+      <pre>{{ goalResult | json }}</pre>
+    </div>
+
+    {% set index = index + 1 %}
+    <div class="{{ colour(index) }}">
+      <h2 class="govuk-heading-l">Goal 1 with steps - Latest</h2>
+      <pre>{{ goalWithSteps | json }}</pre>
+    </div>
+
+    {% set index = index + 1 %}
+    <div class="{{ colour(index) }}">
+      <h2 class="govuk-heading-l">Goal 1 with steps - Version at {{ goalsWithStepsPointInTime.collection.updatedAt }}</h2>
+      <pre>{{ goalWithStepsPointInTime | json }}</pre>
+    </div>
+
+    {% set index = index + 1 %}
+    <div class="{{ colour(index) }}">
+      <h2 class="govuk-heading-l">Latest timeline filtered for STEP_ADDED</h2>
+      <pre>{{ stepsTimelineResult | json }}</pre>
+    </div>
+
+    {% set index = index + 1 %}
+    <div class="{{ colour(index) }}">
+      <h2 class="govuk-heading-l">Full timeline at {{ timelineResult.timeline[1].createdAt }}</h2>
+      <pre>{{ timelinePointInTime | json }}</pre>
+    </div>
+
+  </div>
+
+{% endblock %}

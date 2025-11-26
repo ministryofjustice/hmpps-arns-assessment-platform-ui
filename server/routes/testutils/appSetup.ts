@@ -67,7 +67,7 @@ export function appWithAllRoutes({
   production = false,
   services = {
     auditService: new AuditService(null) as jest.Mocked<AuditService>,
-    assessmentService: new AssessmentService(null, null) as jest.Mocked<AssessmentService>,
+    assessmentService: new AssessmentService(null) as jest.Mocked<AssessmentService>,
   },
   userSupplier = () => user,
 }: {

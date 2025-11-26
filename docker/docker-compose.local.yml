@@ -17,6 +17,10 @@ services:
       TOKEN_VERIFICATION_API_URL: http://localhost:9090/verification
       HMPPS_AUTH_URL: http://auth:8080/auth
       HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
+      HMPPS_ARNS_HANDOVER_URL: ${HMPPS_ARNS_HANDOVER_URL:-http://arns-handover:7070}
+      HMPPS_ARNS_HANDOVER_EXTERNAL_URL: ${HMPPS_ARNS_HANDOVER_EXTERNAL_URL:-http://localhost:7070}
+      HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
+      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: aap-secret
       AAP_API_URL: http://api:8080
       NODE_ENV: 'development'
       ENVIRONMENT_NAME: dev
