@@ -17,10 +17,10 @@ jobs:
     env:
       APP_VERSION: ${{ inputs.app_version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download docker image
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: build_image
           path: ${{ runner.temp }}
@@ -35,7 +35,7 @@ jobs:
 
       - name: Upload test results
         if: '!cancelled()'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test_results
           path: |
@@ -43,7 +43,7 @@ jobs:
 
       - name: Archive screenshots
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: screenshots
           path: |
@@ -55,7 +55,7 @@ jobs:
 
       - name: Upload docker logs
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: e2e_docker_logs
           path: |
