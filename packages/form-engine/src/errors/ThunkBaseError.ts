@@ -34,8 +34,7 @@ export default class ThunkBaseError extends Error {
   toString(): string {
     const fields = [
       { label: 'NodeId', value: this.nodeId },
-      { label: 'Message', value: this.message },
-      ...Object.entries(this.context)
+      { label: 'Message', value: this.message },...Object.entries(this.context)
         .filter(([, v]) => v !== undefined)
         .map(([k, v]) => ({ label: k, value: String(v) })),
     ]
