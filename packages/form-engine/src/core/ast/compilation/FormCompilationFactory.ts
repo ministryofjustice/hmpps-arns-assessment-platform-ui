@@ -81,6 +81,9 @@ export default class FormCompilationFactory {
     // Phase 7 - Wire dependency graph
     NodeCompilationPipeline.wireDependencies(artefact)
 
+    // Phase 8 - Compile thunk handlers
+    NodeCompilationPipeline.compileThunks(artefact)
+
     return {
       artefact,
       currentStepId: stepNode.id,
