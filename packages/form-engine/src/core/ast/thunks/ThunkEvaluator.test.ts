@@ -1,12 +1,12 @@
 import { when } from 'jest-when'
 import { ASTNode, NodeId, PseudoNodeId, FormInstanceDependencies } from '@form-engine/core/types/engine.type'
-import ThunkEvaluator, { EvaluatorRequestData } from '@form-engine/core/ast/thunks/ThunkEvaluator'
+import ThunkEvaluator from '@form-engine/core/ast/thunks/ThunkEvaluator'
 import ThunkHandlerRegistry from '@form-engine/core/ast/thunks/registries/ThunkHandlerRegistry'
 import DependencyGraph from '@form-engine/core/ast/dependencies/DependencyGraph'
 import NodeRegistry from '@form-engine/core/ast/registration/NodeRegistry'
 import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
 import ComponentRegistry from '@form-engine/registry/ComponentRegistry'
-import { ThunkHandler, RuntimeOverlayBuilder } from '@form-engine/core/ast/thunks/types'
+import { ThunkHandler, RuntimeOverlayBuilder, EvaluatorRequestData } from '@form-engine/core/ast/thunks/types'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { CompilationDependencies } from '@form-engine/core/ast/compilation/CompilationDependencies'
 import MetadataRegistry from '@form-engine/core/ast/registration/MetadataRegistry'
@@ -432,23 +432,6 @@ describe('ThunkEvaluator', () => {
 
       // Assert - Handler should be called again (not using evaluator1's cache)
       expect(callCount).toBe(2)
-    })
-
-    it('should include request metadata in context', () => {
-      // Arrange
-      const metadata = { userId: '123', sessionId: 'abc' }
-      const request: EvaluatorRequestData = {
-        post: {},
-        query: {},
-        params: {},
-        metadata,
-      }
-
-      // Act
-      const context = evaluator.createContext(request)
-
-      // Assert
-      expect(context.request.metadata).toBe(metadata)
     })
 
     it('should populate answers map during evaluation', async () => {

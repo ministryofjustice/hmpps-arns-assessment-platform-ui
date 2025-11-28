@@ -1,6 +1,6 @@
 import { FormInstanceDependencies } from '@form-engine/core/types/engine.type'
-import { EvaluatorRequestData } from '@form-engine/core/ast/thunks/ThunkEvaluator'
 import { CompilationDependencies } from '@form-engine/core/ast/compilation/CompilationDependencies'
+import { EvaluatorRequestData } from '@form-engine/core/ast/thunks/types'
 
 /**
  * Global mutable state that persists across thunk evaluations
