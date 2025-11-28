@@ -25,6 +25,7 @@ import CollectionExpressionWiring from '@form-engine/core/ast/dependencies/wirin
 import { CompilationDependencies } from '@form-engine/core/ast/compilation/CompilationDependencies'
 import { NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import OnLoadTransitionWiring from '@form-engine/core/ast/dependencies/wiring/transitions/OnLoadTransitionWiring'
+import ThunkCompilerFactory from '@form-engine/core/ast/thunks/factories/ThunkCompilerFactory'
 
 /**
  * NodeCompilationPipeline - Reusable compilation phases for AST nodes
@@ -181,5 +182,17 @@ export class NodeCompilationPipeline {
     new NextExpressionWiring(wiringContext).wire()
     new FormatExpressionWiring(wiringContext).wire()
     new CollectionExpressionWiring(wiringContext).wire()
+  }
+
+  /**
+   * Phase 7: Compile thunk handlers
+   *
+   * Creates thunk handlers for all nodes in the registry.
+   * Handlers are registered in the thunkHandlerRegistry for runtime evaluation.
+   *
+   * @param compilationDependencies
+   */
+  static compileThunks(compilationDependencies: CompilationDependencies): void {
+    new ThunkCompilerFactory().compile(compilationDependencies)
   }
 }
