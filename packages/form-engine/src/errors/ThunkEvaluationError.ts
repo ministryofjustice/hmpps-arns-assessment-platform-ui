@@ -41,4 +41,18 @@ export default class ThunkEvaluationError extends ThunkBaseError {
       },
     )
   }
+
+  static securityViolation(nodeId: NodeId, propertyName: string, pseudoNodeType?: string): ThunkEvaluationError {
+    const typeInfo = pseudoNodeType ? ` in ${pseudoNodeType}` : ''
+
+    return new ThunkEvaluationError(
+      'SECURITY',
+      nodeId,
+      `Dangerous property name detected: "${propertyName}"${typeInfo}`,
+      {
+        Property: propertyName,
+        'Pseudo Node Type': pseudoNodeType,
+      },
+    )
+  }
 }
