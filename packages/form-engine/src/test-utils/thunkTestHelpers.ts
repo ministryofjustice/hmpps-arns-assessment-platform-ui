@@ -61,7 +61,7 @@ export function createMockContext(options: MockContextOptions = {}): ThunkEvalua
   const mockFunctionRegistry = {
     has: jest.fn((name: string) => options.mockRegisteredFunctions?.has(name) ?? false),
     get: jest.fn((name: string) => options.mockRegisteredFunctions?.get(name)),
-    getAllNames: jest.fn(() => Array.from(options.mockRegisteredFunctions?.keys() ?? [])),
+    getAll: jest.fn(() => options.mockRegisteredFunctions ?? new Map()),
   }
 
   const mockNodeRegistry = {
