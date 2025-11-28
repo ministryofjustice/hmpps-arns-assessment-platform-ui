@@ -8,10 +8,15 @@ import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluation
 import { PseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
 
 /**
- * Placeholder type for HTTP request metadata
- * TODO: Replace with actual RequestMetadata type in future
+ * Request data structure for evaluation
  */
-export type RequestMetadata = Record<string, unknown>
+export interface EvaluatorRequestData {
+  post: Record<string, string | string[]>
+  query: Record<string, string | string[]>
+  params: Record<string, string>
+  session?: Record<string, any>
+  state?: Record<string, any>
+}
 
 /**
  * Metadata about a thunk evaluation
