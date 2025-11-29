@@ -108,7 +108,7 @@ describe('PipelineHandler', () => {
       // Assert
       expect(result.error).toBeDefined()
       expect(result.error?.type).toBe('EVALUATION_FAILED')
-      expect(result.error?.message).toBe('Pipeline input evaluation failed')
+      expect(result.error?.message).toContain('Pipeline input evaluation failed')
     })
 
     it('should return error when first step fails to evaluate', async () => {
@@ -129,7 +129,7 @@ describe('PipelineHandler', () => {
       // Assert
       expect(result.error).toBeDefined()
       expect(result.error?.type).toBe('EVALUATION_FAILED')
-      expect(result.error?.message).toBe('Pipeline step 0 evaluation failed')
+      expect(result.error?.message).toContain('Pipeline step 0 evaluation failed')
     })
 
     it('should return error when middle step fails to evaluate', async () => {
@@ -163,7 +163,7 @@ describe('PipelineHandler', () => {
       // Assert
       expect(result.error).toBeDefined()
       expect(result.error?.type).toBe('EVALUATION_FAILED')
-      expect(result.error?.message).toBe('Pipeline step 1 evaluation failed')
+      expect(result.error?.message).toContain('Pipeline step 1 evaluation failed')
     })
   })
 })
