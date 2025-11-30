@@ -1,8 +1,9 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
-import { ThunkInvocationAdapter } from '@form-engine/core/ast/thunks/types'
+import { CapturedEffect, ThunkInvocationAdapter } from '@form-engine/core/ast/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
 import EffectFunctionContext from '@form-engine/core/ast/thunks/EffectFunctionContext'
+import ThunkLookupError from '@form-engine/errors/ThunkLookupError'
 
 /**
  * Result type for operand evaluation with explicit error tracking
@@ -204,40 +205,48 @@ export async function evaluateUntilFirstMatch(
 }
 
 /**
- * Evaluate effect nodes with a scoped EffectFunctionContext
+ * Commit captured effects by executing them with an EffectFunctionContext
  *
  * This utility:
  * 1. Creates an EffectFunctionContext from the evaluation context
- * 2. Pushes it onto the scope stack as @value
- * 3. Executes all effects sequentially
- * 4. Pops the scope when done (even on error)
- * 5. Returns the list of executed effect NodeIds
+ * 2. For each captured effect:
+ *    a. Looks up the effect function in the registry
+ *    b. Calls it with (effectContext, ...capturedArgs)
+ *    c. Tracks the committed effect
+ * 3. Returns the list of successfully committed effects
  *
- * @param effectNodeIds - NodeIds of effect nodes to execute
- * @param context - The evaluation context
- * @param invoker - The thunk invocation adapter
- * @returns Array of executed effect NodeIds
+ * Uses fail-fast error handling: if any effect fails, execution stops
+ * and the error propagates. This prevents partial state changes.
+ *
+ * @param capturedEffects - Array of captured effect intents from EffectHandler
+ * @param context - The evaluation context (provides functionRegistry)
+ * @returns Array of successfully committed effects
+ * @throws ThunkLookupError if an effect function is not found in the registry
+ * @throws Error if an effect function fails during execution
  */
-export async function evaluateEffectsWithScope(
-  effectNodeIds: NodeId[],
+export async function commitPendingEffects(
+  capturedEffects: CapturedEffect[],
   context: ThunkEvaluationContext,
-  invoker: ThunkInvocationAdapter,
-): Promise<NodeId[]> {
-  if (effectNodeIds.length === 0) {
+): Promise<CapturedEffect[]> {
+  if (capturedEffects.length === 0) {
     return []
   }
 
   const effectContext = new EffectFunctionContext(context)
+  const committed: CapturedEffect[] = []
 
-  return evaluateWithScope({ '@value': effectContext }, context, async () => {
-    const executedEffects: NodeId[] = []
+  for (const effect of capturedEffects) {
+    const effectFn = context.functionRegistry.get(effect.effectName)
 
-    for (const effectId of effectNodeIds) {
-      // eslint-disable-next-line no-await-in-loop
-      await invoker.invoke(effectId, context)
-      executedEffects.push(effectId)
+    if (!effectFn) {
+      const availableFunctions = Array.from(context.functionRegistry.getAll().keys())
+      throw ThunkLookupError.function(effect.nodeId, effect.effectName, availableFunctions)
     }
 
-    return executedEffects
-  })
+    // eslint-disable-next-line no-await-in-loop
+    await effectFn.evaluate(effectContext, ...effect.args)
+    committed.push(effect)
+  }
+
+  return committed
 }

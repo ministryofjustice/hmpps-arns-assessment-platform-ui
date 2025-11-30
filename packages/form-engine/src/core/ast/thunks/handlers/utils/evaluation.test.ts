@@ -1,11 +1,10 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { FunctionType } from '@form-engine/form/types/enums'
 import {
   createMockContext,
   createMockInvoker,
   createMockInvokerWithError,
 } from '@form-engine/test-utils/thunkTestHelpers'
-import { ThunkResult } from '@form-engine/core/ast/thunks/types'
+import { ThunkResult, CapturedEffect } from '@form-engine/core/ast/thunks/types'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import EffectFunctionContext from '@form-engine/core/ast/thunks/EffectFunctionContext'
 import {
@@ -14,7 +13,7 @@ import {
   evaluateWithScope,
   evaluatePropertyValue,
   evaluateUntilFirstMatch,
-  evaluateEffectsWithScope,
+  commitPendingEffects,
 } from './evaluation'
 
 describe('evaluation utilities', () => {
@@ -455,94 +454,101 @@ describe('evaluation utilities', () => {
     })
   })
 
-  describe('evaluateEffectsWithScope()', () => {
+  describe('commitPendingEffects()', () => {
     it('should return empty array when no effects provided', async () => {
       // Arrange
       const mockContext = createMockContext()
-      const mockInvoker = createMockInvoker()
 
       // Act
-      const result = await evaluateEffectsWithScope([], mockContext, mockInvoker)
+      const result = await commitPendingEffects([], mockContext)
 
       // Assert
       expect(result).toEqual([])
-      expect(mockInvoker.invoke).not.toHaveBeenCalled()
     })
 
-    it('should execute effects sequentially and return executed effect IDs', async () => {
+    it('should execute effects sequentially and return committed effects', async () => {
       // Arrange
-      const effect1 = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'effect1', [])
-      const effect2 = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'effect2', [])
-      const mockContext = createMockContext()
-      const invocationOrder: string[] = []
-      const mockInvoker = createMockInvoker({
-        invokeImpl: async (nodeId: string) => {
-          invocationOrder.push(nodeId)
-
-          return { value: undefined, metadata: { source: 'Test', timestamp: Date.now() } }
-        },
+      const mockEffectFn1 = { name: 'effect1', evaluate: jest.fn() }
+      const mockEffectFn2 = { name: 'effect2', evaluate: jest.fn() }
+      const mockContext = createMockContext({
+        mockRegisteredFunctions: new Map([
+          ['effect1', mockEffectFn1],
+          ['effect2', mockEffectFn2],
+        ]),
       })
 
+      const capturedEffects: CapturedEffect[] = [
+        { effectName: 'effect1', args: ['arg1'], nodeId: 'compile_ast:1' },
+        { effectName: 'effect2', args: ['arg2', 'arg3'], nodeId: 'compile_ast:2' },
+      ]
+
       // Act
-      const result = await evaluateEffectsWithScope([effect1.id, effect2.id], mockContext, mockInvoker)
+      const result = await commitPendingEffects(capturedEffects, mockContext)
 
       // Assert
-      expect(result).toEqual([effect1.id, effect2.id])
-      expect(invocationOrder).toEqual([effect1.id, effect2.id])
+      expect(result).toEqual(capturedEffects)
+      expect(mockEffectFn1.evaluate).toHaveBeenCalledWith(expect.any(EffectFunctionContext), 'arg1')
+      expect(mockEffectFn2.evaluate).toHaveBeenCalledWith(expect.any(EffectFunctionContext), 'arg2', 'arg3')
     })
 
-    it('should push EffectFunctionContext onto scope as @value during execution', async () => {
+    it('should call effect function with EffectFunctionContext as first argument', async () => {
       // Arrange
-      const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'testEffect', [])
+      const mockEffectFn = { name: 'testEffect', evaluate: jest.fn() }
       const mockContext = createMockContext({
+        mockRegisteredFunctions: new Map([['testEffect', mockEffectFn]]),
         mockAnswers: { name: 'John' },
       })
-      let capturedScope: Record<string, unknown>[] = []
-      const mockInvoker = createMockInvoker({
-        invokeImpl: async () => {
-          capturedScope = [...mockContext.scope]
 
-          return { value: undefined, metadata: { source: 'Test', timestamp: Date.now() } }
-        },
-      })
+      const capturedEffects: CapturedEffect[] = [{ effectName: 'testEffect', args: [], nodeId: 'compile_ast:1' }]
 
       // Act
-      await evaluateEffectsWithScope([effect.id], mockContext, mockInvoker)
+      await commitPendingEffects(capturedEffects, mockContext)
 
       // Assert
-      const scopeWithValue = capturedScope.find(s => '@value' in s)
-      expect(scopeWithValue).toBeDefined()
-      expect(scopeWithValue!['@value']).toBeInstanceOf(EffectFunctionContext)
+      expect(mockEffectFn.evaluate).toHaveBeenCalledTimes(1)
+      const firstArg = mockEffectFn.evaluate.mock.calls[0][0]
+      expect(firstArg).toBeInstanceOf(EffectFunctionContext)
     })
 
-    it('should pop scope after execution completes', async () => {
+    it('should throw error when effect function is not found in registry', async () => {
       // Arrange
-      const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'testEffect', [])
-      const mockContext = createMockContext()
-      const initialScopeLength = mockContext.scope.length
-      const mockInvoker = createMockInvoker()
-
-      // Act
-      await evaluateEffectsWithScope([effect.id], mockContext, mockInvoker)
-
-      // Assert
-      expect(mockContext.scope.length).toBe(initialScopeLength)
-    })
-
-    it('should pop scope even when effect execution throws', async () => {
-      // Arrange
-      const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'failingEffect', [])
-      const mockContext = createMockContext()
-      const initialScopeLength = mockContext.scope.length
-      const mockInvoker = createMockInvoker({
-        invokeImpl: async () => {
-          throw new Error('Effect failed')
-        },
+      const mockContext = createMockContext({
+        mockRegisteredFunctions: new Map(),
       })
+
+      const capturedEffects: CapturedEffect[] = [{ effectName: 'unknownEffect', args: [], nodeId: 'compile_ast:1' }]
 
       // Act & Assert
-      await expect(evaluateEffectsWithScope([effect.id], mockContext, mockInvoker)).rejects.toThrow('Effect failed')
-      expect(mockContext.scope.length).toBe(initialScopeLength)
+      await expect(commitPendingEffects(capturedEffects, mockContext)).rejects.toThrow(
+        'Function "unknownEffect" not found in registry',
+      )
+    })
+
+    it('should fail fast when effect execution throws', async () => {
+      // Arrange
+      const mockEffectFn1 = {
+        name: 'failingEffect',
+        evaluate: jest.fn().mockImplementation(() => {
+          throw new Error('Effect failed')
+        }),
+      }
+      const mockEffectFn2 = { name: 'effect2', evaluate: jest.fn() }
+      const mockContext = createMockContext({
+        mockRegisteredFunctions: new Map([
+          ['failingEffect', mockEffectFn1],
+          ['effect2', mockEffectFn2],
+        ]),
+      })
+
+      const capturedEffects: CapturedEffect[] = [
+        { effectName: 'failingEffect', args: [], nodeId: 'compile_ast:1' },
+        { effectName: 'effect2', args: [], nodeId: 'compile_ast:2' },
+      ]
+
+      // Act & Assert
+      await expect(commitPendingEffects(capturedEffects, mockContext)).rejects.toThrow('Effect failed')
+      // Second effect should NOT have been called due to fail-fast behavior
+      expect(mockEffectFn2.evaluate).not.toHaveBeenCalled()
     })
   })
 })
