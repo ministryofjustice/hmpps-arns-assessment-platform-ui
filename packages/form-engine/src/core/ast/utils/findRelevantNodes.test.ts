@@ -152,6 +152,40 @@ describe('findRelevantNodes', () => {
     // Assert
     expect(result).toContainEqual(pseudoNode)
   })
+
+  it('should never return duplicate nodes', () => {
+    // Arrange - Create a complex journey with all transition types
+    const nextExpr = ASTTestFactory.expression(ExpressionType.NEXT).withProperty('goto', '/next-step').build()
+    const onSubmitNode = ASTTestFactory.transition(TransitionType.SUBMIT)
+      .withProperty('onValid', { next: [nextExpr] })
+      .build()
+    const onLoadNode = ASTTestFactory.transition(TransitionType.LOAD).build()
+    const onAccessNode = ASTTestFactory.transition(TransitionType.ACCESS).build()
+
+    const journeyNode = ASTTestFactory.journey()
+      .withProperty('onLoad', onLoadNode)
+      .withStep(step =>
+        step
+          .withProperty('onSubmission', [onSubmitNode])
+          .withProperty('onAccess', onAccessNode)
+          .withBlock('TextInput', 'field', block => block.withCode('firstName')),
+      )
+      .build()
+
+    const stepNode = journeyNode.properties.steps[0]
+
+    metadataRegistry.set(journeyNode.id, 'isAncestorOfStep', true)
+    metadataRegistry.set(stepNode.id, 'isCurrentStep', true)
+
+    // Act
+    const result = findRelevantNodes(journeyNode, nodeRegistry, metadataRegistry)
+
+    // Assert - No duplicates allowed
+    const ids = result.map(n => n.id)
+    const uniqueIds = new Set(ids)
+
+    expect(ids.length).toBe(uniqueIds.size)
+  })
 })
 
 describe('findRelevantPseudoNodes', () => {

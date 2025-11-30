@@ -81,6 +81,15 @@ export function findRelevantNodes(
               return StructuralVisitResult.CONTINUE
             }
 
+            // Skip transition nodes - they're already collected by the dedicated functions above
+            if (
+              isLoadTransitionNode(childNode) ||
+              isAccessTransitionNode(childNode) ||
+              isSubmitTransitionNode(childNode)
+            ) {
+              return StructuralVisitResult.SKIP
+            }
+
             nodes.push(childNode)
             return StructuralVisitResult.CONTINUE
           },

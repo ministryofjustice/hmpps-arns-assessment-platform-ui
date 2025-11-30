@@ -2,12 +2,12 @@ import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
 import { PseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
 import ThunkEvaluationContext, { ThunkEvaluationGlobalState } from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
 import {
+  EvaluatorRequestData,
   ThunkErrorType,
   ThunkInvocationAdapter,
   ThunkResult,
   ThunkRuntimeHooks,
 } from '@form-engine/core/ast/thunks/types'
-import { EvaluatorRequestData } from '@form-engine/core/ast/thunks/ThunkEvaluator'
 
 /**
  * Options for creating a mock ThunkEvaluationContext
@@ -45,7 +45,8 @@ export function createMockContext(options: MockContextOptions = {}): ThunkEvalua
     post: options.mockRequest?.post ?? {},
     query: options.mockRequest?.query ?? {},
     params: options.mockRequest?.params ?? {},
-    metadata: options.mockRequest?.metadata,
+    session: options.mockRequest?.session,
+    state: options.mockRequest?.state,
   }
 
   const global: ThunkEvaluationGlobalState = {
@@ -60,7 +61,7 @@ export function createMockContext(options: MockContextOptions = {}): ThunkEvalua
   const mockFunctionRegistry = {
     has: jest.fn((name: string) => options.mockRegisteredFunctions?.has(name) ?? false),
     get: jest.fn((name: string) => options.mockRegisteredFunctions?.get(name)),
-    getAllNames: jest.fn(() => Array.from(options.mockRegisteredFunctions?.keys() ?? [])),
+    getAll: jest.fn(() => options.mockRegisteredFunctions ?? new Map()),
   }
 
   const mockNodeRegistry = {
