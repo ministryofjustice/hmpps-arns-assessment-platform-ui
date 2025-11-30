@@ -7,6 +7,7 @@ import {
   isPipelineExprNode,
   isConditionalExprNode,
   isFunctionExprNode,
+  isEffectExprNode,
   isCollectionExprNode,
   isNextExprNode,
   isValidationExprNode,
@@ -32,6 +33,7 @@ import XorPredicateHandler from '@form-engine/core/ast/thunks/handlers/expressio
 import NotPredicateHandler from '@form-engine/core/ast/thunks/handlers/expressions/NotPredicateHandler'
 import TestPredicateHandler from '@form-engine/core/ast/thunks/handlers/expressions/TestPredicateHandler'
 import FunctionHandler from '@form-engine/core/ast/thunks/handlers/expressions/FunctionHandler'
+import EffectHandler from '@form-engine/core/ast/thunks/handlers/expressions/EffectHandler'
 import BlockHandler from '@form-engine/core/ast/thunks/handlers/structures/BlockHandler'
 import StepHandler from '@form-engine/core/ast/thunks/handlers/structures/StepHandler'
 import LoadTransitionHandler from '@form-engine/core/ast/thunks/handlers/transitions/LoadTransitionHandler'
@@ -218,7 +220,12 @@ export default class ThunkCompilerFactory {
       return new NotPredicateHandler(nodeId, node)
     }
 
-    // Function expressions (CONDITION, TRANSFORMER, GENERATOR, EFFECT)
+    // Effect function expressions (EFFECT)
+    if (isEffectExprNode(node)) {
+      return new EffectHandler(nodeId, node)
+    }
+
+    // Function expressions (CONDITION, TRANSFORMER, GENERATOR)
     if (isFunctionExprNode(node)) {
       return new FunctionHandler(nodeId, node)
     }
