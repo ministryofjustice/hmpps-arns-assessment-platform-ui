@@ -1,6 +1,6 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { SubmitTransitionASTNode } from '@form-engine/core/types/expressions.type'
-import { ThunkHandler, ThunkInvocationAdapter, HandlerResult } from '@form-engine/core/ast/thunks/types'
+import { ThunkHandler, ThunkInvocationAdapter, HandlerResult, CapturedEffect } from '@form-engine/core/ast/thunks/types'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
 import { ASTNodeType } from '@form-engine/core/types/enums'
@@ -31,10 +31,10 @@ interface SubmitTransitionResult {
   next?: string
 
   /**
-   * Effect NodeIds to be committed after interpretation validates the request
-   * Effects are deferred to allow validation of user access before execution
+   * Captured effects to be committed after interpretation validates the request
+   * Effects are captured with their evaluated arguments, deferred for later execution
    */
-  pendingEffects?: NodeId[]
+  pendingEffects?: CapturedEffect[]
 }
 
 /**
@@ -106,13 +106,13 @@ export default class SubmitTransitionHandler implements ThunkHandler {
       isValid = await this.evaluateValidations(context, invoker)
     }
 
-    // Collect effects and next from appropriate branch (don't execute effects yet)
+    // Collect effects and next from appropriate branch (capture effects without executing)
     let next: string | undefined
-    const pendingEffects: NodeId[] = []
+    const pendingEffects: CapturedEffect[] = []
 
     if (validate === true) {
       // Validating transition
-      const onAlwaysEffects = this.collectEffects(this.node.properties.onAlways?.effects)
+      const onAlwaysEffects = await this.captureEffects(this.node.properties.onAlways?.effects, context, invoker)
       pendingEffects.push(...onAlwaysEffects)
 
       if (isValid) {
@@ -344,30 +344,44 @@ export default class SubmitTransitionHandler implements ThunkHandler {
   }
 
   /**
-   * Collect effect NodeIds from an effects array without executing them
+   * Capture effects by invoking their handlers (returns CapturedEffect, not executed)
+   *
+   * Invokes each effect node's EffectHandler which returns a CapturedEffect
+   * containing the effect name and already-evaluated arguments. The effect
+   * function itself is NOT executed - only captured for later commit.
    */
-  private collectEffects(effects: unknown[] | undefined): NodeId[] {
+  private async captureEffects(
+    effects: unknown[] | undefined,
+    context: ThunkEvaluationContext,
+    invoker: ThunkInvocationAdapter,
+  ): Promise<CapturedEffect[]> {
     if (!effects) {
       return []
     }
 
-    return effects.filter(isASTNode).map(e => e.id)
+    const effectNodes = effects.filter(isASTNode)
+
+    const results = await Promise.all(
+      effectNodes.map(effectNode => invoker.invoke<CapturedEffect>(effectNode.id, context)),
+    )
+
+    return results.filter(result => !result.error && result.value).map(result => result.value!)
   }
 
   /**
    * Collect effects and evaluate next from a branch
-   * Returns effect NodeIds (deferred) and the navigation target
+   * Returns captured effects (deferred) and the navigation target
    */
   private async collectBranch(
     branch: { effects?: unknown[]; next?: unknown[] } | undefined,
     context: ThunkEvaluationContext,
     invoker: ThunkInvocationAdapter,
-  ): Promise<{ effects: NodeId[]; next: string | undefined }> {
+  ): Promise<{ effects: CapturedEffect[]; next: string | undefined }> {
     if (!branch) {
       return { effects: [], next: undefined }
     }
 
-    const effects = this.collectEffects(branch.effects)
+    const effects = await this.captureEffects(branch.effects, context, invoker)
     const next = branch.next ? await this.evaluateNext(branch.next, context, invoker) : undefined
 
     return { effects, next }

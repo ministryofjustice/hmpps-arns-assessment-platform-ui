@@ -84,7 +84,7 @@ describe('LoadTransitionHandler', () => {
       expect(result.value).toBeUndefined()
     })
 
-    it('should maintain sequential execution order with multiple effects', async () => {
+    it('should capture all effects in parallel with multiple effects', async () => {
       // Arrange
       const effect1 = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'effect1')
       const effect2 = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'effect2')
@@ -95,20 +95,35 @@ describe('LoadTransitionHandler', () => {
 
       const handler = new LoadTransitionHandler(transition.id, transition)
 
-      const mockContext = createMockContext()
-      const executionTimes: Record<string, number> = {}
+      const mockEffectFn1 = { name: 'effect1', evaluate: jest.fn() }
+      const mockEffectFn2 = { name: 'effect2', evaluate: jest.fn() }
+      const mockContext = createMockContext({
+        mockRegisteredFunctions: new Map([
+          ['effect1', mockEffectFn1],
+          ['effect2', mockEffectFn2],
+        ]),
+      })
+
+      const invokedIds: string[] = []
       const mockInvoker = createMockInvoker({
         invokeImpl: async (nodeId: string) => {
-          // Simulate async delay
-          await new Promise(resolve => {
-            setTimeout(resolve, 10)
-          })
-          executionTimes[nodeId] = Date.now()
+          invokedIds.push(nodeId)
 
-          return {
-            value: undefined,
-            metadata: { source: 'EffectHandler', timestamp: Date.now() },
+          if (nodeId === effect1.id) {
+            return {
+              value: { effectName: 'effect1', args: [], nodeId: effect1.id },
+              metadata: { source: 'EffectHandler', timestamp: Date.now() },
+            }
           }
+
+          if (nodeId === effect2.id) {
+            return {
+              value: { effectName: 'effect2', args: [], nodeId: effect2.id },
+              metadata: { source: 'EffectHandler', timestamp: Date.now() },
+            }
+          }
+
+          return { value: undefined, metadata: { source: 'test', timestamp: Date.now() } }
         },
       })
 
@@ -116,8 +131,12 @@ describe('LoadTransitionHandler', () => {
       await handler.evaluate(mockContext, mockInvoker)
 
       // Assert
-      // Verify effect1 completed before effect2 started
-      expect(executionTimes[effect1.id]).toBeLessThan(executionTimes[effect2.id])
+      // Both effects should be captured
+      expect(invokedIds).toContain(effect1.id)
+      expect(invokedIds).toContain(effect2.id)
+      // Both effects should be committed
+      expect(mockEffectFn1.evaluate).toHaveBeenCalled()
+      expect(mockEffectFn2.evaluate).toHaveBeenCalled()
     })
 
     it('should continue with other effects when effect evaluation fails', async () => {

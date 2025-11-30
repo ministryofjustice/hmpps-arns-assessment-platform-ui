@@ -1,17 +1,22 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { LoadTransitionASTNode, FunctionASTNode } from '@form-engine/core/types/expressions.type'
-import { ThunkHandler, ThunkInvocationAdapter, HandlerResult } from '@form-engine/core/ast/thunks/types'
+import { ThunkHandler, ThunkInvocationAdapter, HandlerResult, CapturedEffect } from '@form-engine/core/ast/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
-import { evaluateEffectsWithScope } from '@form-engine/core/ast/thunks/handlers/utils/evaluation'
+import { commitPendingEffects } from '@form-engine/core/ast/thunks/handlers/utils/evaluation'
 
 /**
  * Handler for Load Transition nodes
  *
- * Evaluates onLoad transitions by executing all effects sequentially.
+ * Evaluates onLoad transitions by capturing and immediately committing effects.
  * Effects are functions that typically load external data into context.data.
  *
  * The handler ensures all effects complete before the transition resolves,
  * enabling dependent nodes to access the loaded data.
+ *
+ * ## Execution Pattern
+ * 1. Capture all effects (invoke EffectHandler to get CapturedEffect[])
+ * 2. Immediately commit all captured effects (execute them)
+ * 3. Return undefined
  *
  * ## Wiring Pattern
  * Effects are wired sequentially in the dependency graph:
@@ -21,7 +26,7 @@ import { evaluateEffectsWithScope } from '@form-engine/core/ast/thunks/handlers/
  *
  * ## Return Value
  * Returns undefined to indicate transition completion.
- * Side effects (data loading) occur in effect handlers.
+ * Side effects (data loading) occur during commit phase.
  */
 export default class LoadTransitionHandler implements ThunkHandler {
   constructor(
@@ -33,9 +38,13 @@ export default class LoadTransitionHandler implements ThunkHandler {
     const effects = this.node.properties.effects as FunctionASTNode[]
 
     if (Array.isArray(effects) && effects.length > 0) {
-      const effectIds = effects.map(effect => effect.id)
+      // Capture effects (invoke EffectHandler for each)
+      const results = await Promise.all(effects.map(effect => invoker.invoke<CapturedEffect>(effect.id, context)))
 
-      await evaluateEffectsWithScope(effectIds, context, invoker)
+      const capturedEffects = results.filter(result => !result.error && result.value).map(result => result.value!)
+
+      // TODO: Immediately commit for now, move commit into LifecycleCoordinator later
+      await commitPendingEffects(capturedEffects, context)
     }
 
     return { value: undefined }
