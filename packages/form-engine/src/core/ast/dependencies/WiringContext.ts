@@ -8,6 +8,7 @@ import NodeRegistry from '@form-engine/core/ast/registration/NodeRegistry'
 import MetadataRegistry from '@form-engine/core/ast/registration/MetadataRegistry'
 import DependencyGraph from '@form-engine/core/ast/dependencies/DependencyGraph'
 import { isJourneyStructNode, isStepStructNode } from '@form-engine/core/typeguards/structure-nodes'
+import getAncestorChain from '@form-engine/core/ast/utils/getAncestorChain'
 
 /**
  * Implementation of WiringContext
@@ -104,21 +105,7 @@ export class WiringContext {
    * Root nodes have depth 0, their children have depth 1, etc.
    */
   getNodeDepth(nodeId: NodeId): number {
-    let depth = 0
-    let currentId: NodeId | undefined = nodeId
-
-    while (currentId) {
-      const parentId = this.getParentNodeId(currentId)
-
-      if (!parentId) {
-        break
-      }
-
-      depth += 1
-      currentId = parentId
-    }
-
-    return depth
+    return getAncestorChain(nodeId, this.metadataRegistry).length - 1
   }
 
   /**
