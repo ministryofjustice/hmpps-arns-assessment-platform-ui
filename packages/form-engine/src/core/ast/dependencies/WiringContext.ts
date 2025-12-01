@@ -24,7 +24,7 @@ export class WiringContext {
   /**
    * Get the current step node (the step marked as isCurrentStep)
    */
-  getStepNode(): StepASTNode {
+  getCurrentStepNode(): StepASTNode {
     const stepId = this.metadataRegistry.findNodesWhere('isCurrentStep', true).at(0)
 
     if (!stepId) {

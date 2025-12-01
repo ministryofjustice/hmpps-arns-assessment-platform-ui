@@ -54,7 +54,7 @@ describe('WiringContext', () => {
         .mockReturnValue(step)
 
       // Act
-      const result = context.getStepNode()
+      const result = context.getCurrentStepNode()
 
       // Assert
       expect(result).toBe(step)
@@ -67,7 +67,7 @@ describe('WiringContext', () => {
         .mockReturnValue([])
 
       // Act & Assert
-      expect(() => context.getStepNode()).toThrow('No current step found in metadata registry')
+      expect(() => context.getCurrentStepNode()).toThrow('No current step found in metadata registry')
     })
   })
 
