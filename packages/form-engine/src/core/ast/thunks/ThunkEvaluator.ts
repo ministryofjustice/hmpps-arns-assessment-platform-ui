@@ -6,7 +6,7 @@ import {
   ThunkRuntimeHooks,
   RuntimeOverlayBuilder,
   RuntimeOverlayConfigurator,
-  RequestMetadata,
+  EvaluatorRequestData,
 } from '@form-engine/core/ast/thunks/types'
 import ThunkHandlerRegistryError from '@form-engine/errors/ThunkHandlerRegistryError'
 import ThunkEvaluationError from '@form-engine/errors/ThunkEvaluationError'
@@ -19,16 +19,6 @@ import { CompilationDependencies } from '@form-engine/core/ast/compilation/Compi
 import { NodeFactory } from '@form-engine/core/ast/nodes/NodeFactory'
 import { NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import { PseudoNodeFactory } from '@form-engine/core/ast/nodes/PseudoNodeFactory'
-
-/**
- * Request data structure for evaluation
- */
-export interface EvaluatorRequestData {
-  post: Record<string, string | string[]>
-  query: Record<string, string | string[]>
-  params: Record<string, string>
-  metadata?: RequestMetadata
-}
 
 /**
  * Result of evaluating a form
