@@ -146,7 +146,7 @@ describe('SubmitTransitionHandler', () => {
       expect(result.value?.executed).toBe(true)
     })
 
-    it('should collect onAlways effects for skip-validation transition', async () => {
+    it('should capture onAlways effects for skip-validation transition', async () => {
       // Arrange
       const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'logSubmission')
 
@@ -160,13 +160,30 @@ describe('SubmitTransitionHandler', () => {
       const handler = new SubmitTransitionHandler(transition.id, transition)
 
       const mockContext = createMockContext()
-      const mockInvoker = createMockInvoker({ defaultValue: undefined })
+
+      // Mock invoker returns CapturedEffect when invoked for effect nodes
+      const mockInvoker = createMockInvoker({
+        invokeImpl: async (nodeId: string) => {
+          if (nodeId === effect.id) {
+            return {
+              value: { effectName: 'logSubmission', args: [], nodeId: effect.id },
+              metadata: { source: 'EffectHandler', timestamp: Date.now() },
+            }
+          }
+
+          return { value: undefined, metadata: { source: 'test', timestamp: Date.now() } }
+        },
+      })
 
       // Act
       const result = await handler.evaluate(mockContext, mockInvoker)
 
       // Assert
-      expect(result.value?.pendingEffects).toContain(effect.id)
+      expect(result.value?.pendingEffects).toContainEqual({
+        effectName: 'logSubmission',
+        args: [],
+        nodeId: effect.id,
+      })
       expect(result.value?.executed).toBe(true)
       expect(result.value?.validated).toBe(false)
     })
@@ -196,7 +213,7 @@ describe('SubmitTransitionHandler', () => {
       expect(result.value?.next).toBe('/success')
     })
 
-    it('should collect effects and evaluate next expressions for skip-validation transition', async () => {
+    it('should capture effects and evaluate next expressions for skip-validation transition', async () => {
       // Arrange
       const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'saveData')
       const nextExpr = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
@@ -215,18 +232,38 @@ describe('SubmitTransitionHandler', () => {
 
       const mockContext = createMockContext()
       const mockInvoker = createMockInvoker({
-        returnValueMap: new Map([[nextExpr.id, '/next']]),
+        invokeImpl: async (nodeId: string) => {
+          if (nodeId === effect.id) {
+            return {
+              value: { effectName: 'saveData', args: [], nodeId: effect.id },
+              metadata: { source: 'EffectHandler', timestamp: Date.now() },
+            }
+          }
+
+          if (nodeId === nextExpr.id) {
+            return {
+              value: '/next',
+              metadata: { source: 'NextHandler', timestamp: Date.now() },
+            }
+          }
+
+          return { value: undefined, metadata: { source: 'test', timestamp: Date.now() } }
+        },
       })
 
       // Act
       const result = await handler.evaluate(mockContext, mockInvoker)
 
       // Assert
-      expect(result.value?.pendingEffects).toContain(effect.id)
+      expect(result.value?.pendingEffects).toContainEqual({
+        effectName: 'saveData',
+        args: [],
+        nodeId: effect.id,
+      })
       expect(result.value?.next).toBe('/next')
     })
 
-    it('should collect onAlways and onValid effects for valid submission with validation enabled', async () => {
+    it('should capture onAlways and onValid effects for valid submission with validation enabled', async () => {
       // Arrange
       const alwaysEffect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'logAttempt')
       const validEffect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'saveData')
@@ -263,9 +300,24 @@ describe('SubmitTransitionHandler', () => {
             }
           }
 
+          // Mock effect node invocations returning CapturedEffect
+          if (nodeId === alwaysEffect.id) {
+            return {
+              value: { effectName: 'logAttempt', args: [], nodeId: alwaysEffect.id },
+              metadata: { source: 'EffectHandler', timestamp: Date.now() },
+            }
+          }
+
+          if (nodeId === validEffect.id) {
+            return {
+              value: { effectName: 'saveData', args: [], nodeId: validEffect.id },
+              metadata: { source: 'EffectHandler', timestamp: Date.now() },
+            }
+          }
+
           return {
             value: undefined,
-            metadata: { source: 'EffectHandler', timestamp: Date.now() },
+            metadata: { source: 'test', timestamp: Date.now() },
           }
         },
       })
@@ -316,8 +368,16 @@ describe('SubmitTransitionHandler', () => {
       const result = await handler.evaluate(mockContext, mockInvoker)
 
       // Assert
-      expect(result.value?.pendingEffects).toContain(alwaysEffect.id)
-      expect(result.value?.pendingEffects).toContain(validEffect.id)
+      expect(result.value?.pendingEffects).toContainEqual({
+        effectName: 'logAttempt',
+        args: [],
+        nodeId: alwaysEffect.id,
+      })
+      expect(result.value?.pendingEffects).toContainEqual({
+        effectName: 'saveData',
+        args: [],
+        nodeId: validEffect.id,
+      })
       expect(result.value?.validated).toBe(true)
       expect(result.value?.isValid).toBe(true)
     })
@@ -525,7 +585,7 @@ describe('SubmitTransitionHandler', () => {
       expect(mockInvoker.invoke).toHaveBeenCalledWith(invalidNext.id, mockContext)
     })
 
-    it('should collect multiple effects', async () => {
+    it('should capture multiple effects', async () => {
       // Arrange
       const effect1 = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'effect1')
       const effect2 = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'effect2')
@@ -540,14 +600,40 @@ describe('SubmitTransitionHandler', () => {
       const handler = new SubmitTransitionHandler(transition.id, transition)
 
       const mockContext = createMockContext()
-      const mockInvoker = createMockInvoker({ defaultValue: undefined })
+      const mockInvoker = createMockInvoker({
+        invokeImpl: async (nodeId: string) => {
+          if (nodeId === effect1.id) {
+            return {
+              value: { effectName: 'effect1', args: [], nodeId: effect1.id },
+              metadata: { source: 'EffectHandler', timestamp: Date.now() },
+            }
+          }
+
+          if (nodeId === effect2.id) {
+            return {
+              value: { effectName: 'effect2', args: [], nodeId: effect2.id },
+              metadata: { source: 'EffectHandler', timestamp: Date.now() },
+            }
+          }
+
+          return { value: undefined, metadata: { source: 'test', timestamp: Date.now() } }
+        },
+      })
 
       // Act
       const result = await handler.evaluate(mockContext, mockInvoker)
 
       // Assert
-      expect(result.value?.pendingEffects).toContain(effect1.id)
-      expect(result.value?.pendingEffects).toContain(effect2.id)
+      expect(result.value?.pendingEffects).toContainEqual({
+        effectName: 'effect1',
+        args: [],
+        nodeId: effect1.id,
+      })
+      expect(result.value?.pendingEffects).toContainEqual({
+        effectName: 'effect2',
+        args: [],
+        nodeId: effect2.id,
+      })
       expect(result.value?.pendingEffects).toHaveLength(2)
     })
 

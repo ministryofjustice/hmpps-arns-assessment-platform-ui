@@ -234,7 +234,7 @@ describe('AccessTransitionHandler', () => {
     })
 
     describe('effects evaluation', () => {
-      it('should execute effects regardless of guards result', async () => {
+      it('should capture and commit effects regardless of guards result', async () => {
         // Arrange
         const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'logAccessAttempt', [])
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isAuthenticated', [])
@@ -251,7 +251,11 @@ describe('AccessTransitionHandler', () => {
 
         const handler = new AccessTransitionHandler(transition.id, transition)
 
-        const mockContext = createMockContext()
+        const mockEffectFn = { name: 'logAccessAttempt', evaluate: jest.fn() }
+        const mockContext = createMockContext({
+          mockRegisteredFunctions: new Map([['logAccessAttempt', mockEffectFn]]),
+        })
+
         const invocationOrder: string[] = []
         const invoker = createMockInvoker({
           invokeImpl: async (nodeId: string) => {
@@ -261,6 +265,14 @@ describe('AccessTransitionHandler', () => {
               return { value: false, metadata: { source: 'Test', timestamp: Date.now() } }
             }
 
+            // Effect node returns CapturedEffect
+            if (nodeId === effect.id) {
+              return {
+                value: { effectName: 'logAccessAttempt', args: [], nodeId: effect.id },
+                metadata: { source: 'EffectHandler', timestamp: Date.now() },
+              }
+            }
+
             return { value: undefined, metadata: { source: 'Test', timestamp: Date.now() } }
           },
         })
@@ -268,12 +280,13 @@ describe('AccessTransitionHandler', () => {
         // Act
         const result = await handler.evaluate(mockContext, invoker)
 
-        // Assert
+        // Assert - effect was captured and committed
         expect(invocationOrder).toContain(effect.id)
-        expect(result.value.executedEffects).toContain(effect.id)
+        expect(mockEffectFn.evaluate).toHaveBeenCalled()
+        expect(result.value.passed).toBe(false)
       })
 
-      it('should execute effects before guards evaluation', async () => {
+      it('should capture and commit effects before guards evaluation', async () => {
         // Arrange
         const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'logAccessAttempt', [])
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isAuthenticated', [])
@@ -290,11 +303,23 @@ describe('AccessTransitionHandler', () => {
 
         const handler = new AccessTransitionHandler(transition.id, transition)
 
-        const mockContext = createMockContext()
+        const mockEffectFn = { name: 'logAccessAttempt', evaluate: jest.fn() }
+        const mockContext = createMockContext({
+          mockRegisteredFunctions: new Map([['logAccessAttempt', mockEffectFn]]),
+        })
+
         const invocationOrder: string[] = []
         const invoker = createMockInvoker({
           invokeImpl: async (nodeId: string) => {
             invocationOrder.push(nodeId)
+
+            // Effect node returns CapturedEffect
+            if (nodeId === effect.id) {
+              return {
+                value: { effectName: 'logAccessAttempt', args: [], nodeId: effect.id },
+                metadata: { source: 'EffectHandler', timestamp: Date.now() },
+              }
+            }
 
             return { value: true, metadata: { source: 'Test', timestamp: Date.now() } }
           },
@@ -309,7 +334,7 @@ describe('AccessTransitionHandler', () => {
         expect(effectIndex).toBeLessThan(guardsIndex)
       })
 
-      it('should execute multiple effects sequentially', async () => {
+      it('should capture and commit multiple effects sequentially', async () => {
         // Arrange
         const effect1 = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'effect1', [])
         const effect2 = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'effect2', [])
@@ -320,25 +345,48 @@ describe('AccessTransitionHandler', () => {
 
         const handler = new AccessTransitionHandler(transition.id, transition)
 
-        const mockContext = createMockContext()
+        const mockEffectFn1 = { name: 'effect1', evaluate: jest.fn() }
+        const mockEffectFn2 = { name: 'effect2', evaluate: jest.fn() }
+        const mockContext = createMockContext({
+          mockRegisteredFunctions: new Map([
+            ['effect1', mockEffectFn1],
+            ['effect2', mockEffectFn2],
+          ]),
+        })
+
         const invocationOrder: string[] = []
         const invoker = createMockInvoker({
           invokeImpl: async (nodeId: string) => {
             invocationOrder.push(nodeId)
+
+            if (nodeId === effect1.id) {
+              return {
+                value: { effectName: 'effect1', args: [], nodeId: effect1.id },
+                metadata: { source: 'EffectHandler', timestamp: Date.now() },
+              }
+            }
+
+            if (nodeId === effect2.id) {
+              return {
+                value: { effectName: 'effect2', args: [], nodeId: effect2.id },
+                metadata: { source: 'EffectHandler', timestamp: Date.now() },
+              }
+            }
 
             return { value: undefined, metadata: { source: 'Test', timestamp: Date.now() } }
           },
         })
 
         // Act
-        const result = await handler.evaluate(mockContext, invoker)
+        await handler.evaluate(mockContext, invoker)
 
-        // Assert
+        // Assert - effects were captured in order and committed
         expect(invocationOrder).toEqual([effect1.id, effect2.id])
-        expect(result.value.executedEffects).toEqual([effect1.id, effect2.id])
+        expect(mockEffectFn1.evaluate).toHaveBeenCalled()
+        expect(mockEffectFn2.evaluate).toHaveBeenCalled()
       })
 
-      it('should not include executedEffects when no effects defined', async () => {
+      it('should succeed when no effects defined', async () => {
         // Arrange
         const transition = ASTTestFactory.transition(TransitionType.ACCESS)
           .build() as AccessTransitionASTNode
@@ -352,7 +400,7 @@ describe('AccessTransitionHandler', () => {
         const result = await handler.evaluate(mockContext, invoker)
 
         // Assert
-        expect(result.value.executedEffects).toBeUndefined()
+        expect(result.value.passed).toBe(true)
       })
     })
   })
