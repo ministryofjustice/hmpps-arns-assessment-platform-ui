@@ -25,6 +25,7 @@ export interface UpdateAssessmentAnswersCommand extends Command {
   type: 'UpdateAssessmentAnswersCommand'
   added: Answers
   removed: QuestionCodes
+  autosave?: boolean
 }
 
 export interface RollBackAssessmentAnswersCommand extends Command {
