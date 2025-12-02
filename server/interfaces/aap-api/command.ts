@@ -21,6 +21,11 @@ export interface CreateAssessmentCommand {
   user: User
 }
 
+export interface GroupCommand extends Command {
+  type: 'GroupCommand'
+  commands: Commands[]
+}
+
 export interface UpdateAssessmentAnswersCommand extends Command {
   type: 'UpdateAssessmentAnswersCommand'
   added: Answers
@@ -86,6 +91,7 @@ export type Commands =
   | AddCollectionItemCommand
   | CreateAssessmentCommand
   | CreateCollectionCommand
+  | GroupCommand
   | RemoveCollectionItemCommand
   | ReorderCollectionItemCommand
   | RollBackAssessmentAnswersCommand
