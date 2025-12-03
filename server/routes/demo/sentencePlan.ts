@@ -334,6 +334,45 @@ export default function routes({ assessmentService }: Services): Router {
         user,
       })
 
+      // Update the form version
+      await assessmentService.command<'Group'>({
+        type: 'GroupCommand',
+        commands: [
+          {
+            type: 'UpdateAssessmentPropertiesCommand',
+            added: {
+              SOME_PROP: ['new val'],
+            },
+            removed: [],
+            assessmentUuid,
+            user,
+          },
+          {
+            type: 'UpdateAssessmentAnswersCommand',
+            added: {
+              SOME_QUESTION: ['new answer'],
+            },
+            removed: [],
+            assessmentUuid,
+            user,
+          },
+          {
+            type: 'UpdateFormVersionCommand',
+            version: '2',
+            assessmentUuid,
+            user,
+          },
+        ],
+        timeline: {
+          type: 'TIMELINE_TYPE_GOES_HERE',
+          data: {
+            details: 'Sentence Plan version updated to v2',
+          },
+        },
+        assessmentUuid,
+        user,
+      })
+
       const sentencePlan = await assessmentService.query<'AssessmentVersion'>({
         type: 'AssessmentVersionQuery',
         assessmentUuid,

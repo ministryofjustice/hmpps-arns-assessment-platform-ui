@@ -5,6 +5,7 @@ import {
   CommandResult,
   CreateAssessmentCommandResult,
   CreateCollectionCommandResult,
+  GroupCommandResult,
 } from '../interfaces/aap-api/commandResult'
 import {
   AssessmentTimelineQueryResult,
@@ -17,6 +18,7 @@ import {
   Commands,
   CreateAssessmentCommand,
   CreateCollectionCommand,
+  GroupCommand,
   RemoveCollectionItemCommand,
   ReorderCollectionItemCommand,
   RollBackAssessmentAnswersCommand,
@@ -35,6 +37,7 @@ import {
 
 interface CommandMap {
   CreateAssessment: { cmd: CreateAssessmentCommand; res: CreateAssessmentCommandResult }
+  Group: { cmd: GroupCommand; res: GroupCommandResult }
   UpdateAssessmentAnswers: { cmd: UpdateAssessmentAnswersCommand; res: CommandResult }
   RollBackAssessmentAnswers: { cmd: RollBackAssessmentAnswersCommand; res: CommandResult }
   UpdateAssessmentProperties: { cmd: UpdateAssessmentPropertiesCommand; res: CommandResult }
