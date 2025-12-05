@@ -52,23 +52,25 @@ export default class PostHandler implements ThunkHandler {
     fieldNodeId: NodeId | undefined,
     context: ThunkEvaluationContext,
   ): unknown {
-    if (!Array.isArray(value)) {
-      return value
-    }
-
-    // If no field reference, default to extracting first non-empty value
+    // If no field reference, default to extracting first non-empty value from arrays
     if (!fieldNodeId) {
-      return this.getFirstNonEmpty(value)
+      return Array.isArray(value) ? this.getFirstNonEmpty(value) : value
     }
 
     const fieldNode = context.nodeRegistry.get(fieldNodeId) as FieldBlockASTNode
 
-    // If field not found or multiple is true, keep all values
+    // If field has multiple: true, always return an array
     if (fieldNode?.properties.multiple) {
-      return value
+      if (Array.isArray(value)) {
+        return value
+      }
+
+      // Normalize single value to array (or empty array if undefined/null)
+      return value !== undefined && value !== null ? [value] : []
     }
 
-    return this.getFirstNonEmpty(value)
+    // For non-multiple fields, extract first value from arrays
+    return Array.isArray(value) ? this.getFirstNonEmpty(value) : value
   }
 
   /**

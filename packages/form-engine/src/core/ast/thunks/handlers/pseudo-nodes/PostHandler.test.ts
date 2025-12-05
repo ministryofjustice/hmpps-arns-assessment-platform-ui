@@ -79,6 +79,50 @@ describe('PostHandler', () => {
       expect(result.error).toBeUndefined()
     })
 
+    it('should wrap single value in array when field has multiple: true', async () => {
+      // Arrange
+      const fieldNode = ASTTestFactory.block('CheckboxInput', 'field')
+        .withCode('interests')
+        .withProperty('multiple', true)
+        .build()
+      const pseudoNode = ASTTestFactory.postPseudoNode('interests', fieldNode.id)
+      const handler = new PostHandler(pseudoNode.id, pseudoNode)
+      const mockContext = createMockContext({
+        mockRequest: { post: { interests: 'coding' } },
+        mockNodes: new Map<NodeId, ASTNode>([[fieldNode.id, fieldNode]]),
+      })
+
+      // Act
+      const result = await handler.evaluate(mockContext)
+
+      // Assert
+      expect(result.value).toEqual(['coding'])
+      expect(Array.isArray(result.value)).toBe(true)
+      expect(result.error).toBeUndefined()
+    })
+
+    it('should return empty array when field has multiple: true and value is undefined', async () => {
+      // Arrange
+      const fieldNode = ASTTestFactory.block('CheckboxInput', 'field')
+        .withCode('interests')
+        .withProperty('multiple', true)
+        .build()
+      const pseudoNode = ASTTestFactory.postPseudoNode('interests', fieldNode.id)
+      const handler = new PostHandler(pseudoNode.id, pseudoNode)
+      const mockContext = createMockContext({
+        mockRequest: { post: {} },
+        mockNodes: new Map<NodeId, ASTNode>([[fieldNode.id, fieldNode]]),
+      })
+
+      // Act
+      const result = await handler.evaluate(mockContext)
+
+      // Assert
+      expect(result.value).toEqual([])
+      expect(Array.isArray(result.value)).toBe(true)
+      expect(result.error).toBeUndefined()
+    })
+
     it('should return first non-empty value when field has multiple: false', async () => {
       // Arrange
       const fieldNode = ASTTestFactory.block('CheckboxInput', 'field')
