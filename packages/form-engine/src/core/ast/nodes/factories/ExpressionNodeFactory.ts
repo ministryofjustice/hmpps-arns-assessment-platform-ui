@@ -5,6 +5,7 @@ import {
   isCollectionExpr,
   isValidationExpr,
   isNextExpr,
+  isExpression,
 } from '@form-engine/form/typeguards/expressions'
 import { isFunctionExpr } from '@form-engine/form/typeguards/functions'
 import { ASTNodeType } from '@form-engine/core/types/enums'
@@ -22,6 +23,7 @@ import {
 import { ASTNode } from '@form-engine/core/types/engine.type'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import UnknownNodeTypeError from '@form-engine/errors/UnknownNodeTypeError'
+import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import {
   CollectionExpr,
   FormatExpr,
@@ -86,21 +88,62 @@ export class ExpressionNodeFactory {
   /**
    * Transform Reference expression: Points to data in context
    * Examples: Answer('field'), Data('external.value'), Self(), Item()
+   *
+   * Static paths normalize dot-notation: ['data', 'assessment.uuid'] → ['data', 'assessment', 'uuid']
+   * Dynamic paths (expression in path[1]) skip normalization - split happens at runtime.
+   * Scope paths like ['@self'] are single-element and pass through unchanged.
    */
   private createReference(json: ReferenceExpr): ReferenceASTNode {
-    const transformedPath = Array.isArray(json.path)
-      ? json.path.map((segment: any) => this.nodeFactory.transformValue(segment))
-      : json.path
+    const path = this.buildReferencePath(json.path)
 
     return {
       id: this.nodeIDGenerator.next(this.category),
       type: ASTNodeType.EXPRESSION,
       expressionType: ExpressionType.REFERENCE,
-      properties: {
-        path: transformedPath,
-      },
+      properties: { path },
       raw: json,
     }
+  }
+
+  /**
+   * Build the reference path, normalizing static paths and preserving dynamic ones.
+   * Path structure: [source, key] for data refs, or ['@self'] for scope refs.
+   */
+  private buildReferencePath(path: any[]): any[] {
+    if (!Array.isArray(path) || path.length === 0) {
+      throw new InvalidNodeError({
+        message: 'Reference path must be a non-empty array',
+        actual: JSON.stringify(path),
+        code: 'INVALID_REFERENCE_PATH',
+      })
+    }
+
+    const [source, key] = path
+
+    // Scope reference like ['@self'] - pass through unchanged
+    if (source === '@self') {
+      return path
+    }
+
+    // Data references require [source, key]
+    if (path.length < 2) {
+      throw new InvalidNodeError({
+        message: 'Reference path must have at least 2 elements [source, key]',
+        expected: '[source, key]',
+        actual: JSON.stringify(path),
+        code: 'INVALID_REFERENCE_PATH',
+      })
+    }
+
+    // Dynamic path - expression will be evaluated at runtime
+    if (isExpression(key)) {
+      return [source, this.nodeFactory.transformValue(key)]
+    }
+
+    // Static path - split dot-notation
+    const keySegments = typeof key === 'string' && key.includes('.') ? key.split('.') : [key]
+
+    return [source, ...keySegments]
   }
 
   /**
