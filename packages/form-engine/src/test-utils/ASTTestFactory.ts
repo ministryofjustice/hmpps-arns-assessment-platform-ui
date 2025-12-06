@@ -209,12 +209,12 @@ export class ASTTestFactory {
   /**
    * Create a DATA pseudo node
    */
-  static dataPseudoNode(baseFieldCode: string): DataPseudoNode {
+  static dataPseudoNode(baseProperty: string): DataPseudoNode {
     return {
       id: ASTTestFactory.getPseudoId(),
       type: PseudoNodeType.DATA,
       properties: {
-        baseFieldCode,
+        baseProperty,
       },
     }
   }
