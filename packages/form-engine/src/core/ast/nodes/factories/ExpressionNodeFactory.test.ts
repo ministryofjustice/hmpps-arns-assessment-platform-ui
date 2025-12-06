@@ -372,18 +372,6 @@ describe('ExpressionNodeFactory', () => {
       expect(result.raw).toBe(json)
     })
 
-    it('should create a Reference expression with nested path via dot-notation', () => {
-      const json = {
-        type: ExpressionType.REFERENCE,
-        path: ['data', 'user.name'],
-      } satisfies ReferenceExpr
-
-      const result = expressionFactory.create(json) as ReferenceASTNode
-
-      const path = result.properties.path
-      expect(path).toEqual(['data', 'user', 'name'])
-    })
-
     it('should transform path segments that are expressions', () => {
       const json = {
         type: ExpressionType.REFERENCE,
@@ -429,34 +417,6 @@ describe('ExpressionNodeFactory', () => {
       expect(result1.id).not.toBe(result2.id)
     })
 
-    it('should normalize dot-notation path into separate segments', () => {
-      // Arrange
-      const json = {
-        type: ExpressionType.REFERENCE,
-        path: ['data', 'assessment.assessmentUuid'],
-      }
-
-      // Act
-      const result = expressionFactory.create(json) as ReferenceASTNode
-
-      // Assert - path should be split
-      expect(result.properties.path).toEqual(['data', 'assessment', 'assessmentUuid'])
-    })
-
-    it('should normalize deeply nested dot-notation path', () => {
-      // Arrange
-      const json = {
-        type: ExpressionType.REFERENCE,
-        path: ['data', 'assessment.collections.0.name'],
-      }
-
-      // Act
-      const result = expressionFactory.create(json) as ReferenceASTNode
-
-      // Assert - path should be fully split
-      expect(result.properties.path).toEqual(['data', 'assessment', 'collections', '0', 'name'])
-    })
-
     it('should not modify paths without dot notation', () => {
       // Arrange
       const json = {
@@ -471,19 +431,6 @@ describe('ExpressionNodeFactory', () => {
       expect(result.properties.path).toEqual(['answers', 'fieldCode'])
     })
 
-    it('should handle deeply nested dot-notation in key', () => {
-      // Arrange
-      const json = {
-        type: ExpressionType.REFERENCE,
-        path: ['data', 'first.second.third.fourth'],
-      }
-
-      // Act
-      const result = expressionFactory.create(json) as ReferenceASTNode
-
-      // Assert - dot-notation key should be split into segments
-      expect(result.properties.path).toEqual(['data', 'first', 'second', 'third', 'fourth'])
-    })
   })
 
   describe('createPipeline', () => {

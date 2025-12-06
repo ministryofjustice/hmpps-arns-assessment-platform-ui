@@ -88,10 +88,6 @@ export class ExpressionNodeFactory {
   /**
    * Transform Reference expression: Points to data in context
    * Examples: Answer('field'), Data('external.value'), Self(), Item()
-   *
-   * Static paths normalize dot-notation: ['data', 'assessment.uuid'] → ['data', 'assessment', 'uuid']
-   * Dynamic paths (expression in path[1]) skip normalization - split happens at runtime.
-   * Scope paths like ['@self'] are single-element and pass through unchanged.
    */
   private createReference(json: ReferenceExpr): ReferenceASTNode {
     const path = this.buildReferencePath(json.path)
@@ -106,8 +102,8 @@ export class ExpressionNodeFactory {
   }
 
   /**
-   * Build the reference path, normalizing static paths and preserving dynamic ones.
-   * Path structure: [source, key] for data refs, or ['@self'] for scope refs.
+   * Build the reference path, transforming any dynamic expressions.
+   * Path splitting is done at the builder level - factory just passes through.
    */
   private buildReferencePath(path: any[]): any[] {
     if (!Array.isArray(path) || path.length === 0) {
@@ -118,32 +114,8 @@ export class ExpressionNodeFactory {
       })
     }
 
-    const [source, key] = path
-
-    // Scope reference like ['@self'] - pass through unchanged
-    if (source === '@self') {
-      return path
-    }
-
-    // Data references require [source, key]
-    if (path.length < 2) {
-      throw new InvalidNodeError({
-        message: 'Reference path must have at least 2 elements [source, key]',
-        expected: '[source, key]',
-        actual: JSON.stringify(path),
-        code: 'INVALID_REFERENCE_PATH',
-      })
-    }
-
-    // Dynamic path - expression will be evaluated at runtime
-    if (isExpression(key)) {
-      return [source, this.nodeFactory.transformValue(key)]
-    }
-
-    // Static path - split dot-notation
-    const keySegments = typeof key === 'string' && key.includes('.') ? key.split('.') : [key]
-
-    return [source, ...keySegments]
+    // Transform any expressions in the path (e.g., dynamic keys)
+    return path.map(segment => (isExpression(segment) ? this.nodeFactory.transformValue(segment) : segment))
   }
 
   /**
