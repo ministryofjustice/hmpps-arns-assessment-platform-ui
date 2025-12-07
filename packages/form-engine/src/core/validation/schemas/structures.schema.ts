@@ -86,6 +86,15 @@ export const AccessTransitionSchema = z.object({
 })
 
 /**
+ * @see {@link ActionTransition}
+ */
+export const ActionTransitionSchema = z.object({
+  type: z.literal(TransitionType.ACTION),
+  when: PredicateExprSchema,
+  effects: z.array(EffectFunctionExprSchema),
+})
+
+/**
  * @see {@link SkipValidationTransition}
  */
 export const SkipValidationTransitionSchema = z.object({
@@ -136,6 +145,7 @@ export const StepSchema = z.looseObject({
   blocks: z.array(BlockSchema).optional(),
   onLoad: z.array(LoadTransitionSchema).optional(),
   onAccess: z.array(AccessTransitionSchema).optional(),
+  onAction: z.array(ActionTransitionSchema).optional(),
   onSubmission: z.array(SubmitTransitionSchema).optional(),
   title: z.string(),
   template: z.string().optional(),
