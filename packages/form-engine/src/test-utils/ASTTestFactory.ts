@@ -9,6 +9,7 @@ import {
   ReferenceASTNode,
   LoadTransitionASTNode,
   AccessTransitionASTNode,
+  ActionTransitionASTNode,
   SubmitTransitionASTNode,
 } from '@form-engine/core/types/expressions.type'
 import { BlockASTNode, JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
@@ -757,7 +758,7 @@ export class TransitionBuilder {
     return this
   }
 
-  build(): LoadTransitionASTNode | AccessTransitionASTNode | SubmitTransitionASTNode {
+  build(): LoadTransitionASTNode | AccessTransitionASTNode | ActionTransitionASTNode | SubmitTransitionASTNode {
     const nodeId = this.id ?? ASTTestFactory.getId()
 
     return {
@@ -765,6 +766,6 @@ export class TransitionBuilder {
       id: nodeId,
       transitionType: this.transitionType,
       properties: this.properties,
-    } as LoadTransitionASTNode | AccessTransitionASTNode | SubmitTransitionASTNode
+    } as LoadTransitionASTNode | AccessTransitionASTNode | ActionTransitionASTNode | SubmitTransitionASTNode
   }
 }
