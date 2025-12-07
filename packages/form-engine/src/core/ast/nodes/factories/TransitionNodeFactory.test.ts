@@ -385,7 +385,7 @@ describe('TransitionNodeFactory', () => {
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'Equals', arguments: ['find-address'] as ValueExpr[] },
         } satisfies PredicateTestExpr,
-        effects: [],
+        effects: [] as EffectFunctionExpr[],
       } satisfies ActionTransition
 
       const result = transitionFactory.create(json) as ActionTransitionASTNode
@@ -441,7 +441,7 @@ describe('TransitionNodeFactory', () => {
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'Equals', arguments: ['noop'] as ValueExpr[] },
         } satisfies PredicateTestExpr,
-        effects: [],
+        effects: [] as EffectFunctionExpr[],
       } satisfies ActionTransition
 
       const result = transitionFactory.create(json) as ActionTransitionASTNode
@@ -458,7 +458,7 @@ describe('TransitionNodeFactory', () => {
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'Equals', arguments: ['test'] as ValueExpr[] },
         } satisfies PredicateTestExpr,
-        effects: [],
+        effects: [] as EffectFunctionExpr[],
       } satisfies ActionTransition
 
       const result = transitionFactory.create(json)
