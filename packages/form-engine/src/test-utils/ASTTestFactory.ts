@@ -171,12 +171,13 @@ export class ASTTestFactory {
   /**
    * Create a POST pseudo node
    */
-  static postPseudoNode(baseFieldCode: string): PostPseudoNode {
+  static postPseudoNode(baseFieldCode: string, fieldNodeId?: NodeId): PostPseudoNode {
     return {
       id: ASTTestFactory.getPseudoId(),
       type: PseudoNodeType.POST,
       properties: {
         baseFieldCode,
+        fieldNodeId,
       },
     }
   }
