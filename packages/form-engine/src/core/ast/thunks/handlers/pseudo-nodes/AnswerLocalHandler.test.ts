@@ -23,12 +23,16 @@ describe('AnswerLocalHandler', () => {
         .withCode('email')
         .withProperty('formatPipeline', formatPipelineNode)
         .build()
+      const postPseudoNode = ASTTestFactory.postPseudoNode('email')
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('email', fieldNode.id)
-      const mockInvoker = createMockInvoker({ defaultValue: 'user@example.com' })
+      const mockInvoker = createSequentialMockInvoker(['raw-value', 'user@example.com'])
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
       const mockContext = createMockContext({
-        mockNodes: new Map([[fieldNode.id, fieldNode]]),
-        mockRequest: { post: { email: 'raw-value' } },
+        mockNodes: new Map<NodeId, ASTNode | PseudoNode>([
+          [fieldNode.id, fieldNode],
+          [postPseudoNode.id, postPseudoNode],
+        ]),
+        mockRequest: { method: 'POST', post: { email: 'raw-value' } },
       })
 
       // Act
@@ -39,12 +43,14 @@ describe('AnswerLocalHandler', () => {
       expect(result.error).toBeUndefined()
       expect(mockContext.global.answers.email).toEqual({
         current: 'user@example.com',
-        mutations: [{ value: 'user@example.com', source: 'processed' }],
+        mutations: [
+          { value: 'raw-value', source: 'post' },
+          { value: 'user@example.com', source: 'processed' },
+        ],
       })
-      expect(mockInvoker.invoke).toHaveBeenCalledWith(formatPipelineNode.id, mockContext)
     })
 
-    it('should fall back to POST when formatPipeline returns undefined', async () => {
+    it('should use raw POST value when formatPipeline returns undefined', async () => {
       // Arrange
       const formatPipelineNode = ASTTestFactory.expression(ExpressionType.PIPELINE).build()
       const fieldNode = ASTTestFactory.block('TextInput', 'field')
@@ -53,14 +59,14 @@ describe('AnswerLocalHandler', () => {
         .build()
       const postPseudoNode = ASTTestFactory.postPseudoNode('email')
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('email', fieldNode.id)
-      const mockInvoker = createSequentialMockInvoker([undefined, 'raw@example.com'])
+      const mockInvoker = createSequentialMockInvoker(['raw@example.com', undefined])
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
       const mockContext = createMockContext({
         mockNodes: new Map<NodeId, ASTNode | PseudoNode>([
           [fieldNode.id, fieldNode],
           [postPseudoNode.id, postPseudoNode],
         ]),
-        mockRequest: { post: { email: 'raw@example.com' } },
+        mockRequest: { method: 'POST', post: { email: 'raw@example.com' } },
       })
 
       // Act
@@ -86,7 +92,7 @@ describe('AnswerLocalHandler', () => {
           [fieldNode.id, fieldNode],
           [postPseudoNode.id, postPseudoNode],
         ]),
-        mockRequest: { post: { name: 'John Doe' } },
+        mockRequest: { method: 'POST', post: { name: 'John Doe' } },
       })
 
       // Act
@@ -101,23 +107,18 @@ describe('AnswerLocalHandler', () => {
       expect(mockInvoker.invoke).toHaveBeenCalledWith(postPseudoNode.id, mockContext)
     })
 
-    it('should fall back to defaultValue when POST is undefined', async () => {
+    it('should use defaultValue on GET when no existing answer', async () => {
       // Arrange
       const defaultValueNode = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
       const fieldNode = ASTTestFactory.block('TextInput', 'field')
         .withCode('country')
         .withProperty('defaultValue', defaultValueNode)
         .build()
-      const postPseudoNode = ASTTestFactory.postPseudoNode('country')
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('country', fieldNode.id)
-      const mockInvoker = createSequentialMockInvoker([undefined, 'UK'])
+      const mockInvoker = createMockInvoker({ defaultValue: 'UK' })
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
       const mockContext = createMockContext({
-        mockNodes: new Map<NodeId, ASTNode | PseudoNode>([
-          [fieldNode.id, fieldNode],
-          [postPseudoNode.id, postPseudoNode],
-        ]),
-        mockRequest: { post: { country: '' } },
+        mockNodes: new Map<NodeId, ASTNode | PseudoNode>([[fieldNode.id, fieldNode]]),
       })
 
       // Act
@@ -235,7 +236,7 @@ describe('AnswerLocalHandler', () => {
       expect(mockInvoker.invoke).not.toHaveBeenCalled()
     })
 
-    it('should fall back to POST when formatPipeline returns error', async () => {
+    it('should use raw POST value when formatPipeline returns error', async () => {
       // Arrange
       const formatPipelineNode = ASTTestFactory.expression(ExpressionType.PIPELINE).build()
       const fieldNode = ASTTestFactory.block('TextInput', 'field')
@@ -249,6 +250,10 @@ describe('AnswerLocalHandler', () => {
       const mockInvoker = createMockInvoker()
       mockInvoker.invoke
         .mockResolvedValueOnce({
+          value: 'raw@example.com',
+          metadata: { source: 'POST', timestamp: Date.now() },
+        })
+        .mockResolvedValueOnce({
           error: {
             type: 'EVALUATION_FAILED',
             nodeId: formatPipelineNode.id,
@@ -256,32 +261,28 @@ describe('AnswerLocalHandler', () => {
           },
           metadata: { source: 'formatPipeline', timestamp: Date.now() },
         })
-        .mockResolvedValueOnce({
-          value: 'fallback@example.com',
-          metadata: { source: 'POST', timestamp: Date.now() },
-        })
 
       const mockContext = createMockContext({
         mockNodes: new Map<NodeId, ASTNode | PseudoNode>([
           [fieldNode.id, fieldNode],
           [postPseudoNode.id, postPseudoNode],
         ]),
-        mockRequest: { post: { email: 'fallback@example.com' } },
+        mockRequest: { method: 'POST', post: { email: 'raw@example.com' } },
       })
 
       // Act
       const result = await handler.evaluate(mockContext, mockInvoker)
 
       // Assert
-      expect(result.value).toBe('fallback@example.com')
+      expect(result.value).toBe('raw@example.com')
       expect(result.error).toBeUndefined()
       expect(mockContext.global.answers.email).toEqual({
-        current: 'fallback@example.com',
-        mutations: [{ value: 'fallback@example.com', source: 'post' }],
+        current: 'raw@example.com',
+        mutations: [{ value: 'raw@example.com', source: 'post' }],
       })
     })
 
-    it('should fall back to defaultValue when POST returns error', async () => {
+    it('should return undefined on POST when POST pseudo node returns error', async () => {
       // Arrange
       const defaultValueNode = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
       const fieldNode = ASTTestFactory.block('TextInput', 'field')
@@ -293,41 +294,36 @@ describe('AnswerLocalHandler', () => {
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
 
       const mockInvoker = createMockInvoker()
-      mockInvoker.invoke
-        .mockResolvedValueOnce({
-          error: {
-            type: 'EVALUATION_FAILED',
-            nodeId: postPseudoNode.id,
-            message: 'POST access failed',
-          },
-          metadata: { source: 'POST', timestamp: Date.now() },
-        })
-        .mockResolvedValueOnce({
-          value: 'UK',
-          metadata: { source: 'defaultValue', timestamp: Date.now() },
-        })
+      mockInvoker.invoke.mockResolvedValueOnce({
+        error: {
+          type: 'EVALUATION_FAILED',
+          nodeId: postPseudoNode.id,
+          message: 'POST access failed',
+        },
+        metadata: { source: 'POST', timestamp: Date.now() },
+      })
 
       const mockContext = createMockContext({
         mockNodes: new Map<NodeId, ASTNode | PseudoNode>([
           [fieldNode.id, fieldNode],
           [postPseudoNode.id, postPseudoNode],
         ]),
-        mockRequest: { post: { country: 'any' } },
+        mockRequest: { method: 'POST', post: { country: 'any' } },
       })
 
       // Act
       const result = await handler.evaluate(mockContext, mockInvoker)
 
       // Assert
-      expect(result.value).toBe('UK')
+      expect(result.value).toBeUndefined()
       expect(result.error).toBeUndefined()
       expect(mockContext.global.answers.country).toEqual({
-        current: 'UK',
-        mutations: [{ value: 'UK', source: 'default' }],
+        current: undefined,
+        mutations: [{ value: undefined, source: 'post' }],
       })
     })
 
-    it('should fall back through all steps when formatPipeline and POST both return errors', async () => {
+    it('should return undefined on POST when both POST and formatPipeline return errors', async () => {
       // Arrange
       const formatPipelineNode = ASTTestFactory.expression(ExpressionType.PIPELINE).build()
       const defaultValueNode = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
@@ -345,22 +341,18 @@ describe('AnswerLocalHandler', () => {
         .mockResolvedValueOnce({
           error: {
             type: 'EVALUATION_FAILED',
-            nodeId: formatPipelineNode.id,
-            message: 'Pipeline failed',
-          },
-          metadata: { source: 'formatPipeline', timestamp: Date.now() },
-        })
-        .mockResolvedValueOnce({
-          error: {
-            type: 'EVALUATION_FAILED',
             nodeId: postPseudoNode.id,
             message: 'POST failed',
           },
           metadata: { source: 'POST', timestamp: Date.now() },
         })
         .mockResolvedValueOnce({
-          value: 'default-status',
-          metadata: { source: 'defaultValue', timestamp: Date.now() },
+          error: {
+            type: 'EVALUATION_FAILED',
+            nodeId: formatPipelineNode.id,
+            message: 'Pipeline failed',
+          },
+          metadata: { source: 'formatPipeline', timestamp: Date.now() },
         })
 
       const mockContext = createMockContext({
@@ -368,40 +360,33 @@ describe('AnswerLocalHandler', () => {
           [fieldNode.id, fieldNode],
           [postPseudoNode.id, postPseudoNode],
         ]),
-        mockRequest: { post: { status: 'any' } },
+        mockRequest: { method: 'POST', post: { status: 'any' } },
       })
 
       // Act
       const result = await handler.evaluate(mockContext, mockInvoker)
 
       // Assert
-      expect(result.value).toBe('default-status')
+      expect(result.value).toBeUndefined()
       expect(result.error).toBeUndefined()
       expect(mockContext.global.answers.status).toEqual({
-        current: 'default-status',
-        mutations: [{ value: 'default-status', source: 'default' }],
+        current: undefined,
+        mutations: [{ value: undefined, source: 'post' }],
       })
     })
 
-    it('should return undefined when all steps return errors', async () => {
+    it('should return undefined on GET when defaultValue returns error', async () => {
       // Arrange
-      const formatPipelineNode = ASTTestFactory.expression(ExpressionType.PIPELINE).build()
       const defaultValueNode = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
       const fieldNode = ASTTestFactory.block('TextInput', 'field')
         .withCode('failing')
-        .withProperty('formatPipeline', formatPipelineNode)
         .withProperty('defaultValue', defaultValueNode)
         .build()
-      const postPseudoNode = ASTTestFactory.postPseudoNode('failing')
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('failing', fieldNode.id)
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
       const mockInvoker = createMockInvokerWithError()
       const mockContext = createMockContext({
-        mockNodes: new Map<NodeId, ASTNode | PseudoNode>([
-          [fieldNode.id, fieldNode],
-          [postPseudoNode.id, postPseudoNode],
-        ]),
-        mockRequest: { post: { failing: 'any' } },
+        mockNodes: new Map<NodeId, ASTNode | PseudoNode>([[fieldNode.id, fieldNode]]),
       })
 
       // Act
@@ -489,7 +474,7 @@ describe('AnswerLocalHandler', () => {
         ]),
         // Previously loaded from API with source 'load'
         mockAnswers: { town: 'London' },
-        mockRequest: { post: { town: 'Manchester' } },
+        mockRequest: { method: 'POST', post: { town: 'Manchester' } },
       })
 
       // Act
