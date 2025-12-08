@@ -141,11 +141,11 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CreateAssessmentCommand',
         formVersion: '1',
         properties: {
-          PUBLISHED_STATE: { type: 'SingleValue', value: 'UNPUBLISHED' },
-          STATUS: { type: 'SingleValue', value: 'UNSIGNED' },
-          AGREEMENT_STATUS: { type: 'SingleValue', value: 'DRAFT' },
-          AGREEMENT_DATE: { type: 'SingleValue', value: '' },
-          AGREEMENT_NOTES: { type: 'SingleValue', value: '' },
+          PUBLISHED_STATE: { type: 'Single', value: 'UNPUBLISHED' },
+          STATUS: { type: 'Single', value: 'UNSIGNED' },
+          AGREEMENT_STATUS: { type: 'Single', value: 'DRAFT' },
+          AGREEMENT_DATE: { type: 'Single', value: '' },
+          AGREEMENT_NOTES: { type: 'Single', value: '' },
         },
         user,
       })
@@ -167,14 +167,14 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'AddCollectionItemCommand',
         collectionUuid: goalsCollectionUuid,
         properties: {
-          STATUS: { type: 'SingleValue', value: 'ACTIVE' },
-          STATUS_DATE: { type: 'SingleValue', value: '2025-11-11T00:00:00' },
+          STATUS: { type: 'Single', value: 'ACTIVE' },
+          STATUS_DATE: { type: 'Single', value: '2025-11-11T00:00:00' },
         },
         answers: {
-          TITLE: { type: 'SingleValue', value: 'I will find new ways to budget my money and keep to my income' },
-          AREA_OF_NEED: { type: 'SingleValue', value: 'FINANCES' },
-          RELATED_AREAS_OF_NEED: { type: 'MultiValue', values: ['ACCOMMODATION', 'THINKING_BEHAVIOURS_AND_ATTITUDES'] },
-          TARGET_DATE: { type: 'SingleValue', value: '2026-02-11T00:00:00' },
+          TITLE: { type: 'Single', value: 'I will find new ways to budget my money and keep to my income' },
+          AREA_OF_NEED: { type: 'Single', value: 'FINANCES' },
+          RELATED_AREAS_OF_NEED: { type: 'Multi', values: ['ACCOMMODATION', 'THINKING_BEHAVIOURS_AND_ATTITUDES'] },
+          TARGET_DATE: { type: 'Single', value: '2026-02-11T00:00:00' },
         },
         assessmentUuid,
         user,
@@ -209,12 +209,12 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'AddCollectionItemCommand',
         collectionUuid: stepsCollectionUuid,
         properties: {
-          STATUS_DATE: { type: 'SingleValue', value: '2025-11-11T00:00:00' },
+          STATUS_DATE: { type: 'Single', value: '2025-11-11T00:00:00' },
         },
         answers: {
-          STATUS: { type: 'SingleValue', value: 'NOT_STARTED' },
-          DESCRIPTION: { type: 'SingleValue', value: 'Provide learning material' },
-          ACTOR: { type: 'SingleValue', value: 'Probation practitioner' },
+          STATUS: { type: 'Single', value: 'NOT_STARTED' },
+          DESCRIPTION: { type: 'Single', value: 'Provide learning material' },
+          ACTOR: { type: 'Single', value: 'Probation practitioner' },
         },
         assessmentUuid,
         user,
@@ -227,12 +227,12 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'AddCollectionItemCommand',
         collectionUuid: stepsCollectionUuid,
         properties: {
-          STATUS_DATE: { type: 'SingleValue', value: '2025-11-11T00:00:00' },
+          STATUS_DATE: { type: 'Single', value: '2025-11-11T00:00:00' },
         },
         answers: {
-          STATUS: { type: 'SingleValue', value: 'NOT_STARTED' },
-          DESCRIPTION: { type: 'SingleValue', value: 'Create a budget' },
-          ACTOR: { type: 'SingleValue', value: 'Person on probation' },
+          STATUS: { type: 'Single', value: 'NOT_STARTED' },
+          DESCRIPTION: { type: 'Single', value: 'Create a budget' },
+          ACTOR: { type: 'Single', value: 'Person on probation' },
         },
         timeline: {
           type: 'STEP_ADDED',
@@ -250,7 +250,7 @@ export default function routes({ assessmentService }: Services): Router {
           type: 'UpdateCollectionItemAnswersCommand',
           collectionItemUuid: step1Uuid,
           added: {
-            STATUS: { type: 'SingleValue', value: 'IN_PROGRESS' },
+            STATUS: { type: 'Single', value: 'IN_PROGRESS' },
           },
           removed: [],
           assessmentUuid,
@@ -260,7 +260,7 @@ export default function routes({ assessmentService }: Services): Router {
           type: 'UpdateCollectionItemPropertiesCommand',
           collectionItemUuid: step1Uuid,
           added: {
-            STATUS_DATE: { type: 'SingleValue', value: '2025-11-12T00:00:00' },
+            STATUS_DATE: { type: 'Single', value: '2025-11-12T00:00:00' },
           },
           removed: [],
           assessmentUuid,
@@ -271,7 +271,7 @@ export default function routes({ assessmentService }: Services): Router {
           collectionUuid: notesCollectionUuid,
           properties: {},
           answers: {
-            DESCRIPTION: { type: 'SingleValue', value: 'Person on probation is progressing well' },
+            DESCRIPTION: { type: 'Single', value: 'Person on probation is progressing well' },
           },
           assessmentUuid,
           user,
@@ -285,14 +285,14 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'AddCollectionItemCommand',
         collectionUuid: goalsCollectionUuid,
         properties: {
-          STATUS: { type: 'SingleValue', value: 'ACTIVE' },
-          STATUS_DATE: { type: 'SingleValue', value: '2025-11-11T00:00:00' },
+          STATUS: { type: 'Single', value: 'ACTIVE' },
+          STATUS_DATE: { type: 'Single', value: '2025-11-11T00:00:00' },
         },
         answers: {
-          TITLE: { type: 'SingleValue', value: 'Top priority goal' },
-          AREA_OF_NEED: { type: 'SingleValue', value: 'FINANCES' },
-          RELATED_AREAS_OF_NEED: { type: 'MultiValue', values: [] },
-          TARGET_DATE: { type: 'SingleValue', value: '2026-02-11T00:00:00' },
+          TITLE: { type: 'Single', value: 'Top priority goal' },
+          AREA_OF_NEED: { type: 'Single', value: 'FINANCES' },
+          RELATED_AREAS_OF_NEED: { type: 'Multi', values: [] },
+          TARGET_DATE: { type: 'Single', value: '2026-02-11T00:00:00' },
         },
         timeline: {
           type: 'GOAL_CREATED',
@@ -319,8 +319,8 @@ export default function routes({ assessmentService }: Services): Router {
       await assessmentService.command<'UpdateAssessmentProperties'>({
         type: 'UpdateAssessmentPropertiesCommand',
         added: {
-          AGREEMENT_STATUS: { type: 'SingleValue', value: 'AGREED' },
-          AGREEMENT_NOTES: { type: 'SingleValue', value: 'AGREED' },
+          AGREEMENT_STATUS: { type: 'Single', value: 'AGREED' },
+          AGREEMENT_NOTES: { type: 'Single', value: 'AGREED' },
         },
         removed: [],
         timeline: {
@@ -341,7 +341,7 @@ export default function routes({ assessmentService }: Services): Router {
           {
             type: 'UpdateAssessmentPropertiesCommand',
             added: {
-              SOME_PROP: { type: 'SingleValue', value: 'new val' },
+              SOME_PROP: { type: 'Single', value: 'new val' },
             },
             removed: [],
             assessmentUuid,
@@ -350,7 +350,7 @@ export default function routes({ assessmentService }: Services): Router {
           {
             type: 'UpdateAssessmentAnswersCommand',
             added: {
-              SOME_QUESTION: { type: 'SingleValue', value: 'new answer' },
+              SOME_QUESTION: { type: 'Single', value: 'new answer' },
             },
             removed: [],
             assessmentUuid,

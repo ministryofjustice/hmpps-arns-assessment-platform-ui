@@ -3,12 +3,12 @@ export interface Value {
 }
 
 export interface SingleValue extends Value {
-  type: 'SingleValue'
+  type: 'Single'
   value: string
 }
 
 export interface MultiValue extends Value {
-  type: 'MultiValue'
+  type: 'Multi'
   values: string[]
 }
 
