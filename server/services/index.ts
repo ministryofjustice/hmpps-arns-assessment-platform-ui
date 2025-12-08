@@ -7,6 +7,7 @@ export const services = () => {
 
   return {
     applicationInfo,
+    assessmentPlatformApiClient,
     auditService: new AuditService(applicationInfo),
     assessmentService: new AssessmentService(assessmentPlatformApiClient),
   }
