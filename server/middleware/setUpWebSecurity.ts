@@ -9,8 +9,10 @@ export default function setUpWebSecurity(): Router {
   // Secure code best practice - see:
   // 1. https://expressjs.com/en/advanced/best-practice-security.html,
   // 2. https://www.npmjs.com/package/helmet
-  router.use((_req: Request, res: Response, next: NextFunction) => {
-    res.locals.cspNonce = crypto.randomBytes(16).toString('hex')
+  router.use((req: Request, res: Response, next: NextFunction) => {
+    const cspNonce = crypto.randomBytes(16).toString('hex')
+    res.locals.cspNonce = cspNonce
+    req.state = { ...req.state, cspNonce }
     next()
   })
   router.use(
