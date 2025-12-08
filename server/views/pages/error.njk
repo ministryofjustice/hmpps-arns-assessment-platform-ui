@@ -1,12 +1,57 @@
 {% extends "../partials/layout.njk" %}
 
-{% set pageTitle = applicationName + " - Error" %}
+{% if error.status === 404 %}
+  {% set title = "Page not found" %}
+  {% set suggestions = [
+    "If you typed the web address, check it is correct.",
+    "If you pasted the web address, check you copied the entire address."
+  ] %}
+{% elif error.status >= 400 and error.status < 500 %}
+  {% set title = "There was an issue with your request" %}
+  {% set suggestions = [
+    "Try performing your request again.",
+    "If the request still fails, try again later."
+  ] %}
+{% else %}
+  {% set title = "Sorry, there is a problem with the service" %}
+  {% set suggestions = [
+    "Try reloading the page. You can do this by pressing F5 (on a PC), or Cmd + R (on a Mac).",
+    "If the page still does not load, try again later."
+  ] %}
+{% endif %}
+
+{% set pageTitle = title + " - " + applicationName %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">{{ title }}</h1>
 
-  <h1>{{ message }}</h1>
-  <h2>{{ status }}</h2>
-  <pre>{{ stack }}</pre>
+      <code>
+        Status code: {{ error.status }}
+        {% if error.status === 404 %}
+          - {{ error.message }}
+        {% endif %}
+      </code>
 
+      <div class="govuk-!-margin-top-8">
+        <ul class="govuk-list govuk-list--bullet">
+          {% for suggestion in suggestions %}
+            <li class="govuk-body-m">{{ suggestion }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {% if error.status !== 404 %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+      <div class="govuk-grid-column-full">
+        <code class="code-block">
+          <pre>{{ error.stack }}</pre>
+        </code>
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}

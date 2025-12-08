@@ -1,8 +1,10 @@
 import { Router } from 'express'
+import { NotFound } from 'http-errors'
 
 import type { Services } from '../services'
 import { createNavigation, htmlBlocks } from '../utils/journeyUtils'
 import demo from './demo'
+import ErrorController from './error/ErrorController'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -22,6 +24,10 @@ export default function routes(services: Services): Router {
   })
 
   router.use(demo(services))
+
+  const errorController = new ErrorController()
+  router.use((req, res, next) => next(new NotFound(req.path)))
+  router.use(errorController.any)
 
   return router
 }

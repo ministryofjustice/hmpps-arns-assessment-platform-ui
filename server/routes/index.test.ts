@@ -26,3 +26,38 @@ describe('GET /', () => {
       })
   })
 })
+
+describe('Error handling', () => {
+  it('should render 400 page for bad requests', () => {
+    return request(app)
+      .get('/test/bad-request')
+      .expect('Content-Type', /html/)
+      .expect(400)
+      .expect(res => {
+        expect(res.text).toContain('There was an issue with your request')
+        expect(res.text).toContain('Try performing your request again.')
+      })
+  })
+
+  it('should render 403 page for forbidden requests', () => {
+    return request(app)
+      .get('/test/forbidden')
+      .expect('Content-Type', /html/)
+      .expect(403)
+      .expect(res => {
+        expect(res.text).toContain('There was an issue with your request')
+        expect(res.text).toContain('Try performing your request again.')
+      })
+  })
+
+  it('should render 404 page for non-existent routes', () => {
+    return request(app)
+      .get('/non-existent-route')
+      .expect('Content-Type', /html/)
+      .expect(404)
+      .expect(res => {
+        expect(res.text).toContain('Page not found')
+        expect(res.text).toContain('If you typed the web address, check it is correct.')
+      })
+  })
+})

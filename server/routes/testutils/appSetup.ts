@@ -1,10 +1,10 @@
 import express, { Express } from 'express'
-import { NotFound } from 'http-errors'
+import { BadRequest, Forbidden, NotFound } from 'http-errors'
 
 import { randomUUID } from 'crypto'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
-import errorHandler from '../../errorHandler'
+import ErrorController from '../error/ErrorController'
 import type { Services } from '../../services'
 import AuditService from '../../services/auditService'
 import AssessmentService from '../../services/assessmentService'
@@ -27,7 +27,7 @@ export const user: HmppsUser = {
 
 export const flashProvider = jest.fn()
 
-function appSetup(services: Services, production: boolean, userSupplier: () => HmppsUser): Express {
+function appSetup(services: Services, userSupplier: () => HmppsUser): Express {
   const app = express()
 
   app.set('view engine', 'njk')
@@ -56,24 +56,30 @@ function appSetup(services: Services, production: boolean, userSupplier: () => H
 
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+
+  app.get('/test/bad-request', () => {
+    throw new BadRequest('Invalid input')
+  })
+  app.get('/test/forbidden', () => {
+    throw new Forbidden('Access forbidden')
+  })
+
   app.use(routes(services))
   app.use((req, res, next) => next(new NotFound()))
-  app.use(errorHandler(production))
+  app.use(new ErrorController().any)
 
   return app
 }
 
 export function appWithAllRoutes({
-  production = false,
   services = {
     auditService: new AuditService(null) as jest.Mocked<AuditService>,
     assessmentService: new AssessmentService(null) as jest.Mocked<AssessmentService>,
   },
   userSupplier = () => user,
 }: {
-  production?: boolean
   services?: Partial<Services>
   userSupplier?: () => HmppsUser
 }): Express {
-  return appSetup(services as Services, production, userSupplier)
+  return appSetup(services as Services, userSupplier)
 }
