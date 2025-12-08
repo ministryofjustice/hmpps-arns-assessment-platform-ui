@@ -102,8 +102,8 @@ describe('AssessmentService', () => {
         createdAt: '2025-02-11T00:00:00',
         updatedAt: '2025-02-11T00:00:00',
         answers: {
-          question1: {type: 'Single', value: 'answer1'},
-          question2: {type: 'Multi', values: ['answer2-a', 'answer2-b']},
+          question1: { type: 'Single', value: 'answer1' },
+          question2: { type: 'Multi', values: ['answer2-a', 'answer2-b'] },
         },
         properties: {},
         collections: [],
