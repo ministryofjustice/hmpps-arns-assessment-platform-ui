@@ -101,7 +101,10 @@ describe('AssessmentService', () => {
         formVersion: '1',
         createdAt: '2025-02-11T00:00:00',
         updatedAt: '2025-02-11T00:00:00',
-        answers: { question1: ['answer1'], question2: ['answer2'] },
+        answers: {
+          question1: {type: 'Single', value: 'answer1'},
+          question2: {type: 'Multi', values: ['answer2-a', 'answer2-b']},
+        },
         properties: {},
         collections: [],
         collaborators: [mockUser],
