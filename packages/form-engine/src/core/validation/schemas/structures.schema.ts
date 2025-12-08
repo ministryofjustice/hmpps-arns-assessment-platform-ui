@@ -96,7 +96,7 @@ export const SkipValidationTransitionSchema = z.object({
   validate: z.literal(false),
   onAlways: z.object({
     effects: z.array(EffectFunctionExprSchema).optional(),
-    next: z.array(NextExprSchema),
+    next: z.array(NextExprSchema).optional(),
   }),
 })
 
@@ -115,11 +115,11 @@ export const ValidatingTransitionSchema = z.object({
     .optional(),
   onValid: z.object({
     effects: z.array(EffectFunctionExprSchema).optional(),
-    next: z.array(NextExprSchema),
+    next: z.array(NextExprSchema).optional(),
   }),
   onInvalid: z.object({
     effects: z.array(EffectFunctionExprSchema).optional(),
-    next: z.array(NextExprSchema),
+    next: z.array(NextExprSchema).optional(),
   }),
 })
 
