@@ -9,4 +9,5 @@ $govuk-page-width: $moj-page-width;
 
 @import './components/header-bar';
 @import './components/form';
+@import "./components/code-block";
 @import './overrides/local';
