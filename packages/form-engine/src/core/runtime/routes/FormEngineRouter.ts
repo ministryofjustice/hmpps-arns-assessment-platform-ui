@@ -138,12 +138,44 @@ export default class FormEngineRouter<TRouter> {
         const newRouter = this.dependencies.frameworkAdapter.createRouter()
         this.dependencies.frameworkAdapter.mountRouter(currentRouter, journeyPath, newRouter)
         this.journeyRouters.set(basePath, newRouter)
+
+        this.mountJourneyRedirectHandler(newRouter, basePath, journey)
       }
 
       currentRouter = this.journeyRouters.get(basePath)!
     })
 
     return { router: currentRouter, basePath }
+  }
+
+  /**
+   * Mount a redirect handler at the journey root path
+   */
+  private mountJourneyRedirectHandler(router: TRouter, basePath: string, journey: JourneyASTNode): void {
+    const entryPath = this.resolveJourneyEntryPath(basePath, journey)
+
+    if (entryPath) {
+      this.dependencies.frameworkAdapter.registerRedirect(router, '/', entryPath)
+      this.dependencies.logger.debug(`[FormEngineRouter]: Registered redirect handler: ${basePath}`)
+    }
+  }
+
+  /**
+   * Resolve the entry path for a journey
+   * Priority: 1) entryPath property, 2) first step with isEntryPoint: true
+   */
+  private resolveJourneyEntryPath(basePath: string, journey: JourneyASTNode): string | null {
+    if (journey.properties.entryPath) {
+      return basePath + journey.properties.entryPath
+    }
+
+    const entryPointStep = journey.properties.steps?.find(step => step.properties.isEntryPoint)
+
+    if (entryPointStep) {
+      return basePath + entryPointStep.properties.path
+    }
+
+    return null
   }
 
   /**
