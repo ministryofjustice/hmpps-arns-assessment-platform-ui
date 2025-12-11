@@ -1,0 +1,20 @@
+{%- from "partials/macros/nav-list-item/macro.njk" import navListItem -%}
+
+{% macro collapsibleNav(params) %}
+  {% for journey in params.navigation %}
+    {% if not journey.hiddenFromNavigation %}
+      <moj-collapsible-nav open-class="app-vertical-nav__item--open" id="journey-nav-{{ loop.index }}">
+        <nav class="app-vertical-nav" aria-labelledby="journey-nav-title-{{ loop.index }}">
+          <h2 class="app-vertical-nav__header" id="journey-nav-title-{{ loop.index }}">{{ journey.title }}</h2>
+          <ul class="app-vertical-nav__list">
+            {% for step in journey.children %}
+              {{ navListItem({
+                item: step | mapNavItem
+              }) }}
+            {% endfor %}
+          </ul>
+        </nav>
+      </moj-collapsible-nav>
+    {% endif %}
+  {% endfor %}
+{% endmacro %}

@@ -20,13 +20,12 @@ import setUpWebSession from './middleware/setUpWebSession'
 import routes from './routes'
 import type { Services } from './services'
 import logger from '../logger'
-import ExampleFormShowcase from './forms/example-form'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
   const formEngine = new FormEngine({
     logger,
-  }).registerForm(ExampleFormShowcase)
+  })
 
   app.set('json spaces', 2)
   app.set('trust proxy', true)
