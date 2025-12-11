@@ -41,8 +41,8 @@ describe('AssessmentService', () => {
   describe('command', () => {
     const command: CreateAssessmentCommand = {
       type: 'CreateAssessmentCommand',
+      assessmentType: 'TEST',
       formVersion: '1',
-      properties: {},
       user: mockUser,
     }
 
@@ -86,7 +86,7 @@ describe('AssessmentService', () => {
     const query: AssessmentVersionQuery = {
       type: 'AssessmentVersionQuery',
       user: mockUser,
-      assessmentUuid: 'assessment-uuid-123',
+      assessmentIdentifier: { type: 'UUID', uuid: 'assessment-uuid-123' },
     }
 
     it('should execute a query and return its result', async () => {
@@ -98,6 +98,7 @@ describe('AssessmentService', () => {
         type: 'AssessmentVersionQueryResult',
         assessmentUuid: '',
         aggregateUuid: '',
+        assessmentType: '',
         formVersion: '1',
         createdAt: '2025-02-11T00:00:00',
         updatedAt: '2025-02-11T00:00:00',
@@ -108,6 +109,7 @@ describe('AssessmentService', () => {
         properties: {},
         collections: [],
         collaborators: [mockUser],
+        identifiers: {},
       }
 
       const mockResponse: QueriesResponse = {
