@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import crypto from 'crypto'
 import type { Services } from '../../services'
 
 export default function routes({ assessmentService }: Services): Router {
@@ -15,13 +16,13 @@ export default function routes({ assessmentService }: Services): Router {
 
       const sentencePlan = await assessmentService.query<'AssessmentVersion'>({
         type: 'AssessmentVersionQuery',
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
       const timelineResult = await assessmentService.query<'AssessmentTimeline'>({
         type: 'AssessmentTimelineQuery',
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -30,7 +31,7 @@ export default function routes({ assessmentService }: Services): Router {
           assessmentService.query<'AssessmentVersion'>({
             type: 'AssessmentVersionQuery',
             timestamp: item.createdAt,
-            assessmentUuid,
+            assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
             user,
           }),
         ),
@@ -43,7 +44,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionQuery',
         collectionUuid: goalsUuid,
         depth: 0,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -51,7 +52,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionQuery',
         collectionUuid: goalsUuid,
         depth: 1,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -59,7 +60,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionItemQuery',
         collectionItemUuid: goalUuid,
         depth: 0,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -67,14 +68,14 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionItemQuery',
         collectionItemUuid: goalUuid,
         depth: 1,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
       const stepsTimelineResult = await assessmentService.query<'AssessmentTimeline'>({
         type: 'AssessmentTimelineQuery',
         timelineTypes: ['STEP_ADDED'],
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -83,7 +84,7 @@ export default function routes({ assessmentService }: Services): Router {
         collectionUuid: goalsUuid,
         depth: 1,
         timestamp: stepsTimelineResult.timeline[0].createdAt,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -92,14 +93,14 @@ export default function routes({ assessmentService }: Services): Router {
         collectionItemUuid: goalUuid,
         depth: 1,
         timestamp: stepsTimelineResult.timeline[0].createdAt,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
       const timelinePointInTime = await assessmentService.query<'AssessmentTimeline'>({
         type: 'AssessmentTimelineQuery',
         timestamp: timelineResult.timeline[1].createdAt,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -136,9 +137,12 @@ export default function routes({ assessmentService }: Services): Router {
         }
       }
 
+      const crn = crypto.randomUUID().toString()
+
       // Create a new Plan
       const { assessmentUuid } = await assessmentService.command<'CreateAssessment'>({
         type: 'CreateAssessmentCommand',
+        assessmentType: 'SENTENCE_PLAN',
         formVersion: '1',
         properties: {
           PUBLISHED_STATE: { type: 'Single', value: 'UNPUBLISHED' },
@@ -146,6 +150,9 @@ export default function routes({ assessmentService }: Services): Router {
           AGREEMENT_STATUS: { type: 'Single', value: 'DRAFT' },
           AGREEMENT_DATE: { type: 'Single', value: '' },
           AGREEMENT_NOTES: { type: 'Single', value: '' },
+        },
+        identifiers: {
+          CRN: crn,
         },
         user,
       })
@@ -375,13 +382,19 @@ export default function routes({ assessmentService }: Services): Router {
 
       const sentencePlan = await assessmentService.query<'AssessmentVersion'>({
         type: 'AssessmentVersionQuery',
-        assessmentUuid,
+        // assessmentIdentifier: {type: 'UUID', uuid: assessmentUuid},
+        assessmentIdentifier: {
+          type: 'EXTERNAL',
+          identifierType: 'CRN',
+          identifier: crn,
+          assessmentType: 'SENTENCE_PLAN',
+        },
         user,
       })
 
       const timelineResult = await assessmentService.query<'AssessmentTimeline'>({
         type: 'AssessmentTimelineQuery',
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -390,7 +403,7 @@ export default function routes({ assessmentService }: Services): Router {
           assessmentService.query<'AssessmentVersion'>({
             type: 'AssessmentVersionQuery',
             timestamp: item.createdAt,
-            assessmentUuid,
+            assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
             user,
           }),
         ),
@@ -400,7 +413,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionQuery',
         collectionUuid: goalsCollectionUuid,
         depth: 0,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -408,7 +421,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionQuery',
         collectionUuid: goalsCollectionUuid,
         depth: 1,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -416,7 +429,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionItemQuery',
         collectionItemUuid: goalUuid,
         depth: 0,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -424,14 +437,14 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionItemQuery',
         collectionItemUuid: goalUuid,
         depth: 1,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
       const stepsTimelineResult = await assessmentService.query<'AssessmentTimeline'>({
         type: 'AssessmentTimelineQuery',
         timelineTypes: ['STEP_ADDED'],
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -440,7 +453,7 @@ export default function routes({ assessmentService }: Services): Router {
         collectionUuid: goalsCollectionUuid,
         depth: 1,
         timestamp: stepsTimelineResult.timeline[0].createdAt,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -449,14 +462,14 @@ export default function routes({ assessmentService }: Services): Router {
         collectionItemUuid: goalUuid,
         depth: 1,
         timestamp: stepsTimelineResult.timeline[0].createdAt,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
       const timelinePointInTime = await assessmentService.query<'AssessmentTimeline'>({
         type: 'AssessmentTimelineQuery',
         timestamp: timelineResult.timeline[1].createdAt,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
