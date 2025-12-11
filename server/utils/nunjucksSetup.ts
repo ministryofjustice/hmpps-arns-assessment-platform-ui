@@ -2,6 +2,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
+import { getCorrelationContext } from 'applicationinsights'
 import { initialiseName } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -55,6 +56,13 @@ export default function nunjucksSetup(app?: express.Express) {
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('json', (obj, spaces = 2) => JSON.stringify(obj, null, spaces))
+
+  // Global function to get the current request's operation ID for support purposes
+  njkEnv.addGlobal('getRequestId', () => {
+    const context = getCorrelationContext()
+
+    return context?.operation?.id ?? 'unavailable'
+  })
 
   // Map navigation data structure (path → url) for nav-list-item macro
   interface NavItem {
