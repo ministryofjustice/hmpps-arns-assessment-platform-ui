@@ -15,7 +15,8 @@
     "typeRoots": ["./server/@types", "./node_modules/@types", "./packages/form-engine/@types"],
     "paths": {
       "@form-engine/*": ["./packages/form-engine/src/*"],
-      "@form-engine-govuk-components/*": ["./packages/form-engine-govuk-components/src/*"]
+      "@form-engine-govuk-components/*": ["./packages/form-engine-govuk-components/src/*"],
+      "@form-engine-express-nunjucks/*": ["./packages/form-engine-express-nunjucks/src/*"]
     }
   },
   "exclude": ["node_modules", "assets/**/*.js", "integration_tests", "dist", "esbuild", "eslint.config.mjs"],
