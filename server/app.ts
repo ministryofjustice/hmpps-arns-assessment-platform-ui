@@ -4,7 +4,6 @@ import createError from 'http-errors'
 
 import FormEngine from '@form-engine/core/FormEngine'
 import nunjucksSetup from './utils/nunjucksSetup'
-import errorHandler from './errorHandler'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 
@@ -20,6 +19,7 @@ import setUpWebSession from './middleware/setUpWebSession'
 import routes from './routes'
 import type { Services } from './services'
 import logger from '../logger'
+import errorHandler from './routes/error/errorHandler'
 
 export default function createApp(services: Services): express.Application {
   const app = express()

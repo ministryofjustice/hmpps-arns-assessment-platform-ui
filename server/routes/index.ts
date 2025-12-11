@@ -1,7 +1,6 @@
 import { Router } from 'express'
 
 import type { Services } from '../services'
-import { createNavigation, htmlBlocks } from '../utils/journeyUtils'
 import demo from './demo'
 
 export default function routes(services: Services): Router {
@@ -13,11 +12,8 @@ export default function routes(services: Services): Router {
       timeStyle: 'long',
     })
 
-    res.locals.form = { backLink: '/', navigation: createNavigation() }
-
     return res.render('pages/index', {
       currentTime,
-      htmlBlocks,
     })
   })
 

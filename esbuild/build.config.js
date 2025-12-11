@@ -20,10 +20,12 @@ const getBuildConfig = () => {
         {
           from: path.join(cwd, 'server/**/*.njk'),
           to: path.join(cwd, 'dist/server'),
+          watch: isWatchMode,
         },
         {
           from: path.join(cwd, 'packages/**/*.njk'),
           to: path.join(cwd, 'dist/packages'),
+          watch: isWatchMode,
         },
       ],
     },

@@ -21,7 +21,6 @@ describe('GET /', () => {
       .expect('Content-Type', /html/)
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('ROSH Screening')
         expect(res.text).toContain('This site is under construction...')
       })
   })

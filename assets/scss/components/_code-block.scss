@@ -1,0 +1,6 @@
+.code-block {
+  display: block;
+  overflow: auto;
+  background-color: govuk-colour('light-grey');
+  @include govuk-responsive-padding(4);
+}
