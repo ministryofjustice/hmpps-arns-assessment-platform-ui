@@ -6,6 +6,7 @@ const config = {
 
   moduleNameMapper: {
     '^@form-engine/(.*)$': '<rootDir>/packages/form-engine/src/$1',
+    '^@form-engine-govuk-components/(.*)$': '<rootDir>/packages/form-engine-govuk-components/src/$1',
   },
 
   // keep your existing bits:
