@@ -1,5 +1,5 @@
 import { buildComponent } from '@form-engine/registry/utils/buildComponent'
-import { ConditionalString, BlockDefinition } from '../../../../form/types/structures.type'
+import { ConditionalString, BlockDefinition } from '../../form/types/structures.type'
 
 /**
  * HTML component for rendering raw HTML content.

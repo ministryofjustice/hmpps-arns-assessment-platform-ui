@@ -1,6 +1,6 @@
 import { collectionBlock, EvaluatedCollectionBlock } from './collectionBlock'
-import { StructureType } from '../../../../form/types/enums'
-import { RenderedBlock } from '../../../../form/types/structures.type'
+import { StructureType } from '../../form/types/enums'
+import { RenderedBlock } from '../../form/types/structures.type'
 
 describe('collectionBlock component', () => {
   const mockEvaluatedBlock = (overrides?: Partial<EvaluatedCollectionBlock>): EvaluatedCollectionBlock =>
@@ -29,7 +29,7 @@ describe('collectionBlock component', () => {
     })
 
     // Act
-    const result = await collectionBlock.spec.render(block as any)
+    const result = await collectionBlock.render(block as any)
 
     // Assert
     expect(result).toBe('<div>Item 1</div><div>Item 2</div><div>Item 3</div>')
@@ -42,7 +42,7 @@ describe('collectionBlock component', () => {
     })
 
     // Act
-    const result = await collectionBlock.spec.render(block as any)
+    const result = await collectionBlock.render(block as any)
 
     // Assert
     expect(result).toBe('')
@@ -56,7 +56,7 @@ describe('collectionBlock component', () => {
     })
 
     // Act
-    const result = await collectionBlock.spec.render(block as any)
+    const result = await collectionBlock.render(block as any)
 
     // Assert
     expect(result).toBe('<div class="collection-wrapper custom-class"><div>Item 1</div><div>Item 2</div></div>')
@@ -73,7 +73,7 @@ describe('collectionBlock component', () => {
     })
 
     // Act
-    const result = await collectionBlock.spec.render(block as any)
+    const result = await collectionBlock.render(block as any)
 
     // Assert
     expect(result).toBe('<div data-collection="items" id="item-list"><div>Item 1</div></div>')
@@ -91,7 +91,7 @@ describe('collectionBlock component', () => {
     })
 
     // Act
-    const result = await collectionBlock.spec.render(block as any)
+    const result = await collectionBlock.render(block as any)
 
     // Assert
     expect(result).toBe(
@@ -107,7 +107,7 @@ describe('collectionBlock component', () => {
     })
 
     // Act
-    const result = await collectionBlock.spec.render(block as any)
+    const result = await collectionBlock.render(block as any)
 
     // Assert
     expect(result).toBe('<div class="empty-collection"></div>')
@@ -122,7 +122,7 @@ describe('collectionBlock component', () => {
     })
 
     // Act
-    const result = await collectionBlock.spec.render(block as any)
+    const result = await collectionBlock.render(block as any)
 
     // Assert
     expect(result).toBe(`${html1}${html2}`)
@@ -130,7 +130,7 @@ describe('collectionBlock component', () => {
 
   it('should have the correct variant', () => {
     // Assert
-    expect(collectionBlock.spec.variant).toBe('collection-block')
+    expect(collectionBlock.variant).toBe('collection-block')
   })
 
   it('should handle undefined collection', async () => {
@@ -140,7 +140,7 @@ describe('collectionBlock component', () => {
     })
 
     // Act
-    const result = await collectionBlock.spec.render(block as any)
+    const result = await collectionBlock.render(block as any)
 
     // Assert
     expect(result).toBe('')

@@ -1,6 +1,6 @@
 import { html, HtmlBlock } from './html'
-import { EvaluatedBlock } from '../../../../form/types/structures.type'
-import { StructureType } from '../../../../form/types/enums'
+import { EvaluatedBlock } from '../../form/types/structures.type'
+import { StructureType } from '../../form/types/enums'
 
 describe('html component', () => {
   const mockBlock = (overrides?: Partial<HtmlBlock>): EvaluatedBlock<HtmlBlock> =>
@@ -16,7 +16,7 @@ describe('html component', () => {
       content: '<div><p>Test content</p></div>',
     })
 
-    const result = await html.spec.render(block)
+    const result = await html.render(block)
 
     expect(result).toBe('<div><p>Test content</p></div>')
   })
@@ -27,7 +27,7 @@ describe('html component', () => {
       classes: 'custom-class',
     })
 
-    const result = await html.spec.render(block)
+    const result = await html.render(block)
 
     expect(result).toBe('<div class="custom-class"><p>Test content</p></div>')
   })
@@ -41,7 +41,7 @@ describe('html component', () => {
       },
     })
 
-    const result = await html.spec.render(block)
+    const result = await html.render(block)
 
     expect(result).toBe('<div data-test="value" id="test-id"><p>Test content</p></div>')
   })
@@ -55,7 +55,7 @@ describe('html component', () => {
       },
     })
 
-    const result = await html.spec.render(block)
+    const result = await html.render(block)
 
     expect(result).toBe('<div class="custom-class" data-test="value"><p>Test content</p></div>')
   })
@@ -71,7 +71,7 @@ describe('html component', () => {
       `,
     })
 
-    const result = await html.spec.render(block)
+    const result = await html.render(block)
 
     expect(result).toBe(`
         <div>
@@ -83,6 +83,6 @@ describe('html component', () => {
   })
 
   it('should have the correct variant', () => {
-    expect(html.spec.variant).toBe('html')
+    expect(html.variant).toBe('html')
   })
 })

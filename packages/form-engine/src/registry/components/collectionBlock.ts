@@ -1,7 +1,7 @@
 import { buildComponent } from '@form-engine/registry/utils/buildComponent'
 import { CollectionExpr } from '@form-engine/form/types/expressions.type'
 import { StructureType } from '@form-engine/form/types/enums'
-import { BlockDefinition, ConditionalString, RenderedBlock } from '../../../../form/types/structures.type'
+import { BlockDefinition, ConditionalString, RenderedBlock } from '../../form/types/structures.type'
 
 /**
  * Collection block component for rendering repeated blocks based on a collection.
