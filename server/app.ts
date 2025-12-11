@@ -61,6 +61,7 @@ export default function createApp(services: Services): express.Application {
 
   const formEngine = new FormEngine({
     logger,
+    basePath: '/forms',
     frameworkAdapter: ExpressFrameworkAdapter.configure({
       nunjucksEnv,
       defaultTemplate: 'partials/form-step',
