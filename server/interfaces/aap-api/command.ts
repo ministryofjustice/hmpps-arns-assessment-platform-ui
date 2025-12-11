@@ -1,5 +1,6 @@
 import { User } from '../user'
 import { Answers, Properties, PropertyKeys, QuestionCodes } from './dataModel'
+import { Identifiers } from './identifier'
 
 interface CommandTimeline {
   type: string
@@ -15,8 +16,10 @@ export interface Command {
 
 export interface CreateAssessmentCommand {
   type: 'CreateAssessmentCommand'
+  assessmentType: string
+  identifiers?: Identifiers
   formVersion: string
-  properties: Properties
+  properties?: Properties
   timeline?: CommandTimeline
   user: User
 }
