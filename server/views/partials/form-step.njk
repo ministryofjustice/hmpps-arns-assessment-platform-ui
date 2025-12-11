@@ -1,0 +1,18 @@
+{%- extends "partials/layout-with-nav.njk" -%}
+
+{% block backLink %}
+  {% if step.backlink %}
+    <a href="{{ step.backlink }}" class="govuk-back-link">Back</a>
+  {% endif %}
+{% endblock %}
+
+{% block formContent %}
+  <form method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    <h1 class="govuk-heading-xl">{{ step.title }}</h1>
+
+    {% for block in blocks %}
+      {{ block | safe }}
+    {% endfor %}
+  </form>
+{% endblock %}

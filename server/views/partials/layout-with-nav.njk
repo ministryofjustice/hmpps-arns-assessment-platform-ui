@@ -1,0 +1,58 @@
+{%- extends "govuk/template.njk" -%}
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+{%- from "partials/macros/collapsible-nav/macro.njk" import collapsibleNav -%}
+
+{% set containerClasses = "govuk-width-container--full-width" %}
+{% set mainClasses = "govuk-main-wrapper--no-padding" %}
+
+{%- block head -%}
+  <link href="{{ '/assets/css/index.css' | assetMap }}" rel="stylesheet"/>
+{%- endblock -%}
+
+{% block pageTitle %}{{pageTitle | default(applicationName)}}{% endblock %}
+
+{% block header %}
+  {% include "./header.njk" %}
+{% endblock %}
+
+{% block bodyStart %}
+{% endblock %}
+
+{% block content %}
+<div class="app-layout">
+  {% if navigation and navigation.length %}
+    <div class="app-layout__sidebar">
+      {{ collapsibleNav({
+        navigation: navigation
+      }) }}
+    </div>
+  {% endif %}
+
+  <div class="app-layout__content">
+    {% block backLink %}{% endblock %}
+
+    {% if navigation and navigation.length %}
+      {% for journey in navigation %}
+        {% if journey.active %}
+          <div class="section-heading">
+            <div class="section-heading__heading">
+              <h2 class="govuk-body-l govuk-!-margin-0">{{ journey.title }}</h2>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {% block formContent %}{% endblock %}
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+  {% include "./support-widget.njk" %}
+  {{ super() }}
+{% endblock %}
+
+{%- block bodyEnd -%}
+  <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
+{%- endblock -%}
