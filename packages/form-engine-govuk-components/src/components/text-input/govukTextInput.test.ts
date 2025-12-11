@@ -1,6 +1,6 @@
+import { GovukComponentTestHelper } from '@form-engine-govuk-components/test-utils/GovukComponentTestHelper'
+import { setupComponentTest } from '@form-engine-govuk-components/test-utils/setupComponentTest'
 import { govukTextInput } from './govukTextInput'
-import { GovukComponentTestHelper } from '../../../../test-utils/govukComponentTestHelper'
-import { setupComponentTest } from '../../../../test-utils/componentTestHelper'
 
 jest.mock('nunjucks')
 

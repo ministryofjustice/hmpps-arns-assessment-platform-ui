@@ -1,6 +1,5 @@
-import nunjucks from 'nunjucks'
-import { buildComponent } from '@form-engine/registry/utils/buildComponent'
-import { ConditionalBoolean, ConditionalString, FieldBlockDefinition } from '../../../../form/types/structures.type'
+import { ConditionalBoolean, ConditionalString, FieldBlockDefinition } from '@form-engine/form/types/structures.type'
+import { buildNunjucksComponent } from '@form-engine-govuk-components/internal/buildNunjucksComponent'
 
 /**
  * GOV.UK Textarea Component
@@ -151,24 +150,27 @@ export interface GovukTextareaInput extends FieldBlockDefinition {
   attributes?: Record<string, any>
 }
 
-export const govukTextareaInput = buildComponent<GovukTextareaInput>('govukTextarea', async block => {
-  const params = {
-    id: block.id ?? block.code,
-    name: block.code,
-    spellcheck: block.spellcheck,
-    rows: block.rows || '5',
-    value: block.value,
-    disabled: block.disabled,
-    label: typeof block.label === 'object' ? block.label : { text: block.label },
-    hint: typeof block.hint === 'object' ? block.hint : { text: block.hint },
-    errorMessage: block.errors?.length && { text: block.errors[0].message },
-    formGroup: block.formGroup,
-    classes: block.classes,
-    autocomplete: block.autocomplete,
-    attributes: block.attributes,
-  }
+export const govukTextareaInput = buildNunjucksComponent<GovukTextareaInput>(
+  'govukTextarea',
+  async (block, nunjucksEnv) => {
+    const params = {
+      id: block.id ?? block.code,
+      name: block.code,
+      spellcheck: block.spellcheck,
+      rows: block.rows || '5',
+      value: block.value,
+      disabled: block.disabled,
+      label: typeof block.label === 'object' ? block.label : { text: block.label },
+      hint: typeof block.hint === 'object' ? block.hint : { text: block.hint },
+      errorMessage: block.errors?.length && { text: block.errors[0].message },
+      formGroup: block.formGroup,
+      classes: block.classes,
+      autocomplete: block.autocomplete,
+      attributes: block.attributes,
+    }
 
-  return nunjucks.render('govuk/components/textarea/template.njk', {
-    params,
-  })
-})
+    return nunjucksEnv.render('govuk/components/textarea/template.njk', {
+      params,
+    })
+  },
+)

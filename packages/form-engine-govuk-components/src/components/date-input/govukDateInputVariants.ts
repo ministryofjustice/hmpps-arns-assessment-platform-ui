@@ -1,11 +1,10 @@
-import nunjucks from 'nunjucks'
-import { buildComponent } from '@form-engine/registry/utils/buildComponent'
 import {
   ConditionalBoolean,
   ConditionalString,
   EvaluatedBlock,
   FieldBlockDefinition,
-} from '../../../../form/types/structures.type'
+} from '@form-engine/form/types/structures.type'
+import { buildNunjucksComponent } from '@form-engine-govuk-components/internal/buildNunjucksComponent'
 
 /**
  * Base interface for GOV.UK Date Input Components
@@ -334,33 +333,36 @@ function buildParams(block: EvaluatedBlock<GovUKDateInputBase>, items: ReturnTyp
  * Full date input component (YYYY-MM-DD)
  * Renders day, month, and year fields
  */
-export const govukDateInputFull = buildComponent<GovUKDateInputFull>('govukDateInputFull', async block => {
-  const dateParts = parseISOToDateParts(block.value as string)
-  const errorDetails = block.errors?.[0]?.details
+export const govukDateInputFull = buildNunjucksComponent<GovUKDateInputFull>(
+  'govukDateInputFull',
+  async (block, nunjucksEnv) => {
+    const dateParts = parseISOToDateParts(block.value as string)
+    const errorDetails = block.errors?.[0]?.details
 
-  const items = buildItems(
-    [
-      { name: 'day', label: 'Day', classes: 'govuk-input--width-2' },
-      { name: 'month', label: 'Month', classes: 'govuk-input--width-2' },
-      { name: 'year', label: 'Year', classes: 'govuk-input--width-4' },
-    ],
-    block,
-    dateParts,
-    errorDetails,
-  )
+    const items = buildItems(
+      [
+        { name: 'day', label: 'Day', classes: 'govuk-input--width-2' },
+        { name: 'month', label: 'Month', classes: 'govuk-input--width-2' },
+        { name: 'year', label: 'Year', classes: 'govuk-input--width-4' },
+      ],
+      block,
+      dateParts,
+      errorDetails,
+    )
 
-  const params = buildParams(block, items)
+    const params = buildParams(block, items)
 
-  return nunjucks.render('govuk/components/date-input/template.njk', { params })
-})
+    return nunjucksEnv.render('govuk/components/date-input/template.njk', { params })
+  },
+)
 
 /**
  * Year and month input component (YYYY-MM)
  * Renders only month and year fields
  */
-export const govukDateInputYearMonth = buildComponent<GovUKDateInputYearMonth>(
+export const govukDateInputYearMonth = buildNunjucksComponent<GovUKDateInputYearMonth>(
   'govukDateInputYearMonth',
-  async block => {
+  async (block, nunjucksEnv) => {
     const dateParts = parseISOToDateParts(block.value as string)
     const errorDetails = block.errors?.[0]?.details
 
@@ -376,7 +378,7 @@ export const govukDateInputYearMonth = buildComponent<GovUKDateInputYearMonth>(
 
     const params = buildParams(block, items)
 
-    return nunjucks.render('govuk/components/date-input/template.njk', { params })
+    return nunjucksEnv.render('govuk/components/date-input/template.njk', { params })
   },
 )
 
@@ -384,21 +386,24 @@ export const govukDateInputYearMonth = buildComponent<GovUKDateInputYearMonth>(
  * Month and day input component (MM-DD)
  * Renders only month and day fields for recurring dates
  */
-export const govukDateInputMonthDay = buildComponent<GovUKDateInputMonthDay>('govukDateInputMonthDay', async block => {
-  const dateParts = parseISOToDateParts(block.value as string)
-  const errorDetails = block.errors?.[0]?.details
+export const govukDateInputMonthDay = buildNunjucksComponent<GovUKDateInputMonthDay>(
+  'govukDateInputMonthDay',
+  async (block, nunjucksEnv) => {
+    const dateParts = parseISOToDateParts(block.value as string)
+    const errorDetails = block.errors?.[0]?.details
 
-  const items = buildItems(
-    [
-      { name: 'day', label: 'Day', classes: 'govuk-input--width-2' },
-      { name: 'month', label: 'Month', classes: 'govuk-input--width-2' },
-    ],
-    block,
-    dateParts,
-    errorDetails,
-  )
+    const items = buildItems(
+      [
+        { name: 'day', label: 'Day', classes: 'govuk-input--width-2' },
+        { name: 'month', label: 'Month', classes: 'govuk-input--width-2' },
+      ],
+      block,
+      dateParts,
+      errorDetails,
+    )
 
-  const params = buildParams(block, items)
+    const params = buildParams(block, items)
 
-  return nunjucks.render('govuk/components/date-input/template.njk', { params })
-})
+    return nunjucksEnv.render('govuk/components/date-input/template.njk', { params })
+  },
+)

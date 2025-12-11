@@ -1,13 +1,12 @@
-import nunjucks from 'nunjucks'
-import { buildComponent } from '@form-engine/registry/utils/buildComponent'
 import {
   BlockDefinition,
   ConditionalBoolean,
   ConditionalString,
   EvaluatedBlock,
   FieldBlockDefinition,
-} from '../../../../form/types/structures.type'
-import { FunctionExpr } from '../../../../form/types/expressions.type'
+} from '@form-engine/form/types/structures.type'
+import { FunctionExpr } from '@form-engine/form/types/expressions.type'
+import { buildNunjucksComponent } from '@form-engine-govuk-components/internal/buildNunjucksComponent'
 
 /**
  * GOV.UK Checkbox Input Component
@@ -290,29 +289,32 @@ interface GovUKCheckboxInputDivider {
   divider: ConditionalString
 }
 
-export const govukCheckboxInput = buildComponent<GovUKCheckboxInput>('govukCheckboxInput', async block => {
-  const items = block.items.map(option => makeOption(option, block.value))
+export const govukCheckboxInput = buildNunjucksComponent<GovUKCheckboxInput>(
+  'govukCheckboxInput',
+  async (block, nunjucksEnv) => {
+    const items = block.items.map(option => makeOption(option, block.value))
 
-  const params = {
-    fieldset: block.fieldset || {
-      legend: {
-        text: block.label,
+    const params = {
+      fieldset: block.fieldset || {
+        legend: {
+          text: block.label,
+        },
       },
-    },
-    idPrefix: block.idPrefix || block.code,
-    name: block.name || block.code,
-    formGroup: block.formGroup,
-    hint: typeof block.hint === 'object' ? block.hint : { text: block.hint },
-    items,
-    classes: block.classes,
-    attributes: block.attributes,
-    errorMessage: block.errors?.length && { text: block.errors[0].message },
-  }
+      idPrefix: block.idPrefix || block.code,
+      name: block.name || block.code,
+      formGroup: block.formGroup,
+      hint: typeof block.hint === 'object' ? block.hint : { text: block.hint },
+      items,
+      classes: block.classes,
+      attributes: block.attributes,
+      errorMessage: block.errors?.length && { text: block.errors[0].message },
+    }
 
-  return nunjucks.render('govuk/components/checkboxes/template.njk', {
-    params,
-  })
-})
+    return nunjucksEnv.render('govuk/components/checkboxes/template.njk', {
+      params,
+    })
+  },
+)
 
 const makeOption = (option: EvaluatedBlock<GovUKCheckboxInputItem | GovUKCheckboxInputDivider>, blockValue?: any) => {
   if (isCheckboxDivider(option)) {

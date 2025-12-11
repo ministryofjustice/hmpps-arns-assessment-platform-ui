@@ -1,6 +1,5 @@
-import nunjucks from 'nunjucks'
 import { ConditionalBoolean, ConditionalString, FieldBlockDefinition } from '@form-engine/form/types/structures.type'
-import { buildComponent } from '@form-engine/registry/utils/buildComponent'
+import { buildNunjucksComponent } from '@form-engine-govuk-components/internal/buildNunjucksComponent'
 
 /**
  * GOV.UK Text Input Component
@@ -238,7 +237,7 @@ export interface GovUKTextInput extends FieldBlockDefinition {
   attributes?: Record<string, any>
 }
 
-export const govukTextInput = buildComponent<GovUKTextInput>('govukTextInput', async block => {
+export const govukTextInput = buildNunjucksComponent<GovUKTextInput>('govukTextInput', async (block, nunjucksEnv) => {
   const params = {
     id: block.id ?? block.code,
     name: block.code,
@@ -261,7 +260,7 @@ export const govukTextInput = buildComponent<GovUKTextInput>('govukTextInput', a
     errorMessage: block.errors?.length && { text: block.errors[0].message },
   }
 
-  return nunjucks.render('govuk/components/input/template.njk', {
+  return nunjucksEnv.render('govuk/components/input/template.njk', {
     params,
   })
 })

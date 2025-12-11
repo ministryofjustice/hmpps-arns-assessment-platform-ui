@@ -1,11 +1,10 @@
-import nunjucks from 'nunjucks'
-import { buildComponent } from '@form-engine/registry/utils/buildComponent'
 import {
   ConditionalBoolean,
   ConditionalNumber,
   ConditionalString,
   FieldBlockDefinition,
-} from '../../../../form/types/structures.type'
+} from '@form-engine/form/types/structures.type'
+import { buildNunjucksComponent } from '@form-engine-govuk-components/internal/buildNunjucksComponent'
 
 /**
  * GOV.UK Character Count Component
@@ -231,35 +230,38 @@ export interface GovUKCharacterCount extends FieldBlockDefinition {
   }
 }
 
-export const govukCharacterCount = buildComponent<GovUKCharacterCount>('govukCharacterCount', async block => {
-  const id = block.id ?? block.code
+export const govukCharacterCount = buildNunjucksComponent<GovUKCharacterCount>(
+  'govukCharacterCount',
+  async (block, nunjucksEnv) => {
+    const id = block.id ?? block.code
 
-  const params = {
-    id,
-    name: block.code,
-    rows: block.rows || '5',
-    value: block.value,
-    maxlength: block.maxWords ? undefined : block.maxLength,
-    maxwords: block.maxWords,
-    threshold: block.threshold,
-    label: typeof block.label === 'object' ? block.label : { text: block.label },
-    hint: typeof block.hint === 'object' ? block.hint : { text: block.hint },
-    errorMessage: block.errors?.length ? { text: block.errors[0].message } : undefined,
-    formGroup: block.formGroup,
-    classes: block.classes,
-    attributes: block.attributes,
-    spellcheck: block.spellcheck,
-    countMessage: block.countMessage,
-    textareaDescriptionText: block.textareaDescriptionText,
-    charactersUnderLimitText: block.charactersUnderLimitText,
-    charactersAtLimitText: block.charactersAtLimitText,
-    charactersOverLimitText: block.charactersOverLimitText,
-    wordsUnderLimitText: block.wordsUnderLimitText,
-    wordsAtLimitText: block.wordsAtLimitText,
-    wordsOverLimitText: block.wordsOverLimitText,
-  }
+    const params = {
+      id,
+      name: block.code,
+      rows: block.rows || '5',
+      value: block.value,
+      maxlength: block.maxWords ? undefined : block.maxLength,
+      maxwords: block.maxWords,
+      threshold: block.threshold,
+      label: typeof block.label === 'object' ? block.label : { text: block.label },
+      hint: typeof block.hint === 'object' ? block.hint : { text: block.hint },
+      errorMessage: block.errors?.length ? { text: block.errors[0].message } : undefined,
+      formGroup: block.formGroup,
+      classes: block.classes,
+      attributes: block.attributes,
+      spellcheck: block.spellcheck,
+      countMessage: block.countMessage,
+      textareaDescriptionText: block.textareaDescriptionText,
+      charactersUnderLimitText: block.charactersUnderLimitText,
+      charactersAtLimitText: block.charactersAtLimitText,
+      charactersOverLimitText: block.charactersOverLimitText,
+      wordsUnderLimitText: block.wordsUnderLimitText,
+      wordsAtLimitText: block.wordsAtLimitText,
+      wordsOverLimitText: block.wordsOverLimitText,
+    }
 
-  return nunjucks.render('govuk/components/character-count/template.njk', {
-    params,
-  })
-})
+    return nunjucksEnv.render('govuk/components/character-count/template.njk', {
+      params,
+    })
+  },
+)

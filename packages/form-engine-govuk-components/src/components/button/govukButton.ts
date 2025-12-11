@@ -1,11 +1,11 @@
-import nunjucks from 'nunjucks'
-import { buildComponent } from '@form-engine/registry/utils/buildComponent'
+import type nunjucks from 'nunjucks'
+import { buildNunjucksComponent } from '@form-engine-govuk-components/internal/buildNunjucksComponent'
 import {
+  BlockDefinition,
   ConditionalBoolean,
   ConditionalString,
-  BlockDefinition,
   EvaluatedBlock,
-} from '../../../../form/types/structures.type'
+} from '@form-engine/form/types/structures.type'
 
 /**
  * Base interface for GOV.UK Button components.
@@ -90,7 +90,7 @@ export interface GovUKLinkButton extends GovUKButtonBase {
  * Shared renderer function for both button types.
  * Determines the appropriate element type and parameters based on the variant.
  */
-async function buttonRenderer(block: EvaluatedBlock<GovUKButton | GovUKLinkButton>) {
+async function buttonRenderer(block: EvaluatedBlock<GovUKButton | GovUKLinkButton>, nunjucksEnv: nunjucks.Environment) {
   let params: Record<string, any> = {
     id: block.id,
     text: block.html ? undefined : block.text,
@@ -119,12 +119,12 @@ async function buttonRenderer(block: EvaluatedBlock<GovUKButton | GovUKLinkButto
     }
   }
 
-  return nunjucks.render('govuk/components/button/template.njk', { params })
+  return nunjucksEnv.render('govuk/components/button/template.njk', { params })
 }
 
-export const govukButton = buildComponent<GovUKButton>('govukButton', buttonRenderer)
+export const govukButton = buildNunjucksComponent<GovUKButton>('govukButton', buttonRenderer)
 
-export const govukLinkButton = buildComponent<GovUKLinkButton>('govukLinkButton', buttonRenderer)
+export const govukLinkButton = buildNunjucksComponent<GovUKLinkButton>('govukLinkButton', buttonRenderer)
 
 function isLinkButton(block: EvaluatedBlock<GovUKButton | GovUKLinkButton>): block is EvaluatedBlock<GovUKLinkButton> {
   return 'href' in block && block.href !== undefined
