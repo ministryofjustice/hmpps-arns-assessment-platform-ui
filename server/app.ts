@@ -22,6 +22,11 @@ import setUpWebSession from './middleware/setUpWebSession'
 import routes from './routes'
 import type { Services } from './services'
 import logger from '../logger'
+import foodBusinessRegistrationJourney from './forms/food-business-registration'
+import aapStandupDemoJourney from './forms/aap-standup-demo'
+import { createFoodBusinessEffectsRegistry } from './forms/food-business-registration/effects'
+import { createStandupDemoEffectsRegistry } from './forms/aap-standup-demo/effects'
+import { StandupDemoTransformersRegistry } from './forms/aap-standup-demo/functions'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -46,6 +51,14 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
 
+  const foodBusinessEffectsRegistry = createFoodBusinessEffectsRegistry({
+    api: services.assessmentPlatformApiClient,
+  })
+
+  const standupDemoEffectsRegistry = createStandupDemoEffectsRegistry({
+    api: services.assessmentPlatformApiClient,
+  })
+
   const formEngine = new FormEngine({
     logger,
     frameworkAdapter: ExpressFrameworkAdapter.configure({
@@ -54,6 +67,11 @@ export default function createApp(services: Services): express.Application {
     }),
   })
     .registerComponents(govukComponents)
+    .registerFunctions(foodBusinessEffectsRegistry)
+    .registerFunctions(standupDemoEffectsRegistry)
+    .registerFunctions(StandupDemoTransformersRegistry)
+    .registerForm(foodBusinessRegistrationJourney)
+    .registerForm(aapStandupDemoJourney)
 
   // Mount routes
   app.use(routes(services))
