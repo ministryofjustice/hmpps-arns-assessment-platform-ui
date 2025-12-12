@@ -40,9 +40,20 @@ export class CollapsibleNav extends HTMLElement {
     if (this.isOpen($item)) {
       this.close($item)
     } else {
-      this.closeOpenItems()
+      this.closeSiblingItems($item)
       this.open($item)
     }
+  }
+
+  closeSiblingItems($item) {
+    const $parentList = $item.parentElement
+    if (!$parentList) return
+
+    Array.from($parentList.children).forEach($sibling => {
+      if ($sibling !== $item && this.isOpen($sibling)) {
+        this.close($sibling)
+      }
+    })
   }
 
   isOpen($item) {
@@ -71,18 +82,8 @@ export class CollapsibleNav extends HTMLElement {
     $button.setAttribute('aria-expanded', 'false')
   }
 
-  closeOpenItems() {
-    this.$openItems.forEach($listItem => this.close($listItem))
-  }
-
   get openClass() {
     return this.getAttribute('open-class') || 'is-open'
-  }
-
-  get $openItems() {
-    return this.$collapsibleItems.filter($listItem => {
-      return $listItem.classList.contains(this.openClass)
-    })
   }
 
   get $collapsibleItems() {
