@@ -167,10 +167,10 @@ $app-vertical-nav-button-menu-hover-color: govuk-shade($app-vertical-nav-button-
   }
 }
 
-.app-vertical-nav__item .app-vertical-nav__indicator {
+.app-vertical-nav__item > .app-vertical-nav__toggle > .app-vertical-nav__indicator {
   transform: rotate(180deg);
 }
 
-.app-vertical-nav__item--open .app-vertical-nav__indicator {
+.app-vertical-nav__item--open > .app-vertical-nav__toggle > .app-vertical-nav__indicator {
   transform: rotate(0deg);
 }
