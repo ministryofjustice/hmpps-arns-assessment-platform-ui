@@ -37,6 +37,12 @@ export default [
     },
   },
   {
+    files: ['packages/form-engine-moj-components/**/*.ts'],
+    rules: {
+      'no-nested-ternary': 'off',
+    },
+  },
+  {
     name: 'prettier-overrides',
     rules: {
       'prettier/prettier': [

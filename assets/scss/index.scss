@@ -6,6 +6,7 @@ $govuk-page-width: $moj-page-width;
 
 @import "govuk-frontend/dist/govuk/index";
 @import "@ministryofjustice/frontend/moj/all";
+@import '../../packages/form-engine-moj-components/src/all';
 
 // Highlight.js theme for syntax highlighting
 @import "highlight.js/styles/github";
