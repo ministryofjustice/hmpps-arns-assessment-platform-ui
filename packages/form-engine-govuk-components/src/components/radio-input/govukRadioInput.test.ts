@@ -108,7 +108,7 @@ describe('govukRadioInput', () => {
         hint: undefined,
         items: [],
       })
-      expect(params.hint).toEqual({ text: undefined })
+      expect(params.hint).toBeUndefined()
     })
   })
 
@@ -211,6 +211,7 @@ describe('govukRadioInput', () => {
     it('passes through conditional blocks', async () => {
       const conditionalBlock: BlockDefinition = {
         type: StructureType.BLOCK,
+        blockType: 'basic',
         variant: 'text',
       }
       const conditionalHtml = `<p>Some conditional HTML</p>`

@@ -107,7 +107,7 @@ code: 'business_contact_phone'`,
     block<TemplateWrapper>({
       variant: 'templateWrapper',
       template: `
-        <h3 class="govuk-heading-s"><code>{{name}}</code></h3>
+        <h3 class="govuk-heading-s"><code>{{name}}</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
         {{slot:description}}
         {{slot:example}}
       `,
@@ -145,7 +145,7 @@ defaultValue: Data('user.email')`,
     block<TemplateWrapper>({
       variant: 'templateWrapper',
       template: `
-        <h3 class="govuk-heading-s"><code>{{name}}</code></h3>
+        <h3 class="govuk-heading-s"><code>{{name}}</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
         {{slot:description}}
         {{slot:example}}
         {{slot:footer}}
@@ -198,7 +198,7 @@ validate: [
     block<TemplateWrapper>({
       variant: 'templateWrapper',
       template: `
-        <h3 class="govuk-heading-s"><code>{{name}}</code></h3>
+        <h3 class="govuk-heading-s"><code>{{name}}</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
         {{slot:description}}
         {{slot:example}}
       `,
@@ -223,8 +223,8 @@ validate: [
 import { Transformer } from '@form-engine/registry/transformers'
 
 formatters: [
-  Transformer.String.Trim,
-  Transformer.String.ToLowerCase,
+  Transformer.String.Trim(),
+  Transformer.String.ToLowerCase(),
 ]`,
           }),
         ],
@@ -235,7 +235,7 @@ formatters: [
     block<TemplateWrapper>({
       variant: 'templateWrapper',
       template: `
-        <h3 class="govuk-heading-s"><code>{{name}}</code></h3>
+        <h3 class="govuk-heading-s"><code>{{name}}</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
         {{slot:description}}
         {{slot:example}}
         {{slot:warning}}
@@ -279,7 +279,7 @@ hidden: Answer('contactMethod').not.match(
     block<TemplateWrapper>({
       variant: 'templateWrapper',
       template: `
-        <h3 class="govuk-heading-s"><code>{{name}}</code></h3>
+        <h3 class="govuk-heading-s"><code>{{name}}</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
         {{slot:description}}
         {{slot:example}}
       `,
@@ -316,7 +316,7 @@ dependent: Answer('contactMethod').match(Condition.String.Equals('other'))`,
     block<TemplateWrapper>({
       variant: 'templateWrapper',
       template: `
-        <h3 class="govuk-heading-s"><code>{{name}}</code></h3>
+        <h3 class="govuk-heading-s"><code>{{name}}</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
         {{slot:description}}
         {{slot:example}}
       `,
@@ -339,6 +339,56 @@ dependent: Answer('contactMethod').match(Condition.String.Equals('other'))`,
             language: 'typescript',
             code: `// Capture all selected checkbox values
 multiple: true`,
+          }),
+        ],
+      },
+    }),
+
+    // sanitize property
+    block<TemplateWrapper>({
+      variant: 'templateWrapper',
+      template: `
+        <h3 class="govuk-heading-s"><code>{{name}}</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
+        {{slot:description}}
+        {{slot:example}}
+      `,
+      values: { name: 'sanitize' },
+      slots: {
+        description: [
+          block<HtmlBlock>({
+            variant: 'html',
+            content: `
+              <p class="govuk-body">
+                Controls whether HTML entities are escaped in the field value. Defaults to <code>true</code>
+                for XSS protection.
+              </p>
+              <p class="govuk-body">
+                When <code>true</code> (default), dangerous characters are converted:
+              </p>
+              <ul class="govuk-list govuk-list--bullet">
+                <li><code>&lt;</code> becomes <code>&amp;lt;</code></li>
+                <li><code>&gt;</code> becomes <code>&amp;gt;</code></li>
+                <li><code>&amp;</code> becomes <code>&amp;amp;</code></li>
+                <li><code>"</code> becomes <code>&amp;quot;</code></li>
+                <li><code>'</code> becomes <code>&amp;#39;</code></li>
+              </ul>
+              <p class="govuk-body">
+                Set to <code>false</code> only for fields that intentionally accept HTML
+                (e.g., rich text editors).
+              </p>
+            `,
+          }),
+        ],
+        example: [
+          block<CodeBlock>({
+            variant: 'codeBlock',
+            language: 'typescript',
+            code: `// Default behaviour - XSS protected
+// Input: <script>alert('xss')</script>
+// Stored: &lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;
+
+// Allow raw HTML (use with caution!)
+sanitize: false`,
           }),
         ],
       },

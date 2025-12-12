@@ -2,7 +2,6 @@ import {
   FunctionExpr,
   PipelineExpr,
   PredicateExpr,
-  PredicateTestExpr,
   ReferenceExpr,
   TransformerFunctionExpr,
   SubmitTransition,
@@ -14,6 +13,7 @@ import {
 } from './expressions.type'
 import { PredicateTestExprBuilder } from '../builders/PredicateTestExprBuilder'
 import { ConditionalExprBuilder } from '../builders/ConditionalExprBuilder'
+import { ChainableExpr, ChainableRef } from '../builders/types'
 import { StructureType, ExpressionType } from './enums'
 
 /**
@@ -40,6 +40,12 @@ export interface BlockDefinition {
 
   /** The specific variant/type of block (e.g., 'text', 'number', 'radio', etc.) */
   variant: string
+
+  /** Discriminator to distinguish field blocks from regular blocks */
+  blockType: 'basic' | 'field'
+
+  /** Conditional visibility - block is hidden when this evaluates to truthy */
+  hidden?: boolean | PredicateExpr | PredicateTestExprBuilder
 
   /** Optional metadata regarding the step */
   metadata?: {
@@ -110,7 +116,7 @@ export interface FieldBlockDefinition extends BlockDefinition {
   formatters?: TransformerFunctionExpr[]
 
   /** Conditional visibility - field is hidden when this evaluates to truthy */
-  hidden?: PredicateTestExpr | PredicateTestExprBuilder
+  hidden?: boolean | PredicateExpr
 
   /** Array of validation errors currently active on the field */
   errors?: { message: string; details?: Record<string, any> }[]
@@ -119,7 +125,7 @@ export interface FieldBlockDefinition extends BlockDefinition {
   validate?: ValidationExpr[]
 
   /** Marks field as dependent on other fields - used for validation ordering */
-  dependent?: PredicateExpr | PredicateTestExprBuilder
+  dependent?: PredicateExpr
 
   /**
    * Whether to keep all values when an array is returned.
@@ -127,6 +133,14 @@ export interface FieldBlockDefinition extends BlockDefinition {
    * When true, all values in the array are kept.
    */
   multiple?: boolean
+
+  /**
+   * Whether to sanitize input by escaping HTML entities.
+   * When true (default), string values have < > & " ' converted to HTML entities.
+   * Set to false for fields that need to accept raw HTML (e.g., rich text editors).
+   * @default true
+   */
+  sanitize?: boolean
 }
 
 /**
@@ -225,12 +239,35 @@ export type ConditionalString =
   | PipelineExpr
   | ConditionalExpr
   | ConditionalExprBuilder
+  | ChainableRef
+  | ChainableExpr<any>
 
-export type ConditionalBoolean = boolean | ReferenceExpr | PipelineExpr | ConditionalExpr | ConditionalExprBuilder
+export type ConditionalBoolean =
+  | boolean
+  | ReferenceExpr
+  | PipelineExpr
+  | ConditionalExpr
+  | ConditionalExprBuilder
+  | ChainableRef
+  | ChainableExpr<any>
 
-export type ConditionalNumber = number | ReferenceExpr | PipelineExpr | ConditionalExpr | ConditionalExprBuilder
+export type ConditionalNumber =
+  | number
+  | ReferenceExpr
+  | PipelineExpr
+  | ConditionalExpr
+  | ConditionalExprBuilder
+  | ChainableRef
+  | ChainableExpr<any>
 
-export type ConditionalArray<T> = T[] | ReferenceExpr | PipelineExpr | ConditionalExpr | ConditionalExprBuilder
+export type ConditionalArray<T> =
+  | T[]
+  | ReferenceExpr
+  | PipelineExpr
+  | ConditionalExpr
+  | ConditionalExprBuilder
+  | ChainableRef
+  | ChainableExpr<any>
 
 export type RenderedBlock = {
   block: BlockDefinition

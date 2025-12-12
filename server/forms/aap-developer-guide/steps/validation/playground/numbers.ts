@@ -4,7 +4,8 @@ import { Transformer } from '@form-engine/registry/transformers'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { CodeBlock } from '@form-engine/registry/components/codeBlock'
-import { GovUKTextInput, GovUKDetails, GovUKPagination, GovUKButton } from '@form-engine-govuk-components/components'
+import { GovUKTextInput, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
+import { exampleBox } from '../../../helpers/exampleBox'
 
 /**
  * Validation Playground - Numbers
@@ -17,8 +18,6 @@ export const numbersStep = step({
   onSubmission: [
     submitTransition({
       validate: true,
-      onValid: {},
-      onInvalid: {},
     }),
   ],
   blocks: [
@@ -51,28 +50,30 @@ export const numbersStep = step({
       `,
     }),
 
-    field<GovUKTextInput>({
-      variant: 'govukTextInput',
-      code: 'playground_range',
-      label: 'Your age',
-      hint: 'You must be at least 18 years old',
-      inputMode: 'numeric',
-      formatters: [Transformer.String.ToInt()],
-      validate: [
-        validation({
-          when: Self().not.match(Condition.IsRequired()),
-          message: 'Enter your age',
-        }),
-        validation({
-          when: Self().not.match(Condition.Number.IsInteger()),
-          message: 'Age must be a number',
-        }),
-        validation({
-          when: Self().not.match(Condition.Number.Between(18, 120)),
-          message: 'Age must be between 18 and 120',
-        }),
-      ],
-    }),
+    exampleBox([
+      field<GovUKTextInput>({
+        variant: 'govukTextInput',
+        code: 'playground_range',
+        label: 'Your age',
+        hint: 'You must be at least 18 years old',
+        inputMode: 'numeric',
+        formatters: [Transformer.String.ToInt()],
+        validate: [
+          validation({
+            when: Self().not.match(Condition.IsRequired()),
+            message: 'Enter your age',
+          }),
+          validation({
+            when: Self().not.match(Condition.Number.IsInteger()),
+            message: 'Age must be a number',
+          }),
+          validation({
+            when: Self().not.match(Condition.Number.Between(18, 120)),
+            message: 'Age must be between 18 and 120',
+          }),
+        ],
+      }),
+    ]),
 
     block<GovUKDetails>({
       variant: 'govukDetails',
@@ -117,28 +118,30 @@ export const numbersStep = step({
       `,
     }),
 
-    field<GovUKTextInput>({
-      variant: 'govukTextInput',
-      code: 'playground_minimum',
-      label: 'Amount to pay',
-      prefix: { text: '£' },
-      inputMode: 'numeric',
-      formatters: [Transformer.String.ToFloat()],
-      validate: [
-        validation({
-          when: Self().not.match(Condition.IsRequired()),
-          message: 'Enter an amount',
-        }),
-        validation({
-          when: Self().not.match(Condition.Number.IsNumber()),
-          message: 'Enter a valid amount',
-        }),
-        validation({
-          when: Self().not.match(Condition.Number.GreaterThan(0)),
-          message: 'Amount must be greater than £0',
-        }),
-      ],
-    }),
+    exampleBox([
+      field<GovUKTextInput>({
+        variant: 'govukTextInput',
+        code: 'playground_minimum',
+        label: 'Amount to pay',
+        prefix: { text: '£' },
+        inputMode: 'numeric',
+        formatters: [Transformer.String.ToFloat()],
+        validate: [
+          validation({
+            when: Self().not.match(Condition.IsRequired()),
+            message: 'Enter an amount',
+          }),
+          validation({
+            when: Self().not.match(Condition.Number.IsNumber()),
+            message: 'Enter a valid amount',
+          }),
+          validation({
+            when: Self().not.match(Condition.Number.GreaterThan(0)),
+            message: 'Amount must be greater than £0',
+          }),
+        ],
+      }),
+    ]),
 
     block<GovUKDetails>({
       variant: 'govukDetails',
@@ -183,32 +186,34 @@ export const numbersStep = step({
       `,
     }),
 
-    field<GovUKTextInput>({
-      variant: 'govukTextInput',
-      code: 'playground_maximum',
-      label: 'Discount percentage',
-      suffix: { text: '%' },
-      inputMode: 'numeric',
-      formatters: [Transformer.String.ToFloat()],
-      validate: [
-        validation({
-          when: Self().not.match(Condition.IsRequired()),
-          message: 'Enter a percentage',
-        }),
-        validation({
-          when: Self().not.match(Condition.Number.IsNumber()),
-          message: 'Percentage must be a number',
-        }),
-        validation({
-          when: Self().not.match(Condition.Number.GreaterThanOrEqual(0)),
-          message: 'Percentage cannot be negative',
-        }),
-        validation({
-          when: Self().not.match(Condition.Number.LessThanOrEqual(100)),
-          message: 'Percentage cannot exceed 100',
-        }),
-      ],
-    }),
+    exampleBox([
+      field<GovUKTextInput>({
+        variant: 'govukTextInput',
+        code: 'playground_maximum',
+        label: 'Discount percentage',
+        suffix: { text: '%' },
+        inputMode: 'numeric',
+        formatters: [Transformer.String.ToFloat()],
+        validate: [
+          validation({
+            when: Self().not.match(Condition.IsRequired()),
+            message: 'Enter a percentage',
+          }),
+          validation({
+            when: Self().not.match(Condition.Number.IsNumber()),
+            message: 'Percentage must be a number',
+          }),
+          validation({
+            when: Self().not.match(Condition.Number.GreaterThanOrEqual(0)),
+            message: 'Percentage cannot be negative',
+          }),
+          validation({
+            when: Self().not.match(Condition.Number.LessThanOrEqual(100)),
+            message: 'Percentage cannot exceed 100',
+          }),
+        ],
+      }),
+    ]),
 
     block<GovUKDetails>({
       variant: 'govukDetails',
@@ -257,32 +262,34 @@ export const numbersStep = step({
       `,
     }),
 
-    field<GovUKTextInput>({
-      variant: 'govukTextInput',
-      code: 'playground_items',
-      label: 'Number of items',
-      hint: 'You can order between 1 and 10 items',
-      inputMode: 'numeric',
-      formatters: [Transformer.String.ToInt()],
-      validate: [
-        validation({
-          when: Self().not.match(Condition.IsRequired()),
-          message: 'Enter the number of items',
-        }),
-        validation({
-          when: Self().not.match(Condition.Number.IsInteger()),
-          message: 'Enter a number',
-        }),
-        validation({
-          when: Self().not.match(Condition.Number.GreaterThanOrEqual(1)),
-          message: 'You must order at least 1 item',
-        }),
-        validation({
-          when: Self().not.match(Condition.Number.LessThanOrEqual(10)),
-          message: 'You can order at most 10 items',
-        }),
-      ],
-    }),
+    exampleBox([
+      field<GovUKTextInput>({
+        variant: 'govukTextInput',
+        code: 'playground_items',
+        label: 'Number of items',
+        hint: 'You can order between 1 and 10 items',
+        inputMode: 'numeric',
+        formatters: [Transformer.String.ToInt()],
+        validate: [
+          validation({
+            when: Self().not.match(Condition.IsRequired()),
+            message: 'Enter the number of items',
+          }),
+          validation({
+            when: Self().not.match(Condition.Number.IsInteger()),
+            message: 'Enter a number',
+          }),
+          validation({
+            when: Self().not.match(Condition.Number.GreaterThanOrEqual(1)),
+            message: 'You must order at least 1 item',
+          }),
+          validation({
+            when: Self().not.match(Condition.Number.LessThanOrEqual(10)),
+            message: 'You can order at most 10 items',
+          }),
+        ],
+      }),
+    ]),
 
     block<GovUKDetails>({
       variant: 'govukDetails',
@@ -319,14 +326,6 @@ export const numbersStep = step({
 })`,
         }),
       ],
-    }),
-
-    // Submit button
-    block<GovUKButton>({
-      variant: 'govukButton',
-      text: 'Test validation',
-      name: 'action',
-      value: 'continue',
     }),
 
     // Navigation

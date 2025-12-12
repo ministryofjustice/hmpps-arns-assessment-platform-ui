@@ -122,14 +122,13 @@ export const introStep = step({
           both blocks and fields in the order they should appear:
         </p>
 
-        <div class="govuk-inset-text" style="font-family: monospace; white-space: pre;">
-Step
-  \u251c\u2500\u2500 Block (heading)
-  \u251c\u2500\u2500 Block (intro text)
-  \u251c\u2500\u2500 Field (text input)
-  \u251c\u2500\u2500 Field (radio buttons)
-  \u251c\u2500\u2500 Block (help text)
-  \u2514\u2500\u2500 Block (submit button)</div>
+        <pre><code>Step
+├── Block (heading)
+├── Block (intro text)
+├── Field (text input)
+├── Field (radio buttons)
+├── Block (help text)
+└── Block (submit button)</code></pre>
 
         <p class="govuk-body">
           The order in the <code>blocks</code> array determines the order on the page.

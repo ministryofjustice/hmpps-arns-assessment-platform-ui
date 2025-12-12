@@ -25,6 +25,58 @@ describe('FormValidator', () => {
       expect(() => FormValidator.validateSchema(validJourney)).not.toThrow()
     })
 
+    it('should validate blocks with blockType', () => {
+      const validJourney = {
+        type: StructureType.JOURNEY,
+        path: '/test-journey',
+        code: 'test-journey',
+        title: 'Test Journey',
+        steps: [
+          {
+            type: StructureType.STEP,
+            path: '/step1',
+            title: 'Step 1',
+            blocks: [
+              { type: StructureType.BLOCK, blockType: 'basic', variant: 'html' },
+              { type: StructureType.BLOCK, blockType: 'field', variant: 'text', code: 'field_code' },
+            ],
+          } as StepDefinition,
+        ],
+      } as JourneyDefinition
+
+      expect(() => FormValidator.validateSchema(validJourney)).not.toThrow()
+    })
+
+    it('should fail when a block is missing blockType', () => {
+      const invalidJourney = {
+        type: StructureType.JOURNEY,
+        path: '/test-journey',
+        code: 'test-journey',
+        title: 'Test Journey',
+        steps: [
+          {
+            type: StructureType.STEP,
+            path: '/step1',
+            title: 'Step 1',
+            blocks: [{ type: StructureType.BLOCK, variant: 'text', code: 'field_code' } as any],
+          } as StepDefinition,
+        ],
+      } as JourneyDefinition
+
+      expect(() => FormValidator.validateSchema(invalidJourney)).toThrow(AggregateError)
+
+      try {
+        FormValidator.validateSchema(invalidJourney)
+      } catch (error) {
+        expect(error).toBeInstanceOf(AggregateError)
+        if (error instanceof AggregateError) {
+          expect(
+            error.errors.some(e => e instanceof FormConfigurationSchemaError && e.path?.includes('blockType')),
+          ).toBe(true)
+        }
+      }
+    })
+
     it('should fail when type is missing with clear error path', () => {
       const invalidJourney = {
         // Missing type

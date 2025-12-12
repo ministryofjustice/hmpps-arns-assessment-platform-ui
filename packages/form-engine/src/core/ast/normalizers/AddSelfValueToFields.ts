@@ -27,10 +27,11 @@ export class AddSelfValueToFieldsNormalizer implements StructuralVisitor {
 
     // Create a Self() reference node using the factory
     // Add the Self() reference as the value directly on the node
-    node.properties.value = this.nodeFactory.createNode({
+    const selfRef = this.nodeFactory.createNode({
       type: ExpressionType.REFERENCE,
       path: ['answers', '@self'],
     } satisfies ReferenceExpr)
+    node.properties.value = selfRef
 
     return StructuralVisitResult.CONTINUE
   }

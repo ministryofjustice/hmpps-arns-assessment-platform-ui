@@ -23,8 +23,11 @@ import setUpWebSession from './middleware/setUpWebSession'
 import routes from './routes'
 import type { Services } from './services'
 import logger from '../logger'
-import aapDeveloperGuideJourney from './forms/aap-developer-guide'
-import { createDeveloperGuideEffectsRegistry } from './forms/aap-developer-guide/effects'
+
+// Form packages
+import aapDeveloperGuide from './forms/aap-developer-guide'
+import foodBusinessRegistration from './forms/food-business-registration'
+import aapStandupDemo from './forms/aap-standup-demo'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -49,8 +52,6 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
 
-  const developerGuideEffectsRegistry = createDeveloperGuideEffectsRegistry({})
-
   const formEngine = new FormEngine({
     logger,
     basePath: '/forms',
@@ -61,8 +62,9 @@ export default function createApp(services: Services): express.Application {
   })
     .registerComponents(govukComponents)
     .registerComponents(mojComponents)
-    .registerFunctions(developerGuideEffectsRegistry)
-    .registerForm(aapDeveloperGuideJourney)
+    .registerFormPackage(aapDeveloperGuide)
+    .registerFormPackage(foodBusinessRegistration, { api: services.assessmentPlatformApiClient })
+    .registerFormPackage(aapStandupDemo, { api: services.assessmentPlatformApiClient })
 
   // Mount routes
   app.use(routes(services))

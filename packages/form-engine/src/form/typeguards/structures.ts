@@ -19,5 +19,5 @@ export function isBlockDefinition(obj: any): obj is BlockDefinition {
 }
 
 export function isFieldBlockDefinition(obj: any): obj is FieldBlockDefinition {
-  return isBlockDefinition(obj) && 'code' in obj
+  return isBlockDefinition(obj) && obj.blockType === 'field'
 }

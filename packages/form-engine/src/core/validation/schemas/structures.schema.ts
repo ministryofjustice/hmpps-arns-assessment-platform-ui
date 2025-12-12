@@ -1,12 +1,7 @@
 import { z } from 'zod'
 import { StructureType, ExpressionType, TransitionType } from '@form-engine/form/types/enums'
 import { ReferenceExprSchema, FormatExprSchema, PipelineExprSchema } from './expressions.schema'
-import {
-  PredicateExprSchema,
-  PredicateTestExprSchema,
-  ConditionalExprSchema,
-  NextExprSchema,
-} from './predicates.schema'
+import { PredicateExprSchema, ConditionalExprSchema, NextExprSchema } from './predicates.schema'
 import { TransformerFunctionExprSchema, FunctionExprSchema, EffectFunctionExprSchema } from './base.schema'
 
 /**
@@ -48,13 +43,14 @@ export const BlockSchema: z.ZodType<any> = z.lazy(() => {
   const baseBlock = z.looseObject({
     type: z.literal(StructureType.BLOCK),
     variant: z.string(),
+    hidden: z.union([z.boolean(), PredicateExprSchema]).optional(),
+    metadata: z.record(z.string(), z.any()).optional(),
   })
 
   const fieldBlockProps = z.looseObject({
     code: ConditionalStringSchema,
     defaultValue: z.union([ConditionalStringSchema, z.array(ConditionalStringSchema), FunctionExprSchema]).optional(),
     formatters: z.array(TransformerFunctionExprSchema).optional(),
-    hidden: PredicateTestExprSchema.optional(),
     errors: z
       .array(
         z.object({
@@ -64,17 +60,21 @@ export const BlockSchema: z.ZodType<any> = z.lazy(() => {
       )
       .optional(),
     validate: z.array(ValidationExprSchema).optional(),
-    dependent: PredicateTestExprSchema.optional(),
+    dependent: PredicateExprSchema.optional(),
     multiple: z.boolean().optional(),
+    sanitize: z.boolean().optional(),
   })
 
-  return z.union([
-    z.looseObject({
-      ...baseBlock.shape,
-      ...fieldBlockProps.shape,
-    }),
-    baseBlock,
-  ])
+  const fieldBlock = baseBlock.extend({
+    blockType: z.literal('field'),
+    ...fieldBlockProps.shape,
+  })
+
+  const basicBlock = baseBlock.extend({
+    blockType: z.literal('basic'),
+  })
+
+  return z.discriminatedUnion('blockType', [fieldBlock, basicBlock])
 })
 
 /**
@@ -86,14 +86,35 @@ export const LoadTransitionSchema = z.object({
 })
 
 /**
- * @see {@link AccessTransition}
+ * Base properties shared by all access transitions
  */
-export const AccessTransitionSchema = z.object({
+const AccessTransitionBaseSchema = z.object({
   type: z.literal(TransitionType.ACCESS),
   guards: PredicateExprSchema.optional(),
   effects: z.array(EffectFunctionExprSchema).optional(),
-  redirect: z.array(NextExprSchema).optional(),
 })
+
+/**
+ * Access transition with redirect (navigates to another page)
+ */
+const AccessTransitionRedirectSchema = AccessTransitionBaseSchema.extend({
+  redirect: z.array(NextExprSchema),
+})
+
+/**
+ * Access transition with error response (returns HTTP status code)
+ */
+const AccessTransitionErrorSchema = AccessTransitionBaseSchema.extend({
+  status: z.number().int().min(100).max(599),
+  message: z.union([z.string(), FormatExprSchema, ConditionalExprSchema]),
+})
+
+/**
+ * @see {@link AccessTransition}
+ *
+ * Discriminated union: either redirect-based or error-based
+ */
+export const AccessTransitionSchema = z.union([AccessTransitionRedirectSchema, AccessTransitionErrorSchema])
 
 /**
  * @see {@link ActionTransition}
@@ -105,46 +126,32 @@ export const ActionTransitionSchema = z.object({
 })
 
 /**
- * @see {@link SkipValidationTransition}
+ * @see {@link SubmitTransition}
  */
-export const SkipValidationTransitionSchema = z.object({
+export const SubmitTransitionSchema = z.object({
   type: z.literal(TransitionType.SUBMIT),
   when: PredicateExprSchema.optional(),
   guards: PredicateExprSchema.optional(),
-  validate: z.literal(false),
-  onAlways: z.object({
-    effects: z.array(EffectFunctionExprSchema).optional(),
-    next: z.array(NextExprSchema).optional(),
-  }),
-})
-
-/**
- * @see {@link ValidatingTransition}
- */
-export const ValidatingTransitionSchema = z.object({
-  type: z.literal(TransitionType.SUBMIT),
-  when: PredicateExprSchema.optional(),
-  guards: PredicateExprSchema.optional(),
-  validate: z.literal(true),
+  validate: z.boolean().optional(),
   onAlways: z
     .object({
       effects: z.array(EffectFunctionExprSchema).optional(),
+      next: z.array(NextExprSchema).optional(),
     })
     .optional(),
-  onValid: z.object({
-    effects: z.array(EffectFunctionExprSchema).optional(),
-    next: z.array(NextExprSchema).optional(),
-  }),
-  onInvalid: z.object({
-    effects: z.array(EffectFunctionExprSchema).optional(),
-    next: z.array(NextExprSchema).optional(),
-  }),
+  onValid: z
+    .object({
+      effects: z.array(EffectFunctionExprSchema).optional(),
+      next: z.array(NextExprSchema).optional(),
+    })
+    .optional(),
+  onInvalid: z
+    .object({
+      effects: z.array(EffectFunctionExprSchema).optional(),
+      next: z.array(NextExprSchema).optional(),
+    })
+    .optional(),
 })
-
-/**
- * @see {@link SubmitTransition}
- */
-export const SubmitTransitionSchema = z.union([SkipValidationTransitionSchema, ValidatingTransitionSchema])
 
 /**
  * @see {@link StepDefinition}

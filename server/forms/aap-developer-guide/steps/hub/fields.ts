@@ -82,7 +82,13 @@ export const conceptCards = block<MOJCardGroup>({
         'Transitions control what happens on load and submit. Learn loadTransition, submitTransition, and next() navigation.',
     },
     {
-      heading: '10. Collections',
+      heading: '10. Components',
+      href: '/forms/form-engine-developer-guide/components/intro',
+      description:
+        'Understand the component system. Learn about built-in components, how to build custom ones, and how to extend existing components.',
+    },
+    {
+      heading: '11. Collections',
       href: '/forms/form-engine-developer-guide/collections/intro',
       description:
         'Manage lists of items with hub-and-spoke pattern. Add, edit, remove items. Use Item() reference in collection context.',

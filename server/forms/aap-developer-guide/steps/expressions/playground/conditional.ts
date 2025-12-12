@@ -1,0 +1,536 @@
+import {
+  step,
+  block,
+  field,
+  validation,
+  Self,
+  Answer,
+  Format,
+  when,
+  Conditional,
+  submitTransition,
+  and,
+  not,
+} from '@form-engine/form/builders'
+import { Condition } from '@form-engine/registry/conditions'
+import { HtmlBlock } from '@form-engine/registry/components/html'
+import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { CodeBlock } from '@form-engine/registry/components/codeBlock'
+import {
+  GovUKTextInput,
+  GovUKDetails,
+  GovUKPagination,
+  GovUKRadioInput,
+} from '@form-engine-govuk-components/components'
+import { exampleBox } from '../../../helpers/exampleBox'
+
+/**
+ * Expressions Playground - Conditional
+ *
+ * Interactive examples of when() and Conditional() expressions.
+ */
+export const conditionalStep = step({
+  path: '/conditional',
+  title: 'Conditional Playground',
+  onSubmission: [
+    submitTransition({
+      validate: true,
+    }),
+  ],
+  blocks: [
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <h1 class="govuk-heading-l">Conditional Expressions Playground</h1>
+
+        <p class="govuk-body-l">
+          Try these interactive examples to see <code>when()</code> and
+          <code>Conditional()</code> in action. Make selections to see content
+          change dynamically.
+        </p>
+      `,
+    }),
+
+    // Dynamic Labels
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h2 class="govuk-heading-m">Dynamic Field Labels</h2>
+        <p class="govuk-body">
+          Select a country to see the postal code field label and hint change.
+        </p>
+      `,
+    }),
+
+    exampleBox([
+      field<GovUKRadioInput>({
+        variant: 'govukRadioInput',
+        code: 'playground_cond_country',
+        fieldset: {
+          legend: { text: 'Where do you live?' },
+        },
+        items: [
+          { value: 'UK', text: 'United Kingdom' },
+          { value: 'US', text: 'United States' },
+          { value: 'CA', text: 'Canada' },
+        ],
+      }),
+
+      field<GovUKTextInput>({
+        variant: 'govukTextInput',
+        code: 'playground_cond_postcode',
+        classes: 'govuk-input--width-10',
+        label: Conditional({
+          when: Answer('playground_cond_country').match(Condition.Equals('US')),
+          then: 'ZIP Code',
+          else: Conditional({
+            when: Answer('playground_cond_country').match(Condition.Equals('CA')),
+            then: 'Postal Code',
+            else: 'Postcode',
+          }),
+        }),
+        hint: Conditional({
+          when: Answer('playground_cond_country').match(Condition.Equals('US')),
+          then: 'For example, 90210 or 90210-1234',
+          else: Conditional({
+            when: Answer('playground_cond_country').match(Condition.Equals('CA')),
+            then: 'For example, K1A 0B1',
+            else: 'For example, SW1A 1AA',
+          }),
+        }),
+        hidden: Answer('playground_cond_country').not.match(Condition.IsRequired()),
+      }),
+
+      block<HtmlBlock>({
+        variant: 'html',
+        content: `
+          <div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+            <strong>Beverly Hills, that's where I want to be! 🌴</strong>
+          </div>
+        `,
+        hidden: not(
+          and(
+            Answer('playground_cond_country').match(Condition.Equals('US')),
+            Answer('playground_cond_postcode').match(Condition.Equals('90210')),
+          ),
+        ),
+      }),
+    ]),
+
+    block<GovUKDetails>({
+      variant: 'govukDetails',
+      summaryText: 'View code',
+      content: [
+        block<CodeBlock>({
+          variant: 'codeBlock',
+          language: 'typescript',
+          code: `field<GovUKTextInput>({
+  code: 'postcode',
+  label: Conditional({
+    when: Answer('country').match(Condition.Equals('US')),
+    then: 'ZIP Code',
+    else: Conditional({
+      when: Answer('country').match(Condition.Equals('CA')),
+      then: 'Postal Code',
+      else: 'Postcode',
+    }),
+  }),
+  hint: Conditional({
+    when: Answer('country').match(Condition.Equals('US')),
+    then: 'For example, 90210',
+    else: 'For example, SW1A 1AA',
+  }),
+})`,
+        }),
+      ],
+    }),
+
+    // Conditional Content Blocks
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h2 class="govuk-heading-m">Conditional Content</h2>
+        <p class="govuk-body">
+          Use <code>when()</code> to show different content based on user selections.
+          Select a membership tier to see the benefits.
+        </p>
+      `,
+    }),
+
+    exampleBox([
+      field<GovUKRadioInput>({
+        variant: 'govukRadioInput',
+        code: 'playground_cond_tier',
+        fieldset: {
+          legend: { text: 'Select your membership tier' },
+        },
+        items: [
+          { value: 'basic', text: 'Basic (Free)' },
+          { value: 'standard', text: 'Standard (£9.99/month)' },
+          { value: 'premium', text: 'Premium (£19.99/month)' },
+        ],
+      }),
+
+      block<HtmlBlock>({
+        variant: 'html',
+        hidden: Answer('playground_cond_tier').not.match(Condition.IsRequired()),
+        content: when(Answer('playground_cond_tier').match(Condition.Equals('premium')))
+          .then(
+            `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+              <strong>Premium Benefits:</strong>
+              <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                <li>24/7 priority support</li>
+                <li>Unlimited storage</li>
+                <li>Advanced analytics</li>
+                <li>Custom integrations</li>
+              </ul>
+            </div>`,
+          )
+          .else(
+            when(Answer('playground_cond_tier').match(Condition.Equals('standard')))
+              .then(
+                `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+                  <strong>Standard Benefits:</strong>
+                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                    <li>Email support (9am-5pm)</li>
+                    <li>10GB storage</li>
+                    <li>Basic analytics</li>
+                  </ul>
+                </div>`,
+              )
+              .else(
+                `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+                  <strong>Basic Benefits:</strong>
+                  <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                    <li>Community forum support</li>
+                    <li>1GB storage</li>
+                  </ul>
+                </div>`,
+              ),
+          ),
+      }),
+    ]),
+
+    block<GovUKDetails>({
+      variant: 'govukDetails',
+      summaryText: 'View code',
+      content: [
+        block<CodeBlock>({
+          variant: 'codeBlock',
+          language: 'typescript',
+          code: `block<HtmlBlock>({
+  variant: 'html',
+  content: when(Answer('tier').match(Condition.Equals('premium')))
+    .then('<div class="govuk-inset-text">Premium Benefits...</div>')
+    .else(
+      when(Answer('tier').match(Condition.Equals('standard')))
+        .then('<div class="govuk-inset-text">Standard Benefits...</div>')
+        .else('<div class="govuk-inset-text">Basic Benefits...</div>')
+    ),
+})`,
+        }),
+      ],
+    }),
+
+    // Status Tag
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h2 class="govuk-heading-m">Dynamic Status Tags</h2>
+        <p class="govuk-body">
+          Use conditionals inside <code>Format()</code> to build dynamic status displays.
+        </p>
+      `,
+    }),
+
+    exampleBox([
+      field<GovUKRadioInput>({
+        variant: 'govukRadioInput',
+        code: 'playground_cond_status',
+        fieldset: {
+          legend: { text: 'Application status' },
+        },
+        items: [
+          { value: 'draft', text: 'Draft' },
+          { value: 'submitted', text: 'Submitted' },
+          { value: 'approved', text: 'Approved' },
+          { value: 'rejected', text: 'Rejected' },
+        ],
+      }),
+
+      block<HtmlBlock>({
+        variant: 'html',
+        hidden: Answer('playground_cond_status').not.match(Condition.IsRequired()),
+        content: Format(
+          `<div class="govuk-!-margin-top-4">
+            <table class="govuk-table govuk-!-margin-bottom-0">
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">Status</th>
+                  <td class="govuk-table__cell">%1</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">Next action</th>
+                  <td class="govuk-table__cell">%2</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>`,
+          Conditional({
+            when: Answer('playground_cond_status').match(Condition.Equals('approved')),
+            then: '<strong class="govuk-tag govuk-tag--green">Approved</strong>',
+            else: Conditional({
+              when: Answer('playground_cond_status').match(Condition.Equals('rejected')),
+              then: '<strong class="govuk-tag govuk-tag--red">Rejected</strong>',
+              else: Conditional({
+                when: Answer('playground_cond_status').match(Condition.Equals('submitted')),
+                then: '<strong class="govuk-tag govuk-tag--blue">Submitted</strong>',
+                else: '<strong class="govuk-tag govuk-tag--grey">Draft</strong>',
+              }),
+            }),
+          }),
+          Conditional({
+            when: Answer('playground_cond_status').match(Condition.Equals('approved')),
+            then: 'No action required',
+            else: Conditional({
+              when: Answer('playground_cond_status').match(Condition.Equals('rejected')),
+              then: 'Review feedback and resubmit',
+              else: Conditional({
+                when: Answer('playground_cond_status').match(Condition.Equals('submitted')),
+                then: 'Awaiting review',
+                else: 'Complete and submit your application',
+              }),
+            }),
+          }),
+        ),
+      }),
+    ]),
+
+    block<GovUKDetails>({
+      variant: 'govukDetails',
+      summaryText: 'View code',
+      content: [
+        block<CodeBlock>({
+          variant: 'codeBlock',
+          language: 'typescript',
+          code: `Format(
+  '<p>Status: %1</p><p>Next: %2</p>',
+  Conditional({
+    when: Answer('status').match(Condition.Equals('approved')),
+    then: '<strong class="govuk-tag govuk-tag--green">Approved</strong>',
+    else: Conditional({
+      when: Answer('status').match(Condition.Equals('rejected')),
+      then: '<strong class="govuk-tag govuk-tag--red">Rejected</strong>',
+      else: '<strong class="govuk-tag govuk-tag--grey">Pending</strong>',
+    }),
+  }),
+  Conditional({
+    when: Answer('status').match(Condition.Equals('approved')),
+    then: 'No action required',
+    else: 'Awaiting review',
+  })
+)`,
+        }),
+      ],
+    }),
+
+    // Conditional Reveal with Validation
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h2 class="govuk-heading-m">Conditional Field Reveal</h2>
+        <p class="govuk-body">
+          Show additional fields based on user selections. The "Other" option
+          reveals a text field that becomes required.
+        </p>
+      `,
+    }),
+
+    exampleBox([
+      field<GovUKRadioInput>({
+        variant: 'govukRadioInput',
+        code: 'playground_cond_contact',
+        fieldset: {
+          legend: { text: 'How should we contact you?' },
+        },
+        items: [
+          { value: 'email', text: 'Email' },
+          { value: 'phone', text: 'Phone' },
+          { value: 'post', text: 'Post' },
+          {
+            value: 'other',
+            text: 'Other',
+            block: field<GovUKTextInput>({
+              variant: 'govukTextInput',
+              code: 'playground_cond_other',
+              label: 'Describe your preferred contact method',
+              dependent: Answer('playground_cond_contact').match(Condition.Equals('other')),
+              validate: [
+                validation({
+                  when: Self().not.match(Condition.IsRequired()),
+                  message: 'Enter your preferred contact method',
+                }),
+              ],
+            }),
+          },
+        ],
+      }),
+
+      block<HtmlBlock>({
+        variant: 'html',
+        hidden: Answer('playground_cond_contact').not.match(Condition.IsRequired()),
+        content: Format(
+          `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+            <strong>You selected:</strong> %1
+          </div>`,
+          when(Answer('playground_cond_contact').match(Condition.Equals('other')))
+            .then(Format('Other - %1', Answer('playground_cond_other')))
+            .else(Answer('playground_cond_contact')),
+        ),
+      }),
+    ]),
+
+    block<GovUKDetails>({
+      variant: 'govukDetails',
+      summaryText: 'View code',
+      content: [
+        block<CodeBlock>({
+          variant: 'codeBlock',
+          language: 'typescript',
+          code: `field<GovUKRadioInput>({
+  variant: 'govukRadioInput',
+  code: 'contactMethod',
+  fieldset: { legend: { text: 'How should we contact you?' } },
+  items: [
+    { value: 'email', text: 'Email' },
+    { value: 'phone', text: 'Phone' },
+    {
+      value: 'other',
+      text: 'Other',
+      // Embedded block is revealed when this option is selected
+      block: field<GovUKTextInput>({
+        variant: 'govukTextInput',
+        code: 'otherMethod',
+        label: 'Describe your preferred contact method',
+        // Only validate when parent option is selected
+        dependent: Answer('contactMethod').match(Condition.Equals('other')),
+        validate: [
+          validation({
+            when: Self().not.match(Condition.IsRequired()),
+            message: 'Enter your preferred contact method',
+          }),
+        ],
+      }),
+    },
+  ],
+})`,
+        }),
+      ],
+    }),
+
+    // Greeting based on time
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h2 class="govuk-heading-m">Personalized Content</h2>
+        <p class="govuk-body">
+          Combine user data with conditionals for personalized experiences.
+        </p>
+      `,
+    }),
+
+    exampleBox([
+      field<GovUKTextInput>({
+        variant: 'govukTextInput',
+        code: 'playground_cond_username',
+        label: 'Your name',
+        validate: [
+          validation({
+            when: Self().not.match(Condition.IsRequired()),
+            message: 'Enter your name',
+          }),
+        ],
+      }),
+
+      field<GovUKRadioInput>({
+        variant: 'govukRadioInput',
+        code: 'playground_cond_returning',
+        fieldset: {
+          legend: { text: 'Have you used this service before?' },
+        },
+        items: [
+          { value: 'yes', text: 'Yes' },
+          { value: 'no', text: 'No' },
+        ],
+        hidden: Answer('playground_cond_username').not.match(Condition.IsRequired()),
+      }),
+
+      block<HtmlBlock>({
+        variant: 'html',
+        hidden: Answer('playground_cond_returning').not.match(Condition.IsRequired()),
+        content: Format(
+          `<div class="govuk-panel govuk-panel--confirmation govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+            <h2 class="govuk-panel__title">%1</h2>
+            <div class="govuk-panel__body">%2</div>
+          </div>`,
+          when(Answer('playground_cond_returning').match(Condition.Equals('yes')))
+            .then(Format('Welcome back, %1!', Answer('playground_cond_username')))
+            .else(Format('Hello, %1!', Answer('playground_cond_username'))),
+          when(Answer('playground_cond_returning').match(Condition.Equals('yes')))
+            .then('Your previous data has been loaded.')
+            .else("Let's get you set up with a new account."),
+        ),
+      }),
+    ]),
+
+    block<GovUKDetails>({
+      variant: 'govukDetails',
+      summaryText: 'View code',
+      content: [
+        block<CodeBlock>({
+          variant: 'codeBlock',
+          language: 'typescript',
+          code: `Format(
+  '<h2>%1</h2><p>%2</p>',
+  when(Answer('returning').match(Condition.Equals('yes')))
+    .then(Format('Welcome back, %1!', Answer('username')))
+    .else(Format('Hello, %1!', Answer('username'))),
+  when(Answer('returning').match(Condition.Equals('yes')))
+    .then('Your previous data has been loaded.')
+    .else('Let\\'s get you set up.')
+)`,
+        }),
+      ],
+    }),
+
+    // Navigation
+    block<TemplateWrapper>({
+      variant: 'templateWrapper',
+      template: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        {{slot:pagination}}
+      `,
+      slots: {
+        pagination: [
+          block<GovUKPagination>({
+            variant: 'govukPagination',
+            classes: 'govuk-pagination--inline',
+            previous: {
+              href: '/forms/form-engine-developer-guide/expressions/playground/format',
+              labelText: 'Format Playground',
+            },
+            next: {
+              href: '/forms/form-engine-developer-guide/expressions/playground/predicates',
+              labelText: 'Predicates Playground',
+            },
+          }),
+        ],
+      },
+    }),
+  ],
+})

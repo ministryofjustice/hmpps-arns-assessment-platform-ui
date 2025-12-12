@@ -1,7 +1,6 @@
-import { journey, loadTransition, step, block } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
+import { journey, loadTransition, createFormPackage } from '@form-engine/form/builders'
 import { hubStep } from './steps/hub/step'
-import { DeveloperGuideEffects } from './effects'
+import { DeveloperGuideEffects, createDeveloperGuideEffectsRegistry } from './effects'
 
 // Journeys & Steps module
 import { introStep as journeysIntroStep } from './steps/journeys-and-steps/intro'
@@ -14,8 +13,23 @@ import { introStep as blocksIntroStep } from './steps/blocks-and-fields/intro'
 import { blocksStep } from './steps/blocks-and-fields/blocks'
 import { fieldsStep } from './steps/blocks-and-fields/fields'
 
+// References module
+import { introStep as referencesIntroStep } from './steps/references/intro'
+import { answerStep } from './steps/references/answer'
+import { dataStep } from './steps/references/data'
+import { selfStep } from './steps/references/self'
+import { itemStep } from './steps/references/item'
+import { httpStep } from './steps/references/http'
+import { chainingStep } from './steps/references/chaining'
+
 // Conditions module
 import { introStep as conditionsIntroStep } from './steps/conditions/intro'
+import { customStep as conditionsCustomStep } from './steps/conditions/custom'
+import { introStep as conditionsPlaygroundIntroStep } from './steps/conditions/playground/intro'
+import { stringsStep as conditionsPlaygroundStringsStep } from './steps/conditions/playground/strings'
+import { numbersStep as conditionsPlaygroundNumbersStep } from './steps/conditions/playground/numbers'
+import { datesStep as conditionsPlaygroundDatesStep } from './steps/conditions/playground/dates'
+import { combinatorsStep as conditionsPlaygroundCombinatorsStep } from './steps/conditions/playground/combinators'
 
 // Validation module
 import { introStep as validationIntroStep } from './steps/validation/intro'
@@ -26,8 +40,54 @@ import { numbersStep as playgroundNumbersStep } from './steps/validation/playgro
 import { datesStep as playgroundDatesStep } from './steps/validation/playground/dates'
 import { arraysStep as playgroundArraysStep } from './steps/validation/playground/arrays'
 
+// Expressions module
+import { introStep as expressionsIntroStep } from './steps/expressions/intro'
+import { formatStep as expressionsFormatStep } from './steps/expressions/format'
+import { conditionalStep as expressionsConditionalStep } from './steps/expressions/conditional'
+import { predicatesStep as expressionsPredicatesStep } from './steps/expressions/predicates'
+import { collectionStep as expressionsCollectionStep } from './steps/expressions/collection'
+import { introStep as expressionsPlaygroundIntroStep } from './steps/expressions/playground/intro'
+import { formatStep as expressionsPlaygroundFormatStep } from './steps/expressions/playground/format'
+import { conditionalStep as expressionsPlaygroundConditionalStep } from './steps/expressions/playground/conditional'
+import { predicatesStep as expressionsPlaygroundPredicatesStep } from './steps/expressions/playground/predicates'
+import { collectionStep as expressionsPlaygroundCollectionStep } from './steps/expressions/playground/collection'
+
 // Transformers module
 import { introStep as transformersIntroStep } from './steps/transformers/intro'
+import { customStep as transformersCustomStep } from './steps/transformers/custom'
+import { introStep as transformersPlaygroundIntroStep } from './steps/transformers/playground/intro'
+import { stringsStep as transformersPlaygroundStringsStep } from './steps/transformers/playground/strings'
+import { numbersStep as transformersPlaygroundNumbersStep } from './steps/transformers/playground/numbers'
+import { arraysStep as transformersPlaygroundArraysStep } from './steps/transformers/playground/arrays'
+
+// Effects module
+import { introStep as effectsIntroStep } from './steps/effects/intro'
+import { contextStep as effectsContextStep } from './steps/effects/context'
+import { customStep as effectsCustomStep } from './steps/effects/custom'
+
+// Transitions module
+import { introStep as transitionsIntroStep } from './steps/transitions/intro'
+import { loadStep as transitionsLoadStep } from './steps/transitions/load'
+import { accessStep as transitionsAccessStep } from './steps/transitions/access'
+import { actionStep as transitionsActionStep } from './steps/transitions/action'
+import { submitStep as transitionsSubmitStep } from './steps/transitions/submit'
+import { navigationStep as transitionsNavigationStep } from './steps/transitions/navigation'
+
+// Components module
+import { introStep as componentsIntroStep } from './steps/components/intro'
+import { builtInStep as componentsBuiltInStep } from './steps/components/built-in'
+import { customStep as componentsCustomStep } from './steps/components/custom'
+import { extendingStep as componentsExtendingStep } from './steps/components/extending'
+
+// Collections module
+import { introStep as collectionsIntroStep } from './steps/collections/intro'
+import { iterationStep as collectionsIterationStep } from './steps/collections/iteration'
+import { hubSpokeStep as collectionsHubSpokeStep } from './steps/collections/hub-spoke'
+import { effectsStep as collectionsEffectsStep } from './steps/collections/effects'
+import { introStep as collectionsPlaygroundIntroStep } from './steps/collections/playground/intro'
+import { iterationStep as collectionsPlaygroundIterationStep } from './steps/collections/playground/iteration'
+import { hubStep as collectionsPlaygroundHubStep } from './steps/collections/playground/hub'
+import { editStep as collectionsPlaygroundEditStep } from './steps/collections/playground/edit'
 
 /**
  * Form Engine Developer Guide
@@ -49,9 +109,10 @@ import { introStep as transformersIntroStep } from './steps/transformers/intro'
  * 7. Transformers - value pipelines
  * 8. Effects - lifecycle side effects
  * 9. Transitions - load/submit handling
- * 10. Collections - hub-and-spoke item management
+ * 10. Components - building and extending UI components
+ * 11. Collections - hub-and-spoke item management
  */
-export default journey({
+const developerGuideJourney = journey({
   code: 'form-engine-developer-guide',
   title: 'Form Engine Developer Guide',
   path: '/form-engine-developer-guide',
@@ -61,7 +122,7 @@ export default journey({
     }),
   ],
   view: {
-    template: 'partials/form-step',
+    template: 'aap-developer-guide/views/template',
   },
   steps: [hubStep],
   children: [
@@ -98,47 +159,52 @@ export default journey({
 
     /**
      * Concept 3: References
+     *
+     * Multi-step module covering:
+     * - Introduction to references and their purpose
+     * - Answer() for field values
+     * - Data() for external data
+     * - Self() for current field scope
+     * - Item() for collection iteration
+     * - Params(), Query(), Post() for HTTP request data
+     * - Chaining with .pipe(), .match(), Format(), Conditional()
      */
     journey({
       code: 'references',
       title: 'References',
       path: '/references',
-      steps: [
-        step({
-          path: '/intro',
-          title: 'Understanding References',
-          blocks: [
-            block<HtmlBlock>({
-              variant: 'html',
-              content: `
-                <h1 class="govuk-heading-l">References</h1>
-                <p class="govuk-body-l">
-                  <strong>References</strong> point to data in the form engine.
-                  They get resolved at runtime to retrieve actual values.
-                </p>
-                <p class="govuk-body">
-                  This section is under construction. Check back soon for the full content.
-                </p>
-                <p class="govuk-body">
-                  <a href="/forms/form-engine-developer-guide/hub" class="govuk-link">&larr; Back to Guide Hub</a>
-                </p>
-              `,
-            }),
-          ],
-        }),
-      ],
+      steps: [referencesIntroStep, answerStep, dataStep, selfStep, itemStep, httpStep, chainingStep],
     }),
 
     /**
      * Concept 4: Conditions
      *
-     * Complete reference of all condition types and combining conditions.
+     * Complete reference of all condition types, combining conditions, and building custom conditions.
      */
     journey({
       code: 'conditions',
       title: 'Conditions',
       path: '/conditions',
-      steps: [conditionsIntroStep],
+      steps: [conditionsIntroStep, conditionsCustomStep],
+      children: [
+        /**
+         * Conditions Playground
+         *
+         * Interactive examples showing conditions with dynamic content.
+         */
+        journey({
+          code: 'playground',
+          title: 'Conditions Playground',
+          path: '/playground',
+          steps: [
+            conditionsPlaygroundIntroStep,
+            conditionsPlaygroundStringsStep,
+            conditionsPlaygroundNumbersStep,
+            conditionsPlaygroundDatesStep,
+            conditionsPlaygroundCombinatorsStep,
+          ],
+        }),
+      ],
     }),
 
     /**
@@ -177,32 +243,41 @@ export default journey({
 
     /**
      * Concept 6: Expressions
+     *
+     * Multi-step module covering:
+     * - Introduction to expressions
+     * - Format() string interpolation
+     * - when()/Conditional() if/then/else logic
+     * - Predicate combinators (and, or, xor, not)
+     * - Collection() iteration
      */
     journey({
       code: 'expressions',
       title: 'Expressions',
       path: '/expressions',
       steps: [
-        step({
-          path: '/intro',
-          title: 'Understanding Expressions',
-          blocks: [
-            block<HtmlBlock>({
-              variant: 'html',
-              content: `
-                <h1 class="govuk-heading-l">Expressions</h1>
-                <p class="govuk-body-l">
-                  <strong>Expressions</strong> compute values dynamically.
-                  Format text, apply conditional logic, and transform data.
-                </p>
-                <p class="govuk-body">
-                  This section is under construction. Check back soon for the full content.
-                </p>
-                <p class="govuk-body">
-                  <a href="/forms/form-engine-developer-guide/hub" class="govuk-link">&larr; Back to Guide Hub</a>
-                </p>
-              `,
-            }),
+        expressionsIntroStep,
+        expressionsFormatStep,
+        expressionsConditionalStep,
+        expressionsPredicatesStep,
+        expressionsCollectionStep,
+      ],
+      children: [
+        /**
+         * Expressions Playground
+         *
+         * Interactive examples where users can test expressions in real time.
+         */
+        journey({
+          code: 'playground',
+          title: 'Expressions Playground',
+          path: '/playground',
+          steps: [
+            expressionsPlaygroundIntroStep,
+            expressionsPlaygroundFormatStep,
+            expressionsPlaygroundConditionalStep,
+            expressionsPlaygroundPredicatesStep,
+            expressionsPlaygroundCollectionStep,
           ],
         }),
       ],
@@ -212,111 +287,126 @@ export default journey({
      * Concept 7: Transformers
      *
      * How to use formatters/transformers to clean and normalise field values.
+     * Includes building custom transformers with dependency injection.
      */
     journey({
       code: 'transformers',
       title: 'Transformers',
       path: '/transformers',
-      steps: [transformersIntroStep],
-    }),
-
-    /**
-     * Concept 8: Effects
-     */
-    journey({
-      code: 'effects',
-      title: 'Effects',
-      path: '/effects',
-      steps: [
-        step({
-          path: '/intro',
-          title: 'Understanding Effects',
-          blocks: [
-            block<HtmlBlock>({
-              variant: 'html',
-              content: `
-                <h1 class="govuk-heading-l">Effects</h1>
-                <p class="govuk-body-l">
-                  <strong>Effects</strong> are functions that run at specific lifecycle points.
-                  Load data, save answers, call APIs, and manage side effects.
-                </p>
-                <p class="govuk-body">
-                  This section is under construction. Check back soon for the full content.
-                </p>
-                <p class="govuk-body">
-                  <a href="/forms/form-engine-developer-guide/hub" class="govuk-link">&larr; Back to Guide Hub</a>
-                </p>
-              `,
-            }),
+      steps: [transformersIntroStep, transformersCustomStep],
+      children: [
+        /**
+         * Transformers Playground
+         *
+         * Interactive examples where users can test transformers in real time.
+         */
+        journey({
+          code: 'playground',
+          title: 'Transformers Playground',
+          path: '/playground',
+          steps: [
+            transformersPlaygroundIntroStep,
+            transformersPlaygroundStringsStep,
+            transformersPlaygroundNumbersStep,
+            transformersPlaygroundArraysStep,
           ],
         }),
       ],
     }),
 
     /**
+     * Concept 8: Effects
+     *
+     * How to create and use effect functions for side effects during form processing.
+     * Covers the context API and building custom effects with dependency injection.
+     */
+    journey({
+      code: 'effects',
+      title: 'Effects',
+      path: '/effects',
+      steps: [effectsIntroStep, effectsContextStep, effectsCustomStep],
+    }),
+
+    /**
      * Concept 9: Transitions
+     *
+     * Multi-step module covering:
+     * - Introduction and lifecycle overview
+     * - loadTransition() for data loading
+     * - accessTransition() for access control
+     * - actionTransition() for in-page actions
+     * - submitTransition() for form submission
+     * - next() and navigation patterns
      */
     journey({
       code: 'transitions',
       title: 'Transitions',
       path: '/transitions',
       steps: [
-        step({
-          path: '/intro',
-          title: 'Understanding Transitions',
-          blocks: [
-            block<HtmlBlock>({
-              variant: 'html',
-              content: `
-                <h1 class="govuk-heading-l">Transitions</h1>
-                <p class="govuk-body-l">
-                  <strong>Transitions</strong> control what happens on load and submit.
-                  Run effects, validate input, and navigate between steps.
-                </p>
-                <p class="govuk-body">
-                  This section is under construction. Check back soon for the full content.
-                </p>
-                <p class="govuk-body">
-                  <a href="/forms/form-engine-developer-guide/hub" class="govuk-link">&larr; Back to Guide Hub</a>
-                </p>
-              `,
-            }),
-          ],
-        }),
+        transitionsIntroStep,
+        transitionsLoadStep,
+        transitionsAccessStep,
+        transitionsActionStep,
+        transitionsSubmitStep,
+        transitionsNavigationStep,
       ],
     }),
 
     /**
-     * Concept 10: Collections
+     * Concept 10: Components
+     *
+     * Multi-step module covering:
+     * - Understanding block() vs field()
+     * - Built-in component packages (Core, GOV.UK, MOJ)
+     * - Building custom components
+     * - Extending and wrapping existing components
+     */
+    journey({
+      code: 'components',
+      title: 'Components',
+      path: '/components',
+      steps: [componentsIntroStep, componentsBuiltInStep, componentsCustomStep, componentsExtendingStep],
+    }),
+
+    /**
+     * Concept 11: Collections
+     *
+     * Multi-step module covering:
+     * - Collection iteration with Collection() and Item()
+     * - Hub-and-spoke architecture for CRUD operations
+     * - Effects for collection management
+     * - Interactive playground with fully working CRUD demo
      */
     journey({
       code: 'collections',
       title: 'Collections',
       path: '/collections',
-      steps: [
-        step({
-          path: '/intro',
-          title: 'Understanding Collections',
-          blocks: [
-            block<HtmlBlock>({
-              variant: 'html',
-              content: `
-                <h1 class="govuk-heading-l">Collections</h1>
-                <p class="govuk-body-l">
-                  <strong>Collections</strong> manage lists of items using hub-and-spoke pattern.
-                  Add, edit, and remove items with dedicated edit pages.
-                </p>
-                <p class="govuk-body">
-                  This section is under construction. Check back soon for the full content.
-                </p>
-                <p class="govuk-body">
-                  <a href="/forms/form-engine-developer-guide/hub" class="govuk-link">&larr; Back to Guide Hub</a>
-                </p>
-              `,
-            }),
+      steps: [collectionsIntroStep, collectionsIterationStep, collectionsHubSpokeStep, collectionsEffectsStep],
+      children: [
+        /**
+         * Collections Playground
+         *
+         * Interactive examples including a fully working task manager demo.
+         */
+        journey({
+          code: 'playground',
+          title: 'Collections Playground',
+          path: '/playground',
+          steps: [
+            collectionsPlaygroundIntroStep,
+            collectionsPlaygroundIterationStep,
+            collectionsPlaygroundHubStep,
+            collectionsPlaygroundEditStep,
           ],
         }),
       ],
     }),
   ],
+})
+
+export default createFormPackage({
+  journey: developerGuideJourney,
+  createRegistries: () => ({
+    ...createDeveloperGuideEffectsRegistry({}),
+  }),
 })

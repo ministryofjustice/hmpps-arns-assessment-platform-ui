@@ -72,17 +72,16 @@ export const introStep = step({
           Forms follow a strict containment hierarchy:
         </p>
 
-        <div class="govuk-inset-text" style="font-family: monospace; white-space: pre;">
-Journey
-  \u251c\u2500\u2500 Step
-  \u2502     \u251c\u2500\u2500 Block (display content)
-  \u2502     \u251c\u2500\u2500 Field (collect input)
-  \u2502     \u2514\u2500\u2500 Field
-  \u251c\u2500\u2500 Step
-  \u2502     \u2514\u2500\u2500 Block
-  \u2514\u2500\u2500 Child Journey (optional)
-        \u2514\u2500\u2500 Step
-              \u2514\u2500\u2500 Block</div>
+        <pre><code>Journey
+├── Step
+│     ├── Block (display content)
+│     ├── Field (collect input)
+│     └── Field
+├── Step
+│     └── Block
+└── Child Journey (optional)
+      └── Step
+            └── Block</code></pre>
 
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
@@ -92,13 +91,11 @@ Journey
           Look at the URL for this page. It demonstrates how paths compose:
         </p>
 
-        <div class="govuk-panel govuk-panel--confirmation" style="background: #f3f2f1; color: #0b0c0c; text-align: left;">
-          <p class="govuk-body" style="margin-bottom: 15px;">
-            <strong>Current URL:</strong>
+        <div class="govuk-inset-text">
+          <p class="govuk-body"><strong>Current URL:</strong></p>
+          <p class="govuk-body">
+            <code>/forms/form-engine-developer-guide/journeys-and-steps/intro</code>
           </p>
-          <code style="font-size: 1rem; word-break: break-all;">
-            /forms/form-engine-developer-guide/journeys-and-steps/intro
-          </code>
         </div>
 
         <table class="govuk-table">

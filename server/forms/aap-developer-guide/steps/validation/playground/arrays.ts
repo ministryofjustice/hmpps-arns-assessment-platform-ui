@@ -3,12 +3,8 @@ import { Condition } from '@form-engine/registry/conditions'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { CodeBlock } from '@form-engine/registry/components/codeBlock'
-import {
-  GovUKCheckboxInput,
-  GovUKDetails,
-  GovUKPagination,
-  GovUKButton,
-} from '@form-engine-govuk-components/components'
+import { GovUKCheckboxInput, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
+import { exampleBox } from '../../../helpers/exampleBox'
 
 /**
  * Validation Playground - Arrays
@@ -21,8 +17,6 @@ export const arraysStep = step({
   onSubmission: [
     submitTransition({
       validate: true,
-      onValid: {},
-      onInvalid: {},
     }),
   ],
   blocks: [
@@ -53,27 +47,29 @@ export const arraysStep = step({
       `,
     }),
 
-    field<GovUKCheckboxInput>({
-      variant: 'govukCheckboxInput',
-      code: 'playground_required_array',
-      multiple: true,
-      fieldset: {
-        legend: { text: 'What are you interested in?' },
-      },
-      items: [
-        { value: 'sports', text: 'Sports' },
-        { value: 'music', text: 'Music' },
-        { value: 'art', text: 'Art' },
-        { value: 'technology', text: 'Technology' },
-        { value: 'travel', text: 'Travel' },
-      ],
-      validate: [
-        validation({
-          when: Self().not.match(Condition.IsRequired()),
-          message: 'Select at least one interest',
-        }),
-      ],
-    }),
+    exampleBox([
+      field<GovUKCheckboxInput>({
+        variant: 'govukCheckboxInput',
+        code: 'playground_required_array',
+        multiple: true,
+        fieldset: {
+          legend: { text: 'Select your interests' },
+        },
+        items: [
+          { value: 'sports', text: 'Sports' },
+          { value: 'music', text: 'Music' },
+          { value: 'art', text: 'Art' },
+          { value: 'technology', text: 'Technology' },
+          { value: 'travel', text: 'Travel' },
+        ],
+        validate: [
+          validation({
+            when: Self().not.match(Condition.IsRequired()),
+            message: 'Select at least one interest',
+          }),
+        ],
+      }),
+    ]),
 
     block<GovUKDetails>({
       variant: 'govukDetails',
@@ -119,25 +115,27 @@ export const arraysStep = step({
       `,
     }),
 
-    field<GovUKCheckboxInput>({
-      variant: 'govukCheckboxInput',
-      code: 'playground_contains_array',
-      multiple: true,
-      fieldset: {
-        legend: { text: 'Please confirm you have read the following:' },
-      },
-      items: [
-        { value: 'privacy', text: 'Privacy policy' },
-        { value: 'terms', text: 'Terms and conditions' },
-        { value: 'newsletter', text: 'Subscribe to newsletter (optional)' },
-      ],
-      validate: [
-        validation({
-          when: Self().not.match(Condition.Array.Contains('terms')),
-          message: 'You must accept the terms and conditions',
-        }),
-      ],
-    }),
+    exampleBox([
+      field<GovUKCheckboxInput>({
+        variant: 'govukCheckboxInput',
+        code: 'playground_contains_array',
+        multiple: true,
+        fieldset: {
+          legend: { text: 'Please confirm you have read the following:' },
+        },
+        items: [
+          { value: 'privacy', text: 'Privacy policy' },
+          { value: 'terms', text: 'Terms and conditions' },
+          { value: 'newsletter', text: 'Subscribe to newsletter (optional)' },
+        ],
+        validate: [
+          validation({
+            when: Self().not.match(Condition.Array.Contains('terms')),
+            message: 'You must accept the terms and conditions',
+          }),
+        ],
+      }),
+    ]),
 
     block<GovUKDetails>({
       variant: 'govukDetails',
@@ -181,34 +179,38 @@ export const arraysStep = step({
       `,
     }),
 
-    field<GovUKCheckboxInput>({
-      variant: 'govukCheckboxInput',
-      code: 'playground_contains_any_array',
-      multiple: true,
-      fieldset: {
-        legend: { text: 'Which days are you available?' },
-      },
-      hint: 'Select at least one weekday',
-      items: [
-        { value: 'monday', text: 'Monday' },
-        { value: 'tuesday', text: 'Tuesday' },
-        { value: 'wednesday', text: 'Wednesday' },
-        { value: 'thursday', text: 'Thursday' },
-        { value: 'friday', text: 'Friday' },
-        { value: 'saturday', text: 'Saturday' },
-        { value: 'sunday', text: 'Sunday' },
-      ],
-      validate: [
-        validation({
-          when: Self().not.match(Condition.IsRequired()),
-          message: 'Select at least one day',
-        }),
-        validation({
-          when: Self().not.match(Condition.Array.ContainsAny(['monday', 'tuesday', 'wednesday', 'thursday', 'friday'])),
-          message: 'Select at least one weekday (Monday to Friday)',
-        }),
-      ],
-    }),
+    exampleBox([
+      field<GovUKCheckboxInput>({
+        variant: 'govukCheckboxInput',
+        code: 'playground_contains_any_array',
+        multiple: true,
+        fieldset: {
+          legend: { text: 'Which days are you available?' },
+        },
+        hint: 'Select at least one weekday',
+        items: [
+          { value: 'monday', text: 'Monday' },
+          { value: 'tuesday', text: 'Tuesday' },
+          { value: 'wednesday', text: 'Wednesday' },
+          { value: 'thursday', text: 'Thursday' },
+          { value: 'friday', text: 'Friday' },
+          { value: 'saturday', text: 'Saturday' },
+          { value: 'sunday', text: 'Sunday' },
+        ],
+        validate: [
+          validation({
+            when: Self().not.match(Condition.IsRequired()),
+            message: 'Select at least one day',
+          }),
+          validation({
+            when: Self().not.match(
+              Condition.Array.ContainsAny(['monday', 'tuesday', 'wednesday', 'thursday', 'friday']),
+            ),
+            message: 'Select at least one weekday (Monday to Friday)',
+          }),
+        ],
+      }),
+    ]),
 
     block<GovUKDetails>({
       variant: 'govukDetails',
@@ -262,32 +264,34 @@ export const arraysStep = step({
       `,
     }),
 
-    field<GovUKCheckboxInput>({
-      variant: 'govukCheckboxInput',
-      code: 'playground_contains_all_array',
-      multiple: true,
-      fieldset: {
-        legend: { text: 'Select your meals (vegetarian menu only)' },
-      },
-      hint: 'Only vegetarian options are available',
-      items: [
-        { value: 'salad', text: 'Garden Salad' },
-        { value: 'soup', text: 'Vegetable Soup' },
-        { value: 'pasta', text: 'Pasta Primavera' },
-        { value: 'steak', text: 'Beef Steak (not available)' },
-        { value: 'chicken', text: 'Grilled Chicken (not available)' },
-      ],
-      validate: [
-        validation({
-          when: Self().not.match(Condition.IsRequired()),
-          message: 'Select at least one meal',
-        }),
-        validation({
-          when: Self().not.match(Condition.Array.ContainsAll(['salad', 'soup', 'pasta'])),
-          message: 'Only vegetarian options (salad, soup, pasta) are available',
-        }),
-      ],
-    }),
+    exampleBox([
+      field<GovUKCheckboxInput>({
+        variant: 'govukCheckboxInput',
+        code: 'playground_contains_all_array',
+        multiple: true,
+        fieldset: {
+          legend: { text: 'Select your meals (vegetarian menu only)' },
+        },
+        hint: 'Only vegetarian options are available',
+        items: [
+          { value: 'salad', text: 'Garden Salad' },
+          { value: 'soup', text: 'Vegetable Soup' },
+          { value: 'pasta', text: 'Pasta Primavera' },
+          { value: 'steak', text: 'Beef Steak (not available)' },
+          { value: 'chicken', text: 'Grilled Chicken (not available)' },
+        ],
+        validate: [
+          validation({
+            when: Self().not.match(Condition.IsRequired()),
+            message: 'Select at least one meal',
+          }),
+          validation({
+            when: Self().not.match(Condition.Array.ContainsAll(['salad', 'soup', 'pasta'])),
+            message: 'Only vegetarian options (salad, soup, pasta) are available',
+          }),
+        ],
+      }),
+    ]),
 
     block<GovUKDetails>({
       variant: 'govukDetails',
@@ -324,14 +328,6 @@ export const arraysStep = step({
 })`,
         }),
       ],
-    }),
-
-    // Submit button
-    block<GovUKButton>({
-      variant: 'govukButton',
-      text: 'Test validation',
-      name: 'action',
-      value: 'continue',
     }),
 
     // Navigation

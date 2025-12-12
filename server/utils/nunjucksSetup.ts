@@ -42,6 +42,8 @@ export default function nunjucksSetup(app?: express.Express) {
     [
       path.join(__dirname, 'server/views'),
       path.join(__dirname, '../../server/views'),
+      path.join(__dirname, 'server/forms'),
+      path.join(__dirname, '../../server/forms'),
       path.join(__dirname, 'packages/form-engine/src/diagnostics/inspector/templates'),
       path.join(__dirname, '../../packages/form-engine/src/diagnostics/inspector/templates'),
       'packages/form-engine-moj-components/src/',
@@ -51,7 +53,6 @@ export default function nunjucksSetup(app?: express.Express) {
     {
       autoescape: true,
       express: app,
-      noCache: process.env.NODE_ENV !== 'production',
     },
   )
 

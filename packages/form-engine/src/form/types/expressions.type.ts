@@ -1,4 +1,5 @@
 import { FunctionType, ExpressionType, LogicType, TransitionType } from './enums'
+import type { ChainableExpr, ChainableRef } from '../builders/types'
 
 /**
  * Represents a reference to a value in the form context.
@@ -248,14 +249,14 @@ export interface EffectFunctionExpr<A extends ValueExpr[] = ValueExpr[]> extends
  *   fallback: [{ type: 'StructureType.Block', variant: 'html', content: 'No items found' }]
  * }
  */
-export interface CollectionExpr<T = any> {
+export interface CollectionExpr<T = any, F = T> {
   type: ExpressionType.COLLECTION
 
   /**
    * The data source to iterate over.
    * Can be a reference expression or a static array.
    */
-  collection: ReferenceExpr | PipelineExpr | any[]
+  collection: ReferenceExpr | PipelineExpr | ChainableRef | ChainableExpr<any> | any[]
 
   /**
    * Template blocks to render for each item in the collection.
@@ -265,8 +266,9 @@ export interface CollectionExpr<T = any> {
 
   /**
    * Optional fallback blocks to render when the collection is empty.
+   * Can be a different block type than the template.
    */
-  fallback?: T[]
+  fallback?: F[]
 }
 
 /**
@@ -524,26 +526,90 @@ export interface LoadTransition {
 }
 
 /**
- * Lifecycle transition for access control and non-loading effects.
- * Runs after data loading, before rendering.
+ * Base interface for access transitions.
+ * Guards define denial conditions - when TRUE, access is DENIED.
  */
-export interface AccessTransition {
+interface AccessTransitionBase {
   type: TransitionType.ACCESS
-  /** Guard conditions that must be met to access this step/journey */
+  /** Guard conditions - when TRUE, access is DENIED and redirect/error triggers */
   guards?: PredicateExpr
-
-  /** Optional effects to execute (analytics, logging, etc.) */
+  /** Optional effects to execute before redirect/error (analytics, logging, etc.) */
   effects?: EffectFunctionExpr<any>[]
-
-  /** Navigation rules if guards fail */
-  redirect?: NextExpr[]
 }
 
 /**
- * Base interface for submission transition types.
- * Submission transitions control how users move between steps when submitting forms.
+ * Access transition that redirects to another page when guards match.
+ * Use for cases like redirecting to login or a prerequisite step.
  */
-interface SubmitTransitionBase {
+interface AccessTransitionRedirect extends AccessTransitionBase {
+  /** Navigation rules when guards match (access denied) */
+  redirect: NextExpr[]
+  status?: never
+  message?: never
+}
+
+/**
+ * Access transition that returns an HTTP error response when guards match.
+ * Use for cases like 404 Not Found or 403 Forbidden.
+ */
+interface AccessTransitionError extends AccessTransitionBase {
+  redirect?: never
+  /** HTTP status code to return (e.g., 401, 403, 404) */
+  status: number
+  /** Error message to display - can be static string or dynamic expression like Format() */
+  message: string | ValueExpr
+}
+
+/**
+ * Lifecycle transition for access control.
+ * Runs after data loading, before rendering.
+ *
+ * Either redirects to another page OR returns an HTTP error response.
+ * TypeScript enforces that redirect and status/message are mutually exclusive.
+ */
+export type AccessTransition = AccessTransitionRedirect | AccessTransitionError
+
+/**
+ * Lifecycle transition for data submission.
+ * Runs after data loading, on form submission.
+ *
+ * @example
+ * // Simple validation - validate and re-render on failure
+ * submitTransition({ validate: true })
+ *
+ * @example
+ * // Standard form progression with validation
+ * submitTransition({
+ *   validate: true,
+ *   onValid: {
+ *     effects: [MyEffects.save()],
+ *     next: [next({ goto: '/next-step' })]
+ *   }
+ * })
+ *
+ * @example
+ * // Skip validation (drafts, collection operations)
+ * submitTransition({
+ *   validate: false,
+ *   onAlways: {
+ *     effects: [MyEffects.saveDraft()],
+ *     next: [next({ goto: '/dashboard' })]
+ *   }
+ * })
+ *
+ * @example
+ * // With onAlways for effects that run regardless of validation result
+ * submitTransition({
+ *   validate: true,
+ *   onAlways: {
+ *     effects: [MyEffects.logSubmission()]
+ *   },
+ *   onValid: {
+ *     next: [next({ goto: '/next-step' })]
+ *   }
+ * })
+ */
+export interface SubmitTransition {
   type: TransitionType.SUBMIT
 
   /**
@@ -557,107 +623,48 @@ interface SubmitTransitionBase {
    * Guards act as a security layer, preventing transitions in certain states.
    */
   guards?: PredicateExpr
-}
-
-/**
- * Represents a transition that skips validation.
- * Used for operations that don't require data validation,
- * such as saving drafts or managing collections.
- *
- * @example
- * // Save draft without validation
- * {
- *   type: 'transition',
- *   when: { type: 'test', subject: {...}, condition: {...} },
- *   validate: false,
- *   onAlways: {
- *     effects: [{ type: 'FunctionType.Effect', name: 'save', arguments: [{ draft: true }] }],
- *     next: [{ goto: '/dashboard' }]
- *   }
- * }
- */
-export interface SkipValidationTransition extends SubmitTransitionBase {
-  /** Must be false to skip validation */
-  validate: false
-
-  /** Actions to execute */
-  onAlways: {
-    /** Optional effects to execute (save, manipulate collections, etc.) */
-    effects?: EffectFunctionExpr<any>[]
-
-    /** Optional navigation rules for where to go next */
-    next?: NextExpr[]
-  }
-
-  onValid?: never
-  onInvalid?: never
-}
-
-/**
- * Represents a transition that validates form fields before proceeding.
- *
- * @example
- * // Standard form progression with validation
- * {
- *   type: 'transition',
- *   when: { type: 'test', subject: {...}, condition: {...} },
- *   validate: true,
- *   onValid: {
- *     effects: [{ type: 'FunctionType.Effect', name: 'save', arguments: [] }],
- *     next: [{ goto: '/next-step' }]
- *   },
- *   onInvalid: {
- *     next: [{ goto: '/current-step' }]
- *   }
- * }
- *
- * @example
- * // With onAlways for effects that run before validation
- * {
- *   type: 'transition',
- *   validate: true,
- *   onAlways: {
- *     effects: [{ type: 'FunctionType.Effect', name: 'log', arguments: ['submission attempt'] }]
- *   },
- *   onValid: {...},
- *   onInvalid: {...}
- * }
- */
-export interface ValidatingTransition extends SubmitTransitionBase {
-  /** Must be true to trigger validation */
-  validate: true
 
   /**
-   * Optional actions to execute before validation occurs.
-   * Useful for logging or preparatory effects.
+   * Whether to validate form fields before proceeding.
+   * When true, routes to onValid or onInvalid based on validation result.
+   * When false (default), skips validation and uses onAlways.
+   */
+  validate?: boolean
+
+  /**
+   * Actions to execute regardless of validation result.
+   * When validate is false, this is the only branch that executes.
+   * When validate is true, this runs before routing to onValid/onInvalid.
    */
   onAlways?: {
-    /** Effects to execute before validation */
+    /** Effects to execute */
     effects?: EffectFunctionExpr<any>[]
-  }
-
-  /** Actions to execute when validation passes. */
-  onValid: {
-    /** Optional effects to execute */
-    effects?: EffectFunctionExpr<any>[]
-    /** Optional navigation rules on successful validation */
+    /** Navigation rules */
     next?: NextExpr[]
   }
 
-  /** Actions to execute when validation fails. */
-  onInvalid: {
-    /** Optional effects to execute */
+  /**
+   * Actions to execute when validation passes.
+   * Only meaningful when validate is true.
+   */
+  onValid?: {
+    /** Effects to execute */
     effects?: EffectFunctionExpr<any>[]
-    /** Optional navigation rules on failed validation */
+    /** Navigation rules on successful validation */
+    next?: NextExpr[]
+  }
+
+  /**
+   * Actions to execute when validation fails.
+   * Only meaningful when validate is true.
+   */
+  onInvalid?: {
+    /** Effects to execute */
+    effects?: EffectFunctionExpr<any>[]
+    /** Navigation rules on failed validation */
     next?: NextExpr[]
   }
 }
-
-/**
- * Lifecycle transition for data submission.
- * Runs after data loading, on form submission.
- */
-export type SubmitTransition = SkipValidationTransition | ValidatingTransition
 
 /**
  * Lifecycle transition for in-page actions.

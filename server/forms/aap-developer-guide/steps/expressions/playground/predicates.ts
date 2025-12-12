@@ -1,0 +1,516 @@
+import {
+  step,
+  block,
+  field,
+  validation,
+  Self,
+  Answer,
+  Format,
+  submitTransition,
+  and,
+  or,
+  not,
+} from '@form-engine/form/builders'
+import { Condition } from '@form-engine/registry/conditions'
+import { HtmlBlock } from '@form-engine/registry/components/html'
+import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { CodeBlock } from '@form-engine/registry/components/codeBlock'
+import {
+  GovUKTextInput,
+  GovUKDetails,
+  GovUKPagination,
+  GovUKRadioInput,
+  GovUKCheckboxInput,
+} from '@form-engine-govuk-components/components'
+import { exampleBox } from '../../../helpers/exampleBox'
+
+/**
+ * Expressions Playground - Predicates
+ *
+ * Interactive examples of and(), or(), not() predicate combinators.
+ */
+export const predicatesStep = step({
+  path: '/predicates',
+  title: 'Predicates Playground',
+  onSubmission: [
+    submitTransition({
+      validate: true,
+    }),
+  ],
+  blocks: [
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <h1 class="govuk-heading-l">Predicates Playground</h1>
+
+        <p class="govuk-body-l">
+          Try these interactive examples to see <code>and()</code>, <code>or()</code>,
+          and <code>not()</code> in action. These combinators let you build complex
+          visibility and validation rules.
+        </p>
+      `,
+    }),
+
+    // and() - Both conditions
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h2 class="govuk-heading-m">and() - Both Conditions Must Be True</h2>
+        <p class="govuk-body">
+          The confirmation message only appears when <strong>both</strong> questions
+          are answered "Yes". Try different combinations.
+        </p>
+      `,
+    }),
+
+    exampleBox([
+      field<GovUKRadioInput>({
+        variant: 'govukRadioInput',
+        code: 'playground_pred_terms',
+        fieldset: {
+          legend: { text: 'Do you agree to the terms and conditions?' },
+        },
+        items: [
+          { value: 'yes', text: 'Yes, I agree' },
+          { value: 'no', text: 'No, I do not agree' },
+        ],
+      }),
+
+      field<GovUKRadioInput>({
+        variant: 'govukRadioInput',
+        code: 'playground_pred_privacy',
+        fieldset: {
+          legend: { text: 'Do you agree to the privacy policy?' },
+        },
+        items: [
+          { value: 'yes', text: 'Yes, I agree' },
+          { value: 'no', text: 'No, I do not agree' },
+        ],
+      }),
+
+      block<HtmlBlock>({
+        variant: 'html',
+        hidden: not(
+          and(
+            Answer('playground_pred_terms').match(Condition.Equals('yes')),
+            Answer('playground_pred_privacy').match(Condition.Equals('yes')),
+          ),
+        ),
+        content: `
+          <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+            <h2 class="govuk-panel__title">Ready to proceed</h2>
+            <div class="govuk-panel__body">
+              Both agreements accepted. You can now continue.
+            </div>
+          </div>
+        `,
+      }),
+
+      block<HtmlBlock>({
+        variant: 'html',
+        hidden: and(
+          Answer('playground_pred_terms').match(Condition.Equals('yes')),
+          Answer('playground_pred_privacy').match(Condition.Equals('yes')),
+        ),
+        content: `
+          <div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+            <strong>Status:</strong> You must agree to both the terms and privacy policy to continue.
+          </div>
+        `,
+      }),
+    ]),
+
+    block<GovUKDetails>({
+      variant: 'govukDetails',
+      summaryText: 'View code',
+      content: [
+        block<CodeBlock>({
+          variant: 'codeBlock',
+          language: 'typescript',
+          code: `// Show when BOTH are "yes" - use not() to invert
+hidden: not(
+  and(
+    Answer('terms').match(Condition.Equals('yes')),
+    Answer('privacy').match(Condition.Equals('yes'))
+  )
+)
+
+// Hide when BOTH are "yes" - and() directly
+hidden: and(
+  Answer('terms').match(Condition.Equals('yes')),
+  Answer('privacy').match(Condition.Equals('yes'))
+)`,
+        }),
+      ],
+    }),
+
+    // or() - Any condition
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h2 class="govuk-heading-m">or() - At Least One Condition Must Be True</h2>
+        <p class="govuk-body">
+          The admin panel only appears for users with "Admin" or "Manager" role.
+          Select different roles to see the panel show/hide.
+        </p>
+      `,
+    }),
+
+    exampleBox([
+      field<GovUKRadioInput>({
+        variant: 'govukRadioInput',
+        code: 'playground_pred_role',
+        fieldset: {
+          legend: { text: 'What is your role?' },
+        },
+        items: [
+          { value: 'admin', text: 'Admin' },
+          { value: 'manager', text: 'Manager' },
+          { value: 'staff', text: 'Staff' },
+          { value: 'guest', text: 'Guest' },
+        ],
+      }),
+
+      block<HtmlBlock>({
+        variant: 'html',
+        hidden: not(
+          or(
+            Answer('playground_pred_role').match(Condition.Equals('admin')),
+            Answer('playground_pred_role').match(Condition.Equals('manager')),
+          ),
+        ),
+        content: `
+          <div class="govuk-warning-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+              <span class="govuk-visually-hidden">Warning</span>
+              Admin Panel Access - You have elevated permissions.
+            </strong>
+          </div>
+        `,
+      }),
+
+      block<HtmlBlock>({
+        variant: 'html',
+        hidden: or(
+          Answer('playground_pred_role').match(Condition.Equals('admin')),
+          Answer('playground_pred_role').match(Condition.Equals('manager')),
+        ),
+        content: `
+          <div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+            <strong>Note:</strong> Admin features are not available for your role.
+            Contact an administrator if you need elevated access.
+          </div>
+        `,
+      }),
+    ]),
+
+    block<GovUKDetails>({
+      variant: 'govukDetails',
+      summaryText: 'View code',
+      content: [
+        block<CodeBlock>({
+          variant: 'codeBlock',
+          language: 'typescript',
+          code: `// Show admin panel when admin OR manager - use not() to invert
+hidden: not(
+  or(
+    Answer('role').match(Condition.Equals('admin')),
+    Answer('role').match(Condition.Equals('manager'))
+  )
+)
+
+// Hide when admin OR manager - or() directly
+hidden: or(
+  Answer('role').match(Condition.Equals('admin')),
+  Answer('role').match(Condition.Equals('manager'))
+)`,
+        }),
+      ],
+    }),
+
+    // Combining and() + or()
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h2 class="govuk-heading-m">Combining and() + or()</h2>
+        <p class="govuk-body">
+          Complex logic: The discount code field appears for Premium members
+          <strong>OR</strong> for Standard members who have opted in to marketing.
+        </p>
+      `,
+    }),
+
+    exampleBox([
+      field<GovUKRadioInput>({
+        variant: 'govukRadioInput',
+        code: 'playground_pred_membership',
+        fieldset: {
+          legend: { text: 'Membership level' },
+        },
+        items: [
+          { value: 'premium', text: 'Premium' },
+          { value: 'standard', text: 'Standard' },
+          { value: 'basic', text: 'Basic' },
+        ],
+      }),
+
+      field<GovUKRadioInput>({
+        variant: 'govukRadioInput',
+        code: 'playground_pred_marketing',
+        fieldset: {
+          legend: { text: 'Would you like to receive marketing emails?' },
+        },
+        items: [
+          { value: 'yes', text: 'Yes' },
+          { value: 'no', text: 'No' },
+        ],
+        hidden: Answer('playground_pred_membership').not.match(Condition.IsRequired()),
+      }),
+
+      field<GovUKTextInput>({
+        variant: 'govukTextInput',
+        code: 'playground_pred_discount',
+        label: 'Discount code',
+        hint: 'Enter your promotional code for 20% off',
+        classes: 'govuk-input--width-10',
+        hidden: not(
+          or(
+            // Premium always sees discount field
+            Answer('playground_pred_membership').match(Condition.Equals('premium')),
+            // Standard + marketing opt-in also sees it
+            and(
+              Answer('playground_pred_membership').match(Condition.Equals('standard')),
+              Answer('playground_pred_marketing').match(Condition.Equals('yes')),
+            ),
+          ),
+        ),
+      }),
+
+      block<HtmlBlock>({
+        variant: 'html',
+        hidden: Answer('playground_pred_membership').not.match(Condition.IsRequired()),
+        content: `
+          <div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+            <strong>Tip:</strong> Select "Premium" or "Standard" with marketing to see the discount field.
+          </div>
+        `,
+      }),
+    ]),
+
+    block<GovUKDetails>({
+      variant: 'govukDetails',
+      summaryText: 'View code',
+      content: [
+        block<CodeBlock>({
+          variant: 'codeBlock',
+          language: 'typescript',
+          code: `// Show for: Premium OR (Standard AND marketing)
+hidden: not(
+  or(
+    Answer('membership').match(Condition.Equals('premium')),
+    and(
+      Answer('membership').match(Condition.Equals('standard')),
+      Answer('marketing').match(Condition.Equals('yes'))
+    )
+  )
+)`,
+        }),
+      ],
+    }),
+
+    // Conditional validation with and()
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h2 class="govuk-heading-m">Conditional Validation</h2>
+        <p class="govuk-body">
+          Use <code>and()</code> in validation rules to make fields conditionally required.
+          The company name is only required when "Business" is selected.
+        </p>
+      `,
+    }),
+
+    exampleBox([
+      field<GovUKRadioInput>({
+        variant: 'govukRadioInput',
+        code: 'playground_pred_accounttype',
+        fieldset: {
+          legend: { text: 'Account type' },
+        },
+        items: [
+          { value: 'personal', text: 'Personal' },
+          { value: 'business', text: 'Business' },
+        ],
+      }),
+
+      field<GovUKTextInput>({
+        variant: 'govukTextInput',
+        code: 'playground_pred_company',
+        label: 'Company name',
+        hidden: Answer('playground_pred_accounttype').not.match(Condition.Equals('business')),
+        dependent: Answer('playground_pred_accounttype').match(Condition.Equals('business')),
+        validate: [
+          validation({
+            when: and(
+              Answer('playground_pred_accounttype').match(Condition.Equals('business')),
+              Self().not.match(Condition.IsRequired()),
+            ),
+            message: 'Enter your company name',
+          }),
+        ],
+      }),
+
+      field<GovUKTextInput>({
+        variant: 'govukTextInput',
+        code: 'playground_pred_vat',
+        label: 'VAT number (optional)',
+        hint: 'For example, GB123456789',
+        classes: 'govuk-input--width-10',
+        hidden: Answer('playground_pred_accounttype').not.match(Condition.Equals('business')),
+      }),
+    ]),
+
+    block<GovUKDetails>({
+      variant: 'govukDetails',
+      summaryText: 'View code',
+      content: [
+        block<CodeBlock>({
+          variant: 'codeBlock',
+          language: 'typescript',
+          code: `field<GovUKTextInput>({
+  code: 'company',
+  label: 'Company name',
+  hidden: Answer('accountType').not.match(Condition.Equals('business')),
+  dependent: Answer('accountType').match(Condition.Equals('business')),
+  validate: [
+    validation({
+      // Only validate when business account AND field is empty
+      when: and(
+        Answer('accountType').match(Condition.Equals('business')),
+        Self().not.match(Condition.IsRequired())
+      ),
+      message: 'Enter your company name',
+    }),
+  ],
+})`,
+        }),
+      ],
+    }),
+
+    // Checkbox example with or()
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h2 class="govuk-heading-m">Multiple Checkbox Trigger</h2>
+        <p class="govuk-body">
+          Show additional fields when <strong>any</strong> of certain checkboxes are selected.
+          Select "Allergy" or "Dietary requirements" to see the details field.
+        </p>
+      `,
+    }),
+
+    exampleBox([
+      field<GovUKCheckboxInput>({
+        variant: 'govukCheckboxInput',
+        code: 'playground_pred_needs',
+        multiple: true,
+        fieldset: {
+          legend: { text: 'Do you have any special requirements?' },
+        },
+        items: [
+          { value: 'wheelchair', text: 'Wheelchair access' },
+          { value: 'allergy', text: 'Food allergy' },
+          { value: 'dietary', text: 'Dietary requirements' },
+          { value: 'hearing', text: 'Hearing loop' },
+        ],
+      }),
+
+      field<GovUKTextInput>({
+        variant: 'govukTextInput',
+        code: 'playground_pred_fooddetails',
+        label: 'Please describe your food allergy or dietary requirements',
+        hidden: not(
+          or(
+            Answer('playground_pred_needs').match(Condition.Array.Contains('allergy')),
+            Answer('playground_pred_needs').match(Condition.Array.Contains('dietary')),
+          ),
+        ),
+        dependent: or(
+          Answer('playground_pred_needs').match(Condition.Array.Contains('allergy')),
+          Answer('playground_pred_needs').match(Condition.Array.Contains('dietary')),
+        ),
+        validate: [
+          validation({
+            when: Self().not.match(Condition.IsRequired()),
+            message: 'Describe your allergy or dietary requirements',
+          }),
+        ],
+      }),
+
+      block<HtmlBlock>({
+        variant: 'html',
+        hidden: Answer('playground_pred_needs').not.match(Condition.IsRequired()),
+        content: Format(
+          `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
+            <strong>Requirements noted.</strong> We will accommodate your needs.
+          </div>`,
+        ),
+      }),
+    ]),
+
+    block<GovUKDetails>({
+      variant: 'govukDetails',
+      summaryText: 'View code',
+      content: [
+        block<CodeBlock>({
+          variant: 'codeBlock',
+          language: 'typescript',
+          code: `// Show details field when allergy OR dietary is checked
+hidden: not(
+  or(
+    Answer('needs').match(Condition.Array.Contains('allergy')),
+    Answer('needs').match(Condition.Array.Contains('dietary'))
+  )
+)
+
+// Make field dependent (only validate when shown)
+dependent: or(
+  Answer('needs').match(Condition.Array.Contains('allergy')),
+  Answer('needs').match(Condition.Array.Contains('dietary'))
+)`,
+        }),
+      ],
+    }),
+
+    // Navigation
+    block<TemplateWrapper>({
+      variant: 'templateWrapper',
+      template: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        {{slot:pagination}}
+      `,
+      slots: {
+        pagination: [
+          block<GovUKPagination>({
+            variant: 'govukPagination',
+            classes: 'govuk-pagination--inline',
+            previous: {
+              href: '/forms/form-engine-developer-guide/expressions/playground/conditional',
+              labelText: 'Conditional Playground',
+            },
+            next: {
+              href: '/forms/form-engine-developer-guide/expressions/playground/collection',
+              labelText: 'Collection Playground',
+            },
+          }),
+        ],
+      },
+    }),
+  ],
+})

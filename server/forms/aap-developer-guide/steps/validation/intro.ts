@@ -67,11 +67,11 @@ field<GovUKTextInput>({
   label: 'Email address',
   validate: [
     validation({
-      when: Self().match(Condition.String.IsEmpty()),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Enter your email address',
     }),
     validation({
-      when: Self().not.match(Condition.String.IsEmail()),
+      when: Self().not.match(Condition.Email.IsValidEmail()),
       message: 'Enter a valid email address',
     }),
   ],
@@ -143,7 +143,7 @@ field<GovUKTextInput>({
     block<TemplateWrapper>({
       variant: 'templateWrapper',
       template: `
-        <h3 class="govuk-heading-s"><code>{{name}}</code></h3>
+        <h3 class="govuk-heading-s"><code>{{name}}</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
         {{slot:description}}
         {{slot:example}}
       `,
@@ -178,7 +178,7 @@ field<GovUKTextInput>({
     block<TemplateWrapper>({
       variant: 'templateWrapper',
       template: `
-        <h3 class="govuk-heading-s"><code>{{name}}</code></h3>
+        <h3 class="govuk-heading-s"><code>{{name}}</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
         {{slot:description}}
         {{slot:example}}
       `,
@@ -235,13 +235,13 @@ field<GovUKTextInput>({
 validate: [
   // 1. Required
   validation({
-    when: Self().match(Condition.String.IsEmpty()),
+    when: Self().not.match(Condition.IsRequired()),
     message: 'Enter your age',
   }),
   // 2. Format
   validation({
-    when: Self().not.match(Condition.String.IsNumeric()),
-    message: 'Age must be a number',
+    when: Self().not.match(Condition.Number.IsInteger()),
+    message: 'Age must be a whole number',
   }),
   // 3. Business rule
   validation({

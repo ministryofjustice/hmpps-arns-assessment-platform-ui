@@ -73,6 +73,36 @@ export async function evaluateOperandWithErrorTracking(
 }
 
 /**
+ * Evaluate an operand synchronously (sync version of evaluateOperand)
+ *
+ * If the operand is an AST node, invokes its handler synchronously and returns the result.
+ * If evaluation fails, returns undefined.
+ * If the operand is a primitive, returns it as-is.
+ *
+ * @param operand - The operand to evaluate (AST node or primitive)
+ * @param context - The evaluation context
+ * @param invoker - The thunk invocation adapter
+ * @returns The evaluated value, or undefined if evaluation failed
+ */
+export function evaluateOperandSync(
+  operand: unknown,
+  context: ThunkEvaluationContext,
+  invoker: ThunkInvocationAdapter,
+): unknown {
+  if (isASTNode(operand)) {
+    const result = invoker.invokeSync(operand.id, context)
+
+    if (result.error) {
+      return undefined
+    }
+
+    return result.value
+  }
+
+  return operand
+}
+
+/**
  * Execute an async operation within a scoped context
  *
  * Pushes scope bindings before execution and pops them after,
@@ -181,6 +211,86 @@ async function evaluatePropertyObject(
 }
 
 /**
+ * Recursively evaluate a value synchronously (sync version of evaluatePropertyValue)
+ *
+ * Handles:
+ * - null/undefined: pass through
+ * - AST nodes (if registered): invoke synchronously and return result
+ * - AST nodes (if NOT registered): filter out (return undefined)
+ * - Arrays: recursively evaluate each element, filtering out undefined
+ * - Objects: recursively evaluate each property value
+ * - Primitives: return as-is
+ *
+ * Used by structure handlers (Block, Step, Journey) for sync evaluation.
+ *
+ * @param value - The value to evaluate
+ * @param context - The evaluation context
+ * @param invoker - The thunk invocation adapter
+ * @returns The evaluated value with all nested AST nodes resolved
+ */
+export function evaluatePropertyValueSync(
+  value: unknown,
+  context: ThunkEvaluationContext,
+  invoker: ThunkInvocationAdapter,
+): unknown {
+  if (value === null || value === undefined) {
+    return value
+  }
+
+  // AST node handling
+  if (isASTNode(value)) {
+    // Only evaluate if registered - otherwise filter out
+    if (!context.nodeRegistry.has(value.id)) {
+      return undefined
+    }
+
+    const result = invoker.invokeSync(value.id, context)
+
+    if (result.error) {
+      return undefined
+    }
+
+    return result.value
+  }
+
+  // Array - recursively evaluate each element, filtering out undefined results
+  if (Array.isArray(value)) {
+    const evaluated = value.map(element => evaluatePropertyValueSync(element, context, invoker))
+    return evaluated.filter(item => item !== undefined)
+  }
+
+  // Object - recursively evaluate each property
+  if (typeof value === 'object') {
+    return evaluatePropertyObjectSync(value as Record<string, unknown>, context, invoker)
+  }
+
+  // Primitive - return as-is
+  return value
+}
+
+/**
+ * Recursively evaluate an object's property values synchronously
+ *
+ * @param obj - The object to evaluate
+ * @param context - The evaluation context
+ * @param invoker - The thunk invocation adapter
+ * @returns Object with all property values evaluated
+ */
+function evaluatePropertyObjectSync(
+  obj: Record<string, unknown>,
+  context: ThunkEvaluationContext,
+  invoker: ThunkInvocationAdapter,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {}
+
+  Object.entries(obj).forEach(([key, val]) => {
+    result[key] = evaluatePropertyValueSync(val, context, invoker)
+  })
+
+  return result
+}
+
+/**
  * Evaluate nodes sequentially until predicate returns true
  *
  * Evaluates each node in order, stopping when the predicate matches.
@@ -202,6 +312,26 @@ export async function evaluateUntilFirstMatch(
   for (const nodeId of nodeIds) {
     // eslint-disable-next-line no-await-in-loop
     const result = await invoker.invoke(nodeId, context)
+
+    if (!result.error && isMatch(result.value)) {
+      return result.value
+    }
+  }
+
+  return undefined
+}
+
+/**
+ * Synchronous version of evaluateUntilFirstMatch
+ */
+export function evaluateUntilFirstMatchSync(
+  nodeIds: NodeId[],
+  context: ThunkEvaluationContext,
+  invoker: ThunkInvocationAdapter,
+  isMatch: (value: unknown) => boolean = value => value !== undefined,
+): unknown {
+  for (const nodeId of nodeIds) {
+    const result = invoker.invokeSync(nodeId, context)
 
     if (!result.error && isMatch(result.value)) {
       return result.value

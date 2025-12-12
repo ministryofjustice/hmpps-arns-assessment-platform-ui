@@ -6,6 +6,7 @@ describe('html component', () => {
   const mockBlock = (overrides?: Partial<HtmlBlock>): EvaluatedBlock<HtmlBlock> =>
     ({
       type: StructureType.BLOCK,
+      blockType: 'basic',
       variant: 'html',
       content: '<p>Default content</p>',
       ...overrides,

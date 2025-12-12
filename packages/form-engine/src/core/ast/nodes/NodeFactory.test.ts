@@ -15,7 +15,7 @@ import {
   PredicateTestExpr,
   PredicateXorExpr,
   ReferenceExpr,
-  ValidatingTransition,
+  SubmitTransition,
   ValueExpr,
 } from '@form-engine/form/types/expressions.type'
 import {
@@ -85,6 +85,7 @@ describe('NodeFactory', () => {
       it('should route Block definitions to StructureNodeFactory', () => {
         const json = {
           type: StructureType.BLOCK,
+          blockType: 'basic',
           variant: 'TestBlock',
         } satisfies BlockDefinition
 
@@ -345,6 +346,7 @@ describe('NodeFactory', () => {
       it('should route Access transitions to TransitionNodeFactory', () => {
         const json = {
           type: TransitionType.ACCESS,
+          redirect: [] as NextExpr[],
         } satisfies AccessTransition
 
         const result = nodeFactory.createNode(json) as TransitionASTNode
@@ -362,7 +364,7 @@ describe('NodeFactory', () => {
           onInvalid: {
             next: [] as NextExpr[],
           },
-        } satisfies ValidatingTransition
+        } satisfies SubmitTransition
 
         const result = nodeFactory.createNode(json) as TransitionASTNode
 
@@ -578,6 +580,7 @@ describe('NodeFactory', () => {
       it('should transform Block structures', () => {
         const json = {
           type: StructureType.BLOCK,
+          blockType: 'basic',
           variant: 'TestBlock',
         }
 
@@ -765,6 +768,7 @@ describe('NodeFactory', () => {
             blocks: [
               {
                 type: StructureType.BLOCK,
+                blockType: 'field',
                 variant: 'TextInput',
                 code: 'email',
                 validate: [
@@ -937,6 +941,7 @@ describe('NodeFactory', () => {
 
       const block = nodeFactory.createNode({
         type: StructureType.BLOCK,
+        blockType: 'basic',
         variant: 'Test',
       } satisfies BlockDefinition)
 

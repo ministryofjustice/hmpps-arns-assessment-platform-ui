@@ -99,7 +99,7 @@ variant: 'govukDetails'`,
     block<TemplateWrapper>({
       variant: 'templateWrapper',
       template: `
-        <h3 class="govuk-heading-s"><code>{{name}}</code></h3>
+        <h3 class="govuk-heading-s"><code>{{name}}</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
         {{slot:description}}
         {{slot:example}}
       `,

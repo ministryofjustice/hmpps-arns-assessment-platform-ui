@@ -1,4 +1,4 @@
-import { JourneyASTNode } from '@form-engine/core/types/structures.type'
+import { FieldBlockASTNode, JourneyASTNode } from '@form-engine/core/types/structures.type'
 import NodeRegistry from '@form-engine/core/ast/registration/NodeRegistry'
 import MetadataRegistry from '@form-engine/core/ast/registration/MetadataRegistry'
 import { ASTNode } from '@form-engine/core/types/engine.type'
@@ -15,9 +15,22 @@ import {
   isLoadTransitionNode,
   isSubmitTransitionNode,
 } from '@form-engine/core/typeguards/transition-nodes'
-import { isBlockStructNode, isJourneyStructNode, isStepStructNode } from '@form-engine/core/typeguards/structure-nodes'
+import {
+  isBlockStructNode,
+  isFieldBlockStructNode,
+  isJourneyStructNode,
+  isStepStructNode,
+} from '@form-engine/core/typeguards/structure-nodes'
 import { isCollectionExprNode, isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
-import { isPseudoNode } from '@form-engine/core/typeguards/nodes'
+import { isASTNode } from '@form-engine/core/typeguards/nodes'
+import { isMapValue, isObjectValue } from '@form-engine/typeguards/primitives'
+
+type RelevantNode = ASTNode | PseudoNode
+
+const JOURNEY_ALLOWED_PROPS = new Set(['children', 'steps', 'view'])
+const STEP_ALLOWED_PROPS = new Set(['blocks', 'view', 'onSubmission'])
+const JOURNEY_TRANSITION_PROPS = new Set(['onLoad', 'onAccess'])
+const VALIDATION_PROPS = new Set(['code', 'validate', 'dependent'])
 
 /**
  * Find all nodes relevant for a unified artefact compilation
@@ -27,16 +40,20 @@ import { isPseudoNode } from '@form-engine/core/typeguards/nodes'
  *
  * For the CURRENT STEP (isCurrentStep = true):
  * - Full traversal of all properties (blocks with rendering properties)
- * - onLoad, onSubmission, all block properties
+ * - All transitions: onLoad, onAccess, onAction, onSubmission
+ * - All block properties (including rendering properties)
  *
  * For ANCESTOR journeys/steps:
- * - Their onLoad transitions (because they affect current step)
+ * - The journey/step node itself
+ * - onLoad transitions (already fired, affect current step)
+ * - onAccess transitions (already fired, affect current step)
  *
- * For OTHER STEPS:
- * - Navigation metadata (path, title)
- * - onSubmission (for journey navigation)
- * - Block validation properties only (code, validate, dependent, formatPipeline, defaultValue)
- * - NO rendering properties (label, hint, items, etc.)
+ * For OTHER STEPS (not current, not ancestor):
+ * - The step node itself (for navigation metadata)
+ * - onSubmission transitions (for journey navigation)
+ * - Block validation properties (code, validate, dependent) with all sub-nodes
+ * - Nested field blocks discovered recursively on any property
+ * - NO rendering properties (label, hint, items, etc.) from non-field blocks
  *
  * This approach:
  * - Creates one artefact with one handler set
@@ -53,61 +70,123 @@ export function findRelevantNodes(
   nodeRegistry: NodeRegistry,
   metadataRegistry: MetadataRegistry,
 ) {
-  const nodes: (ASTNode | PseudoNode)[] = []
+  const nodes: RelevantNode[] = []
+  const seenIds = new Set<string>()
 
-  // Collect transition nodes using dedicated functions
-  const onLoadNodes = collectOnLoadTransitionsFromAncestors(rootNode, metadataRegistry)
-  const onAccessNodes = collectOnAccessTransitionsFromAncestors(rootNode, metadataRegistry)
-  const onActionNodes = collectOnActionTransitionsFromCurrentStep(rootNode, metadataRegistry)
-  const onSubmitNodes = collectOnSubmitTransitionsFromAllSteps(rootNode)
+  const addNode = (node: RelevantNode) => {
+    if (seenIds.has(node.id)) {
+      return
+    }
 
-  nodes.push(...onLoadNodes, ...onAccessNodes, ...onActionNodes, ...onSubmitNodes)
+    seenIds.add(node.id)
+    nodes.push(node)
+  }
+
+  // Tracks when we're inside the current step or a relevant transition subtree
+  // so we can disable property filtering and do a full traversal.
+  let currentStepDepth = 0
+  let transitionDepth = 0
+  const transitionRoots = new Set<string>()
+
+  // Track structural ownership for transition relevance checks.
+  const journeyOrStepStack: (JourneyASTNode | ASTNode)[] = []
+  const stepStack: ASTNode[] = []
+
+  const inFullTraversalScope = () => currentStepDepth > 0 || transitionDepth > 0
+
+  const shouldIncludeTransition = (node: ASTNode): boolean => {
+    if (isLoadTransitionNode(node) || isAccessTransitionNode(node)) {
+      const owner = journeyOrStepStack.at(-1)
+
+      if (!owner) {
+        return false
+      }
+
+      return metadataRegistry.get(owner.id, 'isAncestorOfStep', false) ||
+        metadataRegistry.get(owner.id, 'isCurrentStep', false)
+    }
+
+    if (isActionTransitionNode(node)) {
+      const ownerStep = stepStack.at(-1)
+
+      return ownerStep != null && metadataRegistry.get(ownerStep.id, 'isCurrentStep', false)
+    }
+
+    if (isSubmitTransitionNode(node)) {
+      // Submit transitions are only relevant when owned by a Step
+      return stepStack.length > 0
+    }
+
+    return false
+  }
+
+  const nestedFieldBlockScanVisited = new WeakSet<object>()
+  const processedNestedFieldBlockIds = new Set<string>()
 
   structuralTraverse(rootNode, {
     enterNode: (node: ASTNode): VisitorResult => {
-      // Skip all transition nodes - they're handled by the dedicated collection functions above
+      const isJourney = isJourneyStructNode(node)
+      const isStep = isStepStructNode(node)
+
+      if (isJourney || isStep) {
+        journeyOrStepStack.push(node)
+      }
+
+      if (isStep) {
+        stepStack.push(node)
+      }
+
+      // Full traversal inside current step or included transitions
+      if (inFullTraversalScope()) {
+        addNode(node)
+        return StructuralVisitResult.CONTINUE
+      }
+
+      // Enter current step scope (full traversal for all descendants)
+      if (isStep && metadataRegistry.get(node.id, 'isCurrentStep', false)) {
+        currentStepDepth += 1
+        addNode(node)
+        return StructuralVisitResult.CONTINUE
+      }
+
+      // Handle transitions in-line (no separate full-tree scans)
       if (
         isLoadTransitionNode(node) ||
         isAccessTransitionNode(node) ||
         isActionTransitionNode(node) ||
         isSubmitTransitionNode(node)
       ) {
-        return StructuralVisitResult.SKIP
+        if (!shouldIncludeTransition(node)) {
+          return StructuralVisitResult.SKIP
+        }
+
+        transitionDepth += 1
+        transitionRoots.add(node.id)
+        addNode(node)
+
+        return StructuralVisitResult.CONTINUE
       }
 
-      // Handle the CURRENT step - full traversal
-      if (isStepStructNode(node) && metadataRegistry.get(node.id, 'isCurrentStep')) {
-        // Push the step node itself first
-        nodes.push(node)
+      addNode(node)
+      return StructuralVisitResult.CONTINUE
+    },
 
-        // Then traverse all descendants
-        structuralTraverse(node, {
-          enterNode(childNode: ASTNode): VisitorResult {
-            // Skip the step node itself (already added above)
-            if (childNode.id === node.id) {
-              return StructuralVisitResult.CONTINUE
-            }
-
-            // Skip transition nodes - they're already collected by the dedicated functions above
-            if (
-              isLoadTransitionNode(childNode) ||
-              isAccessTransitionNode(childNode) ||
-              isActionTransitionNode(childNode) ||
-              isSubmitTransitionNode(childNode)
-            ) {
-              return StructuralVisitResult.SKIP
-            }
-
-            nodes.push(childNode)
-            return StructuralVisitResult.CONTINUE
-          },
-        })
-
-        return StructuralVisitResult.SKIP
+    exitNode: (node: ASTNode): VisitorResult => {
+      if (transitionRoots.delete(node.id)) {
+        transitionDepth -= 1
       }
 
-      // Collect all nodes that pass through the property filter
-      nodes.push(node)
+      if (isStepStructNode(node)) {
+        if (metadataRegistry.get(node.id, 'isCurrentStep', false)) {
+          currentStepDepth -= 1
+        }
+
+        stepStack.pop()
+      }
+
+      if (isJourneyStructNode(node) || isStepStructNode(node)) {
+        journeyOrStepStack.pop()
+      }
 
       return StructuralVisitResult.CONTINUE
     },
@@ -115,17 +194,23 @@ export function findRelevantNodes(
     /**
      * Property filtering for non-current steps
      *
-     * Current step gets full traversal (handled above with inner structuralTraverse).
+     * Current step and included transitions get full traversal.
      * Other steps/blocks get filtered properties for validation/navigation only.
      */
     enterProperty: (key: string, value: any, ctx: StructuralContext): VisitorResult => {
+      if (inFullTraversalScope()) {
+        return StructuralVisitResult.CONTINUE
+      }
+
       const { parent } = ctx
 
-      // Journey nodes: only traverse specific properties or collections
+      // Journey nodes: traverse structure and relevant transitions (ancestors only)
       if (isJourneyStructNode(parent)) {
-        const allowedProps = ['children', 'steps', 'view']
+        if (JOURNEY_ALLOWED_PROPS.has(key)) {
+          return StructuralVisitResult.CONTINUE
+        }
 
-        if (allowedProps.includes(key)) {
+        if (JOURNEY_TRANSITION_PROPS.has(key) && metadataRegistry.get(parent.id, 'isAncestorOfStep', false)) {
           return StructuralVisitResult.CONTINUE
         }
 
@@ -136,11 +221,9 @@ export function findRelevantNodes(
         return StructuralVisitResult.SKIP
       }
 
-      // Step nodes (non-current): only traverse metadata/navigation properties
+      // Step nodes (non-current): traverse blocks + view + onSubmission only
       if (isStepStructNode(parent)) {
-        const allowedProps = ['blocks', 'view']
-
-        if (allowedProps.includes(key)) {
+        if (STEP_ALLOWED_PROPS.has(key)) {
           return StructuralVisitResult.CONTINUE
         }
 
@@ -151,11 +234,9 @@ export function findRelevantNodes(
         return StructuralVisitResult.SKIP
       }
 
-      // Block nodes (non-current step): only validation/dependency properties
+      // Block nodes (non-current step): validation properties + nested field block discovery
       if (isBlockStructNode(parent)) {
-        const allowedProps = ['code', 'validate', 'dependent', 'formatPipeline', 'defaultValue']
-
-        if (allowedProps.includes(key)) {
+        if (VALIDATION_PROPS.has(key)) {
           return StructuralVisitResult.CONTINUE
         }
 
@@ -167,6 +248,9 @@ export function findRelevantNodes(
           return StructuralVisitResult.CONTINUE
         }
 
+        // For other properties: discover nested field blocks (but don't add other nodes)
+        collectNestedFieldBlocks(value, addNode, nestedFieldBlockScanVisited, processedNestedFieldBlockIds)
+
         return StructuralVisitResult.SKIP
       }
 
@@ -174,7 +258,9 @@ export function findRelevantNodes(
     },
   })
 
-  return [...nodes, ...findRelevantPseudoNodes(nodes, nodeRegistry)]
+  findRelevantPseudoNodes(nodes, nodeRegistry).forEach(addNode)
+
+  return nodes
 }
 
 /**
@@ -183,9 +269,6 @@ export function findRelevantNodes(
  * @param nodeRegistry - Registry containing all pseudo nodes
  */
 export function findRelevantPseudoNodes(nodes: (ASTNode | PseudoNode)[], nodeRegistry: NodeRegistry): PseudoNode[] {
-  // Extract reference nodes from collected nodes
-  const referenceNodes = nodes.filter(isReferenceExprNode)
-
   // Extract identifiers from reference nodes
   const identifiers = {
     answers: new Set<string>(), // Answer() and Post() base field codes
@@ -194,7 +277,12 @@ export function findRelevantPseudoNodes(nodes: (ASTNode | PseudoNode)[], nodeReg
     params: new Set<string>(), // Params() param names
   }
 
-  referenceNodes.forEach(refNode => {
+  nodes.forEach(node => {
+    if (!isReferenceExprNode(node)) {
+      return
+    }
+
+    const refNode = node
     const path = refNode.properties.path as string[]
 
     if (!Array.isArray(path) || path.length < 2) {
@@ -230,162 +318,200 @@ export function findRelevantPseudoNodes(nodes: (ASTNode | PseudoNode)[], nodeReg
     }
   })
 
-  // Filter pseudo nodes from registry that match those identifiers
-  return (
-    Array.from(nodeRegistry.getAll().values())
-      .filter(isPseudoNode)
-      .filter(pseudoNode => {
-        switch (pseudoNode.type) {
-          case PseudoNodeType.ANSWER_LOCAL:
-          case PseudoNodeType.ANSWER_REMOTE:
-          case PseudoNodeType.POST:
-            return identifiers.answers.has(pseudoNode.properties.baseFieldCode)
+  // Use the NodeRegistry pseudo node index for O(1) lookups
+  const results: PseudoNode[] = []
+  const seen = new Set<string>()
 
-          case PseudoNodeType.DATA:
-            return identifiers.data.has(pseudoNode.properties.baseProperty)
+  const add = (pseudoNode: PseudoNode | undefined) => {
+    if (!pseudoNode || seen.has(pseudoNode.id)) {
+      return
+    }
 
-          case PseudoNodeType.QUERY:
-            return identifiers.query.has(pseudoNode.properties.paramName)
+    seen.add(pseudoNode.id)
+    results.push(pseudoNode)
+  }
 
-          case PseudoNodeType.PARAMS:
-            return identifiers.params.has(pseudoNode.properties.paramName)
+  identifiers.answers.forEach(baseFieldCode => {
+    add(nodeRegistry.findPseudoNode(PseudoNodeType.ANSWER_LOCAL, baseFieldCode))
+    add(nodeRegistry.findPseudoNode(PseudoNodeType.ANSWER_REMOTE, baseFieldCode))
+    add(nodeRegistry.findPseudoNode(PseudoNodeType.POST, baseFieldCode))
+  })
 
-          default:
-            return false
-        }
+  identifiers.data.forEach(baseProperty => {
+    add(nodeRegistry.findPseudoNode(PseudoNodeType.DATA, baseProperty))
+  })
+
+  identifiers.query.forEach(paramName => {
+    add(nodeRegistry.findPseudoNode(PseudoNodeType.QUERY, paramName))
+  })
+
+  identifiers.params.forEach(paramName => {
+    add(nodeRegistry.findPseudoNode(PseudoNodeType.PARAMS, paramName))
+  })
+
+  return results
+}
+
+/**
+ * Recursively traverse a value looking for nested field blocks.
+ * When a field block is found, collect it and its validation properties.
+ * This enables validation discovery for field blocks nested on arbitrary properties.
+ */
+function collectNestedFieldBlocks(
+  value: unknown,
+  addNode: (node: RelevantNode) => void,
+  visited: WeakSet<object>,
+  processedFieldBlockIds: Set<string>,
+): void {
+  if (value == null || typeof value !== 'object') {
+    return
+  }
+
+  const obj = value as object
+
+  if (visited.has(obj)) {
+    return
+  }
+
+  visited.add(obj)
+
+  // If value is a field block, collect it and its validation properties
+  if (isFieldBlockStructNode(value)) {
+    collectFieldBlockValidationNodes(value, addNode, visited, processedFieldBlockIds)
+    return
+  }
+
+  // If value is any other AST node, traverse its properties looking for nested blocks
+  if (isASTNode(value)) {
+    const props = (value as any).properties
+
+    if (props) {
+      Object.values(props).forEach(propValue => {
+        collectNestedFieldBlocks(propValue, addNode, visited, processedFieldBlockIds)
       })
-  )
+    }
+
+    return
+  }
+
+  // If value is an array, check each element
+  if (Array.isArray(value)) {
+    value.forEach(element => {
+      collectNestedFieldBlocks(element, addNode, visited, processedFieldBlockIds)
+    })
+
+    return
+  }
+
+  // If value is a Map, scan values
+  if (isMapValue(value)) {
+    Array.from(value.values()).forEach(mapValue => {
+      collectNestedFieldBlocks(mapValue, addNode, visited, processedFieldBlockIds)
+    })
+
+    return
+  }
+
+  // If value is a plain object, check each property
+  if (isObjectValue(value)) {
+    Object.values(value as Record<string, unknown>).forEach(objValue => {
+      collectNestedFieldBlocks(objValue, addNode, visited, processedFieldBlockIds)
+    })
+  }
 }
 
 /**
- * Collect all OnLoad transition nodes from ancestor journeys/steps
- *
- * OnLoad transitions fire when entering a journey/step. For ancestor nodes,
- * these transitions have already fired and their effects should be included
- * in the current step's evaluation context.
- *
- * @param rootNode - Root journey node to search from
- * @param metadataRegistry - Registry containing node metadata (isAncestorOfStep, etc.)
- * @returns Array of all AST nodes within OnLoad transitions of ancestors
+ * Collect a field block and all nodes under its validation properties.
+ * Also recursively discovers nested field blocks in other properties.
  */
-function collectOnLoadTransitionsFromAncestors(
-  rootNode: JourneyASTNode,
-  metadataRegistry: MetadataRegistry,
-): ASTNode[] {
-  const nodes: ASTNode[] = []
+function collectFieldBlockValidationNodes(
+  fieldBlock: FieldBlockASTNode,
+  addNode: (node: RelevantNode) => void,
+  scanVisited: WeakSet<object>,
+  processedFieldBlockIds: Set<string>,
+): void {
+  if (processedFieldBlockIds.has(fieldBlock.id)) {
+    return
+  }
 
-  structuralTraverse(rootNode, {
-    enterNode: (node: ASTNode, ctx: StructuralContext): VisitorResult => {
-      if (!isLoadTransitionNode(node)) {
-        return StructuralVisitResult.CONTINUE
-      }
+  processedFieldBlockIds.add(fieldBlock.id)
 
-      // Find the Journey/Step node that owns this OnLoad transition
-      const ownerNode = ctx.ancestors
-        .filter(ancestor => isJourneyStructNode(ancestor) || isStepStructNode(ancestor))
-        .at(-1)
+  // Add the field block itself
+  addNode(fieldBlock)
 
-      if (ownerNode && metadataRegistry.get(ownerNode.id, 'isAncestorOfStep')) {
-        // Owner is ancestor of step - traverse this OnLoad subtree
-        structuralTraverse(node, {
-          enterNode(childNode: ASTNode): VisitorResult {
-            nodes.push(childNode)
-            return StructuralVisitResult.CONTINUE
-          },
-        })
-      }
+  const collectVisited = new WeakSet<object>()
 
-      return StructuralVisitResult.SKIP
-    },
+  // Traverse and add all nodes under validation properties
+  VALIDATION_PROPS.forEach(propKey => {
+    const propValue = fieldBlock.properties[propKey]
+
+    if (propValue !== undefined) {
+      collectAllAstNodes(propValue, addNode, collectVisited)
+    }
   })
 
-  return nodes
+  // Continue looking for nested field blocks in OTHER properties
+  Object.entries(fieldBlock.properties).forEach(([key, propValue]) => {
+    if (!VALIDATION_PROPS.has(key)) {
+      collectNestedFieldBlocks(propValue, addNode, scanVisited, processedFieldBlockIds)
+    }
+  })
 }
 
 /**
- * Collect all OnAccess transition nodes from ancestor journeys/steps
+ * Collect all AST nodes within a value.
  *
- * OnAccess transitions fire when a step is accessed (rendered). For ancestor nodes,
- * these transitions should be included when they affect the current step's context.
- *
- * @param rootNode - Root journey node to search from
- * @param metadataRegistry - Registry containing node metadata (isAncestorOfStep, etc.)
- * @returns Array of all AST nodes within OnAccess transitions of ancestors
+ * Used for field-block validation discovery where we need the full subtree,
+ * without paying the cost of full StructuralTraverser context construction.
  */
-function collectOnAccessTransitionsFromAncestors(
-  rootNode: JourneyASTNode,
-  metadataRegistry: MetadataRegistry,
-): ASTNode[] {
-  const nodes: ASTNode[] = []
+function collectAllAstNodes(value: unknown, addNode: (node: RelevantNode) => void, visited: WeakSet<object>): void {
+  if (value == null || typeof value !== 'object') {
+    return
+  }
 
-  structuralTraverse(rootNode, {
-    enterNode: (node: ASTNode, ctx: StructuralContext): VisitorResult => {
-      if (!isAccessTransitionNode(node)) {
-        return StructuralVisitResult.CONTINUE
-      }
+  const obj = value as object
 
-      // Find the Journey/Step node that owns this OnAccess transition
-      const ownerNode = ctx.ancestors
-        .filter(ancestor => isJourneyStructNode(ancestor) || isStepStructNode(ancestor))
-        .at(-1)
+  if (visited.has(obj)) {
+    return
+  }
 
-      if (ownerNode && metadataRegistry.get(ownerNode.id, 'isAncestorOfStep')) {
-        // Owner is ancestor of step - traverse this OnAccess subtree
-        structuralTraverse(node, {
-          enterNode(childNode: ASTNode): VisitorResult {
-            nodes.push(childNode)
-            return StructuralVisitResult.CONTINUE
-          },
-        })
-      }
+  visited.add(obj)
 
-      return StructuralVisitResult.SKIP
-    },
-  })
+  if (isASTNode(value)) {
+    addNode(value)
 
-  return nodes
-}
+    const props = (value as any).properties
 
-/**
- * Collect all OnAction transition nodes from the current step only
- *
- * OnAction transitions fire on POST requests before block evaluation.
- * Only collected from the current step (step-level only).
- *
- * @param rootNode - Root journey node to search from
- * @param metadataRegistry - Registry containing node metadata (isCurrentStep, etc.)
- * @returns Array of all AST nodes within OnAction transitions of the current step
- */
-function collectOnActionTransitionsFromCurrentStep(
-  rootNode: JourneyASTNode,
-  metadataRegistry: MetadataRegistry,
-): ASTNode[] {
-  const nodes: ASTNode[] = []
+    if (props) {
+      Object.values(props).forEach(propValue => {
+        collectAllAstNodes(propValue, addNode, visited)
+      })
+    }
 
-  structuralTraverse(rootNode, {
-    enterNode: (node: ASTNode, ctx: StructuralContext): VisitorResult => {
-      if (!isActionTransitionNode(node)) {
-        return StructuralVisitResult.CONTINUE
-      }
+    return
+  }
 
-      // Find the Step node that owns this OnAction transition
-      const ownerNode = ctx.ancestors.filter(ancestor => isStepStructNode(ancestor)).at(-1)
+  if (Array.isArray(value)) {
+    value.forEach(el => {
+      collectAllAstNodes(el, addNode, visited)
+    })
 
-      if (ownerNode && metadataRegistry.get(ownerNode.id, 'isCurrentStep')) {
-        // Owner is the current step - traverse this OnAction subtree
-        structuralTraverse(node, {
-          enterNode(childNode: ASTNode): VisitorResult {
-            nodes.push(childNode)
-            return StructuralVisitResult.CONTINUE
-          },
-        })
-      }
+    return
+  }
 
-      return StructuralVisitResult.SKIP
-    },
-  })
+  if (isMapValue(value)) {
+    Array.from(value.values()).forEach(mapValue => {
+      collectAllAstNodes(mapValue, addNode, visited)
+    })
 
-  return nodes
+    return
+  }
+
+  if (isObjectValue(value)) {
+    Object.values(value).forEach(objValue => {
+      collectAllAstNodes(objValue, addNode, visited)
+    })
+  }
 }
 
 /**

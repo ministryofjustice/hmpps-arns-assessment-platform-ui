@@ -50,11 +50,11 @@ field<GovUKTextInput>({
   inputType: 'email',
   validate: [
     validation({
-      when: Self().match(Condition.String.IsEmpty()),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Enter your email address',
     }),
     validation({
-      when: Self().not.match(Condition.String.IsEmail()),
+      when: Self().not.match(Condition.Email.IsValidEmail()),
       message: 'Enter a valid email address',
     }),
   ],
@@ -67,11 +67,11 @@ field<GovUKTextInput>({
   inputType: 'email',
   validate: [
     validation({
-      when: Self().match(Condition.String.IsEmpty()),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Confirm your email address',
     }),
     validation({
-      when: Self().not.match(Condition.String.Equals(Answer('email'))),
+      when: Self().not.match(Condition.Equals(Answer('email'))),
       message: 'Email addresses do not match',
     }),
   ],
@@ -115,12 +115,12 @@ field<GovUKTextInput>({
   code: 'other_contact_method',
   label: 'Please specify',
   // Only show when "other" is selected
-  hidden: Answer('contact_method').not.match(Condition.String.Equals('other')),
+  hidden: Answer('contact_method').not.match(Condition.Equals('other')),
   // Only validate when "other" is selected
-  dependent: Answer('contact_method').match(Condition.String.Equals('other')),
+  dependent: Answer('contact_method').match(Condition.Equals('other')),
   validate: [
     validation({
-      when: Self().match(Condition.String.IsEmpty()),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Enter your preferred contact method',
     }),
   ],
@@ -154,7 +154,7 @@ field<GovUKDateInputFull>({
   hint: 'For example, 27 3 2024',
   validate: [
     validation({
-      when: Self().match(Condition.String.IsEmpty()),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Enter a start date',
     }),
     validation({
@@ -171,7 +171,7 @@ field<GovUKDateInputFull>({
   hint: 'For example, 27 3 2025',
   validate: [
     validation({
-      when: Self().match(Condition.String.IsEmpty()),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Enter an end date',
     }),
     validation({
@@ -179,7 +179,7 @@ field<GovUKDateInputFull>({
       message: 'Enter a valid end date',
     }),
     validation({
-      when: Self().match(Condition.Date.IsBefore(Answer('start_date'))),
+      when: Self().not.match(Condition.Date.IsAfter(Answer('start_date'))),
       message: 'End date must be after the start date',
     }),
   ],
@@ -213,7 +213,7 @@ field<GovUKDateInputFull>({
   fieldset: { legend: { text: 'Date of birth' } },
   validate: [
     validation({
-      when: Self().match(Condition.String.IsEmpty()),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Enter your date of birth',
     }),
     validation({
@@ -221,7 +221,8 @@ field<GovUKDateInputFull>({
       message: 'Date of birth must be a real date',
     }),
     validation({
-      when: Self().not.match(Condition.Date.IsInPast()),
+      // Show error when date IS in the future (i.e., not in the past)
+      when: Self().match(Condition.Date.IsFutureDate()),
       message: 'Date of birth must be in the past',
     }),
   ],
@@ -234,11 +235,11 @@ field<GovUKDateInputFull>({
   fieldset: { legend: { text: 'Appointment date' } },
   validate: [
     validation({
-      when: Self().match(Condition.String.IsEmpty()),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Enter an appointment date',
     }),
     validation({
-      when: Self().not.match(Condition.Date.IsInFuture()),
+      when: Self().not.match(Condition.Date.IsFutureDate()),
       message: 'Appointment must be in the future',
     }),
   ],
@@ -280,7 +281,7 @@ field<GovUKCheckboxInput>({
   ],
   validate: [
     validation({
-      when: Self().match(Condition.Array.IsEmpty()),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Select at least one interest',
     }),
   ],
@@ -324,11 +325,14 @@ field<GovUKCheckboxInput>({
   ],
   validate: [
     validation({
-      when: Self().match(Condition.Array.IsEmpty()),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Select at least one priority',
     }),
     validation({
-      when: Self().not.match(Condition.Array.MaxLength(3)),
+      // Use pipe to get array length and check against number condition
+      when: Self().pipe(Transformer.Array.Length()).not.match(
+        Condition.Number.LessThanOrEqual(3)
+      ),
       message: 'Select no more than 3 priorities',
     }),
   ],
@@ -372,17 +376,17 @@ field<GovUKTextInput>({
     validation({
       when: and(
         or(
-          Answer('contact_method').match(Condition.String.Equals('phone')),
-          Answer('sms_notifications').match(Condition.String.Equals('yes')),
+          Answer('contact_method').match(Condition.Equals('phone')),
+          Answer('sms_notifications').match(Condition.Equals('yes')),
         ),
-        Self().match(Condition.String.IsEmpty()),
+        Self().not.match(Condition.IsRequired()),
       ),
       message: 'Enter a phone number',
     }),
     validation({
       when: and(
-        Self().not.match(Condition.String.IsEmpty()),
-        Self().not.match(Condition.String.Matches(/^\\+?[0-9\\s]{10,14}$/)),
+        Self().match(Condition.IsRequired()),
+        Self().not.match(Condition.Phone.IsValidPhoneNumber()),
       ),
       message: 'Enter a valid phone number',
     }),

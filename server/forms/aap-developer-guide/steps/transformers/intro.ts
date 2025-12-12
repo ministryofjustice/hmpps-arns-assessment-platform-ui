@@ -71,12 +71,12 @@ field<GovUKTextInput>({
   code: 'email',
   label: 'Email address',
   formatters: [
-    Transformer.String.Trim,        // "  tomm@example.com  " → "tom@example.com"
-    Transformer.String.ToLowerCase, // "Tom@Example.COM" → "tom@example.com"
+    Transformer.String.Trim(),        // "  tom@example.com  " → "tom@example.com"
+    Transformer.String.ToLowerCase(), // "Tom@Example.COM" → "tom@example.com"
   ],
   validate: [
     validation({
-      when: Self().match(Condition.String.IsEmpty()),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Enter your email address',
     }),
   ],
@@ -103,26 +103,28 @@ field<GovUKTextInput>({
       language: 'typescript',
       code: `
 // Whitespace
-Transformer.String.Trim           // Remove leading/trailing whitespace
-Transformer.String.TrimStart      // Remove leading whitespace only
-Transformer.String.TrimEnd        // Remove trailing whitespace only
-Transformer.String.CollapseWhitespace  // Multiple spaces → single space
+Transformer.String.Trim()           // Remove leading/trailing whitespace
 
 // Case
-Transformer.String.ToUpperCase    // "hello" → "HELLO"
-Transformer.String.ToLowerCase    // "HELLO" → "hello"
-Transformer.String.ToTitleCase    // "hello world" → "Hello World"
-Transformer.String.Capitalize     // "hello world" → "Hello world"
+Transformer.String.ToUpperCase()    // "hello" → "HELLO"
+Transformer.String.ToLowerCase()    // "HELLO" → "hello"
+Transformer.String.ToTitleCase()    // "hello world" → "Hello World"
+Transformer.String.Capitalize()     // "hello world" → "Hello world"
 
 // Substring
 Transformer.String.Substring(0, 10)   // First 10 characters
-Transformer.String.Left(5)            // First 5 characters
-Transformer.String.Right(5)           // Last 5 characters
 
 // Replace
-Transformer.String.Replace('old', 'new')     // First occurrence
-Transformer.String.ReplaceAll('old', 'new')  // All occurrences
-Transformer.String.RemoveAll('-')            // Remove all dashes`,
+Transformer.String.Replace('old', 'new')  // Replace all occurrences
+
+// Padding
+Transformer.String.PadStart(5, '0')   // "42" → "00042"
+Transformer.String.PadEnd(5, '0')     // "42" → "42000"
+
+// Type conversion
+Transformer.String.ToInt()            // "123" → 123
+Transformer.String.ToFloat()          // "12.5" → 12.5
+Transformer.String.ToArray(',')       // "a,b,c" → ["a", "b", "c"]`,
     }),
 
     // Number Transformers
@@ -142,21 +144,24 @@ Transformer.String.RemoveAll('-')            // Remove all dashes`,
       language: 'typescript',
       code: `
 // Rounding
-Transformer.Number.Round          // 3.7 → 4, 3.2 → 3
-Transformer.Number.Floor          // 3.7 → 3
-Transformer.Number.Ceil           // 3.2 → 4
+Transformer.Number.Round()        // 3.7 → 4, 3.2 → 3
+Transformer.Number.Floor()        // 3.7 → 3
+Transformer.Number.Ceil()         // 3.2 → 4
+Transformer.Number.ToFixed(2)     // 3.14159 → 3.14
 
 // Math
-Transformer.Number.Abs            // -5 → 5
+Transformer.Number.Abs()          // -5 → 5
+Transformer.Number.Sqrt()         // 16 → 4
 Transformer.Number.Multiply(100)  // 0.5 → 50
 Transformer.Number.Divide(100)    // 50 → 0.5
 Transformer.Number.Add(10)        // 5 → 15
 Transformer.Number.Subtract(10)   // 15 → 5
+Transformer.Number.Power(2)       // 3 → 9
 
 // Limits
-Transformer.Number.Min(0)         // Clamp to minimum of 0
-Transformer.Number.Max(100)       // Clamp to maximum of 100
-Transformer.Number.Clamp(0, 100)  // Clamp between 0 and 100`,
+Transformer.Number.Min(0)         // Return smaller of value and 0
+Transformer.Number.Max(100)       // Return larger of value and 100
+Transformer.Number.Clamp(0, 100)  // Constrain between 0 and 100`,
     }),
 
     // Common Patterns
@@ -187,8 +192,8 @@ field<GovUKTextInput>({
   label: 'Email address',
   inputType: 'email',
   formatters: [
-    Transformer.String.Trim,
-    Transformer.String.ToLowerCase,
+    Transformer.String.Trim(),
+    Transformer.String.ToLowerCase(),
   ],
 })
 // "  John.Smith@Example.COM  " → "john.smith@example.com"`,
@@ -215,12 +220,11 @@ field<GovUKTextInput>({
   variant: 'govukTextInput',
   label: 'Postcode',
   formatters: [
-    Transformer.String.Trim,
-    Transformer.String.ToUpperCase,
-    Transformer.String.CollapseWhitespace,
+    Transformer.String.Trim(),
+    Transformer.String.ToUpperCase(),
   ],
 })
-// "  sw1a   2aa  " → "SW1A 2AA"`,
+// "  sw1a 2aa  " → "SW1A 2AA"`,
           }),
         ],
       },
@@ -245,9 +249,9 @@ field<GovUKTextInput>({
   label: 'Phone number',
   inputType: 'tel',
   formatters: [
-    Transformer.String.Trim,
-    Transformer.String.RemoveAll(' '),  // Remove spaces
-    Transformer.String.RemoveAll('-'),  // Remove dashes
+    Transformer.String.Trim(),
+    Transformer.String.Replace(' ', ''),  // Remove spaces
+    Transformer.String.Replace('-', ''),  // Remove dashes
   ],
 })
 // "07700 900-123" → "07700900123"`,
@@ -324,8 +328,8 @@ field<GovUKTextInput>({
               labelText: 'Validation Patterns',
             },
             next: {
-              href: '/forms/form-engine-developer-guide/effects/intro',
-              labelText: 'Effects',
+              href: '/forms/form-engine-developer-guide/transformers/custom',
+              labelText: 'Custom Transformers',
             },
           }),
         ],

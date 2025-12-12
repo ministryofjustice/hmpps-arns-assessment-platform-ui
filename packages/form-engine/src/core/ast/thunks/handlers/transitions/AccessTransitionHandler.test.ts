@@ -11,7 +11,7 @@ describe('AccessTransitionHandler', () => {
 
   describe('evaluate()', () => {
     describe('guards evaluation', () => {
-      it('should return passed: true with empty effects when no guards are defined', async () => {
+      it('should return passed: false with empty effects when no guards are defined (default denial)', async () => {
         // Arrange
         const transition = ASTTestFactory.transition(TransitionType.ACCESS)
           .build() as AccessTransitionASTNode
@@ -25,12 +25,12 @@ describe('AccessTransitionHandler', () => {
         const result = await handler.evaluate(mockContext, invoker)
 
         // Assert
-        expect(result.value.passed).toBe(true)
+        expect(result.value.passed).toBe(false)
         expect(result.value.redirect).toBeUndefined()
         expect(result.value.pendingEffects).toEqual([])
       })
 
-      it('should return passed: true when guards predicate evaluates to true', async () => {
+      it('should return passed: false when guards predicate evaluates to true (denial matched)', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isAuthenticated', [])
         const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
@@ -53,12 +53,12 @@ describe('AccessTransitionHandler', () => {
 
         // Assert
         expect(invoker.invoke).toHaveBeenCalledWith(guardsPredicate.id, mockContext)
-        expect(result.value.passed).toBe(true)
+        expect(result.value.passed).toBe(false)
         expect(result.value.redirect).toBeUndefined()
         expect(result.value.pendingEffects).toEqual([])
       })
 
-      it('should return passed: false when guards predicate evaluates to false', async () => {
+      it('should return passed: true when guards predicate evaluates to false (no denial)', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isAuthenticated', [])
         const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
@@ -80,11 +80,11 @@ describe('AccessTransitionHandler', () => {
         const result = await handler.evaluate(mockContext, invoker)
 
         // Assert
-        expect(result.value.passed).toBe(false)
+        expect(result.value.passed).toBe(true)
         expect(result.value.pendingEffects).toEqual([])
       })
 
-      it('should return passed: false when guards predicate evaluation errors', async () => {
+      it('should return passed: true when guards predicate evaluation errors (fail open)', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'checkAccess', [])
         const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
@@ -110,13 +110,13 @@ describe('AccessTransitionHandler', () => {
         const result = await handler.evaluate(mockContext, invoker)
 
         // Assert
-        expect(result.value.passed).toBe(false)
+        expect(result.value.passed).toBe(true)
         expect(result.value.pendingEffects).toEqual([])
       })
     })
 
     describe('redirect evaluation', () => {
-      it('should evaluate redirect when guards fail', async () => {
+      it('should evaluate redirect when guards match denial condition', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isAuthenticated', [])
         const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
@@ -140,7 +140,7 @@ describe('AccessTransitionHandler', () => {
         const invoker = createMockInvoker({
           invokeImpl: async (nodeId: string) => {
             if (nodeId === guardsPredicate.id) {
-              return { value: false, metadata: { source: 'Test', timestamp: Date.now() } }
+              return { value: true, metadata: { source: 'Test', timestamp: Date.now() } }
             }
 
             if (nodeId === redirectExpr.id) {
@@ -188,7 +188,7 @@ describe('AccessTransitionHandler', () => {
         const invoker = createMockInvoker({
           invokeImpl: async (nodeId: string) => {
             if (nodeId === guardsPredicate.id) {
-              return { value: false, metadata: { source: 'Test', timestamp: Date.now() } }
+              return { value: true, metadata: { source: 'Test', timestamp: Date.now() } }
             }
 
             if (nodeId === redirect1.id) {
@@ -226,7 +226,7 @@ describe('AccessTransitionHandler', () => {
         const handler = new AccessTransitionHandler(transition.id, transition)
 
         const mockContext = createMockContext()
-        const invoker = createMockInvoker({ defaultValue: false })
+        const invoker = createMockInvoker({ defaultValue: true })
 
         // Act
         const result = await handler.evaluate(mockContext, invoker)
@@ -234,6 +234,156 @@ describe('AccessTransitionHandler', () => {
         // Assert
         expect(result.value.passed).toBe(false)
         expect(result.value.redirect).toBeUndefined()
+      })
+    })
+
+    describe('error response evaluation', () => {
+      it('should return status and static message when guards match denial', async () => {
+        // Arrange
+        const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'itemExists', [])
+        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+          subject: ASTTestFactory.reference(['data', 'item']),
+          condition,
+          negate: false,
+        })
+
+        const transition = ASTTestFactory.transition(TransitionType.ACCESS)
+          .withProperty('guards', guardsPredicate)
+          .withProperty('status', 404)
+          .withProperty('message', 'Item not found')
+          .build() as AccessTransitionASTNode
+
+        const handler = new AccessTransitionHandler(transition.id, transition)
+
+        const mockContext = createMockContext()
+        const invoker = createMockInvoker({ defaultValue: true })
+
+        // Act
+        const result = await handler.evaluate(mockContext, invoker)
+
+        // Assert
+        expect(result.value.passed).toBe(false)
+        expect(result.value.status).toBe(404)
+        expect(result.value.message).toBe('Item not found')
+        expect(result.value.redirect).toBeUndefined()
+      })
+
+      it('should return status and evaluated message expression when guards match denial', async () => {
+        // Arrange
+        const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'canEdit', [])
+        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+          subject: ASTTestFactory.reference(['data', 'permissions']),
+          condition,
+          negate: false,
+        })
+
+        const messageExpr = ASTTestFactory.expression(ExpressionType.FORMAT)
+          .withProperty('template', 'Item %1 not found')
+          .withProperty('arguments', ['123'])
+          .build()
+
+        const transition = ASTTestFactory.transition(TransitionType.ACCESS)
+          .withProperty('guards', guardsPredicate)
+          .withProperty('status', 403)
+          .withProperty('message', messageExpr)
+          .build() as AccessTransitionASTNode
+
+        const handler = new AccessTransitionHandler(transition.id, transition)
+
+        const mockContext = createMockContext()
+        const invoker = createMockInvoker({
+          invokeImpl: async (nodeId: string) => {
+            if (nodeId === guardsPredicate.id) {
+              return { value: true, metadata: { source: 'Test', timestamp: Date.now() } }
+            }
+
+            if (nodeId === messageExpr.id) {
+              return { value: 'Item 123 not found', metadata: { source: 'Test', timestamp: Date.now() } }
+            }
+
+            return { value: undefined, metadata: { source: 'Test', timestamp: Date.now() } }
+          },
+        })
+
+        // Act
+        const result = await handler.evaluate(mockContext, invoker)
+
+        // Assert
+        expect(result.value.passed).toBe(false)
+        expect(result.value.status).toBe(403)
+        expect(result.value.message).toBe('Item 123 not found')
+        expect(result.value.redirect).toBeUndefined()
+      })
+
+      it('should not return status/message when guards do not match denial', async () => {
+        // Arrange
+        const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'itemExists', [])
+        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+          subject: ASTTestFactory.reference(['data', 'item']),
+          condition,
+          negate: false,
+        })
+
+        const transition = ASTTestFactory.transition(TransitionType.ACCESS)
+          .withProperty('guards', guardsPredicate)
+          .withProperty('status', 404)
+          .withProperty('message', 'Item not found')
+          .build() as AccessTransitionASTNode
+
+        const handler = new AccessTransitionHandler(transition.id, transition)
+
+        const mockContext = createMockContext()
+        const invoker = createMockInvoker({ defaultValue: false })
+
+        // Act
+        const result = await handler.evaluate(mockContext, invoker)
+
+        // Assert
+        expect(result.value.passed).toBe(true)
+        expect(result.value.status).toBeUndefined()
+        expect(result.value.message).toBeUndefined()
+      })
+
+      it('should return undefined message when message expression evaluation errors', async () => {
+        // Arrange
+        const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'itemExists', [])
+        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+          subject: ASTTestFactory.reference(['data', 'item']),
+          condition,
+          negate: false,
+        })
+
+        const messageExpr = ASTTestFactory.expression(ExpressionType.FORMAT)
+          .withProperty('template', 'Error: %1')
+          .withProperty('arguments', [])
+          .build()
+
+        const transition = ASTTestFactory.transition(TransitionType.ACCESS)
+          .withProperty('guards', guardsPredicate)
+          .withProperty('status', 500)
+          .withProperty('message', messageExpr)
+          .build() as AccessTransitionASTNode
+
+        const handler = new AccessTransitionHandler(transition.id, transition)
+
+        const mockContext = createMockContext()
+        const invoker = createMockInvoker({ defaultValue: true })
+
+        // Mock message expression to return an error
+        invoker.invoke
+          .mockResolvedValueOnce({ value: true, metadata: { source: 'Test', timestamp: Date.now() } }) // guards (denial matched)
+          .mockResolvedValueOnce({
+            error: { type: 'EVALUATION_FAILED', nodeId: messageExpr.id, message: 'Missing argument' },
+            metadata: { source: 'Test', timestamp: Date.now() },
+          }) // message expression
+
+        // Act
+        const result = await handler.evaluate(mockContext, invoker)
+
+        // Assert
+        expect(result.value.passed).toBe(false)
+        expect(result.value.status).toBe(500)
+        expect(result.value.message).toBeUndefined()
       })
     })
 
@@ -267,7 +417,7 @@ describe('AccessTransitionHandler', () => {
             invocationOrder.push(nodeId)
 
             if (nodeId === guardsPredicate.id) {
-              return { value: false, metadata: { source: 'Test', timestamp: Date.now() } }
+              return { value: true, metadata: { source: 'Test', timestamp: Date.now() } }
             }
 
             // Effect node returns CapturedEffect
@@ -412,7 +562,7 @@ describe('AccessTransitionHandler', () => {
         const result = await handler.evaluate(mockContext, invoker)
 
         // Assert
-        expect(result.value.passed).toBe(true)
+        expect(result.value.passed).toBe(false)
         expect(result.value.pendingEffects).toEqual([])
       })
     })

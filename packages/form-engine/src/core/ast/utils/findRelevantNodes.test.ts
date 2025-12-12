@@ -122,7 +122,9 @@ describe('findRelevantNodes', () => {
 
     const collectionExpr = ASTTestFactory.expression<CollectionASTNode>(ExpressionType.COLLECTION)
       .withProperty('collection', collectionSourceRef)
-      .withProperty('template', [{ type: StructureType.BLOCK, variant: 'TextInput', code: 'nestedField' }])
+      .withProperty('template', [
+        { type: StructureType.BLOCK, blockType: 'field', variant: 'TextInput', code: 'nestedField' },
+      ])
       .build()
 
     const journeyNode = ASTTestFactory.journey()
@@ -142,6 +144,40 @@ describe('findRelevantNodes', () => {
     // Assert
     expect(result).toContainEqual(collectionExpr)
     expect(result).toContainEqual(collectionSourceRef)
+  })
+
+  it('should discover nested field blocks in non-validation properties on non-current steps', () => {
+    // Arrange
+    const step1FieldRef = ASTTestFactory.reference(['answers', 'step1'])
+
+    const nestedFieldDependentRef = ASTTestFactory.reference(['answers', 'nestedField'])
+    const nestedFieldBlock = ASTTestFactory.block('TextInput', 'field')
+      .withCode('nestedField')
+      .withProperty('dependent', nestedFieldDependentRef)
+      .build()
+
+    // This reference sits on a rendering property and should NOT be included for non-current steps
+    const wrapperLabelRef = ASTTestFactory.reference(['answers', 'shouldNotBeIncluded'])
+
+    const journeyNode = ASTTestFactory.journey()
+      .withStep(step => step.withProperty('entry', step1FieldRef))
+      .withStep(step =>
+        step.withBlock('WrapperBlock', 'basic', block =>
+          block.withProperty('label', wrapperLabelRef).withProperty('nested', [nestedFieldBlock]),
+        ),
+      )
+      .build()
+
+    const step1 = journeyNode.properties.steps[0]
+    metadataRegistry.set(step1.id, 'isCurrentStep', true)
+
+    // Act
+    const result = findRelevantNodes(journeyNode, nodeRegistry, metadataRegistry)
+
+    // Assert
+    expect(result).toContainEqual(nestedFieldBlock)
+    expect(result).toContainEqual(nestedFieldDependentRef)
+    expect(result).not.toContainEqual(wrapperLabelRef)
   })
 
   it('should include structural nodes for non-current steps but filter properties', () => {

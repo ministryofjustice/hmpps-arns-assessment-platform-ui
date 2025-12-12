@@ -6,7 +6,12 @@ import DependencyGraph from '@form-engine/core/ast/dependencies/DependencyGraph'
 import NodeRegistry from '@form-engine/core/ast/registration/NodeRegistry'
 import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
 import ComponentRegistry from '@form-engine/registry/ComponentRegistry'
-import { ThunkHandler, RuntimeOverlayBuilder, EvaluatorRequestData } from '@form-engine/core/ast/thunks/types'
+import {
+  ThunkHandler,
+  AsyncThunkHandler,
+  RuntimeOverlayBuilder,
+  EvaluatorRequestData,
+} from '@form-engine/core/ast/thunks/types'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { CompilationDependencies } from '@form-engine/core/ast/compilation/CompilationDependencies'
 import MetadataRegistry from '@form-engine/core/ast/registration/MetadataRegistry'
@@ -141,6 +146,7 @@ describe('ThunkEvaluator', () => {
       // Arrange
       const mockHandler: jest.Mocked<ThunkHandler> = {
         nodeId,
+        isAsync: true as const,
         evaluate: jest.fn().mockResolvedValue({
           value: 'test-value',
           metadata: { source: 'test', timestamp: 123456 },
@@ -171,6 +177,7 @@ describe('ThunkEvaluator', () => {
       // Arrange
       const mockHandler: jest.Mocked<ThunkHandler> = {
         nodeId,
+        isAsync: true as const,
         evaluate: jest.fn().mockResolvedValue({
           error: {
             type: 'EVALUATION_FAILED',
@@ -221,6 +228,7 @@ describe('ThunkEvaluator', () => {
       // Arrange
       const mockHandler: jest.Mocked<ThunkHandler> = {
         nodeId,
+        isAsync: true as const,
         evaluate: jest.fn().mockResolvedValue({
           value: 42,
           metadata: { source: 'handler', timestamp: Date.now() },
@@ -253,6 +261,7 @@ describe('ThunkEvaluator', () => {
       const thrownError = new Error('Handler crashed')
       const mockHandler: jest.Mocked<ThunkHandler> = {
         nodeId,
+        isAsync: true as const,
         evaluate: jest.fn().mockRejectedValue(thrownError),
       }
 
@@ -275,6 +284,7 @@ describe('ThunkEvaluator', () => {
       // Arrange
       const mockHandler: jest.Mocked<ThunkHandler> = {
         nodeId,
+        isAsync: true as const,
         evaluate: jest.fn().mockRejectedValue('String error'),
       }
 
@@ -299,6 +309,7 @@ describe('ThunkEvaluator', () => {
 
       const mockHandler: jest.Mocked<ThunkHandler> = {
         nodeId,
+        isAsync: true as const,
         evaluate: jest.fn().mockImplementation(async () => {
           await evaluationPromise
 
@@ -374,9 +385,10 @@ describe('ThunkEvaluator', () => {
 
       const evaluationOrder: NodeId[] = []
 
-      const createHandler = (id: NodeId, childIds: NodeId[] = []): jest.Mocked<ThunkHandler> => {
+      const createHandler = (id: NodeId, childIds: NodeId[] = []): jest.Mocked<AsyncThunkHandler> => {
         return {
           nodeId: id,
+          isAsync: true as const,
           evaluate: jest.fn().mockImplementation(async (ctx, invoker, hooks) => {
             evaluationOrder.push(id)
 
@@ -433,6 +445,7 @@ describe('ThunkEvaluator', () => {
 
       const journeyHandler: jest.Mocked<ThunkHandler> = {
         nodeId: journeyNodeId,
+        isAsync: true as const,
         evaluate: jest.fn().mockImplementation(async (ctx, invoker) => {
           await invoker.invoke(childNodeId, ctx)
 
@@ -442,6 +455,7 @@ describe('ThunkEvaluator', () => {
 
       const childHandler: jest.Mocked<ThunkHandler> = {
         nodeId: childNodeId,
+        isAsync: true as const,
         evaluate: jest.fn().mockImplementation(async () => {
           callCount += 1
 
@@ -492,6 +506,7 @@ describe('ThunkEvaluator', () => {
 
       const journeyHandler: jest.Mocked<ThunkHandler> = {
         nodeId: journeyNodeId,
+        isAsync: true as const,
         evaluate: jest.fn().mockImplementation(async (ctx, invoker) => {
           await invoker.invoke(answerNodeId, ctx)
 
@@ -504,6 +519,7 @@ describe('ThunkEvaluator', () => {
 
       const answerHandler: jest.Mocked<ThunkHandler> = {
         nodeId: answerNodeId,
+        isAsync: true as const,
         evaluate: jest.fn().mockImplementation(async (ctx: ThunkEvaluationContext) => {
           // Simulate handler populating answers
           ctx.global.answers.email = {

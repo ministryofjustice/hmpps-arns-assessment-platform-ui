@@ -213,7 +213,10 @@ export default class TemplateRenderer {
     }
 
     if (Array.isArray(value)) {
-      return Promise.all(value.map(element => this.transformValue(element, showValidationFailures)))
+      const transformed = await Promise.all(value.map(element => this.transformValue(element, showValidationFailures)))
+
+      // Filter out null values (hidden nested blocks)
+      return transformed.filter(item => item !== null)
     }
 
     if (typeof value === 'object') {
@@ -227,13 +230,21 @@ export default class TemplateRenderer {
   private async renderNestedBlock(
     block: Evaluated<BlockASTNode>,
     showValidationFailures: boolean,
-  ): Promise<RenderedBlock> {
+  ): Promise<RenderedBlock | null> {
+    const { hidden, ...properties } = block.properties
+    // Skip hidden nested blocks
+    if (block.properties.hidden === true) {
+      return null
+    }
+
     const html = await this.renderBlock(block, showValidationFailures)
 
     return {
       block: {
         type: StructureType.BLOCK,
+        blockType: block.blockType,
         variant: block.variant,
+        ...properties,
       },
       html,
     }
