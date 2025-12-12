@@ -33,6 +33,7 @@ describe('FormEngineRouter', () => {
       toStepRequest: jest.fn(),
       getBaseUrl: jest.fn(),
       redirect: jest.fn(),
+      registerRedirect: jest.fn(),
       forwardError: jest.fn(),
       render: jest.fn().mockResolvedValue(undefined),
     } as unknown as jest.Mocked<FrameworkAdapter<unknown, unknown, unknown>>
@@ -669,6 +670,170 @@ describe('FormEngineRouter', () => {
       expect(metadata).toHaveLength(2)
       expect(metadata[0].title).toBe('Form One')
       expect(metadata[1].title).toBe('Form Two')
+    })
+  })
+
+  describe('journey redirect handling', () => {
+    it('should register redirect when entryPath is defined', () => {
+      // Arrange
+      const journeyNode = createMockJourneyNode('compile_ast:1', '/journey', 'test-journey')
+      journeyNode.properties.entryPath = '/first-step'
+      const stepNode = createMockStepNode('compile_ast:2', '/first-step')
+      const artefact = createMockArtefact(stepNode, [journeyNode], [journeyNode.id, stepNode.id])
+
+      const config: JourneyDefinition = {
+        type: StructureType.JOURNEY,
+        path: '/journey',
+        code: 'test-journey',
+        title: 'Test Journey',
+        entryPath: '/first-step',
+        steps: [{ type: StructureType.STEP, path: '/first-step', title: 'First Step' }],
+      }
+
+      const formInstance = createMockFormInstance([{ artefact, currentStepId: stepNode.id }], config)
+
+      // Act
+      router.mountForm(formInstance)
+
+      // Assert
+      expect(mockFrameworkAdapter.registerRedirect).toHaveBeenCalledWith(expect.anything(), '/', '/journey/first-step')
+      expect(mockLogger.debug).toHaveBeenCalledWith('[FormEngineRouter]: Registered redirect handler: /journey')
+    })
+
+    it('should register redirect to step with isEntryPoint when entryPath not defined', () => {
+      // Arrange
+      const journeyNode = createMockJourneyNode('compile_ast:1', '/journey', 'test-journey')
+      const stepNode = createMockStepNode('compile_ast:2', '/entry')
+      stepNode.properties.isEntryPoint = true
+      journeyNode.properties.steps = [stepNode]
+      const artefact = createMockArtefact(stepNode, [journeyNode], [journeyNode.id, stepNode.id])
+
+      const config: JourneyDefinition = {
+        type: StructureType.JOURNEY,
+        path: '/journey',
+        code: 'test-journey',
+        title: 'Test Journey',
+        steps: [{ type: StructureType.STEP, path: '/entry', title: 'Entry Step', isEntryPoint: true }],
+      }
+
+      const formInstance = createMockFormInstance([{ artefact, currentStepId: stepNode.id }], config)
+
+      // Act
+      router.mountForm(formInstance)
+
+      // Assert
+      expect(mockFrameworkAdapter.registerRedirect).toHaveBeenCalledWith(expect.anything(), '/', '/journey/entry')
+    })
+
+    it('should not register redirect when no entry point defined', () => {
+      // Arrange
+      const journeyNode = createMockJourneyNode('compile_ast:1', '/journey', 'test-journey')
+      const stepNode = createMockStepNode('compile_ast:2', '/step')
+      const artefact = createMockArtefact(stepNode, [journeyNode], [journeyNode.id, stepNode.id])
+
+      const config: JourneyDefinition = {
+        type: StructureType.JOURNEY,
+        path: '/journey',
+        code: 'test-journey',
+        title: 'Test Journey',
+        steps: [{ type: StructureType.STEP, path: '/step', title: 'Step' }],
+      }
+
+      const formInstance = createMockFormInstance([{ artefact, currentStepId: stepNode.id }], config)
+
+      // Act
+      router.mountForm(formInstance)
+
+      // Assert
+      expect(mockFrameworkAdapter.registerRedirect).not.toHaveBeenCalled()
+      expect(mockLogger.debug).not.toHaveBeenCalledWith(
+        expect.stringContaining('[FormEngineRouter]: Registered redirect handler'),
+      )
+    })
+
+    it('should handle nested journey redirects', () => {
+      // Arrange
+      const parentJourney = createMockJourneyNode('compile_ast:1', '/parent', 'parent-journey')
+      parentJourney.properties.entryPath = '/first'
+
+      const childJourney = createMockJourneyNode('compile_ast:2', '/child', 'child-journey')
+      childJourney.properties.entryPath = '/nested'
+
+      const stepNode = createMockStepNode('compile_ast:3', '/nested')
+      const artefact = createMockArtefact(
+        stepNode,
+        [parentJourney, childJourney],
+        [parentJourney.id, childJourney.id, stepNode.id],
+      )
+
+      const config: JourneyDefinition = {
+        type: StructureType.JOURNEY,
+        path: '/parent',
+        code: 'parent-journey',
+        title: 'Parent Journey',
+        entryPath: '/first',
+        children: [
+          {
+            type: StructureType.JOURNEY,
+            path: '/child',
+            code: 'child-journey',
+            title: 'Child Journey',
+            entryPath: '/nested',
+            steps: [{ type: StructureType.STEP, path: '/nested', title: 'Nested Step' }],
+          },
+        ],
+      }
+
+      const formInstance = createMockFormInstance([{ artefact, currentStepId: stepNode.id }], config)
+
+      // Act
+      router.mountForm(formInstance)
+
+      // Assert - both journey routers should have redirect handlers
+      expect(mockFrameworkAdapter.registerRedirect).toHaveBeenCalledTimes(2)
+      expect(mockFrameworkAdapter.registerRedirect).toHaveBeenCalledWith(expect.anything(), '/', '/parent/first')
+      expect(mockFrameworkAdapter.registerRedirect).toHaveBeenCalledWith(expect.anything(), '/', '/parent/child/nested')
+
+      expect(mockLogger.debug).toHaveBeenCalledWith('[FormEngineRouter]: Registered redirect handler: /parent')
+      expect(mockLogger.debug).toHaveBeenCalledWith('[FormEngineRouter]: Registered redirect handler: /parent/child')
+    })
+
+    it('should prefer entryPath over isEntryPoint step', () => {
+      // Arrange
+      const journeyNode = createMockJourneyNode('compile_ast:1', '/journey', 'test-journey')
+      journeyNode.properties.entryPath = '/explicit-entry'
+
+      const entryPointStep = createMockStepNode('compile_ast:2', '/entry-point')
+      entryPointStep.properties.isEntryPoint = true
+
+      const explicitStep = createMockStepNode('compile_ast:3', '/explicit-entry')
+      journeyNode.properties.steps = [entryPointStep, explicitStep]
+
+      const artefact = createMockArtefact(entryPointStep, [journeyNode], [journeyNode.id, entryPointStep.id])
+
+      const config: JourneyDefinition = {
+        type: StructureType.JOURNEY,
+        path: '/journey',
+        code: 'test-journey',
+        title: 'Test Journey',
+        entryPath: '/explicit-entry',
+        steps: [
+          { type: StructureType.STEP, path: '/entry-point', title: 'Entry Point Step', isEntryPoint: true },
+          { type: StructureType.STEP, path: '/explicit-entry', title: 'Explicit Entry' },
+        ],
+      }
+
+      const formInstance = createMockFormInstance([{ artefact, currentStepId: entryPointStep.id }], config)
+
+      // Act
+      router.mountForm(formInstance)
+
+      // Assert - should redirect to entryPath, not isEntryPoint step
+      expect(mockFrameworkAdapter.registerRedirect).toHaveBeenCalledWith(
+        expect.anything(),
+        '/',
+        '/journey/explicit-entry',
+      )
     })
   })
 })
