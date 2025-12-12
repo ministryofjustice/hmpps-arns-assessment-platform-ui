@@ -56,9 +56,9 @@
   {% if status !== 404 and stack %}
     <div class="govuk-grid-row govuk-!-margin-top-4">
       <div class="govuk-grid-column-full">
-        <code class="code-block">
-          <pre>{{ stack }}</pre>
-        </code>
+        <app-copy-code class="app-code-block">
+          <pre><code>{{ stack }}</code></pre>
+        </app-copy-code>
       </div>
     </div>
   {% endif %}
