@@ -5,6 +5,7 @@ import createError from 'http-errors'
 import FormEngine from '@form-engine/core/FormEngine'
 import { ExpressFrameworkAdapter } from '@form-engine-express-nunjucks/index'
 import { govukComponents } from '@form-engine-govuk-components/index'
+import { mojComponents } from '@form-engine-moj-components/index'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './routes/error/errorHandler'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
@@ -22,6 +23,8 @@ import setUpWebSession from './middleware/setUpWebSession'
 import routes from './routes'
 import type { Services } from './services'
 import logger from '../logger'
+import aapDeveloperGuideJourney from './forms/aap-developer-guide'
+import { createDeveloperGuideEffectsRegistry } from './forms/aap-developer-guide/effects'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -46,14 +49,20 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
 
+  const developerGuideEffectsRegistry = createDeveloperGuideEffectsRegistry({})
+
   const formEngine = new FormEngine({
     logger,
+    basePath: '/forms',
     frameworkAdapter: ExpressFrameworkAdapter.configure({
       nunjucksEnv,
       defaultTemplate: 'partials/form-step',
     }),
   })
     .registerComponents(govukComponents)
+    .registerComponents(mojComponents)
+    .registerFunctions(developerGuideEffectsRegistry)
+    .registerForm(aapDeveloperGuideJourney)
 
   // Mount routes
   app.use(routes(services))
