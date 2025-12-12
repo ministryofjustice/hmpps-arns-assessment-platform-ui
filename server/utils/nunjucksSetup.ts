@@ -44,6 +44,7 @@ export default function nunjucksSetup(app?: express.Express) {
       path.join(__dirname, '../../server/views'),
       path.join(__dirname, 'packages/form-engine/src/diagnostics/inspector/templates'),
       path.join(__dirname, '../../packages/form-engine/src/diagnostics/inspector/templates'),
+      'packages/form-engine-moj-components/src/',
       'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
     ],
