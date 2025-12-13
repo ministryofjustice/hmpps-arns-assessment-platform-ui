@@ -19,9 +19,7 @@ import {
   NextExpr,
   PipelineExpr,
   ReferenceExpr,
-  SkipValidationTransition,
   SubmitTransition,
-  ValidatingTransition,
 } from '../types/expressions.type'
 import { ExpressionType, StructureType, TransitionType } from '../types/enums'
 
@@ -57,8 +55,6 @@ export function journey<D extends JourneyDefinition>(definition: Omit<D, 'type'>
  * Creates a submission transition for handling form submissions.
  * Use this in the onSubmission array of steps.
  */
-export function submitTransition(definition: Omit<ValidatingTransition, 'type'>): ValidatingTransition
-export function submitTransition(definition: Omit<SkipValidationTransition, 'type'>): SkipValidationTransition
 export function submitTransition(definition: Omit<SubmitTransition, 'type'>): SubmitTransition {
   return finaliseBuilders({ ...definition, type: TransitionType.SUBMIT }) as SubmitTransition
 }
