@@ -11,7 +11,7 @@ describe('PseudoNodeFactory', () => {
       next: jest.fn(),
     } as unknown as jest.Mocked<NodeIDGenerator>
 
-    factory = new PseudoNodeFactory(mockNodeIDGenerator)
+    factory = new PseudoNodeFactory(mockNodeIDGenerator, NodeIDCategory.COMPILE_PSEUDO)
   })
 
   describe('createPostPseudoNode', () => {
@@ -88,13 +88,13 @@ describe('PseudoNodeFactory', () => {
   describe('createDataPseudoNode', () => {
     it('should create DATA pseudo node with generated ID from nodeIDGenerator', () => {
       // Arrange
-      const baseFieldCode = 'userData'
+      const baseProperty = 'userData'
       const generatedId = 'compile_pseudo:30'
 
       mockNodeIDGenerator.next.mockReturnValue(generatedId)
 
       // Act
-      const result = factory.createDataPseudoNode(baseFieldCode)
+      const result = factory.createDataPseudoNode(baseProperty)
 
       // Assert
       expect(mockNodeIDGenerator.next).toHaveBeenCalledWith(NodeIDCategory.COMPILE_PSEUDO)
@@ -102,7 +102,7 @@ describe('PseudoNodeFactory', () => {
         id: generatedId,
         type: PseudoNodeType.DATA,
         properties: {
-          baseFieldCode,
+          baseProperty,
         },
       })
     })
@@ -152,5 +152,35 @@ describe('PseudoNodeFactory', () => {
         },
       })
     })
+  })
+
+  it('should use RUNTIME_PSEUDO category when specified', () => {
+    // Arrange
+    const runtimeFactory = new PseudoNodeFactory(mockNodeIDGenerator, NodeIDCategory.RUNTIME_PSEUDO)
+    const generatedId = 'runtime_pseudo:1'
+
+    mockNodeIDGenerator.next.mockReturnValue(generatedId)
+
+    // Act
+    const result = runtimeFactory.createPostPseudoNode('fieldName')
+
+    // Assert
+    expect(mockNodeIDGenerator.next).toHaveBeenCalledWith(NodeIDCategory.RUNTIME_PSEUDO)
+    expect(result.id).toBe(generatedId)
+  })
+
+  it('should use COMPILE_PSEUDO category when specified', () => {
+    // Arrange
+    const compileFactory = new PseudoNodeFactory(mockNodeIDGenerator, NodeIDCategory.COMPILE_PSEUDO)
+    const generatedId = 'compile_pseudo:1'
+
+    mockNodeIDGenerator.next.mockReturnValue(generatedId)
+
+    // Act
+    const result = compileFactory.createDataPseudoNode('userData')
+
+    // Assert
+    expect(mockNodeIDGenerator.next).toHaveBeenCalledWith(NodeIDCategory.COMPILE_PSEUDO)
+    expect(result.id).toBe(generatedId)
   })
 })

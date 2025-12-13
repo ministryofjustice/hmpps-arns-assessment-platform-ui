@@ -3,7 +3,7 @@
 
 services:
   auth:
-    image: quay.io/hmpps/hmpps-auth:latest
+    image: ghcr.io/ministryofjustice/hmpps-auth:latest
     networks:
       - hmpps
     ports:
@@ -18,7 +18,7 @@ services:
       SPRING_FLYWAY_LOCATIONS: classpath:db/auth,db/auth_{vendor},db/dev/data/auth_{vendor},db/dev/data/auth,filesystem:/auth_db
 
   redis:
-    image: redis:8.2
+    image: redis:8.4
     networks:
       - hmpps
     ports:

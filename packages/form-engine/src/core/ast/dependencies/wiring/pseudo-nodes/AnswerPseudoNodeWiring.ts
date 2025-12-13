@@ -96,7 +96,9 @@ export default class AnswerPseudoNodeWiring {
     }
 
     // Wire the on load transition
-    const nearestOnLoadTransition = this.wiringContext.findLastOnLoadTransitionFrom(this.wiringContext.getStepNode().id)
+    const nearestOnLoadTransition = this.wiringContext.findLastOnLoadTransitionFrom(
+      this.wiringContext.getCurrentStepNode().id,
+    )
 
     if (nearestOnLoadTransition) {
       this.wiringContext.graph.addEdge(nearestOnLoadTransition.id, answerPseudoNode.id, DependencyEdgeType.DATA_FLOW, {
@@ -115,7 +117,9 @@ export default class AnswerPseudoNodeWiring {
     const { baseFieldCode } = answerPseudoNode.properties
 
     // Wire the on load transition
-    const nearestOnLoadTransition = this.wiringContext.findLastOnLoadTransitionFrom(this.wiringContext.getStepNode().id)
+    const nearestOnLoadTransition = this.wiringContext.findLastOnLoadTransitionFrom(
+      this.wiringContext.getCurrentStepNode().id,
+    )
 
     if (nearestOnLoadTransition) {
       this.wiringContext.graph.addEdge(nearestOnLoadTransition.id, answerPseudoNode.id, DependencyEdgeType.DATA_FLOW, {
@@ -138,10 +142,9 @@ export default class AnswerPseudoNodeWiring {
       const path = refNode.properties.path
 
       if (path.length >= 2) {
-        const referencedField = path[1] as string
-        const baseCode = referencedField.split('.')[0]
+        const referencedBaseCode = path[1] as string
 
-        if (baseCode === baseFieldCode) {
+        if (referencedBaseCode === baseFieldCode) {
           this.wiringContext.graph.addEdge(answerPseudoNode.id, refNode.id, DependencyEdgeType.DATA_FLOW, {
             referenceType: 'answer',
             fieldCode: baseFieldCode,

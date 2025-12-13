@@ -1,0 +1,25 @@
+// Override for GOV.UK pagination to force inline layout
+// when using previous/next without numbered items
+
+.govuk-pagination--inline.govuk-pagination--block {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: govuk-spacing(6);
+
+  .govuk-pagination__prev,
+  .govuk-pagination__next {
+    padding: 0;
+    float: none;
+  }
+
+  // Remove the border that block mode adds between prev and next
+  .govuk-pagination__prev + .govuk-pagination__next {
+    border-top: none;
+  }
+
+  // Reset the ::after that forces block display
+  .govuk-pagination__link-title::after {
+    display: none;
+  }
+}

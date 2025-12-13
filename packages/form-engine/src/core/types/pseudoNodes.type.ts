@@ -45,26 +45,27 @@ export interface ParamsPseudoNode extends BasePseudoNode {
 /**
  * POST pseudo node - represents raw form submission data for a field
  *
- * Stores only the base field code.
+ * Stores the base field code and optionally a reference to the field node.
  * Nested property access (e.g., 'fieldName.subProperty') is handled by the expression evaluator.
  */
 export interface PostPseudoNode extends BasePseudoNode {
   type: PseudoNodeType.POST
   properties: {
     baseFieldCode: string
+    fieldNodeId?: NodeId
   }
 }
 
 /**
  * DATA pseudo node - represents external data loaded via onLoad transitions
  *
- * Stores only the base field code.
+ * Stores only the base property name.
  * Nested property access (e.g., 'userData.name') is handled by the expression evaluator.
  */
 export interface DataPseudoNode extends BasePseudoNode {
   type: PseudoNodeType.DATA
   properties: {
-    baseFieldCode: string
+    baseProperty: string
   }
 }
 

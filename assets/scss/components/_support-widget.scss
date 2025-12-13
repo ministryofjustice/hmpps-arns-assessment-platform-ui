@@ -1,0 +1,72 @@
+.support-widget {
+  display: block;
+  background-color: govuk-colour("light-grey");
+  border-top: 1px solid govuk-colour("mid-grey");
+  padding: govuk-spacing(3) 0;
+}
+
+.support-widget__inner {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: govuk-spacing(3);
+}
+
+.support-widget__prompt {
+  @include govuk-font($size: 16, $weight: bold);
+}
+
+.support-widget__button {
+  @include govuk-font($size: 16);
+  display: inline-block;
+  padding: govuk-spacing(2) govuk-spacing(3);
+  border: 1px solid govuk-colour("black");
+  box-shadow: 0 2px govuk-colour("black");
+  background-color: govuk-colour("white");
+  color: govuk-colour("black");
+  cursor: pointer;
+
+  &:hover {
+    background-color: govuk-colour("light-grey");
+  }
+
+  &:focus {
+    @include govuk-focused-text;
+  }
+}
+
+.support-widget__content {
+  margin-top: govuk-spacing(3);
+  padding: govuk-spacing(3);
+  background-color: govuk-colour("white");
+  border: 1px solid govuk-colour("mid-grey");
+}
+
+.support-widget__data {
+  margin: 0;
+}
+
+.support-widget__data-row {
+  display: flex;
+  align-items: center;
+  gap: govuk-spacing(2);
+
+  &:not(:last-child) {
+    margin-bottom: govuk-spacing(2);
+  }
+
+  dt {
+    @include govuk-font($size: 14, $weight: bold);
+    flex-shrink: 0;
+  }
+
+  dd {
+    @include govuk-font($size: 14);
+    margin: 0;
+    padding: govuk-spacing(2);
+    background-color: govuk-colour("light-grey");
+    font-family: monospace;
+    word-break: break-all;
+    user-select: all;
+  }
+}

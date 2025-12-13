@@ -1,0 +1,27 @@
+<app-support-widget class="support-widget">
+  <div class="govuk-width-container">
+    <div class="support-widget__inner">
+      <span class="support-widget__prompt">Is this page not working correctly?</span>
+      <button type="button" class="support-widget__button" data-support-toggle>
+        Report a problem with this page
+      </button>
+    </div>
+    <div class="support-widget__content" id="support-widget-content" data-support-content>
+      <p class="govuk-body-s govuk-!-margin-bottom-2">
+        If you're experiencing problems, please contact support with this information:
+      </p>
+      <dl class="support-widget__data">
+        <div class="support-widget__data-row">
+          <dt>Request ID</dt>
+          <dd>{{ getRequestId() }}</dd>
+        </div>
+        {% for item in supportData %}
+          <div class="support-widget__data-row">
+            <dt>{{ item.label }}</dt>
+            <dd>{{ item.value }}</dd>
+          </div>
+        {% endfor %}
+      </dl>
+    </div>
+  </div>
+</app-support-widget>

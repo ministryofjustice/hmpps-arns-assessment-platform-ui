@@ -14,14 +14,14 @@ export default function routes({ assessmentService, auditService }: Services): R
 
       const { assessmentUuid, message } = await assessmentService.command<'CreateAssessment'>({
         type: 'CreateAssessmentCommand',
+        assessmentType: 'TEST',
         formVersion: '1',
-        properties: {},
         user,
       })
 
       const assessment = await assessmentService.query<'AssessmentVersion'>({
         type: 'AssessmentVersionQuery',
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 

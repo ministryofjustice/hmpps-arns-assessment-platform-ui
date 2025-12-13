@@ -9,11 +9,27 @@ import {
   FormatExpr,
   ConditionalExpr,
   AccessTransition,
+  ActionTransition,
   LoadTransition,
 } from './expressions.type'
 import { PredicateTestExprBuilder } from '../builders/PredicateTestExprBuilder'
 import { ConditionalExprBuilder } from '../builders/ConditionalExprBuilder'
 import { StructureType, ExpressionType } from './enums'
+
+/**
+ * View configuration for journeys and steps.
+ * Controls rendering behavior including template selection and template locals.
+ */
+export interface ViewConfig {
+  /** Template to use for rendering (inherits from parent journey if not specified) */
+  template?: string
+
+  /** Arbitrary properties to pass to the template as locals */
+  locals?: Record<string, unknown>
+
+  /** If true, this step/journey will be marked as hidden in the navigation tree */
+  hiddenFromNavigation?: boolean
+}
 
 /**
  * Base interface for all block types in the form engine.
@@ -103,7 +119,14 @@ export interface FieldBlockDefinition extends BlockDefinition {
   validate?: ValidationExpr[]
 
   /** Marks field as dependent on other fields - used for validation ordering */
-  dependent?: PredicateTestExpr | PredicateTestExprBuilder
+  dependent?: PredicateExpr | PredicateTestExprBuilder
+
+  /**
+   * Whether to keep all values when an array is returned.
+   * When false (default), only the first non-empty value is used.
+   * When true, all values in the array are kept.
+   */
+  multiple?: boolean
 }
 
 /**
@@ -137,6 +160,15 @@ export interface JourneyDefinition {
   /** Optional description of the journey's purpose */
   description?: string
 
+  /** View configuration for rendering (template, locals) */
+  view?: ViewConfig
+
+  /**
+   * Path to redirect to when journey root is accessed.
+   * Takes priority over isEntryPoint, if no value, first `isEntryPoint` is used.
+   */
+  entryPath?: string
+
   /** Optional metadata regarding the journey */
   metadata?: {
     [key: string]: any
@@ -162,14 +194,17 @@ export interface StepDefinition {
   /** Check access and run analytics when step is accessed */
   onAccess?: AccessTransition[]
 
+  /** Handle in-step actions (e.g., "Find address" button) */
+  onAction?: ActionTransition[]
+
   /** Handle form submission transitions */
   onSubmission?: SubmitTransition[]
 
   /** Title for this step for displaying on the UI */
   title: string
 
-  /** Optional custom Nunjucks template for rendering the step */
-  template?: string
+  /** View configuration for rendering (template, locals) */
+  view?: ViewConfig
 
   /** Marks this as an entry point step in the journey */
   isEntryPoint?: boolean

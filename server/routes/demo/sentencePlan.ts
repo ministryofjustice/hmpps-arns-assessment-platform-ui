@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import crypto from 'crypto'
 import type { Services } from '../../services'
 
 export default function routes({ assessmentService }: Services): Router {
@@ -15,13 +16,13 @@ export default function routes({ assessmentService }: Services): Router {
 
       const sentencePlan = await assessmentService.query<'AssessmentVersion'>({
         type: 'AssessmentVersionQuery',
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
       const timelineResult = await assessmentService.query<'AssessmentTimeline'>({
         type: 'AssessmentTimelineQuery',
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -30,7 +31,7 @@ export default function routes({ assessmentService }: Services): Router {
           assessmentService.query<'AssessmentVersion'>({
             type: 'AssessmentVersionQuery',
             timestamp: item.createdAt,
-            assessmentUuid,
+            assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
             user,
           }),
         ),
@@ -43,7 +44,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionQuery',
         collectionUuid: goalsUuid,
         depth: 0,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -51,7 +52,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionQuery',
         collectionUuid: goalsUuid,
         depth: 1,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -59,7 +60,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionItemQuery',
         collectionItemUuid: goalUuid,
         depth: 0,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -67,14 +68,14 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionItemQuery',
         collectionItemUuid: goalUuid,
         depth: 1,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
       const stepsTimelineResult = await assessmentService.query<'AssessmentTimeline'>({
         type: 'AssessmentTimelineQuery',
         timelineTypes: ['STEP_ADDED'],
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -83,7 +84,7 @@ export default function routes({ assessmentService }: Services): Router {
         collectionUuid: goalsUuid,
         depth: 1,
         timestamp: stepsTimelineResult.timeline[0].createdAt,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -92,14 +93,14 @@ export default function routes({ assessmentService }: Services): Router {
         collectionItemUuid: goalUuid,
         depth: 1,
         timestamp: stepsTimelineResult.timeline[0].createdAt,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
       const timelinePointInTime = await assessmentService.query<'AssessmentTimeline'>({
         type: 'AssessmentTimelineQuery',
         timestamp: timelineResult.timeline[1].createdAt,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -136,16 +137,22 @@ export default function routes({ assessmentService }: Services): Router {
         }
       }
 
+      const crn = crypto.randomUUID().toString()
+
       // Create a new Plan
       const { assessmentUuid } = await assessmentService.command<'CreateAssessment'>({
         type: 'CreateAssessmentCommand',
+        assessmentType: 'SENTENCE_PLAN',
         formVersion: '1',
         properties: {
-          PUBLISHED_STATE: ['UNPUBLISHED'],
-          STATUS: ['UNSIGNED'],
-          AGREEMENT_STATUS: ['DRAFT'],
-          AGREEMENT_DATE: [''],
-          AGREEMENT_NOTES: [''],
+          PUBLISHED_STATE: { type: 'Single', value: 'UNPUBLISHED' },
+          STATUS: { type: 'Single', value: 'UNSIGNED' },
+          AGREEMENT_STATUS: { type: 'Single', value: 'DRAFT' },
+          AGREEMENT_DATE: { type: 'Single', value: '' },
+          AGREEMENT_NOTES: { type: 'Single', value: '' },
+        },
+        identifiers: {
+          CRN: crn,
         },
         user,
       })
@@ -167,14 +174,14 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'AddCollectionItemCommand',
         collectionUuid: goalsCollectionUuid,
         properties: {
-          STATUS: ['ACTIVE'],
-          STATUS_DATE: ['2025-11-11T00:00:00'],
+          STATUS: { type: 'Single', value: 'ACTIVE' },
+          STATUS_DATE: { type: 'Single', value: '2025-11-11T00:00:00' },
         },
         answers: {
-          TITLE: ['I will find new ways to budget my money and keep to my income'],
-          AREA_OF_NEED: ['FINANCES'],
-          RELATED_AREAS_OF_NEED: ['ACCOMMODATION', 'THINKING_BEHAVIOURS_AND_ATTITUDES'],
-          TARGET_DATE: ['2026-02-11T00:00:00'],
+          TITLE: { type: 'Single', value: 'I will find new ways to budget my money and keep to my income' },
+          AREA_OF_NEED: { type: 'Single', value: 'FINANCES' },
+          RELATED_AREAS_OF_NEED: { type: 'Multi', values: ['ACCOMMODATION', 'THINKING_BEHAVIOURS_AND_ATTITUDES'] },
+          TARGET_DATE: { type: 'Single', value: '2026-02-11T00:00:00' },
         },
         assessmentUuid,
         user,
@@ -209,12 +216,12 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'AddCollectionItemCommand',
         collectionUuid: stepsCollectionUuid,
         properties: {
-          STATUS_DATE: ['2025-11-11T00:00:00'],
+          STATUS_DATE: { type: 'Single', value: '2025-11-11T00:00:00' },
         },
         answers: {
-          STATUS: ['NOT_STARTED'],
-          DESCRIPTION: ['Provide learning material'],
-          ACTOR: ['Probation practitioner'],
+          STATUS: { type: 'Single', value: 'NOT_STARTED' },
+          DESCRIPTION: { type: 'Single', value: 'Provide learning material' },
+          ACTOR: { type: 'Single', value: 'Probation practitioner' },
         },
         assessmentUuid,
         user,
@@ -227,12 +234,12 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'AddCollectionItemCommand',
         collectionUuid: stepsCollectionUuid,
         properties: {
-          STATUS_DATE: ['2025-11-11T00:00:00'],
+          STATUS_DATE: { type: 'Single', value: '2025-11-11T00:00:00' },
         },
         answers: {
-          STATUS: ['NOT_STARTED'],
-          DESCRIPTION: ['Create a budget'],
-          ACTOR: ['Person on probation'],
+          STATUS: { type: 'Single', value: 'NOT_STARTED' },
+          DESCRIPTION: { type: 'Single', value: 'Create a budget' },
+          ACTOR: { type: 'Single', value: 'Person on probation' },
         },
         timeline: {
           type: 'STEP_ADDED',
@@ -250,7 +257,7 @@ export default function routes({ assessmentService }: Services): Router {
           type: 'UpdateCollectionItemAnswersCommand',
           collectionItemUuid: step1Uuid,
           added: {
-            STATUS: ['IN_PROGRESS'],
+            STATUS: { type: 'Single', value: 'IN_PROGRESS' },
           },
           removed: [],
           assessmentUuid,
@@ -260,7 +267,7 @@ export default function routes({ assessmentService }: Services): Router {
           type: 'UpdateCollectionItemPropertiesCommand',
           collectionItemUuid: step1Uuid,
           added: {
-            STATUS_DATE: ['2025-11-12T00:00:00'],
+            STATUS_DATE: { type: 'Single', value: '2025-11-12T00:00:00' },
           },
           removed: [],
           assessmentUuid,
@@ -271,7 +278,7 @@ export default function routes({ assessmentService }: Services): Router {
           collectionUuid: notesCollectionUuid,
           properties: {},
           answers: {
-            DESCRIPTION: ['Person on probation is progressing well'],
+            DESCRIPTION: { type: 'Single', value: 'Person on probation is progressing well' },
           },
           assessmentUuid,
           user,
@@ -285,14 +292,14 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'AddCollectionItemCommand',
         collectionUuid: goalsCollectionUuid,
         properties: {
-          STATUS: ['ACTIVE'],
-          STATUS_DATE: ['2025-11-11T00:00:00'],
+          STATUS: { type: 'Single', value: 'ACTIVE' },
+          STATUS_DATE: { type: 'Single', value: '2025-11-11T00:00:00' },
         },
         answers: {
-          TITLE: ['Top priority goal'],
-          AREA_OF_NEED: ['FINANCES'],
-          RELATED_AREAS_OF_NEED: [],
-          TARGET_DATE: ['2026-02-11T00:00:00'],
+          TITLE: { type: 'Single', value: 'Top priority goal' },
+          AREA_OF_NEED: { type: 'Single', value: 'FINANCES' },
+          RELATED_AREAS_OF_NEED: { type: 'Multi', values: [] },
+          TARGET_DATE: { type: 'Single', value: '2026-02-11T00:00:00' },
         },
         timeline: {
           type: 'GOAL_CREATED',
@@ -319,8 +326,8 @@ export default function routes({ assessmentService }: Services): Router {
       await assessmentService.command<'UpdateAssessmentProperties'>({
         type: 'UpdateAssessmentPropertiesCommand',
         added: {
-          AGREEMENT_STATUS: ['AGREED'],
-          AGREEMENT_NOTES: ['AGREED'],
+          AGREEMENT_STATUS: { type: 'Single', value: 'AGREED' },
+          AGREEMENT_NOTES: { type: 'Single', value: 'AGREED' },
         },
         removed: [],
         timeline: {
@@ -334,15 +341,60 @@ export default function routes({ assessmentService }: Services): Router {
         user,
       })
 
+      // Update the form version
+      await assessmentService.command<'Group'>({
+        type: 'GroupCommand',
+        commands: [
+          {
+            type: 'UpdateAssessmentPropertiesCommand',
+            added: {
+              SOME_PROP: { type: 'Single', value: 'new val' },
+            },
+            removed: [],
+            assessmentUuid,
+            user,
+          },
+          {
+            type: 'UpdateAssessmentAnswersCommand',
+            added: {
+              SOME_QUESTION: { type: 'Single', value: 'new answer' },
+            },
+            removed: [],
+            assessmentUuid,
+            user,
+          },
+          {
+            type: 'UpdateFormVersionCommand',
+            version: '2',
+            assessmentUuid,
+            user,
+          },
+        ],
+        timeline: {
+          type: 'TIMELINE_TYPE_GOES_HERE',
+          data: {
+            details: 'Sentence Plan version updated to v2',
+          },
+        },
+        assessmentUuid,
+        user,
+      })
+
       const sentencePlan = await assessmentService.query<'AssessmentVersion'>({
         type: 'AssessmentVersionQuery',
-        assessmentUuid,
+        // assessmentIdentifier: {type: 'UUID', uuid: assessmentUuid},
+        assessmentIdentifier: {
+          type: 'EXTERNAL',
+          identifierType: 'CRN',
+          identifier: crn,
+          assessmentType: 'SENTENCE_PLAN',
+        },
         user,
       })
 
       const timelineResult = await assessmentService.query<'AssessmentTimeline'>({
         type: 'AssessmentTimelineQuery',
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -351,7 +403,7 @@ export default function routes({ assessmentService }: Services): Router {
           assessmentService.query<'AssessmentVersion'>({
             type: 'AssessmentVersionQuery',
             timestamp: item.createdAt,
-            assessmentUuid,
+            assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
             user,
           }),
         ),
@@ -361,7 +413,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionQuery',
         collectionUuid: goalsCollectionUuid,
         depth: 0,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -369,7 +421,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionQuery',
         collectionUuid: goalsCollectionUuid,
         depth: 1,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -377,7 +429,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionItemQuery',
         collectionItemUuid: goalUuid,
         depth: 0,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -385,14 +437,14 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionItemQuery',
         collectionItemUuid: goalUuid,
         depth: 1,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
       const stepsTimelineResult = await assessmentService.query<'AssessmentTimeline'>({
         type: 'AssessmentTimelineQuery',
         timelineTypes: ['STEP_ADDED'],
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -401,7 +453,7 @@ export default function routes({ assessmentService }: Services): Router {
         collectionUuid: goalsCollectionUuid,
         depth: 1,
         timestamp: stepsTimelineResult.timeline[0].createdAt,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
@@ -410,14 +462,14 @@ export default function routes({ assessmentService }: Services): Router {
         collectionItemUuid: goalUuid,
         depth: 1,
         timestamp: stepsTimelineResult.timeline[0].createdAt,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
       const timelinePointInTime = await assessmentService.query<'AssessmentTimeline'>({
         type: 'AssessmentTimelineQuery',
         timestamp: timelineResult.timeline[1].createdAt,
-        assessmentUuid,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 

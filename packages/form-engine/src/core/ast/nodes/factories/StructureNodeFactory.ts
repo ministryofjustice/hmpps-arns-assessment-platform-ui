@@ -31,6 +31,7 @@ export class StructureNodeFactory {
   constructor(
     private readonly nodeIDGenerator: NodeIDGenerator,
     private readonly nodeFactory: NodeFactory,
+    private readonly category: NodeIDCategory.COMPILE_AST | NodeIDCategory.RUNTIME_AST,
   ) {}
 
   /**
@@ -120,12 +121,20 @@ export class StructureNodeFactory {
       properties.children = this.nodeFactory.transformValue(dataProperties.children)
     }
 
+    if (dataProperties.view !== undefined) {
+      properties.view = this.nodeFactory.transformValue(dataProperties.view)
+    }
+
+    if (dataProperties.entryPath !== undefined) {
+      properties.entryPath = dataProperties.entryPath
+    }
+
     if (dataProperties.metadata !== undefined) {
       properties.metadata = dataProperties.metadata
     }
 
     return {
-      id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
+      id: this.nodeIDGenerator.next(this.category),
       type: ASTNodeType.JOURNEY,
       properties,
       raw: json,
@@ -170,6 +179,10 @@ export class StructureNodeFactory {
       properties.onAccess = this.nodeFactory.transformValue(dataProperties.onAccess)
     }
 
+    if (dataProperties.onAction !== undefined) {
+      properties.onAction = this.nodeFactory.transformValue(dataProperties.onAction)
+    }
+
     if (dataProperties.onSubmission !== undefined) {
       properties.onSubmission = this.nodeFactory.transformValue(dataProperties.onSubmission)
     }
@@ -178,8 +191,8 @@ export class StructureNodeFactory {
       properties.blocks = this.nodeFactory.transformValue(dataProperties.blocks)
     }
 
-    if (dataProperties.template !== undefined) {
-      properties.template = dataProperties.template
+    if (dataProperties.view !== undefined) {
+      properties.view = this.nodeFactory.transformValue(dataProperties.view)
     }
 
     if (dataProperties.isEntryPoint !== undefined) {
@@ -195,7 +208,7 @@ export class StructureNodeFactory {
     }
 
     return {
-      id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
+      id: this.nodeIDGenerator.next(this.category),
       type: ASTNodeType.STEP,
       properties,
       raw: json,
@@ -219,7 +232,7 @@ export class StructureNodeFactory {
     }
 
     return {
-      id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
+      id: this.nodeIDGenerator.next(this.category),
       type: ASTNodeType.BLOCK,
       variant,
       blockType: 'basic',
@@ -285,7 +298,7 @@ export class StructureNodeFactory {
     })
 
     return {
-      id: this.nodeIDGenerator.next(NodeIDCategory.COMPILE_AST),
+      id: this.nodeIDGenerator.next(this.category),
       type: ASTNodeType.BLOCK,
       variant,
       blockType: 'field',

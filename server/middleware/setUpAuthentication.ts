@@ -149,7 +149,15 @@ export default function setupAuthentication() {
   })
 
   router.use((req, res, next) => {
-    res.locals.user = req.user as HmppsUser
+    const hmppsUser = req.user as HmppsUser
+    res.locals.user = hmppsUser
+    req.state = {
+      ...req.state,
+      user: {
+        id: hmppsUser.username,
+        name: hmppsUser.displayName ?? hmppsUser.username,
+      },
+    }
     next()
   })
 

@@ -1,28 +1,28 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { StructureType, TransitionType, ExpressionType, LogicType, FunctionType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, LogicType, StructureType, TransitionType } from '@form-engine/form/types/enums'
 import type {
-  StepDefinition,
   BlockDefinition,
   FieldBlockDefinition,
   JourneyDefinition,
+  StepDefinition,
   ValidationExpr,
 } from '@form-engine/form/types/structures.type'
 import type {
-  LoadTransition,
   AccessTransition,
   EffectFunctionExpr,
-  SubmitTransition,
+  LoadTransition,
   NextExpr,
   PredicateTestExpr,
+  SubmitTransition,
   ValueExpr,
 } from '@form-engine/form/types/expressions.type'
-import { NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
+import { NodeIDCategory, NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import {
-  BlockASTNode,
   BasicBlockASTNode,
+  BlockASTNode,
   FieldBlockASTNode,
-  StepASTNode,
   JourneyASTNode,
+  StepASTNode,
 } from '@form-engine/core/types/structures.type'
 import { NodeFactory } from '../NodeFactory'
 import { StructureNodeFactory } from './StructureNodeFactory'
@@ -34,8 +34,8 @@ describe('StructureNodeFactory', () => {
 
   beforeEach(() => {
     nodeIDGenerator = new NodeIDGenerator()
-    nodeFactory = new NodeFactory(nodeIDGenerator)
-    structureFactory = new StructureNodeFactory(nodeIDGenerator, nodeFactory)
+    nodeFactory = new NodeFactory(nodeIDGenerator, NodeIDCategory.COMPILE_AST)
+    structureFactory = new StructureNodeFactory(nodeIDGenerator, nodeFactory, NodeIDCategory.COMPILE_AST)
   })
 
   describe('create', () => {
@@ -410,7 +410,7 @@ describe('StructureNodeFactory', () => {
         code: 'details',
         dependent: {
           type: LogicType.TEST,
-          subject: { type: ExpressionType.REFERENCE, path: ['showDetails'] },
+          subject: { type: ExpressionType.REFERENCE, path: ['answers', 'showDetails'] },
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
         } satisfies PredicateTestExpr,
@@ -443,7 +443,7 @@ describe('StructureNodeFactory', () => {
         code: 'email',
         dependent: {
           type: LogicType.TEST,
-          subject: { type: ExpressionType.REFERENCE, path: ['requireEmail'] },
+          subject: { type: ExpressionType.REFERENCE, path: ['answers', 'requireEmail'] },
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
         } satisfies PredicateTestExpr,

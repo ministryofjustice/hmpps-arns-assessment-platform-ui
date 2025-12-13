@@ -1,5 +1,6 @@
 import { User } from '../user'
 import { Answers, Collection, CollectionItem, Properties, TimelineItem } from './dataModel'
+import { Identifiers } from './identifier'
 
 export interface QueryResult {
   type: string
@@ -9,13 +10,15 @@ export interface AssessmentVersionQueryResult extends QueryResult {
   type: 'AssessmentVersionQueryResult'
   assessmentUuid: string
   aggregateUuid: string
-  formVersion?: string
+  assessmentType: string
+  formVersion: string
   createdAt: string
   updatedAt: string
   answers: Answers
   properties: Properties
   collections: Collection[]
   collaborators: User[]
+  identifiers: Identifiers
 }
 
 export interface AssessmentTimelineQueryResult extends QueryResult {

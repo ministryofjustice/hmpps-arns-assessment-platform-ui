@@ -2,10 +2,12 @@ import { ASTNodeType } from '@form-engine/core/types/enums'
 import { ASTNode } from '@form-engine/core/types/engine.type'
 import {
   AccessTransitionASTNode,
+  ActionTransitionASTNode,
   LoadTransitionASTNode,
   SubmitTransitionASTNode,
   ValidationASTNode,
 } from '@form-engine/core/types/expressions.type'
+import { ViewConfig } from '@form-engine/form/types/structures.type'
 
 /**
  * Journey AST node - represents the top-level form journey
@@ -22,6 +24,8 @@ export interface JourneyASTNode extends ASTNode {
     title: string
     description?: string
     version?: string
+    view?: ViewConfig
+    entryPath?: string
     metadata?: Record<string, any>
   }
 }
@@ -35,11 +39,12 @@ export interface StepASTNode extends ASTNode {
     path: string
     onLoad?: LoadTransitionASTNode[]
     onAccess?: AccessTransitionASTNode[]
+    onAction?: ActionTransitionASTNode[]
     onSubmission?: SubmitTransitionASTNode[]
     blocks?: BlockASTNode[]
     title: string
     description?: string
-    template?: string
+    view?: ViewConfig
     isEntryPoint?: boolean
     backlink?: string
     metadata?: Record<string, any>
@@ -76,6 +81,7 @@ export interface FieldBlockASTNode extends ASTNode {
     dependent?: ASTNode
     value?: ASTNode // Added by normalizer (Self reference)
     metadata?: Record<string, any>
+    multiple?: boolean
 
     // Component-specific arbitrary parameters
     [key: string]: any

@@ -4,10 +4,12 @@ import { ASTNode, AstNodeId, NodeId, PseudoNodeId } from '@form-engine/core/type
 import {
   ExpressionASTNode,
   FunctionASTNode,
+  PipelineASTNode,
   PredicateASTNode,
   ReferenceASTNode,
   LoadTransitionASTNode,
   AccessTransitionASTNode,
+  ActionTransitionASTNode,
   SubmitTransitionASTNode,
 } from '@form-engine/core/types/expressions.type'
 import { BlockASTNode, JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
@@ -133,6 +135,13 @@ export class ASTTestFactory {
       .build()
   }
 
+  static pipelineExpression(config: { input: unknown; steps: unknown[] }): PipelineASTNode {
+    return ASTTestFactory.expression<PipelineASTNode>(ExpressionType.PIPELINE)
+      .withProperty('input', config.input)
+      .withProperty('steps', config.steps)
+      .build()
+  }
+
   static predicate(type: LogicType, config: PredicateBuilderConfig = {}): PredicateASTNode {
     const builder = ASTTestFactory.expression(type)
 
@@ -162,12 +171,13 @@ export class ASTTestFactory {
   /**
    * Create a POST pseudo node
    */
-  static postPseudoNode(baseFieldCode: string): PostPseudoNode {
+  static postPseudoNode(baseFieldCode: string, fieldNodeId?: NodeId): PostPseudoNode {
     return {
       id: ASTTestFactory.getPseudoId(),
       type: PseudoNodeType.POST,
       properties: {
         baseFieldCode,
+        fieldNodeId,
       },
     }
   }
@@ -201,12 +211,12 @@ export class ASTTestFactory {
   /**
    * Create a DATA pseudo node
    */
-  static dataPseudoNode(baseFieldCode: string): DataPseudoNode {
+  static dataPseudoNode(baseProperty: string): DataPseudoNode {
     return {
       id: ASTTestFactory.getPseudoId(),
       type: PseudoNodeType.DATA,
       properties: {
-        baseFieldCode,
+        baseProperty,
       },
     }
   }
@@ -749,7 +759,7 @@ export class TransitionBuilder {
     return this
   }
 
-  build(): LoadTransitionASTNode | AccessTransitionASTNode | SubmitTransitionASTNode {
+  build(): LoadTransitionASTNode | AccessTransitionASTNode | ActionTransitionASTNode | SubmitTransitionASTNode {
     const nodeId = this.id ?? ASTTestFactory.getId()
 
     return {
@@ -757,6 +767,6 @@ export class TransitionBuilder {
       id: nodeId,
       transitionType: this.transitionType,
       properties: this.properties,
-    } as LoadTransitionASTNode | AccessTransitionASTNode | SubmitTransitionASTNode
+    } as LoadTransitionASTNode | AccessTransitionASTNode | ActionTransitionASTNode | SubmitTransitionASTNode
   }
 }

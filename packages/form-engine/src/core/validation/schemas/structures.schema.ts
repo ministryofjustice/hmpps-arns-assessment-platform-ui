@@ -9,6 +9,15 @@ import {
 } from './predicates.schema'
 import { TransformerFunctionExprSchema, FunctionExprSchema, EffectFunctionExprSchema } from './base.schema'
 
+/**
+ * @see {@link ViewConfig}
+ */
+export const ViewConfigSchema = z.object({
+  template: z.string().optional(),
+  locals: z.record(z.string(), z.unknown()).optional(),
+  hiddenFromNavigation: z.boolean().optional(),
+})
+
 // TODO: Maybe add other Conditional like ConditionalBoolean etc.
 /**
  * @see {@link ConditionalString}
@@ -56,6 +65,7 @@ export const BlockSchema: z.ZodType<any> = z.lazy(() => {
       .optional(),
     validate: z.array(ValidationExprSchema).optional(),
     dependent: PredicateTestExprSchema.optional(),
+    multiple: z.boolean().optional(),
   })
 
   return z.union([
@@ -86,6 +96,15 @@ export const AccessTransitionSchema = z.object({
 })
 
 /**
+ * @see {@link ActionTransition}
+ */
+export const ActionTransitionSchema = z.object({
+  type: z.literal(TransitionType.ACTION),
+  when: PredicateExprSchema,
+  effects: z.array(EffectFunctionExprSchema),
+})
+
+/**
  * @see {@link SkipValidationTransition}
  */
 export const SkipValidationTransitionSchema = z.object({
@@ -95,7 +114,7 @@ export const SkipValidationTransitionSchema = z.object({
   validate: z.literal(false),
   onAlways: z.object({
     effects: z.array(EffectFunctionExprSchema).optional(),
-    next: z.array(NextExprSchema),
+    next: z.array(NextExprSchema).optional(),
   }),
 })
 
@@ -114,11 +133,11 @@ export const ValidatingTransitionSchema = z.object({
     .optional(),
   onValid: z.object({
     effects: z.array(EffectFunctionExprSchema).optional(),
-    next: z.array(NextExprSchema),
+    next: z.array(NextExprSchema).optional(),
   }),
   onInvalid: z.object({
     effects: z.array(EffectFunctionExprSchema).optional(),
-    next: z.array(NextExprSchema),
+    next: z.array(NextExprSchema).optional(),
   }),
 })
 
@@ -136,9 +155,10 @@ export const StepSchema = z.looseObject({
   blocks: z.array(BlockSchema).optional(),
   onLoad: z.array(LoadTransitionSchema).optional(),
   onAccess: z.array(AccessTransitionSchema).optional(),
+  onAction: z.array(ActionTransitionSchema).optional(),
   onSubmission: z.array(SubmitTransitionSchema).optional(),
   title: z.string(),
-  template: z.string().optional(),
+  view: ViewConfigSchema.optional(),
   isEntryPoint: z.boolean().optional(),
   backlink: z.string().optional(),
   metadata: z.record(z.string(), z.any()).optional(),
@@ -158,6 +178,8 @@ export const JourneySchema: z.ZodType<any> = z.lazy(() =>
     children: z.array(JourneySchema).optional(),
     title: z.string(),
     description: z.string().optional(),
+    view: ViewConfigSchema.optional(),
+    entryPath: z.string().optional(),
     metadata: z.record(z.string(), z.any()).optional(),
   }),
 )

@@ -1,9 +1,25 @@
+export interface Value {
+  type: string
+}
+
+export interface SingleValue extends Value {
+  type: 'Single'
+  value: string
+}
+
+export interface MultiValue extends Value {
+  type: 'Multi'
+  values: string[]
+}
+
+export type Values = SingleValue | MultiValue
+
 export interface Answers {
-  [key: string]: string[]
+  [key: string]: Values
 }
 
 export interface Properties {
-  [key: string]: string[]
+  [key: string]: Values
 }
 
 export type QuestionCodes = Array<string>

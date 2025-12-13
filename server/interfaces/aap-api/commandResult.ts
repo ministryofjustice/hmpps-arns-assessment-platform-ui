@@ -1,7 +1,14 @@
+import { CommandResponse } from './response'
+
 export interface CommandResult {
   message: string
   success: boolean
   type: string
+}
+
+export interface GroupCommandResult extends CommandResult {
+  type: 'GroupCommandResult'
+  commands: CommandResponse[]
 }
 
 export interface CreateAssessmentCommandResult extends CommandResult {
@@ -24,3 +31,4 @@ export type CommandResults =
   | CreateAssessmentCommandResult
   | CreateCollectionCommandResult
   | AddCollectionItemCommandResult
+  | GroupCommandResult

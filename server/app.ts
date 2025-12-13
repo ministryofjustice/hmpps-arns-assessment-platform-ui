@@ -3,8 +3,10 @@ import express from 'express'
 import createError from 'http-errors'
 
 import FormEngine from '@form-engine/core/FormEngine'
+import { ExpressFrameworkAdapter } from '@form-engine-express-nunjucks/index'
+import { govukComponents } from '@form-engine-govuk-components/index'
 import nunjucksSetup from './utils/nunjucksSetup'
-import errorHandler from './errorHandler'
+import errorHandler from './routes/error/errorHandler'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import { autosaveMiddleware, prefetchAnswersMiddleware } from './middleware/autosaveMiddleware'
@@ -21,25 +23,25 @@ import setUpWebSession from './middleware/setUpWebSession'
 import routes from './routes'
 import type { Services } from './services'
 import logger from '../logger'
-import ExampleFormShowcase from './forms/example-form'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
-  const formEngine = new FormEngine({
-    logger,
-  }).registerForm(ExampleFormShowcase)
 
   app.set('json spaces', 2)
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
 
+  // Setup middleware
   app.use(appInsightsMiddleware())
   app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
   app.use(setUpWebRequestParsing())
   app.use(setUpStaticResources())
-  nunjucksSetup(app)
+
+  // Configure Nunjucks and get environment for form engine
+  const nunjucksEnv = nunjucksSetup(app)
+
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
@@ -52,8 +54,18 @@ export default function createApp(services: Services): express.Application {
   app.use(autosaveMiddleware())
   app.use(prefetchAnswersMiddleware())
 
+  const formEngine = new FormEngine({
+    logger,
+    frameworkAdapter: ExpressFrameworkAdapter.configure({
+      nunjucksEnv,
+      defaultTemplate: 'partials/form-step',
+    }),
+  })
+    .registerComponents(govukComponents)
+
+  // Mount routes
   app.use(routes(services))
-  app.use(formEngine.getRouter())
+  app.use(formEngine.getRouter() as express.Router)
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
