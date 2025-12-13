@@ -59,7 +59,7 @@ describe('StringConditions', () => {
 
     test('should throw error when min is not a valid number', () => {
       expect(() => evaluate('test', -1)).toThrow('Condition.String.HasMinLength: min must be a non-negative number')
-      expect(() => evaluate('test', 'abc')).toThrow('Condition.String.HasMinLength: min must be a non-negative number')
+      expect(() => evaluate('test', 'abc')).toThrow('Condition.String.HasMinLength (min) expects a number')
     })
 
     test('should build correct expression object', () => {
