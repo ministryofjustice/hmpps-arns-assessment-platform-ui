@@ -220,4 +220,51 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
 
     return date
   },
+
+  /**
+   * Converts a UK-formatted date string (DD/MM/YYYY) to ISO-8601 format (YYYY-MM-DD).
+   * Throws on invalid input so pipeline errors and original value is preserved.
+   *
+   * Use this with MOJ Date Picker which outputs UK format dates.
+   * @example
+   * // ToISODate("15/03/2024") -> "2024-03-15"
+   * // ToISODate("5/3/2024") -> "2024-03-05"
+   * // ToISODate("15-03-2024") -> "2024-03-15"
+   * // ToISODate("") -> throws Error
+   * // ToISODate("31/02/2024") -> throws Error (invalid date)
+   */
+  ToISODate: (value: any) => {
+    const UK_DATE_RE = /^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/
+    assertString(value, 'Transformer.String.ToISODate')
+
+    const trimmed = value.trim()
+
+    if (!trimmed) {
+      throw new Error(`Transformer.String.ToISODate: "${value}" is not a valid date`)
+    }
+
+    const match = UK_DATE_RE.exec(trimmed)
+
+    if (!match) {
+      throw new Error(`Transformer.String.ToISODate: "${value}" is not a valid UK date (expected DD/MM/YYYY)`)
+    }
+
+    const day = Number(match[1])
+    const month = Number(match[2])
+    const year = Number(match[3])
+
+    // Validate the date is real (handles leap years, month lengths, etc.)
+    const date = new Date(year, month - 1, day)
+
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+      throw new Error(`Transformer.String.ToISODate: "${value}" is not a valid date`)
+    }
+
+    // Format as ISO-8601: YYYY-MM-DD
+    const paddedYear = String(year).padStart(4, '0')
+    const paddedMonth = String(month).padStart(2, '0')
+    const paddedDay = String(day).padStart(2, '0')
+
+    return `${paddedYear}-${paddedMonth}-${paddedDay}`
+  },
 })
