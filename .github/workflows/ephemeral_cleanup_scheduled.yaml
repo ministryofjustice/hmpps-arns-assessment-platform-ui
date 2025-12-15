@@ -1,0 +1,139 @@
+name: Cleanup ephemeral deployment (time-based)
+
+on:
+  schedule:
+    - cron: '17 1 * * *' # daily at 01:17 UTC
+  workflow_dispatch:
+    inputs:
+      max_age_hours:
+        description: 'Cleanup ephemeral PRs older than this many hours since label applied (overrides vars.EPHEMERAL_MAX_AGE_HOURS)'
+        required: false
+        default: ''
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  find_stale_ephemeral_prs:
+    name: Find stale ephemeral PRs
+    runs-on: ubuntu-latest
+    outputs:
+      prs: ${{ steps.find.outputs.prs }}
+    steps:
+      - name: Find stale PRs
+        id: find
+        uses: actions/github-script@v8
+        env:
+          EPHEMERAL_MAX_AGE_HOURS: ${{ inputs.max_age_hours || vars.EPHEMERAL_MAX_AGE_HOURS }}
+        with:
+          script: |
+            const owner = context.repo.owner
+            const repo = context.repo.repo
+            const maxAgeHoursRaw = process.env.EPHEMERAL_MAX_AGE_HOURS
+            const maxAgeHours = maxAgeHoursRaw ? Number(maxAgeHoursRaw) : 0
+            const maxAgeMs = maxAgeHours > 0 ? maxAgeHours * 60 * 60 * 1000 : 0
+            const useMaxAge = maxAgeMs > 0
+
+            async function getEphemeralLabelAppliedAtMs(issueNumber) {
+              const events = await github.paginate(github.rest.issues.listEvents, {
+                owner,
+                repo,
+                issue_number: issueNumber,
+                per_page: 100,
+              })
+
+              const labeled = events
+                .filter((event) => event.event === 'labeled' && event.label?.name === 'ephemeral')
+                .sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at))
+
+              const last = labeled.at(-1)
+              if (!last?.created_at) return Number.NaN
+              return Date.parse(last.created_at)
+            }
+
+            const items = await github.paginate(
+              github.rest.search.issuesAndPullRequests,
+              {
+                q: `repo:${owner}/${repo} is:pr is:open label:ephemeral`,
+                per_page: 100,
+              },
+            )
+
+            const nowMs = Date.now()
+            const stalePrNumbers = []
+
+            if (!useMaxAge) {
+              core.info(
+                `Skipping scheduled cleanup because vars.EPHEMERAL_MAX_AGE_HOURS is not set (or is not a positive number): '${maxAgeHoursRaw ?? ''}'`,
+              )
+              core.setOutput('prs', JSON.stringify(stalePrNumbers))
+              return
+            }
+
+            for (const item of items) {
+              const pullNumber = item.number
+              const pr = await github.rest.pulls.get({ owner, repo, pull_number: pullNumber })
+
+              if (pr.data.base.ref !== 'main') continue
+
+              const labeledAtMs = await getEphemeralLabelAppliedAtMs(pullNumber)
+              if (Number.isFinite(labeledAtMs) && nowMs - labeledAtMs >= maxAgeMs) {
+                stalePrNumbers.push(pullNumber)
+              }
+            }
+
+            core.info(
+              `Found ${stalePrNumbers.length} ephemeral PR(s) older than ${maxAgeHours} hour(s) since label applied (max age)`,
+            )
+
+            core.setOutput('prs', JSON.stringify(stalePrNumbers))
+
+  cleanup_stale_ephemeral:
+    name: Cleanup stale ephemeral deployments
+    needs: find_stale_ephemeral_prs
+    if: needs.find_stale_ephemeral_prs.outputs.prs != '[]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: write
+    environment: 'dev'
+    strategy:
+      fail-fast: false
+      matrix:
+        pr_number: ${{ fromJSON(needs.find_stale_ephemeral_prs.outputs.prs) }}
+    steps:
+      - name: Uninstall ephemeral deployment
+        uses: ministryofjustice/hmpps-github-actions/.github/actions/build-test-and-deploy/cloud-platform-cleanup@ephemeral-deployment
+        with:
+          api: https://${{ secrets.KUBE_CLUSTER }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+          release_name: '${{ github.event.repository.name }}-pr-${{ matrix.pr_number }}'
+      - name: Remove ephemeral label from PR
+        uses: actions/github-script@v8
+        env:
+          PR_NUMBER: ${{ matrix.pr_number }}
+        with:
+          script: |
+            const owner = context.repo.owner
+            const repo = context.repo.repo
+            const issueNumber = Number(process.env.PR_NUMBER)
+            try {
+              await github.rest.issues.removeLabel({ owner, repo, issue_number: issueNumber, name: 'ephemeral' })
+              core.info(`Removed 'ephemeral' label from PR #${issueNumber}`)
+            } catch (error) {
+              if (error?.status === 404) {
+                core.info(`'ephemeral' label already removed from PR #${issueNumber}`)
+              } else {
+                throw error
+              }
+            }
