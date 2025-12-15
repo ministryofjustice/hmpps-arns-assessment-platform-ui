@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Find stale PRs
         id: find
-        uses: actions/github-script@v8
+        uses: actions/github-script@v7
         env:
           EPHEMERAL_MAX_AGE_HOURS: ${{ inputs.max_age_hours || vars.EPHEMERAL_MAX_AGE_HOURS }}
         with:
@@ -119,7 +119,7 @@ jobs:
           token: ${{ secrets.KUBE_TOKEN }}
           release_name: '${{ github.event.repository.name }}-pr-${{ matrix.pr_number }}'
       - name: Remove ephemeral label from PR
-        uses: actions/github-script@v8
+        uses: actions/github-script@v7
         env:
           PR_NUMBER: ${{ matrix.pr_number }}
         with:
