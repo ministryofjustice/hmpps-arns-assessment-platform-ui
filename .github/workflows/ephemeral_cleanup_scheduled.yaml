@@ -16,8 +16,8 @@ concurrency:
 
 permissions:
   contents: read
-  issues: read
-  pull-requests: read
+  issues: write
+  pull-requests: write
 
 jobs:
   find_stale_ephemeral_prs:
@@ -99,10 +99,6 @@ jobs:
     needs: find_stale_ephemeral_prs
     if: needs.find_stale_ephemeral_prs.outputs.prs != '[]'
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
-      issues: write
     environment: 'dev'
     strategy:
       fail-fast: false
