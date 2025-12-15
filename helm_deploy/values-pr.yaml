@@ -1,0 +1,22 @@
+---
+# Per environment values which override defaults in hmpps-arns-assessment-platform-ui/values.yaml
+
+generic-service:
+  nameOverride: $RELEASE_NAME
+  replicaCount: 1
+
+  ingress:
+    host: pr-$PR_NUMBER.arns-assessment-platform-dev.hmpps.service.justice.gov.uk
+
+  env:
+    INGRESS_URL: "https://pr-$PR_NUMBER.sentence-plan-dev.hmpps.service.justice.gov.uk"
+    HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
+    HMPPS_ARNS_HANDOVER_URL: "https://arns-handover-service-dev.hmpps.service.justice.gov.uk"
+    TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
+    AAP_API_URL: "https://arns-assessment-platform-api-dev.hmpps.service.justice.gov.uk"
+    DEPLOYMENT_NAME: PR-$PR_NUMBER
+    ENVIRONMENT_NAME: DEV
+
+generic-prometheus-alerts:
+  targetApplication: $RELEASE_NAME
+  alertSeverity: hmpps-arns-non-prod
