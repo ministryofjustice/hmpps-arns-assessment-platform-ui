@@ -23,7 +23,10 @@ import setUpWebSession from './middleware/setUpWebSession'
 import routes from './routes'
 import type { Services } from './services'
 import logger from '../logger'
+
+// Form packages
 import formEngineDeveloperGuide from './forms/form-engine-developer-guide'
+import { SentencePlanFormPackages } from './forms/sentence-plan/sentencePlanFormExports'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -59,6 +62,11 @@ export default function createApp(services: Services): express.Application {
     .registerComponents(govukComponents)
     .registerComponents(mojComponents)
     .registerFormPackage(formEngineDeveloperGuide)
+
+  // Register all Sentence Plan form packages
+  SentencePlanFormPackages.forEach(pkg => {
+    formEngine.registerFormPackage(pkg, { api: services.assessmentPlatformApiClient })
+  })
 
   // Mount routes
   app.use(routes(services))
