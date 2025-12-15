@@ -174,4 +174,40 @@ export const { conditions: StringConditions, registry: StringConditionsRegistry 
     assertString(value, 'Condition.String.AlphanumericWithAllSafeSymbols')
     return /^[A-Za-z0-9 .,;:'"()\-!?@#$%^&*]+$/.test(value)
   },
+
+  /**
+   * Checks if a string starts with the specified prefix
+   * @param value - The string to test
+   * @param prefix - The prefix to check for
+   * @returns true if the string starts with the prefix
+   */
+  StartsWith: (value, prefix: string | ValueExpr) => {
+    assertString(value, 'Condition.String.StartsWith')
+    assertString(prefix, 'Condition.String.StartsWith (prefix)')
+    return value.startsWith(prefix)
+  },
+
+  /**
+   * Checks if a string ends with the specified suffix
+   * @param value - The string to test
+   * @param suffix - The suffix to check for
+   * @returns true if the string ends with the suffix
+   */
+  EndsWith: (value, suffix: string | ValueExpr) => {
+    assertString(value, 'Condition.String.EndsWith')
+    assertString(suffix, 'Condition.String.EndsWith (suffix)')
+    return value.endsWith(suffix)
+  },
+
+  /**
+   * Checks if a string contains the specified substring
+   * @param value - The string to test
+   * @param substring - The substring to check for
+   * @returns true if the string contains the substring
+   */
+  Contains: (value, substring: string | ValueExpr) => {
+    assertString(value, 'Condition.String.Contains')
+    assertString(substring, 'Condition.String.Contains (substring)')
+    return value.includes(substring)
+  },
 })
