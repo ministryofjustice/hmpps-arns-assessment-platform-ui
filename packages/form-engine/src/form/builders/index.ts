@@ -229,15 +229,15 @@ export const Format = (template: string, ...args: ConditionalString[]): FormatEx
  *   fallback: [block({ variant: 'html', content: 'No items found' })]
  * })
  */
-export const Collection = <T = any>({
+export function Collection<T = any, F = T>({
   collection,
   template,
   fallback,
 }: {
   collection: ReferenceExpr | PipelineExpr | any[]
   template: T[]
-  fallback?: T[]
-}): CollectionExpr<T> => {
+  fallback?: F[]
+}): CollectionExpr<T, F> {
   return {
     type: ExpressionType.COLLECTION,
     collection,

@@ -248,7 +248,7 @@ export interface EffectFunctionExpr<A extends ValueExpr[] = ValueExpr[]> extends
  *   fallback: [{ type: 'StructureType.Block', variant: 'html', content: 'No items found' }]
  * }
  */
-export interface CollectionExpr<T = any> {
+export interface CollectionExpr<T = any, F = T> {
   type: ExpressionType.COLLECTION
 
   /**
@@ -265,8 +265,9 @@ export interface CollectionExpr<T = any> {
 
   /**
    * Optional fallback blocks to render when the collection is empty.
+   * Can be a different block type than the template.
    */
-  fallback?: T[]
+  fallback?: F[]
 }
 
 /**
