@@ -7,6 +7,7 @@ import config from '../config'
 import { HmppsUser } from '../interfaces/hmppsUser'
 import generateOauthClientToken from '../utils/clientCredentials'
 import logger from '../../logger'
+import { isPubliclyAccessibleRoute } from './publicRoutes'
 
 enum AuthStrategy {
   HANDOVER = 'handover-oauth2',
@@ -137,6 +138,10 @@ export default function setupAuthentication() {
   })
 
   router.use(async (req, res, next) => {
+    if (isPubliclyAccessibleRoute(req)) {
+      return next()
+    }
+
     if (req.isAuthenticated() && req.user.authSource === 'handover') {
       return next()
     }
@@ -149,6 +154,10 @@ export default function setupAuthentication() {
   })
 
   router.use((req, res, next) => {
+    if (isPubliclyAccessibleRoute(req)) {
+      return next()
+    }
+
     const hmppsUser = req.user as HmppsUser
     res.locals.user = hmppsUser
     req.state = {
@@ -158,7 +167,7 @@ export default function setupAuthentication() {
         name: hmppsUser.displayName ?? hmppsUser.username,
       },
     }
-    next()
+    return next()
   })
 
   return router

@@ -26,8 +26,6 @@ import logger from '../logger'
 
 // Form packages
 import aapDeveloperGuide from './forms/aap-developer-guide'
-import foodBusinessRegistration from './forms/food-business-registration'
-import aapStandupDemo from './forms/aap-standup-demo'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -63,8 +61,6 @@ export default function createApp(services: Services): express.Application {
     .registerComponents(govukComponents)
     .registerComponents(mojComponents)
     .registerFormPackage(aapDeveloperGuide)
-    .registerFormPackage(foodBusinessRegistration, { api: services.assessmentPlatformApiClient })
-    .registerFormPackage(aapStandupDemo, { api: services.assessmentPlatformApiClient })
 
   // Mount routes
   app.use(routes(services))

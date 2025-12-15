@@ -2,9 +2,14 @@ import { jwtDecode } from 'jwt-decode'
 import type { RequestHandler } from 'express'
 
 import logger from '../../logger'
+import { isPubliclyAccessibleRoute } from './publicRoutes'
 
 export default function authorisationMiddleware(authorisedRoles: string[] = []): RequestHandler {
   return (req, res, next) => {
+    if (isPubliclyAccessibleRoute(req)) {
+      return next()
+    }
+
     // authorities in the user token will always be prefixed by ROLE_.
     // Convert roles that are passed into this function without the prefix so that we match correctly.
     const authorisedAuthorities = authorisedRoles.map(role => (role.startsWith('ROLE_') ? role : `ROLE_${role}`))

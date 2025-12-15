@@ -2,11 +2,16 @@ import { jwtDecode } from 'jwt-decode'
 import express from 'express'
 import { convertToTitleCase } from '../utils/utils'
 import logger from '../../logger'
+import { isPubliclyAccessibleRoute } from './publicRoutes'
 
 export default function setUpCurrentUser() {
   const router = express.Router()
 
   router.use((req, res, next) => {
+    if (isPubliclyAccessibleRoute(req) || !res.locals?.user?.token) {
+      return next()
+    }
+
     try {
       const {
         name,
@@ -36,10 +41,10 @@ export default function setUpCurrentUser() {
         displayName: convertToTitleCase(name),
       }
 
-      next()
+      return next()
     } catch (error) {
       logger.error(error, `Failed to populate user details for: ${res.locals.user && res.locals.user.username}`)
-      next(error)
+      return next(error)
     }
   })
 
