@@ -105,7 +105,29 @@ jobs:
       matrix:
         pr_number: ${{ fromJSON(needs.find_stale_ephemeral_prs.outputs.prs) }}
     steps:
+      - name: Authenticate with Cloud Platform
+        uses: ministryofjustice/hmpps-github-actions/.github/actions/build-test-and-deploy/cloud-platform-auth@v2
+        with:
+          api: https://${{ secrets.KUBE_CLUSTER }}
+          cert: ${{ secrets.KUBE_CERT }}
+          cluster: ${{ secrets.KUBE_CLUSTER }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+          token: ${{ secrets.KUBE_TOKEN }}
+
+      - name: Check if release exists
+        id: check_release
+        run: |
+          RELEASE_NAME="${{ github.event.repository.name }}-pr-${{ matrix.pr_number }}"
+          if helm status "$RELEASE_NAME" --namespace ${{ secrets.KUBE_NAMESPACE }} > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Release $RELEASE_NAME exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Release $RELEASE_NAME does not exist, skipping uninstall"
+          fi
+
       - name: Uninstall ephemeral deployment
+        if: steps.check_release.outputs.exists == 'true'
         uses: ministryofjustice/hmpps-github-actions/.github/actions/build-test-and-deploy/cloud-platform-cleanup@ephemeral-deployment
         with:
           api: https://${{ secrets.KUBE_CLUSTER }}
