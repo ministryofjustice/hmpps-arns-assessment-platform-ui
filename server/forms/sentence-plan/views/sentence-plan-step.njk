@@ -1,0 +1,27 @@
+{%- extends "partials/layout-with-nav.njk" -%}
+
+{% block head %}
+  {{ super() }}
+  {% block pageStylesheets %}{% endblock %}
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  {% block pageScripts %}{% endblock %}
+{% endblock %}
+
+{% block backLink %}
+  {% if step.backlink %}
+    <a href="{{ step.backlink }}" class="govuk-back-link">Back</a>
+  {% endif %}
+{% endblock %}
+
+{% block formContent %}
+  <form method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    {% for block in blocks %}
+      {{ block | safe }}
+    {% endfor %}
+  </form>
+{% endblock %}
