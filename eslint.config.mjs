@@ -43,6 +43,12 @@ export default [
     },
   },
   {
+    files: ['packages/form-engine-govuk-components/**/*.ts'],
+    rules: {
+      'no-nested-ternary': 'off',
+    },
+  },
+  {
     name: 'prettier-overrides',
     rules: {
       'prettier/prettier': [

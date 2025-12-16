@@ -59,6 +59,8 @@ export interface BasicBlockASTNode extends ASTNode {
   variant: string
   blockType: 'basic'
   properties: {
+    hidden?: ASTNode // Conditional visibility
+    metadata?: Record<string, any>
     // Component-specific arbitrary parameters
     [key: string]: any
   }
@@ -82,6 +84,7 @@ export interface FieldBlockASTNode extends ASTNode {
     value?: ASTNode // Added by normalizer (Self reference)
     metadata?: Record<string, any>
     multiple?: boolean
+    sanitize?: boolean // Whether to escape HTML entities (defaults to true)
 
     // Component-specific arbitrary parameters
     [key: string]: any

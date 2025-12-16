@@ -2,6 +2,7 @@ import { isFieldBlockDefinition } from '@form-engine/form/typeguards/structures'
 import { ReferenceBuilder } from './ReferenceBuilder'
 import { ScopedReferenceBuilder } from './ScopedReferenceBuilder'
 import { ChainableExpr, ChainableRef, ChainableScopedRef } from './types'
+import { FormPackage } from '@form-engine/core/types/engine.type'
 import { finaliseBuilders } from './utils/finaliseBuilders'
 import {
   BlockDefinition,
@@ -20,9 +21,7 @@ import {
   NextExpr,
   PipelineExpr,
   ReferenceExpr,
-  SkipValidationTransition,
   SubmitTransition,
-  ValidatingTransition,
 } from '../types/expressions.type'
 import { ExpressionType, StructureType, TransitionType } from '../types/enums'
 
@@ -69,11 +68,42 @@ export function journey<D extends JourneyDefinition>(definition: Omit<D, 'type'>
 }
 
 /**
+ * Create a form package that bundles a journey with its custom registries.
+ *
+ * @param pkg - The form package configuration
+ * @returns The same package with proper typing
+ *
+ * @example
+ * ```typescript
+ * // Form with dependencies and custom functions
+ * export default createFormPackage({
+ *   journey: myJourney,
+ *   createRegistries: (deps: MyDeps) => ({
+ *     ...createMyEffectsRegistry(deps),
+ *     ...MyTransformersRegistry,
+ *   }),
+ * })
+ *
+ * // Form with custom components
+ * export default createFormPackage({
+ *   journey: myJourney,
+ *   components: [myCustomComponent],
+ * })
+ *
+ * // Journey only (no custom registries)
+ * export default createFormPackage({
+ *   journey: simpleJourney,
+ * })
+ * ```
+ */
+export function createFormPackage<TDeps = void>(pkg: FormPackage<TDeps>): FormPackage<TDeps> {
+  return pkg
+}
+
+/**
  * Creates a submission transition for handling form submissions.
  * Use this in the onSubmission array of steps.
  */
-export function submitTransition(definition: Omit<ValidatingTransition, 'type'>): ValidatingTransition
-export function submitTransition(definition: Omit<SkipValidationTransition, 'type'>): SkipValidationTransition
 export function submitTransition(definition: Omit<SubmitTransition, 'type'>): SubmitTransition {
   return finaliseBuilders({ ...definition, type: TransitionType.SUBMIT }) as SubmitTransition
 }
@@ -244,15 +274,16 @@ export function Format(template: string, ...args: ConditionalString[]): FormatEx
  *   fallback: [block({ variant: 'html', content: 'No items found' })]
  * })
  */
-export function Collection<T = any>({
+
+export function Collection<T = any, F = T>({
   collection,
   template,
   fallback,
 }: {
   collection: ReferenceExpr | PipelineExpr | ChainableRef | ChainableExpr<any> | any[]
   template: T[]
-  fallback?: T[]
-}): CollectionExpr<T> {
+  fallback?: F[]
+}): CollectionExpr<T, F> {
   return {
     type: ExpressionType.COLLECTION,
     collection,
