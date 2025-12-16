@@ -18,6 +18,11 @@
   @include govuk-responsive-padding(4);
 }
 
+// Accessible Autocomplete - use GOV.UK font
+.autocomplete__menu {
+  @include govuk-font($size: 19);
+}
+
 @view-transition {
   navigation: auto;
 }

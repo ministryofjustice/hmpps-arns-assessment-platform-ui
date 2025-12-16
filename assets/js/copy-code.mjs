@@ -37,7 +37,7 @@ export class CopyCode extends HTMLElement {
         this.$button.textContent = 'Copy code'
       }, 5000)
     } catch (err) {
-      // eslint-disable-next-line no-console
+
       console.error('Failed to copy code:', err)
       this.$button.textContent = 'Copy failed'
 
