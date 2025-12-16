@@ -108,7 +108,7 @@ export interface ThunkResultMetadata {
 
 /**
  * Result of evaluating a thunk handler
- * Wraps the evaluated value with metadata for debugging and introspection
+ * Wraps the evaluated value with optional metadata for debugging and introspection
  *
  * This is a discriminated union that enforces "either value OR error, not both"
  */
@@ -119,7 +119,7 @@ export type ThunkResult<T = unknown> =
        */
       value: T
       error?: never
-      metadata: ThunkResultMetadata
+      metadata?: ThunkResultMetadata
     }
   | {
       value?: never
@@ -127,7 +127,7 @@ export type ThunkResult<T = unknown> =
        * Error that occurred during evaluation
        */
       error: ThunkError
-      metadata: ThunkResultMetadata
+      metadata?: ThunkResultMetadata
     }
 
 /**

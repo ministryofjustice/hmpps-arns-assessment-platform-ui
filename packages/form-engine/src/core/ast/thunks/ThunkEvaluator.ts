@@ -374,10 +374,6 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
   /**
    * Execute handler and wrap any errors in structured ThunkError
    *
-   * Merges infrastructure-provided metadata (source from handler class name, timestamp)
-   * with any handler-provided metadata. Handler metadata is appended and can override
-   * defaults if needed.
-   *
    * @param nodeId - The node being evaluated
    * @param handler - The handler to execute
    * @param context - Runtime evaluation context
@@ -397,41 +393,16 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
       if (isSyncHandler(handler)) {
         // This shouldn't happen (sync handlers are fast-pathed in invokeWithRetry)
         // but TypeScript doesn't know that, so we handle it gracefully
-        const result = handler.evaluateSync(context, this)
-
-        return {
-          ...result,
-          metadata: {
-            source: handler.constructor.name,
-            timestamp: Date.now(),
-            ...result.metadata,
-          },
-        } as ThunkResult<T>
+        return handler.evaluateSync(context, this) as ThunkResult<T>
       }
 
-      const result = await handler.evaluate(context, this, hooks)
-
-      // Infrastructure provides defaults, handler metadata appends/overrides
-      return {
-        ...result,
-        metadata: {
-          source: handler.constructor.name,
-          timestamp: Date.now(),
-          ...result.metadata,
-        },
-      } as ThunkResult<T>
+      return (await handler.evaluate(context, this, hooks)) as ThunkResult<T>
     } catch (cause) {
       // Wrap any thrown errors in structured ThunkError
       const wrappedCause = cause instanceof Error ? cause : new Error(String(cause))
       const error = ThunkEvaluationError.failed(nodeId, wrappedCause, handler.constructor.name)
 
-      return {
-        error: error.toThunkError(),
-        metadata: {
-          source: handler.constructor.name,
-          timestamp: Date.now(),
-        },
-      }
+      return { error: error.toThunkError() }
     }
   }
 
@@ -439,10 +410,6 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
    * Execute sync handler and wrap any errors in structured ThunkError
    *
    * Direct synchronous execution - no Promise overhead, no async machinery.
-   *
-   * Merges infrastructure-provided metadata (source from handler class name, timestamp)
-   * with any handler-provided metadata. Handler metadata is appended and can override
-   * defaults if needed.
    *
    * @param nodeId - The node being evaluated
    * @param handler - The sync handler to execute
@@ -455,32 +422,12 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
     context: ThunkEvaluationContext,
   ): ThunkResult<T> {
     try {
-      // Direct synchronous call - NO Promise created!
-      const result = handler.evaluateSync(context, this)
-
-      // Add infrastructure metadata
-      const fullResult: ThunkResult<T> = {
-        ...result,
-        metadata: {
-          source: handler.constructor.name,
-          timestamp: Date.now(),
-          ...result.metadata,
-        },
-      } as ThunkResult<T>
-
-      return fullResult
+      return handler.evaluateSync(context, this) as ThunkResult<T>
     } catch (cause) {
-      // Wrap errors in structured ThunkError
       const wrappedCause = cause instanceof Error ? cause : new Error(String(cause))
       const error = ThunkEvaluationError.failed(nodeId, wrappedCause, handler.constructor.name)
 
-      return {
-        error: error.toThunkError(),
-        metadata: {
-          source: handler.constructor.name,
-          timestamp: Date.now(),
-        },
-      }
+      return { error: error.toThunkError() }
     }
   }
 
