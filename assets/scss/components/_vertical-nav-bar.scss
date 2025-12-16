@@ -102,7 +102,7 @@ $app-vertical-nav-button-menu-hover-color: govuk-shade($app-vertical-nav-button-
   background-color: transparent;
   text-align: left;
   text-decoration: none;
-  @include govuk-font($size: 19);
+  font: inherit;
 
   &:visited {
     color: $govuk-link-colour;

@@ -20,6 +20,7 @@ declare global {
   namespace Express {
     interface RequestState {
       cspNonce?: string
+      csrfToken?: string
       user?: {
         id: string
         name: string
