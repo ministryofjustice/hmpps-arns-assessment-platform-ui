@@ -23,7 +23,9 @@ export default function setUpCsrf(): Router {
 
   router.use((req, res, next) => {
     if (typeof req.csrfToken === 'function') {
-      res.locals.csrfToken = req.csrfToken()
+      const token = req.csrfToken()
+      res.locals.csrfToken = token
+      req.state = { ...req.state, csrfToken: token }
     }
     next()
   })

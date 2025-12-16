@@ -15,7 +15,7 @@ import {
   PredicateTestExpr,
   PredicateXorExpr,
   ReferenceExpr,
-  ValidatingTransition,
+  SubmitTransition,
   ValueExpr,
 } from '@form-engine/form/types/expressions.type'
 import {
@@ -345,6 +345,7 @@ describe('NodeFactory', () => {
       it('should route Access transitions to TransitionNodeFactory', () => {
         const json = {
           type: TransitionType.ACCESS,
+          redirect: [] as NextExpr[],
         } satisfies AccessTransition
 
         const result = nodeFactory.createNode(json) as TransitionASTNode
@@ -362,7 +363,7 @@ describe('NodeFactory', () => {
           onInvalid: {
             next: [] as NextExpr[],
           },
-        } satisfies ValidatingTransition
+        } satisfies SubmitTransition
 
         const result = nodeFactory.createNode(json) as TransitionASTNode
 
