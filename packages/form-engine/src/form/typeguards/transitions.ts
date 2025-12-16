@@ -1,11 +1,4 @@
-import {
-  LoadTransition,
-  AccessTransition,
-  ActionTransition,
-  SkipValidationTransition,
-  ValidatingTransition,
-  SubmitTransition,
-} from '../types/expressions.type'
+import { LoadTransition, AccessTransition, ActionTransition, SubmitTransition } from '../types/expressions.type'
 import { TransitionType } from '../types/enums'
 
 /** Type for AccessTransition with redirect (navigates to another page) */
@@ -42,16 +35,8 @@ export function isActionTransition(obj: any): obj is ActionTransition {
   return obj != null && obj.type === TransitionType.ACTION
 }
 
-export function isSkipValidationTransition(obj: any): obj is SkipValidationTransition {
-  return obj != null && obj.type === TransitionType.SUBMIT && obj.validate === false
-}
-
-export function isValidatingTransition(obj: any): obj is ValidatingTransition {
-  return obj != null && obj.type === TransitionType.SUBMIT && obj.validate === true
-}
-
 export function isSubmitTransition(obj: any): obj is SubmitTransition {
-  return isSkipValidationTransition(obj) || isValidatingTransition(obj)
+  return obj != null && obj.type === TransitionType.SUBMIT
 }
 
 export function isTransition(obj: any): boolean {

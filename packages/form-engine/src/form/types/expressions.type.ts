@@ -248,7 +248,7 @@ export interface EffectFunctionExpr<A extends ValueExpr[] = ValueExpr[]> extends
  *   fallback: [{ type: 'StructureType.Block', variant: 'html', content: 'No items found' }]
  * }
  */
-export interface CollectionExpr<T = any> {
+export interface CollectionExpr<T = any, F = T> {
   type: ExpressionType.COLLECTION
 
   /**
@@ -265,8 +265,9 @@ export interface CollectionExpr<T = any> {
 
   /**
    * Optional fallback blocks to render when the collection is empty.
+   * Can be a different block type than the template.
    */
-  fallback?: T[]
+  fallback?: F[]
 }
 
 /**
@@ -571,7 +572,7 @@ export type AccessTransition = AccessTransitionRedirect | AccessTransitionError
  * Base interface for submission transition types.
  * Submission transitions control how users move between steps when submitting forms.
  */
-interface SubmitTransitionBase {
+export interface SubmitTransition {
   type: TransitionType.SUBMIT
 
   /**
@@ -585,107 +586,48 @@ interface SubmitTransitionBase {
    * Guards act as a security layer, preventing transitions in certain states.
    */
   guards?: PredicateExpr
-}
-
-/**
- * Represents a transition that skips validation.
- * Used for operations that don't require data validation,
- * such as saving drafts or managing collections.
- *
- * @example
- * // Save draft without validation
- * {
- *   type: 'transition',
- *   when: { type: 'test', subject: {...}, condition: {...} },
- *   validate: false,
- *   onAlways: {
- *     effects: [{ type: 'FunctionType.Effect', name: 'save', arguments: [{ draft: true }] }],
- *     next: [{ goto: '/dashboard' }]
- *   }
- * }
- */
-export interface SkipValidationTransition extends SubmitTransitionBase {
-  /** Must be false to skip validation */
-  validate: false
-
-  /** Actions to execute */
-  onAlways: {
-    /** Optional effects to execute (save, manipulate collections, etc.) */
-    effects?: EffectFunctionExpr<any>[]
-
-    /** Optional navigation rules for where to go next */
-    next?: NextExpr[]
-  }
-
-  onValid?: never
-  onInvalid?: never
-}
-
-/**
- * Represents a transition that validates form fields before proceeding.
- *
- * @example
- * // Standard form progression with validation
- * {
- *   type: 'transition',
- *   when: { type: 'test', subject: {...}, condition: {...} },
- *   validate: true,
- *   onValid: {
- *     effects: [{ type: 'FunctionType.Effect', name: 'save', arguments: [] }],
- *     next: [{ goto: '/next-step' }]
- *   },
- *   onInvalid: {
- *     next: [{ goto: '/current-step' }]
- *   }
- * }
- *
- * @example
- * // With onAlways for effects that run before validation
- * {
- *   type: 'transition',
- *   validate: true,
- *   onAlways: {
- *     effects: [{ type: 'FunctionType.Effect', name: 'log', arguments: ['submission attempt'] }]
- *   },
- *   onValid: {...},
- *   onInvalid: {...}
- * }
- */
-export interface ValidatingTransition extends SubmitTransitionBase {
-  /** Must be true to trigger validation */
-  validate: true
 
   /**
-   * Optional actions to execute before validation occurs.
-   * Useful for logging or preparatory effects.
+   * Whether to validate form fields before proceeding.
+   * When true, routes to onValid or onInvalid based on validation result.
+   * When false (default), skips validation and uses onAlways.
+   */
+  validate?: boolean
+
+  /**
+   * Actions to execute regardless of validation result.
+   * When validate is false, this is the only branch that executes.
+   * When validate is true, this runs before routing to onValid/onInvalid.
    */
   onAlways?: {
-    /** Effects to execute before validation */
+    /** Effects to execute */
     effects?: EffectFunctionExpr<any>[]
-  }
-
-  /** Actions to execute when validation passes. */
-  onValid: {
-    /** Optional effects to execute */
-    effects?: EffectFunctionExpr<any>[]
-    /** Optional navigation rules on successful validation */
+    /** Navigation rules */
     next?: NextExpr[]
   }
 
-  /** Actions to execute when validation fails. */
-  onInvalid: {
-    /** Optional effects to execute */
+  /**
+   * Actions to execute when validation passes.
+   * Only meaningful when validate is true.
+   */
+  onValid?: {
+    /** Effects to execute */
     effects?: EffectFunctionExpr<any>[]
-    /** Optional navigation rules on failed validation */
+    /** Navigation rules on successful validation */
+    next?: NextExpr[]
+  }
+
+  /**
+   * Actions to execute when validation fails.
+   * Only meaningful when validate is true.
+   */
+  onInvalid?: {
+    /** Effects to execute */
+    effects?: EffectFunctionExpr<any>[]
+    /** Navigation rules on failed validation */
     next?: NextExpr[]
   }
 }
-
-/**
- * Lifecycle transition for data submission.
- * Runs after data loading, on form submission.
- */
-export type SubmitTransition = SkipValidationTransition | ValidatingTransition
 
 /**
  * Lifecycle transition for in-page actions.

@@ -17,7 +17,7 @@ import {
   NextExpr,
   PredicateTestExpr,
   ReferenceExpr,
-  ValidatingTransition,
+  SubmitTransition,
   ValueExpr,
 } from '@form-engine/form/types/expressions.type'
 import { NodeFactory } from '../NodeFactory'
@@ -102,7 +102,7 @@ describe('TransitionNodeFactory', () => {
         onInvalid: {
           next: [{ type: ExpressionType.NEXT, goto: 'currentStep' }],
         },
-      } satisfies ValidatingTransition
+      } satisfies SubmitTransition
 
       const result = transitionFactory.create(json)
 

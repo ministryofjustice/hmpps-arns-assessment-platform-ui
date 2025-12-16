@@ -24,6 +24,7 @@ const getAssetsConfig = buildConfig => ({
       patterns: globSync(buildConfig.assets.clear),
     }),
     manifestPlugin({
+      append: true,
       generate: entries =>
         Object.fromEntries(Object.entries(entries).map(paths => paths.map(p => p.replace(/^dist\//, '/')))),
     }),

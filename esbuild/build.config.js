@@ -41,6 +41,12 @@ const getBuildConfig = () => {
       ],
       clear: globSync([path.join(cwd, 'dist/assets/{css,js}')]),
     },
+
+    formAssets: {
+      outDir: path.join(cwd, 'dist/assets'),
+      outbase: path.join(cwd, 'server/forms'),
+      entryPoints: globSync([path.join(cwd, 'server/forms/**/form.js'), path.join(cwd, 'server/forms/**/form.scss')]),
+    },
   }
 }
 
