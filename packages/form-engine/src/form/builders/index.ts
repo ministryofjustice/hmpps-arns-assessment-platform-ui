@@ -1,8 +1,8 @@
 import { isFieldBlockDefinition } from '@form-engine/form/typeguards/structures'
+import { FormPackage } from '@form-engine/core/types/engine.type'
 import { ReferenceBuilder } from './ReferenceBuilder'
 import { ScopedReferenceBuilder } from './ScopedReferenceBuilder'
 import { ChainableExpr, ChainableRef, ChainableScopedRef } from './types'
-import { FormPackage } from '@form-engine/core/types/engine.type'
 import { finaliseBuilders } from './utils/finaliseBuilders'
 import {
   BlockDefinition,
