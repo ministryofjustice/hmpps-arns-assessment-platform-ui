@@ -570,39 +570,6 @@ interface AccessTransitionError extends AccessTransitionBase {
 export type AccessTransition = AccessTransitionRedirect | AccessTransitionError
 
 /**
- * Lifecycle transition for data submission.
- * Runs after data loading, on form submission.
- *
- * @example
- * // Simple validation - validate and re-render on failure
- * submitTransition({ validate: true })
- *
- * @example
- * // Standard form progression with validation
- * submitTransition({
- *   validate: true,
- *   onValid: {
- *     effects: [MyEffects.save()],
- *     next: [next({ goto: '/next-step' })]
- *   }
- * })
- *
- * @example
- * // Skip validation (drafts, collection operations)
- * submitTransition({
- *   validate: false,
- *   onAlways: {
- *     effects: [MyEffects.saveDraft()],
- *     next: [next({ goto: '/dashboard' })]
- *   }
- * })
- *
- * Either redirects to another page OR returns an HTTP error response.
- * TypeScript enforces that redirect and status/message are mutually exclusive.
- */
-export type AccessTransition = AccessTransitionRedirect | AccessTransitionError
-
-/**
  * Base interface for submission transition types.
  * Submission transitions control how users move between steps when submitting forms.
  */
