@@ -597,17 +597,14 @@ export type AccessTransition = AccessTransitionRedirect | AccessTransitionError
  *   }
  * })
  *
- * @example
- * // With onAlways for effects that run regardless of validation result
- * submitTransition({
- *   validate: true,
- *   onAlways: {
- *     effects: [MyEffects.logSubmission()]
- *   },
- *   onValid: {
- *     next: [next({ goto: '/next-step' })]
- *   }
- * })
+ * Either redirects to another page OR returns an HTTP error response.
+ * TypeScript enforces that redirect and status/message are mutually exclusive.
+ */
+export type AccessTransition = AccessTransitionRedirect | AccessTransitionError
+
+/**
+ * Base interface for submission transition types.
+ * Submission transitions control how users move between steps when submitting forms.
  */
 export interface SubmitTransition {
   type: TransitionType.SUBMIT
