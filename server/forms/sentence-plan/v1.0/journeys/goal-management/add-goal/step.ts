@@ -1,5 +1,13 @@
 import { Format, next, Params, step, submitTransition } from '@form-engine/form/builders'
-import { pageHeading, continueButton } from './fields'
+import {
+  pageHeading,
+  goalNameInput,
+  isGoalRelatedToOtherAreaOfNeed,
+  canStartWorkingOnGoalNow,
+  buttonGroup,
+  addStepsButton,
+  saveWithoutStepsButton,
+} from './fields'
 
 /**
  * For adding a new goal.
@@ -8,7 +16,7 @@ export const createGoalStep = step({
   path: '/add-goal/:areaOfNeed',
   title: 'Create Goal',
   isEntryPoint: true,
-  blocks: [pageHeading, continueButton],
+  blocks: [pageHeading, goalNameInput, isGoalRelatedToOtherAreaOfNeed, canStartWorkingOnGoalNow, buttonGroup()],
   onSubmission: [
     submitTransition({
       validate: true,
