@@ -26,6 +26,7 @@ import logger from '../logger'
 
 // Form packages
 import { SentencePlanFormPackages } from './forms/sentence-plan/sentencePlanFormExports'
+import { sentencePlanComponents } from './forms/sentence-plan/components'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -60,6 +61,7 @@ export default function createApp(services: Services): express.Application {
   })
     .registerComponents(govukComponents)
     .registerComponents(mojComponents)
+    .registerComponents(sentencePlanComponents)
   // .registerFormPackage(aapDeveloperGuide)
 
   // Register all Sentence Plan form packages
