@@ -164,6 +164,46 @@ Transformer.Number.Max(100)       // Return larger of value and 100
 Transformer.Number.Clamp(0, 100)  // Constrain between 0 and 100`,
     }),
 
+    // Date Transformers
+    block<HtmlBlock>({
+      variant: 'html',
+      content: `
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h2 class="govuk-heading-m">Date Transformers</h2>
+        <p class="govuk-body">
+          Transform Date values. These work with JavaScript Date objects.
+        </p>
+      `,
+    }),
+
+    block<CodeBlock>({
+      variant: 'codeBlock',
+      language: 'typescript',
+      code: `
+// Formatting
+Transformer.Date.Format('DD/MM/YYYY')     // Date → "15/03/2024"
+Transformer.Date.Format('YYYY-MM-DD')     // Date → "2024-03-15"
+Transformer.Date.Format('HH:mm:ss')       // Date → "14:30:45"
+Transformer.Date.ToISOString()            // Date → "2024-03-15T14:30:45.123Z"
+Transformer.Date.ToLocaleString()         // Date → locale-specific string
+Transformer.Date.ToLocaleString('en-US')  // Date → "3/15/2024, 2:30:45 PM"
+
+// Adding time
+Transformer.Date.AddDays(7)               // Add 7 days
+Transformer.Date.AddMonths(1)             // Add 1 month
+Transformer.Date.AddYears(1)              // Add 1 year
+
+// Subtracting time
+Transformer.Date.SubtractDays(7)          // Subtract 7 days
+Transformer.Date.AddDays(-7)              // Also subtracts 7 days
+Transformer.Date.AddMonths(-6)            // Subtract 6 months
+Transformer.Date.AddYears(-18)            // Subtract 18 years
+
+// Day boundaries
+Transformer.Date.StartOfDay()             // Set to 00:00:00.000
+Transformer.Date.EndOfDay()               // Set to 23:59:59.999`,
+    }),
+
     // Common Patterns
     block<HtmlBlock>({
       variant: 'html',
