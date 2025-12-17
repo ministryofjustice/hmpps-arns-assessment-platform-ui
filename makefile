@@ -25,7 +25,8 @@ prod-build: ## Builds a production image of the UI.
 	docker compose ${PROD_COMPOSE_FILES} build ui
 
 prod-up: ## Starts/restarts the UI in a production container.
-	docker compose ${PROD_COMPOSE_FILES} up ui --wait --force-recreate --no-deps
+	docker compose ${PROD_COMPOSE_FILES} down ui
+	docker compose ${PROD_COMPOSE_FILES} up ui --wait --no-recreate
 
 dev-build: ## Builds a development image of the UI and installs Node dependencies.
 	@make install-node-modules
@@ -33,7 +34,8 @@ dev-build: ## Builds a development image of the UI and installs Node dependencie
 
 dev-up: ## Starts/restarts a development container. A remote debugger can be attached on port 9229.
 	@make install-node-modules
-	docker compose ${DEV_COMPOSE_FILES} up ${SERVICE_NAME} --wait --force-recreate --no-deps
+	docker compose down ${SERVICE_NAME}
+	docker compose ${DEV_COMPOSE_FILES} up ${SERVICE_NAME} --wait --no-recreate
 
 down: ## Stops and removes all containers in the project.
 	docker compose down
