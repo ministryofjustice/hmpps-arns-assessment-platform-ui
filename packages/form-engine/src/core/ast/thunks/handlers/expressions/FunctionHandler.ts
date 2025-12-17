@@ -11,6 +11,7 @@ import ThunkLookupError from '@form-engine/errors/ThunkLookupError'
 import ThunkEvaluationError from '@form-engine/errors/ThunkEvaluationError'
 import { evaluateOperand } from '@form-engine/core/ast/thunks/handlers/utils/evaluation'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
+import { FunctionType } from '@form-engine/form/types/enums'
 
 /**
  * Handler for Function expression nodes
@@ -99,12 +100,9 @@ export default class FunctionHandler implements HybridThunkHandler {
       return arg
     })
 
-    // Get the first argument based on function type
-    const firstArgument = this.getFirstArgument(context)
-
-    // Call the function with first argument followed by evaluated arguments
+    // Call the function - generators don't receive a first argument from scope
     try {
-      const result = functionEntry.evaluate(firstArgument, ...evaluatedArguments)
+      const result = this.invokeFunction(functionEntry.evaluate, evaluatedArguments, context)
 
       return { value: result }
     } catch (cause) {
@@ -132,12 +130,9 @@ export default class FunctionHandler implements HybridThunkHandler {
     // Evaluate all arguments (AST nodes invoked, primitives passed through)
     const evaluatedArguments = await Promise.all(rawArguments.map(arg => evaluateOperand(arg, context, invoker)))
 
-    // Get the first argument based on function type
-    const firstArgument = this.getFirstArgument(context)
-
-    // Call the function with first argument followed by evaluated arguments
+    // Call the function - generators don't receive a first argument from scope
     try {
-      const result = functionEntry.evaluate(firstArgument, ...evaluatedArguments)
+      const result = this.invokeFunction(functionEntry.evaluate, evaluatedArguments, context)
 
       return { value: result }
     } catch (cause) {
@@ -146,6 +141,26 @@ export default class FunctionHandler implements HybridThunkHandler {
 
       return { error: error.toThunkError() }
     }
+  }
+
+  /**
+   * Invoke the function with the appropriate arguments based on function type.
+   *
+   * - Generators: Called with only the evaluated arguments (no value from scope)
+   * - Conditions/Transformers/Effects: Called with @value from scope as first argument
+   */
+  private invokeFunction(
+    evaluate: (...args: any[]) => any,
+    evaluatedArguments: any[],
+    context: ThunkEvaluationContext,
+  ): any {
+    if (this.node.expressionType === FunctionType.GENERATOR) {
+      return evaluate(...evaluatedArguments)
+    }
+
+    const firstArgument = this.getFirstArgument(context)
+
+    return evaluate(firstArgument, ...evaluatedArguments)
   }
 
   /**

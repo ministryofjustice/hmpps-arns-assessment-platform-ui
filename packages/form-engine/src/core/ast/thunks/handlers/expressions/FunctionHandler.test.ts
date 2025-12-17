@@ -14,7 +14,7 @@ describe('FunctionHandler', () => {
   })
 
   describe('evaluate()', () => {
-    it('should call function with no arguments when function exists in registry', async () => {
+    it('should call generator function with no arguments (generators do not receive @value)', async () => {
       // Arrange
       const functionNode = ASTTestFactory.functionExpression(FunctionType.GENERATOR, 'generateId')
 
@@ -35,7 +35,7 @@ describe('FunctionHandler', () => {
       const result = await handler.evaluate(mockContext, mockInvoker)
 
       // Assert
-      expect(mockFunction.evaluate).toHaveBeenCalledWith(undefined)
+      expect(mockFunction.evaluate).toHaveBeenCalledWith()
       expect(result.value).toBe('generated-id-123')
     })
 
