@@ -60,6 +60,11 @@ import { stringsStep as transformersPlaygroundStringsStep } from './steps/transf
 import { numbersStep as transformersPlaygroundNumbersStep } from './steps/transformers/playground/numbers'
 import { arraysStep as transformersPlaygroundArraysStep } from './steps/transformers/playground/arrays'
 
+// Generators module
+import { introStep as generatorsIntroStep } from './steps/generators/intro'
+import { introStep as generatorsPlaygroundIntroStep } from './steps/generators/playground/intro'
+import { datesStep as generatorsPlaygroundDatesStep } from './steps/generators/playground/dates'
+
 // Effects module
 import { introStep as effectsIntroStep } from './steps/effects/intro'
 import { contextStep as effectsContextStep } from './steps/effects/context'
@@ -107,10 +112,11 @@ import { editStep as collectionsPlaygroundEditStep } from './steps/collections/p
  * 5. Validation - rules and error messages
  * 6. Expressions - computed values and logic
  * 7. Transformers - value pipelines
- * 8. Effects - lifecycle side effects
- * 9. Transitions - load/submit handling
- * 10. Components - building and extending UI components
- * 11. Collections - hub-and-spoke item management
+ * 8. Generators - dynamic value creation
+ * 9. Effects - lifecycle side effects
+ * 10. Transitions - load/submit handling
+ * 11. Components - building and extending UI components
+ * 12. Collections - hub-and-spoke item management
  */
 const developerGuideJourney = journey({
   code: 'form-engine-developer-guide',
@@ -315,7 +321,33 @@ const developerGuideJourney = journey({
     }),
 
     /**
-     * Concept 8: Effects
+     * Concept 8: Generators
+     *
+     * How to use generators to produce dynamic values without input.
+     * Generators create values from scratch, unlike transformers which modify existing values.
+     */
+    journey({
+      code: 'generators',
+      title: 'Generators',
+      path: '/generators',
+      steps: [generatorsIntroStep],
+      children: [
+        /**
+         * Generators Playground
+         *
+         * Interactive examples where users can see generators in action.
+         */
+        journey({
+          code: 'playground',
+          title: 'Generators Playground',
+          path: '/playground',
+          steps: [generatorsPlaygroundIntroStep, generatorsPlaygroundDatesStep],
+        }),
+      ],
+    }),
+
+    /**
+     * Concept 9: Effects
      *
      * How to create and use effect functions for side effects during form processing.
      * Covers the context API and building custom effects with dependency injection.
@@ -328,7 +360,7 @@ const developerGuideJourney = journey({
     }),
 
     /**
-     * Concept 9: Transitions
+     * Concept 10: Transitions
      *
      * Multi-step module covering:
      * - Introduction and lifecycle overview
@@ -353,7 +385,7 @@ const developerGuideJourney = journey({
     }),
 
     /**
-     * Concept 10: Components
+     * Concept 11: Components
      *
      * Multi-step module covering:
      * - Understanding block() vs field()
@@ -369,7 +401,7 @@ const developerGuideJourney = journey({
     }),
 
     /**
-     * Concept 11: Collections
+     * Concept 12: Collections
      *
      * Multi-step module covering:
      * - Collection iteration with Collection() and Item()
