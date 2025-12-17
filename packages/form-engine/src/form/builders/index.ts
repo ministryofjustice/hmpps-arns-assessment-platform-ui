@@ -276,6 +276,7 @@ export function Format(template: string, ...args: ConditionalString[]): FormatEx
  *   fallback: [block({ variant: 'html', content: 'No items found' })]
  * })
  */
+
 export function Collection<T = any, F = T>({
   collection,
   template,
