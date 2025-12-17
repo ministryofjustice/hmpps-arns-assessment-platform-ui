@@ -30,3 +30,13 @@
 ::view-transition-new(root) {
   animation-duration: 0.125s;
 }
+
+.aap-service-banner {
+  @include govuk-responsive-margin(1, "left");
+
+  .govuk-tag {
+    @include govuk-font($size: 14);
+    background-color: govuk-colour("blue");
+    color: govuk-colour("white");
+  }
+}

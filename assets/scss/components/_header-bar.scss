@@ -143,4 +143,8 @@
 .govuk-phase-banner {
   @include govuk-width-container;
   border: none;
+
+  .govuk-tag {
+    @include govuk-font($size: 14);
+  }
 }

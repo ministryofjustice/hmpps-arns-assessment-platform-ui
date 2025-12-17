@@ -13,6 +13,7 @@
 {% block pageTitle %}{{pageTitle | default(applicationName)}}{% endblock %}
 
 {% block header %}
+  {% set serviceBannerText = ancestors[0].title if ancestors and ancestors[0] %}
   {% include "./header.njk" %}
 {% endblock %}
 
