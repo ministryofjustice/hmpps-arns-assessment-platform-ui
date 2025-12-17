@@ -10,8 +10,8 @@ APP_VERSION ?= local
 
 ## Compose files to stack on each other
 DEV_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.local.yml
-PROD_COMPOSE_FILES = -f docker/docker-compose.base.yml
 TEST_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml
+PROD_COMPOSE_FILES = -f docker/docker-compose.base.yml
 
 export APP_VERSION
 export COMPOSE_PROJECT_NAME=${PROJECT_NAME}
@@ -21,8 +21,12 @@ default: help
 help: ## The help text you're reading.
 	@grep --no-filename -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-build: ## Builds a production image of the UI.
+prod-build: ## Builds a production image of the UI.
 	docker compose ${PROD_COMPOSE_FILES} build ui
+
+prod-up: ## Starts/restarts the UI in a production container.
+	docker compose ${PROD_COMPOSE_FILES} down ui
+	docker compose ${PROD_COMPOSE_FILES} up ui --wait --no-recreate
 
 dev-build: ## Builds a development image of the UI and installs Node dependencies.
 	@make install-node-modules
