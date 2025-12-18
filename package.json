@@ -29,8 +29,8 @@
     "setup": "npm ci && hmpps-npm-script-run-allowlist"
   },
   "engines": {
-    "node": "^22 || ^24",
-    "npm": "^10 || ^11"
+    "node": "^22",
+    "npm": "^10"
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.863.0",
