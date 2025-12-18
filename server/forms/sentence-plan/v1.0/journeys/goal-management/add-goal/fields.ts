@@ -1,13 +1,81 @@
-import { and, Answer, block, Data, field, Format, Self, validation } from '@form-engine/form/builders'
+import { and, Answer, block, Data, field, Format, Self, validation, when, Params } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKRadioInput, GovUKTextInput, GovUKCheckboxInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { MOJDatePicker } from '@form-engine-moj-components/components'
+import { MOJDatePicker, MOJSideNavigation } from '@form-engine-moj-components/components'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { Transformer } from '@form-engine/registry/transformers'
 import { Generator } from '@form-engine/registry/generators'
 import { AccessibleAutocomplete } from '../../../../components'
+
+// Side navigation for areas of need
+export const sideNavigation = block<MOJSideNavigation>({
+  variant: 'mojSideNavigation',
+  label: 'Areas of need',
+  sections: [
+    {
+      items: [
+        {
+          text: 'Accommodation',
+          href: 'accommodation',
+          active: when(Params('areaOfNeed').match(Condition.Equals('accommodation')))
+            .then(true)
+            .else(false),
+        },
+        {
+          text: 'Employment and education',
+          href: 'employment-and-education',
+          active: when(Params('areaOfNeed').match(Condition.Equals('employment-and-education')))
+            .then(true)
+            .else(false),
+        },
+        {
+          text: 'Finances',
+          href: 'finances',
+          active: when(Params('areaOfNeed').match(Condition.Equals('finances')))
+            .then(true)
+            .else(false),
+        },
+        {
+          text: 'Drug use',
+          href: 'drug-use',
+          active: when(Params('areaOfNeed').match(Condition.Equals('drug-use')))
+            .then(true)
+            .else(false),
+        },
+        {
+          text: 'Alcohol use',
+          href: 'alcohol-use',
+          active: when(Params('areaOfNeed').match(Condition.Equals('alcohol-use')))
+            .then(true)
+            .else(false),
+        },
+        {
+          text: 'Health and wellbeing',
+          href: 'health-and-wellbeing',
+          active: when(Params('areaOfNeed').match(Condition.Equals('health-and-wellbeing')))
+            .then(true)
+            .else(false),
+        },
+        {
+          text: 'Personal relationships and community',
+          href: 'personal-relationships-and-community',
+          active: when(Params('areaOfNeed').match(Condition.Equals('personal-relationships-and-community')))
+            .then(true)
+            .else(false),
+        },
+        {
+          text: 'Thinking, behaviours and attitudes',
+          href: 'thinking-behaviours-and-attitudes',
+          active: when(Params('areaOfNeed').match(Condition.Equals('thinking-behaviours-and-attitudes')))
+            .then(true)
+            .else(false),
+        },
+      ],
+    },
+  ],
+})
 
 export const pageHeading = block<HtmlBlock>({
   variant: 'html',
@@ -206,6 +274,34 @@ export const buttonGroup = (): TemplateWrapper => {
     slots: {
       addStepsButton: [addStepsButton],
       saveWithoutStepsButton: [saveWithoutStepsButton],
+    },
+  })
+}
+
+// Two-column layout wrapper
+export const twoColumnLayout = (): TemplateWrapper => {
+  return block<TemplateWrapper>({
+    classes: 'govuk-width-container',
+    variant: 'templateWrapper',
+    template: `
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-quarter">
+          {{slot:sideNav}}
+        </div>
+        <div class="govuk-grid-column-three-quarters">
+          {{slot:content}}
+        </div>
+      </div>
+    `,
+    slots: {
+      sideNav: [sideNavigation],
+      content: [
+        pageHeading,
+        goalNameAutoComplete,
+        isGoalRelatedToOtherAreaOfNeed,
+        canStartWorkingOnGoalNow,
+        buttonGroup(),
+      ],
     },
   })
 }

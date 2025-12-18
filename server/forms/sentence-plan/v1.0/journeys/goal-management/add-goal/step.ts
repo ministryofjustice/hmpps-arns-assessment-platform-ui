@@ -1,13 +1,7 @@
 import { Format, loadTransition, next, Params, Post, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import {
-  pageHeading,
-  isGoalRelatedToOtherAreaOfNeed,
-  canStartWorkingOnGoalNow,
-  buttonGroup,
-  goalNameAutoComplete,
-} from './fields'
 import { SentencePlanV1Effects } from '../../../effects'
+import { twoColumnLayout } from './fields'
 
 /**
  * For adding a new goal.
@@ -21,7 +15,7 @@ export const createGoalStep = step({
   path: '/add-goal/:areaOfNeed',
   title: 'Create Goal',
   isEntryPoint: true,
-  blocks: [pageHeading, goalNameAutoComplete, isGoalRelatedToOtherAreaOfNeed, canStartWorkingOnGoalNow, buttonGroup()],
+  blocks: [twoColumnLayout()],
   onSubmission: [
     submitTransition({
       when: Post('action').match(Condition.Equals('addSteps')),
