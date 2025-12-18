@@ -25,7 +25,8 @@
     "rebuild": "npm run clean && npm i && npm run build",
     "precommit:secrets": "gitleaks git --pre-commit --redact --staged --verbose --config .gitleaks/config.toml",
     "precommit:lint": "node_modules/.bin/lint-staged",
-    "precommit:verify": "npm run typecheck && npm test"
+    "precommit:verify": "npm run typecheck && npm test",
+    "setup": "npm ci && hmpps-npm-script-run-allowlist"
   },
   "engines": {
     "node": "^22",
@@ -64,6 +65,7 @@
   "devDependencies": {
     "@jgoz/esbuild-plugin-typecheck": "^4.0.3",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.1",
+    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
     "@ministryofjustice/hmpps-precommit-hooks": "^0.0.3",
     "@playwright/test": "^1.56.1",
     "@tsconfig/node22": "^22.0.2",
