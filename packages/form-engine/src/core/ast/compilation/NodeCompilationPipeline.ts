@@ -1,5 +1,6 @@
-import { ASTNode } from '@form-engine/core/types/engine.type'
+import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
 import PseudoNodeTraverser from '@form-engine/core/ast/registration/PseudoNodeTraverser'
+import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
 import { MetadataTraverser } from '@form-engine/core/ast/registration/MetadataTraverser'
 import { JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
 import { AddSelfValueToFieldsNormalizer } from '@form-engine/core/ast/normalizers/AddSelfValueToFields'
@@ -71,7 +72,7 @@ export class NodeCompilationPipeline {
     const normalizers = [
       new AddSelfValueToFieldsNormalizer(compilationDependencies.nodeFactory),
       new ConvertFormattersToPipelineNormalizer(compilationDependencies.nodeIdGenerator, idCategory),
-      new ResolveSelfReferencesNormalizer(),
+      new ResolveSelfReferencesNormalizer(compilationDependencies.nodeIdGenerator, idCategory),
     ]
 
     // Run each normalizer on each node
@@ -151,39 +152,68 @@ export class NodeCompilationPipeline {
    * - EFFECT_FLOW: Effect/transition sequencing
    *
    * @param compilationDependencies
+   * @param nodeIds - Optional: If provided, only wire the specified nodes (scoped wiring for runtime nodes)
    */
-  static wireDependencies(compilationDependencies: CompilationDependencies): void {
+  static wireDependencies(compilationDependencies: CompilationDependencies, nodeIds?: NodeId[]): void {
     const wiringContext = new WiringContext(
       compilationDependencies.nodeRegistry,
       compilationDependencies.metadataRegistry,
       compilationDependencies.dependencyGraph,
     )
 
-    // Wire structural hierarchy
-    new StructuralWiring(wiringContext).wire()
+    if (nodeIds) {
+      // Scoped wiring - only process specified nodes with bidirectional wiring
+      new StructuralWiring(wiringContext).wireNodes(nodeIds)
 
-    // Wire lifecycle transitions (entry = onLoad + onAccess, action = onAction, exit = onSubmit)
-    new OnLoadTransitionWiring(wiringContext).wire()
-    new OnActionTransitionWiring(wiringContext).wire()
-    new OnSubmitTransitionWiring(wiringContext).wire()
+      // Wire lifecycle transitions (entry = onLoad + onAccess, action = onAction, exit = onSubmit)
+      new OnLoadTransitionWiring(wiringContext).wireNodes(nodeIds)
+      new OnActionTransitionWiring(wiringContext).wireNodes(nodeIds)
+      new OnSubmitTransitionWiring(wiringContext).wireNodes(nodeIds)
 
-    // Wire pseudo nodes
-    new AnswerPseudoNodeWiring(wiringContext).wire()
-    new DataPseudoNodeWiring(wiringContext).wire()
-    new QueryPseudoNodeWiring(wiringContext).wire()
-    new ParamsPseudoNodeWiring(wiringContext).wire()
-    new PostPseudoNodeWiring(wiringContext).wire()
+      // Wire pseudo nodes
+      new AnswerPseudoNodeWiring(wiringContext).wireNodes(nodeIds)
+      new DataPseudoNodeWiring(wiringContext).wireNodes(nodeIds)
+      new QueryPseudoNodeWiring(wiringContext).wireNodes(nodeIds)
+      new ParamsPseudoNodeWiring(wiringContext).wireNodes(nodeIds)
+      new PostPseudoNodeWiring(wiringContext).wireNodes(nodeIds)
 
-    // Wire expression nodes
-    new ConditionalExpressionWiring(wiringContext).wire()
-    new LogicExpressionWiring(wiringContext).wire()
-    new ReferenceExpressionWiring(wiringContext).wire()
-    new PipelineExpressionWiring(wiringContext).wire()
-    new FunctionExpressionWiring(wiringContext).wire()
-    new ValidationExpressionWiring(wiringContext).wire()
-    new NextExpressionWiring(wiringContext).wire()
-    new FormatExpressionWiring(wiringContext).wire()
-    new CollectionExpressionWiring(wiringContext).wire()
+      // Wire expression nodes
+      new ConditionalExpressionWiring(wiringContext).wireNodes(nodeIds)
+      new LogicExpressionWiring(wiringContext).wireNodes(nodeIds)
+      new ReferenceExpressionWiring(wiringContext).wireNodes(nodeIds)
+      new PipelineExpressionWiring(wiringContext).wireNodes(nodeIds)
+      new FunctionExpressionWiring(wiringContext).wireNodes(nodeIds)
+      new ValidationExpressionWiring(wiringContext).wireNodes(nodeIds)
+      new NextExpressionWiring(wiringContext).wireNodes(nodeIds)
+      new FormatExpressionWiring(wiringContext).wireNodes(nodeIds)
+      new CollectionExpressionWiring(wiringContext).wireNodes(nodeIds)
+    } else {
+      // Full wiring - existing behavior for compile-time
+      new StructuralWiring(wiringContext).wire()
+
+      // Wire lifecycle transitions (entry = onLoad + onAccess, action = onAction, exit = onSubmit)
+      new OnLoadTransitionWiring(wiringContext).wire()
+      new OnActionTransitionWiring(wiringContext).wire()
+      new OnSubmitTransitionWiring(wiringContext).wire()
+
+      // Wire pseudo nodes
+      new AnswerPseudoNodeWiring(wiringContext).wire()
+      new DataPseudoNodeWiring(wiringContext).wire()
+      new QueryPseudoNodeWiring(wiringContext).wire()
+      new ParamsPseudoNodeWiring(wiringContext).wire()
+      new PostPseudoNodeWiring(wiringContext).wire()
+
+      // Wire expression nodes
+      new ConditionalExpressionWiring(wiringContext).wire()
+      new LogicExpressionWiring(wiringContext).wire()
+      new ReferenceExpressionWiring(wiringContext).wire()
+      new PipelineExpressionWiring(wiringContext).wire()
+      new FunctionExpressionWiring(wiringContext).wire()
+      new ValidationExpressionWiring(wiringContext).wire()
+      new NextExpressionWiring(wiringContext).wire()
+      new FormatExpressionWiring(wiringContext).wire()
+      new CollectionExpressionWiring(wiringContext).wire()
+    }
   }
 
   /**
@@ -192,9 +222,13 @@ export class NodeCompilationPipeline {
    * Creates thunk handlers for all nodes in the registry.
    * Handlers are registered in the thunkHandlerRegistry for runtime evaluation.
    *
-   * @param compilationDependencies
+   * Pass 1: Creates all handlers
+   * Pass 2: Computes isAsync metadata for hybrid handlers
+   *
+   * @param compilationDependencies - Contains all compilation artifacts
+   * @param functionRegistry - Registry of user-defined functions (for async metadata)
    */
-  static compileThunks(compilationDependencies: CompilationDependencies): void {
-    new ThunkCompilerFactory().compile(compilationDependencies)
+  static compileThunks(compilationDependencies: CompilationDependencies, functionRegistry: FunctionRegistry): void {
+    new ThunkCompilerFactory().compile(compilationDependencies, functionRegistry)
   }
 }
