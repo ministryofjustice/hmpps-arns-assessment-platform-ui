@@ -1,36 +1,37 @@
 import { and, Answer, block, Data, field, Format, Self, validation } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import {
-  GovUKRadioInput,
-  GovUKTextInput,
-  GovUKCheckboxInput,
-} from '@form-engine-govuk-components/components'
+import { GovUKRadioInput, GovUKTextInput, GovUKCheckboxInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { MOJDatePicker } from '@form-engine-moj-components/components'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { BlockDefinition } from '@form-engine/form/types/structures.type'
 import { Transformer } from '@form-engine/registry/transformers'
+import { Generator } from '@form-engine/registry/generators'
+import { AccessibleAutocomplete } from '../../../../components'
 
 export const pageHeading = block<HtmlBlock>({
   variant: 'html',
   content: Format('<h1 class="govuk-heading-l">Create a goal with %1</h1>', Data('caseData.name.forename')),
 })
 
-export const goalNameInput = field<GovUKTextInput>({
-  variant: 'govukTextInput',
-  code: 'goalNameInput',
-  label: {
-    text: Format('What goal should %1 try to achieve?', Data('caseData.name.forename')),
-    classes: 'govuk-label--m'
-  },
-  hint: 'Search for a suggested goal or enter your own. Add one goal at a time.',
-  validate: [
-    validation({
-      when: Self().not.match(Condition.IsRequired()),
-      message: 'Select or enter what goal they should try to achieve',
-    }),
-  ],
+export const goalNameAutoComplete = block<AccessibleAutocomplete>({
+  variant: 'accessibleAutocomplete',
+  data: Data('goalSuggestions'),
+  field: field<GovUKTextInput>({
+    variant: 'govukTextInput',
+    code: 'goalNameInput',
+    label: {
+      text: Format('What goal should %1 try to achieve?', Data('caseData.name.forename')),
+      classes: 'govuk-label--m',
+    },
+    hint: 'Search for a suggested goal or enter your own. Add one goal at a time.',
+    validate: [
+      validation({
+        when: Self().not.match(Condition.IsRequired()),
+        message: 'Select or enter what goal they should try to achieve',
+      }),
+    ],
+  }),
 })
 
 export const areaOfNeedCheckboxes = field<GovUKCheckboxInput>({
@@ -58,7 +59,8 @@ export const areaOfNeedCheckboxes = field<GovUKCheckboxInput>({
     validation({
       when: and(
         Answer('isGoalRelatedToOtherAreaOfNeed').match(Condition.Equals('related_yes')),
-        Self().not.match(Condition.IsRequired())),
+        Self().not.match(Condition.IsRequired()),
+      ),
       message: 'Select all related areas',
     }),
   ],
@@ -74,7 +76,7 @@ export const isGoalRelatedToOtherAreaOfNeed = field<GovUKRadioInput>({
     },
   },
   items: [
-    { value: 'related_yes', text: 'Yes', block: areaOfNeedCheckboxes},
+    { value: 'related_yes', text: 'Yes', block: areaOfNeedCheckboxes },
     { value: 'related_no', text: 'No' },
   ],
   validate: [
@@ -97,15 +99,15 @@ export const dateOfCurrentGoal = field<MOJDatePicker>({
   formatters: [Transformer.String.ToISODate()],
   validate: [
     validation({
-      when: Self().not.match(Condition.Date.IsValid()),
-      message: 'Date must be today or in the future',
-    }),
-    validation({
-      when: Self().not.match(Condition.Date.IsFutureDate()),
+      when: and(
+        Answer('canStartWorkingOnGoalNow').match(Condition.Equals('yes')),
+        Answer('whenShouldTheGoalBeAchieved').match(Condition.Equals('set_another_date')),
+        Self().match(Condition.Date.IsValid()),
+        Self().not.match(Condition.Date.IsFutureDate()),
+      ),
       message: 'Date must be today or in the future',
     }),
   ],
-
 })
 
 export const whenShouldTheGoalBeAchieved = field<GovUKRadioInput>({
@@ -118,16 +120,37 @@ export const whenShouldTheGoalBeAchieved = field<GovUKRadioInput>({
     },
   },
   items: [
-    { value: 'date1', text: 'In 3 months DATE' },
-    { value: 'date2', text: 'In 6 months DATE' },
-    { value: 'date3', text: 'In 12 months DATE' },
+    {
+      value: 'date_in_3_months',
+      text: Format(
+        'In 3 months (%1)',
+        Generator.Date.Today().pipe(Transformer.Date.AddMonths(3), Transformer.Date.ToUKLongDate()),
+      ),
+    },
+    {
+      value: 'date_in_6_months',
+      text: Format(
+        'In 6 months (%1)',
+        Generator.Date.Today().pipe(Transformer.Date.AddMonths(6), Transformer.Date.ToUKLongDate()),
+      ),
+    },
+    {
+      value: 'date_in_12_months',
+      text: Format(
+        'In 12 months (%1)',
+        Generator.Date.Today().pipe(Transformer.Date.AddMonths(12), Transformer.Date.ToUKLongDate()),
+      ),
+    },
     { divider: 'or' },
-    { value: 'date4', text: 'Set another date', block: dateOfCurrentGoal },
+    { value: 'set_another_date', text: 'Set another date', block: dateOfCurrentGoal },
   ],
   validate: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
-      message: 'Select when they should aim to achieve this goal'
+      when: and(
+        Answer('canStartWorkingOnGoalNow').match(Condition.Equals('yes')),
+        Self().not.match(Condition.IsRequired()),
+      ),
+      message: 'Select when they should aim to achieve this goal',
     }),
   ],
 })
@@ -143,7 +166,7 @@ export const canStartWorkingOnGoalNow = field<GovUKRadioInput>({
   },
   items: [
     { value: 'yes', text: 'Yes', block: whenShouldTheGoalBeAchieved },
-    { value: 'no', text: "No, it is a future goal" },
+    { value: 'no', text: 'No, it is a future goal' },
   ],
   validate: [
     validation({
@@ -170,7 +193,7 @@ export const saveWithoutStepsButton = block<GovUKButton>({
   preventDoubleClick: true,
 })
 
-export const buttonGroup = <T extends BlockDefinition>(): TemplateWrapper => {
+export const buttonGroup = (): TemplateWrapper => {
   return block<TemplateWrapper>({
     variant: 'templateWrapper',
     template: `

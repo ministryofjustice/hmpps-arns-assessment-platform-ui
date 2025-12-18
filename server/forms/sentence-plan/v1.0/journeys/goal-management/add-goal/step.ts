@@ -1,13 +1,13 @@
 import { Format, loadTransition, next, Params, Post, step, submitTransition } from '@form-engine/form/builders'
+import { Condition } from '@form-engine/registry/conditions'
 import {
   pageHeading,
-  goalNameInput,
   isGoalRelatedToOtherAreaOfNeed,
   canStartWorkingOnGoalNow,
   buttonGroup,
+  goalNameAutoComplete,
 } from './fields'
 import { SentencePlanV1Effects } from '../../../effects'
-import { Condition } from '@form-engine/registry/conditions'
 
 /**
  * For adding a new goal.
@@ -15,13 +15,13 @@ import { Condition } from '@form-engine/registry/conditions'
 export const createGoalStep = step({
   onLoad: [
     loadTransition({
-      effects: [SentencePlanV1Effects.loadOrCreatePlan()],
+      effects: [SentencePlanV1Effects.loadOrCreatePlan(), SentencePlanV1Effects.loadGoalsByAreaOfNeed()],
     }),
   ],
   path: '/add-goal/:areaOfNeed',
   title: 'Create Goal',
   isEntryPoint: true,
-  blocks: [pageHeading, goalNameInput, isGoalRelatedToOtherAreaOfNeed, canStartWorkingOnGoalNow, buttonGroup()],
+  blocks: [pageHeading, goalNameAutoComplete, isGoalRelatedToOtherAreaOfNeed, canStartWorkingOnGoalNow, buttonGroup()],
   onSubmission: [
     submitTransition({
       when: Post('action').match(Condition.Equals('addSteps')),
