@@ -43,8 +43,13 @@ export const { effects: SentencePlanV1Effects, createRegistry: SentencePlanV1Reg
       const areaOfNeedParam = context.getRequestParam('areaOfNeed')
 
       // Find the matching area of need in reference data
+      // Convert area name to kebab-case: strip all special chars, replace with hyphens, remove leading/trailing hyphens
       const areaData = referenceData.find(
-        area => area.name.toLowerCase().replace(/\s+/g, '-') === areaOfNeedParam?.toLowerCase(),
+        area =>
+          area.name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '') === areaOfNeedParam?.toLowerCase(),
       )
 
       // Set the goal suggestions (empty array if not found)
