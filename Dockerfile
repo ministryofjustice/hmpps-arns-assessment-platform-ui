@@ -33,8 +33,8 @@ FROM base AS development
 
 FROM base AS build
 
-COPY package*.json ./
-RUN npm ci --no-audit
+COPY package*.json .npmrc .allowed-scripts.mjs ./
+RUN npm run setup
 
 COPY . .
 
