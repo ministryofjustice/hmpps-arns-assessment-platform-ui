@@ -165,16 +165,19 @@ export class NodeCompilationPipeline {
       // Scoped wiring - only process specified nodes with bidirectional wiring
       new StructuralWiring(wiringContext).wireNodes(nodeIds)
 
+      // Wire lifecycle transitions (entry = onLoad + onAccess, action = onAction, exit = onSubmit)
       new OnLoadTransitionWiring(wiringContext).wireNodes(nodeIds)
       new OnActionTransitionWiring(wiringContext).wireNodes(nodeIds)
       new OnSubmitTransitionWiring(wiringContext).wireNodes(nodeIds)
 
+      // Wire pseudo nodes
       new AnswerPseudoNodeWiring(wiringContext).wireNodes(nodeIds)
       new DataPseudoNodeWiring(wiringContext).wireNodes(nodeIds)
       new QueryPseudoNodeWiring(wiringContext).wireNodes(nodeIds)
       new ParamsPseudoNodeWiring(wiringContext).wireNodes(nodeIds)
       new PostPseudoNodeWiring(wiringContext).wireNodes(nodeIds)
 
+      // Wire expression nodes
       new ConditionalExpressionWiring(wiringContext).wireNodes(nodeIds)
       new LogicExpressionWiring(wiringContext).wireNodes(nodeIds)
       new ReferenceExpressionWiring(wiringContext).wireNodes(nodeIds)
@@ -188,16 +191,19 @@ export class NodeCompilationPipeline {
       // Full wiring - existing behavior for compile-time
       new StructuralWiring(wiringContext).wire()
 
+      // Wire lifecycle transitions (entry = onLoad + onAccess, action = onAction, exit = onSubmit)
       new OnLoadTransitionWiring(wiringContext).wire()
       new OnActionTransitionWiring(wiringContext).wire()
       new OnSubmitTransitionWiring(wiringContext).wire()
 
+      // Wire pseudo nodes
       new AnswerPseudoNodeWiring(wiringContext).wire()
       new DataPseudoNodeWiring(wiringContext).wire()
       new QueryPseudoNodeWiring(wiringContext).wire()
       new ParamsPseudoNodeWiring(wiringContext).wire()
       new PostPseudoNodeWiring(wiringContext).wire()
 
+      // Wire expression nodes
       new ConditionalExpressionWiring(wiringContext).wire()
       new LogicExpressionWiring(wiringContext).wire()
       new ReferenceExpressionWiring(wiringContext).wire()
@@ -211,7 +217,7 @@ export class NodeCompilationPipeline {
   }
 
   /**
-   * Phase 7: Compile thunk handlers (two-pass compilation)
+   * Phase 7: Compile thunk handlers
    *
    * Creates thunk handlers for all nodes in the registry.
    * Handlers are registered in the thunkHandlerRegistry for runtime evaluation.

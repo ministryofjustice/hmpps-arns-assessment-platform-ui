@@ -31,7 +31,7 @@ export default class StructuralWiring {
 
   /**
    * Wire only the specified nodes (scoped wiring for runtime nodes)
-   * Each node wires itself to its parent - no PUSH needed
+   * Each node wires itself to its parent
    */
   wireNodes(nodeIds: NodeId[]) {
     nodeIds.forEach(nodeId => {

@@ -188,13 +188,6 @@ export interface ThunkError {
 
 /**
  * Synchronous thunk handler for pure operations
- *
- * Use for handlers that:
- * - Don't call external services
- * - Don't await other operations
- * - Do pure data lookups or transformations
- *
- * Examples: DataHandler, PostHandler, QueryHandler, ParamsHandler, AnswerRemoteHandler
  */
 export interface SyncThunkHandler {
   /**
@@ -212,8 +205,7 @@ export interface SyncThunkHandler {
    * Evaluate synchronously and return result directly
    * No Promise overhead - returns in microseconds
    *
-   * Returns HandlerResult with optional metadata. Infrastructure automatically
-   * adds source (from handler class name) and timestamp. Handler-provided
+   * Returns HandlerResult with optional metadata. Handler-provided
    * metadata fields are appended and can override defaults if needed.
    *
    * @param context - Runtime evaluation context with data and services

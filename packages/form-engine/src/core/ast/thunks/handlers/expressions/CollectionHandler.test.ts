@@ -35,7 +35,11 @@ describe('CollectionHandler', () => {
       .withProperty(
         'template',
         options.template ?? [
-          { type: StructureType.BLOCK, blockType: 'basic', variant: 'text' } satisfies BlockDefinition,
+          {
+            type: StructureType.BLOCK,
+            variant: 'text',
+            blockType: 'basic',
+          } satisfies BlockDefinition,
         ],
       )
 
@@ -291,8 +295,8 @@ describe('CollectionHandler', () => {
         template: [
           {
             type: StructureType.BLOCK,
-            blockType: 'basic',
             variant: 'html',
+            blockType: 'basic',
           } satisfies BlockDefinition,
           {
             type: StructureType.BLOCK,

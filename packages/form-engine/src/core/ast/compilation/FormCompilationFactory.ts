@@ -81,7 +81,7 @@ export default class FormCompilationFactory {
     // Phase 7 - Wire dependency graph
     NodeCompilationPipeline.wireDependencies(artefact)
 
-    // Phase 8 - Compile thunk handlers (two-pass: create handlers, then compute metadata)
+    // Phase 8 - Compile thunk handlers
     NodeCompilationPipeline.compileThunks(artefact, this.formInstanceDependencies.functionRegistry)
 
     return {

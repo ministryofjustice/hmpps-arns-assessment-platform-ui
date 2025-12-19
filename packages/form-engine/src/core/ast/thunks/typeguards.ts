@@ -15,6 +15,7 @@ export function isSyncHandler(handler: ThunkHandler): handler is SyncThunkHandle
   if ('isAsync' in handler) {
     return handler.isAsync === false
   }
+
   return 'evaluateSync' in handler && !('evaluate' in handler)
 }
 
@@ -32,6 +33,7 @@ export function isAsyncHandler(handler: ThunkHandler): handler is AsyncThunkHand
   if ('isAsync' in handler) {
     return handler.isAsync === true
   }
+
   return 'evaluate' in handler && !('evaluateSync' in handler)
 }
 

@@ -278,7 +278,6 @@ export function Format(template: string, ...args: ConditionalString[]): FormatEx
  *   fallback: [block({ variant: 'html', content: 'No items found' })]
  * })
  */
-
 export function Collection<T = any, F = T>({
   collection,
   template,
@@ -287,13 +286,13 @@ export function Collection<T = any, F = T>({
   collection: ReferenceExpr | PipelineExpr | ChainableRef | ChainableExpr<any> | any[]
   template: T[]
   fallback?: F[]
-}): CollectionExpr<T, F> {
-  return {
+}): ChainableExpr<CollectionExpr<T, F>> {
+  return ExpressionBuilder.from({
     type: ExpressionType.COLLECTION,
     collection,
     template,
     fallback: fallback ?? [],
-  }
+  })
 }
 
 /**
