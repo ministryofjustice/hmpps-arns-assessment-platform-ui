@@ -9,6 +9,7 @@ import {
   isFunctionExprNode,
   isEffectExprNode,
   isCollectionExprNode,
+  isIterateExprNode,
   isNextExprNode,
   isValidationExprNode,
 } from '@form-engine/core/typeguards/expression-nodes'
@@ -18,7 +19,9 @@ import {
   isActionTransitionNode,
   isSubmitTransitionNode,
 } from '@form-engine/core/typeguards/transition-nodes'
-import { ThunkHandler } from '@form-engine/core/ast/thunks/types'
+import { ThunkHandler, MetadataComputationDependencies } from '@form-engine/core/ast/thunks/types'
+import { isHybridHandler } from '@form-engine/core/ast/thunks/typeguards'
+import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
 import { isBlockStructNode, isJourneyStructNode, isStepStructNode } from '@form-engine/core/typeguards/structure-nodes'
 import ScopeReferenceHandler from '@form-engine/core/ast/thunks/handlers/references/ScopeReferenceHandler'
 import AnswersReferenceHandler from '@form-engine/core/ast/thunks/handlers/references/AnswersReferenceHandler'
@@ -27,6 +30,7 @@ import PostReferenceHandler from '@form-engine/core/ast/thunks/handlers/referenc
 import QueryReferenceHandler from '@form-engine/core/ast/thunks/handlers/references/QueryReferenceHandler'
 import ParamsReferenceHandler from '@form-engine/core/ast/thunks/handlers/references/ParamsReferenceHandler'
 import CollectionHandler from '@form-engine/core/ast/thunks/handlers/expressions/CollectionHandler'
+import IterateHandler from '@form-engine/core/ast/thunks/handlers/expressions/IterateHandler'
 import ConditionalHandler from '@form-engine/core/ast/thunks/handlers/expressions/ConditionalHandler'
 import AndPredicateHandler from '@form-engine/core/ast/thunks/handlers/expressions/AndPredicateHandler'
 import OrPredicateHandler from '@form-engine/core/ast/thunks/handlers/expressions/OrPredicateHandler'
@@ -74,20 +78,43 @@ import NextHandler from '@form-engine/core/ast/thunks/handlers/expressions/NextH
  */
 export default class ThunkCompilerFactory {
   /**
-   * Compile all nodes into thunk handlers
+   * Compile all nodes into thunk handlers (TWO-PASS)
    *
-   * Iterates through all nodes (both AST and pseudo) in the compilation dependencies,
-   * creating a handler for each one and registering it in a ThunkHandlerRegistry.
+   * Pass 1: Creates handlers for all nodes
+   * Pass 2: Computes isAsync metadata for hybrid handlers
+   *
+   * This two-pass approach allows handlers to check their dependencies'
+   * async metadata during the second pass, enabling sync optimization.
    *
    * @param compilationDependencies - Contains nodeRegistry with all nodes to compile
-   * @returns ThunkHandlerRegistry containing handlers for all nodes
+   * @param functionRegistry - Registry of user-defined functions (for async metadata)
    */
-  compile(compilationDependencies: CompilationDependencies) {
-    // Compile all nodes (AST and pseudo)
+  compile(compilationDependencies: CompilationDependencies, functionRegistry: FunctionRegistry) {
+    // PASS 1: Create all handlers
     compilationDependencies.nodeRegistry.getAllEntries().forEach((entry, nodeId) => {
       const handler = this.compileASTNode(nodeId, entry.node)
 
       compilationDependencies.thunkHandlerRegistry.register(nodeId, handler)
+    })
+
+    // PASS 2: Compute isAsync metadata for hybrid handlers
+    // Use topological sort to compute in dependency order (leaves → roots)
+    // This ensures children compute before parents, so parents see accurate isAsync values
+    const metadataDeps: MetadataComputationDependencies = {
+      thunkHandlerRegistry: compilationDependencies.thunkHandlerRegistry,
+      functionRegistry,
+      nodeRegistry: compilationDependencies.nodeRegistry,
+      metadataRegistry: compilationDependencies.metadataRegistry,
+    }
+
+    const sortResult = compilationDependencies.dependencyGraph.topologicalSort()
+
+    sortResult.sort.forEach(nodeId => {
+      const handler = compilationDependencies.thunkHandlerRegistry.get(nodeId)
+
+      if (handler && isHybridHandler(handler)) {
+        handler.computeIsAsync(metadataDeps)
+      }
     })
   }
 
@@ -192,6 +219,11 @@ export default class ThunkCompilerFactory {
       return new CollectionHandler(nodeId, node)
     }
 
+    // Iterate expressions
+    if (isIterateExprNode(node)) {
+      return new IterateHandler(nodeId, node)
+    }
+
     // Conditional expressions
     if (isConditionalExprNode(node)) {
       return new ConditionalHandler(nodeId, node)
@@ -276,6 +308,7 @@ export default class ThunkCompilerFactory {
       'FORMAT',
       'PIPELINE',
       'COLLECTION',
+      'ITERATE',
       'CONDITIONAL',
       'TEST',
       'AND',
