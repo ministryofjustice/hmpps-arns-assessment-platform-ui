@@ -24,6 +24,7 @@ services:
       AAP_API_URL: http://api:8080
       NODE_ENV: 'development'
       ENVIRONMENT_NAME: dev
+      NODE_CLUSTER_ENABLED: false
 
   wiremock:
     image: wiremock/wiremock
