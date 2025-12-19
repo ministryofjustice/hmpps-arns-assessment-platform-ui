@@ -77,6 +77,11 @@ export const sideNavigation = block<MOJSideNavigation>({
   ],
 })
 
+export const areaOfNeedSubheading = block<HtmlBlock>({
+  variant: 'html',
+  content: Format('<span class="govuk-caption-l">%1</span>', Data('areaOfNeedName')),
+})
+
 export const pageHeading = block<HtmlBlock>({
   variant: 'html',
   content: Format('<h1 class="govuk-heading-l">Create a goal with %1</h1>', Data('caseData.name.forename')),
@@ -296,6 +301,7 @@ export const twoColumnLayout = (): TemplateWrapper => {
     slots: {
       sideNav: [sideNavigation],
       content: [
+        areaOfNeedSubheading,
         pageHeading,
         goalNameAutoComplete,
         isGoalRelatedToOtherAreaOfNeed,
