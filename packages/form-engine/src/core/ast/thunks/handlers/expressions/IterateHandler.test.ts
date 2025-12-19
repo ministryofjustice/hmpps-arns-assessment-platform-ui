@@ -437,12 +437,11 @@ describe('IterateHandler', () => {
       })
 
       it.each([
-        ['object', { id: 1 }, 'object'],
         ['string', 'not an array', 'string'],
         ['null', null, 'null'],
         ['undefined', undefined, 'undefined'],
         ['number', 42, 'number'],
-      ])('should return error when input is %s (not an array)', async (_label, invalidValue, _expectedType) => {
+      ])('should return error when input is %s (not iterable)', async (_label, invalidValue, _expectedType) => {
         // Arrange
         const inputSourceId = 'compile_ast:1'
         const nodeId = 'compile_ast:2'
@@ -463,7 +462,7 @@ describe('IterateHandler', () => {
         expect(result.error).toBeDefined()
         expect(result.error?.type).toBe('TYPE_MISMATCH')
         expect(result.error?.message).toContain('Type mismatch')
-        expect(result.error?.message).toContain('expected array')
+        expect(result.error?.message).toContain('expected array or object')
       })
 
       it('should handle literal array input directly without invoking', async () => {
@@ -549,6 +548,244 @@ describe('IterateHandler', () => {
 
         // Assert
         expect(result.value).toEqual([0, 1, 2])
+      })
+    })
+
+    describe('object iteration', () => {
+      it('should iterate over object entries with @key available in scope', async () => {
+        // Arrange
+        const inputSourceId = 'compile_ast:1'
+        const nodeId = 'compile_ast:2'
+        iterateNode = createIterateNode(nodeId, inputSourceId, {
+          type: IteratorType.MAP,
+          yield: { type: ExpressionType.REFERENCE, path: ['@scope', '0', '@key'] },
+        })
+        handler = new IterateHandler(nodeId, iterateNode)
+
+        const mockContext = createMockContext()
+        const inputData = {
+          accommodation: { score: 5 },
+          finances: { score: 3 },
+          health: { score: 4 },
+        }
+
+        const yieldNode = { id: 'runtime_ast:100', type: ASTNodeType.EXPRESSION }
+
+        const mockInvoker = createSequentialMockInvoker([inputData, 'accommodation', 'finances', 'health'])
+        const mockHooks = createMockHooks()
+        mockHooks.transformValue.mockReturnValue(yieldNode)
+
+        // Act
+        const result = await handler.evaluate(mockContext, mockInvoker, mockHooks)
+
+        // Assert
+        expect(result.value).toEqual(['accommodation', 'finances', 'health'])
+        expect(result.metadata).toEqual({ source: 'IterateHandler.map' })
+      })
+
+      it('should allow access to object value properties alongside @key', async () => {
+        // Arrange
+        const inputSourceId = 'compile_ast:1'
+        const nodeId = 'compile_ast:2'
+        iterateNode = createIterateNode(nodeId, inputSourceId, {
+          type: IteratorType.MAP,
+          yield: {
+            slug: { type: ExpressionType.REFERENCE, path: ['@scope', '0', '@key'] },
+            score: { type: ExpressionType.REFERENCE, path: ['@scope', '0', 'score'] },
+          },
+        })
+        handler = new IterateHandler(nodeId, iterateNode)
+
+        const mockContext = createMockContext()
+        const inputData = {
+          accommodation: { score: 5, label: 'Accommodation' },
+          finances: { score: 3, label: 'Finances' },
+        }
+
+        const keyNode = { id: 'runtime_ast:200', type: ASTNodeType.EXPRESSION }
+        const scoreNode = { id: 'runtime_ast:201', type: ASTNodeType.EXPRESSION }
+
+        const mockInvoker = createSequentialMockInvoker([inputData, 'accommodation', 5, 'finances', 3])
+        const mockHooks = createMockHooks()
+        mockHooks.transformValue.mockImplementation(() => ({
+          slug: keyNode,
+          score: scoreNode,
+        }))
+
+        // Act
+        const result = await handler.evaluate(mockContext, mockInvoker, mockHooks)
+
+        // Assert
+        expect(result.value).toEqual([
+          { slug: 'accommodation', score: 5 },
+          { slug: 'finances', score: 3 },
+        ])
+      })
+
+      it('should handle object with primitive values using @value', async () => {
+        // Arrange
+        const inputSourceId = 'compile_ast:1'
+        const nodeId = 'compile_ast:2'
+        iterateNode = createIterateNode(nodeId, inputSourceId, {
+          type: IteratorType.MAP,
+          yield: {
+            area: { type: ExpressionType.REFERENCE, path: ['@scope', '0', '@key'] },
+            score: { type: ExpressionType.REFERENCE, path: ['@scope', '0', '@value'] },
+          },
+        })
+        handler = new IterateHandler(nodeId, iterateNode)
+
+        const mockContext = createMockContext()
+        const inputData = {
+          accommodation: 5,
+          finances: 3,
+        }
+
+        const keyNode = { id: 'runtime_ast:200', type: ASTNodeType.EXPRESSION }
+        const valueNode = { id: 'runtime_ast:201', type: ASTNodeType.EXPRESSION }
+
+        const mockInvoker = createSequentialMockInvoker([inputData, 'accommodation', 5, 'finances', 3])
+        const mockHooks = createMockHooks()
+        mockHooks.transformValue.mockImplementation(() => ({
+          area: keyNode,
+          score: valueNode,
+        }))
+
+        // Act
+        const result = await handler.evaluate(mockContext, mockInvoker, mockHooks)
+
+        // Assert
+        expect(result.value).toEqual([
+          { area: 'accommodation', score: 5 },
+          { area: 'finances', score: 3 },
+        ])
+      })
+
+      it('should filter object entries based on predicate', async () => {
+        // Arrange
+        const inputSourceId = 'compile_ast:1'
+        const nodeId = 'compile_ast:2'
+        iterateNode = createIterateNode(nodeId, inputSourceId, {
+          type: IteratorType.FILTER,
+          predicate: { type: ExpressionType.REFERENCE, path: ['@scope', '0', 'active'] },
+        })
+        handler = new IterateHandler(nodeId, iterateNode)
+
+        const mockContext = createMockContext()
+        const inputData = {
+          accommodation: { active: true, score: 5 },
+          finances: { active: false, score: 3 },
+          health: { active: true, score: 4 },
+        }
+
+        const predicateNode = { id: 'runtime_ast:filter', type: ASTNodeType.EXPRESSION }
+
+        const mockInvoker = createSequentialMockInvoker([inputData, true, false, true])
+        const mockHooks = createMockHooks()
+        mockHooks.transformValue.mockReturnValue(predicateNode)
+
+        // Act
+        const result = await handler.evaluate(mockContext, mockInvoker, mockHooks)
+
+        // Assert
+        expect(result.value).toEqual([
+          { '@key': 'accommodation', active: true, score: 5 },
+          { '@key': 'health', active: true, score: 4 },
+        ])
+      })
+
+      it('should find first matching object entry', async () => {
+        // Arrange
+        const inputSourceId = 'compile_ast:1'
+        const nodeId = 'compile_ast:2'
+        iterateNode = createIterateNode(nodeId, inputSourceId, {
+          type: IteratorType.FIND,
+          predicate: { type: ExpressionType.REFERENCE, path: ['@scope', '0', 'priority'] },
+        })
+        handler = new IterateHandler(nodeId, iterateNode)
+
+        const mockContext = createMockContext()
+        const inputData = {
+          accommodation: { priority: false },
+          finances: { priority: true },
+          health: { priority: true },
+        }
+
+        const predicateNode = { id: 'runtime_ast:predicate', type: ASTNodeType.EXPRESSION }
+
+        const mockInvoker = createSequentialMockInvoker([inputData, false, true])
+        const mockHooks = createMockHooks()
+        mockHooks.transformValue.mockReturnValue(predicateNode)
+
+        // Act
+        const result = await handler.evaluate(mockContext, mockInvoker, mockHooks)
+
+        // Assert
+        expect(result.value).toEqual({ '@key': 'finances', priority: true })
+        expect(result.metadata).toEqual({ source: 'IterateHandler.find' })
+      })
+
+      it('should return empty array for empty object', async () => {
+        // Arrange
+        const inputSourceId = 'compile_ast:1'
+        const nodeId = 'compile_ast:2'
+        iterateNode = createIterateNode(nodeId, inputSourceId, {
+          type: IteratorType.MAP,
+          yield: { type: ExpressionType.REFERENCE, path: ['@scope', '0', '@key'] },
+        })
+        handler = new IterateHandler(nodeId, iterateNode)
+
+        const mockContext = createMockContext()
+        const mockInvoker = createMockInvoker({ defaultValue: {} })
+        const mockHooks = createMockHooks()
+
+        // Act
+        const result = await handler.evaluate(mockContext, mockInvoker, mockHooks)
+
+        // Assert
+        expect(result.value).toEqual([])
+        expect(result.metadata).toEqual({ source: 'IterateHandler.empty' })
+      })
+
+      it('should provide @index for object entries in iteration order', async () => {
+        // Arrange
+        const inputSourceId = 'compile_ast:1'
+        const nodeId = 'compile_ast:2'
+        iterateNode = createIterateNode(nodeId, inputSourceId, {
+          type: IteratorType.MAP,
+          yield: {
+            key: { type: ExpressionType.REFERENCE, path: ['@scope', '0', '@key'] },
+            index: { type: ExpressionType.REFERENCE, path: ['@scope', '0', '@index'] },
+          },
+        })
+        handler = new IterateHandler(nodeId, iterateNode)
+
+        const mockContext = createMockContext()
+        const inputData = {
+          first: { data: 'a' },
+          second: { data: 'b' },
+          third: { data: 'c' },
+        }
+
+        const keyNode = { id: 'runtime_ast:200', type: ASTNodeType.EXPRESSION }
+        const indexNode = { id: 'runtime_ast:201', type: ASTNodeType.EXPRESSION }
+
+        const mockInvoker = createSequentialMockInvoker([inputData, 'first', 0, 'second', 1, 'third', 2])
+        const mockHooks = createMockHooks()
+        mockHooks.transformValue.mockImplementation(() => ({
+          key: keyNode,
+          index: indexNode,
+        }))
+
+        // Act
+        const result = await handler.evaluate(mockContext, mockInvoker, mockHooks)
+
+        // Assert
+        expect(result.value).toEqual([
+          { key: 'first', index: 0 },
+          { key: 'second', index: 1 },
+          { key: 'third', index: 2 },
+        ])
       })
     })
   })

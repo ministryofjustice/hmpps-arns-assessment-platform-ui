@@ -2,9 +2,11 @@
 
 ## Overview
 
-Iterators provide a composable way to perform per-item operations on collections. They allow you to filter, transform, and search through arrays of data using `Item()` references to access each element during iteration.
+Iterators provide a composable way to perform per-item operations on collections. They allow you to filter, transform, and search through arrays or objects using `Item()` references to access each element during iteration.
 
-Iterators are used with the `.each()` method on any reference or expression that evaluates to an array. Multiple iterators can be chained together, and the result can be further processed with `.pipe()` for whole-array transformations.
+Iterators are used with the `.each()` method on any reference or expression that evaluates to an array or object. Multiple iterators can be chained together, and the result can be further processed with `.pipe()` for whole-array transformations.
+
+When iterating over objects, use `Item().key()` to access the property name and `Item().path()` to access the value's properties.
 
 ## Core Concepts
 
@@ -230,6 +232,7 @@ Item().path('name')           // Access item.name
 Item().path('address.city')   // Access nested property
 Item().value()                // Access the entire item
 Item().index()                // Access the 0-based iteration index
+Item().key()                  // Access the key when iterating over objects
 ```
 
 ### Parent Scope (Nested Iterations)
@@ -341,7 +344,82 @@ Data('sections')
   ))
 ```
 
-## 8. Common Patterns
+## 8. Iterating Over Objects
+
+Iterators work with both arrays and objects. When you iterate over an object, each entry becomes accessible with `Item().key()` for the property name and `Item().path()` for the value's properties.
+
+### Object with Object Values
+
+```typescript
+// Data structure:
+// scores: {
+//   accommodation: { score: 5, label: 'Accommodation' },
+//   finances: { score: 3, label: 'Finances' },
+//   health: { score: 4, label: 'Health' }
+// }
+
+// Transform to array with key included
+Data('scores')
+  .each(Iterator.Map({
+    slug: Item().key(),           // 'accommodation', 'finances', 'health'
+    score: Item().path('score'),  // 5, 3, 4
+    label: Item().path('label'),  // 'Accommodation', 'Finances', 'Health'
+  }))
+
+// Result: [
+//   { slug: 'accommodation', score: 5, label: 'Accommodation' },
+//   { slug: 'finances', score: 3, label: 'Finances' },
+//   { slug: 'health', score: 4, label: 'Health' }
+// ]
+```
+
+### Object with Primitive Values
+
+When object values are primitives (not objects), access them via `@value`:
+
+```typescript
+// Data structure:
+// scores: { accommodation: 5, finances: 3, health: 4 }
+
+Data('scores')
+  .each(Iterator.Map({
+    area: Item().key(),           // 'accommodation', 'finances', 'health'
+    score: Item().path('@value'), // 5, 3, 4
+  }))
+
+// Result: [
+//   { area: 'accommodation', score: 5 },
+//   { area: 'finances', score: 3 },
+//   { area: 'health', score: 4 }
+// ]
+```
+
+### Filtering Object Entries
+
+```typescript
+// Keep only entries where score > 3
+Data('scores')
+  .each(Iterator.Filter(
+    Item().path('score').match(Condition.Number.GreaterThan(3))
+  ))
+  .each(Iterator.Map({
+    area: Item().key(),
+    score: Item().path('score'),
+  }))
+```
+
+### Finding an Object Entry
+
+```typescript
+// Find the entry with highest priority
+Data('areas')
+  .each(Iterator.Find(
+    Item().path('isPriority').match(Condition.IsTrue())
+  ))
+  .pipe(Transformer.Object.Get('label'))
+```
+
+## 9. Common Patterns
 
 ### Select/Checkbox Items from Data
 

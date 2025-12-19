@@ -45,11 +45,11 @@ export default class IterateHandler implements AsyncThunkHandler {
       return { error: inputResult.error }
     }
 
-    const inputArray = inputResult.value
+    // 2. Normalize input to array (handles objects by converting to entries)
+    const inputArray = this.normalizeToArray(inputResult.value)
 
-    // 2. Validate input is array
-    if (!Array.isArray(inputArray)) {
-      const error = ThunkTypeMismatchError.value(this.nodeId, 'array', typeof inputArray)
+    if (inputArray === undefined) {
+      const error = ThunkTypeMismatchError.value(this.nodeId, 'array or object', typeof inputResult.value)
       return { error: error.toThunkError() }
     }
 
@@ -282,6 +282,41 @@ export default class IterateHandler implements AsyncThunkHandler {
       value: results,
       metadata: { source: 'IterateHandler.map' },
     }
+  }
+
+  /**
+   * Normalize input to an array for iteration.
+   *
+   * - Arrays are returned as-is
+   * - Objects are converted to entries with @key property
+   * - Other types return undefined (not iterable)
+   *
+   * @example
+   * // Array input
+   * [{ name: 'Alice' }] → [{ name: 'Alice' }]
+   *
+   * // Object input with object values
+   * { accommodation: { score: 5 } } → [{ '@key': 'accommodation', score: 5 }]
+   *
+   * // Object input with primitive values
+   * { accommodation: 5 } → [{ '@key': 'accommodation', '@value': 5 }]
+   */
+  private normalizeToArray(input: unknown): unknown[] | undefined {
+    if (Array.isArray(input)) {
+      return input
+    }
+
+    if (typeof input === 'object' && input !== null) {
+      return Object.entries(input).map(([key, value]) => {
+        if (typeof value === 'object' && value !== null) {
+          return { '@key': key, ...value }
+        }
+
+        return { '@key': key, '@value': value }
+      })
+    }
+
+    return undefined
   }
 
   /**

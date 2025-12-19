@@ -115,4 +115,10 @@ export interface ChainableScopedRef {
    * Get the current iteration index.
    */
   index(): ChainableRef
+
+  /**
+   * Get the key when iterating over an object.
+   * Only available when iterating over object entries (not arrays).
+   */
+  key(): ChainableRef
 }
