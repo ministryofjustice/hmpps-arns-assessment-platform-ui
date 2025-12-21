@@ -1,0 +1,40 @@
+/**
+ * AAP Developer Guide - Form-specific styles
+ *
+ * These styles are loaded only on pages using this form's custom template.
+ */
+
+@import "govuk-frontend/dist/govuk/base";
+
+// Example box component
+// Used to wrap interactive "Try it" examples in the developer guide
+.app-example-box {
+  border: 2px solid govuk-colour("blue");
+  padding: govuk-spacing(4);
+  padding-top: govuk-spacing(6);
+  margin: govuk-spacing(4) 0;
+  position: relative;
+  background: govuk-colour("light-grey");
+
+  // Tag label
+  &::before {
+    @include govuk-font($size: 14, $weight: bold);
+    content: "Try it";
+    position: absolute;
+    top: -12px;
+    left: govuk-spacing(3);
+    background: govuk-colour("blue");
+    color: govuk-colour("white");
+    padding: 2px govuk-spacing(2);
+  }
+
+  // Remove bottom margin from last form group
+  .govuk-form-group:last-of-type {
+    margin-bottom: 0;
+  }
+
+  // Remove bottom margin from buttons
+  .govuk-button {
+    margin-bottom: 0;
+  }
+}
