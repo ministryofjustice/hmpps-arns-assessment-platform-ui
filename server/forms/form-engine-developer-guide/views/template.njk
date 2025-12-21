@@ -1,0 +1,24 @@
+{#
+  Form Engine Developer Guide - Custom Template
+
+  Extends the base form-step template and adds guide-specific assets.
+  Overrides formContent to remove the <form> wrapper since this is
+  documentation, not an actual form.
+#}
+{%- extends "partials/form-step.njk" -%}
+
+{% block pageStylesheets %}
+  <link rel="stylesheet" href="{{ '/assets/css/forms/form-engine-developer-guide/assets/form.css' | assetMap }}">
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="{{ '/assets/js/forms/form-engine-developer-guide/assets/form.js' | assetMap }}"></script>
+{% endblock %}
+
+{% block formContent %}
+  <h1 class="govuk-heading-xl">{{ step.title }}</h1>
+
+  {% for block in blocks %}
+    {{ block | safe }}
+  {% endfor %}
+{% endblock %}

@@ -1,3 +1,4 @@
+import type nunjucks from 'nunjucks'
 import hljs from 'highlight.js/lib/core'
 import typescript from 'highlight.js/lib/languages/typescript'
 import javascript from 'highlight.js/lib/languages/javascript'
@@ -9,9 +10,8 @@ import bash from 'highlight.js/lib/languages/bash'
 import yaml from 'highlight.js/lib/languages/yaml'
 import markdown from 'highlight.js/lib/languages/markdown'
 import plaintext from 'highlight.js/lib/languages/plaintext'
-
-import { buildComponent } from '@form-engine/registry/utils/buildComponent'
 import { BlockDefinition, ConditionalString, EvaluatedBlock } from '@form-engine/form/types/structures.type'
+import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
 
 // Register languages for SSR highlighting
 hljs.registerLanguage('typescript', typescript)
@@ -72,11 +72,11 @@ export interface CodeBlock extends BlockDefinition {
   /** Programming language for syntax highlighting (defaults to 'typescript') */
   language?: CodeLanguage
 
-  /** Optional title displayed above the code block */
-  title?: ConditionalString
-
   /** Additional CSS classes for the container */
   classes?: ConditionalString
+
+  /** Whether to remove common leading whitespace from all lines (defaults to true) */
+  dedent?: boolean
 }
 
 /**
@@ -92,36 +92,61 @@ function escapeHtml(text: string): string {
 }
 
 /**
+ * Removes common leading whitespace from all lines.
+ * Finds the minimum indentation across non-empty lines and removes it from all lines.
+ */
+function dedentCode(text: string): string {
+  const lines = text.split('\n')
+
+  // Find minimum indentation (ignoring empty lines)
+  const indents = lines
+    .filter(line => line.trim().length > 0)
+    .map(line => {
+      const match = line.match(/^(\s*)/)
+      return match ? match[1].length : 0
+    })
+
+  const minIndent = indents.length > 0 ? Math.min(...indents) : 0
+
+  if (minIndent === 0) {
+    return text
+  }
+
+  // Remove the common indentation from each line
+  return lines.map(line => line.slice(minIndent)).join('\n')
+}
+
+/**
  * Renders the code block component with SSR syntax highlighting.
  */
-export const codeBlock = buildComponent<CodeBlock>('codeBlock', async (block: EvaluatedBlock<CodeBlock>) => {
-  const language = block.language || 'typescript'
-  const containerClasses = ['code-block', block.classes].filter(Boolean).join(' ')
+export const codeBlock = buildNunjucksComponent<CodeBlock>(
+  'codeBlock',
+  async (block: EvaluatedBlock<CodeBlock>, nunjucksEnv: nunjucks.Environment) => {
+    const language = block.language || 'typescript'
+    const shouldDedent = block.dedent !== false
+    const classes = ['code-block', block.classes].filter(Boolean).join(' ')
 
-  // Trim leading/trailing newlines that occur from template literal formatting
-  const code = block.code.replace(/^\n/, '').replace(/\n\s*$/, '')
+    // Trim leading/trailing newlines that occur from template literal formatting
+    let code = block.code.replace(/^\n/, '').replace(/\n\s*$/, '')
 
-  // Apply syntax highlighting server-side
-  let highlightedCode: string
+    // Remove common leading whitespace if dedent is enabled (default)
+    if (shouldDedent) {
+      code = dedentCode(code)
+    }
 
-  try {
-    const result = hljs.highlight(code, { language })
-    highlightedCode = result.value
-  } catch {
-    // Fallback to escaped plain text if highlighting fails
-    highlightedCode = escapeHtml(code)
-  }
+    // Apply syntax highlighting server-side
+    let highlightedCode: string
 
-  let html = ''
+    try {
+      const result = hljs.highlight(code, { language })
+      highlightedCode = result.value
+    } catch {
+      // Fallback to escaped plain text if highlighting fails
+      highlightedCode = escapeHtml(code)
+    }
 
-  if (block.title) {
-    html += `<p class="govuk-body-s govuk-!-margin-bottom-1"><strong>${escapeHtml(block.title)}</strong></p>\n`
-  }
-
-  // Wrap in custom element for copy button
-  html += `<app-copy-code class="app-code-block">`
-  html += `<pre class="${containerClasses}"><code class="hljs language-${language}">${highlightedCode}</code></pre>`
-  html += `</app-copy-code>`
-
-  return html
-})
+    return nunjucksEnv.render('form-engine-developer-guide/components/code-block/template.njk', {
+      params: { code: highlightedCode, language, classes },
+    })
+  },
+)
