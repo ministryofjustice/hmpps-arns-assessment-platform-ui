@@ -14,7 +14,6 @@ import {
 } from '@form-engine/core/types/expressions.type'
 import { BlockASTNode, JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { PipelineExpr, ReferenceExpr } from '@form-engine/form/types/expressions.type'
 import {
   PseudoNodeType,
   PostPseudoNode,
@@ -709,21 +708,6 @@ export class ExpressionBuilder<T = ExpressionASTNode> {
 
   withSteps(steps: any[]): this {
     this.properties.steps = steps
-    return this
-  }
-
-  withCollection(collection: ReferenceExpr | PipelineExpr | any[]): this {
-    this.properties.collection = collection
-    return this
-  }
-
-  withTemplate(nodes: ASTNode[]): this {
-    this.properties.template = nodes
-    return this
-  }
-
-  withFallback(node: ASTNode): this {
-    this.properties.fallback = node
     return this
   }
 
