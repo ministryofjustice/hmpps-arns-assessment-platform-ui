@@ -67,7 +67,10 @@ export default function createApp(services: Services): express.Application {
   // Register all Sentence Plan form packages
   formEngine.registerComponents(sentencePlanComponents)
   SentencePlanFormPackages.forEach(pkg => {
-    formEngine.registerFormPackage(pkg, { api: services.assessmentPlatformApiClient })
+    formEngine.registerFormPackage(pkg, {
+      api: services.assessmentPlatformApiClient,
+      deliusApi: services.deliusApiClient,
+    })
   })
 
   // Mount routes
