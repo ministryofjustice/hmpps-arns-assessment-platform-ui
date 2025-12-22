@@ -260,9 +260,7 @@ export const pageContent = block<TemplateWrapper>({
               message: 'Enter a price',
             }),
             validation({
-              when: Self()
-                .pipe(Transformer.String.ToFloat())
-                .not.match(Condition.Number.IsNumber()),
+              when: Self().pipe(Transformer.String.ToFloat()).not.match(Condition.Number.IsNumber()),
               message: 'Enter a valid number',
             }),
           ],

@@ -46,7 +46,9 @@ export const editStep = step({
         Data('playgroundItems')
           .each(
             Iterator.Find(
-              Item().path('id').match(Condition.Equals(Params('itemId'))),
+              Item()
+                .path('id')
+                .match(Condition.Equals(Params('itemId'))),
             ),
           )
           .not.match(Condition.IsRequired()),
