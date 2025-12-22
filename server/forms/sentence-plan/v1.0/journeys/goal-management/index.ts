@@ -14,6 +14,7 @@ export const goalManagementJourney = journey({
   code: 'goal-management',
   title: 'Goal Management',
   path: '/goal/:uuid',
+  entryPath: '/add-goal/accommodation',
   steps: [
     createGoalStep,
     addStepsStep,

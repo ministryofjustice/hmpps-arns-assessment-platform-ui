@@ -1,4 +1,17 @@
-import { and, Answer, block, Data, field, Format, Self, validation, when, Params } from '@form-engine/form/builders'
+import {
+  and,
+  Answer,
+  block,
+  Data,
+  field,
+  Format,
+  Item,
+  Iterator,
+  Literal,
+  Params,
+  Self,
+  validation,
+} from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKRadioInput, GovUKTextInput, GovUKCheckboxInput } from '@form-engine-govuk-components/components'
@@ -7,6 +20,7 @@ import { MOJDatePicker, MOJSideNavigation } from '@form-engine-moj-components/co
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { Transformer } from '@form-engine/registry/transformers'
 import { Generator } from '@form-engine/registry/generators'
+import { areasOfNeed } from './constants'
 import { AccessibleAutocomplete } from '../../../../components'
 
 // Side navigation for areas of need
@@ -15,71 +29,31 @@ export const sideNavigation = block<MOJSideNavigation>({
   label: 'Areas of need',
   sections: [
     {
-      items: [
-        {
-          text: 'Accommodation',
-          href: 'accommodation',
-          active: when(Params('areaOfNeed').match(Condition.Equals('accommodation')))
-            .then(true)
-            .else(false),
-        },
-        {
-          text: 'Employment and education',
-          href: 'employment-and-education',
-          active: when(Params('areaOfNeed').match(Condition.Equals('employment-and-education')))
-            .then(true)
-            .else(false),
-        },
-        {
-          text: 'Finances',
-          href: 'finances',
-          active: when(Params('areaOfNeed').match(Condition.Equals('finances')))
-            .then(true)
-            .else(false),
-        },
-        {
-          text: 'Drug use',
-          href: 'drug-use',
-          active: when(Params('areaOfNeed').match(Condition.Equals('drug-use')))
-            .then(true)
-            .else(false),
-        },
-        {
-          text: 'Alcohol use',
-          href: 'alcohol-use',
-          active: when(Params('areaOfNeed').match(Condition.Equals('alcohol-use')))
-            .then(true)
-            .else(false),
-        },
-        {
-          text: 'Health and wellbeing',
-          href: 'health-and-wellbeing',
-          active: when(Params('areaOfNeed').match(Condition.Equals('health-and-wellbeing')))
-            .then(true)
-            .else(false),
-        },
-        {
-          text: 'Personal relationships and community',
-          href: 'personal-relationships-and-community',
-          active: when(Params('areaOfNeed').match(Condition.Equals('personal-relationships-and-community')))
-            .then(true)
-            .else(false),
-        },
-        {
-          text: 'Thinking, behaviours and attitudes',
-          href: 'thinking-behaviours-and-attitudes',
-          active: when(Params('areaOfNeed').match(Condition.Equals('thinking-behaviours-and-attitudes')))
-            .then(true)
-            .else(false),
-        },
-      ],
+      items: Literal(areasOfNeed).each(
+        Iterator.Map({
+          text: Item().path('text'),
+          href: Item().path('slug'),
+          active: Item()
+            .path('slug')
+            .match(Condition.Equals(Params('areaOfNeed'))),
+        }),
+      ),
     },
   ],
 })
 
 export const areaOfNeedSubheading = block<HtmlBlock>({
   variant: 'html',
-  content: Format('<span class="govuk-caption-l">%1</span>', Data('areaOfNeedName')),
+  content: Format(
+    '<span class="govuk-caption-l">%1</span>',
+    Literal(areasOfNeed)
+      .each(
+        Iterator.Find(
+          Item().path('slug').match(Condition.Equals(Params('areaOfNeed'))),
+        ),
+      )
+      .each(Iterator.Map(Item().path('text'))),
+  ),
 })
 
 export const pageHeading = block<HtmlBlock>({
@@ -89,7 +63,13 @@ export const pageHeading = block<HtmlBlock>({
 
 export const goalNameAutoComplete = block<AccessibleAutocomplete>({
   variant: 'accessibleAutocomplete',
-  data: Data('goalSuggestions'),
+  data: Literal(areasOfNeed)
+    .each(
+      Iterator.Find(
+        Item().path('slug').match(Condition.Equals(Params('areaOfNeed'))),
+      ),
+    )
+    .path('goals'),
   field: field<GovUKTextInput>({
     variant: 'govukTextInput',
     code: 'goalNameInput',
@@ -119,15 +99,18 @@ export const areaOfNeedCheckboxes = field<GovUKCheckboxInput>({
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  items: [
-    { value: 'area_alcohol_use', text: 'Alcohol use' },
-    { value: 'area_drug_use', text: 'Drug use' },
-    { value: 'area_employment_and_education', text: 'Employment and education' },
-    { value: 'area_finances', text: 'Finances' },
-    { value: 'area_health_and_wellbeing', text: 'Health and wellbeing' },
-    { value: 'area_personal_relationships_and_community', text: 'Personal relationships and community' },
-    { value: 'area_thinking_behaviours_and_attitudes', text: 'Thinking, behaviours and attitudes' },
-  ],
+  items: Literal(areasOfNeed)
+    .each(
+      Iterator.Filter(
+        Item().path('slug').not.match(Condition.Equals(Params('areaOfNeed'))),
+      ),
+    )
+    .each(
+      Iterator.Map({
+        value: Item().path('value'),
+        text: Item().path('text'),
+      }),
+    ),
   validate: [
     validation({
       when: and(
