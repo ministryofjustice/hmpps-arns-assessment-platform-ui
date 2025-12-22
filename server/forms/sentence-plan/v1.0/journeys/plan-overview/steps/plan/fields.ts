@@ -15,6 +15,6 @@ export const blankPlanOverviewContent = block<HtmlBlock>({
       <li><a href="/about">View Information from %1's assessment</a></li>
     </ul>`,
     Data('caseData.name.forename'),
-    Data('caseData.crn')
+    Data('caseData.crn'),
   ),
 })
