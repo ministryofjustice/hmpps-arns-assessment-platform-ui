@@ -14,6 +14,7 @@ export default [
       'prefer-destructuring': 'off',
       'import/prefer-default-export': 'off',
       'import/no-cycle': 'off',
+      'no-plusplus': 'off',
     },
     settings: {
       'import/resolver': {
