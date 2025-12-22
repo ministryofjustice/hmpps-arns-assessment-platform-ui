@@ -37,15 +37,6 @@
         <div class="section-heading__heading">
           <h2 class="govuk-body-l govuk-!-margin-0">{{ form.navigation[0].label }}</h2>
         </div>
-        {% if sectionProgress[options.section] %}
-          <div class="section-heading__status">
-            {{ govukTag({ text: "Complete" }) }}
-          </div>
-        {% else %}
-          <div class="section-heading__status">
-            {{ govukTag({ text: "Incomplete", classes: "govuk-tag--grey" }) }}
-          </div>
-        {% endif %}
       </div>
       {% block formContent %}{% endblock %}
     </div>
