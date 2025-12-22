@@ -15,6 +15,8 @@ services:
     build:
       target: production
     depends_on:
+      - redis
+      - api
       - wiremock
     command: npm run start
     environment:
@@ -32,6 +34,7 @@ services:
       TOKEN_VERIFICATION_API_URL: http://wiremock:8080/verification
       TOKEN_VERIFICATION_ENABLED: true
       AAP_API_URL: http://wiremock:8080/aap-api
+      DELIUS_API_URL: http://wiremock:8080
       INGRESS_URL: http://ui:3000
       ENVIRONMENT_NAME: dev
 

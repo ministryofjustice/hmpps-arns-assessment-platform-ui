@@ -15,6 +15,7 @@ import { createRedisClient } from './redisClient'
 import config from '../config'
 import logger from '../../logger'
 import AssessmentPlatformApiClient from './assessmentPlatformApiClient'
+import DeliusApiClient from './deliusApiClient'
 
 export const dataAccess = () => {
   const hmppsAuthClient = new AuthenticationClient(
@@ -27,9 +28,10 @@ export const dataAccess = () => {
     applicationInfo,
     hmppsAuthClient,
     assessmentPlatformApiClient: new AssessmentPlatformApiClient(hmppsAuthClient),
+    deliusApiClient: new DeliusApiClient(hmppsAuthClient),
   }
 }
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { AuthenticationClient, AssessmentPlatformApiClient }
+export { AuthenticationClient, AssessmentPlatformApiClient, DeliusApiClient }
