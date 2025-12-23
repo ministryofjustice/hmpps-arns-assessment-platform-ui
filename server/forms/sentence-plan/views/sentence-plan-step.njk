@@ -5,6 +5,11 @@
   {% block pageStylesheets %}{% endblock %}
 {% endblock %}
 
+{% block primaryNavigation %}
+  {% include "sentence-plan/views/partials/sentence-plan-nav.njk" %}
+  {% include "sentence-plan/views/partials/subject-details-bar.njk" %}
+{% endblock %}
+
 {% block bodyEnd %}
   {{ super() }}
   {% block pageScripts %}{% endblock %}
