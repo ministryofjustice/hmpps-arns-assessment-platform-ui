@@ -11,7 +11,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  * Iterators Playground - Hub (CRUD Demo)
  *
  * Interactive task list demonstrating the hub-and-spoke pattern
- * using Iterator syntax instead of Collection().
+ * using Iterator syntax.
  */
 export const pageContent = block<TemplateWrapper>({
   variant: 'templateWrapper',
@@ -37,20 +37,17 @@ export const pageContent = block<TemplateWrapper>({
 
   ## How this works
 
-  This page uses \`Iterator.Map\` instead of \`Collection()\`.
-  The key difference is the chainable, composable API.
+  This page uses \`Iterator.Map\` with a chainable, composable API.
 
   {{slot:iteratorCode}}
 
-  {{slot:collectionCode}}
+  ### Key Features
 
-  ### Key Differences
-
-  | Aspect | Collection() | Iterator.Map |
-  |--------|--------------|--------------|
-  | **Syntax** | Object config with template array | Chainable \`.each()\` method |
-  | **Chaining** | Filter/map in single expression | Separate \`.each()\` calls |
-  | **Array transforms** | Limited options | \`.pipe()\` for slice, flatten, etc. |
+  | Feature | Description |
+  |---------|-------------|
+  | **Chainable** | Each operation is a separate \`.each()\` call |
+  | **Composable** | Easy to add, remove, or reorder operations |
+  | **Array transforms** | Use \`.pipe()\` for slice, flatten, etc. |
 
   ---
 
@@ -162,7 +159,7 @@ export const pageContent = block<TemplateWrapper>({
             variant: 'codeBlock',
             language: 'typescript',
             code: `
-              // Using Iterator.Map instead of Collection()
+              // Using Iterator.Map
 
               // Empty state - shown when array is empty/undefined
               block<HtmlBlock>({
@@ -191,46 +188,6 @@ export const pageContent = block<TemplateWrapper>({
                     })
                   )
                 ),
-              })
-            `,
-          }),
-        ],
-      }),
-    ],
-    collectionCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
-        summaryText: 'Compare with Collection() syntax',
-        content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
-            language: 'typescript',
-            code: `
-              // Collection() syntax (older approach)
-              block<CollectionBlock>({
-                variant: 'collection-block',
-                collection: Collection({
-                  collection: Data('playgroundItems'),
-                  template: [
-                    block<HtmlBlock>({
-                      content: Format(
-                        \`<div class="govuk-summary-card">
-                          <h3>%1</h3>
-                          <a href="hub/%2/edit">Edit</a>
-                          <p>%3</p>
-                        </div>\`,
-                        Item().path('name'),
-                        Item().path('id'),
-                        Item().path('description')
-                      ),
-                    }),
-                  ],
-                  fallback: [
-                    block<HtmlBlock>({
-                      content: '<p>No tasks yet.</p>',
-                    }),
-                  ],
-                }),
               })
             `,
           }),

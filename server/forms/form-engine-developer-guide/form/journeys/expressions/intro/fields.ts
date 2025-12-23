@@ -39,14 +39,14 @@ export const pageContent = block<TemplateWrapper>({
 
   ## Expression Types
 
-  The form-engine provides four main expression builders:
+  The form-engine provides these main expression builders:
 
   | Expression | Returns | Purpose |
   |------------|---------|---------|
   | \`Format()\` | String | String interpolation with placeholders |
   | \`when()\` / \`Conditional()\` | Any value | If/then/else branching logic |
   | \`and()\`, \`or()\`, \`xor()\`, \`not()\` | Boolean | Combining multiple predicates |
-  | \`Collection()\` | Array of blocks | Iterating over data to generate content |
+  | \`Iterator.Map\`, \`Iterator.Filter\`, \`Iterator.Find\` | Transformed array | Iterating over data with \`.each()\` |
 
   ---
 
@@ -94,7 +94,7 @@ export const pageContent = block<TemplateWrapper>({
   | \`hidden\`, \`dependent\` | Predicates (and, or, xor, .match()) |
   | \`when\` (validation) | Predicates |
   | \`defaultValue\` | Conditional, references |
-  | \`collection\` | Collection() |
+  | \`items\` | Iterator expressions with \`.each()\` |
 
   ---
 
@@ -105,7 +105,8 @@ export const pageContent = block<TemplateWrapper>({
   - **Format()** — String interpolation with placeholders
   - **Conditional Expressions** — If/then/else with when() and Conditional()
   - **Predicate Combinators** — Combining conditions with and(), or(), xor(), not()
-  - **Collection()** — Iterating over arrays to generate content
+
+  For iterating over arrays, see the **Iterators** section.
 
   ---
 
@@ -127,8 +128,8 @@ export const pageContent = block<TemplateWrapper>({
             // Predicate combinators
             and, or, xor, not,
 
-            // Collection iteration
-            Collection, Item,
+            // Iterators (used with .each())
+            Iterator, Item,
 
             // References (used within expressions)
             Answer, Data, Self, Params, Query, Post,
@@ -163,16 +164,13 @@ export const pageContent = block<TemplateWrapper>({
             Answer('isVerified').match(Condition.Equals(true))
           )
 
-          // Collection() - Iterate over array
-          Collection({
-            collection: Data('items'),
-            template: [
-              block<HtmlBlock>({
-                variant: 'html',
-                content: Format('<li>%1</li>', Item().path('name')),
-              }),
-            ],
-          })
+          // Iterator.Map - Transform array items
+          Data('items').each(
+            Iterator.Map({
+              value: Item().path('id'),
+              text: Item().path('name'),
+            })
+          )
         `,
       }),
     ],
