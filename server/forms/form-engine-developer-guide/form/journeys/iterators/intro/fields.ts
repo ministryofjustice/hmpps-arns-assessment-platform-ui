@@ -20,15 +20,6 @@ export const pageContent = block<TemplateWrapper>({
 
   ---
 
-  ## Iterator vs Collection
-
-  Iterators offer a modern, more flexible alternative to the \`Collection()\` expression.
-  While both work with arrays, iterators use a chainable API that's easier to compose:
-
-  {{slot:comparisonCode}}
-
-  ---
-
   ## Available Iterators
 
   The \`Iterator\` namespace provides three iterator types:
@@ -76,25 +67,6 @@ export const pageContent = block<TemplateWrapper>({
   {{slot:pagination}}
 `),
   slots: {
-    comparisonCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
-        language: 'typescript',
-        code: `
-          // Collection approach (single expression, all options together)
-          Collection({
-            collection: Data('items'),
-            filter: Item().path('active').match(Condition.IsTrue()),
-            template: [{ value: Item().path('id'), text: Item().path('name') }],
-          })
-
-          // Iterator approach (composable, chainable operations)
-          Data('items')
-            .each(Iterator.Filter(Item().path('active').match(Condition.IsTrue())))
-            .each(Iterator.Map({ value: Item().path('id'), text: Item().path('name') }))
-        `,
-      }),
-    ],
     syntaxCode: [
       block<CodeBlock>({
         variant: 'codeBlock',

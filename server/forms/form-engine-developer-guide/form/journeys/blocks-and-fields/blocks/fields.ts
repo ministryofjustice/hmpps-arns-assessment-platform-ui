@@ -277,20 +277,22 @@ export const pageContent = block<TemplateWrapper>({
         variant: 'codeBlock',
         language: 'typescript',
         code: `
-          import { Collection, Data, Item, Format } from '@form-engine/form/builders'
+          import { Data, Item, Iterator, Format } from '@form-engine/form/builders'
 
-          Collection({
-            collection: Data('users'),
-            template: [
-              block<HtmlBlock>({
-                variant: 'html',
-                content: Format(
-                  '<p><strong>%1</strong> - %2</p>',
-                  Item().path('name'),
-                  Item().path('email')
-                ),
-              }),
-            ],
+          block<CollectionBlock>({
+            variant: 'collection-block',
+            collection: Data('users').each(
+              Iterator.Map(
+                block<HtmlBlock>({
+                  variant: 'html',
+                  content: Format(
+                    '<p><strong>%1</strong> - %2</p>',
+                    Item().path('name'),
+                    Item().path('email')
+                  ),
+                })
+              )
+            ),
             fallback: [
               block<HtmlBlock>({
                 variant: 'html',
