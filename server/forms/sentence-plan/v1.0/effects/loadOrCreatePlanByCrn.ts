@@ -1,5 +1,5 @@
 import { BadRequest, InternalServerError } from 'http-errors'
-import { CreateAssessmentCommandResult } from '../../../../interfaces/aap-api/commandResult'
+import { QueryError } from '../../../../errors/aap-api/QueryError'
 import { EffectFunction } from './index'
 
 /**
@@ -23,49 +23,39 @@ export const loadOrCreatePlanByCrn: EffectFunction = deps => async context => {
   }
 
   // Try to load existing assessment by CRN
-  const queryResponse = await deps.api.executeQueries({
-    queries: [
-      {
-        type: 'AssessmentVersionQuery',
-        user,
-        assessmentIdentifier: {
-          type: 'EXTERNAL',
-          identifier: crn,
-          identifierType: 'CRN',
-          assessmentType: 'SENTENCE_PLAN',
-        },
+  try {
+    const assessment = await deps.api.executeQuery({
+      type: 'AssessmentVersionQuery',
+      user,
+      assessmentIdentifier: {
+        type: 'EXTERNAL',
+        identifier: crn,
+        identifierType: 'CRN',
+        assessmentType: 'SENTENCE_PLAN',
       },
-    ],
-  })
+    })
 
-  const queryResult = queryResponse.queries[0]?.result
+    context.setData('assessment', assessment)
+    context.setData('assessmentUuid', assessment.assessmentUuid)
 
-  if (queryResult?.type === 'AssessmentVersionQueryResult') {
-    context.setData('assessment', queryResult)
-    context.setData('assessmentUuid', queryResult.assessmentUuid)
     return
+  } catch (error) {
+    // If the query failed because no assessment exists, create one
+    if (!(error instanceof QueryError)) {
+      throw error
+    }
   }
 
   // TODO: Everything below is just placeholder, not sure how we want to do this in PROD.
   // No existing assessment - create with CRN identifier
-  const commandResponse = await deps.api.executeCommands({
-    commands: [
-      {
-        type: 'CreateAssessmentCommand',
-        assessmentType: 'SENTENCE_PLAN',
-        formVersion: '1.0',
-        identifiers: { CRN: crn },
-        user,
-      },
-    ],
+  const result = await deps.api.executeCommand({
+    type: 'CreateAssessmentCommand',
+    assessmentType: 'SENTENCE_PLAN',
+    formVersion: '1.0',
+    identifiers: { CRN: crn },
+    user,
   })
 
-  const commandResult = commandResponse.commands[0]?.result as CreateAssessmentCommandResult | undefined
-
-  if (!commandResult?.success) {
-    throw new InternalServerError(`Failed to create sentence plan: ${commandResult?.message ?? 'Unknown error'}`)
-  }
-
-  context.setData('assessment', commandResult)
-  context.setData('assessmentUuid', commandResult.assessmentUuid)
+  context.setData('assessment', result)
+  context.setData('assessmentUuid', result.assessmentUuid)
 }
