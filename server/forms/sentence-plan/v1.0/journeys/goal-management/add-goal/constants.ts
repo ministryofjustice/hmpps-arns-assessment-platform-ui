@@ -102,7 +102,8 @@ export const areasOfNeed = [
   },
 ]
 
-export type AreaOfNeedSlug = (typeof areasOfNeed)[number]['slug']
+export type AreaOfNeed = (typeof areasOfNeed)[number]
+export type AreaOfNeedSlug = AreaOfNeed['slug']
 
 export const areaOfNeedSlugs = areasOfNeed.map(a => a.slug)
 

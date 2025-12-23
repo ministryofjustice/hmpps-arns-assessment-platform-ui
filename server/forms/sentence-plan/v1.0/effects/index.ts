@@ -5,6 +5,7 @@ import { loadPersonByCrn } from './loadPersonByCrn'
 import { loadOrCreatePlanByCrn } from './loadOrCreatePlanByCrn'
 import { loadOrCreatePlanByOasys } from './loadOrCreatePlanByOasys'
 import { saveGoal } from './saveGoal'
+import { deriveGoalCurrentAreaOfNeed } from './deriveGoalCurrentAreaOfNeed'
 
 /**
  * Dependencies for sentence plan effects
@@ -45,4 +46,5 @@ export const { effects: SentencePlanV1Effects, createRegistry: SentencePlanV1Reg
 
     // Goals
     saveGoal,
+    deriveGoalCurrentAreaOfNeed,
   })

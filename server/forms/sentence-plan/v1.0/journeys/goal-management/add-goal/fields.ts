@@ -7,7 +7,6 @@ import {
   Format,
   Item,
   Iterator,
-  Literal,
   Params,
   Self,
   validation,
@@ -20,7 +19,6 @@ import { MOJDatePicker, MOJSideNavigation } from '@form-engine-moj-components/co
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { Transformer } from '@form-engine/registry/transformers'
 import { Generator } from '@form-engine/registry/generators'
-import { areasOfNeed } from './constants'
 import { AccessibleAutocomplete } from '../../../../components'
 
 // Side navigation for areas of need
@@ -29,7 +27,7 @@ export const sideNavigation = block<MOJSideNavigation>({
   label: 'Areas of need',
   sections: [
     {
-      items: Literal(areasOfNeed).each(
+      items: Data('areasOfNeed').each(
         Iterator.Map({
           text: Item().path('text'),
           href: Item().path('slug'),
@@ -44,16 +42,7 @@ export const sideNavigation = block<MOJSideNavigation>({
 
 export const areaOfNeedSubheading = block<HtmlBlock>({
   variant: 'html',
-  content: Format(
-    '<span class="govuk-caption-l">%1</span>',
-    Literal(areasOfNeed)
-      .each(
-        Iterator.Find(
-          Item().path('slug').match(Condition.Equals(Params('areaOfNeed'))),
-        ),
-      )
-      .each(Iterator.Map(Item().path('text'))),
-  ),
+  content: Format('<span class="govuk-caption-l">%1</span>', Data('currentAreaOfNeed').path('text')),
 })
 
 export const pageHeading = block<HtmlBlock>({
@@ -63,13 +52,7 @@ export const pageHeading = block<HtmlBlock>({
 
 export const goalNameAutoComplete = block<AccessibleAutocomplete>({
   variant: 'accessibleAutocomplete',
-  data: Literal(areasOfNeed)
-    .each(
-      Iterator.Find(
-        Item().path('slug').match(Condition.Equals(Params('areaOfNeed'))),
-      ),
-    )
-    .path('goals'),
+  data: Data('currentAreaOfNeed').path('goals'),
   field: field<GovUKTextInput>({
     variant: 'govukTextInput',
     code: 'goalNameInput',
@@ -99,18 +82,12 @@ export const areaOfNeedCheckboxes = field<GovUKCheckboxInput>({
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  items: Literal(areasOfNeed)
-    .each(
-      Iterator.Filter(
-        Item().path('slug').not.match(Condition.Equals(Params('areaOfNeed'))),
-      ),
-    )
-    .each(
-      Iterator.Map({
-        value: Item().path('value'),
-        text: Item().path('text'),
-      }),
-    ),
+  items: Data('otherAreasOfNeed').each(
+    Iterator.Map({
+      value: Item().path('value'),
+      text: Item().path('text'),
+    }),
+  ),
   validate: [
     validation({
       when: and(
@@ -244,7 +221,7 @@ export const saveWithoutStepsButton = block<GovUKButton>({
   variant: 'govukButton',
   classes: 'govuk-button--secondary',
   text: 'Save without steps',
-  name: 'saveWithoutSteps',
+  name: 'action',
   value: 'saveWithoutSteps',
   preventDoubleClick: true,
 })
