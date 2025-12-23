@@ -7,7 +7,7 @@ import { DeveloperGuideEffects } from '../../../../../effects'
  * Iterators Playground - Hub (CRUD Demo)
  *
  * Interactive task list demonstrating the hub-and-spoke pattern
- * using Iterator syntax instead of Collection().
+ * using Iterator syntax.
  */
 export const hubStep = step({
   path: '/hub',

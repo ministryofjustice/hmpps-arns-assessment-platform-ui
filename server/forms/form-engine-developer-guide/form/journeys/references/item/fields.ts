@@ -163,12 +163,11 @@ Use \`Format()\` to build strings with item values:
             // ]
           }
 
-          // Then, iterate in your blocks using CollectionBlock
+          // Then, iterate using .each() with Iterator.Map
           block<CollectionBlock>({
             variant: 'collection-block',
-            collection: Collection({
-              collection: Data('items'),
-              template: [
+            collection: Data('items').each(
+              Iterator.Map(
                 block<HtmlBlock>({
                   variant: 'html',
                   content: Format(
@@ -176,9 +175,9 @@ Use \`Format()\` to build strings with item values:
                     Item().path('name'),
                     Item().path('status')
                   ),
-                }),
-              ],
-            }),
+                })
+              )
+            ),
           })
         `,
       }),
@@ -188,12 +187,11 @@ Use \`Format()\` to build strings with item values:
         variant: 'codeBlock',
         language: 'typescript',
         code: `
-          // Create fields for each item in a collection
+          // Create fields for each item using Iterator.Map
           block<CollectionBlock>({
             variant: 'collection-block',
-            collection: Collection({
-              collection: Data('people'),
-              template: [
+            collection: Data('people').each(
+              Iterator.Map(
                 field<GovUKTextInput>({
                   variant: 'govukTextInput',
                   // Generate unique codes: person_0_name, person_1_name, etc.
@@ -202,9 +200,9 @@ Use \`Format()\` to build strings with item values:
                     Item().index().pipe(Transformer.Number.Add(1))
                   ),
                   defaultValue: Item().path('name'),
-                }),
-              ],
-            }),
+                })
+              )
+            ),
           })
         `,
       }),
