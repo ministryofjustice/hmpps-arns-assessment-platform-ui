@@ -2,10 +2,10 @@ import AssessmentService from './assessmentService'
 import AssessmentPlatformApiClient from '../data/assessmentPlatformApiClient'
 import { User } from '../interfaces/user'
 import { HmppsUser } from '../interfaces/hmppsUser'
-import { CommandsResponse, QueriesResponse } from '../interfaces/aap-api/response'
 import { CreateAssessmentCommand } from '../interfaces/aap-api/command'
 import { AssessmentVersionQuery } from '../interfaces/aap-api/query'
 import { AssessmentVersionQueryResult } from '../interfaces/aap-api/queryResult'
+import { CreateAssessmentCommandResult } from '../interfaces/aap-api/commandResult'
 
 describe('AssessmentService', () => {
   let assessmentService: AssessmentService
@@ -47,32 +47,22 @@ describe('AssessmentService', () => {
     }
 
     it('should execute a command and return its result', async () => {
-      const expectedRequest = {
-        commands: [command],
-      }
-
-      const expectedResult = {
+      // Arrange
+      const expectedResult: CreateAssessmentCommandResult = {
         type: 'CreateAssessmentCommandResult',
         assessmentUuid: 'assessment-uuid-123',
         message: 'Assessment created successfully',
         success: true,
       }
 
-      const mockResponse: CommandsResponse = {
-        commands: [
-          {
-            request: command,
-            result: expectedResult,
-          },
-        ],
-      }
+      mockAssessmentPlatformApiClient.executeCommands.mockResolvedValue([expectedResult])
 
-      mockAssessmentPlatformApiClient.executeCommands.mockResolvedValue(mockResponse)
-
+      // Act
       const result = await assessmentService.command(command)
 
+      // Assert
       expect(result).toEqual(expectedResult)
-      expect(mockAssessmentPlatformApiClient.executeCommands).toHaveBeenCalledWith(expectedRequest)
+      expect(mockAssessmentPlatformApiClient.executeCommands).toHaveBeenCalledWith(command)
     })
 
     it('should throw error when API call fails', async () => {
@@ -90,10 +80,7 @@ describe('AssessmentService', () => {
     }
 
     it('should execute a query and return its result', async () => {
-      const expectedRequest = {
-        queries: [query],
-      }
-
+      // Arrange
       const expectedResult: AssessmentVersionQueryResult = {
         type: 'AssessmentVersionQueryResult',
         assessmentUuid: '',
@@ -112,21 +99,14 @@ describe('AssessmentService', () => {
         identifiers: {},
       }
 
-      const mockResponse: QueriesResponse = {
-        queries: [
-          {
-            request: query,
-            result: expectedResult,
-          },
-        ],
-      }
+      mockAssessmentPlatformApiClient.executeQueries.mockResolvedValue([expectedResult])
 
-      mockAssessmentPlatformApiClient.executeQueries.mockResolvedValue(mockResponse)
-
+      // Act
       const result = await assessmentService.query(query)
 
+      // Assert
       expect(result).toEqual(expectedResult)
-      expect(mockAssessmentPlatformApiClient.executeQueries).toHaveBeenCalledWith(expectedRequest)
+      expect(mockAssessmentPlatformApiClient.executeQueries).toHaveBeenCalledWith(query)
     })
 
     it('should throw error when API call fails', async () => {

@@ -36,4 +36,35 @@ export interface CollectionItemQueryResult extends QueryResult {
   collectionItem: CollectionItem
 }
 
-export type QueryResults = AssessmentVersionQueryResult | AssessmentTimelineQueryResult | CollectionQueryResult
+export type QueryResults =
+  | AssessmentVersionQueryResult
+  | AssessmentTimelineQueryResult
+  | CollectionQueryResult
+  | CollectionItemQueryResult
+
+/**
+ * Maps query types to their corresponding result types.
+ * Used by executeQuery to provide type-safe results.
+ */
+export interface QueryResultMap {
+  AssessmentVersionQuery: AssessmentVersionQueryResult
+  AssessmentTimelineQuery: AssessmentTimelineQueryResult
+  CollectionQuery: CollectionQueryResult
+  CollectionItemQuery: CollectionItemQueryResult
+}
+
+/**
+ * Gets the result type for a given query type.
+ * Falls back to QueryResult for unmapped queries.
+ */
+export type QueryResultFor<T extends { type: string }> = T['type'] extends keyof QueryResultMap
+  ? QueryResultMap[T['type']]
+  : QueryResult
+
+/**
+ * Maps a tuple of queries to a tuple of their corresponding result types.
+ * Used by executeQueries for type-safe batch operations.
+ */
+export type QueryResultsFor<T extends readonly { type: string }[]> = {
+  [K in keyof T]: T[K] extends { type: string } ? QueryResultFor<T[K]> : never
+}
