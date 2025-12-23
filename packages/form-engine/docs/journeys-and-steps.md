@@ -174,12 +174,10 @@ Format('Contact us at {0}', Data('supportEmail'))
 Accessing in effects using `context.getData()`:
 
 ```typescript
-effects: [
-  Effect(async (context) => {
-    const email = context.getData('supportEmail')
-    // ...
-  }),
-]
+Effect(: async (context) => {
+  const email = context.getData('supportEmail')
+  // ...
+}),
 ```
 
 **Inheritance:** Step `data` is shallow-merged with journey `data`, with step values taking precedence.
