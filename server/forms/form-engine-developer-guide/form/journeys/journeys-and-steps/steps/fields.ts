@@ -56,7 +56,7 @@ A human-readable title for the step. Used in:
 
 ## Optional Properties
 
-### \`isEntryPoint\`
+### \`isEntryPoint\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
 Marks this step as an entry point. Entry point steps are exempt from
 reachability validation - they don't need to be reachable via navigation
@@ -72,7 +72,7 @@ is used as the default redirect when users navigate to the journey's root path
 > This is useful for hub-and-spoke patterns where several steps serve as
 > independent starting points.
 
-### \`blocks\`
+### \`blocks\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
 An array of block and field definitions. Blocks display content;
 fields collect user input.
@@ -81,26 +81,77 @@ fields collect user input.
 
 See the [Blocks & Fields](/forms/form-engine-developer-guide/blocks-and-fields/intro) section for details on defining blocks and fields.
 
-### \`view\`
+### \`view\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
 Override the journey's view configuration for this specific step.
 Useful when a step needs different rendering.
 
 {{slot:viewExample}}
 
-### \`backlink\`
+### \`backlink\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
 Override the default back link. By default, steps show a back link
 to the previous step. Use this to customise or hide it.
 
 {{slot:backlinkExample}}
 
-### \`metadata\`
+### \`metadata\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
 Custom data specific to this step. Useful for application-specific
 behaviour or conditional logic.
 
 {{slot:metadataExample}}
+
+### \`data\` <span class="govuk-tag govuk-tag--grey">Optional</span>
+
+Static data available to this step via \`Data()\` references.
+Merged with inherited journey data (step values take precedence).
+
+{{slot:dataExample}}
+
+See the [Journey Configuration](/forms/form-engine-developer-guide/journeys-and-steps/journeys) page for full usage examples.
+
+---
+
+## Lifecycle Transitions
+
+Steps can define lifecycle transitions that control behaviour at different points in the request lifecycle.
+
+### \`onLoad\` <span class="govuk-tag govuk-tag--grey">Optional</span>
+
+An array of load transitions that run when the step is accessed.
+Use this to fetch step-specific data.
+
+{{slot:onLoadExample}}
+
+See the [Load Transitions](/forms/form-engine-developer-guide/transitions/load) page for details.
+
+### \`onAccess\` <span class="govuk-tag govuk-tag--grey">Optional</span>
+
+An array of access transitions that control access to this step.
+Use this for step-specific guards or redirects.
+
+{{slot:onAccessExample}}
+
+See the [Access Transitions](/forms/form-engine-developer-guide/transitions/access) page for details.
+
+### \`onAction\` <span class="govuk-tag govuk-tag--grey">Optional</span>
+
+An array of action transitions that run on form submission based on conditions.
+Use this for handling different button clicks or conditional logic.
+
+{{slot:onActionExample}}
+
+See the [Action Transitions](/forms/form-engine-developer-guide/transitions/action) page for details.
+
+### \`onSubmission\` <span class="govuk-tag govuk-tag--grey">Optional</span>
+
+An array of submission transitions that handle form submission, validation,
+and navigation to the next step.
+
+{{slot:onSubmissionExample}}
+
+See the [Submit Transitions](/forms/form-engine-developer-guide/transitions/submit) page for details.
 
 ---
 
@@ -213,6 +264,66 @@ backlink: ''`,
 }`,
       }),
     ],
+    dataExample: [
+      block<CodeBlock>({
+        variant: 'codeBlock',
+        language: 'typescript',
+        code: `data: {
+  pageHeading: 'Enter your personal details',
+  maxItems: 5,
+}`,
+      }),
+    ],
+    onLoadExample: [
+      block<CodeBlock>({
+        variant: 'codeBlock',
+        language: 'typescript',
+        code: `onLoad: [
+  loadTransition({
+    effects: [MyStepEffects.loadOptions()],
+  }),
+]`,
+      }),
+    ],
+    onAccessExample: [
+      block<CodeBlock>({
+        variant: 'codeBlock',
+        language: 'typescript',
+        code: `onAccess: [
+  accessTransition({
+    guards: Answer('termsAccepted').not.match(Condition.Equals(true)),
+    redirect: [next({ goto: '/terms' })],
+  }),
+]`,
+      }),
+    ],
+    onActionExample: [
+      block<CodeBlock>({
+        variant: 'codeBlock',
+        language: 'typescript',
+        code: `onAction: [
+  actionTransition({
+    when: Post('action').match(Condition.Equals('lookup')),
+    effects: [MyStepEffects.lookupPostcode(Post('postcode'))],
+  }),
+]`,
+      }),
+    ],
+    onSubmissionExample: [
+      block<CodeBlock>({
+        variant: 'codeBlock',
+        language: 'typescript',
+        code: `onSubmission: [
+  submitTransition({
+    validate: true,
+    onValid: {
+      effects: [MyStepEffects.saveAnswers()],
+      next: [next({ goto: '/review' })],
+    },
+  }),
+]`,
+      }),
+    ],
     completeExample: [
       block<GovUKDetails>({
         variant: 'govukDetails',
@@ -221,7 +332,7 @@ backlink: ''`,
           block<CodeBlock>({
             variant: 'codeBlock',
             language: 'typescript',
-            code: `import { step, block, field } from '@form-engine/form/builders'
+            code: `import { step, block, field, Format, Data } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { TextField } from '@form-engine/registry/components/text-input'
 
@@ -233,16 +344,24 @@ export const personalDetailsStep = step({
   // Mark as entry point
   isEntryPoint: true,
 
+  // Custom back link
+  backlink: '/forms/my-journey/welcome',
+
+  // Custom metadata
+  metadata: {
+    section: 'about-you',
+  },
+
+  // Static data (merged with journey data)
+  data: {
+    pageHeading: 'Personal details',
+  },
+
   // Content and inputs
   blocks: [
     block<HtmlBlock>({
       variant: 'html',
-      content: \`
-        <h1 class="govuk-heading-l">Personal details</h1>
-        <p class="govuk-body">
-          We need some information about you.
-        </p>
-      \`,
+      content: Format('<h1 class="govuk-heading-l">{0}</h1>', Data('pageHeading')),
     }),
     field<TextField>({
       variant: 'text',
@@ -257,14 +376,6 @@ export const personalDetailsStep = step({
       hint: "We'll use this to send your confirmation",
     }),
   ],
-
-  // Custom back link
-  backlink: '/forms/my-journey/welcome',
-
-  // Custom metadata
-  metadata: {
-    section: 'about-you',
-  },
 })`,
           }),
         ],

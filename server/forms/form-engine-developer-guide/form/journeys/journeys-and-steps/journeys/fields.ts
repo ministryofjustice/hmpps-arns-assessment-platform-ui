@@ -62,14 +62,14 @@ and page titles.
 
 ## Optional Properties
 
-### \`description\`
+### \`description\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
 A description of the journey's purpose. Useful for documentation
 and potentially displayed in UI elements.
 
 {{slot:descriptionExample}}
 
-### \`steps\`
+### \`steps\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
 An array of step definitions that make up the journey. Steps are
 the individual pages users navigate through.
@@ -78,7 +78,7 @@ the individual pages users navigate through.
 
 See the [Step Configuration](/forms/form-engine-developer-guide/journeys-and-steps/steps) page for details on defining steps.
 
-### \`children\`
+### \`children\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
 An array of child journey definitions for creating nested, hierarchical structures.
 Child journeys have their paths prefixed with the parent journey's path.
@@ -87,7 +87,7 @@ Child journeys have their paths prefixed with the parent journey's path.
 
 See the [Nested Journeys](/forms/form-engine-developer-guide/journeys-and-steps/nested-journeys) page for details on using children.
 
-### \`view\`
+### \`view\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
 Configuration for how the journey renders. Contains template selection
 and data passed to templates.
@@ -97,7 +97,7 @@ and data passed to templates.
 > **Inheritance:** If a step doesn't specify its own \`view\`,
 > it inherits from the parent journey's view configuration.
 
-### \`entryPath\`
+### \`entryPath\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
 Override the default entry point for the journey. When a user navigates
 to the journey's root path, they'll be redirected to this path.
@@ -111,12 +111,54 @@ to the journey's root path, they'll be redirected to this path.
 
 If neither is found, no redirect is registered and accessing the journey root returns a 404.
 
-### \`metadata\`
+### \`metadata\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
 An object for storing arbitrary custom data. Useful for application-specific
 configuration that doesn't fit standard properties.
 
 {{slot:metadataExample}}
+
+### \`data\` <span class="govuk-tag govuk-tag--grey">Optional</span>
+
+Static data available to this journey and all its steps via \`Data()\` references.
+This data is merged into the evaluation context before any lifecycle transitions run.
+
+{{slot:dataExample}}
+
+Accessing in expressions using \`Data()\`:
+
+{{slot:dataAccessExample}}
+
+Accessing in effects using \`context.getData()\`:
+
+{{slot:dataEffectExample}}
+
+> **Inheritance:** Step \`data\` is shallow-merged with journey \`data\`,
+> with step values taking precedence.
+
+---
+
+## Lifecycle Transitions
+
+Journeys can define lifecycle transitions that run for every step within the journey.
+
+### \`onLoad\` <span class="govuk-tag govuk-tag--grey">Optional</span>
+
+An array of load transitions that run when any step in the journey is accessed.
+Use this to fetch data or set up context that all steps need.
+
+{{slot:onLoadExample}}
+
+See the [Load Transitions](/forms/form-engine-developer-guide/transitions/load) page for details.
+
+### \`onAccess\` <span class="govuk-tag govuk-tag--grey">Optional</span>
+
+An array of access transitions that control access to all steps in the journey.
+Use this for authentication checks or redirects that apply journey-wide.
+
+{{slot:onAccessExample}}
+
+See the [Access Transitions](/forms/form-engine-developer-guide/transitions/access) page for details.
 
 ---
 
@@ -260,6 +302,69 @@ Here's a journey definition using all the options:
         `,
       }),
     ],
+    dataExample: [
+      block<CodeBlock>({
+        variant: 'codeBlock',
+        language: 'typescript',
+        code: `
+          data: {
+            serviceName: 'Food Business Registration',
+            supportEmail: 'support@example.com',
+            maxFileSize: 10485760,
+          }
+        `,
+      }),
+    ],
+    dataAccessExample: [
+      block<CodeBlock>({
+        variant: 'codeBlock',
+        language: 'typescript',
+        code: `
+          Format('Contact us at {0}', Data('supportEmail'))
+        `,
+      }),
+    ],
+    dataEffectExample: [
+      block<CodeBlock>({
+        variant: 'codeBlock',
+        language: 'typescript',
+        code: `
+          effects: [
+            Effect(async (context) => {
+              const email = context.getData('supportEmail')
+              // ...
+            }),
+          ]
+        `,
+      }),
+    ],
+    onLoadExample: [
+      block<CodeBlock>({
+        variant: 'codeBlock',
+        language: 'typescript',
+        code: `
+          onLoad: [
+            loadTransition({
+              effects: [MyJourneyEffects.loadUserData()],
+            }),
+          ]
+        `,
+      }),
+    ],
+    onAccessExample: [
+      block<CodeBlock>({
+        variant: 'codeBlock',
+        language: 'typescript',
+        code: `
+          onAccess: [
+            accessTransition({
+              guards: Data('user.isAuthenticated').not.match(Condition.Equals(true)),
+              redirect: [next({ goto: '/login' })],
+            }),
+          ]
+        `,
+      }),
+    ],
     completeExample: [
       block<GovUKDetails>({
         variant: 'govukDetails',
@@ -298,6 +403,12 @@ Here's a journey definition using all the options:
                 metadata: {
                   version: '1.0',
                   category: 'registration',
+                },
+
+                // Optional: static data for Data() references
+                data: {
+                  supportEmail: 'support@example.com',
+                  maxFileSize: 10485760,
                 },
 
                 // The steps in this journey
