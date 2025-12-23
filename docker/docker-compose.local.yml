@@ -28,18 +28,6 @@ services:
       ENVIRONMENT_NAME: dev
       NODE_CLUSTER_ENABLED: false
 
-  wiremock:
-    image: wiremock/wiremock
-    networks:
-      - hmpps
-    restart: always
-    ports:
-      - "9091:8080"
-    environment:
-      WIREMOCK_OPTIONS: "--verbose --max-request-journal-entries=1000"
-    volumes:
-      - ./wiremock/delius:/home/wiremock/mappings
-
 volumes:
   node_modules:
     external: true # volume gets setup by `make install-node-modules`
