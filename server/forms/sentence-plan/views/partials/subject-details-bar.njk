@@ -1,0 +1,28 @@
+{% if data.caseData %}
+  {% set person = data.caseData %}
+  {% set fullName = person.name.forename + ' ' + person.name.surname if person.name else 'Unknown' %}
+
+  <div class="govuk-width-container">
+    <div class="subject-details-bar">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+          <p class="subject-details-bar__title">{{ fullName }}</p>
+          <dl class="subject-details-bar__identifiers">
+            <div>
+              <dt>CRN:</dt>
+              <dd>{{ person.crn }} </dd>
+            </div>
+            <div>
+              <dt>PNC:</dt>
+              <dd>{{ person.pnc | default('UNKNOWN PNC', true)}}</dd>
+            </div>
+            <div>
+              <dt>Date of birth:</dt>
+              <dd>{{ person.dateOfBirth | formatSimpleDate }}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

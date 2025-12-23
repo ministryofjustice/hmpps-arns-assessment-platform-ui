@@ -1,0 +1,34 @@
+.subject-details-bar {
+  padding-top: govuk-spacing(3);
+
+  & {
+    * {
+      display: inline-block;
+    }
+
+    &__title {
+      font-weight: bold;
+      margin-right: govuk-spacing(3);
+      margin-bottom: 0;
+    }
+
+    &__identifiers {
+      margin: 0;
+      @include govuk-font($size: 19, $weight: 'normal');
+
+      dd {
+        margin-left: govuk-spacing(1);
+      }
+
+      & > * {
+        color: $govuk-secondary-text-colour;
+        padding-right: govuk-spacing(2);
+        margin-right: govuk-spacing(1);
+
+        &:not(:last-child) {
+          box-shadow: inset -1px 0 0 $govuk-border-colour;
+        }
+      }
+    }
+  }
+}
