@@ -104,6 +104,7 @@ export default class LoadTransitionHandler implements HybridThunkHandler {
 
     // Execute effects sequentially (order matters)
     for (const effect of effects) {
+      // eslint-disable-next-line no-await-in-loop
       const result = await invoker.invoke(effect.id, context)
 
       if (result.error) {

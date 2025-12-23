@@ -94,10 +94,7 @@ export default class EffectHandler implements HybridThunkHandler {
     return { value: undefined }
   }
 
-  async evaluate(
-    context: ThunkEvaluationContext,
-    invoker: ThunkInvocationAdapter,
-  ): Promise<HandlerResult<void>> {
+  async evaluate(context: ThunkEvaluationContext, invoker: ThunkInvocationAdapter): Promise<HandlerResult<void>> {
     const effectName = this.node.properties.name
     const rawArguments = this.node.properties.arguments
 

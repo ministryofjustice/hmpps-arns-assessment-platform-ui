@@ -257,11 +257,11 @@ describe('EffectHandler', () => {
 
       // Assert
       expect(result.value).toBeUndefined()
-      expect(mockEffectFn.evaluate).toHaveBeenCalledWith(
-        expect.anything(),
-        'addresses',
-        { street: '', city: '', postcode: '' },
-      )
+      expect(mockEffectFn.evaluate).toHaveBeenCalledWith(expect.anything(), 'addresses', {
+        street: '',
+        city: '',
+        postcode: '',
+      })
     })
 
     it('should default to load transition type when scope is empty', async () => {
@@ -287,9 +287,7 @@ describe('EffectHandler', () => {
       await handler.evaluate(mockContext, mockInvoker)
 
       // Assert
-      expect(mockEffectFn.evaluate).toHaveBeenCalledWith(
-        expect.objectContaining({ transitionType: 'load' }),
-      )
+      expect(mockEffectFn.evaluate).toHaveBeenCalledWith(expect.objectContaining({ transitionType: 'load' }))
     })
 
     it('should read @transitionType from scope', async () => {
@@ -316,9 +314,7 @@ describe('EffectHandler', () => {
       await handler.evaluate(mockContext, mockInvoker)
 
       // Assert
-      expect(mockEffectFn.evaluate).toHaveBeenCalledWith(
-        expect.objectContaining({ transitionType: 'access' }),
-      )
+      expect(mockEffectFn.evaluate).toHaveBeenCalledWith(expect.objectContaining({ transitionType: 'access' }))
     })
   })
 })
