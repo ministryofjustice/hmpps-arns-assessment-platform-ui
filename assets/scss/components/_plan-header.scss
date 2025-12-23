@@ -1,7 +1,12 @@
-.subject-details-bar {
-  padding-top: govuk-spacing(5);
+.plan-header {
 
   & {
+    box-shadow: inset 0 -1px 0 $govuk-border-colour;
+    padding-top: govuk-spacing(5);
+    padding-bottom: govuk-spacing(3);
+  }
+
+  &__subject-details {
     * {
       display: inline-block;
     }
@@ -29,6 +34,11 @@
           box-shadow: inset -1px 0 0 $govuk-border-colour;
         }
       }
+    }
+    &__navigation-links {
+      @include govuk-font(19);
+      white-space: nowrap;
+      float: right;
     }
   }
 }
