@@ -9,7 +9,18 @@ export const planStep = step({
     }),
   ],
   path: '/overview',
-  title: 'Plan Overview',
+  title: 'Plan overview',
+  view: {
+    locals: {
+      headerPageHeading: Format(`%1's plan`, Data('caseData.name.forename')),
+      buttons: {
+        // TODO: add conditional statement depending on user's auth and plan status
+        showReturnToOasysButton: true,
+        showCreateGoalButton: true,
+        showAgreePlanButton: true,
+      },
+    },
+  },
   isEntryPoint: true,
   blocks: [subNavigation, blankPlanOverviewContent, futureGoalsContent],
 })

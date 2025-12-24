@@ -1,3 +1,6 @@
+{% from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions %}
+
+
 {% if data.caseData %}
   {% set person = data.caseData %}
   {% set fullName = person.name.forename + ' ' + person.name.surname if person.name else 'Unknown' %}
@@ -5,6 +8,38 @@
   {% set rootPath = navigation[0].path if navigation | length > 0 else '' %}
   {% set splitPath = ancestors[1].path if ancestors | length > 1 else '' %}
   {% set splitJourneyPath = rootPath + splitPath %}
+
+  {% set buttonItems = [] %}
+
+  {#  TODO: Add real links for these buttons#}
+  {% if buttons.showReturnToOasysButton %}
+    {% set buttonItems = buttonItems.concat([{
+      text: 'Return to OASys',
+      href: data.systemReturnUrl,
+      classes: "govuk-button--secondary govuk-!-display-none-print",
+      type: 'button'
+    }]) %}
+  {% endif %}
+
+  {% if buttons.showCreateGoalButton %}
+    {% set buttonItems = buttonItems.concat([{
+      text: 'Create goal',
+      href: "goal/uuid/add-goal/accommodation",
+      classes: "govuk-button--secondary govuk-!-display-none-print",
+      type: 'button',
+      id: 'create-goal-button'
+    }]) %}
+  {% endif %}
+
+  {% if buttons.showAgreePlanButton %}
+    {% set buttonItems = buttonItems.concat([{
+      text: 'Agree plan',
+      classes: "govuk-!-display-none-print",
+      type: 'submit',
+      value: 'agree-plan'
+    }]) %}
+  {% endif %}
+
 
   <div class="govuk-width-container">
     <header class="plan-header" role="presentation">
@@ -18,24 +53,36 @@
               </div>
               <div>
                 <dt>PNC:</dt>
-                <dd>{{ person.pnc | default('UNKNOWN PNC', true)}}</dd>
+                <dd>{{ person.pnc | default('Unknown PNC', true)}}</dd>
               </div>
               <div>
                 <dt>Date of birth:</dt>
                 <dd>{{ person.dateOfBirth | formatSimpleDate }}</dd>
               </div>
             </dl>
-
-            <div class ="plan-header__subject-details__navigation-links" >
-              <a href="{{ splitJourneyPath }}/plan-history/previous-versions"
-                 class="govuk-link--no-visited-state"
-                 data-previous-versions-link>
-                View previous versions
-              </a>
-            </div>
-
+            {% if headerPageHeading != 'Previous versions' %}
+              <div class ="plan-header__subject-details__navigation-links" >
+                <a href="{{ splitJourneyPath }}/plan-history/previous-versions"
+                   class="govuk-link--no-visited-state"
+                   data-previous-versions-link>
+                  View previous versions
+                </a>
+              </div>
+            {% endif %}
           </div>
       </div>
+
+      {% if headerPageHeading or buttonItems | length %}
+        <div class="plan-header__header-actions">
+          {{ mojPageHeaderActions({
+            heading: {
+              text: headerPageHeading,
+              classes: "govuk-heading-l govuk-!-margin-bottom-0"
+            },
+            items: buttonItems
+          }) }}
+        </div>
+      {% endif %}
     </header>
   </div>
 {% endif %}
