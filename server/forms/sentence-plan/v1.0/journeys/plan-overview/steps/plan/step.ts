@@ -5,7 +5,7 @@ import { SentencePlanV1Effects } from '../../../../effects'
 export const planStep = step({
   onLoad: [
     loadTransition({
-      effects: [SentencePlanV1Effects.loadOrCreatePlan()],
+      effects: [SentencePlanV1Effects.loadOrCreatePlanByCrn()],
     }),
   ],
   path: '/overview',
