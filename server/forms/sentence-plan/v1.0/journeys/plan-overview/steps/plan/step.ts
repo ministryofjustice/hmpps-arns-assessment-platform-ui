@@ -1,13 +1,7 @@
-import { loadTransition, Format, Data, step } from '@form-engine/form/builders'
+import { Format, Data, step } from '@form-engine/form/builders'
 import { blankPlanOverviewContent, futureGoalsContent, subNavigation } from './fields'
-import { SentencePlanV1Effects } from '../../../../effects'
 
 export const planStep = step({
-  onLoad: [
-    loadTransition({
-      effects: [SentencePlanV1Effects.loadOrCreatePlanByCrn()],
-    }),
-  ],
   path: '/overview',
   title: 'Plan overview',
   view: {

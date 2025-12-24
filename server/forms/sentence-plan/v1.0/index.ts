@@ -4,6 +4,7 @@ import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { planHistoryJourney } from './journeys/plan-history'
 import { aboutPersonStep } from './steps/about-person/step'
+import { loadPersonByCrn } from './effects/loadPersonByCrn'
 
 export const sentencePlanV1Journey = journey({
   code: 'sentence-plan-v1',
@@ -20,9 +21,10 @@ export const sentencePlanV1Journey = journey({
       path: '/crn/:crn',
       onLoad: [
         loadTransition({
-          effects: [SentencePlanV1Effects.loadOrCreatePlanByCrn()],
+          effects: [SentencePlanV1Effects.loadPersonByCrn(), SentencePlanV1Effects.loadOrCreatePlanByCrn()],
         }),
       ],
+      steps: [aboutPersonStep],
       children: [planOverviewJourney, goalManagementJourney, planHistoryJourney],
     }),
 
@@ -33,7 +35,8 @@ export const sentencePlanV1Journey = journey({
       path: '/oasys',
       onLoad: [
         loadTransition({
-          effects: [SentencePlanV1Effects.loadOrCreatePlanByOasys()],
+          // TODO: Adding loadPersonByCrn() until we get source of POP's data from OASys
+          effects: [SentencePlanV1Effects.loadPersonByCrn(), SentencePlanV1Effects.loadOrCreatePlanByOasys()],
         }),
       ],
       steps: [aboutPersonStep],
