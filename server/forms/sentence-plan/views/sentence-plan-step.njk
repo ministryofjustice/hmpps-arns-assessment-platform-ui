@@ -1,0 +1,35 @@
+{%- extends "partials/layout.njk" -%}
+
+{% block head %}
+  {{ super() }}
+  {% block pageStylesheets %}{% endblock %}
+{% endblock %}
+
+{% block primaryNavigation %}
+  {% include "sentence-plan/views/partials/sentence-plan-nav.njk" %}
+{% endblock %}
+
+{% block planHeader %}
+  {% include "sentence-plan/views/partials/plan-header.njk" %}
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  {% block pageScripts %}{% endblock %}
+{% endblock %}
+
+{% block backLink %}
+  {% if step.backlink %}
+    <a href="{{ step.backlink }}" class="govuk-back-link">Back</a>
+  {% endif %}
+{% endblock %}
+
+{% block formContent %}
+  <form method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    {% for block in blocks %}
+      {{ block | safe }}
+    {% endfor %}
+  </form>
+{% endblock %}

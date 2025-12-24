@@ -7,8 +7,9 @@ services:
       target: development
     command: npm run start:dev
     depends_on:
-      - api
       - redis
+      - api
+      - wiremock
     volumes:
       - ../:/app:cached
       - node_modules:/app/node_modules
@@ -22,19 +23,10 @@ services:
       HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
       HMPPS_ARNS_HANDOVER_CLIENT_SECRET: aap-secret
       AAP_API_URL: http://api:8080
+      DELIUS_API_URL: http://wiremock:8080
       NODE_ENV: 'development'
       ENVIRONMENT_NAME: dev
       NODE_CLUSTER_ENABLED: false
-
-  wiremock:
-    image: wiremock/wiremock
-    networks:
-      - hmpps
-    restart: always
-    ports:
-      - "9091:8080"
-    environment:
-      WIREMOCK_OPTIONS: "--verbose --max-request-journal-entries=1000"
 
 volumes:
   node_modules:
