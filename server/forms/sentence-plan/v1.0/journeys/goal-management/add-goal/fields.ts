@@ -22,35 +22,30 @@ import { Generator } from '@form-engine/registry/generators'
 import { AccessibleAutocomplete } from '../../../../components'
 
 // Side navigation for areas of need
-export const sideNavigation = block<MOJSideNavigation>({
+const sideNavigation = block<MOJSideNavigation>({
   variant: 'mojSideNavigation',
-  label: 'Areas of need',
-  sections: [
-    {
-      items: Data('areasOfNeed').each(
-        Iterator.Map({
-          text: Item().path('text'),
-          href: Item().path('slug'),
-          active: Item()
-            .path('slug')
-            .match(Condition.Equals(Params('areaOfNeed'))),
-        }),
-      ),
-    },
-  ],
+  items: Data('areasOfNeed').each(
+    Iterator.Map({
+      text: Item().path('text'),
+      href: Item().path('slug'),
+      active: Item()
+        .path('slug')
+        .match(Condition.Equals(Params('areaOfNeed'))),
+    }),
+  ),
 })
 
-export const areaOfNeedSubheading = block<HtmlBlock>({
+const areaOfNeedSubheading = block<HtmlBlock>({
   variant: 'html',
   content: Format('<span class="govuk-caption-l">%1</span>', Data('currentAreaOfNeed').path('text')),
 })
 
-export const pageHeading = block<HtmlBlock>({
+const pageHeading = block<HtmlBlock>({
   variant: 'html',
   content: Format('<h1 class="govuk-heading-l">Create a goal with %1</h1>', Data('caseData.name.forename')),
 })
 
-export const goalNameAutoComplete = block<AccessibleAutocomplete>({
+const goalNameAutoComplete = block<AccessibleAutocomplete>({
   variant: 'accessibleAutocomplete',
   data: Data('currentAreaOfNeed').path('goals'),
   field: field<GovUKTextInput>({
@@ -70,7 +65,7 @@ export const goalNameAutoComplete = block<AccessibleAutocomplete>({
   }),
 })
 
-export const areaOfNeedCheckboxes = field<GovUKCheckboxInput>({
+const areaOfNeedCheckboxes = field<GovUKCheckboxInput>({
   variant: 'govukCheckboxInput',
   code: 'areaOfNeedCheckboxes',
   multiple: true,
@@ -90,16 +85,14 @@ export const areaOfNeedCheckboxes = field<GovUKCheckboxInput>({
   ),
   validate: [
     validation({
-      when: and(
-        Answer('isGoalRelatedToOtherAreaOfNeed').match(Condition.Equals('related_yes')),
-        Self().not.match(Condition.IsRequired()),
-      ),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Select all related areas',
     }),
   ],
+  dependent: Answer('isGoalRelatedToOtherAreaOfNeed').match(Condition.Equals('related_yes')),
 })
 
-export const isGoalRelatedToOtherAreaOfNeed = field<GovUKRadioInput>({
+const isGoalRelatedToOtherAreaOfNeed = field<GovUKRadioInput>({
   code: 'isGoalRelatedToOtherAreaOfNeed',
   variant: 'govukRadioInput',
   fieldset: {
@@ -120,7 +113,9 @@ export const isGoalRelatedToOtherAreaOfNeed = field<GovUKRadioInput>({
   ],
 })
 
-export const dateOfCurrentGoal = field<MOJDatePicker>({
+// MOJ Date Picker uses DD/MM/YYYY format, so everything needs
+// converting into that format.
+const dateOfCurrentGoal = field<MOJDatePicker>({
   variant: 'mojDatePicker',
   code: 'dateOfCurrentGoal',
   label: {
@@ -128,22 +123,23 @@ export const dateOfCurrentGoal = field<MOJDatePicker>({
     classes: 'govuk-fieldset__legend--s',
   },
   hint: 'For example, 31/3/2023.',
-  minDate: new Date().toLocaleDateString('en-GB'),
+  // Set a minimum date of today in the DD/MM/YYYY format
+  minDate: Generator.Date.Today().pipe(Transformer.Date.Format('DD/MM/YYYY')),
   formatters: [Transformer.String.ToISODate()],
   validate: [
     validation({
-      when: and(
-        Answer('canStartWorkingOnGoalNow').match(Condition.Equals('yes')),
-        Answer('whenShouldTheGoalBeAchieved').match(Condition.Equals('set_another_date')),
-        Self().match(Condition.Date.IsValid()),
-        Self().not.match(Condition.Date.IsFutureDate()),
-      ),
+      when: Self().not.match(Condition.IsRequired()),
+      message: 'Please enter a date',
+    }),
+    validation({
+      when: and(Self().not.match(Condition.Date.IsToday()), Self().not.match(Condition.Date.IsFutureDate())),
       message: 'Date must be today or in the future',
     }),
   ],
+  dependent: Answer('whenShouldTheGoalBeAchieved').match(Condition.Equals('set_another_date')),
 })
 
-export const whenShouldTheGoalBeAchieved = field<GovUKRadioInput>({
+const whenShouldTheGoalBeAchieved = field<GovUKRadioInput>({
   variant: 'govukRadioInput',
   code: 'whenShouldTheGoalBeAchieved',
   fieldset: {
@@ -179,16 +175,14 @@ export const whenShouldTheGoalBeAchieved = field<GovUKRadioInput>({
   ],
   validate: [
     validation({
-      when: and(
-        Answer('canStartWorkingOnGoalNow').match(Condition.Equals('yes')),
-        Self().not.match(Condition.IsRequired()),
-      ),
+      when: Self().not.match(Condition.IsRequired()),
       message: 'Select when they should aim to achieve this goal',
     }),
   ],
+  dependent: Answer('canStartWorkingOnGoalNow').match(Condition.Equals('yes')),
 })
 
-export const canStartWorkingOnGoalNow = field<GovUKRadioInput>({
+const canStartWorkingOnGoalNow = field<GovUKRadioInput>({
   variant: 'govukRadioInput',
   code: 'canStartWorkingOnGoalNow',
   fieldset: {
@@ -209,7 +203,7 @@ export const canStartWorkingOnGoalNow = field<GovUKRadioInput>({
   ],
 })
 
-export const addStepsButton = block<GovUKButton>({
+const addStepsButton = block<GovUKButton>({
   variant: 'govukButton',
   text: 'Add Steps',
   name: 'action',
@@ -217,7 +211,7 @@ export const addStepsButton = block<GovUKButton>({
   preventDoubleClick: true,
 })
 
-export const saveWithoutStepsButton = block<GovUKButton>({
+const saveWithoutStepsButton = block<GovUKButton>({
   variant: 'govukButton',
   classes: 'govuk-button--secondary',
   text: 'Save without steps',
@@ -226,22 +220,20 @@ export const saveWithoutStepsButton = block<GovUKButton>({
   preventDoubleClick: true,
 })
 
-export const buttonGroup = (): TemplateWrapper => {
-  return block<TemplateWrapper>({
-    variant: 'templateWrapper',
-    template: `
+const buttonGroup = block<TemplateWrapper>({
+  variant: 'templateWrapper',
+  template: `
         <div class="govuk-button-group govuk-!-margin-top-4">
             {{slot:addStepsButton}}
             {{slot:saveWithoutStepsButton}}
           </div>
       </div>
     `,
-    slots: {
-      addStepsButton: [addStepsButton],
-      saveWithoutStepsButton: [saveWithoutStepsButton],
-    },
-  })
-}
+  slots: {
+    addStepsButton: [addStepsButton],
+    saveWithoutStepsButton: [saveWithoutStepsButton],
+  },
+})
 
 // Two-column layout wrapper
 export const twoColumnLayout = (): TemplateWrapper => {
@@ -266,7 +258,7 @@ export const twoColumnLayout = (): TemplateWrapper => {
         goalNameAutoComplete,
         isGoalRelatedToOtherAreaOfNeed,
         canStartWorkingOnGoalNow,
-        buttonGroup(),
+        buttonGroup,
       ],
     },
   })
