@@ -1,0 +1,26 @@
+{%- from "moj/components/primary-navigation/macro.njk" import mojPrimaryNavigation -%}
+
+{% set personName = data.caseData.name.forename if data.caseData and data.caseData.name else "Person" %}
+
+{% set rootPath = navigation[0].path if navigation | length > 0 else '' %}
+{% set splitPath = ancestors[1].path if ancestors | length > 1 else '' %}
+{% set splitJourneyPath = rootPath + splitPath %}
+
+{% set isOnPlanPage = ancestors | length > 2 %}
+{% set isOnAboutPage = step.path == '/about-person' %}
+
+{{ mojPrimaryNavigation({
+  label: "Primary navigation",
+  items: [
+    {
+      text: personName + "'s plan",
+      href: splitJourneyPath + "/plan/overview",
+      active: isOnPlanPage
+    },
+    {
+      text: "About " + personName,
+      href: splitJourneyPath + "/about-person",
+      active: isOnAboutPage
+    }
+  ]
+}) }}

@@ -1,8 +1,16 @@
-{%- extends "partials/layout-with-nav.njk" -%}
+{%- extends "partials/layout.njk" -%}
 
 {% block head %}
   {{ super() }}
   {% block pageStylesheets %}{% endblock %}
+{% endblock %}
+
+{% block primaryNavigation %}
+  {% include "sentence-plan/views/partials/sentence-plan-nav.njk" %}
+{% endblock %}
+
+{% block planHeader %}
+  {% include "sentence-plan/views/partials/plan-header.njk" %}
 {% endblock %}
 
 {% block bodyEnd %}
