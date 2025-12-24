@@ -4,7 +4,6 @@ import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { planHistoryJourney } from './journeys/plan-history'
 import { aboutPersonStep } from './steps/about-person/step'
-import { loadPersonByCrn } from './effects/loadPersonByCrn'
 
 export const sentencePlanV1Journey = journey({
   code: 'sentence-plan-v1',
