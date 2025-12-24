@@ -1,0 +1,21 @@
+/**
+ * Sentence Plan - Form-specific styles
+ *
+ * These styles are loaded only on pages using this form's custom template.
+ */
+@import "govuk-frontend/dist/govuk/base";
+
+// Components
+@import "../components/button-as-link/buttonAsLink";
+
+// Step rows - align remove button with input fields
+.step-row {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: govuk-spacing(4);
+
+  .govuk-form-group {
+    margin-bottom: 0;
+  }
+}
+

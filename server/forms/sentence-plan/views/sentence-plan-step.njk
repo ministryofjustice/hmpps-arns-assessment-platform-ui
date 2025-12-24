@@ -2,7 +2,9 @@
 
 {% block head %}
   {{ super() }}
-  {% block pageStylesheets %}{% endblock %}
+  {% block pageStylesheets %}
+    <link rel="stylesheet" href="{{ '/assets/css/forms/sentence-plan/assets/form.css' | assetMap }}">
+  {% endblock %}
 {% endblock %}
 
 {% block header %}
@@ -13,7 +15,9 @@
 
 {% block bodyEnd %}
   {{ super() }}
-  {% block pageScripts %}{% endblock %}
+  {% block pageScripts %}
+    <script src="{{ '/assets/js/forms/sentence-plan/assets/form.js' | assetMap }}"></script>
+  {% endblock %}
 {% endblock %}
 
 {% block backLink %}
