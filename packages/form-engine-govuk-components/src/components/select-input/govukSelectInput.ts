@@ -1,4 +1,5 @@
 import {
+  ConditionalArray,
   ConditionalBoolean,
   ConditionalString,
   FieldBlockDefinition,
@@ -52,7 +53,7 @@ export interface GovUKSelectInputProps extends FieldBlockProps {
    *
    * @example [{ value: '', text: 'Choose an option' }, { value: 'uk', text: 'United Kingdom' }]
    */
-  items: SelectItem[]
+  items: SelectItem[] | ConditionalArray<SelectItem>
 
   /**
    * The label used by the select component.
