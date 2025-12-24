@@ -21,18 +21,14 @@ export const createGoalStep = step({
   path: '/add-goal/:areaOfNeed',
   title: 'Create Goal',
   isEntryPoint: true,
-
   // Static data available to effects and Data() references
   data: { areasOfNeed },
-
   blocks: [twoColumnLayout()],
-
   onLoad: [
     loadTransition({
       effects: [SentencePlanV1Effects.deriveGoalCurrentAreaOfNeed()],
     }),
   ],
-
   onAccess: [
     // If UUID param is literally ':uuid', redirect to use 'new' instead
     accessTransition({
@@ -46,7 +42,6 @@ export const createGoalStep = step({
       redirect: [next({ goto: 'add-goal/accommodation' })],
     }),
   ],
-
   onSubmission: [
     submitTransition({
       when: Post('action').match(Condition.Equals('addSteps')),
@@ -56,7 +51,6 @@ export const createGoalStep = step({
         next: [next({ goto: Format('../%1/add-steps', Data('goalUuid')) })],
       },
     }),
-
     submitTransition({
       when: Post('action').match(Condition.Equals('saveWithoutSteps')),
       validate: true,
