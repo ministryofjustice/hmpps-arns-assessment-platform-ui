@@ -1,0 +1,24 @@
+import { EffectFunction } from './index'
+import { AreaOfNeed } from '../journeys/goal-management/add-goal/constants'
+
+/**
+ * Derive current area of need data from URL params
+ *
+ * Reads areasOfNeed from context (set via step's data property).
+ * Computes:
+ * - currentAreaOfNeed: The full area object matching the URL slug
+ * - otherAreasOfNeed: All other areas (for "related areas" checkboxes)
+ * - areaOfNeedSlugs: Slugs for all the areas of need
+ */
+export const deriveGoalCurrentAreaOfNeed: EffectFunction = _deps => async context => {
+  const slug = context.getRequestParam('areaOfNeed')
+  const areasOfNeed = context.getData('areasOfNeed') as AreaOfNeed[]
+
+  const areaOfNeedSlugs = areasOfNeed.map(areOfNeed => areOfNeed.slug)
+  const currentAreaOfNeed = areasOfNeed.find(a => a.slug === slug)
+  const otherAreasOfNeed = areasOfNeed.filter(a => a.slug !== slug)
+
+  context.setData('areaOfNeedSlugs', areaOfNeedSlugs)
+  context.setData('currentAreaOfNeed', currentAreaOfNeed)
+  context.setData('otherAreasOfNeed', otherAreasOfNeed)
+}

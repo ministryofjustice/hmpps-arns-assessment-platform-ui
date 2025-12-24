@@ -1,9 +1,9 @@
 import { step } from '@form-engine/form/builders'
-import { pageHeading } from './fields'
+import { blankPlanOverviewContent, pageHeading } from './fields'
 
 export const planStep = step({
   path: '/overview',
   title: 'Plan Overview',
   isEntryPoint: true,
-  blocks: [pageHeading],
+  blocks: [pageHeading, blankPlanOverviewContent],
 })

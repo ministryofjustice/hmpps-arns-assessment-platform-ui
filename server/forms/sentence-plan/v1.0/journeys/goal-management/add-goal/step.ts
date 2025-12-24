@@ -1,5 +1,18 @@
-import { Format, next, Params, step, submitTransition } from '@form-engine/form/builders'
-import { pageHeading, continueButton } from './fields'
+import {
+  accessTransition,
+  Data,
+  Format,
+  loadTransition,
+  next,
+  Params,
+  Post,
+  step,
+  submitTransition,
+} from '@form-engine/form/builders'
+import { Condition } from '@form-engine/registry/conditions'
+import { twoColumnLayout } from './fields'
+import { areasOfNeed } from './constants'
+import { SentencePlanV1Effects } from '../../../effects'
 
 /**
  * For adding a new goal.
@@ -8,13 +21,48 @@ export const createGoalStep = step({
   path: '/add-goal/:areaOfNeed',
   title: 'Create Goal',
   isEntryPoint: true,
-  blocks: [pageHeading, continueButton],
+
+  // Static data available to effects and Data() references
+  data: { areasOfNeed },
+
+  blocks: [twoColumnLayout()],
+
+  onLoad: [
+    loadTransition({
+      effects: [SentencePlanV1Effects.deriveGoalCurrentAreaOfNeed()],
+    }),
+  ],
+
+  onAccess: [
+    // If UUID param is literally ':uuid', redirect to use 'new' instead
+    accessTransition({
+      guards: Params('uuid').match(Condition.Equals(':uuid')),
+      redirect: [next({ goto: Format('../new/add-goal/%1', Params('areaOfNeed')) })],
+    }),
+
+    // If area of need is not a valid slug, redirect them to `accommodation` by default.
+    accessTransition({
+      guards: Params('areaOfNeed').not.match(Condition.Array.IsIn(Data('areaOfNeedSlugs'))),
+      redirect: [next({ goto: 'add-goal/accommodation' })],
+    }),
+  ],
+
   onSubmission: [
     submitTransition({
+      when: Post('action').match(Condition.Equals('addSteps')),
       validate: true,
       onValid: {
-        // TODO: Create goal and get UUID, then navigate to add-steps
-        next: [next({ goto: Format('/goal/%1/add-steps', Params('goalUuid')) })],
+        effects: [SentencePlanV1Effects.saveGoal()],
+        next: [next({ goto: Format('../%1/add-steps', Data('goalUuid')) })],
+      },
+    }),
+
+    submitTransition({
+      when: Post('action').match(Condition.Equals('saveWithoutSteps')),
+      validate: true,
+      onValid: {
+        effects: [SentencePlanV1Effects.saveGoal()],
+        next: [next({ goto: '../../plan-overview' })],
       },
     }),
   ],

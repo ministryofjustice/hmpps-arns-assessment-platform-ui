@@ -3,14 +3,6 @@
 # against local deployment.
 
 services:
-  wiremock:
-    image: wiremock/wiremock
-    networks:
-      - hmpps
-    restart: always
-    ports:
-      - "9091:8080"
-
   ui:
     build:
       target: production
