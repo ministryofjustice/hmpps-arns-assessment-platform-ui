@@ -8,6 +8,7 @@ import DependencyGraph from '@form-engine/core/ast/dependencies/DependencyGraph'
 import OverlayNodeRegistry from '@form-engine/core/ast/registration/OverlayNodeRegistry'
 import OverlayMetadataRegistry from '@form-engine/core/ast/registration/OverlayMetadataRegistry'
 import OverlayDependencyGraph from '@form-engine/core/ast/dependencies/OverlayDependencyGraph'
+import OverlayThunkHandlerRegistry from '@form-engine/core/ast/thunks/registries/OverlayThunkHandlerRegistry'
 import { NodeId } from '@form-engine/core/types/engine.type'
 
 export class CompilationDependencies {
@@ -75,6 +76,55 @@ export class CompilationDependencies {
         overlayGraph.flushIntoMain()
         overlayMetadata.flushIntoMain()
       },
+    }
+  }
+
+  /**
+   * Create a runtime overlay for thunk evaluation.
+   *
+   * Unlike clone() which copies all data (O(n+e)), this creates O(1) overlay wrappers:
+   * - NodeRegistry: OverlayNodeRegistry (reads from main, writes to pending)
+   * - MetadataRegistry: OverlayMetadataRegistry
+   * - DependencyGraph: OverlayDependencyGraph
+   * - ThunkHandlerRegistry: OverlayThunkHandlerRegistry
+   *
+   * Only the NodeIDGenerator is cloned (O(1) - 4 integers) to ensure
+   * counter isolation between requests.
+   *
+   * Used by ThunkEvaluator.withRuntimeOverlay() for runtime node registration.
+   */
+  createRuntimeOverlay(): {
+    deps: CompilationDependencies
+    overlayNodeRegistry: OverlayNodeRegistry
+    overlayMetadata: OverlayMetadataRegistry
+    overlayGraph: OverlayDependencyGraph
+    overlayHandlerRegistry: OverlayThunkHandlerRegistry
+  } {
+    // Clone only ID generator (O(1) - 4 integers)
+    const clonedNodeIdGenerator = this.nodeIdGenerator.clone()
+
+    // Create overlay wrappers (O(1) - no data copying)
+    const overlayNodeRegistry = new OverlayNodeRegistry(this.nodeRegistry)
+    const overlayMetadata = new OverlayMetadataRegistry(this.metadataRegistry)
+    const overlayGraph = new OverlayDependencyGraph(this.dependencyGraph)
+    const overlayHandlerRegistry = new OverlayThunkHandlerRegistry(this.thunkHandlerRegistry)
+
+    const deps = new CompilationDependencies(
+      clonedNodeIdGenerator,
+      new NodeFactory(clonedNodeIdGenerator, NodeIDCategory.RUNTIME_AST),
+      new PseudoNodeFactory(clonedNodeIdGenerator, NodeIDCategory.RUNTIME_PSEUDO),
+      overlayNodeRegistry,
+      overlayMetadata,
+      overlayHandlerRegistry,
+      overlayGraph,
+    )
+
+    return {
+      deps,
+      overlayNodeRegistry,
+      overlayMetadata,
+      overlayGraph,
+      overlayHandlerRegistry,
     }
   }
 }

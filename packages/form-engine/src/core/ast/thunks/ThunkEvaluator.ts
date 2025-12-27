@@ -19,9 +19,6 @@ import ThunkCacheManager from '@form-engine/core/ast/thunks/registries/ThunkCach
 import ThunkRuntimeHooksFactory from '@form-engine/core/ast/thunks/factories/ThunkRuntimeHooksFactory'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { CompilationDependencies } from '@form-engine/core/ast/compilation/CompilationDependencies'
-import { NodeFactory } from '@form-engine/core/ast/nodes/NodeFactory'
-import { NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
-import { PseudoNodeFactory } from '@form-engine/core/ast/nodes/PseudoNodeFactory'
 
 /**
  * Result of evaluating a form
@@ -95,11 +92,11 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
   /**
    * Create an evaluator with a runtime overlay.
    *
-   * This factory clones the compilation dependencies and creates a runtime overlay
-   * so callers can register runtime-expanded nodes/edges/handlers without mutating
-   * the original compiled program.
+   * This factory creates O(1) overlay wrappers around the compilation dependencies,
+   * allowing callers to register runtime-expanded nodes/edges/handlers without
+   * mutating the original compiled program or copying data.
    *
-   * The provided configurator receives the cloned registries and graph so it
+   * The provided configurator receives the overlay registries and graph so it
    * can append additional runtime nodes and wiring before evaluation.
    *
    * @param compilationDependencies - The compiled form dependencies
@@ -112,24 +109,20 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
     formInstanceDependencies: FormInstanceDependencies,
     configurator?: RuntimeOverlayConfigurator,
   ): ThunkEvaluator {
-    const clonedCompilationDependencies = compilationDependencies.clone()
-
-    const runtimeCompilationDependencies = new CompilationDependencies(
-      clonedCompilationDependencies.nodeIdGenerator,
-      new NodeFactory(clonedCompilationDependencies.nodeIdGenerator, NodeIDCategory.RUNTIME_AST),
-      new PseudoNodeFactory(clonedCompilationDependencies.nodeIdGenerator, NodeIDCategory.RUNTIME_PSEUDO),
-      clonedCompilationDependencies.nodeRegistry,
-      clonedCompilationDependencies.metadataRegistry,
-      clonedCompilationDependencies.thunkHandlerRegistry,
-      clonedCompilationDependencies.dependencyGraph,
-    )
+    const {
+      deps: runtimeCompilationDependencies,
+      overlayNodeRegistry,
+      overlayMetadata,
+      overlayGraph,
+      overlayHandlerRegistry,
+    } = compilationDependencies.createRuntimeOverlay()
 
     const overlay: RuntimeOverlayBuilder = {
-      handlerRegistry: clonedCompilationDependencies.thunkHandlerRegistry,
-      metadataRegistry: clonedCompilationDependencies.metadataRegistry,
-      dependencyGraph: clonedCompilationDependencies.dependencyGraph,
-      nodeRegistry: clonedCompilationDependencies.nodeRegistry,
-      nodeFactory: new NodeFactory(clonedCompilationDependencies.nodeIdGenerator, NodeIDCategory.RUNTIME_AST),
+      handlerRegistry: overlayHandlerRegistry,
+      metadataRegistry: overlayMetadata,
+      dependencyGraph: overlayGraph,
+      nodeRegistry: overlayNodeRegistry,
+      nodeFactory: runtimeCompilationDependencies.nodeFactory,
       runtimeNodes: new Map<NodeId, ASTNode>(),
     }
 
