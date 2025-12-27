@@ -104,7 +104,7 @@ export default class ThunkRuntimeHooksFactory {
 
       // Phase 2: Create pseudo nodes and wire dependencies ONCE for all nodes
       NodeCompilationPipeline.createPseudoNodes(pendingCompilationDependencies)
-      NodeCompilationPipeline.wireDependencies(pendingCompilationDependencies)
+      NodeCompilationPipeline.wireDependencies(pendingCompilationDependencies, pendingIds)
 
       // Phase 3: Compile handlers for all newly registered nodes
       getPendingNodeIds().forEach(nodeId => {
