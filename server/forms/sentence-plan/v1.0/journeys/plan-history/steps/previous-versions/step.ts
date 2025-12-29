@@ -1,4 +1,5 @@
-import { step } from '@form-engine/form/builders'
+import { Data, step } from '@form-engine/form/builders'
+import { Condition } from '@form-engine/registry/conditions'
 
 export const previousVersionsStep = step({
   path: '/previous-versions',
@@ -7,8 +8,7 @@ export const previousVersionsStep = step({
     locals: {
       headerPageHeading: 'Previous versions',
       buttons: {
-        // TODO: add conditional statement depending on user's auth
-        showReturnToOasysButton: true,
+        showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('handover')),
       },
     },
   },

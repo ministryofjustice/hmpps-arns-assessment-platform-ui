@@ -1,7 +1,5 @@
-import { accessTransition, Format, Data, next, Query, step, loadTransition } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
-import { blankPlanOverviewContent, futureGoalsContent, goalsSection, subNavigation } from './fields'
-import { SentencePlanV1Effects } from '../../../../effects'
+import { Format, Data, step } from '@form-engine/form/builders'
+import { blankPlanOverviewContent, futureGoalsContent, subNavigation } from './fields'
 
 export const planStep = step({
   path: '/overview',
@@ -10,8 +8,7 @@ export const planStep = step({
     locals: {
       headerPageHeading: Format(`%1's plan`, Data('caseData.name.forename')),
       buttons: {
-        // TODO: add conditional statement depending on user's auth and plan status
-        showReturnToOasysButton: true,
+        showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('handover')),
         showCreateGoalButton: true,
         showAgreePlanButton: true,
       },

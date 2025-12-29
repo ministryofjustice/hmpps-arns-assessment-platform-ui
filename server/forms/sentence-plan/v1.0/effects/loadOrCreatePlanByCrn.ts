@@ -15,6 +15,10 @@ export const loadOrCreatePlanByCrn = (deps: SentencePlanEffectsDeps) => async (c
   const crn = context.getRequestParam('crn')
   const user = context.getState('user')
 
+  if (user) {
+    context.setData('user', user)
+  }
+
   if (!user) {
     throw new InternalServerError('User is required to load or create a sentence plan')
   }
