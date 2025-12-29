@@ -1,3 +1,5 @@
+import { AreaOfNeedSlug } from './effects/types'
+
 export const areasOfNeed = [
   {
     slug: 'accommodation',
@@ -101,9 +103,6 @@ export const areasOfNeed = [
     ],
   },
 ]
-
-export type AreaOfNeed = (typeof areasOfNeed)[number]
-export type AreaOfNeedSlug = AreaOfNeed['slug']
 
 export const areaOfNeedSlugs = areasOfNeed.map(a => a.slug)
 

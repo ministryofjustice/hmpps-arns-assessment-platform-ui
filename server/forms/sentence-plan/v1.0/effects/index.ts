@@ -7,7 +7,8 @@ import { loadOrCreatePlanByOasys } from './loadOrCreatePlanByOasys'
 import { loadPlanFromSession } from './loadPlanFromSession'
 import { deriveGoalCurrentAreaOfNeed } from './deriveGoalCurrentAreaOfNeed'
 import { setSessionAccessType } from './setSessionAccessType'
-import { saveGoal } from './saveGoal'
+import { saveActiveGoal } from './goals/saveActiveGoal'
+import { deriveGoalsWithStepsFromAssessment } from './deriveGoalsWithStepsFromAssessment'
 
 /**
  * Dependencies for sentence plan effects
@@ -49,8 +50,9 @@ export const { effects: SentencePlanV1Effects, createRegistry: SentencePlanV1Reg
     loadOrCreatePlanByCrn,
     loadOrCreatePlanByOasys,
     loadPlanFromSession,
+    deriveGoalsWithStepsFromAssessment,
 
     // Goals
-    saveGoal,
+    saveActiveGoal,
     deriveGoalCurrentAreaOfNeed,
   })
