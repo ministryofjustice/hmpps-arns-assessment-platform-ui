@@ -3,7 +3,12 @@
 {% set personName = data.caseData.name.forename if data.caseData and data.caseData.name else "Person" %}
 
 {# Base path is the root journey - both nav items are relative to this #}
-{% set basePath = navigation[0].path if navigation | length > 0 else '' %}
+{% set basePath = '' %}
+  {% for item in navigation %}
+    {%  if item.title == 'Sentence Plan' %}
+      {% set basePath = item.path %}
+    {%  endif %}
+  {% endfor %}
 
 {# About page is a direct step; everything else is "plan" related #}
 {% set isOnAboutPage = step.path == '/about-person' %}
