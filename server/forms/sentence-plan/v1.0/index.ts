@@ -14,6 +14,9 @@ export const sentencePlanV1Journey = journey({
   path: '/sentence-plan/v1.0',
   view: {
     template: 'sentence-plan/views/sentence-plan-step',
+    locals: {
+      hmppsHeaderServiceNameLink: '/forms/sentence-plan/v1.0/plan/overview',
+    },
   },
   onLoad: [
     loadTransition({

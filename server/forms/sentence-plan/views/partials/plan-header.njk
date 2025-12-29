@@ -5,14 +5,12 @@
   {% set person = data.caseData %}
   {% set fullName = person.name.forename + ' ' + person.name.surname if person.name else 'Unknown' %}
 
-  {% set rootPath = '' %}
+  {% set basePath = '' %}
   {% for item in navigation %}
     {%  if item.title == 'Sentence Plan' %}
-      {% set rootPath = item.path %}
+      {% set basePath = item.path %}
     {%  endif %}
   {% endfor %}
-  {% set splitPath = ancestors[1].path if ancestors | length > 1 else '' %}
-  {% set splitJourneyPath = rootPath + splitPath %}
 
   {% set buttonItems = [] %}
 
@@ -67,7 +65,7 @@
             </dl>
             {% if headerPageHeading != 'Previous versions' %}
               <div class ="plan-header__subject-details__navigation-links" >
-                <a href="{{ splitJourneyPath }}/plan-history/previous-versions"
+                <a href="{{ basePath }}/plan-history/previous-versions"
                    class="govuk-link--no-visited-state"
                    data-previous-versions-link>
                   View previous versions
