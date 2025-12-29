@@ -1,5 +1,5 @@
 import { EffectFunction } from './index'
-import { AreaOfNeed } from '../journeys/goal-management/add-goal/constants'
+import { SentencePlanContext } from './types'
 
 /**
  * Derive current area of need data from URL params
@@ -10,9 +10,9 @@ import { AreaOfNeed } from '../journeys/goal-management/add-goal/constants'
  * - otherAreasOfNeed: All other areas (for "related areas" checkboxes)
  * - areaOfNeedSlugs: Slugs for all the areas of need
  */
-export const deriveGoalCurrentAreaOfNeed: EffectFunction = _deps => async context => {
+export const deriveGoalCurrentAreaOfNeed: EffectFunction = _deps => async (context: SentencePlanContext) => {
   const slug = context.getRequestParam('areaOfNeed')
-  const areasOfNeed = context.getData('areasOfNeed') as AreaOfNeed[]
+  const areasOfNeed = context.getData('areasOfNeed')
 
   const areaOfNeedSlugs = areasOfNeed.map(areOfNeed => areOfNeed.slug)
   const currentAreaOfNeed = areasOfNeed.find(a => a.slug === slug)

@@ -1,4 +1,4 @@
-import EffectFunctionContext from '@form-engine/core/ast/thunks/EffectFunctionContext'
+import { SentencePlanContext } from './types'
 
 export type AccessType = 'mpop' | 'oasys'
 
@@ -8,7 +8,7 @@ export type AccessType = 'mpop' | 'oasys'
  * This determines how the user accessed the sentence plan and may affect
  * certain behaviours throughout the journey.
  */
-export const setSessionAccessType = () => (context: EffectFunctionContext, accessType: AccessType) => {
+export const setSessionAccessType = () => (context: SentencePlanContext, accessType: AccessType) => {
   const session = context.getSession()
   session.accessType = accessType
 }
