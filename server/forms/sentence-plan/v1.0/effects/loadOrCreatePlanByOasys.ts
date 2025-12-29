@@ -17,7 +17,7 @@ export const loadOrCreatePlanByOasys: EffectFunction = deps => async context => 
   }
 
   // Check session for existing assessment UUID
-  const sessionUuid = session?.sentencePlanAssessmentUuid
+  const sessionUuid = session?.assessmentUuid
 
   if (sessionUuid) {
     try {
@@ -29,6 +29,7 @@ export const loadOrCreatePlanByOasys: EffectFunction = deps => async context => 
 
       context.setData('assessment', assessment)
       context.setData('assessmentUuid', assessment.assessmentUuid)
+      session.assessmentUuid = assessment.assessmentUuid
 
       return
     } catch (error) {
@@ -51,9 +52,5 @@ export const loadOrCreatePlanByOasys: EffectFunction = deps => async context => 
 
   context.setData('assessment', result)
   context.setData('assessmentUuid', result.assessmentUuid)
-
-  // Store UUID in session for subsequent requests
-  if (session) {
-    session.sentencePlanAssessmentUuid = result.assessmentUuid
-  }
+  session.assessmentUuid = result.assessmentUuid
 }

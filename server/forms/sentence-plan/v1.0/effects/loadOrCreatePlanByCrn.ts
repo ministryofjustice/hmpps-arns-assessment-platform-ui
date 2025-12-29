@@ -38,6 +38,9 @@ export const loadOrCreatePlanByCrn: EffectFunction = deps => async context => {
     context.setData('assessment', assessment)
     context.setData('assessmentUuid', assessment.assessmentUuid)
 
+    const session = context.getSession()
+    session.assessmentUuid = assessment.assessmentUuid
+
     return
   } catch (error) {
     // If the query failed because no assessment exists, create one
@@ -58,4 +61,7 @@ export const loadOrCreatePlanByCrn: EffectFunction = deps => async context => {
 
   context.setData('assessment', result)
   context.setData('assessmentUuid', result.assessmentUuid)
+
+  const session = context.getSession()
+  session.assessmentUuid = result.assessmentUuid
 }
