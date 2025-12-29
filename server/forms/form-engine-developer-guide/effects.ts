@@ -1,6 +1,6 @@
 import { defineEffectsWithDeps } from '@form-engine/registry/utils/createRegisterableFunction'
-import EffectFunctionContext from '@form-engine/core/ast/thunks/EffectFunctionContext'
 import { ValueExpr } from '@form-engine/form/types/expressions.type'
+import { DeveloperGuideContext } from './types'
 
 /**
  * Effects for Form Engine Developer Guide
@@ -14,8 +14,12 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
      * Initialize the guide session
      * Sets up demo data used in various concept demonstrations
      */
-    initializeSession: _deps => (context: EffectFunctionContext) => {
+    initializeSession: () => (context: DeveloperGuideContext) => {
       const session = context.getSession()
+
+      if (!session) {
+        return
+      }
 
       if (!session.guideInitialized) {
         session.guideInitialized = true
@@ -164,8 +168,12 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
      * Track which concept was visited
      * Used to show progress through the guide
      */
-    trackConceptVisit: _deps => (context: EffectFunctionContext, conceptName: string) => {
+    trackConceptVisit: () => (context: DeveloperGuideContext, conceptName: string) => {
       const session = context.getSession()
+
+      if (!session) {
+        return
+      }
 
       if (!session.conceptsVisited) {
         session.conceptsVisited = []
@@ -176,7 +184,7 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
       }
 
       context.setData('guide', {
-        startedAt: session.startedAt,
+        startedAt: session.startedAt ?? '',
         conceptsVisited: session.conceptsVisited,
       })
     },
@@ -189,8 +197,12 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
      * Initialize playground items for the collections CRUD demo
      * Creates sample items if none exist in session
      */
-    initializePlaygroundItems: _deps => (context: EffectFunctionContext) => {
+    initializePlaygroundItems: () => (context: DeveloperGuideContext) => {
       const session = context.getSession()
+
+      if (!session) {
+        return
+      }
 
       if (!session.playgroundItems) {
         session.playgroundItems = [
@@ -232,10 +244,10 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
      * Load a specific playground item for editing
      * Reads itemId from URL params and populates form answers
      */
-    loadPlaygroundItem: _deps => (context: EffectFunctionContext) => {
+    loadPlaygroundItem: () => (context: DeveloperGuideContext) => {
       const itemId = context.getRequestParam('itemId')
       const session = context.getSession()
-      const items = session.playgroundItems || []
+      const items = session?.playgroundItems ?? []
 
       if (itemId === 'new') {
         // Initialize empty form for new item
@@ -264,16 +276,21 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
      * Save playground item changes back to session
      * Handles both new items and updates to existing items
      */
-    savePlaygroundItem: _deps => (context: EffectFunctionContext) => {
+    savePlaygroundItem: () => (context: DeveloperGuideContext) => {
       const itemId = context.getRequestParam('itemId')
       const session = context.getSession()
-      const items = session.playgroundItems || []
+
+      if (!session) {
+        return
+      }
+
+      const items = session.playgroundItems ?? []
 
       const itemData = {
-        name: context.getAnswer('taskName') as string,
-        description: context.getAnswer('taskDescription') as string,
-        category: context.getAnswer('taskCategory') as string,
-        priority: context.getAnswer('taskPriority') as string,
+        name: context.getAnswer('taskName') ?? '',
+        description: context.getAnswer('taskDescription') ?? '',
+        category: context.getAnswer('taskCategory') ?? '',
+        priority: context.getAnswer('taskPriority') ?? '',
       }
 
       if (itemId === 'new') {
@@ -286,9 +303,7 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
         session.playgroundItems = [...items, newItem]
       } else {
         // Update existing item
-        session.playgroundItems = items.map((item: { id: string }) =>
-          item.id === itemId ? { ...item, ...itemData } : item,
-        )
+        session.playgroundItems = items.map(item => (item.id === itemId ? { ...item, ...itemData } : item))
       }
 
       context.setData('playgroundItems', session.playgroundItems)
@@ -298,11 +313,16 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
      * Remove a playground item from the session
      * @param itemId - The ID of the item to remove
      */
-    removePlaygroundItem: _deps => (context: EffectFunctionContext, itemId: ValueExpr) => {
+    removePlaygroundItem: () => (context: DeveloperGuideContext, itemId: ValueExpr) => {
       const session = context.getSession()
-      const items = session.playgroundItems || []
 
-      session.playgroundItems = items.filter((item: { id: string }) => item.id !== itemId)
+      if (!session) {
+        return
+      }
+
+      const items = session.playgroundItems ?? []
+
+      session.playgroundItems = items.filter(item => item.id !== itemId)
       context.setData('playgroundItems', session.playgroundItems)
     },
 
@@ -310,8 +330,12 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
      * Reset playground items to default sample data
      * Clears existing items and restores the initial set
      */
-    resetPlaygroundItems: _deps => (context: EffectFunctionContext) => {
+    resetPlaygroundItems: () => (context: DeveloperGuideContext) => {
       const session = context.getSession()
+
+      if (!session) {
+        return
+      }
 
       session.playgroundItems = [
         {
@@ -349,8 +373,12 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
      * Restores answers from session so saved values display on GET requests
      * On POST requests, these values get overridden by POST data during AST evaluation
      */
-    initializeInlineSteps: _deps => (context: EffectFunctionContext) => {
+    initializeInlineSteps: () => (context: DeveloperGuideContext) => {
       const session = context.getSession()
+
+      if (!session) {
+        return
+      }
 
       if (!session.inlineSteps) {
         session.inlineSteps = [
@@ -372,12 +400,17 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
     /**
      * Add a new empty step to the inline collection
      */
-    addInlineStep: _deps => (context: EffectFunctionContext) => {
+    addInlineStep: () => (context: DeveloperGuideContext) => {
       const session = context.getSession()
-      const steps = session.inlineSteps || []
+
+      if (!session) {
+        return
+      }
+
+      const steps = session.inlineSteps ?? []
 
       // Save current POST values
-      steps.forEach((step: { id: string; who: string; action: string }, i: number) => {
+      steps.forEach((step, i) => {
         step.who = String(context.getAnswer(`who_${i}`) ?? '')
         step.action = String(context.getAnswer(`action_${i}`) ?? '')
       })
@@ -393,12 +426,17 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
      * Remove a step from the inline collection by index
      * If it's the last item, clear it instead of removing (always keep at least one)
      */
-    removeInlineStep: _deps => (context: EffectFunctionContext, index: number) => {
+    removeInlineStep: () => (context: DeveloperGuideContext, index: number) => {
       const session = context.getSession()
-      const steps = session.inlineSteps || []
+
+      if (!session) {
+        return
+      }
+
+      const steps = session.inlineSteps ?? []
 
       // Save current POST values
-      steps.forEach((step: { id: string; who: string; action: string }, i: number) => {
+      steps.forEach((step, i) => {
         step.who = String(context.getAnswer(`who_${i}`) ?? '')
         step.action = String(context.getAnswer(`action_${i}`) ?? '')
       })
@@ -418,11 +456,16 @@ export const { effects: DeveloperGuideEffects, createRegistry: createDeveloperGu
      * Save inline step field values back to session
      * Called on form submission to persist the entered data
      */
-    saveInlineSteps: _deps => (context: EffectFunctionContext) => {
+    saveInlineSteps: () => (context: DeveloperGuideContext) => {
       const session = context.getSession()
-      const steps = session.inlineSteps || []
 
-      steps.forEach((step: { id: string; who: string; action: string }, index: number) => {
+      if (!session) {
+        return
+      }
+
+      const steps = session.inlineSteps ?? []
+
+      steps.forEach((step, index) => {
         step.who = String(context.getAnswer(`who_${index}`) ?? '')
         step.action = String(context.getAnswer(`action_${index}`) ?? '')
       })
