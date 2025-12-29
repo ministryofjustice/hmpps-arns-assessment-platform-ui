@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * onAccess transitions for access control and permission checks.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Access Transitions
 
@@ -165,8 +163,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     guardsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           guards: Data('user.isAuthenticated').not.match(Condition.Equals(true))
@@ -175,8 +172,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     effectsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           effects: [Analytics.trackAccessDenied('unauthenticated')]
@@ -184,12 +180,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     redirectVariant: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'Redirect Variant — navigate user to another page',
         content: [
-          block<TemplateWrapper>({
-            variant: 'templateWrapper',
+          TemplateWrapper({
             template: parseGovUKMarkdown(`
 <h3 class="govuk-heading-s"><code>redirect</code> <span class="govuk-tag govuk-tag--red">Required</span></h3>
 
@@ -200,8 +194,7 @@ Use this when the user should be sent somewhere else (login, prerequisite step, 
             `),
             slots: {
               code: [
-                block<CodeBlock>({
-                  variant: 'codeBlock',
+                CodeBlock({
                   language: 'typescript',
                   code: `
                     accessTransition({
@@ -229,12 +222,10 @@ Use this when the user should be sent somewhere else (login, prerequisite step, 
       }),
     ],
     errorVariant: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'Error Variant — show error page with HTTP status',
         content: [
-          block<TemplateWrapper>({
-            variant: 'templateWrapper',
+          TemplateWrapper({
             template: parseGovUKMarkdown(`
 <h3 class="govuk-heading-s"><code>status</code> <span class="govuk-tag govuk-tag--red">Required</span></h3>
 
@@ -249,8 +240,7 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
             `),
             slots: {
               code: [
-                block<CodeBlock>({
-                  variant: 'codeBlock',
+                CodeBlock({
                   language: 'typescript',
                   code: `
                     accessTransition({
@@ -274,8 +264,7 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
       }),
     ],
     basicAccessCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           journey({
@@ -303,8 +292,7 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
       }),
     ],
     stepAccessCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Step 2 requires Step 1 to be complete
@@ -327,8 +315,7 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
       }),
     ],
     loadedDataCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           step({
@@ -360,8 +347,7 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
       }),
     ],
     errorResponseCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           step({
@@ -396,8 +382,7 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
       }),
     ],
     dynamicErrorCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           onAccess: [
@@ -411,8 +396,7 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
       }),
     ],
     analyticsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           onAccess: [
@@ -430,8 +414,7 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/transitions/load',

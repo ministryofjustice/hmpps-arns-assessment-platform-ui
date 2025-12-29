@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Deep dive into the journey() builder and all its configuration options.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Journey Configuration
 
@@ -176,8 +174,7 @@ Here's a journey definition using all the options:
 `),
   slots: {
     basicCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { journey } from '@form-engine/form/builders'
@@ -192,8 +189,7 @@ Here's a journey definition using all the options:
       }),
     ],
     codeExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           code: 'food-business-registration'
@@ -201,8 +197,7 @@ Here's a journey definition using all the options:
       }),
     ],
     pathExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           path: '/food-business-registration'
@@ -210,8 +205,7 @@ Here's a journey definition using all the options:
       }),
     ],
     titleExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           title: 'Register a Food Business'
@@ -219,8 +213,7 @@ Here's a journey definition using all the options:
       }),
     ],
     descriptionExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           description: 'Complete the registration process for your food business in 10 steps'
@@ -228,8 +221,7 @@ Here's a journey definition using all the options:
       }),
     ],
     stepsExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           steps: [
@@ -243,8 +235,7 @@ Here's a journey definition using all the options:
       }),
     ],
     childrenExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           children: [
@@ -259,8 +250,7 @@ Here's a journey definition using all the options:
       }),
     ],
     viewExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           view: {
@@ -280,8 +270,7 @@ Here's a journey definition using all the options:
       }),
     ],
     entryPathExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           entryPath: '/welcome'
@@ -289,8 +278,7 @@ Here's a journey definition using all the options:
       }),
     ],
     metadataExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           metadata: {
@@ -303,8 +291,7 @@ Here's a journey definition using all the options:
       }),
     ],
     dataExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           data: {
@@ -316,8 +303,7 @@ Here's a journey definition using all the options:
       }),
     ],
     dataAccessExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           Format('Contact us at {0}', Data('supportEmail'))
@@ -325,8 +311,7 @@ Here's a journey definition using all the options:
       }),
     ],
     dataEffectExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           effects: [
@@ -339,8 +324,7 @@ Here's a journey definition using all the options:
       }),
     ],
     onLoadExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           onLoad: [
@@ -352,8 +336,7 @@ Here's a journey definition using all the options:
       }),
     ],
     onAccessExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           onAccess: [
@@ -366,12 +349,10 @@ Here's a journey definition using all the options:
       }),
     ],
     completeExample: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View complete example',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               import { journey, loadTransition } from '@form-engine/form/builders'
@@ -425,8 +406,7 @@ Here's a journey definition using all the options:
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/journeys-and-steps/intro',

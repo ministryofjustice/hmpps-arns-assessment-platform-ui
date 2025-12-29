@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination, GovUKWarningText } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -10,8 +9,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  * Documentation for references that access HTTP request data:
  * Params(), Query(), and Post().
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # HTTP References
 
@@ -106,15 +104,13 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
 `),
   slots: {
     paramsSignature: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `Params(key: string): ReferenceExpr`,
       }),
     ],
     paramsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Route: /applications/:applicationId/edit
@@ -131,8 +127,7 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
       }),
     ],
     paramsUseCases: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // 1. Load data based on route parameter
@@ -143,8 +138,7 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
           }
 
           // 2. Display the ID in a heading
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format('Application: %1', Params('applicationId')),
           })
 
@@ -156,15 +150,13 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
       }),
     ],
     querySignature: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `Query(key: string): ReferenceExpr`,
       }),
     ],
     queryCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // URL: /search?term=widget&category=electronics&page=2
@@ -176,19 +168,16 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
       }),
     ],
     queryWarning: [
-      block<GovUKWarningText>({
-        variant: 'govukWarningText',
+      GovUKWarningText({
         html: 'Query parameters are always strings. Use <code>Transformer.String.ToInt()</code> or <code>Transformer.String.ToFloat()</code> if you need a numeric value.',
       }),
     ],
     queryUseCases: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // 1. Pre-fill a search field
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'searchTerm',
             label: 'Search',
             defaultValue: Query('q'),
@@ -203,8 +192,7 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
           }
 
           // 3. Show different content based on query param
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             hidden: Query('showHelp').not.match(Condition.String.Equals('true')),
             content: '<p class="govuk-body">Help content here...</p>',
           })
@@ -212,15 +200,13 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
       }),
     ],
     postSignature: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `Post(key: string): ReferenceExpr`,
       }),
     ],
     postCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // User submits form with:
@@ -232,8 +218,7 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
       }),
     ],
     postUseCases: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // 1. Check raw submission in action transitions
@@ -257,13 +242,11 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
       }),
     ],
     safeQueryCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Safely handle optional query param
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'searchTerm',
             defaultValue: Conditional({
               when: Query('q').match(Condition.IsPresent()),
@@ -275,8 +258,7 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/references/item',

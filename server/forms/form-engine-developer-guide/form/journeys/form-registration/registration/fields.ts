@@ -1,16 +1,14 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 
 /**
  * Form Registration - Registration
  *
  * How to register form packages with the FormEngine.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Registering Forms
 
@@ -89,8 +87,7 @@ When you call \`registerFormPackage()\`, the FormEngine:
 `),
   slots: {
     basicExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // app.ts
@@ -103,8 +100,7 @@ When you call \`registerFormPackage()\`, the FormEngine:
       }),
     ],
     orderExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // app.ts
@@ -123,8 +119,7 @@ When you call \`registerFormPackage()\`, the FormEngine:
       }),
     ],
     depsDefinition: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // my-form/effects.ts
@@ -145,8 +140,7 @@ When you call \`registerFormPackage()\`, the FormEngine:
       }),
     ],
     depsRegistration: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
         // app.ts
@@ -158,8 +152,7 @@ When you call \`registerFormPackage()\`, the FormEngine:
       }),
     ],
     multipleExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // app.ts
@@ -176,8 +169,7 @@ When you call \`registerFormPackage()\`, the FormEngine:
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/form-registration/structure',

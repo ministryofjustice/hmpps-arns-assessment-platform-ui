@@ -1,13 +1,11 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { MOJCardGroup } from '@form-engine-moj-components/index'
+import { TemplateWrapper } from '@form-engine/registry/components'
+import { MOJCardGroup } from '@form-engine-moj-components/components'
 import { parseGovUKMarkdown } from '../../../helpers/markdown'
 
 /**
  * Welcome introduction for the developer guide
  */
-export const welcomeIntro = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const welcomeIntro = TemplateWrapper({
   template: parseGovUKMarkdown(`
     Welcome to the Form Engine Developer Guide. This interactive tutorial teaches you
     how to build forms with the Assessment Platform form-engine. {.lead}
@@ -20,8 +18,7 @@ export const welcomeIntro = block<TemplateWrapper>({
 /**
  * Card group containing all concept modules
  */
-export const conceptCards = block<MOJCardGroup>({
-  variant: 'mojCardGroup',
+export const conceptCards = MOJCardGroup({
   columns: 3,
   items: [
     {

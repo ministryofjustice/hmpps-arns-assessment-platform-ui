@@ -1,15 +1,14 @@
-import { block, field, validation, Self, Answer, Format, when } from '@form-engine/form/builders'
+import { Answer, Format, Self, validation, when } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import {
-  GovUKTextInput,
   GovUKDetails,
   GovUKPagination,
   GovUKRadioInput,
+  GovUKTextInput,
 } from '@form-engine-govuk-components/components'
 import { Transformer } from '@form-engine/registry/transformers'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 
@@ -18,8 +17,7 @@ import { exampleBox } from '../../../../../helpers/exampleBox'
  *
  * Interactive examples of Format() string interpolation.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Format Expressions Playground
 
@@ -87,8 +85,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     example1: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_format_name',
           label: 'Your name',
           validate: [
@@ -99,8 +96,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: Answer('playground_format_name').not.match(Condition.IsRequired()),
           content: Format(
             `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
@@ -112,22 +108,18 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     example1Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'playground_format_name',
                 label: 'Your name',
               })
 
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 hidden: Answer('playground_format_name').not.match(Condition.IsRequired()),
                 content: Format(
                   'Hello, %1! Welcome to the playground.',
@@ -141,8 +133,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     example2: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_format_firstname',
           label: 'First name',
           validate: [
@@ -153,8 +144,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_format_lastname',
           label: 'Last name',
           validate: [
@@ -165,8 +155,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: Answer('playground_format_firstname').not.match(Condition.IsRequired()),
           content: Format(
             `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
@@ -179,12 +168,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     example2Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Format(
@@ -200,8 +187,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     example3: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_format_contact',
           label: 'Contact name',
           hint: 'Who should we contact?',
@@ -213,8 +199,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_format_phone',
           label: when(Answer('playground_format_contact').match(Condition.IsRequired()))
             .then(Format('Phone number for %1', Answer('playground_format_contact')))
@@ -227,16 +212,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     example3Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'playground_format_phone',
                 label: Format('Phone number for %1', Answer('playground_format_contact')),
                 hint: Format('We will call %1 on this number', Answer('playground_format_contact')),
@@ -248,8 +230,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     example4: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_format_price',
           label: 'Price',
           hint: 'Enter a number (e.g., 19.99)',
@@ -266,8 +247,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'playground_format_quantity',
           fieldset: {
             legend: { text: 'Quantity' },
@@ -280,8 +260,7 @@ export const pageContent = block<TemplateWrapper>({
           hidden: Answer('playground_format_price').not.match(Condition.IsRequired()),
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: Answer('playground_format_quantity').not.match(Condition.IsRequired()),
           content: Format(
             `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
@@ -295,12 +274,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     example4Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Transform price to 2 decimal places
@@ -319,8 +296,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     example5: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_format_business',
           label: 'Business name',
           validate: [
@@ -331,24 +307,21 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_format_email',
           label: 'Email address',
           inputType: 'email',
           hidden: Answer('playground_format_business').not.match(Condition.IsRequired()),
         }),
 
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_format_postcode',
           label: 'Postcode',
           classes: 'govuk-input--width-10',
           hidden: Answer('playground_format_business').not.match(Condition.IsRequired()),
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: Answer('playground_format_business').not.match(Condition.IsRequired()),
           content: Format(
             `<div class="govuk-!-margin-top-4">
@@ -380,16 +353,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     example5Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 content: Format(
                   \`<dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
@@ -413,8 +383,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/expressions/playground/intro',

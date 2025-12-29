@@ -1,14 +1,12 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 
 /**
  * Recipe: Load Data on Entry
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Recipe: Load Data on Entry
 
@@ -80,8 +78,7 @@ Fetch data from an API or session when a step loads. {.lead}
 `),
   slots: {
     effectExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // effects.ts
@@ -107,8 +104,7 @@ Fetch data from an API or session when a step loads. {.lead}
       }),
     ],
     transitionExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // form/index.ts or step.ts
@@ -129,8 +125,7 @@ Fetch data from an API or session when a step loads. {.lead}
       }),
     ],
     sessionExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           loadFromSession: _deps => (context: EffectFunctionContext) => {
@@ -144,8 +139,7 @@ Fetch data from an API or session when a step loads. {.lead}
       }),
     ],
     apiExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // effects.ts - with typed dependencies
@@ -172,8 +166,7 @@ Fetch data from an API or session when a step loads. {.lead}
       }),
     ],
     stepExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // step.ts - load data for a specific step
@@ -191,8 +184,7 @@ Fetch data from an API or session when a step loads. {.lead}
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/recipes/custom-validation',

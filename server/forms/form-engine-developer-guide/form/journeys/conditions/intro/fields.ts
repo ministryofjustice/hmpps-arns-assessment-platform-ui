@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -10,8 +9,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  * Complete reference of all condition types: String, Number, Date, Array,
  * and combining conditions with and()/or()/xor().
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Conditions
 
@@ -112,8 +110,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     selfCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Check if value is missing/empty
@@ -128,8 +125,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     stringConditionsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Condition } from '@form-engine/registry/conditions'
@@ -159,8 +155,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     numberConditionsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Type checking
@@ -177,8 +172,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dateConditionsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // All date conditions expect ISO-8601 format: YYYY-MM-DD
@@ -199,8 +193,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     arrayConditionsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Check if value is in an array
@@ -217,8 +210,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     combiningConditionsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { and, or, xor } from '@form-engine/form/builders'
@@ -256,8 +248,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     answerCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Answer, and } from '@form-engine/form/builders'
@@ -277,8 +268,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dynamicArgsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Static: compare against a fixed value
@@ -302,8 +292,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/hub',

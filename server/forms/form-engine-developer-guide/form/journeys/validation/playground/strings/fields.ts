@@ -1,8 +1,8 @@
-import { block, field, validation, Self } from '@form-engine/form/builders'
+import { validation, Self } from '@form-engine/form/builders'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKTextInput, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 
@@ -11,8 +11,7 @@ import { exampleBox } from '../../../../../helpers/exampleBox'
  *
  * Interactive examples of string validation conditions.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # String Validation Playground
 
@@ -77,8 +76,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     requiredFieldExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_required',
           label: 'Your name',
           validate: [
@@ -91,16 +89,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     requiredFieldCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'playground_required',
                 label: 'Your name',
                 validate: [
@@ -117,8 +112,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     emailFormatExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_email',
           label: 'Email address',
           inputType: 'email',
@@ -136,16 +130,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     emailFormatCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'playground_email',
                 label: 'Email address',
                 inputType: 'email',
@@ -167,8 +158,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     lengthConstraintsExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_length',
           label: 'Username',
           hint: 'Must be between 5 and 20 characters',
@@ -190,16 +180,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     lengthConstraintsCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'playground_length',
                 label: 'Username',
                 hint: 'Must be between 5 and 20 characters',
@@ -225,8 +212,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     patternMatchingExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_pattern',
           label: 'National Insurance number',
           hint: 'For example, AB123456C',
@@ -244,16 +230,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     patternMatchingCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'playground_pattern',
                 label: 'National Insurance number',
                 hint: 'For example, AB123456C',
@@ -275,8 +258,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     lettersOnlyExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_letters',
           label: 'First name',
           hint: 'Letters only, no numbers or symbols',
@@ -294,16 +276,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     lettersOnlyCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'playground_letters',
                 label: 'First name',
                 hint: 'Letters only, no numbers or symbols',
@@ -324,8 +303,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/validation/playground/intro',

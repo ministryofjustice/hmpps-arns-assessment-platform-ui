@@ -1,6 +1,5 @@
-import { block, Data, Format } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { HtmlBlock } from '@form-engine/registry/components/html'
+import { Data, Format } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKButton } from '@form-engine-govuk-components/components'
 import { BlockDefinition } from '@form-engine/form/types/structures.type'
 
@@ -22,16 +21,14 @@ import { BlockDefinition } from '@form-engine/form/types/structures.type'
  *
  * @example
  * exampleBox([
- *   field<GovUKTextInput>({
- *     variant: 'govukTextInput',
+ *   GovUKTextInput({
  *     code: 'myField',
  *     label: 'Example field',
  *   }),
  * ])
  */
 export const exampleBox = <T extends BlockDefinition>(content: T[]): TemplateWrapper => {
-  return block<TemplateWrapper>({
-    variant: 'templateWrapper',
+  return TemplateWrapper({
     template: `
       <form method="post" class="app-example-box" novalidate>
         {{slot:csrf}}
@@ -43,15 +40,13 @@ export const exampleBox = <T extends BlockDefinition>(content: T[]): TemplateWra
     `,
     slots: {
       csrf: [
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format('<input type="hidden" name="_csrf" value="%1">', Data('csrfToken')),
         }),
       ],
       content,
       button: [
-        block<GovUKButton>({
-          variant: 'govukButton',
+        GovUKButton({
           text: 'Continue',
         }),
       ],

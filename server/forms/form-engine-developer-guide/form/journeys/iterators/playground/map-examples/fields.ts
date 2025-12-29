@@ -1,9 +1,8 @@
-import { block, Format, Item, Literal, Iterator } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
+import { Format, Item, Literal, Iterator } from '@form-engine/form/builders'
+import { TemplateWrapper, CollectionBlock } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
 import { Transformer } from '@form-engine/registry/transformers'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
 const teamMembers = [
@@ -37,8 +36,7 @@ const articles = [
  *
  * Interactive examples of Iterator.Map.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Iterator.Map Examples
 
@@ -101,8 +99,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     example1: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal(teamMembers).each(
           Iterator.Map(
@@ -116,12 +113,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example1Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `const teamMembers = [
   { name: 'Alice Johnson', email: 'alice@example.com', role: 'Developer' },
@@ -140,8 +135,7 @@ Literal(teamMembers).each(Iterator.Map(
       }),
     ],
     example2: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal(simpleListItems).each(
           Iterator.Map(
@@ -155,12 +149,10 @@ Literal(teamMembers).each(Iterator.Map(
       }),
     ],
     example2Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `const simpleListItems = [
   { name: 'First item' },
@@ -181,8 +173,7 @@ Literal(simpleListItems).each(Iterator.Map(
       }),
     ],
     example3: [
-      block<TemplateWrapper>({
-        variant: 'templateWrapper',
+      TemplateWrapper({
         template: `
           <table class="govuk-table">
             <thead class="govuk-table__head">
@@ -199,8 +190,7 @@ Literal(simpleListItems).each(Iterator.Map(
         `,
         slots: {
           rows: [
-            block<CollectionBlock>({
-              variant: 'collection-block',
+            CollectionBlock({
               collection: Literal(teamMembers).each(
                 Iterator.Map(
                   Format(
@@ -217,12 +207,10 @@ Literal(simpleListItems).each(Iterator.Map(
       }),
     ],
     example3Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `Literal(teamMembers).each(Iterator.Map(
   Format(
@@ -237,8 +225,7 @@ Literal(simpleListItems).each(Iterator.Map(
       }),
     ],
     example4: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal(dashboardStats).each(
           Iterator.Map(
@@ -253,12 +240,10 @@ Literal(simpleListItems).each(Iterator.Map(
       }),
     ],
     example4Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `const dashboardStats = [
   { icon: '📋', label: 'Tasks', count: 12 },
@@ -280,8 +265,7 @@ Literal(dashboardStats).each(Iterator.Map(
       }),
     ],
     example5: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal(articles).each(
           Iterator.Map(
@@ -312,12 +296,10 @@ Literal(dashboardStats).each(Iterator.Map(
       }),
     ],
     example5Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `const articles = [
   { title: 'Getting Started', description: 'Learn the basics', views: 1250 },
@@ -354,8 +336,7 @@ Literal(articles).each(Iterator.Map(
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/iterators/playground/intro',

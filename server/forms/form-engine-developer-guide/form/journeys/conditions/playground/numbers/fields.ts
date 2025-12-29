@@ -1,9 +1,9 @@
-import { block, field, validation, Self, Answer, and } from '@form-engine/form/builders'
+import { validation, Self, Answer, and } from '@form-engine/form/builders'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKTextInput, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
@@ -12,8 +12,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  *
  * Interactive examples of number conditions with validation.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Number Conditions Playground
 
@@ -113,8 +112,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     isNumberExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_isnumber',
           label: 'Enter a number',
           inputMode: 'numeric',
@@ -132,16 +130,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     isNumberCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'cond_isnumber',
                 label: 'Enter a number',
                 validate: [
@@ -162,8 +157,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     isIntegerExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_isinteger',
           label: 'Enter a whole number',
           inputMode: 'numeric',
@@ -181,16 +175,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     isIntegerCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'cond_isinteger',
                 label: 'Enter a whole number',
                 validate: [
@@ -211,8 +202,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     greaterThanExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_greaterthan',
           label: 'Enter a number',
           hint: 'Must be greater than 10',
@@ -231,16 +221,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     greaterThanCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'cond_greaterthan',
                 label: 'Enter a number',
                 hint: 'Must be greater than 10',
@@ -262,8 +249,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     lessThanExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_lessthan',
           label: 'Enter a number',
           hint: 'Must be less than 5',
@@ -282,16 +268,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     lessThanCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'cond_lessthan',
                 label: 'Enter a number',
                 hint: 'Must be less than 5',
@@ -313,8 +296,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     betweenExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_between',
           label: 'Enter your age',
           hint: 'Must be between 18 and 65',
@@ -333,16 +315,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     betweenCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'cond_between',
                 label: 'Enter your age',
                 hint: 'Must be between 18 and 65',
@@ -364,8 +343,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     gteExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_gte',
           label: 'Enter an amount',
           hint: 'Minimum order: £100',
@@ -385,16 +363,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     gteCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'cond_gte',
                 label: 'Enter an amount',
                 hint: 'Minimum order: £100',
@@ -417,8 +392,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     dynamicExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_dynamic_min',
           label: 'Minimum value',
           hint: 'Enter any number',
@@ -435,8 +409,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_dynamic_max',
           label: 'Maximum value',
           hint: 'Must be greater than minimum',
@@ -467,16 +440,14 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     dynamicCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // The maximum field validates against the minimum field's value
-              field<GovUKTextInput>({
+              GovUKTextInput({
                 code: 'max',
                 label: 'Maximum value',
                 validate: [
@@ -502,8 +473,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/conditions/playground/strings',

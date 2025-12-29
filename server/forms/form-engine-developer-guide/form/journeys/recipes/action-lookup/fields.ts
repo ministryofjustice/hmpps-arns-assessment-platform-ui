@@ -1,14 +1,12 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 
 /**
  * Recipe: In-Page Lookup with Action Transition
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Recipe: In-Page Lookup
 
@@ -80,8 +78,7 @@ Show an error message when the lookup fails:
 `),
   slots: {
     effectExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // effects.ts
@@ -131,13 +128,12 @@ Show an error message when the lookup fails:
       }),
     ],
     stepExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // step.ts
           import {
-            step, field, block, validation, Self, Post,
+            step, validation, Self, Post,
             actionTransition, submitTransition, next,
           } from '@form-engine/form/builders'
           import { Condition } from '@form-engine/registry/conditions'
@@ -150,8 +146,7 @@ Show an error message when the lookup fails:
 
             blocks: [
               // Postcode input
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'postcode',
                 label: 'Postcode',
                 classes: 'govuk-input--width-10',
@@ -164,8 +159,7 @@ Show an error message when the lookup fails:
               }),
 
               // Lookup button
-              block<GovUKButton>({
-                variant: 'govukButton',
+              GovUKButton({
                 text: 'Find address',
                 name: 'action',
                 value: 'lookup',
@@ -173,8 +167,7 @@ Show an error message when the lookup fails:
               }),
 
               // Address fields - populated by lookup or entered manually
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'addressLine1',
                 label: 'Address line 1',
                 validate: [
@@ -184,13 +177,11 @@ Show an error message when the lookup fails:
                   }),
                 ],
               }),
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'addressLine2',
                 label: 'Address line 2 (optional)',
               }),
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'town',
                 label: 'Town or city',
                 validate: [
@@ -202,8 +193,7 @@ Show an error message when the lookup fails:
               }),
 
               // Continue button
-              block<GovUKButton>({
-                variant: 'govukButton',
+              GovUKButton({
                 text: 'Continue',
                 name: 'action',
                 value: 'continue',
@@ -234,16 +224,14 @@ Show an error message when the lookup fails:
       }),
     ],
     errorExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // In your blocks array, add an error panel that shows when lookupError is set
           import { Data } from '@form-engine/form/builders'
           import { GovUKErrorSummary } from '@form-engine-govuk-components/components'
 
-          block<GovUKErrorSummary>({
-            variant: 'govukErrorSummary',
+          GovUKErrorSummary({
             titleText: 'There is a problem',
             errorList: [
               { text: Data('lookupError') },
@@ -255,8 +243,7 @@ Show an error message when the lookup fails:
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/recipes/branching-navigation',

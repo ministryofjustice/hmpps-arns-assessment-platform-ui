@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * How to build, register, and use your own effect functions with dependency injection.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Building Custom Effects
 
@@ -145,8 +143,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     defineEffectsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { defineEffects } from '@form-engine/registry/utils/createRegisterableFunction'
@@ -182,8 +179,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     signatureCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Signature
@@ -215,8 +211,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dependencyInjectionCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { defineEffectsWithDeps } from '@form-engine/registry/utils/createRegisterableFunction'
@@ -264,8 +259,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     registrationWithoutDepsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // effects/myEffects.ts
@@ -287,8 +281,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     registrationWithDepsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // effects/myEffects.ts
@@ -319,8 +312,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     usageInFormsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { loadTransition, submitTransition, actionTransition, next, Params, Post } from '@form-engine/form/builders'
@@ -373,8 +365,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     organisingWithoutDepsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // effects/index.ts (without dependencies)
@@ -401,8 +392,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     organisingWithDepsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // effects/index.ts (with dependencies)
@@ -440,8 +430,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     organisingUsageCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { MyEffects } from './effects'
@@ -472,8 +461,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     errorHandlingCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           export const { effects, createRegistry } = defineEffectsWithDeps<MyDeps>()({
@@ -521,8 +509,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     completeExampleEffectsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // effects/assessmentEffects.ts
@@ -583,8 +570,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     completeExampleUsageCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Usage in a form step
@@ -632,8 +618,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/effects/context',
