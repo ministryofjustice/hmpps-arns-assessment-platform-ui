@@ -76,4 +76,15 @@ export class NodeIDGenerator {
       counters: new Map(this.counters),
     })
   }
+
+  /**
+   * Sync counter values from another generator
+   * Used to propagate counter state back after a pending view flushes
+   * @param source - The generator to sync from
+   */
+  syncFrom(source: NodeIDGenerator): void {
+    source.counters.forEach((value, category) => {
+      this.counters.set(category, value)
+    })
+  }
 }
