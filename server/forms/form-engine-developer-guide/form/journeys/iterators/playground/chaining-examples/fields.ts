@@ -1,11 +1,9 @@
-import { block, Format, Item, Data, Iterator } from '@form-engine/form/builders'
+import { Format, Item, Data, Iterator } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper, CollectionBlock } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
 import { Transformer } from '@form-engine/registry/transformers'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
 /**
@@ -13,8 +11,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  *
  * Interactive examples of chaining iterators and using .pipe().
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Chaining Examples
 
@@ -91,8 +88,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     example1: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Data('tableRows')
           .each(Iterator.Filter(Item().path('status').match(Condition.Equals('active'))))
@@ -102,12 +98,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example1Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Data('tableRows')
@@ -127,8 +121,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example2: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Data('simpleListItems')
           .each(
@@ -143,12 +136,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example2Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Data('simpleListItems')
@@ -165,13 +156,11 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example3: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Data('categories').each(
           Iterator.Map(
-            block<TemplateWrapper>({
-              variant: 'templateWrapper',
+            TemplateWrapper({
               template: `
                 <div class="govuk-!-margin-bottom-4">
                   <h4 class="govuk-heading-s"><strong class="govuk-tag govuk-tag--{{color}}">{{name}}</strong></h4>
@@ -191,17 +180,14 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example3Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Data('categories').each(Iterator.Map(
-                block<TemplateWrapper>({
-                  variant: 'templateWrapper',
+                TemplateWrapper({
                   template: \`
                     <div>
                       <h4><strong class="govuk-tag govuk-tag--{{color}}">{{name}}</strong></h4>
@@ -223,8 +209,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example4: [
-      block<HtmlBlock>({
-        variant: 'html',
+      HtmlBlock({
         hidden: Data('tasks')
           .each(Iterator.Find(Item().path('priority').match(Condition.Equals('high'))))
           .not.match(Condition.IsRequired()),
@@ -236,18 +221,15 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example4Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Show content only when a high priority task is found
               // (hidden when NOT found)
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 hidden: Data('tasks')
                   .each(Iterator.Find(
                     Item().path('priority').match(Condition.Equals('high'))
@@ -261,8 +243,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example5: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Data('articles')
           .each(Iterator.Filter(Item().path('status').match(Condition.Equals('published'))))
@@ -293,12 +274,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example5Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Data('articles')
@@ -331,8 +310,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/iterators/playground/dynamic-fields',

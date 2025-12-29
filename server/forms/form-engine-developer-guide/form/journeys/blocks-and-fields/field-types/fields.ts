@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination, GovUKWarningText } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Deep dive into the field() builder, common field properties, and GOV.UK field components.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Field Types
 
@@ -239,15 +237,12 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     basicUsageCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field } from '@form-engine/form/builders'
           import { GovUKTextInput } from '@form-engine-govuk-components/components'
 
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'fullName',
             label: 'Full name',
           })
@@ -255,8 +250,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     codeExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           code: 'email_address'
@@ -265,8 +259,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     defaultValueExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Static default
@@ -281,8 +274,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     validateExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           validate: [
@@ -299,8 +291,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     formattersExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Transformer } from '@form-engine/registry/transformers'
@@ -313,8 +304,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     hiddenExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Hide unless "other" is selected
@@ -325,8 +315,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     hiddenWarning: [
-      block<GovUKWarningText>({
-        variant: 'govukWarningText',
+      GovUKWarningText({
         html: `<p><strong>
                 Hidden fields are not rendered but DO participate in validation.
                 If you don't want to include it in validation, set a
@@ -335,8 +324,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dependentExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Only validate when "other" is selected
@@ -345,8 +333,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     multipleExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Capture all selected checkbox values
@@ -355,8 +342,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     sanitizeExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Default behaviour - XSS protected
@@ -369,12 +355,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     textInputCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'email',
             label: 'Email address',
             hint: 'We will use this to send your confirmation',
@@ -396,12 +380,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     radioInputCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          GovUKRadioInput({
             code: 'contactMethod',
             fieldset: {
               legend: {
@@ -431,18 +413,15 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     checkboxWarning: [
-      block<GovUKWarningText>({
-        variant: 'govukWarningText',
+      GovUKWarningText({
         html: 'Set <code>multiple: true</code> to capture all selected values as an array.',
       }),
     ],
     checkboxInputCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKCheckboxInput>({
-            variant: 'govukCheckboxInput',
+          GovUKCheckboxInput({
             code: 'notifications',
             multiple: true, // Important: captures array of values
             fieldset: {
@@ -467,12 +446,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     textareaCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKTextarea>({
-            variant: 'govukTextarea',
+          GovUKTextarea({
             code: 'description',
             label: 'Describe the issue',
             hint: 'Include as much detail as possible',
@@ -488,12 +465,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     characterCountCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKCharacterCount>({
-            variant: 'govukCharacterCount',
+          GovUKCharacterCount({
             code: 'feedback',
             label: 'Your feedback',
             maxLength: 500,
@@ -509,12 +484,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dateInputCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKDateInputFull>({
-            variant: 'govukDateInputFull',
+          GovUKDateInputFull({
             code: 'dateOfBirth',
             fieldset: {
               legend: {
@@ -539,16 +512,13 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     conditionalRevealDetails: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View conditional reveal example',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKRadioInput>({
-                variant: 'govukRadioInput',
+              GovUKRadioInput({
                 code: 'hasPhone',
                 fieldset: {
                   legend: { text: 'Can we contact you by phone?' },
@@ -557,8 +527,7 @@ export const pageContent = block<TemplateWrapper>({
                   {
                     value: 'yes',
                     text: 'Yes',
-                    block: field<GovUKTextInput>({
-                      variant: 'govukTextInput',
+                    block: GovUKTextInput({
                       code: 'phoneNumber',
                       label: 'Phone number',
                       inputType: 'tel',
@@ -574,8 +543,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/blocks-and-fields/blocks',

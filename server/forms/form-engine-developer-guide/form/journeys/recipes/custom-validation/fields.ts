@@ -1,14 +1,12 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 
 /**
  * Recipe: Custom Validation
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Recipe: Custom Validation
 
@@ -78,16 +76,14 @@ the error is shown. Think of it as "show error when...":
 `),
   slots: {
     basicExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field, validation, Self } from '@form-engine/form/builders'
+          import { validation, Self } from '@form-engine/form/builders'
           import { Condition } from '@form-engine/registry/conditions'
           import { GovUKTextInput } from '@form-engine-govuk-components/components'
 
-          export const firstName = field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          export const firstName = GovUKTextInput({
             code: 'firstName',
             label: 'First name',
             validate: [
@@ -101,8 +97,7 @@ the error is shown. Think of it as "show error when...":
       }),
     ],
     emailExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           validate: [
@@ -119,8 +114,7 @@ the error is shown. Think of it as "show error when...":
       }),
     ],
     minLengthExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           validate: [
@@ -137,8 +131,7 @@ the error is shown. Think of it as "show error when...":
       }),
     ],
     rangeExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { and } from '@form-engine/form/builders'
@@ -162,13 +155,11 @@ the error is shown. Think of it as "show error when...":
       }),
     ],
     crossFieldExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Validate that confirmation matches password
-          export const confirmPassword = field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          export const confirmPassword = GovUKTextInput({
             code: 'confirmPassword',
             label: 'Confirm password',
             inputType: 'password',
@@ -187,8 +178,7 @@ the error is shown. Think of it as "show error when...":
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/recipes/conditional-visibility',

@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * onAction transitions for handling in-page actions like lookups.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Action Transitions
 
@@ -120,8 +118,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     whenCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           when: Post('action').match(Condition.Equals('lookup'))
@@ -129,8 +126,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     effectsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           effects: [MyEffects.lookupPostcode(Post('postcode'))]
@@ -138,8 +134,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     flowCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'bash',
         code: `
           1. onLoad effects run
@@ -151,8 +146,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     addressLookupCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           step({
@@ -161,16 +155,14 @@ export const pageContent = block<TemplateWrapper>({
 
             blocks: [
               // Postcode input
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'postcode',
                 label: 'Postcode',
                 classes: 'govuk-input--width-10',
               }),
 
               // Lookup button - note the name and value
-              block<GovUKButton>({
-                variant: 'govukButton',
+              GovUKButton({
                 text: 'Find address',
                 name: 'action',
                 value: 'lookup',
@@ -178,20 +170,17 @@ export const pageContent = block<TemplateWrapper>({
               }),
 
               // Address fields - populated by the lookup
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'addressLine1',
                 label: 'Address line 1',
               }),
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'town',
                 label: 'Town or city',
               }),
 
               // Continue button
-              block<GovUKButton>({
-                variant: 'govukButton',
+              GovUKButton({
                 text: 'Continue',
                 name: 'action',
                 value: 'continue',
@@ -222,8 +211,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     effectCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           lookupPostcode: deps => async (context: EffectFunctionContext, postcode: string) => {
@@ -245,8 +233,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/transitions/access',

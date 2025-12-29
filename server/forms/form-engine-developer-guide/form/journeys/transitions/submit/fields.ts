@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * onSubmission transitions for handling form submissions, validation, and navigation.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Submit Transitions
 
@@ -159,30 +157,26 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     whenCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `when: Post('action').match(Condition.Equals('save'))`,
       }),
     ],
     guardsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `guards: Data('user.canSubmit').match(Condition.Equals(true))`,
       }),
     ],
     validateCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `validate: true   // Show errors, enable onValid/onInvalid
 validate: false  // Hide errors, use onAlways only`,
       }),
     ],
     onAlwaysCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `onAlways: {
   effects: [MyEffects.saveDraft()],
@@ -191,8 +185,7 @@ validate: false  // Hide errors, use onAlways only`,
       }),
     ],
     onValidCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `onValid: {
   effects: [MyEffects.saveAnswers()],
@@ -201,8 +194,7 @@ validate: false  // Hide errors, use onAlways only`,
       }),
     ],
     onInvalidCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `// Explicit handling
 onInvalid: {
@@ -214,16 +206,14 @@ onInvalid: {
       }),
     ],
     basicExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `step({
   path: '/personal-details',
   title: 'Personal Details',
 
   blocks: [
-    field<GovUKTextInput>({
-      variant: 'govukTextInput',
+    GovUKTextInput({
       code: 'fullName',
       label: 'Full name',
       validate: [
@@ -233,8 +223,7 @@ onInvalid: {
         }),
       ],
     }),
-    block<GovUKButton>({
-      variant: 'govukButton',
+    GovUKButton({
       text: 'Continue',
     }),
   ],
@@ -253,15 +242,13 @@ onInvalid: {
       }),
     ],
     multiButtonCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `blocks: [
   // Form fields...
 
   // Save and add another
-  block<GovUKButton>({
-    variant: 'govukButton',
+  GovUKButton({
     text: 'Save and add another',
     name: 'action',
     value: 'saveAndAdd',
@@ -269,8 +256,7 @@ onInvalid: {
   }),
 
   // Save and finish
-  block<GovUKButton>({
-    variant: 'govukButton',
+  GovUKButton({
     text: 'Save and finish',
     name: 'action',
     value: 'save',
@@ -301,8 +287,7 @@ onSubmission: [
       }),
     ],
     saveDraftCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `onSubmission: [
   // Save draft - no validation
@@ -328,8 +313,7 @@ onSubmission: [
       }),
     ],
     conditionalNavCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `onSubmission: [
   submitTransition({
@@ -355,8 +339,7 @@ onSubmission: [
       }),
     ],
     stayOnStepCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `onSubmission: [
   submitTransition({
@@ -371,8 +354,7 @@ onSubmission: [
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/transitions/action',

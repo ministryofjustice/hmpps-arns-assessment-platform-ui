@@ -1,8 +1,8 @@
-import { block, Answer, field, when, Conditional } from '@form-engine/form/builders'
+import { Answer, Conditional, when } from '@form-engine/form/builders'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKPagination, GovUKRadioInput, GovUKTextInput } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 import { exampleBox } from '../../../../helpers/exampleBox'
 
@@ -11,8 +11,7 @@ import { exampleBox } from '../../../../helpers/exampleBox'
  *
  * Documentation for when() and Conditional() if/then/else expressions.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Conditional Expressions
 
@@ -96,8 +95,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     apiCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { when, Conditional, Answer, Condition } from '@form-engine/form/builders'
@@ -119,8 +117,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     whenCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Basic structure
@@ -144,8 +141,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     conditionalCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Basic structure
@@ -172,8 +168,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     liveExample: [
       exampleBox([
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'conditionalExampleCountry',
           fieldset: {
             legend: { text: 'Where do you live?' },
@@ -185,8 +180,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'conditionalExamplePostcode',
           label: when(Answer('conditionalExampleCountry').match(Condition.Equals('US')))
             .then('ZIP Code')
@@ -201,12 +195,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     liveExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          GovUKRadioInput({
             code: 'conditionalExampleCountry',
             fieldset: { legend: { text: 'Where do you live?' } },
             items: [
@@ -216,8 +208,7 @@ export const pageContent = block<TemplateWrapper>({
             ],
           })
 
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'conditionalExamplePostcode',
 
             // Dynamic label using when()
@@ -239,8 +230,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     nestedCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Using when() - fluent nesting
@@ -281,12 +271,11 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     useCasesCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // 1. Dynamic field labels
-          field<GovUKTextInput>({
+          GovUKTextInput({
             code: 'identifier',
             label: when(Answer('idType').match(Condition.Equals('email')))
               .then('Email address')
@@ -294,8 +283,7 @@ export const pageContent = block<TemplateWrapper>({
           })
 
           // 2. Conditional content blocks
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: when(Answer('formComplete').match(Condition.Equals(true)))
               .then('<div class="govuk-panel govuk-panel--confirmation">Complete!</div>')
               .else('<p>Please complete all required fields.</p>'),
@@ -312,7 +300,7 @@ export const pageContent = block<TemplateWrapper>({
           })
 
           // 4. Conditional default values
-          field<GovUKTextInput>({
+          GovUKTextInput({
             code: 'country',
             defaultValue: Conditional({
               when: Data('user.location').match(Condition.Equals('GB')),
@@ -322,8 +310,7 @@ export const pageContent = block<TemplateWrapper>({
           })
 
           // 5. Dynamic HTML content
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format(
               '<p>Status: %1</p>',
               when(Answer('approved').match(Condition.Equals(true)))
@@ -335,8 +322,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     expressionValuesCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Reference values
@@ -365,8 +351,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/expressions/format',

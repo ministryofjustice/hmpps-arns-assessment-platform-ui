@@ -1,8 +1,8 @@
-import { block, field, validation, Self } from '@form-engine/form/builders'
+import { validation, Self } from '@form-engine/form/builders'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKCheckboxInput, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
@@ -11,8 +11,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  *
  * Interactive examples of array validation conditions (for multi-select fields).
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Array Validation Playground
 
@@ -70,8 +69,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     atLeastOneRequiredExample: [
       exampleBox([
-        field<GovUKCheckboxInput>({
-          variant: 'govukCheckboxInput',
+        GovUKCheckboxInput({
           code: 'playground_required_array',
           multiple: true,
           fieldset: {
@@ -94,16 +92,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     atLeastOneRequiredCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKCheckboxInput>({
-              variant: 'govukCheckboxInput',
+              GovUKCheckboxInput({
               code: 'playground_required_array',
               multiple: true,
               fieldset: {
@@ -129,8 +124,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     mustContainValueExample: [
       exampleBox([
-        field<GovUKCheckboxInput>({
-          variant: 'govukCheckboxInput',
+        GovUKCheckboxInput({
           code: 'playground_contains_array',
           multiple: true,
           fieldset: {
@@ -151,15 +145,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     mustContainValueCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKCheckboxInput>({
-              variant: 'govukCheckboxInput',
+            code: `GovUKCheckboxInput({
               code: 'playground_contains_array',
               multiple: true,
               fieldset: {
@@ -183,8 +174,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     containsAnyExample: [
       exampleBox([
-        field<GovUKCheckboxInput>({
-          variant: 'govukCheckboxInput',
+        GovUKCheckboxInput({
           code: 'playground_contains_any_array',
           multiple: true,
           fieldset: {
@@ -216,15 +206,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     containsAnyCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKCheckboxInput>({
-              variant: 'govukCheckboxInput',
+            code: `GovUKCheckboxInput({
               code: 'playground_contains_any_array',
               multiple: true,
               fieldset: {
@@ -257,8 +244,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     containsAllExample: [
       exampleBox([
-        field<GovUKCheckboxInput>({
-          variant: 'govukCheckboxInput',
+        GovUKCheckboxInput({
           code: 'playground_contains_all_array',
           multiple: true,
           fieldset: {
@@ -286,15 +272,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     containsAllCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKCheckboxInput>({
-              variant: 'govukCheckboxInput',
+            code: `GovUKCheckboxInput({
               code: 'playground_contains_all_array',
               multiple: true,
               fieldset: {
@@ -324,8 +307,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/validation/playground/dates',

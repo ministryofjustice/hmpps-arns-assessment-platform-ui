@@ -1,9 +1,9 @@
-import { block, field, validation, Self } from '@form-engine/form/builders'
+import { validation, Self } from '@form-engine/form/builders'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKTextInput, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 
@@ -12,8 +12,7 @@ import { exampleBox } from '../../../../../helpers/exampleBox'
  *
  * Interactive examples of number validation conditions.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Number Validation Playground
 
@@ -74,8 +73,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     rangeValidationExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_range',
           label: 'Your age',
           hint: 'You must be at least 18 years old',
@@ -99,16 +97,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     rangeValidationCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'playground_range',
                 label: 'Your age',
                 hint: 'You must be at least 18 years old',
@@ -136,8 +131,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     minimumValueExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_minimum',
           label: 'Amount to pay',
           prefix: { text: '£' },
@@ -161,16 +155,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     minimumValueCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'playground_minimum',
                 label: 'Amount to pay',
                 prefix: { text: '£' },
@@ -198,8 +189,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     maximumValueExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_maximum',
           label: 'Discount percentage',
           suffix: { text: '%' },
@@ -227,16 +217,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     maximumValueCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'playground_maximum',
                 label: 'Discount percentage',
                 suffix: { text: '%' },
@@ -268,8 +255,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     multipleItemsExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_items',
           label: 'Number of items',
           hint: 'You can order between 1 and 10 items',
@@ -297,16 +283,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     multipleItemsCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'playground_items',
                 label: 'Number of items',
                 hint: 'You can order between 1 and 10 items',
@@ -337,8 +320,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/validation/playground/strings',

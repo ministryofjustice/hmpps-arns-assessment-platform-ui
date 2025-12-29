@@ -1,14 +1,12 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 
 /**
  * Recipe: Branching Navigation
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Recipe: Branching Navigation
 
@@ -76,8 +74,7 @@ Always order from most specific to least specific:
 `),
   slots: {
     basicExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { step, submitTransition, next, Answer } from '@form-engine/form/builders'
@@ -114,8 +111,7 @@ Always order from most specific to least specific:
       }),
     ],
     multipleBranchesExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           onValid: {
@@ -140,8 +136,7 @@ Always order from most specific to least specific:
       }),
     ],
     skipExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Skip the address step if user says "no fixed address"
@@ -158,8 +153,7 @@ Always order from most specific to least specific:
       }),
     ],
     multiConditionExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { and } from '@form-engine/form/builders'
@@ -187,8 +181,7 @@ Always order from most specific to least specific:
       }),
     ],
     hubExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Different buttons for different destinations
@@ -217,8 +210,7 @@ Always order from most specific to least specific:
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/recipes/dynamic-options',

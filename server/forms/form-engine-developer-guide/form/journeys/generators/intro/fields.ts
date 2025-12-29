@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * How to use generators to produce dynamic values without input.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Generators
 
@@ -71,14 +69,13 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     basicUsageCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Generator } from '@form-engine/registry/generators'
+          import { MOJDatePicker } from '@form-engine-moj-components/components'
 
-          field<MOJDatePicker>({
-            variant: 'mojDatePicker',
+          MOJDatePicker({
             code: 'appointmentDate',
             label: 'Select appointment date',
             // Minimum date is dynamically set to "now"
@@ -88,8 +85,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dateGeneratorsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Current date and time
@@ -101,8 +97,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pipelineCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Generator } from '@form-engine/registry/generators'
@@ -121,8 +116,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/transformers/playground/arrays',

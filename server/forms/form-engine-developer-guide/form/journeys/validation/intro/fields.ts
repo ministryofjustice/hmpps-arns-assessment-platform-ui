@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Single markdown template with component slots for code examples and navigation.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Validation
 
@@ -96,14 +94,13 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     basicExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field, validation, Self, Condition } from '@form-engine/form/builders'
+          import { validation, Self, Condition } from '@form-engine/form/builders'
+          import { GovUKTextInput } from '@form-engine-govuk-components/components'
 
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'email',
             label: 'Email address',
             validate: [
@@ -121,8 +118,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     submissionOnlyCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           validation({
@@ -134,8 +130,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     detailsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           validation({
@@ -147,8 +142,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     orderExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           validate: [
@@ -172,8 +166,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/conditions/intro',

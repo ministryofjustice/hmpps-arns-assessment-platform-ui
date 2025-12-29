@@ -1,6 +1,6 @@
-import { block, field, validation, Self, Answer, and, or, not } from '@form-engine/form/builders'
+import { validation, Self, Answer, and, or, not } from '@form-engine/form/builders'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import {
   GovUKTextInput,
   GovUKRadioInput,
@@ -8,7 +8,7 @@ import {
   GovUKDetails,
   GovUKPagination,
 } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
@@ -17,8 +17,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  *
  * Interactive examples of combining conditions with and(), or().
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Predicate Combinators Playground
 
@@ -86,8 +85,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     andConditionalExample: [
       exampleBox([
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'comb_and_contact_method',
           fieldset: {
             legend: { text: 'How should we contact you?' },
@@ -104,8 +102,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'comb_and_phone',
           label: 'Phone number',
           hint: 'Only required if you selected "Phone" above',
@@ -124,15 +121,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     andConditionalCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            code: `GovUKTextInput({
               code: 'comb_and_phone',
               label: 'Phone number',
               hidden: Answer('comb_and_contact_method').not.match(Condition.Equals('phone')),
@@ -153,8 +147,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     andMultipleExample: [
       exampleBox([
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'comb_and_country',
           fieldset: {
             legend: { text: 'Which country do you live in?' },
@@ -171,8 +164,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'comb_and_postcode',
           label: 'Postcode or ZIP code',
           validate: [
@@ -192,15 +184,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     andMultipleCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            code: `GovUKTextInput({
               code: 'comb_and_postcode',
               label: 'Postcode or ZIP code',
               validate: [
@@ -223,8 +212,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     orAtLeastOneExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'comb_or_email',
           label: 'Email address',
           hint: 'Provide email or phone (or both)',
@@ -238,8 +226,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'comb_or_phone',
           label: 'Phone number',
           hint: 'Provide email or phone (or both)',
@@ -247,16 +234,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     orAtLeastOneCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-            field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            GovUKTextInput({
               code: 'comb_or_email',
               label: 'Email address',
               hint: 'Provide email or phone (or both)',
@@ -279,8 +263,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     orMultipleFormatsExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'comb_or_zip',
           label: 'ZIP code',
           hint: 'For example, 12345 or 12345-6789',
@@ -303,16 +286,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     orMultipleFormatsCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-            field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            GovUKTextInput({
               code: 'comb_or_zip',
               label: 'ZIP code',
               hint: 'For example, 12345 or 12345-6789',
@@ -339,8 +319,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     arrayExample: [
       exampleBox([
-        field<GovUKCheckboxInput>({
-          variant: 'govukCheckboxInput',
+        GovUKCheckboxInput({
           code: 'comb_checkbox_interests',
           multiple: true,
           fieldset: {
@@ -363,16 +342,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     arrayCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-            field<GovUKCheckboxInput>({
-              variant: 'govukCheckboxInput',
+            GovUKCheckboxInput({
               code: 'comb_checkbox_interests',
               multiple: true,
               fieldset: {
@@ -396,8 +372,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/conditions/playground/dates',

@@ -1,14 +1,12 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 
 /**
  * Recipe: Save Answers on Submit
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Recipe: Save Answers on Submit
 
@@ -73,8 +71,7 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
 `),
   slots: {
     basicExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { step, submitTransition, next } from '@form-engine/form/builders'
@@ -100,8 +97,7 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
       }),
     ],
     draftExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Post } from '@form-engine/form/builders'
@@ -131,20 +127,17 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
       }),
     ],
     multiButtonExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // In fields.ts - buttons with name/value
-          block<GovUKButton>({
-            variant: 'govukButton',
+          GovUKButton({
             text: 'Save and add another',
             name: 'action',
             value: 'saveAndAdd',
             classes: 'govuk-button--secondary',
           }),
-          block<GovUKButton>({
-            variant: 'govukButton',
+          GovUKButton({
             text: 'Save and finish',
             name: 'action',
             value: 'save',
@@ -173,8 +166,7 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
       }),
     ],
     saveOnInvalidExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           onSubmission: [
@@ -195,8 +187,7 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/recipes/format-value',

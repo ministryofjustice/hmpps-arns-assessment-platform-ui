@@ -12,6 +12,7 @@ import markdown from 'highlight.js/lib/languages/markdown'
 import plaintext from 'highlight.js/lib/languages/plaintext'
 import { BlockDefinition, ConditionalString, EvaluatedBlock } from '@form-engine/form/types/structures.type'
 import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
+import { block as blockBuilder } from '@form-engine/form/builders'
 
 // Register languages for SSR highlighting
 hljs.registerLanguage('typescript', typescript)
@@ -45,15 +46,11 @@ export type CodeLanguage =
   | 'plaintext'
 
 /**
- * Code Block component for displaying syntax-highlighted code.
- *
- * Renders code with server-side syntax highlighting via highlight.js.
- * The HTML is pre-highlighted during SSR - no client-side JS required.
+ * Props for the CodeBlock component.
  *
  * @example
  * ```typescript
- * block<CodeBlock>({
- *   variant: 'codeBlock',
+ * CodeBlock({
  *   language: 'typescript',
  *   code: `journey({
  *     code: 'my-form',
@@ -63,9 +60,7 @@ export type CodeLanguage =
  * })
  * ```
  */
-export interface CodeBlock extends BlockDefinition {
-  variant: 'codeBlock'
-
+export interface CodeBlockProps {
   /** The code to display */
   code: ConditionalString
 
@@ -77,6 +72,16 @@ export interface CodeBlock extends BlockDefinition {
 
   /** Whether to remove common leading whitespace from all lines (defaults to true) */
   dedent?: boolean
+}
+
+/**
+ * Code Block component for displaying syntax-highlighted code.
+ *
+ * Renders code with server-side syntax highlighting via highlight.js.
+ * The HTML is pre-highlighted during SSR - no client-side JS required.
+ */
+export interface CodeBlock extends BlockDefinition, CodeBlockProps {
+  variant: 'codeBlock'
 }
 
 /**
@@ -150,3 +155,13 @@ export const codeBlock = buildNunjucksComponent<CodeBlock>(
     })
   },
 )
+
+/**
+ * Creates a CodeBlock for displaying syntax-highlighted code.
+ *
+ * Renders code with server-side syntax highlighting via highlight.js.
+ * The HTML is pre-highlighted during SSR - no client-side JS required.
+ */
+export function CodeBlock(props: CodeBlockProps): CodeBlock {
+  return blockBuilder<CodeBlock>({ ...props, variant: 'codeBlock' })
+}
