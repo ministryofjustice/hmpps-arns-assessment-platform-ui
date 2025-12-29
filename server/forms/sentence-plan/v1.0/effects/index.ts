@@ -4,8 +4,10 @@ import { AssessmentPlatformApiClient, DeliusApiClient } from '../../../../data'
 import { loadPersonByCrn } from './loadPersonByCrn'
 import { loadOrCreatePlanByCrn } from './loadOrCreatePlanByCrn'
 import { loadOrCreatePlanByOasys } from './loadOrCreatePlanByOasys'
-import { saveGoal } from './saveGoal'
+import { loadPlanFromSession } from './loadPlanFromSession'
 import { deriveGoalCurrentAreaOfNeed } from './deriveGoalCurrentAreaOfNeed'
+import { setSessionAccessType } from './setSessionAccessType'
+import { saveGoal } from './saveGoal'
 
 /**
  * Dependencies for sentence plan effects
@@ -39,10 +41,14 @@ export type EffectFunction = (deps: SentencePlanEffectsDeps) => (context: Effect
  */
 export const { effects: SentencePlanV1Effects, createRegistry: SentencePlanV1Registry } =
   defineVersionedEffects<SentencePlanEffectsDeps>('SentencePlan.V1')({
+    // Access
+    setSessionAccessType,
+
     // Assessment
     loadPersonByCrn,
     loadOrCreatePlanByCrn,
     loadOrCreatePlanByOasys,
+    loadPlanFromSession,
 
     // Goals
     saveGoal,
