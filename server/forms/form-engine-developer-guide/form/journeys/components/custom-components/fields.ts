@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * How to build your own components for form-engine.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Custom Components
 
@@ -86,8 +84,7 @@ form package's component registry:
 `),
   slots: {
     blockExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `// myAlertBox.ts
 import type nunjucks from 'nunjucks'
@@ -130,8 +127,7 @@ export const myAlertBox = buildNunjucksComponent<MyAlertBox>('myAlertBox', alert
       }),
     ],
     templateExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'html',
         code: `{# components/alert-box/template.njk #}
 <div class="alert-box {{ params.typeClass }}">
@@ -143,8 +139,7 @@ export const myAlertBox = buildNunjucksComponent<MyAlertBox>('myAlertBox', alert
       }),
     ],
     usageExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `import { block } from '@form-engine/form/builders'
 import { MyAlertBox } from './components/myAlertBox'
@@ -161,8 +156,7 @@ blocks: [
       }),
     ],
     fieldExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `// myStarRating.ts
 import type nunjucks from 'nunjucks'
@@ -209,8 +203,7 @@ export const myStarRating = buildNunjucksComponent<MyStarRating>('myStarRating',
       }),
     ],
     transformExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `async function myDatePickerRenderer(
   block: EvaluatedBlock<MyDatePicker>,
@@ -249,8 +242,7 @@ function toDisplayFormat(value: unknown): string | undefined {
       }),
     ],
     registerExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `// In your form's index.ts or components/index.ts
 import { myAlertBox } from './components/myAlertBox'
@@ -264,8 +256,7 @@ formEngine.registerComponents({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/components/built-in',

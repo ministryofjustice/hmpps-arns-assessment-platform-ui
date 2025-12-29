@@ -1,14 +1,13 @@
-import { block, field, validation, Self, Answer, Format, when, Conditional, and, not } from '@form-engine/form/builders'
+import { and, Answer, Conditional, Format, not, Self, validation, when } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import {
-  GovUKTextInput,
   GovUKDetails,
   GovUKPagination,
   GovUKRadioInput,
+  GovUKTextInput,
 } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 
@@ -17,8 +16,7 @@ import { exampleBox } from '../../../../../helpers/exampleBox'
  *
  * Interactive examples of when() and Conditional() expressions.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Conditional Expressions Playground
 
@@ -85,8 +83,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     example1: [
       exampleBox([
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'playground_cond_country',
           fieldset: {
             legend: { text: 'Where do you live?' },
@@ -98,8 +95,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_cond_postcode',
           classes: 'govuk-input--width-10',
           label: Conditional({
@@ -123,8 +119,7 @@ export const pageContent = block<TemplateWrapper>({
           hidden: Answer('playground_cond_country').not.match(Condition.IsRequired()),
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: `
             <div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
               <strong>Beverly Hills, that's where I want to be! 🌴</strong>
@@ -140,15 +135,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     example1Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
+              GovUKTextInput({
                 code: 'postcode',
                 label: Conditional({
                   when: Answer('country').match(Condition.Equals('US')),
@@ -172,8 +165,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     example2: [
       exampleBox([
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'playground_cond_tier',
           fieldset: {
             legend: { text: 'Select your membership tier' },
@@ -185,8 +177,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: Answer('playground_cond_tier').not.match(Condition.IsRequired()),
           content: when(Answer('playground_cond_tier').match(Condition.Equals('premium')))
             .then(
@@ -226,16 +217,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     example2Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 content: when(Answer('tier').match(Condition.Equals('premium')))
                   .then('<div class="govuk-inset-text">Premium Benefits...</div>')
                   .else(
@@ -251,8 +239,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     example3: [
       exampleBox([
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'playground_cond_status',
           fieldset: {
             legend: { text: 'Application status' },
@@ -265,8 +252,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: Answer('playground_cond_status').not.match(Condition.IsRequired()),
           content: Format(
             `<div class="govuk-!-margin-top-4">
@@ -314,12 +300,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     example3Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Format(
@@ -346,8 +330,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     example4: [
       exampleBox([
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'playground_cond_contact',
           fieldset: {
             legend: { text: 'How should we contact you?' },
@@ -359,8 +342,7 @@ export const pageContent = block<TemplateWrapper>({
             {
               value: 'other',
               text: 'Other',
-              block: field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              block: GovUKTextInput({
                 code: 'playground_cond_other',
                 label: 'Describe your preferred contact method',
                 dependent: Answer('playground_cond_contact').match(Condition.Equals('other')),
@@ -375,8 +357,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: Answer('playground_cond_contact').not.match(Condition.IsRequired()),
           content: Format(
             `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
@@ -390,16 +371,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     example4Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKRadioInput>({
-                variant: 'govukRadioInput',
+              GovUKRadioInput({
                 code: 'contactMethod',
                 fieldset: { legend: { text: 'How should we contact you?' } },
                 items: [
@@ -409,8 +387,7 @@ export const pageContent = block<TemplateWrapper>({
                     value: 'other',
                     text: 'Other',
                     // Embedded block is revealed when this option is selected
-                    block: field<GovUKTextInput>({
-                      variant: 'govukTextInput',
+                    block: GovUKTextInput({
                       code: 'otherMethod',
                       label: 'Describe your preferred contact method',
                       // Only validate when parent option is selected
@@ -432,8 +409,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     example5: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_cond_username',
           label: 'Your name',
           validate: [
@@ -444,8 +420,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'playground_cond_returning',
           fieldset: {
             legend: { text: 'Have you used this service before?' },
@@ -457,8 +432,7 @@ export const pageContent = block<TemplateWrapper>({
           hidden: Answer('playground_cond_username').not.match(Condition.IsRequired()),
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: Answer('playground_cond_returning').not.match(Condition.IsRequired()),
           content: Format(
             `<div class="govuk-panel govuk-panel--confirmation govuk-!-margin-top-4 govuk-!-margin-bottom-0">
@@ -476,12 +450,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     example5Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Format(
@@ -499,8 +471,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/expressions/playground/format',

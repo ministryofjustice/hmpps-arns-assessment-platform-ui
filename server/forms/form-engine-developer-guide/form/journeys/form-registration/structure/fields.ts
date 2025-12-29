@@ -1,16 +1,14 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 
 /**
  * Form Registration - Directory Structure
  *
  * How to organize form files and folders.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Directory Structure
 
@@ -91,8 +89,7 @@ Custom Nunjucks templates for the form's HTML layout.
 `),
   slots: {
     structureExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'plaintext',
         code: `
           my-form/
@@ -122,8 +119,7 @@ Custom Nunjucks templates for the form's HTML layout.
       }),
     ],
     indexExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // my-form/index.ts
@@ -143,8 +139,7 @@ Custom Nunjucks templates for the form's HTML layout.
       }),
     ],
     journeyExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // my-form/form/index.ts
@@ -168,8 +163,7 @@ Custom Nunjucks templates for the form's HTML layout.
       }),
     ],
     effectsExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // my-form/effects.ts
@@ -190,8 +184,7 @@ Custom Nunjucks templates for the form's HTML layout.
       }),
     ],
     stepExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // my-form/form/steps/intro/step.ts
@@ -211,8 +204,7 @@ Custom Nunjucks templates for the form's HTML layout.
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/form-registration/intro',

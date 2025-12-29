@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * How to build, register, and use your own condition functions.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Building Custom Conditions
 
@@ -144,8 +142,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     defineConditionsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { defineConditions } from '@form-engine/registry/utils/createRegisterableFunction'
@@ -170,8 +167,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     signatureCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Signature
@@ -191,8 +187,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     assertionsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { defineConditions } from '@form-engine/registry/utils/createRegisterableFunction'
@@ -222,8 +217,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     assertionErrorCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'bash',
         code: `
           MyConditions.HasMinimumAge (minAge) expects a number but received string.
@@ -232,8 +226,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dynamicArgsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { ValueExpr } from '@form-engine/form/types/expressions.type'
@@ -257,8 +250,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     registrationCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // conditions/myConditions.ts
@@ -282,17 +274,15 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     usageCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field, validation, Self } from '@form-engine/form/builders'
+          import { validation, Self } from '@form-engine/form/builders'
           import { GovUKTextInput } from '@form-engine-govuk-components/components'
           import { Condition } from '@form-engine/registry/conditions'
           import { MyConditions } from './conditions/myConditions'
 
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'prisonNumber',
             label: 'Prison number',
             hint: 'For example, A1234BC',
@@ -314,8 +304,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     asyncCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { defineConditionsWithDeps } from '@form-engine/registry/utils/createRegisterableFunction'
@@ -349,8 +338,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     organisingCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // conditions/index.ts
@@ -378,8 +366,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     completeExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // conditions/prisonerConditions.ts
@@ -417,18 +404,16 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     completeExampleUsageCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Usage in a form step
-          import { field, validation, Self } from '@form-engine/form/builders'
+          import { validation, Self } from '@form-engine/form/builders'
           import { GovUKTextInput } from '@form-engine-govuk-components/components'
           import { Condition } from '@form-engine/registry/conditions'
           import { PrisonerConditions } from './conditions/prisonerConditions'
 
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'prisonNumber',
             label: 'Prison number',
             hint: 'For example, A1234BC',
@@ -448,8 +433,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/conditions/intro',

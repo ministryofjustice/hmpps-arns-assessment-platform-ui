@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Deep dive into the EffectFunctionContext API and how to use it.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # The Context Object
 
@@ -183,8 +181,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     getAnswerCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Get a single answer
@@ -197,8 +194,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     setAnswerCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Pre-populate a text field
@@ -216,8 +212,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     getAnswersCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Get all answers for saving
@@ -229,8 +224,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     hasAnswerCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Check if user has provided an answer
@@ -244,8 +238,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     setDataCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Store API response
@@ -268,8 +261,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     getDataCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Get specific data
@@ -289,8 +281,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dataInFormsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // In your effect
@@ -300,24 +291,21 @@ export const pageContent = block<TemplateWrapper>({
           ])
 
           // In your form definition
-          field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          GovUKRadioInput({
             code: 'country',
             fieldset: { legend: { text: 'Select your country' } },
             items: Data('countries'),  // Uses data from context
           })
 
           // Access nested data
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format('<p>Assessment ID: %1</p>', Data('assessment.id')),
           })
         `,
       }),
     ],
     getRequestParamCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Route: /assessment/:assessmentId/item/:itemId
@@ -336,8 +324,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     getQueryParamCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // URL: /search?q=test&page=2&tags=a&tags=b
@@ -360,8 +347,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     getPostDataCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Get specific POST value
@@ -381,8 +367,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     getSessionCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Get the session object
@@ -408,8 +393,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     getStateCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Get specific state value
@@ -434,8 +418,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     answerHistoryCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Get history for a single answer
@@ -476,8 +459,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     completeExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           LoadAndPrepareAssessment: deps => async (context) => {
@@ -522,8 +504,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/effects/intro',

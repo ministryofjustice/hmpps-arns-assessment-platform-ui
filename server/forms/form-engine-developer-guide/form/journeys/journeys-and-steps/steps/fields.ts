@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Deep dive into the step() builder and all its configuration options.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Step Configuration
 
@@ -169,8 +167,7 @@ Here's a step definition using common options:
 `),
   slots: {
     basicCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `import { step } from '@form-engine/form/builders'
 
@@ -182,51 +179,44 @@ export const myStep = step({
       }),
     ],
     pathExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `path: '/personal-details'`,
       }),
     ],
     titleExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `title: 'Enter your personal details'`,
       }),
     ],
     isEntryPointExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `isEntryPoint: true`,
       }),
     ],
     blocksExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `blocks: [
-  block<HtmlBlock>({
-    variant: 'html',
+  HtmlBlock({
     content: '<h1>Welcome</h1>',
   }),
-  field<TextField>({
-    variant: 'text',
+  GovUKTextInput({
     code: 'fullName',
     label: 'Full name',
   }),
-  field<TextField>({
-    variant: 'email',
+  GovUKTextInput({
     code: 'email',
     label: 'Email address',
+    inputType: 'email',
   }),
 ]`,
       }),
     ],
     viewExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `view: {
   // Use a different template
@@ -243,8 +233,7 @@ export const myStep = step({
       }),
     ],
     backlinkExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `// Custom back link URL
 backlink: '/forms/my-journey/previous-section'
@@ -254,8 +243,7 @@ backlink: ''`,
       }),
     ],
     metadataExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `metadata: {
   section: 'personal-info',
@@ -265,8 +253,7 @@ backlink: ''`,
       }),
     ],
     dataExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `data: {
   pageHeading: 'Enter your personal details',
@@ -275,8 +262,7 @@ backlink: ''`,
       }),
     ],
     onLoadExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `onLoad: [
   loadTransition({
@@ -286,8 +272,7 @@ backlink: ''`,
       }),
     ],
     onAccessExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `onAccess: [
   accessTransition({
@@ -298,8 +283,7 @@ backlink: ''`,
       }),
     ],
     onActionExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `onAction: [
   actionTransition({
@@ -310,8 +294,7 @@ backlink: ''`,
       }),
     ],
     onSubmissionExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `onSubmission: [
   submitTransition({
@@ -325,16 +308,13 @@ backlink: ''`,
       }),
     ],
     completeExample: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View complete example',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `import { step, block, field, Format, Data } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TextField } from '@form-engine/registry/components/text-input'
+            code: `import { step, block, Format, Data } from '@form-engine/form/builders'
+import { GovUKTextInput } from '@form-engine-govuk-components/components'
 
 export const personalDetailsStep = step({
   // Required
@@ -359,21 +339,19 @@ export const personalDetailsStep = step({
 
   // Content and inputs
   blocks: [
-    block<HtmlBlock>({
-      variant: 'html',
+    HtmlBlock({
       content: Format('<h1 class="govuk-heading-l">{0}</h1>', Data('pageHeading')),
     }),
-    field<TextField>({
-      variant: 'text',
+    GovUKTextInput({
       code: 'fullName',
       label: 'Full name',
       hint: 'Enter your first and last name',
     }),
-    field<TextField>({
-      variant: 'email',
+    GovUKTextInput({
       code: 'email',
       label: 'Email address',
       hint: "We'll use this to send your confirmation",
+      inputType: 'email',
     }),
   ],
 })`,
@@ -382,8 +360,7 @@ export const personalDetailsStep = step({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/journeys-and-steps/journeys',

@@ -1,9 +1,8 @@
-import { block, Format, Item, Literal, Iterator, and, or, when } from '@form-engine/form/builders'
+import { Format, Item, Literal, Iterator, and, or, when } from '@form-engine/form/builders'
+import { TemplateWrapper, CollectionBlock } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
 const tableRows = [
@@ -27,8 +26,7 @@ const tasks = [
  *
  * Interactive examples of Iterator.Filter.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Iterator.Filter Examples
 
@@ -81,8 +79,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     example1: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal(tableRows)
           .each(Iterator.Filter(Item().path('status').match(Condition.Equals('active'))))
@@ -98,12 +95,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example1Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `const tableRows = [
   { name: 'Alice Johnson', role: 'Developer', status: 'active' },
@@ -129,8 +124,7 @@ Literal(tableRows)
       }),
     ],
     example2: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal(tasks)
           .each(Iterator.Filter(Item().path('status').not.match(Condition.Equals('completed'))))
@@ -148,12 +142,10 @@ Literal(tableRows)
       }),
     ],
     example2Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `const tasks = [
   { task: 'Review pull request', status: 'completed', priority: 'high' },
@@ -181,8 +173,7 @@ Literal(tasks)
       }),
     ],
     example3: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal(tasks)
           .each(
@@ -204,12 +195,10 @@ Literal(tasks)
       }),
     ],
     example3Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `const tasks = [
   { task: 'Review pull request', status: 'completed', priority: 'high' },
@@ -237,8 +226,7 @@ Literal(tasks)
       }),
     ],
     example4: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal(tasks)
           .each(
@@ -266,12 +254,10 @@ Literal(tasks)
       }),
     ],
     example4Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `Literal(tasks)
   .each(Iterator.Filter(
@@ -297,8 +283,7 @@ Literal(tasks)
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/iterators/playground/map-examples',

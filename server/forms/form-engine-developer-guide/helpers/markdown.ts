@@ -1,5 +1,4 @@
-import { block } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
+import { HtmlBlock } from '@form-engine/registry/components'
 import type MarkdownIt from 'markdown-it'
 import type { Token, Options, Renderer } from 'markdown-it'
 import createMarkdownIt from 'markdown-it'
@@ -234,8 +233,7 @@ export function parseGovUKMarkdown(markdown: string): string {
 export function govukMarkdown(strings: TemplateStringsArray, ...values: unknown[]) {
   const markdown = strings.reduce((acc, str, i) => acc + str + (values[i] ?? ''), '')
 
-  return block<HtmlBlock>({
-    variant: 'html',
+  return HtmlBlock({
     content: parseGovUKMarkdown(markdown),
   })
 }

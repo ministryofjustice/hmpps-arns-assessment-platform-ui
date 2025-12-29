@@ -1,10 +1,10 @@
-import { block, field, validation, Self, and } from '@form-engine/form/builders'
+import { validation, Self, and } from '@form-engine/form/builders'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKDateInputFull, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
 import { MOJDatePicker } from '@form-engine-moj-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
@@ -13,8 +13,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  *
  * Interactive examples of date validation conditions.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Date Validation Playground
 
@@ -133,8 +132,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     validDateExample: [
       exampleBox([
-        field<GovUKDateInputFull>({
-          variant: 'govukDateInputFull',
+        GovUKDateInputFull({
           code: 'playground_valid_date',
           fieldset: {
             legend: { text: 'When did this happen?' },
@@ -175,15 +173,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     validDateCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKDateInputFull>({
-              variant: 'govukDateInputFull',
+            code: `GovUKDateInputFull({
               code: 'playground_valid_date',
               fieldset: {
                 legend: { text: 'When did this happen?' },
@@ -229,8 +224,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     futureDateExample: [
       exampleBox([
-        field<GovUKDateInputFull>({
-          variant: 'govukDateInputFull',
+        GovUKDateInputFull({
           code: 'playground_future_date',
           fieldset: {
             legend: { text: 'Appointment date' },
@@ -255,15 +249,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     futureDateCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKDateInputFull>({
-              variant: 'govukDateInputFull',
+            code: `GovUKDateInputFull({
               code: 'playground_future_date',
               fieldset: {
                 legend: { text: 'Appointment date' },
@@ -291,8 +282,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     beforeDateExample: [
       exampleBox([
-        field<GovUKDateInputFull>({
-          variant: 'govukDateInputFull',
+        GovUKDateInputFull({
           code: 'playground_before_date',
           fieldset: {
             legend: { text: 'Registration date' },
@@ -317,15 +307,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     beforeDateCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKDateInputFull>({
-              variant: 'govukDateInputFull',
+            code: `GovUKDateInputFull({
               code: 'playground_before_date',
               fieldset: {
                 legend: { text: 'Registration date' },
@@ -353,8 +340,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     afterDateExample: [
       exampleBox([
-        field<GovUKDateInputFull>({
-          variant: 'govukDateInputFull',
+        GovUKDateInputFull({
           code: 'playground_after_date',
           fieldset: {
             legend: { text: 'Employment start date' },
@@ -379,15 +365,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     afterDateCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKDateInputFull>({
-              variant: 'govukDateInputFull',
+            code: `GovUKDateInputFull({
               code: 'playground_after_date',
               fieldset: {
                 legend: { text: 'Employment start date' },
@@ -415,8 +398,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     mojValidDateExample: [
       exampleBox([
-        field<MOJDatePicker>({
-          variant: 'mojDatePicker',
+        MOJDatePicker({
           code: 'playground_moj_valid_date',
           label: { text: 'Event date' },
           hint: 'For example, 17/5/2024',
@@ -435,15 +417,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     mojValidDateCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<MOJDatePicker>({
-              variant: 'mojDatePicker',
+            code: `MOJDatePicker({
               code: 'playground_moj_valid_date',
               label: { text: 'Event date' },
               hint: 'For example, 17/5/2024',
@@ -465,8 +444,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     mojFutureDateExample: [
       exampleBox([
-        field<MOJDatePicker>({
-          variant: 'mojDatePicker',
+        MOJDatePicker({
           code: 'playground_moj_future_date',
           label: { text: 'Booking date' },
           hint: 'Select a date for your appointment',
@@ -489,15 +467,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     mojFutureDateCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<MOJDatePicker>({
-              variant: 'mojDatePicker',
+            code: `MOJDatePicker({
               code: 'playground_moj_future_date',
               label: { text: 'Booking date' },
               hint: 'Select a date for your appointment',
@@ -523,8 +498,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     mojRangeDateExample: [
       exampleBox([
-        field<MOJDatePicker>({
-          variant: 'mojDatePicker',
+        MOJDatePicker({
           code: 'playground_moj_range_date',
           label: { text: 'Conference date' },
           hint: 'Select a date in January 2025',
@@ -553,15 +527,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     mojRangeDateCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<MOJDatePicker>({
-              variant: 'mojDatePicker',
+            code: `MOJDatePicker({
               code: 'playground_moj_range_date',
               label: { text: 'Conference date' },
               hint: 'Select a date in January 2025',
@@ -593,8 +564,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     mojWeekdayDateExample: [
       exampleBox([
-        field<MOJDatePicker>({
-          variant: 'mojDatePicker',
+        MOJDatePicker({
           code: 'playground_moj_weekday_date',
           label: { text: 'Office appointment date' },
           hint: 'Appointments are only available on weekdays',
@@ -614,15 +584,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     mojWeekdayDateCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<MOJDatePicker>({
-              variant: 'mojDatePicker',
+            code: `MOJDatePicker({
               code: 'playground_moj_weekday_date',
               label: { text: 'Office appointment date' },
               hint: 'Appointments are only available on weekdays',
@@ -644,8 +611,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/validation/playground/numbers',

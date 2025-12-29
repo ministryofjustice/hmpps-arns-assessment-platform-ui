@@ -1,14 +1,12 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 
 /**
  * Recipe: Conditional Field Visibility
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Recipe: Conditional Visibility
 
@@ -80,16 +78,14 @@ option is selected. This is the GOV.UK "conditional reveal" pattern.
 `),
   slots: {
     basicExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field, Answer } from '@form-engine/form/builders'
+          import { Answer } from '@form-engine/form/builders'
           import { Condition } from '@form-engine/registry/conditions'
           import { GovUKRadioInput, GovUKTextInput } from '@form-engine-govuk-components/components'
 
-          export const contactMethod = field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          export const contactMethod = GovUKRadioInput({
             code: 'contactMethod',
             fieldset: {
               legend: { text: 'How should we contact you?' },
@@ -101,8 +97,7 @@ option is selected. This is the GOV.UK "conditional reveal" pattern.
             ],
           })
 
-          export const phoneNumber = field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          export const phoneNumber = GovUKTextInput({
             code: 'phoneNumber',
             label: 'Phone number',
             // Hide when contactMethod is NOT 'phone'
@@ -114,16 +109,14 @@ option is selected. This is the GOV.UK "conditional reveal" pattern.
       }),
     ],
     inlineRevealExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field, validation, Self, Answer } from '@form-engine/form/builders'
+          import { validation, Self, Answer } from '@form-engine/form/builders'
           import { Condition } from '@form-engine/registry/conditions'
           import { GovUKRadioInput, GovUKTextInput } from '@form-engine-govuk-components/components'
 
-          export const hasPhone = field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          export const hasPhone = GovUKRadioInput({
             code: 'hasPhone',
             fieldset: {
               legend: { text: 'Can we contact you by phone?' },
@@ -133,8 +126,7 @@ option is selected. This is the GOV.UK "conditional reveal" pattern.
                 value: 'yes',
                 text: 'Yes',
                 // Nested field revealed when this option is selected
-                block: field<GovUKTextInput>({
-                  variant: 'govukTextInput',
+                block: GovUKTextInput({
                   code: 'phoneNumber',
                   label: 'Phone number',
                   inputType: 'tel',
@@ -155,8 +147,7 @@ option is selected. This is the GOV.UK "conditional reveal" pattern.
       }),
     ],
     notEmptyExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Show when a field has any value (hide when empty)
@@ -165,8 +156,7 @@ option is selected. This is the GOV.UK "conditional reveal" pattern.
       }),
     ],
     oneOfExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Show when value is one of several options
@@ -177,8 +167,7 @@ option is selected. This is the GOV.UK "conditional reveal" pattern.
       }),
     ],
     multipleExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { and } from '@form-engine/form/builders'
@@ -194,8 +183,7 @@ option is selected. This is the GOV.UK "conditional reveal" pattern.
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/recipes/intro',

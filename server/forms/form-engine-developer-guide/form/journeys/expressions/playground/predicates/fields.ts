@@ -1,15 +1,14 @@
-import { block, field, validation, Self, Answer, Format, and, or, not } from '@form-engine/form/builders'
+import { and, Answer, Format, not, or, Self, validation } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import {
-  GovUKTextInput,
+  GovUKCheckboxInput,
   GovUKDetails,
   GovUKPagination,
   GovUKRadioInput,
-  GovUKCheckboxInput,
+  GovUKTextInput,
 } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 
@@ -18,8 +17,7 @@ import { exampleBox } from '../../../../../helpers/exampleBox'
  *
  * Interactive examples of and(), or(), not() predicate combinators.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Predicates Playground
 
@@ -89,8 +87,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     example1: [
       exampleBox([
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'playground_pred_terms',
           fieldset: {
             legend: { text: 'Do you agree to the terms and conditions?' },
@@ -101,8 +98,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'playground_pred_privacy',
           fieldset: {
             legend: { text: 'Do you agree to the privacy policy?' },
@@ -113,8 +109,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: not(
             and(
               Answer('playground_pred_terms').match(Condition.Equals('yes')),
@@ -131,8 +126,7 @@ export const pageContent = block<TemplateWrapper>({
           `,
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: and(
             Answer('playground_pred_terms').match(Condition.Equals('yes')),
             Answer('playground_pred_privacy').match(Condition.Equals('yes')),
@@ -146,12 +140,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     example1Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `// Show when BOTH are "yes" - use not() to invert
 hidden: not(
@@ -172,8 +164,7 @@ hidden: and(
     ],
     example2: [
       exampleBox([
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'playground_pred_role',
           fieldset: {
             legend: { text: 'What is your role?' },
@@ -186,8 +177,7 @@ hidden: and(
           ],
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: not(
             or(
               Answer('playground_pred_role').match(Condition.Equals('admin')),
@@ -205,8 +195,7 @@ hidden: and(
           `,
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: or(
             Answer('playground_pred_role').match(Condition.Equals('admin')),
             Answer('playground_pred_role').match(Condition.Equals('manager')),
@@ -221,12 +210,10 @@ hidden: and(
       ]),
     ],
     example2Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `// Show admin panel when admin OR manager - use not() to invert
 hidden: not(
@@ -247,8 +234,7 @@ hidden: or(
     ],
     example3: [
       exampleBox([
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'playground_pred_membership',
           fieldset: {
             legend: { text: 'Membership level' },
@@ -260,8 +246,7 @@ hidden: or(
           ],
         }),
 
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'playground_pred_marketing',
           fieldset: {
             legend: { text: 'Would you like to receive marketing emails?' },
@@ -273,8 +258,7 @@ hidden: or(
           hidden: Answer('playground_pred_membership').not.match(Condition.IsRequired()),
         }),
 
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_pred_discount',
           label: 'Discount code',
           hint: 'Enter your promotional code for 20% off',
@@ -290,8 +274,7 @@ hidden: or(
           ),
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: Answer('playground_pred_membership').not.match(Condition.IsRequired()),
           content: `
             <div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
@@ -302,12 +285,10 @@ hidden: or(
       ]),
     ],
     example3Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `// Show for: Premium OR (Standard AND marketing)
 hidden: not(
@@ -325,8 +306,7 @@ hidden: not(
     ],
     example4: [
       exampleBox([
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'playground_pred_accounttype',
           fieldset: {
             legend: { text: 'Account type' },
@@ -337,8 +317,7 @@ hidden: not(
           ],
         }),
 
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_pred_company',
           label: 'Company name',
           hidden: Answer('playground_pred_accounttype').not.match(Condition.Equals('business')),
@@ -354,8 +333,7 @@ hidden: not(
           ],
         }),
 
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_pred_vat',
           label: 'VAT number (optional)',
           hint: 'For example, GB123456789',
@@ -365,14 +343,12 @@ hidden: not(
       ]),
     ],
     example4Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKTextInput>({
+            code: `GovUKTextInput({
   code: 'company',
   label: 'Company name',
   hidden: Answer('accountType').not.match(Condition.Equals('business')),
@@ -394,8 +370,7 @@ hidden: not(
     ],
     example5: [
       exampleBox([
-        field<GovUKCheckboxInput>({
-          variant: 'govukCheckboxInput',
+        GovUKCheckboxInput({
           code: 'playground_pred_needs',
           multiple: true,
           fieldset: {
@@ -409,8 +384,7 @@ hidden: not(
           ],
         }),
 
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'playground_pred_fooddetails',
           label: 'Please describe your food allergy or dietary requirements',
           hidden: not(
@@ -431,8 +405,7 @@ hidden: not(
           ],
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: Answer('playground_pred_needs').not.match(Condition.IsRequired()),
           content: Format(
             `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
@@ -443,12 +416,10 @@ hidden: not(
       ]),
     ],
     example5Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `// Show details field when allergy OR dietary is checked
 hidden: not(
@@ -468,8 +439,7 @@ dependent: or(
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/expressions/playground/conditional',

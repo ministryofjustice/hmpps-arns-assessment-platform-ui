@@ -1,8 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { HtmlBlock } from '@form-engine/registry/components/html'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination, GovUKWarningText } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -11,8 +9,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  * Comprehensive documentation for the Self() reference,
  * covering field-scoped access, validation patterns, and how it resolves.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Self()
 
@@ -115,8 +112,7 @@ you needing to specify it.
 `),
   slots: {
     signatureCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           Self(): ReferenceExpr
@@ -124,12 +120,11 @@ you needing to specify it.
       }),
     ],
     transformCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // You write:
-          field({
+          GovUKTextInput({
             code: 'email',
             validate: [
               validation({
@@ -140,7 +135,7 @@ you needing to specify it.
           })
 
           // The form-engine transforms it to:
-          field({
+          GovUKTextInput({
             code: 'email',
             validate: [
               validation({
@@ -153,14 +148,12 @@ you needing to specify it.
       }),
     ],
     validationCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field, validation, Self, Condition } from '@form-engine/form/builders'
+          import { validation, Self, Condition } from '@form-engine/form/builders'
 
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'fullName',
             label: 'Full name',
             validate: [
@@ -185,8 +178,7 @@ you needing to specify it.
       }),
     ],
     notCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // "Show error when value is NOT a valid email"
@@ -210,20 +202,17 @@ you needing to specify it.
       }),
     ],
     implicitCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // What you write:
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'email',
             label: 'Email',
           })
 
           // What the form-engine adds internally:
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'email',
             label: 'Email',
             value: Self(),  // <-- Added automatically
@@ -232,18 +221,15 @@ you needing to specify it.
       }),
     ],
     warning: [
-      block<GovUKWarningText>({
-        variant: 'govukWarningText',
+      GovUKWarningText({
         html: '<code>Self()</code> can only be used inside a field block. Using it elsewhere will throw a compilation error.',
       }),
     ],
     advancedDetails: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'Advanced: Accessing nested properties within Self()',
         content: [
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: `
               <p class="govuk-body">
                 For composite fields (like date inputs that store structured objects),
@@ -251,14 +237,12 @@ you needing to specify it.
               </p>
             `,
           }),
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Date input stores { day, month, year }
               // You can validate individual parts:
-              field<GovUKDateInputFull>({
-                variant: 'govukDateInputFull',
+              GovUKDateInputFull({
                 code: 'startDate',
                 validate: [
                   validation({
@@ -279,13 +263,11 @@ you needing to specify it.
       }),
     ],
     crossFieldCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Cross-field validation pattern
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'confirmEmail',
             label: 'Confirm email address',
             validate: [
@@ -303,8 +285,7 @@ you needing to specify it.
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/references/data',

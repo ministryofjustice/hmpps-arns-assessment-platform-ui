@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination, GovUKWarningText } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Deep dive into the block() builder and the various block types available.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Block Types
 
@@ -89,7 +87,7 @@ export const pageContent = block<TemplateWrapper>({
 
   ### Collection Block
 
-  \`variant: 'collection-block'\`
+  \`CollectionBlock({ ... })\`
 
   Iterates over a data source to produce repeated templates. Each item in the
   collection generates one instance of the template with \`@item\` references
@@ -175,23 +173,20 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     basicUsageCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { block } from '@form-engine/form/builders'
           import { HtmlBlock } from '@form-engine/registry/components/html'
 
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: '<p>Hello world</p>',
           })
         `,
       }),
     ],
     variantExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           variant: 'html'
@@ -201,8 +196,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     metadataExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           metadata: { section: 'intro', analyticsId: 'welcome-text' }
@@ -210,12 +204,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     htmlBlockCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: \`
               <h1 class="govuk-heading-l">Welcome</h1>
               <p class="govuk-body">
@@ -228,18 +220,15 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     htmlBlockWarning: [
-      block<GovUKWarningText>({
-        variant: 'govukWarningText',
+      GovUKWarningText({
         text: 'HTML content is not sanitised. Only use trusted content sources.',
       }),
     ],
     templateWrapperCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          block<TemplateWrapper>({
-            variant: 'templateWrapper',
+          TemplateWrapper({
             template: \`
               <div class="app-card">
                 <h2 class="app-card__title">{{title}}</h2>
@@ -256,14 +245,12 @@ export const pageContent = block<TemplateWrapper>({
             },
             slots: {
               content: [
-                block<HtmlBlock>({
-                  variant: 'html',
+                HtmlBlock({
                   content: '<p>Review your information below.</p>',
                 }),
               ],
               actions: [
-                block<GovUKButton>({
-                  variant: 'govukButton',
+                GovUKButton({
                   text: 'Continue',
                 }),
               ],
@@ -273,18 +260,17 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     collectionBlockCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Data, Item, Iterator, Format } from '@form-engine/form/builders'
+          import { CollectionBlock } from '@form-engine/registry/components'
+          import { HtmlBlock } from '@form-engine/registry/components/html'
 
-          block<CollectionBlock>({
-            variant: 'collection-block',
+          CollectionBlock({
             collection: Data('users').each(
               Iterator.Map(
-                block<HtmlBlock>({
-                  variant: 'html',
+                HtmlBlock({
                   content: Format(
                     '<p><strong>%1</strong> - %2</p>',
                     Item().path('name'),
@@ -294,8 +280,7 @@ export const pageContent = block<TemplateWrapper>({
               )
             ),
             fallback: [
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 content: '<p>No users found.</p>',
               }),
             ],
@@ -304,16 +289,13 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     detailsBlockCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          block<GovUKDetails>({
-            variant: 'govukDetails',
+          GovUKDetails({
             summaryText: 'Help with national insurance number',
             content: [
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 content: \`
                   <p>Your National Insurance number can be found on:</p>
                   <ul>
@@ -329,12 +311,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     codeBlockCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          block<GovUKCodeBlock>({
-            variant: 'govukCodeBlock',
+          GovUKCodeBlock({
             language: 'typescript',
             title: 'Example function',
             code: \`
@@ -347,12 +327,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     paginationBlockCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          block<GovUKPagination>({
-            variant: 'govukPagination',
+          GovUKPagination({
             classes: 'govuk-pagination--inline',
             previous: {
               href: '/forms/my-journey/step-1',
@@ -367,20 +345,17 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     buttonBlockCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          block<GovUKButton>({
-            variant: 'govukButton',
+          GovUKButton({
             text: 'Save and continue',
             buttonType: 'submit',
             preventDoubleClick: true,
           })
 
           // Start button with arrow
-          block<GovUKButton>({
-            variant: 'govukButton',
+          GovUKButton({
             text: 'Start now',
             isStartButton: true,
           })
@@ -388,19 +363,16 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dynamicContentDetails: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View dynamic content examples',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               import { block, Answer, Format, Data } from '@form-engine/form/builders'
 
               // Using Answer() to reference field values
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 content: Format(
                   '<p>Hello, %1! Your email is %2.</p>',
                   Answer('fullName'),
@@ -409,8 +381,7 @@ export const pageContent = block<TemplateWrapper>({
               })
 
               // Using Data() to reference step data
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 content: Format(
                   '<p>Your reference number is: <strong>%1</strong></p>',
                   Data('referenceNumber')
@@ -418,8 +389,7 @@ export const pageContent = block<TemplateWrapper>({
               })
 
               // Conditional content with ternary-style expression
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 content: {
                   if: Answer('isRegistered').match(Condition.String.Equals('yes')),
                   then: '<p>Welcome back!</p>',
@@ -432,8 +402,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/blocks-and-fields/intro',

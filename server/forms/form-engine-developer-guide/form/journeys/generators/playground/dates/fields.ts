@@ -1,9 +1,9 @@
-import { block, Format } from '@form-engine/form/builders'
+import { Format } from '@form-engine/form/builders'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { Generator } from '@form-engine/registry/generators'
 import { Transformer } from '@form-engine/registry/transformers'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
 /**
@@ -11,8 +11,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  *
  * Interactive examples of date generators.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Date Generators Playground
 
@@ -67,8 +66,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     nowExample: [
-      block<TemplateWrapper>({
-        variant: 'templateWrapper',
+      TemplateWrapper({
         template: Format(
           `<div class="govuk-inset-text">
             <p class="govuk-body govuk-!-margin-bottom-2"><strong>Current time when page loaded:</strong></p>
@@ -80,19 +78,17 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     nowCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               import { Generator } from '@form-engine/registry/generators'
+              import { MOJDatePicker } from '@form-engine-moj-components/components'
 
               // Use as a dynamic constraint
-              field<MOJDatePicker>({
-                variant: 'mojDatePicker',
+              MOJDatePicker({
                 code: 'appointmentDate',
                 label: 'Select appointment date',
                 hint: 'Must be today or later',
@@ -107,8 +103,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     todayExample: [
-      block<TemplateWrapper>({
-        variant: 'templateWrapper',
+      TemplateWrapper({
         template: Format(
           `<div class="govuk-inset-text">
             <p class="govuk-body govuk-!-margin-bottom-2"><strong>Today at midnight:</strong></p>
@@ -120,19 +115,17 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     todayCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               import { Generator } from '@form-engine/registry/generators'
+              import { MOJDatePicker } from '@form-engine-moj-components/components'
 
               // Use for date-only comparisons
-              field<MOJDatePicker>({
-                variant: 'mojDatePicker',
+              MOJDatePicker({
                 code: 'startDate',
                 label: 'Start date',
                 hint: 'Must be today or later',
@@ -147,8 +140,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pipelineExample: [
-      block<TemplateWrapper>({
-        variant: 'templateWrapper',
+      TemplateWrapper({
         template: Format(
           `<div class="govuk-inset-text">
             <p class="govuk-body govuk-!-margin-bottom-2"><strong>One week from today:</strong></p>
@@ -160,12 +152,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pipelineCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               import { Generator } from '@form-engine/registry/generators'
@@ -188,15 +178,14 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     realWorldCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Generator } from '@form-engine/registry/generators'
           import { Transformer } from '@form-engine/registry/transformers'
+          import { MOJDatePicker } from '@form-engine-moj-components/components'
 
-          field<MOJDatePicker>({
-            variant: 'mojDatePicker',
+          MOJDatePicker({
             code: 'appointmentDate',
             label: 'Select appointment date',
             hint: 'Appointments must be booked 2-30 days in advance',
@@ -222,8 +211,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/generators/playground/intro',

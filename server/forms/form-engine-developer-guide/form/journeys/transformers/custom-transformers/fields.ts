@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * How to build, register, and use your own transformer functions.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Building Custom Transformers
 
@@ -140,8 +138,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     defineCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { defineTransformers } from '@form-engine/registry/utils/createRegisterableFunction'
@@ -169,8 +166,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     signatureCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Signature
@@ -202,8 +198,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     assertionsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { defineTransformers } from '@form-engine/registry/utils/createRegisterableFunction'
@@ -237,8 +232,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     errorMessageCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'bash',
         code: `
           MyTransformers.FormatCurrency expects a number but received string.
@@ -247,8 +241,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dynamicArgsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { ValueExpr } from '@form-engine/form/types/expressions.type'
@@ -272,8 +265,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     registrationCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { defineTransformers } from '@form-engine/registry/utils/createRegisterableFunction'
@@ -294,8 +286,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     appCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import FormEngine from '@form-engine/core/FormEngine'
@@ -313,18 +304,16 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     usageCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field, validation, Self, Answer } from '@form-engine/form/builders'
+          import { validation, Self, Answer } from '@form-engine/form/builders'
           import { GovUKTextInput } from '@form-engine-govuk-components/components'
           import { Transformer } from '@form-engine/registry/transformers'
           import { MyTransformers } from './transformers/myTransformers'
 
           // In field formatters
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'prisonNumber',
             label: 'Prison number',
             hint: 'For example, A1234BC',
@@ -335,8 +324,7 @@ export const pageContent = block<TemplateWrapper>({
           })
 
           // In .pipe() chains for computed values
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format(
               '<p>Normalised: %1</p>',
               Answer('prisonNumber').pipe(MyTransformers.NormalisePrisonNumber())
@@ -346,8 +334,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     asyncCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { defineTransformersWithDeps } from '@form-engine/registry/utils/createRegisterableFunction'
@@ -382,8 +369,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     organiseCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Import individual transformer sets (all using defineTransformers)
@@ -407,8 +393,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     completeExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { defineTransformers } from '@form-engine/registry/utils/createRegisterableFunction'
@@ -460,11 +445,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     completeUsageCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { step, field, validation, Self, block, Format, Answer } from '@form-engine/form/builders'
+          import { step, validation, Self, block, Format, Answer } from '@form-engine/form/builders'
           import { GovUKTextInput } from '@form-engine-govuk-components/components'
           import { Transformer } from '@form-engine/registry/transformers'
           import { PrisonerTransformers } from './transformers/prisonerTransformers'
@@ -473,8 +457,7 @@ export const pageContent = block<TemplateWrapper>({
             path: '/prisoner-details',
             title: 'Prisoner Details',
             blocks: [
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'prisonNumber',
                 label: 'Prison number',
                 hint: 'For example, A1234BC',
@@ -494,8 +477,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/transformers/intro',

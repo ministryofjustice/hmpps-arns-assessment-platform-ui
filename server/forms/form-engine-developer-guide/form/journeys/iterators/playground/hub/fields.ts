@@ -1,10 +1,8 @@
-import { block, Format, Item, Data, Iterator, when } from '@form-engine/form/builders'
+import { Format, Item, Data, Iterator, when } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper, CollectionBlock } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { GovUKButton, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
 /**
@@ -13,8 +11,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  * Interactive task list demonstrating the hub-and-spoke pattern
  * using Iterator syntax.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Task Manager
 
@@ -55,8 +52,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     emptyState: [
-      block<HtmlBlock>({
-        variant: 'html',
+      HtmlBlock({
         hidden: Data('playgroundItems').match(Condition.IsRequired()),
         content: `
           <div class="govuk-inset-text">
@@ -66,12 +62,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     taskList: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         collection: Data('playgroundItems').each(
           Iterator.Map(
-            block<HtmlBlock>({
-              variant: 'html',
+            HtmlBlock({
               content: Format(
                 `<div class="govuk-summary-card govuk-!-margin-bottom-3">
                   <div class="govuk-summary-card__title-wrapper">
@@ -121,8 +115,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     buttons: [
-      block<TemplateWrapper>({
-        variant: 'templateWrapper',
+      TemplateWrapper({
         template: `
           <form method="post">
             <input type="hidden" name="_csrf" value="{{csrfToken}}">
@@ -139,8 +132,7 @@ export const pageContent = block<TemplateWrapper>({
         },
         slots: {
           resetButton: [
-            block<GovUKButton>({
-              variant: 'govukButton',
+            GovUKButton({
               text: 'Reset to defaults',
               name: 'action',
               value: 'reset',
@@ -151,30 +143,25 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     iteratorCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View Iterator version code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Using Iterator.Map
 
               // Empty state - shown when array is empty/undefined
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 hidden: Data('playgroundItems').match(Condition.IsRequired()),
                 content: '<p>No tasks yet.</p>',
               })
 
               // Task list using Iterator.Map
-              block<CollectionBlock>({
-                variant: 'collection-block',
+              CollectionBlock({
                 collection: Data('playgroundItems').each(
                   Iterator.Map(
-                    block<HtmlBlock>({
-                      variant: 'html',
+                    HtmlBlock({
                       content: Format(
                         \`<div class="govuk-summary-card">
                           <h3>%1</h3>
@@ -195,8 +182,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/iterators/playground/chaining-examples',

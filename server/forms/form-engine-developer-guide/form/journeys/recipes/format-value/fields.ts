@@ -1,14 +1,12 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 
 /**
  * Recipe: Format a Dynamic Value
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Recipe: Format a Dynamic Value
 
@@ -68,23 +66,20 @@ Use \`Format()\` to interpolate values into text with \`%1\`, \`%2\` placeholder
 `),
   slots: {
     basicExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { block, Format, Answer } from '@form-engine/form/builders'
           import { HtmlBlock } from '@form-engine/registry/components/html'
 
-          export const greeting = block<HtmlBlock>({
-            variant: 'html',
+          export const greeting = HtmlBlock({
             content: Format('Hello, %1!', Answer('firstName')),
           })
         `,
       }),
     ],
     multipleExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Combine multiple references
@@ -92,8 +87,7 @@ Use \`Format()\` to interpolate values into text with \`%1\`, \`%2\` placeholder
           // "John Smith"
 
           // In HTML content
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format(
               '<h1>Welcome, %1</h1><p>Your email: %2</p>',
               Answer('name'),
@@ -104,8 +98,7 @@ Use \`Format()\` to interpolate values into text with \`%1\`, \`%2\` placeholder
       }),
     ],
     conditionalExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Conditional, Answer } from '@form-engine/form/builders'
@@ -121,8 +114,7 @@ Use \`Format()\` to interpolate values into text with \`%1\`, \`%2\` placeholder
       }),
     ],
     dataExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Format, Data } from '@form-engine/form/builders'
@@ -133,8 +125,7 @@ Use \`Format()\` to interpolate values into text with \`%1\`, \`%2\` placeholder
       }),
     ],
     pipeExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Format, Answer, Transformer } from '@form-engine/form/builders'
@@ -148,17 +139,15 @@ Use \`Format()\` to interpolate values into text with \`%1\`, \`%2\` placeholder
       }),
     ],
     labelExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field, Conditional, Answer } from '@form-engine/form/builders'
+          import { Conditional, Answer } from '@form-engine/form/builders'
           import { Condition } from '@form-engine/registry/conditions'
           import { GovUKTextInput } from '@form-engine-govuk-components/components'
 
           // Dynamic label and hint based on country
-          export const postalCode = field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          export const postalCode = GovUKTextInput({
             code: 'postalCode',
             label: Conditional({
               when: Answer('country').match(Condition.Equals('US')),
@@ -175,8 +164,7 @@ Use \`Format()\` to interpolate values into text with \`%1\`, \`%2\` placeholder
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/recipes/load-data',

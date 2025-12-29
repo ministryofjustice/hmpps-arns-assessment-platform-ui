@@ -1,14 +1,12 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 
 /**
  * Recipe: Dynamic Dropdown Options
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Recipe: Dynamic Dropdown Options
 
@@ -69,8 +67,7 @@ Load options via an effect, then reference them with \`Data()\`:
 `),
   slots: {
     effectExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // effects.ts
@@ -93,15 +90,13 @@ Load options via an effect, then reference them with \`Data()\`:
       }),
     ],
     fieldExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field, Data } from '@form-engine/form/builders'
+          import { Data } from '@form-engine/form/builders'
           import { GovUKRadioInput } from '@form-engine-govuk-components/components'
 
-          export const country = field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          export const country = GovUKRadioInput({
             code: 'country',
             fieldset: {
               legend: { text: 'Which country do you live in?' },
@@ -112,11 +107,10 @@ Load options via an effect, then reference them with \`Data()\`:
       }),
     ],
     filterExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field, Data, Iterator, Item, Answer } from '@form-engine/form/builders'
+          import { Data, Iterator, Item, Answer } from '@form-engine/form/builders'
           import { Condition } from '@form-engine/registry/conditions'
 
           // Effect loads all options with a 'region' property
@@ -129,8 +123,7 @@ Load options via an effect, then reference them with \`Data()\`:
 
           // Field filters based on selected country
           // Uses .each(Iterator.Filter(...)) chained on the data reference
-          export const city = field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          export const city = GovUKRadioInput({
             code: 'city',
             fieldset: {
               legend: { text: 'Which city?' },
@@ -145,8 +138,7 @@ Load options via an effect, then reference them with \`Data()\`:
       }),
     ],
     cascadeExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Effect loads nested data structure
@@ -164,8 +156,7 @@ Load options via an effect, then reference them with \`Data()\`:
           }
 
           // Field accesses nested path based on country selection
-          export const city = field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          export const city = GovUKRadioInput({
             code: 'city',
             fieldset: {
               legend: { text: 'Which city?' },
@@ -179,8 +170,7 @@ Load options via an effect, then reference them with \`Data()\`:
       }),
     ],
     apiExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // effects.ts - store raw API response
@@ -191,10 +181,9 @@ Load options via an effect, then reference them with \`Data()\`:
           }
 
           // fields.ts - transform shape with Iterator.Map
-          import { field, Data, Iterator, Item } from '@form-engine/form/builders'
+          import { Data, Iterator, Item } from '@form-engine/form/builders'
 
-          export const accommodationType = field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          export const accommodationType = GovUKRadioInput({
             code: 'accommodationType',
             fieldset: {
               legend: { text: 'What type of accommodation?' },
@@ -211,8 +200,7 @@ Load options via an effect, then reference them with \`Data()\`:
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/recipes/save-answers',

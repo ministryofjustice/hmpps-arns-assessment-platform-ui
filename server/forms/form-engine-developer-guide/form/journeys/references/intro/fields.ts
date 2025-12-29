@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -10,8 +9,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  * High-level overview of what references are, their purpose, and
  * the different types available in the form-engine.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # References
 
@@ -101,29 +99,25 @@ The following pages cover each reference type in detail:
 `),
   slots: {
     exampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field, block, Answer, Data, Self, Condition, validation } from '@form-engine/form/builders'
+          import { block, Answer, Data, Self, Condition, validation } from '@form-engine/form/builders'
 
           // Using Answer() to show a greeting based on user input
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format('Hello, %1!', Answer('firstName')),
           })
 
           // Using Data() to pre-populate from external source
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'email',
             label: 'Email address',
             defaultValue: Data('user.email'),
           })
 
           // Using Self() in validation
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'age',
             label: 'Your age',
             validate: [
@@ -137,8 +131,7 @@ The following pages cover each reference type in detail:
       }),
     ],
     nestedCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Accessing nested data properties
@@ -153,8 +146,7 @@ The following pages cover each reference type in detail:
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/hub',

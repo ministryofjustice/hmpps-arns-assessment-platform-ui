@@ -1,10 +1,8 @@
-import { block, Format, Item, Literal, Iterator, when, and, not } from '@form-engine/form/builders'
+import { Format, Item, Literal, Iterator, when, and, not } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper, CollectionBlock } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
 const users = [
@@ -34,8 +32,7 @@ const categories = [
  *
  * Interactive examples of Iterator.Find for looking up single items.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Iterator.Find Examples
 
@@ -124,8 +121,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     example1: [
-      block<HtmlBlock>({
-        variant: 'html',
+      HtmlBlock({
         hidden: Literal(tasks)
           .each(Iterator.Find(Item().path('priority').match(Condition.Equals('high'))))
           .not.match(Condition.IsRequired()),
@@ -141,17 +137,14 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example1Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Show warning if high priority task exists
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 // Hidden when NO high priority task found
                 hidden: Literal(tasks)
                   .each(Iterator.Find(
@@ -166,8 +159,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example2: [
-      block<HtmlBlock>({
-        variant: 'html',
+      HtmlBlock({
         hidden: Literal(tasks)
           .each(Iterator.Find(Item().path('status').match(Condition.Equals('pending'))))
           .not.match(Condition.IsRequired()),
@@ -179,17 +171,14 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example2Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Show message when pending tasks exist
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 // Hidden when NO pending task found
                 hidden: Literal(tasks)
                   .each(Iterator.Find(
@@ -204,8 +193,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example3: [
-      block<HtmlBlock>({
-        variant: 'html',
+      HtmlBlock({
         content: when(
           Literal(users)
             .each(Iterator.Find(Item().path('role').match(Condition.Equals('superadmin'))))
@@ -220,17 +208,14 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example3Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Use when() with Iterator.Find for conditional content
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 content: when(
                   Literal(users)
                     .each(Iterator.Find(
@@ -247,8 +232,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example4: [
-      block<HtmlBlock>({
-        variant: 'html',
+      HtmlBlock({
         hidden: Literal(users)
           .each(Iterator.Filter(Item().path('active').match(Condition.Equals(true))))
           .each(Iterator.Find(Item().path('role').match(Condition.Equals('editor'))))
@@ -264,12 +248,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example4Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Filter first, then find (first active editor)
@@ -286,8 +268,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example5: [
-      block<HtmlBlock>({
-        variant: 'html',
+      HtmlBlock({
         hidden: not(
           and(
             Literal(users)
@@ -307,17 +288,14 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example5Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Show only if BOTH conditions are true
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 // Hidden when NOT (admin exists AND high priority tasks exist)
                 hidden: not(
                   and(
@@ -341,8 +319,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example6: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal(categories).each(
           Iterator.Map(
@@ -357,18 +334,15 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     example6Code: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Display categories with Iterator.Map
               Literal(categories).each(Iterator.Map(
-                block<HtmlBlock>({
-                  variant: 'html',
+                HtmlBlock({
                   content: Format(
                     '<span class="govuk-tag govuk-tag--%1">%2 %3</span>',
                     Item().path('color'),
@@ -383,8 +357,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/iterators/playground/filter-examples',

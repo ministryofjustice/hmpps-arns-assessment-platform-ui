@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * The next() builder and navigation patterns.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Navigation
 
@@ -124,8 +122,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     whenCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           next({
@@ -136,8 +133,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     gotoCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Relative path (within current journey)
@@ -152,8 +148,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     staticNavCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Relative path (within current journey)
@@ -165,8 +160,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dynamicPathCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Navigate to edit page for specific item
@@ -181,8 +175,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     conditionalNavCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           onValid: {
@@ -205,8 +198,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     stayOnStepCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Stay on step after invalid submission
@@ -236,8 +228,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     redirectCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           onAccess: [
@@ -269,8 +260,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     branchMergeCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Step 1: Choose path
@@ -313,8 +303,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/transitions/submit',
