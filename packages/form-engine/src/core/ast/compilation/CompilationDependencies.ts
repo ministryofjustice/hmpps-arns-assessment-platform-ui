@@ -1,15 +1,23 @@
 import { NodeIDCategory, NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
+import OverlayNodeIDGenerator from '@form-engine/core/ast/nodes/OverlayNodeIDGenerator'
 import { NodeFactory } from '@form-engine/core/ast/nodes/NodeFactory'
 import NodeRegistry from '@form-engine/core/ast/registration/NodeRegistry'
 import MetadataRegistry from '@form-engine/core/ast/registration/MetadataRegistry'
 import { PseudoNodeFactory } from '@form-engine/core/ast/nodes/PseudoNodeFactory'
-import ThunkHandlerRegistry from '@form-engine/core/ast/thunks/registries/ThunkHandlerRegistry'
 import DependencyGraph from '@form-engine/core/ast/dependencies/DependencyGraph'
 import OverlayNodeRegistry from '@form-engine/core/ast/registration/OverlayNodeRegistry'
 import OverlayMetadataRegistry from '@form-engine/core/ast/registration/OverlayMetadataRegistry'
 import OverlayDependencyGraph from '@form-engine/core/ast/dependencies/OverlayDependencyGraph'
+import ThunkHandlerRegistry from '@form-engine/core/ast/thunks/registries/ThunkHandlerRegistry'
 import OverlayThunkHandlerRegistry from '@form-engine/core/ast/thunks/registries/OverlayThunkHandlerRegistry'
 import { NodeId } from '@form-engine/core/types/engine.type'
+
+export type OverlayDependencies = CompilationDependencies & {
+  nodeRegistry: OverlayNodeRegistry
+  metadataRegistry: OverlayMetadataRegistry
+  dependencyGraph: OverlayDependencyGraph
+  thunkHandlerRegistry: OverlayThunkHandlerRegistry
+}
 
 export class CompilationDependencies {
   constructor(
@@ -43,88 +51,52 @@ export class CompilationDependencies {
   }
 
   /**
-   * Create a pending/scoped view of the compilation dependencies.
-   * - Iteration over AST nodes is pending-only
-   * - Lookups fall back to main
-   * - Pseudo iteration is union to allow wiring from existing pseudos to new refs
-   * - flush() merges pending into main
-   */
-  createPendingView(): {
-    deps: CompilationDependencies
-    flush: () => void
-    getPendingNodeIds: () => NodeId[]
-  } {
-    const overlayNodeRegistry = new OverlayNodeRegistry(this.nodeRegistry)
-    const overlayMetadata = new OverlayMetadataRegistry(this.metadataRegistry)
-    const overlayGraph = new OverlayDependencyGraph(this.dependencyGraph)
-
-    const deps = new CompilationDependencies(
-      this.nodeIdGenerator,
-      this.nodeFactory,
-      this.pseudoNodeFactory,
-      overlayNodeRegistry,
-      overlayMetadata,
-      this.thunkHandlerRegistry,
-      overlayGraph,
-    )
-
-    return {
-      deps,
-      getPendingNodeIds: () => overlayNodeRegistry.getPendingIds(),
-      flush: () => {
-        overlayNodeRegistry.flushIntoMain()
-        overlayGraph.flushIntoMain()
-        overlayMetadata.flushIntoMain()
-      },
-    }
-  }
-
-  /**
-   * Create a runtime overlay for thunk evaluation.
+   * Create an overlay view of the compilation dependencies.
    *
-   * Unlike clone() which copies all data (O(n+e)), this creates O(1) overlay wrappers:
-   * - NodeRegistry: OverlayNodeRegistry (reads from main, writes to pending)
+   * Creates overlay wrappers for all dependencies:
+   * - NodeIDGenerator: OverlayNodeIDGenerator
+   * - NodeFactory: New factory referencing overlay generator
+   * - PseudoNodeFactory: New factory referencing overlay generator
+   * - NodeRegistry: OverlayNodeRegistry
    * - MetadataRegistry: OverlayMetadataRegistry
    * - DependencyGraph: OverlayDependencyGraph
    * - ThunkHandlerRegistry: OverlayThunkHandlerRegistry
    *
-   * Only the NodeIDGenerator is cloned (O(1) - 4 integers) to ensure
-   * counter isolation between requests.
-   *
-   * Used by ThunkEvaluator.withRuntimeOverlay() for runtime node registration.
+   * Returns overlay deps with flush() and getPendingNodeIds() helpers.
+   * Callers choose whether to call flush() - runtime overlays typically don't,
+   * while batch/pending views do.
    */
-  createRuntimeOverlay(): {
-    deps: CompilationDependencies
-    overlayNodeRegistry: OverlayNodeRegistry
-    overlayMetadata: OverlayMetadataRegistry
-    overlayGraph: OverlayDependencyGraph
-    overlayHandlerRegistry: OverlayThunkHandlerRegistry
+  createOverlay(): {
+    deps: OverlayDependencies
+    flush: () => void
+    getPendingNodeIds: () => NodeId[]
   } {
-    // Clone only ID generator (O(1) - 4 integers)
-    const clonedNodeIdGenerator = this.nodeIdGenerator.clone()
-
-    // Create overlay wrappers (O(1) - no data copying)
+    const overlayIdGenerator = new OverlayNodeIDGenerator(this.nodeIdGenerator)
     const overlayNodeRegistry = new OverlayNodeRegistry(this.nodeRegistry)
     const overlayMetadata = new OverlayMetadataRegistry(this.metadataRegistry)
     const overlayGraph = new OverlayDependencyGraph(this.dependencyGraph)
     const overlayHandlerRegistry = new OverlayThunkHandlerRegistry(this.thunkHandlerRegistry)
 
     const deps = new CompilationDependencies(
-      clonedNodeIdGenerator,
-      new NodeFactory(clonedNodeIdGenerator, NodeIDCategory.RUNTIME_AST),
-      new PseudoNodeFactory(clonedNodeIdGenerator, NodeIDCategory.RUNTIME_PSEUDO),
+      overlayIdGenerator,
+      new NodeFactory(overlayIdGenerator, NodeIDCategory.RUNTIME_AST),
+      new PseudoNodeFactory(overlayIdGenerator, NodeIDCategory.RUNTIME_PSEUDO),
       overlayNodeRegistry,
       overlayMetadata,
       overlayHandlerRegistry,
       overlayGraph,
-    )
+    ) as OverlayDependencies
 
     return {
       deps,
-      overlayNodeRegistry,
-      overlayMetadata,
-      overlayGraph,
-      overlayHandlerRegistry,
+      getPendingNodeIds: () => overlayNodeRegistry.getPendingIds(),
+      flush: () => {
+        overlayIdGenerator.flushIntoMain()
+        overlayNodeRegistry.flushIntoMain()
+        overlayMetadata.flushIntoMain()
+        overlayGraph.flushIntoMain()
+        overlayHandlerRegistry.flushIntoMain()
+      },
     }
   }
 }
