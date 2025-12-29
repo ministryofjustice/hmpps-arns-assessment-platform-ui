@@ -1,15 +1,14 @@
-import { block, field, Data, Self, validation, when } from '@form-engine/form/builders'
+import { Data, Self, validation, when } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import {
   GovUKButton,
   GovUKDetails,
   GovUKRadioInput,
   GovUKTextInput,
-  GovukTextareaInput,
+  GovUKTextareaInput,
 } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
 /**
@@ -18,8 +17,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  * Edit form for individual tasks, demonstrating the spoke page pattern
  * with Iterator syntax for access guards.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   {{slot:heading}}
 
@@ -51,16 +49,14 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     heading: [
-      block<HtmlBlock>({
-        variant: 'html',
+      HtmlBlock({
         content: when(Data('isNewItem').match(Condition.Equals(true)))
           .then('<h1 class="govuk-heading-l">Add task</h1>')
           .else('<h1 class="govuk-heading-l">Edit task</h1>'),
       }),
     ],
     form: [
-      block<TemplateWrapper>({
-        variant: 'templateWrapper',
+      TemplateWrapper({
         template: `
           <p class="govuk-body">
             Fill in the task details below. Required fields are marked with an asterisk (*).
@@ -79,8 +75,7 @@ export const pageContent = block<TemplateWrapper>({
         slots: {
           fields: [
             // Task name field
-            field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            GovUKTextInput({
               code: 'taskName',
               label: 'Task name *',
               hint: 'Give your task a clear, descriptive name',
@@ -97,8 +92,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
 
             // Task description field
-            field<GovukTextareaInput>({
-              variant: 'govukTextarea',
+            GovUKTextareaInput({
               code: 'taskDescription',
               label: 'Description',
               hint: 'Optional: Add more details about what needs to be done',
@@ -112,8 +106,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
 
             // Category field
-            field<GovUKRadioInput>({
-              variant: 'govukRadioInput',
+            GovUKRadioInput({
               code: 'taskCategory',
               fieldset: {
                 legend: { text: 'Category' },
@@ -129,8 +122,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
 
             // Priority field
-            field<GovUKRadioInput>({
-              variant: 'govukRadioInput',
+            GovUKRadioInput({
               code: 'taskPriority',
               fieldset: {
                 legend: { text: 'Priority' },
@@ -143,30 +135,26 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
           buttons: [
-            block<GovUKButton>({
-              variant: 'govukButton',
+            GovUKButton({
               text: 'Save task',
               name: 'action',
               value: 'save',
             }),
-            block<GovUKButton>({
-              variant: 'govukButton',
+            GovUKButton({
               text: 'Save and add another',
               name: 'action',
               value: 'saveAndAdd',
               classes: 'govuk-button--secondary',
             }),
             // Only show delete for existing items (not new)
-            block<GovUKButton>({
-              variant: 'govukButton',
+            GovUKButton({
               text: 'Delete task',
               name: 'action',
               value: 'delete',
               classes: 'govuk-button--warning',
               hidden: Data('isNewItem').match(Condition.Equals(true)),
             }),
-            block<HtmlBlock>({
-              variant: 'html',
+            HtmlBlock({
               content:
                 '<a href="/forms/form-engine-developer-guide/iterators/playground/hub" class="govuk-link govuk-!-margin-left-3" style="line-height: 3;">Cancel</a>',
             }),
@@ -175,12 +163,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     iteratorCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View Iterator.Find access guard',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Using Iterator.Find instead of Transformer.Array.Map + Array.IsIn
@@ -208,12 +194,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     collectionCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'Compare with Collection approach',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Collection approach (using Transformer.Array.Map)

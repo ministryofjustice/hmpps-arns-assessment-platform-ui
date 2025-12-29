@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Overview of the component packages available in form-engine.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Built-in Components
 
@@ -26,12 +24,12 @@ Framework components for content rendering and layout.
 
 {{slot:coreImport}}
 
-| Component | Purpose |
-|-----------|---------|
-| \`HtmlBlock\` | Render raw HTML content |
-| \`TemplateWrapper\` | Wrap blocks in HTML templates with slots |
-| \`CodeBlock\` | Display syntax-highlighted code |
-| \`CollectionBlock\` | Iterate over arrays to render repeated content |
+| Component | Type | Purpose |
+|-----------|------|---------|
+| \`HtmlBlock\` | Type | Render raw HTML content |
+| \`TemplateWrapper\` | Type | Wrap blocks in HTML templates with slots |
+| \`CodeBlock\` | Type | Display syntax-highlighted code |
+| \`CollectionBlock\` | Wrapper | Iterate over arrays to render repeated content |
 
 ---
 
@@ -94,18 +92,15 @@ Here's a complete step using various built-in components together:
 `),
   slots: {
     coreImport: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { CodeBlock } from '../../../components/codeBlock'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'`,
+import { CollectionBlock } from '@form-engine/registry/components'
+import { CodeBlock } from '../../../components/codeBlock'`,
       }),
     ],
     govukImport: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `import {
   // Fields (collect input)
@@ -128,8 +123,7 @@ import { CollectionBlock } from '@form-engine/registry/components/collectionBloc
       }),
     ],
     mojImport: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `import {
   MOJDatePicker,
@@ -139,17 +133,14 @@ import { CollectionBlock } from '@form-engine/registry/components/collectionBloc
       }),
     ],
     completeExample: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View complete example',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `import { step, block, field, validation, Self, submitTransition, next } from '@form-engine/form/builders'
+            code: `import { step, block, validation, Self, submitTransition, next } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
-import { HtmlBlock } from '@form-engine/registry/components/html'
 import {
   GovUKTextInput,
   GovUKRadioInput,
@@ -162,14 +153,12 @@ export const contactStep = step({
   title: 'Contact Details',
   blocks: [
     // Heading
-    block<HtmlBlock>({
-      variant: 'html',
+    HtmlBlock({
       content: '<h1 class="govuk-heading-l">Contact Details</h1>',
     }),
 
     // Email field
-    field<GovUKTextInput>({
-      variant: 'govukTextInput',
+    GovUKTextInput({
       code: 'email',
       label: 'Email address',
       inputMode: 'email',
@@ -190,8 +179,7 @@ export const contactStep = step({
     }),
 
     // Contact preference
-    field<GovUKRadioInput>({
-      variant: 'govukRadioInput',
+    GovUKRadioInput({
       code: 'contactPreference',
       fieldset: {
         legend: { text: 'How should we contact you?' },
@@ -209,8 +197,7 @@ export const contactStep = step({
     }),
 
     // Date of birth
-    field<GovUKDateInputFull>({
-      variant: 'govukDateInputFull',
+    GovUKDateInputFull({
       code: 'dateOfBirth',
       fieldset: {
         legend: { text: 'Date of birth' },
@@ -232,8 +219,7 @@ export const contactStep = step({
     }),
 
     // Submit button
-    block<GovUKButton>({
-      variant: 'govukButton',
+    GovUKButton({
       text: 'Continue',
     }),
   ],
@@ -251,8 +237,7 @@ export const contactStep = step({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/components/intro',

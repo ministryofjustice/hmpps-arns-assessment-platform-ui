@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Overview of iterators in form-engine.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Iterators
 
@@ -68,8 +66,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     syntaxCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Data, Item, Iterator, Literal } from '@form-engine/form/builders'
@@ -87,8 +84,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/hub',

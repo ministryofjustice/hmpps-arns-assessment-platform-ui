@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Understanding the component system in form-engine.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Components
 
@@ -86,8 +84,7 @@ TypeScript autocomplete for that component's specific properties.
 `),
   slots: {
     blockCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { block } from '@form-engine/form/builders'
@@ -95,31 +92,27 @@ TypeScript autocomplete for that component's specific properties.
           import { GovUKWarningText } from '@form-engine-govuk-components/components'
 
           // Simple HTML content
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: '<h1 class="govuk-heading-l">Welcome</h1>',
           })
 
           // GOV.UK warning component
-          block<GovUKWarningText>({
-            variant: 'govukWarningText',
+          GovUKWarningText({
             text: 'You could be fined if you do not register.',
           })
         `,
       }),
     ],
     fieldCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          import { field, validation, Self } from '@form-engine/form/builders'
+          import { validation, Self } from '@form-engine/form/builders'
           import { Condition } from '@form-engine/registry/conditions'
           import { GovUKTextInput, GovUKRadioInput } from '@form-engine-govuk-components/components'
 
           // Text input
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'email',              // Answer stored as answers.email
             label: 'Email address',
             hint: 'We will use this to contact you',
@@ -132,8 +125,7 @@ TypeScript autocomplete for that component's specific properties.
           })
 
           // Radio buttons
-          field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          GovUKRadioInput({
             code: 'contactPreference',  // Answer stored as answers.contactPreference
             fieldset: {
               legend: { text: 'How should we contact you?' },
@@ -148,20 +140,17 @@ TypeScript autocomplete for that component's specific properties.
       }),
     ],
     variantCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          // The variant tells form-engine which renderer to use
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',  // Must match registered component name
+          // Wrapper functions provide type-safe, clean API
+          GovUKTextInput({
             code: 'name',
             label: 'Full name',
           })
 
-          // Different variant = different component
-          field<GovUKTextareaInput>({
-            variant: 'govukTextareaInput',
+          // Different component = different wrapper function
+          GovUKTextareaInput({
             code: 'description',
             label: 'Description',
             rows: 5,
@@ -170,8 +159,7 @@ TypeScript autocomplete for that component's specific properties.
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/hub',

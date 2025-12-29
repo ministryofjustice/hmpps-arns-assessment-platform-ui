@@ -1,9 +1,8 @@
-import { block, Answer, Format, field, validation, Self } from '@form-engine/form/builders'
+import { Answer, Format, Self, validation } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKPagination, GovUKTextInput } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 import { exampleBox } from '../../../../helpers/exampleBox'
 
@@ -12,8 +11,7 @@ import { exampleBox } from '../../../../helpers/exampleBox'
  *
  * Documentation for Format() string interpolation expressions.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Format() - String Interpolation
 
@@ -94,8 +92,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     syntaxCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Format, Answer } from '@form-engine/form/builders'
@@ -119,8 +116,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     liveExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'formatExampleName',
           label: 'Your name',
           hint: 'Enter any name to see the greeting update',
@@ -132,8 +128,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           hidden: Answer('formatExampleName').not.match(Condition.IsRequired()),
           content: Format(
             `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
@@ -145,18 +140,15 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     liveExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'formatExampleName',
             label: 'Your name',
           })
 
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format(
               '<div class="govuk-inset-text">Hello, %1! Welcome to the guide.</div>',
               Answer('formatExampleName')
@@ -166,13 +158,11 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     htmlCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Dynamic page heading
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format(
               '<h1 class="govuk-heading-l">Application for %1</h1>',
               Data('applicant.fullName')
@@ -180,8 +170,7 @@ export const pageContent = block<TemplateWrapper>({
           })
 
           // Summary list with multiple values
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format(
               \`<dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
@@ -202,8 +191,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     transformerCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Format, Answer, Transformer } from '@form-engine/form/builders'
@@ -237,21 +225,18 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     fieldPropsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Dynamic label
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'phoneNumber',
             label: Format('Phone number for %1', Answer('contactName')),
             hint: Format('We will call %1 on this number', Answer('contactName')),
           })
 
           // Dynamic validation message
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'confirmEmail',
             label: 'Confirm email address',
             validate: [
@@ -268,8 +253,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     reuseCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Same value used twice
@@ -286,8 +270,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     patternsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // 1. Greeting message
@@ -317,8 +300,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/expressions/intro',

@@ -1,5 +1,4 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
@@ -8,8 +7,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  *
  * Entry point to the interactive generator examples.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Generators Playground
 
@@ -34,8 +32,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/generators/intro',

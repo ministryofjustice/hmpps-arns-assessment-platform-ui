@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * onLoad transitions for loading data before access checks.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Load Transitions
 
@@ -87,8 +85,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     effectsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           loadTransition({
@@ -101,8 +98,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     journeyLoadCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           journey({
@@ -134,8 +130,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     stepLoadCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           step({
@@ -155,8 +150,7 @@ export const pageContent = block<TemplateWrapper>({
 
             blocks: [
               // Fields can now use Data('accommodationTypes') for options
-              field<GovUKRadioInput>({
-                variant: 'govukRadioInput',
+              GovUKRadioInput({
                 code: 'accommodationType',
                 fieldset: {
                   legend: { text: 'What type of accommodation?' },
@@ -169,8 +163,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     multipleLoadCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           onLoad: [
@@ -196,8 +189,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/transitions/intro',

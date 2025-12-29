@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Overview of the transition system, lifecycle hooks, and execution semantics.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Transitions
 
@@ -87,8 +85,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     getFlowCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'bash',
         code: `
           1. Journey.onLoad     → Load shared data
@@ -100,8 +97,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     postFlowCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'bash',
         code: `
           1. Step.onLoad        → Load step data
@@ -113,8 +109,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     importCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import {
@@ -132,8 +127,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     basicExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           step({
@@ -180,8 +174,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/effects/context',

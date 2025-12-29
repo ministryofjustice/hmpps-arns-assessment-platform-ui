@@ -1,10 +1,9 @@
-import { block, field, validation, Self, Answer, Format } from '@form-engine/form/builders'
+import { validation, Self, Answer, Format } from '@form-engine/form/builders'
+import { TemplateWrapper, HtmlBlock } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKTextInput, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
@@ -13,8 +12,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  *
  * Interactive examples of string transformers.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # String Transformers Playground
 
@@ -99,8 +97,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     trimExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_trim',
           label: 'Enter text with extra spaces',
           hint: 'Try "  hello world  "',
@@ -112,8 +109,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Transformed value: <code>"%1"</code></div>',
             Answer('transformers_trim'),
@@ -123,15 +119,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     trimCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            code: `GovUKTextInput({
               code: 'transformers_trim',
               label: 'Enter text with extra spaces',
               formatters: [Transformer.String.Trim()],
@@ -142,8 +135,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     upperExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_upper',
           label: 'Enter a postcode',
           hint: 'Try "sw1a 2aa"',
@@ -156,8 +148,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Transformed value: <code>"%1"</code></div>',
             Answer('transformers_upper'),
@@ -167,15 +158,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     upperCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            code: `GovUKTextInput({
               code: 'transformers_upper',
               label: 'Enter a postcode',
               formatters: [
@@ -189,8 +177,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     lowerExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_lower',
           label: 'Enter an email address',
           hint: 'Try "John.Smith@Example.COM"',
@@ -203,8 +190,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Transformed value: <code>"%1"</code></div>',
             Answer('transformers_lower'),
@@ -214,15 +200,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     lowerCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            code: `GovUKTextInput({
               code: 'transformers_lower',
               label: 'Enter an email address',
               inputType: 'email',
@@ -237,8 +220,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     titleExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_title',
           label: 'Enter a name',
           hint: 'Try "john smith"',
@@ -250,8 +232,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Transformed value: <code>"%1"</code></div>',
             Answer('transformers_title'),
@@ -261,15 +242,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     titleCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            code: `GovUKTextInput({
               code: 'transformers_title',
               label: 'Enter a name',
               formatters: [
@@ -283,8 +261,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     replaceExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_replace',
           label: 'Enter a phone number',
           hint: 'Try "07700 900-123"',
@@ -301,8 +278,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Transformed value: <code>"%1"</code></div>',
             Answer('transformers_replace'),
@@ -312,15 +288,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     replaceCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            code: `GovUKTextInput({
               code: 'transformers_replace',
               label: 'Enter a phone number',
               inputType: 'tel',
@@ -336,8 +309,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     padStartExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_padstart',
           label: 'Enter a reference number',
           hint: 'Try "42"',
@@ -350,8 +322,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Transformed value: <code>"%1"</code></div>',
             Answer('transformers_padstart'),
@@ -361,15 +332,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     padStartCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            code: `GovUKTextInput({
               code: 'transformers_padstart',
               label: 'Enter a reference number',
               hint: 'Try "42"',
@@ -384,8 +352,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     substringExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_substring',
           label: 'Enter some text',
           hint: 'Try "This is a very long string that will be truncated"',
@@ -397,8 +364,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Transformed value: <code>"%1"</code></div>',
             Answer('transformers_substring'),
@@ -408,15 +374,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     substringCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            code: `GovUKTextInput({
               code: 'transformers_substring',
               label: 'Enter some text',
               formatters: [
@@ -429,8 +392,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/transformers/playground/intro',

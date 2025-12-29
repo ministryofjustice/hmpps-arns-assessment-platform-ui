@@ -1,8 +1,8 @@
-import { block, field, validation, Self, Answer, and } from '@form-engine/form/builders'
+import { validation, Self, Answer, and } from '@form-engine/form/builders'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKDateInputFull, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
@@ -11,8 +11,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  *
  * Interactive examples of date conditions with validation.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Date Conditions Playground
 
@@ -83,8 +82,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     isValidExample: [
       exampleBox([
-        field<GovUKDateInputFull>({
-          variant: 'govukDateInputFull',
+        GovUKDateInputFull({
           code: 'cond_date_valid',
           fieldset: {
             legend: { text: 'Enter any date' },
@@ -104,16 +102,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     isValidCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKDateInputFull>({
-                variant: 'govukDateInputFull',
+              GovUKDateInputFull({
                 code: 'cond_date_valid',
                 fieldset: {
                   legend: { text: 'Enter any date' },
@@ -136,8 +131,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     futureExample: [
       exampleBox([
-        field<GovUKDateInputFull>({
-          variant: 'govukDateInputFull',
+        GovUKDateInputFull({
           code: 'cond_date_future',
           fieldset: {
             legend: { text: 'Appointment date' },
@@ -161,16 +155,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     futureCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKDateInputFull>({
-                variant: 'govukDateInputFull',
+              GovUKDateInputFull({
                 code: 'cond_date_future',
                 fieldset: {
                   legend: { text: 'Appointment date' },
@@ -198,8 +189,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     afterExample: [
       exampleBox([
-        field<GovUKDateInputFull>({
-          variant: 'govukDateInputFull',
+        GovUKDateInputFull({
           code: 'cond_date_after',
           fieldset: {
             legend: { text: 'Start date' },
@@ -223,16 +213,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     afterCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKDateInputFull>({
-                variant: 'govukDateInputFull',
+              GovUKDateInputFull({
                 code: 'cond_date_after',
                 fieldset: {
                   legend: { text: 'Start date' },
@@ -260,8 +247,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     beforeExample: [
       exampleBox([
-        field<GovUKDateInputFull>({
-          variant: 'govukDateInputFull',
+        GovUKDateInputFull({
           code: 'cond_date_before',
           fieldset: {
             legend: { text: 'Date of birth' },
@@ -285,16 +271,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     beforeCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKDateInputFull>({
-                variant: 'govukDateInputFull',
+              GovUKDateInputFull({
                 code: 'cond_date_before',
                 fieldset: {
                   legend: { text: 'Date of birth' },
@@ -322,8 +305,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     dynamicExample: [
       exampleBox([
-        field<GovUKDateInputFull>({
-          variant: 'govukDateInputFull',
+        GovUKDateInputFull({
           code: 'cond_date_start',
           fieldset: {
             legend: { text: 'Start date' },
@@ -340,8 +322,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        field<GovUKDateInputFull>({
-          variant: 'govukDateInputFull',
+        GovUKDateInputFull({
           code: 'cond_date_end',
           fieldset: {
             legend: { text: 'End date' },
@@ -368,16 +349,14 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     dynamicCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // End date validates against start date's value
-              field<GovUKDateInputFull>({
+              GovUKDateInputFull({
                 code: 'endDate',
                 fieldset: { legend: { text: 'End date' } },
                 validate: [
@@ -397,8 +376,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/conditions/playground/numbers',

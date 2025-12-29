@@ -1,10 +1,8 @@
-import { block, Format, Item, Data, Literal, Iterator } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
+import { Format, Item, Data, Literal, Iterator } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper, CollectionBlock } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
 import { Transformer } from '@form-engine/registry/transformers'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -12,8 +10,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Using Iterator.Map to transform each item to a new shape.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Iterator.Map
 
@@ -78,8 +75,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     syntaxCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Transform items to label/value pairs for a select input
@@ -95,13 +91,11 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     propertyExtractionExample: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Data('teamMembers').each(
           Iterator.Map(
-            block<HtmlBlock>({
-              variant: 'html',
+            HtmlBlock({
               content: Format(
                 '<p class="govuk-body govuk-!-margin-bottom-1">%1 - <em>%2</em></p>',
                 Item().path('name'),
@@ -113,17 +107,14 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     propertyExtractionCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Data('teamMembers').each(Iterator.Map(
-                block<HtmlBlock>({
-                  variant: 'html',
+                HtmlBlock({
                   content: Format('<p>%1 - <em>%2</em></p>', Item().path('name'), Item().path('role')),
                 })
               ))
@@ -133,13 +124,11 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     numberedListExample: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Data('simpleListItems').each(
           Iterator.Map(
-            block<HtmlBlock>({
-              variant: 'html',
+            HtmlBlock({
               content: Format(
                 '<p class="govuk-body govuk-!-margin-bottom-1"><strong>%1.</strong> %2</p>',
                 Item().index().pipe(Transformer.Number.Add(1)),
@@ -151,17 +140,14 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     numberedListCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Data('simpleListItems').each(Iterator.Map(
-                block<HtmlBlock>({
-                  variant: 'html',
+                HtmlBlock({
                   content: Format('<p><strong>%1.</strong> %2</p>',
                     Item().index().pipe(Transformer.Number.Add(1)),
                     Item().path('name')
@@ -174,8 +160,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     complexCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Transform with nested structures
@@ -197,8 +182,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     literalCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           const areasOfNeed = [
@@ -208,8 +192,7 @@ export const pageContent = block<TemplateWrapper>({
           ]
 
           // Use Literal() to make static arrays iterable
-          field<GovUKSelect>({
-            variant: 'govukSelect',
+          GovUKSelectInput({
             code: 'selectedArea',
             items: Literal(areasOfNeed).each(Iterator.Map({
               value: Item().path('value'),
@@ -220,8 +203,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     literalExample: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal([
           { emoji: '🏠', name: 'Accommodation' },
@@ -230,8 +212,7 @@ export const pageContent = block<TemplateWrapper>({
           { emoji: '💼', name: 'Employment' },
         ]).each(
           Iterator.Map(
-            block<HtmlBlock>({
-              variant: 'html',
+            HtmlBlock({
               content: Format(
                 '<span class="govuk-tag govuk-!-margin-right-2 govuk-!-margin-bottom-2">%1 %2</span>',
                 Item().path('emoji'),
@@ -243,12 +224,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     literalExampleCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Literal([
@@ -257,8 +236,7 @@ export const pageContent = block<TemplateWrapper>({
                 { emoji: '🏥', name: 'Health' },
                 { emoji: '💼', name: 'Employment' },
               ]).each(Iterator.Map(
-                block<HtmlBlock>({
-                  variant: 'html',
+                HtmlBlock({
                   content: Format('<span class="govuk-tag">%1 %2</span>',
                     Item().path('emoji'),
                     Item().path('name')
@@ -271,8 +249,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/iterators/intro',

@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Explains how to use the children property to create hierarchical journey structures.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Nested Journeys
 
@@ -120,8 +118,7 @@ Child journeys inherit certain configuration from their parent:
 `),
   slots: {
     formula: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'plaintext',
         code: `
           /basePath + parent.path + child.path + step.path
@@ -129,8 +126,7 @@ Child journeys inherit certain configuration from their parent:
       }),
     ],
     tree: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'plaintext',
         code: `
           Developer Guide (parent)
@@ -148,12 +144,10 @@ Child journeys inherit certain configuration from their parent:
       }),
     ],
     codeExample: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code example',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
           import { journey, step, block } from '@form-engine/form/builders'
@@ -231,8 +225,7 @@ Child journeys inherit certain configuration from their parent:
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/journeys-and-steps/steps',

@@ -1,5 +1,4 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  * High-level overview of what journeys and steps are, their relationship,
  * and a live demonstration of URL path composition.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Journeys & Steps
 
@@ -90,8 +88,7 @@ with the step path. This creates clean, hierarchical URLs automatically.
 `),
   slots: {
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/hub',
