@@ -250,10 +250,8 @@ describe('ThunkEvaluator', () => {
         mockContext,
         evaluator,
         expect.objectContaining({
-          createNode: expect.any(Function),
-          registerRuntimeNode: expect.any(Function),
-          createPseudoNode: expect.any(Function),
-          registerPseudoNode: expect.any(Function),
+          transformValue: expect.any(Function),
+          registerRuntimeNodesBatch: expect.any(Function),
         }),
       )
     })

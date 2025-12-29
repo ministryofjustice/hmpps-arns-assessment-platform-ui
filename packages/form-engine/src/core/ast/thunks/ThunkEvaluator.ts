@@ -86,6 +86,7 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
       new ThunkCompilerFactory(),
       this.cacheManager,
       runtimeOverlayBuilder,
+      formInstanceDependencies.functionRegistry,
     )
   }
 
@@ -109,20 +110,14 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
     formInstanceDependencies: FormInstanceDependencies,
     configurator?: RuntimeOverlayConfigurator,
   ): ThunkEvaluator {
-    const {
-      deps: runtimeCompilationDependencies,
-      overlayNodeRegistry,
-      overlayMetadata,
-      overlayGraph,
-      overlayHandlerRegistry,
-    } = compilationDependencies.createRuntimeOverlay()
+    const { deps: runtimeDeps } = compilationDependencies.createOverlay()
 
     const overlay: RuntimeOverlayBuilder = {
-      handlerRegistry: overlayHandlerRegistry,
-      metadataRegistry: overlayMetadata,
-      dependencyGraph: overlayGraph,
-      nodeRegistry: overlayNodeRegistry,
-      nodeFactory: runtimeCompilationDependencies.nodeFactory,
+      handlerRegistry: runtimeDeps.thunkHandlerRegistry,
+      metadataRegistry: runtimeDeps.metadataRegistry,
+      dependencyGraph: runtimeDeps.dependencyGraph,
+      nodeRegistry: runtimeDeps.nodeRegistry,
+      nodeFactory: runtimeDeps.nodeFactory,
       runtimeNodes: new Map<NodeId, ASTNode>(),
     }
 
@@ -130,7 +125,7 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
       configurator(overlay)
     }
 
-    return new ThunkEvaluator(runtimeCompilationDependencies, formInstanceDependencies, overlay)
+    return new ThunkEvaluator(runtimeDeps, formInstanceDependencies, overlay)
   }
 
   /**
