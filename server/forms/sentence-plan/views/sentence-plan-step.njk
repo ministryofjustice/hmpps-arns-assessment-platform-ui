@@ -20,18 +20,19 @@
   {% endblock %}
 {% endblock %}
 
-{% block backLink %}
-  {% if step.backlink %}
-    <a href="{{ step.backlink }}" class="govuk-back-link">Back</a>
-  {% endif %}
-{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% if step.backlink %}
+        <a href="{{ step.backlink }}" class="govuk-back-link">Back</a>
+      {% endif %}
 
-{% block formContent %}
-  <form method="post" novalidate>
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-
-    {% for block in blocks %}
-      {{ block | safe }}
-    {% endfor %}
-  </form>
+      <form method="post" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% for block in blocks %}
+          {{ block | safe }}
+        {% endfor %}
+      </form>
+    </div>
+  </div>
 {% endblock %}
