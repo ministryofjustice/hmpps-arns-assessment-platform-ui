@@ -38,4 +38,20 @@ export default class OverlayNodeIDGenerator extends NodeIDGenerator {
   flushIntoMain(): void {
     this.main.syncFrom(this.pending)
   }
+
+  /**
+   * Sync counter values into pending (not parent's counters)
+   * This ensures nested overlays flush correctly into this overlay
+   */
+  syncFrom(source: NodeIDGenerator): void {
+    this.pending.syncFrom(source)
+  }
+
+  /**
+   * Return pending's counter entries for syncing
+   * This ensures nested overlays sync from the correct source
+   */
+  getCounterEntries(): [NodeIDCategory, number][] {
+    return this.pending.getCounterEntries()
+  }
 }

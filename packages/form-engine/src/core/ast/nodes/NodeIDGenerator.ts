@@ -83,8 +83,16 @@ export class NodeIDGenerator {
    * @param source - The generator to sync from
    */
   syncFrom(source: NodeIDGenerator): void {
-    source.counters.forEach((value, category) => {
+    source.getCounterEntries().forEach(([category, value]) => {
       this.counters.set(category, value)
     })
+  }
+
+  /**
+   * Get counter entries for syncing
+   * Override in subclasses that delegate to internal generators
+   */
+  getCounterEntries(): [NodeIDCategory, number][] {
+    return Array.from(this.counters.entries())
   }
 }
