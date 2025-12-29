@@ -1,3 +1,4 @@
+import { block } from '@form-engine/form/builders'
 import { buildComponent } from '@form-engine/registry/utils/buildComponent'
 import {
   BlockDefinition,
@@ -7,27 +8,9 @@ import {
 } from '@form-engine/form/types/structures.type'
 
 /**
- * Button styled as a link component.
- *
- * Renders a `<button>` element styled to look like a GOV.UK link
- * while retaining button functionality for form submissions.
- *
- * Useful for actions like "Remove" or "Clear" that should look like links
- * but need to submit form data.
- *
- * @example
- * ```typescript
- * block<ButtonAsLink>({
- *   variant: 'buttonAsLink',
- *   text: 'Remove',
- *   name: 'action',
- *   value: 'remove_0',
- * })
- * ```
+ * Props for the ButtonAsLink component
  */
-export interface ButtonAsLink extends BlockDefinition {
-  variant: 'buttonAsLink'
-
+export interface ButtonAsLinkProps {
   /** Text content for the button */
   text: ConditionalString
 
@@ -51,6 +34,28 @@ export interface ButtonAsLink extends BlockDefinition {
 
   /** Custom HTML attributes */
   attributes?: Record<string, string>
+}
+
+/**
+ * Button styled as a link component.
+ *
+ * Renders a `<button>` element styled to look like a GOV.UK link
+ * while retaining button functionality for form submissions.
+ *
+ * Useful for actions like "Remove" or "Clear" that should look like links
+ * but need to submit form data.
+ *
+ * @example
+ * ```typescript
+ * ButtonAsLink({
+ *   text: 'Remove',
+ *   name: 'action',
+ *   value: 'remove_0',
+ * })
+ * ```
+ */
+export interface ButtonAsLink extends BlockDefinition, ButtonAsLinkProps {
+  variant: 'buttonAsLink'
 }
 
 function escapeHtml(str: string): string {
@@ -94,3 +99,20 @@ export const buttonAsLink = buildComponent<ButtonAsLink>(
     return `<button ${attrs.join(' ')}>${escapeHtml(block.text)}</button>`
   },
 )
+
+/**
+ * Creates a button styled as a link.
+ *
+ * @see ButtonAsLink
+ * @example
+ * ```typescript
+ * ButtonAsLink({
+ *   text: 'Remove',
+ *   name: 'action',
+ *   value: 'remove_0',
+ * })
+ * ```
+ */
+export function ButtonAsLink(props: ButtonAsLinkProps): ButtonAsLink {
+  return block<ButtonAsLink>({ ...props, variant: 'buttonAsLink' })
+}

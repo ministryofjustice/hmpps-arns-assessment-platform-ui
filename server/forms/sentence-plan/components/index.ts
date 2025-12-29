@@ -2,5 +2,5 @@ import { accessibleAutocomplete } from './accessible-autocomplete/accessibleAuto
 import { buttonAsLink } from './button-as-link/buttonAsLink'
 
 export type { AccessibleAutocomplete } from './accessible-autocomplete/accessibleAutocomplete'
-export type { ButtonAsLink } from './button-as-link/buttonAsLink'
+export { ButtonAsLink } from './button-as-link/buttonAsLink'
 export const sentencePlanComponents = [accessibleAutocomplete, buttonAsLink]
