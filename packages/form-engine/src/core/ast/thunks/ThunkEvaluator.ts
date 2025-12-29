@@ -1,14 +1,14 @@
-import { NodeId, FormInstanceDependencies, ASTNode } from '@form-engine/core/types/engine.type'
+import { ASTNode, FormInstanceDependencies, NodeId } from '@form-engine/core/types/engine.type'
 import {
-  ThunkHandler,
-  SyncThunkHandler,
+  EvaluatorRequestData,
   HybridThunkHandler,
+  RuntimeOverlayBuilder,
+  RuntimeOverlayConfigurator,
+  SyncThunkHandler,
+  ThunkHandler,
   ThunkInvocationAdapter,
   ThunkResult,
   ThunkRuntimeHooks,
-  RuntimeOverlayBuilder,
-  RuntimeOverlayConfigurator,
-  EvaluatorRequestData,
 } from '@form-engine/core/ast/thunks/types'
 import { isSyncHandler } from '@form-engine/core/ast/thunks/typeguards'
 import ThunkHandlerRegistryError from '@form-engine/errors/ThunkHandlerRegistryError'
@@ -149,6 +149,10 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
     const cachedResult = this.cacheManager.getWithCachedFlag<T>(nodeId)
 
     if (cachedResult) {
+      if (cachedResult.error) {
+        throw cachedResult.error.cause
+      }
+
       return cachedResult
     }
 
@@ -156,7 +160,13 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
     // when multiple evaluations run in parallel (e.g., Promise.all in BlockHandler)
     const isolatedContext = context.withIsolatedScope()
 
-    return this.invokeWithRetry(nodeId, isolatedContext, 10)
+    const result = await this.invokeWithRetry<T>(nodeId, isolatedContext, 10)
+
+    if (result.error) {
+      throw result.error.cause
+    }
+
+    return result
   }
 
   /**
@@ -182,6 +192,10 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
     const cachedResult = this.cacheManager.getWithCachedFlag<T>(nodeId)
 
     if (cachedResult) {
+      if (cachedResult.error) {
+        throw cachedResult.error.cause
+      }
+
       return cachedResult
     }
 
@@ -190,29 +204,21 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
 
     if (!handler) {
       const registry = this.compilationDependencies.thunkHandlerRegistry
-      const error = ThunkHandlerRegistryError.notFound(nodeId, registry.size(), registry.getIds().slice(0, 10))
-
-      const errorResult: ThunkResult<T> = {
-        error: error.toThunkError(),
-        metadata: { source: 'ThunkEvaluator.invokeSync', timestamp: Date.now() },
-      }
-
-      this.cacheManager.set(nodeId, errorResult)
-
-      return errorResult
+      throw ThunkHandlerRegistryError.notFound(nodeId, registry.size(), registry.getIds().slice(0, 10))
     }
 
     // Verify handler is actually sync
     if (!isSyncHandler(handler)) {
-      throw new Error(
-        `invokeSync() called on async handler: ${nodeId} (${handler.constructor.name}). ` +
-          `Use invoke() instead or convert handler to SyncThunkHandler.`,
-      )
+      throw ThunkEvaluationError.incorrectHandler(nodeId, handler.constructor.name)
     }
 
     // Execute synchronously - NO Promise overhead!
     const result = this.executeSyncHandler<T>(nodeId, handler, context)
     this.cacheManager.set(nodeId, result)
+
+    if (result.error) {
+      throw result.error.cause
+    }
 
     return result
   }
