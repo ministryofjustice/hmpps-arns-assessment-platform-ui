@@ -9,8 +9,6 @@
 
 {% block header %}
   {% include "./header.njk" %}
-  {% block primaryNavigation %}{% endblock %}
-  {% block planHeader %}{% endblock %}
 {% endblock %}
 
 {% block bodyStart %}
@@ -18,28 +16,8 @@
 
 {% block content %}
 <div class="govuk-grid-row">
-  {% if form.navigation %}
-    <div class="govuk-grid-column-one-quarter">
-      <nav class="moj-side-navigation side-navigation" aria-label="Side navigation">
-        <ul class="moj-side-navigation__list">
-          {% for link in form.navigation %}
-            <li class="moj-side-navigation__item{% if link.active %} moj-side-navigation__item--active{% endif %}">
-              <a href="{{ link.url }}"{% if link.active %} aria-current="location"{% endif %}>
-                <span class="section-label">{{ link.label }}</span>
-              </a>
-            </li>
-          {% endfor %}
-        </ul>
-      </nav>
-    </div>
-  {% endif %}
     <div class="govuk-grid-column-three-quarters">
       {% block backLink %}{% endblock %}
-      <div class="section-heading">
-        <div class="section-heading__heading">
-          <h2 class="govuk-body-l govuk-!-margin-0">{{ form.navigation[0].label }}</h2>
-        </div>
-      </div>
       {% block formContent %}{% endblock %}
     </div>
 </div>

@@ -5,11 +5,9 @@
   {% block pageStylesheets %}{% endblock %}
 {% endblock %}
 
-{% block primaryNavigation %}
+{% block header %}
+  {{ super() }}
   {% include "sentence-plan/views/partials/sentence-plan-nav.njk" %}
-{% endblock %}
-
-{% block planHeader %}
   {% include "sentence-plan/views/partials/plan-header.njk" %}
 {% endblock %}
 
