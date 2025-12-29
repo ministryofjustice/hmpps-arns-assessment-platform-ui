@@ -1,8 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { HtmlBlock } from '@form-engine/registry/components/html'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -11,8 +9,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  * Documentation for chaining references with .pipe(), .match(), .not,
  * and combining references with Format() and Conditional().
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Chaining References
 
@@ -112,8 +109,7 @@ Here's a complete example showing multiple chaining techniques:
 `),
   slots: {
     matchCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Answer, Self, Condition } from '@form-engine/form/builders'
@@ -138,8 +134,7 @@ Here's a complete example showing multiple chaining techniques:
       }),
     ],
     notCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // "Show error when value is NOT a valid email"
@@ -166,8 +161,7 @@ Here's a complete example showing multiple chaining techniques:
       }),
     ],
     pipeCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Answer, Transformer } from '@form-engine/form/builders'
@@ -189,8 +183,7 @@ Here's a complete example showing multiple chaining techniques:
       }),
     ],
     pipePatterns: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // 1. Clean string input
@@ -222,20 +215,17 @@ Here's a complete example showing multiple chaining techniques:
       }),
     ],
     pipeDetails: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'Alternative: Standalone Pipe() function',
         content: [
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: `
               <p class="govuk-body">
                 You can also use the standalone <code>Pipe()</code> function with any expression:
               </p>
             `,
           }),
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
           // The .pipe() method is chainable:
@@ -255,8 +245,7 @@ Here's a complete example showing multiple chaining techniques:
       }),
     ],
     formatCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Format, Answer, Data } from '@form-engine/form/builders'
@@ -269,8 +258,7 @@ Here's a complete example showing multiple chaining techniques:
           // "John Smith"
 
           // Use in HTML content
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format(
               '<h1>Welcome, %1</h1><p>Your email: %2</p>',
               Answer('name'),
@@ -286,8 +274,7 @@ Here's a complete example showing multiple chaining techniques:
       }),
     ],
     conditionalCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Conditional, Answer, Condition } from '@form-engine/form/builders'
@@ -320,12 +307,10 @@ Here's a complete example showing multiple chaining techniques:
       }),
     ],
     dynamicLabels: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'postalCode',
             label: Conditional({
               when: Answer('country').match(Condition.Equals('US')),
@@ -342,13 +327,11 @@ Here's a complete example showing multiple chaining techniques:
       }),
     ],
     completeExample: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // A sophisticated address validation field
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'postcode',
 
             // Dynamic label based on country
@@ -399,8 +382,7 @@ Here's a complete example showing multiple chaining techniques:
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/references/http',

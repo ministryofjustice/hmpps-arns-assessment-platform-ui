@@ -1,9 +1,8 @@
-import { block, field, validation, Self, Answer } from '@form-engine/form/builders'
+import { validation, Self, Answer } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKTextInput, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
@@ -12,8 +11,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  *
  * Interactive examples of string conditions with validation.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # String Conditions Playground
 
@@ -97,8 +95,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     equalsExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_equals',
           label: 'Enter the password',
           hint: 'Hint: the combination is 12345',
@@ -109,8 +106,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: `
             <div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
               <strong>1, 2, 3, 4, 5?</strong> That's amazing! I've got the same combination on my luggage!
@@ -121,16 +117,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     equalsCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-            field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            GovUKTextInput({
               code: 'cond_equals',
               label: 'Enter the password',
               validate: [
@@ -146,8 +139,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     requiredExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_required',
           label: 'Your name',
           validate: [
@@ -160,16 +152,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     requiredCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-            field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            GovUKTextInput({
               code: 'cond_required',
               label: 'Your name',
               validate: [
@@ -185,8 +174,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     minLengthExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_minlength',
           label: 'Username',
           hint: 'Must be at least 5 characters',
@@ -204,15 +192,12 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     minLengthCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
-            code: `field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            code: `GovUKTextInput({
               code: 'cond_minlength',
               label: 'Username',
               hint: 'Must be at least 5 characters',
@@ -233,8 +218,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     maxLengthExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_maxlength',
           label: 'Short code',
           hint: 'Maximum 10 characters',
@@ -252,16 +236,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     maxLengthCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-            field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            GovUKTextInput({
               code: 'cond_maxlength',
               label: 'Short code',
               hint: 'Maximum 10 characters',
@@ -282,8 +263,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     regexExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_regex',
           label: 'Postcode',
           hint: 'For example, SW1A 1AA',
@@ -303,16 +283,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     regexCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-            field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            GovUKTextInput({
               code: 'cond_regex',
               label: 'Postcode',
               hint: 'For example, SW1A 1AA',
@@ -335,8 +312,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     lettersExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_letters',
           label: 'First name',
           hint: 'Letters only, no numbers or symbols',
@@ -354,16 +330,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     lettersCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-            field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            GovUKTextInput({
               code: 'cond_letters',
               label: 'First name',
               hint: 'Letters only, no numbers or symbols',
@@ -384,8 +357,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     emailExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'cond_email',
           label: 'Email address',
           inputType: 'email',
@@ -403,16 +375,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     emailCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-            field<GovUKTextInput>({
-              variant: 'govukTextInput',
+            GovUKTextInput({
               code: 'cond_email',
               label: 'Email address',
               inputType: 'email',
@@ -432,8 +401,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/conditions/playground/intro',

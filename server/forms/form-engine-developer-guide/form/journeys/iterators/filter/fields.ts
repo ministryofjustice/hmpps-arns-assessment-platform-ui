@@ -1,10 +1,8 @@
-import { block, Format, Item, Data, Iterator, and, when } from '@form-engine/form/builders'
+import { Format, Item, Data, Iterator, and, when } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper, CollectionBlock } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -12,8 +10,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Using Iterator.Filter to keep only items matching a predicate.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Iterator.Filter
 
@@ -80,8 +77,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     syntaxCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Keep only active users
@@ -97,15 +93,13 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     filterStatusExample: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Data('tableRows')
           .each(Iterator.Filter(Item().path('status').match(Condition.Equals('active'))))
           .each(
             Iterator.Map(
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 content: Format(
                   '<p class="govuk-body govuk-!-margin-bottom-1"><strong class="govuk-tag govuk-tag--green govuk-!-margin-right-2">Active</strong> %1 (%2)</p>',
                   Item().path('name'),
@@ -117,19 +111,16 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     filterStatusCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Data('tableRows')
                 .each(Iterator.Filter(Item().path('status').match(Condition.Equals('active'))))
                 .each(Iterator.Map(
-                  block<HtmlBlock>({
-                    variant: 'html',
+                  HtmlBlock({
                     content: Format('<p><strong class="govuk-tag govuk-tag--green">Active</strong> %1 (%2)</p>',
                       Item().path('name'),
                       Item().path('role')
@@ -142,15 +133,13 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     excludeExample: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Data('tasks')
           .each(Iterator.Filter(Item().path('status').not.match(Condition.Equals('completed'))))
           .each(
             Iterator.Map(
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 content: Format(
                   '<p class="govuk-body govuk-!-margin-bottom-1">%1 %2</p>',
                   when(Item().path('status').match(Condition.Equals('in_progress')))
@@ -164,19 +153,16 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     excludeCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Data('tasks')
                 .each(Iterator.Filter(Item().path('status').not.match(Condition.Equals('completed'))))
                 .each(Iterator.Map(
-                  block<HtmlBlock>({
-                    variant: 'html',
+                  HtmlBlock({
                     content: Format('<p>%1 %2</p>',
                       when(Item().path('status').match(Condition.Equals('in_progress')))
                         .then('<strong class="govuk-tag govuk-tag--blue">In Progress</strong>')
@@ -191,8 +177,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     complexCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Multiple conditions with and()
@@ -214,8 +199,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     combinedExample: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Data('tasks')
           .each(
@@ -228,8 +212,7 @@ export const pageContent = block<TemplateWrapper>({
           )
           .each(
             Iterator.Map(
-              block<HtmlBlock>({
-                variant: 'html',
+              HtmlBlock({
                 content: Format(
                   '<p class="govuk-body govuk-!-margin-bottom-1"><strong class="govuk-tag govuk-tag--red govuk-!-margin-right-2">High Priority</strong> %1</p>',
                   Item().path('task'),
@@ -240,12 +223,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     combinedCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               Data('tasks')
@@ -256,8 +237,7 @@ export const pageContent = block<TemplateWrapper>({
                   )
                 ))
                 .each(Iterator.Map(
-                  block<HtmlBlock>({
-                    variant: 'html',
+                  HtmlBlock({
                     content: Format('<p><strong class="govuk-tag govuk-tag--red">High Priority</strong> %1</p>',
                       Item().path('task')
                     ),
@@ -269,8 +249,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     chainingCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Apply multiple filter conditions in sequence
@@ -285,8 +264,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/iterators/map',

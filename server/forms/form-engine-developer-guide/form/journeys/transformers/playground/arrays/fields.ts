@@ -1,15 +1,14 @@
-import { block, field, validation, Self, Answer, Format } from '@form-engine/form/builders'
+import { validation, Self, Answer, Format } from '@form-engine/form/builders'
+import { TemplateWrapper, HtmlBlock } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import {
   GovUKTextInput,
   GovUKCheckboxInput,
   GovUKDetails,
   GovUKPagination,
 } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
@@ -18,8 +17,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  *
  * Interactive examples of array transformers.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Array Transformers Playground
 
@@ -118,8 +116,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     toArrayExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_toarray',
           label: 'Enter tags (comma-separated)',
           hint: 'Try "red, green, blue"',
@@ -131,8 +128,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Array: <code>%1</code> (%2 items)</div>',
             Answer('transformers_toarray').pipe(Transformer.Array.Join(', ')),
@@ -143,16 +139,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     toArrayCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'transformers_toarray',
             label: 'Enter tags (comma-separated)',
             formatters: [
@@ -167,8 +160,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     joinExample: [
       exampleBox([
-        field<GovUKCheckboxInput>({
-          variant: 'govukCheckboxInput',
+        GovUKCheckboxInput({
           code: 'transformers_join',
           multiple: true,
           fieldset: {
@@ -187,8 +179,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Joined string: <code>"%1"</code></div>',
             Answer('transformers_join').pipe(Transformer.Array.Join(', ')),
@@ -198,12 +189,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     joinCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
           // In a pipe chain for display
@@ -221,8 +210,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     lengthExample: [
       exampleBox([
-        field<GovUKCheckboxInput>({
-          variant: 'govukCheckboxInput',
+        GovUKCheckboxInput({
           code: 'transformers_length',
           multiple: true,
           fieldset: {
@@ -242,8 +230,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">You selected <code>%1</code> interest(s)</div>',
             Answer('transformers_length').pipe(Transformer.Array.Length()),
@@ -253,12 +240,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     lengthCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
           // Get the number of selected items
@@ -272,8 +257,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     firstExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_first',
           label: 'Enter items (comma-separated)',
           hint: 'Try "apple, banana, cherry, date"',
@@ -285,8 +269,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">First item: <code>%1</code></div>',
             Answer('transformers_first').pipe(Transformer.Array.First()),
@@ -296,12 +279,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     firstCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
           Answer('transformers_first').pipe(
@@ -314,8 +295,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     lastExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_last',
           label: 'Enter items (comma-separated)',
           hint: 'Try "apple, banana, cherry, date"',
@@ -327,8 +307,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Last item: <code>%1</code></div>',
             Answer('transformers_last').pipe(Transformer.Array.Last()),
@@ -338,12 +317,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     lastCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
           Answer('transformers_last').pipe(
@@ -356,8 +333,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     reverseExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_reverse',
           label: 'Enter items (comma-separated)',
           hint: 'Try "1, 2, 3, 4, 5"',
@@ -369,8 +345,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
             Original: <code>%1</code><br>
@@ -384,12 +359,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     reverseCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
           Answer('transformers_reverse').pipe(
@@ -402,8 +375,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     sliceExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_slice',
           label: 'Enter items (comma-separated)',
           hint: 'Try "a, b, c, d, e, f"',
@@ -415,8 +387,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
             Full array: <code>%1</code><br>
@@ -430,12 +401,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     sliceCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
           Answer('transformers_slice').pipe(
@@ -448,8 +417,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     uniqueExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_unique',
           label: 'Enter items (comma-separated)',
           hint: 'Try "apple, banana, apple, cherry, banana"',
@@ -461,8 +429,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             `<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
             With duplicates: <code>%1</code> (%2 items)<br>
@@ -478,12 +445,10 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     uniqueCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
           Answer('transformers_unique').pipe(
@@ -495,8 +460,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/transformers/playground/numbers',

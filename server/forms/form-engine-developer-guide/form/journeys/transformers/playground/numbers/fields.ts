@@ -1,10 +1,9 @@
-import { block, field, validation, Self, Answer, Format } from '@form-engine/form/builders'
+import { validation, Self, Answer, Format } from '@form-engine/form/builders'
+import { TemplateWrapper, HtmlBlock } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKTextInput, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../../components'
 import { exampleBox } from '../../../../../helpers/exampleBox'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
 
@@ -13,8 +12,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  *
  * Interactive examples of number transformers.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Number Transformers Playground
 
@@ -114,8 +112,7 @@ export const pageContent = block<TemplateWrapper>({
   slots: {
     roundExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_round',
           label: 'Enter a decimal number',
           hint: 'Try "3.7" or "3.2"',
@@ -129,8 +126,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Transformed value: <code>%1</code></div>',
             Answer('transformers_round'),
@@ -140,16 +136,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     roundCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'transformers_round',
                 label: 'Enter a decimal number',
                 inputMode: 'decimal',
@@ -166,8 +159,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     floorExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_floor',
           label: 'Enter a decimal number',
           hint: 'Try "4.9" or "4.1"',
@@ -181,8 +173,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Floor result: <code>%1</code></div>',
             Answer('transformers_floor'),
@@ -192,16 +183,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     floorCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'transformers_floor',
                 label: 'Enter a decimal number',
                 formatters: [
@@ -216,8 +204,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     ceilExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_ceil',
           label: 'Enter a decimal number',
           hint: 'Try "4.1" or "4.9"',
@@ -231,8 +218,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Ceil result: <code>%1</code></div>',
             Answer('transformers_ceil'),
@@ -242,16 +228,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     ceilCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'transformers_ceil',
                 label: 'Enter a decimal number',
                 formatters: [
@@ -266,8 +249,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     toFixedExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_tofixed',
           label: 'Enter a price',
           hint: 'Try "19.999" or "5"',
@@ -282,8 +264,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Transformed value: <code>£%1</code></div>',
             Answer('transformers_tofixed'),
@@ -293,16 +274,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     toFixedCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'transformers_tofixed',
                 label: 'Enter a price',
                 prefix: { text: '£' },
@@ -318,8 +296,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     multiplyExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_multiply',
           label: 'Enter a price (excluding VAT)',
           hint: 'Try "100"',
@@ -334,8 +311,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Price including VAT: <code>£%1</code></div>',
             Answer('transformers_multiply'),
@@ -345,16 +321,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     multiplyCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'transformers_multiply',
                 label: 'Enter a price (excluding VAT)',
                 prefix: { text: '£' },
@@ -370,8 +343,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     divideExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_divide',
           label: 'Enter a discount percentage',
           hint: 'Try "25" (for 25%)',
@@ -386,8 +358,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Stored as decimal: <code>%1</code></div>',
             Answer('transformers_divide'),
@@ -397,16 +368,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     divideCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'transformers_divide',
                 label: 'Enter a discount percentage',
                 suffix: { text: '%' },
@@ -422,8 +390,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     clampExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_clamp',
           label: 'Enter a quantity',
           hint: 'Will be clamped between 1 and 10',
@@ -437,8 +404,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Clamped value: <code>%1</code> (range: 1-10)</div>',
             Answer('transformers_clamp'),
@@ -448,16 +414,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     clampCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'transformers_clamp',
                 label: 'Enter a quantity',
                 hint: 'Will be clamped between 1 and 10',
@@ -473,8 +436,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     absExample: [
       exampleBox([
-        field<GovUKTextInput>({
-          variant: 'govukTextInput',
+        GovUKTextInput({
           code: 'transformers_abs',
           label: 'Enter a number',
           hint: 'Try "-42"',
@@ -488,8 +450,7 @@ export const pageContent = block<TemplateWrapper>({
             }),
           ],
         }),
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: Format(
             '<div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">Absolute value: <code>%1</code></div>',
             Answer('transformers_abs'),
@@ -499,16 +460,13 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     absCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'transformers_abs',
                 label: 'Enter a number',
                 formatters: [
@@ -522,8 +480,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/transformers/playground/strings',

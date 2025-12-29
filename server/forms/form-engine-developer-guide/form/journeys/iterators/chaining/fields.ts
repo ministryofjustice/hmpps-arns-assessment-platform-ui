@@ -1,10 +1,9 @@
-import { block, Format, Item, Iterator, Literal } from '@form-engine/form/builders'
+import { Format, Item, Iterator, Literal } from '@form-engine/form/builders'
+import { TemplateWrapper, CollectionBlock } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
 import { Transformer } from '@form-engine/registry/transformers'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 const tableRows = [
@@ -38,8 +37,7 @@ const categories = [
  *
  * Combining multiple iterators and transformers.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Chaining Iterators
 
@@ -109,8 +107,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     filterMapCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Filter to active items, then transform to select options
@@ -126,8 +123,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     filterMapExample: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal(tableRows)
           .each(Iterator.Filter(Item().path('status').match(Condition.Equals('active'))))
@@ -137,12 +133,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     filterMapExampleCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               const tableRows = [
@@ -163,8 +157,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pipeCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `// Filter, map, then slice to first 3
 Data('items')
@@ -179,8 +172,7 @@ Data('categories')
       }),
     ],
     sliceExample: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal(simpleListItems)
           .each(
@@ -195,12 +187,10 @@ Data('categories')
       }),
     ],
     sliceExampleCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `const simpleListItems = [
   { name: 'First item' },
@@ -219,13 +209,11 @@ Literal(simpleListItems)
       }),
     ],
     nestedExample: [
-      block<CollectionBlock>({
-        variant: 'collection-block',
+      CollectionBlock({
         classes: 'govuk-!-margin-bottom-4',
         collection: Literal(categories).each(
           Iterator.Map(
-            block<TemplateWrapper>({
-              variant: 'templateWrapper',
+            TemplateWrapper({
               template: `
                 <div>
                     <p>Category title: {{title}}</p>
@@ -244,8 +232,7 @@ Literal(simpleListItems)
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/iterators/find',

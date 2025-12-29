@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * Single markdown template with component slots for code examples and navigation.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Common Validation Patterns
 
@@ -80,12 +78,10 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     confirmFieldMatchesCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'email',
             label: 'Email address',
             inputType: 'email',
@@ -101,8 +97,7 @@ export const pageContent = block<TemplateWrapper>({
             ],
           })
 
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'confirm_email',
             label: 'Confirm email address',
             inputType: 'email',
@@ -121,12 +116,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     conditionalRequiredCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          GovUKRadioInput({
             code: 'contact_method',
             fieldset: { legend: { text: 'How should we contact you?' } },
             items: [
@@ -136,8 +129,7 @@ export const pageContent = block<TemplateWrapper>({
             ],
           })
 
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'other_contact_method',
             label: 'Please specify',
             // Only show when "other" is selected
@@ -155,12 +147,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dateComparisonCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKDateInputFull>({
-            variant: 'govukDateInputFull',
+          GovUKDateInputFull({
             code: 'start_date',
             fieldset: { legend: { text: 'Start date' } },
             hint: 'For example, 27 3 2024',
@@ -176,8 +166,7 @@ export const pageContent = block<TemplateWrapper>({
             ],
           })
 
-          field<GovUKDateInputFull>({
-            variant: 'govukDateInputFull',
+          GovUKDateInputFull({
             code: 'end_date',
             fieldset: { legend: { text: 'End date' } },
             hint: 'For example, 27 3 2025',
@@ -200,13 +189,11 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dateInPastFutureCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Date must be in the past (e.g., date of birth)
-          field<GovUKDateInputFull>({
-            variant: 'govukDateInputFull',
+          GovUKDateInputFull({
             code: 'date_of_birth',
             fieldset: { legend: { text: 'Date of birth' } },
             validate: [
@@ -227,8 +214,7 @@ export const pageContent = block<TemplateWrapper>({
           })
 
           // Date must be in the future (e.g., appointment)
-          field<GovUKDateInputFull>({
-            variant: 'govukDateInputFull',
+          GovUKDateInputFull({
             code: 'appointment_date',
             fieldset: { legend: { text: 'Appointment date' } },
             validate: [
@@ -246,12 +232,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     atLeastOneSelectedCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKCheckboxInput>({
-            variant: 'govukCheckboxInput',
+          GovUKCheckboxInput({
             code: 'interests',
             multiple: true,
             fieldset: {
@@ -274,12 +258,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     maximumSelectionsCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKCheckboxInput>({
-            variant: 'govukCheckboxInput',
+          GovUKCheckboxInput({
             code: 'top_priorities',
             multiple: true,
             fieldset: {
@@ -311,12 +293,10 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     complexCrossFieldDetails: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View complex example',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               import { and, or } from '@form-engine/form/builders'
@@ -324,8 +304,7 @@ export const pageContent = block<TemplateWrapper>({
               // Phone number is required if:
               // - Contact method is "phone" OR
               // - They opted in to SMS notifications
-              field<GovUKTextInput>({
-                variant: 'govukTextInput',
+              GovUKTextInput({
                 code: 'phone_number',
                 label: 'Phone number',
                 inputType: 'tel',
@@ -355,8 +334,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/validation/intro',

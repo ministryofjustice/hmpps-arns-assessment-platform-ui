@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * How to use formatters/transformers to clean and normalise field values.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Transformers
 
@@ -100,14 +98,12 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     basicUsageCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Transformer } from '@form-engine/registry/transformers'
 
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'email',
             label: 'Email address',
             formatters: [
@@ -125,8 +121,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     stringTransformersCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Whitespace
@@ -156,8 +151,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     numberTransformersCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Rounding
@@ -183,8 +177,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     dateTransformersCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Formatting
@@ -213,13 +206,11 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     emailPatternCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKTextInput>({
+          GovUKTextInput({
             code: 'email',
-            variant: 'govukTextInput',
             label: 'Email address',
             inputType: 'email',
             formatters: [
@@ -232,13 +223,11 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     postcodePatternCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKTextInput>({
+          GovUKTextInput({
             code: 'postcode',
-            variant: 'govukTextInput',
             label: 'Postcode',
             formatters: [
               Transformer.String.Trim(),
@@ -250,13 +239,11 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     phonePatternCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          field<GovUKTextInput>({
+          GovUKTextInput({
             code: 'phone',
-            variant: 'govukTextInput',
             label: 'Phone number',
             inputType: 'tel',
             formatters: [
@@ -270,14 +257,12 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     percentagePatternCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // User enters percentage, store as decimal
-          field<GovUKTextInput>({
+          GovUKTextInput({
             code: 'discount_rate',
-            variant: 'govukTextInput',
             label: 'Discount rate (%)',
             inputMode: 'decimal',
             formatters: [
@@ -289,8 +274,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/validation/playground/arrays',

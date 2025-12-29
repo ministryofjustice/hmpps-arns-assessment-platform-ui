@@ -1,8 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { HtmlBlock } from '@form-engine/registry/components/html'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination, GovUKWarningText } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -11,8 +9,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  * Comprehensive documentation for the Item() reference,
  * covering collection iteration, scope navigation, and nested collections.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Item()
 
@@ -116,8 +113,7 @@ Use \`Format()\` to build strings with item values:
 `),
   slots: {
     signatureCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           Item(): ScopedReference
@@ -125,8 +121,7 @@ Use \`Format()\` to build strings with item values:
       }),
     ],
     basicCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Item } from '@form-engine/form/builders'
@@ -149,8 +144,7 @@ Use \`Format()\` to build strings with item values:
       }),
     ],
     listCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // First, load your data in an effect
@@ -164,12 +158,10 @@ Use \`Format()\` to build strings with item values:
           }
 
           // Then, iterate using .each() with Iterator.Map
-          block<CollectionBlock>({
-            variant: 'collection-block',
+          CollectionBlock({
             collection: Data('items').each(
               Iterator.Map(
-                block<HtmlBlock>({
-                  variant: 'html',
+                HtmlBlock({
                   content: Format(
                     '<p class="govuk-body"><strong>%1</strong>: %2</p>',
                     Item().path('name'),
@@ -183,17 +175,14 @@ Use \`Format()\` to build strings with item values:
       }),
     ],
     dynamicCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Create fields for each item using Iterator.Map
-          block<CollectionBlock>({
-            variant: 'collection-block',
+          CollectionBlock({
             collection: Data('people').each(
               Iterator.Map(
-                field<GovUKTextInput>({
-                  variant: 'govukTextInput',
+                GovUKTextInput({
                   // Generate unique codes: person_0_name, person_1_name, etc.
                   code: Format('person_%1_name', Item().index()),
                   label: Format('Name for person %1',
@@ -208,8 +197,7 @@ Use \`Format()\` to build strings with item values:
       }),
     ],
     scopeCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Nested collection structure:
@@ -230,12 +218,10 @@ Use \`Format()\` to build strings with item values:
       }),
     ],
     scopeDiagram: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'Visual diagram: Nested collection scopes',
         content: [
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: `
               <pre><code>categories (Level 1: Item().parent)
 ├── { name: 'Electronics', products: [...] }
@@ -253,13 +239,11 @@ Use \`Format()\` to build strings with item values:
       }),
     ],
     formatCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Display item information
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format(
               '<p class="govuk-body">Item %1: %2 (Status: %3)</p>',
               Item().index().pipe(Transformer.Number.Add(1)),
@@ -275,14 +259,12 @@ Use \`Format()\` to build strings with item values:
       }),
     ],
     warning: [
-      block<GovUKWarningText>({
-        variant: 'govukWarningText',
+      GovUKWarningText({
         html: '<code>Item()</code> can only be used inside a collection block. Using it outside will throw a runtime error because there is no active scope.',
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/references/self',

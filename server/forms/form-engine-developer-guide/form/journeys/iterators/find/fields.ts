@@ -1,9 +1,8 @@
-import { block, Item, Literal, Iterator } from '@form-engine/form/builders'
+import { Item, Literal, Iterator } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 const tasks = [
@@ -19,8 +18,7 @@ const tasks = [
  *
  * Using Iterator.Find to get the first matching item.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Iterator.Find
 
@@ -90,8 +88,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     syntaxCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `// Find user by ID
 Data('users').each(Iterator.Find(
@@ -105,12 +102,10 @@ Data('items').each(Iterator.Find(
       }),
     ],
     conditionalCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `// Show content only when an item is found
-block<HtmlBlock>({
-  variant: 'html',
+HtmlBlock({
   dependent: when(
     Data('users')
       .each(Iterator.Find(Item().path('id').match(Condition.Equals(Params('userId')))))
@@ -120,8 +115,7 @@ block<HtmlBlock>({
 })
 
 // Show warning when no high priority tasks exist
-block<HtmlBlock>({
-  variant: 'html',
+HtmlBlock({
   dependent: when(
     Data('tasks')
       .each(Iterator.Find(Item().path('priority').match(Condition.Equals('high'))))
@@ -132,8 +126,7 @@ block<HtmlBlock>({
       }),
     ],
     liveExample: [
-      block<HtmlBlock>({
-        variant: 'html',
+      HtmlBlock({
         hidden: Literal(tasks)
           .each(Iterator.Find(Item().path('priority').match(Condition.Equals('high'))))
           .not.match(Condition.IsRequired()),
@@ -148,12 +141,10 @@ block<HtmlBlock>({
       }),
     ],
     liveExampleCode: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View code',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `const tasks = [
   { task: 'Review pull request', status: 'completed', priority: 'high' },
@@ -162,8 +153,7 @@ block<HtmlBlock>({
   // ...
 ]
 
-block<HtmlBlock>({
-  variant: 'html',
+HtmlBlock({
   // Hidden when NO high priority task is found
   hidden: Literal(tasks)
     .each(Iterator.Find(Item().path('priority').match(Condition.Equals('high'))))
@@ -175,8 +165,7 @@ block<HtmlBlock>({
       }),
     ],
     lookupCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `// Find item by ID from URL parameter
 const selectedItem = Data('categories')
@@ -185,16 +174,14 @@ const selectedItem = Data('categories')
   ))
 
 // Use in conditional display
-block<HtmlBlock>({
-  variant: 'html',
+HtmlBlock({
   dependent: when(selectedItem.match(Condition.IsRequired())),
   content: 'Category found - showing details...',
 })`,
       }),
     ],
     firstMatchCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `// Find first pending task
 Data('tasks').each(Iterator.Find(
@@ -208,8 +195,7 @@ Data('products').each(Iterator.Find(
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/iterators/filter',

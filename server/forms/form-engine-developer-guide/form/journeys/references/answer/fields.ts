@@ -1,8 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -11,8 +9,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  * Comprehensive documentation for the Answer() reference,
  * including usage patterns, nested properties, and common scenarios.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Answer()
 
@@ -117,15 +114,13 @@ through onLoad transitions that pre-populate the answer store.
 `),
   slots: {
     signatureCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `Answer(target: string | FieldDefinition): ReferenceExpr`,
       }),
     ],
     basicCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Answer } from '@form-engine/form/builders'
@@ -138,12 +133,10 @@ through onLoad transitions that pre-populate the answer store.
       }),
     ],
     fieldDefCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          const emailField = field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          const emailField = GovUKTextInput({
             code: 'email',
             label: 'Email address',
           })
@@ -155,8 +148,7 @@ through onLoad transitions that pre-populate the answer store.
       }),
     ],
     nestedCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // If a field stores an object (e.g., from a composite field)
@@ -171,13 +163,11 @@ through onLoad transitions that pre-populate the answer store.
       }),
     ],
     scenario1Code: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Show "other" text input only when "other" is selected
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'contactMethodOther',
             label: 'Please specify',
             hidden: Answer('contactMethod').not.match(Condition.Equals('other')),
@@ -187,12 +177,10 @@ through onLoad transitions that pre-populate the answer store.
       }),
     ],
     scenario2Code: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format('Thank you, %1. We will contact you at %2.',
               Answer('fullName'),
               Answer('email')
@@ -202,13 +190,11 @@ through onLoad transitions that pre-populate the answer store.
       }),
     ],
     scenario3Code: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Use billing address as default shipping address
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'shippingStreet',
             label: 'Street address',
             defaultValue: Answer('billingStreet'),
@@ -217,13 +203,11 @@ through onLoad transitions that pre-populate the answer store.
       }),
     ],
     scenario4Code: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // End date must be after start date
-          field<GovUKDateInputFull>({
-            variant: 'govukDateInputFull',
+          GovUKDateInputFull({
             code: 'endDate',
             fieldset: { legend: { text: 'End date' } },
             validate: [
@@ -245,12 +229,10 @@ through onLoad transitions that pre-populate the answer store.
       }),
     ],
     technicalDetails: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'Technical detail: Answer resolution priority',
         content: [
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: `
               <p class="govuk-body">
                 The form-engine resolves local answers in this priority order:
@@ -270,8 +252,7 @@ through onLoad transitions that pre-populate the answer store.
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/references/intro',

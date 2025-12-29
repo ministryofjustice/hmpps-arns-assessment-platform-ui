@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKPagination } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -9,8 +8,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  *
  * What effects are, when to use them, and the EffectFunctionContext API.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Effects
 
@@ -122,8 +120,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     contextApiCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Reading data
@@ -143,8 +140,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     basicUsageCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { loadTransition, submitTransition, next } from '@form-engine/form/builders'
@@ -181,8 +177,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     parametersCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Static parameter
@@ -200,8 +195,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     setAnswerVsSetDataCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Loading saved answers into form fields
@@ -224,7 +218,7 @@ export const pageContent = block<TemplateWrapper>({
           }
 
           // In the form, use Data() to access reference data
-          field<GovUKRadioInput>({
+          GovUKRadioInput({
             code: 'country',
             items: Data('countries'),  // Reference data, not an answer
           })
@@ -232,8 +226,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     loadSaveExampleCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           step({
@@ -279,8 +272,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/generators/playground/dates',

@@ -1,9 +1,8 @@
-import { block, Answer, field, and, not } from '@form-engine/form/builders'
+import { and, Answer, not } from '@form-engine/form/builders'
+import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKPagination, GovUKRadioInput } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 import { exampleBox } from '../../../../helpers/exampleBox'
 
@@ -12,8 +11,7 @@ import { exampleBox } from '../../../../helpers/exampleBox'
  *
  * Documentation for and(), or(), xor(), not() boolean combinators.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Predicate Combinators
 
@@ -108,8 +106,7 @@ export const pageContent = block<TemplateWrapper>({
 `),
   slots: {
     basicCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { and, or, xor, not, Answer, Condition } from '@form-engine/form/builders'
@@ -138,8 +135,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     andCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Validation depends on another field
@@ -152,7 +148,7 @@ export const pageContent = block<TemplateWrapper>({
           })
 
           // Show field only when multiple conditions met
-          field<GovUKTextInput>({
+          GovUKTextInput({
             code: 'spouseDetails',
             hidden: and(
               Answer('maritalStatus').match(Condition.Equals('married')),
@@ -172,12 +168,11 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     orCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Show field for multiple roles
-          field<GovUKTextInput>({
+          GovUKTextInput({
             code: 'adminNotes',
             hidden: or(
               Answer('role').match(Condition.Equals('admin')),
@@ -196,8 +191,7 @@ export const pageContent = block<TemplateWrapper>({
           })
 
           // Multiple trigger conditions
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: '<div class="warning">Action required</div>',
             hidden: or(
               Answer('status').match(Condition.Equals('overdue')),
@@ -209,8 +203,7 @@ export const pageContent = block<TemplateWrapper>({
     ],
     liveExample: [
       exampleBox([
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'predicateHasIssue',
           fieldset: {
             legend: { text: 'Did you experience any issues?' },
@@ -221,8 +214,7 @@ export const pageContent = block<TemplateWrapper>({
           ],
         }),
 
-        field<GovUKRadioInput>({
-          variant: 'govukRadioInput',
+        GovUKRadioInput({
           code: 'predicateWantsFollowup',
           fieldset: {
             legend: { text: 'Would you like us to follow up?' },
@@ -234,8 +226,7 @@ export const pageContent = block<TemplateWrapper>({
           hidden: Answer('predicateHasIssue').not.match(Condition.Equals('yes')),
         }),
 
-        block<HtmlBlock>({
-          variant: 'html',
+        HtmlBlock({
           content: `
             <div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-0">
               <strong>This message uses <code>and()</code></strong> — it only appears
@@ -252,8 +243,7 @@ export const pageContent = block<TemplateWrapper>({
       ]),
     ],
     xorCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Ensure exactly one contact method is provided
@@ -277,8 +267,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     notCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Standalone not() function
@@ -297,7 +286,7 @@ export const pageContent = block<TemplateWrapper>({
 
           // Show content when user is NOT (admin AND verified)
           // Hidden when IS (admin AND verified) - use and() directly
-          block<HtmlBlock>({
+          HtmlBlock({
             content: '<p>Limited access mode</p>',
             hidden: and(
               Answer('role').match(Condition.Equals('admin')),
@@ -308,8 +297,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     combiningCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // (A AND B) OR C
@@ -341,8 +329,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     validationCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // 1. Conditional required field
@@ -390,8 +377,7 @@ export const pageContent = block<TemplateWrapper>({
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/expressions/conditional',

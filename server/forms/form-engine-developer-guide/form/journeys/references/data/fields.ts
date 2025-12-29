@@ -1,7 +1,6 @@
-import { block } from '@form-engine/form/builders'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKDetails, GovUKPagination, GovUKWarningText } from '@form-engine-govuk-components/components'
-import { CodeBlock } from '../../../../components/code-block/codeBlock'
+import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
@@ -10,8 +9,7 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  * Comprehensive documentation for the Data() reference,
  * covering external data access, onLoad effects, and common patterns.
  */
-export const pageContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Data()
 
@@ -109,8 +107,7 @@ Organise your data keys thoughtfully. Here are common patterns:
 `),
   slots: {
     signatureCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           Data(key: string): ReferenceExpr
@@ -118,8 +115,7 @@ Organise your data keys thoughtfully. Here are common patterns:
       }),
     ],
     loadingCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // In your effects file
@@ -149,15 +145,13 @@ Organise your data keys thoughtfully. Here are common patterns:
       }),
     ],
     warning: [
-      block<GovUKWarningText>({
-        variant: 'govukWarningText',
+      GovUKWarningText({
         html: `<strong>Data must be loaded before use.</strong> If you reference <code>Data('user')</code>
           without loading it in onLoad, the value will be <code>undefined</code>.`,
       }),
     ],
     basicCode: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           import { Data } from '@form-engine/form/builders'
@@ -175,16 +169,14 @@ Organise your data keys thoughtfully. Here are common patterns:
       }),
     ],
     scenario1Code: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Effect loads user data
           context.setData('existingApplication', await api.getApplication(id))
 
           // Field uses it as default
-          field<GovUKTextInput>({
-            variant: 'govukTextInput',
+          GovUKTextInput({
             code: 'businessName',
             label: 'Business name',
             defaultValue: Data('existingApplication.businessName'),
@@ -193,8 +185,7 @@ Organise your data keys thoughtfully. Here are common patterns:
       }),
     ],
     scenario2Code: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Effect loads options
@@ -207,8 +198,7 @@ Organise your data keys thoughtfully. Here are common patterns:
           }
 
           // Field uses the options
-          field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          GovUKRadioInput({
             code: 'country',
             fieldset: { legend: { text: 'Country' } },
             items: Data('countries'),
@@ -217,12 +207,10 @@ Organise your data keys thoughtfully. Here are common patterns:
       }),
     ],
     scenario3Code: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             content: Format(
               '<h2 class="govuk-heading-m">Application: %1</h2><p class="govuk-body">Status: %2</p>',
               Data('application.reference'),
@@ -233,20 +221,17 @@ Organise your data keys thoughtfully. Here are common patterns:
       }),
     ],
     scenario4Code: [
-      block<CodeBlock>({
-        variant: 'codeBlock',
+      CodeBlock({
         language: 'typescript',
         code: `
           // Show premium features only for premium users
-          block<HtmlBlock>({
-            variant: 'html',
+          HtmlBlock({
             hidden: Data('user.tier').not.match(Condition.Equals('premium')),
             content: '<p class="govuk-body">Premium feature content here...</p>',
           })
 
           // Show different step based on user permissions
-          field<GovUKRadioInput>({
-            variant: 'govukRadioInput',
+          GovUKRadioInput({
             code: 'action',
             hidden: Data('permissions.canApprove').not.match(Condition.Equals(true)),
             // ...
@@ -255,12 +240,10 @@ Organise your data keys thoughtfully. Here are common patterns:
       }),
     ],
     structurePatterns: [
-      block<GovUKDetails>({
-        variant: 'govukDetails',
+      GovUKDetails({
         summaryText: 'View recommended data structure',
         content: [
-          block<CodeBlock>({
-            variant: 'codeBlock',
+          CodeBlock({
             language: 'typescript',
             code: `
               // Pattern 1: Domain-based grouping
@@ -296,8 +279,7 @@ Organise your data keys thoughtfully. Here are common patterns:
       }),
     ],
     pagination: [
-      block<GovUKPagination>({
-        variant: 'govukPagination',
+      GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
           href: '/forms/form-engine-developer-guide/references/answer',
