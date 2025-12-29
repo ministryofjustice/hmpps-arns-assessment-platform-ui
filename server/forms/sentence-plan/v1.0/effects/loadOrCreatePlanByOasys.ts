@@ -47,6 +47,9 @@ export const loadOrCreatePlanByOasys: EffectFunction = deps => async context => 
     type: 'CreateAssessmentCommand',
     assessmentType: 'SENTENCE_PLAN',
     formVersion: '1.0',
+    properties: {
+      AGREEMENT_STATUS: { type: 'Single', value: 'DRAFT' },
+    },
     user,
   })
 

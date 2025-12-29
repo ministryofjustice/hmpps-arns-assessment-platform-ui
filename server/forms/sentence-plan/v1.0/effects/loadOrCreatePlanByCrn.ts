@@ -56,6 +56,9 @@ export const loadOrCreatePlanByCrn: EffectFunction = deps => async context => {
     assessmentType: 'SENTENCE_PLAN',
     formVersion: '1.0',
     identifiers: { CRN: crn },
+    properties: {
+      AGREEMENT_STATUS: { type: 'Single', value: 'DRAFT' },
+    },
     user,
   })
 
