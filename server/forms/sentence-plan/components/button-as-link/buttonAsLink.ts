@@ -1,4 +1,4 @@
-import { block } from '@form-engine/form/builders'
+import { block as blockBuilder } from '@form-engine/form/builders'
 import { buildComponent } from '@form-engine/registry/utils/buildComponent'
 import {
   BlockDefinition,
@@ -114,5 +114,5 @@ export const buttonAsLink = buildComponent<ButtonAsLink>(
  * ```
  */
 export function ButtonAsLink(props: ButtonAsLinkProps): ButtonAsLink {
-  return block<ButtonAsLink>({ ...props, variant: 'buttonAsLink' })
+  return blockBuilder<ButtonAsLink>({ ...props, variant: 'buttonAsLink' })
 }

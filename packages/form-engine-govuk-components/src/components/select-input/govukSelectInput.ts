@@ -13,13 +13,13 @@ import { field } from '@form-engine/form/builders'
  */
 export interface SelectItem {
   /** Value for the option. If omitted, the value is taken from the text content. */
-  value?: string
+  value?: ConditionalString
   /** Text for the option item. */
-  text: string
+  text: ConditionalString
   /** Whether the option should be selected when the page loads. */
-  selected?: boolean
+  selected?: ConditionalBoolean
   /** Sets the option item as disabled. */
-  disabled?: boolean
+  disabled?: ConditionalBoolean
   /** HTML attributes to add to the option. */
   attributes?: Record<string, any>
 }
