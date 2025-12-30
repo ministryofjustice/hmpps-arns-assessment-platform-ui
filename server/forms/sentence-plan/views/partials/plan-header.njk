@@ -14,7 +14,7 @@
 
   {% set buttonItems = [] %}
 
-  {#  TODO: Add real links for these buttons#}
+  {#  TODO: Add real links for 'Return to OASys' and 'Agree plan'#}
   {% if buttons.showReturnToOasysButton %}
     {% set buttonItems = buttonItems.concat([{
       text: 'Return to OASys',
@@ -27,7 +27,7 @@
   {% if buttons.showCreateGoalButton %}
     {% set buttonItems = buttonItems.concat([{
       text: 'Create goal',
-      href: "../goal/new/add-goal/accommodation",
+      href: basePath + '/goal/new/add-goal/accommodation',
       classes: "govuk-button--secondary govuk-!-display-none-print",
       type: 'button',
       id: 'create-goal-button'
