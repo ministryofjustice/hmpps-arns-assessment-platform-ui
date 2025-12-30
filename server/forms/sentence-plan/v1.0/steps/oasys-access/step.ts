@@ -6,14 +6,6 @@ export const oasysAccessStep = step({
   path: '/oasys',
   title: 'OASys Access',
   isEntryPoint: true,
-  view: {
-    locals: {
-      showPlanHistoryTab: Data('assessment.properties.AGREEMENT_STATUS.value').match(
-        Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
-      ),
-    },
-  },
-
   onLoad: [
     loadTransition({
       effects: [SentencePlanV1Effects.loadOrCreatePlanByOasys(), SentencePlanV1Effects.setSessionAccessType('oasys')],
