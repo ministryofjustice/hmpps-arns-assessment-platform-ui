@@ -1,5 +1,7 @@
-import { Format, Data, step } from '@form-engine/form/builders'
-import { blankPlanOverviewContent, futureGoalsContent, subNavigation } from './fields'
+import { accessTransition, Format, Data, next, Query, step, loadTransition } from '@form-engine/form/builders'
+import { Condition } from '@form-engine/registry/conditions'
+import { blankPlanOverviewContent, futureGoalsContent, goalsSection, subNavigation } from './fields'
+import { SentencePlanV1Effects } from '../../../../effects'
 
 export const planStep = step({
   path: '/overview',
@@ -16,5 +18,16 @@ export const planStep = step({
     },
   },
   isEntryPoint: true,
-  blocks: [subNavigation, blankPlanOverviewContent, futureGoalsContent],
+  blocks: [subNavigation, goalsSection, blankPlanOverviewContent, futureGoalsContent],
+  onAccess: [
+    accessTransition({
+      guards: Query('type').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
+      redirect: [next({ goto: 'overview?type=current' })],
+    }),
+  ],
+  onLoad: [
+    loadTransition({
+      effects: [SentencePlanV1Effects.deriveGoalsWithStepsFromAssessment()],
+    }),
+  ],
 })
