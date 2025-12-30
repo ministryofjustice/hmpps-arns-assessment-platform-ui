@@ -12,7 +12,6 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { twoColumnLayout } from './fields'
-import { areasOfNeed } from '../../../constants'
 import { SentencePlanV1Effects } from '../../../effects'
 
 /**
