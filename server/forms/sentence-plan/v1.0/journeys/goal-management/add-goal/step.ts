@@ -23,7 +23,6 @@ export const createGoalStep = step({
   title: 'Create Goal',
   isEntryPoint: true,
   // Static data available to effects and Data() references
-  data: { areasOfNeed },
   blocks: [twoColumnLayout()],
   onLoad: [
     loadTransition({

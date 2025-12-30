@@ -22,6 +22,7 @@ export interface RawCollectionItem {
 export interface DerivedStep {
   uuid: string
   actor: string
+  actorLabel: string
   status: string
   description: string
   statusDate: string
@@ -34,7 +35,9 @@ export interface DerivedGoal {
   targetDate: string
   statusDate: string
   areaOfNeed: string
+  areaOfNeedLabel: string
   relatedAreasOfNeed: string[]
+  relatedAreasOfNeedLabels: string[]
   stepsCollectionUuid?: string
   steps: DerivedStep[]
 }
@@ -116,6 +119,9 @@ export interface SentencePlanData extends Record<string, unknown> {
   currentAreaOfNeed: AreaOfNeed
   otherAreasOfNeed: AreaOfNeed[]
   areaOfNeedSlugs: string[]
+
+  // Actor labels
+  actorLabels: Record<string, string>
 
   // Case data (from Delius)
   caseData: unknown

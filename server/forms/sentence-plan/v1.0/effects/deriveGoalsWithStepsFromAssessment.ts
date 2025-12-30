@@ -1,5 +1,6 @@
 import { unwrapAll } from '../../../../data/aap-api/wrappers'
 import {
+  AreaOfNeed,
   DerivedGoal,
   DerivedStep,
   GoalAnswers,
@@ -9,6 +10,41 @@ import {
   StepAnswers,
   StepProperties,
 } from './types'
+
+/**
+ * Resolves an actor value to its human-readable label.
+ * Special case: 'person_on_probation' uses the person's forename.
+ * Falls back to raw actor value if no label found.
+ */
+function resolveActorLabel(
+  actor: string | undefined,
+  actorLabels: Record<string, string> | undefined,
+  personName: string,
+): string {
+  if (!actor) {
+    return ''
+  }
+
+  if (actor === 'person_on_probation') {
+    return personName
+  }
+
+  return actorLabels?.[actor] ?? actor
+}
+
+/**
+ * Resolves an area of need slug (e.g. 'accommodation') to its label (e.g. 'Accommodation').
+ * Falls back to raw slug value if no label found.
+ */
+function resolveAreaOfNeedLabel(slug: string | undefined, areasOfNeed: AreaOfNeed[] | undefined): string {
+  if (!slug) {
+    return ''
+  }
+
+  const area = areasOfNeed?.find(a => a.slug === slug)
+
+  return area?.text ?? slug
+}
 
 /**
  * Derive goals with steps from the loaded assessment
@@ -37,6 +73,11 @@ export const deriveGoalsWithStepsFromAssessment = () => async (context: Sentence
 
   context.setData('goalsCollectionUuid', goalsCollection.uuid)
 
+  const caseData = context.getData('caseData') as { name?: { forename?: string } } | undefined
+  const personName = caseData?.name?.forename ?? 'Person on probation'
+  const actorLabels = context.getData('actorLabels')
+  const areasOfNeed = context.getData('areasOfNeed')
+
   const goals: DerivedGoal[] = goalsCollection.items.map(item => {
     const answers = unwrapAll<GoalAnswers>(item.answers)
     const properties = unwrapAll<GoalProperties>(item.properties)
@@ -50,11 +91,14 @@ export const deriveGoalsWithStepsFromAssessment = () => async (context: Sentence
       return {
         uuid: stepItem.uuid,
         actor: stepAnswers.actor,
+        actorLabel: resolveActorLabel(stepAnswers.actor, actorLabels, personName),
         status: stepAnswers.status,
         description: stepAnswers.description,
         statusDate: stepProperties.status_date,
       }
     })
+
+    const relatedAreasOfNeed = answers.related_areas_of_need ?? []
 
     return {
       uuid: item.uuid,
@@ -63,7 +107,9 @@ export const deriveGoalsWithStepsFromAssessment = () => async (context: Sentence
       targetDate: answers.target_date,
       statusDate: properties.status_date,
       areaOfNeed: answers.area_of_need,
-      relatedAreasOfNeed: answers.related_areas_of_need ?? [],
+      areaOfNeedLabel: resolveAreaOfNeedLabel(answers.area_of_need, areasOfNeed),
+      relatedAreasOfNeed,
+      relatedAreasOfNeedLabels: relatedAreasOfNeed.map(slug => resolveAreaOfNeedLabel(slug, areasOfNeed)),
       stepsCollectionUuid: stepsCollections[0]?.uuid,
       steps,
     }

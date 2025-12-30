@@ -74,9 +74,15 @@ export const goalsSection = TemplateWrapper({
                       goalUuid: Item().path('uuid'),
                       targetDate: Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()),
                       statusDate: Item().path('statusDate'),
-                      areaOfNeed: Item().path('areaOfNeed'),
-                      relatedAreasOfNeed: Item().path('relatedAreasOfNeed'),
-                      steps: Item().path('steps'),
+                      areaOfNeed: Item().path('areaOfNeedLabel'),
+                      relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
+                      steps: Item().path('steps').each(
+                          Iterator.Map({
+                            actor: Item().path('actorLabel'),
+                            description: Item().path('description'),
+                            status: Item().path('status'),
+                          }),
+                        ),
                       actions: [
                         {
                           text: 'Change goal',
