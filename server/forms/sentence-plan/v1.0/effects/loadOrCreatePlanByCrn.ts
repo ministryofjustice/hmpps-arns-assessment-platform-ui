@@ -1,5 +1,4 @@
 import { BadRequest, InternalServerError } from 'http-errors'
-import { QueryError } from '../../../../errors/aap-api/QueryError'
 import { SentencePlanContext } from './types'
 import { SentencePlanEffectsDeps } from './index'
 
@@ -47,9 +46,9 @@ export const loadOrCreatePlanByCrn = (deps: SentencePlanEffectsDeps) => async (c
     session.assessmentUuid = assessment.assessmentUuid
 
     return
-  } catch (error) {
+  } catch (error: any) {
     // If the query failed because no assessment exists, create one
-    if (!(error instanceof QueryError)) {
+    if (error?.responseStatus !== 404 && error?.status !== 404) {
       throw error
     }
   }
