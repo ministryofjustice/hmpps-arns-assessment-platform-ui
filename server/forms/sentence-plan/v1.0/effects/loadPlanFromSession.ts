@@ -1,5 +1,5 @@
 import { InternalServerError } from 'http-errors'
-import { EffectFunction } from './index'
+import { SentencePlanEffectsDeps } from './index'
 import { SentencePlanContext } from './types'
 
 /**
@@ -9,7 +9,7 @@ import { SentencePlanContext } from './types'
  * Entry point steps (mpop-access, oasys-access) are responsible for
  * setting up the session before redirecting.
  */
-export const loadPlanFromSession: EffectFunction = deps => async (context: SentencePlanContext) => {
+export const loadPlanFromSession = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const session = context.getSession()
   const assessmentUuid = session.assessmentUuid
   const user = context.getState('user')

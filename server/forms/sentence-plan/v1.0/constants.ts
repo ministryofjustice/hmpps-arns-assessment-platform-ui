@@ -1,4 +1,24 @@
+import { Data } from '@form-engine/form/builders'
 import { AreaOfNeedSlug } from './effects/types'
+
+/**
+ * Actor enum values to human-readable labels.
+ * Note: 'person_on_probation' is handled specially using the person's name.
+ */
+export const actorLabels: Record<string, string> = {
+  probation_practitioner: 'Probation practitioner',
+  prison_offender_manager: 'Prison offender manager',
+  programme_staff: 'Programme staff',
+  partnership_agency: 'Partnership agency',
+  crs_provider: 'Commissioned rehabilitative services (CRS) provider',
+  someone_else: 'Someone else',
+}
+
+export const actorLabelOptions = [
+  { value: '', text: 'Choose someone' },
+  { value: 'person_on_probation', text: Data('caseData.name.forename') },
+  ...Object.entries(actorLabels).map(([value, text]) => ({ value, text })),
+]
 
 export const areasOfNeed = [
   {

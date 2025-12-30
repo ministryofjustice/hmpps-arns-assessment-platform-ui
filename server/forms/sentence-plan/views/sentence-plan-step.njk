@@ -2,7 +2,9 @@
 
 {% block head %}
   {{ super() }}
-  {% block pageStylesheets %}{% endblock %}
+  {% block pageStylesheets %}
+    <link rel="stylesheet" href="{{ '/assets/css/forms/sentence-plan/assets/form.css' | assetMap }}">
+  {% endblock %}
 {% endblock %}
 
 {% block header %}
@@ -13,21 +15,24 @@
 
 {% block bodyEnd %}
   {{ super() }}
-  {% block pageScripts %}{% endblock %}
+  {% block pageScripts %}
+    <script src="{{ '/assets/js/forms/sentence-plan/assets/form.js' | assetMap }}"></script>
+  {% endblock %}
 {% endblock %}
 
-{% block backLink %}
-  {% if step.backlink %}
-    <a href="{{ step.backlink }}" class="govuk-back-link">Back</a>
-  {% endif %}
-{% endblock %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% if step.backlink %}
+        <a href="{{ step.backlink }}" class="govuk-back-link">Back</a>
+      {% endif %}
 
-{% block formContent %}
-  <form method="post" novalidate>
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-
-    {% for block in blocks %}
-      {{ block | safe }}
-    {% endfor %}
-  </form>
+      <form method="post" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% for block in blocks %}
+          {{ block | safe }}
+        {% endfor %}
+      </form>
+    </div>
+  </div>
 {% endblock %}

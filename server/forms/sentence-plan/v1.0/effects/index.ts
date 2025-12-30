@@ -1,14 +1,18 @@
-import EffectFunctionContext from '@form-engine/core/ast/thunks/EffectFunctionContext'
 import { defineVersionedEffects } from '../../utils/versionedRegistry'
 import { AssessmentPlatformApiClient, DeliusApiClient } from '../../../../data'
 import { loadPersonByCrn } from './loadPersonByCrn'
 import { loadOrCreatePlanByCrn } from './loadOrCreatePlanByCrn'
 import { loadOrCreatePlanByOasys } from './loadOrCreatePlanByOasys'
 import { loadPlanFromSession } from './loadPlanFromSession'
-import { deriveGoalCurrentAreaOfNeed } from './deriveGoalCurrentAreaOfNeed'
-import { setSessionAccessType } from './setSessionAccessType'
 import { saveActiveGoal } from './goals/saveActiveGoal'
+import { deriveGoalCurrentAreaOfNeed } from './deriveGoalCurrentAreaOfNeed'
 import { deriveGoalsWithStepsFromAssessment } from './deriveGoalsWithStepsFromAssessment'
+import { setActiveGoalContext } from './goals/setActiveGoalContext'
+import { initializeStepEditSession } from './steps/initializeStepEditSession'
+import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
+import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
+import { saveStepEditSession } from './steps/saveStepEditSession'
+import { setSessionAccessType } from './setSessionAccessType'
 
 /**
  * Dependencies for sentence plan effects
@@ -17,11 +21,6 @@ export interface SentencePlanEffectsDeps {
   api: AssessmentPlatformApiClient
   deliusApi: DeliusApiClient
 }
-
-/**
- * Type for an individual effect function
- */
-export type EffectFunction = (deps: SentencePlanEffectsDeps) => (context: EffectFunctionContext) => Promise<void>
 
 /**
  * Sentence Plan v1.0 Effects
@@ -55,4 +54,11 @@ export const { effects: SentencePlanV1Effects, createRegistry: SentencePlanV1Reg
     // Goals
     saveActiveGoal,
     deriveGoalCurrentAreaOfNeed,
+    setActiveGoalContext,
+
+    // Steps
+    initializeStepEditSession,
+    addStepToStepEditSession,
+    removeStepFromStepEditSession,
+    saveStepEditSession,
   })

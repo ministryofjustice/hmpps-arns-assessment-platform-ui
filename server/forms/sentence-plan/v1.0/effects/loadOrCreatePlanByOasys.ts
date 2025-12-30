@@ -1,6 +1,6 @@
 import { InternalServerError } from 'http-errors'
 import { QueryError } from '../../../../errors/aap-api/QueryError'
-import { EffectFunction } from './index'
+import { SentencePlanEffectsDeps } from './index'
 import { SentencePlanContext } from './types'
 
 /**
@@ -9,7 +9,7 @@ import { SentencePlanContext } from './types'
  * Checks session for existing assessment UUID. If found, loads that assessment.
  * If not found (or invalid), creates a new assessment and stores UUID in session.
  */
-export const loadOrCreatePlanByOasys: EffectFunction = deps => async (context: SentencePlanContext) => {
+export const loadOrCreatePlanByOasys = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const user = context.getState('user')
   const session = context.getSession()
 

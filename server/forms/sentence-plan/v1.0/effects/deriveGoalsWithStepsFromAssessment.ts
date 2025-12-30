@@ -1,4 +1,3 @@
-import { EffectFunction } from './index'
 import { unwrapAll } from '../../../../data/aap-api/wrappers'
 import {
   DerivedGoal,
@@ -6,6 +5,7 @@ import {
   GoalAnswers,
   GoalProperties,
   RawCollection,
+  SentencePlanContext,
   StepAnswers,
   StepProperties,
 } from './types'
@@ -20,7 +20,7 @@ import {
  * - Data('goals'): Array of derived goals with their steps
  * - Data('goalsCollectionUuid'): UUID of the GOALS collection (for adding new goals)
  */
-export const deriveGoalsWithStepsFromAssessment: EffectFunction = _deps => async context => {
+export const deriveGoalsWithStepsFromAssessment = () => async (context: SentencePlanContext) => {
   const assessment = context.getData('assessment') as { collections?: RawCollection[] } | undefined
 
   if (!assessment?.collections) {
