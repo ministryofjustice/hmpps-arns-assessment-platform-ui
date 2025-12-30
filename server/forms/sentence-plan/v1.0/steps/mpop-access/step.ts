@@ -14,7 +14,7 @@ export const mpopAccessStep = step({
   onAccess: [
     accessTransition({
       guards: Data('assessmentUuid').match(Condition.IsRequired()),
-      redirect: [next({ goto: '/sentence-plan/v1.0/plan/overview' })],
+      redirect: [next({ goto: 'plan/overview' })],
     }),
     accessTransition({
       guards: Data('assessmentUuid').not.match(Condition.IsRequired()),
