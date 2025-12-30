@@ -1,4 +1,5 @@
 import { Format, Data, step } from '@form-engine/form/builders'
+import { Condition } from '@form-engine/registry/conditions'
 import { blankPlanOverviewContent, futureGoalsContent, subNavigation } from './fields'
 
 export const planStep = step({
@@ -10,7 +11,9 @@ export const planStep = step({
       buttons: {
         showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('handover')),
         showCreateGoalButton: true,
-        showAgreePlanButton: true,
+        showAgreePlanButton: Data('assessment.properties.AGREEMENT_STATUS.value').not.match(
+          Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
+        ),
       },
     },
   },
