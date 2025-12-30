@@ -12,7 +12,6 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { twoColumnLayout } from './fields'
-import { areasOfNeed } from '../../../constants'
 import { SentencePlanV1Effects } from '../../../effects'
 
 /**
@@ -23,7 +22,6 @@ export const createGoalStep = step({
   title: 'Create Goal',
   isEntryPoint: true,
   // Static data available to effects and Data() references
-  data: { areasOfNeed },
   blocks: [twoColumnLayout()],
   onLoad: [
     loadTransition({

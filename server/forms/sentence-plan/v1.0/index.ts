@@ -6,6 +6,7 @@ import { planHistoryJourney } from './journeys/plan-history'
 import { aboutPersonStep } from './steps/about-person/step'
 import { mpopAccessStep } from './steps/mpop-access/step'
 import { oasysAccessStep } from './steps/oasys-access/step'
+import { actorLabels, areasOfNeed } from './constants'
 
 export const sentencePlanV1Journey = journey({
   code: 'sentence-plan-v1',
@@ -19,6 +20,10 @@ export const sentencePlanV1Journey = journey({
       effects: [SentencePlanV1Effects.loadPersonByCrn(), SentencePlanV1Effects.loadPlanFromSession()],
     }),
   ],
+  data: {
+    areasOfNeed,
+    actorLabels,
+  },
   steps: [mpopAccessStep, oasysAccessStep, aboutPersonStep],
   children: [planOverviewJourney, goalManagementJourney, planHistoryJourney],
 })

@@ -102,11 +102,7 @@ export const stepRows = CollectionBlock({
           ],
           removeButton: [
             ButtonAsLink({
-              text: when(
-                Data('activeGoalStepsEdited')
-                  .pipe(Transformer.Array.Length())
-                  .match(Condition.Equals(1)),
-              )
+              text: when(Data('activeGoalStepsEdited').pipe(Transformer.Array.Length()).match(Condition.Equals(1)))
                 .then('Clear')
                 .else('Remove'),
               name: 'action',
