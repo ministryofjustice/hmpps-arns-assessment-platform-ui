@@ -2,7 +2,7 @@
 
 {% set personName = data.caseData.name.forename if data.caseData and data.caseData.name else "Person" %}
 
-{# Base path is the root journey - both nav items are relative to this #}
+{# Base path is the root journey - all three nav items are relative to this #}
 {% set basePath = '' %}
   {% for item in navigation %}
     {%  if item.title == 'Sentence Plan' %}
@@ -10,10 +10,11 @@
     {%  endif %}
   {% endfor %}
 
-{# About page is a direct step; everything else is "plan" related #}
 {% set isOnAboutPage = step.path == '/about-person' %}
-{% set isOnPlanPage = not isOnAboutPage %}
+{% set isOnPlanHistoryPage = step.path == '/plan-history' %}
+{% set isOnPlanPage = not isOnAboutPage and not isOnPlanHistoryPage %}
 
+{# use '| select | list' to filter out the undefined or falsy values from the items array #}
 {{ mojPrimaryNavigation({
   label: "Primary navigation",
   items: [
@@ -23,9 +24,14 @@
       active: isOnPlanPage
     },
     {
+      text: "Plan history",
+      href: basePath + "/plan/plan-history",
+      active: isOnPlanHistoryPage
+    } if showPlanHistoryTab,
+    {
       text: "About " + personName,
       href: basePath + "/about-person",
       active: isOnAboutPage
     }
-  ]
+  ] | select | list
 }) }}
