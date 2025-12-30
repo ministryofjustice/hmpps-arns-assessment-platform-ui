@@ -1,16 +1,4 @@
-import {
-  and,
-  Answer,
-  block,
-  Data,
-  field,
-  Format,
-  Item,
-  Iterator,
-  Params,
-  Self,
-  validation,
-} from '@form-engine/form/builders'
+import { and, Answer, block, Data, Format, Item, Iterator, Params, Self, validation } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKRadioInput, GovUKTextInput, GovUKCheckboxInput } from '@form-engine-govuk-components/components'
@@ -22,8 +10,7 @@ import { Generator } from '@form-engine/registry/generators'
 import { AccessibleAutocomplete } from '../../../../components'
 
 // Side navigation for areas of need
-const sideNavigation = block<MOJSideNavigation>({
-  variant: 'mojSideNavigation',
+const sideNavigation = MOJSideNavigation({
   items: Data('areasOfNeed').each(
     Iterator.Map({
       text: Item().path('text'),
@@ -35,22 +22,20 @@ const sideNavigation = block<MOJSideNavigation>({
   ),
 })
 
-const areaOfNeedSubheading = block<HtmlBlock>({
-  variant: 'html',
-  content: Format('<span class="govuk-caption-l">%1</span>', Data('currentAreaOfNeed').path('text')),
+const pageHeading = HtmlBlock({
+  content: Format(
+    `<span class="govuk-caption-l">%1</span>
+    <h1 class="govuk-heading-l">Create a goal with %2</h1>`,
+    Data('currentAreaOfNeed').path('text'),
+    Data('caseData.name.forename'),
+  ),
 })
 
-const pageHeading = block<HtmlBlock>({
-  variant: 'html',
-  content: Format('<h1 class="govuk-heading-l">Create a goal with %1</h1>', Data('caseData.name.forename')),
-})
-
-const goalNameAutoComplete = block<AccessibleAutocomplete>({
+const goalTitle = block<AccessibleAutocomplete>({
   variant: 'accessibleAutocomplete',
   data: Data('currentAreaOfNeed').path('goals'),
-  field: field<GovUKTextInput>({
-    variant: 'govukTextInput',
-    code: 'goalNameInput',
+  field: GovUKTextInput({
+    code: 'goal_title',
     label: {
       text: Format('What goal should %1 try to achieve?', Data('caseData.name.forename')),
       classes: 'govuk-label--m',
@@ -65,9 +50,8 @@ const goalNameAutoComplete = block<AccessibleAutocomplete>({
   }),
 })
 
-const areaOfNeedCheckboxes = field<GovUKCheckboxInput>({
-  variant: 'govukCheckboxInput',
-  code: 'areaOfNeedCheckboxes',
+const relatedAreasOfNeed = GovUKCheckboxInput({
+  code: 'related_areas_of_need',
   multiple: true,
   hint: {
     text: 'Select all that apply.',
@@ -79,7 +63,7 @@ const areaOfNeedCheckboxes = field<GovUKCheckboxInput>({
   },
   items: Data('otherAreasOfNeed').each(
     Iterator.Map({
-      value: Item().path('value'),
+      value: Item().path('slug'),
       text: Item().path('text'),
     }),
   ),
@@ -89,12 +73,11 @@ const areaOfNeedCheckboxes = field<GovUKCheckboxInput>({
       message: 'Select all related areas',
     }),
   ],
-  dependent: Answer('isGoalRelatedToOtherAreaOfNeed').match(Condition.Equals('related_yes')),
+  dependent: Answer('is_related_to_other_areas').match(Condition.Equals('yes')),
 })
 
-const isGoalRelatedToOtherAreaOfNeed = field<GovUKRadioInput>({
-  code: 'isGoalRelatedToOtherAreaOfNeed',
-  variant: 'govukRadioInput',
+const isRelatedToOtherAreas = GovUKRadioInput({
+  code: 'is_related_to_other_areas',
   fieldset: {
     legend: {
       text: 'Is this goal related to any other area of need?',
@@ -102,8 +85,8 @@ const isGoalRelatedToOtherAreaOfNeed = field<GovUKRadioInput>({
     },
   },
   items: [
-    { value: 'related_yes', text: 'Yes', block: areaOfNeedCheckboxes },
-    { value: 'related_no', text: 'No' },
+    { value: 'yes', text: 'Yes', block: relatedAreasOfNeed },
+    { value: 'no', text: 'No' },
   ],
   validate: [
     validation({
@@ -115,9 +98,8 @@ const isGoalRelatedToOtherAreaOfNeed = field<GovUKRadioInput>({
 
 // MOJ Date Picker uses DD/MM/YYYY format, so everything needs
 // converting into that format.
-const dateOfCurrentGoal = field<MOJDatePicker>({
-  variant: 'mojDatePicker',
-  code: 'dateOfCurrentGoal',
+const customTargetDate = MOJDatePicker({
+  code: 'custom_target_date',
   label: {
     text: 'Select a date',
     classes: 'govuk-fieldset__legend--s',
@@ -132,16 +114,19 @@ const dateOfCurrentGoal = field<MOJDatePicker>({
       message: 'Please enter a date',
     }),
     validation({
+      when: Self().not.match(Condition.Date.IsValid()),
+      message: 'Please enter a valid date',
+    }),
+    validation({
       when: and(Self().not.match(Condition.Date.IsToday()), Self().not.match(Condition.Date.IsFutureDate())),
       message: 'Date must be today or in the future',
     }),
   ],
-  dependent: Answer('whenShouldTheGoalBeAchieved').match(Condition.Equals('set_another_date')),
+  dependent: Answer('target_date_option').match(Condition.Equals('set_another_date')),
 })
 
-const whenShouldTheGoalBeAchieved = field<GovUKRadioInput>({
-  variant: 'govukRadioInput',
-  code: 'whenShouldTheGoalBeAchieved',
+const targetDateOption = GovUKRadioInput({
+  code: 'target_date_option',
   fieldset: {
     legend: {
       text: Format('When should %1 aim to achieve this goal?', Data('caseData.name.forename')),
@@ -171,7 +156,7 @@ const whenShouldTheGoalBeAchieved = field<GovUKRadioInput>({
       ),
     },
     { divider: 'or' },
-    { value: 'set_another_date', text: 'Set another date', block: dateOfCurrentGoal },
+    { value: 'set_another_date', text: 'Set another date', block: customTargetDate },
   ],
   validate: [
     validation({
@@ -179,12 +164,11 @@ const whenShouldTheGoalBeAchieved = field<GovUKRadioInput>({
       message: 'Select when they should aim to achieve this goal',
     }),
   ],
-  dependent: Answer('canStartWorkingOnGoalNow').match(Condition.Equals('yes')),
+  dependent: Answer('can_start_now').match(Condition.Equals('yes')),
 })
 
-const canStartWorkingOnGoalNow = field<GovUKRadioInput>({
-  variant: 'govukRadioInput',
-  code: 'canStartWorkingOnGoalNow',
+const canStartNow = GovUKRadioInput({
+  code: 'can_start_now',
   fieldset: {
     legend: {
       text: Format('Can %1 start working on this goal now?', Data('caseData.name.forename')),
@@ -192,7 +176,7 @@ const canStartWorkingOnGoalNow = field<GovUKRadioInput>({
     },
   },
   items: [
-    { value: 'yes', text: 'Yes', block: whenShouldTheGoalBeAchieved },
+    { value: 'yes', text: 'Yes', block: targetDateOption },
     { value: 'no', text: 'No, it is a future goal' },
   ],
   validate: [
@@ -203,16 +187,14 @@ const canStartWorkingOnGoalNow = field<GovUKRadioInput>({
   ],
 })
 
-const addStepsButton = block<GovUKButton>({
-  variant: 'govukButton',
+const addStepsButton = GovUKButton({
   text: 'Add Steps',
   name: 'action',
   value: 'addSteps',
   preventDoubleClick: true,
 })
 
-const saveWithoutStepsButton = block<GovUKButton>({
-  variant: 'govukButton',
+const saveWithoutStepsButton = GovUKButton({
   classes: 'govuk-button--secondary',
   text: 'Save without steps',
   name: 'action',
@@ -220,8 +202,7 @@ const saveWithoutStepsButton = block<GovUKButton>({
   preventDoubleClick: true,
 })
 
-const buttonGroup = block<TemplateWrapper>({
-  variant: 'templateWrapper',
+const buttonGroup = TemplateWrapper({
   template: `
         <div class="govuk-button-group govuk-!-margin-top-4">
             {{slot:addStepsButton}}
@@ -237,9 +218,8 @@ const buttonGroup = block<TemplateWrapper>({
 
 // Two-column layout wrapper
 export const twoColumnLayout = (): TemplateWrapper => {
-  return block<TemplateWrapper>({
+  return TemplateWrapper({
     classes: 'govuk-width-container',
-    variant: 'templateWrapper',
     template: `
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-quarter">
@@ -252,14 +232,7 @@ export const twoColumnLayout = (): TemplateWrapper => {
     `,
     slots: {
       sideNav: [sideNavigation],
-      content: [
-        areaOfNeedSubheading,
-        pageHeading,
-        goalNameAutoComplete,
-        isGoalRelatedToOtherAreaOfNeed,
-        canStartWorkingOnGoalNow,
-        buttonGroup,
-      ],
+      content: [pageHeading, goalTitle, isRelatedToOtherAreas, canStartNow, buttonGroup],
     },
   })
 }

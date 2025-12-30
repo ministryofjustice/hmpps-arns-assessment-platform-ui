@@ -1,5 +1,6 @@
 import {
   accessTransition,
+  Answer,
   Data,
   Format,
   loadTransition,
@@ -11,7 +12,7 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { twoColumnLayout } from './fields'
-import { areasOfNeed } from './constants'
+import { areasOfNeed } from '../../../constants'
 import { SentencePlanV1Effects } from '../../../effects'
 
 /**
@@ -26,7 +27,10 @@ export const createGoalStep = step({
   blocks: [twoColumnLayout()],
   onLoad: [
     loadTransition({
-      effects: [SentencePlanV1Effects.deriveGoalCurrentAreaOfNeed()],
+      effects: [
+        SentencePlanV1Effects.deriveGoalsWithStepsFromAssessment(),
+        SentencePlanV1Effects.deriveGoalCurrentAreaOfNeed(),
+      ],
     }),
   ],
   onAccess: [
@@ -47,16 +51,22 @@ export const createGoalStep = step({
       when: Post('action').match(Condition.Equals('addSteps')),
       validate: true,
       onValid: {
-        effects: [SentencePlanV1Effects.saveGoal()],
-        next: [next({ goto: Format('../%1/add-steps', Data('goalUuid')) })],
+        effects: [SentencePlanV1Effects.saveActiveGoal()],
+        next: [next({ goto: Format('../%1/add-steps', Data('activeGoalUuid')) })],
       },
     }),
     submitTransition({
       when: Post('action').match(Condition.Equals('saveWithoutSteps')),
       validate: true,
       onValid: {
-        effects: [SentencePlanV1Effects.saveGoal()],
-        next: [next({ goto: '../../plan-overview' })],
+        effects: [SentencePlanV1Effects.saveActiveGoal()],
+        next: [
+          next({
+            when: Answer('can_start_now').match(Condition.Equals('no')),
+            goto: '../../plan/overview?type=future',
+          }),
+          next({ goto: '../../plan/overview?type=current' }),
+        ],
       },
     }),
   ],
