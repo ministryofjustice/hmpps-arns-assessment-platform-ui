@@ -119,11 +119,10 @@ export const blankPlanOverviewContent = HtmlBlock({
   content: Format(
     `<p class="govuk-!-display-none-print"> %1 does not have any goals to work on now. You can either:</p>
     <ul class="govuk-!-display-none-print">
-      <li><a href="/forms/sentence-plan/v1.0/crn/%2/goal/uuid/add-goal/areaOfNeed">create a goal with %1</a></li>
+      <li><a href="../goal/new/add-goal/accommodation">create a goal with %1</a></li>
       <li><a href="/about">view information from %1's assessment</a></li>
     </ul>`,
     Data('caseData.name.forename'),
-    Data('caseData.crn'),
   ),
 })
 
