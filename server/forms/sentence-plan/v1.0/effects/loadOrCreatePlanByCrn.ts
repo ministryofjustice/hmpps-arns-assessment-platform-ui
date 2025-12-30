@@ -1,7 +1,7 @@
 import { BadRequest, InternalServerError } from 'http-errors'
 import { QueryError } from '../../../../errors/aap-api/QueryError'
-import { EffectFunction } from './index'
 import { SentencePlanContext } from './types'
+import { SentencePlanEffectsDeps } from './index'
 
 /**
  * Load or create a sentence plan for the MPOP path (CRN-based)
@@ -11,7 +11,7 @@ import { SentencePlanContext } from './types'
  *
  * Requires :crn route parameter.
  */
-export const loadOrCreatePlanByCrn: EffectFunction = deps => async (context: SentencePlanContext) => {
+export const loadOrCreatePlanByCrn = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const crn = context.getRequestParam('crn')
   const user = context.getState('user')
 

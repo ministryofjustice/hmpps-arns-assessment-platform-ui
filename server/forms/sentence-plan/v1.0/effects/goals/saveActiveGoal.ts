@@ -1,5 +1,5 @@
 import { BadRequest, InternalServerError } from 'http-errors'
-import { EffectFunction } from '../index'
+import { SentencePlanEffectsDeps } from '../index'
 import { GoalAnswers, GoalProperties, GoalStatus, SentencePlanContext } from '../types'
 import { wrapAll } from '../../../../../data/aap-api/wrappers'
 
@@ -17,7 +17,7 @@ import { wrapAll } from '../../../../../data/aap-api/wrappers'
  * - target_date_option: Target date option
  * - custom_target_date: Custom date (if set_another_date)
  */
-export const saveActiveGoal: EffectFunction = deps => async (context: SentencePlanContext) => {
+export const saveActiveGoal = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const user = context.getState('user')
   const areaOfNeedSlug = context.getRequestParam('areaOfNeed')
   const assessmentUuid = context.getData('assessmentUuid')

@@ -1,4 +1,5 @@
-import { EffectFunction } from './index'
+import { SentencePlanEffectsDeps } from './index'
+import { SentencePlanContext } from './types'
 
 /**
  * Load person/case data from Delius by CRN
@@ -6,7 +7,7 @@ import { EffectFunction } from './index'
  * Fetches case details including name, sentences, and other data.
  * Stores the result as 'caseData' in context for use in form fields.
  */
-export const loadPersonByCrn: EffectFunction = deps => async context => {
+export const loadPersonByCrn = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   // TODO: Remove hardcoded fallback CRN once we have a proper mechanism
   //  for the OASys path to provide person identification
   const crn = context.getRequestParam('crn') ?? 'X123456'

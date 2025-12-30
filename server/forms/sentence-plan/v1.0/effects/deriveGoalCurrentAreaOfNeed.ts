@@ -1,4 +1,3 @@
-import { EffectFunction } from './index'
 import { SentencePlanContext } from './types'
 
 /**
@@ -10,7 +9,7 @@ import { SentencePlanContext } from './types'
  * - otherAreasOfNeed: All other areas (for "related areas" checkboxes)
  * - areaOfNeedSlugs: Slugs for all the areas of need
  */
-export const deriveGoalCurrentAreaOfNeed: EffectFunction = _deps => async (context: SentencePlanContext) => {
+export const deriveGoalCurrentAreaOfNeed = () => async (context: SentencePlanContext) => {
   const slug = context.getRequestParam('areaOfNeed')
   const areasOfNeed = context.getData('areasOfNeed')
 
