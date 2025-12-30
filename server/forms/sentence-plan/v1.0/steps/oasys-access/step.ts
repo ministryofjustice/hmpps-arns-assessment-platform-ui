@@ -6,7 +6,6 @@ export const oasysAccessStep = step({
   path: '/oasys',
   title: 'OASys Access',
   isEntryPoint: true,
-
   onLoad: [
     loadTransition({
       effects: [SentencePlanV1Effects.loadOrCreatePlanByOasys(), SentencePlanV1Effects.setSessionAccessType('oasys')],

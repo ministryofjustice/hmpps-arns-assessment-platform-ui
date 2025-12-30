@@ -1,4 +1,5 @@
-import { createFormPackage, journey, loadTransition } from '@form-engine/form/builders'
+import { createFormPackage, Data, journey, loadTransition } from '@form-engine/form/builders'
+import { Condition } from '@form-engine/registry/conditions'
 import { SentencePlanEffectsDeps, SentencePlanV1Effects, SentencePlanV1Registry } from './effects'
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
@@ -14,6 +15,12 @@ export const sentencePlanV1Journey = journey({
   path: '/sentence-plan/v1.0',
   view: {
     template: 'sentence-plan/views/sentence-plan-step',
+    locals: {
+      hmppsHeaderServiceNameLink: '/forms/sentence-plan/v1.0/plan/overview',
+      showPlanHistoryTab: Data('assessment.properties.AGREEMENT_STATUS.value').match(
+        Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
+      ),
+    },
   },
   onLoad: [
     loadTransition({

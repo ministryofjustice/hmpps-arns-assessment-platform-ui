@@ -13,6 +13,10 @@ export const loadOrCreatePlanByOasys = (deps: SentencePlanEffectsDeps) => async 
   const user = context.getState('user')
   const session = context.getSession()
 
+  if (user) {
+    context.setData('user', user)
+  }
+
   if (!user) {
     throw new InternalServerError('User is required to load or create a sentence plan')
   }

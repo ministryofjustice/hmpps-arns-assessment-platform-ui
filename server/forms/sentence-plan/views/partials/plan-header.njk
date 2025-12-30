@@ -5,13 +5,16 @@
   {% set person = data.caseData %}
   {% set fullName = person.name.forename + ' ' + person.name.surname if person.name else 'Unknown' %}
 
-  {% set rootPath = navigation[0].path if navigation | length > 0 else '' %}
-  {% set splitPath = ancestors[1].path if ancestors | length > 1 else '' %}
-  {% set splitJourneyPath = rootPath + splitPath %}
+  {% set basePath = '' %}
+  {% for item in navigation %}
+    {%  if item.title == 'Sentence Plan' %}
+      {% set basePath = item.path %}
+    {%  endif %}
+  {% endfor %}
 
   {% set buttonItems = [] %}
 
-  {#  TODO: Add real links for these buttons#}
+  {#  TODO: Add real links for 'Return to OASys' and 'Agree plan'#}
   {% if buttons.showReturnToOasysButton %}
     {% set buttonItems = buttonItems.concat([{
       text: 'Return to OASys',
@@ -24,7 +27,7 @@
   {% if buttons.showCreateGoalButton %}
     {% set buttonItems = buttonItems.concat([{
       text: 'Create goal',
-      href: "../goal/new/add-goal/accommodation",
+      href: basePath + '/goal/new/add-goal/accommodation',
       classes: "govuk-button--secondary govuk-!-display-none-print",
       type: 'button',
       id: 'create-goal-button'
@@ -62,7 +65,7 @@
             </dl>
             {% if headerPageHeading != 'Previous versions' %}
               <div class ="plan-header__subject-details__navigation-links" >
-                <a href="{{ splitJourneyPath }}/plan-history/previous-versions"
+                <a href="{{ basePath }}/plan-history/previous-versions"
                    class="govuk-link--no-visited-state"
                    data-previous-versions-link>
                   View previous versions

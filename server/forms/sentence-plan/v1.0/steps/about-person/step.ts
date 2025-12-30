@@ -1,4 +1,5 @@
 import { Data, Format, next, step, submitTransition } from '@form-engine/form/builders'
+import { Condition } from '@form-engine/registry/conditions'
 import { continueButton } from './fields'
 
 export const aboutPersonStep = step({
@@ -8,8 +9,7 @@ export const aboutPersonStep = step({
     locals: {
       headerPageHeading: Format(`About %1`, Data('caseData.name.forename')),
       buttons: {
-        // TODO: add conditional statement depending on user's auth etc
-        showReturnToOasysButton: true,
+        showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('handover')),
         showCreateGoalButton: true,
       },
     },
