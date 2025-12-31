@@ -76,7 +76,9 @@ export const goalsSection = TemplateWrapper({
                       statusDate: Item().path('statusDate'),
                       areaOfNeed: Item().path('areaOfNeedLabel'),
                       relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
-                      steps: Item().path('steps').each(
+                      steps: Item()
+                        .path('steps')
+                        .each(
                           Iterator.Map({
                             actor: Item().path('actorLabel'),
                             description: Item().path('description'),
@@ -120,7 +122,7 @@ export const blankPlanOverviewContent = HtmlBlock({
     `<p class="govuk-!-display-none-print"> %1 does not have any goals to work on now. You can either:</p>
     <ul class="govuk-!-display-none-print">
       <li><a href="../goal/new/add-goal/accommodation">create a goal with %1</a></li>
-      <li><a href="/about">view information from %1's assessment</a></li>
+      <li><a href="../about-person">view information from %1's assessment</a></li>
     </ul>`,
     Data('caseData.name.forename'),
   ),
