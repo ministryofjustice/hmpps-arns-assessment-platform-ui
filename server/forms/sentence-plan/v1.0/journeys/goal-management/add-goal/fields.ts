@@ -6,6 +6,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { MOJSideNavigation } from '@form-engine-moj-components/components'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { AccessibleAutocomplete } from '../../../../components'
+import { CaseData } from '../../../constants'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 
 // Side navigation for areas of need
@@ -26,7 +27,7 @@ const pageHeading = HtmlBlock({
     `<span class="govuk-caption-l">%1</span>
     <h1 class="govuk-heading-l">Create a goal with %2</h1>`,
     Data('currentAreaOfNeed').path('text'),
-    Data('caseData.name.forename'),
+    CaseData.Forename,
   ),
 })
 
@@ -36,7 +37,7 @@ const goalTitle = block<AccessibleAutocomplete>({
   field: GovUKTextInput({
     code: 'goal_title',
     label: {
-      text: Format('What goal should %1 try to achieve?', Data('caseData.name.forename')),
+      text: Format('What goal should %1 try to achieve?', CaseData.Forename),
       classes: 'govuk-label--m',
     },
     hint: 'Search for a suggested goal or enter your own. Add one goal at a time.',
@@ -78,8 +79,6 @@ const buttonGroup = TemplateWrapper({
   },
 })
 
-const forename = Data('caseData.name.forename')
-
 // Two-column layout wrapper
 export const twoColumnLayout = (): TemplateWrapper => {
   return TemplateWrapper({
@@ -96,7 +95,7 @@ export const twoColumnLayout = (): TemplateWrapper => {
     `,
     slots: {
       sideNav: [sideNavigation],
-      content: [pageHeading, goalTitle, isRelatedToOtherAreas, canStartNow(forename), buttonGroup],
+      content: [pageHeading, goalTitle, isRelatedToOtherAreas, canStartNow, buttonGroup],
     },
   })
 }

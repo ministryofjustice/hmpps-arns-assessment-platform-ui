@@ -2,6 +2,15 @@ import { Data } from '@form-engine/form/builders'
 import { AreaOfNeedSlug } from './effects/types'
 
 /**
+ * Centralised data accessors for case data.
+ * Use these throughout the form configuration so if paths change, we only update here.
+ */
+export const CaseData = {
+  Forename: Data('caseData.name.forename'),
+  Surname: Data('caseData.name.surname'),
+}
+
+/**
  * Actor enum values to human-readable labels.
  * Note: 'person_on_probation' is handled specially using the person's name.
  */
@@ -16,7 +25,7 @@ export const actorLabels: Record<string, string> = {
 
 export const actorLabelOptions = [
   { value: '', text: 'Choose someone' },
-  { value: 'person_on_probation', text: Data('caseData.name.forename') },
+  { value: 'person_on_probation', text: CaseData.Forename },
   ...Object.entries(actorLabels).map(([value, text]) => ({ value, text })),
 ]
 

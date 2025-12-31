@@ -4,6 +4,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { MOJDatePicker } from '@form-engine-moj-components/components'
 import { Transformer } from '@form-engine/registry/transformers'
 import { Generator } from '@form-engine/registry/generators'
+import { CaseData } from '../../constants'
 
 export const relatedAreasOfNeed = GovUKCheckboxInput({
   code: 'related_areas_of_need',
@@ -80,66 +81,64 @@ export const customTargetDate = MOJDatePicker({
   dependent: Answer('target_date_option').match(Condition.Equals('set_another_date')),
 })
 
-export const targetDateOption = (forename: ReturnType<typeof Data>) =>
-  GovUKRadioInput({
-    code: 'target_date_option',
-    fieldset: {
-      legend: {
-        text: Format('When should %1 aim to achieve this goal?', forename),
-        classes: 'govuk-fieldset__legend--m',
-      },
+export const targetDateOption = GovUKRadioInput({
+  code: 'target_date_option',
+  fieldset: {
+    legend: {
+      text: Format('When should %1 aim to achieve this goal?', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
     },
-    items: [
-      {
-        value: 'date_in_3_months',
-        text: Format(
-          'In 3 months (%1)',
-          Generator.Date.Today().pipe(Transformer.Date.AddMonths(3), Transformer.Date.ToUKLongDate()),
-        ),
-      },
-      {
-        value: 'date_in_6_months',
-        text: Format(
-          'In 6 months (%1)',
-          Generator.Date.Today().pipe(Transformer.Date.AddMonths(6), Transformer.Date.ToUKLongDate()),
-        ),
-      },
-      {
-        value: 'date_in_12_months',
-        text: Format(
-          'In 12 months (%1)',
-          Generator.Date.Today().pipe(Transformer.Date.AddMonths(12), Transformer.Date.ToUKLongDate()),
-        ),
-      },
-      { divider: 'or' },
-      { value: 'set_another_date', text: 'Set another date', block: customTargetDate },
-    ],
-    validate: [
-      validation({
-        when: Self().not.match(Condition.IsRequired()),
-        message: 'Select when they should aim to achieve this goal',
-      }),
-    ],
-    dependent: Answer('can_start_now').match(Condition.Equals('yes')),
-  })
+  },
+  items: [
+    {
+      value: 'date_in_3_months',
+      text: Format(
+        'In 3 months (%1)',
+        Generator.Date.Today().pipe(Transformer.Date.AddMonths(3), Transformer.Date.ToUKLongDate()),
+      ),
+    },
+    {
+      value: 'date_in_6_months',
+      text: Format(
+        'In 6 months (%1)',
+        Generator.Date.Today().pipe(Transformer.Date.AddMonths(6), Transformer.Date.ToUKLongDate()),
+      ),
+    },
+    {
+      value: 'date_in_12_months',
+      text: Format(
+        'In 12 months (%1)',
+        Generator.Date.Today().pipe(Transformer.Date.AddMonths(12), Transformer.Date.ToUKLongDate()),
+      ),
+    },
+    { divider: 'or' },
+    { value: 'set_another_date', text: 'Set another date', block: customTargetDate },
+  ],
+  validate: [
+    validation({
+      when: Self().not.match(Condition.IsRequired()),
+      message: 'Select when they should aim to achieve this goal',
+    }),
+  ],
+  dependent: Answer('can_start_now').match(Condition.Equals('yes')),
+})
 
-export const canStartNow = (forename: ReturnType<typeof Data>) =>
-  GovUKRadioInput({
-    code: 'can_start_now',
-    fieldset: {
-      legend: {
-        text: Format('Can %1 start working on this goal now?', forename),
-        classes: 'govuk-fieldset__legend--m',
-      },
+export const canStartNow = GovUKRadioInput({
+  code: 'can_start_now',
+  fieldset: {
+    legend: {
+      text: Format('Can %1 start working on this goal now?', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
     },
-    items: [
-      { value: 'yes', text: 'Yes', block: targetDateOption(forename) },
-      { value: 'no', text: 'No, it is a future goal' },
-    ],
-    validate: [
-      validation({
-        when: Self().not.match(Condition.IsRequired()),
-        message: 'Select yes if they can start working on this goal now',
-      }),
-    ],
-  })
+  },
+  items: [
+    { value: 'yes', text: 'Yes', block: targetDateOption },
+    { value: 'no', text: 'No, it is a future goal' },
+  ],
+  validate: [
+    validation({
+      when: Self().not.match(Condition.IsRequired()),
+      message: 'Select yes if they can start working on this goal now',
+    }),
+  ],
+})

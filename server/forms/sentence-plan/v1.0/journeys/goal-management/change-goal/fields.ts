@@ -5,6 +5,7 @@ import { GovUKTextInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { AccessibleAutocomplete } from '../../../../components'
+import { CaseData } from '../../../constants'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 
 const pageHeading = HtmlBlock({
@@ -12,7 +13,7 @@ const pageHeading = HtmlBlock({
     `<span class="govuk-caption-l">%1</span>
     <h1 class="govuk-heading-l">Change goal with %2</h1>`,
     Data('activeGoal.areaOfNeedLabel'),
-    Data('caseData.name.forename'),
+    CaseData.Forename,
   ),
 })
 
@@ -23,7 +24,7 @@ const goalTitle = block<AccessibleAutocomplete>({
   field: GovUKTextInput({
     code: 'goal_title',
     label: {
-      text: Format('What goal should %1 try to achieve?', Data('caseData.name.forename')),
+      text: Format('What goal should %1 try to achieve?', CaseData.Forename),
       classes: 'govuk-label--m',
     },
     hint: 'Search for a suggested goal or enter your own. Add one goal at a time.',
@@ -43,8 +44,6 @@ const saveGoalButton = GovUKButton({
   preventDoubleClick: true,
 })
 
-const forename = Data('caseData.name.forename')
-
 export const pageLayout = TemplateWrapper({
   template: `
     <div>
@@ -59,7 +58,7 @@ export const pageLayout = TemplateWrapper({
     pageHeading: [pageHeading],
     goalTitle: [goalTitle],
     isRelatedToOtherAreas: [isRelatedToOtherAreas],
-    canStartNow: [canStartNow(forename)],
+    canStartNow: [canStartNow],
     saveGoalButton: [saveGoalButton],
   },
 })
