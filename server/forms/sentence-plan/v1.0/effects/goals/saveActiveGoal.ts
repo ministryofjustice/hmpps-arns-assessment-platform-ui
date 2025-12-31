@@ -1,7 +1,8 @@
 import { BadRequest, InternalServerError } from 'http-errors'
 import { SentencePlanEffectsDeps } from '../index'
-import { GoalAnswers, GoalProperties, GoalStatus, SentencePlanContext } from '../types'
+import { SentencePlanContext } from '../types'
 import { wrapAll } from '../../../../../data/aap-api/wrappers'
+import { calculateTargetDate, determineGoalStatus, buildGoalProperties, buildGoalAnswers } from './goal-utils'
 
 /**
  * Create a new goal
@@ -41,33 +42,9 @@ export const saveActiveGoal = (deps: SentencePlanEffectsDeps) => async (context:
   const targetDateOption = context.getAnswer('target_date_option')
   const customDate = context.getAnswer('custom_target_date')
 
-  // Calculate target date
-  let targetDate
-
-  if (canStartNow === 'yes') {
-    const today = new Date()
-
-    switch (targetDateOption) {
-      case 'date_in_3_months':
-        today.setMonth(today.getMonth() + 3)
-        targetDate = today.toISOString()
-        break
-      case 'date_in_6_months':
-        today.setMonth(today.getMonth() + 6)
-        targetDate = today.toISOString()
-        break
-      case 'date_in_12_months':
-        today.setMonth(today.getMonth() + 12)
-        targetDate = today.toISOString()
-        break
-      case 'set_another_date':
-        if (customDate) {
-          targetDate = new Date(customDate).toISOString()
-        }
-        break
-      default:
-    }
-  }
+  // Calculate target date and status
+  const targetDate = calculateTargetDate(canStartNow, targetDateOption, customDate)
+  const status = determineGoalStatus(canStartNow)
 
   // Get or create GOALS collection
   let goalsCollectionUuid = context.getData('goalsCollectionUuid')
@@ -83,20 +60,8 @@ export const saveActiveGoal = (deps: SentencePlanEffectsDeps) => async (context:
     goalsCollectionUuid = createResult.collectionUuid
   }
 
-  // Determine goal status based on whether they can start now
-  const status: GoalStatus = canStartNow === 'yes' ? 'ACTIVE' : 'FUTURE'
-
-  const properties: GoalProperties = {
-    status,
-    status_date: new Date().toISOString(),
-  }
-
-  const answers: GoalAnswers = {
-    title: goalTitle,
-    area_of_need: areaOfNeedSlug,
-    related_areas_of_need: relatedAreas,
-    target_date: targetDate,
-  }
+  const properties = buildGoalProperties(status)
+  const answers = buildGoalAnswers(goalTitle, areaOfNeedSlug, relatedAreas, targetDate)
 
   // Create the goal
   const addResult = await deps.api.executeCommand({
