@@ -25,6 +25,7 @@ services:
       NODE_ENV: 'development'
       ENVIRONMENT_NAME: dev
       NODE_CLUSTER_ENABLED: false
+      FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
 
   wiremock:
     image: wiremock/wiremock
