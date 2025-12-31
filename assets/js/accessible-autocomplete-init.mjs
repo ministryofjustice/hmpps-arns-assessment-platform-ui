@@ -81,6 +81,10 @@ function getSource(wrapper) {
  * @param {HTMLElement} wrapper - The wrapper element to initialize
  */
 function initializeAutocomplete(wrapper) {
+  // this guard is to prevent double initialisation:
+  if (wrapper.dataset.autocompleteInitialized) return
+  wrapper.dataset.autocompleteInitialized = 'true'
+
   const input = wrapper.querySelector('input')
 
   if (!input) {
