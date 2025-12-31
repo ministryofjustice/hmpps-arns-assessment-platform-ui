@@ -5,7 +5,7 @@ import { GovUKTextInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { AccessibleAutocomplete } from '../../../../components'
-import { isRelatedToOtherAreas, canStartNow } from '../shared-fields'
+import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 
 const pageHeading = HtmlBlock({
   content: Format(

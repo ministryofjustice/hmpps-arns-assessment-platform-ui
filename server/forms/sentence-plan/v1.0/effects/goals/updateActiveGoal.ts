@@ -2,7 +2,7 @@ import { InternalServerError } from 'http-errors'
 import { SentencePlanEffectsDeps } from '../index'
 import { SentencePlanContext } from '../types'
 import { wrapAll } from '../../../../../data/aap-api/wrappers'
-import { calculateTargetDate, determineGoalStatus, buildGoalProperties, buildGoalAnswers } from './goal-utils'
+import { calculateTargetDate, determineGoalStatus, buildGoalProperties, buildGoalAnswers } from './goalUtils'
 
 /**
  * Update an existing goal

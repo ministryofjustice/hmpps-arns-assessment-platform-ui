@@ -1,5 +1,5 @@
 import { AreaOfNeed, DerivedGoal, SentencePlanContext } from '../types'
-import { getMatchingTargetDateOption } from './goal-utils'
+import { getMatchingTargetDateOption } from './goalUtils'
 
 /**
  * Load the active goal and pre-populate form fields for editing

@@ -6,7 +6,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { MOJSideNavigation } from '@form-engine-moj-components/components'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { AccessibleAutocomplete } from '../../../../components'
-import { isRelatedToOtherAreas, canStartNow } from '../shared-fields'
+import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 
 // Side navigation for areas of need
 const sideNavigation = MOJSideNavigation({
