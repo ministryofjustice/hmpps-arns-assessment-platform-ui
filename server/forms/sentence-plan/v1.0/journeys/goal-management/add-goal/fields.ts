@@ -222,10 +222,10 @@ export const twoColumnLayout = (): TemplateWrapper => {
     classes: 'govuk-width-container',
     template: `
       <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-quarter">
+        <div class="govuk-grid-column-one-third">
           {{slot:sideNav}}
         </div>
-        <div class="govuk-grid-column-three-quarters">
+        <div class="govuk-grid-column-two-thirds">
           {{slot:content}}
         </div>
       </div>
