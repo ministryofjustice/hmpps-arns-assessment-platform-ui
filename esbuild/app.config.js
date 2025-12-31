@@ -15,6 +15,9 @@ const getAppConfig = buildConfig => ({
   platform: 'node',
   format: 'cjs',
   external: [...Object.keys(pkg.dependencies || {}), ...Object.keys(pkg.peerDependencies || {})],
+  loader: {
+    '.njk': 'empty',
+  },
   plugins: [
     typecheckPlugin({
       watch: buildConfig.isWatchMode,
