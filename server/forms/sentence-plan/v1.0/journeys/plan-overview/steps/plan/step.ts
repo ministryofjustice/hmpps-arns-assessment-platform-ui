@@ -2,13 +2,14 @@ import { Format, Data, step, accessTransition, Query, next, loadTransition } fro
 import { Condition } from '@form-engine/registry/conditions'
 import { blankPlanOverviewContent, futureGoalsContent, goalsSection, subNavigation } from './fields'
 import { SentencePlanV1Effects } from '../../../../effects'
+import { CaseData } from '../../../../constants'
 
 export const planStep = step({
   path: '/overview',
   title: 'Plan overview',
   view: {
     locals: {
-      headerPageHeading: Format(`%1's plan`, Data('caseData.name.forename')),
+      headerPageHeading: Format(`%1's plan`, CaseData.Forename),
       buttons: {
         showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('handover')),
         showCreateGoalButton: true,
