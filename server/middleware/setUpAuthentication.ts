@@ -156,6 +156,7 @@ export default function setupAuthentication() {
       user: {
         id: hmppsUser.username,
         name: hmppsUser.displayName ?? hmppsUser.username,
+        authSource: hmppsUser.authSource,
       },
     }
     next()

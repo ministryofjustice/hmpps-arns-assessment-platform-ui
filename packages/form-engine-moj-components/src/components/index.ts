@@ -5,6 +5,7 @@ import { mojCard } from './card/mojCard'
 import { mojCardGroup } from './card-group/mojCardGroup'
 import { mojDatePicker } from './date-picker/mojDatePicker'
 import { mojSideNavigation } from './side-navigation/mojSideNavigation'
+import { mojSubNavigation } from './sub-navigation/mojSubNavigation'
 
 // Re-export types only (for types that don't have wrapper functions)
 export type { MOJAlertVariant, MOJAlertHeadingTag } from './alert/mojAlert'
@@ -16,6 +17,7 @@ export type {
   MOJSideNavigationSection,
   MOJSideNavigationHeading,
 } from './side-navigation/mojSideNavigation'
+export type { MOJSubNavigationItem } from './sub-navigation/mojSubNavigation'
 
 // Re-export wrapper functions (types are exported implicitly with the functions)
 export { MOJAlert } from './alert/mojAlert'
@@ -23,6 +25,7 @@ export { MOJCard } from './card/mojCard'
 export { MOJCardGroup } from './card-group/mojCardGroup'
 export { MOJDatePicker } from './date-picker/mojDatePicker'
 export { MOJSideNavigation } from './side-navigation/mojSideNavigation'
+export { MOJSubNavigation } from './sub-navigation/mojSubNavigation'
 
 /** All MOJ component definitions */
 export const mojComponents: ComponentRegistryEntry<any>[] = [
@@ -31,4 +34,5 @@ export const mojComponents: ComponentRegistryEntry<any>[] = [
   mojCardGroup,
   mojDatePicker,
   mojSideNavigation,
+  mojSubNavigation,
 ]

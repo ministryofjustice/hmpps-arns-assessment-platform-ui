@@ -93,6 +93,15 @@ export default {
       },
       agent: new AgentConfig(Number(get('AAP_API_TIMEOUT_RESPONSE', 5000))),
     },
+    deliusApi: {
+      url: get('DELIUS_API_URL', 'http://localhost:9091', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('DELIUS_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('DELIUS_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('DELIUS_API_TIMEOUT_RESPONSE', 5000))),
+    },
   },
   sqs: {
     audit: auditConfig(),

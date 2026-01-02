@@ -5,7 +5,7 @@ import createError from 'http-errors'
 import FormEngine from '@form-engine/core/FormEngine'
 import { ExpressFrameworkAdapter } from '@form-engine-express-nunjucks/index'
 import { govukComponents } from '@form-engine-govuk-components/index'
-import { mojComponents } from '@form-engine-moj-components/components'
+import { mojComponents } from '@form-engine-moj-components/index'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './routes/error/errorHandler'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
@@ -23,7 +23,11 @@ import setUpWebSession from './middleware/setUpWebSession'
 import routes from './routes'
 import type { Services } from './services'
 import logger from '../logger'
+
+// Form packages
 import formEngineDeveloperGuide from './forms/form-engine-developer-guide'
+import { SentencePlanFormPackages } from './forms/sentence-plan/sentencePlanFormExports'
+import { sentencePlanComponents } from './forms/sentence-plan/components'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -59,6 +63,15 @@ export default function createApp(services: Services): express.Application {
     .registerComponents(govukComponents)
     .registerComponents(mojComponents)
     .registerFormPackage(formEngineDeveloperGuide)
+
+  // Register all Sentence Plan form packages
+  formEngine.registerComponents(sentencePlanComponents)
+  SentencePlanFormPackages.forEach(pkg => {
+    formEngine.registerFormPackage(pkg, {
+      api: services.assessmentPlatformApiClient,
+      deliusApi: services.deliusApiClient,
+    })
+  })
 
   // Mount routes
   app.use(routes(services))

@@ -27,6 +27,7 @@
       @include govuk-font($size: 24, $weight: 'bold');
       display: flex;
       align-items: center;
+      color: govuk-colour('white');
     }
 
     &__service-name {
