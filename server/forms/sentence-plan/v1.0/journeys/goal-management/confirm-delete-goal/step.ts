@@ -25,6 +25,12 @@ export const confirmDeleteGoalStep = step({
   ],
 
   onAccess: [
+    // Redirect if plan is no longer in draft (delete is only for draft plans)
+    accessTransition({
+      guards: Data('assessment.properties.AGREEMENT_STATUS.value').not.match(Condition.Equals('DRAFT')),
+      redirect: [next({ goto: '../../plan/overview' })],
+    }),
+    // Redirect if goal not found
     accessTransition({
       guards: Data('activeGoal').not.match(Condition.IsRequired()),
       redirect: [next({ goto: '../../plan/overview' })],
