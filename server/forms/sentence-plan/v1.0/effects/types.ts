@@ -32,8 +32,8 @@ export interface DerivedGoal {
   uuid: string
   title: string
   status: string
-  targetDate: string
-  statusDate: string
+  targetDate: Date
+  statusDate: Date
   areaOfNeed: string
   areaOfNeedLabel: string
   relatedAreasOfNeed: string[]
@@ -109,7 +109,7 @@ export interface SentencePlanData extends Record<string, unknown> {
   // Goals
   goals: DerivedGoal[]
   goalsCollectionUuid: string
-  activeGoal: Pick<DerivedGoal, 'uuid' | 'title' | 'status' | 'areaOfNeed' | 'stepsCollectionUuid'>
+  activeGoal: DerivedGoal
   activeGoalUuid: string
   activeGoalStepsOriginal: StepSession[]
   activeGoalStepsEdited: StepSession[]

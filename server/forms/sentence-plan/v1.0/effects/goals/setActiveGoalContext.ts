@@ -23,15 +23,7 @@ export const setActiveGoalContext = () => async (context: SentencePlanContext) =
     return
   }
 
-  const activeGoal = {
-    uuid: derivedGoal.uuid,
-    title: derivedGoal.title,
-    status: derivedGoal.status,
-    areaOfNeed: derivedGoal.areaOfNeed,
-    stepsCollectionUuid: derivedGoal.stepsCollectionUuid,
-  }
-
-  context.setData('activeGoal', activeGoal)
+  context.setData('activeGoal', derivedGoal)
   context.setData('activeGoalUuid', goalUuid)
 
   if (derivedGoal.steps.length > 0) {

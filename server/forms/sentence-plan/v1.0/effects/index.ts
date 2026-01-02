@@ -15,6 +15,7 @@ import { saveStepEditSession } from './steps/saveStepEditSession'
 import { setSessionAccessType } from './setSessionAccessType'
 import { loadActiveGoalForEdit } from './goals/loadActiveGoalForEdit'
 import { updateActiveGoal } from './goals/updateActiveGoal'
+import { deleteActiveGoal } from './goals/deleteActiveGoal'
 
 /**
  * Dependencies for sentence plan effects
@@ -59,6 +60,7 @@ export const { effects: SentencePlanV1Effects, createRegistry: SentencePlanV1Reg
     setActiveGoalContext,
     loadActiveGoalForEdit,
     updateActiveGoal,
+    deleteActiveGoal,
 
     // Steps
     initializeStepEditSession,

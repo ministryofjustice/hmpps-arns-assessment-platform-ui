@@ -36,17 +36,8 @@ export const loadActiveGoalForEdit = () => async (context: SentencePlanContext) 
   context.setData('currentAreaOfNeed', currentAreaOfNeed)
   context.setData('otherAreasOfNeed', otherAreasOfNeed)
 
-  // Set context data for the active goal (include area of need label for heading)
-  const activeGoal = {
-    uuid: derivedGoal.uuid,
-    title: derivedGoal.title,
-    status: derivedGoal.status,
-    areaOfNeed: derivedGoal.areaOfNeed,
-    areaOfNeedLabel: derivedGoal.areaOfNeedLabel,
-    stepsCollectionUuid: derivedGoal.stepsCollectionUuid,
-  }
-
-  context.setData('activeGoal', activeGoal)
+  // Set context data for the active goal (full derived goal for display and editing)
+  context.setData('activeGoal', derivedGoal)
   context.setData('activeGoalUuid', goalUuid)
 
   // Pre-populate form fields with existing values
@@ -73,11 +64,10 @@ export const loadActiveGoalForEdit = () => async (context: SentencePlanContext) 
     } else {
       context.setAnswer('target_date_option', 'set_another_date')
 
-      // Convert ISO date to DD/MM/YYYY format for the date picker
-      const targetDate = new Date(derivedGoal.targetDate)
-      const day = targetDate.getDate().toString().padStart(2, '0')
-      const month = (targetDate.getMonth() + 1).toString().padStart(2, '0')
-      const year = targetDate.getFullYear()
+      // Convert date to DD/MM/YYYY format for the date picker
+      const day = derivedGoal.targetDate.getDate().toString().padStart(2, '0')
+      const month = (derivedGoal.targetDate.getMonth() + 1).toString().padStart(2, '0')
+      const year = derivedGoal.targetDate.getFullYear()
       context.setAnswer('custom_target_date', `${day}/${month}/${year}`)
     }
   }

@@ -6,19 +6,19 @@ export const MONTHS_BY_OPTION: Record<string, number> = {
   date_in_12_months: 12,
 }
 
+const isSameDay = (a: Date, b: Date): boolean => {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
+}
+
 // Determine which target date option matches a given target date (if any):
-export const getMatchingTargetDateOption = (targetDate: string): string | null => {
-  const targetDateStr = targetDate.substring(0, 10)
+export const getMatchingTargetDateOption = (targetDate: Date): string | null => {
+  const match = Object.entries(MONTHS_BY_OPTION).find(([, months]) => {
+    const optionDate = new Date()
+    optionDate.setMonth(optionDate.getMonth() + months)
+    return isSameDay(targetDate, optionDate)
+  })
 
-  for (const [option, months] of Object.entries(MONTHS_BY_OPTION)) {
-    const date = new Date()
-    date.setMonth(date.getMonth() + months)
-    if (date.toISOString().substring(0, 10) === targetDateStr) {
-      return option
-    }
-  }
-
-  return null
+  return match ? match[0] : null
 }
 
 // Calculate the target date based on form selections:
