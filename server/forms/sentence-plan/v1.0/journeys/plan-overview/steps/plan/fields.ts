@@ -44,7 +44,7 @@ export const subNavigation = MOJSubNavigation({
  */
 export const goalsSection = TemplateWrapper({
   hidden: Data('goals').not.match(Condition.IsRequired()),
-  template: '<ol class="goal-list">{{slot:items}}</ol>',
+  template: '<ol class="goal-list govuk-list govuk-list--number">{{slot:items}}</ol>',
   slots: {
     items: [
       CollectionBlock({
