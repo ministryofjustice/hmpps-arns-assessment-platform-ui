@@ -83,7 +83,7 @@ Show an error message when the lookup fails:
         code: `
           // effects.ts
           import { defineEffectsWithDeps } from '@form-engine/registry/utils/createRegisterableFunction'
-          import EffectFunctionContext from '@form-engine/core/ast/thunks/EffectFunctionContext'
+          import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
 
           interface AddressFormDeps {
             postcodeApi: PostcodeLookupClient
