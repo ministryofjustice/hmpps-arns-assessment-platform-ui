@@ -1,7 +1,7 @@
 import NodeRegistry from '@form-engine/core/ast/registration/NodeRegistry'
 import MetadataRegistry from '@form-engine/core/ast/registration/MetadataRegistry'
 import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
-import { PseudoNodeFactory } from '@form-engine/core/ast/nodes/PseudoNodeFactory'
+import PseudoNodeFactory from '@form-engine/core/ast/nodes/PseudoNodeFactory'
 import { PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { BlockASTNode } from '@form-engine/core/types/structures.type'

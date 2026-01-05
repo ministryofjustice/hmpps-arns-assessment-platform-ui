@@ -587,7 +587,7 @@ export interface NextExpr {
   when?: PredicateExpr
 
   /** The path to navigate to. */
-  goto: string | FormatExpr
+  goto: string | ValueExpr
 }
 
 /**
