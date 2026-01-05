@@ -1,14 +1,19 @@
-import { next, step, submitTransition } from '@form-engine/form/builders'
-import { pageHeading, continueButton } from './fields'
+import { next, step, submitTransition, Post } from '@form-engine/form/builders'
+import { Condition } from '@form-engine/registry/conditions'
+import { planAgreementQuestion, notesField, saveButton } from './fields'
+import { SentencePlanV1Effects } from '../../../../effects'
 
 export const agreePlanStep = step({
   path: '/agree-plan',
   title: 'Agree Plan',
-  blocks: [pageHeading, continueButton],
+  blocks: [planAgreementQuestion, notesField, saveButton],
   onSubmission: [
     submitTransition({
-      onAlways: {
-        next: [next({ goto: 'plan' })],
+      when: Post('action').match(Condition.Equals('save')),
+      validate: true,
+      onValid: {
+        effects: [SentencePlanV1Effects.updatePlanAgreementStatus()],
+        next: [next({ goto: 'overview' })],
       },
     }),
   ],

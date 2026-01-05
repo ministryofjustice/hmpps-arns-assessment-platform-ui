@@ -16,6 +16,7 @@ import { setSessionAccessType } from './setSessionAccessType'
 import { loadActiveGoalForEdit } from './goals/loadActiveGoalForEdit'
 import { updateActiveGoal } from './goals/updateActiveGoal'
 import { deleteActiveGoal } from './goals/deleteActiveGoal'
+import { updatePlanAgreementStatus } from './updatePlanAgreementStatus'
 
 /**
  * Dependencies for sentence plan effects
@@ -53,6 +54,9 @@ export const { effects: SentencePlanV1Effects, createRegistry: SentencePlanV1Reg
     loadOrCreatePlanByOasys,
     loadPlanFromSession,
     deriveGoalsWithStepsFromAssessment,
+
+    // Plan Agreement
+    updatePlanAgreementStatus,
 
     // Goals
     saveActiveGoal,
