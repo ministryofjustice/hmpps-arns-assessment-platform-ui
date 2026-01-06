@@ -1,4 +1,9 @@
 .goal-summary-card {
+  // Prevent links from turning purple when visited
+  a:visited {
+    color: $govuk-link-colour;
+  }
+
   &__state-tag {
     margin-bottom: govuk-spacing(2);
   }

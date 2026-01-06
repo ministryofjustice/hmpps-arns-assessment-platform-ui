@@ -4,6 +4,7 @@ import {
   blankPlanOverviewContent,
   futureGoalsContent,
   goalsSection,
+  planCreatedMessage,
   subNavigation,
   noActiveGoalsErrorMessage,
   noStepsErrorMessage,
@@ -30,6 +31,7 @@ export const planStep = step({
   blocks: [
     noActiveGoalsErrorMessage,
     noStepsErrorMessage,
+    planCreatedMessage,
     subNavigation,
     goalsSection,
     blankPlanOverviewContent,

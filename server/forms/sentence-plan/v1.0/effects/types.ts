@@ -141,6 +141,7 @@ export interface SentencePlanData extends Record<string, unknown> {
   planAgreements: DerivedPlanAgreement[]
   planAgreementsCollectionUuid: string
   latestAgreementStatus: AgreementStatus | undefined
+  latestAgreementDate: Date | undefined
 
   // Areas of need
   areasOfNeed: AreaOfNeed[]
