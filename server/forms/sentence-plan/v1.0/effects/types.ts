@@ -5,6 +5,7 @@ import { areasOfNeed } from '../constants'
 
 export type GoalStatus = 'ACTIVE' | 'FUTURE'
 export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
+export type AgreementStatus = 'AGREED' | 'DO_NOT_AGREE' | 'COULD_NOT_ANSWER'
 
 export interface RawCollection {
   name: string
@@ -42,6 +43,16 @@ export interface DerivedGoal {
   steps: DerivedStep[]
 }
 
+export interface DerivedPlanAgreement {
+  uuid: string
+  status: AgreementStatus
+  statusDate: Date
+  agreementQuestion: string
+  detailsNo?: string
+  detailsCouldNotAnswer?: string
+  notes?: string
+}
+
 export type AreaOfNeed = (typeof areasOfNeed)[number]
 
 export type AreaOfNeedSlug = AreaOfNeed['slug']
@@ -65,6 +76,18 @@ export interface StepAnswers {
 }
 
 export interface StepProperties {
+  status_date: string
+}
+
+export interface PlanAgreementAnswers {
+  agreement_question: string
+  details_no?: string
+  details_could_not_answer?: string
+  notes?: string
+}
+
+export interface PlanAgreementProperties {
+  status: AgreementStatus
   status_date: string
 }
 
@@ -113,6 +136,11 @@ export interface SentencePlanData extends Record<string, unknown> {
   activeGoalUuid: string
   activeGoalStepsOriginal: StepSession[]
   activeGoalStepsEdited: StepSession[]
+
+  // Plan Agreements
+  planAgreements: DerivedPlanAgreement[]
+  planAgreementsCollectionUuid: string
+  latestAgreementStatus: AgreementStatus | undefined
 
   // Areas of need
   areasOfNeed: AreaOfNeed[]

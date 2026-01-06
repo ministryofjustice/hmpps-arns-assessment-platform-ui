@@ -1,12 +1,16 @@
 import { InternalServerError } from 'http-errors'
 import { SentencePlanEffectsDeps } from './index'
-import { SentencePlanContext } from './types'
+import { AgreementStatus, PlanAgreementAnswers, PlanAgreementProperties, SentencePlanContext } from './types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 
 /**
- * Update the plan agreement status and save all agreement form answers
+ * Add a new plan agreement record to the PLAN_AGREEMENTS collection
  *
- * Maps the plan_agreement_question answer to AGREEMENT_STATUS property:
+ * Creates or uses existing PLAN_AGREEMENTS collection and adds a new item
+ * representing the agreement event. This allows tracking a full history of
+ * plan agreement status changes over time.
+ *
+ * Maps the plan_agreement_question answer to status:
  * - 'yes' → 'AGREED'
  * - 'no' → 'DO_NOT_AGREE'
  * - 'could_not_answer' → 'COULD_NOT_ANSWER'
@@ -34,8 +38,8 @@ export const updatePlanAgreementStatus = (deps: SentencePlanEffectsDeps) => asyn
     throw new InternalServerError('Agreement answer is required to update plan agreement status')
   }
 
-  // Map the form answer to the AGREEMENT_STATUS value
-  const statusMap: Record<string, string> = {
+  // Map the form answer to the status value
+  const statusMap: Record<string, AgreementStatus> = {
     yes: 'AGREED',
     no: 'DO_NOT_AGREE',
     could_not_answer: 'COULD_NOT_ANSWER',
@@ -47,47 +51,59 @@ export const updatePlanAgreementStatus = (deps: SentencePlanEffectsDeps) => asyn
     throw new InternalServerError(`Invalid agreement answer: ${agreementAnswer}`)
   }
 
-  // Collect all answers to save
-  const answers: Record<string, any> = {
-    plan_agreement_question: agreementAnswer,
+  // Get or create PLAN_AGREEMENTS collection
+  let planAgreementsCollectionUuid = context.getData('planAgreementsCollectionUuid')
+
+  if (!planAgreementsCollectionUuid) {
+    const createResult = await deps.api.executeCommand({
+      type: 'CreateCollectionCommand',
+      name: 'PLAN_AGREEMENTS',
+      assessmentUuid,
+      user,
+    })
+
+    planAgreementsCollectionUuid = createResult.collectionUuid
+  }
+
+  // Build properties
+  const properties: PlanAgreementProperties = {
+    status: agreementStatus,
+    status_date: new Date().toISOString(),
+  }
+
+  // Build answers
+  const answers: PlanAgreementAnswers = {
+    agreement_question: agreementAnswer,
   }
 
   // Add conditional details if present
-  const detailsNo = context.getAnswer('plan_agreement_details_no')
+  const detailsNo = context.getAnswer('plan_agreement_details_no') as string | undefined
   if (detailsNo) {
-    answers.plan_agreement_details_no = detailsNo
+    answers.details_no = detailsNo
   }
 
-  const detailsCouldNotAnswer = context.getAnswer('plan_agreement_details_could_not_answer')
+  const detailsCouldNotAnswer = context.getAnswer('plan_agreement_details_could_not_answer') as string | undefined
   if (detailsCouldNotAnswer) {
-    answers.plan_agreement_details_could_not_answer = detailsCouldNotAnswer
+    answers.details_could_not_answer = detailsCouldNotAnswer
   }
 
   // Add notes if present
-  const notes = context.getAnswer('plan_agreement_notes')
+  const notes = context.getAnswer('plan_agreement_notes') as string | undefined
   if (notes) {
-    answers.plan_agreement_notes = notes
+    answers.notes = notes
   }
 
-  // Execute both commands together
-  await deps.api.executeCommands(
-    // Update AGREEMENT_STATUS property
-    {
-      type: 'UpdateAssessmentPropertiesCommand',
-      assessmentUuid,
-      added: {
-        AGREEMENT_STATUS: { type: 'Single', value: agreementStatus },
-      },
-      removed: [],
-      user,
+  // Add the agreement record to the collection
+  await deps.api.executeCommand({
+    type: 'AddCollectionItemCommand',
+    collectionUuid: planAgreementsCollectionUuid,
+    properties: wrapAll(properties),
+    answers: wrapAll(answers),
+    timeline: {
+      type: 'PLAN_AGREEMENT_STATUS_CHANGED',
+      data: { status: agreementStatus },
     },
-    // Save all form answers
-    {
-      type: 'UpdateAssessmentAnswersCommand',
-      assessmentUuid,
-      added: wrapAll(answers),
-      removed: [],
-      user,
-    },
-  )
+    assessmentUuid,
+    user,
+  })
 }
