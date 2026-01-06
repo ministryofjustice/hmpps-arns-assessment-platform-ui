@@ -16,6 +16,7 @@ import {
  * Sets:
  * - Data('planAgreements'): Array of derived plan agreements (sorted newest first)
  * - Data('latestAgreementStatus'): Status of the most recent agreement (or undefined if none)
+ * - Data('latestAgreementDate'): Status date of the most recent agreement (or undefined if none)
  * - Data('planAgreementsCollectionUuid'): UUID of the PLAN_AGREEMENTS collection (for adding new agreements)
  */
 export const derivePlanAgreementsFromAssessment = () => async (context: SentencePlanContext) => {
@@ -24,6 +25,7 @@ export const derivePlanAgreementsFromAssessment = () => async (context: Sentence
   if (!assessment?.collections) {
     context.setData('planAgreements', [])
     context.setData('latestAgreementStatus', undefined)
+    context.setData('latestAgreementDate', undefined)
     return
   }
 
@@ -32,6 +34,7 @@ export const derivePlanAgreementsFromAssessment = () => async (context: Sentence
   if (!planAgreementsCollection) {
     context.setData('planAgreements', [])
     context.setData('latestAgreementStatus', undefined)
+    context.setData('latestAgreementDate', undefined)
     return
   }
 
@@ -57,6 +60,7 @@ export const derivePlanAgreementsFromAssessment = () => async (context: Sentence
 
   context.setData('planAgreements', agreements)
 
-  // Set the latest agreement status for easy access
+  // Set the latest agreement status and date for easy access
   context.setData('latestAgreementStatus', agreements[0]?.status)
+  context.setData('latestAgreementDate', agreements[0]?.statusDate)
 }

@@ -6,7 +6,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { GoalSummaryCardDraft } from '../../../../../components'
+import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../components'
 import { CaseData } from '../../../../constants'
 
 export const noActiveGoalsErrorMessage = HtmlBlock({
@@ -67,6 +67,23 @@ const activeGoalsCount = Data('goals')
 const futureGoalsCount = Data('goals')
   .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
   .pipe(Transformer.Array.Length())
+
+export const planCreatedMessage = HtmlBlock({
+  hidden: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER'])),
+  content: when(Data('latestAgreementStatus').match(Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE'])))
+    .then(
+      Format(
+        '<p class="govuk-body">Plan created on %1. <a href="#" class="govuk-link">View plan history</a></p>',
+        Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
+      ),
+    )
+    .else(
+      Format(
+        '<p class="govuk-body"><a href="#" class="govuk-link">Update %1\'s agreement</a> when you\'ve shared the plan with them.</p>',
+        CaseData.Forename,
+      ),
+    ),
+})
 
 export const subNavigation = MOJSubNavigation({
   label: 'Plan sections',
@@ -144,38 +161,83 @@ export const goalsSection = TemplateWrapper({
                 ),
                 slots: {
                   card: [
-                    GoalSummaryCardDraft({
-                      goalTitle: Item().path('title'),
-                      goalStatus: Item().path('status'),
-                      goalUuid: Item().path('uuid'),
-                      targetDate: Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()),
-                      statusDate: Item().path('statusDate'),
-                      areaOfNeed: Item().path('areaOfNeedLabel'),
-                      relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
-                      steps: Item()
-                        .path('steps')
-                        .each(
-                          Iterator.Map({
-                            actor: Item().path('actorLabel'),
-                            description: Item().path('description'),
-                            status: Item().path('status'),
+                    TemplateWrapper({
+                      hidden: Data('latestAgreementStatus').match(
+                        Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']),
+                      ),
+                      template: '{{slot:draftCard}}',
+                      slots: {
+                        draftCard: [
+                          GoalSummaryCardDraft({
+                            goalTitle: Item().path('title'),
+                            goalStatus: Item().path('status'),
+                            goalUuid: Item().path('uuid'),
+                            targetDate: Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()),
+                            statusDate: Item().path('statusDate'),
+                            areaOfNeed: Item().path('areaOfNeedLabel'),
+                            relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
+                            steps: Item()
+                              .path('steps')
+                              .each(
+                                Iterator.Map({
+                                  actor: Item().path('actorLabel'),
+                                  description: Item().path('description'),
+                                  status: Item().path('status'),
+                                }),
+                              ),
+                            actions: [
+                              {
+                                text: 'Change goal',
+                                href: Format('../goal/%1/change-goal', Item().path('uuid')),
+                              },
+                              {
+                                text: 'Add or change steps',
+                                href: Format('../goal/%1/add-steps', Item().path('uuid')),
+                              },
+                              {
+                                text: 'Delete',
+                                href: Format('../goal/%1/confirm-delete-goal', Item().path('uuid')),
+                              },
+                            ],
+                            index: Item().index(),
                           }),
-                        ),
-                      actions: [
-                        {
-                          text: 'Change goal',
-                          href: Format('../goal/%1/change-goal', Item().path('uuid')),
-                        },
-                        {
-                          text: 'Add or change steps',
-                          href: Format('../goal/%1/add-steps', Item().path('uuid')),
-                        },
-                        {
-                          text: 'Delete',
-                          href: Format('../goal/%1/confirm-delete-goal', Item().path('uuid')),
-                        },
-                      ],
-                      index: Item().index(),
+                        ],
+                      },
+                    }),
+                    TemplateWrapper({
+                      hidden: Data('latestAgreementStatus').not.match(
+                        Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']),
+                      ),
+                      template: '{{slot:agreedCard}}',
+                      slots: {
+                        agreedCard: [
+                          GoalSummaryCardAgreed({
+                            goalTitle: Item().path('title'),
+                            goalStatus: Item().path('status'),
+                            goalUuid: Item().path('uuid'),
+                            targetDate: Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()),
+                            statusDate: Item().path('statusDate'),
+                            areaOfNeed: Item().path('areaOfNeedLabel'),
+                            relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
+                            steps: Item()
+                              .path('steps')
+                              .each(
+                                Iterator.Map({
+                                  actor: Item().path('actorLabel'),
+                                  description: Item().path('description'),
+                                  status: Item().path('status'),
+                                }),
+                              ),
+                            actions: [
+                              {
+                                text: 'Update',
+                                href: Format('../goal/%1/update-goal', Item().path('uuid')),
+                              },
+                            ],
+                            index: Item().index(),
+                          }),
+                        ],
+                      },
                     }),
                   ],
                 },
