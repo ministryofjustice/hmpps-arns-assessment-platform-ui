@@ -1,5 +1,5 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType, FunctionType, IteratorType, LogicType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, IteratorType, PredicateType } from '@form-engine/form/types/enums'
 import type { IterateExpr, PredicateTestExpr, ReferenceExpr } from '@form-engine/form/types/expressions.type'
 import { NodeIDCategory, NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import { NodeFactory } from '@form-engine/core/ast/nodes/NodeFactory'
@@ -45,7 +45,7 @@ describe('IterateFactory', () => {
     it('should create an Iterate expression with FILTER iterator', () => {
       // Arrange
       const predicate: PredicateTestExpr = {
-        type: LogicType.TEST,
+        type: PredicateType.TEST,
         subject: { type: ExpressionType.REFERENCE, path: ['scope', 'item', 'active'] },
         negate: false,
         condition: { type: FunctionType.CONDITION, name: 'Equals', arguments: [true] },
@@ -75,7 +75,7 @@ describe('IterateFactory', () => {
     it('should create an Iterate expression with FIND iterator', () => {
       // Arrange
       const predicate: PredicateTestExpr = {
-        type: LogicType.TEST,
+        type: PredicateType.TEST,
         subject: { type: ExpressionType.REFERENCE, path: ['scope', 'item', 'id'] },
         negate: false,
         condition: { type: FunctionType.CONDITION, name: 'IsRequired', arguments: [] },
@@ -145,7 +145,7 @@ describe('IterateFactory', () => {
     it('should store predicate template as raw JSON for FILTER iterator', () => {
       // Arrange
       const predicateTemplate: PredicateTestExpr = {
-        type: LogicType.TEST,
+        type: PredicateType.TEST,
         subject: { type: ExpressionType.REFERENCE, path: ['scope', 'item', 'active'] },
         negate: false,
         condition: { type: FunctionType.CONDITION, name: 'Equals', arguments: [true] },

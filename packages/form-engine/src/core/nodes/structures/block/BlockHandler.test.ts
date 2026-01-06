@@ -1,5 +1,5 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType, FunctionType, LogicType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, PredicateType } from '@form-engine/form/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import {
   createMockContext,
@@ -8,6 +8,7 @@ import {
   createSequentialMockInvoker,
 } from '@form-engine/test-utils/thunkTestHelpers'
 import { FieldBlockASTNode } from '@form-engine/core/types/structures.type'
+import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
 import BlockHandler from './BlockHandler'
 
 describe('BlockHandler', () => {
@@ -284,7 +285,7 @@ describe('BlockHandler', () => {
     it('should skip validation when dependent property evaluates to false', async () => {
       // Arrange
       const dependentNode = ASTTestFactory.reference(['answers', 'businessType'])
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const validationNode = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
         .withProperty('message', 'Enter your typical trading hours')
@@ -296,7 +297,7 @@ describe('BlockHandler', () => {
         .build()
       const handler = new BlockHandler(block.id, block)
       const mockContext = createMockContext({
-        mockNodes: new Map([
+        mockNodes: new Map<NodeId, ASTNode>([
           [dependentNode.id, dependentNode],
           [predicateNode.id, predicateNode],
           [validationNode.id, validationNode],
@@ -318,7 +319,7 @@ describe('BlockHandler', () => {
     it('should evaluate validation when dependent property evaluates to true', async () => {
       // Arrange
       const dependentNode = ASTTestFactory.reference(['answers', 'businessType'])
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const validationNode = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
         .withProperty('message', 'Enter your typical trading hours')
@@ -330,7 +331,7 @@ describe('BlockHandler', () => {
         .build()
       const handler = new BlockHandler(block.id, block)
       const mockContext = createMockContext({
-        mockNodes: new Map([
+        mockNodes: new Map<NodeId, ASTNode>([
           [dependentNode.id, dependentNode],
           [predicateNode.id, predicateNode],
           [validationNode.id, validationNode],
@@ -353,7 +354,7 @@ describe('BlockHandler', () => {
 
     it('should evaluate validation when dependent property does not exist', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const validationNode = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
         .withProperty('message', 'Select the type of food business')
@@ -364,7 +365,7 @@ describe('BlockHandler', () => {
         .build()
       const handler = new BlockHandler(block.id, block)
       const mockContext = createMockContext({
-        mockNodes: new Map([
+        mockNodes: new Map<NodeId, ASTNode>([
           [predicateNode.id, predicateNode],
           [validationNode.id, validationNode],
         ]),

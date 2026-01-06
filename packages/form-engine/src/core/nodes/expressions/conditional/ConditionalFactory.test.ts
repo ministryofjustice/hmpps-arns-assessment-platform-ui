@@ -1,10 +1,11 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType, FunctionType, LogicType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, PredicateType } from '@form-engine/form/types/enums'
+import { ConditionalASTNode } from '@form-engine/core/types/expressions.type'
 import type { ConditionalExpr, PredicateTestExpr, ValueExpr } from '@form-engine/form/types/expressions.type'
 import { NodeIDCategory, NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
-import { PredicateASTNode } from '@form-engine/core/types/expressions.type'
 import { NodeFactory } from '@form-engine/core/ast/nodes/NodeFactory'
+import { TestPredicateASTNode } from '@form-engine/core/types/predicates.type'
 import ConditionalFactory from './ConditionalFactory'
 
 describe('ConditionalFactory', () => {
@@ -22,9 +23,9 @@ describe('ConditionalFactory', () => {
     it('should create a Conditional expression with all properties', () => {
       // Arrange
       const json = {
-        type: LogicType.CONDITIONAL,
+        type: ExpressionType.CONDITIONAL,
         predicate: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'field'] },
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -34,12 +35,12 @@ describe('ConditionalFactory', () => {
       } satisfies ConditionalExpr
 
       // Act
-      const result = conditionalFactory.create(json)
+      const result = conditionalFactory.create(json) as ConditionalASTNode
 
       // Assert
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.EXPRESSION)
-      expect(result.expressionType).toBe(LogicType.CONDITIONAL)
+      expect(result.expressionType).toBe(ExpressionType.CONDITIONAL)
       expect(result.raw).toBe(json)
       expect(result.properties.predicate).toBeDefined()
       expect(result.properties.thenValue).toBeDefined()
@@ -49,14 +50,14 @@ describe('ConditionalFactory', () => {
     it('should transform predicate using nodeFactory', () => {
       // Arrange
       const predicateJson = {
-        type: LogicType.TEST,
+        type: PredicateType.TEST,
         subject: { type: ExpressionType.REFERENCE, path: ['answers', 'field'] },
         negate: false,
         condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
       } satisfies PredicateTestExpr
 
       const json = {
-        type: LogicType.CONDITIONAL,
+        type: ExpressionType.CONDITIONAL,
         predicate: predicateJson,
         thenValue: 'yes',
         elseValue: 'no',
@@ -64,19 +65,19 @@ describe('ConditionalFactory', () => {
 
       // Act
       const result = conditionalFactory.create(json)
-      const predicate = result.properties.predicate as PredicateASTNode
+      const predicate = result.properties.predicate as TestPredicateASTNode
 
       // Assert
-      expect(predicate.type).toBe(ASTNodeType.EXPRESSION)
-      expect(predicate.expressionType).toBe(LogicType.TEST)
+      expect(predicate.type).toBe(ASTNodeType.PREDICATE)
+      expect(predicate.predicateType).toBe(PredicateType.TEST)
     })
 
     it('should handle literal thenValue and elseValue', () => {
       // Arrange
       const json = {
-        type: LogicType.CONDITIONAL,
+        type: ExpressionType.CONDITIONAL,
         predicate: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'field'] },
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -96,9 +97,9 @@ describe('ConditionalFactory', () => {
     it('should transform expression thenValue and elseValue', () => {
       // Arrange
       const json = {
-        type: LogicType.CONDITIONAL,
+        type: ExpressionType.CONDITIONAL,
         predicate: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'field'] },
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -118,9 +119,9 @@ describe('ConditionalFactory', () => {
     it('should default thenValue to true when omitted', () => {
       // Arrange
       const json = {
-        type: LogicType.CONDITIONAL,
+        type: ExpressionType.CONDITIONAL,
         predicate: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'field'] },
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -140,9 +141,9 @@ describe('ConditionalFactory', () => {
     it('should default elseValue to false when omitted', () => {
       // Arrange
       const json = {
-        type: LogicType.CONDITIONAL,
+        type: ExpressionType.CONDITIONAL,
         predicate: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'field'] },
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -162,9 +163,9 @@ describe('ConditionalFactory', () => {
     it('should generate unique node IDs', () => {
       // Arrange
       const json = {
-        type: LogicType.CONDITIONAL,
+        type: ExpressionType.CONDITIONAL,
         predicate: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'field'] },
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -186,7 +187,7 @@ describe('ConditionalFactory', () => {
     it('should throw InvalidNodeError when predicate is missing', () => {
       // Arrange
       const json = {
-        type: LogicType.CONDITIONAL,
+        type: ExpressionType.CONDITIONAL,
         thenValue: 'yes',
         elseValue: 'no',
       } as any

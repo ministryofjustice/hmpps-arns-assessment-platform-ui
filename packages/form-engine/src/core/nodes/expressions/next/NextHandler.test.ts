@@ -1,4 +1,4 @@
-import { ExpressionType, LogicType } from '@form-engine/form/types/enums'
+import { ExpressionType, PredicateType } from '@form-engine/form/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import {
   createMockContext,
@@ -35,7 +35,7 @@ describe('NextHandler', () => {
 
     it('should return goto value when when condition is truthy', async () => {
       // Arrange
-      const whenNode = ASTTestFactory.predicate(LogicType.TEST)
+      const whenNode = ASTTestFactory.predicate(PredicateType.TEST)
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)
         .withProperty('goto', '/success')
@@ -53,7 +53,7 @@ describe('NextHandler', () => {
 
     it('should return undefined when when condition is falsy', async () => {
       // Arrange
-      const whenNode = ASTTestFactory.predicate(LogicType.TEST)
+      const whenNode = ASTTestFactory.predicate(PredicateType.TEST)
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)
         .withProperty('goto', '/success')
@@ -88,7 +88,7 @@ describe('NextHandler', () => {
 
     it('should evaluate both when and goto when both are AST nodes', async () => {
       // Arrange
-      const whenNode = ASTTestFactory.predicate(LogicType.TEST)
+      const whenNode = ASTTestFactory.predicate(PredicateType.TEST)
       const gotoNode = ASTTestFactory.reference(['data', 'nextPath'])
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)
@@ -107,7 +107,7 @@ describe('NextHandler', () => {
 
     it('should handle truthy numeric value in when condition', async () => {
       // Arrange
-      const whenNode = ASTTestFactory.predicate(LogicType.TEST)
+      const whenNode = ASTTestFactory.predicate(PredicateType.TEST)
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)
         .withProperty('goto', '/next')
@@ -125,7 +125,7 @@ describe('NextHandler', () => {
 
     it('should handle truthy string value in when condition', async () => {
       // Arrange
-      const whenNode = ASTTestFactory.predicate(LogicType.TEST)
+      const whenNode = ASTTestFactory.predicate(PredicateType.TEST)
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)
         .withProperty('goto', '/next')
@@ -143,7 +143,7 @@ describe('NextHandler', () => {
 
     it('should handle null as falsy in when condition', async () => {
       // Arrange
-      const whenNode = ASTTestFactory.predicate(LogicType.TEST)
+      const whenNode = ASTTestFactory.predicate(PredicateType.TEST)
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)
         .withProperty('goto', '/next')
@@ -161,7 +161,7 @@ describe('NextHandler', () => {
 
     it('should handle undefined as falsy in when condition', async () => {
       // Arrange
-      const whenNode = ASTTestFactory.predicate(LogicType.TEST)
+      const whenNode = ASTTestFactory.predicate(PredicateType.TEST)
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)
         .withProperty('goto', '/next')
@@ -179,7 +179,7 @@ describe('NextHandler', () => {
 
     it('should handle 0 as falsy in when condition', async () => {
       // Arrange
-      const whenNode = ASTTestFactory.predicate(LogicType.TEST)
+      const whenNode = ASTTestFactory.predicate(PredicateType.TEST)
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)
         .withProperty('goto', '/next')
@@ -197,7 +197,7 @@ describe('NextHandler', () => {
 
     it('should handle empty string as falsy in when condition', async () => {
       // Arrange
-      const whenNode = ASTTestFactory.predicate(LogicType.TEST)
+      const whenNode = ASTTestFactory.predicate(PredicateType.TEST)
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)
         .withProperty('goto', '/next')
@@ -215,7 +215,7 @@ describe('NextHandler', () => {
 
     it('should return undefined when when condition evaluation fails', async () => {
       // Arrange
-      const whenNode = ASTTestFactory.predicate(LogicType.TEST)
+      const whenNode = ASTTestFactory.predicate(PredicateType.TEST)
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)
         .withProperty('goto', '/next')
@@ -252,7 +252,7 @@ describe('NextHandler', () => {
 
     it('should return undefined when goto evaluation fails after when condition passes', async () => {
       // Arrange
-      const whenNode = ASTTestFactory.predicate(LogicType.TEST)
+      const whenNode = ASTTestFactory.predicate(PredicateType.TEST)
       const gotoNode = ASTTestFactory.reference(['data', 'missing'])
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)
@@ -295,7 +295,7 @@ describe('NextHandler', () => {
 
     it('should not evaluate goto when when condition is falsy', async () => {
       // Arrange
-      const whenNode = ASTTestFactory.predicate(LogicType.TEST)
+      const whenNode = ASTTestFactory.predicate(PredicateType.TEST)
       const gotoNode = ASTTestFactory.reference(['data', 'path'])
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)

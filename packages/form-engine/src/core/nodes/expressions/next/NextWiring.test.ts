@@ -1,6 +1,6 @@
 import { when } from 'jest-when'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
-import { LogicType, ExpressionType } from '@form-engine/form/types/enums'
+import { PredicateType, ExpressionType } from '@form-engine/form/types/enums'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { NextASTNode } from '@form-engine/core/types/expressions.type'
 import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
@@ -34,7 +34,7 @@ describe('NextWiring', () => {
   describe('wire', () => {
     it('should wire `when` to next node', () => {
       // Arrange
-      const whenNode = ASTTestFactory.expression(LogicType.TEST).build()
+      const whenNode = ASTTestFactory.expression(PredicateType.TEST).build()
 
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode)
@@ -77,7 +77,7 @@ describe('NextWiring', () => {
 
     it('should wire both `when` and `goto` when both are AST nodes', () => {
       // Arrange
-      const whenNode = ASTTestFactory.expression(LogicType.TEST).build()
+      const whenNode = ASTTestFactory.expression(PredicateType.TEST).build()
       const gotoNode = ASTTestFactory.reference(['data', 'nextStep'])
 
       const nextNode = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
@@ -138,8 +138,8 @@ describe('NextWiring', () => {
 
     it('should wire multiple next nodes', () => {
       // Arrange
-      const whenNode1 = ASTTestFactory.expression(LogicType.TEST).build()
-      const whenNode2 = ASTTestFactory.expression(LogicType.TEST).build()
+      const whenNode1 = ASTTestFactory.expression(PredicateType.TEST).build()
+      const whenNode2 = ASTTestFactory.expression(PredicateType.TEST).build()
 
       const nextNode1 = ASTTestFactory.expression<NextASTNode>(ExpressionType.NEXT)
         .withProperty('when', whenNode1)

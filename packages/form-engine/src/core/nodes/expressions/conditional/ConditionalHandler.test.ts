@@ -1,4 +1,4 @@
-import { LogicType } from '@form-engine/form/types/enums'
+import { ExpressionType, PredicateType } from '@form-engine/form/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import {
   createMockContext,
@@ -17,8 +17,8 @@ describe('ConditionalHandler', () => {
   describe('evaluate()', () => {
     it('should return primitive thenValue when predicate is truthy', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Admin Panel')
         .withElseValue('User Panel')
@@ -36,9 +36,9 @@ describe('ConditionalHandler', () => {
 
     it('should evaluate and return AST node thenValue when predicate is truthy', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const thenValueNode = ASTTestFactory.reference(['data', 'adminTitle'])
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue(thenValueNode)
         .withElseValue('User Panel')
@@ -56,8 +56,8 @@ describe('ConditionalHandler', () => {
 
     it('should handle numeric truthy predicate values', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Has value')
         .withElseValue('No value')
@@ -75,8 +75,8 @@ describe('ConditionalHandler', () => {
 
     it('should handle string truthy predicate values', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Has value')
         .withElseValue('No value')
@@ -94,8 +94,8 @@ describe('ConditionalHandler', () => {
 
     it('should return primitive elseValue when predicate is falsy', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Admin Panel')
         .withElseValue('User Panel')
@@ -113,9 +113,9 @@ describe('ConditionalHandler', () => {
 
     it('should evaluate and return AST node elseValue when predicate is falsy', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const elseValueNode = ASTTestFactory.reference(['data', 'userTitle'])
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Admin Panel')
         .withElseValue(elseValueNode)
@@ -133,8 +133,8 @@ describe('ConditionalHandler', () => {
 
     it('should handle null as falsy predicate', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Has value')
         .withElseValue('No value')
@@ -152,8 +152,8 @@ describe('ConditionalHandler', () => {
 
     it('should handle undefined as falsy predicate', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Has value')
         .withElseValue('No value')
@@ -171,8 +171,8 @@ describe('ConditionalHandler', () => {
 
     it('should handle 0 as falsy predicate', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Has value')
         .withElseValue('No value')
@@ -190,8 +190,8 @@ describe('ConditionalHandler', () => {
 
     it('should handle empty string as falsy predicate', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Has value')
         .withElseValue('No value')
@@ -209,8 +209,8 @@ describe('ConditionalHandler', () => {
 
     it('should handle NaN as falsy predicate', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Has value')
         .withElseValue('No value')
@@ -228,8 +228,8 @@ describe('ConditionalHandler', () => {
 
     it('should handle BigInt zero (0n) as falsy predicate', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Has value')
         .withElseValue('No value')
@@ -247,8 +247,8 @@ describe('ConditionalHandler', () => {
 
     it('should return undefined when thenValue is not specified and predicate is true', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withElseValue('User Panel')
         .build()
@@ -265,8 +265,8 @@ describe('ConditionalHandler', () => {
 
     it('should return undefined when elseValue is not specified and predicate is false', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Admin Panel')
         .build()
@@ -283,8 +283,8 @@ describe('ConditionalHandler', () => {
 
     it('should return undefined when both thenValue and elseValue are not specified', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .build()
       const handler = new ConditionalHandler(conditional.id, conditional as any)
@@ -300,8 +300,8 @@ describe('ConditionalHandler', () => {
 
     it('should return undefined when predicate evaluation fails', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Admin Panel')
         .withElseValue('User Panel')
@@ -320,9 +320,9 @@ describe('ConditionalHandler', () => {
 
     it('should return undefined when thenValue evaluation fails', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const thenValueNode = ASTTestFactory.reference(['data', 'missing'])
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue(thenValueNode)
         .withElseValue('User Panel')
@@ -362,9 +362,9 @@ describe('ConditionalHandler', () => {
 
     it('should return undefined when elseValue evaluation fails', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const elseValueNode = ASTTestFactory.reference(['data', 'missing'])
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue('Admin Panel')
         .withElseValue(elseValueNode)
@@ -404,10 +404,10 @@ describe('ConditionalHandler', () => {
 
     it('should evaluate and return correct branch when both values are AST nodes', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const thenValueNode = ASTTestFactory.reference(['data', 'adminTitle'])
       const elseValueNode = ASTTestFactory.reference(['data', 'userTitle'])
-      const conditional = ASTTestFactory.expression(LogicType.CONDITIONAL)
+      const conditional = ASTTestFactory.expression(ExpressionType.CONDITIONAL)
         .withPredicate(predicateNode)
         .withThenValue(thenValueNode)
         .withElseValue(elseValueNode)

@@ -1,5 +1,5 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType, FunctionType, LogicType, TransitionType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, PredicateType, TransitionType } from '@form-engine/form/types/enums'
 import { NodeIDCategory, NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import { AccessTransitionASTNode, FunctionASTNode, NextASTNode } from '@form-engine/core/types/expressions.type'
 import {
@@ -30,7 +30,7 @@ describe('AccessFactory', () => {
       const json = {
         type: TransitionType.ACCESS,
         guards: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'field'] } satisfies ReferenceExpr,
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -46,7 +46,7 @@ describe('AccessFactory', () => {
       expect(result.type).toBe(ASTNodeType.TRANSITION)
       expect(result.transitionType).toBe(TransitionType.ACCESS)
       expect(result.properties.guards).toBeDefined()
-      expect(result.properties.guards.type).toBe(ASTNodeType.EXPRESSION)
+      expect(result.properties.guards.type).toBe(ASTNodeType.PREDICATE)
       expect(result.raw).toBe(json)
     })
 
@@ -120,7 +120,7 @@ describe('AccessFactory', () => {
           {
             type: ExpressionType.NEXT,
             when: {
-              type: LogicType.TEST,
+              type: PredicateType.TEST,
               subject: { type: ExpressionType.REFERENCE, path: ['answers', 'test'] } satisfies ReferenceExpr,
               negate: false,
               condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -145,7 +145,7 @@ describe('AccessFactory', () => {
       const json = {
         type: TransitionType.ACCESS,
         guards: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'test'] } satisfies ReferenceExpr,
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -155,7 +155,7 @@ describe('AccessFactory', () => {
           {
             type: ExpressionType.NEXT,
             when: {
-              type: LogicType.TEST,
+              type: PredicateType.TEST,
               subject: { type: ExpressionType.REFERENCE, path: ['answers', 'test'] } satisfies ReferenceExpr,
               negate: false,
               condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -173,7 +173,7 @@ describe('AccessFactory', () => {
       expect(result.properties.effects).toBeDefined()
       expect(result.properties.redirect).toBeDefined()
 
-      expect(result.properties.guards.type).toBe(ASTNodeType.EXPRESSION)
+      expect(result.properties.guards.type).toBe(ASTNodeType.PREDICATE)
       expect(result.properties.effects[0].type).toBe(ASTNodeType.EXPRESSION)
       expect(result.properties.redirect[0].type).toBe(ASTNodeType.EXPRESSION)
     })

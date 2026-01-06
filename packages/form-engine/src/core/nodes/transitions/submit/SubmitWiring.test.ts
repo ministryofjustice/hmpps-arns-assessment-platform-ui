@@ -1,6 +1,6 @@
 import { when } from 'jest-when'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
-import { TransitionType, FunctionType, LogicType, ExpressionType } from '@form-engine/form/types/enums'
+import { TransitionType, FunctionType, PredicateType, ExpressionType } from '@form-engine/form/types/enums'
 import { SubmitTransitionASTNode, ExpressionASTNode } from '@form-engine/core/types/expressions.type'
 import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
 import DependencyGraph, { DependencyEdgeType } from '@form-engine/core/ast/dependencies/DependencyGraph'
@@ -61,7 +61,7 @@ describe('SubmitWiring', () => {
       it('should wire when predicate to transition', () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isRequired', []) as any
-        const whenPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const whenPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['answers', 'confirmed']),
           condition,
           negate: false,
@@ -88,7 +88,7 @@ describe('SubmitWiring', () => {
       it('should wire guards predicate to transition', () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'matchesValue', ['admin']) as any
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'userRole']),
           condition,
           negate: false,

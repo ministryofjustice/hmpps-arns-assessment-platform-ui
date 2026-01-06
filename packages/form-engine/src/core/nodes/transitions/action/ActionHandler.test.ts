@@ -1,5 +1,5 @@
 import { ActionTransitionASTNode } from '@form-engine/core/types/expressions.type'
-import { TransitionType, FunctionType, LogicType } from '@form-engine/form/types/enums'
+import { TransitionType, FunctionType, PredicateType } from '@form-engine/form/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { createMockContext, createMockInvoker } from '@form-engine/test-utils/thunkTestHelpers'
 import { ThunkResult } from '@form-engine/core/ast/thunks/types'
@@ -15,7 +15,7 @@ describe('ActionHandler', () => {
   describe('evaluate()', () => {
     it('should return executed: false when when predicate returns false', async () => {
       // Arrange
-      const whenPredicate = ASTTestFactory.expression(LogicType.TEST).build()
+      const whenPredicate = ASTTestFactory.expression(PredicateType.TEST).build()
       const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'lookupAddress')
 
       const transition = ASTTestFactory.transition(TransitionType.ACTION)
@@ -45,7 +45,7 @@ describe('ActionHandler', () => {
 
     it('should return executed: true and execute effects when when predicate returns true', async () => {
       // Arrange
-      const whenPredicate = ASTTestFactory.expression(LogicType.TEST).build()
+      const whenPredicate = ASTTestFactory.expression(PredicateType.TEST).build()
       const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'lookupAddress')
 
       const transition = ASTTestFactory.transition(TransitionType.ACTION)
@@ -82,7 +82,7 @@ describe('ActionHandler', () => {
 
     it('should not invoke effects when when predicate fails', async () => {
       // Arrange
-      const whenPredicate = ASTTestFactory.expression(LogicType.TEST).build()
+      const whenPredicate = ASTTestFactory.expression(PredicateType.TEST).build()
       const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'lookupAddress')
 
       const transition = ASTTestFactory.transition(TransitionType.ACTION)
@@ -116,7 +116,7 @@ describe('ActionHandler', () => {
 
     it('should return executed: false when when predicate evaluation errors', async () => {
       // Arrange
-      const whenPredicate = ASTTestFactory.expression(LogicType.TEST).build()
+      const whenPredicate = ASTTestFactory.expression(PredicateType.TEST).build()
       const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'lookupAddress')
 
       const transition = ASTTestFactory.transition(TransitionType.ACTION)
@@ -153,7 +153,7 @@ describe('ActionHandler', () => {
 
     it('should execute multiple effects sequentially when when predicate passes', async () => {
       // Arrange
-      const whenPredicate = ASTTestFactory.expression(LogicType.TEST).build()
+      const whenPredicate = ASTTestFactory.expression(PredicateType.TEST).build()
       const effect1 = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'effect1')
       const effect2 = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'effect2')
 
@@ -191,7 +191,7 @@ describe('ActionHandler', () => {
 
     it('should return executed: true when when passes and no effects defined', async () => {
       // Arrange
-      const whenPredicate = ASTTestFactory.expression(LogicType.TEST).build()
+      const whenPredicate = ASTTestFactory.expression(PredicateType.TEST).build()
 
       const transition = ASTTestFactory.transition(TransitionType.ACTION)
         .withProperty('when', whenPredicate)
@@ -220,7 +220,7 @@ describe('ActionHandler', () => {
 
     it('should fail fast and return error when effect fails', async () => {
       // Arrange
-      const whenPredicate = ASTTestFactory.expression(LogicType.TEST).build()
+      const whenPredicate = ASTTestFactory.expression(PredicateType.TEST).build()
       const failingEffect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'failingEffect')
       const successEffect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'successEffect')
 
@@ -290,7 +290,7 @@ describe('ActionHandler', () => {
 
     it('should push @transitionType to scope before executing effects', async () => {
       // Arrange
-      const whenPredicate = ASTTestFactory.expression(LogicType.TEST).build()
+      const whenPredicate = ASTTestFactory.expression(PredicateType.TEST).build()
       const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'lookupAddress')
 
       const transition = ASTTestFactory.transition(TransitionType.ACTION)

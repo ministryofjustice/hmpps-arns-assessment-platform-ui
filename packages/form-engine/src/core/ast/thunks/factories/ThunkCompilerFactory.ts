@@ -5,12 +5,12 @@ import {
   isReferenceExprNode,
   isFormatExprNode,
   isPipelineExprNode,
-  isConditionalExprNode,
   isFunctionExprNode,
   isEffectExprNode,
   isIterateExprNode,
   isNextExprNode,
   isValidationExprNode,
+  isConditionalExprNode,
 } from '@form-engine/core/typeguards/expression-nodes'
 import {
   isLoadTransitionNode,
@@ -31,11 +31,11 @@ import ParamsReferenceHandler from '@form-engine/core/nodes/expressions/referenc
 import BaseReferenceHandler from '@form-engine/core/nodes/expressions/reference/base/BaseReferenceHandler'
 import IterateHandler from '@form-engine/core/nodes/expressions/iterate/IterateHandler'
 import ConditionalHandler from '@form-engine/core/nodes/expressions/conditional/ConditionalHandler'
-import AndHandler from '@form-engine/core/nodes/logic/and/AndHandler'
-import OrHandler from '@form-engine/core/nodes/logic/or/OrHandler'
-import XorHandler from '@form-engine/core/nodes/logic/xor/XorHandler'
-import NotHandler from '@form-engine/core/nodes/logic/not/NotHandler'
-import TestHandler from '@form-engine/core/nodes/logic/test/TestHandler'
+import AndHandler from '@form-engine/core/nodes/predicates/and/AndHandler'
+import OrHandler from '@form-engine/core/nodes/predicates/or/OrHandler'
+import XorHandler from '@form-engine/core/nodes/predicates/xor/XorHandler'
+import NotHandler from '@form-engine/core/nodes/predicates/not/NotHandler'
+import TestHandler from '@form-engine/core/nodes/predicates/test/TestHandler'
 import FunctionHandler from '@form-engine/core/nodes/expressions/function/FunctionHandler'
 import EffectHandler from '@form-engine/core/nodes/expressions/effect/EffectHandler'
 import BlockHandler from '@form-engine/core/nodes/structures/block/BlockHandler'
@@ -47,11 +47,11 @@ import SubmitHandler from '@form-engine/core/nodes/transitions/submit/SubmitHand
 import { CompilationDependencies } from '@form-engine/core/ast/compilation/CompilationDependencies'
 import JourneyHandler from '@form-engine/core/nodes/structures/journey/JourneyHandler'
 import {
-  isPredicateAndNode,
-  isPredicateOrNode,
-  isPredicateXorNode,
-  isPredicateNotNode,
-  isPredicateTestNode,
+  isAndPredicateNode,
+  isOrPredicateNode,
+  isXorPredicateNode,
+  isNotPredicateNode,
+  isTestPredicateNode,
 } from '@form-engine/core/typeguards/predicate-nodes'
 import ThunkTypeMismatchError from '@form-engine/errors/ThunkTypeMismatchError'
 import PostHandler from '@form-engine/core/nodes/pseudo-nodes/post/PostHandler'
@@ -230,27 +230,27 @@ export default class ThunkCompilerFactory {
     }
 
     // TEST Predicate expressions
-    if (isPredicateTestNode(node)) {
+    if (isTestPredicateNode(node)) {
       return new TestHandler(nodeId, node)
     }
 
     // AND Predicate expressions
-    if (isPredicateAndNode(node)) {
+    if (isAndPredicateNode(node)) {
       return new AndHandler(nodeId, node)
     }
 
     // OR Predicate expressions
-    if (isPredicateOrNode(node)) {
+    if (isOrPredicateNode(node)) {
       return new OrHandler(nodeId, node)
     }
 
     // XOR Predicate expressions
-    if (isPredicateXorNode(node)) {
+    if (isXorPredicateNode(node)) {
       return new XorHandler(nodeId, node)
     }
 
     // NOT Predicate expressions
-    if (isPredicateNotNode(node)) {
+    if (isNotPredicateNode(node)) {
       return new NotHandler(nodeId, node)
     }
 

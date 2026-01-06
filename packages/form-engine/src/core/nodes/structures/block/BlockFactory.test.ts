@@ -1,5 +1,5 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType, FunctionType, LogicType, StructureType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, PredicateType, StructureType } from '@form-engine/form/types/enums'
 import type { BlockDefinition, FieldBlockDefinition, ValidationExpr } from '@form-engine/form/types/structures.type'
 import type { PredicateTestExpr, ValueExpr } from '@form-engine/form/types/expressions.type'
 import { NodeIDCategory, NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
@@ -123,7 +123,7 @@ describe('BlockFactory', () => {
           {
             type: ExpressionType.VALIDATION,
             when: {
-              type: LogicType.TEST,
+              type: PredicateType.TEST,
               subject: { type: ExpressionType.REFERENCE, path: ['@self'] },
               negate: true,
               condition: { type: FunctionType.CONDITION, name: 'IsRequired', arguments: [] as ValueExpr[] },
@@ -151,7 +151,7 @@ describe('BlockFactory', () => {
         variant: 'TextInput',
         code: 'details',
         dependent: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'showDetails'] },
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -163,7 +163,7 @@ describe('BlockFactory', () => {
       const dependent = result.properties.dependent
 
       // Assert
-      expect(dependent.type).toBe(ASTNodeType.EXPRESSION)
+      expect(dependent.type).toBe(ASTNodeType.PREDICATE)
     })
 
     it('should handle field block with custom properties', () => {
@@ -193,7 +193,7 @@ describe('BlockFactory', () => {
         variant: 'TextInput',
         code: 'email',
         dependent: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'requireEmail'] },
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -202,7 +202,7 @@ describe('BlockFactory', () => {
           {
             type: ExpressionType.VALIDATION,
             when: {
-              type: LogicType.TEST,
+              type: PredicateType.TEST,
               subject: { type: ExpressionType.REFERENCE, path: ['@self'] },
               negate: true,
               condition: { type: FunctionType.CONDITION, name: 'IsRequired', arguments: [] as ValueExpr[] },

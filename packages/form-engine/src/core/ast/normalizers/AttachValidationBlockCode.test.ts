@@ -1,4 +1,4 @@
-import { ExpressionType, LogicType } from '@form-engine/form/types/enums'
+import { ExpressionType, PredicateType } from '@form-engine/form/types/enums'
 import { isExpressionNode } from '@form-engine/core/typeguards/expression-nodes'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { AttachValidationBlockCodeNormalizer } from './AttachValidationBlockCode'
@@ -13,7 +13,7 @@ describe('AttachValidationBlockCodeNormalizer', () => {
 
   const buildValidation = () =>
     ASTTestFactory.expression(ExpressionType.VALIDATION)
-      .withProperty('when', ASTTestFactory.expression(LogicType.TEST).build())
+      .withProperty('when', ASTTestFactory.expression(PredicateType.TEST).build())
       .withProperty('message', 'Required field')
       .build()
 

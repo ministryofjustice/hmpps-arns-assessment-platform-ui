@@ -1,5 +1,4 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
-import { ConditionalASTNode } from '@form-engine/core/types/expressions.type'
 import {
   HybridThunkHandler,
   ThunkInvocationAdapter,
@@ -9,6 +8,8 @@ import {
 import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
 import { evaluateOperand } from '@form-engine/core/ast/thunks/evaluation'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
+
+import { ConditionalASTNode } from '@form-engine/core/types/expressions.type'
 
 /**
  * Handler for Conditional expression nodes (if-then-else logic)

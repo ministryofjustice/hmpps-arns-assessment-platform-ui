@@ -1,5 +1,5 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType, FunctionType, LogicType, TransitionType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, PredicateType, TransitionType } from '@form-engine/form/types/enums'
 import { NodeIDCategory, NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import { SubmitTransition, ValueExpr } from '@form-engine/form/types/expressions.type'
 import { NodeFactory } from '@form-engine/core/ast/nodes/NodeFactory'
@@ -23,7 +23,7 @@ describe('SubmitFactory', () => {
         type: TransitionType.SUBMIT,
         validate: true,
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           negate: false,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'test'] },
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -40,7 +40,7 @@ describe('SubmitFactory', () => {
       expect(result.properties.when).toBeDefined()
 
       const whenNode = result.properties.when
-      expect(whenNode.type).toBe(ASTNodeType.EXPRESSION)
+      expect(whenNode.type).toBe(ASTNodeType.PREDICATE)
     })
 
     it('should create a Submit transition with guards', () => {
@@ -49,7 +49,7 @@ describe('SubmitFactory', () => {
         type: TransitionType.SUBMIT,
         validate: true,
         guards: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           negate: false,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'test'] },
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -63,7 +63,7 @@ describe('SubmitFactory', () => {
       expect(result.properties.guards).toBeDefined()
 
       const guardsNode = result.properties.guards
-      expect(guardsNode.type).toBe(ASTNodeType.EXPRESSION)
+      expect(guardsNode.type).toBe(ASTNodeType.PREDICATE)
     })
 
     it('should set validate to true when explicitly true', () => {

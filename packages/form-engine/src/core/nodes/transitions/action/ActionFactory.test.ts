@@ -1,5 +1,5 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType, FunctionType, LogicType, TransitionType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, PredicateType, TransitionType } from '@form-engine/form/types/enums'
 import { NodeIDCategory, NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import { ActionTransitionASTNode, FunctionASTNode } from '@form-engine/core/types/expressions.type'
 import {
@@ -29,7 +29,7 @@ describe('ActionFactory', () => {
       const json = {
         type: TransitionType.ACTION,
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['post', 'action'] } satisfies ReferenceExpr,
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'Equals', arguments: ['lookup'] as ValueExpr[] },
@@ -50,7 +50,7 @@ describe('ActionFactory', () => {
       expect(result.raw).toBe(json)
 
       expect(result.properties.when).toBeDefined()
-      expect(result.properties.when.type).toBe(ASTNodeType.EXPRESSION)
+      expect(result.properties.when.type).toBe(ASTNodeType.PREDICATE)
 
       expect(result.properties.effects).toHaveLength(2)
 
@@ -68,7 +68,7 @@ describe('ActionFactory', () => {
       const json = {
         type: TransitionType.ACTION,
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['post', 'button'] } satisfies ReferenceExpr,
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'Equals', arguments: ['find-address'] as ValueExpr[] },
@@ -82,7 +82,7 @@ describe('ActionFactory', () => {
       // Assert
       const whenNode = result.properties.when
       expect(whenNode).toHaveProperty('id')
-      expect(whenNode.type).toBe(ASTNodeType.EXPRESSION)
+      expect(whenNode.type).toBe(ASTNodeType.PREDICATE)
     })
 
     it('should transform each effect using nodeFactory', () => {
@@ -101,7 +101,7 @@ describe('ActionFactory', () => {
       const json = {
         type: TransitionType.ACTION,
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['post', 'action'] } satisfies ReferenceExpr,
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'Equals', arguments: ['lookup'] as ValueExpr[] },
@@ -130,7 +130,7 @@ describe('ActionFactory', () => {
       const json = {
         type: TransitionType.ACTION,
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['post', 'action'] } satisfies ReferenceExpr,
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'Equals', arguments: ['noop'] as ValueExpr[] },
@@ -150,7 +150,7 @@ describe('ActionFactory', () => {
       const json = {
         type: TransitionType.ACTION,
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['post', 'action'] } satisfies ReferenceExpr,
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'Equals', arguments: ['test'] as ValueExpr[] },

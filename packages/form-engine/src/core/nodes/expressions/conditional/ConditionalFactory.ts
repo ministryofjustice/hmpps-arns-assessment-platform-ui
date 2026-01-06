@@ -1,10 +1,10 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { LogicType } from '@form-engine/form/types/enums'
-import { ConditionalASTNode } from '@form-engine/core/types/expressions.type'
+import { ExpressionType } from '@form-engine/form/types/enums'
 import { ConditionalExpr } from '@form-engine/form/types/expressions.type'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import { NodeFactory } from '@form-engine/core/ast/nodes/NodeFactory'
+import { ConditionalASTNode } from '@form-engine/core/types/expressions.type'
 
 /**
  * ConditionalFactory: Creates Conditional AST nodes
@@ -36,7 +36,7 @@ export default class ConditionalFactory {
     return {
       id: this.nodeIDGenerator.next(this.category),
       type: ASTNodeType.EXPRESSION,
-      expressionType: LogicType.CONDITIONAL,
+      expressionType: ExpressionType.CONDITIONAL,
       properties: {
         predicate: this.nodeFactory.createNode(json.predicate),
         thenValue: json.thenValue !== undefined ? this.nodeFactory.transformValue(json.thenValue) : true,

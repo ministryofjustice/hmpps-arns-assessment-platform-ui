@@ -18,17 +18,17 @@ import ParamsWiring from '@form-engine/core/nodes/pseudo-nodes/params/ParamsWiri
 import PostWiring from '@form-engine/core/nodes/pseudo-nodes/post/PostWiring'
 import ConditionalWiring from '@form-engine/core/nodes/expressions/conditional/ConditionalWiring'
 import ReferenceWiring from '@form-engine/core/nodes/expressions/reference/ReferenceWiring'
-import AndWiring from '@form-engine/core/nodes/logic/and/AndWiring'
-import OrWiring from '@form-engine/core/nodes/logic/or/OrWiring'
-import XorWiring from '@form-engine/core/nodes/logic/xor/XorWiring'
-import NotWiring from '@form-engine/core/nodes/logic/not/NotWiring'
+import AndWiring from '@form-engine/core/nodes/predicates/and/AndWiring'
+import OrWiring from '@form-engine/core/nodes/predicates/or/OrWiring'
+import XorWiring from '@form-engine/core/nodes/predicates/xor/XorWiring'
+import NotWiring from '@form-engine/core/nodes/predicates/not/NotWiring'
 import PipelineWiring from '@form-engine/core/nodes/expressions/pipeline/PipelineWiring'
 import FunctionWiring from '@form-engine/core/nodes/expressions/function/FunctionWiring'
 import ValidationWiring from '@form-engine/core/nodes/expressions/validation/ValidationWiring'
 import NextWiring from '@form-engine/core/nodes/expressions/next/NextWiring'
 import FormatWiring from '@form-engine/core/nodes/expressions/format/FormatWiring'
 import IterateWiring from '@form-engine/core/nodes/expressions/iterate/IterateWiring'
-import TestWiring from '@form-engine/core/nodes/logic/test/TestWiring'
+import TestWiring from '@form-engine/core/nodes/predicates/test/TestWiring'
 import { CompilationDependencies } from '@form-engine/core/ast/compilation/CompilationDependencies'
 import { NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
 import LoadWiring from '@form-engine/core/nodes/transitions/load/LoadWiring'
@@ -177,13 +177,15 @@ export class NodeCompilationPipeline {
     new ActionWiring(wiringContext).wire()
     new SubmitWiring(wiringContext).wire()
 
-    // All expression wiring (no step-scope dependencies)
-    new ConditionalWiring(wiringContext).wire()
+    // All predicate wiring
     new TestWiring(wiringContext).wire()
     new AndWiring(wiringContext).wire()
     new OrWiring(wiringContext).wire()
     new XorWiring(wiringContext).wire()
     new NotWiring(wiringContext).wire()
+
+    // All expression wiring
+    new ConditionalWiring(wiringContext).wire()
     new ReferenceWiring(wiringContext).wire()
     new PipelineWiring(wiringContext).wire()
     new FunctionWiring(wiringContext).wire()
@@ -259,13 +261,15 @@ export class NodeCompilationPipeline {
     new ParamsWiring(wiringContext).wireNodes(nodeIds)
     new PostWiring(wiringContext).wireNodes(nodeIds)
 
-    // Wire expression nodes
-    new ConditionalWiring(wiringContext).wireNodes(nodeIds)
+    // Wire predicate nodes
     new TestWiring(wiringContext).wireNodes(nodeIds)
     new AndWiring(wiringContext).wireNodes(nodeIds)
     new OrWiring(wiringContext).wireNodes(nodeIds)
     new XorWiring(wiringContext).wireNodes(nodeIds)
     new NotWiring(wiringContext).wireNodes(nodeIds)
+
+    // Wire expression nodes
+    new ConditionalWiring(wiringContext).wireNodes(nodeIds)
     new ReferenceWiring(wiringContext).wireNodes(nodeIds)
     new PipelineWiring(wiringContext).wireNodes(nodeIds)
     new FunctionWiring(wiringContext).wireNodes(nodeIds)

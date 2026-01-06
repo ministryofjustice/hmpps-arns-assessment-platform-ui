@@ -1,6 +1,6 @@
 import { when } from 'jest-when'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
-import { TransitionType, FunctionType, LogicType } from '@form-engine/form/types/enums'
+import { TransitionType, FunctionType, PredicateType } from '@form-engine/form/types/enums'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { ActionTransitionASTNode } from '@form-engine/core/types/expressions.type'
 import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
@@ -34,7 +34,7 @@ describe('ActionWiring', () => {
   describe('wire()', () => {
     it('should add action transition nodes to the graph', () => {
       // Arrange
-      const whenPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+      const whenPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['post', 'action']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', ['lookup']),
         negate: false,
@@ -58,7 +58,7 @@ describe('ActionWiring', () => {
 
     it('should wire when predicate to transition', () => {
       // Arrange
-      const whenPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+      const whenPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['post', 'button']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', ['find-address']),
         negate: false,
@@ -84,7 +84,7 @@ describe('ActionWiring', () => {
 
     it('should wire effects to transition', () => {
       // Arrange
-      const whenPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+      const whenPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['post', 'action']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', ['lookup']),
         negate: false,
@@ -118,13 +118,13 @@ describe('ActionWiring', () => {
 
     it('should wire multiple action transitions independently', () => {
       // Arrange
-      const whenPredicate1 = ASTTestFactory.predicate(LogicType.TEST, {
+      const whenPredicate1 = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['post', 'action']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', ['lookup']),
         negate: false,
       })
 
-      const whenPredicate2 = ASTTestFactory.predicate(LogicType.TEST, {
+      const whenPredicate2 = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['post', 'action']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', ['add-item']),
         negate: false,
@@ -161,7 +161,7 @@ describe('ActionWiring', () => {
 
     it('should handle action transition with empty effects array', () => {
       // Arrange
-      const whenPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+      const whenPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['post', 'action']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', ['noop']),
         negate: false,

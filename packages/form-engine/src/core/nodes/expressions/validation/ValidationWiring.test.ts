@@ -1,6 +1,6 @@
 import { when } from 'jest-when'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
-import { LogicType, ExpressionType } from '@form-engine/form/types/enums'
+import { PredicateType, ExpressionType } from '@form-engine/form/types/enums'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { ValidationASTNode } from '@form-engine/core/types/expressions.type'
 import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
@@ -34,7 +34,7 @@ describe('ValidationWiring', () => {
   describe('wire', () => {
     it('should wire `when` to validation node', () => {
       // Arrange
-      const whenNode = ASTTestFactory.expression(LogicType.TEST).build()
+      const whenNode = ASTTestFactory.expression(PredicateType.TEST).build()
 
       const validationNode = ASTTestFactory.expression<ValidationASTNode>(ExpressionType.VALIDATION)
         .withProperty('when', whenNode)

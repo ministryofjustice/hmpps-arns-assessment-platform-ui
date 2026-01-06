@@ -1,5 +1,5 @@
 import { AccessTransitionASTNode } from '@form-engine/core/types/expressions.type'
-import { TransitionType, LogicType, FunctionType, ExpressionType } from '@form-engine/form/types/enums'
+import { TransitionType, PredicateType, FunctionType, ExpressionType } from '@form-engine/form/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { createMockContext, createMockInvoker } from '@form-engine/test-utils/thunkTestHelpers'
 import AccessHandler from './AccessHandler'
@@ -32,7 +32,7 @@ describe('AccessHandler', () => {
       it('should return passed: false when guards predicate evaluates to true (denial matched)', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isAuthenticated', [])
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'user']),
           condition,
           negate: false,
@@ -59,7 +59,7 @@ describe('AccessHandler', () => {
       it('should return passed: true when guards predicate evaluates to false (no denial)', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isAuthenticated', [])
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'user']),
           condition,
           negate: false,
@@ -84,7 +84,7 @@ describe('AccessHandler', () => {
       it('should return passed: true when guards predicate evaluation errors (fail open)', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'checkAccess', [])
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'user']),
           condition,
           negate: false,
@@ -115,7 +115,7 @@ describe('AccessHandler', () => {
       it('should evaluate redirect when guards match denial condition', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isAuthenticated', [])
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'user']),
           condition,
           negate: false,
@@ -158,14 +158,14 @@ describe('AccessHandler', () => {
       it('should return first matching redirect from multiple redirect expressions', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isAuthenticated', [])
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'user']),
           condition,
           negate: false,
         })
 
         const redirect1 = ASTTestFactory.expression(ExpressionType.NEXT)
-          .withProperty('when', ASTTestFactory.predicate(LogicType.TEST, {}))
+          .withProperty('when', ASTTestFactory.predicate(PredicateType.TEST, {}))
           .withProperty('goto', '/conditional-redirect')
           .build()
 
@@ -209,7 +209,7 @@ describe('AccessHandler', () => {
       it('should return undefined redirect when no redirect expressions defined', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isAuthenticated', [])
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'user']),
           condition,
           negate: false,
@@ -237,7 +237,7 @@ describe('AccessHandler', () => {
       it('should return status and static message when guards match denial', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'itemExists', [])
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'item']),
           condition,
           negate: false,
@@ -267,7 +267,7 @@ describe('AccessHandler', () => {
       it('should return status and evaluated message expression when guards match denial', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'canEdit', [])
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'permissions']),
           condition,
           negate: false,
@@ -314,7 +314,7 @@ describe('AccessHandler', () => {
       it('should not return status/message when guards do not match denial', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'itemExists', [])
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'item']),
           condition,
           negate: false,
@@ -343,7 +343,7 @@ describe('AccessHandler', () => {
       it('should return undefined message when message expression evaluation errors', async () => {
         // Arrange
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'itemExists', [])
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'item']),
           condition,
           negate: false,
@@ -388,7 +388,7 @@ describe('AccessHandler', () => {
         // Arrange
         const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'logAccessAttempt', [])
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isAuthenticated', [])
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'user']),
           condition,
           negate: false,
@@ -436,7 +436,7 @@ describe('AccessHandler', () => {
         // Arrange
         const effect = ASTTestFactory.functionExpression(FunctionType.EFFECT, 'logAccessAttempt', [])
         const condition = ASTTestFactory.functionExpression(FunctionType.CONDITION, 'isAuthenticated', [])
-        const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+        const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
           subject: ASTTestFactory.reference(['data', 'user']),
           condition,
           negate: false,

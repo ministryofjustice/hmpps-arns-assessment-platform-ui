@@ -1,6 +1,6 @@
 import { when } from 'jest-when'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
-import { TransitionType, FunctionType, LogicType, ExpressionType } from '@form-engine/form/types/enums'
+import { TransitionType, FunctionType, PredicateType, ExpressionType } from '@form-engine/form/types/enums'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { AccessTransitionASTNode } from '@form-engine/core/types/expressions.type'
 import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
@@ -34,7 +34,7 @@ describe('AccessWiring', () => {
   describe('wire()', () => {
     it('should add access transition nodes to the graph', () => {
       // Arrange
-      const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+      const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['data', 'isAuthorized']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', [false]),
         negate: false,
@@ -57,7 +57,7 @@ describe('AccessWiring', () => {
 
     it('should wire guards predicate to transition', () => {
       // Arrange
-      const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+      const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['data', 'hasPermission']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', [false]),
         negate: false,
@@ -109,7 +109,7 @@ describe('AccessWiring', () => {
 
     it('should wire redirect expressions to transition', () => {
       // Arrange
-      const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+      const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['data', 'isBlocked']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', [true]),
         negate: false,
@@ -147,7 +147,7 @@ describe('AccessWiring', () => {
 
     it('should wire message expression to transition for error responses', () => {
       // Arrange
-      const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+      const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['data', 'notFound']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', [true]),
         negate: false,
@@ -178,7 +178,7 @@ describe('AccessWiring', () => {
 
     it('should not wire message when it is a static string', () => {
       // Arrange
-      const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+      const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['data', 'forbidden']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', [true]),
         negate: false,
@@ -204,13 +204,13 @@ describe('AccessWiring', () => {
 
     it('should wire multiple access transitions independently', () => {
       // Arrange
-      const guards1 = ASTTestFactory.predicate(LogicType.TEST, {
+      const guards1 = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['data', 'isAdmin']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', [false]),
         negate: false,
       })
 
-      const guards2 = ASTTestFactory.predicate(LogicType.TEST, {
+      const guards2 = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['data', 'isVerified']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', [false]),
         negate: false,
@@ -245,7 +245,7 @@ describe('AccessWiring', () => {
 
     it('should handle access transition with empty effects array', () => {
       // Arrange
-      const guardsPredicate = ASTTestFactory.predicate(LogicType.TEST, {
+      const guardsPredicate = ASTTestFactory.predicate(PredicateType.TEST, {
         subject: ASTTestFactory.reference(['data', 'isBlocked']),
         condition: ASTTestFactory.functionExpression(FunctionType.CONDITION, 'Equals', [true]),
         negate: false,

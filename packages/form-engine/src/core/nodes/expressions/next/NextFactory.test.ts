@@ -1,5 +1,5 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType, FunctionType, LogicType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, PredicateType } from '@form-engine/form/types/enums'
 import type {
   ConditionFunctionExpr,
   NextExpr,
@@ -11,6 +11,7 @@ import { NodeIDCategory, NodeIDGenerator } from '@form-engine/core/ast/nodes/Nod
 import { NodeFactory } from '@form-engine/core/ast/nodes/NodeFactory'
 import { ASTNode } from '@form-engine/core/types/engine.type'
 import { ExpressionASTNode } from '@form-engine/core/types/expressions.type'
+import { PredicateASTNode } from '@form-engine/core/types/predicates.type'
 import NextFactory from './NextFactory'
 
 describe('NextFactory', () => {
@@ -71,7 +72,7 @@ describe('NextFactory', () => {
         type: ExpressionType.NEXT,
         goto: 'step-3',
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'field'] } satisfies ReferenceExpr,
           negate: false,
           condition: {
@@ -89,8 +90,8 @@ describe('NextFactory', () => {
       expect(result.id).toBeDefined()
       expect(result.properties.goto).toBe('step-3')
       expect(result.properties.when).toBeDefined()
-      expect(result.properties.when!.type).toBe(ASTNodeType.EXPRESSION)
-      expect((result.properties.when! as ExpressionASTNode).expressionType).toBe(LogicType.TEST)
+      expect(result.properties.when!.type).toBe(ASTNodeType.PREDICATE)
+      expect((result.properties.when! as PredicateASTNode).predicateType).toBe(PredicateType.TEST)
     })
 
     it('should create a Next expression with both dynamic goto and when condition', () => {
@@ -99,7 +100,7 @@ describe('NextFactory', () => {
         type: ExpressionType.NEXT,
         goto: { type: ExpressionType.REFERENCE, path: ['data', 'dynamicStep'] } satisfies ReferenceExpr,
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'condition'] } satisfies ReferenceExpr,
           negate: false,
           condition: {
@@ -117,7 +118,7 @@ describe('NextFactory', () => {
       expect(result.properties.goto).toHaveProperty('id')
       expect((result.properties.goto as ASTNode).type).toBe(ASTNodeType.EXPRESSION)
       expect(result.properties.when).toBeDefined()
-      expect(result.properties.when!.type).toBe(ASTNodeType.EXPRESSION)
+      expect(result.properties.when!.type).toBe(ASTNodeType.PREDICATE)
     })
 
     it('should generate unique node IDs', () => {

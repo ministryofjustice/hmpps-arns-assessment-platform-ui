@@ -1,5 +1,5 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType, FunctionType, LogicType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, PredicateType } from '@form-engine/form/types/enums'
 import type {
   ConditionFunctionExpr,
   PredicateTestExpr,
@@ -29,7 +29,7 @@ describe('ValidationFactory', () => {
         type: ExpressionType.VALIDATION,
         message: 'Field is required',
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'test'] },
           negate: false,
           condition: { type: FunctionType.CONDITION, name: 'IsTrue', arguments: [] as ValueExpr[] },
@@ -52,7 +52,7 @@ describe('ValidationFactory', () => {
     it('should create a Validation expression with when condition', () => {
       // Arrange
       const whenCondition = {
-        type: LogicType.TEST,
+        type: PredicateType.TEST,
         subject: { type: ExpressionType.REFERENCE, path: ['answers', 'field'] } satisfies ReferenceExpr,
         negate: false,
         condition: {
@@ -74,7 +74,7 @@ describe('ValidationFactory', () => {
 
       // Assert
       expect(result.id).toBeDefined()
-      expect(when.type).toBe(ASTNodeType.EXPRESSION)
+      expect(when.type).toBe(ASTNodeType.PREDICATE)
       expect(result.properties.when !== undefined).toBe(true)
     })
 
@@ -84,7 +84,7 @@ describe('ValidationFactory', () => {
         type: ExpressionType.VALIDATION,
         message: 'Error',
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'test'] } satisfies ReferenceExpr,
           negate: false,
           condition: {
@@ -110,7 +110,7 @@ describe('ValidationFactory', () => {
         type: ExpressionType.VALIDATION,
         message: 'Error',
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'test'] } satisfies ReferenceExpr,
           negate: false,
           condition: {
@@ -136,7 +136,7 @@ describe('ValidationFactory', () => {
         type: ExpressionType.VALIDATION,
         message: 'Error',
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'test'] } satisfies ReferenceExpr,
           negate: false,
           condition: {
@@ -160,7 +160,7 @@ describe('ValidationFactory', () => {
         type: ExpressionType.VALIDATION,
         message: 'Error',
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'test'] } satisfies ReferenceExpr,
           negate: false,
           condition: {
@@ -189,7 +189,7 @@ describe('ValidationFactory', () => {
         type: ExpressionType.VALIDATION,
         message: 'Error',
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'test'] } satisfies ReferenceExpr,
           negate: false,
           condition: {
@@ -213,7 +213,7 @@ describe('ValidationFactory', () => {
         type: ExpressionType.VALIDATION,
         message: '',
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'test'] } satisfies ReferenceExpr,
           negate: false,
           condition: {
@@ -236,7 +236,7 @@ describe('ValidationFactory', () => {
       const json = {
         type: ExpressionType.VALIDATION,
         when: {
-          type: LogicType.TEST,
+          type: PredicateType.TEST,
           subject: { type: ExpressionType.REFERENCE, path: ['answers', 'field'] } satisfies ReferenceExpr,
           negate: false,
           condition: {

@@ -1,4 +1,4 @@
-import { ExpressionType, LogicType } from '@form-engine/form/types/enums'
+import { ExpressionType, PredicateType } from '@form-engine/form/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import {
   createMockContext,
@@ -18,7 +18,7 @@ describe('ValidationHandler', () => {
   describe('evaluate', () => {
     it('should return passed false when predicate is truthy', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const validation = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
         .withProperty('message', 'Field is required')
@@ -37,7 +37,7 @@ describe('ValidationHandler', () => {
 
     it('should return passed true when predicate is falsy', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const validation = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
         .withProperty('message', 'Field is required')
@@ -56,7 +56,7 @@ describe('ValidationHandler', () => {
 
     it('should evaluate message when it is an AST node', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const messageNode = ASTTestFactory.reference(['data', 'errorMessage'])
       const validation = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
@@ -79,7 +79,7 @@ describe('ValidationHandler', () => {
 
     it('should pass through submissionOnly flag', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const validation = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
         .withProperty('message', 'Field is required')
@@ -98,7 +98,7 @@ describe('ValidationHandler', () => {
 
     it('should default submissionOnly to false when not specified', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const validation = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
         .withProperty('message', 'Field is required')
@@ -116,7 +116,7 @@ describe('ValidationHandler', () => {
 
     it('should pass through details object', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const details = { minLength: 5, maxLength: 100 }
       const validation = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
@@ -136,7 +136,7 @@ describe('ValidationHandler', () => {
 
     it('should return passed false with user message when predicate evaluation fails', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const validation = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
         .withProperty('message', 'Field is required')
@@ -155,7 +155,7 @@ describe('ValidationHandler', () => {
 
     it('should return empty string when message evaluation fails', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const messageNode = ASTTestFactory.reference(['data', 'missing'])
       const validation = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
@@ -197,7 +197,7 @@ describe('ValidationHandler', () => {
 
     it('should handle null as falsy predicate value', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const validation = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
         .withProperty('message', 'Field is required')
@@ -215,7 +215,7 @@ describe('ValidationHandler', () => {
 
     it('should handle empty string as falsy predicate value', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const validation = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
         .withProperty('message', 'Field is required')
@@ -233,7 +233,7 @@ describe('ValidationHandler', () => {
 
     it('should handle numeric truthy predicate value', async () => {
       // Arrange
-      const predicateNode = ASTTestFactory.predicate(LogicType.TEST)
+      const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
       const validation = ASTTestFactory.expression(ExpressionType.VALIDATION)
         .withProperty('when', predicateNode)
         .withProperty('message', 'Field is required')
