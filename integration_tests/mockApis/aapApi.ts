@@ -54,8 +54,6 @@ export const createTestAssessment = (overrides: Partial<TestAssessment> = {}): T
   properties: {
     AGREEMENT_STATUS: { type: 'Single', value: 'DRAFT' },
   },
-  // Include a GOALS collection with one goal so that add-steps page can find the goal
-  // The UUID 'test-item-uuid' matches what the command mock returns for collectionItemUuid
   collections: [
     {
       uuid: 'test-collection-uuid',

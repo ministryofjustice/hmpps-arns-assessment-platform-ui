@@ -29,9 +29,7 @@ export default class CreateGoalPage extends AbstractPage {
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
-
     this.goalTitleInput = page.getByRole('combobox', { name: /what goal should.*try to achieve/i })
-
     this.isRelatedYes = page
       .getByRole('group', { name: /related to any other area/i })
       .getByRole('radio', { name: 'Yes' })
@@ -39,7 +37,6 @@ export default class CreateGoalPage extends AbstractPage {
       .getByRole('group', { name: /related to any other area/i })
       .getByRole('radio', { name: 'No' })
     this.relatedAreasCheckboxes = page.locator('[name="related_areas_of_need"]')
-    // Radio buttons for "Can start working on this goal now?"
     this.canStartNowYes = page
       .getByRole('group', { name: /can.*start working on this goal/i })
       .getByRole('radio', { name: 'Yes' })
@@ -95,9 +92,5 @@ export default class CreateGoalPage extends AbstractPage {
 
   async clickSaveWithoutSteps(): Promise<void> {
     await this.saveWithoutStepsButton.click()
-  }
-
-  async selectAreaOfNeed(areaSlug: string): Promise<void> {
-    await this.areaOfNeedNav.getByRole('link', { name: new RegExp(areaSlug, 'i') }).click()
   }
 }

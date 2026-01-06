@@ -13,7 +13,6 @@ import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
  */
 test.describe('Create Goal Journey', () => {
   test.beforeEach(async () => {
-    // Set up all API stubs BEFORE any navigation
     await aapApi.stubSentencePlanApis()
   })
 
@@ -28,11 +27,9 @@ test.describe('Create Goal Journey', () => {
       await loginAndNavigateToPlan(page)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
-      // Click create goal
       await planOverviewPage.clickCreateGoal()
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
 
-      // Fill in goal details
       await createGoalPage.enterGoalTitle('Find stable accommodation')
       await createGoalPage.selectIsRelated(false)
       await createGoalPage.selectCanStartNow(true)
