@@ -1,7 +1,7 @@
 import { and, Data, Format, Item, or, Query, when } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { MOJSubNavigation } from '@form-engine-moj-components/components'
+import { MOJAlert, MOJSubNavigation } from '@form-engine-moj-components/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
@@ -103,6 +103,22 @@ export const subNavigation = MOJSubNavigation({
         .else(false),
     },
   ],
+})
+
+/**
+ * Notification banners - renders any flash notifications from session using MOJ Alert
+ */
+export const notificationBanners = CollectionBlock({
+  collection: Data('notifications').each(
+    Iterator.Map(
+      MOJAlert({
+        alertVariant: Item().path('type'),
+        title: Item().path('title'),
+        text: Item().path('message'),
+        showTitleAsHeading: true,
+      }),
+    ),
+  ),
 })
 
 /**
