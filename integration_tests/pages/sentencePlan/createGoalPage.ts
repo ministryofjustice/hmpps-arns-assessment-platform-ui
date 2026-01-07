@@ -47,7 +47,7 @@ export default class CreateGoalPage extends AbstractPage {
     this.customTargetDateInput = page.locator('#custom_target_date')
     this.addStepsButton = page.getByRole('button', { name: /add steps/i })
     this.saveWithoutStepsButton = page.getByRole('button', { name: /save without steps/i })
-    this.areaOfNeedNav = page.locator('.moj-side-navigation')
+    this.areaOfNeedNav = page.locator('[data-qa="area-of-need-nav"]')
   }
 
   static async verifyOnPage(page: Page): Promise<CreateGoalPage> {

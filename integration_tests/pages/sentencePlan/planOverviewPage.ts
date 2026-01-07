@@ -19,9 +19,9 @@ export default class PlanOverviewPage extends AbstractPage {
     this.pageHeading = page.locator('h1')
     this.createGoalLink = page.getByRole('link', { name: /create a goal/i })
     this.createGoalButton = page.getByRole('button', { name: /create goal/i })
-    this.currentGoalsSection = page.locator('[data-qa="current-goals"]')
-    this.futureGoalsSection = page.locator('[data-qa="future-goals"]')
-    this.goalCards = page.locator('.goal-summary-card')
+    this.currentGoalsSection = page.getByRole(`region`, { name: /Goals to work on now/i })
+    this.futureGoalsSection = page.getByRole(`region`, { name: /Future goals/i })
+    this.goalCards = page.locator('[data-qa="goal-summary-card"]')
   }
 
   static async verifyOnPage(page: Page): Promise<PlanOverviewPage> {

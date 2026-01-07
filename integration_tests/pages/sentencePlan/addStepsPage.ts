@@ -13,7 +13,7 @@ export default class AddStepsPage extends AbstractPage {
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
-    this.stepRows = page.locator('.step-row, [data-qa="step-row"]')
+    this.stepRows = page.locator('[data-qa="step-row"]')
     this.addStepButton = page.getByRole('button', { name: /add another step/i })
     this.saveAndContinueButton = page.getByRole('button', { name: /save and continue/i })
   }
