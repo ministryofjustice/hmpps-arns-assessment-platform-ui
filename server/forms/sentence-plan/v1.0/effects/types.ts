@@ -92,6 +92,21 @@ export interface PlanAgreementProperties {
 }
 
 /**
+ * Alert variant types matching MOJ Alert component
+ */
+export type NotificationType = 'information' | 'success' | 'warning' | 'error'
+
+/**
+ * Notification structure stored in session
+ */
+export interface PlanNotification {
+  type: NotificationType
+  title?: string
+  message: string
+  target: string
+}
+
+/**
  * Step data structure stored in session during step editing
  */
 export interface StepSession {
@@ -181,6 +196,7 @@ export interface SentencePlanSession {
   assessmentUuid?: string
   accessType?: 'mpop' | 'oasys'
   stepChanges?: StepChangesStorage
+  notifications?: PlanNotification[]
 }
 
 /**

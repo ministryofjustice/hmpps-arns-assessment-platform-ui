@@ -18,6 +18,8 @@ import { loadActiveGoalForEdit } from './goals/loadActiveGoalForEdit'
 import { updateActiveGoal } from './goals/updateActiveGoal'
 import { deleteActiveGoal } from './goals/deleteActiveGoal'
 import { updatePlanAgreementStatus } from './updatePlanAgreementStatus'
+import { addNotification } from './notifications/addNotification'
+import { loadNotifications } from './notifications/loadNotifications'
 
 /**
  * Dependencies for sentence plan effects
@@ -48,6 +50,10 @@ export const { effects: SentencePlanV1Effects, createRegistry: SentencePlanV1Reg
   defineVersionedEffects<SentencePlanEffectsDeps>('SentencePlan.V1')({
     // Access
     setSessionAccessType,
+
+    // Notifications
+    addNotification,
+    loadNotifications,
 
     // Assessment
     loadPersonByCrn,
