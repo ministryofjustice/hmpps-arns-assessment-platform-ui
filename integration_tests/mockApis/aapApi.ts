@@ -53,6 +53,9 @@ export interface TestPerson {
   location?: string
 }
 
+/**
+ * Default test person with standard values
+ */
 export const defaultTestPerson: TestPerson = {
   crn: 'X123456',
   forename: 'John',
@@ -65,6 +68,9 @@ export const defaultTestPerson: TestPerson = {
   location: 'Office',
 }
 
+/**
+ * Create a test assessment with default values
+ */
 export const createTestAssessment = (overrides: Partial<TestAssessment> = {}): TestAssessment => ({
   assessmentUuid: 'test-assessment-uuid',
   assessmentType: 'SENTENCE_PLAN',
