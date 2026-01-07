@@ -61,7 +61,7 @@
 {%- if params.errorMessage %}{% set cardClasses = cardClasses + " goal-summary-card--error" %}{% endif -%}
 {%- if params.classes %}{% set cardClasses = cardClasses + " " + params.classes %}{% endif -%}
 
-<div class="{{ cardClasses }}"{% if params.index is defined %} id="goal-summary-card-{{ params.index }}"{% endif %}>
+<div class="{{ cardClasses }}" data-qa="goal-summary-card"{% if params.index is defined %} id="goal-summary-card-{{ params.index }}"{% endif %}>
 
   {#- Error message -#}
   {% if params.errorMessage %}

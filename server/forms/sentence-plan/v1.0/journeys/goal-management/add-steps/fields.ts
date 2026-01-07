@@ -50,7 +50,7 @@ export const stepRows = CollectionBlock({
     Iterator.Map(
       TemplateWrapper({
         template: `
-          <div class="govuk-grid-row step-row">
+          <div class="govuk-grid-row step-row" data-qa="step-row">
             <div class="govuk-grid-column-one-quarter">
               {{slot:actorField}}
             </div>
