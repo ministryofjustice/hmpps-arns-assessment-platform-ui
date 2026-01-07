@@ -22,6 +22,25 @@ export interface TestCollectionItem {
   answers: Record<string, { type: string; value: unknown }>
 }
 
+export type GoalStatus = 'ACTIVE' | 'FUTURE' | 'ACHIEVED' | 'REMOVED'
+
+export interface TestStep {
+  uuid?: string
+  actor: string
+  description: string
+  status?: string
+}
+
+export interface TestGoal {
+  uuid?: string
+  title: string
+  status: GoalStatus
+  areaOfNeed?: string
+  relatedAreasOfNeed?: string[]
+  targetDate?: string | null
+  steps?: TestStep[]
+}
+
 export interface TestPerson {
   crn: string
   forename: string
@@ -77,6 +96,120 @@ export const createTestAssessment = (overrides: Partial<TestAssessment> = {}): T
   ],
   ...overrides,
 })
+
+/**
+ * Create a test step for use in goals
+ */
+export const createTestStep = (step: TestStep, index: number): TestCollectionItem => ({
+  uuid: step.uuid || `test-step-uuid-${index}`,
+  properties: {
+    status: { type: 'Single', value: step.status || 'NOT_STARTED' },
+    status_date: { type: 'Single', value: new Date().toISOString() },
+  },
+  answers: {
+    actor: { type: 'Single', value: step.actor },
+    description: { type: 'Single', value: step.description },
+  },
+})
+
+/**
+ * Create a test goal collection item
+ */
+export const createTestGoal = (goal: TestGoal, index: number): TestCollectionItem => ({
+  uuid: goal.uuid || `test-goal-uuid-${index}`,
+  properties: {
+    status: { type: 'Single', value: goal.status },
+    status_date: { type: 'Single', value: new Date().toISOString() },
+  },
+  answers: {
+    title: { type: 'Single', value: goal.title },
+    area_of_need: { type: 'Single', value: goal.areaOfNeed || 'accommodation' },
+    related_areas_of_need: { type: 'Array', value: goal.relatedAreasOfNeed || [] },
+    target_date: { type: 'Single', value: goal.targetDate || null },
+  },
+})
+
+/**
+ * Create an assessment with specific goals
+ */
+export const createAssessmentWithGoals = (goals: TestGoal[]): TestAssessment => {
+  const goalItems = goals.map((goal, index) => {
+    const goalItem = createTestGoal(goal, index)
+
+    if (goal.steps && goal.steps.length > 0) {
+      const stepsCollection: TestCollection = {
+        uuid: `steps-collection-${index}`,
+        name: 'STEPS',
+        items: goal.steps.map((step, stepIndex) => createTestStep(step, stepIndex)),
+      }
+      return {
+        ...goalItem,
+        collections: [stepsCollection],
+      }
+    }
+
+    return goalItem
+  })
+
+  return createTestAssessment({
+    collections: [
+      {
+        uuid: 'test-collection-uuid',
+        name: 'GOALS',
+        items: goalItems,
+      },
+    ],
+  })
+}
+
+/**
+ * Create an assessment with no goals (empty state)
+ */
+export const createEmptyAssessment = (): TestAssessment =>
+  createTestAssessment({
+    collections: [
+      {
+        uuid: 'test-collection-uuid',
+        name: 'GOALS',
+        items: [],
+      },
+    ],
+  })
+
+/**
+ * Create an assessment with only current (ACTIVE) goals
+ */
+export const createAssessmentWithCurrentGoals = (count: number = 1): TestAssessment => {
+  const goals: TestGoal[] = Array.from({ length: count }, (_, i) => ({
+    title: `Current Goal ${i + 1}`,
+    status: 'ACTIVE' as GoalStatus,
+    areaOfNeed: 'accommodation',
+    targetDate: '2025-06-01',
+  }))
+  return createAssessmentWithGoals(goals)
+}
+
+/**
+ * Create an assessment with only future goals
+ */
+export const createAssessmentWithFutureGoals = (count: number = 1): TestAssessment => {
+  const goals: TestGoal[] = Array.from({ length: count }, (_, i) => ({
+    title: `Future Goal ${i + 1}`,
+    status: 'FUTURE' as GoalStatus,
+    areaOfNeed: 'employment-and-education',
+  }))
+  return createAssessmentWithGoals(goals)
+}
+
+/**
+ * Create an assessment with both current and future goals
+ */
+export const createAssessmentWithMixedGoals = (): TestAssessment =>
+  createAssessmentWithGoals([
+    { title: 'Find stable housing', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+    { title: 'Get a job', status: 'ACTIVE', areaOfNeed: 'employment-and-education', targetDate: '2025-09-01' },
+    { title: 'Improve finances', status: 'FUTURE', areaOfNeed: 'finances' },
+  ])
 
 export default {
   stubPing: (httpStatus = 200): SuperAgentRequest =>
