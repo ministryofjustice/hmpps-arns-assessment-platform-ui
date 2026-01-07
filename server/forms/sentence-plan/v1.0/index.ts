@@ -17,14 +17,18 @@ export const sentencePlanV1Journey = journey({
     template: 'sentence-plan/views/sentence-plan-step',
     locals: {
       hmppsHeaderServiceNameLink: '/forms/sentence-plan/v1.0/plan/overview',
-      showPlanHistoryTab: Data('assessment.properties.AGREEMENT_STATUS.value').match(
+      showPlanHistoryTab: Data('latestAgreementStatus').match(
         Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
       ),
     },
   },
   onLoad: [
     loadTransition({
-      effects: [SentencePlanV1Effects.loadPersonByCrn(), SentencePlanV1Effects.loadPlanFromSession()],
+      effects: [
+        SentencePlanV1Effects.loadPersonByCrn(),
+        SentencePlanV1Effects.loadPlanFromSession(),
+        SentencePlanV1Effects.derivePlanAgreementsFromAssessment(),
+      ],
     }),
   ],
   data: {

@@ -7,6 +7,7 @@ import { loadPlanFromSession } from './loadPlanFromSession'
 import { saveActiveGoal } from './goals/saveActiveGoal'
 import { deriveGoalCurrentAreaOfNeed } from './deriveGoalCurrentAreaOfNeed'
 import { deriveGoalsWithStepsFromAssessment } from './deriveGoalsWithStepsFromAssessment'
+import { derivePlanAgreementsFromAssessment } from './derivePlanAgreementsFromAssessment'
 import { setActiveGoalContext } from './goals/setActiveGoalContext'
 import { initializeStepEditSession } from './steps/initializeStepEditSession'
 import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
@@ -16,6 +17,7 @@ import { setSessionAccessType } from './setSessionAccessType'
 import { loadActiveGoalForEdit } from './goals/loadActiveGoalForEdit'
 import { updateActiveGoal } from './goals/updateActiveGoal'
 import { deleteActiveGoal } from './goals/deleteActiveGoal'
+import { updatePlanAgreementStatus } from './updatePlanAgreementStatus'
 
 /**
  * Dependencies for sentence plan effects
@@ -53,6 +55,10 @@ export const { effects: SentencePlanV1Effects, createRegistry: SentencePlanV1Reg
     loadOrCreatePlanByOasys,
     loadPlanFromSession,
     deriveGoalsWithStepsFromAssessment,
+    derivePlanAgreementsFromAssessment,
+
+    // Plan Agreement
+    updatePlanAgreementStatus,
 
     // Goals
     saveActiveGoal,

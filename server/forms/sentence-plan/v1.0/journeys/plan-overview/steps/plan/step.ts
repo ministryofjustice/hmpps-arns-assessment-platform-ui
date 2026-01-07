@@ -1,6 +1,14 @@
 import { Format, Data, step, accessTransition, Query, next, loadTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import { blankPlanOverviewContent, futureGoalsContent, goalsSection, subNavigation } from './fields'
+import {
+  blankPlanOverviewContent,
+  futureGoalsContent,
+  goalsSection,
+  planCreatedMessage,
+  subNavigation,
+  noActiveGoalsErrorMessage,
+  noStepsErrorMessage,
+} from './fields'
 import { SentencePlanV1Effects } from '../../../../effects'
 import { CaseData } from '../../../../constants'
 
@@ -13,14 +21,22 @@ export const planStep = step({
       buttons: {
         showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('handover')),
         showCreateGoalButton: true,
-        showAgreePlanButton: Data('assessment.properties.AGREEMENT_STATUS.value').not.match(
+        showAgreePlanButton: Data('latestAgreementStatus').not.match(
           Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
         ),
       },
     },
   },
   isEntryPoint: true,
-  blocks: [subNavigation, goalsSection, blankPlanOverviewContent, futureGoalsContent],
+  blocks: [
+    noActiveGoalsErrorMessage,
+    noStepsErrorMessage,
+    planCreatedMessage,
+    subNavigation,
+    goalsSection,
+    blankPlanOverviewContent,
+    futureGoalsContent,
+  ],
   onAccess: [
     accessTransition({
       guards: Query('type').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
@@ -29,7 +45,10 @@ export const planStep = step({
   ],
   onLoad: [
     loadTransition({
-      effects: [SentencePlanV1Effects.deriveGoalsWithStepsFromAssessment()],
+      effects: [
+        SentencePlanV1Effects.deriveGoalsWithStepsFromAssessment(),
+        SentencePlanV1Effects.derivePlanAgreementsFromAssessment(),
+      ],
     }),
   ],
 })

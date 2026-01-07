@@ -14,7 +14,7 @@
 
   {% set buttonItems = [] %}
 
-  {#  TODO: Add real links for 'Return to OASys' and 'Agree plan'#}
+  {#  TODO: Add real links for 'Return to OASys' #}
   {% if buttons.showReturnToOasysButton %}
     {% set buttonItems = buttonItems.concat([{
       text: 'Return to OASys',
@@ -37,9 +37,10 @@
   {% if buttons.showAgreePlanButton %}
     {% set buttonItems = buttonItems.concat([{
       text: 'Agree plan',
+      href: basePath + '/plan/agree-plan',
       classes: "govuk-!-display-none-print",
-      type: 'submit',
-      value: 'agree-plan'
+      type: 'button',
+      id: 'agree-plan-button'
     }]) %}
   {% endif %}
 
