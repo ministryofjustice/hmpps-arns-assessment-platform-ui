@@ -202,7 +202,7 @@ test.describe('Plan Overview Page', () => {
       await aapApi.stubSentencePlanApis(createAssessmentWithCurrentGoals(1))
     })
 
-    test('shows Change goal link on draft goal cards', async ({ page }) => {
+    test('shows Change goal link on goal cards', async ({ page }) => {
       await loginAndNavigateToPlan(page)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -210,7 +210,7 @@ test.describe('Plan Overview Page', () => {
       expect(hasChangeLink).toBe(true)
     })
 
-    test('shows Add or change steps link on draft goal cards', async ({ page }) => {
+    test('shows Add or change steps link on goal cards', async ({ page }) => {
       await loginAndNavigateToPlan(page)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -218,7 +218,7 @@ test.describe('Plan Overview Page', () => {
       expect(hasAddStepsLink).toBe(true)
     })
 
-    test('shows Delete link on draft goal cards', async ({ page }) => {
+    test('shows Delete link on goal cards', async ({ page }) => {
       await loginAndNavigateToPlan(page)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
