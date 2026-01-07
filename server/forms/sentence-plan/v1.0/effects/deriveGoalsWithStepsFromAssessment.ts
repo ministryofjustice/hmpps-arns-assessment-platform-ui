@@ -3,6 +3,7 @@ import {
   AreaOfNeed,
   DerivedGoal,
   DerivedStep,
+  DerivedNote,
   GoalAnswers,
   GoalProperties,
   RawCollection,
@@ -98,6 +99,22 @@ export const deriveGoalsWithStepsFromAssessment = () => async (context: Sentence
       }
     })
 
+    const notesCollections = item.collections?.filter(c => c.name === 'NOTES') ?? []
+    const allNoteItems = notesCollections.flatMap(c => c.items)
+    const notes: DerivedNote[] = allNoteItems
+      .map(noteItem => {
+        const noteAnswers = unwrapAll<{ note: string; created_by: string }>(noteItem.answers)
+        const noteProperties = unwrapAll<{ created_at: string }>(noteItem.properties)
+
+        return {
+          uuid: noteItem.uuid,
+          note: noteAnswers.note,
+          createdBy: noteAnswers.created_by,
+          createdAt: new Date(noteProperties.created_at),
+        }
+      })
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()) // Sort newest first
+
     const relatedAreasOfNeed = answers.related_areas_of_need ?? []
 
     return {
@@ -112,6 +129,8 @@ export const deriveGoalsWithStepsFromAssessment = () => async (context: Sentence
       relatedAreasOfNeedLabels: relatedAreasOfNeed.map(slug => resolveAreaOfNeedLabel(slug, areasOfNeed)),
       stepsCollectionUuid: stepsCollections[0]?.uuid,
       steps,
+      notesCollectionUuid: notesCollections[0]?.uuid,
+      notes,
     }
   })
 

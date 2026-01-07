@@ -231,7 +231,7 @@ export const goalsSection = TemplateWrapper({
                             actions: [
                               {
                                 text: 'Update',
-                                href: Format('../goal/%1/update-goal', Item().path('uuid')),
+                                href: Format('../goal/%1/update-goal-steps', Item().path('uuid')),
                               },
                             ],
                             index: Item().index(),
