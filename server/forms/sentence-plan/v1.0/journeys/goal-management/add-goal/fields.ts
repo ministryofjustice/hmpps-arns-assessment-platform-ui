@@ -11,6 +11,7 @@ import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 
 // Side navigation for areas of need
 const sideNavigation = MOJSideNavigation({
+  attributes: { 'data-qa': 'area-of-need-nav' },
   items: Data('areasOfNeed').each(
     Iterator.Map({
       text: Item().path('text'),
