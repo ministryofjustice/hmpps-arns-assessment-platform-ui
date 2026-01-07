@@ -1,4 +1,5 @@
 import { Data } from '@form-engine/form/builders'
+import { Transformer } from '@form-engine/registry/transformers'
 import { AreaOfNeedSlug } from './effects/types'
 
 /**
@@ -7,6 +8,7 @@ import { AreaOfNeedSlug } from './effects/types'
  */
 export const CaseData = {
   Forename: Data('caseData.name.forename'),
+  ForenamePossessive: Data('caseData.name.forename').pipe(Transformer.String.Possessive()),
   Surname: Data('caseData.name.surname'),
 }
 
