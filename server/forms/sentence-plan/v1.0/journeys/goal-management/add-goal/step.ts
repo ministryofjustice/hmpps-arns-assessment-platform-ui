@@ -33,7 +33,7 @@ export const createGoalStep = step({
     }),
   ],
   onAccess: [
-    // If UUID param is literally ':uuid', redirect to use 'new' instead
+    // If UUID param is literally ':uuid', redirect to use 'new'   instead
     accessTransition({
       guards: Params('uuid').match(Condition.Equals(':uuid')),
       redirect: [next({ goto: Format('../new/add-goal/%1', Params('areaOfNeed')) })],
