@@ -8,6 +8,7 @@ import {
   subNavigation,
   noActiveGoalsErrorMessage,
   noStepsErrorMessage,
+  notificationBanners,
 } from './fields'
 import { SentencePlanV1Effects } from '../../../../effects'
 import { CaseData } from '../../../../constants'
@@ -32,6 +33,7 @@ export const planStep = step({
     noActiveGoalsErrorMessage,
     noStepsErrorMessage,
     planCreatedMessage,
+    notificationBanners,
     subNavigation,
     goalsSection,
     blankPlanOverviewContent,
@@ -48,6 +50,7 @@ export const planStep = step({
       effects: [
         SentencePlanV1Effects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanV1Effects.derivePlanAgreementsFromAssessment(),
+        SentencePlanV1Effects.loadNotifications('plan-overview'),
       ],
     }),
   ],
