@@ -16,6 +16,7 @@ import config from '../config'
 import logger from '../../logger'
 import AssessmentPlatformApiClient from './assessmentPlatformApiClient'
 import HandoverApiClient from './handoverApiClient'
+import CoordinatorApiClient from './coordinatorApiClient'
 
 export const dataAccess = () => {
   const hmppsAuthClient = new AuthenticationClient(
@@ -29,9 +30,10 @@ export const dataAccess = () => {
     hmppsAuthClient,
     assessmentPlatformApiClient: new AssessmentPlatformApiClient(hmppsAuthClient),
     handoverApiClient: new HandoverApiClient(hmppsAuthClient),
+    coordinatorApiClient: new CoordinatorApiClient(hmppsAuthClient),
   }
 }
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { AuthenticationClient, AssessmentPlatformApiClient, HandoverApiClient }
+export { AuthenticationClient, AssessmentPlatformApiClient, HandoverApiClient, CoordinatorApiClient }
