@@ -39,6 +39,7 @@ declare global {
       id: string
       logout(done: (err: unknown) => void): void
       state: RequestState
+      authBypassed?: boolean
     }
 
     interface Locals {

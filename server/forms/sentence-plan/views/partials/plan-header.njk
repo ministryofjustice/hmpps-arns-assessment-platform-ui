@@ -4,14 +4,6 @@
 {% if data.caseData %}
   {% set person = data.caseData %}
   {% set fullName = person.name.forename + ' ' + person.name.surname if person.name else 'Unknown' %}
-
-  {% set basePath = '' %}
-  {% for item in navigation %}
-    {%  if item.title == 'Sentence Plan' %}
-      {% set basePath = item.path %}
-    {%  endif %}
-  {% endfor %}
-
   {% set buttonItems = [] %}
 
   {#  TODO: Add real links for 'Return to OASys' #}
