@@ -7,7 +7,9 @@ export default function setUpCurrentUser() {
   const router = express.Router()
 
   router.use((req, res, next) => {
-    if (req.authBypassed) {
+    // Skip if bypassed and no user token (unauthenticated on bypassed path)
+    // For authenticated users on bypassed paths, we still want to populate user details
+    if (req.authBypassed && !res.locals.user?.token) {
       return next()
     }
 

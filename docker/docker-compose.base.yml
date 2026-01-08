@@ -74,6 +74,7 @@ services:
       AUDIT_SQS_REGION: eu-west-2
       AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
       NODE_CLUSTER_ENABLED: true
+      FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
 
   api:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
