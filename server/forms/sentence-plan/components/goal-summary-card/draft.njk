@@ -72,7 +72,7 @@
 
   <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper">
-      <h2 class="govuk-summary-card__title">{{ params.goalTitle }}</h2>
+      <h2 class="govuk-summary-card__title" data-qa="goal-title">{{ params.goalTitle }}</h2>
 
       {#- Action links -#}
       {% if params.actions.length > 0 %}
@@ -143,7 +143,7 @@
       {% endif %}
 
       {#- Areas of need -#}
-      <p class="goal-summary-card__areas-of-need">
+      <p class="goal-summary-card__areas-of-need" data-qa="goal-area-of-need">
         Area of need: {{ params.areaOfNeed }}
         {% if params.relatedAreasText %}
           <br>Also linked to: {{ params.relatedAreasText }}
