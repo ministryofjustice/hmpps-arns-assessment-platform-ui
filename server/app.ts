@@ -10,6 +10,7 @@ import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './routes/error/errorHandler'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
+import { autosaveMiddleware, prefetchAnswersMiddleware } from './middleware/autosaveMiddleware'
 
 import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
@@ -51,6 +52,13 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
+
+  app.use((_req, res, next) => {
+    res.locals.assessmentService = services.assessmentService
+    next()
+  })
+  app.use(autosaveMiddleware())
+  app.use(prefetchAnswersMiddleware())
 
   const formEngine = new FormEngine({
     logger,
