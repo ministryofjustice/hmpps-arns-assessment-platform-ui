@@ -7,6 +7,12 @@ export default function setUpCurrentUser() {
   const router = express.Router()
 
   router.use((req, res, next) => {
+    // Skip if bypassed and no user token (unauthenticated on bypassed path)
+    // For authenticated users on bypassed paths, we still want to populate user details
+    if (req.authBypassed && !res.locals.user?.token) {
+      return next()
+    }
+
     try {
       const {
         name,
@@ -36,10 +42,10 @@ export default function setUpCurrentUser() {
         displayName: convertToTitleCase(name),
       }
 
-      next()
+      return next()
     } catch (error) {
       logger.error(error, `Failed to populate user details for: ${res.locals.user && res.locals.user.username}`)
-      next(error)
+      return next(error)
     }
   })
 
