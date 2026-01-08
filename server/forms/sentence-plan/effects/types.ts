@@ -151,6 +151,9 @@ export type StepChangesStorage = Record<string, StepChanges>
  * Data stored via context.setData() / context.getData()
  */
 export interface SentencePlanData extends Record<string, unknown> {
+  // System
+  systemReturnUrl?: string
+
   // Assessment
   assessment: { collections?: unknown[]; assessmentUuid?: string }
   assessmentUuid: string
@@ -201,6 +204,16 @@ export interface SentencePlanAnswers extends Record<string, unknown> {
 }
 
 /**
+ * Principal data stored in session
+ */
+export interface SessionPrincipal {
+  identifier: string
+  username: string
+  displayName: string
+  returnUrl?: string
+}
+
+/**
  * Session data via context.getSession()
  */
 export interface SentencePlanSession {
@@ -209,6 +222,7 @@ export interface SentencePlanSession {
   accessType?: 'mpop' | 'oasys'
   stepChanges?: StepChangesStorage
   notifications?: PlanNotification[]
+  principal?: SessionPrincipal
 }
 
 /**

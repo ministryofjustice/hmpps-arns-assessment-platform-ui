@@ -12,6 +12,7 @@ export declare module 'express-session' {
       identifier: string
       username: string
       displayName: string
+      returnUrl?: string
     }
   }
 }
