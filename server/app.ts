@@ -26,8 +26,7 @@ import logger from '../logger'
 
 // Form packages
 import formEngineDeveloperGuide from './forms/form-engine-developer-guide'
-import { SentencePlanFormPackages } from './forms/sentence-plan/sentencePlanFormExports'
-import { sentencePlanComponents } from './forms/sentence-plan/components'
+import sentencePlanFormPackage from './forms/sentence-plan'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -67,15 +66,10 @@ export default function createApp(services: Services): express.Application {
     .registerComponents(govukComponents)
     .registerComponents(mojComponents)
     .registerFormPackage(formEngineDeveloperGuide)
-
-  // Register all Sentence Plan form packages
-  formEngine.registerComponents(sentencePlanComponents)
-  SentencePlanFormPackages.forEach(pkg => {
-    formEngine.registerFormPackage(pkg, {
+    .registerFormPackage(sentencePlanFormPackage, {
       api: services.assessmentPlatformApiClient,
       deliusApi: services.deliusApiClient,
     })
-  })
 
   // Mount routes
   app.use(routes(services))
