@@ -19,7 +19,7 @@ export const sentencePlanV1URLs = {
 // This establishes the session with proper user context and assessment UUID.
 export const loginAndNavigateToPlan = async (page: Page): Promise<void> => {
   await login(page)
-  await page.goto('/forms/sentence-plan/v1.0/oasys')
+  await page.goto('/forms/sentence-plan/oasys')
   await expect(page).toHaveURL(/\/plan\/overview/)
 }
 
