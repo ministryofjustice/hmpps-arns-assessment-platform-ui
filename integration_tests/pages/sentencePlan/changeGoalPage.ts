@@ -29,7 +29,7 @@ export default class ChangeGoalPage extends AbstractPage {
   private constructor(page: Page) {
     super(page)
     this.header = page.locator('h1')
-    this.goalTitleInput = page.locator('#goal_title')
+    this.goalTitleInput = page.locator('#goal_title-autocomplete')
     this.isRelatedYes = page.locator('input[name="is_related_to_other_areas"][value="yes"]')
     this.isRelatedNo = page.locator('input[name="is_related_to_other_areas"][value="no"]')
     this.canStartNowYes = page.locator('input[name="can_start_now"][value="yes"]')
