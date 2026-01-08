@@ -5,6 +5,10 @@ import logger from '../../logger'
 
 export default function authorisationMiddleware(authorisedRoles: string[] = []): RequestHandler {
   return (req, res, next) => {
+    if (req.authBypassed) {
+      return next()
+    }
+
     // authorities in the user token will always be prefixed by ROLE_.
     // Convert roles that are passed into this function without the prefix so that we match correctly.
     const authorisedAuthorities = authorisedRoles.map(role => (role.startsWith('ROLE_') ? role : `ROLE_${role}`))

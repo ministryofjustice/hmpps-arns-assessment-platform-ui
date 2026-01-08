@@ -43,7 +43,11 @@ export default function createApp(services: Services): express.Application {
   // Configure Nunjucks and get environment for form engine
   const nunjucksEnv = nunjucksSetup(app)
 
-  app.use(setUpAuthentication())
+  app.use(
+    setUpAuthentication({
+      bypassPaths: ['/forms/form-engine-developer-guide'],
+    }),
+  )
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())

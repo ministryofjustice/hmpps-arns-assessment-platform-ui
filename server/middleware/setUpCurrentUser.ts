@@ -7,6 +7,10 @@ export default function setUpCurrentUser() {
   const router = express.Router()
 
   router.use((req, res, next) => {
+    if (req.authBypassed) {
+      return next()
+    }
+
     try {
       const {
         name,
@@ -36,10 +40,10 @@ export default function setUpCurrentUser() {
         displayName: convertToTitleCase(name),
       }
 
-      next()
+      return next()
     } catch (error) {
       logger.error(error, `Failed to populate user details for: ${res.locals.user && res.locals.user.username}`)
-      next(error)
+      return next(error)
     }
   })
 
