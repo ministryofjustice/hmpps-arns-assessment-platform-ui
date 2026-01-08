@@ -1,15 +1,6 @@
 {%- from "moj/components/primary-navigation/macro.njk" import mojPrimaryNavigation -%}
 
 {% set personName = data.caseData.name.forename if data.caseData and data.caseData.name else "Person" %}
-
-{# Base path is the root journey - all three nav items are relative to this #}
-{% set basePath = '' %}
-  {% for item in navigation %}
-    {%  if item.title == 'Sentence Plan' %}
-      {% set basePath = item.path %}
-    {%  endif %}
-  {% endfor %}
-
 {% set isOnAboutPage = step.path == '/about-person' %}
 {% set isOnPlanHistoryPage = step.path == '/plan-history' %}
 {% set isOnPlanPage = not isOnAboutPage and not isOnPlanHistoryPage %}
