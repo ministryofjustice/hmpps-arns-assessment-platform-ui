@@ -29,6 +29,13 @@ export interface DerivedStep {
   statusDate: string
 }
 
+export interface DerivedNote {
+  uuid: string
+  note: string
+  createdBy: string
+  createdAt: Date
+}
+
 export interface DerivedGoal {
   uuid: string
   title: string
@@ -41,6 +48,8 @@ export interface DerivedGoal {
   relatedAreasOfNeedLabels: string[]
   stepsCollectionUuid?: string
   steps: DerivedStep[]
+  notesCollectionUuid?: string
+  notes: DerivedNote[]
 }
 
 export interface DerivedPlanAgreement {
