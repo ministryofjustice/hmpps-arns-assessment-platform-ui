@@ -9,9 +9,13 @@ import { CaseData } from '../../../constants'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 
 export const backLink = HtmlBlock({
-  content: when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
-    .then('<a href="../../plan/overview?type=current" class="govuk-back-link">Back</a>')
-    .else('<a href="../../plan/overview?type=future" class="govuk-back-link">Back</a>'),
+  content: when(Data('latestAgreementStatus').match(Condition.IsRequired()))
+    .then(Format('<a href="../../goal/%1/update-goal-steps" class="govuk-back-link">Back</a>', Data('activeGoal.uuid')))
+    .else(
+      when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
+        .then('<a href="../../plan/overview?type=current" class="govuk-back-link">Back</a>')
+        .else('<a href="../../plan/overview?type=future" class="govuk-back-link">Back</a>'),
+    ),
 })
 
 const pageHeading = HtmlBlock({
