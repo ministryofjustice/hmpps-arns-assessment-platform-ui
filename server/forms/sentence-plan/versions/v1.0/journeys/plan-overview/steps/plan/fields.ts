@@ -87,22 +87,32 @@ export const planCreatedMessage = HtmlBlock({
 
 export const subNavigation = MOJSubNavigation({
   label: 'Plan sections',
-  items: [
-    {
-      text: Format('Goals to work on now (%1)', activeGoalsCount),
-      href: 'overview?type=current',
-      active: when(Query('type').match(Condition.Equals('current')))
-        .then(true)
-        .else(false),
-    },
-    {
-      text: Format('Future goals (%1)', futureGoalsCount),
-      href: 'overview?type=future',
-      active: when(Query('type').match(Condition.Equals('future')))
-        .then(true)
-        .else(false),
-    },
-  ],
+  items: when(futureGoalsCount.match(Condition.Number.GreaterThan(0)))
+    .then([
+      {
+        text: Format('Goals to work on now (%1)', activeGoalsCount),
+        href: 'overview?type=current',
+        active: when(Query('type').match(Condition.Equals('current')))
+          .then(true)
+          .else(false),
+      },
+      {
+        text: Format('Future goals (%1)', futureGoalsCount),
+        href: 'overview?type=future',
+        active: when(Query('type').match(Condition.Equals('future')))
+          .then(true)
+          .else(false),
+      },
+    ])
+    .else([
+      {
+        text: Format('Goals to work on now (%1)', activeGoalsCount),
+        href: 'overview?type=current',
+        active: when(Query('type').match(Condition.Equals('current')))
+          .then(true)
+          .else(false),
+      },
+    ]),
 })
 
 /**
@@ -244,12 +254,19 @@ export const goalsSection = TemplateWrapper({
                                   status: Item().path('status'),
                                 }),
                               ),
-                            actions: [
-                              {
-                                text: 'Update',
-                                href: Format('../goal/%1/update-goal-steps', Item().path('uuid')),
-                              },
-                            ],
+                            actions: when(Item().path('status').match(Condition.Equals('ACTIVE')))
+                              .then([
+                                {
+                                  text: 'Update',
+                                  href: Format('../goal/%1/update-goal-steps', Item().path('uuid')),
+                                },
+                              ])
+                              .else([
+                                {
+                                  text: 'Do another thing',
+                                  href: Format('../goal/%1/update-goal-steps', Item().path('uuid')),
+                                },
+                              ]),
                             index: Item().index(),
                           }),
                         ],
