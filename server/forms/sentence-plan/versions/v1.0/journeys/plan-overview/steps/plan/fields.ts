@@ -89,67 +89,31 @@ export const planCreatedMessage = HtmlBlock({
     ),
 })
 
-export const subNavigation = TemplateWrapper({
-  hidden: achievedGoalsCount.match(Condition.Number.GreaterThan(0)),
-  template: '{{slot:nav}}',
-  slots: {
-    nav: [
-      MOJSubNavigation({
-        label: 'Plan sections',
-        items: [
-          {
-            text: Format('Goals to work on now (%1)', activeGoalsCount),
-            href: 'overview?type=current',
-            active: when(Query('type').match(Condition.Equals('current')))
-              .then(true)
-              .else(false),
-          },
-          {
-            text: Format('Future goals (%1)', futureGoalsCount),
-            href: 'overview?type=future',
-            active: when(Query('type').match(Condition.Equals('future')))
-              .then(true)
-              .else(false),
-          },
-        ],
-      }),
-    ],
-  },
-})
-
-export const subNavigationWithAchieved = TemplateWrapper({
-  hidden: achievedGoalsCount.not.match(Condition.Number.GreaterThan(0)),
-  template: '{{slot:nav}}',
-  slots: {
-    nav: [
-      MOJSubNavigation({
-        label: 'Plan sections',
-        items: [
-          {
-            text: Format('Goals to work on now (%1)', activeGoalsCount),
-            href: 'overview?type=current',
-            active: when(Query('type').match(Condition.Equals('current')))
-              .then(true)
-              .else(false),
-          },
-          {
-            text: Format('Future goals (%1)', futureGoalsCount),
-            href: 'overview?type=future',
-            active: when(Query('type').match(Condition.Equals('future')))
-              .then(true)
-              .else(false),
-          },
-          {
-            text: Format('Achieved goals (%1)', achievedGoalsCount),
-            href: 'overview?type=achieved',
-            active: when(Query('type').match(Condition.Equals('achieved')))
-              .then(true)
-              .else(false),
-          },
-        ],
-      }),
-    ],
-  },
+export const subNavigation = MOJSubNavigation({
+  label: 'Plan sections',
+  items: [
+    {
+      text: Format('Goals to work on now (%1)', activeGoalsCount),
+      href: 'overview?type=current',
+      active: when(Query('type').match(Condition.Equals('current')))
+        .then(true)
+        .else(false),
+    },
+    {
+      text: Format('Future goals (%1)', futureGoalsCount),
+      href: 'overview?type=future',
+      active: when(Query('type').match(Condition.Equals('future')))
+        .then(true)
+        .else(false),
+    },
+    when(achievedGoalsCount.match(Condition.Number.GreaterThan(0))).then({
+      text: Format('Achieved goals (%1)', achievedGoalsCount),
+      href: 'overview?type=achieved',
+      active: when(Query('type').match(Condition.Equals('achieved')))
+        .then(true)
+        .else(false),
+    }) as any,
+  ],
 })
 
 /**
@@ -272,11 +236,8 @@ export const goalsSection = TemplateWrapper({
                       },
                     }),
                     TemplateWrapper({
-                      hidden: or(
-                        Data('latestAgreementStatus').not.match(
-                          Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']),
-                        ),
-                        Item().path('status').match(Condition.Equals('ACHIEVED')),
+                      hidden: Data('latestAgreementStatus').not.match(
+                        Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']),
                       ),
                       template: '{{slot:agreedCard}}',
                       slots: {
@@ -299,43 +260,15 @@ export const goalsSection = TemplateWrapper({
                                 }),
                               ),
                             actions: [
-                              {
-                                text: 'Update',
-                                href: Format('../goal/%1/update-goal-steps', Item().path('uuid')),
-                              },
-                            ],
-                            index: Item().index(),
-                          }),
-                        ],
-                      },
-                    }),
-                    TemplateWrapper({
-                      hidden: Item().path('status').not.match(Condition.Equals('ACHIEVED')),
-                      template: '{{slot:achievedCard}}',
-                      slots: {
-                        achievedCard: [
-                          GoalSummaryCardAgreed({
-                            goalTitle: Item().path('title'),
-                            goalStatus: Item().path('status'),
-                            goalUuid: Item().path('uuid'),
-                            targetDate: Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()),
-                            statusDate: Item().path('statusDate').pipe(Transformer.Date.ToUKLongDate()),
-                            areaOfNeed: Item().path('areaOfNeedLabel'),
-                            relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
-                            steps: Item()
-                              .path('steps')
-                              .each(
-                                Iterator.Map({
-                                  actor: Item().path('actorLabel'),
-                                  description: Item().path('description'),
-                                  status: Item().path('status'),
-                                }),
-                              ),
-                            actions: [
-                              {
-                                text: 'View details',
-                                href: '#',
-                              },
+                              when(Item().path('status').match(Condition.Equals('ACHIEVED')))
+                                .then({
+                                  text: 'View details',
+                                  href: '#',
+                                })
+                                .else({
+                                  text: 'Update',
+                                  href: Format('../goal/%1/update-goal-steps', Item().path('uuid')),
+                                }) as any,
                             ],
                             index: Item().index(),
                           }),
@@ -355,6 +288,7 @@ export const goalsSection = TemplateWrapper({
 export const blankPlanOverviewContent = HtmlBlock({
   hidden: or(
     Query('type').match(Condition.Equals('future')),
+    Query('type').match(Condition.Equals('achieved')),
     Data('goals')
       .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
       .match(Condition.IsRequired()),
