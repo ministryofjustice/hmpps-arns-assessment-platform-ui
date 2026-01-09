@@ -10,6 +10,7 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import {
+  backLink,
   pageHeading,
   goalInfo,
   reviewStepsSection,
@@ -27,7 +28,20 @@ export const updateGoalAndStepsStep = step({
   path: '/update-goal-steps',
   title: 'Update goal and steps',
   isEntryPoint: true,
-  blocks: [pageHeading, goalInfo, reviewStepsSection, progressNotesSection, viewAllNotesSection, actionButtons],
+  view: {
+    locals: {
+      mainClasses: 'govuk-main-wrapper--no-padding',
+    },
+  },
+  blocks: [
+    backLink,
+    pageHeading,
+    goalInfo,
+    reviewStepsSection,
+    progressNotesSection,
+    viewAllNotesSection,
+    actionButtons,
+  ],
 
   onLoad: [
     loadTransition({

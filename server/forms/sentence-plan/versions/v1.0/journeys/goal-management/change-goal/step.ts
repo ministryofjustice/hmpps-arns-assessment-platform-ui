@@ -24,12 +24,21 @@ export const changeGoalStep = step({
   path: '/change-goal',
   title: 'Change Goal',
   isEntryPoint: true,
+  view: {
+    locals: {
+      mainClasses: 'govuk-main-wrapper--no-padding',
+    },
+  },
 
   blocks: [pageLayout],
 
   onLoad: [
     loadTransition({
-      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.loadActiveGoalForEdit()],
+      effects: [
+        SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
+        SentencePlanEffects.derivePlanAgreementsFromAssessment(),
+        SentencePlanEffects.loadActiveGoalForEdit(),
+      ],
     }),
   ],
 
