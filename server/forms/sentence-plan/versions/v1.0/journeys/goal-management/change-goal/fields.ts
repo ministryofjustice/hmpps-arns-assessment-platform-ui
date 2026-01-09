@@ -1,4 +1,4 @@
-import { block, Data, Format, Self, validation } from '@form-engine/form/builders'
+import { block, Data, Format, Self, validation, when } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKTextInput } from '@form-engine-govuk-components/components'
@@ -7,6 +7,12 @@ import { TemplateWrapper } from '@form-engine/registry/components/templateWrappe
 import { AccessibleAutocomplete } from '../../../../../components'
 import { CaseData } from '../../../constants'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
+
+export const backLink = HtmlBlock({
+  content: when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
+    .then('<a href="../../plan/overview?type=current" class="govuk-back-link">Back</a>')
+    .else('<a href="../../plan/overview?type=future" class="govuk-back-link">Back</a>'),
+})
 
 const pageHeading = HtmlBlock({
   content: Format(
@@ -47,6 +53,7 @@ const saveGoalButton = GovUKButton({
 export const pageLayout = TemplateWrapper({
   template: `
     <div>
+      {{slot:backLink}}
       {{slot:pageHeading}}
       {{slot:goalTitle}}
       {{slot:isRelatedToOtherAreas}}
@@ -55,6 +62,7 @@ export const pageLayout = TemplateWrapper({
     </div>
   `,
   slots: {
+    backLink: [backLink],
     pageHeading: [pageHeading],
     goalTitle: [goalTitle],
     isRelatedToOtherAreas: [isRelatedToOtherAreas],
