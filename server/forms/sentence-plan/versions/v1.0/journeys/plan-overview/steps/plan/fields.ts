@@ -68,6 +68,10 @@ const futureGoalsCount = Data('goals')
   .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
   .pipe(Transformer.Array.Length())
 
+const achievedGoalsCount = Data('goals')
+  .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACHIEVED'))))
+  .pipe(Transformer.Array.Length())
+
 export const planCreatedMessage = HtmlBlock({
   hidden: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER'])),
   content: when(Data('latestAgreementStatus').match(Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE'])))
@@ -85,24 +89,67 @@ export const planCreatedMessage = HtmlBlock({
     ),
 })
 
-export const subNavigation = MOJSubNavigation({
-  label: 'Plan sections',
-  items: [
-    {
-      text: Format('Goals to work on now (%1)', activeGoalsCount),
-      href: 'overview?type=current',
-      active: when(Query('type').match(Condition.Equals('current')))
-        .then(true)
-        .else(false),
-    },
-    {
-      text: Format('Future goals (%1)', futureGoalsCount),
-      href: 'overview?type=future',
-      active: when(Query('type').match(Condition.Equals('future')))
-        .then(true)
-        .else(false),
-    },
-  ],
+export const subNavigation = TemplateWrapper({
+  hidden: achievedGoalsCount.match(Condition.Number.GreaterThan(0)),
+  template: '{{slot:nav}}',
+  slots: {
+    nav: [
+      MOJSubNavigation({
+        label: 'Plan sections',
+        items: [
+          {
+            text: Format('Goals to work on now (%1)', activeGoalsCount),
+            href: 'overview?type=current',
+            active: when(Query('type').match(Condition.Equals('current')))
+              .then(true)
+              .else(false),
+          },
+          {
+            text: Format('Future goals (%1)', futureGoalsCount),
+            href: 'overview?type=future',
+            active: when(Query('type').match(Condition.Equals('future')))
+              .then(true)
+              .else(false),
+          },
+        ],
+      }),
+    ],
+  },
+})
+
+export const subNavigationWithAchieved = TemplateWrapper({
+  hidden: achievedGoalsCount.not.match(Condition.Number.GreaterThan(0)),
+  template: '{{slot:nav}}',
+  slots: {
+    nav: [
+      MOJSubNavigation({
+        label: 'Plan sections',
+        items: [
+          {
+            text: Format('Goals to work on now (%1)', activeGoalsCount),
+            href: 'overview?type=current',
+            active: when(Query('type').match(Condition.Equals('current')))
+              .then(true)
+              .else(false),
+          },
+          {
+            text: Format('Future goals (%1)', futureGoalsCount),
+            href: 'overview?type=future',
+            active: when(Query('type').match(Condition.Equals('future')))
+              .then(true)
+              .else(false),
+          },
+          {
+            text: Format('Achieved goals (%1)', achievedGoalsCount),
+            href: 'overview?type=achieved',
+            active: when(Query('type').match(Condition.Equals('achieved')))
+              .then(true)
+              .else(false),
+          },
+        ],
+      }),
+    ],
+  },
 })
 
 /**
@@ -137,12 +184,16 @@ export const goalsSection = TemplateWrapper({
             Iterator.Filter(
               or(
                 and(
-                  Query('type').not.match(Condition.Equals('future')),
+                  Query('type').match(Condition.Equals('current')),
                   Item().path('status').match(Condition.Equals('ACTIVE')),
                 ),
                 and(
                   Query('type').match(Condition.Equals('future')),
                   Item().path('status').match(Condition.Equals('FUTURE')),
+                ),
+                and(
+                  Query('type').match(Condition.Equals('achieved')),
+                  Item().path('status').match(Condition.Equals('ACHIEVED')),
                 ),
               ),
             ),
@@ -189,7 +240,7 @@ export const goalsSection = TemplateWrapper({
                             goalStatus: Item().path('status'),
                             goalUuid: Item().path('uuid'),
                             targetDate: Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()),
-                            statusDate: Item().path('statusDate'),
+                            statusDate: Item().path('statusDate').pipe(Transformer.Date.ToUKLongDate()),
                             areaOfNeed: Item().path('areaOfNeedLabel'),
                             relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
                             steps: Item()
@@ -221,8 +272,11 @@ export const goalsSection = TemplateWrapper({
                       },
                     }),
                     TemplateWrapper({
-                      hidden: Data('latestAgreementStatus').not.match(
-                        Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']),
+                      hidden: or(
+                        Data('latestAgreementStatus').not.match(
+                          Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']),
+                        ),
+                        Item().path('status').match(Condition.Equals('ACHIEVED')),
                       ),
                       template: '{{slot:agreedCard}}',
                       slots: {
@@ -232,7 +286,7 @@ export const goalsSection = TemplateWrapper({
                             goalStatus: Item().path('status'),
                             goalUuid: Item().path('uuid'),
                             targetDate: Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()),
-                            statusDate: Item().path('statusDate'),
+                            statusDate: Item().path('statusDate').pipe(Transformer.Date.ToUKLongDate()),
                             areaOfNeed: Item().path('areaOfNeedLabel'),
                             relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
                             steps: Item()
@@ -248,6 +302,39 @@ export const goalsSection = TemplateWrapper({
                               {
                                 text: 'Update',
                                 href: Format('../goal/%1/update-goal-steps', Item().path('uuid')),
+                              },
+                            ],
+                            index: Item().index(),
+                          }),
+                        ],
+                      },
+                    }),
+                    TemplateWrapper({
+                      hidden: Item().path('status').not.match(Condition.Equals('ACHIEVED')),
+                      template: '{{slot:achievedCard}}',
+                      slots: {
+                        achievedCard: [
+                          GoalSummaryCardAgreed({
+                            goalTitle: Item().path('title'),
+                            goalStatus: Item().path('status'),
+                            goalUuid: Item().path('uuid'),
+                            targetDate: Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()),
+                            statusDate: Item().path('statusDate').pipe(Transformer.Date.ToUKLongDate()),
+                            areaOfNeed: Item().path('areaOfNeedLabel'),
+                            relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
+                            steps: Item()
+                              .path('steps')
+                              .each(
+                                Iterator.Map({
+                                  actor: Item().path('actorLabel'),
+                                  description: Item().path('description'),
+                                  status: Item().path('status'),
+                                }),
+                              ),
+                            actions: [
+                              {
+                                text: 'View details',
+                                href: '#',
                               },
                             ],
                             index: Item().index(),
