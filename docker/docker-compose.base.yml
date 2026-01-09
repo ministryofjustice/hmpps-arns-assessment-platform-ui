@@ -61,6 +61,7 @@ services:
       HMPPS_AUTH_URL: http://auth:8080/auth
       HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
       AAP_API_URL: http://api:8080
+      COORDINATOR_API_URL: http://arns-coordinator:8080
       HMPPS_ARNS_HANDOVER_URL: http://arns-handover:7070
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
       HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
