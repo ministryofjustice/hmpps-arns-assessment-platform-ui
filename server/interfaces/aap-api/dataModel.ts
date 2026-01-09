@@ -32,6 +32,7 @@ export interface CollectionItem {
   updatedAt: string
   answers: Answers
   properties: Properties
+  collections?: Collection[]
 }
 
 export interface Collection {

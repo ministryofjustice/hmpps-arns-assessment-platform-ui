@@ -24,6 +24,7 @@ declare global {
       user?: {
         id: string
         name: string
+        authSource: string
       }
     }
 
