@@ -5,6 +5,7 @@ import handover from '../mockApis/handover'
 import tokenVerification from '../mockApis/tokenVerification'
 
 import { resetStubs } from '../testUtils'
+import coordinatorApi from '../mockApis/coordinatorApi'
 
 test.describe('Health', () => {
   test.afterEach(async () => {
@@ -13,7 +14,13 @@ test.describe('Health', () => {
 
   test.describe('All healthy', () => {
     test.beforeEach(async () => {
-      await Promise.all([hmppsAuth.stubPing(), aapApi.stubPing(), handover.stubPing(), tokenVerification.stubPing()])
+      await Promise.all([
+        hmppsAuth.stubPing(),
+        aapApi.stubPing(),
+        coordinatorApi.stubPing(),
+        handover.stubPing(),
+        tokenVerification.stubPing(),
+      ])
     })
 
     test('Health check is accessible and status is UP', async ({ page }) => {
@@ -40,6 +47,7 @@ test.describe('Health', () => {
       await Promise.all([
         hmppsAuth.stubPing(),
         aapApi.stubPing(500),
+        coordinatorApi.stubPing(),
         handover.stubPing(),
         tokenVerification.stubPing(500),
       ])
