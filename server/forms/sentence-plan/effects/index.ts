@@ -22,6 +22,8 @@ import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
 import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
 import { saveStepEditSession } from './steps/saveStepEditSession'
 import { setSessionAccessType } from './access/setSessionAccessType'
+import { loadSystemReturnUrl } from './loadSystemReturnUrl'
+
 
 /**
  * Sentence Plan Effects
@@ -75,4 +77,7 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     addStepToStepEditSession,
     removeStepFromStepEditSession,
     saveStepEditSession,
+
+    // System
+    loadSystemReturnUrl,
   })

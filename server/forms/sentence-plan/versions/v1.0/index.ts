@@ -26,6 +26,7 @@ export const sentencePlanV1Journey = journey({
   onLoad: [
     loadTransition({
       effects: [
+        SentencePlanEffects.loadSystemReturnUrl(),
         SentencePlanEffects.loadPersonByCrn(),
         SentencePlanEffects.loadPlanFromSession(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
