@@ -1,16 +1,22 @@
 import { defineConfig, devices } from '@playwright/test'
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv'
-// dotenv.config({ path: path.resolve(__dirname, '.env') })
+export interface PlaywrightExtendedConfig {
+  apis: {
+    hmppsAuth: {
+      url: string
+      systemClientId: string
+      systemClientSecret: string
+    }
+    aapApi: {
+      url: string
+    }
+  }
+}
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig({
+export default defineConfig<PlaywrightExtendedConfig>({
   outputDir: './test_results/playwright/test-output',
   testDir: './integration_tests/specs',
   /* Maximum time one test can run for. (millis) */
@@ -41,6 +47,17 @@ export default defineConfig({
     ...devices['Desktop Chrome'],
     testIdAttribute: 'data-qa',
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
+
+    apis: {
+      hmppsAuth: {
+        url: process.env.HMPPS_AUTH_URL || 'http://localhost:9090/auth',
+        systemClientId: process.env.CLIENT_CREDS_CLIENT_ID || 'hmpps-arns-assessment-platform-ui-e2e',
+        systemClientSecret: process.env.CLIENT_CREDS_CLIENT_SECRET || 'clientsecret',
+      },
+      aapApi: {
+        url: process.env.AAP_API_URL || 'http://localhost:8080',
+      },
+    },
   },
 
   /* Configure projects */
