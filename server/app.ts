@@ -35,26 +35,7 @@ export default function createApp(services: Services): express.Application {
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
 
-  // Setup middleware
-  app.use(appInsightsMiddleware())
-  app.use(setUpHealthChecks(services.applicationInfo))
-  app.use(setUpWebSecurity())
-  app.use(setUpWebSession())
-  app.use(setUpWebRequestParsing())
-  app.use(setUpStaticResources())
-
-  // Configure Nunjucks and get environment for form engine
   const nunjucksEnv = nunjucksSetup(app)
-
-  app.use(
-    setUpAuthentication({
-      bypassPaths: ['/forms/form-engine-developer-guide'],
-    }),
-  )
-  app.use(authorisationMiddleware())
-  app.use(setUpCsrf())
-  app.use(setUpCurrentUser())
-
   const formEngine = new FormEngine({
     logger,
     basePath: '/forms',
@@ -70,6 +51,22 @@ export default function createApp(services: Services): express.Application {
       api: services.assessmentPlatformApiClient,
       deliusApi: services.deliusApiClient,
     })
+
+  // Setup middleware
+  app.use(appInsightsMiddleware())
+  app.use(setUpHealthChecks(services.applicationInfo))
+  app.use(setUpWebSecurity())
+  app.use(setUpWebSession())
+  app.use(setUpWebRequestParsing())
+  app.use(setUpStaticResources())
+  app.use(
+    setUpAuthentication({
+      bypassPaths: ['/forms/form-engine-developer-guide'],
+    }),
+  )
+  app.use(authorisationMiddleware())
+  app.use(setUpCsrf())
+  app.use(setUpCurrentUser())
 
   // Mount routes
   app.use(routes(services))

@@ -1,4 +1,4 @@
-import EffectFunctionContext from '@form-engine/core/ast/thunks/EffectFunctionContext'
+import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
 
 // -----------------------------------------------------------------------------
 // Helper Types

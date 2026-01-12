@@ -83,7 +83,7 @@ Fetch data from an API or session when a step loads. {.lead}
         code: `
           // effects.ts
           import { defineEffectsWithDeps } from '@form-engine/registry/utils/createRegisterableFunction'
-          import EffectFunctionContext from '@form-engine/core/ast/thunks/EffectFunctionContext'
+          import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
 
           export const { effects: MyFormEffects, createRegistry: createMyFormEffectsRegistry } =
             defineEffectsWithDeps<object>()({

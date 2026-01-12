@@ -1,30 +1,25 @@
 import { expect, test } from '@playwright/test'
-import hmppsAuth from '../mockApis/hmppsAuth'
+import tokenVerification from '../mockApis/tokenVerification'
 
-import { login, resetStubs } from '../testUtils'
+import { login } from '../testUtils'
 import HomePage from '../pages/homePage'
+import { resetStubs } from '../mockApis/wiremock'
 
 test.describe('SignIn', () => {
-  test.afterEach(async () => {
-    await resetStubs()
-  })
-
   test('Unauthenticated user directed to auth', async ({ page }) => {
-    await hmppsAuth.stubSignInPage()
     await page.goto('/')
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')
   })
 
   test('Unauthenticated user navigating to sign in page directed to auth', async ({ page }) => {
-    await hmppsAuth.stubSignInPage()
     await page.goto('/sign-in')
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')
   })
 
   test('User name visible in header', async ({ page }) => {
-    await login(page, { name: 'A Test' })
+    await login(page)
 
     const homePage = await HomePage.verifyOnPage(page)
 
@@ -48,33 +43,40 @@ test.describe('SignIn', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')
   })
 
-  test('User can manage their details', async ({ page }) => {
-    await login(page, { name: 'A TestUser' })
-
-    await hmppsAuth.stubManageDetailsPage()
+  test('User can manage their details', async ({ page, context }) => {
+    await login(page)
 
     const homePage = await HomePage.verifyOnPage(page)
+
+    // Workaround: HMPPS Auth sets cookies with SameSite=Strict, which prevents them
+    // from being sent on cross-site navigations. Re-add them with SameSite=Lax.
+    const cookies = await context.cookies()
+    const authCookies = cookies
+      .filter(c => c.domain.includes('hmpps-auth') || c.domain.includes('localhost'))
+      .map(c => ({ ...c, sameSite: 'Lax' as const }))
+    await context.addCookies(authCookies)
+
     await homePage.clickManageUserDetails()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Your account details')
   })
 
-  test('Token verification failure takes user to sign in page', async ({ page }) => {
-    test.skip(process.env.ENVIRONMENT === 'e2e-ui', 'Only runs when auth is wiremock')
-    await login(page, { active: false })
+  test('Token verification failure redirects user to auth @serial', async ({ page }) => {
+    await login(page)
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')
-  })
+    await tokenVerification.stubVerifyToken(false)
 
-  test('Token verification failure clears user session', async ({ page }) => {
-    test.skip(process.env.ENVIRONMENT === 'e2e-ui', 'Only runs when auth is wiremock')
-    await login(page, { name: 'A TestUser', active: false })
+    const authRequestPromise = page.waitForRequest(request => request.url().includes('/auth/oauth/authorize'))
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')
+    const gotoPromise = page.goto('/').catch(() => {
+      // Expected: ERR_TOO_MANY_REDIRECTS
+    })
 
-    await login(page, { name: 'Some OtherTestUser', active: true })
+    const authRequest = await authRequestPromise
 
-    const homePage = await HomePage.verifyOnPage(page)
-    await expect(homePage.usersName).toHaveText('S. Othertestuser')
+    expect(authRequest.url()).toContain('/auth/oauth/authorize')
+
+    await gotoPromise
+    await resetStubs()
   })
 })

@@ -3,36 +3,58 @@
 # against local deployment.
 
 services:
+  wiremock:
+    image: wiremock/wiremock:3.3.1
+    networks:
+      - hmpps
+    depends_on:
+      hmpps-auth:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    restart: always
+    ports:
+      - "9091:8080"
+    volumes:
+      - ./wiremock/mappings:/home/wiremock/mappings
+    environment:
+      WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:8080
+      WIREMOCK_AAP_API_URL: http://api:8080
+      WIREMOCK_COORDINATOR_API_URL: http://arns-coordinator:8080
+      WIREMOCK_HANDOVER_URL: http://arns-handover:7070
+      WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
+      WIREMOCK_DELIUS_URL: http://delius-api:8080
+    command: --global-response-templating
+
   ui:
     build:
       target: production
     depends_on:
-      - redis
-      - api
       - wiremock
+      - hmpps-auth
     command: npm run start
     environment:
       NODE_ENV: development
-      AUTH_CODE_CLIENT_ID: clientid
-      AUTH_CODE_CLIENT_SECRET: clientsecret
-      CLIENT_CREDS_CLIENT_ID: clientid
-      CLIENT_CREDS_CLIENT_SECRET: clientsecret
+      ENVIRONMENT_NAME: dev
       HMPPS_AUTH_URL: http://wiremock:8080/auth
-      HMPPS_AUTH_EXTERNAL_URL: ${HMPPS_AUTH_EXTERNAL_URL:-http://localhost:9091/auth}
-      HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080
-      HMPPS_ARNS_HANDOVER_EXTERNAL_URL: ${HMPPS_ARNS_HANDOVER_EXTERNAL_URL:-http://localhost:9091}
-      HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
-      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: aap-secret
+      HMPPS_AUTH_EXTERNAL_URL: http://hmpps-auth:8080/auth
+      HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080/handover
+      HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://arns-handover:7070
+      AAP_API_URL: http://wiremock:8080/aap-api
+      COORDINATOR_API_URL: http://wiremock:8080/coordinator-api
       TOKEN_VERIFICATION_API_URL: http://wiremock:8080/verification
       TOKEN_VERIFICATION_ENABLED: true
-      AAP_API_URL: http://wiremock:8080/aap-api
-      DELIUS_API_URL: http://wiremock:8080
-      COORDINATOR_API_URL: http://wiremock:8080/coordinator-api
+      DELIUS_API_URL: http://wiremock:8080/delius
       INGRESS_URL: http://ui:3000
-      ENVIRONMENT_NAME: dev
+      AUTH_CODE_CLIENT_ID: hmpps-arns-assessment-platform-ui
+      AUTH_CODE_CLIENT_SECRET: clientsecret
+      CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-e2e
+      CLIENT_CREDS_CLIENT_SECRET: clientsecret
+      HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
+      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: aap-secret
 
   playwright:
-    image: mcr.microsoft.com/playwright:v1.56.1-noble # Must match version in package-lock
+    image: mcr.microsoft.com/playwright:v1.56.1-noble
     networks:
       - hmpps
     depends_on:
@@ -42,6 +64,10 @@ services:
       CI: true
       BASE_URL: http://ui:3000
       WIREMOCK_URL: http://wiremock:8080/__admin
+      AAP_API_URL: http://api:8080
+      HMPPS_AUTH_URL: http://hmpps-auth:8080/auth
+      CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-e2e
+      CLIENT_CREDS_CLIENT_SECRET: clientsecret
     working_dir: /playwright
     entrypoint: sh
     command: -c "npm ci && npx playwright test"

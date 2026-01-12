@@ -1,0 +1,11 @@
+{
+  "name": "Proxy to AAP API",
+  "request": {
+    "urlPattern": "/aap-api/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "{{systemValue type='ENVIRONMENT' key='WIREMOCK_AAP_API_URL'}}",
+    "proxyUrlPrefixToRemove": "/aap-api"
+  },
+  "priority": 100
+}

@@ -2,7 +2,7 @@
 # Other compose files (local, test) extend or override these settings as needed.
 
 services:
-  auth:
+  hmpps-auth:
     image: ghcr.io/ministryofjustice/hmpps-auth:latest
     networks:
       - hmpps
@@ -46,6 +46,8 @@ services:
     ports:
       - "3000:3000"
       - "9229:9229"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/health"]
     environment:
       PRODUCT_ID: 'UNASSIGNED'
       REDIS_ENABLED: true
@@ -59,10 +61,10 @@ services:
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
       TOKEN_VERIFICATION_ENABLED: false
       TOKEN_VERIFICATION_API_URL: http://localhost:9090/verification
-      HMPPS_AUTH_URL: http://auth:8080/auth
+      HMPPS_AUTH_URL: http://hmpps-auth:8080/auth
       HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
       AAP_API_URL: http://api:8080
-      DELIUS_API_URL: http://wiremock:8080
+      DELIUS_API_URL: http://wiremock:8080/delius
       COORDINATOR_API_URL: http://arns-coordinator:8080
       HMPPS_ARNS_HANDOVER_URL: http://arns-handover:7070
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
@@ -89,7 +91,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
     environment:
       - SERVER_PORT=8080
-      - HMPPS_AUTH_URL=http://auth:8080/auth
+      - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
       - SPRING_PROFILES_ACTIVE=dev,postgres
       - DATABASE_ENDPOINT=postgres:5432
       - HMPPS_SQS_PROVIDER=localstack
@@ -97,7 +99,7 @@ services:
       - HMPPS_SQS_QUEUES_AUDIT_QUEUE_NAME=audit-queue
     depends_on:
       - postgres
-      - auth
+      - hmpps-auth
       - localstack
 
   postgres:
@@ -136,16 +138,22 @@ services:
       retries: 50
 
   wiremock:
-    image: wiremock/wiremock
+    image: wiremock/wiremock:3.3.1
     networks:
       - hmpps
     restart: always
     ports:
       - "9091:8080"
-    environment:
-      WIREMOCK_OPTIONS: "--verbose --max-request-journal-entries=1000"
     volumes:
-      - ./wiremock/delius:/home/wiremock/mappings
+      - ./wiremock/mappings:/home/wiremock/mappings
+    environment:
+      WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:8080
+      WIREMOCK_AAP_API_URL: http://api:8080
+      WIREMOCK_COORDINATOR_API_URL: http://arns-coordinator:8080
+      WIREMOCK_HANDOVER_URL: http://arns-handover:7070
+      WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
+      WIREMOCK_DELIUS_URL: http://delius-api:8080
+    command: --global-response-templating
 
 networks:
   hmpps:
