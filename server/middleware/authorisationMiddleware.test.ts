@@ -33,6 +33,9 @@ describe('authorisationMiddleware', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
+    req = {
+      authBypassed: false,
+    } as unknown as Request
   })
 
   it('should return next when no required roles', () => {
@@ -66,6 +69,16 @@ describe('authorisationMiddleware', () => {
     const res = createResWithToken({ authorities: ['ROLE_SOME_REQUIRED_ROLE'] })
 
     authorisationMiddleware(['ROLE_SOME_REQUIRED_ROLE'])(req, res, next)
+
+    expect(next).toHaveBeenCalled()
+    expect(res.redirect).not.toHaveBeenCalled()
+  })
+
+  it('should return next when authBypassed is true', () => {
+    req.authBypassed = true
+    const res = createResWithToken({ authorities: [] })
+
+    authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
 
     expect(next).toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()

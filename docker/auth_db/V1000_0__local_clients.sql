@@ -1,10 +1,14 @@
 -- Add auth client (auth_code flow) for local dev. Client secret is clientsecret
 INSERT INTO oauth_client_details (client_id, access_token_validity, additional_information, authorities, authorized_grant_types, autoapprove, client_secret, refresh_token_validity, resource_ids, scope, web_server_redirect_uri)
-VALUES ('hmpps-arns-assessment-platform-ui', 3600, '{}', null, 'authorization_code,refresh_token', 'read,write', '$2a$10$lBwbziQlLfiCnn8Kj1PfMujEcLdsJYlYSNJvBRO638gCYTS9yN0xm', 43200, null, 'read,write', 'http://localhost:3000/sign-in/callback,http://localhost:3000/sign-in/hmpps-auth/callback,http://ui:3000/sign-in/callback,http://ui:3000/sign-in/hmpps-auth/callback');
+VALUES ('hmpps-arns-assessment-platform-ui', 3600, '{}', null, 'authorization_code,refresh_token', 'read,write', '$2a$10$lBwbziQlLfiCnn8Kj1PfMujEcLdsJYlYSNJvBRO638gCYTS9yN0xm', 43200, null, 'read,write', 'http://localhost:3000,http://localhost:3000/sign-in/callback,http://localhost:3000/sign-in/hmpps-auth/callback,http://ui:3000,http://ui:3000/sign-in/callback,http://ui:3000/sign-in/hmpps-auth/callback');
 
 -- Add system client (S2S calls) for local dev with ARNS roles. Client secret is clientsecret
 INSERT INTO oauth_client_details (client_id, access_token_validity, additional_information, authorities, authorized_grant_types, autoapprove, client_secret, refresh_token_validity, resource_ids, scope, web_server_redirect_uri)
 VALUES ('hmpps-arns-assessment-platform-ui-system', 1200, '{}', 'ROLE_AAP__FRONTEND_RW,ROLE_ARNS_ASSESSMENTS_RW,ROLE_ASSESS_RISKS_AND_NEEDS_COORDINATOR_RW', 'client_credentials', 'read,write', '$2a$10$lBwbziQlLfiCnn8Kj1PfMujEcLdsJYlYSNJvBRO638gCYTS9yN0xm', 43200, null, 'read,write', null);
+
+-- Add E2E test client (S2S calls) for integration tests. Client secret is clientsecret
+INSERT INTO oauth_client_details (client_id, access_token_validity, additional_information, authorities, authorized_grant_types, autoapprove, client_secret, refresh_token_validity, resource_ids, scope, web_server_redirect_uri)
+VALUES ('hmpps-arns-assessment-platform-ui-e2e', 1200, '{}', 'ROLE_AAP__FRONTEND_RW,ROLE_ARNS_ASSESSMENTS_RW,ROLE_ASSESS_RISKS_AND_NEEDS_COORDINATOR_RW', 'client_credentials', 'read,write', '$2a$10$lBwbziQlLfiCnn8Kj1PfMujEcLdsJYlYSNJvBRO638gCYTS9yN0xm', 43200, null, 'read,write', null);
 
 -- Create custom roles for UI users
 INSERT INTO roles (role_id, role_code, role_name, create_datetime, role_description, admin_type)

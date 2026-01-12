@@ -6,10 +6,9 @@ import {
   MetadataComputationDependencies,
 } from '@form-engine/core/ast/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
-import { evaluateOperand } from '@form-engine/core/ast/thunks/evaluation'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
-
 import { ConditionalASTNode } from '@form-engine/core/types/expressions.type'
+import { evaluatePropertyValue, evaluatePropertyValueSync } from '@form-engine/core/ast/thunks/evaluation'
 
 /**
  * Handler for Conditional expression nodes (if-then-else logic)
@@ -72,16 +71,7 @@ export default class ConditionalHandler implements HybridThunkHandler {
     }
 
     const selectedValue = predicateResult.value ? this.node.properties.thenValue : this.node.properties.elseValue
-
-    let value: unknown
-
-    if (isASTNode(selectedValue)) {
-      const result = invoker.invokeSync(selectedValue.id, context)
-
-      value = result.error ? undefined : result.value
-    } else {
-      value = selectedValue
-    }
+    const value = evaluatePropertyValueSync(selectedValue, context, invoker)
 
     return { value }
   }
@@ -95,7 +85,7 @@ export default class ConditionalHandler implements HybridThunkHandler {
 
     const selectedValue = predicateResult.value ? this.node.properties.thenValue : this.node.properties.elseValue
 
-    const value = await evaluateOperand(selectedValue, context, invoker)
+    const value = await evaluatePropertyValue(selectedValue, context, invoker)
 
     return { value }
   }

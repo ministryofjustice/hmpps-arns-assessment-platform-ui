@@ -9,9 +9,9 @@ import {
 } from '@form-engine/core/ast/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
 import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
-import { evaluateOperand } from '@form-engine/core/ast/thunks/evaluation'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import ThunkLookupError from '@form-engine/errors/ThunkLookupError'
+import { evaluatePropertyValue, evaluatePropertyValueSync } from '@form-engine/core/ast/thunks/evaluation'
 
 /**
  * Handler for Effect expression nodes (FunctionType.EFFECT)
@@ -62,15 +62,7 @@ export default class EffectHandler implements HybridThunkHandler {
     const rawArguments = this.node.properties.arguments
 
     // Evaluate all arguments
-    const args = rawArguments.map(arg => {
-      if (isASTNode(arg)) {
-        const result = invoker.invokeSync(arg.id, context)
-
-        return result.error ? undefined : result.value
-      }
-
-      return arg
-    })
+    const args = rawArguments.map(arg => evaluatePropertyValueSync(arg, context, invoker))
 
     // Look up effect function
     const effectFn = context.functionRegistry.get(effectName)
@@ -99,7 +91,7 @@ export default class EffectHandler implements HybridThunkHandler {
     const rawArguments = this.node.properties.arguments
 
     // Evaluate all arguments
-    const args = await Promise.all(rawArguments.map(arg => evaluateOperand(arg, context, invoker)))
+    const args = await Promise.all(rawArguments.map(arg => evaluatePropertyValue(arg, context, invoker)))
 
     // Look up effect function
     const effectFn = context.functionRegistry.get(effectName)

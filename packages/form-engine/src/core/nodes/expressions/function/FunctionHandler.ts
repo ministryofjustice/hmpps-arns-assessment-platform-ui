@@ -9,9 +9,9 @@ import {
 import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
 import ThunkLookupError from '@form-engine/errors/ThunkLookupError'
 import ThunkEvaluationError from '@form-engine/errors/ThunkEvaluationError'
-import { evaluateOperand } from '@form-engine/core/ast/thunks/evaluation'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import { FunctionType } from '@form-engine/form/types/enums'
+import { evaluatePropertyValue, evaluatePropertyValueSync } from '@form-engine/core/ast/thunks/evaluation'
 
 /**
  * Handler for Function expression nodes
@@ -90,15 +90,7 @@ export default class FunctionHandler implements HybridThunkHandler {
     }
 
     // Evaluate all arguments (AST nodes invoked, primitives passed through)
-    const evaluatedArguments = rawArguments.map(arg => {
-      if (isASTNode(arg)) {
-        const result = invoker.invokeSync(arg.id, context)
-
-        return result.error ? undefined : result.value
-      }
-
-      return arg
-    })
+    const evaluatedArguments = rawArguments.map(arg => evaluatePropertyValueSync(arg, context, invoker))
 
     // Call the function - generators don't receive a first argument from scope
     try {
@@ -128,7 +120,7 @@ export default class FunctionHandler implements HybridThunkHandler {
     }
 
     // Evaluate all arguments (AST nodes invoked, primitives passed through)
-    const evaluatedArguments = await Promise.all(rawArguments.map(arg => evaluateOperand(arg, context, invoker)))
+    const evaluatedArguments = await Promise.all(rawArguments.map(arg => evaluatePropertyValue(arg, context, invoker)))
 
     // Call the function - generators don't receive a first argument from scope
     try {
