@@ -10,7 +10,7 @@ APP_VERSION ?= local
 
 ## Compose files to stack on each other
 DEV_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.local.yml
-TEST_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml
+CI_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml
 PROD_COMPOSE_FILES = -f docker/docker-compose.base.yml
 
 export APP_VERSION
@@ -43,28 +43,17 @@ down: ## Stops and removes all containers in the project.
 test: ## Runs the unit test suite.
 	docker compose exec ${SERVICE_NAME} npm run test
 
-e2e-docker: ## Run Playwright tests in Docker container against application running in Docker
-	echo "Running Playwright tests in Docker container..."
-	export HMPPS_AUTH_EXTERNAL_URL=http://wiremock:8080/auth && \
-	export HMPPS_ARNS_HANDOVER_EXTERNAL_URL=http://wiremock:8080 && \
-	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME) && \
-	docker compose $(TEST_COMPOSE_FILES) down && \
-	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait && \
-	docker compose $(TEST_COMPOSE_FILES) run --rm playwright
+e2e: ## Run Playwright tests locally (dev environment must be running).
+	npx playwright test --reporter=list
 
-e2e-local: ## Run Playwright tests locally against application running in Docker
-	echo "Running Playwright tests locally..."
-	docker compose $(TEST_COMPOSE_FILES) build $(SERVICE_NAME)
-	docker compose $(TEST_COMPOSE_FILES) down
-	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
-	npx playwright test
+e2e-ui: ## Run Playwright tests with UI mode (dev environment must be running).
+	npx playwright test --ui
 
-e2e-ui: ## Run Playwright UI against application running in Docker
-	echo "Running Playwright tests locally..."
-	export HMPPS_ARNS_HANDOVER_URL=http://wiremock:8080 && \
-	export HMPPS_ARNS_HANDOVER_EXTERNAL_URL=http://localhost:9091 && \
-	docker compose $(DEV_COMPOSE_FILES) up $(SERVICE_NAME) wiremock --wait
-	ENVIRONMENT='e2e-ui' npx playwright test --ui
+e2e-ci: ## Run Playwright tests in Docker container (for CI).
+	echo "Running Playwright tests in CI..."
+	docker compose $(CI_COMPOSE_FILES) build $(SERVICE_NAME) && \
+	docker compose $(CI_COMPOSE_FILES) up $(SERVICE_NAME) --wait && \
+	docker compose $(CI_COMPOSE_FILES) run --rm playwright
 
 lint: ## Runs the linter.
 	docker compose exec ${SERVICE_NAME} npm run lint

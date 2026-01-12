@@ -2,34 +2,54 @@
 # to support a fully self-contained local development environment.
 
 services:
+  wiremock:
+    image: wiremock/wiremock:3.3.1
+    networks:
+      - hmpps
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: always
+    ports:
+      - "9091:8080"
+    volumes:
+      - ./wiremock/mappings:/home/wiremock/mappings
+    environment:
+      WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:8080
+      WIREMOCK_AAP_API_URL: http://api:8080
+      WIREMOCK_COORDINATOR_API_URL: http://arns-coordinator:8080
+      WIREMOCK_HANDOVER_URL: http://arns-handover:7070
+      WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
+    command: --global-response-templating
+
   ui:
     build:
       target: development
     command: npm run start:dev
     depends_on:
-      - redis
-      - api
       - wiremock
+      - redis
+      - hmpps-auth
     volumes:
       - ../:/app:cached
       - node_modules:/app/node_modules
     environment:
-      TOKEN_VERIFICATION_ENABLED: false
-      TOKEN_VERIFICATION_API_URL: http://localhost:9090/verification
-      HMPPS_AUTH_URL: http://auth:8080/auth
+      NODE_ENV: development
+      NODE_CLUSTER_ENABLED: false
+      ENVIRONMENT_NAME: dev
+      HMPPS_AUTH_URL: http://wiremock:8080/auth
       HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
-      HMPPS_ARNS_HANDOVER_URL: ${HMPPS_ARNS_HANDOVER_URL:-http://arns-handover:7070}
-      HMPPS_ARNS_HANDOVER_EXTERNAL_URL: ${HMPPS_ARNS_HANDOVER_EXTERNAL_URL:-http://localhost:7070}
+      HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080/handover
+      HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
+      AAP_API_URL: http://wiremock:8080/aap-api
+      COORDINATOR_API_URL: http://wiremock:8080/coordinator-api
+      TOKEN_VERIFICATION_API_URL: http://wiremock:8080/verification
+      TOKEN_VERIFICATION_ENABLED: true
+      INGRESS_URL: http://localhost:3000
       HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
       HMPPS_ARNS_HANDOVER_CLIENT_SECRET: aap-secret
-      AAP_API_URL: http://api:8080
-      DELIUS_API_URL: http://wiremock:8080
-      COORDINATOR_API_URL: http://arns-coordinator:8080
-      NODE_ENV: 'development'
-      ENVIRONMENT_NAME: dev
-      NODE_CLUSTER_ENABLED: false
 
 volumes:
   node_modules:
-    external: true # volume gets setup by `make install-node-modules`
+    external: true
     name: ${COMPOSE_PROJECT_NAME}_node_modules

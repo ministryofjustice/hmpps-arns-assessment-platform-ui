@@ -1,0 +1,11 @@
+{
+  "name": "Proxy to ARNS Handover",
+  "request": {
+    "urlPattern": "/handover/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "{{systemValue type='ENVIRONMENT' key='WIREMOCK_HANDOVER_URL'}}",
+    "proxyUrlPrefixToRemove": "/handover"
+  },
+  "priority": 100
+}
