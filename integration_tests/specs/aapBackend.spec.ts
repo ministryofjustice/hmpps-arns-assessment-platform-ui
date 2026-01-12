@@ -21,9 +21,7 @@ test.describe('AAP Backend', () => {
     // Arrange
     const builder = new AssessmentBuilder()
       .ofType('E2E_TEST')
-      .withCollection('items', collection =>
-        collection.withItem(item => item.withAnswer('description', 'Test item')),
-      )
+      .withCollection('items', collection => collection.withItem(item => item.withAnswer('description', 'Test item')))
 
     // Act
     const assessment = await builder.create(aapClient)
@@ -38,7 +36,12 @@ test.describe('AAP Backend', () => {
 
   test('can create an assessment with custom CRN', async ({ aapClient }) => {
     // Arrange
-    const customCrn = 'X123456'
+    const letter = String.fromCharCode(65 + Math.floor(Math.random() * 26))
+    const digits = Math.floor(Math.random() * 1000000)
+      .toString()
+      .padStart(6, '0')
+    const customCrn = `${letter}${digits}`
+
     const builder = new AssessmentBuilder().ofType('E2E_TEST').forCrn(customCrn)
 
     // Act

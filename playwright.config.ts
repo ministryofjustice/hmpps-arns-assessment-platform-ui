@@ -21,12 +21,10 @@ export default defineConfig<PlaywrightExtendedConfig>({
   testDir: './integration_tests/specs',
   /* Maximum time one test can run for. (millis) */
   timeout: 3 * 60 * 1000,
-  /* Maximum time test suite can run for. (millis) */
+  /* Maximum time test suite canm run for. (millis) */
   globalTimeout: 60 * 60 * 1000,
-  /* Run tests in files in parallel */
-  fullyParallel: false,
-  /* Ensure tests run consecutively due to inability to share wiremock instance */
-  workers: 1,
+  fullyParallel: true,
+  workers: 6,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -41,7 +39,12 @@ export default defineConfig<PlaywrightExtendedConfig>({
   use: {
     actionTimeout: 30 /* seconds */ * 1000,
     timezoneId: 'Europe/London',
-    launchOptions: { slowMo: 150 },
+    launchOptions: {
+      slowMo: 150,
+      args: process.env.CI
+        ? ['--unsafely-treat-insecure-origin-as-secure=http://hmpps-auth:8080,http://ui:3000,http://wiremock:8080']
+        : [],
+    },
     screenshot: 'only-on-failure',
     trace: process.env.CI ? 'off' : 'on',
     ...devices['Desktop Chrome'],
@@ -61,5 +64,17 @@ export default defineConfig<PlaywrightExtendedConfig>({
   },
 
   /* Configure projects */
-  projects: [{ name: 'default' }],
+  projects: [
+    {
+      name: 'parallel',
+      grepInvert: /@serial/,
+    },
+    {
+      name: 'serial',
+      grep: /@serial/,
+      dependencies: ['parallel'],
+      fullyParallel: false,
+      workers: 1,
+    },
+  ],
 })
