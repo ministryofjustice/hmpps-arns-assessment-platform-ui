@@ -1,26 +1,31 @@
 {
   "mappings": [
     {
+      "name": "Delius case-details - not found",
       "request": {
-        "url": "/case-details/NOTFOUND",
+        "url": "/delius/case-details/NOTFOUND",
         "method": "GET"
       },
       "response": {
         "status": 404
-      }
+      },
+      "priority": 10
     },
     {
+      "name": "Delius case-details - server error",
       "request": {
-        "url": "/case-details/SERVERERROR",
+        "url": "/delius/case-details/SERVERERROR",
         "method": "GET"
       },
       "response": {
         "status": 500
-      }
+      },
+      "priority": 10
     },
     {
+      "name": "Delius case-details - X123456",
       "request": {
-        "urlPattern": "/case-details/X123456",
+        "urlPattern": "/delius/case-details/X123456",
         "method": "GET"
       },
       "response": {
@@ -64,12 +69,13 @@
             }
           ]
         }
-      }
+      },
+      "priority": 20
     },
     {
-      "priority": 2147483647,
+      "name": "Delius case-details - default",
       "request": {
-        "urlPattern": "/case-details/(?!NOTFOUND$|SERVERERROR$).*",
+        "urlPattern": "/delius/case-details/(?!NOTFOUND$|SERVERERROR$).*",
         "method": "GET"
       },
       "response": {
@@ -113,7 +119,8 @@
             }
           ]
         }
-      }
+      },
+      "priority": 50
     }
   ]
 }
