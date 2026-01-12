@@ -1,6 +1,5 @@
-import { expect, test } from '@playwright/test'
-import { resetStubs } from '../../testUtils'
-import aapApi from '../../mockApis/aapApi'
+import { expect } from '@playwright/test'
+import { test } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
@@ -9,22 +8,15 @@ import { loginAndNavigateToPlan } from './sentencePlanUtils'
 /**
  * Integration tests for the Create Goal journey
  *
- * Tests the full flow of creating a goal with and without steps,
+ * Tests the full flow of creating a goal manually via the UI,
  * including validation and conditional field behaviour.
+ *
+ * These tests use the real AAP API - goals are created through
+ * the UI forms rather than via API fixtures.
  */
 test.describe('Create Goal Journey', () => {
-  test.beforeEach(async () => {
-    await aapApi.stubSentencePlanApis()
-  })
-
-  test.afterEach(async () => {
-    await resetStubs()
-  })
-
   test.describe('Create Goal with Steps', () => {
     test('can create a goal and add steps - happy path', async ({ page }) => {
-      // Login via HMPPS Auth and navigate to plan overview
-      // TODO: This is a temporary workaround until the handover/OASys stub is properly configured
       await loginAndNavigateToPlan(page)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -45,7 +37,13 @@ test.describe('Create Goal Journey', () => {
 
       await addStepsPage.clickSaveAndContinue()
 
+      // Verify goal was created and we're back on plan overview
       await expect(page).toHaveURL(/\/plan\/overview/)
+      const updatedPlanOverview = await PlanOverviewPage.verifyOnPage(page)
+
+      // Verify the goal appears on the page
+      const goalTitle = await updatedPlanOverview.getGoalCardTitle(0)
+      expect(goalTitle).toContain('Find stable accommodation')
     })
 
     test('can add multiple steps to a goal', async ({ page }) => {
@@ -71,7 +69,13 @@ test.describe('Create Goal Journey', () => {
 
       await addStepsPage.clickSaveAndContinue()
 
+      // Verify goal was created with steps
       await expect(page).toHaveURL(/\/plan\/overview/)
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      const goalCard = await planOverviewPage.getGoalCardByIndex(0)
+      await expect(goalCard).toContainText('Contact housing services')
+      await expect(goalCard).toContainText('Attend housing appointment')
     })
 
     test('can remove a step when multiple exist', async ({ page }) => {
@@ -127,6 +131,11 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.clickSaveWithoutSteps()
 
       await expect(page).toHaveURL(/type=future/)
+
+      // Verify goal appears in future goals tab
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      const goalTitle = await planOverviewPage.getGoalCardTitle(0)
+      expect(goalTitle).toContain('Future goal')
     })
 
     test('current goal redirects to current goals tab', async ({ page }) => {
@@ -142,6 +151,11 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.clickSaveWithoutSteps()
 
       await expect(page).toHaveURL(/type=current/)
+
+      // Verify goal appears in current goals tab
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      const goalTitle = await planOverviewPage.getGoalCardTitle(0)
+      expect(goalTitle).toContain('Current goal')
     })
   })
 

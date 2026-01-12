@@ -29,3 +29,19 @@ export const getDatePlusMonthsAsString = (months: number) => {
   date.setMonth(date.getMonth() + months)
   return date.toLocaleDateString('en-GB')
 }
+
+/**
+ * Extracts the assessment UUID from the page.
+ * The UUID is exposed via a data attribute on the page for testing purposes.
+ *
+ * @param page Playwright page
+ * @returns The assessment UUID
+ * @throws Error if the UUID cannot be found
+ */
+export const getAssessmentUuid = async (page: Page): Promise<string> => {
+  const uuid = await page.locator('[data-qa-assessment-uuid]').getAttribute('data-qa-assessment-uuid')
+  if (!uuid) {
+    throw new Error('Could not find assessment UUID on page. Ensure the page has loaded correctly.')
+  }
+  return uuid
+}
