@@ -13,7 +13,10 @@ describe('QueryWiring', () => {
 
   function createMockWiringContext(stepNode: StepASTNode): jest.Mocked<WiringContext> {
     return {
-      findPseudoNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn().mockReturnValue(undefined),
+      },
       findReferenceNodes: jest.fn().mockReturnValue([]),
       graph: mockGraph,
       getCurrentStepNode: jest.fn().mockReturnValue(stepNode),
@@ -38,7 +41,7 @@ describe('QueryWiring', () => {
       const queryNode = ASTTestFactory.queryPseudoNode('redirect_url')
       const queryRef = ASTTestFactory.reference(['query', 'redirect_url'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.QUERY)
         .mockReturnValue([queryNode])
 
@@ -64,7 +67,7 @@ describe('QueryWiring', () => {
       const queryRef1 = ASTTestFactory.reference(['query', 'redirect_url'])
       const queryRef2 = ASTTestFactory.reference(['query', 'session_id'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.QUERY)
         .mockReturnValue([queryNode1, queryNode2])
 
@@ -94,7 +97,7 @@ describe('QueryWiring', () => {
       const queryRef2 = ASTTestFactory.reference(['query', 'user_id'])
       const queryRef3 = ASTTestFactory.reference(['query', 'user_id'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.QUERY)
         .mockReturnValue([queryNode])
 
@@ -124,7 +127,7 @@ describe('QueryWiring', () => {
     describe('edge cases', () => {
       it('should handle no query pseudo nodes', () => {
         // Arrange
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.QUERY)
           .mockReturnValue([])
 
@@ -140,7 +143,7 @@ describe('QueryWiring', () => {
         const queryNode = ASTTestFactory.queryPseudoNode('param')
         const invalidRef = ASTTestFactory.reference(['query']) // Missing param name
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.QUERY)
           .mockReturnValue([queryNode])
 
@@ -160,7 +163,7 @@ describe('QueryWiring', () => {
         const queryNode = ASTTestFactory.queryPseudoNode('redirect_url')
         const differentParamRef = ASTTestFactory.reference(['query', 'session_id'])
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.QUERY)
           .mockReturnValue([queryNode])
 
@@ -179,7 +182,7 @@ describe('QueryWiring', () => {
         // Arrange
         const queryNode = ASTTestFactory.queryPseudoNode('unused_param')
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.QUERY)
           .mockReturnValue([queryNode])
 
@@ -202,7 +205,7 @@ describe('QueryWiring', () => {
         const queryRef1 = ASTTestFactory.reference(['query', 'redirect_url'])
         const queryRef2 = ASTTestFactory.reference(['query', 'user_id']) // No matching node
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.QUERY)
           .mockReturnValue([queryNode1, queryNode2])
 

@@ -43,7 +43,7 @@ export default class SubmitWiring {
 
   private wireOnSubmitTransitions() {
     // Find all steps in the registry and wire their onSubmission transitions
-    const submitTransitions = this.wiringContext.findNodesByType<TransitionASTNode>(ASTNodeType.TRANSITION)
+    const submitTransitions = this.wiringContext.nodeRegistry.findByType<TransitionASTNode>(ASTNodeType.TRANSITION)
       .filter(isSubmitTransitionNode)
 
     submitTransitions.forEach(submitTransitionNode => {
@@ -119,7 +119,7 @@ export default class SubmitWiring {
     }
 
     // Find all validation expressions that are descendants of this specific step
-    const validationNodes = this.wiringContext.findNodesByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
+    const validationNodes = this.wiringContext.nodeRegistry.findByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
       .filter(node => node.expressionType === ExpressionType.VALIDATION)
       .filter(node => this.isDescendantOf(node.id, parentStep.id))
 

@@ -14,7 +14,10 @@ describe('PipelineWiring', () => {
 
   function createMockWiringContext(): jest.Mocked<WiringContext> {
     return {
-      findNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn(),
+      },
       graph: mockGraph,
     } as unknown as jest.Mocked<WiringContext>
   }
@@ -43,7 +46,7 @@ describe('PipelineWiring', () => {
         .withProperty('steps', [transformer1, transformer2])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([pipelineNode])
 
@@ -73,7 +76,7 @@ describe('PipelineWiring', () => {
         .withProperty('steps', [])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([pipelineNode])
 
@@ -97,7 +100,7 @@ describe('PipelineWiring', () => {
         .withProperty('steps', [transformer1, transformer2])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([pipelineNode])
 
@@ -127,7 +130,7 @@ describe('PipelineWiring', () => {
         .withProperty('steps', [transformer1, 'literal-transformer', transformer2, null])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([pipelineNode])
 
@@ -152,7 +155,7 @@ describe('PipelineWiring', () => {
     describe('edge cases', () => {
       it('should handle empty expression nodes array', () => {
         // Arrange
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.EXPRESSION)
           .mockReturnValue([])
 
@@ -167,7 +170,7 @@ describe('PipelineWiring', () => {
         // Arrange
         const pipelineNode = ASTTestFactory.expression<PipelineASTNode>(ExpressionType.PIPELINE).build()
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.EXPRESSION)
           .mockReturnValue([pipelineNode])
 
@@ -189,7 +192,7 @@ describe('PipelineWiring', () => {
           .withProperty('steps', [])
           .build()
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.EXPRESSION)
           .mockReturnValue([conditionalNode, referenceNode, pipelineNode] as ExpressionASTNode[])
 

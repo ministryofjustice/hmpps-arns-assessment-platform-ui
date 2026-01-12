@@ -14,7 +14,10 @@ describe('NextWiring', () => {
 
   function createMockWiringContext(): jest.Mocked<WiringContext> {
     return {
-      findNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn(),
+      },
       graph: mockGraph,
     } as unknown as jest.Mocked<WiringContext>
   }
@@ -41,7 +44,7 @@ describe('NextWiring', () => {
         .withProperty('goto', 'step-2')
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([nextNode])
 
@@ -62,7 +65,7 @@ describe('NextWiring', () => {
         .withProperty('goto', gotoNode)
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([nextNode])
 
@@ -85,7 +88,7 @@ describe('NextWiring', () => {
         .withProperty('goto', gotoNode)
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([nextNode])
 
@@ -108,7 +111,7 @@ describe('NextWiring', () => {
         .withProperty('goto', 'step-2')
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([nextNode])
 
@@ -125,7 +128,7 @@ describe('NextWiring', () => {
         .withProperty('goto', 'step-2')
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([nextNode])
 
@@ -151,7 +154,7 @@ describe('NextWiring', () => {
         .withProperty('goto', 'step-3')
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([nextNode1, nextNode2])
 

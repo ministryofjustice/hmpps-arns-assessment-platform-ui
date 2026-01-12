@@ -13,7 +13,10 @@ describe('ParamsWiring', () => {
 
   function createMockWiringContext(stepNode: StepASTNode): jest.Mocked<WiringContext> {
     return {
-      findPseudoNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn().mockReturnValue(undefined),
+      },
       findReferenceNodes: jest.fn().mockReturnValue([]),
       graph: mockGraph,
       getCurrentStepNode: jest.fn().mockReturnValue(stepNode),
@@ -38,7 +41,7 @@ describe('ParamsWiring', () => {
       const paramsNode = ASTTestFactory.paramsPseudoNode('journey_id')
       const paramsRef = ASTTestFactory.reference(['params', 'journey_id'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.PARAMS)
         .mockReturnValue([paramsNode])
 
@@ -64,7 +67,7 @@ describe('ParamsWiring', () => {
       const paramsRef1 = ASTTestFactory.reference(['params', 'journey_id'])
       const paramsRef2 = ASTTestFactory.reference(['params', 'step_id'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.PARAMS)
         .mockReturnValue([paramsNode1, paramsNode2])
 
@@ -94,7 +97,7 @@ describe('ParamsWiring', () => {
       const paramsRef2 = ASTTestFactory.reference(['params', 'journey_id'])
       const paramsRef3 = ASTTestFactory.reference(['params', 'journey_id'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.PARAMS)
         .mockReturnValue([paramsNode])
 
@@ -124,7 +127,7 @@ describe('ParamsWiring', () => {
     describe('edge cases', () => {
       it('should handle no params pseudo nodes', () => {
         // Arrange
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.PARAMS)
           .mockReturnValue([])
 
@@ -140,7 +143,7 @@ describe('ParamsWiring', () => {
         const paramsNode = ASTTestFactory.paramsPseudoNode('param')
         const invalidRef = ASTTestFactory.reference(['params']) // Missing param name
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.PARAMS)
           .mockReturnValue([paramsNode])
 
@@ -160,7 +163,7 @@ describe('ParamsWiring', () => {
         const paramsNode = ASTTestFactory.paramsPseudoNode('journey_id')
         const differentParamRef = ASTTestFactory.reference(['params', 'step_id'])
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.PARAMS)
           .mockReturnValue([paramsNode])
 
@@ -179,7 +182,7 @@ describe('ParamsWiring', () => {
         // Arrange
         const paramsNode = ASTTestFactory.paramsPseudoNode('unused_param')
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.PARAMS)
           .mockReturnValue([paramsNode])
 
@@ -202,7 +205,7 @@ describe('ParamsWiring', () => {
         const paramsRef1 = ASTTestFactory.reference(['params', 'journey_id'])
         const paramsRef2 = ASTTestFactory.reference(['params', 'user_id']) // No matching node
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.PARAMS)
           .mockReturnValue([paramsNode1, paramsNode2])
 

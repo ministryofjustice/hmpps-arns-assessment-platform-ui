@@ -1,5 +1,6 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
-import { AnswerLocalPseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
+import { getPseudoNodeKey } from '@form-engine/core/ast/registration/pseudoNodeKeyExtractor'
+import { AnswerLocalPseudoNode, PostPseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
 import { FieldBlockASTNode } from '@form-engine/core/types/structures.type'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import {
@@ -444,9 +445,10 @@ export default class AnswerLocalHandler implements HybridThunkHandler {
 
   /**
    * Find POST pseudo node for the given field code
-   * Uses O(1) indexed lookup instead of linear scan
    */
   private findPostPseudoNode(context: ThunkEvaluationContext, baseFieldCode: string) {
-    return context.nodeRegistry.findPseudoNode(PseudoNodeType.POST, baseFieldCode)
+    return context.nodeRegistry
+      .findByType<PostPseudoNode>(PseudoNodeType.POST)
+      .find(node => getPseudoNodeKey(node) === baseFieldCode)
   }
 }

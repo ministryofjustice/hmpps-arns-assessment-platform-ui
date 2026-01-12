@@ -15,13 +15,12 @@ describe('AnswerRemoteWiring', () => {
 
   function createMockWiringContext(stepNode: StepASTNode): jest.Mocked<WiringContext> {
     return {
-      findPseudoNodesByType: jest.fn().mockReturnValue([]),
-      findPseudoNode: jest.fn().mockReturnValue(undefined),
-      findReferenceNodes: jest.fn().mockReturnValue([]),
-      findLastOnLoadTransitionFrom: jest.fn().mockReturnValue(undefined),
       nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
         get: jest.fn().mockReturnValue(undefined),
       },
+      findReferenceNodes: jest.fn().mockReturnValue([]),
+      findLastOnLoadTransitionFrom: jest.fn().mockReturnValue(undefined),
       graph: mockGraph,
       getCurrentStepNode: jest.fn().mockReturnValue(stepNode),
     } as unknown as jest.Mocked<WiringContext>
@@ -51,7 +50,7 @@ describe('AnswerRemoteWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new AnswerRemoteWiring(mockWiringContext)
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_REMOTE)
         .mockReturnValue([answerRemote])
 
@@ -73,7 +72,7 @@ describe('AnswerRemoteWiring', () => {
       const answerRemote = ASTTestFactory.answerRemotePseudoNode('previousField')
       const answerRef = ASTTestFactory.reference(['answers', 'previousField'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_REMOTE)
         .mockReturnValue([answerRemote])
 
@@ -94,7 +93,7 @@ describe('AnswerRemoteWiring', () => {
       const answerRemote = ASTTestFactory.answerRemotePseudoNode('address')
       const answerRef = ASTTestFactory.reference(['answers', 'address', 'postcode'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_REMOTE)
         .mockReturnValue([answerRemote])
 
@@ -112,7 +111,7 @@ describe('AnswerRemoteWiring', () => {
 
     it('should handle no answer remote pseudo nodes', () => {
       // Arrange
-      when(mockWiringContext.findPseudoNodesByType).calledWith(PseudoNodeType.ANSWER_REMOTE).mockReturnValue([])
+      when(mockWiringContext.nodeRegistry.findByType).calledWith(PseudoNodeType.ANSWER_REMOTE).mockReturnValue([])
 
       // Act
       wiring.wire()
@@ -126,7 +125,7 @@ describe('AnswerRemoteWiring', () => {
       const answerRemote = ASTTestFactory.answerRemotePseudoNode('field')
       const invalidRef = ASTTestFactory.reference(['answers']) // Missing field name
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_REMOTE)
         .mockReturnValue([answerRemote])
 
@@ -144,7 +143,7 @@ describe('AnswerRemoteWiring', () => {
       const answerRemote = ASTTestFactory.answerRemotePseudoNode('firstName')
       const differentFieldRef = ASTTestFactory.reference(['answers', 'lastName'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_REMOTE)
         .mockReturnValue([answerRemote])
 

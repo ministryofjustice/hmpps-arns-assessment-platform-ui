@@ -24,7 +24,7 @@ export default class NextWiring {
    * Wire all next expressions to their dependencies
    */
   wire() {
-    const expressionNodes = this.wiringContext.findNodesByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
+    const expressionNodes = this.wiringContext.nodeRegistry.findByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
 
     expressionNodes
       .filter(isNextExprNode)

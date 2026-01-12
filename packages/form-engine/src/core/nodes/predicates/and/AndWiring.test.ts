@@ -13,7 +13,10 @@ describe('AndWiring', () => {
 
   function createMockWiringContext(): jest.Mocked<WiringContext> {
     return {
-      findNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn(),
+      },
       graph: mockGraph,
     } as unknown as jest.Mocked<WiringContext>
   }
@@ -45,7 +48,7 @@ describe('AndWiring', () => {
         .withProperty('operands', [predicate1, predicate2])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([andExpr, predicate1, predicate2])
 
@@ -74,7 +77,7 @@ describe('AndWiring', () => {
         .withProperty('operands', [predicate1, true, 'literal'])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([andExpr])
 
@@ -96,7 +99,7 @@ describe('AndWiring', () => {
         .withProperty('operands', [])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([andExpr])
 
@@ -113,7 +116,7 @@ describe('AndWiring', () => {
         .withProperty('operands', [])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([orExpr])
 

@@ -13,7 +13,10 @@ describe('FormatWiring', () => {
 
   function createMockWiringContext(): jest.Mocked<WiringContext> {
     return {
-      findNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn(),
+      },
       graph: mockGraph,
     } as unknown as jest.Mocked<WiringContext>
   }
@@ -42,7 +45,7 @@ describe('FormatWiring', () => {
         .withProperty('arguments', [arg1, arg2, arg3])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([formatExpr])
 
@@ -74,7 +77,7 @@ describe('FormatWiring', () => {
         .withProperty('arguments', [arg1, arg2, 25])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([formatExpr])
 
@@ -108,7 +111,7 @@ describe('FormatWiring', () => {
         .withProperty('arguments', [outerArg, innerFormat])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([outerFormat, innerFormat, outerArg, innerArg])
 

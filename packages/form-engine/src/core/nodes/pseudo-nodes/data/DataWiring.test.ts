@@ -15,7 +15,10 @@ describe('DataWiring', () => {
 
   function createMockWiringContext(stepNode: StepASTNode): jest.Mocked<WiringContext> {
     return {
-      findPseudoNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn().mockReturnValue(undefined),
+      },
       findReferenceNodes: jest.fn().mockReturnValue([]),
       findLastOnLoadTransitionFrom: jest.fn().mockReturnValue(undefined),
       graph: mockGraph,
@@ -49,7 +52,7 @@ describe('DataWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new DataWiring(mockWiringContext)
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.DATA)
         .mockReturnValue([dataNode])
 
@@ -79,7 +82,7 @@ describe('DataWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new DataWiring(mockWiringContext)
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.DATA)
         .mockReturnValue([dataNode])
 
@@ -105,7 +108,7 @@ describe('DataWiring', () => {
       const dataNode = ASTTestFactory.dataPseudoNode('externalField')
       const dataRef = ASTTestFactory.reference(['data', 'externalField'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.DATA)
         .mockReturnValue([dataNode])
 
@@ -132,7 +135,7 @@ describe('DataWiring', () => {
       const dataNode = ASTTestFactory.dataPseudoNode('user')
       const dataRef = ASTTestFactory.reference(['data', 'user', 'name'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.DATA)
         .mockReturnValue([dataNode])
 
@@ -160,7 +163,7 @@ describe('DataWiring', () => {
         const dataNode = ASTTestFactory.dataPseudoNode('field')
         const invalidRef = ASTTestFactory.reference(['data']) // Missing field name
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.DATA)
           .mockReturnValue([dataNode])
 
@@ -184,7 +187,7 @@ describe('DataWiring', () => {
         const dataNode = ASTTestFactory.dataPseudoNode('user')
         const differentFieldRef = ASTTestFactory.reference(['data', 'settings'])
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.DATA)
           .mockReturnValue([dataNode])
 
@@ -212,7 +215,7 @@ describe('DataWiring', () => {
         mockWiringContext = createMockWiringContext(step)
         wiring = new DataWiring(mockWiringContext)
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.DATA)
           .mockReturnValue([dataNode])
 
@@ -242,7 +245,7 @@ describe('DataWiring', () => {
         mockWiringContext = createMockWiringContext(step)
         wiring = new DataWiring(mockWiringContext)
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.DATA)
           .mockReturnValue([dataNode])
 
@@ -272,7 +275,7 @@ describe('DataWiring', () => {
         mockWiringContext = createMockWiringContext(step)
         wiring = new DataWiring(mockWiringContext)
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.DATA)
           .mockReturnValue([dataNode])
 
@@ -307,7 +310,7 @@ describe('DataWiring', () => {
         mockWiringContext = createMockWiringContext(step)
         wiring = new DataWiring(mockWiringContext)
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.DATA)
           .mockReturnValue([dataNode])
 

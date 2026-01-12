@@ -48,7 +48,7 @@ export default class LoadWiring {
    */
   private wireSameDepthTransitions() {
     // Wire each ancestor Journey's array of on load transitions together
-    const ancestorJourneys = this.wiringContext.findNodesByType<JourneyASTNode>(ASTNodeType.JOURNEY)
+    const ancestorJourneys = this.wiringContext.nodeRegistry.findByType<JourneyASTNode>(ASTNodeType.JOURNEY)
       .filter(journey => this.wiringContext.metadataRegistry.get(journey.id, 'isAncestorOfStep'))
 
     ancestorJourneys.forEach(journey => {
@@ -70,7 +70,7 @@ export default class LoadWiring {
    */
   private wireCrossDepthTransitions() {
     // Get ancestor journeys
-    const ancestorJourneys = this.wiringContext.findNodesByType<JourneyASTNode>(ASTNodeType.JOURNEY)
+    const ancestorJourneys = this.wiringContext.nodeRegistry.findByType<JourneyASTNode>(ASTNodeType.JOURNEY)
       .filter(journey => this.wiringContext.metadataRegistry.get(journey.id, 'isAncestorOfStep'))
 
     // Add their depth information

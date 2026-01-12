@@ -24,7 +24,7 @@ export default class PipelineWiring {
    * Wire all pipeline expressions to their input and transformer nodes
    */
   wire() {
-    const expressionNodes = this.wiringContext.findNodesByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
+    const expressionNodes = this.wiringContext.nodeRegistry.findByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
 
     expressionNodes
       .filter(isPipelineExprNode)

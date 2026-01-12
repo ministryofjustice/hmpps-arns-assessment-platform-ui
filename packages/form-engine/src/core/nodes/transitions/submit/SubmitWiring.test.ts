@@ -23,12 +23,12 @@ describe('SubmitWiring', () => {
     } as unknown as jest.Mocked<DependencyGraph>
 
     mockNodeRegistry = {
+      findByType: jest.fn().mockReturnValue([]),
       get: jest.fn(),
     } as unknown as jest.Mocked<NodeRegistry>
 
     mockWiringContext = {
       graph: mockGraph,
-      findNodesByType: jest.fn(),
       nodeRegistry: mockNodeRegistry,
       getParentNode: jest.fn(),
       isDescendantOfStep: jest.fn(),
@@ -44,7 +44,7 @@ describe('SubmitWiring', () => {
         const transition1 = ASTTestFactory.transition(TransitionType.SUBMIT).build() as SubmitTransitionASTNode
         const transition2 = ASTTestFactory.transition(TransitionType.SUBMIT).build() as SubmitTransitionASTNode
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.TRANSITION)
           .mockReturnValue([transition1, transition2])
 
@@ -70,7 +70,7 @@ describe('SubmitWiring', () => {
           .withProperty('when', whenPredicate)
           .build() as SubmitTransitionASTNode
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.TRANSITION)
           .mockReturnValue([transition])
 
@@ -97,7 +97,7 @@ describe('SubmitWiring', () => {
           .withProperty('guards', guardsPredicate)
           .build() as SubmitTransitionASTNode
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.TRANSITION)
           .mockReturnValue([transition])
 
@@ -128,11 +128,11 @@ describe('SubmitWiring', () => {
           .withProperty('onInvalid', { next: [] })
           .build() as SubmitTransitionASTNode
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.TRANSITION)
           .mockReturnValue([transition])
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.EXPRESSION)
           .mockReturnValue([validation1, validation2] as ExpressionASTNode[])
 
@@ -174,11 +174,11 @@ describe('SubmitWiring', () => {
           .withProperty('onAlways', { next: [] })
           .build() as SubmitTransitionASTNode
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.TRANSITION)
           .mockReturnValue([transition])
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.EXPRESSION)
           .mockReturnValue([validation] as ExpressionASTNode[])
 
@@ -205,11 +205,11 @@ describe('SubmitWiring', () => {
           .withProperty('onInvalid', { next: [] })
           .build() as SubmitTransitionASTNode
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.TRANSITION)
           .mockReturnValue([transition])
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.EXPRESSION)
           .mockReturnValue([])
 
@@ -234,11 +234,11 @@ describe('SubmitWiring', () => {
           .withProperty('onInvalid', { next: [] })
           .build() as SubmitTransitionASTNode
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.TRANSITION)
           .mockReturnValue([transition])
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.EXPRESSION)
           .mockReturnValue([])
 
@@ -267,11 +267,11 @@ describe('SubmitWiring', () => {
           .withProperty('onInvalid', { effects: [effect], next: [next] })
           .build() as SubmitTransitionASTNode
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.TRANSITION)
           .mockReturnValue([transition])
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.EXPRESSION)
           .mockReturnValue([])
 
@@ -301,11 +301,11 @@ describe('SubmitWiring', () => {
           .withProperty('onAlways', { effects: [effect], next: [next] })
           .build() as SubmitTransitionASTNode
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.TRANSITION)
           .mockReturnValue([transition])
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.EXPRESSION)
           .mockReturnValue([])
 
@@ -335,11 +335,11 @@ describe('SubmitWiring', () => {
           .withProperty('onAlways', { effects: [effect1, effect2], next: [next1, next2] })
           .build() as SubmitTransitionASTNode
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.TRANSITION)
           .mockReturnValue([transition])
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.EXPRESSION)
           .mockReturnValue([])
 
@@ -371,11 +371,11 @@ describe('SubmitWiring', () => {
         // Arrange
         const transition = ASTTestFactory.transition(TransitionType.SUBMIT).build() as SubmitTransitionASTNode
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.TRANSITION)
           .mockReturnValue([transition])
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.EXPRESSION)
           .mockReturnValue([])
 
@@ -395,11 +395,11 @@ describe('SubmitWiring', () => {
           .withProperty('onAlways', { effects: [], next: [next] })
           .build() as SubmitTransitionASTNode
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.TRANSITION)
           .mockReturnValue([transition])
 
-        when(mockWiringContext.findNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(ASTNodeType.EXPRESSION)
           .mockReturnValue([])
 

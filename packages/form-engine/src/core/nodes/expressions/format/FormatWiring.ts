@@ -25,7 +25,7 @@ export default class FormatWiring {
    * Wire all format expressions to their argument nodes
    */
   wire() {
-    const expressionNodes = this.wiringContext.findNodesByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
+    const expressionNodes = this.wiringContext.nodeRegistry.findByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
 
     expressionNodes
       .filter(isFormatExprNode)

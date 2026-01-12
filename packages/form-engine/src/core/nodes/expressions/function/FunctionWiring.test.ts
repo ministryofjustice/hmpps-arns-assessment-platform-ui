@@ -13,7 +13,10 @@ describe('FunctionWiring', () => {
 
   function createMockWiringContext(): jest.Mocked<WiringContext> {
     return {
-      findNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn(),
+      },
       graph: mockGraph,
     } as unknown as jest.Mocked<WiringContext>
   }
@@ -42,7 +45,7 @@ describe('FunctionWiring', () => {
         .withProperty('arguments', [arg1, arg2, arg3])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([transformerExpr])
 
@@ -73,7 +76,7 @@ describe('FunctionWiring', () => {
         .withProperty('arguments', [arg1, 'old', 'new'])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([transformerExpr])
 
@@ -103,7 +106,7 @@ describe('FunctionWiring', () => {
         .withProperty('arguments', [outerArg, innerFunction])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([outerFunction, innerFunction, outerArg, innerArg])
 

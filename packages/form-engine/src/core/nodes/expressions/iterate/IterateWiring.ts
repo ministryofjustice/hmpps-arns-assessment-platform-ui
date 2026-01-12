@@ -27,7 +27,7 @@ export default class IterateWiring {
    * Wire all iterate expressions to their input nodes
    */
   wire() {
-    const expressionNodes = this.wiringContext.findNodesByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
+    const expressionNodes = this.wiringContext.nodeRegistry.findByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
 
     expressionNodes.filter(isIterateExprNode).forEach(iterateNode => {
       this.wireIterate(iterateNode)

@@ -13,7 +13,10 @@ describe('NotWiring', () => {
 
   function createMockWiringContext(): jest.Mocked<WiringContext> {
     return {
-      findNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn(),
+      },
       graph: mockGraph,
     } as unknown as jest.Mocked<WiringContext>
   }
@@ -39,7 +42,7 @@ describe('NotWiring', () => {
         operand: operandNode,
       } as any)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([notNode])
 
@@ -60,7 +63,7 @@ describe('NotWiring', () => {
         operand: true,
       } as any)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([notNode])
 
@@ -84,7 +87,7 @@ describe('NotWiring', () => {
         operand: operand2,
       } as any)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([notNode1, notNode2])
 

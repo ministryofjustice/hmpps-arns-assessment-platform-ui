@@ -46,7 +46,7 @@ export default class AccessWiring {
   }
 
   private wireOnAccessTransitions() {
-    const accessTransitions = this.wiringContext.findNodesByType<TransitionASTNode>(ASTNodeType.TRANSITION)
+    const accessTransitions = this.wiringContext.nodeRegistry.findByType<TransitionASTNode>(ASTNodeType.TRANSITION)
       .filter(isAccessTransitionNode)
 
     accessTransitions.forEach(accessTransitionNode => {

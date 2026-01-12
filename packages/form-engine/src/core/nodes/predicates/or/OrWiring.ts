@@ -19,7 +19,7 @@ export default class OrWiring {
   constructor(private readonly wiringContext: WiringContext) {}
 
   wire(): void {
-    const logicNodes = this.wiringContext.findNodesByType<PredicateASTNode>(ASTNodeType.PREDICATE)
+    const logicNodes = this.wiringContext.nodeRegistry.findByType<PredicateASTNode>(ASTNodeType.PREDICATE)
 
     logicNodes.filter(isOrPredicateNode).forEach(orNode => {
       this.wireOr(orNode)

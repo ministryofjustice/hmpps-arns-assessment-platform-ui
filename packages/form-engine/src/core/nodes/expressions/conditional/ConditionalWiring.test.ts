@@ -14,7 +14,10 @@ describe('ConditionalWiring', () => {
 
   function createMockWiringContext(): jest.Mocked<WiringContext> {
     return {
-      findNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn(),
+      },
       graph: mockGraph,
     } as unknown as jest.Mocked<WiringContext>
   }
@@ -44,7 +47,7 @@ describe('ConditionalWiring', () => {
         .withProperty('elseValue', elseNode)
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([conditionalNode])
 
@@ -80,7 +83,7 @@ describe('ConditionalWiring', () => {
         .withProperty('elseValue', 42)
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.EXPRESSION)
         .mockReturnValue([conditionalNode])
 

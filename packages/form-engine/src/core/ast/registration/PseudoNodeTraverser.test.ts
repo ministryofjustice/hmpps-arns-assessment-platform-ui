@@ -1,6 +1,6 @@
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType } from '@form-engine/form/types/enums'
+import { BlockType, ExpressionType } from '@form-engine/form/types/enums'
 import { FieldBlockASTNode } from '@form-engine/core/types/structures.type'
 import { ReferenceASTNode } from '@form-engine/core/types/expressions.type'
 import { when } from 'jest-when'
@@ -19,7 +19,6 @@ describe('PseudoNodeTraverser', () => {
     ASTTestFactory.resetIds()
     mockNodeRegistry = {
       findByType: jest.fn().mockReturnValue([]),
-      findPseudoNode: jest.fn().mockReturnValue(undefined),
       register: jest.fn(),
     } as unknown as jest.Mocked<NodeRegistry>
 
@@ -53,7 +52,7 @@ describe('PseudoNodeTraverser', () => {
           .postPseudoNode('firstName', fieldBlock.id)
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
+          .calledWith(BlockType.FIELD)
           .mockReturnValue([fieldBlock])
 
         when(mockMetadataRegistry.get)
@@ -85,7 +84,7 @@ describe('PseudoNodeTraverser', () => {
           .build()
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
+          .calledWith(BlockType.FIELD)
           .mockReturnValue([fieldBlock])
 
         when(mockMetadataRegistry.get)
@@ -107,7 +106,7 @@ describe('PseudoNodeTraverser', () => {
           .build()
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
+          .calledWith(BlockType.FIELD)
           .mockReturnValue([fieldBlock])
 
         when(mockMetadataRegistry.get)
@@ -135,7 +134,7 @@ describe('PseudoNodeTraverser', () => {
         }
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
+          .calledWith(BlockType.FIELD)
           .mockReturnValue([fieldBlock])
 
         when(mockMetadataRegistry.get)
@@ -150,20 +149,12 @@ describe('PseudoNodeTraverser', () => {
         expect(mockPseudoNodeFactory.createPostPseudoNode).not.toHaveBeenCalled()
       })
 
-      it('should skip non-field blocks', () => {
+      it('should not process basic blocks (they are not returned by BlockType.field query)', () => {
         // Arrange
-        const basicBlock = ASTTestFactory
-          .block('Heading', 'basic')
-          .withCode('heading')
-          .build()
-
+        // Basic blocks won't be returned by findByType(BlockType.FIELD) since they're indexed under 'BlockType.basic'
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
-          .mockReturnValue([basicBlock])
-
-        when(mockMetadataRegistry.get)
-          .calledWith(basicBlock.id, 'isDescendantOfStep', false)
-          .mockReturnValue(true)
+          .calledWith(BlockType.FIELD)
+          .mockReturnValue([])
 
         // Act
         traverser.createPseudoNodes()
@@ -193,7 +184,7 @@ describe('PseudoNodeTraverser', () => {
           .postPseudoNode('lastName', lastNameBlock.id)
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
+          .calledWith(BlockType.FIELD)
           .mockReturnValue([firstNameBlock, lastNameBlock])
 
         when(mockMetadataRegistry.get)
@@ -258,11 +249,11 @@ describe('PseudoNodeTraverser', () => {
           .answerRemotePseudoNode('age')
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
+          .calledWith(BlockType.FIELD)
           .mockReturnValue([])
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.EXPRESSION)
+          .calledWith(ExpressionType.REFERENCE)
           .mockReturnValue([queryRef, paramsRef, postRef, dataRef, answersRef])
 
         when(mockPseudoNodeFactory.createQueryPseudoNode)
@@ -306,11 +297,11 @@ describe('PseudoNodeTraverser', () => {
           .queryPseudoNode('returnUrl')
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
+          .calledWith(BlockType.FIELD)
           .mockReturnValue([])
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.EXPRESSION)
+          .calledWith(ExpressionType.REFERENCE)
           .mockReturnValue([queryRef1, queryRef2])
 
         when(mockPseudoNodeFactory.createQueryPseudoNode)
@@ -335,11 +326,11 @@ describe('PseudoNodeTraverser', () => {
           .postPseudoNode('address')
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
+          .calledWith(BlockType.FIELD)
           .mockReturnValue([])
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.EXPRESSION)
+          .calledWith(ExpressionType.REFERENCE)
           .mockReturnValue([postRef])
 
         when(mockPseudoNodeFactory.createPostPseudoNode)
@@ -364,11 +355,11 @@ describe('PseudoNodeTraverser', () => {
           .postPseudoNode('address')
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
+          .calledWith(BlockType.FIELD)
           .mockReturnValue([])
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.EXPRESSION)
+          .calledWith(ExpressionType.REFERENCE)
           .mockReturnValue([postRef1, postRef2])
 
         when(mockPseudoNodeFactory.createPostPseudoNode)
@@ -399,11 +390,11 @@ describe('PseudoNodeTraverser', () => {
           .postPseudoNode('firstName', fieldBlock.id)
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
+          .calledWith(BlockType.FIELD)
           .mockReturnValue([fieldBlock])
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.EXPRESSION)
+          .calledWith(ExpressionType.REFERENCE)
           .mockReturnValue([answersRef])
 
         when(mockMetadataRegistry.get)
@@ -434,11 +425,11 @@ describe('PseudoNodeTraverser', () => {
           .reference(['unknown', 'someValue'])
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
+          .calledWith(BlockType.FIELD)
           .mockReturnValue([])
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.EXPRESSION)
+          .calledWith(ExpressionType.REFERENCE)
           .mockReturnValue([unknownRef])
 
         // Act
@@ -477,11 +468,11 @@ describe('PseudoNodeTraverser', () => {
         }
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.BLOCK)
+          .calledWith(BlockType.FIELD)
           .mockReturnValue([])
 
         when(mockNodeRegistry.findByType)
-          .calledWith(ASTNodeType.EXPRESSION)
+          .calledWith(ExpressionType.REFERENCE)
           .mockReturnValue([shortPathRef, nonArrayRef, nonStringKeyRef])
 
         // Act
@@ -530,11 +521,11 @@ describe('PseudoNodeTraverser', () => {
         .answerRemotePseudoNode('age')
 
       when(mockNodeRegistry.findByType)
-        .calledWith(ASTNodeType.BLOCK)
+        .calledWith(BlockType.FIELD)
         .mockReturnValue([firstNameBlock, lastNameBlock])
 
       when(mockNodeRegistry.findByType)
-        .calledWith(ASTNodeType.EXPRESSION)
+        .calledWith(ExpressionType.REFERENCE)
         .mockReturnValue([queryRef, dataRef, answersRef])
 
       when(mockMetadataRegistry.get)
@@ -590,11 +581,11 @@ describe('PseudoNodeTraverser', () => {
     it('should handle empty node registry', () => {
       // Arrange
       when(mockNodeRegistry.findByType)
-        .calledWith(ASTNodeType.BLOCK)
+        .calledWith(BlockType.FIELD)
         .mockReturnValue([])
 
       when(mockNodeRegistry.findByType)
-        .calledWith(ASTNodeType.EXPRESSION)
+        .calledWith(ExpressionType.REFERENCE)
         .mockReturnValue([])
 
       // Act

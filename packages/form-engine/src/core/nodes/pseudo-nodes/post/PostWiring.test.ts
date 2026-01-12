@@ -12,7 +12,10 @@ describe('PostWiring', () => {
 
   function createMockWiringContext(): jest.Mocked<WiringContext> {
     return {
-      findPseudoNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn().mockReturnValue(undefined),
+      },
       findReferenceNodes: jest.fn().mockReturnValue([]),
       graph: mockGraph,
     } as unknown as jest.Mocked<WiringContext>
@@ -37,7 +40,7 @@ describe('PostWiring', () => {
       const postNode = ASTTestFactory.postPseudoNode('firstName')
       const postRef = ASTTestFactory.reference(['post', 'firstName'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.POST)
         .mockReturnValue([postNode])
 
@@ -60,7 +63,7 @@ describe('PostWiring', () => {
       const postNode = ASTTestFactory.postPseudoNode('address')
       const postRef = ASTTestFactory.reference(['post', 'address', 'postcode'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.POST)
         .mockReturnValue([postNode])
 
@@ -86,7 +89,7 @@ describe('PostWiring', () => {
       const postRef1 = ASTTestFactory.reference(['post', 'firstName'])
       const postRef2 = ASTTestFactory.reference(['post', 'lastName'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.POST)
         .mockReturnValue([postNode1, postNode2])
 
@@ -116,7 +119,7 @@ describe('PostWiring', () => {
       const postRef2 = ASTTestFactory.reference(['post', 'fieldName'])
       const postRef3 = ASTTestFactory.reference(['post', 'fieldName'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.POST)
         .mockReturnValue([postNode])
 
@@ -145,7 +148,7 @@ describe('PostWiring', () => {
     describe('edge cases', () => {
       it('should handle no post pseudo nodes', () => {
         // Arrange
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.POST)
           .mockReturnValue([])
 
@@ -161,7 +164,7 @@ describe('PostWiring', () => {
         const postNode = ASTTestFactory.postPseudoNode('field')
         const invalidRef = ASTTestFactory.reference(['post']) // Missing field name
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.POST)
           .mockReturnValue([postNode])
 
@@ -181,7 +184,7 @@ describe('PostWiring', () => {
         const postNode = ASTTestFactory.postPseudoNode('firstName')
         const differentFieldRef = ASTTestFactory.reference(['post', 'lastName'])
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.POST)
           .mockReturnValue([postNode])
 
@@ -200,7 +203,7 @@ describe('PostWiring', () => {
         // Arrange
         const postNode = ASTTestFactory.postPseudoNode('unusedField')
 
-        when(mockWiringContext.findPseudoNodesByType)
+        when(mockWiringContext.nodeRegistry.findByType)
           .calledWith(PseudoNodeType.POST)
           .mockReturnValue([postNode])
 

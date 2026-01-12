@@ -4,6 +4,7 @@ import { DependencyEdgeType } from '@form-engine/core/ast/dependencies/Dependenc
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { isPseudoNode } from '@form-engine/core/typeguards/nodes'
 import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
+import { getPseudoNodeKey } from '@form-engine/core/ast/registration/pseudoNodeKeyExtractor'
 
 /**
  * DataWiring: Wires Data pseudo nodes to their data sources and consumers
@@ -23,7 +24,7 @@ export default class DataWiring {
    * Wire all Data pseudo nodes to their producers and consumers
    */
   wire() {
-    this.wiringContext.findPseudoNodesByType<DataPseudoNode>(PseudoNodeType.DATA)
+    this.wiringContext.nodeRegistry.findByType<DataPseudoNode>(PseudoNodeType.DATA)
       .forEach(dataPseudoNode => {
         this.wireProducers(dataPseudoNode)
         this.wireConsumers(dataPseudoNode)
@@ -64,7 +65,8 @@ export default class DataWiring {
     dataRefs.forEach(refNode => {
       const baseProperty = refNode.properties.path[1] as string
 
-      const pseudoNode = this.wiringContext.findPseudoNode<DataPseudoNode>(PseudoNodeType.DATA, baseProperty)
+      const pseudoNode = this.wiringContext.nodeRegistry.findByType<DataPseudoNode>(PseudoNodeType.DATA)
+        .find(node => getPseudoNodeKey(node) === baseProperty)
 
       if (pseudoNode) {
         this.wiringContext.graph.addEdge(pseudoNode.id, refNode.id, DependencyEdgeType.DATA_FLOW, {

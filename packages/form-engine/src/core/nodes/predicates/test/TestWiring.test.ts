@@ -14,7 +14,10 @@ describe('TestWiring', () => {
 
   function createMockWiringContext(): jest.Mocked<WiringContext> {
     return {
-      findNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn(),
+      },
       graph: mockGraph,
     } as unknown as jest.Mocked<WiringContext>
   }
@@ -43,7 +46,7 @@ describe('TestWiring', () => {
         .withProperty('negate', false)
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([testExpr])
 
@@ -70,7 +73,7 @@ describe('TestWiring', () => {
         .withProperty('negate', false)
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([testExpr])
 
@@ -105,7 +108,7 @@ describe('TestWiring', () => {
         .withProperty('negate', false)
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([test1, test2, subject1, subject2])
 
@@ -144,7 +147,7 @@ describe('TestWiring', () => {
       // Remove subject property
       delete (testExpr.properties as any).subject
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([testExpr])
 
@@ -171,7 +174,7 @@ describe('TestWiring', () => {
       // Remove condition property
       delete (testExpr.properties as any).condition
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([testExpr])
 
@@ -192,7 +195,7 @@ describe('TestWiring', () => {
         .withProperty('operands', [])
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.PREDICATE)
         .mockReturnValue([andExpr])
 

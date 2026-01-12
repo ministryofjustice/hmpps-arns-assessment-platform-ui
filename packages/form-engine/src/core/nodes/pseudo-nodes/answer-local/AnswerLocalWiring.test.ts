@@ -15,13 +15,12 @@ describe('AnswerLocalWiring', () => {
 
   function createMockWiringContext(stepNode: StepASTNode): jest.Mocked<WiringContext> {
     return {
-      findPseudoNodesByType: jest.fn().mockReturnValue([]),
-      findPseudoNode: jest.fn().mockReturnValue(undefined),
-      findReferenceNodes: jest.fn().mockReturnValue([]),
-      findLastOnLoadTransitionFrom: jest.fn().mockReturnValue(undefined),
       nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
         get: jest.fn().mockReturnValue(undefined),
       },
+      findReferenceNodes: jest.fn().mockReturnValue([]),
+      findLastOnLoadTransitionFrom: jest.fn().mockReturnValue(undefined),
       graph: mockGraph,
       getCurrentStepNode: jest.fn().mockReturnValue(stepNode),
     } as unknown as jest.Mocked<WiringContext>
@@ -47,13 +46,15 @@ describe('AnswerLocalWiring', () => {
       const answerLocal = ASTTestFactory.answerLocalPseudoNode('firstName', fieldBlock.id)
       const postNode = ASTTestFactory.postPseudoNode('firstName')
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_LOCAL)
         .mockReturnValue([answerLocal])
 
-      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(PseudoNodeType.POST)
+        .mockReturnValue([postNode])
 
-      when(mockWiringContext.findPseudoNode).calledWith(PseudoNodeType.POST, 'firstName').mockReturnValue(postNode)
+      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
 
       when(mockWiringContext.findReferenceNodes).calledWith('answers').mockReturnValue([])
 
@@ -79,13 +80,15 @@ describe('AnswerLocalWiring', () => {
       const answerLocal = ASTTestFactory.answerLocalPseudoNode('firstName', fieldBlock.id)
       const postNode = ASTTestFactory.postPseudoNode('firstName')
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_LOCAL)
         .mockReturnValue([answerLocal])
 
-      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(PseudoNodeType.POST)
+        .mockReturnValue([postNode])
 
-      when(mockWiringContext.findPseudoNode).calledWith(PseudoNodeType.POST, 'firstName').mockReturnValue(postNode)
+      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
 
       when(mockWiringContext.findReferenceNodes).calledWith('answers').mockReturnValue([])
 
@@ -118,13 +121,15 @@ describe('AnswerLocalWiring', () => {
       const answerLocal = ASTTestFactory.answerLocalPseudoNode('firstName', fieldBlock.id)
       const postNode = ASTTestFactory.postPseudoNode('firstName')
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_LOCAL)
         .mockReturnValue([answerLocal])
 
-      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(PseudoNodeType.POST)
+        .mockReturnValue([postNode])
 
-      when(mockWiringContext.findPseudoNode).calledWith(PseudoNodeType.POST, 'firstName').mockReturnValue(postNode)
+      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
 
       when(mockWiringContext.findReferenceNodes).calledWith('answers').mockReturnValue([])
 
@@ -160,13 +165,15 @@ describe('AnswerLocalWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new AnswerLocalWiring(mockWiringContext)
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_LOCAL)
         .mockReturnValue([answerLocal])
 
-      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(PseudoNodeType.POST)
+        .mockReturnValue([postNode])
 
-      when(mockWiringContext.findPseudoNode).calledWith(PseudoNodeType.POST, 'firstName').mockReturnValue(postNode)
+      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
 
       when(mockWiringContext.findReferenceNodes).calledWith('answers').mockReturnValue([])
 
@@ -194,13 +201,15 @@ describe('AnswerLocalWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new AnswerLocalWiring(mockWiringContext)
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_LOCAL)
         .mockReturnValue([answerLocal])
 
-      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(PseudoNodeType.POST)
+        .mockReturnValue([postNode])
 
-      when(mockWiringContext.findPseudoNode).calledWith(PseudoNodeType.POST, 'firstName').mockReturnValue(postNode)
+      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
 
       when(mockWiringContext.findReferenceNodes).calledWith('answers').mockReturnValue([])
 
@@ -225,13 +234,15 @@ describe('AnswerLocalWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new AnswerLocalWiring(mockWiringContext)
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_LOCAL)
         .mockReturnValue([answerLocal])
 
-      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(PseudoNodeType.POST)
+        .mockReturnValue([postNode])
 
-      when(mockWiringContext.findPseudoNode).calledWith(PseudoNodeType.POST, 'firstName').mockReturnValue(postNode)
+      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
 
       when(mockWiringContext.findReferenceNodes).calledWith('answers').mockReturnValue([])
 
@@ -256,13 +267,15 @@ describe('AnswerLocalWiring', () => {
 
       const answerRef = ASTTestFactory.reference(['answers', 'firstName'])
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_LOCAL)
         .mockReturnValue([answerLocal])
 
-      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(PseudoNodeType.POST)
+        .mockReturnValue([postNode])
 
-      when(mockWiringContext.findPseudoNode).calledWith(PseudoNodeType.POST, 'firstName').mockReturnValue(postNode)
+      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
 
       when(mockWiringContext.findReferenceNodes).calledWith('answers').mockReturnValue([answerRef])
 
@@ -287,17 +300,17 @@ describe('AnswerLocalWiring', () => {
       const postNode1 = ASTTestFactory.postPseudoNode('firstName')
       const postNode2 = ASTTestFactory.postPseudoNode('lastName')
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_LOCAL)
         .mockReturnValue([answerLocal1, answerLocal2])
+
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(PseudoNodeType.POST)
+        .mockReturnValue([postNode1, postNode2])
 
       when(mockWiringContext.nodeRegistry.get).calledWith(field1.id).mockReturnValue(field1)
 
       when(mockWiringContext.nodeRegistry.get).calledWith(field2.id).mockReturnValue(field2)
-
-      when(mockWiringContext.findPseudoNode).calledWith(PseudoNodeType.POST, 'firstName').mockReturnValue(postNode1)
-
-      when(mockWiringContext.findPseudoNode).calledWith(PseudoNodeType.POST, 'lastName').mockReturnValue(postNode2)
 
       when(mockWiringContext.findReferenceNodes).calledWith('answers').mockReturnValue([])
 
@@ -315,7 +328,7 @@ describe('AnswerLocalWiring', () => {
 
     it('should handle no answer local pseudo nodes', () => {
       // Arrange
-      when(mockWiringContext.findPseudoNodesByType).calledWith(PseudoNodeType.ANSWER_LOCAL).mockReturnValue([])
+      when(mockWiringContext.nodeRegistry.findByType).calledWith(PseudoNodeType.ANSWER_LOCAL).mockReturnValue([])
 
       // Act
       wiring.wire()
@@ -330,13 +343,15 @@ describe('AnswerLocalWiring', () => {
 
       const answerLocal = ASTTestFactory.answerLocalPseudoNode('firstName', fieldBlock.id)
 
-      when(mockWiringContext.findPseudoNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(PseudoNodeType.ANSWER_LOCAL)
         .mockReturnValue([answerLocal])
 
-      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(PseudoNodeType.POST)
+        .mockReturnValue([])
 
-      when(mockWiringContext.findPseudoNode).calledWith(PseudoNodeType.POST, 'firstName').mockReturnValue(undefined)
+      when(mockWiringContext.nodeRegistry.get).calledWith(fieldBlock.id).mockReturnValue(fieldBlock)
 
       when(mockWiringContext.findReferenceNodes).calledWith('answers').mockReturnValue([])
 

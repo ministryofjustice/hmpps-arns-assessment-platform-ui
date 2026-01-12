@@ -19,7 +19,7 @@ export default class XorWiring {
   constructor(private readonly wiringContext: WiringContext) {}
 
   wire(): void {
-    const logicNodes = this.wiringContext.findNodesByType<PredicateASTNode>(ASTNodeType.PREDICATE)
+    const logicNodes = this.wiringContext.nodeRegistry.findByType<PredicateASTNode>(ASTNodeType.PREDICATE)
 
     logicNodes.filter(isXorPredicateNode).forEach(xorNode => {
       this.wireXor(xorNode)

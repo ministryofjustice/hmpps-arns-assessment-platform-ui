@@ -45,7 +45,7 @@ export default class ActionWiring {
   }
 
   private wireOnActionTransitions() {
-    const actionTransitions = this.wiringContext.findNodesByType<TransitionASTNode>(ASTNodeType.TRANSITION)
+    const actionTransitions = this.wiringContext.nodeRegistry.findByType<TransitionASTNode>(ASTNodeType.TRANSITION)
       .filter(isActionTransitionNode)
 
     actionTransitions.forEach(actionTransitionNode => {

@@ -3,6 +3,7 @@ import { PostPseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNo
 import { DependencyEdgeType } from '@form-engine/core/ast/dependencies/DependencyGraph'
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
+import { getPseudoNodeKey } from '@form-engine/core/ast/registration/pseudoNodeKeyExtractor'
 
 /**
  * PostWiring: Wires Post pseudo nodes to their consumers
@@ -20,7 +21,7 @@ export default class PostWiring {
    * Wire all Post pseudo nodes to their consumers
    */
   wire() {
-    this.wiringContext.findPseudoNodesByType<PostPseudoNode>(PseudoNodeType.POST)
+    this.wiringContext.nodeRegistry.findByType<PostPseudoNode>(PseudoNodeType.POST)
       .forEach(postPseudoNode => {
         this.wireConsumers(postPseudoNode)
       })
@@ -54,7 +55,8 @@ export default class PostWiring {
     postRefs.forEach(refNode => {
       const baseFieldCode = refNode.properties.path[1] as string
 
-      const pseudoNode = this.wiringContext.findPseudoNode<PostPseudoNode>(PseudoNodeType.POST, baseFieldCode)
+      const pseudoNode = this.wiringContext.nodeRegistry.findByType<PostPseudoNode>(PseudoNodeType.POST)
+        .find(node => getPseudoNodeKey(node) === baseFieldCode)
 
       if (pseudoNode) {
         this.wiringContext.graph.addEdge(pseudoNode.id, refNode.id, DependencyEdgeType.DATA_FLOW, {

@@ -15,7 +15,10 @@ describe('LoadWiring', () => {
 
   function createMockWiringContext(stepNode?: StepASTNode): jest.Mocked<WiringContext> {
     return {
-      findNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn(),
+      },
       getNodeDepth: jest.fn().mockReturnValue(0),
       metadataRegistry: {
         get: jest.fn().mockReturnValue(false),
@@ -53,7 +56,7 @@ describe('LoadWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new LoadWiring(mockWiringContext)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.JOURNEY)
         .mockReturnValue([journey])
 
@@ -91,7 +94,7 @@ describe('LoadWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new LoadWiring(mockWiringContext)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.JOURNEY)
         .mockReturnValue([])
 
@@ -120,7 +123,7 @@ describe('LoadWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new LoadWiring(mockWiringContext)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.JOURNEY)
         .mockReturnValue([journey])
 
@@ -154,7 +157,7 @@ describe('LoadWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new LoadWiring(mockWiringContext)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.JOURNEY)
         .mockReturnValue([ancestorJourney, unrelatedJourney])
 
@@ -197,7 +200,7 @@ describe('LoadWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new LoadWiring(mockWiringContext)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.JOURNEY)
         .mockReturnValue([parentJourney, childJourney])
 
@@ -247,7 +250,7 @@ describe('LoadWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new LoadWiring(mockWiringContext)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.JOURNEY)
         .mockReturnValue([journey])
 
@@ -291,7 +294,7 @@ describe('LoadWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new LoadWiring(mockWiringContext)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.JOURNEY)
         .mockReturnValue([rootJourney, middleJourney, deepJourney])
 
@@ -356,7 +359,7 @@ describe('LoadWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new LoadWiring(mockWiringContext)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.JOURNEY)
         .mockReturnValue([])
 
@@ -388,7 +391,7 @@ describe('LoadWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new LoadWiring(mockWiringContext)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.JOURNEY)
         .mockReturnValue([])
 
@@ -418,7 +421,7 @@ describe('LoadWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new LoadWiring(mockWiringContext)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.JOURNEY)
         .mockReturnValue([])
 
@@ -448,7 +451,7 @@ describe('LoadWiring', () => {
       mockWiringContext = createMockWiringContext(step)
       wiring = new LoadWiring(mockWiringContext)
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.JOURNEY)
         .mockReturnValue([])
 

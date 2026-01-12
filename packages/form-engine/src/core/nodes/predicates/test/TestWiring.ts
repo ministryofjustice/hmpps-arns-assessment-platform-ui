@@ -20,7 +20,7 @@ export default class TestWiring {
   constructor(private readonly wiringContext: WiringContext) {}
 
   wire(): void {
-    const logicNodes = this.wiringContext.findNodesByType<PredicateASTNode>(ASTNodeType.PREDICATE)
+    const logicNodes = this.wiringContext.nodeRegistry.findByType<PredicateASTNode>(ASTNodeType.PREDICATE)
 
     logicNodes.filter(isTestPredicateNode).forEach(testNode => {
       this.wireTest(testNode)

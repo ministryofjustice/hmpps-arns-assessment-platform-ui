@@ -3,6 +3,7 @@ import { QueryPseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoN
 import { DependencyEdgeType } from '@form-engine/core/ast/dependencies/DependencyGraph'
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
+import { getPseudoNodeKey } from '@form-engine/core/ast/registration/pseudoNodeKeyExtractor'
 
 /**
  * QueryWiring: Wires Query pseudo nodes to their consumers
@@ -24,7 +25,7 @@ export default class QueryWiring {
    * Wire all Query pseudo nodes to their consumers
    */
   wire() {
-    this.wiringContext.findPseudoNodesByType<QueryPseudoNode>(PseudoNodeType.QUERY)
+    this.wiringContext.nodeRegistry.findByType<QueryPseudoNode>(PseudoNodeType.QUERY)
       .forEach(queryPseudoNode => {
         this.wireConsumers(queryPseudoNode)
       })
@@ -58,7 +59,8 @@ export default class QueryWiring {
     queryRefs.forEach(refNode => {
       const paramName = refNode.properties.path[1] as string
 
-      const pseudoNode = this.wiringContext.findPseudoNode<QueryPseudoNode>(PseudoNodeType.QUERY, paramName)
+      const pseudoNode = this.wiringContext.nodeRegistry.findByType<QueryPseudoNode>(PseudoNodeType.QUERY)
+        .find(node => getPseudoNodeKey(node) === paramName)
 
       if (pseudoNode) {
         this.wiringContext.graph.addEdge(pseudoNode.id, refNode.id, DependencyEdgeType.DATA_FLOW, {

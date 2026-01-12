@@ -6,6 +6,7 @@ import { NodeId } from '@form-engine/core/types/engine.type'
 import { isASTNode, isPseudoNode } from '@form-engine/core/typeguards/nodes'
 import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import { ReferenceASTNode } from '@form-engine/core/types/expressions.type'
+import { getPseudoNodeKey } from '@form-engine/core/ast/registration/pseudoNodeKeyExtractor'
 
 /**
  * AnswerLocalWiring: Wires Answer.Local pseudo nodes to their data sources and consumers
@@ -28,7 +29,7 @@ export default class AnswerLocalWiring {
   wire() {
     const answerRefsByFieldCode = this.buildAnswerRefsIndex()
 
-    this.wiringContext.findPseudoNodesByType<AnswerLocalPseudoNode>(PseudoNodeType.ANSWER_LOCAL)
+    this.wiringContext.nodeRegistry.findByType<AnswerLocalPseudoNode>(PseudoNodeType.ANSWER_LOCAL)
       .forEach(answerPseudoNode => {
         this.wireProducers(answerPseudoNode)
         this.wireConsumersFromIndex(answerPseudoNode, answerRefsByFieldCode)
@@ -58,10 +59,8 @@ export default class AnswerLocalWiring {
 
     answerRefs.forEach(refNode => {
       const baseFieldCode = refNode.properties.path[1] as string
-      const pseudoNode = this.wiringContext.findPseudoNode<AnswerLocalPseudoNode>(
-        PseudoNodeType.ANSWER_LOCAL,
-        baseFieldCode,
-      )
+      const pseudoNode = this.wiringContext.nodeRegistry.findByType<AnswerLocalPseudoNode>(PseudoNodeType.ANSWER_LOCAL)
+        .find(node => getPseudoNodeKey(node) === baseFieldCode)
 
       if (pseudoNode) {
         this.wiringContext.graph.addEdge(pseudoNode.id, refNode.id, DependencyEdgeType.DATA_FLOW, {
@@ -127,7 +126,8 @@ export default class AnswerLocalWiring {
     const fieldNode = this.wiringContext.nodeRegistry.get(baseFieldNodeId) as FieldBlockASTNode
 
     // Always wire POST pseudo node - AnswerLocalHandler reads from it directly
-    const postNode = this.wiringContext.findPseudoNode<PostPseudoNode>(PseudoNodeType.POST, baseFieldCode)
+    const postNode = this.wiringContext.nodeRegistry.findByType<PostPseudoNode>(PseudoNodeType.POST)
+      .find(node => getPseudoNodeKey(node) === baseFieldCode)
 
     if (postNode) {
       this.wiringContext.graph.addEdge(postNode.id, answerPseudoNode.id, DependencyEdgeType.DATA_FLOW, {

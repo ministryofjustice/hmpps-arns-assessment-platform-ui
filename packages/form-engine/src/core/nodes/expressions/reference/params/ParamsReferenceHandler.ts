@@ -10,6 +10,8 @@ import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluation
 import { ParamsPseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import { getByPath } from '@form-engine/utils/utils'
+import { getPseudoNodeKey } from '@form-engine/core/ast/registration/pseudoNodeKeyExtractor'
+import NodeRegistry from '@form-engine/core/ast/registration/NodeRegistry'
 
 /**
  * Handler for params namespace references
@@ -39,7 +41,7 @@ export default class ParamsReferenceHandler implements HybridThunkHandler {
     } else {
       // Static path - look up the pseudo node and check if it's async
       const pathParam = path[1] as string
-      const pseudoNode = deps.nodeRegistry.findPseudoNode<ParamsPseudoNode>(PseudoNodeType.PARAMS, pathParam)
+      const pseudoNode = this.findPseudoNodeInRegistry(deps.nodeRegistry, pathParam)
 
       if (pseudoNode) {
         // Check if the pseudo node's handler is async (ParamsHandler is always sync currently)
@@ -56,7 +58,7 @@ export default class ParamsReferenceHandler implements HybridThunkHandler {
     const path = this.node.properties.path
 
     // Path must be static for sync evaluation
-    const relatedPseudoNode = this.findPseudoNode(context, path[1] as string)
+    const relatedPseudoNode = this.findPseudoNodeInRegistry(context.nodeRegistry, path[1] as string)
     const baseValue = relatedPseudoNode
       ? invoker.invokeSync(relatedPseudoNode.id, context).value
       : context.request.params[path[1] as string]
@@ -77,7 +79,7 @@ export default class ParamsReferenceHandler implements HybridThunkHandler {
       path = [path[0], ...dynamicPathEvaluation.value.split('.')]
     }
 
-    const relatedPseudoNode = this.findPseudoNode(context, path[1] as string)
+    const relatedPseudoNode = this.findPseudoNodeInRegistry(context.nodeRegistry, path[1] as string)
     const baseValue = relatedPseudoNode
       ? (await invoker.invoke(relatedPseudoNode.id, context)).value
       : context.request.params[path[1] as string]
@@ -85,7 +87,9 @@ export default class ParamsReferenceHandler implements HybridThunkHandler {
     return { value: getByPath(baseValue, path.slice(2).join('.')) }
   }
 
-  private findPseudoNode(context: ThunkEvaluationContext, paramName: string): ParamsPseudoNode | undefined {
-    return context.nodeRegistry.findPseudoNode<ParamsPseudoNode>(PseudoNodeType.PARAMS, paramName)
+  private findPseudoNodeInRegistry(nodeRegistry: NodeRegistry, paramName: string): ParamsPseudoNode | undefined {
+    return nodeRegistry
+      .findByType<ParamsPseudoNode>(PseudoNodeType.PARAMS)
+      .find(node => getPseudoNodeKey(node) === paramName)
   }
 }

@@ -1,6 +1,12 @@
 import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
 import { AnswerHistory, TransitionType } from '@form-engine/core/ast/thunks/types'
-import { PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
+import { getPseudoNodeKey } from '@form-engine/core/ast/registration/pseudoNodeKeyExtractor'
+import {
+  AnswerLocalPseudoNode,
+  AnswerRemotePseudoNode,
+  DataPseudoNode,
+  PseudoNodeType,
+} from '@form-engine/core/types/pseudoNodes.type'
 
 /**
  * User-friendly context object provided to effect functions.
@@ -81,8 +87,12 @@ export default class EffectFunctionContext<
     this.context.global.answers[key] = history
 
     // Invalidate cached pseudo nodes and dependents so next access re-evaluates
-    const localPseudoNode = this.context.nodeRegistry.findPseudoNode(PseudoNodeType.ANSWER_LOCAL, key)
-    const remotePseudoNode = this.context.nodeRegistry.findPseudoNode(PseudoNodeType.ANSWER_REMOTE, key)
+    const localPseudoNode = this.context.nodeRegistry
+      .findByType<AnswerLocalPseudoNode>(PseudoNodeType.ANSWER_LOCAL)
+      .find(node => getPseudoNodeKey(node) === key)
+    const remotePseudoNode = this.context.nodeRegistry
+      .findByType<AnswerRemotePseudoNode>(PseudoNodeType.ANSWER_REMOTE)
+      .find(node => getPseudoNodeKey(node) === key)
 
     if (localPseudoNode) {
       this.context.cacheManager.invalidateCascading(localPseudoNode.id, this.context.dependencyGraph)
@@ -156,7 +166,9 @@ export default class EffectFunctionContext<
     this.context.global.data[key] = value
 
     // Invalidate cached pseudo node and dependents so next access re-evaluates
-    const dataPseudoNode = this.context.nodeRegistry.findPseudoNode(PseudoNodeType.DATA, key)
+    const dataPseudoNode = this.context.nodeRegistry
+      .findByType<DataPseudoNode>(PseudoNodeType.DATA)
+      .find(node => getPseudoNodeKey(node) === key)
 
     if (dataPseudoNode) {
       this.context.cacheManager.invalidateCascading(dataPseudoNode.id, this.context.dependencyGraph)

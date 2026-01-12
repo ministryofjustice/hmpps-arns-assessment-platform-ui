@@ -14,7 +14,10 @@ describe('AccessWiring', () => {
 
   function createMockWiringContext(): jest.Mocked<WiringContext> {
     return {
-      findNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn(),
+      },
       graph: mockGraph,
     } as unknown as jest.Mocked<WiringContext>
   }
@@ -44,7 +47,7 @@ describe('AccessWiring', () => {
         .withProperty('guards', guardsPredicate)
         .build() as AccessTransitionASTNode
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.TRANSITION)
         .mockReturnValue([transition])
 
@@ -67,7 +70,7 @@ describe('AccessWiring', () => {
         .withProperty('guards', guardsPredicate)
         .build() as AccessTransitionASTNode
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.TRANSITION)
         .mockReturnValue([transition])
 
@@ -89,7 +92,7 @@ describe('AccessWiring', () => {
         .withProperty('effects', [effect1, effect2])
         .build() as AccessTransitionASTNode
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.TRANSITION)
         .mockReturnValue([transition])
 
@@ -127,7 +130,7 @@ describe('AccessWiring', () => {
         .withProperty('redirect', [redirect1, redirect2])
         .build() as AccessTransitionASTNode
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.TRANSITION)
         .mockReturnValue([transition])
 
@@ -163,7 +166,7 @@ describe('AccessWiring', () => {
         .withProperty('message', messageExpr)
         .build() as AccessTransitionASTNode
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.TRANSITION)
         .mockReturnValue([transition])
 
@@ -190,7 +193,7 @@ describe('AccessWiring', () => {
         .withProperty('message', 'Access denied')
         .build() as AccessTransitionASTNode
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.TRANSITION)
         .mockReturnValue([transition])
 
@@ -224,7 +227,7 @@ describe('AccessWiring', () => {
         .withProperty('guards', guards2)
         .build() as AccessTransitionASTNode
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.TRANSITION)
         .mockReturnValue([transition1, transition2])
 
@@ -256,7 +259,7 @@ describe('AccessWiring', () => {
         .withProperty('effects', [])
         .build() as AccessTransitionASTNode
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.TRANSITION)
         .mockReturnValue([transition])
 
@@ -284,7 +287,7 @@ describe('AccessWiring', () => {
         .withProperty('validate', false)
         .build()
 
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.TRANSITION)
         .mockReturnValue([loadTransition, submitTransition])
 
@@ -298,7 +301,7 @@ describe('AccessWiring', () => {
 
     it('should handle no access transitions in registry', () => {
       // Arrange
-      when(mockWiringContext.findNodesByType)
+      when(mockWiringContext.nodeRegistry.findByType)
         .calledWith(ASTNodeType.TRANSITION)
         .mockReturnValue([])
 

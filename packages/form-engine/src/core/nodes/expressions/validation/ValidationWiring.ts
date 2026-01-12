@@ -25,7 +25,7 @@ export default class ValidationWiring {
    * Wire all validation expressions to their condition nodes
    */
   wire() {
-    const expressionNodes = this.wiringContext.findNodesByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
+    const expressionNodes = this.wiringContext.nodeRegistry.findByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
 
     expressionNodes
       .filter(isValidationExprNode)

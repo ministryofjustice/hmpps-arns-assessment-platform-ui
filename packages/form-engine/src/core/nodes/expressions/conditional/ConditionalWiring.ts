@@ -25,7 +25,7 @@ export default class ConditionalWiring {
    * Wire all conditional expressions to their predicate and branch nodes
    */
   wire() {
-    const expressionNodes = this.wiringContext.findNodesByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
+    const expressionNodes = this.wiringContext.nodeRegistry.findByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
 
     expressionNodes
       .filter(isConditionalExprNode)

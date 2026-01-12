@@ -5,6 +5,7 @@ import { NodeId } from '@form-engine/core/types/engine.type'
 import { isPseudoNode } from '@form-engine/core/typeguards/nodes'
 import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import { ReferenceASTNode } from '@form-engine/core/types/expressions.type'
+import { getPseudoNodeKey } from '@form-engine/core/ast/registration/pseudoNodeKeyExtractor'
 
 /**
  * AnswerRemoteWiring: Wires Answer.Remote pseudo nodes to their data sources and consumers
@@ -24,7 +25,7 @@ export default class AnswerRemoteWiring {
   wire() {
     const answerRefsByFieldCode = this.buildAnswerRefsIndex()
 
-    this.wiringContext.findPseudoNodesByType<AnswerRemotePseudoNode>(PseudoNodeType.ANSWER_REMOTE)
+    this.wiringContext.nodeRegistry.findByType<AnswerRemotePseudoNode>(PseudoNodeType.ANSWER_REMOTE)
       .forEach(answerPseudoNode => {
         this.wireProducers(answerPseudoNode)
         this.wireConsumersFromIndex(answerPseudoNode, answerRefsByFieldCode)
@@ -54,10 +55,8 @@ export default class AnswerRemoteWiring {
 
     answerRefs.forEach(refNode => {
       const baseFieldCode = refNode.properties.path[1] as string
-      const pseudoNode = this.wiringContext.findPseudoNode<AnswerRemotePseudoNode>(
-        PseudoNodeType.ANSWER_REMOTE,
-        baseFieldCode,
-      )
+      const pseudoNode = this.wiringContext.nodeRegistry.findByType<AnswerRemotePseudoNode>(PseudoNodeType.ANSWER_REMOTE)
+        .find(node => getPseudoNodeKey(node) === baseFieldCode)
 
       if (pseudoNode) {
         this.wiringContext.graph.addEdge(pseudoNode.id, refNode.id, DependencyEdgeType.DATA_FLOW, {
