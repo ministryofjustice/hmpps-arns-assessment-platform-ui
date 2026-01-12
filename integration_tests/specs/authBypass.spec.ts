@@ -3,7 +3,6 @@ import { expect, test } from '@playwright/test'
 import { login } from '../testUtils'
 
 test.describe('Auth Bypass', () => {
-
   test('Unauthenticated user can access bypassed path without redirect to sign-in', async ({ page }) => {
     // Act
     const response = await page.goto('/forms/form-engine-developer-guide')
