@@ -186,11 +186,15 @@ export const createEmptyAssessment = (): TestAssessment =>
  * Create an assessment with only current (ACTIVE) goals
  */
 export const createAssessmentWithCurrentGoals = (count: number = 1): TestAssessment => {
+  const futureDate = new Date()
+  futureDate.setMonth(futureDate.getMonth() + 1)
+  const targetDate = futureDate.toISOString().split('T')[0]
+
   const goals: TestGoal[] = Array.from({ length: count }, (_, i) => ({
     title: `Current Goal ${i + 1}`,
     status: 'ACTIVE' as GoalStatus,
     areaOfNeed: 'accommodation',
-    targetDate: '2025-06-01',
+    targetDate,
   }))
   return createAssessmentWithGoals(goals)
 }

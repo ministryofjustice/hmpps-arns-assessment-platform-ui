@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { loginAndNavigateToPlan, resetStubs } from '../../testUtils'
+import { resetStubs } from '../../testUtils'
 import aapApi, {
   createEmptyAssessment,
   createAssessmentWithCurrentGoals,
@@ -8,6 +8,7 @@ import aapApi, {
   createAssessmentWithGoals,
 } from '../../mockApis/aapApi'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
+import { loginAndNavigateToPlan } from './sentencePlanUtils'
 
 /**
  * Integration tests for the Plan Overview page

@@ -1,4 +1,4 @@
-import { expect, Page } from '@playwright/test'
+import { Page } from '@playwright/test'
 import tokenVerification from './mockApis/tokenVerification'
 import hmppsAuth, { type UserToken } from './mockApis/hmppsAuth'
 import handover, { type UserToken as HandoverUserToken } from './mockApis/handover'
@@ -53,14 +53,4 @@ const authSignIn = async (page: Page) => {
 
   // Click the submit button
   await page.locator('#submit').click()
-}
-
-/**
- * Logs in via HMPPS Auth and navigates to the plan overview via the OASys entry point.
- * This establishes the session with proper user context and assessment UUID.
- */
-export const loginAndNavigateToPlan = async (page: Page): Promise<void> => {
-  await login(page)
-  await page.goto('/forms/sentence-plan/oasys')
-  await expect(page).toHaveURL(/\/plan\/overview/)
 }
