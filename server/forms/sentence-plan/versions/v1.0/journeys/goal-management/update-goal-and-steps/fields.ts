@@ -130,7 +130,7 @@ const progressNotesField = field<GovUKTextareaInput>({
     'For example, how %1 feels about their progress, any strengths or protective factors they have developed, or any support they need.',
     CaseData.Forename,
   ),
-  rows: '5',
+  rows: '3',
 })
 
 export const progressNotesSection = TemplateWrapper({

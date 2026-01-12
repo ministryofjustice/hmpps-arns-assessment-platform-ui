@@ -99,7 +99,7 @@
       <div class="goal-summary-card__info">
         <div class="goal-date-and-notes">
           {% if params.goalStatus == 'ACHIEVED' and params.statusDate %}
-            <p>Achieved on {{ params.statusDate }}.</p>
+            <p>Marked as achieved on {{ params.statusDate }}.</p>
           {% elif params.goalStatus == 'REMOVED' and params.statusDate %}
             <p>Removed on {{ params.statusDate }}.</p>
             {% if params.removedNote %}

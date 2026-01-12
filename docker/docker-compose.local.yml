@@ -24,6 +24,7 @@ services:
       HMPPS_ARNS_HANDOVER_CLIENT_SECRET: aap-secret
       AAP_API_URL: http://api:8080
       DELIUS_API_URL: http://wiremock:8080
+      COORDINATOR_API_URL: http://arns-coordinator:8080
       NODE_ENV: 'development'
       ENVIRONMENT_NAME: dev
       NODE_CLUSTER_ENABLED: false

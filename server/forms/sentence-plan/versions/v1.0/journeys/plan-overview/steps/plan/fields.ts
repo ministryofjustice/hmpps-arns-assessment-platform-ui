@@ -68,6 +68,10 @@ const futureGoalsCount = Data('goals')
   .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
   .pipe(Transformer.Array.Length())
 
+const achievedGoalsCount = Data('goals')
+  .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACHIEVED'))))
+  .pipe(Transformer.Array.Length())
+
 export const planCreatedMessage = HtmlBlock({
   hidden: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER'])),
   content: when(Data('latestAgreementStatus').match(Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE'])))
@@ -102,6 +106,13 @@ export const subNavigation = MOJSubNavigation({
         .then(true)
         .else(false),
     },
+    when(achievedGoalsCount.match(Condition.Number.GreaterThan(0))).then({
+      text: Format('Achieved goals (%1)', achievedGoalsCount),
+      href: 'overview?type=achieved',
+      active: when(Query('type').match(Condition.Equals('achieved')))
+        .then(true)
+        .else(false),
+    }) as any,
   ],
 })
 
@@ -137,12 +148,16 @@ export const goalsSection = TemplateWrapper({
             Iterator.Filter(
               or(
                 and(
-                  Query('type').not.match(Condition.Equals('future')),
+                  Query('type').match(Condition.Equals('current')),
                   Item().path('status').match(Condition.Equals('ACTIVE')),
                 ),
                 and(
                   Query('type').match(Condition.Equals('future')),
                   Item().path('status').match(Condition.Equals('FUTURE')),
+                ),
+                and(
+                  Query('type').match(Condition.Equals('achieved')),
+                  Item().path('status').match(Condition.Equals('ACHIEVED')),
                 ),
               ),
             ),
@@ -189,7 +204,7 @@ export const goalsSection = TemplateWrapper({
                             goalStatus: Item().path('status'),
                             goalUuid: Item().path('uuid'),
                             targetDate: Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()),
-                            statusDate: Item().path('statusDate'),
+                            statusDate: Item().path('statusDate').pipe(Transformer.Date.ToUKLongDate()),
                             areaOfNeed: Item().path('areaOfNeedLabel'),
                             relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
                             steps: Item()
@@ -232,7 +247,7 @@ export const goalsSection = TemplateWrapper({
                             goalStatus: Item().path('status'),
                             goalUuid: Item().path('uuid'),
                             targetDate: Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()),
-                            statusDate: Item().path('statusDate'),
+                            statusDate: Item().path('statusDate').pipe(Transformer.Date.ToUKLongDate()),
                             areaOfNeed: Item().path('areaOfNeedLabel'),
                             relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
                             steps: Item()
@@ -245,10 +260,15 @@ export const goalsSection = TemplateWrapper({
                                 }),
                               ),
                             actions: [
-                              {
-                                text: 'Update',
-                                href: Format('../goal/%1/update-goal-steps', Item().path('uuid')),
-                              },
+                              when(Item().path('status').match(Condition.Equals('ACHIEVED')))
+                                .then({
+                                  text: 'View details',
+                                  href: '#',
+                                })
+                                .else({
+                                  text: 'Update',
+                                  href: Format('../goal/%1/update-goal-steps', Item().path('uuid')),
+                                }) as any,
                             ],
                             index: Item().index(),
                           }),
@@ -268,6 +288,7 @@ export const goalsSection = TemplateWrapper({
 export const blankPlanOverviewContent = HtmlBlock({
   hidden: or(
     Query('type').match(Condition.Equals('future')),
+    Query('type').match(Condition.Equals('achieved')),
     Data('goals')
       .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
       .match(Condition.IsRequired()),
