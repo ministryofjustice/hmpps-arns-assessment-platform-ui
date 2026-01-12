@@ -3,7 +3,6 @@ import { login } from '../testUtils'
 import HomePage from '../pages/homePage'
 
 test.describe('Home', () => {
-
   test('Home page displays construction message, current time, side nav and HTML blocks', async ({ page }) => {
     await login(page)
 

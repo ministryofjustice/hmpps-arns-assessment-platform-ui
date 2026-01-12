@@ -1,5 +1,5 @@
-import EffectFunctionContext from '@form-engine/core/ast/thunks/EffectFunctionContext'
 import { FormatExpr } from '@form-engine/form/types/expressions.type'
+import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
 import { User } from '../../../interfaces/user'
 import { Answers, Properties } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed } from '../versions/v1.0/constants'
