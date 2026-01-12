@@ -82,35 +82,7 @@ const single = (value: string): SingleValue => ({ type: 'Single', value })
 const multi = (values: string[]): MultiValue => ({ type: 'Multi', values })
 
 /**
- * Generate a date N months from now in ISO format
- */
-function getDatePlusMonths(months: number): string {
-  const date = new Date()
-  date.setMonth(date.getMonth() + months)
-  return date.toISOString()
-}
-
-/**
- * Fluent builder for creating and populating SENTENCE_PLAN assessments with goals and steps.
- *
- * Supports two execution modes:
- * - `create(client)` - Creates a NEW assessment with the configured goals
- * - `addTo(assessmentUuid, client)` - Adds goals to an EXISTING assessment
- *
- * @example
- * // Create a new sentence plan with goals
- * const plan = await new SentencePlanBuilder()
- *   .withGoal({ title: 'Find housing', areaOfNeed: 'accommodation', status: 'ACTIVE' })
- *   .create(aapClient)
- *
- * @example
- * // Add goals to an existing assessment (reverse flow pattern)
- * await loginAndNavigateToPlan(page)
- * const uuid = await getAssessmentUuid(page)
- * await new SentencePlanBuilder()
- *   .withGoal({ title: 'Find housing', areaOfNeed: 'accommodation', status: 'ACTIVE' })
- *   .addTo(uuid, aapClient)
- * await page.reload()
+ * Fluent builder for creating SENTENCE_PLAN assessments with goals and steps.
  */
 export class SentencePlanBuilder {
   private readonly goals: GoalConfig[] = []
@@ -401,92 +373,4 @@ export class SentencePlanBuilder {
       description: config.description,
     }
   }
-}
-
-// ============================================================================
-// Convenience Factory Functions - Creating New Assessments
-// ============================================================================
-
-/**
- * Create an empty sentence plan builder (no goals)
- */
-export function createEmptySentencePlan(): SentencePlanBuilder {
-  return new SentencePlanBuilder()
-}
-
-/**
- * Create a builder with ACTIVE (current) goals
- *
- * @param count Number of goals to create
- */
-export function withCurrentGoals(count: number): SentencePlanBuilder {
-  const builder = new SentencePlanBuilder()
-  const targetDate = getDatePlusMonths(3)
-
-  for (let i = 1; i <= count; i++) {
-    builder.withGoal({
-      title: `Current Goal ${i}`,
-      areaOfNeed: 'accommodation',
-      status: 'ACTIVE',
-      targetDate,
-    })
-  }
-
-  return builder
-}
-
-/**
- * Create a builder with FUTURE goals
- *
- * @param count Number of goals to create
- */
-export function withFutureGoals(count: number): SentencePlanBuilder {
-  const builder = new SentencePlanBuilder()
-
-  for (let i = 1; i <= count; i++) {
-    builder.withGoal({
-      title: `Future Goal ${i}`,
-      areaOfNeed: 'finances',
-      status: 'FUTURE',
-    })
-  }
-
-  return builder
-}
-
-/**
- * Create a builder with a mix of ACTIVE and FUTURE goals
- *
- * Creates: 2 current goals + 1 future goal
- */
-export function withMixedGoals(): SentencePlanBuilder {
-  const targetDate = getDatePlusMonths(6)
-
-  return new SentencePlanBuilder()
-    .withGoal({
-      title: 'Find stable housing',
-      areaOfNeed: 'accommodation',
-      status: 'ACTIVE',
-      targetDate,
-    })
-    .withGoal({
-      title: 'Get employment support',
-      areaOfNeed: 'employment-and-education',
-      status: 'ACTIVE',
-      targetDate,
-    })
-    .withGoal({
-      title: 'Improve finances',
-      areaOfNeed: 'finances',
-      status: 'FUTURE',
-    })
-}
-
-/**
- * Create a builder with custom goal configurations
- *
- * @param goals Array of goal configurations
- */
-export function withGoals(goals: GoalConfig[]): SentencePlanBuilder {
-  return new SentencePlanBuilder().withGoals(goals)
 }

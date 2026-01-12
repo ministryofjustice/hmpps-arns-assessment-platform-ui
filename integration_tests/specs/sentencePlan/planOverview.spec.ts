@@ -1,37 +1,34 @@
 import { expect } from '@playwright/test'
 import { test } from '../../support/fixtures'
-import { withCurrentGoals, withFutureGoals, withMixedGoals, withGoals } from '../../builders/SentencePlanBuilder'
+import { createEmptySentencePlan, withCurrentGoals, withFutureGoals, withMixedGoals, withGoals } from '../../builders'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import { loginAndNavigateToPlan, getAssessmentUuid } from './sentencePlanUtils'
+import { loginAndNavigateToPlanByCrn } from './sentencePlanUtils'
 
-/**
- * Integration tests for the Plan Overview page
- *
- * Uses the "reverse flow" pattern:
- * 1. Navigate to OASys entry point (creates empty assessment)
- * 2. Extract the assessment UUID from the page
- * 3. Use SentencePlanBuilder.addTo() to add goals/steps via API
- * 4. Refresh the page to see the populated data
- */
 test.describe('Plan Overview Page', () => {
   test.describe('Empty State', () => {
-    test('shows empty message when no current goals exist', async ({ page }) => {
-      await loginAndNavigateToPlan(page)
+    test('shows empty message when no current goals exist', async ({ page, aapClient }) => {
+      const plan = await createEmptySentencePlan().create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
+
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.noGoalsMessage).toBeVisible()
       await expect(planOverviewPage.noGoalsMessage).toContainText(/does not have any goals to work on now/i)
     })
 
-    test('shows create goal link in empty state', async ({ page }) => {
-      await loginAndNavigateToPlan(page)
+    test('shows create goal link in empty state', async ({ page, aapClient }) => {
+      const plan = await createEmptySentencePlan().create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
+
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.createGoalLink).toBeVisible()
     })
 
-    test('shows empty message when no future goals exist', async ({ page }) => {
-      await loginAndNavigateToPlan(page)
+    test('shows empty message when no future goals exist', async ({ page, aapClient }) => {
+      const plan = await createEmptySentencePlan().create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
+
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.clickFutureGoalsTab()
@@ -44,15 +41,10 @@ test.describe('Plan Overview Page', () => {
 
   test.describe('Goal Display', () => {
     test('displays current goals in Goals to work on now section', async ({ page, aapClient }) => {
-      // Navigate to create empty assessment
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
+      // Create assessment with current goals
+      const plan = await withCurrentGoals(2).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Populate with current goals via API
-      await withCurrentGoals(2).addTo(assessmentUuid, aapClient)
-
-      // Refresh to see the data
-      await page.reload()
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const goalCount = await planOverviewPage.getGoalCount()
@@ -66,15 +58,10 @@ test.describe('Plan Overview Page', () => {
     })
 
     test('displays future goals in Future goals section', async ({ page, aapClient }) => {
-      // Navigate to create empty assessment
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
+      // Create assessment with future goals
+      const plan = await withFutureGoals(2).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Populate with future goals via API
-      await withFutureGoals(2).addTo(assessmentUuid, aapClient)
-
-      // Refresh and navigate to future goals tab
-      await page.reload()
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.clickFutureGoalsTab()
@@ -87,15 +74,10 @@ test.describe('Plan Overview Page', () => {
     })
 
     test('shows correct goal count in tab labels', async ({ page, aapClient }) => {
-      // Navigate to create empty assessment
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
+      // Create assessment with mixed goals
+      const plan = await withMixedGoals().create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Populate with mixed goals via API
-      await withMixedGoals().addTo(assessmentUuid, aapClient)
-
-      // Refresh to see the data
-      await page.reload()
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.currentGoalsTab).toContainText('2')
@@ -103,22 +85,17 @@ test.describe('Plan Overview Page', () => {
     })
 
     test('goal card shows title and area of need', async ({ page, aapClient }) => {
-      // Navigate to create empty assessment
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-
-      // Populate with a specific goal
-      await withGoals([
+      // Create assessment with a specific goal
+      const plan = await withGoals([
         {
           title: 'Find stable housing',
           status: 'ACTIVE',
           areaOfNeed: 'accommodation',
           targetDate: '2025-06-01',
         },
-      ]).addTo(assessmentUuid, aapClient)
+      ]).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Refresh to see the data
-      await page.reload()
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const goalTitle = await planOverviewPage.getGoalCardTitle(0)
@@ -129,15 +106,10 @@ test.describe('Plan Overview Page', () => {
     })
 
     test('goal card shows No steps added when goal has no steps', async ({ page, aapClient }) => {
-      // Navigate to create empty assessment
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
+      // Create assessment with a goal without steps
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Populate with a goal without steps
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
-
-      // Refresh to see the data
-      await page.reload()
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const goalCard = await planOverviewPage.getGoalCardByIndex(0)
@@ -145,12 +117,8 @@ test.describe('Plan Overview Page', () => {
     })
 
     test('goal card shows steps when steps exist', async ({ page, aapClient }) => {
-      // Navigate to create empty assessment
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-
-      // Populate with a goal that has steps
-      await withGoals([
+      // Create assessment with a goal that has steps
+      const plan = await withGoals([
         {
           title: 'Goal with steps',
           status: 'ACTIVE',
@@ -161,10 +129,9 @@ test.describe('Plan Overview Page', () => {
             { actor: 'person_on_probation', description: 'Attend housing appointment' },
           ],
         },
-      ]).addTo(assessmentUuid, aapClient)
+      ]).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Refresh to see the data
-      await page.reload()
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const goalCard = await planOverviewPage.getGoalCardByIndex(0)
@@ -174,23 +141,20 @@ test.describe('Plan Overview Page', () => {
   })
 
   test.describe('Tab Navigation', () => {
-    test('defaults to current goals tab', async ({ page }) => {
-      await loginAndNavigateToPlan(page)
+    test('defaults to current goals tab', async ({ page, aapClient }) => {
+      const plan = await createEmptySentencePlan().create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
+
       await PlanOverviewPage.verifyOnPage(page)
 
       await expect(page).toHaveURL(/type=current/)
     })
 
     test('can switch to future goals tab', async ({ page, aapClient }) => {
-      // Navigate to create empty assessment
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
+      // Create assessment with mixed goals
+      const plan = await withMixedGoals().create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Populate with mixed goals
-      await withMixedGoals().addTo(assessmentUuid, aapClient)
-
-      // Refresh and test tab navigation
-      await page.reload()
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.clickFutureGoalsTab()
@@ -201,15 +165,10 @@ test.describe('Plan Overview Page', () => {
     })
 
     test('can switch back to current goals tab', async ({ page, aapClient }) => {
-      // Navigate to create empty assessment
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
+      // Create assessment with mixed goals
+      const plan = await withMixedGoals().create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Populate with mixed goals
-      await withMixedGoals().addTo(assessmentUuid, aapClient)
-
-      // Refresh and test tab navigation
-      await page.reload()
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.clickFutureGoalsTab()
@@ -223,12 +182,9 @@ test.describe('Plan Overview Page', () => {
     })
 
     test('respects type=future query param on page load', async ({ page, aapClient }) => {
-      // Navigate to create empty assessment
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-
-      // Populate with mixed goals
-      await withMixedGoals().addTo(assessmentUuid, aapClient)
+      // Create assessment with mixed goals
+      const plan = await withMixedGoals().create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate directly to future goals tab
       await page.goto('/forms/sentence-plan/v1.0/plan/overview?type=future')
@@ -244,15 +200,10 @@ test.describe('Plan Overview Page', () => {
 
   test.describe('Goal Actions', () => {
     test('shows Change goal link on goal cards', async ({ page, aapClient }) => {
-      // Navigate to create empty assessment
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
+      // Create assessment with a goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Populate with a goal
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
-
-      // Refresh to see the data
-      await page.reload()
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const hasChangeLink = await planOverviewPage.goalCardHasChangeLink(0)
@@ -260,15 +211,10 @@ test.describe('Plan Overview Page', () => {
     })
 
     test('shows Add or change steps link on goal cards', async ({ page, aapClient }) => {
-      // Navigate to create empty assessment
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
+      // Create assessment with a goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Populate with a goal
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
-
-      // Refresh to see the data
-      await page.reload()
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const hasAddStepsLink = await planOverviewPage.goalCardHasAddStepsLink(0)
@@ -276,15 +222,10 @@ test.describe('Plan Overview Page', () => {
     })
 
     test('shows Delete link on goal cards', async ({ page, aapClient }) => {
-      // Navigate to create empty assessment
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
+      // Create assessment with a goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Populate with a goal
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
-
-      // Refresh to see the data
-      await page.reload()
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const hasDeleteLink = await planOverviewPage.goalCardHasDeleteLink(0)

@@ -2,28 +2,17 @@ import { expect } from '@playwright/test'
 import { test } from '../../support/fixtures'
 import ChangeGoalPage from '../../pages/sentencePlan/changeGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import { withCurrentGoals, withFutureGoals } from '../../builders/SentencePlanBuilder'
-import { getDatePlusMonthsAsString, loginAndNavigateToPlan, getAssessmentUuid } from './sentencePlanUtils'
+import { withCurrentGoals, withFutureGoals } from '../../builders'
+import { getDatePlusMonthsAsString, loginAndNavigateToPlanByCrn } from './sentencePlanUtils'
 
-/**
- * Integration tests for the Change Goal journey
- *
- * Uses the "reverse flow" pattern:
- * 1. Navigate to OASys entry point (creates empty assessment)
- * 2. Use SentencePlanBuilder.addTo() to add goals via API
- * 3. Refresh and interact with the UI to change goals
- * 4. Verify changes are reflected on the plan overview
- */
 test.describe('Change goal journey', () => {
   test.describe('current goal workflow', () => {
     test('can access change goal page directly', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a current goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a current goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -32,13 +21,11 @@ test.describe('Change goal journey', () => {
     })
 
     test('form is pre-populated with existing goal data', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a current goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a current goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -54,13 +41,11 @@ test.describe('Change goal journey', () => {
     })
 
     test('can update goal title and verify change on plan overview', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a current goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a current goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -80,13 +65,11 @@ test.describe('Change goal journey', () => {
     })
 
     test('can change goal from current to future and verify on plan overview', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a current goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a current goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -109,13 +92,11 @@ test.describe('Change goal journey', () => {
     })
 
     test('can change target date option', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a current goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a current goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -130,13 +111,11 @@ test.describe('Change goal journey', () => {
     })
 
     test('can set custom target date', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a current goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a current goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -156,13 +135,11 @@ test.describe('Change goal journey', () => {
     })
 
     test('can add related areas of need', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a current goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a current goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -181,13 +158,11 @@ test.describe('Change goal journey', () => {
     })
 
     test('redirects to current goals tab when saving an active goal', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a current goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a current goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -205,13 +180,11 @@ test.describe('Change goal journey', () => {
 
   test.describe('validation', () => {
     test('shows error when goal title is empty', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a current goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a current goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -227,13 +200,11 @@ test.describe('Change goal journey', () => {
     })
 
     test('shows error when related areas not selected but yes chosen', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a current goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a current goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -249,13 +220,11 @@ test.describe('Change goal journey', () => {
     })
 
     test('shows target date options for active goal', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a current goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withCurrentGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a current goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -271,13 +240,11 @@ test.describe('Change goal journey', () => {
 
   test.describe('future goal workflow', () => {
     test('can change future goal to current goal and verify on plan overview', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a future goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withFutureGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a future goal
+      const plan = await withFutureGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to future goals tab and click change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Future goals' }).click()
       await page.getByRole('link', { name: 'Change goal' }).click()
@@ -306,13 +273,11 @@ test.describe('Change goal journey', () => {
     })
 
     test('future goal does not show target date options', async ({ page, aapClient }) => {
-      // Setup: create assessment and add a future goal
-      await loginAndNavigateToPlan(page)
-      const assessmentUuid = await getAssessmentUuid(page)
-      await withFutureGoals(1).addTo(assessmentUuid, aapClient)
+      // Setup: create assessment with a future goal
+      const plan = await withFutureGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
 
       // Navigate to future goals tab and click change goal
-      await page.reload()
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Future goals' }).click()
       await page.getByRole('link', { name: 'Change goal' }).click()

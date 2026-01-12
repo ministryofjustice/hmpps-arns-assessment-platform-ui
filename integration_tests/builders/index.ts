@@ -8,15 +8,17 @@
 // Generic assessment builder
 export { AssessmentBuilder, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
 
-// Sentence plan builder and factory functions
+// Sentence plan builder
+export { SentencePlanBuilder } from './SentencePlanBuilder'
+
+// Sentence plan factory functions
 export {
-  SentencePlanBuilder,
   createEmptySentencePlan,
   withCurrentGoals,
   withFutureGoals,
   withMixedGoals,
   withGoals,
-} from './SentencePlanBuilder'
+} from './sentencePlanFactories'
 
 export type {
   GoalConfig,
