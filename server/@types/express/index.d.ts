@@ -16,8 +16,17 @@ export declare module 'express-session' {
   }
 }
 
-export declare global {
+declare global {
   namespace Express {
+    interface RequestState {
+      cspNonce?: string
+      csrfToken?: string
+      user?: {
+        id: string
+        name: string
+      }
+    }
+
     interface User {
       username: string
       token: string
@@ -28,6 +37,8 @@ export declare global {
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void
+      state: RequestState
+      authBypassed?: boolean
     }
 
     interface Locals {

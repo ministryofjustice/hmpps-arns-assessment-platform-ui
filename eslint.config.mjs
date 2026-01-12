@@ -14,6 +14,7 @@ export default [
       'prefer-destructuring': 'off',
       'import/prefer-default-export': 'off',
       'import/no-cycle': 'off',
+      'no-plusplus': 'off',
     },
     settings: {
       'import/resolver': {
@@ -34,6 +35,18 @@ export default [
     files: ['integration_tests/**/*.ts', 'playwright.config.ts'],
     rules: {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    },
+  },
+  {
+    files: ['packages/form-engine-moj-components/**/*.ts'],
+    rules: {
+      'no-nested-ternary': 'off',
+    },
+  },
+  {
+    files: ['packages/form-engine-govuk-components/**/*.ts'],
+    rules: {
+      'no-nested-ternary': 'off',
     },
   },
   {

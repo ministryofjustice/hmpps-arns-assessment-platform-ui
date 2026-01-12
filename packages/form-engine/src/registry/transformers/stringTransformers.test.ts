@@ -296,19 +296,9 @@ describe('String Transformers', () => {
       expect(result).toBe(-456)
     })
 
-    it('should handle hexadecimal with custom radix', () => {
-      const result = evaluate('FF', 16)
-      expect(result).toBe(255)
-    })
-
-    it('should handle binary with custom radix', () => {
-      const result = evaluate('1010', 2)
-      expect(result).toBe(10)
-    })
-
-    it('should return NaN for non-numeric strings', () => {
-      const result = evaluate('not a number')
-      expect(result).toBeNaN()
+    it('should handle negative decimals by truncating', () => {
+      const result = evaluate('-456.789')
+      expect(result).toBe(-456)
     })
 
     it('should handle strings with leading/trailing spaces', () => {
@@ -316,9 +306,24 @@ describe('String Transformers', () => {
       expect(result).toBe(123)
     })
 
-    it('should handle empty strings', () => {
-      const result = evaluate('')
-      expect(result).toBeNaN()
+    it('should throw for empty string', () => {
+      expect(() => evaluate('')).toThrow('is not a valid number')
+    })
+
+    it('should throw for whitespace-only string', () => {
+      expect(() => evaluate('   ')).toThrow('is not a valid number')
+    })
+
+    it('should throw for non-numeric input', () => {
+      expect(() => evaluate('not a number')).toThrow('is not a valid number')
+    })
+
+    it('should throw for partial numeric input', () => {
+      expect(() => evaluate('123abc')).toThrow('is not a valid number')
+    })
+
+    it('should throw for Infinity', () => {
+      expect(() => evaluate('Infinity')).toThrow('is not a valid number')
     })
 
     it('should throw error for non-string values', () => {
@@ -358,24 +363,34 @@ describe('String Transformers', () => {
       expect(result).toBe(123000)
     })
 
-    it('should return NaN for non-numeric strings', () => {
-      const result = evaluate('not a number')
-      expect(result).toBeNaN()
-    })
-
     it('should handle strings with leading/trailing spaces', () => {
       const result = evaluate('  3.14159  ')
       expect(result).toBeCloseTo(3.14159)
     })
 
-    it('should handle empty strings', () => {
-      const result = evaluate('')
-      expect(result).toBeNaN()
+    it('should throw for empty string', () => {
+      expect(() => evaluate('')).toThrow('is not a valid number')
+    })
+
+    it('should throw for whitespace-only string', () => {
+      expect(() => evaluate('   ')).toThrow('is not a valid number')
     })
 
     it('should handle very small decimals', () => {
       const result = evaluate('0.000001')
       expect(result).toBe(0.000001)
+    })
+
+    it('should throw for non-numeric input', () => {
+      expect(() => evaluate('not a number')).toThrow('is not a valid number')
+    })
+
+    it('should throw for partial numeric input', () => {
+      expect(() => evaluate('123.45abc')).toThrow('is not a valid number')
+    })
+
+    it('should throw for Infinity', () => {
+      expect(() => evaluate('Infinity')).toThrow('is not a valid number')
     })
 
     it('should throw error for non-string values', () => {
@@ -505,71 +520,44 @@ describe('String Transformers', () => {
       expect(result.getDate()).toBe(15)
     })
 
-    it('should return Invalid Date for empty string', () => {
-      const result = evaluate('')
-      expect(result).toBeInstanceOf(Date)
-      expect(Number.isNaN(result.getTime())).toBe(true)
+    it('should throw for empty string', () => {
+      expect(() => evaluate('')).toThrow('is not a valid date')
     })
 
-    it('should return Invalid Date for whitespace-only string', () => {
-      const result = evaluate('   ')
-      expect(result).toBeInstanceOf(Date)
-      expect(Number.isNaN(result.getTime())).toBe(true)
+    it('should throw for whitespace-only string', () => {
+      expect(() => evaluate('   ')).toThrow('is not a valid date')
     })
 
-    it('should return Invalid Date for ISO format (not supported)', () => {
-      const result = evaluate('2024-03-15')
-      expect(result).toBeInstanceOf(Date)
-      expect(Number.isNaN(result.getTime())).toBe(true)
+    it('should throw for ISO format (not supported)', () => {
+      expect(() => evaluate('2024-03-15')).toThrow('is not a valid UK date')
     })
 
-    it('should return Invalid Date for US format (not supported)', () => {
-      const result = evaluate('03/15/2024')
-      expect(result).toBeInstanceOf(Date)
-      // This might actually parse as 03/15/2024 -> 3rd day of 15th month
-      // which would normalize to 3rd March 2025, so we check if it's invalid
-      const isInvalid =
-        Number.isNaN(result.getTime()) ||
-        result.getFullYear() !== 2024 ||
-        result.getMonth() !== 2 ||
-        result.getDate() !== 15
-      expect(isInvalid).toBe(true)
+    it('should throw for US format (not supported)', () => {
+      expect(() => evaluate('03/15/2024')).toThrow('is not a valid date')
     })
 
-    it('should return Invalid Date for invalid date string', () => {
-      const result = evaluate('not a date')
-      expect(result).toBeInstanceOf(Date)
-      expect(Number.isNaN(result.getTime())).toBe(true)
+    it('should throw for invalid date string', () => {
+      expect(() => evaluate('not a date')).toThrow('is not a valid UK date')
     })
 
-    it('should return Invalid Date for invalid day', () => {
-      const result = evaluate('32/03/2024')
-      expect(result).toBeInstanceOf(Date)
-      expect(Number.isNaN(result.getTime())).toBe(true)
+    it('should throw for invalid day', () => {
+      expect(() => evaluate('32/03/2024')).toThrow('is not a valid date')
     })
 
-    it('should return Invalid Date for invalid month', () => {
-      const result = evaluate('15/13/2024')
-      expect(result).toBeInstanceOf(Date)
-      expect(Number.isNaN(result.getTime())).toBe(true)
+    it('should throw for invalid month', () => {
+      expect(() => evaluate('15/13/2024')).toThrow('is not a valid date')
     })
 
-    it('should return Invalid Date for invalid leap year date', () => {
-      const result = evaluate('29/02/2023') // 2023 is not a leap year
-      expect(result).toBeInstanceOf(Date)
-      expect(Number.isNaN(result.getTime())).toBe(true)
+    it('should throw for invalid leap year date', () => {
+      expect(() => evaluate('29/02/2023')).toThrow('is not a valid date')
     })
 
-    it('should return Invalid Date for wrong format', () => {
-      const result = evaluate('2024/03/15') // Year first is not UK format
-      expect(result).toBeInstanceOf(Date)
-      expect(Number.isNaN(result.getTime())).toBe(true)
+    it('should throw for wrong format', () => {
+      expect(() => evaluate('2024/03/15')).toThrow('is not a valid UK date')
     })
 
-    it('should return Invalid Date for partial dates', () => {
-      const result = evaluate('15/03')
-      expect(result).toBeInstanceOf(Date)
-      expect(Number.isNaN(result.getTime())).toBe(true)
+    it('should throw for partial dates', () => {
+      expect(() => evaluate('15/03')).toThrow('is not a valid UK date')
     })
 
     it('should throw error for non-string values', () => {
@@ -583,6 +571,82 @@ describe('String Transformers', () => {
       expect(expr).toEqual({
         type: FunctionType.TRANSFORMER,
         name: 'ToDate',
+        arguments: [],
+      })
+    })
+  })
+
+  describe('ToISODate', () => {
+    const { evaluate } = StringTransformersRegistry.ToISODate
+
+    it('should convert UK date format to ISO format', () => {
+      expect(evaluate('15/03/2024')).toBe('2024-03-15')
+    })
+
+    it('should handle single digit day and month', () => {
+      expect(evaluate('5/3/2024')).toBe('2024-03-05')
+      expect(evaluate('1/1/2024')).toBe('2024-01-01')
+    })
+
+    it('should handle dash separator', () => {
+      expect(evaluate('15-03-2024')).toBe('2024-03-15')
+    })
+
+    it('should handle leading/trailing whitespace', () => {
+      expect(evaluate('  15/03/2024  ')).toBe('2024-03-15')
+    })
+
+    it('should handle end of year dates', () => {
+      expect(evaluate('31/12/2024')).toBe('2024-12-31')
+    })
+
+    it('should handle leap year dates', () => {
+      expect(evaluate('29/02/2024')).toBe('2024-02-29')
+    })
+
+    it('should throw for empty string', () => {
+      expect(() => evaluate('')).toThrow('is not a valid date')
+    })
+
+    it('should throw for whitespace only', () => {
+      expect(() => evaluate('   ')).toThrow('is not a valid date')
+    })
+
+    it('should throw for ISO format input', () => {
+      expect(() => evaluate('2024-03-15')).toThrow('is not a valid UK date')
+    })
+
+    it('should throw for invalid day', () => {
+      expect(() => evaluate('32/03/2024')).toThrow('is not a valid date')
+    })
+
+    it('should throw for invalid month', () => {
+      expect(() => evaluate('15/13/2024')).toThrow('is not a valid date')
+    })
+
+    it('should throw for invalid leap year date', () => {
+      expect(() => evaluate('29/02/2023')).toThrow('is not a valid date')
+    })
+
+    it('should throw for wrong format', () => {
+      expect(() => evaluate('2024/03/15')).toThrow('is not a valid UK date')
+    })
+
+    it('should throw for partial dates', () => {
+      expect(() => evaluate('15/03')).toThrow('is not a valid UK date')
+    })
+
+    it('should throw error for non-string values', () => {
+      expect(() => evaluate(123)).toThrow('Transformer.String.ToISODate expects a string but received number.')
+      expect(() => evaluate(null)).toThrow('Transformer.String.ToISODate expects a string but received object.')
+      expect(() => evaluate(undefined)).toThrow('Transformer.String.ToISODate expects a string but received undefined.')
+    })
+
+    it('should return a function expression when called', () => {
+      const expr = StringTransformers.ToISODate()
+      expect(expr).toEqual({
+        type: FunctionType.TRANSFORMER,
+        name: 'ToISODate',
         arguments: [],
       })
     })

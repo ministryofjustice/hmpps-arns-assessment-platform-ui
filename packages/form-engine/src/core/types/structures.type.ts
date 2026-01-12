@@ -1,11 +1,14 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
+import { BlockType } from '@form-engine/form/types/enums'
 import { ASTNode } from '@form-engine/core/types/engine.type'
 import {
   AccessTransitionASTNode,
+  ActionTransitionASTNode,
   LoadTransitionASTNode,
   SubmitTransitionASTNode,
   ValidationASTNode,
 } from '@form-engine/core/types/expressions.type'
+import { ViewConfig } from '@form-engine/form/types/structures.type'
 
 /**
  * Journey AST node - represents the top-level form journey
@@ -22,7 +25,10 @@ export interface JourneyASTNode extends ASTNode {
     title: string
     description?: string
     version?: string
+    view?: ViewConfig
+    entryPath?: string
     metadata?: Record<string, any>
+    data?: Record<string, unknown>
   }
 }
 
@@ -35,14 +41,16 @@ export interface StepASTNode extends ASTNode {
     path: string
     onLoad?: LoadTransitionASTNode[]
     onAccess?: AccessTransitionASTNode[]
+    onAction?: ActionTransitionASTNode[]
     onSubmission?: SubmitTransitionASTNode[]
     blocks?: BlockASTNode[]
     title: string
     description?: string
-    template?: string
+    view?: ViewConfig
     isEntryPoint?: boolean
     backlink?: string
     metadata?: Record<string, any>
+    data?: Record<string, unknown>
   }
 }
 
@@ -52,8 +60,10 @@ export interface StepASTNode extends ASTNode {
 export interface BasicBlockASTNode extends ASTNode {
   type: ASTNodeType.BLOCK
   variant: string
-  blockType: 'basic'
+  blockType: BlockType.BASIC
   properties: {
+    hidden?: ASTNode // Conditional visibility
+    metadata?: Record<string, any>
     // Component-specific arbitrary parameters
     [key: string]: any
   }
@@ -65,17 +75,19 @@ export interface BasicBlockASTNode extends ASTNode {
 export interface FieldBlockASTNode extends ASTNode {
   type: ASTNodeType.BLOCK
   variant: string
-  blockType: 'field'
+  blockType: BlockType.FIELD
   properties: {
     // Known field properties
     code?: string | ASTNode // Optional because it might not be set initially
     defaultValue?: ASTNode | any
-    formatters?: ASTNode // Pipeline node after normalization
+    formatters?: ASTNode[] // Array of transformer function AST nodes
     hidden?: ASTNode
     validate?: ValidationASTNode[]
     dependent?: ASTNode
     value?: ASTNode // Added by normalizer (Self reference)
     metadata?: Record<string, any>
+    multiple?: boolean
+    sanitize?: boolean // Whether to escape HTML entities (defaults to true)
 
     // Component-specific arbitrary parameters
     [key: string]: any

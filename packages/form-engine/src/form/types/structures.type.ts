@@ -2,33 +2,72 @@ import {
   FunctionExpr,
   PipelineExpr,
   PredicateExpr,
-  PredicateTestExpr,
   ReferenceExpr,
   TransformerFunctionExpr,
   SubmitTransition,
   FormatExpr,
   ConditionalExpr,
   AccessTransition,
+  ActionTransition,
   LoadTransition,
 } from './expressions.type'
 import { PredicateTestExprBuilder } from '../builders/PredicateTestExprBuilder'
 import { ConditionalExprBuilder } from '../builders/ConditionalExprBuilder'
-import { StructureType, ExpressionType } from './enums'
+import { ChainableExpr, ChainableRef } from '../builders/types'
+import { BlockType, StructureType, ExpressionType } from './enums'
+
+/**
+ * View configuration for journeys and steps.
+ * Controls rendering behavior including template selection and template locals.
+ */
+export interface ViewConfig {
+  /** Template to use for rendering (inherits from parent journey if not specified) */
+  template?: string
+
+  /** Arbitrary properties to pass to the template as locals */
+  locals?: Record<string, unknown>
+
+  /** If true, this step/journey will be marked as hidden in the navigation tree */
+  hiddenFromNavigation?: boolean
+}
+
+/**
+ * Props for basic (non-field) block components.
+ * Use this as the base for component Props interfaces.
+ */
+export interface BasicBlockProps {
+  /**
+   * Conditional visibility - field is hidden when this evaluates to truthy.
+   * Hidden fields are not rendered but retain their values.
+   *
+   * @example true // Always hidden
+   * @example Answer('contactMethod').not.equals('email') // Hide unless email selected
+   */
+  hidden?: boolean | PredicateExpr | PredicateTestExprBuilder
+
+  /**
+   * Optional metadata for the field.
+   * Can be used for analytics, debugging, or custom processing.
+   *
+   * @example { section: 'personal-details', priority: 'high' }
+   */
+  metadata?: {
+    [key: string]: any
+  }
+}
 
 /**
  * Base interface for all block types in the form engine.
  * Blocks are the fundamental building units of form UI.
  */
-export interface BlockDefinition {
+export interface BlockDefinition extends BasicBlockProps {
   type: StructureType.BLOCK
 
   /** The specific variant/type of block (e.g., 'text', 'number', 'radio', etc.) */
   variant: string
 
-  /** Optional metadata regarding the step */
-  metadata?: {
-    [key: string]: any
-  }
+  /** Discriminator to distinguish field blocks from regular blocks */
+  blockType: BlockType
 }
 
 /**
@@ -80,31 +119,92 @@ export interface ValidationExpr {
 }
 
 /**
+ * Props for field block components.
+ * Use this as the base for field component Props interfaces.
+ */
+export interface FieldBlockProps extends BasicBlockProps {
+  /**
+   * Unique identifier for the field within the form.
+   * Used for storing answers and referencing the field value.
+   *
+   * @example 'email'
+   * @example 'date_of_birth'
+   * @example Format('task_%1_status', Item().path('id')) // Dynamic code in iterators
+   */
+  code: ConditionalString
+
+  /**
+   * Initial or computed value for the field.
+   * Can be a static value, a reference to another field, or a computed expression.
+   *
+   * @example 'United Kingdom' // Static default
+   * @example Answer('previousEmail') // Copy from another field
+   * @example Data('user.name') // From loaded data
+   */
+  defaultValue?: ConditionalString | ConditionalString[] | FunctionExpr<any>
+
+  /**
+   * Array of transformers to format/process the field value before rendering/storing.
+   * Transformers only affect submitted values, and run AFTER sanitization.
+   *
+   * @example [Transformer.String.Trim()] // Remove whitespace
+   * @example [Transformer.String.Uppercase(), Transformer.String.SnakeCase()] // Convert to uppercase snake_case
+   */
+  formatters?: TransformerFunctionExpr[]
+
+  /**
+   * Array of validation rules to apply to the field value.
+   * Validations run in order; first failure shows its error message.
+   *
+   * @example
+   * ```typescript
+   * validate: [
+   *   validation({
+   *     when: Self().not.match(Condition.IsRequired()),
+   *     message: 'Enter your email address',
+   *   }),
+   *   validation({
+   *     when: Self().not.match(Condition.Email.IsValidEmail()),
+   *     message: 'Enter a valid email address',
+   *   }),
+   * ]
+   * ```
+   */
+  validate?: ValidationExpr[]
+
+  /**
+   * Marks field as dependent on other fields.
+   * If false, this field is skipped for validation, and its answer is set to blank.
+   *
+   * @example Answer('startDate') // This field depends on startDate
+   */
+  dependent?: PredicateExpr
+
+  /**
+   * Whether to keep all values when an array is returned (e.g., checkboxes).
+   * When false (default), only the first non-empty value is used.
+   * When true, all values in the array are kept.
+   *
+   * @default false
+   * @example true // For checkbox groups
+   */
+  multiple?: boolean
+
+  /**
+   * Whether to sanitize input by escaping HTML entities.
+   * When true (default), string values have < > & " ' converted to HTML entities.
+   * Set to false for fields that need to accept raw HTML (e.g., rich text editors).
+   *
+   * @default true
+   */
+  sanitize?: boolean
+}
+
+/**
  * Block definition for form field blocks.
  * Represents user input fields with validation and formatting.
  */
-export interface FieldBlockDefinition extends BlockDefinition {
-  /** Unique identifier for the field, can be conditional based on context */
-  code: ConditionalString
-
-  /** Initial or computed value for the field */
-  defaultValue?: ConditionalString | ConditionalString[] | FunctionExpr<any>
-
-  /** Array of transformers to format/process the field value */
-  formatters?: TransformerFunctionExpr[]
-
-  /** Conditional visibility - field is hidden when this evaluates to truthy */
-  hidden?: PredicateTestExpr | PredicateTestExprBuilder
-
-  /** Array of validation errors currently active on the field */
-  errors?: { message: string; details?: Record<string, any> }[]
-
-  /** Array of validation rules to apply to the field value */
-  validate?: ValidationExpr[]
-
-  /** Marks field as dependent on other fields - used for validation ordering */
-  dependent?: PredicateTestExpr | PredicateTestExprBuilder
-}
+export interface FieldBlockDefinition extends BlockDefinition, FieldBlockProps {}
 
 /**
  * Top-level journey definition representing a complete form flow.
@@ -137,10 +237,22 @@ export interface JourneyDefinition {
   /** Optional description of the journey's purpose */
   description?: string
 
+  /** View configuration for rendering (template, locals) */
+  view?: ViewConfig
+
+  /**
+   * Path to redirect to when journey root is accessed.
+   * Takes priority over isEntryPoint, if no value, first `isEntryPoint` is used.
+   */
+  entryPath?: string
+
   /** Optional metadata regarding the journey */
   metadata?: {
     [key: string]: any
   }
+
+  /** Static data available to this journey and all children via Data() references */
+  data?: Record<string, unknown>
 }
 
 /**
@@ -162,14 +274,17 @@ export interface StepDefinition {
   /** Check access and run analytics when step is accessed */
   onAccess?: AccessTransition[]
 
+  /** Handle in-step actions (e.g., "Find address" button) */
+  onAction?: ActionTransition[]
+
   /** Handle form submission transitions */
   onSubmission?: SubmitTransition[]
 
   /** Title for this step for displaying on the UI */
   title: string
 
-  /** Optional custom Nunjucks template for rendering the step */
-  template?: string
+  /** View configuration for rendering (template, locals) */
+  view?: ViewConfig
 
   /** Marks this as an entry point step in the journey */
   isEntryPoint?: boolean
@@ -181,6 +296,9 @@ export interface StepDefinition {
   metadata?: {
     [key: string]: any
   }
+
+  /** Static data available to this step, merged with inherited journey data */
+  data?: Record<string, unknown>
 }
 
 export type ConditionalString =
@@ -190,12 +308,35 @@ export type ConditionalString =
   | PipelineExpr
   | ConditionalExpr
   | ConditionalExprBuilder
+  | ChainableRef
+  | ChainableExpr<any>
 
-export type ConditionalBoolean = boolean | ReferenceExpr | PipelineExpr | ConditionalExpr | ConditionalExprBuilder
+export type ConditionalBoolean =
+  | boolean
+  | ReferenceExpr
+  | PipelineExpr
+  | ConditionalExpr
+  | ConditionalExprBuilder
+  | ChainableRef
+  | ChainableExpr<any>
 
-export type ConditionalNumber = number | ReferenceExpr | PipelineExpr | ConditionalExpr | ConditionalExprBuilder
+export type ConditionalNumber =
+  | number
+  | ReferenceExpr
+  | PipelineExpr
+  | ConditionalExpr
+  | ConditionalExprBuilder
+  | ChainableRef
+  | ChainableExpr<any>
 
-export type ConditionalArray<T> = T[] | ReferenceExpr | PipelineExpr | ConditionalExpr | ConditionalExprBuilder
+export type ConditionalArray<T> =
+  | T[]
+  | ReferenceExpr
+  | PipelineExpr
+  | ConditionalExpr
+  | ConditionalExprBuilder
+  | ChainableRef
+  | ChainableExpr<any>
 
 export type RenderedBlock = {
   block: BlockDefinition
@@ -216,14 +357,21 @@ export type EvaluatedBlock<T, IsRoot extends boolean = true> =
           : T extends (infer U)[]
             ? EvaluatedBlock<U, false>[]
             : // 3) blocks: keep shape at root; collapse nested to RenderedBlock
-              T extends BlockDefinition
+              T extends FieldBlockDefinition
               ? IsRoot extends true
                 ? { [K in keyof T]: K extends 'type' | 'variant' ? T[K] : EvaluatedBlock<T[K], false> } & {
                     value?: unknown
+                    errors?: { message: string; details?: Record<string, any> }[]
                   }
                 : RenderedBlock
-              : // 4) plain objects
-                T extends object
-                ? { [K in keyof T]: K extends 'type' | 'variant' ? T[K] : EvaluatedBlock<T[K], false> }
-                : // 5) everything else
-                  T
+              : T extends BlockDefinition
+                ? IsRoot extends true
+                  ? { [K in keyof T]: K extends 'type' | 'variant' ? T[K] : EvaluatedBlock<T[K], false> } & {
+                      value?: unknown
+                    }
+                  : RenderedBlock
+                : // 4) plain objects
+                  T extends object
+                  ? { [K in keyof T]: K extends 'type' | 'variant' ? T[K] : EvaluatedBlock<T[K], false> }
+                  : // 5) everything else
+                    T

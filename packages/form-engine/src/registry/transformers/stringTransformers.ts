@@ -1,8 +1,13 @@
-import { assertString } from '@form-engine/registry/utils/asserts'
+import { assertNumber, assertString } from '@form-engine/registry/utils/asserts'
 import { defineTransformers } from '@form-engine/registry/utils/createRegisterableFunction'
+import { ValueExpr } from '@form-engine/form/types/expressions.type'
 
 /**
  * String transformation functions for data processing
+ *
+ * All config arguments accept both static values and expressions:
+ * - Static: Transformer.String.Substring(0, 5)
+ * - Dynamic: Transformer.String.Replace(Answer('search'), Answer('replace'))
  */
 export const { transformers: StringTransformers, registry: StringTransformersRegistry } = defineTransformers({
   /**
@@ -61,9 +66,14 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
    * @example
    * // Substring("hello", 1, 4) returns "ell"
    */
-  Substring: (value: any, start: number, end?: number) => {
+  Substring: (value: any, start: number | ValueExpr, end?: number | ValueExpr) => {
     assertString(value, 'Transformer.String.Substring')
-    return value.substring(start, end)
+    assertNumber(start, 'Transformer.String.Substring (start)')
+    if (end !== undefined) {
+      assertNumber(end, 'Transformer.String.Substring (end)')
+      return value.substring(start, end)
+    }
+    return value.substring(start)
   },
 
   /**
@@ -71,8 +81,10 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
    * @example
    * // Replace("hello world", "world", "universe") returns "hello universe"
    */
-  Replace: (value: any, searchValue: string, replaceValue: string) => {
+  Replace: (value: any, searchValue: string | ValueExpr, replaceValue: string | ValueExpr) => {
     assertString(value, 'Transformer.String.Replace')
+    assertString(searchValue, 'Transformer.String.Replace (searchValue)')
+    assertString(replaceValue, 'Transformer.String.Replace (replaceValue)')
     return value.replaceAll(searchValue, replaceValue)
   },
 
@@ -81,8 +93,10 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
    * @example
    * // PadStart("5", 3) returns "  5"
    */
-  PadStart: (value: any, targetLength: number, padString: string = ' ') => {
+  PadStart: (value: any, targetLength: number | ValueExpr, padString: string | ValueExpr = ' ') => {
     assertString(value, 'Transformer.String.PadStart')
+    assertNumber(targetLength, 'Transformer.String.PadStart (targetLength)')
+    assertString(padString, 'Transformer.String.PadStart (padString)')
     return value.padStart(targetLength, padString)
   },
 
@@ -91,8 +105,10 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
    * @example
    * // PadEnd("5", 3) returns "5  "
    */
-  PadEnd: (value: any, targetLength: number, padString: string = ' ') => {
+  PadEnd: (value: any, targetLength: number | ValueExpr, padString: string | ValueExpr = ' ') => {
     assertString(value, 'Transformer.String.PadEnd')
+    assertNumber(targetLength, 'Transformer.String.PadEnd (targetLength)')
+    assertString(padString, 'Transformer.String.PadEnd (padString)')
     return value.padEnd(targetLength, padString)
   },
 
@@ -103,27 +119,50 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
 
   /**
    * Converts a string to an integer
+   * Throws on invalid input so pipeline errors and original value is preserved.
    * @example
    * // ToInt("123") returns 123
-   * // ToInt("123.45") returns 123
-   * // ToInt("0xFF") returns 255 (hexadecimal)
-   * // ToInt("not a number") returns NaN
+   * // ToInt("123.45") returns 123 (truncated)
+   * // ToInt("  123  ") returns 123
+   * // ToInt("") throws Error
+   * // ToInt("abc") throws Error
+   * // ToInt("123abc") throws Error (partial parse rejected)
    */
-  ToInt: (value: any, radix: number = 10) => {
+  ToInt: (value: any) => {
     assertString(value, 'Transformer.String.ToInt')
-    return parseInt(value, radix)
+
+    const trimmed = value.trim()
+    const parsed = Number(trimmed)
+
+    if (trimmed === '' || Number.isNaN(parsed) || !Number.isFinite(parsed)) {
+      throw new Error(`Transformer.String.ToInt: "${value}" is not a valid number`)
+    }
+
+    return Math.trunc(parsed)
   },
 
   /**
    * Converts a string to a floating-point number
+   * Throws on invalid input so pipeline errors and original value is preserved.
    * @example
    * // ToFloat("123.45") returns 123.45
    * // ToFloat("3.14159") returns 3.14159
-   * // ToFloat("not a number") returns NaN
+   * // ToFloat("  123.45  ") returns 123.45
+   * // ToFloat("") throws Error
+   * // ToFloat("abc") throws Error
+   * // ToFloat("123abc") throws Error (partial parse rejected)
    */
   ToFloat: (value: any) => {
     assertString(value, 'Transformer.String.ToFloat')
-    return parseFloat(value)
+
+    const trimmed = value.trim()
+    const parsed = Number(trimmed)
+
+    if (trimmed === '' || Number.isNaN(parsed) || !Number.isFinite(parsed)) {
+      throw new Error(`Transformer.String.ToFloat: "${value}" is not a valid number`)
+    }
+
+    return parsed
   },
 
   /**
@@ -133,43 +172,99 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
    * // ToArray("hello,world", ",") returns ["hello", "world"]
    * // ToArray("a-b-c", "-") returns ["a", "b", "c"]
    */
-  ToArray: (value: any, separator?: string) => {
+  ToArray: (value: any, separator?: string | ValueExpr) => {
     assertString(value, 'Transformer.String.ToArray')
     if (separator === undefined) {
       return value.split('')
     }
+    assertString(separator, 'Transformer.String.ToArray (separator)')
     return value.split(separator)
   },
 
   /**
    * Converts a UK-formatted date string to a Date (local time).
-   * Returns Invalid Date if the input is empty or not a valid UK date
+   * Throws on invalid input so pipeline errors and original value is preserved.
    *
    * //TODO: This probably needs to support supplying/choosing a format.
    * @example
    * // ToDate("15/03/2024") -> 2024-03-15T00:00:00 local
    * // ToDate("15-03-2024") -> 2024-03-15T00:00:00 local
-   * // ToDate("2024-03-15") -> Invalid Date
+   * // ToDate("2024-03-15") -> throws Error (ISO format not supported)
+   * // ToDate("") -> throws Error
    */
   ToDate: (value: any) => {
     const UK_DATE_RE = /^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/
     assertString(value, 'Transformer.String.ToDate')
 
-    const trimString = value.trim()
-    if (!trimString) {
-      return new Date(NaN)
+    const trimmed = value.trim()
+
+    if (!trimmed) {
+      throw new Error(`Transformer.String.ToDate: "${value}" is not a valid date`)
     }
 
-    const matchString = UK_DATE_RE.exec(trimString)
-    if (!matchString) {
-      return new Date(NaN)
+    const match = UK_DATE_RE.exec(trimmed)
+
+    if (!match) {
+      throw new Error(`Transformer.String.ToDate: "${value}" is not a valid UK date (expected DD/MM/YYYY)`)
     }
 
-    const day = Number(matchString[1])
-    const month = Number(matchString[2])
-    const year = Number(matchString[3])
+    const day = Number(match[1])
+    const month = Number(match[2])
+    const year = Number(match[3])
 
     const date = new Date(year, month - 1, day)
-    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : new Date(NaN)
+
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+      throw new Error(`Transformer.String.ToDate: "${value}" is not a valid date`)
+    }
+
+    return date
+  },
+
+  /**
+   * Converts a UK-formatted date string (DD/MM/YYYY) to ISO-8601 format (YYYY-MM-DD).
+   * Throws on invalid input so pipeline errors and original value is preserved.
+   *
+   * Use this with MOJ Date Picker which outputs UK format dates.
+   * @example
+   * // ToISODate("15/03/2024") -> "2024-03-15"
+   * // ToISODate("5/3/2024") -> "2024-03-05"
+   * // ToISODate("15-03-2024") -> "2024-03-15"
+   * // ToISODate("") -> throws Error
+   * // ToISODate("31/02/2024") -> throws Error (invalid date)
+   */
+  ToISODate: (value: any) => {
+    const UK_DATE_RE = /^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/
+    assertString(value, 'Transformer.String.ToISODate')
+
+    const trimmed = value.trim()
+
+    if (!trimmed) {
+      throw new Error(`Transformer.String.ToISODate: "${value}" is not a valid date`)
+    }
+
+    const match = UK_DATE_RE.exec(trimmed)
+
+    if (!match) {
+      throw new Error(`Transformer.String.ToISODate: "${value}" is not a valid UK date (expected DD/MM/YYYY)`)
+    }
+
+    const day = Number(match[1])
+    const month = Number(match[2])
+    const year = Number(match[3])
+
+    // Validate the date is real (handles leap years, month lengths, etc.)
+    const date = new Date(year, month - 1, day)
+
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+      throw new Error(`Transformer.String.ToISODate: "${value}" is not a valid date`)
+    }
+
+    // Format as ISO-8601: YYYY-MM-DD
+    const paddedYear = String(year).padStart(4, '0')
+    const paddedMonth = String(month).padStart(2, '0')
+    const paddedDay = String(day).padStart(2, '0')
+
+    return `${paddedYear}-${paddedMonth}-${paddedDay}`
   },
 })

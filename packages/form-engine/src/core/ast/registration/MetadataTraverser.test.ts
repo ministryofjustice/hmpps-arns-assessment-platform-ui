@@ -1,21 +1,42 @@
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
+import { BlockType } from '@form-engine/form/types/enums'
 import MetadataRegistry from './MetadataRegistry'
 import { MetadataTraverser } from './MetadataTraverser'
 
 describe('MetadataTraverser', () => {
   let mockMetadataRegistry: jest.Mocked<MetadataRegistry>
   let traverser: MetadataTraverser
+  let parentMap: Map<string, string>
 
   beforeEach(() => {
     ASTTestFactory.resetIds()
+    parentMap = new Map()
 
     mockMetadataRegistry = {
-      set: jest.fn(),
-      get: jest.fn(),
+      set: jest.fn().mockImplementation((nodeId: string, key: string, value: unknown) => {
+        if (key === 'attachedToParentNode') {
+          parentMap.set(nodeId, value as string)
+        }
+      }),
+      get: jest.fn().mockImplementation((nodeId: string, key: string) => {
+        if (key === 'attachedToParentNode') {
+          return parentMap.get(nodeId)
+        }
+
+        return undefined
+      }),
     } as unknown as jest.Mocked<MetadataRegistry>
 
     traverser = new MetadataTraverser(mockMetadataRegistry)
   })
+
+  /**
+   * Helper to set up parent metadata before calling setStepScopeMetadata
+   * This simulates the real usage where setParentMetadata is called first
+   */
+  function setupParentMetadata(rootNode: import('@form-engine/core/types/engine.type').ASTNode): void {
+    traverser.setParentMetadata(rootNode)
+  }
 
   describe('traverse', () => {
     it('should mark journey as ancestor and step as descendant', () => {
@@ -27,7 +48,8 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, stepNode)
+      setupParentMetadata(journeyNode)
+      traverser.setStepScopeMetadata(journeyNode, stepNode)
 
       // Assert
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(journeyNode.id, 'isAncestorOfStep', true)
@@ -37,15 +59,15 @@ describe('MetadataTraverser', () => {
     it('should mark all blocks as descendants', () => {
       // Arrange
       const block1 = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('firstName')
         .build()
       const block2 = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('lastName')
         .build()
       const block3 = ASTTestFactory
-        .block('Heading', 'basic')
+        .block('Heading', BlockType.BASIC)
         .build()
       const stepNode = ASTTestFactory
         .step()
@@ -57,7 +79,8 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, stepNode)
+      setupParentMetadata(journeyNode)
+      traverser.setStepScopeMetadata(journeyNode, stepNode)
 
       // Assert
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(stepNode.id, 'isDescendantOfStep', true)
@@ -69,7 +92,7 @@ describe('MetadataTraverser', () => {
     it('should mark journey as ancestor', () => {
       // Arrange
       const block = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .build()
       const stepNode = ASTTestFactory
         .step()
@@ -81,7 +104,8 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, stepNode)
+      setupParentMetadata(journeyNode)
+      traverser.setStepScopeMetadata(journeyNode, stepNode)
 
       // Assert
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(journeyNode.id, 'isAncestorOfStep', true)
@@ -90,11 +114,11 @@ describe('MetadataTraverser', () => {
     it('should only mark target step and its descendants', () => {
       // Arrange
       const targetStepBlock1 = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('targetField1')
         .build()
       const targetStepBlock2 = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('targetField2')
         .build()
       const targetStep = ASTTestFactory
@@ -103,7 +127,7 @@ describe('MetadataTraverser', () => {
         .build()
 
       const otherStepBlock = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('otherField')
         .build()
       const otherStep = ASTTestFactory
@@ -117,7 +141,8 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, targetStep)
+      setupParentMetadata(journeyNode)
+      traverser.setStepScopeMetadata(journeyNode, targetStep)
 
       // Assert - target step and its blocks should be marked as descendants
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(targetStep.id, 'isDescendantOfStep', true)
@@ -132,11 +157,11 @@ describe('MetadataTraverser', () => {
     it('should mark deeply nested blocks as descendants', () => {
       // Arrange
       const nestedBlock = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('nestedField')
         .build()
       const parentBlock = ASTTestFactory
-        .block('Container', 'basic')
+        .block('Container', BlockType.BASIC)
         .withProperty('blocks', [nestedBlock])
         .build()
       const stepNode = ASTTestFactory
@@ -149,7 +174,8 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, stepNode)
+      setupParentMetadata(journeyNode)
+      traverser.setStepScopeMetadata(journeyNode, stepNode)
 
       // Assert
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(stepNode.id, 'isDescendantOfStep', true)
@@ -172,7 +198,8 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(outerJourney, stepNode)
+      setupParentMetadata(outerJourney)
+      traverser.setStepScopeMetadata(outerJourney, stepNode)
 
       // Assert
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(outerJourney.id, 'isAncestorOfStep', true)
@@ -203,7 +230,8 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(greatGrandparentJourney, stepNode)
+      setupParentMetadata(greatGrandparentJourney)
+      traverser.setStepScopeMetadata(greatGrandparentJourney, stepNode)
 
       // Assert - all ancestor journeys should be marked
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(greatGrandparentJourney.id, 'isAncestorOfStep', true)
@@ -241,7 +269,8 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(parentJourney, targetStepNode)
+      setupParentMetadata(parentJourney)
+      traverser.setStepScopeMetadata(parentJourney, targetStepNode)
 
       // Assert - only parent and target journey should be marked as ancestors
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(parentJourney.id, 'isAncestorOfStep', true)
@@ -263,7 +292,7 @@ describe('MetadataTraverser', () => {
       const expression = ASTTestFactory
         .reference(['answers', 'firstName'])
       const block = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withProperty('value', expression)
         .build()
       const stepNode = ASTTestFactory
@@ -276,7 +305,8 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, stepNode)
+      setupParentMetadata(journeyNode)
+      traverser.setStepScopeMetadata(journeyNode, stepNode)
 
       // Assert
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(stepNode.id, 'isDescendantOfStep', true)
@@ -295,7 +325,7 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, stepNode)
+      traverser.setParentMetadata(journeyNode)
 
       // Assert
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(stepNode.id, 'attachedToParentNode', journeyNode.id)
@@ -305,11 +335,11 @@ describe('MetadataTraverser', () => {
     it('should set parent node and property for blocks in step', () => {
       // Arrange
       const block1 = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('firstName')
         .build()
       const block2 = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('lastName')
         .build()
       const stepNode = ASTTestFactory
@@ -322,7 +352,7 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, stepNode)
+      traverser.setParentMetadata(journeyNode)
 
       // Assert
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(block1.id, 'attachedToParentNode', stepNode.id)
@@ -334,11 +364,11 @@ describe('MetadataTraverser', () => {
     it('should set parent node and property for nested blocks', () => {
       // Arrange
       const nestedBlock = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('nestedField')
         .build()
       const parentBlock = ASTTestFactory
-        .block('Container', 'basic')
+        .block('Container', BlockType.BASIC)
         .withProperty('blocks', [nestedBlock])
         .build()
       const stepNode = ASTTestFactory
@@ -351,7 +381,7 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, stepNode)
+      traverser.setParentMetadata(journeyNode)
 
       // Assert
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(parentBlock.id, 'attachedToParentNode', stepNode.id)
@@ -365,7 +395,7 @@ describe('MetadataTraverser', () => {
       const expression = ASTTestFactory
         .reference(['answers', 'firstName'])
       const block = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withProperty('value', expression)
         .build()
       const stepNode = ASTTestFactory
@@ -378,7 +408,7 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, stepNode)
+      traverser.setParentMetadata(journeyNode)
 
       // Assert
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(expression.id, 'attachedToParentNode', block.id)
@@ -394,7 +424,7 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, stepNode)
+      traverser.setParentMetadata(journeyNode)
 
       // Assert - journey is root, so should not have parent metadata
       expect(mockMetadataRegistry.set).not.toHaveBeenCalledWith(
@@ -422,7 +452,7 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(outerJourney, stepNode)
+      traverser.setParentMetadata(outerJourney)
 
       // Assert
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(innerJourney.id, 'attachedToParentNode', outerJourney.id)
@@ -435,11 +465,11 @@ describe('MetadataTraverser', () => {
       // Arrange
       const expression = ASTTestFactory.reference(['answers', 'test'])
       const block1 = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withProperty('value', expression)
         .build()
       const block2 = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .build()
       const stepNode = ASTTestFactory
         .step()
@@ -451,7 +481,7 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, stepNode)
+      traverser.setParentMetadata(journeyNode)
 
       // Assert - verify parent chain
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(stepNode.id, 'attachedToParentNode', journeyNode.id)
@@ -469,7 +499,7 @@ describe('MetadataTraverser', () => {
     it('should set parent metadata for ALL nodes including sibling steps', () => {
       // Arrange
       const targetStepBlock = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('targetField')
         .build()
       const targetStep = ASTTestFactory
@@ -478,7 +508,7 @@ describe('MetadataTraverser', () => {
         .build()
 
       const siblingStepBlock = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('siblingField')
         .build()
       const siblingStep = ASTTestFactory
@@ -492,7 +522,7 @@ describe('MetadataTraverser', () => {
         .build()
 
       // Act
-      traverser.traverse(journeyNode, targetStep)
+      traverser.setParentMetadata(journeyNode)
 
       // Assert - ALL steps should have parent metadata (not just target step)
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(siblingStep.id, 'attachedToParentNode', journeyNode.id)
@@ -505,6 +535,128 @@ describe('MetadataTraverser', () => {
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(siblingStepBlock.id, 'attachedToParentProperty', 'blocks')
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(targetStepBlock.id, 'attachedToParentNode', targetStep.id)
       expect(mockMetadataRegistry.set).toHaveBeenCalledWith(targetStepBlock.id, 'attachedToParentProperty', 'blocks')
+    })
+  })
+
+  describe('traverseSubtree', () => {
+    it('should reconstruct ancestorPath from metadata and set parent metadata for runtime node', () => {
+      // Arrange
+      const block = ASTTestFactory
+        .block('TextInput', BlockType.FIELD)
+        .withCode('name')
+        .build()
+      const step = ASTTestFactory
+        .step()
+        .withProperty('blocks', [block])
+        .build()
+      const journey = ASTTestFactory
+        .journey()
+        .withProperty('steps', [step])
+        .build()
+
+      const realMetadataRegistry = new MetadataRegistry()
+      realMetadataRegistry.set(step.id, 'attachedToParentNode', journey.id)
+      realMetadataRegistry.set(block.id, 'attachedToParentNode', step.id)
+      realMetadataRegistry.set(block.id, 'isDescendantOfStep', true)
+
+      const realTraverser = new MetadataTraverser(realMetadataRegistry)
+
+      const runtimeChild = ASTTestFactory
+        .block('TextInput', BlockType.FIELD)
+        .withCode('dynamicField')
+        .build()
+      const runtimeNode = ASTTestFactory
+        .block('Container', BlockType.BASIC)
+        .withProperty('blocks', [runtimeChild])
+        .build()
+
+      realMetadataRegistry.set(runtimeNode.id, 'attachedToParentNode', block.id)
+      realMetadataRegistry.set(runtimeNode.id, 'attachedToParentProperty', 'template')
+
+      // Act
+      realTraverser.traverseSubtree(runtimeNode)
+
+      // Assert
+      expect(realMetadataRegistry.get(runtimeNode.id, 'attachedToParentNode')).toBe(block.id)
+      expect(realMetadataRegistry.get(runtimeNode.id, 'attachedToParentProperty')).toBe('template')
+      expect(realMetadataRegistry.get(runtimeChild.id, 'attachedToParentNode')).toBe(runtimeNode.id)
+      expect(realMetadataRegistry.get(runtimeChild.id, 'attachedToParentProperty')).toBe('blocks')
+    })
+
+    it('should inherit step context from parent node', () => {
+      // Arrange
+      const step = ASTTestFactory.step().build()
+      const block = ASTTestFactory
+        .block('TextInput', BlockType.FIELD)
+        .withCode('name')
+        .build()
+
+      const realMetadataRegistry = new MetadataRegistry()
+      realMetadataRegistry.set(block.id, 'attachedToParentNode', step.id)
+      realMetadataRegistry.set(block.id, 'isDescendantOfStep', true)
+      realMetadataRegistry.set(block.id, 'isAncestorOfStep', false)
+
+      const realTraverser = new MetadataTraverser(realMetadataRegistry)
+
+      const runtimeNode = ASTTestFactory
+        .block('Container', BlockType.BASIC)
+        .build()
+
+      realMetadataRegistry.set(runtimeNode.id, 'attachedToParentNode', block.id)
+      realMetadataRegistry.set(runtimeNode.id, 'attachedToParentProperty', 'template')
+
+      // Act
+      realTraverser.traverseSubtree(runtimeNode)
+
+      // Assert
+      expect(realMetadataRegistry.get(runtimeNode.id, 'isDescendantOfStep')).toBe(true)
+    })
+
+    it('should handle deep ancestry chain by reconstructing from metadata', () => {
+      // Arrange
+      const block3 = ASTTestFactory
+        .block('TextInput', BlockType.FIELD)
+        .withCode('field3')
+        .build()
+      const block2 = ASTTestFactory
+        .block('Container', BlockType.BASIC)
+        .withProperty('blocks', [block3])
+        .build()
+      const block1 = ASTTestFactory
+        .block('Container', BlockType.BASIC)
+        .withProperty('blocks', [block2])
+        .build()
+      const step = ASTTestFactory
+        .step()
+        .withProperty('blocks', [block1])
+        .build()
+      const journey = ASTTestFactory
+        .journey()
+        .withProperty('steps', [step])
+        .build()
+
+      const realMetadataRegistry = new MetadataRegistry()
+      realMetadataRegistry.set(step.id, 'attachedToParentNode', journey.id)
+      realMetadataRegistry.set(block1.id, 'attachedToParentNode', step.id)
+      realMetadataRegistry.set(block2.id, 'attachedToParentNode', block1.id)
+      realMetadataRegistry.set(block3.id, 'attachedToParentNode', block2.id)
+
+      const realTraverser = new MetadataTraverser(realMetadataRegistry)
+
+      const runtimeNode = ASTTestFactory
+        .block('TextInput', BlockType.FIELD)
+        .withCode('dynamicField')
+        .build()
+
+      realMetadataRegistry.set(runtimeNode.id, 'attachedToParentNode', block3.id)
+      realMetadataRegistry.set(runtimeNode.id, 'attachedToParentProperty', 'value')
+
+      // Act
+      realTraverser.traverseSubtree(runtimeNode)
+
+      // Assert
+      expect(realMetadataRegistry.get(runtimeNode.id, 'attachedToParentNode')).toBe(block3.id)
+      expect(realMetadataRegistry.get(runtimeNode.id, 'attachedToParentProperty')).toBe('value')
     })
   })
 })

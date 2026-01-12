@@ -13,8 +13,10 @@ generic-service:
     HMPPS_ARNS_HANDOVER_URL: "https://arns-handover-service-dev.hmpps.service.justice.gov.uk"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
     AAP_API_URL: "https://arns-assessment-platform-api-dev.hmpps.service.justice.gov.uk"
+    COORDINATOR_API_URL: "https://arns-coordinator-api-dev.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: DEV
     AUDIT_ENABLED: "false"
+    FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "true"
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-arns-non-prod

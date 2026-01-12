@@ -1,6 +1,8 @@
-import { BuildableReference, createReference } from '@form-engine/form/builders/utils/createReference'
-import { createScopedReference, CreateScopedReference } from '@form-engine/form/builders/utils/createScopedReference'
 import { isFieldBlockDefinition } from '@form-engine/form/typeguards/structures'
+import { FormPackage } from '@form-engine/core/types/engine.type'
+import { ReferenceBuilder } from './ReferenceBuilder'
+import { ScopedReferenceBuilder } from './ScopedReferenceBuilder'
+import { ChainableExpr, ChainableRef, ChainableScopedRef } from './types'
 import { finaliseBuilders } from './utils/finaliseBuilders'
 import {
   BlockDefinition,
@@ -12,29 +14,47 @@ import {
 } from '../types/structures.type'
 import {
   AccessTransition,
-  CollectionExpr,
+  ActionTransition,
   FormatExpr,
   LoadTransition,
   NextExpr,
-  PipelineExpr,
-  ReferenceExpr,
-  SkipValidationTransition,
   SubmitTransition,
-  ValidatingTransition,
+  ValueExpr,
 } from '../types/expressions.type'
-import { ExpressionType, StructureType, TransitionType } from '../types/enums'
+import { ExpressionBuilder } from './ExpressionBuilder'
+import { BlockType, ExpressionType, StructureType, TransitionType } from '../types/enums'
 
-export function block<D extends BlockDefinition>(definition: Omit<D, 'type'>): D {
+// Re-export public interfaces (for type annotations)
+export type { ChainableExpr, ChainableRef, ChainableScopedRef, ChainableIterable } from './types'
+
+// Re-export builder classes (for advanced use cases)
+export { ExpressionBuilder } from './ExpressionBuilder'
+export { ReferenceBuilder } from './ReferenceBuilder'
+export { ScopedReferenceBuilder } from './ScopedReferenceBuilder'
+export { IterableBuilder } from './IterableBuilder'
+
+// Re-export Iterator namespace for iterator configuration
+export { Iterator } from './IteratorBuilder'
+
+// Re-export predicate combinators
+export { and, or, xor, not } from './PredicateTestExprBuilder'
+
+// Re-export conditional builders
+export { when, Conditional } from './ConditionalExprBuilder'
+
+export function block<D extends BlockDefinition>(definition: Omit<D, 'type' | 'blockType'>): D {
   return finaliseBuilders({
     ...definition,
     type: StructureType.BLOCK,
+    blockType: BlockType.BASIC,
   }) as D
 }
 
-export function field<D extends FieldBlockDefinition>(definition: Omit<D, 'type'>): D {
+export function field<D extends FieldBlockDefinition>(definition: Omit<D, 'type' | 'blockType'>): D {
   return finaliseBuilders({
     ...definition,
     type: StructureType.BLOCK,
+    blockType: BlockType.FIELD,
   }) as D
 }
 
@@ -53,11 +73,48 @@ export function journey<D extends JourneyDefinition>(definition: Omit<D, 'type'>
 }
 
 /**
+ * Create a form package that bundles a journey with its custom registries.
+ *
+ * @param pkg - The form package configuration
+ * @returns The same package with proper typing
+ *
+ * @example
+ * ```typescript
+ * // Form with dependencies and custom functions
+ * export default createFormPackage({
+ *   journey: myJourney,
+ *   createRegistries: (deps: MyDeps) => ({
+ *     ...createMyEffectsRegistry(deps),
+ *     ...MyTransformersRegistry,
+ *   }),
+ * })
+ *
+ * // Form with custom components
+ * export default createFormPackage({
+ *   journey: myJourney,
+ *   components: [myCustomComponent],
+ * })
+ *
+ * // Journey only (no custom registries)
+ * export default createFormPackage({
+ *   journey: simpleJourney,
+ * })
+ *
+ * // Conditionally disabled form (via config/env var)
+ * export default createFormPackage({
+ *   enabled: config.forms.myFormEnabled,
+ *   journey: myJourney,
+ * })
+ * ```
+ */
+export function createFormPackage<TDeps = void>(pkg: FormPackage<TDeps>): FormPackage<TDeps> {
+  return pkg
+}
+
+/**
  * Creates a submission transition for handling form submissions.
  * Use this in the onSubmission array of steps.
  */
-export function submitTransition(definition: Omit<ValidatingTransition, 'type'>): ValidatingTransition
-export function submitTransition(definition: Omit<SkipValidationTransition, 'type'>): SkipValidationTransition
 export function submitTransition(definition: Omit<SubmitTransition, 'type'>): SubmitTransition {
   return finaliseBuilders({ ...definition, type: TransitionType.SUBMIT }) as SubmitTransition
 }
@@ -76,6 +133,15 @@ export function loadTransition(definition: Omit<LoadTransition, 'type'>): LoadTr
  */
 export function accessTransition(definition: Omit<AccessTransition, 'type'>): AccessTransition {
   return finaliseBuilders({ ...definition, type: TransitionType.ACCESS }) as AccessTransition
+}
+
+/**
+ * Creates an action transition for in-page actions.
+ * Use this in the onAction lifecycle hook for buttons that trigger effects
+ * without navigating away (e.g., "Find address", "Add item").
+ */
+export function actionTransition(definition: Omit<ActionTransition, 'type'>): ActionTransition {
+  return finaliseBuilders({ ...definition, type: TransitionType.ACTION }) as ActionTransition
 }
 
 export function validation(definition: Omit<ValidationExpr, 'type'>): ValidationExpr {
@@ -97,79 +163,105 @@ export function next(definition: Omit<NextExpr, 'type'>): NextExpr {
 }
 
 /**
- * References POST body data from form submission
+ * Split a key string into path segments
+ * 'user.name' -> ['user', 'name']
+ * 'simple' -> ['simple']
  */
-export function Post(key: string): BuildableReference {
-  return createReference({
-    type: ExpressionType.REFERENCE,
-    path: ['post', key],
-  })
+const splitKey = (key: string): string[] => (key.includes('.') ? key.split('.') : [key])
+
+/**
+ * References POST body data from form submission.
+ */
+export function Post(key: string): ChainableRef {
+  return ReferenceBuilder.create(['post', ...splitKey(key)])
 }
 
 /**
- * References URL parameters (e.g., /users/:id)
+ * References URL parameters (e.g., /users/:id).
  */
-export function Params(key: string): BuildableReference {
-  return createReference({
-    type: ExpressionType.REFERENCE,
-    path: ['params', key],
-  })
+export function Params(key: string): ChainableRef {
+  return ReferenceBuilder.create(['params', ...splitKey(key)])
 }
 
 /**
- * References query string parameters (e.g., ?search=test)
+ * References query string parameters (e.g., ?search=test).
  */
-export function Query(key: string): BuildableReference {
-  return createReference({
-    type: ExpressionType.REFERENCE,
-    path: ['query', key],
-  })
+export function Query(key: string): ChainableRef {
+  return ReferenceBuilder.create(['query', ...splitKey(key)])
 }
 
 /**
- * References data defined for the step
+ * References data defined for the step.
  */
-export const Data = (key: string): BuildableReference =>
-  createReference({
-    type: ExpressionType.REFERENCE,
-    path: ['data', key],
-  })
+export function Data(key: string): ChainableRef {
+  return ReferenceBuilder.create(['data', ...splitKey(key)])
+}
 
 /**
- * References an answer using its target field, or a string
+ * References an answer using its target field or a string code.
+ *
+ * @example
+ * Answer('email')  // Reference by code string
+ * Answer(emailField)  // Reference by field definition
+ * Answer('user.address.postcode')  // Nested path
  */
-export const Answer = (target: FieldBlockDefinition | ConditionalString): BuildableReference => {
+export function Answer(target: FieldBlockDefinition | ConditionalString): ChainableRef {
   // If it's a field block definition, use its code property
   if (isFieldBlockDefinition(target)) {
     const { code } = target
-    return createReference({
-      type: ExpressionType.REFERENCE,
-      path: ['answers', code as any],
-    })
+
+    // String code - split dot notation
+    if (typeof code === 'string') {
+      return ReferenceBuilder.create(['answers', ...splitKey(code)])
+    }
+
+    // Dynamic code (expression) - pass through
+    return ReferenceBuilder.create(['answers', code as any])
   }
 
-  // Otherwise, use the target directly (string, or other ConditionalString types)
-  return createReference({
-    type: ExpressionType.REFERENCE,
-    path: ['answers', target as any],
-  })
+  // String target - split dot notation
+  if (typeof target === 'string') {
+    return ReferenceBuilder.create(['answers', ...splitKey(target)])
+  }
+
+  // Otherwise, use the target directly (expression types like Format)
+  return ReferenceBuilder.create(['answers', target as any])
 }
 
 /**
- * References the current collection item when inside a collection scope
+ * References the current collection item when inside a collection scope.
+ *
+ * @example
+ * Item().path('name')  // Access item.name
+ * Item().value()  // Access the whole item
+ * Item().index()  // Access iteration index
+ * Item().parent.path('groupId')  // Access parent item's property
  */
-export const Item = (): CreateScopedReference => createScopedReference(0)
+export function Item(): ChainableScopedRef {
+  return ScopedReferenceBuilder.create(0)
+}
 
 /**
- * References the block/field it's in scope of
+ * References the block/field it's in scope of.
+ *
+ * @example
+ * Self().match(Condition.IsRequired())
+ * Self().not.match(Condition.String.IsEmpty())
+ * Self().pipe(Transformer.String.Trim).match(Condition.IsRequired())
  */
-export const Self = (): BuildableReference =>
-  createReference({
-    type: ExpressionType.REFERENCE,
-    path: ['answers', '@self'],
-  })
+export function Self(): ChainableRef {
+  return ReferenceBuilder.create(['answers', '@self'])
+}
 
-export const Format = (template: string, ...args: ConditionalString[]): FormatExpr => {
+/**
+ * Creates a string formatting expression with placeholder substitution.
+ * Placeholders are %1, %2, etc.
+ *
+ * @example
+ * Format('Hello %1!', Answer('name'))
+ * Format('%1 %2', Answer('firstName'), Answer('lastName'))
+ */
+export function Format(template: string, ...args: ConditionalString[]): FormatExpr {
   return {
     type: ExpressionType.FORMAT,
     template,
@@ -178,35 +270,24 @@ export const Format = (template: string, ...args: ConditionalString[]): FormatEx
 }
 
 /**
- * Creates a collection expression that iterates over data to produce repeated templates.
- * Collections allow dynamic generation of form elements based on arrays of data.
+ * Wraps a static/literal value to make it chainable with .pipe() and .match().
  *
- * @param collection - The data source to iterate over (array or expression)
- * @param template - Template blocks to render for each item
- * @param fallback - Optional fallback blocks when collection is empty
- * @returns Collection expression
+ * Use this when you have static data that you want to transform or test
+ * using the fluent expression API.
+ *
+ * @param value - Any static value (array, object, primitive)
+ * @returns A chainable expression (only exposes .pipe(), .match(), .not)
  *
  * @example
- * // With fallback
- * Collection({
- *   collection: Data('items'),
- *   template: [field({ code: 'item_name', variant: 'text' })],
- *   fallback: [block({ variant: 'html', content: 'No items found' })]
- * })
+ * // Static array with transformations
+ * Literal(['apple', 'banana', 'cherry']).pipe(Transformer.Array.Filter(...))
+ *
+ * // Static value with condition
+ * Literal(42).match(Condition.Number.GreaterThan(0))
+ *
+ * // Use with .each() for iteration
+ * Literal([1, 2, 3]).each(Iterator.Map(Item().value()))
  */
-export const Collection = <T = any>({
-  collection,
-  template,
-  fallback,
-}: {
-  collection: ReferenceExpr | PipelineExpr | any[]
-  template: T[]
-  fallback?: T[]
-}): CollectionExpr<T> => {
-  return {
-    type: ExpressionType.COLLECTION,
-    collection,
-    template,
-    fallback: fallback ?? [],
-  }
+export function Literal<T extends ValueExpr>(value: T): ChainableExpr<T> {
+  return ExpressionBuilder.from(value)
 }

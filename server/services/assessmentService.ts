@@ -1,10 +1,10 @@
 import AssessmentPlatformApiClient from '../data/assessmentPlatformApiClient'
-import { CommandsRequest, QueriesRequest } from '../interfaces/aap-api/request'
 import {
   AddCollectionItemCommandResult,
   CommandResult,
   CreateAssessmentCommandResult,
   CreateCollectionCommandResult,
+  GroupCommandResult,
 } from '../interfaces/aap-api/commandResult'
 import {
   AssessmentTimelineQueryResult,
@@ -17,6 +17,7 @@ import {
   Commands,
   CreateAssessmentCommand,
   CreateCollectionCommand,
+  GroupCommand,
   RemoveCollectionItemCommand,
   ReorderCollectionItemCommand,
   RollBackAssessmentAnswersCommand,
@@ -35,6 +36,7 @@ import {
 
 interface CommandMap {
   CreateAssessment: { cmd: CreateAssessmentCommand; res: CreateAssessmentCommandResult }
+  Group: { cmd: GroupCommand; res: GroupCommandResult }
   UpdateAssessmentAnswers: { cmd: UpdateAssessmentAnswersCommand; res: CommandResult }
   RollBackAssessmentAnswers: { cmd: RollBackAssessmentAnswersCommand; res: CommandResult }
   UpdateAssessmentProperties: { cmd: UpdateAssessmentPropertiesCommand; res: CommandResult }
@@ -58,19 +60,16 @@ export default class AssessmentService {
   constructor(private readonly assessmentPlatformApiClient: AssessmentPlatformApiClient) {}
 
   async command<T extends keyof CommandMap>(cmd: CommandMap[T]['cmd']): Promise<CommandMap[T]['res']> {
-    const request: CommandsRequest = { commands: [cmd] }
-    const response = await this.assessmentPlatformApiClient.executeCommands(request)
-    return response.commands[0].result as CommandMap[T]['res']
+    const [result] = await this.assessmentPlatformApiClient.executeCommands(cmd)
+    return result as CommandMap[T]['res']
   }
 
-  async commands(commands: Array<Commands>) {
-    const request: CommandsRequest = { commands }
-    await this.assessmentPlatformApiClient.executeCommands(request)
+  async commands(commands: readonly Commands[]) {
+    await this.assessmentPlatformApiClient.executeCommands(...commands)
   }
 
   async query<T extends keyof QueryMap>(query: QueryMap[T]['query']): Promise<QueryMap[T]['res']> {
-    const request: QueriesRequest = { queries: [query] }
-    const response = await this.assessmentPlatformApiClient.executeQueries(request)
-    return response.queries[0].result as QueryMap[T]['res']
+    const [result] = await this.assessmentPlatformApiClient.executeQueries(query)
+    return result as QueryMap[T]['res']
   }
 }

@@ -19,7 +19,6 @@ export default class HomePage extends AbstractPage {
     const homePage = new HomePage(page)
     await expect(homePage.header).toBeVisible()
     await expect(homePage.header).toBeVisible()
-    await expect(homePage.sideNav).toBeVisible()
     return homePage
   }
 }

@@ -1,4 +1,4 @@
-import { FunctionType, ExpressionType, LogicType, TransitionType } from './enums'
+import { FunctionType, ExpressionType, PredicateType, TransitionType, IteratorType } from './enums'
 
 /**
  * Represents a reference to a value in the form context.
@@ -28,6 +28,21 @@ export interface ReferenceExpr {
    * Special paths include '@self' (current field) and '@item' (current collection item).
    */
   path: string[]
+
+  /**
+   * Optional base expression to evaluate first.
+   * When present, the reference evaluates the base expression and then
+   * navigates into the result using the path segments.
+   *
+   * @example
+   * // Navigate into the result of an iteration
+   * {
+   *   type: 'ExpressionType.Reference',
+   *   base: { type: 'ExpressionType.Iterate', ... },
+   *   path: ['goals']
+   * }
+   */
+  base?: ValueExpr
 }
 
 /**
@@ -222,51 +237,112 @@ export interface EffectFunctionExpr<A extends ValueExpr[] = ValueExpr[]> extends
 }
 
 /**
- * Represents a collection expression that iterates over data to produce repeated templates.
- * Collections allow dynamic generation of form elements based on arrays of data.
+ * Represents a generator function call expression.
+ * Generator functions produce values without requiring input.
+ * Unlike conditions and transformers, generators do not receive a value to process.
  *
  * @example
- * // Iterate over addresses to create address fields
+ * // Generate current date
  * {
- *   type: 'ExpressionType.Collection',
- *   collection: { type: 'ExpressionType.Reference', path: ['answers', 'addresses'] },
- *   template: [
- *     {
- *       type: 'StructureType.Block',
- *       variant: 'text',
- *       code: { type: 'ExpressionType.Format', text: 'address_%1_line1', args: [{ type: 'ExpressionType.Reference', path: ['@item', 'id'] }] }
- *     }
- *   ]
+ *   type: 'FunctionType.Generator',
+ *   name: 'Now',
+ *   arguments: []
  * }
  *
  * @example
- * // Collection with fallback when empty
+ * // Generate UUID with prefix
  * {
- *   type: 'ExpressionType.Collection',
- *   collection: { type: 'ExpressionType.Reference', path: ['data', 'items'] },
- *   template: [...],
- *   fallback: [{ type: 'StructureType.Block', variant: 'html', content: 'No items found' }]
+ *   type: 'FunctionType.Generator',
+ *   name: 'UUID',
+ *   arguments: ['prefix-']
  * }
  */
-export interface CollectionExpr<T = any> {
-  type: ExpressionType.COLLECTION
+export interface GeneratorFunctionExpr<A extends ValueExpr[] = ValueExpr[]> extends BaseFunctionExpr<A> {
+  type: FunctionType.GENERATOR
+}
+
+/**
+ * Configuration for Iterator.Map - transforms each item to a new shape.
+ *
+ * @example
+ * Iterator.Map({ label: Item().path('name'), value: Item().path('id') })
+ */
+export interface MapIteratorConfig {
+  type: IteratorType.MAP
 
   /**
-   * The data source to iterate over.
-   * Can be a reference expression or a static array.
+   * Template with Item() references - evaluated per item to produce output.
+   * The template is instantiated for each item with Item() references resolved.
    */
-  collection: ReferenceExpr | PipelineExpr | any[]
+  yield: unknown
+}
+
+/**
+ * Configuration for Iterator.Filter - keeps items matching a predicate.
+ *
+ * @example
+ * Iterator.Filter(Item().path('active').match(Condition.IsTrue()))
+ */
+export interface FilterIteratorConfig {
+  type: IteratorType.FILTER
 
   /**
-   * Template blocks to render for each item in the collection.
-   * The template is repeated once per item with @item references resolved.
+   * Predicate evaluated per item - items where predicate is true are kept.
+   * Uses Item() references to access item properties.
    */
-  template: T[]
+  predicate: PredicateExpr
+}
+
+/**
+ * Configuration for Iterator.Find - returns first item matching a predicate.
+ *
+ * @example
+ * Iterator.Find(Item().path('id').match(Condition.Equals(Params('userId'))))
+ */
+export interface FindIteratorConfig {
+  type: IteratorType.FIND
 
   /**
-   * Optional fallback blocks to render when the collection is empty.
+   * Predicate evaluated per item - returns first item where predicate is true.
+   * Returns undefined if no match found.
    */
-  fallback?: T[]
+  predicate: PredicateExpr
+}
+
+/**
+ * Union of all iterator configuration types.
+ */
+export type IteratorConfig = MapIteratorConfig | FilterIteratorConfig | FindIteratorConfig
+
+/**
+ * Represents an iterate expression that applies an iterator to a source collection.
+ * Created by the .each() method on reference/expression builders.
+ *
+ * @example
+ * // Filter and map in sequence
+ * Data('items')
+ *   .each(Iterator.Filter(Item().path('active').match(Condition.IsTrue())))
+ *   .each(Iterator.Map({ label: Item().path('name'), value: Item().path('id') }))
+ *
+ * @example
+ * // Transform with pipeline on result
+ * Data('items')
+ *   .each(Iterator.Map(Item().path('name')))
+ *   .pipe(Transformer.Array.Slice(0, 10))
+ */
+export interface IterateExpr {
+  type: ExpressionType.ITERATE
+
+  /**
+   * The input source expression (array or prior iterate result).
+   * Can be a reference, pipeline, or another iterate expression for chaining.
+   */
+  input: ValueExpr
+
+  /**
+   * The iterator configuration (Map, Filter, etc.) to apply per item.
+   */
+  iterator: IteratorConfig
 }
 
 /**
@@ -277,8 +353,9 @@ export type ValueExpr =
   | ReferenceExpr
   | FormatExpr
   | TransformerFunctionExpr
+  | GeneratorFunctionExpr
   | PipelineExpr
-  | CollectionExpr
+  | IterateExpr
   | ValueExpr[]
   | string
   | number
@@ -293,7 +370,7 @@ export type ValueExpr =
  * @example
  * // Test if field is required (not empty)
  * {
- *   type: 'LogicType.Test',
+ *   type: 'PredicateType.Test',
  *   subject: { type: 'ExpressionType.Reference', path: ['@self'] },
  *   negate: false,
  *   condition: { type: 'FunctionType.Condition', name: 'isRequired', arguments: [] }
@@ -302,14 +379,14 @@ export type ValueExpr =
  * @example
  * // Test if email is NOT valid (negated)
  * {
- *   type: 'LogicType.Test',
+ *   type: 'PredicateType.Test',
  *   subject: { type: 'ExpressionType.Reference', path: ['answers', 'email'] },
  *   negate: true,
  *   condition: { type: 'FunctionType.Condition', name: 'isEmail', arguments: [] }
  * }
  */
 export interface PredicateTestExpr {
-  type: LogicType.TEST
+  type: PredicateType.TEST
   /** The value expression to test. */
   subject: ValueExpr
 
@@ -329,15 +406,15 @@ export interface PredicateTestExpr {
  * @example
  * // AND logic - all must be true
  * {
- *   type: 'LogicType.And',
+ *   type: 'PredicateType.And',
  *   operands: [
- *     { type: 'LogicType.Test', subject: {...}, negate: false, condition: {...} },
- *     { type: 'LogicType.Test', subject: {...}, negate: false, condition: {...} }
+ *     { type: 'PredicateType.Test', subject: {...}, negate: false, condition: {...} },
+ *     { type: 'PredicateType.Test', subject: {...}, negate: false, condition: {...} }
  *   ]
  * }
  */
 export interface PredicateAndExpr {
-  type: LogicType.AND
+  type: PredicateType.AND
 
   /**
    * Array of predicates that must all be true.
@@ -352,15 +429,15 @@ export interface PredicateAndExpr {
  * @example
  * // OR logic - at least one must be true
  * {
- *   type: 'LogicType.Or',
+ *   type: 'PredicateType.Or',
  *   operands: [
- *     { type: 'LogicType.Test', subject: {...}, condition: {...} },
- *     { type: 'LogicType.Test', subject: {...}, condition: {...} }
+ *     { type: 'PredicateType.Test', subject: {...}, condition: {...} },
+ *     { type: 'PredicateType.Test', subject: {...}, condition: {...} }
  *   ]
  * }
  */
 export interface PredicateOrExpr {
-  type: LogicType.OR
+  type: PredicateType.OR
 
   /**
    * Array of predicates where at least one must be true.
@@ -375,15 +452,15 @@ export interface PredicateOrExpr {
  * @example
  * // XOR logic - exactly one must be true
  * {
- *   type: 'LogicType.Xor',
+ *   type: 'PredicateType.Xor',
  *   operands: [
- *     { type: 'LogicType.Test', subject: {...}, condition: {...} },
- *     { type: 'LogicType.Test', subject: {...}, condition: {...} }
+ *     { type: 'PredicateType.Test', subject: {...}, condition: {...} },
+ *     { type: 'PredicateType.Test', subject: {...}, condition: {...} }
  *   ]
  * }
  */
 export interface PredicateXorExpr {
-  type: LogicType.XOR
+  type: PredicateType.XOR
 
   /**
    * Array of predicates where exactly one must be true.
@@ -398,12 +475,12 @@ export interface PredicateXorExpr {
  * @example
  * // NOT logic - invert the result
  * {
- *   type: 'LogicType.Not',
- *   operand: { type: 'LogicType.Test', subject: {...}, condition: {...} }
+ *   type: 'PredicateType.Not',
+ *   operand: { type: 'PredicateType.Test', subject: {...}, condition: {...} }
  * }
  */
 export interface PredicateNotExpr {
-  type: LogicType.NOT
+  type: PredicateType.NOT
 
   /**
    * Single predicate to negate.
@@ -427,7 +504,7 @@ export type PredicateExpr = PredicateTestExpr | PredicateAndExpr | PredicateOrEx
  * {
  *   type: 'LogicType.Conditional',
  *   predicate: {
- *     type: 'LogicType.Test',
+ *     type: 'PredicateType.Test',
  *     subject: { type: 'ExpressionType.Reference', path: ['@self'] },
  *     negate: true,
  *     condition: { type: 'FunctionType.Condition', name: 'isRequired', arguments: [] }
@@ -441,7 +518,7 @@ export type PredicateExpr = PredicateTestExpr | PredicateAndExpr | PredicateOrEx
  * {
  *   type: 'LogicType.Conditional',
  *   predicate: {
- *     type: 'LogicType.Test',
+ *     type: 'PredicateType.Test',
  *     subject: { type: 'ExpressionType.Reference', path: ['answers', 'hasChildren'] },
  *     negate: false,
  *     condition: { type: 'FunctionType.Condition', name: 'matchesValue', arguments: [true] }
@@ -454,10 +531,10 @@ export type PredicateExpr = PredicateTestExpr | PredicateAndExpr | PredicateOrEx
  * // Nested conditionals for complex logic
  * {
  *   type: 'LogicType.Conditional',
- *   predicate: { type: 'LogicType.Test', subject: {...}, condition: {...} },
+ *   predicate: { type: 'PredicateType.Test', subject: {...}, condition: {...} },
  *   thenValue: {
  *     type: 'LogicType.Conditional',
- *     predicate: { type: 'LogicType.Test', subject: {...}, condition: {...} ,
+ *     predicate: { type: 'PredicateType.Test', subject: {...}, condition: {...} ,
  *     thenValue: 'Option A',
  *     elseValue: 'Option B'
  *   },
@@ -465,7 +542,7 @@ export type PredicateExpr = PredicateTestExpr | PredicateAndExpr | PredicateOrEx
  * }
  */
 export interface ConditionalExpr {
-  type: LogicType.CONDITIONAL
+  type: ExpressionType.CONDITIONAL
 
   /** The condition to evaluate. */
   predicate: PredicateExpr
@@ -510,7 +587,7 @@ export interface NextExpr {
   when?: PredicateExpr
 
   /** The path to navigate to. */
-  goto: string | FormatExpr
+  goto: string | ValueExpr
 }
 
 /**
@@ -524,26 +601,54 @@ export interface LoadTransition {
 }
 
 /**
- * Lifecycle transition for access control and non-loading effects.
- * Runs after data loading, before rendering.
+ * Base interface for access transitions.
+ * Guards define denial conditions - when TRUE, access is DENIED.
  */
-export interface AccessTransition {
+interface AccessTransitionBase {
   type: TransitionType.ACCESS
-  /** Guard conditions that must be met to access this step/journey */
+  /** Guard conditions - when TRUE, access is DENIED and redirect/error triggers */
   guards?: PredicateExpr
-
-  /** Optional effects to execute (analytics, logging, etc.) */
+  /** Optional effects to execute before redirect/error (analytics, logging, etc.) */
   effects?: EffectFunctionExpr<any>[]
-
-  /** Navigation rules if guards fail */
-  redirect?: NextExpr[]
 }
+
+/**
+ * Access transition that redirects to another page when guards match.
+ * Use for cases like redirecting to login or a prerequisite step.
+ */
+interface AccessTransitionRedirect extends AccessTransitionBase {
+  /** Navigation rules when guards match (access denied) */
+  redirect: NextExpr[]
+  status?: never
+  message?: never
+}
+
+/**
+ * Access transition that returns an HTTP error response when guards match.
+ * Use for cases like 404 Not Found or 403 Forbidden.
+ */
+interface AccessTransitionError extends AccessTransitionBase {
+  redirect?: never
+  /** HTTP status code to return (e.g., 401, 403, 404) */
+  status: number
+  /** Error message to display - can be static string or dynamic expression like Format() */
+  message: string | ValueExpr
+}
+
+/**
+ * Lifecycle transition for access control.
+ * Runs after data loading, before rendering.
+ *
+ * Either redirects to another page OR returns an HTTP error response.
+ * TypeScript enforces that redirect and status/message are mutually exclusive.
+ */
+export type AccessTransition = AccessTransitionRedirect | AccessTransitionError
 
 /**
  * Base interface for submission transition types.
  * Submission transitions control how users move between steps when submitting forms.
  */
-interface SubmitTransitionBase {
+export interface SubmitTransition {
   type: TransitionType.SUBMIT
 
   /**
@@ -557,104 +662,87 @@ interface SubmitTransitionBase {
    * Guards act as a security layer, preventing transitions in certain states.
    */
   guards?: PredicateExpr
-}
-
-/**
- * Represents a transition that skips validation.
- * Used for operations that don't require data validation,
- * such as saving drafts or managing collections.
- *
- * @example
- * // Save draft without validation
- * {
- *   type: 'transition',
- *   when: { type: 'test', subject: {...}, condition: {...} },
- *   validate: false,
- *   onAlways: {
- *     effects: [{ type: 'FunctionType.Effect', name: 'save', arguments: [{ draft: true }] }],
- *     next: [{ goto: '/dashboard' }]
- *   }
- * }
- */
-export interface SkipValidationTransition extends SubmitTransitionBase {
-  /** Must be false to skip validation */
-  validate: false
-
-  /** Actions to execute */
-  onAlways: {
-    /** Optional effects to execute (save, manipulate collections, etc.) */
-    effects?: EffectFunctionExpr<any>[]
-
-    /** Required navigation rules for where to go next */
-    next: NextExpr[]
-  }
-
-  onValid?: never
-  onInvalid?: never
-}
-
-/**
- * Represents a transition that validates form fields before proceeding.
- *
- * @example
- * // Standard form progression with validation
- * {
- *   type: 'transition',
- *   when: { type: 'test', subject: {...}, condition: {...} },
- *   validate: true,
- *   onValid: {
- *     effects: [{ type: 'FunctionType.Effect', name: 'save', arguments: [] }],
- *     next: [{ goto: '/next-step' }]
- *   },
- *   onInvalid: {
- *     next: [{ goto: '/current-step' }]
- *   }
- * }
- *
- * @example
- * // With onAlways for effects that run before validation
- * {
- *   type: 'transition',
- *   validate: true,
- *   onAlways: {
- *     effects: [{ type: 'FunctionType.Effect', name: 'log', arguments: ['submission attempt'] }]
- *   },
- *   onValid: {...},
- *   onInvalid: {...}
- * }
- */
-export interface ValidatingTransition extends SubmitTransitionBase {
-  /** Must be true to trigger validation */
-  validate: true
 
   /**
-   * Optional actions to execute before validation occurs.
-   * Useful for logging or preparatory effects.
+   * Whether to validate form fields before proceeding.
+   * When true, routes to onValid or onInvalid based on validation result.
+   * When false (default), skips validation and uses onAlways.
+   */
+  validate?: boolean
+
+  /**
+   * Actions to execute regardless of validation result.
+   * When validate is false, this is the only branch that executes.
+   * When validate is true, this runs before routing to onValid/onInvalid.
    */
   onAlways?: {
-    /** Effects to execute before validation */
+    /** Effects to execute */
     effects?: EffectFunctionExpr<any>[]
+    /** Navigation rules */
+    next?: NextExpr[]
   }
 
-  /** Actions to execute when validation passes. */
-  onValid: {
-    /** Optional effects to execute */
+  /**
+   * Actions to execute when validation passes.
+   * Only meaningful when validate is true.
+   */
+  onValid?: {
+    /** Effects to execute */
     effects?: EffectFunctionExpr<any>[]
-    /** Required navigation rules on successful validation */
-    next: NextExpr[]
+    /** Navigation rules on successful validation */
+    next?: NextExpr[]
   }
 
-  /** Actions to execute when validation fails. */
-  onInvalid: {
-    /** Optional effects to execute */
+  /**
+   * Actions to execute when validation fails.
+   * Only meaningful when validate is true.
+   */
+  onInvalid?: {
+    /** Effects to execute */
     effects?: EffectFunctionExpr<any>[]
-    /** Required navigation rules on failed validation */
-    next: NextExpr[]
+    /** Navigation rules on failed validation */
+    next?: NextExpr[]
   }
 }
 
 /**
- * Lifecycle transition for data submission.
- * Runs after data loading, on form submission.
+ * Lifecycle transition for in-page actions.
+ *
+ * Executes effects in response to button clicks that don't navigate away,
+ * such as "Find address" or "Add another item" buttons.
+ *
+ * Runs BEFORE block evaluation on POST requests, allowing effects to populate
+ * answers that blocks will then display.
+ *
+ * @example
+ * // Postcode lookup action
+ * {
+ *   type: 'TransitionType.Action',
+ *   when: Post('action').match(Condition.Equals('lookup')),
+ *   effects: [lookupPostcode()]
+ * }
+ *
+ * @example
+ * // Add item to collection
+ * {
+ *   type: 'TransitionType.Action',
+ *   when: Post('action').match(Condition.Equals('add-item')),
+ *   effects: [addItemToCollection()]
+ * }
  */
-export type SubmitTransition = SkipValidationTransition | ValidatingTransition
+export interface ActionTransition {
+  type: TransitionType.ACTION
+
+  /**
+   * Trigger condition for this action.
+   * Checks POST data to determine if this action was triggered.
+   */
+  when: PredicateExpr
+
+  /**
+   * Effects to execute when the action triggers.
+   * Effects run before block evaluation, allowing them to set answers
+   * that will be displayed in the re-rendered form.
+   */
+  effects: EffectFunctionExpr<any>[]
+}

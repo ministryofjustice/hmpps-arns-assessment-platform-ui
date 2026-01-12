@@ -1,4 +1,4 @@
-import { ExpressionType, FunctionType, LogicType, TransitionType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, IteratorType, TransitionType } from '@form-engine/form/types/enums'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { ASTNode } from '@form-engine/core/types/engine.type'
 
@@ -7,7 +7,7 @@ import { ASTNode } from '@form-engine/core/types/engine.type'
  */
 export interface ExpressionASTNode extends ASTNode {
   type: ASTNodeType.EXPRESSION
-  expressionType: ExpressionType | FunctionType | LogicType
+  expressionType: ExpressionType | FunctionType
 }
 
 /**
@@ -17,6 +17,11 @@ export interface ReferenceASTNode extends ExpressionASTNode {
   expressionType: ExpressionType.REFERENCE
   properties: {
     path: (ASTNode | string | number)[]
+    /**
+     * Optional base expression to evaluate first.
+     * When present, evaluates the base and navigates into the result using path.
+     */
+    base?: ASTNode
   }
 }
 
@@ -54,14 +59,24 @@ export interface FormatASTNode extends ExpressionASTNode {
 }
 
 /**
- * Collection Expression AST node
+ * Iterate Expression AST node - applies an iterator to a source collection.
+ *
+ * Similar to Collection, the yield/predicate templates are stored as raw JSON
+ * and instantiated at runtime per item.
  */
-export interface CollectionASTNode extends ExpressionASTNode {
-  expressionType: ExpressionType.COLLECTION
+export interface IterateASTNode extends ExpressionASTNode {
+  expressionType: ExpressionType.ITERATE
   properties: {
-    collection: ASTNode
-    template: any
-    fallback?: ASTNode[]
+    /** The input source (array or prior iterate result) */
+    input: ASTNode | any
+    /** Iterator configuration */
+    iterator: {
+      type: IteratorType
+      /** For MAP: template to yield per item (raw JSON, instantiated at runtime) */
+      yield?: any
+      /** For FILTER: predicate (raw JSON, instantiated at runtime) */
+      predicate?: any
+    }
   }
 }
 
@@ -69,75 +84,13 @@ export interface CollectionASTNode extends ExpressionASTNode {
  * Conditional Expression AST node
  */
 export interface ConditionalASTNode extends ExpressionASTNode {
-  expressionType: LogicType.CONDITIONAL
+  expressionType: ExpressionType.CONDITIONAL
   properties: {
     predicate: ASTNode
     thenValue?: ASTNode | any
     elseValue?: ASTNode | any
   }
 }
-
-/**
- * Test Predicate Expression AST node
- */
-export interface TestPredicateASTNode extends ExpressionASTNode {
-  expressionType: LogicType.TEST
-  properties: {
-    subject: ASTNode
-    condition: ASTNode
-    negate: boolean
-  }
-}
-
-/**
- * Not Predicate Expression AST node
- */
-export interface NotPredicateASTNode extends ExpressionASTNode {
-  expressionType: LogicType.NOT
-  properties: {
-    operand: ASTNode
-  }
-}
-
-/**
- * And Predicate Expression AST node
- */
-export interface AndPredicateASTNode extends ExpressionASTNode {
-  expressionType: LogicType.AND
-  properties: {
-    operands: ASTNode[]
-  }
-}
-
-/**
- * Or Predicate Expression AST node
- */
-export interface OrPredicateASTNode extends ExpressionASTNode {
-  expressionType: LogicType.OR
-  properties: {
-    operands: ASTNode[]
-  }
-}
-
-/**
- * Xor Predicate Expression AST node
- */
-export interface XorPredicateASTNode extends ExpressionASTNode {
-  expressionType: LogicType.XOR
-  properties: {
-    operands: ASTNode[]
-  }
-}
-
-/**
- * Union type for all Predicate Expression AST nodes
- */
-export type PredicateASTNode =
-  | TestPredicateASTNode
-  | NotPredicateASTNode
-  | AndPredicateASTNode
-  | OrPredicateASTNode
-  | XorPredicateASTNode
 
 /**
  * Function Expression AST node
@@ -191,6 +144,19 @@ export interface AccessTransitionASTNode extends TransitionASTNode {
     guards?: ASTNode
     effects?: ASTNode[]
     redirect?: ASTNode[]
+    status?: number
+    message?: ASTNode | string
+  }
+}
+
+/**
+ * Action Transition AST node
+ */
+export interface ActionTransitionASTNode extends TransitionASTNode {
+  transitionType: TransitionType.ACTION
+  properties: {
+    when: ASTNode
+    effects: ASTNode[]
   }
 }
 

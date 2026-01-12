@@ -1,12 +1,65 @@
 {% extends "../partials/layout.njk" %}
 
-{% set pageTitle = applicationName + " - Error" %}
+{% if status === 401 %}
+  {% set title = "You need to sign in" %}
+  {% set suggestions = [
+    "Your session may have expired.",
+    "Try signing in again."
+  ] %}
+{% elif status === 404 %}
+  {% set title = "Page not found" %}
+  {% set suggestions = [
+    "If you typed the web address, check it is correct.",
+    "If you pasted the web address, check you copied the entire address."
+  ] %}
+{% elif status >= 400 and status < 500 %}
+  {% set title = "There was an issue with your request" %}
+  {% set suggestions = [
+    "Try performing your request again.",
+    "If the request still fails, try again later."
+  ] %}
+{% else %}
+  {% set title = "Sorry, there is a problem with the service" %}
+  {% set suggestions = [
+    "Try reloading the page. You can do this by pressing F5 (on a PC), or Cmd + R (on a Mac).",
+    "If the page still does not load, try again later."
+  ] %}
+{% endif %}
+
+{% set pageTitle = title + " - " + applicationName %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">{{ title }}</h1>
 
-  <h1>{{ message }}</h1>
-  <h2>{{ status }}</h2>
-  <pre>{{ stack }}</pre>
+      <code>
+        {% if status %}
+        Status code: {{ status }}
+        {% endif %}
+        {% if status === 404 %}
+          - {{ message }}
+        {% endif %}
+      </code>
 
+      <div class="govuk-!-margin-top-8">
+        <ul class="govuk-list govuk-list--bullet">
+          {% for suggestion in suggestions %}
+            <li class="govuk-body-m">{{ suggestion }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {% if status !== 404 and stack %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+      <div class="govuk-grid-column-full">
+        <app-copy-code class="app-code-block">
+          <pre><code>{{ stack }}</code></pre>
+        </app-copy-code>
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}

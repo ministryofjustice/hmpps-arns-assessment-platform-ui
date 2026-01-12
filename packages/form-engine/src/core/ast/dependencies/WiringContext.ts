@@ -1,13 +1,12 @@
 import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
-import { ASTNodeType } from '@form-engine/core/types/enums'
-import { PseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
-import { ExpressionASTNode, LoadTransitionASTNode, ReferenceASTNode } from '@form-engine/core/types/expressions.type'
+import { ExpressionType } from '@form-engine/form/types/enums'
+import { LoadTransitionASTNode, ReferenceASTNode } from '@form-engine/core/types/expressions.type'
 import { StepASTNode } from '@form-engine/core/types/structures.type'
-import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import NodeRegistry from '@form-engine/core/ast/registration/NodeRegistry'
 import MetadataRegistry from '@form-engine/core/ast/registration/MetadataRegistry'
 import DependencyGraph from '@form-engine/core/ast/dependencies/DependencyGraph'
 import { isJourneyStructNode, isStepStructNode } from '@form-engine/core/typeguards/structure-nodes'
+import getAncestorChain from '@form-engine/core/ast/utils/getAncestorChain'
 
 /**
  * Implementation of WiringContext
@@ -21,58 +20,21 @@ export class WiringContext {
   ) {}
 
   /**
-   * Get the current step node (the step marked as isAncestorOfStep)
+   * Get the current step node (the step marked as isCurrentStep)
    */
-  getStepNode(): StepASTNode {
-    const step = this.nodeRegistry.findByType<StepASTNode>(ASTNodeType.STEP)
-      .find(node => this.metadataRegistry.get(node.id, 'isAncestorOfStep'))
+  getCurrentStepNode(): StepASTNode {
+    const stepId = this.metadataRegistry.findNodesWhere('isCurrentStep', true).at(0)
 
-    if (!step) {
-      throw new Error('No current step found in node registry')
+    if (!stepId) {
+      throw new Error('No current step found in metadata registry')
     }
 
-    return step
-  }
-
-  findNodesByType<T extends ASTNode>(type: ASTNodeType): T[] {
-    return this.nodeRegistry.findByType<T>(type)
-  }
-
-  findPseudoNodesByType<T extends PseudoNode>(type: PseudoNodeType): T[] {
-    return Array.from(this.nodeRegistry.getAll().values()).filter(
-      (node): node is T => 'type' in node && node.type === type,
-    )
-  }
-
-  findPseudoNode<T extends PseudoNode>(type: PseudoNodeType, key: string): T | undefined {
-    const allPseudoNodes = this.findPseudoNodesByType<T>(type)
-
-    return allPseudoNodes.find(node => {
-      const props = node.properties
-
-      switch (type) {
-        case PseudoNodeType.ANSWER_LOCAL:
-        case PseudoNodeType.ANSWER_REMOTE:
-        case PseudoNodeType.POST:
-        case PseudoNodeType.DATA:
-          return 'baseFieldCode' in props && props.baseFieldCode === key
-
-        case PseudoNodeType.QUERY:
-        case PseudoNodeType.PARAMS:
-          return 'paramName' in props && props.paramName === key
-
-        default:
-          return false
-      }
-    })
+    return this.nodeRegistry.get(stepId) as StepASTNode
   }
 
   findReferenceNodes(referenceSource: 'post' | 'query' | 'params' | 'data' | 'answers'): ReferenceASTNode[] {
-    const allExprNodes = this.findNodesByType<ExpressionASTNode>(ASTNodeType.EXPRESSION)
-
     return (
-      allExprNodes
-        .filter(isReferenceExprNode)
+      this.nodeRegistry.findByType<ReferenceASTNode>(ExpressionType.REFERENCE)
         .filter(node => {
           const path = node.properties.path
 
@@ -104,21 +66,7 @@ export class WiringContext {
    * Root nodes have depth 0, their children have depth 1, etc.
    */
   getNodeDepth(nodeId: NodeId): number {
-    let depth = 0
-    let currentId: NodeId | undefined = nodeId
-
-    while (currentId) {
-      const parentId = this.getParentNodeId(currentId)
-
-      if (!parentId) {
-        break
-      }
-
-      depth += 1
-      currentId = parentId
-    }
-
-    return depth
+    return getAncestorChain(nodeId, this.metadataRegistry).length - 1
   }
 
   /**
@@ -143,29 +91,20 @@ export class WiringContext {
    * from the first node (deepest-first) that has onLoad transitions
    */
   findLastOnLoadTransitionFrom(nodeId: NodeId): LoadTransitionASTNode | undefined {
-    let currentNode = this.nodeRegistry.get(nodeId)
+    // Reverse to search deepest-first, find first ancestor with onLoad transitions
+    const ancestorWithOnLoad = getAncestorChain(nodeId, this.metadataRegistry)
+      .reverse()
+      .map(ancestorId => this.nodeRegistry.get(ancestorId))
+      .filter(node => isStepStructNode(node) || isJourneyStructNode(node))
+      .find(node => {
+        const onLoad = node.properties.onLoad
+        return Array.isArray(onLoad) && onLoad.length > 0
+      })
 
-    while (currentNode) {
-      if (isStepStructNode(currentNode)) {
-        const onLoad = currentNode.properties.onLoad as LoadTransitionASTNode[] | undefined
-
-        if (Array.isArray(onLoad) && onLoad.length > 0) {
-          return onLoad.at(-1)
-        }
-      }
-
-      if (isJourneyStructNode(currentNode)) {
-        const onLoad = currentNode.properties.onLoad
-
-        if (Array.isArray(onLoad) && onLoad.length > 0) {
-          return onLoad.at(-1)
-        }
-      }
-
-      currentNode = this.getParentNode(currentNode.id)
+    if (!ancestorWithOnLoad) {
+      return undefined
     }
 
-    // No onLoad transitions found in the entire ancestor chain
-    return undefined
+    return ancestorWithOnLoad.properties.onLoad.at(-1)
   }
 }

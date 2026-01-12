@@ -26,15 +26,11 @@ export class NodeIDGenerator {
   /**
    * Generate next ID in category
    * @param category - Which counter to use
-   * @returns String ID like "compile_ast:1"
+   * @returns String ID like "compile_ast:1" or "runtime_ast:1"
    */
-  next(category: NodeIDCategory.COMPILE_AST): AstNodeId
+  next(category: NodeIDCategory.COMPILE_AST | NodeIDCategory.RUNTIME_AST): AstNodeId
 
-  next(category: NodeIDCategory.RUNTIME_AST): AstNodeId
-
-  next(category: NodeIDCategory.COMPILE_PSEUDO): PseudoNodeId
-
-  next(category: NodeIDCategory.RUNTIME_PSEUDO): PseudoNodeId
+  next(category: NodeIDCategory.COMPILE_PSEUDO | NodeIDCategory.RUNTIME_PSEUDO): PseudoNodeId
 
   next(category: NodeIDCategory): NodeId {
     const current = this.counters.get(category)!
@@ -79,5 +75,24 @@ export class NodeIDGenerator {
     return Object.assign(cloned, {
       counters: new Map(this.counters),
     })
+  }
+
+  /**
+   * Sync counter values from another generator
+   * Used to propagate counter state back after a pending view flushes
+   * @param source - The generator to sync from
+   */
+  syncFrom(source: NodeIDGenerator): void {
+    source.getCounterEntries().forEach(([category, value]) => {
+      this.counters.set(category, value)
+    })
+  }
+
+  /**
+   * Get counter entries for syncing
+   * Override in subclasses that delegate to internal generators
+   */
+  getCounterEntries(): [NodeIDCategory, number][] {
+    return Array.from(this.counters.entries())
   }
 }

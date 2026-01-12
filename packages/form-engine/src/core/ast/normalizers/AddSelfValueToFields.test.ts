@@ -1,8 +1,7 @@
-import { ExpressionType } from '@form-engine/form/types/enums'
+import { BlockType, ExpressionType, IteratorType } from '@form-engine/form/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { NodeFactory } from '@form-engine/core/ast/nodes/NodeFactory'
 import { ASTNode } from '@form-engine/core/types/engine.type'
-import { StepASTNode } from '@form-engine/core/types/structures.type'
 import { AddSelfValueToFieldsNormalizer } from './AddSelfValueToFields'
 
 describe('AddSelfValueToFields', () => {
@@ -25,7 +24,7 @@ describe('AddSelfValueToFields', () => {
 
   describe('normalize()', () => {
     it('adds Self() reference to fields without explicit value', () => {
-      const field = ASTTestFactory.block('textInput', 'field')
+      const field = ASTTestFactory.block('textInput', BlockType.FIELD)
         .withId('compile_ast:1')
         .withCode('username')
         .withLabel('Username')
@@ -42,7 +41,7 @@ describe('AddSelfValueToFields', () => {
 
     it('overrides existing value with Self() reference', () => {
       const explicitValue = 'preset value'
-      const field = ASTTestFactory.block('textInput', 'field')
+      const field = ASTTestFactory.block('textInput', BlockType.FIELD)
         .withId('compile_ast:2')
         .withCode('username')
         .withLabel('Username')
@@ -59,7 +58,7 @@ describe('AddSelfValueToFields', () => {
     })
 
     it('does not create Self() reference for blocks without code (non-fields)', () => {
-      const block = ASTTestFactory.block('heading', 'basic')
+      const block = ASTTestFactory.block('heading', BlockType.BASIC)
         .withId('compile_ast:3')
         .withProperty('text', 'Welcome')
         .build()
@@ -73,7 +72,7 @@ describe('AddSelfValueToFields', () => {
     })
 
     it('adds Self() even when value is undefined', () => {
-      const field = ASTTestFactory.block('textInput', 'field')
+      const field = ASTTestFactory.block('textInput', BlockType.FIELD)
         .withId('compile_ast:4')
         .withCode('username')
         .withLabel('Username')
@@ -89,33 +88,40 @@ describe('AddSelfValueToFields', () => {
       expect(field.properties.value).toBe(mockSelfReferenceNode)
     })
 
-    it('adds Self() to fields inside collection expression templates', () => {
-      const templateField = ASTTestFactory.block('textInput', 'field')
+    it('adds Self() to fields inside iterate expression yield templates', () => {
+      // Arrange
+      const templateField = ASTTestFactory.block('textInput', BlockType.FIELD)
         .withId('compile_ast:5')
         .withCode('street')
         .withLabel('Street')
         .build()
 
-      const collectionExpr = ASTTestFactory.expression(ExpressionType.COLLECTION)
+      const iterateExpr = ASTTestFactory.expression(ExpressionType.ITERATE)
         .withId('compile_ast:6')
-        .withCollection({ type: ExpressionType.REFERENCE, path: ['answers', 'addresses'] })
-        .withTemplate([templateField])
+        .withProperty('input', { type: ExpressionType.REFERENCE, path: ['answers', 'addresses'] })
+        .withProperty('iterator', {
+          type: IteratorType.MAP,
+          yield: [templateField],
+        })
         .build()
 
       const step = ASTTestFactory.step()
         .withId('compile_ast:7')
-        .withBlock('container', 'basic', block => block.withId('compile_ast:8').withProperty('content', collectionExpr))
+        .withBlock('container', BlockType.BASIC, block =>
+          block.withId('compile_ast:8').withProperty('content', iterateExpr),
+        )
         .build()
 
       const journey = ASTTestFactory.journey().withId('compile_ast:9').withProperty('steps', [step]).build()
 
+      // Act
       normalizer.normalize(journey)
 
-      const steps = journey.properties.steps as StepASTNode[]
-      const containerBlock = steps[0].properties.blocks[0]
-      const transformedCollection = containerBlock.properties.content
-      const template = transformedCollection.properties.template as any[]
-      const transformedField = template[0]
+      // Assert
+      const containerBlock = journey.properties.steps[0].properties.blocks[0]
+      const transformedIterate = containerBlock.properties.content
+      const yieldTemplate = transformedIterate.properties.iterator.yield as any[]
+      const transformedField = yieldTemplate[0]
 
       expect(mockNodeFactory.createNode).toHaveBeenCalledWith({
         type: ExpressionType.REFERENCE,
@@ -125,20 +131,20 @@ describe('AddSelfValueToFields', () => {
     })
 
     it('adds Self() to nested fields in blocks', () => {
-      const nestedField1 = ASTTestFactory.block('textInput', 'field')
+      const nestedField1 = ASTTestFactory.block('textInput', BlockType.FIELD)
         .withId('compile_ast:9')
         .withCode('nested1')
         .withLabel('Nested 1')
         .build()
 
-      const nestedField2 = ASTTestFactory.block('textInput', 'field')
+      const nestedField2 = ASTTestFactory.block('textInput', BlockType.FIELD)
         .withId('compile_ast:10')
         .withCode('nested2')
         .withLabel('Nested 2')
         .withProperty('value', 'has value')
         .build()
 
-      const blockWithNestedFields = ASTTestFactory.block('group', 'basic')
+      const blockWithNestedFields = ASTTestFactory.block('group', BlockType.BASIC)
         .withId('compile_ast:11')
         .withProperty('blocks', [nestedField1, nestedField2])
         .build()

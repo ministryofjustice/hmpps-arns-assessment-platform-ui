@@ -74,6 +74,52 @@ export default class MetadataRegistry {
   }
 
   /**
+   * Get all entries in the registry
+   * @returns Map of all node IDs to their metadata maps
+   */
+  getAllEntries(): Map<NodeId, Map<string, unknown>> {
+    const result = new Map<NodeId, Map<string, unknown>>()
+
+    this.metadata.forEach((meta, nodeId) => {
+      const metaMap = new Map<string, unknown>()
+
+      Object.entries(meta).forEach(([key, value]) => {
+        metaMap.set(key, value)
+      })
+
+      result.set(nodeId, metaMap)
+    })
+
+    return result
+  }
+
+  /**
+   * Find all node IDs where a metadata key matches a value
+   *
+   * @param key - The metadata property name to check
+   * @param value - The value to match against
+   * @returns Array of NodeIds where metadata[key] === value
+   */
+  findNodesWhere(key: string, value: unknown): NodeId[] {
+    const results: NodeId[] = []
+
+    this.metadata.forEach((meta, nodeId) => {
+      if (meta[key] === value) {
+        results.push(nodeId)
+      }
+    })
+
+    return results
+  }
+
+  /**
+   * Clear all metadata
+   */
+  clear(): void {
+    this.metadata.clear()
+  }
+
+  /**
    * Create a shallow copy of this metadata registry
    * The clone can be modified independently per compilation
    * @returns A new MetadataRegistry with the same metadata

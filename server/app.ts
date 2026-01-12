@@ -3,8 +3,11 @@ import express from 'express'
 import createError from 'http-errors'
 
 import FormEngine from '@form-engine/core/FormEngine'
+import { ExpressFrameworkAdapter } from '@form-engine-express-nunjucks/index'
+import { govukComponents } from '@form-engine-govuk-components/index'
+import { mojComponents } from '@form-engine-moj-components/components'
 import nunjucksSetup from './utils/nunjucksSetup'
-import errorHandler from './errorHandler'
+import errorHandler from './routes/error/errorHandler'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 
@@ -20,32 +23,47 @@ import setUpWebSession from './middleware/setUpWebSession'
 import routes from './routes'
 import type { Services } from './services'
 import logger from '../logger'
-import ExampleFormShowcase from './forms/example-form'
+import formEngineDeveloperGuide from './forms/form-engine-developer-guide'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
-  const formEngine = new FormEngine({
-    logger,
-  }).registerForm(ExampleFormShowcase)
 
   app.set('json spaces', 2)
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
 
+  const nunjucksEnv = nunjucksSetup(app)
+  const formEngine = new FormEngine({
+    logger,
+    basePath: '/forms',
+    frameworkAdapter: ExpressFrameworkAdapter.configure({
+      nunjucksEnv,
+      defaultTemplate: 'partials/form-step',
+    }),
+  })
+    .registerComponents(govukComponents)
+    .registerComponents(mojComponents)
+    .registerFormPackage(formEngineDeveloperGuide)
+
+  // Setup middleware
   app.use(appInsightsMiddleware())
   app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
   app.use(setUpWebRequestParsing())
   app.use(setUpStaticResources())
-  nunjucksSetup(app)
-  app.use(setUpAuthentication())
+  app.use(
+    setUpAuthentication({
+      bypassPaths: ['/forms/form-engine-developer-guide'],
+    }),
+  )
   app.use(authorisationMiddleware())
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
 
+  // Mount routes
   app.use(routes(services))
-  app.use(formEngine.getRouter())
+  app.use(formEngine.getRouter() as express.Router)
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))

@@ -1,12 +1,30 @@
 import passport from 'passport'
 import flash from 'connect-flash'
-import { Router } from 'express'
+import { Router, Request } from 'express'
 import { Strategy } from 'passport-oauth2'
 import { VerificationClient, AuthenticatedRequest } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import { HmppsUser } from '../interfaces/hmppsUser'
 import generateOauthClientToken from '../utils/clientCredentials'
 import logger from '../../logger'
+
+interface AuthenticationOptions {
+  bypassPaths?: (string | RegExp)[]
+}
+
+function shouldBypassAuth(req: Request, bypassPaths?: (string | RegExp)[]): boolean {
+  if (!bypassPaths || bypassPaths.length === 0) {
+    return false
+  }
+
+  return bypassPaths.some(pattern => {
+    if (typeof pattern === 'string') {
+      return req.path.startsWith(pattern)
+    }
+
+    return pattern.test(req.path)
+  })
+}
 
 enum AuthStrategy {
   HANDOVER = 'handover-oauth2',
@@ -86,7 +104,7 @@ passport.use(
   ),
 )
 
-export default function setupAuthentication() {
+export default function setupAuthentication(options: AuthenticationOptions = {}) {
   const router = Router()
   const tokenVerificationClient = new VerificationClient(config.apis.tokenVerification, logger)
 
@@ -137,6 +155,11 @@ export default function setupAuthentication() {
   })
 
   router.use(async (req, res, next) => {
+    if (shouldBypassAuth(req, options.bypassPaths)) {
+      req.authBypassed = true
+      return next()
+    }
+
     if (req.isAuthenticated() && req.user.authSource === 'handover') {
       return next()
     }
@@ -144,13 +167,27 @@ export default function setupAuthentication() {
     if (req.isAuthenticated() && (await tokenVerificationClient.verifyToken(req as unknown as AuthenticatedRequest))) {
       return next()
     }
+
     req.session.returnTo = req.originalUrl
     return res.redirect(authPaths.signIn)
   })
 
   router.use((req, res, next) => {
-    res.locals.user = req.user as HmppsUser
-    next()
+    if (!req.isAuthenticated()) {
+      return next()
+    }
+
+    const hmppsUser = req.user as HmppsUser
+    res.locals.user = hmppsUser
+    req.state = {
+      ...req.state,
+      user: {
+        id: hmppsUser.username,
+        name: hmppsUser.displayName ?? hmppsUser.username,
+      },
+    }
+
+    return next()
   })
 
   return router

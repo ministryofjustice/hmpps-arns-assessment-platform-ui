@@ -2,8 +2,8 @@
 # Other compose files (local, test) extend or override these settings as needed.
 
 services:
-  auth:
-    image: quay.io/hmpps/hmpps-auth:latest
+  hmpps-auth:
+    image: ghcr.io/ministryofjustice/hmpps-auth:latest
     networks:
       - hmpps
     ports:
@@ -27,7 +27,7 @@ services:
       ALLOW_EMPTY_PASSWORD: yes
 
   ui:
-    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:${APP_VERSION:-latest}
+    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:local
     networks:
       - hmpps
     depends_on:
@@ -45,6 +45,8 @@ services:
     ports:
       - "3000:3000"
       - "9229:9229"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/health"]
     environment:
       PRODUCT_ID: 'UNASSIGNED'
       REDIS_ENABLED: true
@@ -56,6 +58,12 @@ services:
       AUTH_CODE_CLIENT_SECRET: clientsecret
       CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-system
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
+      TOKEN_VERIFICATION_ENABLED: false
+      TOKEN_VERIFICATION_API_URL: http://localhost:9090/verification
+      HMPPS_AUTH_URL: http://hmpps-auth:8080/auth
+      HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
+      AAP_API_URL: http://api:8080
+      COORDINATOR_API_URL: http://arns-coordinator:8080
       HMPPS_ARNS_HANDOVER_URL: http://arns-handover:7070
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
       HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
@@ -68,6 +76,8 @@ services:
       AUDIT_SQS_QUEUE_URL: http://localstack:4566/000000000000/audit-queue
       AUDIT_SQS_REGION: eu-west-2
       AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
+      NODE_CLUSTER_ENABLED: true
+      FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
 
   api:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
@@ -79,7 +89,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
     environment:
       - SERVER_PORT=8080
-      - HMPPS_AUTH_URL=http://auth:8080/auth
+      - HMPPS_AUTH_URL=http://hmpps-auth:8080/auth
       - SPRING_PROFILES_ACTIVE=dev,postgres
       - DATABASE_ENDPOINT=postgres:5432
       - HMPPS_SQS_PROVIDER=localstack
@@ -87,7 +97,7 @@ services:
       - HMPPS_SQS_QUEUES_AUDIT_QUEUE_NAME=audit-queue
     depends_on:
       - postgres
-      - auth
+      - hmpps-auth
       - localstack
 
   postgres:

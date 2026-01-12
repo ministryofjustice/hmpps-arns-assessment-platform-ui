@@ -1,16 +1,15 @@
-import { ExpressionType, FunctionType, LogicType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType } from '@form-engine/form/types/enums'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import {
-  ExpressionASTNode,
   ConditionalASTNode,
+  ExpressionASTNode,
   FormatASTNode,
+  FunctionASTNode,
+  IterateASTNode,
   NextASTNode,
   PipelineASTNode,
   ReferenceASTNode,
   ValidationASTNode,
-  PredicateASTNode,
-  FunctionASTNode,
-  CollectionASTNode,
 } from '@form-engine/core/types/expressions.type'
 
 /**
@@ -42,13 +41,6 @@ export function isPipelineExprNode(obj: any): obj is PipelineASTNode {
 }
 
 /**
- * Check if an AST node is a Conditional Expression node
- */
-export function isConditionalExprNode(obj: any): obj is ConditionalASTNode {
-  return isExpressionNode(obj) && obj.expressionType === LogicType.CONDITIONAL
-}
-
-/**
  * Check if an AST node is a Next Expression node
  */
 export function isNextExprNode(obj: any): obj is NextASTNode {
@@ -63,20 +55,17 @@ export function isValidationExprNode(obj: any): obj is ValidationASTNode {
 }
 
 /**
- * Check if an AST node is a Validation Expression node
+ * Check if an AST node is an Iterate Expression node
  */
-export function isCollectionExprNode(obj: any): obj is CollectionASTNode {
-  return isExpressionNode(obj) && obj.expressionType === ExpressionType.COLLECTION
+export function isIterateExprNode(obj: any): obj is IterateASTNode {
+  return isExpressionNode(obj) && obj.expressionType === ExpressionType.ITERATE
 }
 
 /**
- * Check if an AST node is any type of Predicate Expression node
+ * Check if an AST node is a Conditional Expression node
  */
-export function isPredicateExprNode(obj: any): obj is PredicateASTNode {
-  return obj != null &&
-    obj.expressionType != null &&
-    Object.values(LogicType).includes(obj.expressionType) &&
-    obj.expressionType !== LogicType.CONDITIONAL
+export function isConditionalExprNode(obj: any): obj is ConditionalASTNode {
+  return isExpressionNode(obj) && obj.expressionType === ExpressionType.CONDITIONAL
 }
 
 /**
@@ -84,4 +73,13 @@ export function isPredicateExprNode(obj: any): obj is PredicateASTNode {
  */
 export function isFunctionExprNode(obj: any): obj is FunctionASTNode {
   return obj != null && obj.expressionType != null && Object.values(FunctionType).includes(obj.expressionType)
+}
+
+/**
+ * Check if an AST node is an Effect Expression node
+ * Effects are function expressions that perform side effects (save data, log, etc.)
+ * They are handled separately from other functions to enable deferred execution.
+ */
+export function isEffectExprNode(obj: any): obj is FunctionASTNode {
+  return isFunctionExprNode(obj) && obj.expressionType === FunctionType.EFFECT
 }

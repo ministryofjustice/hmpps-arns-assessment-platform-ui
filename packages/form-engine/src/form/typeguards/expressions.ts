@@ -5,11 +5,14 @@ import {
   FormatExpr,
   PipelineExpr,
   ConditionalExpr,
-  CollectionExpr,
+  IterateExpr,
+  MapIteratorConfig,
+  FilterIteratorConfig,
+  FindIteratorConfig,
   ValueExpr,
   NextExpr,
 } from '../types/expressions.type'
-import { ExpressionType, LogicType } from '../types/enums'
+import { ExpressionType, IteratorType } from '../types/enums'
 import { isFunctionExpr, isTransformerFunctionExpr } from './functions'
 
 export function isReferenceExpr(obj: any): obj is ReferenceExpr {
@@ -25,11 +28,23 @@ export function isPipelineExpr(obj: any): obj is PipelineExpr {
 }
 
 export function isConditionalExpr(obj: any): obj is ConditionalExpr {
-  return obj != null && obj.type === LogicType.CONDITIONAL
+  return obj != null && obj.type === ExpressionType.CONDITIONAL
 }
 
-export function isCollectionExpr(obj: any): obj is CollectionExpr {
-  return obj != null && obj.type === ExpressionType.COLLECTION
+export function isIterateExpr(obj: any): obj is IterateExpr {
+  return obj != null && obj.type === ExpressionType.ITERATE
+}
+
+export function isMapIteratorConfig(obj: any): obj is MapIteratorConfig {
+  return obj != null && obj.type === IteratorType.MAP
+}
+
+export function isFilterIteratorConfig(obj: any): obj is FilterIteratorConfig {
+  return obj != null && obj.type === IteratorType.FILTER
+}
+
+export function isFindIteratorConfig(obj: any): obj is FindIteratorConfig {
+  return obj != null && obj.type === IteratorType.FIND
 }
 
 export function isNextExpr(obj: any): obj is NextExpr {
@@ -41,7 +56,7 @@ export function isValueExpr(obj: any): obj is ValueExpr {
   if (isReferenceExpr(obj)) return true
   if (isFormatExpr(obj)) return true
   if (isPipelineExpr(obj)) return true
-  if (isCollectionExpr(obj)) return true
+  if (isIterateExpr(obj)) return true
 
   // Check for function types
   if (obj != null && typeof obj === 'object' && 'type' in obj) {
@@ -71,7 +86,7 @@ export function isExpression(node: any): boolean {
     isFormatExpr(node) ||
     isPipelineExpr(node) ||
     isConditionalExpr(node) ||
-    isCollectionExpr(node) ||
+    isIterateExpr(node) ||
     isPredicateExpr(node) ||
     isFunctionExpr(node) ||
     isValidationExpr(node) ||

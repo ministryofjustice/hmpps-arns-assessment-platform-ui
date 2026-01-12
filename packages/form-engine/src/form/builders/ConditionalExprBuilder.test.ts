@@ -3,7 +3,7 @@ import { ConditionalExprBuilder, when } from './ConditionalExprBuilder'
 import { finaliseBuilders } from './utils/finaliseBuilders'
 import { ConditionalExpr, PredicateTestExpr } from '../types/expressions.type'
 import { Condition } from '../../registry/conditions'
-import { FunctionType, ExpressionType, LogicType } from '../types/enums'
+import { FunctionType, ExpressionType, PredicateType } from '../types/enums'
 
 describe('ConditionalExprBuilder', () => {
   const simplePredicate = () => Self().match(Condition.IsRequired())
@@ -22,7 +22,7 @@ describe('ConditionalExprBuilder', () => {
 
     it('accepts a PredicateTestExpr directly', () => {
       const testExpr: PredicateTestExpr = {
-        type: LogicType.TEST,
+        type: PredicateType.TEST,
         subject: { type: ExpressionType.REFERENCE, path: ['@self'] },
         negate: false,
         condition: { type: FunctionType.CONDITION, name: 'isRequired', arguments: [] },
@@ -52,7 +52,11 @@ describe('ConditionalExprBuilder', () => {
       const valueExpr = Answer('someField')
       const result = finaliseBuilders(when(simplePredicate()).then(valueExpr)) as ConditionalExpr
 
-      expect(result.thenValue).toBe(valueExpr)
+      // After finaliseBuilders, the ReferenceBuilder is converted to a ReferenceExpr
+      expect(result.thenValue).toEqual({
+        type: ExpressionType.REFERENCE,
+        path: ['answers', 'someField'],
+      })
     })
   })
 
@@ -75,7 +79,11 @@ describe('ConditionalExprBuilder', () => {
       const valueExpr = Answer('fallbackField')
       const result = finaliseBuilders(when(simplePredicate()).else(valueExpr)) as ConditionalExpr
 
-      expect(result.elseValue).toBe(valueExpr)
+      // After finaliseBuilders, the ReferenceBuilder is converted to a ReferenceExpr
+      expect(result.elseValue).toEqual({
+        type: ExpressionType.REFERENCE,
+        path: ['answers', 'fallbackField'],
+      })
     })
   })
 
@@ -85,7 +93,7 @@ describe('ConditionalExprBuilder', () => {
       const result = finaliseBuilders(when(predicate).then('Yes').else('No')) as ConditionalExpr
 
       expect(result).toEqual({
-        type: LogicType.CONDITIONAL,
+        type: ExpressionType.CONDITIONAL,
         predicate,
         thenValue: 'Yes',
         elseValue: 'No',

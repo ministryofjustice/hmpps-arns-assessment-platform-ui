@@ -4,12 +4,9 @@ import NodeRegistry from '@form-engine/core/ast/registration/NodeRegistry'
 import MetadataRegistry from '@form-engine/core/ast/registration/MetadataRegistry'
 import DependencyGraph from '@form-engine/core/ast/dependencies/DependencyGraph'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
-import { ASTNodeType } from '@form-engine/core/types/enums'
-import { TransitionType } from '@form-engine/form/types/enums'
-import { PseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
+import { BlockType, ExpressionType, TransitionType } from '@form-engine/form/types/enums'
 import { LoadTransitionASTNode } from '@form-engine/core/types/expressions.type'
 import { JourneyASTNode } from '@form-engine/core/types/structures.type'
-import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
 
 function createMockNodeRegistry(): jest.Mocked<NodeRegistry> {
   return {
@@ -22,6 +19,7 @@ function createMockNodeRegistry(): jest.Mocked<NodeRegistry> {
 function createMockMetadataRegistry(): jest.Mocked<MetadataRegistry> {
   return {
     get: jest.fn().mockReturnValue(undefined),
+    findNodesWhere: jest.fn().mockReturnValue([]),
   } as unknown as jest.Mocked<MetadataRegistry>
 }
 
@@ -39,143 +37,34 @@ describe('WiringContext', () => {
     context = new WiringContext(mockNodeRegistry, mockMetadataRegistry, mockGraph)
   })
 
-  describe('getStepNode', () => {
-    it('should return step marked as isAncestorOfStep', () => {
-      const step1 = ASTTestFactory.step().build()
-      const step2 = ASTTestFactory.step().build()
-
-      when(mockNodeRegistry.findByType)
-        .calledWith(ASTNodeType.STEP)
-        .mockReturnValue([step1, step2])
-
-      when(mockMetadataRegistry.get)
-        .calledWith(step1.id, 'isAncestorOfStep')
-        .mockReturnValue(false)
-
-      when(mockMetadataRegistry.get)
-        .calledWith(step2.id, 'isAncestorOfStep')
-        .mockReturnValue(true)
-
-      const result = context.getStepNode()
-
-      expect(result).toBe(step2)
-    })
-
-    it('should throw error when no step is marked as isAncestorOfStep', () => {
+  describe('getStepNode()', () => {
+    it('should return step marked as isCurrentStep', () => {
+      // Arrange
       const step = ASTTestFactory.step().build()
 
-      when(mockNodeRegistry.findByType)
-        .calledWith(ASTNodeType.STEP)
-        .mockReturnValue([step])
+      when(mockMetadataRegistry.findNodesWhere)
+        .calledWith('isCurrentStep', true)
+        .mockReturnValue([step.id])
 
-      when(mockMetadataRegistry.get)
-        .calledWith(step.id, 'isAncestorOfStep')
-        .mockReturnValue(false)
+      when(mockNodeRegistry.get)
+        .calledWith(step.id)
+        .mockReturnValue(step)
 
-      expect(() => context.getStepNode()).toThrow('No current step found in node registry')
+      // Act
+      const result = context.getCurrentStepNode()
+
+      // Assert
+      expect(result).toBe(step)
     })
 
-    it('should throw error when no steps exist', () => {
-      when(mockNodeRegistry.findByType)
-        .calledWith(ASTNodeType.STEP)
+    it('should throw error when no step is marked as isCurrentStep', () => {
+      // Arrange
+      when(mockMetadataRegistry.findNodesWhere)
+        .calledWith('isCurrentStep', true)
         .mockReturnValue([])
 
-      expect(() => context.getStepNode()).toThrow('No current step found in node registry')
-    })
-  })
-
-  describe('findPseudoNodesByType', () => {
-    it('should return all pseudo nodes of specified type', () => {
-      const postNode1 = ASTTestFactory.postPseudoNode('firstName')
-      const postNode2 = ASTTestFactory.postPseudoNode('lastName')
-      const queryNode = ASTTestFactory.queryPseudoNode('id')
-
-      const allNodes = new Map<NodeId, ASTNode | PseudoNode>([
-        [postNode1.id, postNode1],
-        [postNode2.id, postNode2],
-        [queryNode.id, queryNode],
-      ])
-
-      when(mockNodeRegistry.getAll).calledWith().mockReturnValue(allNodes)
-
-      const result = context.findPseudoNodesByType(PseudoNodeType.POST)
-
-      expect(result).toHaveLength(2)
-      expect(result).toContain(postNode1)
-      expect(result).toContain(postNode2)
-    })
-
-    it('should return empty array when no pseudo nodes of type exist', () => {
-      const queryNode = ASTTestFactory.queryPseudoNode('id')
-      const allNodes = new Map([[queryNode.id, queryNode]])
-
-      when(mockNodeRegistry.getAll).calledWith().mockReturnValue(allNodes)
-
-      const result = context.findPseudoNodesByType(PseudoNodeType.POST)
-
-      expect(result).toEqual([])
-    })
-
-    it('should filter out regular AST nodes', () => {
-      const postNode = ASTTestFactory.postPseudoNode('firstName')
-      const step = ASTTestFactory.step().build()
-
-      const allNodes = new Map<NodeId, ASTNode | PseudoNode>([
-        [postNode.id, postNode],
-        [step.id, step],
-      ])
-
-      when(mockNodeRegistry.getAll).calledWith().mockReturnValue(allNodes)
-
-      const result = context.findPseudoNodesByType(PseudoNodeType.POST)
-
-      expect(result).toHaveLength(1)
-      expect(result).toContain(postNode)
-    })
-  })
-
-  describe('findPseudoNode', () => {
-    it('should find pseudo node by baseFieldCode for field-based types', () => {
-      const postNode1 = ASTTestFactory.postPseudoNode('firstName')
-      const postNode2 = ASTTestFactory.postPseudoNode('lastName')
-
-      const allNodes = new Map([
-        [postNode1.id, postNode1],
-        [postNode2.id, postNode2],
-      ])
-
-      when(mockNodeRegistry.getAll).calledWith().mockReturnValue(allNodes)
-
-      const result = context.findPseudoNode(PseudoNodeType.POST, 'lastName')
-
-      expect(result).toBe(postNode2)
-    })
-
-    it('should find pseudo node by paramName for param-based types', () => {
-      const queryNode1 = ASTTestFactory.queryPseudoNode('id')
-      const queryNode2 = ASTTestFactory.queryPseudoNode('page')
-
-      const allNodes = new Map([
-        [queryNode1.id, queryNode1],
-        [queryNode2.id, queryNode2],
-      ])
-
-      when(mockNodeRegistry.getAll).calledWith().mockReturnValue(allNodes)
-
-      const result = context.findPseudoNode(PseudoNodeType.QUERY, 'page')
-
-      expect(result).toBe(queryNode2)
-    })
-
-    it('should return undefined when no matching pseudo node exists', () => {
-      const postNode = ASTTestFactory.postPseudoNode('firstName')
-      const allNodes = new Map([[postNode.id, postNode]])
-
-      when(mockNodeRegistry.getAll).calledWith().mockReturnValue(allNodes)
-
-      const result = context.findPseudoNode(PseudoNodeType.POST, 'lastName')
-
-      expect(result).toBeUndefined()
+      // Act & Assert
+      expect(() => context.getCurrentStepNode()).toThrow('No current step found in metadata registry')
     })
   })
 
@@ -186,7 +75,7 @@ describe('WiringContext', () => {
       const queryRef = ASTTestFactory.reference(['query', 'id'])
 
       when(mockNodeRegistry.findByType)
-        .calledWith(ASTNodeType.EXPRESSION)
+        .calledWith(ExpressionType.REFERENCE)
         .mockReturnValue([postRef1, postRef2, queryRef])
 
       const result = context.findReferenceNodes('post')
@@ -200,7 +89,7 @@ describe('WiringContext', () => {
       const queryRef = ASTTestFactory.reference(['query', 'id'])
 
       when(mockNodeRegistry.findByType)
-        .calledWith(ASTNodeType.EXPRESSION)
+        .calledWith(ExpressionType.REFERENCE)
         .mockReturnValue([queryRef])
 
       const result = context.findReferenceNodes('post')
@@ -213,7 +102,7 @@ describe('WiringContext', () => {
       const invalidRef = ASTTestFactory.reference(['post'])
 
       when(mockNodeRegistry.findByType)
-        .calledWith(ASTNodeType.EXPRESSION)
+        .calledWith(ExpressionType.REFERENCE)
         .mockReturnValue([validRef, invalidRef])
 
       const result = context.findReferenceNodes('post')
@@ -536,7 +425,7 @@ describe('WiringContext', () => {
         .withProperty('onLoad', [parentOnLoad])
         .build()
 
-      const blockNode = ASTTestFactory.block('TextInput', 'basic').build()
+      const blockNode = ASTTestFactory.block('TextInput', BlockType.BASIC).build()
 
       when(mockNodeRegistry.get)
         .calledWith(blockNode.id)
