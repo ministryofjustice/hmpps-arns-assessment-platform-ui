@@ -1,0 +1,11 @@
+{
+  "name": "Proxy to Coordinator API",
+  "request": {
+    "urlPattern": "/coordinator-api/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "{{systemValue type='ENVIRONMENT' key='WIREMOCK_COORDINATOR_API_URL'}}",
+    "proxyUrlPrefixToRemove": "/coordinator-api"
+  },
+  "priority": 100
+}

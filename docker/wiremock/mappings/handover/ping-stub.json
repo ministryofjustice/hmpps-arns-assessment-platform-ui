@@ -1,0 +1,17 @@
+{
+  "name": "ARNS Handover ping - default success",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/handover/health/ping"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "status": "UP"
+    }
+  },
+  "priority": 50
+}
