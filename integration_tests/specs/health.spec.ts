@@ -3,9 +3,7 @@ import tokenVerification from '../mockApis/tokenVerification'
 import { resetStubs } from '../mockApis/wiremock'
 
 test.describe('Health', () => {
-
   test.describe('All healthy', () => {
-
     test('Health check is accessible and status is UP', async ({ page }) => {
       const response = await page.request.get('/health')
       const payload = await response.json()
