@@ -1,7 +1,11 @@
 {%- extends "govuk/template.njk" -%}
 {%- from "govuk/components/tag/macro.njk" import govukTag -%}
 
-{% set mainClasses = "" if not backlink else "govuk-main-wrapper--no-padding" %}
+{% if backlink %}
+  {% set mainClasses = "govuk-main-wrapper--no-padding" %}
+{% else %}
+  {% set mainClasses = "" %}
+{% endif %}
 
 {%- block head -%}
   <link href="{{ '/assets/css/index.css' | assetMap }}" rel="stylesheet"/>
