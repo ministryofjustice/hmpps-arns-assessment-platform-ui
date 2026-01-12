@@ -26,5 +26,6 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: { active },
       },
+      priority: 1,
     }),
 }
