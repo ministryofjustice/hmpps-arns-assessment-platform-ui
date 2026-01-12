@@ -17,12 +17,6 @@ const stepStatusOptions = [
   { text: 'No longer needed', value: 'NO_LONGER_NEEDED' },
 ]
 
-export const backLink = HtmlBlock({
-  content: when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
-    .then('<a href="../../plan/overview?type=current" class="govuk-back-link">Back</a>')
-    .else('<a href="../../plan/overview?type=future" class="govuk-back-link">Back</a>'),
-})
-
 export const pageHeading = block<HtmlBlock>({
   variant: 'html',
   content: Format(

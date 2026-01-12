@@ -17,9 +17,10 @@
   {% endif %}
 
   {% if buttons.showCreateGoalButton %}
+    {% set createGoalHref = basePath + '/goal/new/add-goal/accommodation' + ('?type=' + currentTab if currentTab else '') %}
     {% set buttonItems = buttonItems.concat([{
       text: 'Create goal',
-      href: basePath + '/goal/new/add-goal/accommodation',
+      href: createGoalHref,
       classes: "govuk-button--secondary govuk-!-display-none-print",
       type: 'button',
       id: 'create-goal-button'
@@ -27,9 +28,10 @@
   {% endif %}
 
   {% if buttons.showAgreePlanButton %}
+    {% set agreePlanHref = basePath + '/plan/agree-plan' + ('?type=' + currentTab if currentTab else '') %}
     {% set buttonItems = buttonItems.concat([{
       text: 'Agree plan',
-      href: basePath + '/plan/agree-plan',
+      href: agreePlanHref,
       classes: "govuk-!-display-none-print",
       type: 'button',
       id: 'agree-plan-button'

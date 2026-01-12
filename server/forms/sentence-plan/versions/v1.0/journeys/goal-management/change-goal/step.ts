@@ -2,11 +2,13 @@ import {
   accessTransition,
   Answer,
   Data,
+  Format,
   loadTransition,
   next,
   Post,
   step,
   submitTransition,
+  when,
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageLayout } from './fields'
@@ -26,7 +28,13 @@ export const changeGoalStep = step({
   isEntryPoint: true,
   view: {
     locals: {
-      mainClasses: 'govuk-main-wrapper--no-padding',
+      backlink: when(Data('latestAgreementStatus').match(Condition.IsRequired()))
+        .then(Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')))
+        .else(
+          when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
+            .then('../../plan/overview?type=current')
+            .else('../../plan/overview?type=future'),
+        ),
     },
   },
 

@@ -7,8 +7,10 @@ import {
   next,
   Params,
   Post,
+  Query,
   step,
   submitTransition,
+  when,
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { twoColumnLayout } from './fields'
@@ -23,6 +25,13 @@ export const createGoalStep = step({
   title: 'Create Goal',
   isEntryPoint: true,
   // Static data available to effects and Data() references
+  view: {
+    locals: {
+      backlink: when(Query('type').match(Condition.IsRequired()))
+        .then(Format('../../../plan/overview?type=%1', Query('type')))
+        .else('../../../plan/overview?type=current'),
+    },
+  },
   blocks: [twoColumnLayout()],
   onLoad: [
     loadTransition({
@@ -51,7 +60,13 @@ export const createGoalStep = step({
       validate: true,
       onValid: {
         effects: [SentencePlanEffects.saveActiveGoal()],
-        next: [next({ goto: Format('../%1/add-steps', Data('activeGoalUuid')) })],
+        next: [
+          next({
+            when: Query('type').match(Condition.IsRequired()),
+            goto: Format('../%1/add-steps?type=%2', Data('activeGoalUuid'), Query('type')),
+          }),
+          next({ goto: Format('../%1/add-steps', Data('activeGoalUuid')) }),
+        ],
       },
     }),
     submitTransition({
@@ -68,6 +83,10 @@ export const createGoalStep = step({
           }),
         ],
         next: [
+          next({
+            when: Query('type').match(Condition.IsRequired()),
+            goto: Format('../../plan/overview?type=%1', Query('type')),
+          }),
           next({
             when: Answer('can_start_now').match(Condition.Equals('no')),
             goto: '../../plan/overview?type=future',
