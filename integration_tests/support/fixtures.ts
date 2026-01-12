@@ -1,7 +1,7 @@
 import { test as base } from '@playwright/test'
 import { getTestApis } from './apis'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
-import {TestAapApiClient} from "./apis/TestAapApiClient";
+import { TestAapApiClient } from './apis/TestAapApiClient'
 
 /**
  * Test fixtures provided to tests

@@ -4,6 +4,7 @@ import type { TestInfo } from '@playwright/test'
 import type { Commands } from '../../../server/interfaces/aap-api/command'
 import type { CommandsResponse } from '../../../server/interfaces/aap-api/response'
 import type { CommandResults } from '../../../server/interfaces/aap-api/commandResult'
+import { noopLogger } from './noopLogger'
 
 export interface TestAapApiClientConfig {
   baseUrl: string
@@ -27,7 +28,7 @@ export class TestAapApiClient extends RestClient {
         timeout: { response: 30000, deadline: 30000 },
         agent: new AgentConfig(30000),
       },
-      console,
+      noopLogger,
       config.authenticationClient,
     )
     this.testInfo = config.testInfo

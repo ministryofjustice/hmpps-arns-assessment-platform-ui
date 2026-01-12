@@ -1,6 +1,7 @@
 import { AuthenticationClient, InMemoryTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 import { AgentConfig } from '@ministryofjustice/hmpps-rest-client'
 import type { TestInfo } from '@playwright/test'
+import { noopLogger } from './noopLogger'
 
 export interface TestHmppsAuthClientConfig {
   url: string
@@ -36,7 +37,9 @@ function decodeJwtPayload(token: string): JwtPayload {
  */
 export class TestHmppsAuthClient {
   private readonly client: AuthenticationClient
+
   private readonly config: TestHmppsAuthClientConfig
+
   private readonly testInfo?: TestInfo
 
   private hasAttachedToken = false
@@ -53,7 +56,7 @@ export class TestHmppsAuthClient {
         systemClientId: config.systemClientId,
         systemClientSecret: config.systemClientSecret,
       },
-      console,
+      noopLogger,
       new InMemoryTokenStore(),
     )
 
