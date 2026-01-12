@@ -1,4 +1,4 @@
-import { ExpressionType, FunctionType } from '@form-engine/form/types/enums'
+import { BlockType, ExpressionType, FunctionType } from '@form-engine/form/types/enums'
 import {
   createMockInvoker,
   createMockInvokerWithError,
@@ -18,7 +18,7 @@ describe('AnswerLocalHandler', () => {
     it('should use formatter result when formatters exist', async () => {
       // Arrange
       const formatterNode = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('email')
         .withProperty('formatters', [formatterNode])
         .build()
@@ -58,7 +58,7 @@ describe('AnswerLocalHandler', () => {
     it('should use raw POST value when formatters return undefined', async () => {
       // Arrange
       const formatterNode = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'transform')
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('email')
         .withProperty('formatters', [formatterNode])
         .build()
@@ -93,7 +93,7 @@ describe('AnswerLocalHandler', () => {
 
     it('should use raw POST value when no formatters exist', async () => {
       // Arrange
-      const fieldNode = ASTTestFactory.block('TextInput', 'field').withCode('name').build()
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('name').build()
       const postPseudoNode = ASTTestFactory.postPseudoNode('name')
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('name', fieldNode.id)
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
@@ -124,7 +124,7 @@ describe('AnswerLocalHandler', () => {
     it('should use defaultValue on GET when no existing answer', async () => {
       // Arrange
       const defaultValueNode = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('country')
         .withProperty('defaultValue', defaultValueNode)
         .build()
@@ -149,7 +149,7 @@ describe('AnswerLocalHandler', () => {
 
     it('should use literal defaultValue when defaultValue is a literal', async () => {
       // Arrange
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('status')
         .withProperty('defaultValue', 'pending')
         .build()
@@ -177,7 +177,7 @@ describe('AnswerLocalHandler', () => {
 
     it('should return undefined and store undefined in answers when all sources return undefined', async () => {
       // Arrange
-      const fieldNode = ASTTestFactory.block('TextInput', 'field').withCode('optional').build()
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('optional').build()
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('optional', fieldNode.id)
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
       const mockInvoker = createMockInvoker()
@@ -198,7 +198,7 @@ describe('AnswerLocalHandler', () => {
 
     it('should preserve existing answer value from onLoad effects when no POST or defaultValue', async () => {
       // Arrange
-      const fieldNode = ASTTestFactory.block('TextInput', 'field').withCode('preloaded').build()
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('preloaded').build()
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('preloaded', fieldNode.id)
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
       const mockInvoker = createMockInvoker()
@@ -222,7 +222,7 @@ describe('AnswerLocalHandler', () => {
     it('should use existing answer over defaultValue when both exist', async () => {
       // Arrange - field with defaultValue but also existing answer from API
       const defaultValueNode = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('address')
         .withProperty('defaultValue', defaultValueNode)
         .build()
@@ -253,7 +253,7 @@ describe('AnswerLocalHandler', () => {
     it('should use raw POST value when formatter returns error', async () => {
       // Arrange
       const formatterNode = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'transform')
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('email')
         .withProperty('formatters', [formatterNode])
         .build()
@@ -296,7 +296,7 @@ describe('AnswerLocalHandler', () => {
     it('should return undefined on POST when POST pseudo node returns error', async () => {
       // Arrange
       const defaultValueNode = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('country')
         .withProperty('defaultValue', defaultValueNode)
         .build()
@@ -336,7 +336,7 @@ describe('AnswerLocalHandler', () => {
     it('should return undefined on GET when defaultValue returns error', async () => {
       // Arrange
       const defaultValueNode = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('failing')
         .withProperty('defaultValue', defaultValueNode)
         .build()
@@ -382,7 +382,7 @@ describe('AnswerLocalHandler', () => {
       // Arrange - simulating postcode lookup scenario
       // An action effect has set 'town' to 'Birmingham' with source 'action'
       // POST data has empty string for 'town' (user didn't type anything)
-      const fieldNode = ASTTestFactory.block('TextInput', 'field').withCode('town').build()
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('town').build()
       const postPseudoNode = ASTTestFactory.postPseudoNode('town')
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('town', fieldNode.id)
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
@@ -418,7 +418,7 @@ describe('AnswerLocalHandler', () => {
 
     it('should allow POST to override load-set answers', async () => {
       // Arrange - user editing a previously saved value
-      const fieldNode = ASTTestFactory.block('TextInput', 'field').withCode('town').build()
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('town').build()
       const postPseudoNode = ASTTestFactory.postPseudoNode('town')
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('town', fieldNode.id)
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
@@ -454,7 +454,7 @@ describe('AnswerLocalHandler', () => {
     it('should clear answer when dependent condition is false on POST', async () => {
       // Arrange - field with dependent condition that evaluates to false
       const dependentNode = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('conditionalField')
         .withProperty('dependent', dependentNode)
         .build()
@@ -492,7 +492,7 @@ describe('AnswerLocalHandler', () => {
     it('should keep answer when dependent condition is true on POST', async () => {
       // Arrange - field with dependent condition that evaluates to true
       const dependentNode = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('conditionalField')
         .withProperty('dependent', dependentNode)
         .build()
@@ -527,7 +527,7 @@ describe('AnswerLocalHandler', () => {
     it('should keep answer when dependent evaluation returns error on POST', async () => {
       // Arrange - dependent condition evaluation fails
       const dependentNode = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('conditionalField')
         .withProperty('dependent', dependentNode)
         .build()
@@ -568,7 +568,7 @@ describe('AnswerLocalHandler', () => {
     it('should not check dependent condition on GET request', async () => {
       // Arrange - field with dependent condition, but request is GET
       const dependentNode = ASTTestFactory.expression(ExpressionType.REFERENCE).build()
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('conditionalField')
         .withProperty('dependent', dependentNode)
         .build()
@@ -596,7 +596,7 @@ describe('AnswerLocalHandler', () => {
       // Arrange
       const rawValue = '<script>alert("xss")</script>'
       const sanitizedValue = '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
-      const fieldNode = ASTTestFactory.block('TextInput', 'field').withCode('comment').build()
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('comment').build()
       const postPseudoNode = ASTTestFactory.postPseudoNode('comment')
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('comment', fieldNode.id)
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
@@ -629,7 +629,7 @@ describe('AnswerLocalHandler', () => {
 
     it('should not add sanitized mutation when value has no HTML characters', async () => {
       // Arrange - value has no characters to escape
-      const fieldNode = ASTTestFactory.block('TextInput', 'field').withCode('name').build()
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('name').build()
       const postPseudoNode = ASTTestFactory.postPseudoNode('name')
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('name', fieldNode.id)
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
@@ -658,7 +658,7 @@ describe('AnswerLocalHandler', () => {
 
     it('should skip sanitization when sanitize is explicitly false', async () => {
       // Arrange
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('htmlContent')
         .withProperty('sanitize', false)
         .build()
@@ -690,7 +690,7 @@ describe('AnswerLocalHandler', () => {
 
     it('should not sanitize non-string values like arrays', async () => {
       // Arrange - array of values (checkboxes)
-      const fieldNode = ASTTestFactory.block('CheckboxInput', 'field')
+      const fieldNode = ASTTestFactory.block('CheckboxInput', BlockType.FIELD)
         .withCode('options')
         .withProperty('multiple', true)
         .build()
@@ -723,7 +723,7 @@ describe('AnswerLocalHandler', () => {
     it('should sanitize before formatters run', async () => {
       // Arrange
       const formatterNode = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'toUpperCase')
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('email')
         .withProperty('formatters', [formatterNode])
         .build()
@@ -772,7 +772,7 @@ describe('AnswerLocalHandler', () => {
       // Arrange
       const xssPayload = '<img src=x onerror="alert(\'XSS\')">'
       const sanitizedPayload = '&lt;img src=x onerror=&quot;alert(&#39;XSS&#39;)&quot;&gt;'
-      const fieldNode = ASTTestFactory.block('TextInput', 'field').withCode('input').build()
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('input').build()
       const postPseudoNode = ASTTestFactory.postPseudoNode('input')
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('input', fieldNode.id)
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
@@ -801,7 +801,7 @@ describe('AnswerLocalHandler', () => {
       // Arrange
       const trimFormatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
       const upperFormatter = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'toUpperCase')
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('name')
         .withProperty('formatters', [trimFormatter, upperFormatter])
         .build()
@@ -836,7 +836,7 @@ describe('AnswerLocalHandler', () => {
     it('should push value onto scope as @value for each formatter', async () => {
       // Arrange
       const formatterNode = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'double')
-      const fieldNode = ASTTestFactory.block('TextInput', 'field')
+      const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('number')
         .withProperty('formatters', [formatterNode])
         .build()

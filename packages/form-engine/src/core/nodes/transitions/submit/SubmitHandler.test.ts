@@ -1,5 +1,5 @@
 import { SubmitTransitionASTNode, NextASTNode } from '@form-engine/core/types/expressions.type'
-import { TransitionType, ExpressionType, FunctionType } from '@form-engine/form/types/enums'
+import { BlockType, TransitionType, ExpressionType, FunctionType } from '@form-engine/form/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { createMockInvoker } from '@form-engine/test-utils/thunkTestHelpers'
 import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
@@ -282,7 +282,7 @@ describe('SubmitHandler', () => {
       const stepNode = ASTTestFactory.step().build()
 
       // Mock a block node with a passing validation
-      const blockNode = ASTTestFactory.block('text-input', 'field').build()
+      const blockNode = ASTTestFactory.block('text-input', BlockType.FIELD).build()
 
       const effectsExecuted: string[] = []
       const mockInvoker = createMockInvoker({
@@ -396,7 +396,7 @@ describe('SubmitHandler', () => {
       const stepNode = ASTTestFactory.step().build()
 
       // Mock a block node with a passing validation
-      const blockNode = ASTTestFactory.block('text-input', 'field').build()
+      const blockNode = ASTTestFactory.block('text-input', BlockType.FIELD).build()
 
       const mockInvoker = createMockInvoker({
         invokeImpl: async (nodeId: string) => {
@@ -497,7 +497,7 @@ describe('SubmitHandler', () => {
       const stepNode = ASTTestFactory.step().build()
 
       // Mock a block node with a failed validation
-      const blockNode = ASTTestFactory.block('text-input', 'field').build()
+      const blockNode = ASTTestFactory.block('text-input', BlockType.FIELD).build()
 
       const mockInvoker = createMockInvoker({
         invokeImpl: async (nodeId: string) => {

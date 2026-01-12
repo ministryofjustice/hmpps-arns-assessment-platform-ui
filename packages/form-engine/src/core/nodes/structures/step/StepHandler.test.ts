@@ -1,4 +1,5 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
+import { BlockType } from '@form-engine/form/types/enums'
 import {
   createMockContext,
   createMockInvoker,
@@ -117,8 +118,8 @@ describe('StepHandler', () => {
 
     it('should evaluate blocks array with BlockASTNode elements', async () => {
       // Arrange
-      const block1 = ASTTestFactory.block('text-input', 'field').withCode('field1').build()
-      const block2 = ASTTestFactory.block('textarea', 'field').withCode('field2').build()
+      const block1 = ASTTestFactory.block('text-input', BlockType.FIELD).withCode('field1').build()
+      const block2 = ASTTestFactory.block('textarea', BlockType.FIELD).withCode('field2').build()
 
       const step = ASTTestFactory.step()
         .withPath('/step')

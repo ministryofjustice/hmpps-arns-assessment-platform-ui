@@ -1,6 +1,6 @@
 import { when } from 'jest-when'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
-import { TransitionType, FunctionType, PredicateType, ExpressionType } from '@form-engine/form/types/enums'
+import { BlockType, TransitionType, FunctionType, PredicateType, ExpressionType } from '@form-engine/form/types/enums'
 import { SubmitTransitionASTNode, ExpressionASTNode } from '@form-engine/core/types/expressions.type'
 import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
 import DependencyGraph, { DependencyEdgeType } from '@form-engine/core/ast/dependencies/DependencyGraph'
@@ -118,7 +118,7 @@ describe('SubmitWiring', () => {
       it('should wire validations from parent step to transition when validate is true', () => {
         // Arrange
         const step = ASTTestFactory.step().build()
-        const block = ASTTestFactory.block('TextInput', 'field').build()
+        const block = ASTTestFactory.block('TextInput', BlockType.FIELD).build()
         const validation1 = ASTTestFactory.expression(ExpressionType.VALIDATION).build()
         const validation2 = ASTTestFactory.expression(ExpressionType.VALIDATION).build()
 

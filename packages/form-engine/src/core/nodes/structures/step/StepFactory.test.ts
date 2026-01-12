@@ -1,5 +1,5 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { StructureType, TransitionType } from '@form-engine/form/types/enums'
+import { BlockType, StructureType, TransitionType } from '@form-engine/form/types/enums'
 import type { BlockDefinition, StepDefinition } from '@form-engine/form/types/structures.type'
 import type {
   AccessTransition,
@@ -53,12 +53,12 @@ describe('StepFactory', () => {
         blocks: [
           {
             type: StructureType.BLOCK,
-            blockType: 'basic',
+            blockType: BlockType.BASIC,
             variant: 'Block1',
           } satisfies BlockDefinition,
           {
             type: StructureType.BLOCK,
-            blockType: 'basic',
+            blockType: BlockType.BASIC,
             variant: 'Block2',
           } satisfies BlockDefinition,
         ],

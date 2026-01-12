@@ -1,5 +1,5 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType, FunctionType, PredicateType } from '@form-engine/form/types/enums'
+import { BlockType, ExpressionType, FunctionType, PredicateType } from '@form-engine/form/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import {
   createMockContext,
@@ -19,7 +19,7 @@ describe('BlockHandler', () => {
   describe('evaluate()', () => {
     it('should return block with primitive values unchanged', async () => {
       // Arrange
-      const block = ASTTestFactory.block('text-input', 'field')
+      const block = ASTTestFactory.block('text-input', BlockType.FIELD)
         .withCode('firstName')
         .withLabel('First name')
         .withProperty('required', true)
@@ -37,7 +37,7 @@ describe('BlockHandler', () => {
         id: block.id,
         type: ASTNodeType.BLOCK,
         variant: 'text-input',
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         properties: {
           code: 'firstName',
           label: 'First name',
@@ -50,7 +50,7 @@ describe('BlockHandler', () => {
     it('should evaluate AST nodes and include their values in properties', async () => {
       // Arrange
       const referenceNode = ASTTestFactory.reference(['data', 'user', 'name'])
-      const block = ASTTestFactory.block('text-input', 'field')
+      const block = ASTTestFactory.block('text-input', BlockType.FIELD)
         .withCode('userName')
         .withProperty('defaultValue', referenceNode)
         .build()
@@ -68,7 +68,7 @@ describe('BlockHandler', () => {
         id: block.id,
         type: ASTNodeType.BLOCK,
         variant: 'text-input',
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         properties: {
           code: 'userName',
           defaultValue: 'John Doe',
@@ -79,7 +79,7 @@ describe('BlockHandler', () => {
     it('should return undefined for AST node properties that fail evaluation', async () => {
       // Arrange
       const referenceNode = ASTTestFactory.reference(['data', 'missing'])
-      const block = ASTTestFactory.block('text-input', 'field')
+      const block = ASTTestFactory.block('text-input', BlockType.FIELD)
         .withCode('userName')
         .withProperty('defaultValue', referenceNode)
         .build()
@@ -97,7 +97,7 @@ describe('BlockHandler', () => {
         id: block.id,
         type: ASTNodeType.BLOCK,
         variant: 'text-input',
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         properties: {
           code: 'userName',
           defaultValue: undefined,
@@ -109,7 +109,7 @@ describe('BlockHandler', () => {
       // Arrange
       const ref1 = ASTTestFactory.reference(['data', 'value1'])
       const ref2 = ASTTestFactory.reference(['data', 'value2'])
-      const block = ASTTestFactory.block('checkboxes', 'field')
+      const block = ASTTestFactory.block('checkboxes', BlockType.FIELD)
         .withCode('choices')
         .withProperty('options', [ref1, 'static-option', ref2])
         .build()
@@ -130,7 +130,7 @@ describe('BlockHandler', () => {
         id: block.id,
         type: ASTNodeType.BLOCK,
         variant: 'checkboxes',
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         properties: {
           code: 'choices',
           options: ['Option 1', 'static-option', 'Option 2'],
@@ -140,7 +140,7 @@ describe('BlockHandler', () => {
 
     it('should preserve arrays of primitives unchanged', async () => {
       // Arrange
-      const block = ASTTestFactory.block('checkboxes', 'field')
+      const block = ASTTestFactory.block('checkboxes', BlockType.FIELD)
         .withCode('choices')
         .withProperty('options', ['Option 1', 'Option 2', 'Option 3'])
         .build()
@@ -156,7 +156,7 @@ describe('BlockHandler', () => {
         id: block.id,
         type: ASTNodeType.BLOCK,
         variant: 'checkboxes',
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         properties: {
           code: 'choices',
           options: ['Option 1', 'Option 2', 'Option 3'],
@@ -168,7 +168,7 @@ describe('BlockHandler', () => {
       // Arrange
       const ref1 = ASTTestFactory.reference(['data', 'title'])
       const ref2 = ASTTestFactory.reference(['data', 'description'])
-      const block = ASTTestFactory.block('text-input', 'field')
+      const block = ASTTestFactory.block('text-input', BlockType.FIELD)
         .withCode('field')
         .withProperty('metadata', {
           title: ref1,
@@ -193,7 +193,7 @@ describe('BlockHandler', () => {
         id: block.id,
         type: ASTNodeType.BLOCK,
         variant: 'text-input',
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         properties: {
           code: 'field',
           metadata: {
@@ -209,7 +209,7 @@ describe('BlockHandler', () => {
       // Arrange
       const ref1 = ASTTestFactory.reference(['data', 'label1'])
       const ref2 = ASTTestFactory.reference(['data', 'label2'])
-      const block = ASTTestFactory.block('radios', 'field')
+      const block = ASTTestFactory.block('radios', BlockType.FIELD)
         .withCode('choice')
         .withProperty('options', [
           { label: ref1, value: 'value1' },
@@ -234,7 +234,7 @@ describe('BlockHandler', () => {
         id: block.id,
         type: ASTNodeType.BLOCK,
         variant: 'radios',
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         properties: {
           code: 'choice',
           options: [
@@ -248,7 +248,7 @@ describe('BlockHandler', () => {
 
     it('should handle null and undefined values in nested structures', async () => {
       // Arrange
-      const block = ASTTestFactory.block('text-input', 'field')
+      const block = ASTTestFactory.block('text-input', BlockType.FIELD)
         .withCode('field')
         .withProperty('defaultValue', null)
         .withProperty('optional', undefined)
@@ -269,7 +269,7 @@ describe('BlockHandler', () => {
         id: block.id,
         type: ASTNodeType.BLOCK,
         variant: 'text-input',
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         properties: {
           code: 'field',
           defaultValue: null,
@@ -290,7 +290,7 @@ describe('BlockHandler', () => {
         .withProperty('when', predicateNode)
         .withProperty('message', 'Enter your typical trading hours')
         .build()
-      const block = ASTTestFactory.block('text-input', 'field')
+      const block = ASTTestFactory.block('text-input', BlockType.FIELD)
         .withCode('tradingHours')
         .withProperty('dependent', dependentNode)
         .withProperty('validate', [validationNode])
@@ -324,7 +324,7 @@ describe('BlockHandler', () => {
         .withProperty('when', predicateNode)
         .withProperty('message', 'Enter your typical trading hours')
         .build()
-      const block = ASTTestFactory.block('text-input', 'field')
+      const block = ASTTestFactory.block('text-input', BlockType.FIELD)
         .withCode('tradingHours')
         .withProperty('dependent', dependentNode)
         .withProperty('validate', [validationNode])
@@ -359,7 +359,7 @@ describe('BlockHandler', () => {
         .withProperty('when', predicateNode)
         .withProperty('message', 'Select the type of food business')
         .build()
-      const block = ASTTestFactory.block('text-input', 'field')
+      const block = ASTTestFactory.block('text-input', BlockType.FIELD)
         .withCode('businessType')
         .withProperty('validate', [validationNode])
         .build()
@@ -387,7 +387,7 @@ describe('BlockHandler', () => {
     it('should pass formatters through without evaluating AST nodes', async () => {
       // Arrange
       const formatterNode = ASTTestFactory.expression(FunctionType.TRANSFORMER).build()
-      const block = ASTTestFactory.block('text-input', 'field')
+      const block = ASTTestFactory.block('text-input', BlockType.FIELD)
         .withCode('email')
         .withLabel('Email address')
         .withProperty('formatters', [formatterNode])

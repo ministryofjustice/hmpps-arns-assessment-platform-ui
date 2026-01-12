@@ -1,5 +1,5 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType, FunctionType, PredicateType, StructureType } from '@form-engine/form/types/enums'
+import { BlockType, ExpressionType, FunctionType, PredicateType, StructureType } from '@form-engine/form/types/enums'
 import type { BlockDefinition, FieldBlockDefinition, ValidationExpr } from '@form-engine/form/types/structures.type'
 import type { PredicateTestExpr, ValueExpr } from '@form-engine/form/types/expressions.type'
 import { NodeIDCategory, NodeIDGenerator } from '@form-engine/core/ast/nodes/NodeIDGenerator'
@@ -23,7 +23,7 @@ describe('BlockFactory', () => {
       // Arrange
       const json = {
         type: StructureType.BLOCK,
-        blockType: 'basic',
+        blockType: BlockType.BASIC,
         variant: 'TestBlock',
       } satisfies BlockDefinition
 
@@ -34,7 +34,7 @@ describe('BlockFactory', () => {
       expect(result.id).toBeDefined()
       expect(result.type).toBe(ASTNodeType.BLOCK)
       expect(result.variant).toBe('TestBlock')
-      expect(result.blockType).toBe('basic')
+      expect(result.blockType).toBe(BlockType.BASIC)
       expect(result.raw).toBe(json)
     })
 
@@ -42,7 +42,7 @@ describe('BlockFactory', () => {
       // Arrange
       const json = {
         type: StructureType.BLOCK,
-        blockType: 'basic',
+        blockType: BlockType.BASIC,
         variant: 'TestBlock',
         customProp: 'value',
       } satisfies BlockDefinition & { customProp: string }
@@ -60,18 +60,18 @@ describe('BlockFactory', () => {
       // Arrange
       const json = {
         type: StructureType.BLOCK,
-        blockType: 'basic',
+        blockType: BlockType.BASIC,
         variant: 'Fieldset',
         blocks: [
           {
             type: StructureType.BLOCK,
-            blockType: 'field',
+            blockType: BlockType.FIELD,
             variant: 'TextInput',
             code: 'field1',
           } satisfies FieldBlockDefinition,
           {
             type: StructureType.BLOCK,
-            blockType: 'field',
+            blockType: BlockType.FIELD,
             variant: 'TextInput',
             code: 'field2',
           } satisfies FieldBlockDefinition,
@@ -87,7 +87,7 @@ describe('BlockFactory', () => {
       expect(blocks).toHaveLength(2)
       blocks.forEach((block: BlockASTNode) => {
         expect(block.type).toBe(ASTNodeType.BLOCK)
-        expect(block.blockType).toBe('field')
+        expect(block.blockType).toBe(BlockType.FIELD)
       })
     })
   })
@@ -97,7 +97,7 @@ describe('BlockFactory', () => {
       // Arrange
       const json = {
         type: StructureType.BLOCK,
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         variant: 'TextInput',
         code: 'email',
       } satisfies FieldBlockDefinition
@@ -108,7 +108,7 @@ describe('BlockFactory', () => {
       // Assert
       expect(result.type).toBe(ASTNodeType.BLOCK)
       expect(result.variant).toBe('TextInput')
-      expect(result.blockType).toBe('field')
+      expect(result.blockType).toBe(BlockType.FIELD)
       expect(result.properties.code).toBe('email')
     })
 
@@ -116,7 +116,7 @@ describe('BlockFactory', () => {
       // Arrange
       const json = {
         type: StructureType.BLOCK,
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         variant: 'TextInput',
         code: 'email',
         validate: [
@@ -147,7 +147,7 @@ describe('BlockFactory', () => {
       // Arrange
       const json = {
         type: StructureType.BLOCK,
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         variant: 'TextInput',
         code: 'details',
         dependent: {
@@ -170,7 +170,7 @@ describe('BlockFactory', () => {
       // Arrange
       const json = {
         type: StructureType.BLOCK,
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         variant: 'TextInput',
         code: 'email',
         label: 'Email Address',
@@ -189,7 +189,7 @@ describe('BlockFactory', () => {
       // Arrange
       const json: FieldBlockDefinition = {
         type: StructureType.BLOCK,
-        blockType: 'field',
+        blockType: BlockType.FIELD,
         variant: 'TextInput',
         code: 'email',
         dependent: {
@@ -216,7 +216,7 @@ describe('BlockFactory', () => {
       const result = blockFactory.create(json)
 
       // Assert
-      expect(result.blockType).toBe('field')
+      expect(result.blockType).toBe(BlockType.FIELD)
       expect('code' in result.properties).toBe(true)
       expect('dependent' in result.properties).toBe(true)
       expect('validate' in result.properties).toBe(true)

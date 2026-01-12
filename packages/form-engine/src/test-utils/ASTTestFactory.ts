@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-classes-per-file
-import { ExpressionType, FunctionType, PredicateType, TransitionType } from '@form-engine/form/types/enums'
+import { BlockType, ExpressionType, FunctionType, PredicateType, TransitionType } from '@form-engine/form/types/enums'
 import { AstNodeId, NodeId, PseudoNodeId } from '@form-engine/core/types/engine.type'
 import {
   ExpressionASTNode,
@@ -31,8 +31,6 @@ type PredicateBuilderConfig = {
   operands?: (ExpressionASTNode | PredicateASTNode)[]
   operand?: ExpressionASTNode | PredicateASTNode
 }
-
-type BlockType = 'basic' | 'field'
 
 /**
  * Test data factory for creating AST nodes with fluent builders and automatic ID generation.

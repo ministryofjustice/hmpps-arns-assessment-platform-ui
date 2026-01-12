@@ -11,6 +11,11 @@ export enum StructureType {
   STEP = 'StructureType.Step',
 }
 
+export enum BlockType {
+  FIELD = 'BlockType.field',
+  BASIC = 'BlockType.basic',
+}
+
 export enum ExpressionType {
   REFERENCE = 'ExpressionType.Reference',
   FORMAT = 'ExpressionType.Format',

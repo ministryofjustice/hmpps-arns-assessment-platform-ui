@@ -1,6 +1,6 @@
 import { when } from 'jest-when'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
-import { TransitionType, FunctionType } from '@form-engine/form/types/enums'
+import { BlockType, TransitionType, FunctionType } from '@form-engine/form/types/enums'
 import { LoadTransitionASTNode } from '@form-engine/core/types/expressions.type'
 import { StepASTNode } from '@form-engine/core/types/structures.type'
 import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
@@ -42,7 +42,7 @@ describe('AnswerLocalWiring', () => {
   describe('wire', () => {
     it('should wire POST pseudo node to answer local when no formatPipeline exists', () => {
       // Arrange
-      const fieldBlock = ASTTestFactory.block('TextInput', 'field').withCode('firstName').build()
+      const fieldBlock = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('firstName').build()
 
       const answerLocal = ASTTestFactory.answerLocalPseudoNode('firstName', fieldBlock.id)
       const postNode = ASTTestFactory.postPseudoNode('firstName')
@@ -71,7 +71,7 @@ describe('AnswerLocalWiring', () => {
       const formatter1 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'trim')
       const formatter2 = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'toUpperCase')
 
-      const fieldBlock = ASTTestFactory.block('TextInput', 'field')
+      const fieldBlock = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('firstName')
         .withProperty('formatters', [formatter1, formatter2])
         .build()
@@ -110,7 +110,7 @@ describe('AnswerLocalWiring', () => {
       // Arrange
       const defaultValueExpr = ASTTestFactory.expression(FunctionType.GENERATOR).build()
 
-      const fieldBlock = ASTTestFactory.block('TextInput', 'field')
+      const fieldBlock = ASTTestFactory.block('TextInput', BlockType.FIELD)
         .withCode('firstName')
         .withProperty('defaultValue', defaultValueExpr)
         .build()
@@ -152,7 +152,7 @@ describe('AnswerLocalWiring', () => {
 
       const step = ASTTestFactory.step().withProperty('onLoad', [onLoadTrans]).build()
 
-      const fieldBlock = ASTTestFactory.block('TextInput', 'field').withCode('firstName').build()
+      const fieldBlock = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('firstName').build()
 
       const answerLocal = ASTTestFactory.answerLocalPseudoNode('firstName', fieldBlock.id)
       const postNode = ASTTestFactory.postPseudoNode('firstName')
@@ -186,7 +186,7 @@ describe('AnswerLocalWiring', () => {
       const onLoadTrans = ASTTestFactory.transition(TransitionType.LOAD).build() as LoadTransitionASTNode
       const step = ASTTestFactory.step().build()
 
-      const fieldBlock = ASTTestFactory.block('TextInput', 'field').withCode('firstName').build()
+      const fieldBlock = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('firstName').build()
 
       const answerLocal = ASTTestFactory.answerLocalPseudoNode('firstName', fieldBlock.id)
       const postNode = ASTTestFactory.postPseudoNode('firstName')
@@ -217,7 +217,7 @@ describe('AnswerLocalWiring', () => {
       // Arrange
       const step = ASTTestFactory.step().build()
 
-      const fieldBlock = ASTTestFactory.block('TextInput', 'field').withCode('firstName').build()
+      const fieldBlock = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('firstName').build()
 
       const answerLocal = ASTTestFactory.answerLocalPseudoNode('firstName', fieldBlock.id)
       const postNode = ASTTestFactory.postPseudoNode('firstName')
@@ -249,7 +249,7 @@ describe('AnswerLocalWiring', () => {
 
     it('should wire answer local to Answer() reference consumers', () => {
       // Arrange
-      const fieldBlock = ASTTestFactory.block('TextInput', 'field').withCode('firstName').build()
+      const fieldBlock = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('firstName').build()
 
       const answerLocal = ASTTestFactory.answerLocalPseudoNode('firstName', fieldBlock.id)
       const postNode = ASTTestFactory.postPseudoNode('firstName')
@@ -278,8 +278,8 @@ describe('AnswerLocalWiring', () => {
 
     it('should handle multiple answer local nodes', () => {
       // Arrange
-      const field1 = ASTTestFactory.block('TextInput', 'field').withCode('firstName').build()
-      const field2 = ASTTestFactory.block('TextInput', 'field').withCode('lastName').build()
+      const field1 = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('firstName').build()
+      const field2 = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('lastName').build()
 
       const answerLocal1 = ASTTestFactory.answerLocalPseudoNode('firstName', field1.id)
       const answerLocal2 = ASTTestFactory.answerLocalPseudoNode('lastName', field2.id)
@@ -326,7 +326,7 @@ describe('AnswerLocalWiring', () => {
 
     it('should not wire POST when POST pseudo node does not exist', () => {
       // Arrange
-      const fieldBlock = ASTTestFactory.block('TextInput', 'field').withCode('firstName').build()
+      const fieldBlock = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('firstName').build()
 
       const answerLocal = ASTTestFactory.answerLocalPseudoNode('firstName', fieldBlock.id)
 

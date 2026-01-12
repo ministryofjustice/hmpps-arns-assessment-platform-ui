@@ -45,7 +45,7 @@ export default class NodeRegistry {
   }
 
   /**
-   * Index a pseudo node for O(1) lookup by type and key
+   * Extract the sub-type from a node if it has one
    */
   private indexPseudoNode(id: NodeId, node: PseudoNode): void {
     const key = getPseudoNodeKey(node)
@@ -56,9 +56,8 @@ export default class NodeRegistry {
 
     let typeIndex = this.pseudoNodeIndex.get(node.type)
 
-    if (!typeIndex) {
-      typeIndex = new Map()
-      this.pseudoNodeIndex.set(node.type, typeIndex)
+    if ('blockType' in node) {
+      return (node as BlockASTNode).blockType
     }
 
     typeIndex.set(key, id)

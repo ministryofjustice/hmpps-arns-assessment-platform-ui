@@ -44,7 +44,7 @@ describe('PseudoNodeTraverser', () => {
       it('should create ANSWER_LOCAL and POST pseudo nodes for fields on current step', () => {
         // Arrange
         const fieldBlock = ASTTestFactory
-          .block('TextInput', 'field')
+          .block('TextInput', BlockType.FIELD)
           .withCode('firstName')
           .build()
         const answerLocalPseudoNode = ASTTestFactory
@@ -80,7 +80,7 @@ describe('PseudoNodeTraverser', () => {
       it('should not create pseudo nodes for fields not on current step', () => {
         // Arrange
         const fieldBlock = ASTTestFactory
-          .block('TextInput', 'field')
+          .block('TextInput', BlockType.FIELD)
           .withCode('firstName')
           .build()
 
@@ -103,7 +103,7 @@ describe('PseudoNodeTraverser', () => {
       it('should skip field blocks without code property', () => {
         // Arrange
         const fieldBlock = ASTTestFactory
-          .block('TextInput', 'field')
+          .block('TextInput', BlockType.FIELD)
           .build()
 
         when(mockNodeRegistry.findByType)
@@ -127,7 +127,7 @@ describe('PseudoNodeTraverser', () => {
         const fieldBlock: FieldBlockASTNode = {
           id: 'compile_ast:1',
           type: ASTNodeType.BLOCK,
-          blockType: 'field',
+          blockType: BlockType.FIELD,
           variant: 'TextInput',
           properties: {
             code: ASTTestFactory.reference(['test']),
@@ -176,11 +176,11 @@ describe('PseudoNodeTraverser', () => {
       it('should handle multiple field blocks', () => {
         // Arrange
         const firstNameBlock = ASTTestFactory
-          .block('TextInput', 'field')
+          .block('TextInput', BlockType.FIELD)
           .withCode('firstName')
           .build()
         const lastNameBlock = ASTTestFactory
-          .block('TextInput', 'field')
+          .block('TextInput', BlockType.FIELD)
           .withCode('lastName')
           .build()
         const firstNameAnswerLocal = ASTTestFactory
@@ -388,7 +388,7 @@ describe('PseudoNodeTraverser', () => {
       it('should not create ANSWER_REMOTE when ANSWER_LOCAL exists for same field code', () => {
         // Arrange
         const fieldBlock = ASTTestFactory
-          .block('TextInput', 'field')
+          .block('TextInput', BlockType.FIELD)
           .withCode('firstName')
           .build()
         const answersRef = ASTTestFactory
@@ -500,11 +500,11 @@ describe('PseudoNodeTraverser', () => {
     it('should handle mixed field blocks and reference expressions', () => {
       // Arrange
       const firstNameBlock = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('firstName')
         .build()
       const lastNameBlock = ASTTestFactory
-        .block('TextInput', 'field')
+        .block('TextInput', BlockType.FIELD)
         .withCode('lastName')
         .build()
       const queryRef = ASTTestFactory

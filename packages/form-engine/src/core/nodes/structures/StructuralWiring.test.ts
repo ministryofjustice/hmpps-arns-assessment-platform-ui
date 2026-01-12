@@ -1,6 +1,6 @@
 import { when } from 'jest-when'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
-import { ExpressionType } from '@form-engine/form/types/enums'
+import { BlockType, ExpressionType } from '@form-engine/form/types/enums'
 import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
 import DependencyGraph, { DependencyEdgeType } from '@form-engine/core/ast/dependencies/DependencyGraph'
 import NodeRegistry from '@form-engine/core/ast/registration/NodeRegistry'
@@ -49,7 +49,7 @@ describe('StructuralWiring', () => {
         // Arrange
         const journey = ASTTestFactory.journey().build()
         const step = ASTTestFactory.step().build()
-        const block = ASTTestFactory.block('TextInput', 'field').build()
+        const block = ASTTestFactory.block('TextInput', BlockType.FIELD).build()
 
         const nodesMap = new Map()
         nodesMap.set(journey.id, journey)
@@ -86,7 +86,7 @@ describe('StructuralWiring', () => {
         const grandchildJourney = ASTTestFactory.journey().build()
         const step1 = ASTTestFactory.step().build()
         const step2 = ASTTestFactory.step().build()
-        const block = ASTTestFactory.block('TextInput', 'field').build()
+        const block = ASTTestFactory.block('TextInput', BlockType.FIELD).build()
 
         const nodesMap = new Map()
         nodesMap.set(rootJourney.id, rootJourney)

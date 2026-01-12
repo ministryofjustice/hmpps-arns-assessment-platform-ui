@@ -1,5 +1,6 @@
 import { isFieldBlockDefinition } from '@form-engine/form/typeguards/structures'
 import { ASTNodeType } from '@form-engine/core/types/enums'
+import { BlockType } from '@form-engine/form/types/enums'
 import { BasicBlockASTNode, BlockASTNode, FieldBlockASTNode } from '@form-engine/core/types/structures.type'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { NodeIDGenerator, NodeIDCategory } from '@form-engine/core/ast/nodes/NodeIDGenerator'
@@ -46,7 +47,7 @@ export default class BlockFactory {
       id: this.nodeIDGenerator.next(this.category),
       type: ASTNodeType.BLOCK,
       variant,
-      blockType: 'basic',
+      blockType: BlockType.BASIC,
       properties,
       raw: json,
     }
@@ -83,7 +84,7 @@ export default class BlockFactory {
       id: this.nodeIDGenerator.next(this.category),
       type: ASTNodeType.BLOCK,
       variant,
-      blockType: 'field',
+      blockType: BlockType.FIELD,
       properties,
       raw: json,
     }

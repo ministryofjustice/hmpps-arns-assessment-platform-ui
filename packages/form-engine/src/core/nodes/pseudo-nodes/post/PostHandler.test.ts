@@ -1,3 +1,4 @@
+import { BlockType } from '@form-engine/form/types/enums'
 import { createMockContext } from '@form-engine/test-utils/thunkTestHelpers'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
@@ -59,7 +60,7 @@ describe('PostHandler', () => {
 
     it('should return full array when field has multiple: true', async () => {
       // Arrange
-      const fieldNode = ASTTestFactory.block('CheckboxInput', 'field')
+      const fieldNode = ASTTestFactory.block('CheckboxInput', BlockType.FIELD)
         .withCode('interests')
         .withProperty('multiple', true)
         .build()
@@ -81,7 +82,7 @@ describe('PostHandler', () => {
 
     it('should wrap single value in array when field has multiple: true', async () => {
       // Arrange
-      const fieldNode = ASTTestFactory.block('CheckboxInput', 'field')
+      const fieldNode = ASTTestFactory.block('CheckboxInput', BlockType.FIELD)
         .withCode('interests')
         .withProperty('multiple', true)
         .build()
@@ -103,7 +104,7 @@ describe('PostHandler', () => {
 
     it('should return undefined when field is not in POST even with multiple: true', async () => {
       // Arrange
-      const fieldNode = ASTTestFactory.block('CheckboxInput', 'field')
+      const fieldNode = ASTTestFactory.block('CheckboxInput', BlockType.FIELD)
         .withCode('interests')
         .withProperty('multiple', true)
         .build()
@@ -124,7 +125,7 @@ describe('PostHandler', () => {
 
     it('should return empty array when field has multiple: true and value is null', async () => {
       // Arrange
-      const fieldNode = ASTTestFactory.block('CheckboxInput', 'field')
+      const fieldNode = ASTTestFactory.block('CheckboxInput', BlockType.FIELD)
         .withCode('interests')
         .withProperty('multiple', true)
         .build()
@@ -146,7 +147,7 @@ describe('PostHandler', () => {
 
     it('should return first non-empty value when field has multiple: false', async () => {
       // Arrange
-      const fieldNode = ASTTestFactory.block('CheckboxInput', 'field')
+      const fieldNode = ASTTestFactory.block('CheckboxInput', BlockType.FIELD)
         .withCode('selections')
         .withProperty('multiple', false)
         .build()
