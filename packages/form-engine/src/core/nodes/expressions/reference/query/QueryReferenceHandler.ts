@@ -88,8 +88,7 @@ export default class QueryReferenceHandler implements HybridThunkHandler {
   }
 
   private findPseudoNodeInRegistry(nodeRegistry: NodeRegistry, paramName: string): QueryPseudoNode | undefined {
-    return nodeRegistry
-      .findByType<QueryPseudoNode>(PseudoNodeType.QUERY)
+    return nodeRegistry.findByType<QueryPseudoNode>(PseudoNodeType.QUERY)
       .find(node => getPseudoNodeKey(node) === paramName)
   }
 }

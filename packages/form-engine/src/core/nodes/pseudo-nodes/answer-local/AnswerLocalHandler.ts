@@ -447,8 +447,7 @@ export default class AnswerLocalHandler implements HybridThunkHandler {
    * Find POST pseudo node for the given field code
    */
   private findPostPseudoNode(context: ThunkEvaluationContext, baseFieldCode: string) {
-    return context.nodeRegistry
-      .findByType<PostPseudoNode>(PseudoNodeType.POST)
+    return context.nodeRegistry.findByType<PostPseudoNode>(PseudoNodeType.POST)
       .find(node => getPseudoNodeKey(node) === baseFieldCode)
   }
 }

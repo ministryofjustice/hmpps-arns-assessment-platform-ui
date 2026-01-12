@@ -88,8 +88,7 @@ export default class ParamsReferenceHandler implements HybridThunkHandler {
   }
 
   private findPseudoNodeInRegistry(nodeRegistry: NodeRegistry, paramName: string): ParamsPseudoNode | undefined {
-    return nodeRegistry
-      .findByType<ParamsPseudoNode>(PseudoNodeType.PARAMS)
+    return nodeRegistry.findByType<ParamsPseudoNode>(PseudoNodeType.PARAMS)
       .find(node => getPseudoNodeKey(node) === paramName)
   }
 }

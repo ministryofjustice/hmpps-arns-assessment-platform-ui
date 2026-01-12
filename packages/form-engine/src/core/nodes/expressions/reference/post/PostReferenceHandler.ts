@@ -88,8 +88,7 @@ export default class PostReferenceHandler implements HybridThunkHandler {
   }
 
   private findPseudoNodeInRegistry(nodeRegistry: NodeRegistry, baseFieldCode: string): PostPseudoNode | undefined {
-    return nodeRegistry
-      .findByType<PostPseudoNode>(PseudoNodeType.POST)
+    return nodeRegistry.findByType<PostPseudoNode>(PseudoNodeType.POST)
       .find(node => getPseudoNodeKey(node) === baseFieldCode)
   }
 }

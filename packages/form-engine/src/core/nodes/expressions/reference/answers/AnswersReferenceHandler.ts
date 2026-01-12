@@ -92,16 +92,14 @@ export default class AnswersReferenceHandler implements HybridThunkHandler {
     baseFieldCode: string,
   ): AnswerLocalPseudoNode | AnswerRemotePseudoNode | undefined {
     // Check ANSWER_LOCAL first, then ANSWER_REMOTE if not found
-    const localNode = nodeRegistry
-      .findByType<AnswerLocalPseudoNode>(PseudoNodeType.ANSWER_LOCAL)
+    const localNode = nodeRegistry.findByType<AnswerLocalPseudoNode>(PseudoNodeType.ANSWER_LOCAL)
       .find(node => getPseudoNodeKey(node) === baseFieldCode)
 
     if (localNode) {
       return localNode
     }
 
-    return nodeRegistry
-      .findByType<AnswerRemotePseudoNode>(PseudoNodeType.ANSWER_REMOTE)
+    return nodeRegistry.findByType<AnswerRemotePseudoNode>(PseudoNodeType.ANSWER_REMOTE)
       .find(node => getPseudoNodeKey(node) === baseFieldCode)
   }
 }

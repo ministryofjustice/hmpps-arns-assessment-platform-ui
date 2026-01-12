@@ -87,11 +87,9 @@ export default class EffectFunctionContext<
     this.context.global.answers[key] = history
 
     // Invalidate cached pseudo nodes and dependents so next access re-evaluates
-    const localPseudoNode = this.context.nodeRegistry
-      .findByType<AnswerLocalPseudoNode>(PseudoNodeType.ANSWER_LOCAL)
+    const localPseudoNode = this.context.nodeRegistry.findByType<AnswerLocalPseudoNode>(PseudoNodeType.ANSWER_LOCAL)
       .find(node => getPseudoNodeKey(node) === key)
-    const remotePseudoNode = this.context.nodeRegistry
-      .findByType<AnswerRemotePseudoNode>(PseudoNodeType.ANSWER_REMOTE)
+    const remotePseudoNode = this.context.nodeRegistry.findByType<AnswerRemotePseudoNode>(PseudoNodeType.ANSWER_REMOTE)
       .find(node => getPseudoNodeKey(node) === key)
 
     if (localPseudoNode) {
@@ -166,8 +164,7 @@ export default class EffectFunctionContext<
     this.context.global.data[key] = value
 
     // Invalidate cached pseudo node and dependents so next access re-evaluates
-    const dataPseudoNode = this.context.nodeRegistry
-      .findByType<DataPseudoNode>(PseudoNodeType.DATA)
+    const dataPseudoNode = this.context.nodeRegistry.findByType<DataPseudoNode>(PseudoNodeType.DATA)
       .find(node => getPseudoNodeKey(node) === key)
 
     if (dataPseudoNode) {

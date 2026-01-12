@@ -88,8 +88,7 @@ export default class DataReferenceHandler implements HybridThunkHandler {
   }
 
   private findPseudoNodeInRegistry(nodeRegistry: NodeRegistry, baseProperty: string): DataPseudoNode | undefined {
-    return nodeRegistry
-      .findByType<DataPseudoNode>(PseudoNodeType.DATA)
+    return nodeRegistry.findByType<DataPseudoNode>(PseudoNodeType.DATA)
       .find(node => getPseudoNodeKey(node) === baseProperty)
   }
 }
