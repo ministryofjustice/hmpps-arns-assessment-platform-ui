@@ -1,27 +1,10 @@
 import { expect, test } from '@playwright/test'
-import aapApi from '../mockApis/aapApi'
-import hmppsAuth from '../mockApis/hmppsAuth'
-import handover from '../mockApis/handover'
 import tokenVerification from '../mockApis/tokenVerification'
-
-import { resetStubs } from '../testUtils'
-import coordinatorApi from '../mockApis/coordinatorApi'
+import { resetStubs } from '../mockApis/wiremock'
 
 test.describe('Health', () => {
-  test.afterEach(async () => {
-    await resetStubs()
-  })
 
   test.describe('All healthy', () => {
-    test.beforeEach(async () => {
-      await Promise.all([
-        hmppsAuth.stubPing(),
-        aapApi.stubPing(),
-        coordinatorApi.stubPing(),
-        handover.stubPing(),
-        tokenVerification.stubPing(),
-      ])
-    })
 
     test('Health check is accessible and status is UP', async ({ page }) => {
       const response = await page.request.get('/health')
@@ -42,15 +25,9 @@ test.describe('Health', () => {
     })
   })
 
-  test.describe('Some unhealthy', () => {
+  test.describe('Some unhealthy @serial', () => {
     test.beforeEach(async () => {
-      await Promise.all([
-        hmppsAuth.stubPing(),
-        aapApi.stubPing(500),
-        coordinatorApi.stubPing(),
-        handover.stubPing(),
-        tokenVerification.stubPing(500),
-      ])
+      await Promise.all([tokenVerification.stubPing(500)])
     })
 
     test('Health check status is down', async ({ page }) => {
@@ -65,6 +42,10 @@ test.describe('Health', () => {
       } else {
         expect(payload.status).toBe('UP')
       }
+    })
+
+    test.afterEach(async () => {
+      await resetStubs()
     })
   })
 })
