@@ -11,15 +11,15 @@ const createGoalStepPath = '/add-goal/:areaOfNeed'
 
 export const sentencePlanV1URLs = {
   OASYS_ENTRY_POINT: sentencePlanV1 + oasysAccessStepPath, // '/forms/sentence-plan' + '/oasys'
+  CRN_ENTRY_POINT: `${sentencePlanV1}/crn`, // '/forms/sentence-plan/crn/:crn'
   PLAN_OVERVIEW: sentencePlanV1 + planOverviewJourneyPath + planStepPath, // '/forms/sentence-plan' + '/plan' + '/overview'
   CREATE_GOAL: sentencePlanV1 + goalManagementJourneyPath + createGoalStepPath, // '/forms/sentence-plan/v1.0' + '/goal/:uuid' + '/add-goal/:areaOfNeed'
 }
 
-// Logs in via HMPPS Auth and navigates to the plan overview via the OASys entry point.
-// This establishes the session with proper user context and assessment UUID.
-export const loginAndNavigateToPlan = async (page: Page): Promise<void> => {
+/** Logs in and navigates to a sentence plan by CRN. */
+export const loginAndNavigateToPlanByCrn = async (page: Page, crn: string): Promise<void> => {
   await login(page)
-  await page.goto(sentencePlanV1URLs.OASYS_ENTRY_POINT)
+  await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
   await expect(page).toHaveURL(/\/plan\/overview/)
 }
 

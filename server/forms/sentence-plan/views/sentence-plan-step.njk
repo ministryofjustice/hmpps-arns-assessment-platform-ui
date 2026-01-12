@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-grid-row">
+  <div class="govuk-grid-row" data-qa-assessment-uuid="{{ data.assessmentUuid }}">
     <div class="govuk-grid-column-full">
       {% if backlink %}
         <a href="{{ backlink }}" class="govuk-back-link">Back</a>
