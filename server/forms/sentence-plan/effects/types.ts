@@ -1,9 +1,9 @@
-import EffectFunctionContext from '@form-engine/core/ast/thunks/EffectFunctionContext'
 import { FormatExpr } from '@form-engine/form/types/expressions.type'
 import { User } from '../../../interfaces/user'
 import { Answers, Properties } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed } from '../versions/v1.0/constants'
 import { AssessmentPlatformApiClient, DeliusApiClient } from '../../../data'
+import EffectFunctionContext from "@form-engine/core/nodes/expressions/effect/EffectFunctionContext";
 
 export type GoalStatus = 'ACTIVE' | 'FUTURE'
 export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
