@@ -1,6 +1,6 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
-import { ExpressionType } from '@form-engine/form/types/enums'
+import { BlockType, ExpressionType, PredicateType } from '@form-engine/form/types/enums'
 import NodeRegistry from './NodeRegistry'
 
 describe('NodeRegistry', () => {

@@ -1,7 +1,6 @@
 import { when } from 'jest-when'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { ExpressionType } from '@form-engine/form/types/enums'
-import { ASTNodeType } from '@form-engine/core/types/enums'
 import { ReferenceASTNode } from '@form-engine/core/types/expressions.type'
 import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
 import DependencyGraph, { DependencyEdgeType } from '@form-engine/core/ast/dependencies/DependencyGraph'
@@ -14,7 +13,10 @@ describe('ReferenceWiring', () => {
 
   function createMockWiringContext(): jest.Mocked<WiringContext> {
     return {
-      findNodesByType: jest.fn().mockReturnValue([]),
+      nodeRegistry: {
+        findByType: jest.fn().mockReturnValue([]),
+        get: jest.fn().mockReturnValue(undefined),
+      },
       graph: mockGraph,
     } as unknown as jest.Mocked<WiringContext>
   }
@@ -40,8 +42,8 @@ describe('ReferenceWiring', () => {
         .withPath(['items', indexNode])
         .build()
 
-      when(mockWiringContext.findNodesByType)
-        .calledWith(ASTNodeType.EXPRESSION)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(ExpressionType.REFERENCE)
         .mockReturnValue([referenceNode])
 
       // Act
@@ -63,8 +65,8 @@ describe('ReferenceWiring', () => {
         .withPath(['items', arrayIndexNode, propertyNode])
         .build()
 
-      when(mockWiringContext.findNodesByType)
-        .calledWith(ASTNodeType.EXPRESSION)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(ExpressionType.REFERENCE)
         .mockReturnValue([referenceNode])
 
       // Act
@@ -91,8 +93,8 @@ describe('ReferenceWiring', () => {
       // Arrange
       const referenceNode = ASTTestFactory.reference(['answers', 'email'])
 
-      when(mockWiringContext.findNodesByType)
-        .calledWith(ASTNodeType.EXPRESSION)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(ExpressionType.REFERENCE)
         .mockReturnValue([referenceNode])
 
       // Act
@@ -115,8 +117,8 @@ describe('ReferenceWiring', () => {
         .withPath(['data', indexNode2, 'value'])
         .build()
 
-      when(mockWiringContext.findNodesByType)
-        .calledWith(ASTNodeType.EXPRESSION)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(ExpressionType.REFERENCE)
         .mockReturnValue([referenceNode1, referenceNode2])
 
       // Act
@@ -142,8 +144,8 @@ describe('ReferenceWiring', () => {
         .withPath(['answers', dynamicSegment, 'nested', 0])
         .build()
 
-      when(mockWiringContext.findNodesByType)
-        .calledWith(ASTNodeType.EXPRESSION)
+      when(mockWiringContext.nodeRegistry.findByType)
+        .calledWith(ExpressionType.REFERENCE)
         .mockReturnValue([referenceNode])
 
       // Act
