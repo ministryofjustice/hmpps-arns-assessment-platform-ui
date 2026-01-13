@@ -284,7 +284,7 @@ export const goalsSection = TemplateWrapper({
                               )
                                 .then({
                                   text: 'View details',
-                                  href: '#',
+                                  href: Format('../goal/%1/view-achieved-goal', Item().path('uuid')),
                                 })
                                 .else({
                                   text: 'Update',
