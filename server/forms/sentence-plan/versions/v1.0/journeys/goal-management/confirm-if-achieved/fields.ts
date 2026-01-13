@@ -1,16 +1,20 @@
-import { block, Data, field, Format, Item } from '@form-engine/form/builders'
+import { Data, Format, Item, Self, validation } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import { GovUKTextareaInput } from '@form-engine-govuk-components/components'
+import { GovUKRadioInput, GovUKTextareaInput } from '@form-engine-govuk-components/components'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { Transformer } from '@form-engine/registry/transformers'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { GoalSummaryCardDraft, ButtonAsLink } from '../../../../../components'
+import { Condition } from '@form-engine/registry/conditions'
+import { GoalSummaryCardDraft } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
-export const pageHeading = block<HtmlBlock>({
-  variant: 'html',
-  content: Format('<h1 class="govuk-heading-l">Confirm %1 has achieved this goal</h1>', CaseData.Forename),
+export const pageHeading = HtmlBlock({
+  content: Format('<h1 class="govuk-heading-l">Confirm if %1 has achieved this goal</h1>', CaseData.Forename),
+})
+
+export const allStepsCompletedField = HtmlBlock({
+  content: '<p class="govuk-body">All steps have been completed. Check if this goal can now be marked as achieved.</p>',
 })
 
 export const goalCard = GoalSummaryCardDraft({
@@ -28,33 +32,43 @@ export const goalCard = GoalSummaryCardDraft({
   ),
 })
 
-export const howHelpedField = field<GovUKTextareaInput>({
-  variant: 'govukTextarea',
+export const howAchievingGoalHelpedInput = GovUKTextareaInput({
   code: 'how_helped',
-  label: {
-    text: Format('How has achieving this goal helped %1? (optional)', CaseData.Forename),
-    classes: 'govuk-label govuk-label--m',
-  },
+  label: Format('Enter how achieving this goal has helped %1 (optional)', CaseData.Forename),
   classes: 'govuk-!-width-two-thirds',
   rows: '3',
 })
 
-export const confirmButton = block<GovUKButton>({
-  variant: 'govukButton',
-  text: 'Confirm',
-  name: 'action',
-  value: 'confirm',
+export const hasAchievedGoal = GovUKRadioInput({
+  code: 'has_achieved_goal',
+  fieldset: {
+    legend: {
+      text: Format('Has %1 achieved this goal?', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    { value: 'yes', text: 'Yes, mark it as achieved', block: howAchievingGoalHelpedInput },
+    { value: 'no', text: Format("No, go to %1's plan", CaseData.Forename) },
+  ],
+  validate: [
+    validation({
+      when: Self().not.match(Condition.IsRequired()),
+      message: 'Select if they have achieved this goal',
+    }),
+  ],
 })
 
-export const cancelLink = ButtonAsLink({
-  text: 'Do not mark as achieved',
+export const saveAndContinueButton = GovUKButton({
+  text: 'Save and continue',
   name: 'action',
-  value: 'cancel',
+  value: 'saveAndContinue',
+  preventDoubleClick: true,
 })
 
 export const buttonGroup = TemplateWrapper({
   template: `<div class="govuk-button-group">{{slot:buttons}}</div>`,
   slots: {
-    buttons: [confirmButton, cancelLink],
+    buttons: [saveAndContinueButton],
   },
 })
