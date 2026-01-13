@@ -1,6 +1,6 @@
 import { Data, loadTransition, next, Post, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import { pageHeading, goalCard, buttonGroup, allStepsCompletedField, hasAchievedGoal } from './fields'
+import { pageHeading, goalCard, allStepsCompletedField, hasAchievedGoal, saveAndContinueButton } from './fields'
 import { SentencePlanEffects } from '../../../../../effects'
 
 /**
@@ -16,7 +16,7 @@ export const confirmIfAchievedStep = step({
       backlink: 'update-goal-steps',
     },
   },
-  blocks: [pageHeading, allStepsCompletedField, goalCard, hasAchievedGoal, buttonGroup],
+  blocks: [pageHeading, allStepsCompletedField, goalCard, hasAchievedGoal, saveAndContinueButton],
 
   onLoad: [
     loadTransition({

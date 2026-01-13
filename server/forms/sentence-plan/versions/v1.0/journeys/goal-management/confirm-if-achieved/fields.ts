@@ -65,10 +65,3 @@ export const saveAndContinueButton = GovUKButton({
   value: 'saveAndContinue',
   preventDoubleClick: true,
 })
-
-export const buttonGroup = TemplateWrapper({
-  template: `<div class="govuk-button-group">{{slot:buttons}}</div>`,
-  slots: {
-    buttons: [saveAndContinueButton],
-  },
-})
