@@ -6,8 +6,10 @@ import {
   loadTransition,
   next,
   Post,
+  Query,
   step,
   submitTransition,
+  when,
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageLayout } from './fields'
@@ -30,7 +32,16 @@ export const addStepsStep = step({
   isEntryPoint: true,
   view: {
     locals: {
-      backlink: Format('../../goal/%1/change-goal', Data('activeGoal.uuid')),
+      // Backlink logic:
+      // 1. If came from create goal page (?from=add-goal) backLink navigates to change-goal page with goal info persisted
+      // 2. Otherwise, return to plan overview on the correct tab based on goal status (ACTIVE → current, FUTURE → future)
+      backlink: when(Query('from').match(Condition.Equals('add-goal')))
+        .then(Format('../../goal/%1/change-goal', Data('activeGoal.uuid')))
+        .else(
+          when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
+            .then('../../plan/overview?type=current')
+            .else('../../plan/overview?type=future'),
+        ),
     },
   },
 

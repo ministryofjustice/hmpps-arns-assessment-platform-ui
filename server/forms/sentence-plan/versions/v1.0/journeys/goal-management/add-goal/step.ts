@@ -63,9 +63,9 @@ export const createGoalStep = step({
         next: [
           next({
             when: Query('type').match(Condition.IsRequired()),
-            goto: Format('../%1/add-steps?type=%2', Data('activeGoalUuid'), Query('type')),
+            goto: Format('../%1/add-steps?type=%2&from=add-goal', Data('activeGoalUuid'), Query('type')),
           }),
-          next({ goto: Format('../%1/add-steps', Data('activeGoalUuid')) }),
+          next({ goto: Format('../%1/add-steps?from=add-goal', Data('activeGoalUuid')) }),
         ],
       },
     }),

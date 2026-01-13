@@ -5,8 +5,10 @@ import {
   loadTransition,
   next,
   Post,
+  Query,
   step,
   submitTransition,
+  when,
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, introText, goalCard, buttonGroup } from './fields'
@@ -23,6 +25,14 @@ export const confirmDeleteGoalStep = step({
   path: '/confirm-delete-goal',
   title: 'Confirm you want to delete this goal',
   isEntryPoint: true,
+  view: {
+    locals: {
+      backlink: when(Query('type').match(Condition.IsRequired()))
+        .then(Format('../../plan/overview?type=%1', Query('type')))
+        .else('../../plan/overview?type=current'),
+    },
+  },
+
   blocks: [pageHeading, introText, goalCard, buttonGroup],
 
   onLoad: [

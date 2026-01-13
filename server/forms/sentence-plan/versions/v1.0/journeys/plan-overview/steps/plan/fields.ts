@@ -227,7 +227,15 @@ export const goalsSection = TemplateWrapper({
                               },
                               {
                                 text: 'Delete',
-                                href: Format('../goal/%1/confirm-delete-goal', Item().path('uuid')),
+                                href: when(Query('type').match(Condition.IsRequired()))
+                                  .then(
+                                    Format(
+                                      '../goal/%1/confirm-delete-goal?type=%2',
+                                      Item().path('uuid'),
+                                      Query('type'),
+                                    ),
+                                  )
+                                  .else(Format('../goal/%1/confirm-delete-goal', Item().path('uuid'))),
                               },
                             ],
                             index: Item().index(),
