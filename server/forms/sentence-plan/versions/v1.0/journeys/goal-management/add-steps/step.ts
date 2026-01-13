@@ -33,11 +33,10 @@ export const addStepsStep = step({
   view: {
     locals: {
       // Backlink logic:
-      // 1. If user came from update-goal-steps (?from=update-goal-steps) backLink navigates back to update-goal-steps
-      // 2. If user came from create goal page (?from=add-goal) backLink navigates back to change-goal page with goal
-      // info persisted
-      // 3. Otherwise, return to plan overview on the correct tab based on goal status (current or future)
-      backlink: when(Query('from').match(Condition.Equals('update-goal-steps')))
+      // 1. If plan has been agreed (latestAgreementStatus exists) backLink navigates back to update-goal-steps
+      // 2. If user comes from ?from=add-goal backLink navigates to change-goal and persists the goal information
+      // 3. Otherwise backLink navigates to plan overview on correct tab (current or future) based on goal status
+      backlink: when(Data('latestAgreementStatus').match(Condition.IsRequired()))
         .then(Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')))
         .else(
           when(Query('from').match(Condition.Equals('add-goal')))

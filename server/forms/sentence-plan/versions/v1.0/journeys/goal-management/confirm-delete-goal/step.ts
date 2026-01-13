@@ -5,7 +5,6 @@ import {
   loadTransition,
   next,
   Post,
-  Query,
   step,
   submitTransition,
   when,
@@ -27,8 +26,8 @@ export const confirmDeleteGoalStep = step({
   isEntryPoint: true,
   view: {
     locals: {
-      backlink: when(Query('type').match(Condition.IsRequired()))
-        .then(Format('../../plan/overview?type=%1', Query('type')))
+      backlink: when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
+        .then('../../plan/overview?type=future')
         .else('../../plan/overview?type=current'),
     },
   },
