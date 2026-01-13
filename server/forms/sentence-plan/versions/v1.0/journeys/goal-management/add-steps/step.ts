@@ -33,14 +33,20 @@ export const addStepsStep = step({
   view: {
     locals: {
       // Backlink logic:
-      // 1. If came from create goal page (?from=add-goal) backLink navigates to change-goal page with goal info persisted
-      // 2. Otherwise, return to plan overview on the correct tab based on goal status (ACTIVE → current, FUTURE → future)
-      backlink: when(Query('from').match(Condition.Equals('add-goal')))
-        .then(Format('../../goal/%1/change-goal', Data('activeGoal.uuid')))
+      // 1. If user came from update-goal-steps (?from=update-goal-steps) backLink navigates back to update-goal-steps
+      // 2. If user came from create goal page (?from=add-goal) backLink navigates back to change-goal page with goal
+      // info persisted
+      // 3. Otherwise, return to plan overview on the correct tab based on goal status (current or future)
+      backlink: when(Query('from').match(Condition.Equals('update-goal-steps')))
+        .then(Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')))
         .else(
-          when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
-            .then('../../plan/overview?type=current')
-            .else('../../plan/overview?type=future'),
+          when(Query('from').match(Condition.Equals('add-goal')))
+            .then(Format('../../goal/%1/change-goal', Data('activeGoal.uuid')))
+            .else(
+              when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
+                .then('../../plan/overview?type=current')
+                .else('../../plan/overview?type=future'),
+            ),
         ),
     },
   },

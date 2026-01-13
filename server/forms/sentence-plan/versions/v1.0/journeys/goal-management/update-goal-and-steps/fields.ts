@@ -43,7 +43,7 @@ const reviewStepsHeading = HtmlBlock({
 
 const addOrChangeStepsLink = HtmlBlock({
   content: Format(
-    `<p class="govuk-body"><a href="../../goal/%1/add-steps" class="govuk-link">Add or change steps</a></p>`,
+    `<p class="govuk-body"><a href="../../goal/%1/add-steps?from=update-goal-steps" class="govuk-link">Add or change steps</a></p>`,
     Data('activeGoal.uuid'),
   ),
 })
