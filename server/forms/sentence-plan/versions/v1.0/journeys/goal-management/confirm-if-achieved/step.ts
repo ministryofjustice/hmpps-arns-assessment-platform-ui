@@ -48,5 +48,9 @@ export const confirmIfAchievedStep = step({
         ],
       },
     }),
+    // default: when no option is selected, validate to show error
+    submitTransition({
+      validate: true,
+    }),
   ],
 })
