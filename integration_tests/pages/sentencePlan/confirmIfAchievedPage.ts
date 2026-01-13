@@ -50,10 +50,6 @@ export default class ConfirmIfAchievedPage extends AbstractPage {
     return (await this.goalTitle.textContent()) ?? ''
   }
 
-  async isGoalCardVisible(): Promise<boolean> {
-    return this.goalCard.isVisible()
-  }
-
   async getHeaderText(): Promise<string> {
     return (await this.header.textContent()) ?? ''
   }
