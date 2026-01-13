@@ -2,6 +2,8 @@ import { defineEffectsWithDeps } from '@form-engine/registry/utils/createRegiste
 import { SentencePlanEffectsDeps } from './types'
 import { addNotification } from './notifications/addNotification'
 import { loadNotifications } from './notifications/loadNotifications'
+import { setNavigationReferrer } from './navigation/setNavigationReferrer'
+import { loadNavigationReferrer } from './navigation/loadNavigationReferrer'
 import { loadPersonByCrn } from './session/loadPersonByCrn'
 import { loadOrCreatePlanByCrn } from './plan/loadOrCreatePlanByCrn'
 import { loadOrCreatePlanByOasys } from './plan/loadOrCreatePlanByOasys'
@@ -52,6 +54,10 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     // Notifications
     addNotification,
     loadNotifications,
+
+    // Navigation
+    setNavigationReferrer,
+    loadNavigationReferrer,
 
     // Plan
     loadOrCreatePlanByCrn,
