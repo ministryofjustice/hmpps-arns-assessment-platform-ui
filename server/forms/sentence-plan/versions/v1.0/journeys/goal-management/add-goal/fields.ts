@@ -80,23 +80,8 @@ const buttonGroup = TemplateWrapper({
   },
 })
 
-// Two-column layout wrapper
-export const twoColumnLayout = (): TemplateWrapper => {
-  return TemplateWrapper({
-    classes: 'govuk-width-container',
-    template: `
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-third">
-          {{slot:sideNav}}
-        </div>
-        <div class="govuk-grid-column-two-thirds">
-          {{slot:content}}
-        </div>
-      </div>
-    `,
-    slots: {
-      sideNav: [sideNavigation],
-      content: [pageHeading, goalTitle, isRelatedToOtherAreas, canStartNow, buttonGroup],
-    },
-  })
-}
+// Export sidebar navigation for two-column layout
+export const sideNav = sideNavigation
+
+// Export content blocks for two-column layout
+export const contentBlocks = [pageHeading, goalTitle, isRelatedToOtherAreas, canStartNow, buttonGroup]

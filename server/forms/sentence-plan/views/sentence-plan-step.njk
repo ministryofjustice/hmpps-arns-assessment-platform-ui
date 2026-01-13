@@ -1,4 +1,5 @@
 {%- extends "partials/layout.njk" -%}
+{%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
 
 {% block head %}
   {{ super() }}
@@ -21,6 +22,8 @@
 {% endblock %}
 
 {% block content %}
+  {% set sidebarIndex = twoColumnLayout.sidebarBlockIndex if twoColumnLayout else -1 %}
+
   <div class="govuk-grid-row" data-qa-assessment-uuid="{{ data.assessmentUuid }}">
     <div class="govuk-grid-column-full">
       {% if backlink %}
@@ -29,9 +32,27 @@
 
       <form method="post" novalidate>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        {% for block in blocks %}
-          {{ block | safe }}
-        {% endfor %}
+
+        {% if twoColumnLayout %}
+          <div class="govuk-width-container">
+            <div class="govuk-grid-row">
+              <div class="govuk-grid-column-one-third">
+                {{ blocks[sidebarIndex] | safe }}
+              </div>
+              <div class="govuk-grid-column-two-thirds">
+                {{ govukErrorSummary({ titleText: "There is a problem", errorList: validationErrors }) if validationErrors.length }}
+                {% for block in blocks %}
+                  {{ block | safe if loop.index0 != sidebarIndex }}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% else %}
+          {{ govukErrorSummary({ titleText: "There is a problem", errorList: validationErrors }) if validationErrors.length }}
+          {% for block in blocks %}
+            {{ block | safe }}
+          {% endfor %}
+        {% endif %}
       </form>
     </div>
   </div>
