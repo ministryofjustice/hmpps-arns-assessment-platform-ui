@@ -9,7 +9,6 @@ import {
   Query,
   step,
   submitTransition,
-  when,
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageLayout } from './fields'
@@ -32,9 +31,7 @@ export const addStepsStep = step({
   isEntryPoint: true,
   view: {
     locals: {
-      backlink: when(Query('type').match(Condition.IsRequired()))
-        .then(Format('../../goal/%1/add-goal/accommodation?type=%2', Data('activeGoal.uuid'), Query('type')))
-        .else(Format('../../goal/%1/add-goal/accommodation', Data('activeGoal.uuid'))),
+      backlink: Format('../../goal/%1/change-goal', Data('activeGoal.uuid')),
     },
   },
 
@@ -79,10 +76,6 @@ export const addStepsStep = step({
       onValid: {
         effects: [SentencePlanEffects.saveStepEditSession()],
         next: [
-          next({
-            when: Query('type').match(Condition.IsRequired()),
-            goto: Format('../../plan/overview?type=%1', Query('type')),
-          }),
           next({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
             goto: '../../plan/overview?type=future',

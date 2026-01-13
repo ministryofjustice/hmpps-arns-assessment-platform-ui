@@ -28,6 +28,9 @@ export const changeGoalStep = step({
   isEntryPoint: true,
   view: {
     locals: {
+      // Backlink logic:
+      // If editing the goal after the plan has been agreed (latestAgreementStatus exists), backLink should return
+      //  to update-goal-step. Otherwise, return to plan overview on the appropriate tab (current or future goals).
       backlink: when(Data('latestAgreementStatus').match(Condition.IsRequired()))
         .then(Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')))
         .else(
