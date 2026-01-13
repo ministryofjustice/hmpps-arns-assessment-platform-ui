@@ -71,7 +71,7 @@ export const updateGoalAndStepsStep = step({
       validate: false,
       onAlways: {
         effects: [SentencePlanEffects.updateGoalProgress()],
-        next: [next({ goto: Format('../../goal/%1/confirm-if-achieved', Data('activeGoal.uuid')) })],
+        next: [next({ goto: Format('../../goal/%1/confirm-achieved-goal', Data('activeGoal.uuid')) })],
       },
     }),
   ],
