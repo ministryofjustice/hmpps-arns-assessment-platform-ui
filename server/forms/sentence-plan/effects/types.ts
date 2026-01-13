@@ -204,6 +204,7 @@ export interface SentencePlanAnswers extends Record<string, unknown> {
  * Session data via context.getSession()
  */
 export interface SentencePlanSession {
+  navigationReferrer?: string
   returnTo?: string
   assessmentUuid?: string
   accessType?: 'mpop' | 'oasys'
