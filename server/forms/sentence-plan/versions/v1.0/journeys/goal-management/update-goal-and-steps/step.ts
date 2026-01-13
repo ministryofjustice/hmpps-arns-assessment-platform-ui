@@ -7,10 +7,10 @@ import {
   Post,
   step,
   submitTransition,
+  when,
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import {
-  backLink,
   pageHeading,
   goalInfo,
   reviewStepsSection,
@@ -30,18 +30,12 @@ export const updateGoalAndStepsStep = step({
   isEntryPoint: true,
   view: {
     locals: {
-      mainClasses: 'govuk-main-wrapper--no-padding',
+      backlink: when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
+        .then('../../plan/overview?type=current')
+        .else('../../plan/overview?type=future'),
     },
   },
-  blocks: [
-    backLink,
-    pageHeading,
-    goalInfo,
-    reviewStepsSection,
-    progressNotesSection,
-    viewAllNotesSection,
-    actionButtons,
-  ],
+  blocks: [pageHeading, goalInfo, reviewStepsSection, progressNotesSection, viewAllNotesSection, actionButtons],
 
   onLoad: [
     loadTransition({
