@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import { test } from '../../support/fixtures'
-import ConfirmIfAchievedPage from '../../pages/sentencePlan/confirmIfAchievedPage'
+import ConfirmAchievedGoalPage from '../../pages/sentencePlan/confirmAchievedGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { withCurrentGoalsWithCompletedSteps, withGoals } from '../../builders'
 import { loginAndNavigateToPlanByCrn } from './sentencePlanUtils'
@@ -13,10 +13,10 @@ test.describe('Achieve goal journey', () => {
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Navigate to confirm-if-achieved page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-if-achieved`)
+      // Navigate to confirm-achieved-goal page
+      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
-      const achievePage = await ConfirmIfAchievedPage.verifyOnPage(page)
+      const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
 
       // Enter optional note about how the goal helped
       await achievePage.enterHowHelpedNote('This goal helped stabilise their housing situation')
@@ -37,10 +37,10 @@ test.describe('Achieve goal journey', () => {
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Navigate to confirm-if-achieved page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-if-achieved`)
+      // Navigate to confirm-achieved-goal page
+      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
-      const achievePage = await ConfirmIfAchievedPage.verifyOnPage(page)
+      const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
 
       await achievePage.clickConfirm()
 
@@ -54,10 +54,10 @@ test.describe('Achieve goal journey', () => {
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Navigate to confirm-if-achieved page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-if-achieved`)
+      // Navigate to confirm-achieved-goal page
+      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
-      const achievePage = await ConfirmIfAchievedPage.verifyOnPage(page)
+      const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
 
       // Click cancel/do not mark as achieved
       await achievePage.clickCancel()
@@ -74,10 +74,10 @@ test.describe('Achieve goal journey', () => {
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Navigate to confirm-if-achieved page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-if-achieved`)
+      // Navigate to confirm-achieved-goal page
+      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
-      const achievePage = await ConfirmIfAchievedPage.verifyOnPage(page)
+      const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
 
       // Check heading contains expected text
       const headerText = await achievePage.getHeaderText()
@@ -99,10 +99,10 @@ test.describe('Achieve goal journey', () => {
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Navigate to confirm-if-achieved page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-if-achieved`)
+      // Navigate to confirm-achieved-goal page
+      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
-      const achievePage = await ConfirmIfAchievedPage.verifyOnPage(page)
+      const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
 
       await expect(achievePage.goalCard).toBeVisible()
 
@@ -117,10 +117,10 @@ test.describe('Achieve goal journey', () => {
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Navigate to confirm-if-achieved page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-if-achieved`)
+      // Navigate toconfirm-achieved-goal page
+      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
-      const achievePage = await ConfirmIfAchievedPage.verifyOnPage(page)
+      const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
 
       // Check the how helped field starts empty
       const noteValue = await achievePage.getHowHelpedNote()
@@ -144,9 +144,9 @@ test.describe('Achieve goal journey', () => {
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Navigate to confirm-if-achieved page and confirm
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-if-achieved`)
-      const achievePage = await ConfirmIfAchievedPage.verifyOnPage(page)
+      // Navigate to confirm-achieved-goal page and confirm
+      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
       await achievePage.clickConfirm()
 
       // Should be on achieved tab now
@@ -187,10 +187,10 @@ test.describe('Achieve goal journey', () => {
       let goalCount = await planOverviewPage.getGoalCount()
       expect(goalCount).toBe(2)
 
-      // Navigate to confirm-if-achieved page for first goal and confirm
+      // Navigate to confirm-achieved-goal page for first goal and confirm
       const goalUuid = plan.goals[0].uuid
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-if-achieved`)
-      const achievePage = await ConfirmIfAchievedPage.verifyOnPage(page)
+      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
       await achievePage.clickConfirm()
 
       // Navigate to current goals tab
