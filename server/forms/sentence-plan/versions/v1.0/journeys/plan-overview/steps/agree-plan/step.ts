@@ -8,6 +8,9 @@ import {
   Item,
   and,
   loadTransition,
+  when,
+  Query,
+  Format,
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
@@ -19,6 +22,13 @@ export const agreePlanStep = step({
   path: '/agree-plan',
   title: 'Agree Plan',
   blocks: [planAgreementQuestion, notesField, saveButton],
+  view: {
+    locals: {
+      backlink: when(Query('type').match(Condition.IsRequired()))
+        .then(Format('overview?type=%1', Query('type')))
+        .else('overview?type=current'),
+    },
+  },
   onLoad: [
     loadTransition({
       effects: [

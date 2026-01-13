@@ -19,6 +19,7 @@ export const planStep = step({
   view: {
     locals: {
       headerPageHeading: Format(`%1's plan`, CaseData.Forename),
+      currentTab: Query('type'),
       buttons: {
         showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('handover')),
         showCreateGoalButton: true,

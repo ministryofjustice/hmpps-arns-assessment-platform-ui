@@ -2,6 +2,7 @@ import {
   accessTransition,
   actionTransition,
   Data,
+  Format,
   loadTransition,
   next,
   Post,
@@ -27,6 +28,11 @@ export const addStepsStep = step({
   path: '/add-steps',
   title: 'Add Steps',
   isEntryPoint: true,
+  view: {
+    locals: {
+      backlink: Format('../../goal/%1/change-goal', Data('activeGoal.uuid')),
+    },
+  },
 
   blocks: [pageLayout],
 
