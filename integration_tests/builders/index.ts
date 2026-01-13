@@ -15,6 +15,7 @@ export { SentencePlanBuilder } from './SentencePlanBuilder'
 export {
   createEmptySentencePlan,
   withCurrentGoals,
+  withCurrentGoalsWithCompletedSteps,
   withFutureGoals,
   withMixedGoals,
   withGoals,

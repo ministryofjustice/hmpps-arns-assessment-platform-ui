@@ -71,3 +71,24 @@ export function withMixedGoals(): SentencePlanBuilder {
 export function withGoals(goals: GoalConfig[]): SentencePlanBuilder {
   return new SentencePlanBuilder().withGoals(goals)
 }
+
+/** Create a builder with N ACTIVE goals that have completed steps (required for achieve goal flow) */
+export function withCurrentGoalsWithCompletedSteps(count: number): SentencePlanBuilder {
+  const builder = new SentencePlanBuilder()
+  const targetDate = getDatePlusMonths(3)
+
+  for (let i = 1; i <= count; i++) {
+    builder.withGoal({
+      title: `Current Goal ${i}`,
+      areaOfNeed: 'accommodation',
+      status: 'ACTIVE',
+      targetDate,
+      steps: [
+        { actor: 'probation_practitioner', description: `Step 1 for Goal ${i}`, status: 'COMPLETED' },
+        { actor: 'person_on_probation', description: `Step 2 for Goal ${i}`, status: 'COMPLETED' },
+      ],
+    })
+  }
+
+  return builder
+}
