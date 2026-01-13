@@ -31,7 +31,7 @@ export const addStepsStep = step({
   isEntryPoint: true,
   view: {
     locals: {
-      // Backlink logic (data-driven using session):
+      // Backlink logic:
       // 1. Post-agree: If plan agreed (latestAgreementStatus exists) → update-goal-steps
       // 2. From add-goal: If navigationReferrer='add-goal' → change-goal (allows further editing)
       // 3. Pre-agree: Otherwise → plan overview on correct tab based on goal status
