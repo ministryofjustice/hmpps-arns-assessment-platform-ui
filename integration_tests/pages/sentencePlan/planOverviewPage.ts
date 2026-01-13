@@ -20,6 +20,8 @@ export default class PlanOverviewPage extends AbstractPage {
 
   readonly futureGoalsTab: Locator
 
+  readonly removedGoalsTab: Locator
+
   readonly noGoalsMessage: Locator
 
   readonly noFutureGoalsMessage: Locator
@@ -39,6 +41,7 @@ export default class PlanOverviewPage extends AbstractPage {
     this.tabNavigation = page.locator('.moj-sub-navigation')
     this.currentGoalsTab = page.getByRole('link', { name: /Goals to work on now/i })
     this.futureGoalsTab = page.getByRole('link', { name: /Future goals/i })
+    this.removedGoalsTab = page.getByRole('link', { name: /Removed goals/i })
     this.noGoalsMessage = page.getByText(/does not have any goals/i)
     this.noFutureGoalsMessage = page.getByText(/does not have any future goals/i)
     this.goalCardTitles = page.locator('[data-qa="goal-title"]')
@@ -98,5 +101,17 @@ export default class PlanOverviewPage extends AbstractPage {
     const card = await this.getGoalCardByIndex(index)
     const deleteLink = card.getByRole('link', { name: /delete/i })
     return (await deleteLink.count()) > 0
+  }
+
+  async goalCardHasUpdateLink(index: number): Promise<boolean> {
+    const card = await this.getGoalCardByIndex(index)
+    const updateLink = card.getByRole('link', { name: /update/i })
+    return (await updateLink.count()) > 0
+  }
+
+  async goalCardHasViewDetailsLink(index: number): Promise<boolean> {
+    const card = await this.getGoalCardByIndex(index)
+    const viewDetailsLink = card.getByRole('link', { name: /view details/i })
+    return (await viewDetailsLink.count()) > 0
   }
 }
