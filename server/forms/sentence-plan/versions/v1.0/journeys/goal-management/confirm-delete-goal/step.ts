@@ -7,6 +7,7 @@ import {
   Post,
   step,
   submitTransition,
+  when,
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, introText, goalCard, buttonGroup } from './fields'
@@ -23,6 +24,14 @@ export const confirmDeleteGoalStep = step({
   path: '/confirm-delete-goal',
   title: 'Confirm you want to delete this goal',
   isEntryPoint: true,
+  view: {
+    locals: {
+      backlink: when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
+        .then('../../plan/overview?type=future')
+        .else('../../plan/overview?type=current'),
+    },
+  },
+
   blocks: [pageHeading, introText, goalCard, buttonGroup],
 
   onLoad: [
