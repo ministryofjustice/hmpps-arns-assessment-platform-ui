@@ -31,15 +31,15 @@ export const addStepsStep = step({
   isEntryPoint: true,
   view: {
     locals: {
-      // Backlink logic:
-      // 1. Post-agree: If plan agreed (latestAgreementStatus exists) → update-goal-steps
-      // 2. From add-goal: If navigationReferrer='add-goal' → change-goal (allows further editing)
-      // 3. Pre-agree: Otherwise → plan overview on correct tab based on goal status
-      backlink: when(Data('latestAgreementStatus').match(Condition.IsRequired()))
-        .then(Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')))
+      // Backlink logic (priority order):
+      // 1. If navigationReferrer='add-goal', navigate to change-goal and persist goal information
+      // 2. Post-agree: if latestAgreementStatus exists, navigate back to update-goal-steps page
+      // 3. Default: navigate back to plan overview on correct tab based on goal status (current/future)
+      backlink: when(Data('navigationReferrer').match(Condition.Equals('add-goal')))
+        .then(Format('../../goal/%1/change-goal', Data('activeGoal.uuid')))
         .else(
-          when(Data('navigationReferrer').match(Condition.Equals('add-goal')))
-            .then(Format('../../goal/%1/change-goal', Data('activeGoal.uuid')))
+          when(Data('latestAgreementStatus').match(Condition.IsRequired()))
+            .then(Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')))
             .else(
               when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
                 .then('../../plan/overview?type=current')
