@@ -24,7 +24,6 @@ export const createGoalStep = step({
   path: '/add-goal/:areaOfNeed',
   title: 'Create Goal',
   isEntryPoint: true,
-  // Static data available to effects and Data() references
   view: {
     locals: {
       backlink: when(Query('type').match(Condition.IsRequired()))
@@ -59,14 +58,8 @@ export const createGoalStep = step({
       when: Post('action').match(Condition.Equals('addSteps')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.saveActiveGoal()],
-        next: [
-          next({
-            when: Query('type').match(Condition.IsRequired()),
-            goto: Format('../%1/add-steps?type=%2&from=add-goal', Data('activeGoalUuid'), Query('type')),
-          }),
-          next({ goto: Format('../%1/add-steps?from=add-goal', Data('activeGoalUuid')) }),
-        ],
+        effects: [SentencePlanEffects.saveActiveGoal(), SentencePlanEffects.setNavigationReferrer('add-goal')],
+        next: [next({ goto: Format('../%1/add-steps', Data('activeGoalUuid')) })],
       },
     }),
     submitTransition({

@@ -6,7 +6,6 @@ import {
   loadTransition,
   next,
   Post,
-  Query,
   step,
   submitTransition,
   when,
@@ -32,14 +31,14 @@ export const addStepsStep = step({
   isEntryPoint: true,
   view: {
     locals: {
-      // Backlink logic:
-      // 1. If plan has been agreed (latestAgreementStatus exists) backLink navigates back to update-goal-steps
-      // 2. If user comes from ?from=add-goal backLink navigates to change-goal and persists the goal information
-      // 3. Otherwise backLink navigates to plan overview on correct tab (current or future) based on goal status
+      // Backlink logic (data-driven using session):
+      // 1. Post-agree: If plan agreed (latestAgreementStatus exists) → update-goal-steps
+      // 2. From add-goal: If navigationReferrer='add-goal' → change-goal (allows further editing)
+      // 3. Pre-agree: Otherwise → plan overview on correct tab based on goal status
       backlink: when(Data('latestAgreementStatus').match(Condition.IsRequired()))
         .then(Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')))
         .else(
-          when(Query('from').match(Condition.Equals('add-goal')))
+          when(Data('navigationReferrer').match(Condition.Equals('add-goal')))
             .then(Format('../../goal/%1/change-goal', Data('activeGoal.uuid')))
             .else(
               when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
@@ -55,6 +54,7 @@ export const addStepsStep = step({
   onLoad: [
     loadTransition({
       effects: [
+        SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.initializeStepEditSession(),
