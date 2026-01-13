@@ -18,7 +18,7 @@ services:
     volumes:
       - ./wiremock/mappings:/home/wiremock/mappings
     environment:
-      WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:8080
+      WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:9090
       WIREMOCK_AAP_API_URL: http://api:8080
       WIREMOCK_COORDINATOR_API_URL: http://arns-coordinator:8080
       WIREMOCK_HANDOVER_URL: http://arns-handover:7070
@@ -36,7 +36,7 @@ services:
       NODE_ENV: development
       ENVIRONMENT_NAME: dev
       HMPPS_AUTH_URL: http://wiremock:8080/auth
-      HMPPS_AUTH_EXTERNAL_URL: http://hmpps-auth:8080/auth
+      HMPPS_AUTH_EXTERNAL_URL: http://hmpps-auth:9090/auth
       HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080/handover
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://arns-handover:7070
       AAP_API_URL: http://wiremock:8080/aap-api
@@ -63,7 +63,7 @@ services:
       BASE_URL: http://ui:3000
       WIREMOCK_URL: http://wiremock:8080/__admin
       AAP_API_URL: http://api:8080
-      HMPPS_AUTH_URL: http://hmpps-auth:8080/auth
+      HMPPS_AUTH_URL: http://hmpps-auth:9090/auth
       CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-e2e
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
     working_dir: /playwright
