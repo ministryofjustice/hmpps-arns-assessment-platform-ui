@@ -23,8 +23,8 @@
 {% block content %}
   <div class="govuk-grid-row" data-qa-assessment-uuid="{{ data.assessmentUuid }}">
     <div class="govuk-grid-column-full">
-      {% if step.backlink %}
-        <a href="{{ step.backlink }}" class="govuk-back-link">Back</a>
+      {% if backlink %}
+        <a href="{{ backlink }}" class="govuk-back-link">Back</a>
       {% endif %}
 
       <form method="post" novalidate>
