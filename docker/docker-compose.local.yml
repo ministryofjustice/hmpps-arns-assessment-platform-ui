@@ -3,7 +3,7 @@
 
 services:
   wiremock:
-    image: wiremock/wiremock:3.3.1
+    image: wiremock/wiremock:3.13.2
     networks:
       - hmpps
     depends_on:
