@@ -117,7 +117,7 @@ test.describe('Achieve goal journey', () => {
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
 
-      // Navigate toconfirm-achieved-goal page
+      // Navigate to confirm-achieved-goal page
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
