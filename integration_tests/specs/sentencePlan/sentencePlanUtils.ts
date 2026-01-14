@@ -2,18 +2,19 @@ import { expect, Page } from '@playwright/test'
 import { login } from '../../testUtils'
 
 // sentence plan V1 URLs for use in playwright testing suits:
-const sentencePlanV1 = '/forms/sentence-plan'
+const sentencePlanFormPath = '/forms/sentence-plan'
+const v1Path = '/v1.0'
 const oasysAccessStepPath = '/oasys'
+const crnAccessStepPath = '/crn'
 const planOverviewJourneyPath = '/plan'
 const planStepPath = '/overview'
-const goalManagementJourneyPath = '/goal/:uuid'
-const createGoalStepPath = '/add-goal/:areaOfNeed'
+const goalManagementJourneyPath = '/goal'
 
 export const sentencePlanV1URLs = {
-  OASYS_ENTRY_POINT: sentencePlanV1 + oasysAccessStepPath, // '/forms/sentence-plan' + '/oasys'
-  CRN_ENTRY_POINT: `${sentencePlanV1}/crn`, // '/forms/sentence-plan/crn/:crn'
-  PLAN_OVERVIEW: sentencePlanV1 + planOverviewJourneyPath + planStepPath, // '/forms/sentence-plan' + '/plan' + '/overview'
-  CREATE_GOAL: sentencePlanV1 + goalManagementJourneyPath + createGoalStepPath, // '/forms/sentence-plan/v1.0' + '/goal/:uuid' + '/add-goal/:areaOfNeed'
+  OASYS_ENTRY_POINT: sentencePlanFormPath + oasysAccessStepPath, // '/forms/sentence-plan' + '/oasys'
+  CRN_ENTRY_POINT: sentencePlanFormPath + crnAccessStepPath, // '/forms/sentence-plan/crn/:crn'
+  PLAN_OVERVIEW: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planStepPath, // '/forms/sentence-plan' + '/v1.0' + '/plan' + '/overview'
+  GOAL_MANAGEMENT_ROOT_PATH: sentencePlanFormPath + v1Path + goalManagementJourneyPath, // '/forms/sentence-plan' + '/v1.0' + '/goal'
 }
 
 /** Logs in and navigates to a sentence plan by CRN. */
