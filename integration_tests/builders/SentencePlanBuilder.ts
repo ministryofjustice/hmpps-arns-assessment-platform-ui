@@ -81,6 +81,9 @@ export interface CreatedStep extends CreatedCollectionItem {
 const single = (value: string): SingleValue => ({ type: 'Single', value })
 const multi = (values: string[]): MultiValue => ({ type: 'Multi', values })
 
+// plan agreement status:
+export type PlanAgreementStatus = 'AGREED' | 'DO_NOT_AGREE' | 'COULD_NOT_ANSWER'
+
 /**
  * Fluent builder for creating SENTENCE_PLAN assessments with goals and steps.
  */
@@ -90,6 +93,8 @@ export class SentencePlanBuilder {
   private crn: string | undefined
 
   private user: User = { id: 'e2e-test', name: 'E2E_TEST' }
+
+  private agreementStatus: PlanAgreementStatus | undefined
 
   /**
    * Set a specific CRN for this sentence plan.
@@ -124,6 +129,12 @@ export class SentencePlanBuilder {
     return this
   }
 
+  // Set the plan agreement status ('AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER')
+  withAgreementStatus(status: PlanAgreementStatus): this {
+    this.agreementStatus = status
+    return this
+  }
+
   /**
    * Create a NEW sentence plan assessment with the configured goals.
    * Returns the created assessment with goals and steps.
@@ -154,6 +165,11 @@ export class SentencePlanBuilder {
     }
 
     const assessment = await builder.create(client)
+
+    // Add plan agreement if status is set
+    if (this.agreementStatus) {
+      await this.createPlanAgreement(client, assessment.uuid)
+    }
 
     // Map created collections to typed goals
     const goalsCollection = assessment.collections.find(c => c.name === 'GOALS')
@@ -372,5 +388,44 @@ export class SentencePlanBuilder {
       actor: config.actor,
       description: config.description,
     }
+  }
+
+  // Create a plan agreement record in the PLAN_AGREEMENTS collection:
+  private async createPlanAgreement(client: TestAapApiClient, assessmentUuid: string): Promise<void> {
+    if (!this.agreementStatus) {
+      return
+    }
+
+    const now = new Date().toISOString()
+
+    // map status to the agreement question value
+    const questionMap: Record<PlanAgreementStatus, string> = {
+      AGREED: 'yes',
+      DO_NOT_AGREE: 'no',
+      COULD_NOT_ANSWER: 'could_not_answer',
+    }
+
+    // create PLAN_AGREEMENTS collection
+    const collectionResult = await client.executeCommand<CreateCollectionCommandResult>({
+      type: 'CreateCollectionCommand',
+      name: 'PLAN_AGREEMENTS',
+      assessmentUuid,
+      user: this.user,
+    })
+
+    // add the agreement record
+    await client.executeCommand<AddCollectionItemCommandResult>({
+      type: 'AddCollectionItemCommand',
+      collectionUuid: collectionResult.collectionUuid,
+      assessmentUuid,
+      answers: {
+        agreement_question: single(questionMap[this.agreementStatus]),
+      },
+      properties: {
+        status: single(this.agreementStatus),
+        status_date: single(now),
+      },
+      user: this.user,
+    })
   }
 }

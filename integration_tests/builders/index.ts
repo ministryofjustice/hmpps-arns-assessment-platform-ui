@@ -30,6 +30,7 @@ export type {
   CreatedSentencePlan,
   CreatedGoal,
   CreatedStep,
+  PlanAgreementStatus,
 } from './SentencePlanBuilder'
 
 // Types

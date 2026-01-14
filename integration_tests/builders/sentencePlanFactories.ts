@@ -1,4 +1,4 @@
-import { SentencePlanBuilder, type GoalConfig } from './SentencePlanBuilder'
+import { SentencePlanBuilder, type GoalConfig, type PlanAgreementStatus } from './SentencePlanBuilder'
 
 function getDatePlusMonths(months: number): string {
   const date = new Date()
@@ -7,13 +7,20 @@ function getDatePlusMonths(months: number): string {
 }
 
 /** Create an empty sentence plan builder (no goals) */
-export function createEmptySentencePlan(): SentencePlanBuilder {
-  return new SentencePlanBuilder()
+export function createEmptySentencePlan(agreementStatus?: PlanAgreementStatus): SentencePlanBuilder {
+  const builder = new SentencePlanBuilder()
+  if (agreementStatus) {
+    builder.withAgreementStatus(agreementStatus)
+  }
+  return builder
 }
 
 /** Create a builder with N ACTIVE goals */
-export function withCurrentGoals(count: number): SentencePlanBuilder {
+export function withCurrentGoals(count: number, agreementStatus?: PlanAgreementStatus): SentencePlanBuilder {
   const builder = new SentencePlanBuilder()
+  if (agreementStatus) {
+    builder.withAgreementStatus(agreementStatus)
+  }
   const targetDate = getDatePlusMonths(3)
 
   for (let i = 1; i <= count; i++) {
@@ -29,8 +36,11 @@ export function withCurrentGoals(count: number): SentencePlanBuilder {
 }
 
 /** Create a builder with N FUTURE goals */
-export function withFutureGoals(count: number): SentencePlanBuilder {
+export function withFutureGoals(count: number, agreementStatus?: PlanAgreementStatus): SentencePlanBuilder {
   const builder = new SentencePlanBuilder()
+  if (agreementStatus) {
+    builder.withAgreementStatus(agreementStatus)
+  }
 
   for (let i = 1; i <= count; i++) {
     builder.withGoal({
@@ -44,10 +54,15 @@ export function withFutureGoals(count: number): SentencePlanBuilder {
 }
 
 /** Create a builder with 2 current + 1 future goal */
-export function withMixedGoals(): SentencePlanBuilder {
+export function withMixedGoals(agreementStatus?: PlanAgreementStatus): SentencePlanBuilder {
   const targetDate = getDatePlusMonths(6)
 
-  return new SentencePlanBuilder()
+  const builder = new SentencePlanBuilder()
+  if (agreementStatus) {
+    builder.withAgreementStatus(agreementStatus)
+  }
+
+  return builder
     .withGoal({
       title: 'Find stable housing',
       areaOfNeed: 'accommodation',
@@ -68,13 +83,23 @@ export function withMixedGoals(): SentencePlanBuilder {
 }
 
 /** Create a builder with custom goal configurations */
-export function withGoals(goals: GoalConfig[]): SentencePlanBuilder {
-  return new SentencePlanBuilder().withGoals(goals)
+export function withGoals(goals: GoalConfig[], agreementStatus?: PlanAgreementStatus): SentencePlanBuilder {
+  const builder = new SentencePlanBuilder()
+  if (agreementStatus) {
+    builder.withAgreementStatus(agreementStatus)
+  }
+  return builder.withGoals(goals)
 }
 
 /** Create a builder with N ACTIVE goals that have completed steps (required for achieve goal flow) */
-export function withCurrentGoalsWithCompletedSteps(count: number): SentencePlanBuilder {
+export function withCurrentGoalsWithCompletedSteps(
+  count: number,
+  agreementStatus?: PlanAgreementStatus,
+): SentencePlanBuilder {
   const builder = new SentencePlanBuilder()
+  if (agreementStatus) {
+    builder.withAgreementStatus(agreementStatus)
+  }
   const targetDate = getDatePlusMonths(3)
 
   for (let i = 1; i <= count; i++) {
