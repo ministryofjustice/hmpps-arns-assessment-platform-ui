@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
 
-export default class ConfirmIfAchievedPage extends AbstractPage {
+export default class ConfirmAchievedGoalPage extends AbstractPage {
   readonly header: Locator
 
   readonly goalCard: Locator
@@ -24,8 +24,8 @@ export default class ConfirmIfAchievedPage extends AbstractPage {
     this.cancelButton = page.getByRole('button', { name: 'Do not mark as achieved' })
   }
 
-  static async verifyOnPage(page: Page): Promise<ConfirmIfAchievedPage> {
-    const confirmIfAchievedPage = new ConfirmIfAchievedPage(page)
+  static async verifyOnPage(page: Page): Promise<ConfirmAchievedGoalPage> {
+    const confirmIfAchievedPage = new ConfirmAchievedGoalPage(page)
     await expect(confirmIfAchievedPage.header).toContainText('has achieved this goal')
     return confirmIfAchievedPage
   }
