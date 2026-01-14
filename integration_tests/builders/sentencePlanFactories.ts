@@ -117,3 +117,20 @@ export function withCurrentGoalsWithCompletedSteps(
 
   return builder
 }
+
+/**
+ * Create a builder with N ACTIVE goals with completed steps AND plan agreed.
+ *
+ * This setup satisfies the prerequisites for flows that require an agreed plan:
+ * - Remove goal (soft-delete for agreed plans)
+ * - Update goal progress
+ * - Mark goal as achieved
+ *
+ * Each goal will have:
+ * - Status: ACTIVE
+ * - 2 completed steps
+ * - Target date 3 months from now
+ */
+export function withAgreedPlanAndGoals(count: number): SentencePlanBuilder {
+  return withCurrentGoalsWithCompletedSteps(count).asAgreed()
+}

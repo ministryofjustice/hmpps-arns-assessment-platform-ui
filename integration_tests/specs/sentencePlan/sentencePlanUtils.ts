@@ -30,3 +30,8 @@ export const getDatePlusMonthsAsString = (months: number) => {
   date.setMonth(date.getMonth() + months)
   return date.toLocaleDateString('en-GB')
 }
+
+/** Returns an ISO date string for a date N days from now. Useful for goal target dates in tests. */
+export const getDatePlusDaysAsISO = (days: number): string => {
+  return new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString()
+}

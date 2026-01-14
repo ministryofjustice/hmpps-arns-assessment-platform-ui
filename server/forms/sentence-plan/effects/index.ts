@@ -18,6 +18,7 @@ import { loadActiveGoalForEdit } from './goals/loadActiveGoalForEdit'
 import { updateActiveGoal } from './goals/updateActiveGoal'
 import { updateGoalProgress } from './goals/updateGoalProgress'
 import { markGoalAsAchieved } from './goals/markGoalAsAchieved'
+import { markGoalAsRemoved } from './goals/markGoalAsRemoved'
 import { deleteActiveGoal } from './goals/deleteActiveGoal'
 import { initializeStepEditSession } from './steps/initializeStepEditSession'
 import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
@@ -77,6 +78,7 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     updateActiveGoal,
     updateGoalProgress,
     markGoalAsAchieved,
+    markGoalAsRemoved,
     deleteActiveGoal,
 
     // Steps

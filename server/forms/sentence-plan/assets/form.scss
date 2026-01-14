@@ -21,3 +21,8 @@
   }
 }
 
+// Plan overview sub-navigation - position "Removed goals" tab on the right
+.moj-sub-navigation__list > li:has(> a[href$="type=removed"]) {
+  float: right;
+}
+
