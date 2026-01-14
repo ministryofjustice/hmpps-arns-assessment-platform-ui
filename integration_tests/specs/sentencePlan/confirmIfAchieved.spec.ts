@@ -3,7 +3,7 @@ import { test } from '../../support/fixtures'
 import ConfirmIfAchievedPage from '../../pages/sentencePlan/confirmIfAchievedPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { withCurrentGoalsWithCompletedSteps, withGoals } from '../../builders'
-import { loginAndNavigateToPlanByCrn, sentencePlanV1URLs } from './sentencePlanUtils'
+import { getDatePlusDaysAsISO, loginAndNavigateToPlanByCrn, sentencePlanV1URLs } from './sentencePlanUtils'
 
 const confirmIfAchievedPath = '/confirm-if-achieved'
 const planOverviewPageCurrentGoalsTabPath = `${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`
@@ -176,7 +176,7 @@ test.describe('Confirm if achieved page', () => {
             title: 'Active Goal With Completed Steps',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Completed step', status: 'COMPLETED' }],
           },
         ],
@@ -235,7 +235,7 @@ test.describe('Confirm if achieved page', () => {
             title: 'Goal Should Remain Active',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Step one', status: 'COMPLETED' }],
           },
         ],
@@ -286,7 +286,7 @@ test.describe('Confirm if achieved page', () => {
             title: 'Test Goal Title',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Test step description', status: 'COMPLETED' }],
           },
         ],
@@ -315,7 +315,7 @@ test.describe('Confirm if achieved page', () => {
             title: 'Goal With Multiple Steps',
             areaOfNeed: 'employment-and-education',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [
               { actor: 'probation_practitioner', description: 'First completed step', status: 'COMPLETED' },
               { actor: 'person_on_probation', description: 'Second completed step', status: 'COMPLETED' },
@@ -445,7 +445,7 @@ test.describe('Confirm if achieved page', () => {
             title: 'Goal To Be Achieved',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Complete this', status: 'COMPLETED' }],
           },
         ],
@@ -479,14 +479,14 @@ test.describe('Confirm if achieved page', () => {
             title: 'Goal To Move',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'COMPLETED' }],
           },
           {
             title: 'Goal To Stay',
             areaOfNeed: 'finances',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'person_on_probation', description: 'Other step', status: 'NOT_STARTED' }],
           },
         ],
@@ -555,7 +555,7 @@ test.describe('Confirm if achieved page', () => {
             title: 'Goal With Incomplete Steps',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [
               { actor: 'probation_practitioner', description: 'First step', status: 'NOT_STARTED' },
               { actor: 'person_on_probation', description: 'Second step', status: 'IN_PROGRESS' },
@@ -598,7 +598,7 @@ test.describe('Confirm if achieved page', () => {
             title: 'Goal With Mixed Step Status',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [
               { actor: 'probation_practitioner', description: 'First step', status: 'COMPLETED' },
               { actor: 'person_on_probation', description: 'Second step', status: 'NOT_STARTED' },
@@ -666,7 +666,7 @@ test.describe('Confirm if achieved page', () => {
             title: 'Goal With Blocked Steps',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [
               { actor: 'probation_practitioner', description: 'First step', status: 'COMPLETED' },
               { actor: 'person_on_probation', description: 'Second step', status: 'NOT_STARTED' },
