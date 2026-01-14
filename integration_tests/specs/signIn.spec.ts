@@ -6,7 +6,6 @@ import HomePage from '../pages/homePage'
 import { resetStubs } from '../mockApis/wiremock'
 
 test.describe('SignIn', () => {
-
   test('Unauthenticated user directed to auth', async ({ page }) => {
     await page.goto('/')
 

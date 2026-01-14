@@ -1,6 +1,9 @@
 import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
-import { PseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
-import ThunkEvaluationContext, { ThunkEvaluationGlobalState } from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
+import { PseudoNode } from '@form-engine/core/types/pseudoNodes.type'
+import { IndexableNodeType } from '@form-engine/core/compilation/registries/NodeRegistry'
+import ThunkEvaluationContext, {
+  ThunkEvaluationGlobalState,
+} from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import {
   AnswerHistory,
   AnswerSource,
@@ -9,7 +12,7 @@ import {
   ThunkInvocationAdapter,
   ThunkResult,
   ThunkRuntimeHooks,
-} from '@form-engine/core/ast/thunks/types'
+} from '@form-engine/core/compilation/thunks/types'
 
 /**
  * Mock answer input - can be a simple value or a full AnswerHistory
@@ -125,58 +128,24 @@ export function createMockContext(options: MockContextOptions = {}): ThunkEvalua
     getAll: jest.fn(() => options.mockRegisteredFunctions ?? new Map()),
   }
 
-  // Helper to find pseudo node by type and key
-  const findPseudoNodeImpl = (type: PseudoNodeType, key: string) => {
-    if (!options.mockNodes) {
-      return undefined
-    }
-
-    for (const node of options.mockNodes.values()) {
-      if ('type' in node && node.type === type) {
-        const props = (node as PseudoNode).properties
-
-        if (type === PseudoNodeType.DATA && 'baseProperty' in props && props.baseProperty === key) {
-          return node
-        }
-
-        if (
-          (type === PseudoNodeType.POST ||
-            type === PseudoNodeType.ANSWER_LOCAL ||
-            type === PseudoNodeType.ANSWER_REMOTE) &&
-          'baseFieldCode' in props &&
-          props.baseFieldCode === key
-        ) {
-          return node
-        }
-
-        if (
-          (type === PseudoNodeType.QUERY || type === PseudoNodeType.PARAMS) &&
-          'paramName' in props &&
-          props.paramName === key
-        ) {
-          return node
-        }
-      }
-    }
-
-    return undefined
-  }
-
   const mockNodeRegistry = {
     getAll: jest.fn(() => options.mockNodes ?? new Map()),
     get: jest.fn((nodeId: NodeId) => options.mockNodes?.get(nodeId)),
     has: jest.fn((nodeId: NodeId) => options.mockNodes?.has(nodeId) ?? false),
-    findPseudoNode: jest.fn(findPseudoNodeImpl),
-    findPseudoNodeByTypes: jest.fn((types: PseudoNodeType[], key: string) => {
-      for (const type of types) {
-        const result = findPseudoNodeImpl(type, key)
-
-        if (result) {
-          return result
-        }
+    findByType: jest.fn((type: IndexableNodeType) => {
+      if (!options.mockNodes) {
+        return []
       }
 
-      return undefined
+      const results: (ASTNode | PseudoNode)[] = []
+
+      options.mockNodes.forEach(node => {
+        if (node.type === type) {
+          results.push(node)
+        }
+      })
+
+      return results
     }),
   }
 
@@ -394,15 +363,18 @@ export function createMockInvokerWithError(
     message?: string
   } = {},
 ): jest.Mocked<ThunkInvocationAdapter> {
+  const errorResult: ThunkResult = {
+    error: {
+      type: options.type ?? 'EVALUATION_FAILED',
+      nodeId: options.nodeId ?? 'compile_ast:100',
+      message: options.message ?? 'Evaluation failed',
+    },
+    metadata: { source: 'test', timestamp: Date.now() },
+  }
+
   return createMockInvoker({
-    invokeImpl: async (): Promise<ThunkResult> => ({
-      error: {
-        type: options.type ?? 'EVALUATION_FAILED',
-        nodeId: options.nodeId ?? 'compile_ast:100',
-        message: options.message ?? 'Evaluation failed',
-      },
-      metadata: { source: 'test', timestamp: Date.now() },
-    }),
+    invokeImpl: async (): Promise<ThunkResult> => errorResult,
+    invokeSyncImpl: (): ThunkResult => errorResult,
   })
 }
 

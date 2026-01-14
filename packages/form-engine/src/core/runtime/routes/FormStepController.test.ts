@@ -10,18 +10,18 @@ import {
   SubmitTransitionASTNode,
 } from '@form-engine/core/types/expressions.type'
 import { FormInstanceDependencies, NodeId, AstNodeId } from '@form-engine/core/types/engine.type'
-import { LoadTransitionResult } from '@form-engine/core/ast/thunks/handlers/transitions/LoadTransitionHandler'
-import { AccessTransitionResult } from '@form-engine/core/ast/thunks/handlers/transitions/AccessTransitionHandler'
-import { SubmitTransitionResult } from '@form-engine/core/ast/thunks/handlers/transitions/SubmitTransitionHandler'
-import { ActionTransitionResult } from '@form-engine/core/ast/thunks/handlers/transitions/ActionTransitionHandler'
-import { CompiledForm } from '@form-engine/core/ast/compilation/FormCompilationFactory'
+import { LoadTransitionResult } from '@form-engine/core/nodes/transitions/load/LoadHandler'
+import { AccessTransitionResult } from '@form-engine/core/nodes/transitions/access/AccessHandler'
+import { SubmitTransitionResult } from '@form-engine/core/nodes/transitions/submit/SubmitHandler'
+import { ActionTransitionResult } from '@form-engine/core/nodes/transitions/action/ActionHandler'
+import { CompiledForm } from '@form-engine/core/compilation/FormCompilationFactory'
 import { JourneyMetadata } from '@form-engine/core/runtime/rendering/types'
-import ThunkEvaluator, { EvaluationResult } from '@form-engine/core/ast/thunks/ThunkEvaluator'
-import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
+import ThunkEvaluator, { EvaluationResult } from '@form-engine/core/compilation/thunks/ThunkEvaluator'
+import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import FormStepController from './FormStepController'
 import { StepRequest } from './types'
 
-jest.mock('@form-engine/core/ast/thunks/ThunkEvaluator')
+jest.mock('@form-engine/core/compilation/thunks/ThunkEvaluator')
 
 const mockRenderContextFactoryBuild = jest.fn().mockReturnValue({ step: {}, blocks: [], ancestors: [] })
 jest.mock('@form-engine/core/runtime/rendering/RenderContextFactory', () => {
