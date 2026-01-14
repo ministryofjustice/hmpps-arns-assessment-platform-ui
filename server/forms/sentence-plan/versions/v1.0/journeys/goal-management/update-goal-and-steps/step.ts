@@ -57,7 +57,19 @@ export const updateGoalAndStepsStep = step({
       validate: false,
       onAlways: {
         effects: [SentencePlanEffects.updateGoalProgress()],
-        next: [next({ goto: '../../plan/overview' })],
+        next: [
+          // If all steps completed, go to confirm-if-achieved page
+          next({
+            when: Data('allStepsCompleted').match(Condition.Equals(true)),
+            goto: Format('../../goal/%1/confirm-if-achieved', Data('activeGoal.uuid')),
+          }),
+          // Otherwise, go back to plan overview based on goal status
+          next({
+            when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
+            goto: '../../plan/overview?type=future',
+          }),
+          next({ goto: '../../plan/overview?type=current' }),
+        ],
       },
     }),
     submitTransition({
@@ -65,7 +77,7 @@ export const updateGoalAndStepsStep = step({
       validate: false,
       onAlways: {
         effects: [SentencePlanEffects.updateGoalProgress()],
-        next: [next({ goto: Format('../../goal/%1/confirm-if-achieved', Data('activeGoal.uuid')) })],
+        next: [next({ goto: Format('../../goal/%1/confirm-achieved-goal', Data('activeGoal.uuid')) })],
       },
     }),
   ],
