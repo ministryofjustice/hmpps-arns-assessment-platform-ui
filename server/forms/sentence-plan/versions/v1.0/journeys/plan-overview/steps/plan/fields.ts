@@ -60,6 +60,8 @@ export const noStepsErrorMessage = HtmlBlock({
   ),
 })
 
+// Calculate goal counts for sub-navigation tabs
+// Achieved and removed tabs are conditionally shown only when count > 0
 const activeGoalsCount = Data('goals')
   .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
   .pipe(Transformer.Array.Length())
@@ -70,6 +72,10 @@ const futureGoalsCount = Data('goals')
 
 const achievedGoalsCount = Data('goals')
   .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACHIEVED'))))
+  .pipe(Transformer.Array.Length())
+
+const removedGoalsCount = Data('goals')
+  .each(Iterator.Filter(Item().path('status').match(Condition.Equals('REMOVED'))))
   .pipe(Transformer.Array.Length())
 
 export const planCreatedMessage = HtmlBlock({
@@ -110,6 +116,13 @@ export const subNavigation = MOJSubNavigation({
       text: Format('Achieved goals (%1)', achievedGoalsCount),
       href: 'overview?type=achieved',
       active: when(Query('type').match(Condition.Equals('achieved')))
+        .then(true)
+        .else(false),
+    }) as any,
+    when(removedGoalsCount.match(Condition.Number.GreaterThan(0))).then({
+      text: Format('Removed goals (%1)', removedGoalsCount),
+      href: 'overview?type=removed',
+      active: when(Query('type').match(Condition.Equals('removed')))
         .then(true)
         .else(false),
     }) as any,
@@ -158,6 +171,10 @@ export const goalsSection = TemplateWrapper({
                 and(
                   Query('type').match(Condition.Equals('achieved')),
                   Item().path('status').match(Condition.Equals('ACHIEVED')),
+                ),
+                and(
+                  Query('type').match(Condition.Equals('removed')),
+                  Item().path('status').match(Condition.Equals('REMOVED')),
                 ),
               ),
             ),
@@ -260,7 +277,11 @@ export const goalsSection = TemplateWrapper({
                                 }),
                               ),
                             actions: [
-                              when(Item().path('status').match(Condition.Equals('ACHIEVED')))
+                              when(
+                                Item()
+                                  .path('status')
+                                  .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
+                              )
                                 .then({
                                   text: 'View details',
                                   href: '#',
@@ -289,6 +310,7 @@ export const blankPlanOverviewContent = HtmlBlock({
   hidden: or(
     Query('type').match(Condition.Equals('future')),
     Query('type').match(Condition.Equals('achieved')),
+    Query('type').match(Condition.Equals('removed')),
     Data('goals')
       .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
       .match(Condition.IsRequired()),

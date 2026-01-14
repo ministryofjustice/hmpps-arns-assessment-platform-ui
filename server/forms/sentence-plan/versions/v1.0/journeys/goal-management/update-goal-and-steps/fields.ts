@@ -197,7 +197,7 @@ const markAsAchievedButton = block<GovUKButton>({
 
 const removeGoalLink = HtmlBlock({
   content: Format(
-    `<p class="govuk-body"><a href="../../goal/%1/confirm-delete-goal" class="govuk-link">Remove goal from plan</a></p>`,
+    `<p class="govuk-body"><a href="../../goal/%1/confirm-remove-goal" class="govuk-link">Remove goal from plan</a></p>`,
     Data('activeGoal.uuid'),
   ),
 })
