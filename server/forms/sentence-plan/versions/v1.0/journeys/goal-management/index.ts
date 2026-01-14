@@ -7,8 +7,7 @@ import { confirmDeleteGoalStep } from './confirm-delete-goal/step'
 import { confirmIfAchievedStep } from './confirm-if-achieved/step'
 import { confirmAddGoalStep } from './confirm-readd-goal/step'
 import { removeGoalStep } from './confirm-remove-goal/step'
-import { viewAchievedGoalStep } from './view-achieved-goal/step'
-import { viewRemovedGoalStep } from './view-removed-goal/step'
+import { viewInactiveGoalStep } from './view-inactive-goal/step'
 import { updateGoalAndStepsStep } from './update-goal-and-steps/step'
 
 export const goalManagementJourney = journey({
@@ -21,11 +20,10 @@ export const goalManagementJourney = journey({
     changeGoalStep,
     confirmIfAchievedStep,
     confirmAchievedGoalStep,
-    viewAchievedGoalStep,
     confirmDeleteGoalStep,
     removeGoalStep,
     updateGoalAndStepsStep,
     confirmAddGoalStep,
-    viewRemovedGoalStep,
+    viewInactiveGoalStep,
   ],
 })

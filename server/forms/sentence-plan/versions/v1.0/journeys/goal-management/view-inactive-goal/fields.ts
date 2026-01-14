@@ -1,30 +1,58 @@
 import { block, Data, Format, Item, when } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
-import { GovUKDetails } from '@form-engine-govuk-components/components'
+import { GovUKDetails, GovUKButton } from '@form-engine-govuk-components/components'
 import { Transformer } from '@form-engine/registry/transformers'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { Condition } from '@form-engine/registry/conditions'
 
+/**
+ * Shared fields for viewing inactive goals (achieved or removed)
+ */
+
 export const pageHeading = block<HtmlBlock>({
   variant: 'html',
-  content: Format(
-    `<span class="govuk-caption-l">%1</span>
-    <h1 class="govuk-heading-l">View goal details</h1>
-    <h2 class="govuk-heading-m">Goal: %2</h2>`,
-    Data('activeGoal.areaOfNeedLabel'),
-    Data('activeGoal.title'),
-  ),
+  content: when(Data('activeGoal.relatedAreasOfNeedLabels').match(Condition.IsRequired()))
+    .then(
+      Format(
+        `<span class="govuk-caption-l">%1 (and %2)</span>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-2">View goal details</h1>
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Goal: %3</h2>`,
+        Data('activeGoal.areaOfNeedLabel'),
+        Data('activeGoal.relatedAreasOfNeedLabels').pipe(
+          Transformer.Array.Join(', '),
+          Transformer.String.ToLowerCase(),
+        ),
+        Data('activeGoal.title'),
+      ),
+    )
+    .else(
+      Format(
+        `<span class="govuk-caption-l">%1</span>
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-2">View goal details</h1>
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Goal: %2</h2>`,
+        Data('activeGoal.areaOfNeedLabel'),
+        Data('activeGoal.title'),
+      ),
+    ),
 })
 
 export const goalInfo = block<HtmlBlock>({
   variant: 'html',
-  content: Format(
-    `<p class="govuk-body">Marked as achieved on %1.`,
-    Data('achieved.statusDate').pipe(Transformer.Date.ToUKLongDate()),
-    Data('activeGoal.uuid'),
-  ),
+  content: when(Data('activeGoal.status').match(Condition.Equals('ACHIEVED')))
+    .then(
+      Format(
+        '<p class="govuk-body">Marked as achieved on %1.</p>',
+        Data('activeGoal.statusDate').pipe(Transformer.Date.ToUKLongDate()),
+      ),
+    )
+    .else(
+      Format(
+        '<p class="govuk-body">Removed on %1.</p>',
+        Data('activeGoal.statusDate').pipe(Transformer.Date.ToUKLongDate()),
+      ),
+    ),
 })
 
 const reviewStepsTable = TemplateWrapper({
@@ -133,4 +161,14 @@ export const viewAllNotesSection = block<GovUKDetails>({
       },
     }),
   ],
+})
+
+// TODO - wiring up of this button will be done in SP2-1741
+export const addToPlanButton = block<GovUKButton>({
+  variant: 'govukButton',
+  text: 'Add to plan',
+  name: 'action',
+  value: 're-add',
+  classes: 'govuk-button--secondary',
+  hidden: Data('activeGoal.status').not.match(Condition.Equals('REMOVED')),
 })
