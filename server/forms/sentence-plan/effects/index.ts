@@ -26,6 +26,9 @@ import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSes
 import { saveStepEditSession } from './steps/saveStepEditSession'
 import { setSessionAccessType } from './access/setSessionAccessType'
 
+export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
+export type { AgreementStatus } from './types'
+
 /**
  * Sentence Plan Effects
  *

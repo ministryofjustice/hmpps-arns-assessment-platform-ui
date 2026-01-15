@@ -1,9 +1,10 @@
-import { Data, loadTransition, next, Post, step, submitTransition } from '@form-engine/form/builders'
+import { accessTransition, Data, loadTransition, next, Post, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, allStepsCompletedField, hasAchievedGoal, saveAndContinueButton } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
 
 /**
+ * This page is only accessible after a plan has been agreed.
  * For automatically asking the user to confirm a goal is achieved
  * if they have marked all steps as 'Complete' on a goal.
  */
@@ -21,6 +22,19 @@ export const confirmIfAchievedStep = step({
   onLoad: [
     loadTransition({
       effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.setActiveGoalContext()],
+    }),
+  ],
+
+  onAccess: [
+    // redirect if plan has not been agreed (DRAFT plans cannot access this page)
+    accessTransition({
+      guards: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
+      redirect: [next({ goto: '../../plan/overview' })],
+    }),
+    // redirect if goal not found
+    accessTransition({
+      guards: Data('activeGoal').not.match(Condition.IsRequired()),
+      redirect: [next({ goto: '../../plan/overview' })],
     }),
   ],
 

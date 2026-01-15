@@ -19,7 +19,6 @@ export {
   withFutureGoals,
   withMixedGoals,
   withGoals,
-  withAgreedPlanAndGoals,
 } from './sentencePlanFactories'
 
 export type {
@@ -27,11 +26,11 @@ export type {
   StepConfig,
   GoalStatus,
   StepStatus,
-  AgreementStatus,
   AreaOfNeedSlug,
   CreatedSentencePlan,
   CreatedGoal,
   CreatedStep,
+  PlanAgreementStatus,
 } from './SentencePlanBuilder'
 
 // Types
