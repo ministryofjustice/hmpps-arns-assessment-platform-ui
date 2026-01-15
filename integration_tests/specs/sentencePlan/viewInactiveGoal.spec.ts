@@ -42,7 +42,7 @@ test.describe('View inactive goal page', () => {
       expect(headerText).toContain('View goal details')
 
       const goalHeading = await viewPage.getGoalHeading()
-      expect(goalHeading).toContain('Find stable accommodation')
+      expect(goalHeading).toContain('Goal: Find stable housing')
 
       // Verify status text shows "Marked as achieved"
       const statusText = await viewPage.getStatusText()
@@ -365,7 +365,7 @@ test.describe('View inactive goal page', () => {
     })
   })
 
-  test.describe('access control', () => {
+  test.describe('Check re-direct', () => {
     test('redirects to plan overview if goal not found', async ({ page, aapClient }) => {
       const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
       const invalidGoalUuid = '00000000-0000-0000-0000-000000000000'
