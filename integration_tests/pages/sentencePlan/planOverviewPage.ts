@@ -114,4 +114,34 @@ export default class PlanOverviewPage extends AbstractPage {
     const viewDetailsLink = card.getByRole('link', { name: /view details/i })
     return (await viewDetailsLink.count()) > 0
   }
+
+  async goalCardHasMoveUpButton(index: number): Promise<boolean> {
+    const card = await this.getGoalCardByIndex(index)
+    const moveUpButton = card.locator('[data-qa="move-goal-up"]')
+    return (await moveUpButton.count()) > 0
+  }
+
+  async goalCardHasMoveDownButton(index: number): Promise<boolean> {
+    const card = await this.getGoalCardByIndex(index)
+    const moveDownButton = card.locator('[data-qa="move-goal-down"]')
+    return (await moveDownButton.count()) > 0
+  }
+
+  async clickMoveGoalUp(index: number): Promise<void> {
+    const card = await this.getGoalCardByIndex(index)
+    const moveUpButton = card.locator('[data-qa="move-goal-up"]')
+    await moveUpButton.click()
+  }
+
+  async clickMoveGoalDown(index: number): Promise<void> {
+    const card = await this.getGoalCardByIndex(index)
+    const moveDownButton = card.locator('[data-qa="move-goal-down"]')
+    await moveDownButton.click()
+  }
+
+  async getAllGoalTitles(): Promise<string[]> {
+    const count = await this.goalCards.count()
+    const indices = Array.from({ length: count }, (_, i) => i)
+    return Promise.all(indices.map(i => this.getGoalCardTitle(i)))
+  }
 }

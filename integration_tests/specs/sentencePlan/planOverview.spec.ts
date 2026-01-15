@@ -232,4 +232,148 @@ test.describe('Plan Overview Page', () => {
       expect(hasDeleteLink).toBe(true)
     })
   })
+
+  test.describe('Goal Reordering', () => {
+    test.describe('Button Visibility', () => {
+      test('single goal shows no move buttons', async ({ page, aapClient }) => {
+        const plan = await withCurrentGoals(1).create(aapClient)
+        await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+        const hasMoveUp = await planOverviewPage.goalCardHasMoveUpButton(0)
+        const hasMoveDown = await planOverviewPage.goalCardHasMoveDownButton(0)
+
+        expect(hasMoveUp).toBe(false)
+        expect(hasMoveDown).toBe(false)
+      })
+
+      test('first goal only shows Move down button', async ({ page, aapClient }) => {
+        const plan = await withCurrentGoals(2).create(aapClient)
+        await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+        const hasMoveUp = await planOverviewPage.goalCardHasMoveUpButton(0)
+        const hasMoveDown = await planOverviewPage.goalCardHasMoveDownButton(0)
+
+        expect(hasMoveUp).toBe(false)
+        expect(hasMoveDown).toBe(true)
+      })
+
+      test('last goal only shows Move up button', async ({ page, aapClient }) => {
+        const plan = await withCurrentGoals(2).create(aapClient)
+        await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+        const hasMoveUp = await planOverviewPage.goalCardHasMoveUpButton(1)
+        const hasMoveDown = await planOverviewPage.goalCardHasMoveDownButton(1)
+
+        expect(hasMoveUp).toBe(true)
+        expect(hasMoveDown).toBe(false)
+      })
+
+      test('middle goal shows both move buttons', async ({ page, aapClient }) => {
+        const plan = await withCurrentGoals(3).create(aapClient)
+        await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+        const hasMoveUp = await planOverviewPage.goalCardHasMoveUpButton(1)
+        const hasMoveDown = await planOverviewPage.goalCardHasMoveDownButton(1)
+
+        expect(hasMoveUp).toBe(true)
+        expect(hasMoveDown).toBe(true)
+      })
+    })
+
+    test.describe('Reordering Functionality', () => {
+      test('clicking Move down swaps goal with the one below', async ({ page, aapClient }) => {
+        const plan = await withGoals([
+          { title: 'Goal A', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+          { title: 'Goal B', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+          { title: 'Goal C', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+        ]).create(aapClient)
+        await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+        // Verify initial order
+        const titlesBefore = await planOverviewPage.getAllGoalTitles()
+        expect(titlesBefore[0]).toContain('Goal A')
+        expect(titlesBefore[1]).toContain('Goal B')
+        expect(titlesBefore[2]).toContain('Goal C')
+
+        // Move Goal A down
+        await planOverviewPage.clickMoveGoalDown(0)
+
+        // Verify page reloads and order has changed
+        await PlanOverviewPage.verifyOnPage(page)
+        const titlesAfter = await planOverviewPage.getAllGoalTitles()
+        expect(titlesAfter[0]).toContain('Goal B')
+        expect(titlesAfter[1]).toContain('Goal A')
+        expect(titlesAfter[2]).toContain('Goal C')
+      })
+
+      test('clicking Move up swaps goal with the one above', async ({ page, aapClient }) => {
+        const plan = await withGoals([
+          { title: 'Goal A', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+          { title: 'Goal B', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+          { title: 'Goal C', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+        ]).create(aapClient)
+        await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+        // Move Goal C up
+        await planOverviewPage.clickMoveGoalUp(2)
+
+        // Verify order has changed
+        await PlanOverviewPage.verifyOnPage(page)
+        const titlesAfter = await planOverviewPage.getAllGoalTitles()
+        expect(titlesAfter[0]).toContain('Goal A')
+        expect(titlesAfter[1]).toContain('Goal C')
+        expect(titlesAfter[2]).toContain('Goal B')
+      })
+
+      test('reordering stays on correct tab', async ({ page, aapClient }) => {
+        const plan = await withFutureGoals(2).create(aapClient)
+        await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+        await planOverviewPage.clickFutureGoalsTab()
+        await expect(page).toHaveURL(/type=future/)
+
+        // Move first future goal down
+        await planOverviewPage.clickMoveGoalDown(0)
+
+        // Should stay on future tab
+        await expect(page).toHaveURL(/type=future/)
+      })
+
+      test('goals only reorder within their status group', async ({ page, aapClient }) => {
+        // Create plan with both current and future goals
+        const plan = await withGoals([
+          { title: 'Current Goal 1', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+          { title: 'Current Goal 2', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+          { title: 'Future Goal 1', status: 'FUTURE', areaOfNeed: 'accommodation', targetDate: '2025-12-01' },
+          { title: 'Future Goal 2', status: 'FUTURE', areaOfNeed: 'accommodation', targetDate: '2025-12-01' },
+        ]).create(aapClient)
+        await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+        // On current goals tab, last current goal should only have Move up (not Move down)
+        // because it can't move into future goals
+        const lastCurrentHasMoveDown = await planOverviewPage.goalCardHasMoveDownButton(1)
+        expect(lastCurrentHasMoveDown).toBe(false)
+
+        // Switch to future tab and verify first future goal only has Move down
+        await planOverviewPage.clickFutureGoalsTab()
+        const firstFutureHasMoveUp = await planOverviewPage.goalCardHasMoveUpButton(0)
+        expect(firstFutureHasMoveUp).toBe(false)
+      })
+    })
+  })
 })
