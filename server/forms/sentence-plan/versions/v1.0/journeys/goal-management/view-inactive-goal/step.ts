@@ -44,7 +44,6 @@ export const viewInactiveGoalStep = step({
   ],
 
   onAccess: [
-    // If goal not found, redirect to plan overview
     accessTransition({
       guards: Data('activeGoal').not.match(Condition.IsRequired()),
       redirect: [next({ goto: '../../plan/overview' })],
@@ -52,14 +51,12 @@ export const viewInactiveGoalStep = step({
   ],
 
   onSubmission: [
-    // Handle re-add button (only visible for REMOVED goals)
     submitTransition({
       when: Post('action').match(Condition.Equals('re-add')),
       onAlways: {
         next: [next({ goto: '/confirm-readd-goal' })],
       },
     }),
-    // Handle back to plan button (fallback for any other action)
     submitTransition({
       onAlways: {
         next: [next({ goto: '/plan-overview/plan' })],
