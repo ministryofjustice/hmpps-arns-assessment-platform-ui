@@ -7,51 +7,14 @@ import type {
 } from '../../server/interfaces/aap-api/commandResult'
 import { AssessmentBuilder, CollectionItemBuilder } from './AssessmentBuilder'
 import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
-import type { CreatedAssessment, CreatedCollectionItem } from './types'
-
-/**
- * Goal status enum matching the form-engine types
- */
-export type GoalStatus = 'ACTIVE' | 'FUTURE'
-
-/**
- * Step status enum matching the form-engine types
- */
-export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
-
-/**
- * Valid area of need slugs
- */
-export type AreaOfNeedSlug =
-  | 'accommodation'
-  | 'employment-and-education'
-  | 'finances'
-  | 'drug-use'
-  | 'alcohol-use'
-  | 'health-and-wellbeing'
-  | 'personal-relationships-and-community'
-  | 'thinking-behaviours-and-attitudes'
-
-/**
- * Step configuration for test setup
- */
-export interface StepConfig {
-  actor: string
-  description: string
-  status?: StepStatus
-}
-
-/**
- * Goal configuration for test setup
- */
-export interface GoalConfig {
-  title: string
-  areaOfNeed: AreaOfNeedSlug | string
-  status?: GoalStatus
-  targetDate?: string
-  relatedAreasOfNeed?: string[]
-  steps?: StepConfig[]
-}
+import type {
+  CreatedAssessment,
+  CreatedCollectionItem,
+  GoalStatus,
+  PlanAgreementStatus,
+  StepConfig,
+  GoalConfig,
+} from './types'
 
 /**
  * Created sentence plan with typed goal information
@@ -80,9 +43,6 @@ export interface CreatedStep extends CreatedCollectionItem {
 
 const single = (value: string): SingleValue => ({ type: 'Single', value })
 const multi = (values: string[]): MultiValue => ({ type: 'Multi', values })
-
-// plan agreement status:
-export type PlanAgreementStatus = 'AGREED' | 'DO_NOT_AGREE' | 'COULD_NOT_ANSWER'
 
 /**
  * Fluent builder for creating SENTENCE_PLAN assessments with goals and steps.
@@ -113,8 +73,10 @@ export class SentencePlanBuilder {
   }
 
   // Set the plan agreement status ('AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER')
-  withAgreementStatus(status: PlanAgreementStatus): this {
-    this.agreementStatus = status
+  withAgreementStatus(status?: PlanAgreementStatus): this {
+    if (status) {
+      this.agreementStatus = status
+    }
     return this
   }
 
