@@ -9,6 +9,27 @@ import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
 
+/**
+ * Builds move buttons for goal cards.
+ * Shows/hides buttons based on position within status group.
+ */
+function buildMoveButtonProps() {
+  return {
+    showMoveUp: when(Item().path('isFirstInStatus').match(Condition.Equals(true)))
+      .then(false)
+      .else(true),
+    showMoveDown: when(Item().path('isLastInStatus').match(Condition.Equals(true)))
+      .then(false)
+      .else(true),
+    moveUpHref: Format('reorder-goal?goalUuid=%1&direction=up&status=%2', Item().path('uuid'), Item().path('status')),
+    moveDownHref: Format(
+      'reorder-goal?goalUuid=%1&direction=down&status=%2',
+      Item().path('uuid'),
+      Item().path('status'),
+    ),
+  }
+}
+
 export const noActiveGoalsErrorMessage = HtmlBlock({
   hidden: Query('error').not.match(Condition.Equals('no-active-goals')),
   content: `<div class="govuk-error-summary" data-module="govuk-error-summary">
@@ -248,6 +269,7 @@ export const goalsSection = TemplateWrapper({
                               },
                             ],
                             index: Item().index(),
+                            ...buildMoveButtonProps(),
                           }),
                         ],
                       },
@@ -292,6 +314,7 @@ export const goalsSection = TemplateWrapper({
                                 }) as any,
                             ],
                             index: Item().index(),
+                            ...buildMoveButtonProps(),
                           }),
                         ],
                       },

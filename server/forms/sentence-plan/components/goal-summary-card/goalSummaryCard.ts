@@ -3,6 +3,7 @@ import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buil
 import {
   BlockDefinition,
   ConditionalArray,
+  ConditionalBoolean,
   ConditionalNumber,
   ConditionalString,
   EvaluatedBlock,
@@ -113,6 +114,18 @@ export interface GoalSummaryCardProps {
 
   /** Additional CSS classes */
   classes?: ConditionalString
+
+  /** Whether to show the "Move goal up" link */
+  showMoveUp?: ConditionalBoolean
+
+  /** Whether to show the "Move goal down" link */
+  showMoveDown?: ConditionalBoolean
+
+  /** URL for the "Move goal up" action */
+  moveUpHref?: ConditionalString
+
+  /** URL for the "Move goal down" action */
+  moveDownHref?: ConditionalString
 }
 
 /**
@@ -163,12 +176,7 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
 
   // Build related areas text
   const relatedAreasText =
-    relatedAreasOfNeed.length > 0
-      ? [...relatedAreasOfNeed]
-          .sort()
-          .join('; ')
-          .toLowerCase()
-      : undefined
+    relatedAreasOfNeed.length > 0 ? [...relatedAreasOfNeed].sort().join('; ').toLowerCase() : undefined
 
   return {
     goalTitle: block.goalTitle,
@@ -188,6 +196,10 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
     errorMessage: block.errorMessage,
     index: block.index,
     classes: block.classes,
+    showMoveUp: block.showMoveUp,
+    showMoveDown: block.showMoveDown,
+    moveUpHref: block.moveUpHref,
+    moveDownHref: block.moveDownHref,
   }
 }
 
