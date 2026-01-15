@@ -79,7 +79,7 @@ export const deriveGoalsWithStepsFromAssessment = () => async (context: Sentence
   const actorLabels = context.getData('actorLabels')
   const areasOfNeed = context.getData('areasOfNeed')
 
-  const goals: DerivedGoal[] = goalsCollection.items.map(item => {
+  const goals: DerivedGoal[] = goalsCollection.items.map((item, collectionIndex) => {
     const answers = unwrapAll<GoalAnswers>(item.answers)
     const properties = unwrapAll<GoalProperties>(item.properties)
 
@@ -131,6 +131,26 @@ export const deriveGoalsWithStepsFromAssessment = () => async (context: Sentence
       steps,
       notesCollectionUuid: notesCollections[0]?.uuid,
       notes,
+      collectionIndex,
+      isFirstInStatus: false, // Will be calculated below
+      isLastInStatus: false, // Will be calculated below
+    }
+  })
+
+  // Calculate position flags within each status group
+  // Group goals by status, maintaining collection order
+  const goalsByStatus = new Map<string, DerivedGoal[]>()
+  goals.forEach(goal => {
+    const statusGoals = goalsByStatus.get(goal.status) ?? []
+    statusGoals.push(goal)
+    goalsByStatus.set(goal.status, statusGoals)
+  })
+
+  // Mark first and last goals within each status group
+  goalsByStatus.forEach(statusGoals => {
+    if (statusGoals.length > 0) {
+      statusGoals[0].isFirstInStatus = true
+      statusGoals[statusGoals.length - 1].isLastInStatus = true
     }
   })
 

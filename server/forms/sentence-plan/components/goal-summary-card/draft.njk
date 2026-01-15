@@ -150,6 +150,28 @@
         {% endif %}
       </p>
 
+      {#- Move goal buttons -#}
+      {% if params.showMoveUp or params.showMoveDown %}
+        <div class="govuk-button-group">
+          {% if params.showMoveUp and params.moveUpHref %}
+            {{ govukButton({
+              text: "Move goal up",
+              href: params.moveUpHref,
+              classes: "govuk-button--secondary",
+              attributes: { "data-qa": "move-goal-up" }
+            }) }}
+          {% endif %}
+          {% if params.showMoveDown and params.moveDownHref %}
+            {{ govukButton({
+              text: "Move goal down",
+              href: params.moveDownHref,
+              classes: "govuk-button--secondary",
+              attributes: { "data-qa": "move-goal-down" }
+            }) }}
+          {% endif %}
+        </div>
+      {% endif %}
+
       {#- Buttons -#}
       {% if params.buttons.length > 0 %}
         <div class="govuk-button-group">

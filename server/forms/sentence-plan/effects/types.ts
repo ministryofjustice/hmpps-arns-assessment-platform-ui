@@ -69,6 +69,21 @@ export interface DerivedGoal {
   steps: DerivedStep[]
   notesCollectionUuid?: string
   notes: DerivedNote[]
+  /**
+   * Position in the underlying GOALS collection.
+   * Used by reorderGoal effect to calculate swap positions.
+   */
+  collectionIndex: number
+  /**
+   * First goal of its status group (ACTIVE, FUTURE, etc).
+   * Controls visibility of "Move goal up" button on plan overview.
+   */
+  isFirstInStatus: boolean
+  /**
+   * Last goal of its status group (ACTIVE, FUTURE, etc).
+   * Controls visibility of "Move goal down" button on plan overview.
+   */
+  isLastInStatus: boolean
 }
 
 export interface DerivedPlanAgreement {
