@@ -3,7 +3,7 @@
 
 services:
   wiremock:
-    image: wiremock/wiremock:3.3.1
+    image: wiremock/wiremock:3.13.2
     networks:
       - hmpps
     depends_on:
@@ -15,7 +15,7 @@ services:
     volumes:
       - ./wiremock/mappings:/home/wiremock/mappings
     environment:
-      WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:8080
+      WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:9090
       WIREMOCK_AAP_API_URL: http://api:8080
       WIREMOCK_COORDINATOR_API_URL: http://arns-coordinator:8080
       WIREMOCK_HANDOVER_URL: http://arns-handover:7070

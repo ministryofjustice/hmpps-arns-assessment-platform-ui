@@ -9,6 +9,7 @@ import { Commands } from '../../../../interfaces/aap-api/command'
  * This effect:
  * 1. Updates the status of each step based on form fields (step_status_0, step_status_1, etc.)
  * 2. Adds a progress note if the user entered one
+ * 3. sets 'allStepsCompleted' boolean variable in context (used in confirm-if-achieved journey)
  *
  * Form fields used:
  * - step_status_{index}: Status for each step
@@ -112,4 +113,14 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
   if (commands.length > 0) {
     await deps.api.executeCommands(...commands)
   }
+
+  // check if all steps are now COMPLETED (using the new statuses from form submission):
+  const allStepsCompleted =
+    steps.length > 0 &&
+    steps.every((_step: any, index: number) => {
+      const newStatus = context.getAnswer(`step_status_${index}`)
+      return newStatus === 'COMPLETED'
+    })
+
+  context.setData('allStepsCompleted', allStepsCompleted)
 }

@@ -21,19 +21,16 @@ export {
   withGoals,
 } from './sentencePlanFactories'
 
+export type { CreatedSentencePlan, CreatedGoal, CreatedStep } from './SentencePlanBuilder'
+
+// Shared types
 export type {
   GoalConfig,
   StepConfig,
   GoalStatus,
   StepStatus,
   AreaOfNeedSlug,
-  CreatedSentencePlan,
-  CreatedGoal,
-  CreatedStep,
-} from './SentencePlanBuilder'
-
-// Types
-export type {
+  PlanAgreementStatus,
   AssessmentDefinition,
   CollectionDefinition,
   CollectionItemDefinition,

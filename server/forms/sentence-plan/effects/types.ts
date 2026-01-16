@@ -7,7 +7,24 @@ import { AssessmentPlatformApiClient, DeliusApiClient } from '../../../data'
 
 export type GoalStatus = 'ACTIVE' | 'FUTURE'
 export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
-export type AgreementStatus = 'AGREED' | 'DO_NOT_AGREE' | 'COULD_NOT_ANSWER'
+
+// Plan agreement statuses - DRAFT is the initial status before any agreement action
+export type AgreementStatus =
+  | 'DRAFT'
+  | 'AGREED'
+  | 'DO_NOT_AGREE'
+  | 'COULD_NOT_ANSWER'
+  | 'UPDATED_AGREED'
+  | 'UPDATED_DO_NOT_AGREE'
+
+// Statuses that indicate a plan has been through the agreement process (not draft)
+export const POST_AGREEMENT_PROCESS_STATUSES: AgreementStatus[] = [
+  'AGREED',
+  'DO_NOT_AGREE',
+  'COULD_NOT_ANSWER',
+  'UPDATED_AGREED',
+  'UPDATED_DO_NOT_AGREE',
+]
 
 export interface RawCollection {
   name: string
@@ -52,6 +69,21 @@ export interface DerivedGoal {
   steps: DerivedStep[]
   notesCollectionUuid?: string
   notes: DerivedNote[]
+  /**
+   * Position in the underlying GOALS collection.
+   * Used by reorderGoal effect to calculate swap positions.
+   */
+  collectionIndex: number
+  /**
+   * First goal of its status group (ACTIVE, FUTURE, etc).
+   * Controls visibility of "Move goal up" button on plan overview.
+   */
+  isFirstInStatus: boolean
+  /**
+   * Last goal of its status group (ACTIVE, FUTURE, etc).
+   * Controls visibility of "Move goal down" button on plan overview.
+   */
+  isLastInStatus: boolean
 }
 
 export interface DerivedPlanAgreement {

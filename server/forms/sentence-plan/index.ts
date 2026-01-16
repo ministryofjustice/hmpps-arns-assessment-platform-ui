@@ -5,6 +5,7 @@ import { SentencePlanEffectsRegistry } from './effects'
 import { sentencePlanComponents } from './components'
 import { oasysAccessStep } from './access-steps/oasys-access/step'
 import { mpopAccessStep } from './access-steps/mpop-access/step'
+import config from '../../config'
 
 /**
  * Root Sentence Plan Journey
@@ -32,6 +33,7 @@ const sentencePlanRootJourney = journey({
  * Root Sentence Plan Form Package
  */
 export default createFormPackage({
+  enabled: config.forms.sentencePlan.enabled,
   journey: sentencePlanRootJourney,
   components: sentencePlanComponents,
   createRegistries: (deps: SentencePlanEffectsDeps) => ({

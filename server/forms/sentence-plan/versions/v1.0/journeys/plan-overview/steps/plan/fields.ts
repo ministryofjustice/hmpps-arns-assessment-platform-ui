@@ -9,6 +9,27 @@ import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
 
+/**
+ * Builds move buttons for goal cards.
+ * Shows/hides buttons based on position within status group.
+ */
+function buildMoveButtonProps() {
+  return {
+    showMoveUp: when(Item().path('isFirstInStatus').match(Condition.Equals(true)))
+      .then(false)
+      .else(true),
+    showMoveDown: when(Item().path('isLastInStatus').match(Condition.Equals(true)))
+      .then(false)
+      .else(true),
+    moveUpHref: Format('reorder-goal?goalUuid=%1&direction=up&status=%2', Item().path('uuid'), Item().path('status')),
+    moveDownHref: Format(
+      'reorder-goal?goalUuid=%1&direction=down&status=%2',
+      Item().path('uuid'),
+      Item().path('status'),
+    ),
+  }
+}
+
 export const noActiveGoalsErrorMessage = HtmlBlock({
   hidden: Query('error').not.match(Condition.Equals('no-active-goals')),
   content: `<div class="govuk-error-summary" data-module="govuk-error-summary">
@@ -60,6 +81,8 @@ export const noStepsErrorMessage = HtmlBlock({
   ),
 })
 
+// Calculate goal counts for sub-navigation tabs
+// Achieved and removed tabs are conditionally shown only when count > 0
 const activeGoalsCount = Data('goals')
   .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
   .pipe(Transformer.Array.Length())
@@ -70,6 +93,10 @@ const futureGoalsCount = Data('goals')
 
 const achievedGoalsCount = Data('goals')
   .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACHIEVED'))))
+  .pipe(Transformer.Array.Length())
+
+const removedGoalsCount = Data('goals')
+  .each(Iterator.Filter(Item().path('status').match(Condition.Equals('REMOVED'))))
   .pipe(Transformer.Array.Length())
 
 export const planCreatedMessage = HtmlBlock({
@@ -110,6 +137,13 @@ export const subNavigation = MOJSubNavigation({
       text: Format('Achieved goals (%1)', achievedGoalsCount),
       href: 'overview?type=achieved',
       active: when(Query('type').match(Condition.Equals('achieved')))
+        .then(true)
+        .else(false),
+    }) as any,
+    when(removedGoalsCount.match(Condition.Number.GreaterThan(0))).then({
+      text: Format('Removed goals (%1)', removedGoalsCount),
+      href: 'overview?type=removed',
+      active: when(Query('type').match(Condition.Equals('removed')))
         .then(true)
         .else(false),
     }) as any,
@@ -158,6 +192,10 @@ export const goalsSection = TemplateWrapper({
                 and(
                   Query('type').match(Condition.Equals('achieved')),
                   Item().path('status').match(Condition.Equals('ACHIEVED')),
+                ),
+                and(
+                  Query('type').match(Condition.Equals('removed')),
+                  Item().path('status').match(Condition.Equals('REMOVED')),
                 ),
               ),
             ),
@@ -231,6 +269,7 @@ export const goalsSection = TemplateWrapper({
                               },
                             ],
                             index: Item().index(),
+                            ...buildMoveButtonProps(),
                           }),
                         ],
                       },
@@ -260,10 +299,14 @@ export const goalsSection = TemplateWrapper({
                                 }),
                               ),
                             actions: [
-                              when(Item().path('status').match(Condition.Equals('ACHIEVED')))
+                              when(
+                                Item()
+                                  .path('status')
+                                  .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
+                              )
                                 .then({
                                   text: 'View details',
-                                  href: '#',
+                                  href: Format('../goal/%1/view-inactive-goal', Item().path('uuid')),
                                 })
                                 .else({
                                   text: 'Update',
@@ -271,6 +314,7 @@ export const goalsSection = TemplateWrapper({
                                 }) as any,
                             ],
                             index: Item().index(),
+                            ...buildMoveButtonProps(),
                           }),
                         ],
                       },
@@ -289,6 +333,7 @@ export const blankPlanOverviewContent = HtmlBlock({
   hidden: or(
     Query('type').match(Condition.Equals('future')),
     Query('type').match(Condition.Equals('achieved')),
+    Query('type').match(Condition.Equals('removed')),
     Data('goals')
       .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
       .match(Condition.IsRequired()),

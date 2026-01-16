@@ -42,7 +42,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
     launchOptions: {
       slowMo: 150,
       args: process.env.CI
-        ? ['--unsafely-treat-insecure-origin-as-secure=http://hmpps-auth:8080,http://ui:3000,http://wiremock:8080']
+        ? ['--unsafely-treat-insecure-origin-as-secure=http://hmpps-auth:9090,http://ui:3000,http://wiremock:8080']
         : [],
     },
     screenshot: 'only-on-failure',

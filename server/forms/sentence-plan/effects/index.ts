@@ -18,12 +18,17 @@ import { loadActiveGoalForEdit } from './goals/loadActiveGoalForEdit'
 import { updateActiveGoal } from './goals/updateActiveGoal'
 import { updateGoalProgress } from './goals/updateGoalProgress'
 import { markGoalAsAchieved } from './goals/markGoalAsAchieved'
+import { markGoalAsRemoved } from './goals/markGoalAsRemoved'
 import { deleteActiveGoal } from './goals/deleteActiveGoal'
+import { reorderGoal } from './goals/reorderGoal'
 import { initializeStepEditSession } from './steps/initializeStepEditSession'
 import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
 import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
 import { saveStepEditSession } from './steps/saveStepEditSession'
 import { setSessionAccessType } from './access/setSessionAccessType'
+
+export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
+export type { AgreementStatus } from './types'
 
 /**
  * Sentence Plan Effects
@@ -74,7 +79,9 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     updateActiveGoal,
     updateGoalProgress,
     markGoalAsAchieved,
+    markGoalAsRemoved,
     deleteActiveGoal,
+    reorderGoal,
 
     // Steps
     initializeStepEditSession,

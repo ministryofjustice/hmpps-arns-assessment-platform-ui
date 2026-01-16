@@ -7,51 +7,14 @@ import type {
 } from '../../server/interfaces/aap-api/commandResult'
 import { AssessmentBuilder, CollectionItemBuilder } from './AssessmentBuilder'
 import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
-import type { CreatedAssessment, CreatedCollectionItem } from './types'
-
-/**
- * Goal status enum matching the form-engine types
- */
-export type GoalStatus = 'ACTIVE' | 'FUTURE'
-
-/**
- * Step status enum matching the form-engine types
- */
-export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
-
-/**
- * Valid area of need slugs
- */
-export type AreaOfNeedSlug =
-  | 'accommodation'
-  | 'employment-and-education'
-  | 'finances'
-  | 'drug-use'
-  | 'alcohol-use'
-  | 'health-and-wellbeing'
-  | 'personal-relationships-and-community'
-  | 'thinking-behaviours-and-attitudes'
-
-/**
- * Step configuration for test setup
- */
-export interface StepConfig {
-  actor: string
-  description: string
-  status?: StepStatus
-}
-
-/**
- * Goal configuration for test setup
- */
-export interface GoalConfig {
-  title: string
-  areaOfNeed: AreaOfNeedSlug | string
-  status?: GoalStatus
-  targetDate?: string
-  relatedAreasOfNeed?: string[]
-  steps?: StepConfig[]
-}
+import type {
+  CreatedAssessment,
+  CreatedCollectionItem,
+  GoalStatus,
+  PlanAgreementStatus,
+  StepConfig,
+  GoalConfig,
+} from './types'
 
 /**
  * Created sentence plan with typed goal information
@@ -91,22 +54,7 @@ export class SentencePlanBuilder {
 
   private user: User = { id: 'e2e-test', name: 'E2E_TEST' }
 
-  /**
-   * Set a specific CRN for this sentence plan.
-   * Only used with create() - if not called, a random CRN will be generated.
-   */
-  forCrn(crn: string): this {
-    this.crn = crn
-    return this
-  }
-
-  /**
-   * Set the user context for API calls
-   */
-  asUser(user: User): this {
-    this.user = user
-    return this
-  }
+  private agreementStatus: PlanAgreementStatus | undefined
 
   /**
    * Add a goal to the sentence plan
@@ -121,6 +69,14 @@ export class SentencePlanBuilder {
    */
   withGoals(configs: GoalConfig[]): this {
     configs.forEach(config => this.goals.push(config))
+    return this
+  }
+
+  // Set the plan agreement status ('AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER')
+  withAgreementStatus(status?: PlanAgreementStatus): this {
+    if (status) {
+      this.agreementStatus = status
+    }
     return this
   }
 
@@ -154,6 +110,11 @@ export class SentencePlanBuilder {
     }
 
     const assessment = await builder.create(client)
+
+    // Add plan agreement if status is set
+    if (this.agreementStatus) {
+      await this.createPlanAgreement(client, assessment.uuid)
+    }
 
     // Map created collections to typed goals
     const goalsCollection = assessment.collections.find(c => c.name === 'GOALS')
@@ -372,5 +333,44 @@ export class SentencePlanBuilder {
       actor: config.actor,
       description: config.description,
     }
+  }
+
+  // Create a plan agreement record in the PLAN_AGREEMENTS collection:
+  private async createPlanAgreement(client: TestAapApiClient, assessmentUuid: string): Promise<void> {
+    if (!this.agreementStatus) {
+      return
+    }
+
+    const now = new Date().toISOString()
+
+    // map status to the agreement question value
+    const questionMap: Record<PlanAgreementStatus, string> = {
+      AGREED: 'yes',
+      DO_NOT_AGREE: 'no',
+      COULD_NOT_ANSWER: 'could_not_answer',
+    }
+
+    // create PLAN_AGREEMENTS collection
+    const collectionResult = await client.executeCommand<CreateCollectionCommandResult>({
+      type: 'CreateCollectionCommand',
+      name: 'PLAN_AGREEMENTS',
+      assessmentUuid,
+      user: this.user,
+    })
+
+    // add the agreement record
+    await client.executeCommand<AddCollectionItemCommandResult>({
+      type: 'AddCollectionItemCommand',
+      collectionUuid: collectionResult.collectionUuid,
+      assessmentUuid,
+      answers: {
+        agreement_question: single(questionMap[this.agreementStatus]),
+      },
+      properties: {
+        status: single(this.agreementStatus),
+        status_date: single(now),
+      },
+      user: this.user,
+    })
   }
 }

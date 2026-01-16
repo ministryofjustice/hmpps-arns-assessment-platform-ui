@@ -1,7 +1,7 @@
 SHELL = '/bin/bash'
 
 ## Useful to keep this the same for backend/frontend
-PROJECT_NAME = hmpps-arns-assessment-platform
+PROJECT_NAME = hmpps-assess-risks-and-needs
 
 ## Must match name of container in Docker
 SERVICE_NAME = ui

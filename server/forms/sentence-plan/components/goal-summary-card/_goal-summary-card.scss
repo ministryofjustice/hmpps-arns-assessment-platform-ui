@@ -4,6 +4,21 @@
     color: $govuk-link-colour;
   }
 
+  // Prevent button-as-link from turning blue when visited
+  a.govuk-button:visited {
+    color: govuk-colour("white");
+
+    &.govuk-button--secondary {
+      color: govuk-colour("black");
+    }
+  }
+
+  // Add spacing between areas of need and move buttons, reduce space below
+  &__areas-of-need + .govuk-button-group {
+    margin-top: govuk-spacing(4);
+    margin-bottom: 0;
+  }
+
   &__state-tag {
     margin-bottom: govuk-spacing(2);
   }
