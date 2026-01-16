@@ -4,7 +4,7 @@ VALUES ('hmpps-arns-assessment-platform-ui', 3600, '{}', null, 'authorization_co
 
 -- Add system client (S2S calls) for local dev with ARNS roles. Client secret is clientsecret
 INSERT INTO oauth_client_details (client_id, access_token_validity, additional_information, authorities, authorized_grant_types, autoapprove, client_secret, refresh_token_validity, resource_ids, scope, web_server_redirect_uri)
-VALUES ('hmpps-arns-assessment-platform-ui-system', 1200, '{}', 'ROLE_AAP__FRONTEND_RW,ROLE_ARNS_ASSESSMENTS_RW,ROLE_ASSESS_RISKS_AND_NEEDS_COORDINATOR_RW', 'client_credentials', 'read,write', '$2a$10$lBwbziQlLfiCnn8Kj1PfMujEcLdsJYlYSNJvBRO638gCYTS9yN0xm', 43200, null, 'read,write', null);
+VALUES ('hmpps-arns-assessment-platform-ui-system', 1200, '{}', 'ROLE_AAP__FRONTEND_RW,ROLE_ARNS_ASSESSMENTS_RW,ROLE_ASSESS_RISKS_AND_NEEDS_COORDINATOR_RW,ROLE_STRENGTHS_AND_NEEDS_OASYS', 'client_credentials', 'read,write', '$2a$10$lBwbziQlLfiCnn8Kj1PfMujEcLdsJYlYSNJvBRO638gCYTS9yN0xm', 43200, null, 'read,write', null);
 
 -- Add E2E test client (S2S calls) for integration tests. Client secret is clientsecret
 INSERT INTO oauth_client_details (client_id, access_token_validity, additional_information, authorities, authorized_grant_types, autoapprove, client_secret, refresh_token_validity, resource_ids, scope, web_server_redirect_uri)
