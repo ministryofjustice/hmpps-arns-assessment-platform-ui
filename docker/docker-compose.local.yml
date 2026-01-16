@@ -20,6 +20,7 @@ services:
       WIREMOCK_COORDINATOR_API_URL: http://arns-coordinator:8080
       WIREMOCK_HANDOVER_URL: http://arns-handover:7070
       WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
+      WIREMOCK_DELIUS_URL: http://delius-api:8080
     command: --global-response-templating
 
   ui:
@@ -45,6 +46,7 @@ services:
       COORDINATOR_API_URL: http://wiremock:8080/coordinator-api
       TOKEN_VERIFICATION_API_URL: http://wiremock:8080/verification
       TOKEN_VERIFICATION_ENABLED: true
+      DELIUS_API_URL: http://wiremock:8080/delius
       INGRESS_URL: http://localhost:3000
       HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
       HMPPS_ARNS_HANDOVER_CLIENT_SECRET: aap-secret

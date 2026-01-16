@@ -1,0 +1,86 @@
+{% from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions %}
+
+
+{% if data.caseData %}
+  {% set person = data.caseData %}
+  {% set fullName = person.name.forename + ' ' + person.name.surname if person.name else 'Unknown' %}
+  {% set buttonItems = [] %}
+
+  {#  TODO: Add real links for 'Return to OASys' #}
+  {% if buttons.showReturnToOasysButton %}
+    {% set buttonItems = buttonItems.concat([{
+      text: 'Return to OASys',
+      href: data.systemReturnUrl,
+      classes: "govuk-button--secondary govuk-!-display-none-print",
+      type: 'button'
+    }]) %}
+  {% endif %}
+
+  {% if buttons.showCreateGoalButton %}
+    {% set createGoalHref = basePath + '/goal/new/add-goal/accommodation' + ('?type=' + currentTab if currentTab else '') %}
+    {% set buttonItems = buttonItems.concat([{
+      text: 'Create goal',
+      href: createGoalHref,
+      classes: "govuk-button--secondary govuk-!-display-none-print",
+      type: 'button',
+      id: 'create-goal-button'
+    }]) %}
+  {% endif %}
+
+  {% if buttons.showAgreePlanButton %}
+    {% set agreePlanHref = basePath + '/plan/agree-plan' + ('?type=' + currentTab if currentTab else '') %}
+    {% set buttonItems = buttonItems.concat([{
+      text: 'Agree plan',
+      href: agreePlanHref,
+      classes: "govuk-!-display-none-print",
+      type: 'button',
+      id: 'agree-plan-button'
+    }]) %}
+  {% endif %}
+
+
+  <div class="govuk-width-container">
+    <header class="plan-header" role="presentation">
+      <div class="govuk-grid-row">
+          <div class="govuk-grid-column-full plan-header__subject-details">
+            <p class="plan-header__subject-details__title">{{ fullName }}</p>
+            <dl class="plan-header__subject-details__identifiers">
+              <div>
+                <dt>CRN:</dt>
+                <dd>{{ person.crn }} </dd>
+              </div>
+              <div>
+                <dt>PNC:</dt>
+                <dd>{{ person.pnc | default('Unknown PNC', true)}}</dd>
+              </div>
+              <div>
+                <dt>Date of birth:</dt>
+                <dd>{{ person.dateOfBirth | formatSimpleDate }}</dd>
+              </div>
+            </dl>
+            {% if headerPageHeading != 'Previous versions' %}
+              <div class ="plan-header__subject-details__navigation-links" >
+                <a href="{{ basePath }}/plan-history/previous-versions"
+                   class="govuk-link--no-visited-state govuk-!-display-none-print"
+                   data-previous-versions-link>
+                  View previous versions
+                </a>
+              </div>
+            {% endif %}
+          </div>
+      </div>
+
+      {% if headerPageHeading or buttonItems | length %}
+        <div class="plan-header__header-actions">
+          {{ mojPageHeaderActions({
+            heading: {
+              text: headerPageHeading,
+              classes: "govuk-heading-l govuk-!-margin-bottom-0"
+            },
+            items: buttonItems
+          }) }}
+        </div>
+      {% endif %}
+    </header>
+  </div>
+{% endif %}

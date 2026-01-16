@@ -1,0 +1,190 @@
+{#
+  Goal Summary Card (Draft) Component
+
+  Displays a summary card for a draft sentence plan goal.
+  Shows the steps table directly without collapsible wrapper.
+
+  Params:
+    goalTitle        - Goal title text
+    goalStatus       - 'ACTIVE' | 'FUTURE' | 'ACHIEVED' | 'REMOVED'
+    goalUuid         - UUID for generating links
+    targetDate       - Target date (formatted string)
+    statusDate       - Date status changed (for achieved/removed)
+    areaOfNeed       - Main area of need (lowercase)
+    relatedAreasText - Related areas (semicolon-separated, lowercase)
+    steps            - Array of { actor, description, status }
+    stepsCount       - Number of steps
+    removedNote      - Note text if goal was removed
+    actions          - Array of { text, href, visuallyHiddenText?, classes? }
+    buttons          - Array of { text, href, classes? }
+    errorMessage     - Error message text
+    index            - Index for unique IDs
+    classes          - Additional CSS classes
+#}
+
+{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{#- Macro for rendering action links -#}
+{% macro _actionLink(action, cardTitle) %}
+  <a class="govuk-link{%- if action.classes %} {{ action.classes }}{% endif %}" href="{{ action.href }}">
+    {{- action.text -}}
+    {%- if action.visuallyHiddenText or cardTitle -%}
+      <span class="govuk-visually-hidden">
+        {%- if action.visuallyHiddenText %} {{ action.visuallyHiddenText }}{% endif -%}
+        {%- if cardTitle %} ({{ cardTitle }}){% endif -%}
+      </span>
+    {%- endif -%}
+  </a>
+{% endmacro %}
+
+{#- Macro for step status tag -#}
+{% macro _stepStatusTag(status) %}
+  {%- if status == 'NOT_STARTED' -%}
+    {{ govukTag({ text: "Not started", classes: "govuk-tag--grey" }) }}
+  {%- elif status == 'IN_PROGRESS' -%}
+    {{ govukTag({ text: "In progress" }) }}
+  {%- elif status == 'COMPLETED' -%}
+    {{ govukTag({ text: "Completed", classes: "govuk-tag--green" }) }}
+  {%- elif status == 'CANNOT_BE_DONE_YET' -%}
+    {{ govukTag({ text: "Cannot be done yet", classes: "govuk-tag--purple" }) }}
+  {%- elif status == 'NO_LONGER_NEEDED' -%}
+    {{ govukTag({ text: "No longer needed", classes: "govuk-tag--yellow" }) }}
+  {%- else -%}
+    {{ govukTag({ text: status, classes: "govuk-tag--grey" }) }}
+  {%- endif -%}
+{% endmacro %}
+
+{#- Build card classes -#}
+{%- set cardClasses = "goal-summary-card" -%}
+{%- if params.errorMessage %}{% set cardClasses = cardClasses + " goal-summary-card--error" %}{% endif -%}
+{%- if params.classes %}{% set cardClasses = cardClasses + " " + params.classes %}{% endif -%}
+
+<div class="{{ cardClasses }}" data-qa="goal-summary-card"{% if params.index is defined %} id="goal-summary-card-{{ params.index }}"{% endif %}>
+
+  {#- Error message -#}
+  {% if params.errorMessage %}
+    <div class="goal-error-message">
+      {{ govukErrorMessage({ text: params.errorMessage }) }}
+    </div>
+  {% endif %}
+
+  <div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+      <h2 class="govuk-summary-card__title" data-qa="goal-title">{{ params.goalTitle }}</h2>
+
+      {#- Action links -#}
+      {% if params.actions.length > 0 %}
+        {% if params.actions.length == 1 %}
+          <div class="govuk-summary-card__actions">
+            {{ _actionLink(params.actions[0], params.goalTitle) | trim }}
+          </div>
+        {% else %}
+          <ul class="govuk-summary-card__actions">
+            {% for action in params.actions %}
+              <li class="govuk-summary-card__action">
+                {{ _actionLink(action, params.goalTitle) | trim }}
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <div class="govuk-summary-card__content">
+
+      {#- Info section based on status -#}
+      <div class="goal-summary-card__info">
+        <div class="goal-date-and-notes">
+          {% if params.goalStatus == 'ACHIEVED' and params.statusDate %}
+            <p>Achieved on {{ params.statusDate }}.</p>
+          {% elif params.goalStatus == 'REMOVED' and params.statusDate %}
+            <p>Removed on {{ params.statusDate }}.</p>
+            {% if params.removedNote %}
+              <p>{{ params.removedNote }}</p>
+            {% endif %}
+          {% elif params.targetDate and params.goalStatus != 'ACHIEVED' and params.goalStatus != 'REMOVED' %}
+            <p>Aim to achieve this by {{ params.targetDate }}.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      {#- Steps section (draft - no collapsible, no counter) -#}
+      {% if params.stepsCount > 0 %}
+        <div class="govuk-details__text_inactive">
+          <table class="govuk-table goal-summary-card__steps">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Who will do this</th>
+                <th scope="col" class="govuk-table__header">Steps</th>
+                <th scope="col" class="govuk-table__header">Status</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              {% for step in params.steps %}
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">{{ step.actor | replace(" (include who in the step)", "") }}</td>
+                  <td class="govuk-table__cell">{{ step.description }}</td>
+                  <td class="govuk-table__cell">{{ _stepStatusTag(step.status) }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        {#- No steps -#}
+        <div class="goal-summary-card__steps--empty">
+          <strong>No steps added</strong>
+          {% if params.actions.length > 0 and params.goalUuid %}
+            <a class="govuk-!-display-none-print" href="../goal/{{ params.goalUuid }}/add-steps">Add steps</a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {#- Areas of need -#}
+      <p class="goal-summary-card__areas-of-need" data-qa="goal-area-of-need">
+        Area of need: {{ params.areaOfNeed }}
+        {% if params.relatedAreasText %}
+          <br>Also linked to: {{ params.relatedAreasText }}
+        {% endif %}
+      </p>
+
+      {#- Move goal buttons -#}
+      {% if params.showMoveUp or params.showMoveDown %}
+        <div class="govuk-button-group">
+          {% if params.showMoveUp and params.moveUpHref %}
+            {{ govukButton({
+              text: "Move goal up",
+              href: params.moveUpHref,
+              classes: "govuk-button--secondary",
+              attributes: { "data-qa": "move-goal-up" }
+            }) }}
+          {% endif %}
+          {% if params.showMoveDown and params.moveDownHref %}
+            {{ govukButton({
+              text: "Move goal down",
+              href: params.moveDownHref,
+              classes: "govuk-button--secondary",
+              attributes: { "data-qa": "move-goal-down" }
+            }) }}
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {#- Buttons -#}
+      {% if params.buttons.length > 0 %}
+        <div class="govuk-button-group">
+          {% for button in params.buttons %}
+            {{ govukButton({
+              text: button.text,
+              href: button.href,
+              classes: button.classes
+            }) }}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>

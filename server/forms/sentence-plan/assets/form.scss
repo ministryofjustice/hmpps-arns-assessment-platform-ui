@@ -1,0 +1,28 @@
+/**
+ * Sentence Plan - Form-specific styles
+ *
+ * These styles are loaded only on pages using this form's custom template.
+ */
+@import "govuk-frontend/dist/govuk/base";
+
+// Components
+@import "../components/button-as-link/buttonAsLink";
+@import "../components/goal-summary-card/goal-summary-card";
+@import "../components/goal-summary-card/goal-list";
+
+// Step rows - align remove button with input fields
+.step-row {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: govuk-spacing(4);
+
+  .govuk-form-group {
+    margin-bottom: 0;
+  }
+}
+
+// Plan overview sub-navigation - position "Removed goals" tab on the right
+.moj-sub-navigation__list > li:has(> a[href$="type=removed"]) {
+  float: right;
+}
+

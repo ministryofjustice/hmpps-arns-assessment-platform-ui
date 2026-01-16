@@ -50,6 +50,20 @@ export default [
     },
   },
   {
+    files: ['**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      sourceType: 'module',
+    },
+  },
+  {
+    files: ['assets/js/**/*.js', 'assets/js/**/*.mjs'],
+    rules: {
+      'import/namespace': 'off',
+      'no-console': 'off',
+    },
+  },
+  {
     name: 'prettier-overrides',
     rules: {
       'prettier/prettier': [

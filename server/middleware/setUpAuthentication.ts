@@ -184,6 +184,7 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
       user: {
         id: hmppsUser.username,
         name: hmppsUser.displayName ?? hmppsUser.username,
+        authSource: hmppsUser.authSource,
       },
     }
 

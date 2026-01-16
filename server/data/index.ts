@@ -15,6 +15,7 @@ import { createRedisClient } from './redisClient'
 import config from '../config'
 import logger from '../../logger'
 import AssessmentPlatformApiClient from './assessmentPlatformApiClient'
+import DeliusApiClient from './deliusApiClient'
 import HandoverApiClient from './handoverApiClient'
 import CoordinatorApiClient from './coordinatorApiClient'
 
@@ -29,6 +30,7 @@ export const dataAccess = () => {
     applicationInfo,
     hmppsAuthClient,
     assessmentPlatformApiClient: new AssessmentPlatformApiClient(hmppsAuthClient),
+    deliusApiClient: new DeliusApiClient(hmppsAuthClient),
     handoverApiClient: new HandoverApiClient(hmppsAuthClient),
     coordinatorApiClient: new CoordinatorApiClient(hmppsAuthClient),
   }
@@ -36,4 +38,4 @@ export const dataAccess = () => {
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { AuthenticationClient, AssessmentPlatformApiClient, HandoverApiClient, CoordinatorApiClient }
+export { AuthenticationClient, AssessmentPlatformApiClient, HandoverApiClient, DeliusApiClient, CoordinatorApiClient }

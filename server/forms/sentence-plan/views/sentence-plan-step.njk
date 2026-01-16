@@ -1,0 +1,38 @@
+{%- extends "partials/layout.njk" -%}
+
+{% block head %}
+  {{ super() }}
+  {% block pageStylesheets %}
+    <link rel="stylesheet" href="{{ '/assets/css/forms/sentence-plan/assets/form.css' | assetMap }}">
+  {% endblock %}
+{% endblock %}
+
+{% block header %}
+  {{ super() }}
+  {% include "sentence-plan/views/partials/sentence-plan-nav.njk" %}
+  {% include "sentence-plan/views/partials/plan-header.njk" %}
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  {% block pageScripts %}
+    <script src="{{ '/assets/js/forms/sentence-plan/assets/form.js' | assetMap }}"></script>
+  {% endblock %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row" data-qa-assessment-uuid="{{ data.assessmentUuid }}">
+    <div class="govuk-grid-column-full">
+      {% if backlink %}
+        <a href="{{ backlink }}" class="govuk-back-link">Back</a>
+      {% endif %}
+
+      <form method="post" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% for block in blocks %}
+          {{ block | safe }}
+        {% endfor %}
+      </form>
+    </div>
+  </div>
+{% endblock %}
