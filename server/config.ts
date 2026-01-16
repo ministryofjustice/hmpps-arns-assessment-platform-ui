@@ -119,6 +119,9 @@ export default {
     formEngineDeveloperGuide: {
       enabled: get('FORM_ENGINE_DEVELOPER_GUIDE_ENABLED', 'false') === 'true',
     },
+    sentencePlan: {
+      enabled: get('SENTENCE_PLAN_ENABLED', 'true') === 'true',
+    },
   },
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
