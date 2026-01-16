@@ -74,7 +74,7 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
       CodeBlock({
         language: 'typescript',
         code: `
-          import { step, submitTransition, next } from '@form-engine/form/builders'
+          import { step, submitTransition, redirect } from '@form-engine/form/builders'
           import { MyFormEffects } from '../effects'
 
           export const personalDetailsStep = step({
@@ -87,7 +87,7 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
                 validate: true,
                 onValid: {
                   effects: [MyFormEffects.saveAnswers()],
-                  next: [next({ goto: '/contact-details' })],
+                  next: [redirect({ goto: '/contact-details' })],
                 },
                 // onInvalid omitted - stays on page with errors
               }),
@@ -110,7 +110,7 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
               validate: false,
               onAlways: {
                 effects: [MyFormEffects.saveDraft()],
-                next: [next({ goto: '/dashboard' })],
+                next: [redirect({ goto: '/dashboard' })],
               },
             }),
 
@@ -119,7 +119,7 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
               validate: true,
               onValid: {
                 effects: [MyFormEffects.saveAnswers()],
-                next: [next({ goto: '/next-step' })],
+                next: [redirect({ goto: '/next-step' })],
               },
             }),
           ]
@@ -150,7 +150,7 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
               validate: true,
               onValid: {
                 effects: [MyFormEffects.saveItem()],
-                next: [next({ goto: '/items/new' })],
+                next: [redirect({ goto: '/items/new' })],
               },
             }),
             submitTransition({
@@ -158,7 +158,7 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
               validate: true,
               onValid: {
                 effects: [MyFormEffects.saveItem()],
-                next: [next({ goto: '/items' })],
+                next: [redirect({ goto: '/items' })],
               },
             }),
           ]
@@ -174,7 +174,7 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
               validate: true,
               onValid: {
                 effects: [MyFormEffects.saveAnswers()],
-                next: [next({ goto: '/next-step' })],
+                next: [redirect({ goto: '/next-step' })],
               },
               onInvalid: {
                 // Save as draft even when invalid

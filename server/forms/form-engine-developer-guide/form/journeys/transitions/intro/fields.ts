@@ -17,14 +17,13 @@ export const pageContent = TemplateWrapper({
 
   ---
 
-  ## The Four Transition Types
+  ## The Three Transition Types
 
   Each transition type serves a specific purpose in the form lifecycle:
 
   | Type | Where Used | Purpose |
   |------|------------|---------|
-  | \`loadTransition()\` | Journey & Step | Load data before access checks |
-  | \`accessTransition()\` | Journey & Step | Check permissions, redirect if denied |
+  | \`accessTransition()\` | Journey & Step | Load data, check permissions, redirect or error |
   | \`actionTransition()\` | Step only | Handle in-page actions (e.g., lookups) |
   | \`submitTransition()\` | Step only | Validate, save, and navigate |
 
@@ -57,8 +56,7 @@ export const pageContent = TemplateWrapper({
 
   | Hook | Execution | Why |
   |------|-----------|-----|
-  | \`onLoad[]\` | **ALL** execute | You may need to load multiple data sources |
-  | \`onAccess[]\` | **First match** executes | First denial condition that matches triggers redirect |
+  | \`onAccess[]\` | **Sequential** | Execute effects; redirect/error stops execution |
   | \`onAction[]\` | **First match** executes | Only one action should handle a button click |
   | \`onSubmission[]\` | **First match** executes | Only one submission handler per button |
 
@@ -88,11 +86,9 @@ export const pageContent = TemplateWrapper({
       CodeBlock({
         language: 'bash',
         code: `
-          1. Journey.onLoad     → Load shared data
-          2. Journey.onAccess   → Check journey-level permissions
-          3. Step.onLoad        → Load step-specific data
-          4. Step.onAccess      → Check step-level permissions
-          5. Blocks render      → Display the page
+          1. Journey.onAccess   → Load shared data, check journey-level permissions
+          2. Step.onAccess      → Load step-specific data, check step-level permissions
+          3. Blocks render      → Display the page
         `,
       }),
     ],
@@ -100,11 +96,10 @@ export const pageContent = TemplateWrapper({
       CodeBlock({
         language: 'bash',
         code: `
-          1. Step.onLoad        → Load step data
-          2. Step.onAccess      → Check permissions
-          3. Step.onAction      → Handle in-page actions (runs BEFORE render)
-          4. Blocks render      → Display with action results
-          5. Step.onSubmission  → Validate and navigate
+          1. Step.onAccess      → Load data, check permissions
+          2. Step.onAction      → Handle in-page actions (runs BEFORE render)
+          3. Blocks render      → Display with action results
+          4. Step.onSubmission  → Validate and navigate
         `,
       }),
     ],
@@ -114,12 +109,12 @@ export const pageContent = TemplateWrapper({
         code: `
           import {
             // Transition builders
-            loadTransition,
             accessTransition,
             actionTransition,
             submitTransition,
-            // Navigation builder
-            next,
+            // Outcome builders
+            redirect,
+            throwError,
             // HTTP references (for 'when' conditions)
             Post, Params, Query,
           } from '@form-engine/form/builders'
@@ -134,22 +129,20 @@ export const pageContent = TemplateWrapper({
             path: '/my-step',
             title: 'My Step',
 
-            // 1. Load data needed for this step
-            onLoad: [
-              loadTransition({
-                effects: [MyEffects.loadUserData()],
-              }),
-            ],
-
-            // 2. Check if user can access this step (denial condition)
+            // 1. Load data and check access for this step
             onAccess: [
               accessTransition({
-                guards: Data('user.authenticated').not.match(Condition.Equals(true)),
-                redirect: [next({ goto: '/login' })],
+                effects: [MyEffects.loadUserData()],
+                next: [
+                  redirect({
+                    when: Data('user.authenticated').not.match(Condition.Equals(true)),
+                    goto: '/login',
+                  }),
+                ],
               }),
             ],
 
-            // 3. Handle in-page actions (e.g., lookup buttons)
+            // 2. Handle in-page actions (e.g., lookup buttons)
             onAction: [
               actionTransition({
                 when: Post('action').match(Condition.Equals('lookup')),
@@ -157,13 +150,13 @@ export const pageContent = TemplateWrapper({
               }),
             ],
 
-            // 4. Handle form submission
+            // 3. Handle form submission
             onSubmission: [
               submitTransition({
                 validate: true,
                 onValid: {
                   effects: [MyEffects.saveAnswers()],
-                  next: [next({ goto: '/next-step' })],
+                  next: [redirect({ goto: '/next-step' })],
                 },
               }),
             ],
@@ -181,8 +174,8 @@ export const pageContent = TemplateWrapper({
           labelText: 'Effect Context',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/transitions/load',
-          labelText: 'Load Transitions',
+          href: '/forms/form-engine-developer-guide/transitions/access',
+          labelText: 'Access Transitions',
         },
       }),
     ],

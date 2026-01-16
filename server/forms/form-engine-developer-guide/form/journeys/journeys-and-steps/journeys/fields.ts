@@ -140,19 +140,10 @@ Accessing in effects using \`context.getData()\`:
 
 Journeys can define lifecycle transitions that run for every step within the journey.
 
-### \`onLoad\` <span class="govuk-tag govuk-tag--grey">Optional</span>
-
-An array of load transitions that run when any step in the journey is accessed.
-Use this to fetch data or set up context that all steps need.
-
-{{slot:onLoadExample}}
-
-See the [Load Transitions](/forms/form-engine-developer-guide/transitions/load) page for details.
-
 ### \`onAccess\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
-An array of access transitions that control access to all steps in the journey.
-Use this for authentication checks or redirects that apply journey-wide.
+An array of access transitions that run for every step in the journey.
+Use this to load shared data, check permissions, and redirect or return errors.
 
 {{slot:onAccessExample}}
 
@@ -323,26 +314,19 @@ Here's a journey definition using all the options:
         `,
       }),
     ],
-    onLoadExample: [
-      CodeBlock({
-        language: 'typescript',
-        code: `
-          onLoad: [
-            loadTransition({
-              effects: [MyJourneyEffects.loadUserData()],
-            }),
-          ]
-        `,
-      }),
-    ],
     onAccessExample: [
       CodeBlock({
         language: 'typescript',
         code: `
           onAccess: [
             accessTransition({
-              guards: Data('user.isAuthenticated').not.match(Condition.Equals(true)),
-              redirect: [next({ goto: '/login' })],
+              effects: [MyJourneyEffects.loadUserData()],
+              next: [
+                redirect({
+                  when: Data('user.isAuthenticated').not.match(Condition.Equals(true)),
+                  goto: '/login',
+                }),
+              ],
             }),
           ]
         `,
@@ -355,7 +339,7 @@ Here's a journey definition using all the options:
           CodeBlock({
             language: 'typescript',
             code: `
-              import { journey, loadTransition } from '@form-engine/form/builders'
+              import { journey } from '@form-engine/form/builders'
               import { MyEffects } from './effects'
               import { welcomeStep, detailsStep, reviewStep, confirmationStep } from './steps'
 

@@ -1,4 +1,4 @@
-import { Format, Data, step, accessTransition, Query, next, loadTransition } from '@form-engine/form/builders'
+import { Format, Data, step, accessTransition, Query, redirect } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import {
   blankPlanOverviewContent,
@@ -42,16 +42,16 @@ export const planStep = step({
   ],
   onAccess: [
     accessTransition({
-      guards: Query('type').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
-      redirect: [next({ goto: 'overview?type=current' })],
-    }),
-  ],
-  onLoad: [
-    loadTransition({
       effects: [
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
         SentencePlanEffects.loadNotifications('plan-overview'),
+      ],
+      next: [
+        redirect({
+          when: Query('type').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
+          goto: 'overview?type=current',
+        }),
       ],
     }),
   ],

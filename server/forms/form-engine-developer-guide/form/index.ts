@@ -1,4 +1,4 @@
-import { journey, loadTransition } from '@form-engine/form/builders'
+import { journey, accessTransition } from '@form-engine/form/builders'
 import { hubStep } from './steps/hub/step'
 import { DeveloperGuideEffects } from '../effects'
 import { formRegistrationJourney } from './journeys/form-registration'
@@ -39,15 +39,15 @@ import { recipesJourney } from './journeys/recipes'
  * 10. Conditions - value testing and matching
  * 11. Validation - rules and error messages
  * 12. Effects - lifecycle side effects
- * 13. Transitions - load/submit handling
+ * 13. Transitions - access/action/submit handling
  * 14. Recipes - quick reference patterns
  */
 export const developerGuideJourney = journey({
   code: 'form-engine-developer-guide',
   title: 'Form Engine Developer Guide',
   path: '/form-engine-developer-guide',
-  onLoad: [
-    loadTransition({
+  onAccess: [
+    accessTransition({
       effects: [DeveloperGuideEffects.initializeSession()],
     }),
   ],

@@ -90,12 +90,12 @@ When referencing a field on the same step, the answer is resolved from:
 1. POST data (if the form was just submitted)
 2. Format pipeline output (after transformers)
 3. Default value (if no user input)
-4. OnLoad effects (data set during page load)
+4. onAccess effects (data set during page access)
 
 ### Remote Answers (Different Step)
 
 When referencing a field from another step, the answer must be made available
-through onLoad transitions that pre-populate the answer store.
+through onAccess transitions that pre-populate the answer store.
 
 {{slot:technicalDetails}}
 

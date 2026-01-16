@@ -1,4 +1,4 @@
-import { next, step, submitTransition } from '@form-engine/form/builders'
+import { redirect, step, submitTransition } from '@form-engine/form/builders'
 import { pageHeading, backButton } from './fields'
 
 export const viewHistoricStep = step({
@@ -8,7 +8,7 @@ export const viewHistoricStep = step({
   onSubmission: [
     submitTransition({
       onAlways: {
-        next: [next({ goto: 'previous-versions' })],
+        next: [redirect({ goto: 'previous-versions' })],
       },
     }),
   ],

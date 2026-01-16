@@ -1,4 +1,4 @@
-import { next, step, submitTransition } from '@form-engine/form/builders'
+import { redirect, step, submitTransition } from '@form-engine/form/builders'
 import { pageHeading, continueButton } from './fields'
 
 export const updateAgreePlanStep = step({
@@ -8,7 +8,7 @@ export const updateAgreePlanStep = step({
   onSubmission: [
     submitTransition({
       onAlways: {
-        next: [next({ goto: 'plan' })],
+        next: [redirect({ goto: 'plan' })],
       },
     }),
   ],
