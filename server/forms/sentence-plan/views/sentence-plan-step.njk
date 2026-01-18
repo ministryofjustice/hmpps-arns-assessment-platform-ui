@@ -40,7 +40,11 @@
                 {{ blocks[sidebarIndex] | safe }}
               </div>
               <div class="govuk-grid-column-two-thirds">
-                {{ govukErrorSummary({ titleText: "There is a problem", errorList: validationErrors }) if validationErrors.length }}
+                {{ govukErrorSummary({
+                  titleText: "There is a problem",
+                  errorList: validationErrors | toErrorSummary
+                }) if validationErrors.length }}
+
                 {% for block in blocks %}
                   {{ block | safe if loop.index0 != sidebarIndex }}
                 {% endfor %}
@@ -48,7 +52,11 @@
             </div>
           </div>
         {% else %}
-          {{ govukErrorSummary({ titleText: "There is a problem", errorList: validationErrors }) if validationErrors.length }}
+          {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: validationErrors | toErrorSummary
+          }) if validationErrors.length }}
+
           {% for block in blocks %}
             {{ block | safe }}
           {% endfor %}
