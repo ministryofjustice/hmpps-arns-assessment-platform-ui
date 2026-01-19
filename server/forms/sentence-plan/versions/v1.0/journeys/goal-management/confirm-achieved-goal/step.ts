@@ -1,4 +1,4 @@
-import { Data, Format, loadTransition, next, Post, step, submitTransition } from '@form-engine/form/builders'
+import { accessTransition, Data, Format, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, howHelpedField, buttonGroup } from './fields'
 import { SentencePlanEffects } from '../../../../../effects'
@@ -12,8 +12,8 @@ export const confirmAchievedGoalStep = step({
   isEntryPoint: true,
   blocks: [pageHeading, goalCard, howHelpedField, buttonGroup],
 
-  onLoad: [
-    loadTransition({
+  onAccess: [
+    accessTransition({
       effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.setActiveGoalContext()],
     }),
   ],
@@ -22,7 +22,7 @@ export const confirmAchievedGoalStep = step({
     submitTransition({
       when: Post('action').match(Condition.Equals('cancel')),
       onAlways: {
-        next: [next({ goto: Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')) })],
+        next: [redirect({ goto: Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')) })],
       },
     }),
     submitTransition({
@@ -30,7 +30,7 @@ export const confirmAchievedGoalStep = step({
       validate: true,
       onValid: {
         effects: [SentencePlanEffects.markGoalAsAchieved()],
-        next: [next({ goto: '../../plan/overview?type=achieved' })],
+        next: [redirect({ goto: '../../plan/overview?type=achieved' })],
       },
     }),
   ],

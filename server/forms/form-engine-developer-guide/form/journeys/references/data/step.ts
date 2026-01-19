@@ -5,7 +5,7 @@ import { pageContent } from './fields'
  * References - Data()
  *
  * Comprehensive documentation for the Data() reference,
- * covering external data access, onLoad effects, and common patterns.
+ * covering external data access, onAccess effects, and common patterns.
  */
 export const dataStep = step({
   path: '/data',

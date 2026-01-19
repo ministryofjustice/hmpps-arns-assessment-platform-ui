@@ -137,8 +137,8 @@ export const pageContent = TemplateWrapper({
       CodeBlock({
         language: 'bash',
         code: `
-          1. onLoad effects run
-          2. onAccess guards checked
+          1. onAccess effects run
+          2. onAccess transitions evaluated
           3. onAction evaluated           ← Effects set values here
           4. Blocks render                ← Values appear in fields
           5. onSubmission evaluated       ← NOT run if action matched
@@ -202,7 +202,7 @@ export const pageContent = TemplateWrapper({
                 validate: true,
                 onValid: {
                   effects: [MyEffects.saveAddress()],
-                  next: [next({ goto: '/contact' })],
+                  next: [redirect({ goto: '/contact' })],
                 },
               }),
             ],

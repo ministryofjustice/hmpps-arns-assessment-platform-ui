@@ -1,4 +1,4 @@
-import { step, Post, loadTransition, actionTransition } from '@form-engine/form/builders'
+import { step, Post, accessTransition, actionTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageContent } from './fields'
 import { DeveloperGuideEffects } from '../../../../../effects'
@@ -14,8 +14,8 @@ export const hubStep = step({
   title: 'Task Manager',
 
   // Initialize items on page load
-  onLoad: [
-    loadTransition({
+  onAccess: [
+    accessTransition({
       effects: [DeveloperGuideEffects.initializePlaygroundItems()],
     }),
   ],

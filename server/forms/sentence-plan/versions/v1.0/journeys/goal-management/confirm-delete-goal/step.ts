@@ -2,8 +2,7 @@ import {
   accessTransition,
   Data,
   Format,
-  loadTransition,
-  next,
+  redirect,
   Post,
   step,
   submitTransition,
@@ -34,22 +33,21 @@ export const confirmDeleteGoalStep = step({
 
   blocks: [pageHeading, introText, goalCard, buttonGroup],
 
-  onLoad: [
-    loadTransition({
-      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.setActiveGoalContext()],
-    }),
-  ],
-
   onAccess: [
-    // Redirect if plan is no longer in draft (delete is only for draft plans)
     accessTransition({
-      guards: Data('assessment.properties.AGREEMENT_STATUS.value').not.match(Condition.Equals('DRAFT')),
-      redirect: [next({ goto: '../../plan/overview' })],
-    }),
-    // Redirect if goal not found
-    accessTransition({
-      guards: Data('activeGoal').not.match(Condition.IsRequired()),
-      redirect: [next({ goto: '../../plan/overview' })],
+      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.setActiveGoalContext()],
+      next: [
+        // Redirect if plan is no longer in draft (delete is only for draft plans)
+        redirect({
+          when: Data('assessment.properties.AGREEMENT_STATUS.value').not.match(Condition.Equals('DRAFT')),
+          goto: '../../plan/overview',
+        }),
+        // Redirect if goal not found
+        redirect({
+          when: Data('activeGoal').not.match(Condition.IsRequired()),
+          goto: '../../plan/overview',
+        }),
+      ],
     }),
   ],
 
@@ -58,11 +56,11 @@ export const confirmDeleteGoalStep = step({
       when: Post('action').match(Condition.Equals('cancel')),
       onAlways: {
         next: [
-          next({
+          redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
             goto: '../../plan/overview?type=future',
           }),
-          next({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?type=current' }),
         ],
       },
     }),
@@ -79,11 +77,11 @@ export const confirmDeleteGoalStep = step({
           }),
         ],
         next: [
-          next({
+          redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
             goto: '../../plan/overview?type=future',
           }),
-          next({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?type=current' }),
         ],
       },
     }),

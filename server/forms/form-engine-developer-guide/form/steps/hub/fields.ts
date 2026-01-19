@@ -96,7 +96,7 @@ export const conceptCards = MOJCardGroup({
       heading: '13. Transitions',
       href: '/forms/form-engine-developer-guide/transitions/intro',
       description:
-        'Transitions control what happens on load and submit. Learn loadTransition, submitTransition, and next() navigation.',
+        'Transitions control access, actions, and submission. Learn accessTransition, submitTransition, redirect(), and throwError().',
     },
     {
       heading: '14. Recipes',

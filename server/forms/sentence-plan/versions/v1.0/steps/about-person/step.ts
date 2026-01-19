@@ -1,4 +1,4 @@
-import { Data, Format, next, step, submitTransition } from '@form-engine/form/builders'
+import { Data, Format, redirect, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { continueButton } from './fields'
 import { CaseData } from '../../constants'
@@ -19,7 +19,7 @@ export const aboutPersonStep = step({
   onSubmission: [
     submitTransition({
       onAlways: {
-        next: [next({ goto: '/plan-overview/plan' })],
+        next: [redirect({ goto: '/plan-overview/plan' })],
       },
     }),
   ],

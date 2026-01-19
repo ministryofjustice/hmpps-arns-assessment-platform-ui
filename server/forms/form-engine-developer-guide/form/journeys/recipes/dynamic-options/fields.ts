@@ -31,7 +31,7 @@ Load options via an effect, then reference them with \`Data()\`:
 
 ## How It Works
 
-1. Effect runs on page load via \`loadTransition\`
+1. Effect runs on access via \`accessTransition\`
 2. \`context.setData('key', options)\` stores the options
 3. \`items: Data('key')\` binds the field to that data
 4. Options can be an array of \`{ value, text }\` objects
@@ -80,9 +80,9 @@ Load options via an effect, then reference them with \`Data()\`:
             ])
           }
 
-          // step.ts - attach to loadTransition
-          onLoad: [
-            loadTransition({
+          // step.ts - attach to accessTransition
+          onAccess: [
+            accessTransition({
               effects: [MyFormEffects.loadCountryOptions()],
             }),
           ]

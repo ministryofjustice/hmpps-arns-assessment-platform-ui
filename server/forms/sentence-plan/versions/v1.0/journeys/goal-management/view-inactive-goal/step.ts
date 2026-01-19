@@ -1,13 +1,4 @@
-import {
-  accessTransition,
-  Data,
-  loadTransition,
-  next,
-  Post,
-  step,
-  submitTransition,
-  when,
-} from '@form-engine/form/builders'
+import { accessTransition, Data, redirect, Post, step, submitTransition, when } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalInfo, reviewStepsSection, viewAllNotesSection, addToPlanButton } from './fields'
 import { SentencePlanEffects } from '../../../../../effects'
@@ -37,16 +28,15 @@ export const viewInactiveGoalStep = step({
   },
   blocks: [pageHeading, goalInfo, reviewStepsSection, viewAllNotesSection, addToPlanButton],
 
-  onLoad: [
-    loadTransition({
-      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.loadActiveGoalForEdit()],
-    }),
-  ],
-
   onAccess: [
     accessTransition({
-      guards: Data('activeGoal').not.match(Condition.IsRequired()),
-      redirect: [next({ goto: '../../plan/overview' })],
+      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.loadActiveGoalForEdit()],
+      next: [
+        redirect({
+          when: Data('activeGoal').not.match(Condition.IsRequired()),
+          goto: '../../plan/overview',
+        }),
+      ],
     }),
   ],
 
@@ -54,12 +44,12 @@ export const viewInactiveGoalStep = step({
     submitTransition({
       when: Post('action').match(Condition.Equals('re-add')),
       onAlways: {
-        next: [next({ goto: '/confirm-readd-goal' })],
+        next: [redirect({ goto: '/confirm-readd-goal' })],
       },
     }),
     submitTransition({
       onAlways: {
-        next: [next({ goto: '/plan-overview/plan' })],
+        next: [redirect({ goto: '/plan-overview/plan' })],
       },
     }),
   ],

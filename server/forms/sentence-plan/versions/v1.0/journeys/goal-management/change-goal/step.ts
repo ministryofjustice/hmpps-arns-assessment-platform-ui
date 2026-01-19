@@ -3,9 +3,8 @@ import {
   Answer,
   Data,
   Format,
-  loadTransition,
-  next,
   Post,
+  redirect,
   step,
   submitTransition,
   when,
@@ -43,21 +42,20 @@ export const changeGoalStep = step({
 
   blocks: [pageLayout],
 
-  onLoad: [
-    loadTransition({
+  onAccess: [
+    accessTransition({
       effects: [
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
         SentencePlanEffects.loadActiveGoalForEdit(),
       ],
-    }),
-  ],
-
-  onAccess: [
-    // If goal not found, redirect to plan overview
-    accessTransition({
-      guards: Data('activeGoal').not.match(Condition.IsRequired()),
-      redirect: [next({ goto: '../../plan/overview' })],
+      next: [
+        // If goal not found, redirect to plan overview
+        redirect({
+          when: Data('activeGoal').not.match(Condition.IsRequired()),
+          goto: '../../plan/overview',
+        }),
+      ],
     }),
   ],
 
@@ -69,12 +67,12 @@ export const changeGoalStep = step({
         effects: [SentencePlanEffects.updateActiveGoal()],
         next: [
           // If changed to a future goal, redirect to future goals tab
-          next({
+          redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
             goto: '../../plan/overview?type=future',
           }),
           // Otherwise redirect to current goals tab
-          next({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?type=current' }),
         ],
       },
     }),
