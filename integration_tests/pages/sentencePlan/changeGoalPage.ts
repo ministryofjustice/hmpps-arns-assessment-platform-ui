@@ -4,6 +4,8 @@ import AbstractPage from '../abstractPage'
 export default class ChangeGoalPage extends AbstractPage {
   readonly header: Locator
 
+  readonly goalTitleAutocomplete: Locator
+
   readonly goalTitleInput: Locator
 
   readonly isRelatedYes: Locator
@@ -29,7 +31,8 @@ export default class ChangeGoalPage extends AbstractPage {
   private constructor(page: Page) {
     super(page)
     this.header = page.locator('h1')
-    this.goalTitleInput = page.locator('#goal_title-autocomplete')
+    this.goalTitleAutocomplete = page.locator('accessible-autocomplete-wrapper[data-initialized="true"]')
+    this.goalTitleInput = this.goalTitleAutocomplete.getByRole('combobox')
     this.isRelatedYes = page.locator('input[name="is_related_to_other_areas"][value="yes"]')
     this.isRelatedNo = page.locator('input[name="is_related_to_other_areas"][value="no"]')
     this.canStartNowYes = page.locator('input[name="can_start_now"][value="yes"]')
