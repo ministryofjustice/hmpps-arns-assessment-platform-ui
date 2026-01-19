@@ -2,7 +2,7 @@ import hmppsConfig from '@ministryofjustice/eslint-config-hmpps'
 
 export default [
   ...hmppsConfig({
-    extraIgnorePaths: ['test_results/'],
+    extraIgnorePaths: ['test_results/', 'server/forms/**/components/**/*.mjs'],
   }),
   {
     ignores: ['test_results/**'],

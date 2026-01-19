@@ -2,7 +2,7 @@ import { accessibleAutocomplete } from './accessible-autocomplete/accessibleAuto
 import { buttonAsLink } from './button-as-link/buttonAsLink'
 import { goalSummaryCardAgreed, goalSummaryCardDraft } from './goal-summary-card/goalSummaryCard'
 
-export type { AccessibleAutocomplete } from './accessible-autocomplete/accessibleAutocomplete'
+export { AccessibleAutocomplete } from './accessible-autocomplete/accessibleAutocomplete'
 export { ButtonAsLink } from './button-as-link/buttonAsLink'
 export { GoalSummaryCardAgreed, GoalSummaryCardDraft } from './goal-summary-card/goalSummaryCard'
 

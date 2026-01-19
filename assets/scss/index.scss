@@ -7,6 +7,7 @@ $govuk-page-width: $moj-page-width;
 @import "govuk-frontend/dist/govuk/index";
 @import "@ministryofjustice/frontend/moj/all";
 @import "accessible-autocomplete/dist/accessible-autocomplete.min.css";
+@import '../../server/forms/sentence-plan/components/accessible-autocomplete/accessible-autocomplete';
 @import '../../packages/form-engine-moj-components/src/all';
 
 // Highlight.js theme for syntax highlighting
