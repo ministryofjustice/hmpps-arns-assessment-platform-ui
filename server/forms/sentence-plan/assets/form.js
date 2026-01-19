@@ -6,3 +6,4 @@
  */
 
 // Add form-specific JS as needed
+import '../components/accessible-autocomplete/accessible-autocomplete.mjs'

@@ -1,13 +1,13 @@
-import { block, Data, Format, Item, Iterator, Params, Self, validation } from '@form-engine/form/builders'
+import { Data, Format, Item, Iterator, Params, Self, validation } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKTextInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { MOJSideNavigation } from '@form-engine-moj-components/components'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { AccessibleAutocomplete } from '../../../../../components'
 import { CaseData } from '../../../constants'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
+import { AccessibleAutocomplete } from '../../../../../components'
 
 // Side navigation for areas of need
 const sideNavigation = MOJSideNavigation({
@@ -32,8 +32,7 @@ const pageHeading = HtmlBlock({
   ),
 })
 
-const goalTitle = block<AccessibleAutocomplete>({
-  variant: 'accessibleAutocomplete',
+const goalTitle = AccessibleAutocomplete({
   data: Data('currentAreaOfNeed').path('goals'),
   field: GovUKTextInput({
     code: 'goal_title',
