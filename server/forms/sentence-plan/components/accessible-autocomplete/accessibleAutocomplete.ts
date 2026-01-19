@@ -1,3 +1,4 @@
+import { block as blockBuilder } from '@form-engine/form/builders'
 import {
   BlockDefinition,
   ConditionalArray,
@@ -10,49 +11,10 @@ import {
 import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
 
 /**
- * Accessible Autocomplete wrapper component.
- *
- * Wraps any field (typically GovUKTextInput) with the accessible-autocomplete
- * enhancement from alphagov/accessible-autocomplete.
- *
- * The component:
- * 1. Renders a script tag containing the autocomplete data as JSON
- * 2. Wraps the field in a div with data attributes for JS initialization
- * 3. A generic JS initializer finds these wrappers and enhances the inputs
- *
+ * Props for the AccessibleAutocomplete component.
  * @see https://github.com/alphagov/accessible-autocomplete
- *
- * @example Simple flat array of options
- * ```typescript
- * block<AccessibleAutocomplete>({
- *   variant: 'accessibleAutocomplete',
- *   field: field<GovUKTextInput>({
- *     variant: 'govukTextInput',
- *     code: 'country',
- *     label: 'Country',
- *   }),
- *   data: Data('countries'), // ['England', 'Wales', 'Scotland', ...]
- * })
- * ```
- *
- * @example Keyed data with dynamic filtering
- * ```typescript
- * block<AccessibleAutocomplete>({
- *   variant: 'accessibleAutocomplete',
- *   field: field<GovUKTextInput>({
- *     variant: 'govukTextInput',
- *     code: 'goal',
- *     label: 'Select a goal',
- *   }),
- *   data: Data('goalsByAreaOfNeed'), // { accommodation: [...], employment: [...] }
- *   dataKeyFrom: '#area-of-need-input',
- *   minLength: 2,
- * })
- * ```
  */
-export interface AccessibleAutocomplete extends BlockDefinition {
-  variant: 'accessibleAutocomplete'
-
+export interface AccessibleAutocompleteProps {
   /**
    * The field to enhance with autocomplete behaviour.
    * Typically a GovUKTextInput, but can be any field type.
@@ -146,6 +108,14 @@ export interface AccessibleAutocomplete extends BlockDefinition {
 }
 
 /**
+ * Accessible Autocomplete wrapper component.
+ * Full interface including form-engine discriminator properties.
+ */
+export interface AccessibleAutocomplete extends BlockDefinition, AccessibleAutocompleteProps {
+  variant: 'accessibleAutocomplete'
+}
+
+/**
  * Renders the AccessibleAutocomplete wrapper component.
  *
  * Outputs:
@@ -155,16 +125,18 @@ export interface AccessibleAutocomplete extends BlockDefinition {
 export const accessibleAutocomplete = buildNunjucksComponent<AccessibleAutocomplete>(
   'accessibleAutocomplete',
   async (block: EvaluatedBlock<AccessibleAutocomplete>): Promise<string> => {
-    const fieldBlock = block.field.block as FieldBlockDefinition
+    const fieldBlock = block.field.block as FieldBlockDefinition & { value?: unknown; defaultValue?: unknown }
     const fieldCode = fieldBlock.code ?? 'autocomplete-field'
     const dataId = `autocomplete-data-${fieldCode}`
 
     const dataScript = `<script type="application/json" id="${dataId}">${JSON.stringify(block.data)}</script>`
 
+    const defaultValue = fieldBlock.value ?? fieldBlock.defaultValue
+
     const wrapperAttrs = [
       'class="accessible-autocomplete-wrapper"',
-      'data-module="accessible-autocomplete"',
       `data-autocomplete-source="${dataId}"`,
+      defaultValue !== undefined ? `data-autocomplete-default-value="${defaultValue}"` : '',
       block.dataKeyFrom ? `data-autocomplete-source-key-from="${block.dataKeyFrom}"` : '',
       block.minLength !== undefined ? `data-autocomplete-min-length="${block.minLength}"` : '',
       block.showNoOptionsFound !== undefined ? `data-autocomplete-show-no-options="${block.showNoOptionsFound}"` : '',
@@ -182,6 +154,21 @@ export const accessibleAutocomplete = buildNunjucksComponent<AccessibleAutocompl
       .filter(Boolean)
       .join(' ')
 
-    return `${dataScript}\n<div ${wrapperAttrs}>\n${block.field.html}\n</div>`
+    return `${dataScript}\n<accessible-autocomplete-wrapper ${wrapperAttrs}>\n${block.field.html}\n</accessible-autocomplete-wrapper>`
   },
 )
+
+/**
+ * Creates an accessible autocomplete wrapper around a field.
+ *
+ * @example
+ * ```typescript
+ * AccessibleAutocomplete({
+ *   field: GovUKTextInput({ code: 'goal', label: 'Select a goal' }),
+ *   data: Data('goals'),
+ * })
+ * ```
+ */
+export function AccessibleAutocomplete(props: AccessibleAutocompleteProps): AccessibleAutocomplete {
+  return blockBuilder<AccessibleAutocomplete>({ ...props, variant: 'accessibleAutocomplete' })
+}
