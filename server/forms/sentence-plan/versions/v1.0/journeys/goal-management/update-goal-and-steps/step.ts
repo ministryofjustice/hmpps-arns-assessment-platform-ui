@@ -2,8 +2,7 @@ import {
   accessTransition,
   Data,
   Format,
-  loadTransition,
-  next,
+  redirect,
   Post,
   step,
   submitTransition,
@@ -37,17 +36,15 @@ export const updateGoalAndStepsStep = step({
   },
   blocks: [pageHeading, goalInfo, reviewStepsSection, progressNotesSection, viewAllNotesSection, actionButtons],
 
-  onLoad: [
-    loadTransition({
+  onAccess: [
+    accessTransition({
       effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.loadActiveGoalForEdit()],
     }),
-  ],
 
-  onAccess: [
     // If goal not found, redirect to plan overview
     accessTransition({
-      guards: Data('activeGoal').not.match(Condition.IsRequired()),
-      redirect: [next({ goto: '../../plan/overview' })],
+      when: Data('activeGoal').not.match(Condition.IsRequired()),
+      next: [redirect({ goto: '../../plan/overview' })],
     }),
   ],
 
@@ -59,16 +56,16 @@ export const updateGoalAndStepsStep = step({
         effects: [SentencePlanEffects.updateGoalProgress()],
         next: [
           // If all steps completed, go to confirm-if-achieved page
-          next({
+          redirect({
             when: Data('allStepsCompleted').match(Condition.Equals(true)),
             goto: Format('../../goal/%1/confirm-if-achieved', Data('activeGoal.uuid')),
           }),
           // Otherwise, go back to plan overview based on goal status
-          next({
+          redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
             goto: '../../plan/overview?type=future',
           }),
-          next({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?type=current' }),
         ],
       },
     }),
@@ -77,7 +74,7 @@ export const updateGoalAndStepsStep = step({
       validate: false,
       onAlways: {
         effects: [SentencePlanEffects.updateGoalProgress()],
-        next: [next({ goto: Format('../../goal/%1/confirm-achieved-goal', Data('activeGoal.uuid')) })],
+        next: [redirect({ goto: Format('../../goal/%1/confirm-achieved-goal', Data('activeGoal.uuid')) })],
       },
     }),
   ],

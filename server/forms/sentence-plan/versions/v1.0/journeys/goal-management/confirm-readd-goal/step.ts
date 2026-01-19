@@ -1,4 +1,4 @@
-import { next, step, submitTransition } from '@form-engine/form/builders'
+import { redirect, step, submitTransition } from '@form-engine/form/builders'
 import { pageHeading, confirmButton } from './fields'
 
 export const confirmAddGoalStep = step({
@@ -9,7 +9,7 @@ export const confirmAddGoalStep = step({
     submitTransition({
       onAlways: {
         // TODO: Execute re-add goal effect
-        next: [next({ goto: '/plan-overview/plan' })],
+        next: [redirect({ goto: '/plan-overview/plan' })],
       },
     }),
   ],

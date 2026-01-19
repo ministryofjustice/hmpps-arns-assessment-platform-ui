@@ -89,8 +89,7 @@ export const pageContent = TemplateWrapper({
 
   | Transition | When Effects Run | Common Uses |
   |------------|------------------|-------------|
-  | \`loadTransition\` | Before access checks, on every request | Load data from APIs, populate dropdowns |
-  | \`accessTransition\` | Before redirect (when denied) | Log access attempts, analytics |
+  | \`accessTransition\` | Before evaluating conditions and redirects | Load data from APIs, populate dropdowns |
   | \`actionTransition\` | During POST, before render | Postcode lookup, address fetch |
   | \`submitTransition\` | After validation (onValid/onInvalid/onAlways) | Save answers, send notifications |
 
@@ -143,16 +142,16 @@ export const pageContent = TemplateWrapper({
       CodeBlock({
         language: 'typescript',
         code: `
-          import { loadTransition, submitTransition, next } from '@form-engine/form/builders'
+          import { accessTransition, submitTransition, redirect } from '@form-engine/form/builders'
           import { MyEffects } from './effects'
 
           step({
             path: '/my-step',
             title: 'My Step',
 
-            // Load effects run when the step is accessed
-            onLoad: [
-              loadTransition({
+            // Access effects run when the step is accessed
+            onAccess: [
+              accessTransition({
                 effects: [
                   MyEffects.loadUserProfile(),
                   MyEffects.loadReferenceData(),
@@ -166,7 +165,7 @@ export const pageContent = TemplateWrapper({
                 validate: true,
                 onValid: {
                   effects: [MyEffects.saveAnswers()],
-                  next: [next({ goto: 'next-step' })],
+                  next: [redirect({ goto: 'next-step' })],
                 },
               }),
             ],
@@ -233,8 +232,8 @@ export const pageContent = TemplateWrapper({
             path: '/personal-details',
             title: 'Personal Details',
 
-            onLoad: [
-              loadTransition({
+            onAccess: [
+              accessTransition({
                 effects: [
                   // Load user profile to pre-populate fields
                   MyEffects.loadUserProfile(Params('userId')),
@@ -254,7 +253,7 @@ export const pageContent = TemplateWrapper({
                     // Track completion
                     MyEffects.trackStepComplete('personal-details'),
                   ],
-                  next: [next({ goto: 'contact-details' })],
+                  next: [redirect({ goto: 'contact-details' })],
                 },
                 onInvalid: {
                   effects: [

@@ -17,7 +17,7 @@ Fetch data from an API or session when a step loads. {.lead}
 ## The Pattern
 
 1. Define effects in your form's \`effects.ts\`
-2. Attach them to a \`loadTransition\` on your journey or step
+2. Attach them to an \`accessTransition\` in \`onAccess\` on your journey or step
 
 ### Step 1: Define the effect
 
@@ -69,7 +69,7 @@ Fetch data from an API or session when a step loads. {.lead}
 ## Related Concepts
 
 - [Effects](/forms/form-engine-developer-guide/effects/intro) - Full effects documentation
-- [Transitions](/forms/form-engine-developer-guide/transitions/intro) - Load and submit transitions
+- [Transitions](/forms/form-engine-developer-guide/transitions/intro) - Access and submit transitions
 - [References](/forms/form-engine-developer-guide/references/data) - Using Data() to access loaded data
 
 ---
@@ -108,14 +108,14 @@ Fetch data from an API or session when a step loads. {.lead}
         language: 'typescript',
         code: `
           // form/index.ts or step.ts
-          import { journey, loadTransition } from '@form-engine/form/builders'
+          import { journey, accessTransition } from '@form-engine/form/builders'
           import { MyFormEffects } from '../effects'
 
           export const myJourney = journey({
             code: 'my-form',
             path: '/my-form',
-            onLoad: [
-              loadTransition({
+            onAccess: [
+              accessTransition({
                 effects: [MyFormEffects.loadUserData()],
               }),
             ],
@@ -173,8 +173,8 @@ Fetch data from an API or session when a step loads. {.lead}
           export const detailsStep = step({
             path: '/details',
             title: 'Details',
-            onLoad: [
-              loadTransition({
+            onAccess: [
+              accessTransition({
                 effects: [MyFormEffects.loadDetails()],
               }),
             ],

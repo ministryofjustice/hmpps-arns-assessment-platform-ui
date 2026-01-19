@@ -3,9 +3,8 @@ import {
   actionTransition,
   Data,
   Format,
-  loadTransition,
-  next,
   Post,
+  redirect,
   step,
   submitTransition,
   when,
@@ -51,22 +50,21 @@ export const addStepsStep = step({
 
   blocks: [pageLayout],
 
-  onLoad: [
-    loadTransition({
+  onAccess: [
+    accessTransition({
       effects: [
         SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.initializeStepEditSession(),
       ],
-    }),
-  ],
-
-  onAccess: [
-    // If goal not found, redirect to plan overview
-    accessTransition({
-      guards: Data('activeGoal').not.match(Condition.IsRequired()),
-      redirect: [next({ goto: '../../plan-overview' })],
+      next: [
+        // If goal not found, redirect to plan overview
+        redirect({
+          when: Data('activeGoal').not.match(Condition.IsRequired()),
+          goto: '../../plan-overview',
+        }),
+      ],
     }),
   ],
 
@@ -91,11 +89,11 @@ export const addStepsStep = step({
       onValid: {
         effects: [SentencePlanEffects.saveStepEditSession()],
         next: [
-          next({
+          redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
             goto: '../../plan/overview?type=future',
           }),
-          next({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?type=current' }),
         ],
       },
     }),

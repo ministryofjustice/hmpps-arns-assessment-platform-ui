@@ -152,7 +152,7 @@ export const pageContent = TemplateWrapper({
 
   | Source | When Set |
   |--------|----------|
-  | \`load\` | During \`onLoad\` transitions |
+  | \`access\` | During \`onAccess\` transitions |
   | \`action\` | During \`onAction\` transitions (e.g., postcode lookup) |
   | \`post\` | Raw value from POST body (user form submission) |
   | \`sanitized\` | After HTML entity sanitization |

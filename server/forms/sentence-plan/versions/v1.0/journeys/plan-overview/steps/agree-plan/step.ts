@@ -1,5 +1,5 @@
 import {
-  next,
+  redirect,
   step,
   submitTransition,
   Post,
@@ -7,7 +7,6 @@ import {
   Data,
   Item,
   and,
-  loadTransition,
   when,
   Query,
   Format,
@@ -29,37 +28,37 @@ export const agreePlanStep = step({
         .else('overview?type=current'),
     },
   },
-  onLoad: [
-    loadTransition({
+  onAccess: [
+    accessTransition({
       effects: [
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
       ],
-    }),
-  ],
-  onAccess: [
-    // Check if there are no active goals at all
-    accessTransition({
-      guards: Data('goals')
-        .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
-        .pipe(Transformer.Array.Length())
-        .match(Condition.Equals(0)),
-      redirect: [next({ goto: 'overview?type=current&error=no-active-goals' })],
-    }),
-    // Check if there are any active goals without steps
-    accessTransition({
-      guards: Data('goals')
-        .each(
-          Iterator.Filter(
-            and(
-              Item().path('status').match(Condition.Equals('ACTIVE')),
-              Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
-            ),
-          ),
-        )
-        .pipe(Transformer.Array.Length())
-        .match(Condition.Number.GreaterThan(0)),
-      redirect: [next({ goto: 'overview?type=current&error=no-steps' })],
+      next: [
+        // Check if there are no active goals at all
+        redirect({
+          when: Data('goals')
+            .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
+            .pipe(Transformer.Array.Length())
+            .match(Condition.Equals(0)),
+          goto: 'overview?type=current&error=no-active-goals',
+        }),
+        // Check if there are any active goals without steps
+        redirect({
+          when: Data('goals')
+            .each(
+              Iterator.Filter(
+                and(
+                  Item().path('status').match(Condition.Equals('ACTIVE')),
+                  Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
+                ),
+              ),
+            )
+            .pipe(Transformer.Array.Length())
+            .match(Condition.Number.GreaterThan(0)),
+          goto: 'overview?type=current&error=no-steps',
+        }),
+      ],
     }),
   ],
   onSubmission: [
@@ -68,7 +67,7 @@ export const agreePlanStep = step({
       validate: true,
       onValid: {
         effects: [SentencePlanEffects.updatePlanAgreementStatus()],
-        next: [next({ goto: 'overview' })],
+        next: [redirect({ goto: 'overview' })],
       },
     }),
   ],

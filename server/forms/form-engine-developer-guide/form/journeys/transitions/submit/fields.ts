@@ -29,7 +29,7 @@ export const pageContent = TemplateWrapper({
   <h3 class="govuk-heading-s"><code>guards</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
 
   Permission check. When **true**, the transition proceeds.
-  **Note:** This is opposite to \`accessTransition\` where guards=true means deny.
+  **Note:** \`accessTransition\` uses \`when\` (true means execute), not \`guards\`.
 
   {{slot:guardsCode}}
 
@@ -79,12 +79,13 @@ export const pageContent = TemplateWrapper({
   | \`true\` | Visible to user | \`onValid\`, \`onInvalid\`, \`onAlways\` |
   | \`false\` | Hidden | \`onAlways\` only |
 
-  ### Guards vs accessTransition
+  ### Guards vs accessTransition \`when\`
 
-  Note: \`guards\` in submitTransition works **opposite** to accessTransition:
+  Note: \`guards\` in submitTransition is a permission check, while \`accessTransition\`
+  uses \`when\` as an execution condition:
 
   - **submitTransition:** guards = true → proceed with transition
-  - **accessTransition:** guards = true → deny access, redirect
+  - **accessTransition:** when = true → execute (effects, then redirect/error if configured)
 
   ---
 
@@ -140,6 +141,20 @@ export const pageContent = TemplateWrapper({
 
   ---
 
+  ## Error Responses with throwError()
+
+  Submit transitions can return HTTP errors instead of redirecting. This is useful
+  for save failures, business rule violations, or other server-side errors:
+
+  {{slot:throwErrorCode}}
+
+  Use \`throwError()\` when:
+  - An API save fails and you want to show an error page
+  - Business rules are violated (duplicate record, invalid state)
+  - The user should see an error page rather than stay on the form
+
+  ---
+
   ## Best Practices
 
   - **Use descriptive action values:** \`saveDraft\`,
@@ -180,7 +195,7 @@ validate: false  // Hide errors, use onAlways only`,
         language: 'typescript',
         code: `onAlways: {
   effects: [MyEffects.saveDraft()],
-  next: [next({ goto: '/dashboard' })],
+  next: [redirect({ goto: '/dashboard' })],
 }`,
       }),
     ],
@@ -189,7 +204,7 @@ validate: false  // Hide errors, use onAlways only`,
         language: 'typescript',
         code: `onValid: {
   effects: [MyEffects.saveAnswers()],
-  next: [next({ goto: '/next-step' })],
+  next: [redirect({ goto: '/next-step' })],
 }`,
       }),
     ],
@@ -233,7 +248,7 @@ onInvalid: {
       validate: true,
       onValid: {
         effects: [MyEffects.saveAnswers()],
-        next: [next({ goto: '/contact-details' })],
+        next: [redirect({ goto: '/contact-details' })],
       },
       // onInvalid not needed - omitting 'next' stays on current step
     }),
@@ -270,7 +285,7 @@ onSubmission: [
     validate: true,
     onValid: {
       effects: [MyEffects.saveItem()],
-      next: [next({ goto: '/items/new' })],
+      next: [redirect({ goto: '/items/new' })],
     },
   }),
 
@@ -280,7 +295,7 @@ onSubmission: [
     validate: true,
     onValid: {
       effects: [MyEffects.saveItem()],
-      next: [next({ goto: '/items' })],
+      next: [redirect({ goto: '/items' })],
     },
   }),
 ],`,
@@ -296,7 +311,7 @@ onSubmission: [
     validate: false,
     onAlways: {
       effects: [MyEffects.saveDraft()],
-      next: [next({ goto: '/dashboard' })],
+      next: [redirect({ goto: '/dashboard' })],
     },
   }),
 
@@ -306,7 +321,7 @@ onSubmission: [
     validate: true,
     onValid: {
       effects: [MyEffects.saveAnswers()],
-      next: [next({ goto: '/next-step' })],
+      next: [redirect({ goto: '/next-step' })],
     },
   }),
 ],`,
@@ -322,16 +337,16 @@ onSubmission: [
       effects: [MyEffects.saveAnswers()],
       next: [
         // Specific conditions first
-        next({
+        redirect({
           when: Answer('userType').match(Condition.Equals('business')),
           goto: '/business-details',
         }),
-        next({
+        redirect({
           when: Answer('userType').match(Condition.Equals('individual')),
           goto: '/individual-details',
         }),
         // Fallback last (no 'when')
-        next({ goto: '/generic-details' }),
+        redirect({ goto: '/generic-details' }),
       ],
     },
   }),
@@ -346,9 +361,40 @@ onSubmission: [
     validate: true,
     onValid: {
       effects: [MyEffects.saveAnswers()],
-      next: [next({ goto: '/next-step' })],
+      next: [redirect({ goto: '/next-step' })],
     },
     // onInvalid omitted - stays on current step with errors shown
+  }),
+],`,
+      }),
+    ],
+    throwErrorCode: [
+      CodeBlock({
+        language: 'typescript',
+        code: `import { submitTransition, redirect, throwError, Format } from '@form-engine/form/builders'
+
+onSubmission: [
+  submitTransition({
+    validate: true,
+    onValid: {
+      effects: [MyEffects.saveGoal()],
+      next: [
+        // Check for save errors first
+        throwError({
+          when: Data('saveError').match(Condition.IsRequired()),
+          status: 500,
+          message: Format('Failed to save: %1', Data('saveError')),
+        }),
+        // Check for business rule violations
+        throwError({
+          when: Data('duplicateGoal').match(Condition.Equals(true)),
+          status: 409,
+          message: 'This goal already exists',
+        }),
+        // Success - redirect
+        redirect({ goto: '/goals/overview' }),
+      ],
+    },
   }),
 ],`,
       }),

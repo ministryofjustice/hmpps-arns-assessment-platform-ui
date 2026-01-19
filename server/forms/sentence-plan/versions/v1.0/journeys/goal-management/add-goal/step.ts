@@ -3,11 +3,10 @@ import {
   Answer,
   Data,
   Format,
-  loadTransition,
-  next,
   Params,
   Post,
   Query,
+  redirect,
   step,
   submitTransition,
   when,
@@ -34,26 +33,25 @@ export const createGoalStep = step({
       },
     },
   },
-  blocks: [sideNav, ...contentBlocks],
-  onLoad: [
-    loadTransition({
+  blocks: [twoColumnLayout()],
+  onAccess: [
+    accessTransition({
       effects: [
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.deriveGoalCurrentAreaOfNeed(),
       ],
     }),
-  ],
-  onAccess: [
+
     // If UUID param is literally ':uuid', redirect to use 'new' instead
     accessTransition({
-      guards: Params('uuid').match(Condition.Equals(':uuid')),
-      redirect: [next({ goto: Format('../new/add-goal/%1', Params('areaOfNeed')) })],
+      when: Params('uuid').match(Condition.Equals(':uuid')),
+      next: [redirect({ goto: Format('../new/add-goal/%1', Params('areaOfNeed')) })],
     }),
 
     // If area of need is not a valid slug, redirect them to `accommodation` by default.
     accessTransition({
-      guards: Params('areaOfNeed').not.match(Condition.Array.IsIn(Data('areaOfNeedSlugs'))),
-      redirect: [next({ goto: 'add-goal/accommodation' })],
+      when: Params('areaOfNeed').not.match(Condition.Array.IsIn(Data('areaOfNeedSlugs'))),
+      next: [redirect({ goto: 'add-goal/accommodation' })],
     }),
   ],
   onSubmission: [
@@ -62,7 +60,7 @@ export const createGoalStep = step({
       validate: true,
       onValid: {
         effects: [SentencePlanEffects.saveActiveGoal(), SentencePlanEffects.setNavigationReferrer('add-goal')],
-        next: [next({ goto: Format('../%1/add-steps', Data('activeGoalUuid')) })],
+        next: [redirect({ goto: Format('../%1/add-steps', Data('activeGoalUuid')) })],
       },
     }),
     submitTransition({
@@ -79,15 +77,15 @@ export const createGoalStep = step({
           }),
         ],
         next: [
-          next({
+          redirect({
             when: Query('type').match(Condition.IsRequired()),
             goto: Format('../../plan/overview?type=%1', Query('type')),
           }),
-          next({
+          redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
             goto: '../../plan/overview?type=future',
           }),
-          next({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?type=current' }),
         ],
       },
     }),

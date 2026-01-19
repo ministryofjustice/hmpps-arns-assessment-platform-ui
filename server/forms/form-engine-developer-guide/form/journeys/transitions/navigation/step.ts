@@ -4,7 +4,7 @@ import { pageContent } from './fields'
 /**
  * Transitions - Navigation
  *
- * The next() builder and navigation patterns.
+ * The redirect() builder and navigation patterns.
  */
 export const navigationStep = step({
   path: '/navigation',

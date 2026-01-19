@@ -7,14 +7,14 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
  * References - Data()
  *
  * Comprehensive documentation for the Data() reference,
- * covering external data access, onLoad effects, and common patterns.
+ * covering external data access, onAccess effects, and common patterns.
  */
 export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # Data()
 
 The \`Data()\` reference retrieves values from external data sources
-loaded via onLoad transitions. Use it to access API responses, database lookups,
+loaded via onAccess transitions. Use it to access API responses, database lookups,
 and pre-fetched configuration. {.lead}
 
 ---
@@ -31,7 +31,7 @@ and pre-fetched configuration. {.lead}
 
 ## How Data Gets Loaded
 
-Data must be loaded before you can reference it. This happens in **onLoad transitions**
+Data must be loaded before you can reference it. This happens in **onAccess transitions**
 using effects that call \`context.setData()\`:
 
 {{slot:loadingCode}}
@@ -87,7 +87,7 @@ Organise your data keys thoughtfully. Here are common patterns:
 | Aspect | Data() | Answer() |
 |--------|--------|----------|
 | Source | External (APIs, databases) | User input (form fields) |
-| When loaded | onLoad transitions | Form submission / defaults |
+| When loaded | onAccess transitions | Form submission / defaults |
 | Typical use | Lookup data, configuration | Validation, dynamic display |
 | Mutability | Set once at load time | Changes with user interaction |
 
@@ -95,7 +95,7 @@ Organise your data keys thoughtfully. Here are common patterns:
 
 ## Best Practices
 
-- **Always load before use:** Ensure your onLoad effects set all required data before the step renders
+- **Always load before use:** Ensure your onAccess effects set all required data before the step renders
 - **Use consistent key naming:** Stick to camelCase for data keys (e.g., \`userData\`, not \`user_data\`)
 - **Handle loading errors:** If an API call fails, set appropriate fallback data or show an error message
 - **Keep data minimal:** Only load what you need for the current step to keep the form responsive
@@ -134,8 +134,8 @@ Organise your data keys thoughtfully. Here are common patterns:
           step({
             path: '/profile',
             title: 'User Profile',
-            onLoad: [
-              loadTransition({
+            onAccess: [
+              accessTransition({
                 effects: [MyEffects.loadUserProfile()],
               }),
             ],
@@ -147,7 +147,7 @@ Organise your data keys thoughtfully. Here are common patterns:
     warning: [
       GovUKWarningText({
         html: `<strong>Data must be loaded before use.</strong> If you reference <code>Data('user')</code>
-          without loading it in onLoad, the value will be <code>undefined</code>.`,
+          without loading it in onAccess, the value will be <code>undefined</code>.`,
       }),
     ],
     basicCode: [

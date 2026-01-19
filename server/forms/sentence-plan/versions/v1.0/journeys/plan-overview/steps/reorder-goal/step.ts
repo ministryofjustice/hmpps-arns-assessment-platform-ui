@@ -1,4 +1,4 @@
-import { accessTransition, loadTransition, next, Query, step } from '@form-engine/form/builders'
+import { accessTransition, redirect, Query, step } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { SentencePlanEffects } from '../../../../../../effects'
 
@@ -20,34 +20,25 @@ export const reorderGoalStep = step({
 
   blocks: [], // No visible content - immediate redirect
 
-  onLoad: [
-    loadTransition({
-      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.reorderGoal()],
-    }),
-  ],
-
   onAccess: [
-    // Redirect back to plan overview with appropriate tab based on status
     accessTransition({
-      guards: Query('status').match(Condition.Equals('FUTURE')),
-      redirect: [next({ goto: 'overview?type=future' })],
-    }),
-    accessTransition({
-      guards: Query('status').match(Condition.Equals('ACHIEVED')),
-      redirect: [next({ goto: 'overview?type=achieved' })],
-    }),
-    accessTransition({
-      guards: Query('status').match(Condition.Equals('REMOVED')),
-      redirect: [next({ goto: 'overview?type=removed' })],
-    }),
-    // Default fallback for ACTIVE or any other status
-    accessTransition({
-      guards: Query('status').match(Condition.IsRequired()),
-      redirect: [next({ goto: 'overview?type=current' })],
-    }),
-    // Final fallback if no status provided
-    accessTransition({
-      redirect: [next({ goto: 'overview?type=current' })],
+      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.reorderGoal()],
+      next: [
+        redirect({
+          when: Query('status').match(Condition.Equals('FUTURE')),
+          goto: 'overview?type=future',
+        }),
+        redirect({
+          when: Query('status').match(Condition.Equals('ACHIEVED')),
+          goto: 'overview?type=achieved',
+        }),
+        redirect({
+          when: Query('status').match(Condition.Equals('REMOVED')),
+          goto: 'overview?type=removed',
+        }),
+        // Fallback for ACTIVE or any other/missing status
+        redirect({ goto: 'overview?type=current' }),
+      ],
     }),
   ],
 })

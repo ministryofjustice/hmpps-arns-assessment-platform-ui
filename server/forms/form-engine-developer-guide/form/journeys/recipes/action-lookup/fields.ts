@@ -134,7 +134,7 @@ Show an error message when the lookup fails:
           // step.ts
           import {
             step, validation, Self, Post,
-            actionTransition, submitTransition, next,
+            actionTransition, submitTransition, redirect,
           } from '@form-engine/form/builders'
           import { Condition } from '@form-engine/registry/conditions'
           import { GovUKTextInput, GovUKButton } from '@form-engine-govuk-components/components'
@@ -215,7 +215,7 @@ Show an error message when the lookup fails:
                 validate: true,
                 onValid: {
                   effects: [AddressEffects.saveAddress()],
-                  next: [next({ goto: '/contact-details' })],
+                  next: [redirect({ goto: '/contact-details' })],
                 },
               }),
             ],

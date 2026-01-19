@@ -1,4 +1,4 @@
-import { Data, journey, loadTransition } from '@form-engine/form/builders'
+import { accessTransition, Data, journey } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
@@ -23,8 +23,8 @@ export const sentencePlanV1Journey = journey({
       ),
     },
   },
-  onLoad: [
-    loadTransition({
+  onAccess: [
+    accessTransition({
       effects: [
         SentencePlanEffects.loadPersonByCrn(),
         SentencePlanEffects.loadPlanFromSession(),
