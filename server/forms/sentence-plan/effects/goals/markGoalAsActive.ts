@@ -1,5 +1,5 @@
 import { InternalServerError } from 'http-errors'
-import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
+import { DerivedGoal, SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { calculateTargetDate, determineGoalStatus } from './goalUtils'
@@ -11,6 +11,7 @@ import { calculateTargetDate, determineGoalStatus } from './goalUtils'
  * 1. Updates the goal status from 'REMOVED' to 'ACTIVE' or 'FUTURE'
  * 2. Updates the target date based on form selections
  * 3. Adds a re-add note if the user entered one (readd_note field)
+ * 4. Moves the goal to the bottom of the list (highest collection index)
  *
  * This is the reverse of `markGoalAsRemoved` and is used via
  * the `confirm-readd-goal` flow to add a removed goal back into
@@ -125,5 +126,23 @@ export const markGoalAsActive = (deps: SentencePlanEffectsDeps) => async (contex
   // Execute all commands in a single batch
   if (commands.length > 0) {
     await deps.api.executeCommands(...commands)
+  }
+
+  // Move goal to bottom of the list
+  const goals = context.getData('goals') as DerivedGoal[]
+
+  if (goals && goals.length > 1) {
+    const maxCollectionIndex = Math.max(...goals.map(g => g.collectionIndex))
+
+    // Only reorder if the goal isn't already at the bottom
+    if (activeGoal.collectionIndex < maxCollectionIndex) {
+      await deps.api.executeCommand({
+        type: 'ReorderCollectionItemCommand',
+        collectionItemUuid: activeGoal.uuid,
+        index: maxCollectionIndex,
+        assessmentUuid,
+        user,
+      })
+    }
   }
 }

@@ -168,6 +168,67 @@ test.describe('Re-add goal journey', () => {
   })
 
   test.describe('re-added goals', () => {
+    test('re-added goal appears at the bottom of the list when there are multiple goals', async ({
+      page,
+      aapClient,
+    }) => {
+      const plan = await withGoals(
+        [
+          {
+            title: 'First Goal - Should Stay First',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'NOT_STARTED' }],
+          },
+          {
+            title: 'Second Goal - Should Stay Second',
+            areaOfNeed: 'finances',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Step 2', status: 'NOT_STARTED' }],
+          },
+          {
+            title: 'Re-added Goal - Should Be Last',
+            areaOfNeed: 'health',
+            status: 'REMOVED',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Step 3', status: 'COMPLETED' }],
+            notes: [{ type: 'REMOVED', note: 'Was removed temporarily' }],
+          },
+        ],
+        'AGREED',
+      ).create(aapClient)
+
+      // Verify initial state: 2 active goals
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto('/forms/sentence-plan/v1.0/plan/overview?type=current')
+
+      let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      expect(await planOverviewPage.getGoalCount()).toBe(2)
+
+      // Re-add the removed goal
+      const removedGoalUuid = plan.goals[2].uuid
+      await page.goto(`/forms/sentence-plan/v1.0/goal/${removedGoalUuid}/confirm-readd-goal`)
+
+      const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
+      await readdPage.enterReaddNote('Ready to work on this again')
+      await readdPage.selectCanStartNow(true)
+      await readdPage.selectTargetDateOption('date_in_3_months')
+      await readdPage.clickConfirm()
+
+      await expect(page).toHaveURL(/type=current/)
+
+      // Verify re-added goal is at the bottom
+      planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      const goalTitles = await planOverviewPage.getAllGoalTitles()
+
+      expect(goalTitles).toHaveLength(3)
+      expect(goalTitles[0]).toContain('First Goal - Should Stay First')
+      expect(goalTitles[1]).toContain('Second Goal - Should Stay Second')
+      expect(goalTitles[2]).toContain('Re-added Goal - Should Be Last')
+    })
+
     test('re-added goal appears in current goals tab after confirmation', async ({ page, aapClient }) => {
       const plan = await withGoals(
         [
