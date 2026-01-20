@@ -24,6 +24,8 @@ import { initializeStepEditSession } from './steps/initializeStepEditSession'
 import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
 import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
 import { saveStepEditSession } from './steps/saveStepEditSession'
+import { setSessionAccessType } from './access/setSessionAccessType'
+import { setPrivacyAccepted } from './access/setPrivacyAccepted'
 
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
@@ -54,6 +56,9 @@ export type { AgreementStatus } from './types'
 export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffectsRegistry } =
   defineEffectsWithDeps<SentencePlanEffectsDeps>()({
     initializeSessionFromAccess,
+    // Access
+    setSessionAccessType,
+    setPrivacyAccepted,
 
     // Notifications
     addNotification,

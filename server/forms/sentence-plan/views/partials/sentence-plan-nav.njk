@@ -1,28 +1,30 @@
 {%- from "moj/components/primary-navigation/macro.njk" import mojPrimaryNavigation -%}
 
-{% set personName = data.caseData.name.forename if data.caseData and data.caseData.name else "Person" %}
-{% set isOnAboutPage = step.path == '/about-person' %}
-{% set isOnPlanHistoryPage = step.path == '/plan-history' %}
-{% set isOnPlanPage = not isOnAboutPage and not isOnPlanHistoryPage %}
+{% if showNavigation != false %}
+  {% set personName = data.caseData.name.forename if data.caseData and data.caseData.name else "Person" %}
+  {% set isOnAboutPage = step.path == '/about-person' %}
+  {% set isOnPlanHistoryPage = step.path == '/plan-history' %}
+  {% set isOnPlanPage = not isOnAboutPage and not isOnPlanHistoryPage %}
 
-{# use '| select | list' to filter out the undefined or falsy values from the items array #}
-{{ mojPrimaryNavigation({
-  label: "Primary navigation",
-  items: [
-    {
-      text: personName + "'s plan",
-      href: basePath + "/plan/overview",
-      active: isOnPlanPage
-    },
-    {
-      text: "Plan history",
-      href: basePath + "/plan/plan-history",
-      active: isOnPlanHistoryPage
-    } if showPlanHistoryTab,
-    {
-      text: "About " + personName,
-      href: basePath + "/about-person",
-      active: isOnAboutPage
-    }
-  ] | select | list
-}) }}
+  {# use '| select | list' to filter out the undefined or falsy values from the items array #}
+  {{ mojPrimaryNavigation({
+    label: "Primary navigation",
+    items: [
+      {
+        text: personName + "'s plan",
+        href: basePath + "/plan/overview",
+        active: isOnPlanPage
+      },
+      {
+        text: "Plan history",
+        href: basePath + "/plan/plan-history",
+        active: isOnPlanHistoryPage
+      } if showPlanHistoryTab,
+      {
+        text: "About " + personName,
+        href: basePath + "/about-person",
+        active: isOnAboutPage
+      }
+    ] | select | list
+  }) }}
+{% endif %}
