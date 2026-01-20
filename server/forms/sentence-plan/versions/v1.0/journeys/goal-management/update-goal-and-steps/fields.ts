@@ -161,13 +161,35 @@ export const viewAllNotesSection = block<GovUKDetails>({
               Iterator.Map(
                 TemplateWrapper({
                   template: Format(
-                    `<label class="govuk-heading-s">%1 by %2</label>
-                    <p class="goal-note">%3</p>`,
+                    `<label class="govuk-heading-s">%1 by %2</label>{{slot:typeLabel}}<p class="goal-note">%3</p>`,
                     Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
                     Item().path('createdBy'),
                     Item().path('note'),
                   ),
-                  slots: {},
+                  slots: {
+                    typeLabel: [
+                      block<HtmlBlock>({
+                        variant: 'html',
+                        content: when(Item().path('type').match(Condition.Equals('READDED')))
+                          .then(
+                            Format(
+                              '<p class="govuk-body">Goal added back into plan on %1.</p>',
+                              Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
+                            ),
+                          )
+                          .else(
+                            when(Item().path('type').match(Condition.Equals('REMOVED')))
+                              .then(
+                                Format(
+                                  '<p class="govuk-body">Goal removed on %1.</p>',
+                                  Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
+                                ),
+                              )
+                              .else(''),
+                          ),
+                      }),
+                    ],
+                  },
                 }),
               ),
             ),

@@ -3,7 +3,7 @@ import { Answers, Properties } from '../../server/interfaces/aap-api/dataModel'
 /**
  * Goal status enum matching the form-engine types
  */
-export type GoalStatus = 'ACTIVE' | 'FUTURE'
+export type GoalStatus = 'ACTIVE' | 'FUTURE' | 'REMOVED' | 'ACHIEVED'
 
 /**
  * Step status enum matching the form-engine types
@@ -38,6 +38,20 @@ export interface StepConfig {
 }
 
 /**
+ * Note configuration for test setup.
+ *
+ * Note types track goal lifecycle events:
+ * - REMOVED: Created when a goal is removed from the plan
+ * - READDED: Created when a previously removed goal is added back
+ * - PROGRESS: General progress updates on active goals
+ */
+export interface NoteConfig {
+  type: 'REMOVED' | 'READDED' | 'PROGRESS'
+  note: string
+  createdBy?: string
+}
+
+/**
  * Goal configuration for test setup
  */
 export interface GoalConfig {
@@ -47,6 +61,7 @@ export interface GoalConfig {
   targetDate?: string
   relatedAreasOfNeed?: string[]
   steps?: StepConfig[]
+  notes?: NoteConfig[]
 }
 
 /**

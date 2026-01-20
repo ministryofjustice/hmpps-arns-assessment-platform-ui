@@ -104,10 +104,11 @@ export const deriveGoalsWithStepsFromAssessment = () => async (context: Sentence
     const notes: DerivedNote[] = allNoteItems
       .map(noteItem => {
         const noteAnswers = unwrapAll<{ note: string; created_by: string }>(noteItem.answers)
-        const noteProperties = unwrapAll<{ created_at: string }>(noteItem.properties)
+        const noteProperties = unwrapAll<{ created_at: string; type: string }>(noteItem.properties)
 
         return {
           uuid: noteItem.uuid,
+          type: noteProperties.type,
           note: noteAnswers.note,
           createdBy: noteAnswers.created_by,
           createdAt: new Date(noteProperties.created_at),

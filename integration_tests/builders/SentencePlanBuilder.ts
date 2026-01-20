@@ -14,6 +14,7 @@ import type {
   PlanAgreementStatus,
   StepConfig,
   GoalConfig,
+  NoteConfig,
 } from './types'
 
 /**
@@ -210,7 +211,32 @@ export class SentencePlanBuilder {
       })
     }
 
+    // Add NOTES collection if notes exist (tracks goal lifecycle: removed, re-added, progress)
+    if (config.notes && config.notes.length > 0) {
+      goalItem.withCollection('NOTES', notesCollection => {
+        config.notes!.forEach(noteConfig => {
+          notesCollection.withItem(noteItem => this.buildNoteItemForCreate(noteItem, noteConfig))
+        })
+        return notesCollection
+      })
+    }
+
     return goalItem
+  }
+
+  /**
+   * Build a note item for the create() path (using CollectionItemBuilder)
+   */
+  private buildNoteItemForCreate(noteItem: CollectionItemBuilder, config: NoteConfig): CollectionItemBuilder {
+    const now = new Date().toISOString()
+
+    noteItem
+      .withAnswer('note', config.note)
+      .withAnswer('created_by', config.createdBy ?? 'E2E Test')
+      .withProperty('type', config.type)
+      .withProperty('created_at', now)
+
+    return noteItem
   }
 
   /**

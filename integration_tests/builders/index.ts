@@ -19,6 +19,7 @@ export {
   withFutureGoals,
   withMixedGoals,
   withGoals,
+  withRemovedGoals,
 } from './sentencePlanFactories'
 
 export type { CreatedSentencePlan, CreatedGoal, CreatedStep } from './SentencePlanBuilder'
@@ -27,6 +28,7 @@ export type { CreatedSentencePlan, CreatedGoal, CreatedStep } from './SentencePl
 export type {
   GoalConfig,
   StepConfig,
+  NoteConfig,
   GoalStatus,
   StepStatus,
   AreaOfNeedSlug,
