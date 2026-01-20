@@ -124,7 +124,7 @@ export const pageContent = TemplateWrapper({
         code: `
           // Reading data
           context.getAnswer('fieldCode')          // Get a single answer value
-          context.getAnswers()                    // Get all answers
+          context.getAllAnswers()                    // Get all answers
           context.getData('key')                  // Get supplementary data
           context.getData()                       // Get all supplementary data
           context.getSession()                    // Get session object (mutable)
