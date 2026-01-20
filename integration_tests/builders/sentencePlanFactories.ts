@@ -97,3 +97,22 @@ export function withCurrentGoalsWithCompletedSteps(
 
   return builder
 }
+
+/** Create a builder with N REMOVED goals (for re-add goal flow) */
+export function withRemovedGoals(count: number, agreementStatus?: PlanAgreementStatus): SentencePlanBuilder {
+  const builder = new SentencePlanBuilder().withAgreementStatus(agreementStatus)
+  const targetDate = getDatePlusMonths(3)
+
+  for (let i = 1; i <= count; i++) {
+    builder.withGoal({
+      title: `Removed Goal ${i}`,
+      areaOfNeed: 'accommodation',
+      status: 'REMOVED',
+      targetDate,
+      steps: [{ actor: 'probation_practitioner', description: `Step 1 for Removed Goal ${i}`, status: 'COMPLETED' }],
+      notes: [{ type: 'REMOVED', note: `This goal was removed because it is no longer relevant` }],
+    })
+  }
+
+  return builder
+}

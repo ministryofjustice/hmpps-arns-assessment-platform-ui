@@ -50,6 +50,7 @@ export interface DerivedStep {
 
 export interface DerivedNote {
   uuid: string
+  type: string
   note: string
   createdBy: string
   createdAt: Date

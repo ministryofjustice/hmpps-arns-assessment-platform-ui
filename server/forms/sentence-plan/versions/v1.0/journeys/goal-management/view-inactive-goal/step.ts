@@ -44,12 +44,12 @@ export const viewInactiveGoalStep = step({
     submitTransition({
       when: Post('action').match(Condition.Equals('re-add')),
       onAlways: {
-        next: [redirect({ goto: '/confirm-readd-goal' })],
+        next: [redirect({ goto: 'confirm-readd-goal' })],
       },
     }),
     submitTransition({
       onAlways: {
-        next: [redirect({ goto: '/plan-overview/plan' })],
+        next: [redirect({ goto: '../../plan/overview' })],
       },
     }),
   ],
