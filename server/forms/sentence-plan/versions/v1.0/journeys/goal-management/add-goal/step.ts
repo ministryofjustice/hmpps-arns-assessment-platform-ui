@@ -33,7 +33,7 @@ export const createGoalStep = step({
       },
     },
   },
-  blocks: [twoColumnLayout()],
+  blocks: [sideNav, ...contentBlocks],
   onAccess: [
     accessTransition({
       effects: [
