@@ -12,7 +12,7 @@ import {
   when,
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import { twoColumnLayout } from './fields'
+import { sideNav, contentBlocks } from './fields'
 import { SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 
@@ -28,9 +28,12 @@ export const createGoalStep = step({
       backlink: when(Query('type').match(Condition.IsRequired()))
         .then(Format('../../../plan/overview?type=%1', Query('type')))
         .else('../../../plan/overview?type=current'),
+      twoColumnLayout: {
+        sidebarBlockIndex: 0,
+      },
     },
   },
-  blocks: [twoColumnLayout()],
+  blocks: [sideNav, ...contentBlocks],
   onAccess: [
     accessTransition({
       effects: [
