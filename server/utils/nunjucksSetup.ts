@@ -3,6 +3,7 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
 import { getCorrelationContext } from 'applicationinsights'
+import { ValidationResult } from '@form-engine/core/nodes/expressions/validation/ValidationHandler'
 import { formatDate, initialiseName } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -109,6 +110,13 @@ export default function nunjucksSetup(app?: express.Express) {
   njkEnv.addFilter('mapNavItem', mapNavItem)
 
   njkEnv.addFilter('isDeepestActive', isDeepestActive)
+
+  njkEnv.addFilter('toErrorSummary', (errors: ValidationResult[]) =>
+    errors.map(error => ({
+      text: error.message,
+      href: (error.details?.href as string | undefined) ?? (error.blockCode ? `#${error.blockCode}` : ''),
+    })),
+  )
 
   return njkEnv
 }
