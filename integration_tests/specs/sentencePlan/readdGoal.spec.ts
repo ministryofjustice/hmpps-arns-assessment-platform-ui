@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test'
 import { test } from '../../support/fixtures'
 import ConfirmReaddGoalPage from '../../pages/sentencePlan/confirmReaddGoalPage'
+import ConfirmRemoveGoalPage from '../../pages/sentencePlan/confirmRemoveGoalPage'
 import ViewInactiveGoalPage from '../../pages/sentencePlan/viewInactiveGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { withRemovedGoals, withGoals } from '../../builders'
@@ -259,9 +260,53 @@ test.describe('Re-add goal journey', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       expect(await planOverviewPage.getGoalCount()).toBe(1)
       expect(await planOverviewPage.getGoalCardTitle(0)).toContain('Re-add Test Goal')
+      expect(await planOverviewPage.goalCardHasTargetDateText(0)).toBe(true)
     })
 
     // Verifies that after re-adding one of two removed goals, only the un-readded goal remains in the removed tab
+    test('re-added goal as future goal does not display target date', async ({ page, aapClient }) => {
+      // Setup: create an ACTIVE goal with a target date
+      const plan = await withGoals(
+        [
+          {
+            title: 'Goal with target date',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'COMPLETED' }],
+          },
+        ],
+        'AGREED',
+      ).create(aapClient)
+      const goalUuid = plan.goals[0].uuid
+
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+      // Verify the active goal shows target date initially
+      let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      expect(await planOverviewPage.goalCardHasTargetDateText(0)).toBe(true)
+
+      // Remove the goal (this should clear the target_date via markGoalAsRemoved effect)
+      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
+      await removePage.enterRemovalNote('Temporarily removing this goal')
+      await removePage.clickConfirm()
+
+      // Now re-add as a future goal
+      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
+      await readdPage.enterReaddNote('Will work on this later')
+      await readdPage.selectCanStartNow(false)
+      await readdPage.clickConfirm()
+
+      // Verify redirected to future goals tab
+      await expect(page).toHaveURL(/type=future/)
+
+      // Verify the goal card does NOT show "Aim to achieve this by" text
+      planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      expect(await planOverviewPage.goalCardHasTargetDateText(0)).toBe(false)
+    })
+
     test('re-added goal no longer appears in removed goals tab', async ({ page, aapClient }) => {
       const plan = await withGoals(
         [
