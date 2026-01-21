@@ -198,7 +198,7 @@ export const pageContent = TemplateWrapper({
 
           // Single parameter
           SaveSection: async (context, sectionName: string) => {
-            const answers = context.getAnswers()
+            const answers = context.getAllAnswers()
             await api.saveSection(sectionName, answers)
           }
 
@@ -242,7 +242,7 @@ export const pageContent = TemplateWrapper({
 
               SaveAnswers: deps => async (context: EffectFunctionContext) => {
                 const assessmentId = context.getData('assessment').id
-                const answers = context.getAnswers()
+                const answers = context.getAllAnswers()
 
                 await deps.api.saveAnswers(assessmentId, answers)
                 deps.logger.info(\`Answers saved for: \${assessmentId}\`)
@@ -468,7 +468,7 @@ export const pageContent = TemplateWrapper({
             // Critical: let errors propagate
             SaveAnswers: deps => async (context) => {
               // If this fails, form submission should stop
-              await deps.api.save(context.getAnswers())
+              await deps.api.save(context.getAllAnswers())
             },
 
             // Non-critical: handle gracefully
@@ -491,7 +491,7 @@ export const pageContent = TemplateWrapper({
 
               for (let attempt = 1; attempt <= maxRetries; attempt++) {
                 try {
-                  await deps.api.save(context.getAnswers())
+                  await deps.api.save(context.getAllAnswers())
                   return // Success
                 } catch (error) {
                   lastError = error as Error
@@ -537,7 +537,7 @@ export const pageContent = TemplateWrapper({
 
               SaveAnswers: deps => async (context: EffectFunctionContext) => {
                 const assessment = context.getData('assessment')
-                await deps.api.saveAnswers(assessment.id, context.getAnswers())
+                await deps.api.saveAnswers(assessment.id, context.getAllAnswers())
                 deps.logger.info(\`Answers saved for assessment: \${assessment.id}\`)
               },
 
