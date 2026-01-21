@@ -144,4 +144,10 @@ export default class PlanOverviewPage extends AbstractPage {
     const indices = Array.from({ length: count }, (_, i) => i)
     return Promise.all(indices.map(i => this.getGoalCardTitle(i)))
   }
+
+  async goalCardHasTargetDateText(index: number): Promise<boolean> {
+    const card = await this.getGoalCardByIndex(index)
+    const targetDateText = card.getByText(/Aim to achieve this by/i)
+    return (await targetDateText.count()) > 0
+  }
 }

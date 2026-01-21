@@ -91,6 +91,32 @@ test.describe('Change goal journey', () => {
       expect(goalTitle).toContain('Current Goal 1')
     })
 
+    test('changing goal from current to future clears target date', async ({ page, aapClient }) => {
+      // Setup: create assessment with a current goal (which has a target date)
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+      // Verify the current goal shows target date
+      let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      expect(await planOverviewPage.goalCardHasTargetDateText(0)).toBe(true)
+
+      // Navigate to change goal
+      await page.getByRole('link', { name: 'Change goal' }).click()
+
+      const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+
+      // Change to a future goal
+      await changeGoalPage.selectCanStartNow(false)
+      await changeGoalPage.saveGoal()
+
+      // Verify redirected to future goals tab
+      await expect(page).toHaveURL(/type=future/)
+
+      // Verify the goal card does NOT show "Aim to achieve this by" text
+      planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      expect(await planOverviewPage.goalCardHasTargetDateText(0)).toBe(false)
+    })
+
     test('can change target date option', async ({ page, aapClient }) => {
       // Setup: create assessment with a current goal
       const plan = await withCurrentGoals(1).create(aapClient)

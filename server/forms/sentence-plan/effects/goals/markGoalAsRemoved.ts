@@ -8,7 +8,8 @@ import { Commands } from '../../../../interfaces/aap-api/command'
  *
  * This effect:
  * 1. Updates the goal status to 'REMOVED'
- * 2. Adds a removal note if the user entered one (removal_note field)
+ * 2. Clears the target_date (so it doesn't persist if re-added as a future goal)
+ * 3. Adds a removal note
  *
  * Unlike `deleteActiveGoal`, this is a soft-delete that can be undone
  * via the `confirm-readd-goal` flow. Used for agreed plans only.
@@ -48,7 +49,17 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
     user,
   })
 
-  // 2. Add removal note if provided
+  // 2. Clear target_date so it doesn't persist if the goal is re-added as a future goal
+  commands.push({
+    type: 'UpdateCollectionItemAnswersCommand',
+    collectionItemUuid: activeGoal.uuid,
+    added: {},
+    removed: ['target_date'],
+    assessmentUuid,
+    user,
+  })
+
+  // 3. Add removal note
   const removalNote = context.getAnswer('removal_note')
   if (removalNote && typeof removalNote === 'string' && removalNote.trim().length > 0) {
     // Find or create NOTES collection for the goal
