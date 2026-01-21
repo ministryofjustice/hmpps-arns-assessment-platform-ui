@@ -9,6 +9,9 @@ import { calculateTargetDate, determineGoalStatus, buildGoalProperties, buildGoa
  * Updates the goal's answers (title, areas of need, target date) and
  * properties (status, status_date) based on form field values.
  *
+ * If the goal is changed to a future goal (can_start_now = 'no'),
+ * the target_date is cleared to prevent stale data being displayed.
+ *
  * Form fields used:
  * - goal_title: Goal title
  * - is_related_to_other_areas: 'yes' or 'no'
@@ -49,12 +52,15 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
   const properties = buildGoalProperties(status)
   const answers = buildGoalAnswers(goalTitle, activeGoal.areaOfNeed, relatedAreas, targetDate)
 
+  // If changing to a future goal, clear the target_date
+  const answersToRemove = targetDate ? [] : ['target_date']
+
   // Update the goal answers
   await deps.api.executeCommand({
     type: 'UpdateCollectionItemAnswersCommand',
     collectionItemUuid: activeGoal.uuid,
     added: wrapAll(answers),
-    removed: [],
+    removed: answersToRemove,
     timeline: {
       type: 'GOAL_UPDATED',
       data: {},
