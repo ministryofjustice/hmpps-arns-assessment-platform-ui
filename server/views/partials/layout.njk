@@ -1,12 +1,10 @@
 {%- extends "govuk/template.njk" -%}
 {%- from "govuk/components/tag/macro.njk" import govukTag -%}
 
-{% if not mainClasses %}
-  {% if backlink %}
-    {% set mainClasses = "govuk-main-wrapper--no-padding" %}
-  {% else %}
-    {% set mainClasses = "" %}
-  {% endif %}
+{% if backlink %}
+  {% set mainClasses = "govuk-main-wrapper--no-padding" %}
+{% else %}
+  {% set mainClasses = "" %}
 {% endif %}
 
 {%- block head -%}

@@ -1,4 +1,4 @@
-import { createFormPackage, Data, journey } from '@form-engine/form/builders'
+import { createFormPackage, journey } from '@form-engine/form/builders'
 import { sentencePlanV1Journey } from './versions/v1.0'
 import { SentencePlanEffectsDeps } from './effects/types'
 import { SentencePlanEffects, SentencePlanEffectsRegistry } from './effects'
@@ -18,7 +18,6 @@ const privacyScreenStep = createPrivacyScreen({
   alreadyAcceptedRedirectPath: 'v1.0/plan/overview',
   template: 'sentence-plan/views/sentence-plan-step',
   basePath: '/forms/sentence-plan/v1.0',
-  forenameRef: Data('caseData.name.forename'),
 })
 
 /**

@@ -4,22 +4,21 @@ import { GovUKCheckboxInput } from '@form-engine-govuk-components/components/che
 import { Condition } from '@form-engine/registry/conditions'
 import { GovUKButton } from '@form-engine-govuk-components/components'
 import { TemplateWrapper } from '@form-engine/registry/components'
-import { ConditionalString } from '@form-engine/form/types/structures.type'
+import { CaseData } from '../../sentence-plan/versions/v1.0/constants'
 
-export const createPrivacyContent = (forenameRef: ConditionalString) =>
-  block<HtmlBlock>({
-    variant: 'html',
-    content: Format(
-      `<h1 class="govuk-heading-l">Remember to close any other applications before starting an appointment with %1</h1>
+const privacyContent = block<HtmlBlock>({
+  variant: 'html',
+  content: Format(
+    `<h1 class="govuk-heading-l">Remember to close any other applications before starting an appointment with %1</h1>
     <p class="govuk-body">For example, Outlook, Teams or NDelius.</p>
     <p class="govuk-body">You must also close other people's assessments or plans if you have them open in other tabs.</p>
     <p class="govuk-body">Do not let %1 use your device either.</p>
     <p class="govuk-body">This is to avoid sharing sensitive information.</p>`,
-      forenameRef,
-    ),
-  })
+    CaseData.Forename,
+  ),
+})
 
-export const privacyCheckbox = field<GovUKCheckboxInput>({
+const privacyCheckbox = field<GovUKCheckboxInput>({
   variant: 'govukCheckboxInput',
   code: 'confirm_privacy',
   multiple: true,
@@ -44,22 +43,32 @@ const confirmButton = GovUKButton({
   preventDoubleClick: true,
 })
 
-/**
- * Return to OASys link - only shown when accessType is 'oasys'
- */
-// TODO: insert correct return to oasys link once we have OASys return url available
 const returnToOasysLink = block<HtmlBlock>({
   variant: 'html',
   hidden: Data('session.accessType').not.match(Condition.Equals('oasys')),
+  // TODO: insert correct return to oasys link once we have OASys return url available
   content: Format(
     '<a href="%1" class="govuk-link govuk-link--no-visited-state">Return to OASys</a>',
     Data('systemReturnUrl'),
   ),
 })
 
-export const buttonGroup = TemplateWrapper({
+const buttonGroup = TemplateWrapper({
   template: '<div class="govuk-button-group">{{slot:buttons}}</div>',
   slots: {
     buttons: [confirmButton, returnToOasysLink],
+  },
+})
+
+export const formContent = TemplateWrapper({
+  template: `
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {{slot:content}}
+      </div>
+    </div>
+  `,
+  slots: {
+    content: [privacyContent, privacyCheckbox, buttonGroup],
   },
 })

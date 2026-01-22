@@ -1,8 +1,7 @@
-import { step, submitTransition, redirect, Data, accessTransition, when, Query } from '@form-engine/form/builders'
+import { step, submitTransition, redirect, Data, accessTransition, when } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { EffectFunctionExpr } from '@form-engine/form/types/expressions.type'
-import { ConditionalString } from '@form-engine/form/types/structures.type'
-import { createPrivacyContent, privacyCheckbox, buttonGroup } from './fields'
+import { formContent } from './fields'
 
 /**
  * Configuration for creating a privacy screen step
@@ -42,12 +41,6 @@ export interface PrivacyScreenConfig {
    * (e.g., '/forms/sentence-plan/v1.0')
    */
   basePath: string
-
-  /**
-   * Reference to the person's forename in the data context
-   * (e.g., Data('caseData.name.forename'))
-   */
-  forenameRef: ConditionalString
 }
 
 /**
@@ -71,22 +64,11 @@ export interface PrivacyScreenConfig {
  *   alreadyAcceptedRedirectPath: 'v1.0/plan/overview',
  *   template: 'sentence-plan/views/sentence-plan-step',
  *   basePath: '/forms/sentence-plan/v1.0',
- *   forenameRef: Data('caseData.name.forename'),
  * })
  * ```
  */
 export function createPrivacyScreen(config: PrivacyScreenConfig) {
-  const {
-    loadEffects,
-    submitEffect,
-    submitRedirectPath,
-    alreadyAcceptedRedirectPath,
-    template,
-    basePath,
-    forenameRef,
-  } = config
-
-  const privacyContent = createPrivacyContent(forenameRef)
+  const { loadEffects, submitEffect, submitRedirectPath, alreadyAcceptedRedirectPath, template, basePath } = config
 
   return step({
     path: '/privacy',
@@ -96,11 +78,15 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
       locals: {
         basePath,
         showNavigation: false,
-        mainClasses: 'govuk-main-wrapper--no-padding',
-        backlink: Data('session.accessType').match(Condition.Equals('oasys')),
+        hmppsHeaderServiceNameLink: '/forms/sentence-plan/v1.0/plan/overview',
+        // TODO: replace with correct OASys return URL once available
+        // Only show back link for OASys users
+        backlink: when(Data('session.accessType').match(Condition.Equals('oasys')))
+          .then('/return-to-oasys')
+          .else(null),
       },
     },
-    blocks: [privacyContent, privacyCheckbox, buttonGroup],
+    blocks: [formContent],
     onAccess: [
       accessTransition({
         effects: loadEffects,
