@@ -57,8 +57,8 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
     this.noStepsMessage = page.locator('.goal-summary-card__steps--empty-no-shadow')
     this.addStepsLink = page
       .locator('.goal-summary-card__steps--empty-no-shadow')
-      .getByRole('link', { name: 'Add steps' })
-    this.addOrChangeStepsLink = page.getByRole('link', { name: 'Add or change steps' })
+      .getByRole('button', { name: 'Add steps' })
+    this.addOrChangeStepsLink = page.getByRole('button', { name: 'Add or change steps' })
     this.progressNotesTextarea = page.locator('#progress_notes')
     this.progressNotesLabel = page.locator('label[for="progress_notes"]')
     this.progressNotesHint = page.locator('#progress_notes-hint')

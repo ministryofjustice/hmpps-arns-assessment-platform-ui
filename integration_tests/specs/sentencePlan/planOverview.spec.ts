@@ -2,6 +2,7 @@ import { expect } from '@playwright/test'
 import { test } from '../../support/fixtures'
 import { createEmptySentencePlan, withCurrentGoals, withFutureGoals, withMixedGoals, withGoals } from '../../builders'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
+import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import { loginAndNavigateToPlanByCrn } from './sentencePlanUtils'
 
 test.describe('Plan Overview Page', () => {
@@ -230,6 +231,32 @@ test.describe('Plan Overview Page', () => {
 
       const hasDeleteLink = await planOverviewPage.goalCardHasDeleteLink(0)
       expect(hasDeleteLink).toBe(true)
+    })
+
+    test('clicking Add or change steps navigates to add steps page and back returns to plan overview', async ({
+      page,
+      aapClient,
+    }) => {
+      // Create assessment with a current goal
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      await expect(page).toHaveURL(/type=current/)
+
+      // Click "Add or change steps" on the first goal
+      await planOverviewPage.clickAddOrChangeSteps(0)
+
+      // Verify we're on the add steps page
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      await expect(page).toHaveURL(/add-steps/)
+
+      // Click back
+      await addStepsPage.clickBack()
+
+      // Verify we're back on plan overview with correct tab
+      await PlanOverviewPage.verifyOnPage(page)
+      await expect(page).toHaveURL(/type=current/)
     })
   })
 
