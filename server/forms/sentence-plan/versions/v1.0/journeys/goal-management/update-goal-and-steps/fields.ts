@@ -71,22 +71,19 @@ const reviewStepsHeading = HtmlBlock({
 
 const addOrChangeStepsLink = HtmlBlock({
   content: Format(
-    `<p class="govuk-body"><a href="../../goal/%1/add-steps" class="govuk-link">Add or change steps</a></p>`,
+    `<p class="govuk-body"><button type="submit" name="action" value="goToAddSteps" class="button-as-link govuk-link">Add or change steps</button></p>`,
     Data('activeGoal.uuid'),
   ),
 })
 
 const noStepsMessage = HtmlBlock({
-  content: Format(
-    `
+  content: `
     <div class="goal-summary-card__steps--empty-no-shadow">
       <p class="govuk-body">
-        No steps added. <a href="../../goal/%1/add-steps" class="govuk-link">Add steps</a>
+        No steps added. <button type="submit" name="action" value="goToAddSteps" class="button-as-link govuk-link">Add steps</button>
       </p>
     </div>
   `,
-    Data('activeGoal.uuid'),
-  ),
 })
 
 const reviewStepsTable = TemplateWrapper({
