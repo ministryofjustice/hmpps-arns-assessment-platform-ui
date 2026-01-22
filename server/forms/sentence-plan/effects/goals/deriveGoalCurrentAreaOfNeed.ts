@@ -15,7 +15,7 @@ export const deriveGoalCurrentAreaOfNeed = () => async (context: SentencePlanCon
 
   const areaOfNeedSlugs = areasOfNeed.map(areOfNeed => areOfNeed.slug)
   const currentAreaOfNeed = areasOfNeed.find(a => a.slug === slug)
-  const otherAreasOfNeed = areasOfNeed.filter(a => a.slug !== slug)
+  const otherAreasOfNeed = areasOfNeed.filter(a => a.slug !== slug).sort((a, b) => a.text.localeCompare(b.text))
 
   context.setData('areaOfNeedSlugs', areaOfNeedSlugs)
   context.setData('currentAreaOfNeed', currentAreaOfNeed)

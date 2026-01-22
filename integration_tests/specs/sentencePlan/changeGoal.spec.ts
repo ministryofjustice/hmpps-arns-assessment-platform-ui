@@ -183,6 +183,30 @@ test.describe('Change goal journey', () => {
       await expect(page).toHaveURL(/plan\/overview/)
     })
 
+    test('related areas of need checkboxes are displayed in alphabetical order', async ({ page, aapClient }) => {
+      const plan = await withCurrentGoals(1).create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+      await PlanOverviewPage.verifyOnPage(page)
+      await page.getByRole('link', { name: 'Change goal' }).click()
+
+      const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+
+      await changeGoalPage.selectIsRelatedToOtherAreas(true)
+
+      // get all checkbox labels for related areas of need
+      const checkboxLabels = await page.locator('[name="related_areas_of_need"]').evaluateAll(checkboxes =>
+        checkboxes.map(checkbox => {
+          const label = document.querySelector(`label[for="${checkbox.id}"]`)
+          return label?.textContent?.trim() ?? ''
+        }),
+      )
+
+      // verify the labels are in alphabetical order
+      const sortedLabels = [...checkboxLabels].sort((a, b) => a.localeCompare(b))
+      expect(checkboxLabels).toEqual(sortedLabels)
+    })
+
     test('redirects to current goals tab when saving an active goal', async ({ page, aapClient }) => {
       // Setup: create assessment with a current goal
       const plan = await withCurrentGoals(1).create(aapClient)
