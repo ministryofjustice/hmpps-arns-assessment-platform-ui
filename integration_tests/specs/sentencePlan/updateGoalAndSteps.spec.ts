@@ -115,6 +115,36 @@ test.describe('Update goal and steps page', () => {
       // check change goal details link is visible
       await expect(updatePage.changeGoalDetailsLink).toBeVisible()
     })
+
+    test('displays related areas of need in page heading when goal has related areas', async ({ page, aapClient }) => {
+      const plan = await withGoals(
+        [
+          {
+            title: 'Test Goal With Related Areas',
+            areaOfNeed: 'accommodation',
+            relatedAreasOfNeed: ['finances', 'employment-and-education'],
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Test step', status: 'NOT_STARTED' }],
+          },
+        ],
+        'AGREED',
+      ).create(aapClient)
+      const goalUuid = plan.goals[0].uuid
+
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
+
+      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+
+      const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+
+      // check heading elements include related areas of need
+      const areaOfNeedCaption = await updatePage.getAreaOfNeedCaption()
+      expect(areaOfNeedCaption).toContain('Accommodation')
+      expect(areaOfNeedCaption).toContain('(and')
+      // related areas should be joined with "; " in lowercase
+      expect(areaOfNeedCaption).toContain('employment and education; finances')
+    })
   })
 
   test.describe('page content - FUTURE goal', () => {

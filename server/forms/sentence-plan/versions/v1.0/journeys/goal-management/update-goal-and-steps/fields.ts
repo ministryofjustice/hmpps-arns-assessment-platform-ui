@@ -9,6 +9,12 @@ import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { Condition } from '@form-engine/registry/conditions'
 import { CaseData } from '../../../constants'
 
+const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
+  Transformer.Array.Sort(),
+  Transformer.Array.Join('; '),
+  Transformer.String.ToLowerCase(),
+)
+
 const stepStatusOptions = [
   { text: 'Not started', value: 'NOT_STARTED' },
   { text: 'In progress', value: 'IN_PROGRESS' },
@@ -19,13 +25,26 @@ const stepStatusOptions = [
 
 export const pageHeading = block<HtmlBlock>({
   variant: 'html',
-  content: Format(
-    `<span class="govuk-caption-l">%1</span>
+  content: when(Data('activeGoal.relatedAreasOfNeedLabels.length').match(Condition.Number.GreaterThan(0)))
+    .then(
+      Format(
+        `<span class="govuk-caption-l">%1 (and %2)</span>
+    <h1 class="govuk-heading-l">Update goal and steps</h1>
+    <h2 class="govuk-heading-m">Goal: %3</h2>`,
+        Data('activeGoal.areaOfNeedLabel'),
+        relatedAreasOfNeedText,
+        Data('activeGoal.title'),
+      ),
+    )
+    .else(
+      Format(
+        `<span class="govuk-caption-l">%1</span>
     <h1 class="govuk-heading-l">Update goal and steps</h1>
     <h2 class="govuk-heading-m">Goal: %2</h2>`,
-    Data('activeGoal.areaOfNeedLabel'),
-    Data('activeGoal.title'),
-  ),
+        Data('activeGoal.areaOfNeedLabel'),
+        Data('activeGoal.title'),
+      ),
+    ),
 })
 
 export const goalInfo = block<HtmlBlock>({
