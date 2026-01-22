@@ -3,7 +3,7 @@ import { test } from '../../support/fixtures'
 import ConfirmAchievedGoalPage from '../../pages/sentencePlan/confirmAchievedGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { withCurrentGoalsWithCompletedSteps, withGoals } from '../../builders'
-import { loginAndNavigateToPlanByCrn } from './sentencePlanUtils'
+import { getDatePlusDaysAsISO, loginAndNavigateToPlanByCrn } from './sentencePlanUtils'
 
 test.describe('Achieve goal journey', () => {
   test.describe('confirm goal as achieved', () => {
@@ -92,7 +92,7 @@ test.describe('Achieve goal journey', () => {
             title: 'Find stable housing',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Contact housing services', status: 'COMPLETED' }],
           },
         ],
@@ -140,7 +140,7 @@ test.describe('Achieve goal journey', () => {
             title: 'Achieve Test Goal',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Complete task', status: 'COMPLETED' }],
           },
         ],
@@ -175,14 +175,14 @@ test.describe('Achieve goal journey', () => {
             title: 'Goal To Achieve',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'COMPLETED' }],
           },
           {
             title: 'Goal To Keep',
             areaOfNeed: 'finances',
             status: 'ACTIVE',
-            targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'NOT_STARTED' }],
           },
         ],
