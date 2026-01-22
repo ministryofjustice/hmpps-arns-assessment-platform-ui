@@ -1,5 +1,12 @@
 import { expect, Page } from '@playwright/test'
 import { login } from '../../testUtils'
+import { PlanAgreementStatus } from '../../builders'
+
+// Statuses that indicate a plan has been through the agreement process (not draft)
+export const postAgreementProcessStatuses: PlanAgreementStatus[] = ['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']
+
+// Statuses for step to choose from in dropdown
+export const stepStatusOptions = ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'CANNOT_BE_DONE_YET', 'NO_LONGER_NEEDED']
 
 // sentence plan V1 URLs for use in playwright testing suits:
 const sentencePlanFormPath = '/forms/sentence-plan'

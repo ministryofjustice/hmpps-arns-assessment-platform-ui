@@ -3,12 +3,12 @@ import { test } from '../../support/fixtures'
 import ConfirmAchievedGoalPage from '../../pages/sentencePlan/confirmAchievedGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { withCurrentGoalsWithCompletedSteps, withGoals } from '../../builders'
-import { loginAndNavigateToPlanByCrn } from './sentencePlanUtils'
+import { getDatePlusDaysAsISO, loginAndNavigateToPlanByCrn } from './sentencePlanUtils'
 
 test.describe('Achieve goal journey', () => {
   test.describe('confirm goal as achieved', () => {
     test('can confirm goal as achieved with optional note', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1).create(aapClient)
+      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
       const goalUuid = plan.goals[0].uuid
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
@@ -32,7 +32,7 @@ test.describe('Achieve goal journey', () => {
     })
 
     test('can confirm goal as achieved without optional note', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1).create(aapClient)
+      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
       const goalUuid = plan.goals[0].uuid
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
@@ -49,7 +49,7 @@ test.describe('Achieve goal journey', () => {
     })
 
     test('can cancel and return to update goal steps page', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1).create(aapClient)
+      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
       const goalUuid = plan.goals[0].uuid
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
@@ -69,7 +69,7 @@ test.describe('Achieve goal journey', () => {
 
   test.describe('page content', () => {
     test('displays page heading with person name', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1).create(aapClient)
+      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
       const goalUuid = plan.goals[0].uuid
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
@@ -86,15 +86,18 @@ test.describe('Achieve goal journey', () => {
 
     test('displays goal summary card with goal details', async ({ page, aapClient }) => {
       // Setup: create assessment with a specific goal title
-      const plan = await withGoals([
-        {
-          title: 'Find stable housing',
-          areaOfNeed: 'accommodation',
-          status: 'ACTIVE',
-          targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
-          steps: [{ actor: 'probation_practitioner', description: 'Contact housing services', status: 'COMPLETED' }],
-        },
-      ]).create(aapClient)
+      const plan = await withGoals(
+        [
+          {
+            title: 'Find stable housing',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Contact housing services', status: 'COMPLETED' }],
+          },
+        ],
+        'AGREED',
+      ).create(aapClient)
       const goalUuid = plan.goals[0].uuid
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
@@ -112,7 +115,7 @@ test.describe('Achieve goal journey', () => {
     })
 
     test('how helped field is optional and starts empty', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1).create(aapClient)
+      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
       const goalUuid = plan.goals[0].uuid
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
@@ -131,15 +134,18 @@ test.describe('Achieve goal journey', () => {
   test.describe('achieved goals tab', () => {
     test('achieved goal appears in achieved goals tab after confirmation', async ({ page, aapClient }) => {
       // Setup: create assessment with an ACTIVE goal with completed steps
-      const plan = await withGoals([
-        {
-          title: 'Achieve Test Goal',
-          areaOfNeed: 'accommodation',
-          status: 'ACTIVE',
-          targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
-          steps: [{ actor: 'probation_practitioner', description: 'Complete task', status: 'COMPLETED' }],
-        },
-      ]).create(aapClient)
+      const plan = await withGoals(
+        [
+          {
+            title: 'Achieve Test Goal',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Complete task', status: 'COMPLETED' }],
+          },
+        ],
+        'AGREED',
+      ).create(aapClient)
       const goalUuid = plan.goals[0].uuid
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
@@ -163,22 +169,25 @@ test.describe('Achieve goal journey', () => {
 
     test('achieved goal no longer appears in current goals tab', async ({ page, aapClient }) => {
       // Setup: create assessment with 2 ACTIVE goals
-      const plan = await withGoals([
-        {
-          title: 'Goal To Achieve',
-          areaOfNeed: 'accommodation',
-          status: 'ACTIVE',
-          targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
-          steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'COMPLETED' }],
-        },
-        {
-          title: 'Goal To Keep',
-          areaOfNeed: 'finances',
-          status: 'ACTIVE',
-          targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
-          steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'NOT_STARTED' }],
-        },
-      ]).create(aapClient)
+      const plan = await withGoals(
+        [
+          {
+            title: 'Goal To Achieve',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'COMPLETED' }],
+          },
+          {
+            title: 'Goal To Keep',
+            areaOfNeed: 'finances',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'NOT_STARTED' }],
+          },
+        ],
+        'AGREED',
+      ).create(aapClient)
 
       await loginAndNavigateToPlanByCrn(page, plan.crn)
 

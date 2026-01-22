@@ -17,7 +17,7 @@ import {
   viewAllNotesSection,
   actionButtons,
 } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
 
 /**
  * Update goal and steps
@@ -39,12 +39,18 @@ export const updateGoalAndStepsStep = step({
   onAccess: [
     accessTransition({
       effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.loadActiveGoalForEdit()],
-    }),
-
-    // If goal not found, redirect to plan overview
-    accessTransition({
-      when: Data('activeGoal').not.match(Condition.IsRequired()),
-      next: [redirect({ goto: '../../plan/overview' })],
+      next: [
+        // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
+        redirect({
+          when: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
+          goto: '../../plan/overview',
+        }),
+        // Redirect if goal not found
+        redirect({
+          when: Data('activeGoal').not.match(Condition.IsRequired()),
+          goto: '../../plan/overview',
+        }),
+      ],
     }),
   ],
 

@@ -9,6 +9,12 @@ import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { Condition } from '@form-engine/registry/conditions'
 import { CaseData } from '../../../constants'
 
+const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
+  Transformer.Array.Sort(),
+  Transformer.Array.Join('; '),
+  Transformer.String.ToLowerCase(),
+)
+
 const stepStatusOptions = [
   { text: 'Not started', value: 'NOT_STARTED' },
   { text: 'In progress', value: 'IN_PROGRESS' },
@@ -19,22 +25,44 @@ const stepStatusOptions = [
 
 export const pageHeading = block<HtmlBlock>({
   variant: 'html',
-  content: Format(
-    `<span class="govuk-caption-l">%1</span>
+  content: when(Data('activeGoal.relatedAreasOfNeedLabels.length').match(Condition.Number.GreaterThan(0)))
+    .then(
+      Format(
+        `<span class="govuk-caption-l">%1 (and %2)</span>
+    <h1 class="govuk-heading-l">Update goal and steps</h1>
+    <h2 class="govuk-heading-m">Goal: %3</h2>`,
+        Data('activeGoal.areaOfNeedLabel'),
+        relatedAreasOfNeedText,
+        Data('activeGoal.title'),
+      ),
+    )
+    .else(
+      Format(
+        `<span class="govuk-caption-l">%1</span>
     <h1 class="govuk-heading-l">Update goal and steps</h1>
     <h2 class="govuk-heading-m">Goal: %2</h2>`,
-    Data('activeGoal.areaOfNeedLabel'),
-    Data('activeGoal.title'),
-  ),
+        Data('activeGoal.areaOfNeedLabel'),
+        Data('activeGoal.title'),
+      ),
+    ),
 })
 
 export const goalInfo = block<HtmlBlock>({
   variant: 'html',
-  content: Format(
-    `<p class="govuk-body">Aim to achieve this by %1. <a href="../../goal/%2/change-goal" class="govuk-link">Change goal details</a></p>`,
-    Data('activeGoal.targetDate').pipe(Transformer.Date.ToUKLongDate()),
-    Data('activeGoal.uuid'),
-  ),
+  content: when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
+    .then(
+      Format(
+        `<p class="govuk-body">This is a future goal. <a href="../../goal/%1/change-goal" class="govuk-link">Change goal details</a></p>`,
+        Data('activeGoal.uuid'),
+      ),
+    )
+    .else(
+      Format(
+        `<p class="govuk-body">Aim to achieve this by %1. <a href="../../goal/%2/change-goal" class="govuk-link">Change goal details</a></p>`,
+        Data('activeGoal.targetDate').pipe(Transformer.Date.ToUKLongDate()),
+        Data('activeGoal.uuid'),
+      ),
+    ),
 })
 
 const reviewStepsHeading = HtmlBlock({
@@ -44,6 +72,19 @@ const reviewStepsHeading = HtmlBlock({
 const addOrChangeStepsLink = HtmlBlock({
   content: Format(
     `<p class="govuk-body"><a href="../../goal/%1/add-steps" class="govuk-link">Add or change steps</a></p>`,
+    Data('activeGoal.uuid'),
+  ),
+})
+
+const noStepsMessage = HtmlBlock({
+  content: Format(
+    `
+    <div class="goal-summary-card__steps--empty-no-shadow">
+      <p class="govuk-body">
+        No steps added. <a href="../../goal/%1/add-steps" class="govuk-link">Add steps</a>
+      </p>
+    </div>
+  `,
     Data('activeGoal.uuid'),
   ),
 })
@@ -105,17 +146,25 @@ const reviewStepsTable = TemplateWrapper({
 })
 
 export const reviewStepsSection = TemplateWrapper({
-  template: `
-    <div>
+  template: when(Data('activeGoal.steps.length').match(Condition.Number.GreaterThan(0)))
+    .then(
+      `<div>
       {{slot:heading}}
       {{slot:table}}
       {{slot:addOrChangeStepsLink}}
-    </div>
-  `,
+    </div>`,
+    )
+    .else(
+      `<div>
+      {{slot:heading}}
+      {{slot:noStepsMessage}}
+    </div>`,
+    ),
   slots: {
     heading: [reviewStepsHeading],
     table: [reviewStepsTable],
     addOrChangeStepsLink: [addOrChangeStepsLink],
+    noStepsMessage: [noStepsMessage],
   },
 })
 
