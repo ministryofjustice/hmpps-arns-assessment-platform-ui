@@ -10,12 +10,15 @@ export default class AddStepsPage extends AbstractPage {
 
   readonly saveAndContinueButton: Locator
 
+  readonly backLink: Locator
+
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
     this.stepRows = page.locator('[data-qa="step-row"]')
     this.addStepButton = page.getByRole('button', { name: /add another step/i })
     this.saveAndContinueButton = page.getByRole('button', { name: /save and continue/i })
+    this.backLink = page.locator('.govuk-back-link')
   }
 
   static async verifyOnPage(page: Page): Promise<AddStepsPage> {
@@ -55,5 +58,9 @@ export default class AddStepsPage extends AbstractPage {
 
   async clickSaveAndContinue(): Promise<void> {
     await this.saveAndContinueButton.click()
+  }
+
+  async clickBack(): Promise<void> {
+    await this.backLink.click()
   }
 }

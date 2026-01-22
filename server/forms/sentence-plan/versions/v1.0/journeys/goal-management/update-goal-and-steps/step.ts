@@ -55,6 +55,15 @@ export const updateGoalAndStepsStep = step({
   ],
 
   onSubmission: [
+    // Navigate to add-steps page with referrer set
+    submitTransition({
+      when: Post('action').match(Condition.Equals('goToAddSteps')),
+      validate: false,
+      onAlways: {
+        effects: [SentencePlanEffects.setNavigationReferrer('update-goal-steps')],
+        next: [redirect({ goto: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')) })],
+      },
+    }),
     submitTransition({
       when: Post('action').match(Condition.Equals('save')),
       validate: false,
