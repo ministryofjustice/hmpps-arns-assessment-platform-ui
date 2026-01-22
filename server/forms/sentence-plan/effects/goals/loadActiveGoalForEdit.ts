@@ -31,7 +31,8 @@ export const loadActiveGoalForEdit = () => async (context: SentencePlanContext) 
 
   // Set up area of need data based on the goal's area
   const currentAreaOfNeed = areasOfNeed?.find(area => area.slug === derivedGoal.areaOfNeed)
-  const otherAreasOfNeed = areasOfNeed?.filter(area => area.slug !== derivedGoal.areaOfNeed) ?? []
+  const otherAreasOfNeed =
+    areasOfNeed?.filter(area => area.slug !== derivedGoal.areaOfNeed).sort((a, b) => a.text.localeCompare(b.text)) ?? []
 
   context.setData('currentAreaOfNeed', currentAreaOfNeed)
   context.setData('otherAreasOfNeed', otherAreasOfNeed)

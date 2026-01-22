@@ -182,6 +182,28 @@ test.describe('Create Goal Journey', () => {
 
       await expect(page).toHaveURL(/\/plan\/overview/)
     })
+
+    test('related areas of need checkboxes are displayed in alphabetical order', async ({ page, aapClient }) => {
+      const plan = await createEmptySentencePlan().create(aapClient)
+      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await PlanOverviewPage.verifyOnPage(page)
+      await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.selectIsRelated(true)
+
+      // get all checkbox labels for related areas of need
+      const checkboxLabels = await page.locator('[name="related_areas_of_need"]').evaluateAll(checkboxes =>
+        checkboxes.map(checkbox => {
+          const label = document.querySelector(`label[for="${checkbox.id}"]`)
+          return label?.textContent?.trim() ?? ''
+        }),
+      )
+
+      // verify the labels are in alphabetical order
+      const sortedLabels = [...checkboxLabels].sort((a, b) => a.localeCompare(b))
+      expect(checkboxLabels).toEqual(sortedLabels)
+    })
   })
 
   test.describe('Validation', () => {
