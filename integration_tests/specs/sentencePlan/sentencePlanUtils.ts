@@ -1,5 +1,7 @@
 import { expect, Page } from '@playwright/test'
 import { login } from '../../testUtils'
+import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
+import { PlanAgreementStatus } from '../../builders'
 import { AgreementStatus } from '../../../server/forms/sentence-plan/effects'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
@@ -16,6 +18,7 @@ const accessFormPath = '/forms/access'
 const v1Path = '/v1.0'
 const oasysAccessStepPath = '/oasys'
 const crnAccessStepPath = '/crn'
+const privacyStepPath = '/privacy'
 const planOverviewJourneyPath = '/plan'
 const planStepPath = '/overview'
 const goalManagementJourneyPath = '/goal'
@@ -24,16 +27,38 @@ const planHistoryPath = '/plan-history'
 export const sentencePlanV1URLs = {
   OASYS_ENTRY_POINT: `${accessFormPath}/sentence-plan${oasysAccessStepPath}`, // '/forms/access/sentence-plan/oasys'
   CRN_ENTRY_POINT: `${accessFormPath}/sentence-plan${crnAccessStepPath}`, // '/forms/access/sentence-plan/crn/:crn'
+  PRIVACY_SCREEN: sentencePlanFormPath + privacyStepPath, // '/forms/sentence-plan' + '/privacy'
   PLAN_OVERVIEW: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planStepPath, // '/forms/sentence-plan' + '/v1.0' + '/plan' + '/overview'
   PLAN_HISTORY: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planHistoryPath, // '/forms/sentence-plan' + '/v1.0' + '/plan' + '/plan-history'
   GOAL_MANAGEMENT_ROOT_PATH: sentencePlanFormPath + v1Path + goalManagementJourneyPath, // '/forms/sentence-plan' + '/v1.0' + '/goal'
 }
 
-/** Logs in and navigates to a sentence plan by CRN. */
+/**
+ * Logs in, navigates to a sentence plan by CRN, and handles the privacy screen.
+ * Use this for tests that need to get to the plan overview.
+ */
 export const loginAndNavigateToPlanByCrn = async (page: Page, crn: string): Promise<void> => {
   await login(page)
   await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
+
+  // Handle privacy screen if shown
+  if (page.url().includes('/privacy')) {
+    const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
+    await privacyPage.confirmAndContinue()
+  }
+
   await expect(page).toHaveURL(/\/plan\/overview/)
+}
+
+/**
+ * Logs in and navigates to a sentence plan by CRN, stopping at the privacy screen.
+ * Use this for tests that need to test the privacy screen itself.
+ */
+export const loginAndNavigateToPrivacyScreenByCrn = async (page: Page, crn: string): Promise<PrivacyScreenPage> => {
+  await login(page)
+  await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
+  await expect(page).toHaveURL(/\/privacy/)
+  return PrivacyScreenPage.verifyOnPage(page)
 }
 
 // returns date in DD/MM/YYYY format; can be used for mojDatePicker field

@@ -41,6 +41,12 @@ export interface PrivacyScreenConfig {
    * (e.g., '/forms/sentence-plan/v1.0')
    */
   basePath: string
+
+  /**
+   * URL for the HMPPS header service name link
+   * (e.g., '/forms/sentence-plan/v1.0/plan/overview')
+   */
+  headerServiceNameLink: string
 }
 
 /**
@@ -64,11 +70,20 @@ export interface PrivacyScreenConfig {
  *   alreadyAcceptedRedirectPath: 'v1.0/plan/overview',
  *   template: 'sentence-plan/views/sentence-plan-step',
  *   basePath: '/forms/sentence-plan/v1.0',
+ *   headerServiceNameLink: '/forms/sentence-plan/v1.0/plan/overview',
  * })
  * ```
  */
 export function createPrivacyScreen(config: PrivacyScreenConfig) {
-  const { loadEffects, submitEffect, submitRedirectPath, alreadyAcceptedRedirectPath, template, basePath } = config
+  const {
+    loadEffects,
+    submitEffect,
+    submitRedirectPath,
+    alreadyAcceptedRedirectPath,
+    template,
+    basePath,
+    headerServiceNameLink,
+  } = config
 
   return step({
     path: '/privacy',
@@ -78,9 +93,8 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
       locals: {
         basePath,
         showNavigation: false,
-        hmppsHeaderServiceNameLink: '/forms/sentence-plan/v1.0/plan/overview',
+        hmppsHeaderServiceNameLink: headerServiceNameLink,
         // TODO: replace with correct OASys return URL once available
-        // Only show back link for OASys users
         backlink: when(Data('session.accessType').match(Condition.Equals('oasys')))
           .then('/return-to-oasys')
           .else(null),

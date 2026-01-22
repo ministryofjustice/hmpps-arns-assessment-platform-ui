@@ -1,9 +1,8 @@
 import { block, field, Format, validation, Self, Data } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
-import { GovUKCheckboxInput } from '@form-engine-govuk-components/components/checkbox-input/govukCheckboxInput'
-import { Condition } from '@form-engine/registry/conditions'
-import { GovUKButton } from '@form-engine-govuk-components/components'
 import { TemplateWrapper } from '@form-engine/registry/components'
+import { GovUKCheckboxInput, GovUKButton } from '@form-engine-govuk-components/components'
+import { Condition } from '@form-engine/registry/conditions'
 import { CaseData } from '../../sentence-plan/versions/v1.0/constants'
 
 const privacyContent = block<HtmlBlock>({
@@ -36,7 +35,8 @@ const privacyCheckbox = field<GovUKCheckboxInput>({
   ],
 })
 
-const confirmButton = GovUKButton({
+const confirmButton = block<GovUKButton>({
+  variant: 'govukButton',
   text: 'Confirm',
   name: 'action',
   value: 'confirm',
@@ -53,14 +53,16 @@ const returnToOasysLink = block<HtmlBlock>({
   ),
 })
 
-const buttonGroup = TemplateWrapper({
+const buttonGroup = block<TemplateWrapper>({
+  variant: 'templateWrapper',
   template: '<div class="govuk-button-group">{{slot:buttons}}</div>',
   slots: {
     buttons: [confirmButton, returnToOasysLink],
   },
 })
 
-export const formContent = TemplateWrapper({
+export const formContent = block<TemplateWrapper>({
+  variant: 'templateWrapper',
   template: `
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
