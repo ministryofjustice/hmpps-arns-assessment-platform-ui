@@ -17,7 +17,8 @@ test.describe('Create Goal Journey', () => {
       await planOverviewPage.clickCreateGoal()
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
 
-      await createGoalPage.enterGoalTitle('Find stable accommodation')
+      // Use special characters to verify they display correctly (not as HTML entities like &#39;)
+      await createGoalPage.enterGoalTitle("Find stable accommodation so I'm not homeless ('sofa surfing')")
       await createGoalPage.selectIsRelated(false)
       await createGoalPage.selectCanStartNow(true)
       await createGoalPage.selectTargetDateOption('date_in_3_months')
@@ -27,7 +28,7 @@ test.describe('Create Goal Journey', () => {
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
       await expect(page).toHaveURL(/\/add-steps/)
 
-      await addStepsPage.enterStep(0, 'probation_practitioner', 'Contact housing services')
+      await addStepsPage.enterStep(0, 'probation_practitioner', "Contact housing services about 'emergency housing'")
 
       await addStepsPage.clickSaveAndContinue()
 
@@ -35,9 +36,11 @@ test.describe('Create Goal Journey', () => {
       await expect(page).toHaveURL(/\/plan\/overview/)
       const updatedPlanOverview = await PlanOverviewPage.verifyOnPage(page)
 
-      // Verify the goal appears on the page
+      // Verify the goal and step display correctly with special characters
+      const goalCard = await updatedPlanOverview.getGoalCardByIndex(0)
       const goalTitle = await updatedPlanOverview.getGoalCardTitle(0)
-      expect(goalTitle).toContain('Find stable accommodation')
+      expect(goalTitle).toContain("I'm not homeless ('sofa surfing')")
+      await expect(goalCard).toContainText("'emergency housing'")
     })
 
     test('can add multiple steps to a goal', async ({ page, aapClient }) => {
