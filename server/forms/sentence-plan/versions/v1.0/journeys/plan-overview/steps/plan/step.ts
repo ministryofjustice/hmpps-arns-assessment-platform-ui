@@ -21,7 +21,7 @@ export const planStep = step({
       headerPageHeading: Format(`%1's plan`, CaseData.Forename),
       currentTab: Query('type'),
       buttons: {
-        showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('handover')),
+        showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('handover')),
         showCreateGoalButton: true,
         showAgreePlanButton: Data('latestAgreementStatus').not.match(
           Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
@@ -43,6 +43,10 @@ export const planStep = step({
   onAccess: [
     accessTransition({
       effects: [
+        // Initialize session from access form data and load plan
+        SentencePlanEffects.initializeSessionFromAccess(),
+        SentencePlanEffects.loadPlan(),
+        // Derive display data from plan
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
         SentencePlanEffects.loadNotifications('plan-overview'),

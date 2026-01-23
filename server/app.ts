@@ -54,7 +54,6 @@ export default function createApp(services: Services): express.Application {
     })
     .registerFormPackage(sentencePlanFormPackage, {
       api: services.assessmentPlatformApiClient,
-      deliusApi: services.deliusApiClient,
     })
 
   // Setup middleware

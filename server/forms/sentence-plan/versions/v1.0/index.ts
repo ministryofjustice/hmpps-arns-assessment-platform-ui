@@ -1,14 +1,20 @@
-import { accessTransition, Data, journey } from '@form-engine/form/builders'
+import { Data, journey } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { planHistoryJourney } from './journeys/plan-history'
 import { aboutPersonStep } from './steps/about-person/step'
-import { mpopAccessStep } from '../../access-steps/mpop-access/step'
-import { oasysAccessStep } from '../../access-steps/oasys-access/step'
 import { actorLabels, areasOfNeed } from './constants'
-import { SentencePlanEffects } from '../../effects'
 
+/**
+ * Sentence Plan v1.0 Journey
+ *
+ * Access is handled by the access form at /forms/access/sentence-plan/
+ * which redirects to plan/overview after setting up session data.
+ *
+ * The plan overview step loads the plan and initializes session details
+ * from the access form data.
+ */
 export const sentencePlanV1Journey = journey({
   code: 'sentence-plan-v1',
   title: 'Sentence Plan',
@@ -23,19 +29,10 @@ export const sentencePlanV1Journey = journey({
       ),
     },
   },
-  onAccess: [
-    accessTransition({
-      effects: [
-        SentencePlanEffects.loadPersonByCrn(),
-        SentencePlanEffects.loadPlanFromSession(),
-        SentencePlanEffects.derivePlanAgreementsFromAssessment(),
-      ],
-    }),
-  ],
   data: {
     areasOfNeed,
     actorLabels,
   },
-  steps: [mpopAccessStep, oasysAccessStep, aboutPersonStep],
+  steps: [aboutPersonStep],
   children: [planOverviewJourney, goalManagementJourney, planHistoryJourney],
 })
