@@ -19,7 +19,7 @@ export interface UuidIdentifier extends AssessmentIdentifier {
 export interface ExternalIdentifier extends AssessmentIdentifier {
   type: 'EXTERNAL'
   identifier: string
-  identifierType: IdentifierType
+  identifierType: IdentifierType | keyof typeof IdentifierType | string
   assessmentType: string
 }
 
