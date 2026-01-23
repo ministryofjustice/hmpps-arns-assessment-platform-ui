@@ -1,0 +1,147 @@
+// Tab Panel Component
+// Generic two-column layout with selectable items and content panels
+
+@import "govuk-frontend/dist/govuk/base";
+
+.tab-panel {
+  margin-bottom: govuk-spacing(6);
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr);
+    background: govuk-colour("white");
+    border: 1px solid #d9dadb;
+    min-height: 500px;
+    max-height: 70vh;
+    overflow: hidden;
+
+    @include govuk-media-query($from: tablet) {
+      grid-template-columns: 280px 1fr;
+    }
+  }
+
+  // Left sidebar
+  &__sidebar {
+    background-color: govuk-colour("light-grey");
+    padding: govuk-spacing(4);
+    overflow-y: auto;
+    min-height: 0;
+
+    &-title {
+      margin-bottom: govuk-spacing(3);
+      padding-bottom: govuk-spacing(2);
+      border-bottom: 1px solid govuk-colour("mid-grey");
+    }
+
+    &-footer {
+      margin-top: govuk-spacing(4);
+      padding-top: govuk-spacing(4);
+      border-top: 1px solid govuk-colour("mid-grey");
+    }
+  }
+
+  // Item list
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    &-item {
+      margin-bottom: govuk-spacing(1);
+    }
+  }
+
+  // Item button
+  &__item {
+    &-btn {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      padding: govuk-spacing(3);
+      background-color: govuk-colour("white");
+      border: 2px solid transparent;
+      border-radius: 0;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+
+      &:hover {
+        background-color: govuk-colour("light-grey");
+        border-color: govuk-colour("dark-grey");
+      }
+
+      &:focus-visible {
+        outline: 3px solid govuk-colour("yellow");
+        outline-offset: 0;
+        background-color: govuk-colour("yellow");
+      }
+
+      &--selected {
+        border-color: govuk-colour("black");
+        background-color: govuk-colour("white");
+
+        &:hover {
+          background-color: govuk-colour("white");
+        }
+      }
+    }
+
+    &-label {
+      @include govuk-font($size: 19, $weight: bold);
+      color: govuk-colour("black");
+    }
+
+    &-sublabel {
+      color: govuk-colour("dark-grey");
+      margin-top: govuk-spacing(1);
+    }
+  }
+
+  // Right panels container
+  &__panels {
+    overflow-y: scroll;
+    min-height: 0;
+    padding: govuk-spacing(4);
+    scrollbar-gutter: stable;
+
+    // Firefox scrollbar styling
+    scrollbar-width: auto;
+    scrollbar-color: govuk-colour("mid-grey") govuk-colour("light-grey");
+
+    // WebKit (Chrome, Safari, Edge) scrollbar styling
+    &::-webkit-scrollbar {
+      width: 10px;
+      -webkit-appearance: none;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: govuk-colour("light-grey");
+      border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: govuk-colour("mid-grey");
+      border-radius: 5px;
+      border: 2px solid govuk-colour("light-grey");
+
+      &:hover {
+        background-color: govuk-colour("dark-grey");
+      }
+    }
+
+    @include govuk-media-query($from: tablet) {
+      padding: govuk-spacing(6);
+    }
+  }
+
+  // Individual panel
+  &__panel {
+    display: none;
+
+    &--active {
+      display: block;
+    }
+  }
+
+}
