@@ -19,6 +19,7 @@ import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
+import setUpPreferencesCookie from './middleware/setUpPreferencesCookie'
 
 import routes from './routes'
 import type { Services } from './services'
@@ -62,6 +63,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
   app.use(setUpWebRequestParsing())
+  app.use(setUpPreferencesCookie())
   app.use(setUpStaticResources())
   app.use(
     setUpAuthentication({
