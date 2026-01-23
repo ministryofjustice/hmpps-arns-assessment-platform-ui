@@ -2,81 +2,81 @@ import { escapeHtmlEntities, sanitizeValue } from './sanitize'
 
 describe('sanitize', () => {
   describe('escapeHtmlEntities()', () => {
-    it('should escape less-than character', () => {
+    it('should NOT escape less-than character (handled by template auto-escaping)', () => {
       // Arrange
       const input = '<script>'
 
       // Act
       const result = escapeHtmlEntities(input)
 
-      // Assert
-      expect(result).toBe('&lt;script&gt;')
+      // Assert - no encoding, template engine handles XSS at render time
+      expect(result).toBe('<script>')
     })
 
-    it('should escape greater-than character', () => {
+    it('should NOT escape greater-than character (handled by template auto-escaping)', () => {
       // Arrange
-      const input = 'value > 10'
+      const input = 'Complete > 80% of sessions'
 
       // Act
       const result = escapeHtmlEntities(input)
 
       // Assert
-      expect(result).toBe('value &gt; 10')
+      expect(result).toBe('Complete > 80% of sessions')
     })
 
-    it('should escape ampersand', () => {
+    it('should NOT escape ampersand (handled by template auto-escaping)', () => {
       // Arrange
-      const input = 'A & B'
+      const input = 'Drugs & alcohol support'
 
       // Act
       const result = escapeHtmlEntities(input)
 
       // Assert
-      expect(result).toBe('A &amp; B')
+      expect(result).toBe('Drugs & alcohol support')
     })
 
-    it('should escape double quotes', () => {
+    it('should NOT escape double quotes (handled by template auto-escaping)', () => {
       // Arrange
-      const input = 'say "hello"'
+      const input = 'Complete "thinking skills" programme'
 
       // Act
       const result = escapeHtmlEntities(input)
 
       // Assert
-      expect(result).toBe('say &quot;hello&quot;')
+      expect(result).toBe('Complete "thinking skills" programme')
     })
 
-    it('should escape single quotes', () => {
+    it('should NOT escape single quotes (handled by template auto-escaping)', () => {
       // Arrange
-      const input = "it's fine"
+      const input = "John's first goal"
 
       // Act
       const result = escapeHtmlEntities(input)
 
       // Assert
-      expect(result).toBe('it&#39;s fine')
+      expect(result).toBe("John's first goal")
     })
 
-    it('should escape multiple characters in complex XSS payload', () => {
+    it('should pass through XSS payloads unchanged (template handles at render time)', () => {
       // Arrange
       const input = '<script>alert("XSS & \'attack\'")</script>'
 
       // Act
       const result = escapeHtmlEntities(input)
 
-      // Assert
-      expect(result).toBe('&lt;script&gt;alert(&quot;XSS &amp; &#39;attack&#39;&quot;)&lt;/script&gt;')
+      // Assert - no encoding, Nunjucks auto-escape will handle this at render
+      expect(result).toBe('<script>alert("XSS & \'attack\'")</script>')
     })
 
-    it('should return unchanged string when no special characters', () => {
+    it('should return unchanged string with no special characters', () => {
       // Arrange
-      const input = 'Hello World 123'
+      const input = 'Find stable accommodation'
 
       // Act
       const result = escapeHtmlEntities(input)
 
       // Assert
-      expect(result).toBe('Hello World 123')
+      expect(result).toBe('Find stable accommodation')
     })
 
     it('should handle empty string', () => {
@@ -90,28 +90,51 @@ describe('sanitize', () => {
       expect(result).toBe('')
     })
 
-    it('should handle img tag XSS payload', () => {
+    it('should pass through img tag XSS payload unchanged', () => {
       // Arrange
       const input = '<img src=x onerror="alert(\'XSS\')">'
 
       // Act
       const result = escapeHtmlEntities(input)
 
-      // Assert
-      expect(result).toBe('&lt;img src=x onerror=&quot;alert(&#39;XSS&#39;)&quot;&gt;')
+      // Assert - no encoding, template engine handles XSS at render time
+      expect(result).toBe('<img src=x onerror="alert(\'XSS\')">')
+    })
+
+    it('should preserve HTML entities typed by user', () => {
+      // Arrange - user intentionally types "&amp;"
+      const input = 'Learn about R&amp;D processes'
+
+      // Act
+      const result = escapeHtmlEntities(input)
+
+      // Assert - preserved as-is, template will encode & to &amp;
+      // resulting in "&amp;amp;" which displays as "&amp;" (user's intent)
+      expect(result).toBe('Learn about R&amp;D processes')
+    })
+
+    it('should preserve all special characters for complex input', () => {
+      // Arrange
+      const input = "Complete life skills ('basic') - cooking & cleaning > 80% &amp; participation"
+
+      // Act
+      const result = escapeHtmlEntities(input)
+
+      // Assert - all characters preserved, template handles encoding at render
+      expect(result).toBe("Complete life skills ('basic') - cooking & cleaning > 80% &amp; participation")
     })
   })
 
   describe('sanitizeValue()', () => {
-    it('should sanitize string values', () => {
+    it('should pass through string values unchanged', () => {
       // Arrange
-      const input = '<b>bold</b>'
+      const input = '<b>Important goal</b>'
 
       // Act
       const result = sanitizeValue(input)
 
-      // Assert
-      expect(result).toBe('&lt;b&gt;bold&lt;/b&gt;')
+      // Assert - no encoding, template handles XSS at render time
+      expect(result).toBe('<b>Important goal</b>')
     })
 
     it('should return numbers unchanged', () => {
@@ -160,24 +183,24 @@ describe('sanitize', () => {
 
     it('should return arrays unchanged', () => {
       // Arrange
-      const input = ['<a>', '<b>']
+      const input = ['Accommodation', 'Employment']
 
       // Act
       const result = sanitizeValue(input)
 
       // Assert
-      expect(result).toEqual(['<a>', '<b>'])
+      expect(result).toEqual(['Accommodation', 'Employment'])
     })
 
     it('should return objects unchanged', () => {
       // Arrange
-      const input = { key: '<value>' }
+      const input = { title: 'Health & wellbeing goal' }
 
       // Act
       const result = sanitizeValue(input)
 
       // Assert
-      expect(result).toEqual({ key: '<value>' })
+      expect(result).toEqual({ title: 'Health & wellbeing goal' })
     })
   })
 })

@@ -11,6 +11,28 @@ import {
 import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
 
 /**
+ * HTML entity map for escaping values in HTML attributes.
+ * Prevents XSS and ensures special characters display correctly.
+ */
+const HTML_ESCAPE_MAP: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+}
+
+/**
+ * Escape HTML entities in a string for safe insertion into HTML attributes.
+ */
+function escapeHtmlAttribute(value: unknown): string {
+  if (value === null || value === undefined) {
+    return ''
+  }
+  return String(value).replace(/[&<>"']/g, char => HTML_ESCAPE_MAP[char])
+}
+
+/**
  * Props for the AccessibleAutocomplete component.
  * @see https://github.com/alphagov/accessible-autocomplete
  */
@@ -136,7 +158,7 @@ export const accessibleAutocomplete = buildNunjucksComponent<AccessibleAutocompl
     const wrapperAttrs = [
       'class="accessible-autocomplete-wrapper"',
       `data-autocomplete-source="${dataId}"`,
-      defaultValue !== undefined ? `data-autocomplete-default-value="${defaultValue}"` : '',
+      defaultValue !== undefined ? `data-autocomplete-default-value="${escapeHtmlAttribute(defaultValue)}"` : '',
       block.dataKeyFrom ? `data-autocomplete-source-key-from="${block.dataKeyFrom}"` : '',
       block.minLength !== undefined ? `data-autocomplete-min-length="${block.minLength}"` : '',
       block.showNoOptionsFound !== undefined ? `data-autocomplete-show-no-options="${block.showNoOptionsFound}"` : '',

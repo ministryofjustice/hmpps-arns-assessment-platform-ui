@@ -1,5 +1,5 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
-import { FormatASTNode } from '@form-engine/core/types/expressions.type'
+import { ExpressionASTNode, FormatASTNode } from '@form-engine/core/types/expressions.type'
 import {
   ThunkHandler,
   ThunkInvocationAdapter,
@@ -11,6 +11,68 @@ import ThunkEvaluationError from '@form-engine/errors/ThunkEvaluationError'
 import { evaluateOperand } from '@form-engine/core/utils/thunkEvaluatorsAsync'
 import { evaluateOperandSync } from '@form-engine/core/utils/thunkEvaluatorsSync'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
+import { ExpressionType } from '@form-engine/form/types/enums'
+import { ASTNodeType } from '@form-engine/core/types/enums'
+
+/**
+ * HTML entity map for escaping user content in Format templates.
+ *
+ * SECURITY: This is part of the output encoding XSS protection strategy.
+ * Format() is often used to build HTML strings like `<h1>Goal: %1</h1>`.
+ * Since the output is rendered with `| safe` (as trusted HTML structure),
+ * we must escape user-provided argument values to prevent XSS.
+ *
+ * See packages/form-engine/src/core/utils/sanitize.ts for full security documentation.
+ */
+const HTML_ESCAPE_MAP: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+}
+
+/**
+ * Escape HTML entities in a string to prevent XSS attacks.
+ *
+ * SECURITY: The template string (first arg to Format) is trusted and NOT escaped.
+ * Only the interpolated values (%1, %2, etc.) are escaped, as these may contain
+ * user-generated content like goal titles or step descriptions.
+ */
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, char => HTML_ESCAPE_MAP[char])
+}
+
+/**
+ * Check if an AST node is an Expression node (vs Predicate, Structure, etc.)
+ */
+function isExpressionNode(node: unknown): node is ExpressionASTNode {
+  return isASTNode(node) && node.type === ASTNodeType.EXPRESSION
+}
+
+/**
+ * Check if an argument should have its value HTML-escaped.
+ *
+ * SECURITY: Only Reference-type AST nodes are escaped because they could contain
+ * user-generated content (e.g., Answer('goalTitle'), Data('user.name'), Item().path('title')).
+ *
+ * Values from these sources are NOT escaped:
+ * - Primitive strings: Developer-written literals in source code (trusted)
+ * - Conditional results: when().then('<span>...').else('') returns trusted HTML
+ * - Other expression types: Format, Pipeline, etc. compose from other values
+ *
+ * This approach allows Format() to be used for both:
+ * 1. Safe text interpolation with user data (escaped)
+ * 2. HTML composition with trusted source code (not escaped)
+ */
+function shouldEscapeArgument(rawArg: unknown): boolean {
+  if (!isExpressionNode(rawArg)) {
+    return false // Primitive values from source code - trusted
+  }
+
+  // Reference nodes point to data sources that could contain user input
+  return rawArg.expressionType === ExpressionType.REFERENCE
+}
 
 /**
  * Handler for Format expression nodes
@@ -68,7 +130,7 @@ export default class FormatHandler implements ThunkHandler {
 
     // Substitute arguments into template
     try {
-      const result = this.formatTemplate(template, evaluatedArguments)
+      const result = this.formatTemplate(template, evaluatedArguments, rawArguments)
 
       return { value: result }
     } catch (cause) {
@@ -88,7 +150,7 @@ export default class FormatHandler implements ThunkHandler {
 
     // Substitute arguments into template
     try {
-      const result = this.formatTemplate(template, evaluatedArguments)
+      const result = this.formatTemplate(template, evaluatedArguments, rawArguments)
 
       return { value: result }
     } catch (cause) {
@@ -105,8 +167,27 @@ export default class FormatHandler implements ThunkHandler {
    * Replaces %1, %2, %3, etc. with corresponding argument values.
    * Placeholders are 1-indexed (first argument replaces %1).
    * Missing arguments are replaced with empty string.
+   *
+   * Values from Reference AST nodes are HTML-escaped to prevent XSS when
+   * Format output is rendered as HTML content. This ensures user-provided
+   * content like goal titles or step descriptions display correctly
+   * without being interpreted as HTML.
+   *
+   * Values from primitives (literal strings in source code) and other
+   * expression types (Conditional, etc.) are NOT escaped, allowing
+   * Format() to compose HTML from trusted source code.
+   *
+   * This means:
+   * - User types "&" in a field → displays as "&" (escaped from Reference)
+   * - User types "&amp;" → displays as "&amp;" (escaped from Reference)
+   * - User types "<script>" → displays as "<script>" (escaped, not executed)
+   * - Developer writes when(...).then('<span>...</span>') → renders as HTML (not escaped)
+   *
+   * @param template - The template string with %1, %2, etc. placeholders
+   * @param args - The evaluated argument values
+   * @param rawArgs - The original AST nodes/primitives (for determining escape behavior)
    */
-  private formatTemplate(template: string, args: unknown[]): string {
+  private formatTemplate(template: string, args: unknown[], rawArgs: unknown[]): string {
     return template.replace(/%(\d+)/g, (match, index) => {
       const argIndex = parseInt(index, 10) - 1
 
@@ -118,6 +199,13 @@ export default class FormatHandler implements ThunkHandler {
 
       if (value === undefined || value === null) {
         return ''
+      }
+
+      // Only escape values from Reference nodes (could contain user data)
+      const rawArg = rawArgs[argIndex]
+
+      if (shouldEscapeArgument(rawArg)) {
+        return escapeHtml(String(value))
       }
 
       return String(value)

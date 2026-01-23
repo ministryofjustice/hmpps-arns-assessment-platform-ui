@@ -34,7 +34,7 @@
     {%- if action.visuallyHiddenText or cardTitle -%}
       <span class="govuk-visually-hidden">
         {%- if action.visuallyHiddenText %} {{ action.visuallyHiddenText }}{% endif -%}
-        {%- if cardTitle %} ({{ cardTitle | safe }}){% endif -%}
+        {%- if cardTitle %} ({{ cardTitle }}){% endif -%}
       </span>
     {%- endif -%}
   </a>
@@ -73,7 +73,7 @@
 
   <div class="govuk-summary-card">
     <div class="govuk-summary-card__title-wrapper">
-      <h2 class="govuk-summary-card__title" data-qa="goal-title">{{ params.goalTitle | safe }}</h2>
+      <h2 class="govuk-summary-card__title" data-qa="goal-title">{{ params.goalTitle }}</h2>
 
       {#- Action links -#}
       {% if params.actions.length > 0 %}
@@ -137,7 +137,7 @@
                 {% for step in params.steps %}
                   <tr class="govuk-table__row">
                     <td class="govuk-table__cell">{{ step.actor | replace(" (include who in the step)", "") }}</td>
-                    <td class="govuk-table__cell">{{ step.description | safe }}</td>
+                    <td class="govuk-table__cell">{{ step.description }}</td>
                     <td class="govuk-table__cell">{{ _stepStatusTag(step.status) }}</td>
                   </tr>
                 {% endfor %}
