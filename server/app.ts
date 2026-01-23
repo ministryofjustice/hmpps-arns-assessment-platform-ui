@@ -29,6 +29,7 @@ import logger from '../logger'
 import formEngineDeveloperGuide from './forms/form-engine-developer-guide'
 import accessFormPackage from './forms/access'
 import sentencePlanFormPackage from './forms/sentence-plan'
+import trainingSessionLauncher from './forms/training-session-launcher'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -49,6 +50,11 @@ export default function createApp(services: Services): express.Application {
     .registerComponents(govukComponents)
     .registerComponents(mojComponents)
     .registerFormPackage(formEngineDeveloperGuide)
+    .registerFormPackage(trainingSessionLauncher, {
+      coordinatorApiClient: services.coordinatorApiClient,
+      handoverApiClient: services.handoverApiClient,
+      preferencesStore: services.preferencesStore,
+    })
     .registerFormPackage(accessFormPackage, {
       deliusApi: services.deliusApiClient,
       handoverApi: services.handoverApiClient,
@@ -67,7 +73,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpStaticResources())
   app.use(
     setUpAuthentication({
-      bypassPaths: ['/forms/form-engine-developer-guide'],
+      bypassPaths: ['/forms/form-engine-developer-guide', '/forms/training-session-launcher'],
     }),
   )
   app.use(authorisationMiddleware())
