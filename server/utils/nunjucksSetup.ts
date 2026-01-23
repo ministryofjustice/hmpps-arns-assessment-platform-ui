@@ -52,6 +52,11 @@ export default function nunjucksSetup(app?: express.Express) {
       'node_modules/@ministryofjustice/frontend/',
     ],
     {
+      // SECURITY CRITICAL: autoescape must remain true
+      // This is the primary XSS protection for user-generated content.
+      // The codebase uses output encoding - data is stored raw and escaped at render time.
+      // NEVER use `| safe` filter for user-generated content (goal titles, step descriptions, etc.)
+      // See packages/form-engine/src/core/utils/sanitize.ts for full security documentation.
       autoescape: true,
       express: app,
     },

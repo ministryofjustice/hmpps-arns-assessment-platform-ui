@@ -592,16 +592,16 @@ describe('AnswerLocalHandler', () => {
   })
 
   describe('sanitization', () => {
-    it('should sanitize string values with HTML characters by default', async () => {
+    it('should pass through string values unchanged (XSS handled by template auto-escaping)', async () => {
       // Arrange
       const rawValue = '<script>alert("xss")</script>'
-      const sanitizedValue = '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
+      // Sanitizer is now a pass-through - XSS protection handled by Nunjucks at render time
       const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('comment').build()
       const postPseudoNode = ASTTestFactory.postPseudoNode('comment')
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('comment', fieldNode.id)
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
 
-      // PostHandler returns raw value, AnswerLocalHandler sanitizes
+      // PostHandler returns raw value, sanitizer passes through unchanged
       const mockInvoker = createMockInvoker()
       mockInvoker.invoke.mockResolvedValueOnce({ value: rawValue })
 
@@ -616,14 +616,11 @@ describe('AnswerLocalHandler', () => {
       // Act
       const result = await handler.evaluate(mockContext, mockInvoker)
 
-      // Assert
-      expect(result.value).toBe(sanitizedValue)
+      // Assert - value unchanged, no 'sanitized' mutation since value didn't change
+      expect(result.value).toBe(rawValue)
       expect(mockContext.global.answers.comment).toEqual({
-        current: sanitizedValue,
-        mutations: [
-          { value: rawValue, source: 'post' },
-          { value: sanitizedValue, source: 'sanitized' },
-        ],
+        current: rawValue,
+        mutations: [{ value: rawValue, source: 'post' }],
       })
     })
 
@@ -720,7 +717,7 @@ describe('AnswerLocalHandler', () => {
       })
     })
 
-    it('should sanitize before formatters run', async () => {
+    it('should run formatters on raw value (sanitizer is pass-through)', async () => {
       // Arrange
       const formatterNode = ASTTestFactory.functionExpression(FunctionType.TRANSFORMER, 'toUpperCase')
       const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD)
@@ -732,14 +729,13 @@ describe('AnswerLocalHandler', () => {
       const handler = new AnswerLocalHandler(pseudoNode.id, pseudoNode)
 
       const rawValue = '<script>test</script>'
-      const sanitizedValue = '&lt;script&gt;test&lt;/script&gt;'
-      const processedValue = '&LT;SCRIPT&GT;TEST&LT;/SCRIPT&GT;'
+      const processedValue = '<SCRIPT>TEST</SCRIPT>'
 
-      // PostHandler returns raw value, then AnswerLocalHandler sanitizes, then runs formatter
+      // PostHandler returns raw value, sanitizer passes through, then runs formatter
       const mockInvoker = createMockInvoker()
       mockInvoker.invoke
         .mockResolvedValueOnce({ value: rawValue }) // POST returns raw
-        .mockResolvedValueOnce({ value: processedValue }) // Formatter uppercases sanitized value
+        .mockResolvedValueOnce({ value: processedValue }) // Formatter uppercases raw value
 
       const mockContext = createMockContext({
         mockNodes: new Map<NodeId, ASTNode | PseudoNode>([
@@ -753,25 +749,24 @@ describe('AnswerLocalHandler', () => {
       // Act
       const result = await handler.evaluate(mockContext, mockInvoker)
 
-      // Assert - mutations show full pipeline: post -> sanitized -> processed
+      // Assert - mutations show: post -> processed (no sanitized since value unchanged)
       expect(result.value).toBe(processedValue)
       expect(mockContext.global.answers.email).toEqual({
         current: processedValue,
         mutations: [
           { value: rawValue, source: 'post' },
-          { value: sanitizedValue, source: 'sanitized' },
           { value: processedValue, source: 'processed' },
         ],
       })
 
-      // Verify formatter was invoked with sanitized value in scope
+      // Verify formatter was invoked
       expect(mockInvoker.invoke).toHaveBeenCalledTimes(2)
     })
 
-    it('should sanitize common XSS payloads', async () => {
+    it('should pass through XSS payloads unchanged (template handles at render time)', async () => {
       // Arrange
       const xssPayload = '<img src=x onerror="alert(\'XSS\')">'
-      const sanitizedPayload = '&lt;img src=x onerror=&quot;alert(&#39;XSS&#39;)&quot;&gt;'
+      // Sanitizer is pass-through - XSS protection handled by Nunjucks auto-escape at render time
       const fieldNode = ASTTestFactory.block('TextInput', BlockType.FIELD).withCode('input').build()
       const postPseudoNode = ASTTestFactory.postPseudoNode('input')
       const pseudoNode = ASTTestFactory.answerLocalPseudoNode('input', fieldNode.id)
@@ -791,8 +786,8 @@ describe('AnswerLocalHandler', () => {
       // Act
       const result = await handler.evaluate(mockContext, mockInvoker)
 
-      // Assert
-      expect(result.value).toBe(sanitizedPayload)
+      // Assert - value passed through unchanged
+      expect(result.value).toBe(xssPayload)
     })
   })
 

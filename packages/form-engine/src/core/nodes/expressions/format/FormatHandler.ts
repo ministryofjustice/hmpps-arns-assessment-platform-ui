@@ -13,6 +13,35 @@ import { evaluateOperandSync } from '@form-engine/core/utils/thunkEvaluatorsSync
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 
 /**
+ * HTML entity map for escaping user content in Format templates.
+ *
+ * SECURITY: This is part of the output encoding XSS protection strategy.
+ * Format() is often used to build HTML strings like `<h1>Goal: %1</h1>`.
+ * Since the output is rendered with `| safe` (as trusted HTML structure),
+ * we must escape user-provided argument values to prevent XSS.
+ *
+ * See packages/form-engine/src/core/utils/sanitize.ts for full security documentation.
+ */
+const HTML_ESCAPE_MAP: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+}
+
+/**
+ * Escape HTML entities in a string to prevent XSS attacks.
+ *
+ * SECURITY: The template string (first arg to Format) is trusted and NOT escaped.
+ * Only the interpolated values (%1, %2, etc.) are escaped, as these may contain
+ * user-generated content like goal titles or step descriptions.
+ */
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, char => HTML_ESCAPE_MAP[char])
+}
+
+/**
  * Handler for Format expression nodes
  *
  * Evaluates format expressions by:
@@ -105,6 +134,15 @@ export default class FormatHandler implements ThunkHandler {
    * Replaces %1, %2, %3, etc. with corresponding argument values.
    * Placeholders are 1-indexed (first argument replaces %1).
    * Missing arguments are replaced with empty string.
+   *
+   * Values are HTML-escaped to prevent XSS when Format output is rendered
+   * as HTML content. This ensures user-provided content like goal titles
+   * or step descriptions display correctly without being interpreted as HTML.
+   *
+   * This means:
+   * - User types "&" → displays as "&"
+   * - User types "&amp;" → displays as "&amp;" (not decoded to "&")
+   * - User types "<script>" → displays as "<script>" (not executed)
    */
   private formatTemplate(template: string, args: unknown[]): string {
     return template.replace(/%(\d+)/g, (match, index) => {
@@ -120,7 +158,8 @@ export default class FormatHandler implements ThunkHandler {
         return ''
       }
 
-      return String(value)
+      // HTML-escape the value to prevent XSS when rendered as HTML
+      return escapeHtml(String(value))
     })
   }
 }
