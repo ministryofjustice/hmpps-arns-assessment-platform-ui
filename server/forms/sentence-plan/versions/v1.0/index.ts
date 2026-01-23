@@ -4,7 +4,6 @@ import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { planHistoryJourney } from './journeys/plan-history'
 import { aboutPersonStep } from './steps/about-person/step'
-import { privacyScreenStep } from './steps/privacy-screen/step'
 import { actorLabels, areasOfNeed } from './constants'
 import { SentencePlanEffects } from '../../effects'
 
@@ -38,6 +37,7 @@ export const sentencePlanV1Journey = journey({
   onAccess: [
     accessTransition({
       effects: [
+        SentencePlanEffects.loadSessionData(),
         SentencePlanEffects.initializeSessionFromAccess(),
         SentencePlanEffects.loadPlan(),
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
@@ -52,6 +52,6 @@ export const sentencePlanV1Journey = journey({
       ],
     }),
   ],
-  steps: [privacyScreenStep, aboutPersonStep],
+  steps: [aboutPersonStep],
   children: [planOverviewJourney, goalManagementJourney, planHistoryJourney],
 })

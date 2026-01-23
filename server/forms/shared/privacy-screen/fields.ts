@@ -3,19 +3,20 @@ import { HtmlBlock } from '@form-engine/registry/components/html'
 import { TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKCheckboxInput, GovUKButton } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
-import { CaseData } from '../../sentence-plan/versions/v1.0/constants'
+import { ConditionalString } from '@form-engine/form/types/structures.type'
 
-const privacyContent = block<HtmlBlock>({
-  variant: 'html',
-  content: Format(
-    `<h1 class="govuk-heading-l">Remember to close any other applications before starting an appointment with %1</h1>
+const createPrivacyContent = (personForename: ConditionalString) =>
+  block<HtmlBlock>({
+    variant: 'html',
+    content: Format(
+      `<h1 class="govuk-heading-l">Remember to close any other applications before starting an appointment with %1</h1>
     <p class="govuk-body">For example, Outlook, Teams or NDelius.</p>
     <p class="govuk-body">You must also close other people's assessments or plans if you have them open in other tabs.</p>
     <p class="govuk-body">Do not let %1 use your device either.</p>
     <p class="govuk-body">This is to avoid sharing sensitive information.</p>`,
-    CaseData.Forename,
-  ),
-})
+      personForename,
+    ),
+  })
 
 const privacyCheckbox = field<GovUKCheckboxInput>({
   variant: 'govukCheckboxInput',
@@ -45,11 +46,10 @@ const confirmButton = block<GovUKButton>({
 
 const returnToOasysLink = block<HtmlBlock>({
   variant: 'html',
-  hidden: Data('session.accessType').not.match(Condition.Equals('oasys')),
-  // TODO: insert correct return to oasys link once we have OASys return url available
+  hidden: Data('accessDetails.accessType').not.match(Condition.Equals('handover')),
   content: Format(
     '<a href="%1" class="govuk-link govuk-link--no-visited-state">Return to OASys</a>',
-    Data('systemReturnUrl'),
+    Data('accessDetails.oasysRedirectUrl'),
   ),
 })
 
@@ -61,16 +61,22 @@ const buttonGroup = block<TemplateWrapper>({
   },
 })
 
-export const formContent = block<TemplateWrapper>({
-  variant: 'templateWrapper',
-  template: `
+/**
+ * Creates the privacy screen form content with the given person forename expression.
+ *
+ * @param personForename - Expression to resolve the person's forename (e.g., Data('caseData.name.forename'))
+ */
+export const createFormContent = (personForename: ConditionalString) =>
+  block<TemplateWrapper>({
+    variant: 'templateWrapper',
+    template: `
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         {{slot:content}}
       </div>
     </div>
   `,
-  slots: {
-    content: [privacyContent, privacyCheckbox, buttonGroup],
-  },
-})
+    slots: {
+      content: [createPrivacyContent(personForename), privacyCheckbox, buttonGroup],
+    },
+  })

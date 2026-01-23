@@ -1,16 +1,17 @@
 import { expect } from '@playwright/test'
 import { test } from '../../support/fixtures'
-import { createEmptySentencePlan } from '../../builders'
+import { SentencePlanBuilder } from '../../builders/SentencePlanBuilder'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { loginAndNavigateToPrivacyScreenByCrn, sentencePlanV1URLs } from './sentencePlanUtils'
-import { login } from '../../testUtils'
+import { login, randomCrn } from '../../testUtils'
 
 test.describe('Privacy Screen', () => {
   test.describe('Display and content', () => {
     test('displays privacy screen with correct content', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, plan.crn)
+      const crn = randomCrn()
+      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
+      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
 
       const headingText = await privacyPage.getHeadingText()
       expect(headingText).toContain('Remember to close any other applications before starting an appointment with')
@@ -28,16 +29,18 @@ test.describe('Privacy Screen', () => {
     })
 
     test('displays checkbox with correct label', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      await loginAndNavigateToPrivacyScreenByCrn(page, plan.crn)
+      const crn = randomCrn()
+      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
+      await loginAndNavigateToPrivacyScreenByCrn(page, crn)
 
       const checkboxLabel = page.locator('label[for="confirm_privacy"]')
       await expect(checkboxLabel).toContainText("I confirm I'll do this before starting an appointment")
     })
 
     test('does not show Return to OASys link for MPOP access', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, plan.crn)
+      const crn = randomCrn()
+      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
+      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
 
       const isOasysLinkVisible = await privacyPage.isReturnToOasysLinkVisible()
       expect(isOasysLinkVisible).toBe(false)
@@ -46,8 +49,9 @@ test.describe('Privacy Screen', () => {
 
   test.describe('Validation', () => {
     test('shows validation error when submitting without checking the checkbox', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, plan.crn)
+      const crn = randomCrn()
+      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
+      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
 
       await privacyPage.clickConfirm()
 
@@ -61,8 +65,9 @@ test.describe('Privacy Screen', () => {
     })
 
     test('error summary links to the checkbox field', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, plan.crn)
+      const crn = randomCrn()
+      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
+      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
 
       await privacyPage.clickConfirm()
 
@@ -76,8 +81,9 @@ test.describe('Privacy Screen', () => {
 
   test.describe('Successful submission', () => {
     test('redirects to plan overview after confirming privacy', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, plan.crn)
+      const crn = randomCrn()
+      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
+      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
 
       await privacyPage.confirmAndContinue()
 
@@ -89,23 +95,25 @@ test.describe('Privacy Screen', () => {
 
   test.describe('Session behaviour', () => {
     test('skips privacy screen on subsequent visits within same session', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
+      const crn = randomCrn()
+      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
 
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, plan.crn)
+      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
       await privacyPage.confirmAndContinue()
 
       await expect(page).toHaveURL(/\/plan\/overview/)
 
-      await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${plan.crn}`)
+      await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
 
       await expect(page).toHaveURL(/\/plan\/overview/)
       await PlanOverviewPage.verifyOnPage(page)
     })
 
     test('shows privacy screen again after logging out and back in', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
+      const crn = randomCrn()
+      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
 
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, plan.crn)
+      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
       await privacyPage.confirmAndContinue()
       await expect(page).toHaveURL(/\/plan\/overview/)
 
@@ -113,7 +121,7 @@ test.describe('Privacy Screen', () => {
       await planOverviewPage.signOut()
 
       await login(page)
-      await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${plan.crn}`)
+      await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
 
       await expect(page).toHaveURL(/\/privacy/)
       await PrivacyScreenPage.verifyOnPage(page)

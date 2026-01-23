@@ -4,6 +4,7 @@ import { SentencePlanEffectsDeps } from './effects/types'
 import { SentencePlanEffects, SentencePlanEffectsRegistry } from './effects'
 import { sentencePlanComponents } from './components'
 import { createPrivacyScreen } from '../shared'
+import { CaseData } from './versions/v1.0/constants'
 import config from '../../config'
 
 /**
@@ -12,13 +13,14 @@ import config from '../../config'
  * Uses the shared privacy screen factory with Sentence Plan specific configuration.
  */
 const privacyScreenStep = createPrivacyScreen({
-  loadEffects: [SentencePlanEffects.loadSessionData(), SentencePlanEffects.loadPersonByCrn()],
+  loadEffects: [SentencePlanEffects.loadSessionData()],
   submitEffect: SentencePlanEffects.setPrivacyAccepted(),
   submitRedirectPath: 'v1.0/plan/overview',
   alreadyAcceptedRedirectPath: 'v1.0/plan/overview',
   template: 'sentence-plan/views/sentence-plan-step',
   basePath: '/forms/sentence-plan/v1.0',
   headerServiceNameLink: '/forms/sentence-plan/v1.0/plan/overview',
+  personForename: CaseData.Forename,
 })
 
 /**

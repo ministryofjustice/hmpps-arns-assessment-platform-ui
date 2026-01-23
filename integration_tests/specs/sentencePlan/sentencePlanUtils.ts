@@ -1,7 +1,6 @@
 import { expect, Page } from '@playwright/test'
 import { login } from '../../testUtils'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
-import { PlanAgreementStatus } from '../../builders'
 import { AgreementStatus } from '../../../server/forms/sentence-plan/effects'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)

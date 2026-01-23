@@ -5,6 +5,7 @@ import { loadNotifications } from './notifications/loadNotifications'
 import { setNavigationReferrer } from './navigation/setNavigationReferrer'
 import { loadNavigationReferrer } from './navigation/loadNavigationReferrer'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
+import { loadSessionData } from './session/loadSessionData'
 import { loadPlan } from './plan/loadPlan'
 import { deriveGoalsWithStepsFromAssessment } from './goals/deriveGoalsWithStepsFromAssessment'
 import { derivePlanAgreementsFromAssessment } from './plan/derivePlanAgreementsFromAssessment'
@@ -24,7 +25,6 @@ import { initializeStepEditSession } from './steps/initializeStepEditSession'
 import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
 import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
 import { saveStepEditSession } from './steps/saveStepEditSession'
-import { setSessionAccessType } from './access/setSessionAccessType'
 import { setPrivacyAccepted } from './access/setPrivacyAccepted'
 
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
@@ -55,9 +55,11 @@ export type { AgreementStatus } from './types'
  */
 export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffectsRegistry } =
   defineEffectsWithDeps<SentencePlanEffectsDeps>()({
+    // Session
     initializeSessionFromAccess,
+    loadSessionData,
+
     // Access
-    setSessionAccessType,
     setPrivacyAccepted,
 
     // Notifications

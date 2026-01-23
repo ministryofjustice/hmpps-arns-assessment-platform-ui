@@ -1,7 +1,8 @@
 import { step, submitTransition, redirect, Data, accessTransition, when } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { EffectFunctionExpr } from '@form-engine/form/types/expressions.type'
-import { formContent } from './fields'
+import { ConditionalString } from '@form-engine/form/types/structures.type'
+import { createFormContent } from './fields'
 
 /**
  * Configuration for creating a privacy screen step
@@ -47,6 +48,12 @@ export interface PrivacyScreenConfig {
    * (e.g., '/forms/sentence-plan/v1.0/plan/overview')
    */
   headerServiceNameLink: string
+
+  /**
+   * Expression to resolve the person's forename for display in the privacy screen content
+   * (e.g., Data('caseData.name.forename'))
+   */
+  personForename: ConditionalString
 }
 
 /**
@@ -71,6 +78,7 @@ export interface PrivacyScreenConfig {
  *   template: 'sentence-plan/views/sentence-plan-step',
  *   basePath: '/forms/sentence-plan/v1.0',
  *   headerServiceNameLink: '/forms/sentence-plan/v1.0/plan/overview',
+ *   personForename: Data('caseData.name.forename'),
  * })
  * ```
  */
@@ -83,6 +91,7 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
     template,
     basePath,
     headerServiceNameLink,
+    personForename,
   } = config
 
   return step({
@@ -94,13 +103,12 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
         basePath,
         showNavigation: false,
         hmppsHeaderServiceNameLink: headerServiceNameLink,
-        // TODO: replace with correct OASys return URL once available
-        backlink: when(Data('session.accessType').match(Condition.Equals('oasys')))
-          .then('/return-to-oasys')
+        backlink: when(Data('accessDetails.accessType').match(Condition.Equals('handover')))
+          .then(Data('accessDetails.oasysRedirectUrl'))
           .else(null),
       },
     },
-    blocks: [formContent],
+    blocks: [createFormContent(personForename)],
     onAccess: [
       accessTransition({
         effects: loadEffects,
