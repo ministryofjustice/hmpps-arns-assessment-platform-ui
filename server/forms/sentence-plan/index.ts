@@ -28,7 +28,7 @@ const sentencePlanRootJourney = journey({
   code: 'sentence-plan',
   title: 'Sentence Plan',
   path: '/sentence-plan',
-  entryPath: 'v1.0/plan/overview',
+  entryPath: '/v1.0/plan/overview',
   children: [sentencePlanV1Journey],
 })
 
