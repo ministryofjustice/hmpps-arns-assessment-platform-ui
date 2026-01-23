@@ -14,6 +14,7 @@ export declare module 'express-session' {
       displayName: string
     }
     targetService?: string
+    csrfToken?: string
   }
 }
 
