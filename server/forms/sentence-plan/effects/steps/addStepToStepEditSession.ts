@@ -1,4 +1,3 @@
-import { decodeHtmlEntities } from '../../../../utils/decodeHtmlEntities'
 import { SentencePlanContext } from '../types'
 
 /**
@@ -23,10 +22,10 @@ export const addStepToStepEditSession = () => async (context: SentencePlanContex
 
   const changes = session.stepChanges[activeGoalUuid]
 
-  // Save current values to session (decode to prevent double-encoding)
+  // Save current form values to session (plain text from user input)
   changes.steps.forEach((step, index) => {
     step.actor = context.getAnswer(`step_actor_${index}`) ?? step.actor
-    step.description = decodeHtmlEntities(context.getAnswer(`step_description_${index}`)) || step.description
+    step.description = context.getAnswer(`step_description_${index}`) ?? step.description
   })
 
   // Add new empty step

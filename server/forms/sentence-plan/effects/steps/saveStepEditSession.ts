@@ -1,5 +1,4 @@
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { decodeHtmlEntities } from '../../../../utils/decodeHtmlEntities'
 import { SentencePlanContext, SentencePlanEffectsDeps, StepAnswers, StepChangesStorage, StepProperties } from '../types'
 import { Commands } from '../../../../interfaces/aap-api/command'
 
@@ -20,10 +19,10 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
     toDelete: [],
   }
 
-  // Get current form values for a step by index (decode to prevent double-encoding)
+  // Get current form values for a step by index
   const getFormValues = (index: number) => ({
     actor: context.getAnswer(`step_actor_${index}`),
-    description: decodeHtmlEntities(context.getAnswer(`step_description_${index}`)),
+    description: context.getAnswer(`step_description_${index}`),
   })
 
   // Get original step values for change detection

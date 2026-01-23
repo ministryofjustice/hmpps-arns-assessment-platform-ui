@@ -1,5 +1,4 @@
 import { SentencePlanContext, StepChangesStorage } from '../types'
-import { decodeHtmlEntities } from '../../../../utils/decodeHtmlEntities'
 
 /**
  * Initialize the step edit session
@@ -8,7 +7,9 @@ import { decodeHtmlEntities } from '../../../../utils/decodeHtmlEntities'
  * If the goal has existing steps from the API, those are loaded into session.
  * Otherwise, starts with one empty step for new goals.
  *
- * Restores field answers from session so saved values display on GET requests.
+ * Note: Session stores values as-is (HTML-encoded from API or sanitized from POST).
+ * The DecodeHtmlEntities formatter on the field handles decoding for display.
+ * This prevents double-decoding when values pass through multiple times.
  */
 export const initializeStepEditSession = () => async (context: SentencePlanContext) => {
   const session = context.getSession()
@@ -28,8 +29,11 @@ export const initializeStepEditSession = () => async (context: SentencePlanConte
 
     if (stepsOriginal?.length > 0) {
       // Populate session with existing steps from API
+      // Keep values as-is (HTML-encoded) - the formatter handles decoding for display
       storage[activeGoalUuid] = {
-        steps: stepsOriginal,
+        steps: stepsOriginal.map(step => ({
+          ...step,
+        })),
         toCreate: [],
         toUpdate: [],
         toDelete: [],
@@ -47,13 +51,13 @@ export const initializeStepEditSession = () => async (context: SentencePlanConte
   }
 
   const { steps } = storage[activeGoalUuid]
+
   context.setData('activeGoalStepsEdited', steps)
 
-  // Restore field answers from session (GET requests only)
-  // On POST requests, the form data should populate the answers instead
-  // Decode HTML entities to prevent double-encoding when form engine renders the values
+  // Set field answers from session for display
+  // On POST requests, these may be overwritten by form data during action handling
   steps.forEach((step, index) => {
     context.setAnswer(`step_actor_${index}`, step.actor)
-    context.setAnswer(`step_description_${index}`, decodeHtmlEntities(step.description))
+    context.setAnswer(`step_description_${index}`, step.description)
   })
 }

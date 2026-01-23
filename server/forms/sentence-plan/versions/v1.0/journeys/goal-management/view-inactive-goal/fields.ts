@@ -6,6 +6,7 @@ import { TemplateWrapper } from '@form-engine/registry/components/templateWrappe
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { Condition } from '@form-engine/registry/conditions'
+import { SentencePlanTransformers } from '../../../../../transformers'
 
 /**
  * Shared fields for viewing inactive goals (achieved or removed)
@@ -83,7 +84,8 @@ const reviewStepsTable = TemplateWrapper({
                   <td class="govuk-table__cell">{{slot:statusField}}</td>
                 </tr>`,
                 Item().path('actorLabel'),
-                Item().path('description'),
+                // Escape HTML to prevent browser interpreting entities (e.g., &amp; → &)
+                Item().path('description').pipe(SentencePlanTransformers.EscapeHtml()),
               ),
               slots: {
                 statusField: [

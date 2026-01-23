@@ -8,6 +8,7 @@ import { CollectionBlock } from '@form-engine/registry/components/collectionBloc
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { Condition } from '@form-engine/registry/conditions'
 import { CaseData } from '../../../constants'
+import { SentencePlanTransformers } from '../../../../../transformers'
 
 const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
   Transformer.Array.Sort(),
@@ -114,7 +115,8 @@ const reviewStepsTable = TemplateWrapper({
                   <td class="govuk-table__cell">{{slot:statusField}}</td>
                 </tr>`,
                 Item().path('actorLabel'),
-                Item().path('description'),
+                // Escape HTML to prevent browser interpreting entities (e.g., &amp; → &)
+                Item().path('description').pipe(SentencePlanTransformers.EscapeHtml()),
               ),
               slots: {
                 statusField: [

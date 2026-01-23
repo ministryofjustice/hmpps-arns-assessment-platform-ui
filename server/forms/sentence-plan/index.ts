@@ -2,6 +2,7 @@ import { createFormPackage, journey } from '@form-engine/form/builders'
 import { sentencePlanV1Journey } from './versions/v1.0'
 import { SentencePlanEffectsDeps } from './effects/types'
 import { SentencePlanEffectsRegistry } from './effects'
+import { SentencePlanTransformersRegistry } from './transformers'
 import { sentencePlanComponents } from './components'
 import { oasysAccessStep } from './access-steps/oasys-access/step'
 import { mpopAccessStep } from './access-steps/mpop-access/step'
@@ -38,5 +39,6 @@ export default createFormPackage({
   components: sentencePlanComponents,
   createRegistries: (deps: SentencePlanEffectsDeps) => ({
     ...SentencePlanEffectsRegistry(deps),
+    ...SentencePlanTransformersRegistry,
   }),
 })

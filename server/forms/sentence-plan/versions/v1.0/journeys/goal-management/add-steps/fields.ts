@@ -7,6 +7,7 @@ import { GovUKSelectInput, GovUKTextInput } from '@form-engine-govuk-components/
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { ButtonAsLink } from '../../../../../components'
+import { SentencePlanTransformers } from '../../../../../transformers'
 import { actorLabelOptions } from '../../../constants'
 
 /**
@@ -92,6 +93,9 @@ export const stepRows = CollectionBlock({
               },
               classes: 'govuk-!-width-full',
               defaultValue: Item().path('description'),
+              // Decode after sanitization to prevent double-encoding
+              // (Form engine sanitizes for XSS, then we decode so Nunjucks can re-escape once)
+              formatters: [SentencePlanTransformers.DecodeHtmlEntities()],
               validate: [
                 validation({
                   when: Self().not.match(Condition.IsRequired()),

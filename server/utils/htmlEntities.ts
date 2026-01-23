@@ -8,10 +8,27 @@ export function decodeHtmlEntities(text: string | undefined): string {
   }
 
   return text
-    .replace(/&amp;/g, '&')
     .replace(/&#39;/g, "'")
     .replace(/&apos;/g, "'")
     .replace(/&quot;/g, '"')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+}
+
+/**
+ * Escape HTML special characters to prevent XSS and ensure proper display.
+ * Used when inserting user content into HTML templates.
+ */
+export function escapeHtml(text: string | undefined): string {
+  if (!text) {
+    return ''
+  }
+
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
 }

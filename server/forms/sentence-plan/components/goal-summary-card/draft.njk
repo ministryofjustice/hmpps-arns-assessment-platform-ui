@@ -125,7 +125,7 @@
               {% for step in params.steps %}
                 <tr class="govuk-table__row">
                   <td class="govuk-table__cell">{{ step.actor | replace(" (include who in the step)", "") }}</td>
-                  <td class="govuk-table__cell">{{ step.description | safe }}</td>
+                  <td class="govuk-table__cell">{{ step.description }}</td>
                   <td class="govuk-table__cell">{{ _stepStatusTag(step.status) }}</td>
                 </tr>
               {% endfor %}
