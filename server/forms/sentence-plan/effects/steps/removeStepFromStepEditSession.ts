@@ -1,3 +1,4 @@
+import { decodeHtmlEntities } from '../../../../utils/decodeHtmlEntities'
 import { SentencePlanContext } from '../types'
 
 /**
@@ -36,10 +37,10 @@ export const removeStepFromStepEditSession = () => async (context: SentencePlanC
     return
   }
 
-  // Save current values to session before modifying array
+  // Save current values to session before modifying array (decode to prevent double-encoding)
   changes.steps.forEach((step, i) => {
     step.actor = context.getAnswer(`step_actor_${i}`) ?? step.actor
-    step.description = context.getAnswer(`step_description_${i}`) ?? step.description
+    step.description = decodeHtmlEntities(context.getAnswer(`step_description_${i}`)) || step.description
   })
 
   // If only 1 step, clear it instead of removing

@@ -1,4 +1,5 @@
 import { SentencePlanContext, StepChangesStorage } from '../types'
+import { decodeHtmlEntities } from '../../../../utils/decodeHtmlEntities'
 
 /**
  * Initialize the step edit session
@@ -50,8 +51,9 @@ export const initializeStepEditSession = () => async (context: SentencePlanConte
 
   // Restore field answers from session (GET requests only)
   // On POST requests, the form data should populate the answers instead
+  // Decode HTML entities to prevent double-encoding when form engine renders the values
   steps.forEach((step, index) => {
     context.setAnswer(`step_actor_${index}`, step.actor)
-    context.setAnswer(`step_description_${index}`, step.description)
+    context.setAnswer(`step_description_${index}`, decodeHtmlEntities(step.description))
   })
 }
