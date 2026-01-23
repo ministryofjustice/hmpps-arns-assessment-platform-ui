@@ -1,6 +1,6 @@
 import crypto from 'node:crypto'
 import { TrainingScenarioFlag } from '../../constants'
-import { scenarioFieldKeys, scenarioFieldSchema, ScenarioValues } from '../../scenarioSchema'
+import { scenarioFieldKeys, scenarioFieldSchema, ScenarioValues } from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session } from '../../types'
 import { TrainingSessionLauncherEffectsDeps } from '../types'
 import { createInCoordinatorAndUpdatePreferences } from './coordinatorHelpers'

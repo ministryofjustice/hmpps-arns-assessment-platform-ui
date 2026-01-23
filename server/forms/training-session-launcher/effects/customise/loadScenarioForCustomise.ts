@@ -1,10 +1,4 @@
-import {
-  getPresetById,
-  getRandomizeFields,
-  resolvePreset,
-  scenarioPresets,
-  TrainingScenarioFlag,
-} from '../../constants'
+import { TrainingScenarioFlag } from '../../constants'
 import { getExcludedFields } from '../../flags/handlers'
 import {
   ScenarioFieldKey,
@@ -12,7 +6,11 @@ import {
   scenarioFieldKeys,
   applyRandomization,
   generateSeed,
-} from '../../scenarioSchema'
+  getPresetById,
+  getRandomizeFields,
+  resolvePreset,
+  scenarioPresets,
+} from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences } from '../../types'
 import { TrainingSessionLauncherEffectsDeps } from '../types'
 

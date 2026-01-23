@@ -1,7 +1,6 @@
 import config from '../../../../config'
-import { getRandomizeFields } from '../../constants'
 import { getExcludedFields, resolveHandoverConfig } from '../../flags/handlers'
-import { applyRandomization, ScenarioValues, generateSeed } from '../../scenarioSchema'
+import { applyRandomization, ScenarioValues, generateSeed, getRandomizeFields } from '../../scenarios'
 import {
   TrainingSessionLauncherContext,
   TrainingLauncherPreferences,

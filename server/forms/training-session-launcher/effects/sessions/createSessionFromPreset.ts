@@ -1,7 +1,6 @@
 import crypto from 'node:crypto'
-import { getPresetById, getRandomizeFields, resolvePreset } from '../../constants'
 import { getExcludedFields } from '../../flags/handlers'
-import { applyRandomization } from '../../scenarioSchema'
+import { applyRandomization, getPresetById, getRandomizeFields, resolvePreset } from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session } from '../../types'
 import { TrainingSessionLauncherEffectsDeps } from '../types'
 import { createInCoordinatorAndUpdatePreferences } from './coordinatorHelpers'

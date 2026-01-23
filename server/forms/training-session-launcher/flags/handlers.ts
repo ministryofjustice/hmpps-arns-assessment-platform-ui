@@ -2,7 +2,7 @@ import config from '../../../config'
 import { CreateHandoverLinkRequest } from '../../../interfaces/handover-api/request'
 import { OasysCreateRequest } from '../../../interfaces/coordinator-api/oasysCreate'
 import { TrainingScenarioFlag } from '../constants'
-import { ScenarioFieldKey, getFieldsByGroup } from '../scenarioSchema'
+import { ScenarioFieldKey, getFieldsByGroup } from '../scenarios'
 import { TrainingSessionLauncherContext, TargetApplication } from '../types'
 import { TrainingSessionLauncherEffectsDeps } from '../effects/types'
 

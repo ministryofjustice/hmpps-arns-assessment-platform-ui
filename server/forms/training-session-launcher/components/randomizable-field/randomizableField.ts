@@ -7,7 +7,7 @@ import {
   FieldBlockDefinition,
 } from '@form-engine/form/types/structures.type'
 import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
-import { scenarioFieldSchema, ScenarioFieldKey } from '../../scenarioSchema'
+import { scenarioFieldSchema, ScenarioFieldKey } from '../../scenarios'
 
 /**
  * Props for the RandomizableField component.
