@@ -20,7 +20,7 @@ services:
     environment:
       WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:9090
       WIREMOCK_AAP_API_URL: http://api:8080
-      WIREMOCK_COORDINATOR_API_URL: http://arns-coordinator:8080
+      WIREMOCK_COORDINATOR_API_URL: http://coordinator-api:8080
       WIREMOCK_HANDOVER_URL: http://arns-handover:7070
       WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
       WIREMOCK_DELIUS_URL: http://delius-api:8080

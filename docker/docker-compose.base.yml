@@ -61,7 +61,7 @@ services:
       SPRING_FLYWAY_LOCATIONS: classpath:db/auth,db/auth_{vendor},db/dev/data/auth_{vendor},db/dev/data/auth,filesystem:/auth_db
 
   coordinator-api:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:latest
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:2026-01-20.18.e5a34a1
     depends_on:
       - postgres
       - hmpps-auth
@@ -85,7 +85,7 @@ services:
       CLIENT_SECRET: clientsecret
 
   arns-handover:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:latest
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:2026-01-22.12.c13529c
     depends_on:
       - redis
       - localstack
@@ -104,14 +104,14 @@ services:
       HMPPS_HANDOVER_EXTERNAL_URL: http://localhost:7070
       HMPPS_AUTH_BASE_URL: http://hmpps-auth:9090
       OASYS_BASE_URL: http://localhost:7072
-      OASYS_RETURN_URLS: http://localhost:7072
+      OASYS_RETURN_URLS: http://localhost:3000
       COORDINATOR_API_BASE_URL: http://coordinator-api:8080
       SERVER_ERROR_WHITELABEL_ENABLED: true
       CLIENT_ID: hmpps-assess-risks-and-needs-oastub-ui
       CLIENT_SECRET: clientsecret
       CLIENT_SP_SECRET: sp-secret
-      CLIENT_SP_OAUTH_REDIRECT_URI: http://localhost:3001/sign-in/handover/callback
-      CLIENT_SP_HANDOVER_REDIRECT_URI: http://localhost:3001/sign-in/handover
+      CLIENT_SP_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/handover/callback
+      CLIENT_SP_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in/handover?service=sentence-plan
       CLIENT_SAN_SECRET: san-secret
       CLIENT_SAN_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/callback
       CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in
@@ -154,11 +154,11 @@ services:
       HMPPS_AUTH_URL: http://hmpps-auth:9090/auth
       HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
       AAP_API_URL: http://api:8080
-      COORDINATOR_API_URL: http://arns-coordinator:8080
+      COORDINATOR_API_URL: http://coordinator-api:8080
       HMPPS_ARNS_HANDOVER_URL: http://arns-handover:7070
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
-      HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
-      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: aap-secret
+      HMPPS_ARNS_HANDOVER_CLIENT_ID: sentence-plan
+      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: sp-secret
       OASYS_URL: http://localhost:7072
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
