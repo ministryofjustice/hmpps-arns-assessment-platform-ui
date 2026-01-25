@@ -14,7 +14,7 @@ export const confirmAchievedGoalStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.setActiveGoalContext()],
+      effects: [SentencePlanEffects.setActiveGoalContext()],
       next: [
         // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
         redirect({

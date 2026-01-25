@@ -30,10 +30,6 @@ export const agreePlanStep = step({
   },
   onAccess: [
     accessTransition({
-      effects: [
-        SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
-        SentencePlanEffects.derivePlanAgreementsFromAssessment(),
-      ],
       next: [
         // Check if there are no active goals at all
         redirect({

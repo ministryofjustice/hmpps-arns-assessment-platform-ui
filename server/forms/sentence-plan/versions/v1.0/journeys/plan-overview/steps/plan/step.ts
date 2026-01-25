@@ -42,15 +42,7 @@ export const planStep = step({
   ],
   onAccess: [
     accessTransition({
-      effects: [
-        // Initialize session from access form data and load plan
-        SentencePlanEffects.initializeSessionFromAccess(),
-        SentencePlanEffects.loadPlan(),
-        // Derive display data from plan
-        SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
-        SentencePlanEffects.derivePlanAgreementsFromAssessment(),
-        SentencePlanEffects.loadNotifications('plan-overview'),
-      ],
+      effects: [SentencePlanEffects.loadNotifications('plan-overview')],
       next: [
         redirect({
           when: Query('type').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),

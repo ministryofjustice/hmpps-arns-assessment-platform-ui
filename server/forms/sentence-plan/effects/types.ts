@@ -18,26 +18,14 @@ export interface AccessDetails {
   oasysRedirectUrl?: string
 }
 
-export type GoalStatus = 'ACTIVE' | 'FUTURE'
+export type GoalStatus = 'ACTIVE' | 'FUTURE' | 'REMOVED' | 'ACHIEVED'
 export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
 
 // Plan agreement statuses - DRAFT is the initial status before any agreement action
-export type AgreementStatus =
-  | 'DRAFT'
-  | 'AGREED'
-  | 'DO_NOT_AGREE'
-  | 'COULD_NOT_ANSWER'
-  | 'UPDATED_AGREED'
-  | 'UPDATED_DO_NOT_AGREE'
+export type AgreementStatus = 'DRAFT' | 'AGREED' | 'DO_NOT_AGREE' | 'COULD_NOT_ANSWER'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
-export const POST_AGREEMENT_PROCESS_STATUSES: AgreementStatus[] = [
-  'AGREED',
-  'DO_NOT_AGREE',
-  'COULD_NOT_ANSWER',
-  'UPDATED_AGREED',
-  'UPDATED_DO_NOT_AGREE',
-]
+export const POST_AGREEMENT_PROCESS_STATUSES: AgreementStatus[] = ['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']
 
 export interface RawCollection {
   name: string
