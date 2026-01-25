@@ -1,13 +1,12 @@
 import { expect } from '@playwright/test'
-import { test } from '../../support/fixtures'
+import { test, TargetService } from '../../support/fixtures'
 import UpdateGoalAndStepsPage from '../../pages/sentencePlan/updateGoalAndStepsPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import ConfirmIfAchievedPage from '../../pages/sentencePlan/confirmIfAchievedPage'
 import ConfirmAchievedGoalPage from '../../pages/sentencePlan/confirmAchievedGoalPage'
-import { withCurrentGoals, withFutureGoals, withGoals } from '../../builders'
+import { currentGoals, futureGoals } from '../../builders/sentencePlanFactories'
 import {
   getDatePlusDaysAsISO,
-  loginAndNavigateToPlanByCrn,
   postAgreementProcessStatuses,
   stepStatusOptions,
   sentencePlanV1URLs,
@@ -27,12 +26,13 @@ const nonCompletedStepStatuses = ['NOT_STARTED', 'IN_PROGRESS', 'CANNOT_BE_DONE_
 
 test.describe('Update goal and steps page', () => {
   test.describe('access control', () => {
-    test('redirects to plan overview when plan is not agreed', async ({ page, aapClient }) => {
+    test('redirects to plan overview when plan is not agreed', async ({ page, createSession, sentencePlanBuilder }) => {
       // create a plan with 'DRAFT' agreement status
-      const plan = await withCurrentGoals(1).create(aapClient)
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // try to access update-goal-steps page directly
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
@@ -42,11 +42,20 @@ test.describe('Update goal and steps page', () => {
     })
 
     for (const agreedPlanStatus of postAgreementProcessStatuses) {
-      test(`allows access when plan status is ${agreedPlanStatus}`, async ({ page, aapClient }) => {
-        const plan = await withCurrentGoals(1, agreedPlanStatus).create(aapClient)
+      test(`allows access when plan status is ${agreedPlanStatus}`, async ({
+        page,
+        createSession,
+        sentencePlanBuilder,
+      }) => {
+        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        const plan = await sentencePlanBuilder
+          .extend(sentencePlanId)
+          .withGoals(currentGoals(1))
+          .withAgreementStatus(agreedPlanStatus)
+          .save()
         const goalUuid = plan.goals[0].uuid
 
-        await loginAndNavigateToPlanByCrn(page, plan.crn)
+        await page.goto(handoverLink)
 
         await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -58,10 +67,15 @@ test.describe('Update goal and steps page', () => {
       })
     }
 
-    test('redirects to plan overview when goal does not exist', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoals(1, 'AGREED').create(aapClient)
+    test('redirects to plan overview when goal does not exist', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // try to access with a non-existent goal UUID
       const nonExistentUuid = '00000000-0000-0000-0000-000000000000'
@@ -75,10 +89,13 @@ test.describe('Update goal and steps page', () => {
   test.describe('page content - ACTIVE goal', () => {
     test('displays page heading, target date message and change goal details link correctly', async ({
       page,
-      aapClient,
+      createSession,
+      sentencePlanBuilder,
     }) => {
-      const plan = await withGoals(
-        [
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Test Goal Title',
             areaOfNeed: 'accommodation',
@@ -86,12 +103,12 @@ test.describe('Update goal and steps page', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Test step', status: 'NOT_STARTED' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -116,9 +133,15 @@ test.describe('Update goal and steps page', () => {
       await expect(updatePage.changeGoalDetailsLink).toBeVisible()
     })
 
-    test('displays related areas of need in page heading when goal has related areas', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('displays related areas of need in page heading when goal has related areas', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Test Goal With Related Areas',
             areaOfNeed: 'accommodation',
@@ -127,12 +150,12 @@ test.describe('Update goal and steps page', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Test step', status: 'NOT_STARTED' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -148,11 +171,20 @@ test.describe('Update goal and steps page', () => {
   })
 
   test.describe('page content - FUTURE goal', () => {
-    test('displays future goal message instead of target date', async ({ page, aapClient }) => {
-      const plan = await withFutureGoals(1, 'AGREED').create(aapClient)
+    test('displays future goal message instead of target date', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(futureGoals(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -171,10 +203,13 @@ test.describe('Update goal and steps page', () => {
   test.describe('steps table', () => {
     test('displays table and its headers as well as add or change steps link correctly for goal with steps', async ({
       page,
-      aapClient,
+      createSession,
+      sentencePlanBuilder,
     }) => {
-      const plan = await withGoals(
-        [
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Goal With Steps',
             areaOfNeed: 'accommodation',
@@ -185,12 +220,12 @@ test.describe('Update goal and steps page', () => {
               { actor: 'person_on_probation', description: 'Second step description', status: 'IN_PROGRESS' },
             ],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -218,21 +253,23 @@ test.describe('Update goal and steps page', () => {
       await expect(updatePage.addOrChangeStepsLink).toBeVisible()
     })
 
-    test('displays no steps message when goal has no steps', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('displays no steps message when goal has no steps', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Goal Without Steps',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
             targetDate: getDatePlusDaysAsISO(90),
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -248,9 +285,11 @@ test.describe('Update goal and steps page', () => {
   })
 
   test.describe('step status dropdown', () => {
-    test('displays current step status as selected', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('displays current step status as selected', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Goal With Step',
             areaOfNeed: 'accommodation',
@@ -258,12 +297,12 @@ test.describe('Update goal and steps page', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'IN_PROGRESS' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -274,9 +313,11 @@ test.describe('Update goal and steps page', () => {
     })
 
     for (const targetStatus of stepStatusOptions) {
-      test(`can change step status to ${targetStatus}`, async ({ page, aapClient }) => {
-        const plan = await withGoals(
-          [
+      test(`can change step status to ${targetStatus}`, async ({ page, createSession, sentencePlanBuilder }) => {
+        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        const plan = await sentencePlanBuilder
+          .extend(sentencePlanId)
+          .withGoals([
             {
               title: 'Goal With Step',
               areaOfNeed: 'accommodation',
@@ -284,12 +325,12 @@ test.describe('Update goal and steps page', () => {
               targetDate: getDatePlusDaysAsISO(90),
               steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'NOT_STARTED' }],
             },
-          ],
-          'AGREED',
-        ).create(aapClient)
+          ])
+          .withAgreementStatus('AGREED')
+          .save()
         const goalUuid = plan.goals[0].uuid
 
-        await loginAndNavigateToPlanByCrn(page, plan.crn)
+        await page.goto(handoverLink)
 
         await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -304,11 +345,20 @@ test.describe('Update goal and steps page', () => {
   })
 
   test.describe('progress notes', () => {
-    test('displays progress notes section with textarea, label, and hint text', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoals(1, 'AGREED').create(aapClient)
+    test('displays progress notes section with textarea, label, and hint text', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoals(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -328,11 +378,16 @@ test.describe('Update goal and steps page', () => {
       expect(hintText).toContain('feels about their progress')
     })
 
-    test('can enter progress notes', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoals(1, 'AGREED').create(aapClient)
+    test('can enter progress notes', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoals(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -349,12 +404,18 @@ test.describe('Update goal and steps page', () => {
   test.describe('view all notes', () => {
     test('displays view and expand all notes details component and see noo notes message when goal has no notes ', async ({
       page,
-      aapClient,
+      createSession,
+      sentencePlanBuilder,
     }) => {
-      const plan = await withCurrentGoals(1, 'AGREED').create(aapClient)
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoals(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -375,9 +436,11 @@ test.describe('Update goal and steps page', () => {
       await expect(updatePage.noNotesMessage).toBeVisible()
     })
 
-    test('displays notes when goal has notes history', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('displays notes when goal has notes history', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Goal With Notes',
             areaOfNeed: 'accommodation',
@@ -386,12 +449,12 @@ test.describe('Update goal and steps page', () => {
             steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'NOT_STARTED' }],
             notes: [{ type: 'PROGRESS', note: 'Progress update: Making good headway on accommodation' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -407,12 +470,18 @@ test.describe('Update goal and steps page', () => {
   test.describe('action buttons', () => {
     test('displays "save goal and steps" and "mark as achieved" buttons as well as "remove goal from plan" link', async ({
       page,
-      aapClient,
+      createSession,
+      sentencePlanBuilder,
     }) => {
-      const plan = await withCurrentGoals(1, 'AGREED').create(aapClient)
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoals(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -425,9 +494,15 @@ test.describe('Update goal and steps page', () => {
   })
 
   test.describe('save goal and steps navigation', () => {
-    test('redirects to current tab when not all steps completed for ACTIVE goal', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('redirects to current tab when not all steps completed for ACTIVE goal', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Active Goal',
             areaOfNeed: 'accommodation',
@@ -438,12 +513,12 @@ test.describe('Update goal and steps page', () => {
               { actor: 'person_on_probation', description: 'Step 2', status: 'NOT_STARTED' },
             ],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -456,9 +531,15 @@ test.describe('Update goal and steps page', () => {
       await PlanOverviewPage.verifyOnPage(page)
     })
 
-    test('redirects to future tab when not all steps completed for FUTURE goal', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('redirects to future tab when not all steps completed for FUTURE goal', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Future Goal',
             areaOfNeed: 'finances',
@@ -468,12 +549,12 @@ test.describe('Update goal and steps page', () => {
               { actor: 'person_on_probation', description: 'Step 2', status: 'NOT_STARTED' },
             ],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -485,9 +566,15 @@ test.describe('Update goal and steps page', () => {
       await expect(page).toHaveURL(planOverviewPageFutureGoalsTabPath)
     })
 
-    test('redirects to confirm-if-achieved when all steps are marked COMPLETED', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('redirects to confirm-if-achieved when all steps are marked COMPLETED', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Goal With Incomplete Steps',
             areaOfNeed: 'accommodation',
@@ -498,12 +585,12 @@ test.describe('Update goal and steps page', () => {
               { actor: 'person_on_probation', description: 'Step 2', status: 'IN_PROGRESS' },
             ],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -525,10 +612,13 @@ test.describe('Update goal and steps page', () => {
     for (const nonCompletedStepStatus of nonCompletedStepStatuses) {
       test(`does not redirect to confirm-if-achieved when steps have ${nonCompletedStepStatus} status`, async ({
         page,
-        aapClient,
+        createSession,
+        sentencePlanBuilder,
       }) => {
-        const plan = await withGoals(
-          [
+        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        const plan = await sentencePlanBuilder
+          .extend(sentencePlanId)
+          .withGoals([
             {
               title: 'Goal With Blocked Steps',
               areaOfNeed: 'accommodation',
@@ -539,12 +629,12 @@ test.describe('Update goal and steps page', () => {
                 { actor: 'person_on_probation', description: 'Step 2', status: 'NOT_STARTED' },
               ],
             },
-          ],
-          'AGREED',
-        ).create(aapClient)
+          ])
+          .withAgreementStatus('AGREED')
+          .save()
         const goalUuid = plan.goals[0].uuid
 
-        await loginAndNavigateToPlanByCrn(page, plan.crn)
+        await page.goto(handoverLink)
 
         await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -561,9 +651,15 @@ test.describe('Update goal and steps page', () => {
       })
     }
 
-    test('can save progress notes along with step status changes', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('can save progress notes along with step status changes', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Goal To Update',
             areaOfNeed: 'accommodation',
@@ -571,12 +667,12 @@ test.describe('Update goal and steps page', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'NOT_STARTED' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -607,10 +703,16 @@ test.describe('Update goal and steps page', () => {
   })
 
   test.describe('mark as achieved navigation', () => {
-    test('marks goal as achieved and verifies it appears in achieved tab', async ({ page, aapClient }) => {
+    test('marks goal as achieved and verifies it appears in achieved tab', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
       const goalTitle = 'Goal To Achieve'
-      const plan = await withGoals(
-        [
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: goalTitle,
             areaOfNeed: 'accommodation',
@@ -618,12 +720,12 @@ test.describe('Update goal and steps page', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'COMPLETED' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -651,11 +753,20 @@ test.describe('Update goal and steps page', () => {
   })
 
   test.describe('link navigation', () => {
-    test('change goal details link navigates to change-goal page', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoals(1, 'AGREED').create(aapClient)
+    test('change goal details link navigates to change-goal page', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoals(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -666,9 +777,15 @@ test.describe('Update goal and steps page', () => {
       await expect(page).toHaveURL(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${changeGoalPath}`)
     })
 
-    test('add or change steps link navigates to add-steps page', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('add or change steps link navigates to add-steps page', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Goal With Steps',
             areaOfNeed: 'accommodation',
@@ -676,12 +793,12 @@ test.describe('Update goal and steps page', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'NOT_STARTED' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -692,21 +809,27 @@ test.describe('Update goal and steps page', () => {
       await expect(page).toHaveURL(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${addStepsPath}`)
     })
 
-    test('add steps link (when no steps) navigates to add-steps page', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('add steps link (when no steps) navigates to add-steps page', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Goal Without Steps',
             areaOfNeed: 'accommodation',
             status: 'ACTIVE',
             targetDate: getDatePlusDaysAsISO(90),
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -717,11 +840,20 @@ test.describe('Update goal and steps page', () => {
       await expect(page).toHaveURL(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${addStepsPath}`)
     })
 
-    test('remove goal from plan link navigates to confirm-remove-goal page', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoals(1, 'AGREED').create(aapClient)
+    test('remove goal from plan link navigates to confirm-remove-goal page', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoals(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -736,11 +868,16 @@ test.describe('Update goal and steps page', () => {
   })
 
   test.describe('back link', () => {
-    test('back link navigates to current tab for ACTIVE goal', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoals(1, 'AGREED').create(aapClient)
+    test('back link navigates to current tab for ACTIVE goal', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoals(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
@@ -752,11 +889,16 @@ test.describe('Update goal and steps page', () => {
       await expect(page).toHaveURL(planOverviewPageCurrentGoalsTabPath)
     })
 
-    test('back link navigates to future tab for FUTURE goal', async ({ page, aapClient }) => {
-      const plan = await withFutureGoals(1, 'AGREED').create(aapClient)
+    test('back link navigates to future tab for FUTURE goal', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(futureGoals(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
