@@ -1,27 +1,13 @@
-import { test } from '@playwright/test'
-import type { User } from '../../server/interfaces/user'
-import type { SingleValue, MultiValue } from '../../server/interfaces/aap-api/dataModel'
-import type {
-  CreateCollectionCommandResult,
-  AddCollectionItemCommandResult,
-} from '../../server/interfaces/aap-api/commandResult'
-import { AssessmentBuilder, CollectionItemBuilder } from './AssessmentBuilder'
+import { AssessmentBuilder, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
+import type { AssessmentBuilderInstance } from './AssessmentBuilder'
 import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
-import type {
-  CreatedAssessment,
-  CreatedCollectionItem,
-  GoalStatus,
-  PlanAgreementStatus,
-  StepConfig,
-  GoalConfig,
-  NoteConfig,
-} from './types'
+import type { CreatedAssessment, CreatedCollectionItem, GoalStatus, GoalConfig } from './types'
+import { AgreementStatus } from '../../server/forms/sentence-plan/effects'
 
 /**
  * Created sentence plan with typed goal information
  */
 export interface CreatedSentencePlan extends CreatedAssessment {
-  crn: string
   goals: CreatedGoal[]
 }
 
@@ -42,26 +28,72 @@ export interface CreatedStep extends CreatedCollectionItem {
   description: string
 }
 
-const single = (value: string): SingleValue => ({ type: 'Single', value })
-const multi = (values: string[]): MultiValue => ({ type: 'Multi', values })
+/**
+ * Factory for creating SentencePlanBuilder instances with a bound client.
+ *
+ * @example
+ * // Create a fresh sentence plan (no coordinator)
+ * await SentencePlanBuilder(client).fresh()
+ *   .forCrn('X123456')
+ *   .withGoals(currentGoals(2))
+ *   .withAgreementStatus('AGREED')
+ *   .save()
+ *
+ * @example
+ * // Extend an existing sentence plan (from coordinator)
+ * await SentencePlanBuilder(client).extend(association.sentencePlanId)
+ *   .withGoals(currentGoals(2))
+ *   .save()
+ *
+ * @example
+ * // Use via fixture
+ * test('my test', async ({ sentencePlanBuilder }) => {
+ *   await sentencePlanBuilder.extend(id).withGoals(currentGoals(2)).save()
+ * })
+ */
+export function SentencePlanBuilder(client: TestAapApiClient): SentencePlanBuilderFactory {
+  return {
+    fresh: () =>
+      new SentencePlanBuilderInstance(AssessmentBuilder(client).fresh().ofType('SENTENCE_PLAN').withFormVersion('1.0')),
+    extend: (sentencePlanId: string) =>
+      new SentencePlanBuilderInstance(AssessmentBuilder(client).extend(sentencePlanId)),
+  }
+}
+
+export interface SentencePlanBuilderFactory {
+  fresh: () => SentencePlanBuilderInstance
+  extend: (sentencePlanId: string) => SentencePlanBuilderInstance
+}
 
 /**
- * Fluent builder for creating SENTENCE_PLAN assessments with goals and steps.
+ * Fluent builder for SENTENCE_PLAN assessments with goals and steps.
  */
-export class SentencePlanBuilder {
+export class SentencePlanBuilderInstance {
+  private readonly assessmentBuilder: AssessmentBuilderInstance
+
   private readonly goals: GoalConfig[] = []
 
-  private crn: string | undefined
+  private agreementStatus: AgreementStatus | undefined
 
-  private user: User = { id: 'e2e-test', name: 'E2E_TEST' }
+  constructor(assessmentBuilder: AssessmentBuilderInstance) {
+    this.assessmentBuilder = assessmentBuilder
+  }
 
-  private agreementStatus: PlanAgreementStatus | undefined
+  /**
+   * Set the CRN identifier (only relevant for fresh plans)
+   */
+  forCrn(crn: string): this {
+    this.assessmentBuilder.forCrn(crn)
+
+    return this
+  }
 
   /**
    * Add a goal to the sentence plan
    */
   withGoal(config: GoalConfig): this {
     this.goals.push(config)
+
     return this
   }
 
@@ -70,57 +102,122 @@ export class SentencePlanBuilder {
    */
   withGoals(configs: GoalConfig[]): this {
     configs.forEach(config => this.goals.push(config))
-    return this
-  }
 
-  // Set the plan agreement status ('AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER')
-  withAgreementStatus(status?: PlanAgreementStatus): this {
-    if (status) {
-      this.agreementStatus = status
-    }
     return this
   }
 
   /**
-   * Create a NEW sentence plan assessment with the configured goals.
-   * Returns the created assessment with goals and steps.
+   * Set the plan agreement status ('AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER')
    */
-  async create(client: TestAapApiClient): Promise<CreatedSentencePlan> {
-    // Generate CRN if not provided
-    if (!this.crn) {
-      const letter = String.fromCharCode(65 + Math.floor(Math.random() * 26))
-      const digits = Math.floor(Math.random() * 1000000)
-        .toString()
-        .padStart(6, '0')
-      this.crn = `${letter}${digits}`
-    }
+  withAgreementStatus(status: AgreementStatus): this {
+    this.agreementStatus = status
 
-    const builder = new AssessmentBuilder().ofType('SENTENCE_PLAN').withFormVersion('1.0').forCrn(this.crn)
+    return this
+  }
 
-    // Build the GOALS collection with all goals
-    if (this.goals.length > 0) {
-      builder.withCollection('GOALS', goalsCollection => {
-        this.goals.forEach(goalConfig => {
-          goalsCollection.withItem(goalItem => this.buildGoalItemForCreate(goalItem, goalConfig))
-        })
-        return goalsCollection
+  /**
+   * Save the sentence plan to the backend.
+   */
+  async save(): Promise<CreatedSentencePlan> {
+    this.buildGoalsCollection()
+    this.buildAgreementCollection()
+
+    const assessment = await this.assessmentBuilder.save()
+
+    return this.mapToCreatedSentencePlan(assessment)
+  }
+
+  private buildGoalsCollection(): void {
+    this.assessmentBuilder.withCollection('GOALS', (goalsCollection: CollectionBuilder) => {
+      this.goals.forEach(goalConfig => {
+        goalsCollection.withItem((goalItem: CollectionItemBuilder) => this.buildGoalItem(goalItem, goalConfig))
       })
-    } else {
-      // Create empty GOALS collection for consistency
-      builder.withCollection('GOALS', goalsCollection => goalsCollection)
+
+      return goalsCollection
+    })
+  }
+
+  private buildAgreementCollection(): void {
+    if (!this.agreementStatus) {
+      return
     }
 
-    const assessment = await builder.create(client)
-
-    // Add plan agreement if status is set
-    if (this.agreementStatus) {
-      await this.createPlanAgreement(client, assessment.uuid)
+    const now = new Date().toISOString()
+    const questionMap: Record<string, string> = {
+      AGREED: 'yes',
+      DO_NOT_AGREE: 'no',
+      COULD_NOT_ANSWER: 'could_not_answer',
     }
 
-    // Map created collections to typed goals
+    this.assessmentBuilder.withCollection('PLAN_AGREEMENTS', (collection: CollectionBuilder) =>
+      collection.withItem((item: CollectionItemBuilder) =>
+        item
+          .withAnswer('agreement_question', questionMap[this.agreementStatus!])
+          .withProperty('status', this.agreementStatus!)
+          .withProperty('status_date', now),
+      ),
+    )
+  }
+
+  private buildGoalItem(goalItem: CollectionItemBuilder, config: GoalConfig): CollectionItemBuilder {
+    const status = config.status ?? 'ACTIVE'
+    const now = new Date().toISOString()
+
+    goalItem
+      .withAnswer('title', config.title)
+      .withAnswer('area_of_need', config.areaOfNeed)
+      .withAnswer('related_areas_of_need', config.relatedAreasOfNeed ?? [])
+      .withProperty('status', status)
+      .withProperty('status_date', now)
+
+    if (config.targetDate) {
+      goalItem.withAnswer('target_date', config.targetDate)
+    }
+
+    if (config.steps && config.steps.length > 0) {
+      goalItem.withCollection('STEPS', (stepsCollection: CollectionBuilder) => {
+        config.steps!.forEach(stepConfig => {
+          stepsCollection.withItem((stepItem: CollectionItemBuilder) => {
+            const stepNow = new Date().toISOString()
+
+            return stepItem
+              .withAnswer('actor', stepConfig.actor)
+              .withAnswer('description', stepConfig.description)
+              .withAnswer('status', stepConfig.status ?? 'NOT_STARTED')
+              .withProperty('status_date', stepNow)
+          })
+        })
+
+        return stepsCollection
+      })
+    }
+
+    if (config.notes && config.notes.length > 0) {
+      goalItem.withCollection('NOTES', (notesCollection: CollectionBuilder) => {
+        config.notes!.forEach(noteConfig => {
+          notesCollection.withItem((noteItem: CollectionItemBuilder) => {
+            const noteNow = new Date().toISOString()
+
+            return noteItem
+              .withAnswer('note', noteConfig.note)
+              .withAnswer('created_by', noteConfig.createdBy ?? 'E2E Test')
+              .withProperty('type', noteConfig.type)
+              .withProperty('created_at', noteNow)
+          })
+        })
+
+        return notesCollection
+      })
+    }
+
+    return goalItem
+  }
+
+  private mapToCreatedSentencePlan(assessment: CreatedAssessment): CreatedSentencePlan {
     const goalsCollection = assessment.collections.find(c => c.name === 'GOALS')
+
     const createdGoals: CreatedGoal[] =
-      goalsCollection?.items.map((item, index) => {
+      goalsCollection?.items.map((item: CreatedCollectionItem, index: number) => {
         const goalConfig = this.goals[index]
         const stepsCollection = item.collections.find(c => c.name === 'STEPS')
 
@@ -130,7 +227,7 @@ export class SentencePlanBuilder {
           title: goalConfig?.title ?? '',
           status: goalConfig?.status ?? 'ACTIVE',
           steps:
-            stepsCollection?.items.map((stepItem, stepIndex) => ({
+            stepsCollection?.items.map((stepItem: CreatedCollectionItem, stepIndex: number) => ({
               uuid: stepItem.uuid,
               collections: stepItem.collections,
               actor: goalConfig?.steps?.[stepIndex]?.actor ?? '',
@@ -142,261 +239,7 @@ export class SentencePlanBuilder {
     return {
       uuid: assessment.uuid,
       collections: assessment.collections,
-      crn: this.crn,
       goals: createdGoals,
     }
-  }
-
-  /**
-   * Add goals to an EXISTING assessment.
-   * Use this for the "reverse flow" pattern where an assessment already exists.
-   *
-   * @param assessmentUuid The UUID of the existing assessment
-   * @param client The AAP API client
-   * @returns Array of created goals with their UUIDs
-   */
-  async addTo(assessmentUuid: string, client: TestAapApiClient): Promise<CreatedGoal[]> {
-    return test.step(`Add ${this.goals.length} goal(s) to assessment`, async () => {
-      // Create the GOALS collection
-      const goalsCollectionResult = await client.executeCommand<CreateCollectionCommandResult>({
-        type: 'CreateCollectionCommand',
-        name: 'GOALS',
-        assessmentUuid,
-        user: this.user,
-      })
-
-      const goalsCollectionUuid = goalsCollectionResult.collectionUuid
-
-      // Create each goal
-      const createdGoals: CreatedGoal[] = []
-
-      for (const goalConfig of this.goals) {
-        // eslint-disable-next-line no-await-in-loop
-        const createdGoal = await this.createGoalItem(client, assessmentUuid, goalsCollectionUuid, goalConfig)
-        createdGoals.push(createdGoal)
-      }
-
-      return createdGoals
-    })
-  }
-
-  /**
-   * Build a goal item for the create() path (using CollectionItemBuilder)
-   */
-  private buildGoalItemForCreate(goalItem: CollectionItemBuilder, config: GoalConfig): CollectionItemBuilder {
-    const status = config.status ?? 'ACTIVE'
-    const now = new Date().toISOString()
-
-    // Set goal answers
-    goalItem
-      .withAnswer('title', config.title)
-      .withAnswer('area_of_need', config.areaOfNeed)
-      .withAnswer('related_areas_of_need', config.relatedAreasOfNeed ?? [])
-
-    // Only set target date for ACTIVE goals
-    if (config.targetDate) {
-      goalItem.withAnswer('target_date', config.targetDate)
-    }
-
-    // Set goal properties
-    goalItem.withProperty('status', status).withProperty('status_date', now)
-
-    // Add STEPS collection if steps exist
-    if (config.steps && config.steps.length > 0) {
-      goalItem.withCollection('STEPS', stepsCollection => {
-        config.steps!.forEach(stepConfig => {
-          stepsCollection.withItem(stepItem => this.buildStepItemForCreate(stepItem, stepConfig))
-        })
-        return stepsCollection
-      })
-    }
-
-    // Add NOTES collection if notes exist (tracks goal lifecycle: removed, re-added, progress)
-    if (config.notes && config.notes.length > 0) {
-      goalItem.withCollection('NOTES', notesCollection => {
-        config.notes!.forEach(noteConfig => {
-          notesCollection.withItem(noteItem => this.buildNoteItemForCreate(noteItem, noteConfig))
-        })
-        return notesCollection
-      })
-    }
-
-    return goalItem
-  }
-
-  /**
-   * Build a note item for the create() path (using CollectionItemBuilder)
-   */
-  private buildNoteItemForCreate(noteItem: CollectionItemBuilder, config: NoteConfig): CollectionItemBuilder {
-    const now = new Date().toISOString()
-
-    noteItem
-      .withAnswer('note', config.note)
-      .withAnswer('created_by', config.createdBy ?? 'E2E Test')
-      .withProperty('type', config.type)
-      .withProperty('created_at', now)
-
-    return noteItem
-  }
-
-  /**
-   * Build a step item for the create() path (using CollectionItemBuilder)
-   */
-  private buildStepItemForCreate(stepItem: CollectionItemBuilder, config: StepConfig): CollectionItemBuilder {
-    const now = new Date().toISOString()
-
-    stepItem
-      .withAnswer('actor', config.actor)
-      .withAnswer('description', config.description)
-      .withAnswer('status', config.status ?? 'NOT_STARTED')
-      .withProperty('status_date', now)
-
-    return stepItem
-  }
-
-  /**
-   * Create a goal item for the addTo() path (direct API calls)
-   */
-  private async createGoalItem(
-    client: TestAapApiClient,
-    assessmentUuid: string,
-    goalsCollectionUuid: string,
-    config: GoalConfig,
-  ): Promise<CreatedGoal> {
-    const status = config.status ?? 'ACTIVE'
-    const now = new Date().toISOString()
-
-    // Build goal answers
-    const answers: Record<string, SingleValue | MultiValue> = {
-      title: single(config.title),
-      area_of_need: single(config.areaOfNeed),
-      related_areas_of_need: multi(config.relatedAreasOfNeed ?? []),
-    }
-
-    if (config.targetDate) {
-      answers.target_date = single(config.targetDate)
-    }
-
-    // Build goal properties
-    const properties: Record<string, SingleValue | MultiValue> = {
-      status: single(status),
-      status_date: single(now),
-    }
-
-    // Create the goal item
-    const goalResult = await client.executeCommand<AddCollectionItemCommandResult>({
-      type: 'AddCollectionItemCommand',
-      collectionUuid: goalsCollectionUuid,
-      assessmentUuid,
-      answers,
-      properties,
-      user: this.user,
-    })
-
-    const goalItemUuid = goalResult.collectionItemUuid
-
-    // Create steps if any
-    const createdSteps: CreatedStep[] = []
-
-    if (config.steps && config.steps.length > 0) {
-      // Create STEPS collection under this goal
-      const stepsCollectionResult = await client.executeCommand<CreateCollectionCommandResult>({
-        type: 'CreateCollectionCommand',
-        name: 'STEPS',
-        assessmentUuid,
-        parentCollectionItemUuid: goalItemUuid,
-        user: this.user,
-      })
-
-      const stepsCollectionUuid = stepsCollectionResult.collectionUuid
-
-      // Create each step
-      for (const stepConfig of config.steps) {
-        // eslint-disable-next-line no-await-in-loop
-        const createdStep = await this.createStepItem(client, assessmentUuid, stepsCollectionUuid, stepConfig)
-        createdSteps.push(createdStep)
-      }
-    }
-
-    return {
-      uuid: goalItemUuid,
-      collections: [],
-      title: config.title,
-      status,
-      steps: createdSteps,
-    }
-  }
-
-  /**
-   * Create a step item for the addTo() path (direct API calls)
-   */
-  private async createStepItem(
-    client: TestAapApiClient,
-    assessmentUuid: string,
-    stepsCollectionUuid: string,
-    config: StepConfig,
-  ): Promise<CreatedStep> {
-    const now = new Date().toISOString()
-
-    const stepResult = await client.executeCommand<AddCollectionItemCommandResult>({
-      type: 'AddCollectionItemCommand',
-      collectionUuid: stepsCollectionUuid,
-      assessmentUuid,
-      answers: {
-        actor: single(config.actor),
-        description: single(config.description),
-        status: single(config.status ?? 'NOT_STARTED'),
-      },
-      properties: {
-        status_date: single(now),
-      },
-      user: this.user,
-    })
-
-    return {
-      uuid: stepResult.collectionItemUuid,
-      collections: [],
-      actor: config.actor,
-      description: config.description,
-    }
-  }
-
-  // Create a plan agreement record in the PLAN_AGREEMENTS collection:
-  private async createPlanAgreement(client: TestAapApiClient, assessmentUuid: string): Promise<void> {
-    if (!this.agreementStatus) {
-      return
-    }
-
-    const now = new Date().toISOString()
-
-    // map status to the agreement question value
-    const questionMap: Record<PlanAgreementStatus, string> = {
-      AGREED: 'yes',
-      DO_NOT_AGREE: 'no',
-      COULD_NOT_ANSWER: 'could_not_answer',
-    }
-
-    // create PLAN_AGREEMENTS collection
-    const collectionResult = await client.executeCommand<CreateCollectionCommandResult>({
-      type: 'CreateCollectionCommand',
-      name: 'PLAN_AGREEMENTS',
-      assessmentUuid,
-      user: this.user,
-    })
-
-    // add the agreement record
-    await client.executeCommand<AddCollectionItemCommandResult>({
-      type: 'AddCollectionItemCommand',
-      collectionUuid: collectionResult.collectionUuid,
-      assessmentUuid,
-      answers: {
-        agreement_question: single(questionMap[this.agreementStatus]),
-      },
-      properties: {
-        status: single(this.agreementStatus),
-        status_date: single(now),
-      },
-      user: this.user,
-    })
   }
 }
