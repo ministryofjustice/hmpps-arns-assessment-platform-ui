@@ -69,11 +69,16 @@ services:
       CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-e2e
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
     working_dir: /playwright
-    entrypoint: sh
-    command: -c "npm ci && npx playwright test"
+    command: npx playwright test
     volumes:
       - ../package.json:/playwright/package.json
       - ../package-lock.json:/playwright/package-lock.json
       - ../playwright.config.ts:/playwright/playwright.config.ts
       - ../integration_tests:/playwright/integration_tests
       - ../test_results:/playwright/test_results
+      - node_modules:/playwright/node_modules
+
+volumes:
+  node_modules:
+    external: true
+    name: ${COMPOSE_PROJECT_NAME}_node_modules
