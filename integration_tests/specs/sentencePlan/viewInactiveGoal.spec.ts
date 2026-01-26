@@ -1,17 +1,23 @@
 import { expect } from '@playwright/test'
-import { test } from '../../support/fixtures'
+import { test, TargetService } from '../../support/fixtures'
 import ViewInactiveGoalPage from '../../pages/sentencePlan/viewInactiveGoalPage'
 import ConfirmAchievedGoalPage from '../../pages/sentencePlan/confirmAchievedGoalPage'
 import ConfirmRemoveGoalPage from '../../pages/sentencePlan/confirmRemoveGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import { withGoals, withCurrentGoalsWithCompletedSteps } from '../../builders'
-import { loginAndNavigateToPlanByCrn, getDatePlusDaysAsISO } from './sentencePlanUtils'
+import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
+import { getDatePlusDaysAsISO } from './sentencePlanUtils'
 
 test.describe('View inactive goal page', () => {
   test.describe('view achieved goal', () => {
-    test('displays achieved goal details with correct status text', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('displays achieved goal details with correct status text', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Find stable housing',
             areaOfNeed: 'accommodation',
@@ -19,12 +25,12 @@ test.describe('View inactive goal page', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Contact housing services', status: 'COMPLETED' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Mark goal as achieved
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -53,11 +59,16 @@ test.describe('View inactive goal page', () => {
       expect(captionText).toContain('Accommodation')
     })
 
-    test('achieved goal does not show "Add to plan" button', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('achieved goal does not show "Add to plan" button', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Mark goal as achieved
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -74,11 +85,16 @@ test.describe('View inactive goal page', () => {
       expect(isButtonVisible).toBe(false)
     })
 
-    test('back link navigates to achieved goals tab', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('back link navigates to achieved goals tab', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Mark goal as achieved
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -100,10 +116,16 @@ test.describe('View inactive goal page', () => {
   })
 
   test.describe('view removed goal', () => {
-    test('displays removed goal details with correct status text', async ({ page, aapClient }) => {
+    test('displays removed goal details with correct status text', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
       // Setup: create goal and mark as removed
-      const plan = await withGoals(
-        [
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Reduce drug use',
             areaOfNeed: 'drug_misuse',
@@ -111,12 +133,12 @@ test.describe('View inactive goal page', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Attend support group', status: 'NOT_STARTED' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Mark goal as removed
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -141,11 +163,16 @@ test.describe('View inactive goal page', () => {
       expect(statusText).toContain('Removed on')
     })
 
-    test('removed goal shows "Add to plan" button', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('removed goal shows "Add to plan" button', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Mark goal as removed
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -163,11 +190,16 @@ test.describe('View inactive goal page', () => {
       expect(isButtonVisible).toBe(true)
     })
 
-    test('back link navigates to removed goals tab', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('back link navigates to removed goals tab', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Mark goal as removed
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -190,9 +222,11 @@ test.describe('View inactive goal page', () => {
   })
 
   test.describe('steps table', () => {
-    test('displays all steps with correct details', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('displays all steps with correct details', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Test Goal',
             areaOfNeed: 'accommodation',
@@ -204,12 +238,12 @@ test.describe('View inactive goal page', () => {
               { actor: 'probation_practitioner', description: 'Third step', status: 'NOT_STARTED' },
             ],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Mark goal as achieved
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -242,11 +276,16 @@ test.describe('View inactive goal page', () => {
   })
 
   test.describe('notes section', () => {
-    test('displays "View all notes" section', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('displays "View all notes" section', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Mark goal as achieved with a note
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -272,11 +311,16 @@ test.describe('View inactive goal page', () => {
       expect(noteText).toContain('This helped them find stable housing')
     })
 
-    test('shows message when goal has no notes', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('shows message when goal has no notes', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Mark goal as achieved without a note
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -298,9 +342,11 @@ test.describe('View inactive goal page', () => {
   })
 
   test.describe('related areas of need', () => {
-    test('displays related areas when present', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('displays related areas when present', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Find stable housing',
             areaOfNeed: 'accommodation',
@@ -309,12 +355,12 @@ test.describe('View inactive goal page', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Contact services', status: 'COMPLETED' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Mark goal as achieved
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -332,9 +378,11 @@ test.describe('View inactive goal page', () => {
       expect(captionText.toLowerCase()).toContain('finance')
     })
 
-    test('does not show "(and ...)" when no related areas', async ({ page, aapClient }) => {
-      const plan = await withGoals(
-        [
+    test('does not show "(and ...)" when no related areas', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Simple goal',
             areaOfNeed: 'accommodation',
@@ -342,12 +390,12 @@ test.describe('View inactive goal page', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'COMPLETED' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Mark goal as achieved
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -366,11 +414,16 @@ test.describe('View inactive goal page', () => {
   })
 
   test.describe('Check re-direct', () => {
-    test('redirects to plan overview if goal not found', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('redirects to plan overview if goal not found', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const invalidGoalUuid = '00000000-0000-0000-0000-000000000000'
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Try to navigate with invalid goal UUID
       await page.goto(`/forms/sentence-plan/v1.0/goal/${invalidGoalUuid}/view-inactive-goal`)
