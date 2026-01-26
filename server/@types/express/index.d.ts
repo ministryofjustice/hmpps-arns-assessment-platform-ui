@@ -13,6 +13,8 @@ export declare module 'express-session' {
       username: string
       displayName: string
     }
+    targetService?: string
+    csrfToken?: string
   }
 }
 
@@ -21,10 +23,12 @@ declare global {
     interface RequestState {
       cspNonce?: string
       csrfToken?: string
+      preferencesId?: string
       user?: {
         id: string
         name: string
         authSource: string
+        token: string
       }
     }
 

@@ -1,32 +1,7 @@
 import { Answers, Properties } from '../../server/interfaces/aap-api/dataModel'
+import { GoalStatus, StepStatus, AreaOfNeedSlug } from '../../server/forms/sentence-plan/effects/types'
 
-/**
- * Goal status enum matching the form-engine types
- */
-export type GoalStatus = 'ACTIVE' | 'FUTURE' | 'REMOVED' | 'ACHIEVED'
-
-/**
- * Step status enum matching the form-engine types
- */
-export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
-
-/**
- * Valid area of need slugs
- */
-export type AreaOfNeedSlug =
-  | 'accommodation'
-  | 'employment-and-education'
-  | 'finances'
-  | 'drug-use'
-  | 'alcohol-use'
-  | 'health-and-wellbeing'
-  | 'personal-relationships-and-community'
-  | 'thinking-behaviours-and-attitudes'
-
-/**
- * Plan agreement status
- */
-export type PlanAgreementStatus = 'AGREED' | 'DO_NOT_AGREE' | 'COULD_NOT_ANSWER'
+export { GoalStatus, StepStatus, AreaOfNeedSlug }
 
 /**
  * Step configuration for test setup
@@ -82,10 +57,16 @@ export interface CollectionDefinition {
   items: CollectionItemDefinition[]
 }
 
+export interface CollectionItemTimeline {
+  type: string
+  data: Record<string, unknown>
+}
+
 export interface CollectionItemDefinition {
   answers: Answers
   properties: Properties
   collections: CollectionDefinition[]
+  timeline?: CollectionItemTimeline
 }
 
 export interface CreatedAssessment {

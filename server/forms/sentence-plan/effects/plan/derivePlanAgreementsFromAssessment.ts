@@ -24,7 +24,7 @@ export const derivePlanAgreementsFromAssessment = () => async (context: Sentence
 
   if (!assessment?.collections) {
     context.setData('planAgreements', [])
-    context.setData('latestAgreementStatus', undefined)
+    context.setData('latestAgreementStatus', 'DRAFT')
     context.setData('latestAgreementDate', undefined)
     return
   }
@@ -33,7 +33,7 @@ export const derivePlanAgreementsFromAssessment = () => async (context: Sentence
 
   if (!planAgreementsCollection) {
     context.setData('planAgreements', [])
-    context.setData('latestAgreementStatus', undefined)
+    context.setData('latestAgreementStatus', 'DRAFT')
     context.setData('latestAgreementDate', undefined)
     return
   }
@@ -61,6 +61,6 @@ export const derivePlanAgreementsFromAssessment = () => async (context: Sentence
   context.setData('planAgreements', agreements)
 
   // Set the latest agreement status and date for easy access
-  context.setData('latestAgreementStatus', agreements[0]?.status)
+  context.setData('latestAgreementStatus', agreements[0]?.status ?? 'DRAFT')
   context.setData('latestAgreementDate', agreements[0]?.statusDate)
 }

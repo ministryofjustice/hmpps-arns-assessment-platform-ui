@@ -1,0 +1,96 @@
+// Criminogenic Needs List Component
+// Displays a list of needs with score badges and expandable details
+
+@import "govuk-frontend/dist/govuk/base";
+
+// Score badge widget
+.score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid;
+  @include govuk-font($size: 19, $weight: bold);
+
+  // High scoring variant (red)
+  &--high {
+    background-color: #fce1df;
+    border-color: #d4351c;
+    color: #942514;
+  }
+
+  // Low scoring variant (green)
+  &--low {
+    background-color: #e6efdc;
+    border-color: #00703c;
+    color: #00572e;
+  }
+
+  // Unknown/missing score variant (grey)
+  &--unknown {
+    background-color: govuk-colour("light-grey");
+    border-color: govuk-colour("mid-grey");
+    color: govuk-colour("mid-grey");
+  }
+}
+
+// Criminogenic needs list container
+.criminogenic-needs-list {
+  display: flex;
+  flex-direction: column;
+  gap: govuk-spacing(2);
+}
+
+// Need row with details
+.need-row {
+  &__details {
+    margin-bottom: 0;
+
+    .govuk-details__summary {
+      display: flex;
+      align-items: center;
+      gap: govuk-spacing(2);
+      padding-left: 0;
+
+      // Hide the default disclosure arrow
+      list-style: none !important;
+
+      &::marker,
+      &::-webkit-details-marker {
+        display: none !important;
+        content: none !important;
+      }
+
+      // Hide GOV.UK's custom arrow
+      &::before {
+        display: none !important;
+      }
+    }
+
+    .govuk-details__summary-text {
+      @include govuk-font($size: 16);
+    }
+
+    .govuk-details__text {
+      margin-top: govuk-spacing(2);
+
+      .govuk-summary-list__row {
+        padding: govuk-spacing(1) 0;
+      }
+
+      .govuk-summary-list__key {
+        @include govuk-font($size: 16);
+        width: 50%;
+      }
+
+      .govuk-summary-list__value {
+        @include govuk-font($size: 16);
+      }
+    }
+  }
+
+  &__badge {
+    flex-shrink: 0;
+  }
+}
