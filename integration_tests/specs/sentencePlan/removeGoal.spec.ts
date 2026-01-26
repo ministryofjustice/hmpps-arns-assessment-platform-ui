@@ -20,7 +20,7 @@ test.describe('Remove goal journey', () => {
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
 
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
 
@@ -50,7 +50,7 @@ test.describe('Remove goal journey', () => {
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
 
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
 
@@ -78,7 +78,7 @@ test.describe('Remove goal journey', () => {
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
 
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
 
@@ -104,7 +104,7 @@ test.describe('Remove goal journey', () => {
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
 
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
 
@@ -136,7 +136,7 @@ test.describe('Remove goal journey', () => {
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
 
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
 
@@ -160,7 +160,7 @@ test.describe('Remove goal journey', () => {
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
 
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
 
@@ -197,7 +197,7 @@ test.describe('Remove goal journey', () => {
       await page.goto(handoverLink)
 
       // Navigate to confirm-remove-goal page and confirm
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
       await removePage.enterRemovalNote('No longer needed')
       await removePage.clickConfirm()
@@ -252,13 +252,13 @@ test.describe('Remove goal journey', () => {
 
       // Navigate to confirm-remove-goal page for first goal and confirm
       const goalUuid = plan.goals[0].uuid
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
       await removePage.enterRemovalNote('No longer relevant')
       await removePage.clickConfirm()
 
       // Navigate to current goals tab
-      await page.goto('/forms/sentence-plan/v1.0/plan/overview?type=current')
+      await page.goto('/sentence-plan/v1.0/plan/overview?type=current')
 
       // Verify only 1 goal remains in current goals
       planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -290,7 +290,7 @@ test.describe('Remove goal journey', () => {
 
       // Remove the goal
       const goalUuid = plan.goals[0].uuid
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
       await removePage.enterRemovalNote('Testing tab visibility')
       await removePage.clickConfirm()
@@ -316,7 +316,7 @@ test.describe('Remove goal journey', () => {
       await page.goto(handoverLink)
 
       // Remove the goal
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
       await removePage.enterRemovalNote('Testing action link')
       await removePage.clickConfirm()
@@ -348,7 +348,7 @@ test.describe('Remove goal journey', () => {
       await page.goto(handoverLink)
 
       // Try to navigate to confirm-remove-goal page without agreeing plan
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
 
       // Should redirect to plan overview (remove is only for agreed plans)
       await expect(page).toHaveURL(/\/plan\/overview/)
