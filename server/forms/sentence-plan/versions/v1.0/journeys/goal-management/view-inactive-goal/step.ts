@@ -30,7 +30,7 @@ export const viewInactiveGoalStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.loadActiveGoalForEdit()],
+      effects: [SentencePlanEffects.loadActiveGoalForEdit()],
       next: [
         redirect({
           when: Data('activeGoal').not.match(Condition.IsRequired()),

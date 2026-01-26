@@ -38,7 +38,7 @@ export const confirmAddGoalStep = step({
   onAccess: [
     // Load data first (no `when` = always runs)
     accessTransition({
-      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.setActiveGoalContext()],
+      effects: [SentencePlanEffects.setActiveGoalContext()],
     }),
     // Only allow re-adding goals if plan is agreed
     accessTransition({

@@ -50,9 +50,8 @@ e2e-ui: ## Run Playwright tests with UI mode (dev environment must be running).
 	npx playwright test --ui
 
 e2e-ci: ## Run Playwright tests in Docker container (for CI).
-	echo "Running Playwright tests in CI..."
-	docker compose $(CI_COMPOSE_FILES) build $(SERVICE_NAME) && \
-	docker compose $(CI_COMPOSE_FILES) up $(SERVICE_NAME) --wait && \
+	@make install-node-modules
+	docker compose $(CI_COMPOSE_FILES) up $(SERVICE_NAME) --wait --build && \
 	docker compose $(CI_COMPOSE_FILES) run --rm playwright
 
 lint: ## Runs the linter.

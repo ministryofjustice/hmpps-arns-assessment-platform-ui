@@ -22,7 +22,7 @@ export const reorderGoalStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.reorderGoal()],
+      effects: [SentencePlanEffects.reorderGoal()],
       next: [
         redirect({
           when: Query('status').match(Condition.Equals('FUTURE')),

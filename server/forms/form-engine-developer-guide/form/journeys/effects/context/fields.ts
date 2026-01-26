@@ -23,7 +23,7 @@ export const pageContent = TemplateWrapper({
 
   | Category | Purpose | Methods |
   |----------|---------|---------|
-  | **Answers** | Form field values | \`getAnswer\`, \`setAnswer\`, \`getAnswers\`, \`hasAnswer\`, \`clearAnswer\` |
+  | **Answers** | Form field values | \`getAnswer\`, \`setAnswer\`, \`getAllAnswers\`, \`hasAnswer\`, \`clearAnswer\` |
   | **Data** | Supplementary data (API responses, reference data) | \`getData\`, \`setData\`, \`getAllData\` |
   | **Request** | HTTP request data (params, query, POST body) | \`getRequestParam\`, \`getQueryParam\`, \`getPostData\` |
   | **Session & State** | Persistent session and request-level state | \`getSession\`, \`getState\`, \`getAllState\` |
@@ -49,11 +49,11 @@ export const pageContent = TemplateWrapper({
 
   {{slot:setAnswerCode}}
 
-  ### getAnswers()
+  ### getAllAnswers()
 
   Get all answers as a flat object. Returns current values only (without mutation history).
 
-  {{slot:getAnswersCode}}
+  {{slot:getAllAnswersCode}}
 
   ### hasAnswer(key) and clearAnswer(key)
 
@@ -96,14 +96,14 @@ export const pageContent = TemplateWrapper({
 
   Access HTTP request data — URL parameters, query strings, and POST body.
 
-  ### getRequestParam(key) and getRequestParams()
+  ### getRequestParam(key) and getAllRequestParams()
 
   Get URL route parameters. For a route like \`/assessment/:id/step/:stepId\`,
   these methods access \`:id\` and \`:stepId\`.
 
   {{slot:getRequestParamCode}}
 
-  ### getQueryParam(key) and getQueryParams()
+  ### getQueryParam(key) and getAllQueryParams()
 
   Get URL query string parameters. For \`/search?q=test&page=2\`,
   these access the query values.
@@ -211,12 +211,12 @@ export const pageContent = TemplateWrapper({
         `,
       }),
     ],
-    getAnswersCode: [
+    getAllAnswersCode: [
       CodeBlock({
         language: 'typescript',
         code: `
           // Get all answers for saving
-          const allAnswers = context.getAnswers()
+          const allAnswers = context.getAllAnswers()
           // → { firstName: 'John', lastName: 'Smith', email: 'john@example.com' }
 
           await api.saveAnswers(assessmentId, allAnswers)
@@ -318,7 +318,7 @@ export const pageContent = TemplateWrapper({
           // → 'new' or 'item_456'
 
           // Get all params
-          const allParams = context.getRequestParams()
+          const allParams = context.getAllRequestParams()
           // → { assessmentId: '123', itemId: 'new' }
         `,
       }),
@@ -341,7 +341,7 @@ export const pageContent = TemplateWrapper({
           // → ['a', 'b']
 
           // Get all query params
-          const allQuery = context.getQueryParams()
+          const allQuery = context.getAllQueryParams()
           // → { q: 'test', page: '2', tags: ['a', 'b'] }
         `,
       }),

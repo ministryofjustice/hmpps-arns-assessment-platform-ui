@@ -3,28 +3,29 @@ import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/Ef
 import { User } from '../../../interfaces/user'
 import { Answers, Properties } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed } from '../versions/v1.0/constants'
-import { AssessmentPlatformApiClient, DeliusApiClient } from '../../../data'
+import { AssessmentPlatformApiClient } from '../../../data'
+import { HandoverContext } from '../../../interfaces/handover-api/response'
+import { SessionDetails, AccessType } from '../../../interfaces/sessionDetails'
+import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
+import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
+import { AccessMode } from '../../../interfaces/handover-api/shared'
+import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryResult'
+import { CreateAssessmentCommandResult } from '../../../interfaces/aap-api/commandResult'
 
-export type GoalStatus = 'ACTIVE' | 'FUTURE'
+export interface AccessDetails {
+  accessType: AccessType
+  accessMode: AccessMode
+  oasysRedirectUrl?: string
+}
+
+export type GoalStatus = 'ACTIVE' | 'FUTURE' | 'REMOVED' | 'ACHIEVED'
 export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
 
 // Plan agreement statuses - DRAFT is the initial status before any agreement action
-export type AgreementStatus =
-  | 'DRAFT'
-  | 'AGREED'
-  | 'DO_NOT_AGREE'
-  | 'COULD_NOT_ANSWER'
-  | 'UPDATED_AGREED'
-  | 'UPDATED_DO_NOT_AGREE'
+export type AgreementStatus = 'DRAFT' | 'AGREED' | 'DO_NOT_AGREE' | 'COULD_NOT_ANSWER'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
-export const POST_AGREEMENT_PROCESS_STATUSES: AgreementStatus[] = [
-  'AGREED',
-  'DO_NOT_AGREE',
-  'COULD_NOT_ANSWER',
-  'UPDATED_AGREED',
-  'UPDATED_DO_NOT_AGREE',
-]
+export const POST_AGREEMENT_PROCESS_STATUSES: AgreementStatus[] = ['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']
 
 export interface RawCollection {
   name: string
@@ -185,7 +186,7 @@ export type StepChangesStorage = Record<string, StepChanges>
  */
 export interface SentencePlanData extends Record<string, unknown> {
   // Assessment
-  assessment: { collections?: unknown[]; assessmentUuid?: string }
+  assessment: AssessmentVersionQueryResult | CreateAssessmentCommandResult
   assessmentUuid: string
 
   // Goals
@@ -240,16 +241,20 @@ export interface SentencePlanSession {
   navigationReferrer?: string
   returnTo?: string
   assessmentUuid?: string
-  accessType?: 'mpop' | 'oasys'
   stepChanges?: StepChangesStorage
   notifications?: PlanNotification[]
+  handoverContext?: HandoverContext
+  accessDetails?: AccessDetails
+  sessionDetails?: SessionDetails
+  practitionerDetails?: PractitionerDetails
+  caseDetails?: CaseDetails
 }
 
 /**
  * Request state via context.getState()
  */
 export interface SentencePlanState extends Record<string, unknown> {
-  user: User & { authSource: string }
+  user: User & { authSource: string; token: string }
 }
 
 /**
@@ -260,7 +265,7 @@ export interface SentencePlanState extends Record<string, unknown> {
  * @example
  * const myEffect = (deps: Deps) => async (context: SentencePlanContext) => {
  *   context.getData('assessmentUuid')  // typed as string
- *   context.getSession().accessType    // typed as 'mpop' | 'oasys' | undefined
+ *   context.getSession().sessionDetails?.accessType  // typed as 'hmpps-auth' | 'handover' | undefined
  *   context.getState('user')           // typed as User
  * }
  */
@@ -272,9 +277,9 @@ export type SentencePlanContext = EffectFunctionContext<
 >
 
 /**
- * Dependencies for sentence plan effects
+ * Dependencies for sentence plan effects.
+ * Access-related dependencies (deliusApi, handoverApi) are now in the access form.
  */
 export interface SentencePlanEffectsDeps {
   api: AssessmentPlatformApiClient
-  deliusApi: DeliusApiClient
 }

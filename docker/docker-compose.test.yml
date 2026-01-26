@@ -3,6 +3,12 @@
 # against local deployment.
 
 services:
+  arns-handover:
+    environment:
+      HMPPS_HANDOVER_EXTERNAL_URL: http://arns-handover:7070
+      CLIENT_SP_OAUTH_REDIRECT_URI: http://ui:3000/sign-in/handover/callback
+      CLIENT_SP_HANDOVER_REDIRECT_URI: http://ui:3000/sign-in/handover?service=sentence-plan
+
   wiremock:
     image: wiremock/wiremock:3.13.2
     networks:
@@ -20,7 +26,7 @@ services:
     environment:
       WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:9090
       WIREMOCK_AAP_API_URL: http://api:8080
-      WIREMOCK_COORDINATOR_API_URL: http://arns-coordinator:8080
+      WIREMOCK_COORDINATOR_API_URL: http://coordinator-api:8080
       WIREMOCK_HANDOVER_URL: http://arns-handover:7070
       WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
       WIREMOCK_DELIUS_URL: http://delius-api:8080
@@ -29,13 +35,14 @@ services:
   ui:
     build:
       target: production
+    networks:
+      - hmpps
     depends_on:
       - wiremock
       - hmpps-auth
     command: npm run start
     environment:
-      NODE_ENV: development
-      ENVIRONMENT_NAME: dev
+      NODE_ENV: production
       HMPPS_AUTH_URL: http://wiremock:8080/auth
       HMPPS_AUTH_EXTERNAL_URL: http://hmpps-auth:9090/auth
       HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080/handover
@@ -46,12 +53,6 @@ services:
       TOKEN_VERIFICATION_ENABLED: true
       DELIUS_API_URL: http://wiremock:8080/delius
       INGRESS_URL: http://ui:3000
-      AUTH_CODE_CLIENT_ID: hmpps-arns-assessment-platform-ui
-      AUTH_CODE_CLIENT_SECRET: clientsecret
-      CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-e2e
-      CLIENT_CREDS_CLIENT_SECRET: clientsecret
-      HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
-      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: aap-secret
 
   playwright:
     image: mcr.microsoft.com/playwright:v1.56.1-noble
@@ -65,15 +66,22 @@ services:
       BASE_URL: http://ui:3000
       WIREMOCK_URL: http://wiremock:8080/__admin
       AAP_API_URL: http://api:8080
+      HANDOVER_API_URL: http://arns-handover:7070
+      COORDINATOR_API_URL: http://coordinator-api:8080
       HMPPS_AUTH_URL: http://hmpps-auth:9090/auth
       CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-e2e
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
     working_dir: /playwright
-    entrypoint: sh
-    command: -c "npm ci && npx playwright test"
+    command: npx playwright test
     volumes:
       - ../package.json:/playwright/package.json
       - ../package-lock.json:/playwright/package-lock.json
       - ../playwright.config.ts:/playwright/playwright.config.ts
       - ../integration_tests:/playwright/integration_tests
       - ../test_results:/playwright/test_results
+      - node_modules:/playwright/node_modules
+
+volumes:
+  node_modules:
+    external: true
+    name: ${COMPOSE_PROJECT_NAME}_node_modules

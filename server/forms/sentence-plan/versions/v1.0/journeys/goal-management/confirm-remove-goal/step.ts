@@ -24,7 +24,7 @@ export const removeGoalStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.setActiveGoalContext()],
+      effects: [SentencePlanEffects.setActiveGoalContext()],
       next: [
         // Only allow removing goals if plan is agreed (soft-delete for agreed plans only)
         // Draft plans should use "delete" instead

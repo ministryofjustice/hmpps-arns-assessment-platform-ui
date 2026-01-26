@@ -66,7 +66,7 @@ describe('CoordinatorApiClient', () => {
       // Arrange
       const request: OasysCreateRequest = {
         oasysAssessmentPk: '123456',
-        previousOasysAssessmentPk: '123455',
+        previousOasysSanPk: '123455',
         regionPrisonCode: 'MDI',
         planType: 'REVIEW',
         userDetails: {

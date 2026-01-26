@@ -26,6 +26,7 @@ import logger from '../logger'
 
 // Form packages
 import formEngineDeveloperGuide from './forms/form-engine-developer-guide'
+import accessFormPackage from './forms/access'
 import sentencePlanFormPackage from './forms/sentence-plan'
 
 export default function createApp(services: Services): express.Application {
@@ -47,9 +48,12 @@ export default function createApp(services: Services): express.Application {
     .registerComponents(govukComponents)
     .registerComponents(mojComponents)
     .registerFormPackage(formEngineDeveloperGuide)
+    .registerFormPackage(accessFormPackage, {
+      deliusApi: services.deliusApiClient,
+      handoverApi: services.handoverApiClient,
+    })
     .registerFormPackage(sentencePlanFormPackage, {
       api: services.assessmentPlatformApiClient,
-      deliusApi: services.deliusApiClient,
     })
 
   // Setup middleware

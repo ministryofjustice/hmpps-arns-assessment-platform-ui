@@ -17,7 +17,7 @@ import {
   viewAllNotesSection,
   actionButtons,
 } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
 
 /**
  * Update goal and steps
@@ -38,17 +38,32 @@ export const updateGoalAndStepsStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.loadActiveGoalForEdit()],
-    }),
-
-    // If goal not found, redirect to plan overview
-    accessTransition({
-      when: Data('activeGoal').not.match(Condition.IsRequired()),
-      next: [redirect({ goto: '../../plan/overview' })],
+      effects: [SentencePlanEffects.loadActiveGoalForEdit()],
+      next: [
+        // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
+        redirect({
+          when: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
+          goto: '../../plan/overview',
+        }),
+        // Redirect if goal not found
+        redirect({
+          when: Data('activeGoal').not.match(Condition.IsRequired()),
+          goto: '../../plan/overview',
+        }),
+      ],
     }),
   ],
 
   onSubmission: [
+    // Navigate to add-steps page with referrer set
+    submitTransition({
+      when: Post('action').match(Condition.Equals('goToAddSteps')),
+      validate: false,
+      onAlways: {
+        effects: [SentencePlanEffects.setNavigationReferrer('update-goal-steps')],
+        next: [redirect({ goto: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')) })],
+      },
+    }),
     submitTransition({
       when: Post('action').match(Condition.Equals('save')),
       validate: false,

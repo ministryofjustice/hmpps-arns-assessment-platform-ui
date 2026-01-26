@@ -104,13 +104,13 @@ export const planCreatedMessage = HtmlBlock({
   content: when(Data('latestAgreementStatus').match(Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE'])))
     .then(
       Format(
-        '<p class="govuk-body">Plan created on %1. <a href="#" class="govuk-link">View plan history</a></p>',
+        '<p class="govuk-body">Plan created on %1. <a href="#" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
         Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
       ),
     )
     .else(
       Format(
-        '<p class="govuk-body"><a href="#" class="govuk-link">Update %1\'s agreement</a> when you\'ve shared the plan with them.</p>',
+        '<p class="govuk-body"><a href="#" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a> when you\'ve shared the plan with them.</p>',
         CaseData.Forename,
       ),
     ),
@@ -341,10 +341,10 @@ export const blankPlanOverviewContent = HtmlBlock({
   content: Format(
     `<div id="blank-plan-content" class="govuk-form-group %2">
       %3
-      <p class="govuk-!-display-none-print"> %1 does not have any goals to work on now. You can either:</p>
-      <ul class="govuk-!-display-none-print">
-        <li><a href="../goal/new/add-goal/accommodation">create a goal with %1</a></li>
-        <li><a href="../about-person">view information from %1's assessment</a></li>
+      <p class="govuk-body govuk-!-display-none-print"> %1 does not have any goals to work on now. You can either:</p>
+      <ul class="govuk-list govuk-list--bullet govuk-!-display-none-print">
+        <li><a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a></li>
+        <li><a href="../about-person" class="govuk-link govuk-link--no-visited-state">view information from %1's assessment</a></li>
       </ul>
     </div>`,
     CaseData.Forename,
@@ -367,7 +367,7 @@ export const futureGoalsContent = HtmlBlock({
       .match(Condition.IsRequired()),
   ),
   content: Format(
-    `<p class="govuk-!-display-none-print"> %1 does not have any future goals in their plan.</p>`,
+    `<p class="govuk-body govuk-!-display-none-print"> %1 does not have any future goals in their plan.</p>`,
     CaseData.Forename,
   ),
 })

@@ -3,30 +3,33 @@ import { sentencePlanV1Journey } from './versions/v1.0'
 import { SentencePlanEffectsDeps } from './effects/types'
 import { SentencePlanEffectsRegistry } from './effects'
 import { sentencePlanComponents } from './components'
-import { oasysAccessStep } from './access-steps/oasys-access/step'
-import { mpopAccessStep } from './access-steps/mpop-access/step'
 import config from '../../config'
 
 /**
  * Root Sentence Plan Journey
  *
- * This is the root journey that provides entry points for authentication
- * and delegates to versioned sub-journeys for actual functionality.
+ * Access to this form is managed by the access form which handles
+ * OASys handover and CRN-based authentication flows.
+ *
+ * Entry points:
+ * - /forms/access/sentence-plan/oasys     → OASys handover
+ * - /forms/access/sentence-plan/crn/:crn  → CRN-based access
+ *
+ * Both redirect to /forms/sentence-plan/v1.0/plan/overview after
+ * setting up session with case details and access configuration.
  *
  * Structure:
  * /forms/sentence-plan/
- * ├── /oasys              - Entry point for OASys handover (handles auth)
- * ├── /crn/:crn            - Entry point for MPOP access (handles auth)
  * └── /v1.0/              - Version 1.0 sub-journey
- *     ├── /plan/overview  - Plan overview page
+ *     ├── /plan/overview  - Plan overview page (entry point)
  *     └── ...
  */
 const sentencePlanRootJourney = journey({
   code: 'sentence-plan',
   title: 'Sentence Plan',
   path: '/sentence-plan',
+  entryPath: '/v1.0/plan/overview',
   children: [sentencePlanV1Journey],
-  steps: [oasysAccessStep, mpopAccessStep],
 })
 
 /**
