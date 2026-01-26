@@ -1,0 +1,34 @@
+{%- extends "partials/layout.njk" -%}
+
+{% block head %}
+  {{ super() }}
+  {% block pageStylesheets %}
+    <link rel="stylesheet" href="{{ '/assets/css/forms/training-session-launcher/assets/form.css' | assetMap }}">
+  {% endblock %}
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  {% block pageScripts %}
+    <script src="{{ '/assets/js/forms/training-session-launcher/assets/form.js' | assetMap }}"></script>
+  {% endblock %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% if step.backlink %}
+        <a href="{{ step.backlink }}" class="govuk-back-link">Back</a>
+      {% endif %}
+
+      {% for block in blocks %}
+        {{ block | safe }}
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}
+  {% include "partials/support-widget.njk" %}
+  {{ super() }}
+{% endblock %}

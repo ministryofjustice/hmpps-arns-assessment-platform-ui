@@ -136,23 +136,67 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
   })
 
   router.get(authPaths.handoverCallback, (req, res, next) => {
+    // Preserve values across session regeneration
+    const csrfToken = req.session.csrfToken
     const targetService = req.session.targetService
-    const redirectPath = targetService ? targetServicePaths[targetService] : '/'
 
-    passport.authenticate(AuthStrategy.HANDOVER, {
-      successRedirect: redirectPath,
-      failureRedirect: authPaths.authError,
+    passport.authenticate(AuthStrategy.HANDOVER, (err: Error, user: Express.User) => {
+      if (err) {
+        return next(err)
+      }
+
+      if (!user) {
+        return res.redirect(authPaths.authError)
+      }
+
+      return req.logIn(user, loginErr => {
+        if (loginErr) {
+          return next(loginErr)
+        }
+
+        // Restore CSRF token to the new session
+        if (csrfToken) {
+          req.session.csrfToken = csrfToken
+        }
+
+        // Redirect to the service path, or fallback to root
+        const redirectPath = targetService ? targetServicePaths[targetService] : '/'
+
+        return res.redirect(redirectPath)
+      })
     })(req, res, next)
   })
 
   router.get(authPaths.hmppsAuth, passport.authenticate(AuthStrategy.HMPPS_AUTH))
 
-  router.get(authPaths.hmppsAuthCallback, (req, res, next) =>
-    passport.authenticate(AuthStrategy.HMPPS_AUTH, {
-      successReturnToOrRedirect: req.session.returnTo || '/',
-      failureRedirect: authPaths.authError,
-    })(req, res, next),
-  )
+  router.get(authPaths.hmppsAuthCallback, (req, res, next) => {
+    // Preserve values across session regeneration
+    const csrfToken = req.session.csrfToken
+    const returnTo = req.session.returnTo
+
+    passport.authenticate(AuthStrategy.HMPPS_AUTH, (err: Error, user: Express.User) => {
+      if (err) {
+        return next(err)
+      }
+
+      if (!user) {
+        return res.redirect(authPaths.authError)
+      }
+
+      return req.logIn(user, loginErr => {
+        if (loginErr) {
+          return next(loginErr)
+        }
+
+        // Restore CSRF token to the new session
+        if (csrfToken) {
+          req.session.csrfToken = csrfToken
+        }
+
+        return res.redirect(returnTo || '/')
+      })
+    })(req, res, next)
+  })
 
   router.get(authPaths.signIn, passport.authenticate(AuthStrategy.HMPPS_AUTH))
 

@@ -122,7 +122,22 @@ export default {
     sentencePlan: {
       enabled: get('SENTENCE_PLAN_ENABLED', 'true') === 'true',
     },
+    trainingSessionLauncher: {
+      enabled: get('TRAINING_SESSION_LAUNCHER_ENABLED', 'false') === 'true',
+    },
   },
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
+
+  // Target service OAuth client IDs for handover
+  handoverTargets: {
+    'sentence-plan': {
+      clientId: get('SP_HANDOVER_CLIENT_ID', 'sentence-plan'),
+      displayName: 'Sentence Plan',
+    },
+    'strengths-and-needs': {
+      clientId: get('SAN_HANDOVER_CLIENT_ID', 'strengths-and-needs-assessment'),
+      displayName: 'Strengths and Needs (SAN)',
+    },
+  },
 }

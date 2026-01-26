@@ -4,8 +4,8 @@ export interface CreateHandoverLinkRequest {
   user: HandoverPrincipalDetails
   subjectDetails: HandoverSubjectDetails
   oasysAssessmentPk: string
-  assessmentVersion?: string
-  sentencePlanVersion?: string
+  assessmentVersion?: number | null
+  planVersion?: number | null
   criminogenicNeedsData?: CriminogenicNeedsData
 }
 
@@ -20,7 +20,7 @@ export interface UpdateHandoverContextRequest {
 export interface HandoverAssessmentContext {
   oasysAssessmentPk?: string
   assessmentId?: string
-  assessmentVersion?: string
+  assessmentVersion?: number
 }
 
 export interface HandoverSentencePlanContext {
