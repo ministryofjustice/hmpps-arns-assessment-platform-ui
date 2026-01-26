@@ -1,20 +1,21 @@
 import { expect } from '@playwright/test'
-import { test } from '../../support/fixtures'
-import { SentencePlanBuilder } from '../../builders'
+import { test, TargetService } from '../../support/fixtures'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import PlanHistoryPage from '../../pages/sentencePlan/planHistoryPage'
-import { loginAndNavigateToPlanByCrn } from './sentencePlanUtils'
 
 test.describe('Plan History Page', () => {
   test.describe('Could not answer then agreed scenario', () => {
     test('displays agreement history with correct status headings when plan was initially unanswered then agreed', async ({
       page,
-      aapClient,
+      createSession,
+      sentencePlanBuilder,
     }) => {
       // Create a plan with two agreements:
       // 1. Initial: Could not answer (older - "Plan created")
       // 2. Update: Agreed (newer - "Agreement updated")
-      const plan = await new SentencePlanBuilder()
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
         .withGoal({
           title: 'Find stable accommodation',
           areaOfNeed: 'accommodation',
@@ -35,10 +36,10 @@ test.describe('Plan History Page', () => {
             dateOffset: 0, // now (most recent)
           },
         ])
-        .create(aapClient)
+        .save()
 
       // Navigate to plan overview
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Click the "View plan history" link
@@ -98,9 +99,11 @@ test.describe('Plan History Page', () => {
       expect(hasSectionBreak).toBe(true)
     })
 
-    test('hides update agreement link when plan is agreed', async ({ page, aapClient }) => {
+    test('hides update agreement link when plan is agreed', async ({ page, createSession, sentencePlanBuilder }) => {
       // Create a plan that has been agreed
-      const plan = await new SentencePlanBuilder()
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
         .withGoal({
           title: 'Reduce alcohol use',
           areaOfNeed: 'alcohol-use',
@@ -114,9 +117,9 @@ test.describe('Plan History Page', () => {
             dateOffset: 0,
           },
         ])
-        .create(aapClient)
+        .save()
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -128,8 +131,10 @@ test.describe('Plan History Page', () => {
   })
 
   test.describe('Initial plan agreement', () => {
-    test('displays "Plan agreed" for first-time agreement', async ({ page, aapClient }) => {
-      const plan = await new SentencePlanBuilder()
+    test('displays "Plan agreed" for first-time agreement', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
         .withGoal({
           title: 'Build positive relationships',
           areaOfNeed: 'personal-relationships-and-community',
@@ -144,9 +149,9 @@ test.describe('Plan History Page', () => {
             dateOffset: 0,
           },
         ])
-        .create(aapClient)
+        .save()
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -160,8 +165,14 @@ test.describe('Plan History Page', () => {
       expect(entryHeader).toContain(' and ')
     })
 
-    test('displays "Plan created" for initial non-agreement (DO_NOT_AGREE)', async ({ page, aapClient }) => {
-      const plan = await new SentencePlanBuilder()
+    test('displays "Plan created" for initial non-agreement (DO_NOT_AGREE)', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
         .withGoal({
           title: 'Address thinking patterns',
           areaOfNeed: 'thinking-behaviours-and-attitudes',
@@ -176,9 +187,9 @@ test.describe('Plan History Page', () => {
             dateOffset: 0,
           },
         ])
-        .create(aapClient)
+        .save()
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -200,10 +211,13 @@ test.describe('Plan History Page', () => {
   test.describe('Agreement updates (only possible after COULD_NOT_ANSWER)', () => {
     test('displays "Agreement updated" when person agrees after initially not being able to answer', async ({
       page,
-      aapClient,
+      createSession,
+      sentencePlanBuilder,
     }) => {
       // Valid flow: COULD_NOT_ANSWER → UPDATED_AGREED
-      const plan = await new SentencePlanBuilder()
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
         .withGoal({
           title: 'Manage finances better',
           areaOfNeed: 'finances',
@@ -224,9 +238,9 @@ test.describe('Plan History Page', () => {
             dateOffset: 0, // now
           },
         ])
-        .create(aapClient)
+        .save()
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -242,10 +256,13 @@ test.describe('Plan History Page', () => {
 
     test('displays "Agreement updated" when person does not agree after initially not being able to answer', async ({
       page,
-      aapClient,
+      createSession,
+      sentencePlanBuilder,
     }) => {
       // Valid flow: COULD_NOT_ANSWER → UPDATED_DO_NOT_AGREE
-      const plan = await new SentencePlanBuilder()
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
         .withGoal({
           title: 'Improve health',
           areaOfNeed: 'health-and-wellbeing',
@@ -266,9 +283,9 @@ test.describe('Plan History Page', () => {
             dateOffset: 0, // now
           },
         ])
-        .create(aapClient)
+        .save()
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -288,8 +305,10 @@ test.describe('Plan History Page', () => {
   })
 
   test.describe('Navigation', () => {
-    test('can navigate to plan history from plan overview', async ({ page, aapClient }) => {
-      const plan = await new SentencePlanBuilder()
+    test('can navigate to plan history from plan overview', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
         .withGoal({
           title: 'Test goal',
           areaOfNeed: 'accommodation',
@@ -297,9 +316,9 @@ test.describe('Plan History Page', () => {
           steps: [{ actor: 'probation_practitioner', description: 'Test step' }],
         })
         .withAgreementStatus('AGREED')
-        .create(aapClient)
+        .save()
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Verify the "View plan history" link is visible
       const viewHistoryLink = page.getByRole('link', { name: /View plan history/i })
@@ -313,17 +332,23 @@ test.describe('Plan History Page', () => {
       await PlanHistoryPage.verifyOnPage(page)
     })
 
-    test('redirects to plan overview when plan has no agreement status', async ({ page, aapClient }) => {
+    test('redirects to plan overview when plan has no agreement status', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
       // Create a plan without any agreement (draft state)
-      const plan = await new SentencePlanBuilder()
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
         .withGoal({
           title: 'Draft goal',
           areaOfNeed: 'accommodation',
           status: 'ACTIVE',
         })
-        .create(aapClient)
+        .save()
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Try to navigate directly to plan history
       await page.goto(`/forms/sentence-plan/v1.0/plan/plan-history`)

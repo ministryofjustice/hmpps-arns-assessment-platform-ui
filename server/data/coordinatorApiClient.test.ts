@@ -39,10 +39,12 @@ describe('CoordinatorApiClient', () => {
       const request: OasysCreateRequest = {
         oasysAssessmentPk: '123456',
         planType: 'INITIAL',
+        assessmentType: 'SAN_SP',
         userDetails: {
           id: 'user-123',
           name: 'Test User',
         },
+        newPeriodOfSupervision: 'N',
       }
 
       const expectedResponse: OasysCreateResponse = {
@@ -66,14 +68,21 @@ describe('CoordinatorApiClient', () => {
       // Arrange
       const request: OasysCreateRequest = {
         oasysAssessmentPk: '123456',
-        previousOasysAssessmentPk: '123455',
+        previousOasysSanPk: '123455',
+        previousOasysSpPk: '123454',
         regionPrisonCode: 'MDI',
         planType: 'REVIEW',
+        assessmentType: 'SAN_SP',
         userDetails: {
           id: 'user-123',
           name: 'Test User',
           location: 'PRISON',
         },
+        subjectDetails: {
+          crn: 'X123456',
+          nomisId: 'A1234BC',
+        },
+        newPeriodOfSupervision: 'Y',
       }
 
       const expectedResponse: OasysCreateResponse = {

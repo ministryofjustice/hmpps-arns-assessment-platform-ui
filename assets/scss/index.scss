@@ -1,25 +1,27 @@
-$govuk-global-styles: true;
-$path: "/assets/images/";
+// GOV.UK Frontend with configuration
+@use "govuk-frontend/dist/govuk" as * with (
+  $govuk-global-styles: true,
+  $govuk-page-width: 1170px,
+  $govuk-suppressed-warnings: ("govuk-typography-scale-14")
+);
 
-$moj-page-width: 1170px;
-$govuk-page-width: $moj-page-width;
+// MOJ Frontend
+@use "@ministryofjustice/frontend/moj/all" as *;
 
-@import "govuk-frontend/dist/govuk/index";
-@import "@ministryofjustice/frontend/moj/all";
+// Application components (all @use must come before @import)
+@use '../../server/forms/sentence-plan/components/accessible-autocomplete/accessible-autocomplete';
+@use '../../packages/form-engine-moj-components/src/all';
+@use './components/header-bar';
+@use './components/vertical-nav-bar';
+@use './components/form';
+@use "./components/code-block";
+@use "./components/pagination";
+@use "./components/copy-button";
+@use './components/support-widget';
+@use "./components/layout";
+@use './components/plan-header';
+@use './overrides/local';
+
+// Third-party CSS (plain CSS imports must come after all @use rules)
 @import "accessible-autocomplete/dist/accessible-autocomplete.min.css";
-@import '../../server/forms/sentence-plan/components/accessible-autocomplete/accessible-autocomplete';
-@import '../../packages/form-engine-moj-components/src/all';
-
-// Highlight.js theme for syntax highlighting
-@import "highlight.js/styles/github";
-
-@import './components/header-bar';
-@import './components/vertical-nav-bar';
-@import './components/form';
-@import "./components/code-block";
-@import "./components/pagination";
-@import "./components/copy-button";
-@import './components/support-widget';
-@import "./components/layout";
-@import './components/plan-header';
-@import './overrides/local';
+@import "highlight.js/styles/github.css";

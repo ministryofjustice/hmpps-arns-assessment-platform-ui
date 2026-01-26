@@ -1,6 +1,8 @@
 // Copy button styling - based on MOJ Frontend approach
 // @see https://design-patterns.service.justice.gov.uk
 
+@use "govuk-frontend/dist/govuk/base" as *;
+
 .app-copy-button {
   $copy-button-colour: #00823b;
 

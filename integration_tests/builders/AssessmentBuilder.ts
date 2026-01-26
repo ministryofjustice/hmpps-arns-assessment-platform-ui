@@ -32,14 +32,54 @@ function generateCrn(): string {
   return `${letter}${digits}`
 }
 
+type BuilderMode = 'fresh' | 'extend'
+
+/**
+ * Factory for creating AssessmentBuilder instances with a bound client.
+ *
+ * @example
+ * // Create a new assessment
+ * await AssessmentBuilder(client).fresh()
+ *   .ofType('SENTENCE_PLAN')
+ *   .forCrn('X123456')
+ *   .withCollection('GOALS', c => c.withItem(...))
+ *   .save()
+ *
+ * @example
+ * // Extend an existing assessment (e.g., from coordinator)
+ * await AssessmentBuilder(client).extend(association.sentencePlanId)
+ *   .withCollection('GOALS', c => c.withItem(...))
+ *   .save()
+ *
+ * @example
+ * // Use via fixture
+ * test('my test', async ({ assessmentBuilder }) => {
+ *   await assessmentBuilder.fresh().ofType('E2E_TEST').save()
+ * })
+ */
+export function AssessmentBuilder(client: TestAapApiClient): AssessmentBuilderFactory {
+  return {
+    fresh: () => new AssessmentBuilderInstance(client, 'fresh'),
+    extend: (assessmentUuid: string) => new AssessmentBuilderInstance(client, 'extend', assessmentUuid),
+  }
+}
+
+export interface AssessmentBuilderFactory {
+  fresh: () => AssessmentBuilderInstance
+  extend: (assessmentUuid: string) => AssessmentBuilderInstance
+}
+
 /**
  * Generic builder for any assessment type.
  * Handles core AAP concepts: assessments, collections, items, answers, properties.
- *
- * Uses deferred execution - fluent calls build a definition tree,
- * then create() executes API calls via TestAapClient and threads UUIDs.
  */
-export class AssessmentBuilder {
+export class AssessmentBuilderInstance {
+  private readonly client: TestAapApiClient
+
+  private readonly mode: BuilderMode
+
+  private existingAssessmentUuid: string | undefined
+
   private definition: AssessmentDefinition = {
     assessmentType: 'DEFAULT',
     formVersion: '1',
@@ -51,11 +91,18 @@ export class AssessmentBuilder {
 
   private user: User = { id: 'e2e-test', name: 'E2E_TEST' }
 
+  constructor(client: TestAapApiClient, mode: BuilderMode, existingAssessmentUuid?: string) {
+    this.client = client
+    this.mode = mode
+    this.existingAssessmentUuid = existingAssessmentUuid
+  }
+
   /**
    * Set the assessment type (e.g., 'SENTENCE_PLAN')
    */
   ofType(assessmentType: string): this {
     this.definition.assessmentType = assessmentType
+
     return this
   }
 
@@ -64,14 +111,16 @@ export class AssessmentBuilder {
    */
   withFormVersion(version: string): this {
     this.definition.formVersion = version
+
     return this
   }
 
   /**
-   * Set the CRN identifier. If not called, a random UUID will be generated.
+   * Set the CRN identifier. If not called, a random CRN will be generated.
    */
   forCrn(crn: string): this {
     this.definition.identifiers.CRN = crn
+
     return this
   }
 
@@ -80,6 +129,7 @@ export class AssessmentBuilder {
    */
   withIdentifier(type: string, value: string): this {
     this.definition.identifiers[type] = value
+
     return this
   }
 
@@ -88,6 +138,7 @@ export class AssessmentBuilder {
    */
   asUser(user: User): this {
     this.user = user
+
     return this
   }
 
@@ -96,6 +147,7 @@ export class AssessmentBuilder {
    */
   withAnswer(code: string, value: string | string[]): this {
     this.definition.answers[code] = Array.isArray(value) ? multi(value) : single(value)
+
     return this
   }
 
@@ -104,6 +156,7 @@ export class AssessmentBuilder {
    */
   withProperty(key: string, value: string | string[]): this {
     this.definition.properties[key] = Array.isArray(value) ? multi(value) : single(value)
+
     return this
   }
 
@@ -113,38 +166,26 @@ export class AssessmentBuilder {
   withCollection(name: string, configure: (collection: CollectionBuilder) => CollectionBuilder): this {
     const collectionBuilder = new CollectionBuilder(name)
     this.definition.collections.push(configure(collectionBuilder).build())
+
     return this
   }
 
   /**
-   * Execute all API calls to create the assessment and its nested structure.
-   * Wrapped in a Playwright test.step() for trace visibility.
-   * Returns the created assessment with all UUIDs populated.
+   * Save the assessment to the backend.
+   * - For fresh(): creates a new assessment then populates it
+   * - For extend(): populates an existing assessment
    */
-  async create(client: TestAapApiClient): Promise<CreatedAssessment> {
-    const stepName = `Create ${this.definition.assessmentType} assessment`
+  async save(): Promise<CreatedAssessment> {
+    const stepName =
+      this.mode === 'fresh'
+        ? `Create ${this.definition.assessmentType} assessment`
+        : `Extend assessment ${this.existingAssessmentUuid}`
 
     return test.step(stepName, async () => {
-      // Auto-generate CRN if not provided
-      if (!this.definition.identifiers.CRN) {
-        this.definition.identifiers.CRN = generateCrn()
-      }
+      const assessmentUuid = await this.resolveAssessmentUuid()
 
-      // Phase 1: Create the assessment
-      const createResult = await client.executeCommand<CreateAssessmentCommandResult>({
-        type: 'CreateAssessmentCommand',
-        assessmentType: this.definition.assessmentType,
-        formVersion: this.definition.formVersion,
-        identifiers: this.definition.identifiers,
-        properties: this.definition.properties,
-        user: this.user,
-      })
-
-      const assessmentUuid = createResult.assessmentUuid
-
-      // Phase 2: Add assessment-level answers if any
       if (Object.keys(this.definition.answers).length > 0) {
-        await client.executeCommand({
+        await this.client.executeCommand({
           type: 'UpdateAssessmentAnswersCommand',
           assessmentUuid,
           user: this.user,
@@ -153,12 +194,11 @@ export class AssessmentBuilder {
         })
       }
 
-      // Phase 3: Create collections recursively
       const createdCollections: CreatedCollection[] = []
 
       for (const collectionDef of this.definition.collections) {
         // eslint-disable-next-line no-await-in-loop
-        const created = await this.createCollection(client, assessmentUuid, collectionDef)
+        const created = await this.createCollection(assessmentUuid, collectionDef)
         createdCollections.push(created)
       }
 
@@ -169,14 +209,37 @@ export class AssessmentBuilder {
     })
   }
 
+  private async resolveAssessmentUuid(): Promise<string> {
+    if (this.mode === 'extend') {
+      if (!this.existingAssessmentUuid) {
+        throw new Error('extend() requires an assessment UUID')
+      }
+
+      return this.existingAssessmentUuid
+    }
+
+    if (!this.definition.identifiers.CRN) {
+      this.definition.identifiers.CRN = generateCrn()
+    }
+
+    const createResult = await this.client.executeCommand<CreateAssessmentCommandResult>({
+      type: 'CreateAssessmentCommand',
+      assessmentType: this.definition.assessmentType,
+      formVersion: this.definition.formVersion,
+      identifiers: this.definition.identifiers,
+      properties: this.definition.properties,
+      user: this.user,
+    })
+
+    return createResult.assessmentUuid
+  }
+
   private async createCollection(
-    client: TestAapApiClient,
     assessmentUuid: string,
     def: CollectionDefinition,
     parentItemUuid?: string,
   ): Promise<CreatedCollection> {
-    // Create the collection itself
-    const createResult = await client.executeCommand<CreateCollectionCommandResult>({
+    const createResult = await this.client.executeCommand<CreateCollectionCommandResult>({
       type: 'CreateCollectionCommand',
       name: def.name,
       assessmentUuid,
@@ -185,13 +248,11 @@ export class AssessmentBuilder {
     })
 
     const collectionUuid = createResult.collectionUuid
-
-    // Create each item in this collection
     const createdItems: CreatedCollectionItem[] = []
 
     for (const itemDef of def.items) {
       // eslint-disable-next-line no-await-in-loop
-      const created = await this.createCollectionItem(client, assessmentUuid, collectionUuid, itemDef)
+      const created = await this.createCollectionItem(assessmentUuid, collectionUuid, itemDef)
       createdItems.push(created)
     }
 
@@ -203,13 +264,11 @@ export class AssessmentBuilder {
   }
 
   private async createCollectionItem(
-    client: TestAapApiClient,
     assessmentUuid: string,
     collectionUuid: string,
     def: CollectionItemDefinition,
   ): Promise<CreatedCollectionItem> {
-    // Create the item
-    const createResult = await client.executeCommand<AddCollectionItemCommandResult>({
+    const createResult = await this.client.executeCommand<AddCollectionItemCommandResult>({
       type: 'AddCollectionItemCommand',
       collectionUuid,
       assessmentUuid,
@@ -219,13 +278,11 @@ export class AssessmentBuilder {
     })
 
     const collectionItemUuid = createResult.collectionItemUuid
-
-    // Create any nested collections under this item
     const nestedCollections: CreatedCollection[] = []
 
     for (const nestedDef of def.collections) {
       // eslint-disable-next-line no-await-in-loop
-      const created = await this.createCollection(client, assessmentUuid, nestedDef, collectionItemUuid)
+      const created = await this.createCollection(assessmentUuid, nestedDef, collectionItemUuid)
       nestedCollections.push(created)
     }
 
@@ -252,6 +309,7 @@ export class CollectionBuilder {
   withItem(configure: (item: CollectionItemBuilder) => CollectionItemBuilder): this {
     const itemBuilder = new CollectionItemBuilder()
     this.definition.items.push(configure(itemBuilder).build())
+
     return this
   }
 
@@ -275,6 +333,7 @@ export class CollectionItemBuilder {
    */
   withAnswer(code: string, value: string | string[]): this {
     this.definition.answers[code] = Array.isArray(value) ? multi(value) : single(value)
+
     return this
   }
 
@@ -283,6 +342,7 @@ export class CollectionItemBuilder {
    */
   withProperty(key: string, value: string | string[]): this {
     this.definition.properties[key] = Array.isArray(value) ? multi(value) : single(value)
+
     return this
   }
 
@@ -292,6 +352,7 @@ export class CollectionItemBuilder {
   withCollection(name: string, configure: (collection: CollectionBuilder) => CollectionBuilder): this {
     const collectionBuilder = new CollectionBuilder(name)
     this.definition.collections.push(configure(collectionBuilder).build())
+
     return this
   }
 

@@ -44,11 +44,7 @@ export const changeGoalStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [
-        SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
-        SentencePlanEffects.derivePlanAgreementsFromAssessment(),
-        SentencePlanEffects.loadActiveGoalForEdit(),
-      ],
+      effects: [SentencePlanEffects.loadActiveGoalForEdit()],
       next: [
         // If goal not found, redirect to plan overview
         redirect({

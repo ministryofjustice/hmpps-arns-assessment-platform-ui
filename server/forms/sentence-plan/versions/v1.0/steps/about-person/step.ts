@@ -10,7 +10,7 @@ export const aboutPersonStep = step({
     locals: {
       headerPageHeading: Format(`About %1`, CaseData.Forename),
       buttons: {
-        showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('handover')),
+        showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('handover')),
         showCreateGoalButton: true,
       },
     },

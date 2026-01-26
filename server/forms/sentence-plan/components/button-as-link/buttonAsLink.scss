@@ -5,6 +5,8 @@
  * button functionality for form submissions.
  */
 
+@use "govuk-frontend/dist/govuk/base" as *;
+
 .button-as-link {
   @include govuk-link-common;
   @include govuk-font-size(19, $line-height: 1.6, $important: false);

@@ -1,0 +1,28 @@
+{
+  "name": "SAN API - Create Assessment",
+  "request": {
+    "method": "POST",
+    "urlPath": "/san-api/assessment"
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "metaData": {
+        "uuid": "{{randomValue type='UUID'}}",
+        "createdAt": "{{now}}",
+        "versionUuid": "{{randomValue type='UUID'}}",
+        "versionNumber": 0,
+        "versionCreatedAt": "{{now}}",
+        "versionUpdatedAt": "{{now}}",
+        "formVersion": "1.0"
+      },
+      "assessment": {},
+      "oasysEquivalent": {}
+    },
+    "transformers": ["response-template"]
+  },
+  "priority": 50
+}

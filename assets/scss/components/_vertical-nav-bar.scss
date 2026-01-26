@@ -1,3 +1,5 @@
+@use "govuk-frontend/dist/govuk/base" as *;
+
 $app-vertical-nav-button-menu-color: govuk-colour("blue") !default;
 $app-vertical-nav-button-menu-hover-color: govuk-shade($app-vertical-nav-button-menu-color, 20%) !default;
 

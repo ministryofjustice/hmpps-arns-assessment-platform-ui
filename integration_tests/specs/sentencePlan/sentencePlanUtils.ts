@@ -1,6 +1,6 @@
 import { expect, Page } from '@playwright/test'
 import { login } from '../../testUtils'
-import { PlanAgreementStatus } from '../../builders'
+import type { PlanAgreementStatus } from '../../builders/types'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
 export const postAgreementProcessStatuses: PlanAgreementStatus[] = [
@@ -16,6 +16,7 @@ export const stepStatusOptions = ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'CA
 
 // sentence plan V1 URLs for use in playwright testing suits:
 const sentencePlanFormPath = '/forms/sentence-plan'
+const accessFormPath = '/forms/access'
 const v1Path = '/v1.0'
 const oasysAccessStepPath = '/oasys'
 const crnAccessStepPath = '/crn'
@@ -25,8 +26,8 @@ const goalManagementJourneyPath = '/goal'
 const planHistoryPath = '/plan-history'
 
 export const sentencePlanV1URLs = {
-  OASYS_ENTRY_POINT: sentencePlanFormPath + oasysAccessStepPath, // '/forms/sentence-plan' + '/oasys'
-  CRN_ENTRY_POINT: sentencePlanFormPath + crnAccessStepPath, // '/forms/sentence-plan/crn/:crn'
+  OASYS_ENTRY_POINT: `${accessFormPath}/sentence-plan${oasysAccessStepPath}`, // '/forms/access/sentence-plan/oasys'
+  CRN_ENTRY_POINT: `${accessFormPath}/sentence-plan${crnAccessStepPath}`, // '/forms/access/sentence-plan/crn/:crn'
   PLAN_OVERVIEW: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planStepPath, // '/forms/sentence-plan' + '/v1.0' + '/plan' + '/overview'
   PLAN_HISTORY: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planHistoryPath, // '/forms/sentence-plan' + '/v1.0' + '/plan' + '/plan-history'
   GOAL_MANAGEMENT_ROOT_PATH: sentencePlanFormPath + v1Path + goalManagementJourneyPath, // '/forms/sentence-plan' + '/v1.0' + '/goal'

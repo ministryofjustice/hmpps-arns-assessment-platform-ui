@@ -4,7 +4,9 @@
  * These styles are loaded only on pages using this form's custom template.
  */
 
-@import "govuk-frontend/dist/govuk/base";
+@use "govuk-frontend/dist/govuk/base" as * with (
+  $govuk-suppressed-warnings: ("govuk-typography-scale-14")
+);
 
 // Example box component
 // Used to wrap interactive "Try it" examples in the developer guide

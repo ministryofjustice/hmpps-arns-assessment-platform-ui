@@ -18,6 +18,7 @@ import AssessmentPlatformApiClient from './assessmentPlatformApiClient'
 import DeliusApiClient from './deliusApiClient'
 import HandoverApiClient from './handoverApiClient'
 import CoordinatorApiClient from './coordinatorApiClient'
+import PreferencesStore from './preferencesStore'
 
 export const dataAccess = () => {
   const hmppsAuthClient = new AuthenticationClient(
@@ -33,9 +34,17 @@ export const dataAccess = () => {
     deliusApiClient: new DeliusApiClient(hmppsAuthClient),
     handoverApiClient: new HandoverApiClient(hmppsAuthClient),
     coordinatorApiClient: new CoordinatorApiClient(hmppsAuthClient),
+    preferencesStore: new PreferencesStore(),
   }
 }
 
 export type DataAccess = ReturnType<typeof dataAccess>
 
-export { AuthenticationClient, AssessmentPlatformApiClient, HandoverApiClient, DeliusApiClient, CoordinatorApiClient }
+export {
+  AuthenticationClient,
+  AssessmentPlatformApiClient,
+  HandoverApiClient,
+  DeliusApiClient,
+  CoordinatorApiClient,
+  PreferencesStore,
+}

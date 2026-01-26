@@ -2,10 +2,15 @@
   "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
     "noEmit": true,
-    "lib": ["es5", "dom", "es2015.promise"],
+    "lib": ["es2022", "dom"],
     "types": ["@playwright/test"],
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "strict": false,
+    "baseUrl": ".",
+    "paths": {
+      "@form-engine/*": ["../packages/form-engine/src/*"]
+    }
   },
   "include": ["**/*.ts"]
 }

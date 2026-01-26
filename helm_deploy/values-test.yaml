@@ -18,6 +18,7 @@ generic-service:
     ENVIRONMENT_NAME: DEV
     AUDIT_ENABLED: "false"
     FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "false"
+    TRAINING_SESSION_LAUNCHER_ENABLED: "true"
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-arns-non-prod

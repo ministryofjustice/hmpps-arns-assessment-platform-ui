@@ -47,6 +47,14 @@ const authPaths = {
   hmppsToken: '/oauth/token',
 }
 
+/**
+ * Mapping of service names to their access form entry paths after handover auth.
+ * The access form handles loading handover context and redirecting to the target service.
+ */
+const targetServicePaths: Record<string, string> = {
+  'sentence-plan': '/forms/access/sentence-plan/oasys',
+}
+
 passport.serializeUser((user, done) => {
   // Not used but required for Passport
   done(null, user)
@@ -117,23 +125,78 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
     return res.render('autherror')
   })
 
-  router.get(authPaths.handover, passport.authenticate(AuthStrategy.HANDOVER))
+  router.get(authPaths.handover, (req, res, next) => {
+    const service = req.query.service as string | undefined
 
-  router.get(authPaths.handoverCallback, (req, res, next) =>
-    passport.authenticate(AuthStrategy.HANDOVER, {
-      successReturnToOrRedirect: req.session.returnTo || '/',
-      failureRedirect: authPaths.authError,
-    })(req, res, next),
-  )
+    if (service) {
+      req.session.targetService = service
+    }
+
+    passport.authenticate(AuthStrategy.HANDOVER)(req, res, next)
+  })
+
+  router.get(authPaths.handoverCallback, (req, res, next) => {
+    // Preserve values across session regeneration
+    const csrfToken = req.session.csrfToken
+    const targetService = req.session.targetService
+
+    passport.authenticate(AuthStrategy.HANDOVER, (err: Error, user: Express.User) => {
+      if (err) {
+        return next(err)
+      }
+
+      if (!user) {
+        return res.redirect(authPaths.authError)
+      }
+
+      return req.logIn(user, loginErr => {
+        if (loginErr) {
+          return next(loginErr)
+        }
+
+        // Restore CSRF token to the new session
+        if (csrfToken) {
+          req.session.csrfToken = csrfToken
+        }
+
+        // Redirect to the service path, or fallback to root
+        const redirectPath = targetService ? targetServicePaths[targetService] : '/'
+
+        return res.redirect(redirectPath)
+      })
+    })(req, res, next)
+  })
 
   router.get(authPaths.hmppsAuth, passport.authenticate(AuthStrategy.HMPPS_AUTH))
 
-  router.get(authPaths.hmppsAuthCallback, (req, res, next) =>
-    passport.authenticate(AuthStrategy.HMPPS_AUTH, {
-      successReturnToOrRedirect: req.session.returnTo || '/',
-      failureRedirect: authPaths.authError,
-    })(req, res, next),
-  )
+  router.get(authPaths.hmppsAuthCallback, (req, res, next) => {
+    // Preserve values across session regeneration
+    const csrfToken = req.session.csrfToken
+    const returnTo = req.session.returnTo
+
+    passport.authenticate(AuthStrategy.HMPPS_AUTH, (err: Error, user: Express.User) => {
+      if (err) {
+        return next(err)
+      }
+
+      if (!user) {
+        return res.redirect(authPaths.authError)
+      }
+
+      return req.logIn(user, loginErr => {
+        if (loginErr) {
+          return next(loginErr)
+        }
+
+        // Restore CSRF token to the new session
+        if (csrfToken) {
+          req.session.csrfToken = csrfToken
+        }
+
+        return res.redirect(returnTo || '/')
+      })
+    })(req, res, next)
+  })
 
   router.get(authPaths.signIn, passport.authenticate(AuthStrategy.HMPPS_AUTH))
 
@@ -185,6 +248,7 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
         id: hmppsUser.username,
         name: hmppsUser.displayName ?? hmppsUser.username,
         authSource: hmppsUser.authSource,
+        token: hmppsUser.token,
       },
     }
 

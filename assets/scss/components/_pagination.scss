@@ -1,6 +1,8 @@
 // Override for GOV.UK pagination to force inline layout
 // when using previous/next without numbered items
 
+@use "govuk-frontend/dist/govuk/base" as *;
+
 .govuk-pagination--inline.govuk-pagination--block {
   display: flex;
   flex-direction: row;
