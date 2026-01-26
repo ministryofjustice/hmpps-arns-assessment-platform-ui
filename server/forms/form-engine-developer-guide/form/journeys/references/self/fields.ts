@@ -288,11 +288,11 @@ you needing to specify it.
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/references/data',
+          href: '/form-engine-developer-guide/references/data',
           labelText: 'Data Reference',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/references/item',
+          href: '/form-engine-developer-guide/references/item',
           labelText: 'Item Reference',
         },
       }),

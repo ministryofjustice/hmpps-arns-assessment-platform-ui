@@ -337,11 +337,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/validation/intro',
+          href: '/form-engine-developer-guide/validation/intro',
           labelText: 'Understanding Validation',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/validation/playground/intro',
+          href: '/form-engine-developer-guide/validation/playground/intro',
           labelText: 'Validation Playground',
         },
       }),

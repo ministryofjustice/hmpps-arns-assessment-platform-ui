@@ -474,11 +474,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/expressions/playground/format',
+          href: '/form-engine-developer-guide/expressions/playground/format',
           labelText: 'Format Playground',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/expressions/playground/predicates',
+          href: '/form-engine-developer-guide/expressions/playground/predicates',
           labelText: 'Predicates Playground',
         },
       }),

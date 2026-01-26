@@ -282,11 +282,11 @@ Organise your data keys thoughtfully. Here are common patterns:
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/references/answer',
+          href: '/form-engine-developer-guide/references/answer',
           labelText: 'Answer Reference',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/references/self',
+          href: '/form-engine-developer-guide/references/self',
           labelText: 'Self Reference',
         },
       }),

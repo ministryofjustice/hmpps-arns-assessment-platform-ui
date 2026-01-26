@@ -96,11 +96,11 @@ export const pageContent = TemplateWrapper({
 
   ## Next Steps
 
-  - [**Building Custom Conditions →**](/forms/form-engine-developer-guide/conditions/custom)
+  - [**Building Custom Conditions →**](/form-engine-developer-guide/conditions/custom)
 
     Learn how to create your own domain-specific conditions.
 
-  - [**Conditions Playground →**](/forms/form-engine-developer-guide/conditions/playground/intro)
+  - [**Conditions Playground →**](/form-engine-developer-guide/conditions/playground/intro)
 
     Try out conditions with live, interactive examples.
 
@@ -295,11 +295,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/hub',
+          href: '/form-engine-developer-guide/hub',
           labelText: 'Guide Hub',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/conditions/custom',
+          href: '/form-engine-developer-guide/conditions/custom',
           labelText: 'Custom Conditions',
         },
       }),

@@ -404,11 +404,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/conditions/playground/intro',
+          href: '/form-engine-developer-guide/conditions/playground/intro',
           labelText: 'Playground Hub',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/conditions/playground/numbers',
+          href: '/form-engine-developer-guide/conditions/playground/numbers',
           labelText: 'Number Conditions',
         },
       }),

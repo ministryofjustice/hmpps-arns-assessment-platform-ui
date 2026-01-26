@@ -169,7 +169,7 @@ export const pageContent = TemplateWrapper({
 
   {{slot:pagination}}
 
-  [← Back to Guide Hub](/forms/form-engine-developer-guide/hub)
+  [← Back to Guide Hub](/form-engine-developer-guide/hub)
 `),
   slots: {
     basicUsageCode: [
@@ -405,11 +405,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/blocks-and-fields/intro',
+          href: '/form-engine-developer-guide/blocks-and-fields/intro',
           labelText: 'Introduction',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/blocks-and-fields/fields',
+          href: '/form-engine-developer-guide/blocks-and-fields/fields',
           labelText: 'Field Types',
         },
       }),

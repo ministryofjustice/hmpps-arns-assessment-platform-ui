@@ -240,11 +240,11 @@ export const contactStep = step({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/components/intro',
+          href: '/form-engine-developer-guide/components/intro',
           labelText: 'Understanding Components',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/components/custom',
+          href: '/form-engine-developer-guide/components/custom',
           labelText: 'Custom Components',
         },
       }),

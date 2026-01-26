@@ -261,11 +261,11 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/references/item',
+          href: '/form-engine-developer-guide/references/item',
           labelText: 'Item Reference',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/references/chaining',
+          href: '/form-engine-developer-guide/references/chaining',
           labelText: 'Chaining References',
         },
       }),
