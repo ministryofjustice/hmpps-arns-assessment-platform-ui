@@ -1,15 +1,11 @@
 import { expect, Page } from '@playwright/test'
 import { login } from '../../testUtils'
-import type { PlanAgreementStatus } from '../../builders/types'
+import { AgreementStatus } from '../../../server/forms/sentence-plan/effects'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
-export const postAgreementProcessStatuses: PlanAgreementStatus[] = [
-  'AGREED',
-  'DO_NOT_AGREE',
-  'COULD_NOT_ANSWER',
-  'UPDATED_AGREED',
-  'UPDATED_DO_NOT_AGREE',
-]
+// Note: UPDATED_AGREED and UPDATED_DO_NOT_AGREE are only valid as follow-up statuses
+// after COULD_NOT_ANSWER, so they can't be used standalone with withAgreementStatus()
+export const postAgreementProcessStatuses: AgreementStatus[] = ['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']
 
 // Statuses for step to choose from in dropdown
 export const stepStatusOptions = ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'CANNOT_BE_DONE_YET', 'NO_LONGER_NEEDED']
