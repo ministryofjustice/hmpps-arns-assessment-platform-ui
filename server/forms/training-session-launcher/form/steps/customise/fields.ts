@@ -111,7 +111,7 @@ export const customiseFormWrapper = TemplateWrapper({
         classes: 'govuk-button--secondary',
       }),
       HtmlBlock({
-        content: '<a href="/forms/training-session-launcher/browse" class="govuk-link">Cancel</a>',
+        content: '<a href="../browse" class="govuk-link">Cancel</a>',
       }),
     ],
     tabPanel: [customiseTabPanel],
