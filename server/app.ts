@@ -19,6 +19,7 @@ import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
+import setUpPreferencesCookie from './middleware/setUpPreferencesCookie'
 
 import routes from './routes'
 import type { Services } from './services'
@@ -28,6 +29,7 @@ import logger from '../logger'
 import formEngineDeveloperGuide from './forms/form-engine-developer-guide'
 import accessFormPackage from './forms/access'
 import sentencePlanFormPackage from './forms/sentence-plan'
+import trainingSessionLauncher from './forms/training-session-launcher'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -48,6 +50,11 @@ export default function createApp(services: Services): express.Application {
     .registerComponents(govukComponents)
     .registerComponents(mojComponents)
     .registerFormPackage(formEngineDeveloperGuide)
+    .registerFormPackage(trainingSessionLauncher, {
+      coordinatorApiClient: services.coordinatorApiClient,
+      handoverApiClient: services.handoverApiClient,
+      preferencesStore: services.preferencesStore,
+    })
     .registerFormPackage(accessFormPackage, {
       deliusApi: services.deliusApiClient,
       handoverApi: services.handoverApiClient,
@@ -62,10 +69,11 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
   app.use(setUpWebRequestParsing())
+  app.use(setUpPreferencesCookie())
   app.use(setUpStaticResources())
   app.use(
     setUpAuthentication({
-      bypassPaths: ['/forms/form-engine-developer-guide'],
+      bypassPaths: ['/forms/form-engine-developer-guide', '/forms/training-session-launcher'],
     }),
   )
   app.use(authorisationMiddleware())
