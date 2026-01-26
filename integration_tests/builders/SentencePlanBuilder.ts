@@ -12,6 +12,7 @@ import type {
   CreatedCollectionItem,
   GoalStatus,
   PlanAgreementStatus,
+  PlanAgreementConfig,
   StepConfig,
   GoalConfig,
   NoteConfig,
@@ -57,6 +58,8 @@ export class SentencePlanBuilder {
 
   private agreementStatus: PlanAgreementStatus | undefined
 
+  private planAgreements: PlanAgreementConfig[] = []
+
   /**
    * Add a goal to the sentence plan
    */
@@ -78,6 +81,16 @@ export class SentencePlanBuilder {
     if (status) {
       this.agreementStatus = status
     }
+    return this
+  }
+
+  /**
+   * Add multiple plan agreements with full configuration.
+   * Agreements are created in order (first = oldest, last = most recent).
+   * Use dateOffset to control the timing of each agreement.
+   */
+  withPlanAgreements(agreements: PlanAgreementConfig[]): this {
+    this.planAgreements = agreements
     return this
   }
 
@@ -112,8 +125,10 @@ export class SentencePlanBuilder {
 
     const assessment = await builder.create(client)
 
-    // Add plan agreement if status is set
-    if (this.agreementStatus) {
+    // Add plan agreements - either multiple (new API) or single (legacy API)
+    if (this.planAgreements.length > 0) {
+      await this.createPlanAgreements(client, assessment.uuid)
+    } else if (this.agreementStatus) {
       await this.createPlanAgreement(client, assessment.uuid)
     }
 
@@ -374,6 +389,8 @@ export class SentencePlanBuilder {
       AGREED: 'yes',
       DO_NOT_AGREE: 'no',
       COULD_NOT_ANSWER: 'could_not_answer',
+      UPDATED_AGREED: 'yes',
+      UPDATED_DO_NOT_AGREE: 'no',
     }
 
     // create PLAN_AGREEMENTS collection
@@ -398,5 +415,68 @@ export class SentencePlanBuilder {
       },
       user: this.user,
     })
+  }
+
+  /**
+   * Create multiple plan agreement records in the PLAN_AGREEMENTS collection.
+   * Agreements are created in order with configurable dates.
+   */
+  private async createPlanAgreements(client: TestAapApiClient, assessmentUuid: string): Promise<void> {
+    if (this.planAgreements.length === 0) {
+      return
+    }
+
+    // map status to the agreement question value
+    const questionMap: Record<PlanAgreementStatus, string> = {
+      AGREED: 'yes',
+      DO_NOT_AGREE: 'no',
+      COULD_NOT_ANSWER: 'could_not_answer',
+      UPDATED_AGREED: 'yes',
+      UPDATED_DO_NOT_AGREE: 'no',
+    }
+
+    // create PLAN_AGREEMENTS collection
+    const collectionResult = await client.executeCommand<CreateCollectionCommandResult>({
+      type: 'CreateCollectionCommand',
+      name: 'PLAN_AGREEMENTS',
+      assessmentUuid,
+      user: this.user,
+    })
+
+    // add each agreement record
+    for (const agreement of this.planAgreements) {
+      const date = new Date(Date.now() + (agreement.dateOffset ?? 0)).toISOString()
+
+      const answers: Record<string, SingleValue> = {
+        agreement_question: single(questionMap[agreement.status]),
+      }
+
+      // Add optional fields
+      if (agreement.createdBy) {
+        answers.created_by = single(agreement.createdBy)
+      }
+      if (agreement.notes) {
+        answers.notes = single(agreement.notes)
+      }
+      if (agreement.detailsNo) {
+        answers.details_no = single(agreement.detailsNo)
+      }
+      if (agreement.detailsCouldNotAnswer) {
+        answers.details_could_not_answer = single(agreement.detailsCouldNotAnswer)
+      }
+
+      // eslint-disable-next-line no-await-in-loop
+      await client.executeCommand<AddCollectionItemCommandResult>({
+        type: 'AddCollectionItemCommand',
+        collectionUuid: collectionResult.collectionUuid,
+        assessmentUuid,
+        answers,
+        properties: {
+          status: single(agreement.status),
+          status_date: single(date),
+        },
+        user: this.user,
+      })
+    }
   }
 }

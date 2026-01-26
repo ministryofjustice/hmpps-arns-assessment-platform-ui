@@ -26,7 +26,25 @@ export type AreaOfNeedSlug =
 /**
  * Plan agreement status
  */
-export type PlanAgreementStatus = 'AGREED' | 'DO_NOT_AGREE' | 'COULD_NOT_ANSWER'
+export type PlanAgreementStatus =
+  | 'AGREED'
+  | 'DO_NOT_AGREE'
+  | 'COULD_NOT_ANSWER'
+  | 'UPDATED_AGREED'
+  | 'UPDATED_DO_NOT_AGREE'
+
+/**
+ * Plan agreement configuration for test setup
+ */
+export interface PlanAgreementConfig {
+  status: PlanAgreementStatus
+  createdBy?: string
+  notes?: string
+  detailsNo?: string
+  detailsCouldNotAnswer?: string
+  /** Date offset in milliseconds from now (negative for past) */
+  dateOffset?: number
+}
 
 /**
  * Step configuration for test setup
