@@ -3,7 +3,7 @@ import { HandoverPrincipalDetails, HandoverSubjectDetails, CriminogenicNeedsData
 export interface CreateHandoverLinkRequest {
   user: HandoverPrincipalDetails
   subjectDetails: HandoverSubjectDetails
-  oasysAssessmentPk: number
+  oasysAssessmentPk: string
   assessmentVersion?: number | null
   planVersion?: number | null
   criminogenicNeedsData?: CriminogenicNeedsData

@@ -175,7 +175,7 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
       returnUrl: `${config.ingressUrl}/forms/training-session-launcher/sessions`,
     },
     subjectDetails: buildSubjectDetails(values),
-    oasysAssessmentPk: parseInt(values.oasysAssessmentPk, 10),
+    oasysAssessmentPk: values.oasysAssessmentPk,
     criminogenicNeedsData: buildCriminogenicNeeds(values),
   }
 

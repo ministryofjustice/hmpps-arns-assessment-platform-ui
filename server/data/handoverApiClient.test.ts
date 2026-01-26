@@ -102,7 +102,7 @@ describe('HandoverApiClient', () => {
       const request: CreateHandoverLinkRequest = {
         user: mockPrincipal,
         subjectDetails: mockSubject,
-        oasysAssessmentPk: 123456,
+        oasysAssessmentPk: '123456',
         assessmentVersion: 1,
         planVersion: 2,
       }
@@ -127,7 +127,7 @@ describe('HandoverApiClient', () => {
       const request: CreateHandoverLinkRequest = {
         user: mockPrincipal,
         subjectDetails: mockSubject,
-        oasysAssessmentPk: 123456,
+        oasysAssessmentPk: '123456',
         criminogenicNeedsData: {
           accommodation: {
             accLinkedToHarm: 'YES',
