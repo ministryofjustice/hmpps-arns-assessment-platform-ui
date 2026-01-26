@@ -1,7 +1,13 @@
-import { Data, Format, redirect, step, submitTransition } from '@form-engine/form/builders'
+import { accessTransition, Data, Format, redirect, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import { continueButton } from './fields'
+import {
+  incompleteAssessmentWarning,
+  sentenceInformationSection,
+  assessmentInformationSection,
+  continueButton,
+} from './fields'
 import { CaseData } from '../../constants'
+import { SentencePlanEffects } from '../../../../effects'
 
 export const aboutPersonStep = step({
   path: '/about-person',
@@ -15,7 +21,12 @@ export const aboutPersonStep = step({
       },
     },
   },
-  blocks: [continueButton],
+  blocks: [incompleteAssessmentWarning, sentenceInformationSection, assessmentInformationSection, continueButton],
+  onAccess: [
+    accessTransition({
+      effects: [SentencePlanEffects.loadAboutPageData()],
+    }),
+  ],
   onSubmission: [
     submitTransition({
       onAlways: {

@@ -4,6 +4,9 @@ import { User } from '../../../interfaces/user'
 import { Answers, Properties } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed } from '../versions/v1.0/constants'
 import { AssessmentPlatformApiClient, DeliusApiClient } from '../../../data'
+import { FormattedAssessmentInfo } from './about/mockAssessmentData'
+import { FormattedSentence } from './about/loadAboutPageData'
+import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 
 export type GoalStatus = 'ACTIVE' | 'FUTURE'
 export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
@@ -212,7 +215,13 @@ export interface SentencePlanData extends Record<string, unknown> {
   actorLabels: Record<string, string>
 
   // Case data (from Delius)
-  caseData: unknown
+  caseData: CaseDetails
+
+  // About page data
+  assessmentInfo: FormattedAssessmentInfo
+  formattedSentences: FormattedSentence[]
+  deliusDataError: boolean
+  assessmentDataError: boolean
 }
 
 /**

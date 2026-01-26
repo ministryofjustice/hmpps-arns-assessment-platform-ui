@@ -27,6 +27,7 @@ import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
 import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
 import { saveStepEditSession } from './steps/saveStepEditSession'
 import { setSessionAccessType } from './access/setSessionAccessType'
+import { loadAboutPageData } from './about/loadAboutPageData'
 
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
@@ -55,6 +56,9 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
 
     // Session
     loadPersonByCrn,
+
+    // About page
+    loadAboutPageData,
 
     // Notifications
     addNotification,
