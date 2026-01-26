@@ -35,11 +35,11 @@ export const confirmDeleteGoalStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.setActiveGoalContext()],
+      effects: [SentencePlanEffects.setActiveGoalContext()],
       next: [
         // Redirect if plan is no longer in draft (delete is only for draft plans)
         redirect({
-          when: Data('assessment.properties.AGREEMENT_STATUS.value').not.match(Condition.Equals('DRAFT')),
+          when: Data('latestAgreementStatus').not.match(Condition.Equals('DRAFT')),
           goto: '../../plan/overview',
         }),
         // Redirect if goal not found

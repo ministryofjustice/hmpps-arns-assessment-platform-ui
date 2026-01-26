@@ -13,6 +13,7 @@ export declare module 'express-session' {
       username: string
       displayName: string
     }
+    targetService?: string
   }
 }
 
@@ -25,6 +26,7 @@ declare global {
         id: string
         name: string
         authSource: string
+        token: string
       }
     }
 

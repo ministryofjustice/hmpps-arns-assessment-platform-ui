@@ -6,11 +6,10 @@
   {% set fullName = person.name.forename + ' ' + person.name.surname if person.name else 'Unknown' %}
   {% set buttonItems = [] %}
 
-  {#  TODO: Add real links for 'Return to OASys' #}
   {% if buttons.showReturnToOasysButton %}
     {% set buttonItems = buttonItems.concat([{
       text: 'Return to OASys',
-      href: data.systemReturnUrl,
+      href: data.sessionDetails.oasysRedirectUrl,
       classes: "govuk-button--secondary govuk-!-display-none-print",
       type: 'button'
     }]) %}

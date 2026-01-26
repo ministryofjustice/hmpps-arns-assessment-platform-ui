@@ -1,15 +1,16 @@
 import { expect, Page } from '@playwright/test'
 import { login } from '../../testUtils'
-import { PlanAgreementStatus } from '../../builders'
+import { AgreementStatus } from '../../../server/forms/sentence-plan/effects'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
-export const postAgreementProcessStatuses: PlanAgreementStatus[] = ['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']
+export const postAgreementProcessStatuses: AgreementStatus[] = ['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']
 
 // Statuses for step to choose from in dropdown
 export const stepStatusOptions = ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'CANNOT_BE_DONE_YET', 'NO_LONGER_NEEDED']
 
 // sentence plan V1 URLs for use in playwright testing suits:
 const sentencePlanFormPath = '/forms/sentence-plan'
+const accessFormPath = '/forms/access'
 const v1Path = '/v1.0'
 const oasysAccessStepPath = '/oasys'
 const crnAccessStepPath = '/crn'
@@ -18,8 +19,8 @@ const planStepPath = '/overview'
 const goalManagementJourneyPath = '/goal'
 
 export const sentencePlanV1URLs = {
-  OASYS_ENTRY_POINT: sentencePlanFormPath + oasysAccessStepPath, // '/forms/sentence-plan' + '/oasys'
-  CRN_ENTRY_POINT: sentencePlanFormPath + crnAccessStepPath, // '/forms/sentence-plan/crn/:crn'
+  OASYS_ENTRY_POINT: `${accessFormPath}/sentence-plan${oasysAccessStepPath}`, // '/forms/access/sentence-plan/oasys'
+  CRN_ENTRY_POINT: `${accessFormPath}/sentence-plan${crnAccessStepPath}`, // '/forms/access/sentence-plan/crn/:crn'
   PLAN_OVERVIEW: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planStepPath, // '/forms/sentence-plan' + '/v1.0' + '/plan' + '/overview'
   GOAL_MANAGEMENT_ROOT_PATH: sentencePlanFormPath + v1Path + goalManagementJourneyPath, // '/forms/sentence-plan' + '/v1.0' + '/goal'
 }

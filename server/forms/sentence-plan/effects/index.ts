@@ -4,10 +4,8 @@ import { addNotification } from './notifications/addNotification'
 import { loadNotifications } from './notifications/loadNotifications'
 import { setNavigationReferrer } from './navigation/setNavigationReferrer'
 import { loadNavigationReferrer } from './navigation/loadNavigationReferrer'
-import { loadPersonByCrn } from './session/loadPersonByCrn'
-import { loadOrCreatePlanByCrn } from './plan/loadOrCreatePlanByCrn'
-import { loadOrCreatePlanByOasys } from './plan/loadOrCreatePlanByOasys'
-import { loadPlanFromSession } from './plan/loadPlanFromSession'
+import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
+import { loadPlan } from './plan/loadPlan'
 import { deriveGoalsWithStepsFromAssessment } from './goals/deriveGoalsWithStepsFromAssessment'
 import { derivePlanAgreementsFromAssessment } from './plan/derivePlanAgreementsFromAssessment'
 import { updatePlanAgreementStatus } from './plan/updatePlanAgreementStatus'
@@ -26,7 +24,6 @@ import { initializeStepEditSession } from './steps/initializeStepEditSession'
 import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
 import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
 import { saveStepEditSession } from './steps/saveStepEditSession'
-import { setSessionAccessType } from './access/setSessionAccessType'
 
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
@@ -35,26 +32,28 @@ export type { AgreementStatus } from './types'
  * Sentence Plan Effects
  *
  * These effects handle:
+ * - Initializing session from access form data
  * - Loading/creating sentence plans
  * - Managing goals and steps (CRUD)
  * - Plan agreement workflow
  * - Progress notes
  *
+ * Access flow is handled by the access form (/forms/access).
+ * This form's entry point (plan/overview) calls initializeSessionFromAccess
+ * to convert generic access data into sentence plan specific session.
+ *
  * Usage in forms:
  * ```typescript
  * import { SentencePlanEffects } from './effects'
  *
- * SentencePlanEffects.loadOrCreatePlanByCrn()
- * SentencePlanEffects.saveGoal()
+ * SentencePlanEffects.initializeSessionFromAccess()
+ * SentencePlanEffects.loadPlan()
+ * SentencePlanEffects.saveActiveGoal()
  * ```
  */
 export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffectsRegistry } =
   defineEffectsWithDeps<SentencePlanEffectsDeps>()({
-    // Access
-    setSessionAccessType,
-
-    // Session
-    loadPersonByCrn,
+    initializeSessionFromAccess,
 
     // Notifications
     addNotification,
@@ -65,9 +64,7 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     loadNavigationReferrer,
 
     // Plan
-    loadOrCreatePlanByCrn,
-    loadOrCreatePlanByOasys,
-    loadPlanFromSession,
+    loadPlan,
     deriveGoalsWithStepsFromAssessment,
     derivePlanAgreementsFromAssessment,
     updatePlanAgreementStatus,

@@ -1,17 +1,23 @@
 import { expect } from '@playwright/test'
-import { test } from '../../support/fixtures'
+import { test, TargetService } from '../../support/fixtures'
 import ConfirmRemoveGoalPage from '../../pages/sentencePlan/confirmRemoveGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import { withGoals, withCurrentGoalsWithCompletedSteps } from '../../builders'
-import { loginAndNavigateToPlanByCrn, getDatePlusDaysAsISO } from './sentencePlanUtils'
+import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
+import { getDatePlusDaysAsISO } from './sentencePlanUtils'
 
 test.describe('Remove goal journey', () => {
   test.describe('confirm goal removal', () => {
-    test('can confirm goal removal with required note', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('can confirm goal removal with required note', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
+      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -31,11 +37,17 @@ test.describe('Remove goal journey', () => {
       await PlanOverviewPage.verifyOnPage(page)
     })
 
-    test('shows validation error when removal note is empty', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('shows validation error when removal note is empty', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
+      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -53,11 +65,17 @@ test.describe('Remove goal journey', () => {
       expect(errorMessage).toContain('Enter why you want to remove this goal')
     })
 
-    test('can cancel and return to update goal steps page', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('can cancel and return to update goal steps page', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
+      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -73,11 +91,17 @@ test.describe('Remove goal journey', () => {
   })
 
   test.describe('page content', () => {
-    test('displays page heading', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('displays page heading', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
+      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -89,10 +113,13 @@ test.describe('Remove goal journey', () => {
       expect(headerText).toContain('Confirm you want to remove this goal')
     })
 
-    test('displays goal summary card with goal details', async ({ page, aapClient }) => {
+    test('displays goal summary card with goal details', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+
       // Setup: create assessment with a specific goal title
-      const plan = await withGoals(
-        [
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Find stable housing',
             areaOfNeed: 'accommodation',
@@ -100,12 +127,13 @@ test.describe('Remove goal journey', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Contact housing services', status: 'COMPLETED' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
+      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -119,11 +147,17 @@ test.describe('Remove goal journey', () => {
       expect(goalTitle).toContain('Find stable housing')
     })
 
-    test('removal note field is required and starts empty', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('removal note field is required and starts empty', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
+      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -137,10 +171,17 @@ test.describe('Remove goal journey', () => {
   })
 
   test.describe('removed goals tab', () => {
-    test('removed goal appears in removed goals tab after confirmation', async ({ page, aapClient }) => {
+    test('removed goal appears in removed goals tab after confirmation', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+
       // Setup: create assessment with an ACTIVE goal with completed steps
-      const plan = await withGoals(
-        [
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Remove Test Goal',
             areaOfNeed: 'accommodation',
@@ -148,12 +189,12 @@ test.describe('Remove goal journey', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Complete task', status: 'COMPLETED' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Navigate to confirm-remove-goal page and confirm
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -173,10 +214,17 @@ test.describe('Remove goal journey', () => {
       expect(goalTitle).toContain('Remove Test Goal')
     })
 
-    test('removed goal no longer appears in current goals tab', async ({ page, aapClient }) => {
+    test('removed goal no longer appears in current goals tab', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+
       // Setup: create assessment with 2 ACTIVE goals
-      const plan = await withGoals(
-        [
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
           {
             title: 'Goal To Remove',
             areaOfNeed: 'accommodation',
@@ -191,11 +239,11 @@ test.describe('Remove goal journey', () => {
             targetDate: getDatePlusDaysAsISO(90),
             steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'NOT_STARTED' }],
           },
-        ],
-        'AGREED',
-      ).create(aapClient)
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Verify we start with 2 current goals
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -222,10 +270,19 @@ test.describe('Remove goal journey', () => {
       expect(remainingGoalTitle).toContain('Goal To Keep')
     })
 
-    test('removed goals tab only appears when there are removed goals', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('removed goals tab only appears when there are removed goals', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Verify removed goals tab is not visible initially
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -243,11 +300,20 @@ test.describe('Remove goal journey', () => {
       await expect(updatedPlanOverviewPage.removedGoalsTab).toBeVisible()
     })
 
-    test('removed goal card shows "View details" action instead of "Update"', async ({ page, aapClient }) => {
-      const plan = await withCurrentGoalsWithCompletedSteps(1, 'AGREED').create(aapClient)
+    test('removed goal card shows "View details" action instead of "Update"', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Remove the goal
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -268,13 +334,18 @@ test.describe('Remove goal journey', () => {
   })
 
   test.describe('access control', () => {
-    test('redirects to plan overview if plan is not agreed (draft)', async ({ page, aapClient }) => {
+    test('redirects to plan overview if plan is not agreed (draft)', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
       // Business rule: Goals can only be removed (soft-delete) from agreed plans.
       // Draft plans should use the "delete" action instead (hard-delete).
-      const plan = await withCurrentGoalsWithCompletedSteps(1).create(aapClient)
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
       const goalUuid = plan.goals[0].uuid
 
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+      await page.goto(handoverLink)
 
       // Try to navigate to confirm-remove-goal page without agreeing plan
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
