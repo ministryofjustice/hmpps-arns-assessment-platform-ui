@@ -3,12 +3,12 @@
  *
  * These styles are loaded only on pages using this form's custom template.
  */
-@use "govuk-frontend/dist/govuk/base" as *;
+@import "govuk-frontend/dist/govuk/base";
 
 // Components
-@use "../components/button-as-link/buttonAsLink";
-@use "../components/goal-summary-card/goal-summary-card";
-@use "../components/goal-summary-card/goal-list";
+@import "../components/button-as-link/buttonAsLink";
+@import "../components/goal-summary-card/goal-summary-card";
+@import "../components/goal-summary-card/goal-list";
 
 // Step rows - align remove button with input fields
 .step-row {
