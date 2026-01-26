@@ -54,7 +54,6 @@ export const addStepsStep = step({
     accessTransition({
       effects: [
         SentencePlanEffects.loadNavigationReferrer(),
-        SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.initializeStepEditSession(),
       ],

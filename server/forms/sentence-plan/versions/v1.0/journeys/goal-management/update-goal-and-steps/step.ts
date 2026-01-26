@@ -38,7 +38,7 @@ export const updateGoalAndStepsStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.deriveGoalsWithStepsFromAssessment(), SentencePlanEffects.loadActiveGoalForEdit()],
+      effects: [SentencePlanEffects.loadActiveGoalForEdit()],
       next: [
         // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
         redirect({

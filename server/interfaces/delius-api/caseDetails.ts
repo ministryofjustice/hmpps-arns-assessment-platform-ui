@@ -19,6 +19,7 @@ export interface CaseDetailsSentence {
 export interface CaseDetails {
   name: CaseDetailsName
   crn: string
+  pnc?: string
   tier: string
   dateOfBirth: string
   nomisId: string

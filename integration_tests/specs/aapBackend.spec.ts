@@ -1,30 +1,34 @@
 import { test, expect } from '../support/fixtures'
-import { AssessmentBuilder } from '../builders/AssessmentBuilder'
+import type { CollectionBuilder, CollectionItemBuilder } from '../builders/AssessmentBuilder'
 
 test.describe('AAP Backend', () => {
-  test('can create an assessment via the AAP API', async ({ aapClient }) => {
+  test('can create an assessment via the AAP API', async ({ assessmentBuilder }) => {
     // Arrange
-    const builder = new AssessmentBuilder()
+    const builder = assessmentBuilder
+      .fresh()
       .ofType('E2E_TEST')
       .withFormVersion('1')
       .withAnswer('test_field', 'test value')
 
     // Act
-    const assessment = await builder.create(aapClient)
+    const assessment = await builder.save()
 
     // Assert
     expect(assessment.uuid).toBeDefined()
     expect(assessment.uuid).toMatch(/^[0-9a-f-]{36}$/)
   })
 
-  test('can create an assessment with collections', async ({ aapClient }) => {
+  test('can create an assessment with collections', async ({ assessmentBuilder }) => {
     // Arrange
-    const builder = new AssessmentBuilder()
+    const builder = assessmentBuilder
+      .fresh()
       .ofType('E2E_TEST')
-      .withCollection('items', collection => collection.withItem(item => item.withAnswer('description', 'Test item')))
+      .withCollection('items', (collection: CollectionBuilder) =>
+        collection.withItem((item: CollectionItemBuilder) => item.withAnswer('description', 'Test item')),
+      )
 
     // Act
-    const assessment = await builder.create(aapClient)
+    const assessment = await builder.save()
 
     // Assert
     expect(assessment.uuid).toBeDefined()
@@ -34,7 +38,7 @@ test.describe('AAP Backend', () => {
     expect(assessment.collections[0].items[0].uuid).toBeDefined()
   })
 
-  test('can create an assessment with custom CRN', async ({ aapClient }) => {
+  test('can create an assessment with custom CRN', async ({ assessmentBuilder }) => {
     // Arrange
     const letter = String.fromCharCode(65 + Math.floor(Math.random() * 26))
     const digits = Math.floor(Math.random() * 1000000)
@@ -42,10 +46,10 @@ test.describe('AAP Backend', () => {
       .padStart(6, '0')
     const customCrn = `${letter}${digits}`
 
-    const builder = new AssessmentBuilder().ofType('E2E_TEST').forCrn(customCrn)
+    const builder = assessmentBuilder.fresh().ofType('E2E_TEST').forCrn(customCrn)
 
     // Act
-    const assessment = await builder.create(aapClient)
+    const assessment = await builder.save()
 
     // Assert
     expect(assessment.uuid).toBeDefined()

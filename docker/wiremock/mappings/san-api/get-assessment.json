@@ -1,0 +1,28 @@
+{
+  "name": "SAN API - Get Assessment",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/san-api/assessment/[a-f0-9-]+"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "metaData": {
+        "uuid": "{{request.pathSegments.[2]}}",
+        "createdAt": "2024-01-01T10:00:00",
+        "versionUuid": "{{randomValue type='UUID'}}",
+        "versionNumber": 1,
+        "versionCreatedAt": "2024-01-01T10:00:00",
+        "versionUpdatedAt": "2024-01-01T10:00:00",
+        "formVersion": "1.0"
+      },
+      "assessment": {},
+      "oasysEquivalent": {}
+    },
+    "transformers": ["response-template"]
+  },
+  "priority": 50
+}

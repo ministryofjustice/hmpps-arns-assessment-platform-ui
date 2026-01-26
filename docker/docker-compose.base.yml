@@ -61,7 +61,7 @@ services:
       SPRING_FLYWAY_LOCATIONS: classpath:db/auth,db/auth_{vendor},db/dev/data/auth_{vendor},db/dev/data/auth,filesystem:/auth_db
 
   coordinator-api:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:latest
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:2026-01-23.23.09b9a43
     depends_on:
       - postgres
       - hmpps-auth
@@ -78,14 +78,15 @@ services:
       APP_DB_NAME: postgres
       APP_DB_USERNAME: root
       APP_DB_PASSWORD: dev
-      HMPPS_AUTH_BASE_URL: http://hmpps-auth:8080/auth
-      SAN_API_BASE_URL: http://san-api:8080
-      SP_API_BASE_URL: http://sp-api:8080
+      HMPPS_AUTH_BASE_URL: http://hmpps-auth:9090/auth
+      SAN_API_BASE_URL: http://wiremock:8080/san-api
+      AAP_API_BASE_URL: http://wiremock:8080/aap-api
+      APP_STRATEGIES_PLAN: false
       CLIENT_ID: hmpps-assess-risks-and-needs-oastub-ui
       CLIENT_SECRET: clientsecret
 
   arns-handover:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:latest
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:2026-01-22.12.c13529c
     depends_on:
       - redis
       - localstack
@@ -96,6 +97,8 @@ services:
       retries: 60
     networks:
       - hmpps
+    ports:
+      - "7070:7070"
     environment:
       SERVER_PORT: 7070
       REDIS_HOST: redis
@@ -104,14 +107,14 @@ services:
       HMPPS_HANDOVER_EXTERNAL_URL: http://localhost:7070
       HMPPS_AUTH_BASE_URL: http://hmpps-auth:9090
       OASYS_BASE_URL: http://localhost:7072
-      OASYS_RETURN_URLS: http://localhost:7072
+      OASYS_RETURN_URLS: http://localhost:3000
       COORDINATOR_API_BASE_URL: http://coordinator-api:8080
       SERVER_ERROR_WHITELABEL_ENABLED: true
       CLIENT_ID: hmpps-assess-risks-and-needs-oastub-ui
       CLIENT_SECRET: clientsecret
       CLIENT_SP_SECRET: sp-secret
-      CLIENT_SP_OAUTH_REDIRECT_URI: http://localhost:3001/sign-in/handover/callback
-      CLIENT_SP_HANDOVER_REDIRECT_URI: http://localhost:3001/sign-in/handover
+      CLIENT_SP_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/handover/callback
+      CLIENT_SP_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in/handover?service=sentence-plan
       CLIENT_SAN_SECRET: san-secret
       CLIENT_SAN_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/callback
       CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in
@@ -125,6 +128,7 @@ services:
       - api
       - localstack
       - arns-handover
+      - wiremock
     build:
       context: ../
       target: production
@@ -154,11 +158,11 @@ services:
       HMPPS_AUTH_URL: http://hmpps-auth:9090/auth
       HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
       AAP_API_URL: http://api:8080
-      COORDINATOR_API_URL: http://arns-coordinator:8080
+      COORDINATOR_API_URL: http://coordinator-api:8080
       HMPPS_ARNS_HANDOVER_URL: http://arns-handover:7070
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
-      HMPPS_ARNS_HANDOVER_CLIENT_ID: arns-assessment-platform
-      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: aap-secret
+      HMPPS_ARNS_HANDOVER_CLIENT_ID: sentence-plan
+      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: sp-secret
       OASYS_URL: http://localhost:7072
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
@@ -168,6 +172,7 @@ services:
       AUDIT_SQS_REGION: eu-west-2
       AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
       NODE_CLUSTER_ENABLED: true
+      DELIUS_API_URL: http://wiremock:8080/delius
       FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
 
   api:
@@ -190,6 +195,27 @@ services:
       - postgres
       - hmpps-auth
       - localstack
+
+  wiremock:
+    image: wiremock/wiremock:3.13.2
+    networks:
+      - hmpps
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: always
+    ports:
+      - "9091:8080"
+    volumes:
+      - ./wiremock/mappings:/home/wiremock/mappings
+    environment:
+      WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:9090
+      WIREMOCK_AAP_API_URL: http://api:8080
+      WIREMOCK_COORDINATOR_API_URL: http://coordinator-api:8080
+      WIREMOCK_HANDOVER_URL: http://arns-handover:7070
+      WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
+      WIREMOCK_DELIUS_URL: http://delius-api:8080
+    command: --global-response-templating
 
 networks:
   hmpps:

@@ -19,10 +19,12 @@ export interface UpdateHandoverContextRequest {
 
 export interface HandoverAssessmentContext {
   oasysAssessmentPk?: string
+  assessmentId?: string
   assessmentVersion?: string
 }
 
 export interface HandoverSentencePlanContext {
   oasysAssessmentPk?: string
-  sentencePlanVersion?: string
+  planId?: string
+  planVersion?: number
 }

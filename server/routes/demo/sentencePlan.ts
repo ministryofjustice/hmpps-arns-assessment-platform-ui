@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import crypto from 'crypto'
 import type { Services } from '../../services'
+import { IdentifierType } from '../../interfaces/aap-api/identifier'
 
 export default function routes({ assessmentService }: Services): Router {
   const router = Router()
@@ -382,10 +383,9 @@ export default function routes({ assessmentService }: Services): Router {
 
       const sentencePlan = await assessmentService.query<'AssessmentVersion'>({
         type: 'AssessmentVersionQuery',
-        // assessmentIdentifier: {type: 'UUID', uuid: assessmentUuid},
         assessmentIdentifier: {
           type: 'EXTERNAL',
-          identifierType: 'CRN',
+          identifierType: IdentifierType.CRN,
           identifier: crn,
           assessmentType: 'SENTENCE_PLAN',
         },

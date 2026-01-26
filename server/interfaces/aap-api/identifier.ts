@@ -1,5 +1,6 @@
 export enum IdentifierType {
   CRN = 'CRN',
+  NOMIS = 'NOMIS',
 }
 
 export type Identifiers = {
@@ -18,7 +19,7 @@ export interface UuidIdentifier extends AssessmentIdentifier {
 export interface ExternalIdentifier extends AssessmentIdentifier {
   type: 'EXTERNAL'
   identifier: string
-  identifierType: IdentifierType | keyof typeof IdentifierType
+  identifierType: IdentifierType
   assessmentType: string
 }
 

@@ -47,6 +47,14 @@ const authPaths = {
   hmppsToken: '/oauth/token',
 }
 
+/**
+ * Mapping of service names to their access form entry paths after handover auth.
+ * The access form handles loading handover context and redirecting to the target service.
+ */
+const targetServicePaths: Record<string, string> = {
+  'sentence-plan': '/forms/access/sentence-plan/oasys',
+}
+
 passport.serializeUser((user, done) => {
   // Not used but required for Passport
   done(null, user)
@@ -117,14 +125,25 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
     return res.render('autherror')
   })
 
-  router.get(authPaths.handover, passport.authenticate(AuthStrategy.HANDOVER))
+  router.get(authPaths.handover, (req, res, next) => {
+    const service = req.query.service as string | undefined
 
-  router.get(authPaths.handoverCallback, (req, res, next) =>
+    if (service) {
+      req.session.targetService = service
+    }
+
+    passport.authenticate(AuthStrategy.HANDOVER)(req, res, next)
+  })
+
+  router.get(authPaths.handoverCallback, (req, res, next) => {
+    const targetService = req.session.targetService
+    const redirectPath = targetService ? targetServicePaths[targetService] : '/'
+
     passport.authenticate(AuthStrategy.HANDOVER, {
-      successReturnToOrRedirect: req.session.returnTo || '/',
+      successRedirect: redirectPath,
       failureRedirect: authPaths.authError,
-    })(req, res, next),
-  )
+    })(req, res, next)
+  })
 
   router.get(authPaths.hmppsAuth, passport.authenticate(AuthStrategy.HMPPS_AUTH))
 
@@ -185,6 +204,7 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
         id: hmppsUser.username,
         name: hmppsUser.displayName ?? hmppsUser.username,
         authSource: hmppsUser.authSource,
+        token: hmppsUser.token,
       },
     }
 

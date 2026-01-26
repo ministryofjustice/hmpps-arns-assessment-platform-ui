@@ -1,16 +1,14 @@
 import { expect } from '@playwright/test'
-import { test } from '../../support/fixtures'
-import { createEmptySentencePlan } from '../../builders'
+import { test, TargetService } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import { loginAndNavigateToPlanByCrn } from './sentencePlanUtils'
 
 test.describe('Create Goal Journey', () => {
   test.describe('Create Goal with Steps', () => {
-    test('can create a goal and add steps - happy path', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+    test('can create a goal and add steps - happy path', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await page.goto(handoverLink)
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -43,9 +41,9 @@ test.describe('Create Goal Journey', () => {
       await expect(goalCard).toContainText("'emergency housing'")
     })
 
-    test('can add multiple steps to a goal', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+    test('can add multiple steps to a goal', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await page.goto(handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
@@ -76,9 +74,9 @@ test.describe('Create Goal Journey', () => {
       await expect(goalCard).toContainText('Attend housing appointment')
     })
 
-    test('can remove a step when multiple exist', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+    test('can remove a step when multiple exist', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await page.goto(handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
@@ -103,9 +101,9 @@ test.describe('Create Goal Journey', () => {
   })
 
   test.describe('Create Goal without Steps', () => {
-    test('can save goal without adding steps', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+    test('can save goal without adding steps', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await page.goto(handoverLink)
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       await planOverviewPage.clickCreateGoal()
@@ -120,9 +118,9 @@ test.describe('Create Goal Journey', () => {
       await expect(page).toHaveURL(/\/plan\/overview/)
     })
 
-    test('future goal redirects to future goals tab', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+    test('future goal redirects to future goals tab', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await page.goto(handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
@@ -140,9 +138,9 @@ test.describe('Create Goal Journey', () => {
       expect(goalTitle).toContain('Future goal')
     })
 
-    test('current goal redirects to current goals tab', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+    test('current goal redirects to current goals tab', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await page.goto(handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
@@ -163,9 +161,9 @@ test.describe('Create Goal Journey', () => {
   })
 
   test.describe('Goal with Related Areas', () => {
-    test('can create goal with related areas of need', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+    test('can create goal with related areas of need', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await page.goto(handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
@@ -183,9 +181,9 @@ test.describe('Create Goal Journey', () => {
       await expect(page).toHaveURL(/\/plan\/overview/)
     })
 
-    test('related areas of need checkboxes are displayed in alphabetical order', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+    test('related areas of need checkboxes are displayed in alphabetical order', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await page.goto(handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('button', { name: 'Create goal' }).click()
 
@@ -207,9 +205,9 @@ test.describe('Create Goal Journey', () => {
   })
 
   test.describe('Validation', () => {
-    test('shows error when goal title is empty', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+    test('shows error when goal title is empty', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await page.goto(handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
@@ -224,9 +222,9 @@ test.describe('Create Goal Journey', () => {
       await expect(fieldError).toContainText('Select or enter what goal they should try to achieve')
     })
 
-    test('shows error when can start now is not selected', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+    test('shows error when can start now is not selected', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await page.goto(handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
@@ -240,9 +238,9 @@ test.describe('Create Goal Journey', () => {
       await expect(fieldError).toBeVisible()
     })
 
-    test('shows error when target date is required but not selected', async ({ page, aapClient }) => {
-      const plan = await createEmptySentencePlan().create(aapClient)
-      await loginAndNavigateToPlanByCrn(page, plan.crn)
+    test('shows error when target date is required but not selected', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await page.goto(handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
@@ -271,9 +269,9 @@ test.describe('Create Goal Journey', () => {
     ]
 
     for (const area of areasOfNeed) {
-      test(`can create goal for ${area} area`, async ({ page, aapClient }) => {
-        const plan = await createEmptySentencePlan().create(aapClient)
-        await loginAndNavigateToPlanByCrn(page, plan.crn)
+      test(`can create goal for ${area} area`, async ({ page, createSession }) => {
+        const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        await page.goto(handoverLink)
         await PlanOverviewPage.verifyOnPage(page)
         await page.goto(`/forms/sentence-plan/v1.0/goal/new/add-goal/${area}`)
 
