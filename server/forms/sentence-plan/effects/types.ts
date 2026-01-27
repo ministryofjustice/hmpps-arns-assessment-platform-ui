@@ -279,6 +279,7 @@ export interface SentencePlanSession {
   navigationReferrer?: string
   returnTo?: string
   assessmentUuid?: string
+  privacyAccepted?: boolean
   stepChanges?: StepChangesStorage
   notifications?: PlanNotification[]
   handoverContext?: HandoverContext

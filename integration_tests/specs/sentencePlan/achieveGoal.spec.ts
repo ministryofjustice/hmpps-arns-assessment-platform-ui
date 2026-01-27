@@ -3,7 +3,7 @@ import { test, TargetService } from '../../support/fixtures'
 import ConfirmAchievedGoalPage from '../../pages/sentencePlan/confirmAchievedGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
-import { getDatePlusDaysAsISO } from './sentencePlanUtils'
+import { getDatePlusDaysAsISO, navigateToSentencePlan } from './sentencePlanUtils'
 
 test.describe('Achieve goal journey', () => {
   test.describe('confirm goal as achieved', () => {
@@ -16,7 +16,7 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
@@ -46,7 +46,7 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
@@ -69,7 +69,7 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
@@ -95,7 +95,7 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
@@ -125,7 +125,7 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
@@ -149,7 +149,7 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
@@ -185,7 +185,7 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to confirm-achieved-goal page and confirm
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -231,7 +231,7 @@ test.describe('Achieve goal journey', () => {
         .withAgreementStatus('AGREED')
         .save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Verify we start with 2 current goals
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)

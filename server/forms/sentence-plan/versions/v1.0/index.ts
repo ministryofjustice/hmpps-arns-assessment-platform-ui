@@ -1,4 +1,4 @@
-import { accessTransition, Data, journey } from '@form-engine/form/builders'
+import { accessTransition, Data, journey, redirect } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
@@ -37,11 +37,19 @@ export const sentencePlanV1Journey = journey({
   onAccess: [
     accessTransition({
       effects: [
+        SentencePlanEffects.loadSessionData(),
         SentencePlanEffects.initializeSessionFromAccess(),
         SentencePlanEffects.loadPlan(),
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
         SentencePlanEffects.derivePlanHistoryEntries(),
+      ],
+      next: [
+        // Redirect to privacy screen if privacy not yet accepted this session
+        redirect({
+          when: Data('session.privacyAccepted').not.match(Condition.Equals(true)),
+          goto: '/forms/sentence-plan/privacy',
+        }),
       ],
     }),
   ],
