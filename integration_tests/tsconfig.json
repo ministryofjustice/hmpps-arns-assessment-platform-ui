@@ -9,7 +9,7 @@
     "strict": false,
     "baseUrl": ".",
     "paths": {
-      "@form-engine/*": ["../packages/form-engine/src/*"],
+      "@form-engine/*": ["../packages/form-engine/src/*"]
     }
   },
   "include": ["**/*.ts"]
