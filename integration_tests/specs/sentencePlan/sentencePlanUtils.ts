@@ -25,7 +25,7 @@ const planHistoryPath = '/plan-history'
 export const sentencePlanV1URLs = {
   OASYS_ENTRY_POINT: `${accessFormPath}/sentence-plan${oasysAccessStepPath}`, // '/forms/access/sentence-plan/oasys'
   CRN_ENTRY_POINT: `${accessFormPath}/sentence-plan${crnAccessStepPath}`, // '/forms/access/sentence-plan/crn/:crn'
-  PRIVACY_SCREEN: sentencePlanFormPath + privacyStepPath, // '/forms/sentence-plan' + '/privacy'
+  PRIVACY_SCREEN: `${sentencePlanFormPath}/${privacyStepPath}`, // '/forms/sentence-plan/privacy'
   PLAN_OVERVIEW: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planStepPath, // '/forms/sentence-plan' + '/v1.0' + '/plan' + '/overview'
   PLAN_HISTORY: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planHistoryPath, // '/forms/sentence-plan' + '/v1.0' + '/plan' + '/plan-history'
   GOAL_MANAGEMENT_ROOT_PATH: sentencePlanFormPath + v1Path + goalManagementJourneyPath, // '/forms/sentence-plan' + '/v1.0' + '/goal'
