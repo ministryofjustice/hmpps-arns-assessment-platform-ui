@@ -351,6 +351,7 @@ test.describe('Plan History Page', () => {
         .save()
 
       await page.goto(handoverLink)
+      await handlePrivacyScreenIfPresent(page)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -406,6 +407,7 @@ test.describe('Plan History Page', () => {
         .save()
 
       await page.goto(handoverLink)
+      await handlePrivacyScreenIfPresent(page)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -457,6 +459,7 @@ test.describe('Plan History Page', () => {
         .save()
 
       await page.goto(handoverLink)
+      await handlePrivacyScreenIfPresent(page)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
