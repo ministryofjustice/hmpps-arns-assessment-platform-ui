@@ -1,5 +1,4 @@
 import { expect, Page } from '@playwright/test'
-import { login } from '../../testUtils'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
 import { AgreementStatus } from '../../../server/forms/sentence-plan/effects'
 
@@ -33,29 +32,32 @@ export const sentencePlanV1URLs = {
 }
 
 /**
- * Logs in, navigates to a sentence plan by CRN, and handles the privacy screen.
- * Use this for tests that need to get to the plan overview.
+ * Handles the privacy screen if it appears, confirming and continuing.
  */
-export const loginAndNavigateToPlanByCrn = async (page: Page, crn: string): Promise<void> => {
-  await login(page)
-  await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
-
-  // Handle privacy screen if shown
+export const handlePrivacyScreenIfPresent = async (page: Page): Promise<void> => {
   if (page.url().includes('/privacy')) {
     const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
     await privacyPage.confirmAndContinue()
   }
+}
 
+/**
+ * Navigates to a sentence plan via handover link and handles the privacy screen.
+ * Use this for tests that need to get to the plan overview via OASys handover.
+ */
+export const navigateToSentencePlan = async (page: Page, handoverLink: string): Promise<void> => {
+  await page.goto(handoverLink)
+  await handlePrivacyScreenIfPresent(page)
   await expect(page).toHaveURL(/\/plan\/overview/)
 }
 
 /**
- * Logs in and navigates to a sentence plan by CRN, stopping at the privacy screen.
+ * Navigates to a sentence plan via handover link, stopping at the privacy screen.
  * Use this for tests that need to test the privacy screen itself.
+ * Returns the PrivacyScreenPage for further interactions.
  */
-export const loginAndNavigateToPrivacyScreenByCrn = async (page: Page, crn: string): Promise<PrivacyScreenPage> => {
-  await login(page)
-  await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
+export const navigateToPrivacyScreen = async (page: Page, handoverLink: string): Promise<PrivacyScreenPage> => {
+  await page.goto(handoverLink)
   await expect(page).toHaveURL(/\/privacy/)
   return PrivacyScreenPage.verifyOnPage(page)
 }

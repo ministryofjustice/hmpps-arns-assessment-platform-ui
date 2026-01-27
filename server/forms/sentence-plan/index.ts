@@ -39,7 +39,7 @@ const privacyScreenStep = createPrivacyScreen({
  * Structure:
  * /forms/sentence-plan/
  * └── /v1.0/              - Version 1.0 sub-journey
- *     ├── /privacy        - Privacy screen (shown every OASys session)
+ *     ├── /privacy        - Privacy screen
  *     ├── /plan/overview  - Plan overview page (entry point)
  *     └── ...
  */

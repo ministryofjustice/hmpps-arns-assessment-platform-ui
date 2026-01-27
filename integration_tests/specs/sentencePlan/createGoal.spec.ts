@@ -1,15 +1,15 @@
 import { expect } from '@playwright/test'
-import { areasOfNeed } from '@server/forms/sentence-plan/versions/v1.0/constants'
 import { test, TargetService } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
+import { navigateToSentencePlan } from './sentencePlanUtils'
 
 test.describe('Create Goal Journey', () => {
   test.describe('Create Goal with Steps', () => {
     test('can create a goal and add steps - happy path', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -44,8 +44,7 @@ test.describe('Create Goal Journey', () => {
 
     test('can add multiple steps to a goal', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await page.goto(handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
@@ -77,8 +76,7 @@ test.describe('Create Goal Journey', () => {
 
     test('can remove a step when multiple exist', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await page.goto(handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
+      await navigateToSentencePlan(page, handoverLink)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -104,7 +102,7 @@ test.describe('Create Goal Journey', () => {
   test.describe('Create Goal without Steps', () => {
     test('can save goal without adding steps', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       await planOverviewPage.clickCreateGoal()
@@ -121,8 +119,7 @@ test.describe('Create Goal Journey', () => {
 
     test('future goal redirects to future goals tab', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await page.goto(handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
+      await navigateToSentencePlan(page, handoverLink)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -141,8 +138,7 @@ test.describe('Create Goal Journey', () => {
 
     test('current goal redirects to current goals tab', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await page.goto(handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
+      await navigateToSentencePlan(page, handoverLink)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -164,8 +160,7 @@ test.describe('Create Goal Journey', () => {
   test.describe('Goal with Related Areas', () => {
     test('can create goal with related areas of need', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await page.goto(handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
+      await navigateToSentencePlan(page, handoverLink)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -184,8 +179,7 @@ test.describe('Create Goal Journey', () => {
 
     test('related areas of need checkboxes are displayed in alphabetical order', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await page.goto(handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
+      await navigateToSentencePlan(page, handoverLink)
       await page.getByRole('button', { name: 'Create goal' }).click()
 
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -208,8 +202,7 @@ test.describe('Create Goal Journey', () => {
   test.describe('Validation', () => {
     test('shows error when goal title is empty', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await page.goto(handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
+      await navigateToSentencePlan(page, handoverLink)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -225,8 +218,7 @@ test.describe('Create Goal Journey', () => {
 
     test('shows error when can start now is not selected', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await page.goto(handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
+      await navigateToSentencePlan(page, handoverLink)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -241,8 +233,7 @@ test.describe('Create Goal Journey', () => {
 
     test('shows error when target date is required but not selected', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await page.goto(handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
+      await navigateToSentencePlan(page, handoverLink)
       await page.goto('/forms/sentence-plan/v1.0/goal/new/add-goal/accommodation')
 
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -265,7 +256,7 @@ test.describe('Create Goal Journey', () => {
       .forEach(({ area, goals }) => {
         test(`can create goal for ${area} area`, async ({ page, createSession }) => {
           const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-          await page.goto(handoverLink)
+          await navigateToSentencePlan(page, handoverLink)
           await PlanOverviewPage.verifyOnPage(page)
           await page.goto(`/forms/sentence-plan/v1.0/goal/new/add-goal/${area}`)
 

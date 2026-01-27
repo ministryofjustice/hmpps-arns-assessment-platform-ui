@@ -1,17 +1,15 @@
 import { expect } from '@playwright/test'
-import { test } from '../../support/fixtures'
-import { SentencePlanBuilder } from '../../builders/SentencePlanBuilder'
-import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
+import { test, TargetService } from '../../support/fixtures'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import { loginAndNavigateToPrivacyScreenByCrn, sentencePlanV1URLs } from './sentencePlanUtils'
-import { login, randomCrn } from '../../testUtils'
+import { navigateToPrivacyScreen } from './sentencePlanUtils'
 
 test.describe('Privacy Screen', () => {
   test.describe('Display and content', () => {
-    test('displays privacy screen with correct content', async ({ page, aapClient }) => {
-      const crn = randomCrn()
-      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
+    test('displays privacy screen with correct content', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      const privacyPage = await navigateToPrivacyScreen(page, handoverLink)
 
       const headingText = await privacyPage.getHeadingText()
       expect(headingText).toContain('Remember to close any other applications before starting an appointment with')
@@ -28,103 +26,71 @@ test.describe('Privacy Screen', () => {
       await expect(privacyPage.confirmButton).toBeVisible()
     })
 
-    test('displays checkbox with correct label', async ({ page, aapClient }) => {
-      const crn = randomCrn()
-      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
-      await loginAndNavigateToPrivacyScreenByCrn(page, crn)
+    test('displays checkbox with correct label', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      await navigateToPrivacyScreen(page, handoverLink)
 
       const checkboxLabel = page.locator('label[for="confirm_privacy"]')
       await expect(checkboxLabel).toContainText("I confirm I'll do this before starting an appointment")
     })
 
-    test('does not show Return to OASys link for MPOP access', async ({ page, aapClient }) => {
-      const crn = randomCrn()
-      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
+    test.describe('Validation', () => {
+      test('shows validation error when submitting without checking the checkbox', async ({
+        page,
+        createSession,
+        sentencePlanBuilder,
+      }) => {
+        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        await sentencePlanBuilder.extend(sentencePlanId).save()
 
-      const isOasysLinkVisible = await privacyPage.isReturnToOasysLinkVisible()
-      expect(isOasysLinkVisible).toBe(false)
-    })
-  })
+        const privacyPage = await navigateToPrivacyScreen(page, handoverLink)
 
-  test.describe('Validation', () => {
-    test('shows validation error when submitting without checking the checkbox', async ({ page, aapClient }) => {
-      const crn = randomCrn()
-      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
+        await privacyPage.clickConfirm()
 
-      await privacyPage.clickConfirm()
+        await expect(page).toHaveURL(/\/privacy/)
 
-      await expect(page).toHaveURL(/\/privacy/)
+        const hasError = await privacyPage.hasValidationError()
+        expect(hasError).toBe(true)
 
-      const hasError = await privacyPage.hasValidationError()
-      expect(hasError).toBe(true)
+        const errorMessage = await privacyPage.getFieldErrorMessage()
+        expect(errorMessage).toContain('Confirm you will do this before starting an appointment')
+      })
 
-      const errorMessage = await privacyPage.getFieldErrorMessage()
-      expect(errorMessage).toContain('Confirm you will do this before starting an appointment')
-    })
+      test('error summary links to the checkbox field', async ({ page, createSession, sentencePlanBuilder }) => {
+        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        await sentencePlanBuilder.extend(sentencePlanId).save()
 
-    test('error summary links to the checkbox field', async ({ page, aapClient }) => {
-      const crn = randomCrn()
-      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
+        const privacyPage = await navigateToPrivacyScreen(page, handoverLink)
 
-      await privacyPage.clickConfirm()
+        await privacyPage.clickConfirm()
 
-      const errorLink = page.locator('.govuk-error-summary__list a')
-      await expect(errorLink).toBeVisible()
+        const errorLink = page.locator('.govuk-error-summary__list a')
+        await expect(errorLink).toBeVisible()
 
-      const href = await errorLink.getAttribute('href')
-      expect(href).toContain('confirm_privacy')
-    })
-  })
-
-  test.describe('Successful submission', () => {
-    test('redirects to plan overview after confirming privacy', async ({ page, aapClient }) => {
-      const crn = randomCrn()
-      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
-
-      await privacyPage.confirmAndContinue()
-
-      await expect(page).toHaveURL(/\/plan\/overview/)
-
-      await PlanOverviewPage.verifyOnPage(page)
-    })
-  })
-
-  test.describe('Session behaviour', () => {
-    test('skips privacy screen on subsequent visits within same session', async ({ page, aapClient }) => {
-      const crn = randomCrn()
-      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
-
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
-      await privacyPage.confirmAndContinue()
-
-      await expect(page).toHaveURL(/\/plan\/overview/)
-
-      await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
-
-      await expect(page).toHaveURL(/\/plan\/overview/)
-      await PlanOverviewPage.verifyOnPage(page)
+        const href = await errorLink.getAttribute('href')
+        expect(href).toContain('confirm_privacy')
+      })
     })
 
-    test('shows privacy screen again after logging out and back in', async ({ page, aapClient }) => {
-      const crn = randomCrn()
-      await SentencePlanBuilder(aapClient).fresh().forCrn(crn).save()
+    test.describe('Successful submission', () => {
+      test('redirects to plan overview after confirming privacy', async ({
+        page,
+        createSession,
+        sentencePlanBuilder,
+      }) => {
+        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        await sentencePlanBuilder.extend(sentencePlanId).save()
 
-      const privacyPage = await loginAndNavigateToPrivacyScreenByCrn(page, crn)
-      await privacyPage.confirmAndContinue()
-      await expect(page).toHaveURL(/\/plan\/overview/)
+        const privacyPage = await navigateToPrivacyScreen(page, handoverLink)
 
-      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-      await planOverviewPage.signOut()
+        await privacyPage.confirmAndContinue()
 
-      await login(page)
-      await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
+        await expect(page).toHaveURL(/\/plan\/overview/)
 
-      await expect(page).toHaveURL(/\/privacy/)
-      await PrivacyScreenPage.verifyOnPage(page)
+        await PlanOverviewPage.verifyOnPage(page)
+      })
     })
   })
 })
