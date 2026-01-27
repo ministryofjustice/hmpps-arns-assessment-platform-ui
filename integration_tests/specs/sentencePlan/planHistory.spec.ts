@@ -416,11 +416,7 @@ test.describe('Plan History Page', () => {
       expect(hasViewLink).toBe(true)
     })
 
-    test('interleaves achieved goals with agreement entries chronologically', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
+    test('displays entries sorted by date with newest first', async ({ page, createSession, sentencePlanBuilder }) => {
       // Create a plan with multiple events in chronological order
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder
