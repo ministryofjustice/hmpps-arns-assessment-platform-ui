@@ -36,6 +36,14 @@ export default [
     rules: {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: './integration_tests/tsconfig.json',
+        },
+      },
+    },
   },
   {
     files: ['packages/form-engine-moj-components/**/*.ts'],
