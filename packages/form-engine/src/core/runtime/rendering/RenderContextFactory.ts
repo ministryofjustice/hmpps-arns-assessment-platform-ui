@@ -1,9 +1,12 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
-import { EvaluationResult } from '@form-engine/core/ast/thunks/ThunkEvaluator'
-import { JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
-import getAncestorChain from '@form-engine/core/ast/utils/getAncestorChain'
-import MetadataRegistry from '@form-engine/core/ast/registration/MetadataRegistry'
-import ThunkCacheManager from '@form-engine/core/ast/thunks/registries/ThunkCacheManager'
+import { EvaluationResult } from '@form-engine/core/compilation/thunks/ThunkEvaluator'
+import { FieldBlockASTNode, JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
+import getAncestorChain from '@form-engine/core/utils/getAncestorChain'
+import MetadataRegistry from '@form-engine/core/compilation/registries/MetadataRegistry'
+import NodeRegistry from '@form-engine/core/compilation/registries/NodeRegistry'
+import ThunkCacheManager from '@form-engine/core/compilation/thunks/ThunkCacheManager'
+import { ValidationResult } from '@form-engine/core/nodes/expressions/validation/ValidationHandler'
+import { BlockType } from '@form-engine/form/types/enums'
 import {
   JourneyAncestor,
   RenderContext,
@@ -65,7 +68,8 @@ export default class RenderContextFactory {
     currentStepId: NodeId,
     options: RenderContextOptions = {},
   ): RenderContext {
-    const { cacheManager, metadataRegistry } = evaluationResult.context
+    const { cacheManager, metadataRegistry, nodeRegistry } = evaluationResult.context
+    const showValidationFailures = options.showValidationFailures ?? false
 
     const step = RenderContextFactory.getStep(cacheManager, currentStepId)
     const ancestors = RenderContextFactory.getAncestors(cacheManager, metadataRegistry, currentStepId)
@@ -75,12 +79,17 @@ export default class RenderContextFactory {
       options.currentStepPath ?? '',
     )
 
+    const validationErrors = showValidationFailures
+      ? RenderContextFactory.collectValidationErrors(nodeRegistry, metadataRegistry, cacheManager)
+      : []
+
     return {
       navigation,
       step: RenderContextFactory.toStepForRendering(step),
       ancestors: ancestors.map(RenderContextFactory.toJourneyAncestor),
       blocks: step.properties.blocks ?? [],
-      showValidationFailures: options.showValidationFailures ?? false,
+      showValidationFailures,
+      validationErrors,
       answers: evaluationResult.context.global.answers,
       data: evaluationResult.context.global.data,
     }
@@ -91,7 +100,7 @@ export default class RenderContextFactory {
    * Excludes transitions (onLoad, onAction, onSubmission) and blocks.
    */
   private static toStepForRendering(step: Evaluated<StepASTNode>): RenderContext['step'] {
-    const { onLoad, onAction, onSubmission, blocks, ...stepProperties } = step.properties
+    const { onAction, onSubmission, blocks, ...stepProperties } = step.properties
 
     return stepProperties
   }
@@ -141,7 +150,7 @@ export default class RenderContextFactory {
    * Excludes transitions (onLoad, onAccess), children, and steps.
    */
   private static toJourneyAncestor(journey: JourneyASTNode): JourneyAncestor {
-    const { onLoad, onAccess, children, steps, ...journeyProperties } = journey.properties
+    const { onAccess, children, steps, ...journeyProperties } = journey.properties
 
     return journeyProperties
   }
@@ -192,5 +201,32 @@ export default class RenderContextFactory {
       active: stored.path === currentStepPath,
       hiddenFromNavigation: stored.hiddenFromNavigation,
     }
+  }
+
+  /**
+   * Collect failed validation results from all field blocks in the current step.
+   */
+  private static collectValidationErrors(
+    nodeRegistry: NodeRegistry,
+    metadataRegistry: MetadataRegistry,
+    cacheManager: ThunkCacheManager,
+  ): ValidationResult[] {
+    return (
+      nodeRegistry.findByType<FieldBlockASTNode>(BlockType.FIELD)
+        .filter(block => metadataRegistry.get(block.id, 'isDescendantOfStep') === true)
+        .flatMap(block => {
+          const evaluated = cacheManager.get<Evaluated<FieldBlockASTNode>>(block.id)
+          const validate = evaluated?.value?.properties?.validate
+          const blockCode = evaluated?.value?.properties?.code as string | undefined
+
+          if (!Array.isArray(validate)) {
+            return []
+          }
+
+          return (validate as ValidationResult[])
+            .filter(result => result.passed === false)
+            .map(result => ({ ...result, blockCode }))
+        })
+    )
   }
 }

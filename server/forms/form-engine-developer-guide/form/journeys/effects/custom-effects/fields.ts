@@ -198,7 +198,7 @@ export const pageContent = TemplateWrapper({
 
           // Single parameter
           SaveSection: async (context, sectionName: string) => {
-            const answers = context.getAnswers()
+            const answers = context.getAllAnswers()
             await api.saveSection(sectionName, answers)
           }
 
@@ -242,7 +242,7 @@ export const pageContent = TemplateWrapper({
 
               SaveAnswers: deps => async (context: EffectFunctionContext) => {
                 const assessmentId = context.getData('assessment').id
-                const answers = context.getAnswers()
+                const answers = context.getAllAnswers()
 
                 await deps.api.saveAnswers(assessmentId, answers)
                 deps.logger.info(\`Answers saved for: \${assessmentId}\`)
@@ -315,15 +315,15 @@ export const pageContent = TemplateWrapper({
       CodeBlock({
         language: 'typescript',
         code: `
-          import { loadTransition, submitTransition, actionTransition, next, Params, Post } from '@form-engine/form/builders'
+          import { accessTransition, submitTransition, actionTransition, redirect, Params, Post } from '@form-engine/form/builders'
           import { MyEffects } from './effects/myEffects'
 
           step({
             path: '/assessment/:id',
             title: 'Assessment Details',
 
-            onLoad: [
-              loadTransition({
+            onAccess: [
+              accessTransition({
                 effects: [
                   // Pass URL parameter as argument
                   MyEffects.LoadAssessment(Params('id')),
@@ -349,7 +349,7 @@ export const pageContent = TemplateWrapper({
                     MyEffects.SaveAnswers(),
                     MyEffects.CompleteSection('personal-details'),
                   ],
-                  next: [next({ goto: 'next-step' })],
+                  next: [redirect({ goto: 'next-step' })],
                 },
                 onInvalid: {
                   effects: [
@@ -436,8 +436,8 @@ export const pageContent = TemplateWrapper({
           import { MyEffects } from './effects'
 
           // Use namespaced effects (same as before - no deps needed here)
-          onLoad: [
-            loadTransition({
+          onAccess: [
+            accessTransition({
               effects: [
                 MyEffects.Session.Initialize(),
                 MyEffects.Api.LoadAssessment(Params('id')),
@@ -453,7 +453,7 @@ export const pageContent = TemplateWrapper({
                   MyEffects.Api.SaveAnswers(),
                   MyEffects.Analytics.TrackSubmission('personal-details'),
                 ],
-                next: [next({ goto: 'next-step' })],
+                next: [redirect({ goto: 'next-step' })],
               },
             }),
           ],
@@ -468,7 +468,7 @@ export const pageContent = TemplateWrapper({
             // Critical: let errors propagate
             SaveAnswers: deps => async (context) => {
               // If this fails, form submission should stop
-              await deps.api.save(context.getAnswers())
+              await deps.api.save(context.getAllAnswers())
             },
 
             // Non-critical: handle gracefully
@@ -491,7 +491,7 @@ export const pageContent = TemplateWrapper({
 
               for (let attempt = 1; attempt <= maxRetries; attempt++) {
                 try {
-                  await deps.api.save(context.getAnswers())
+                  await deps.api.save(context.getAllAnswers())
                   return // Success
                 } catch (error) {
                   lastError = error as Error
@@ -537,7 +537,7 @@ export const pageContent = TemplateWrapper({
 
               SaveAnswers: deps => async (context: EffectFunctionContext) => {
                 const assessment = context.getData('assessment')
-                await deps.api.saveAnswers(assessment.id, context.getAnswers())
+                await deps.api.saveAnswers(assessment.id, context.getAllAnswers())
                 deps.logger.info(\`Answers saved for assessment: \${assessment.id}\`)
               },
 
@@ -574,7 +574,7 @@ export const pageContent = TemplateWrapper({
         language: 'typescript',
         code: `
           // Usage in a form step
-          import { step, loadTransition, submitTransition, actionTransition, next, Params, Post } from '@form-engine/form/builders'
+          import { step, accessTransition, submitTransition, actionTransition, next, Params, Post } from '@form-engine/form/builders'
           import { Condition } from '@form-engine/registry/conditions'
           import { AssessmentEffects } from './effects/assessmentEffects'
 
@@ -582,8 +582,8 @@ export const pageContent = TemplateWrapper({
             path: '/personal-details',
             title: 'Personal Details',
 
-            onLoad: [
-              loadTransition({
+            onAccess: [
+              accessTransition({
                 effects: [
                   AssessmentEffects.LoadAssessment(Params('assessmentId')),
                 ],
@@ -607,7 +607,7 @@ export const pageContent = TemplateWrapper({
                     AssessmentEffects.SaveAnswers(),
                     AssessmentEffects.CompleteSection('personal-details'),
                   ],
-                  next: [next({ goto: 'contact-details' })],
+                  next: [redirect({ goto: 'contact-details' })],
                 },
               }),
             ],

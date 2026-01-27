@@ -10,6 +10,12 @@ export interface PlaywrightExtendedConfig {
     aapApi: {
       url: string
     }
+    handoverApi: {
+      url: string
+    }
+    coordinatorApi: {
+      url: string
+    }
   }
 }
 
@@ -42,7 +48,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
     launchOptions: {
       slowMo: 150,
       args: process.env.CI
-        ? ['--unsafely-treat-insecure-origin-as-secure=http://hmpps-auth:8080,http://ui:3000,http://wiremock:8080']
+        ? ['--unsafely-treat-insecure-origin-as-secure=http://hmpps-auth:9090,http://ui:3000,http://wiremock:8080']
         : [],
     },
     screenshot: 'only-on-failure',
@@ -53,12 +59,18 @@ export default defineConfig<PlaywrightExtendedConfig>({
 
     apis: {
       hmppsAuth: {
-        url: process.env.HMPPS_AUTH_URL || 'http://localhost:9090/auth',
+        url: process.env.HMPPS_AUTH_URL || 'http://localhost:9091/auth',
         systemClientId: process.env.CLIENT_CREDS_CLIENT_ID || 'hmpps-arns-assessment-platform-ui-e2e',
         systemClientSecret: process.env.CLIENT_CREDS_CLIENT_SECRET || 'clientsecret',
       },
       aapApi: {
         url: process.env.AAP_API_URL || 'http://localhost:8080',
+      },
+      handoverApi: {
+        url: process.env.HANDOVER_API_URL || 'http://localhost:9091/handover',
+      },
+      coordinatorApi: {
+        url: process.env.COORDINATOR_API_URL || 'http://localhost:9091/coordinator-api',
       },
     },
   },
@@ -77,4 +89,5 @@ export default defineConfig<PlaywrightExtendedConfig>({
       workers: 1,
     },
   ],
+  tsconfig: './integration_tests/tsconfig.json',
 })

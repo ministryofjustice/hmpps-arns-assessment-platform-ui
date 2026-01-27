@@ -138,7 +138,7 @@ import { CodeBlock } from '../../../components/codeBlock'`,
         content: [
           CodeBlock({
             language: 'typescript',
-            code: `import { step, block, validation, Self, submitTransition, next } from '@form-engine/form/builders'
+            code: `import { step, block, validation, Self, submitTransition, redirect } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import {
@@ -227,7 +227,7 @@ export const contactStep = step({
     submitTransition({
       validate: true,
       onValid: {
-        next: [next({ goto: 'review' })],
+        next: [redirect({ goto: 'review' })],
       },
     }),
   ],

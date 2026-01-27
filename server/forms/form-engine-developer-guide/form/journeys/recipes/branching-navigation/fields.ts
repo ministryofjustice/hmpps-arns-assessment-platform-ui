@@ -16,7 +16,7 @@ Navigate to different steps based on user answers. {.lead}
 
 ## The Pattern
 
-Use multiple \`next()\` calls with \`when\` conditions in your
+Use multiple \`redirect()\` calls with \`when\` conditions in your
 \`submitTransition\`. The first matching condition wins.
 
 {{slot:basicExample}}
@@ -26,7 +26,7 @@ Use multiple \`next()\` calls with \`when\` conditions in your
 ## How It Works
 
 1. \`next\` takes an array of navigation options
-2. Each \`next()\` can have a \`when\` condition
+2. Each \`redirect()\` can have a \`when\` condition
 3. First matching condition is used
 4. Always include a fallback (no \`when\`) as the last option
 
@@ -77,7 +77,7 @@ Always order from most specific to least specific:
       CodeBlock({
         language: 'typescript',
         code: `
-          import { step, submitTransition, next, Answer } from '@form-engine/form/builders'
+          import { step, submitTransition, redirect, Answer } from '@form-engine/form/builders'
           import { Condition } from '@form-engine/registry/conditions'
 
           export const userTypeStep = step({
@@ -91,17 +91,17 @@ Always order from most specific to least specific:
                 onValid: {
                   next: [
                     // Business users go to business details
-                    next({
+                    redirect({
                       when: Answer('userType').match(Condition.Equals('business')),
                       goto: '/business-details',
                     }),
                     // Individual users go to personal details
-                    next({
+                    redirect({
                       when: Answer('userType').match(Condition.Equals('individual')),
                       goto: '/personal-details',
                     }),
                     // Fallback (always include one!)
-                    next({ goto: '/generic-details' }),
+                    redirect({ goto: '/generic-details' }),
                   ],
                 },
               }),
@@ -116,20 +116,20 @@ Always order from most specific to least specific:
         code: `
           onValid: {
             next: [
-              next({
+              redirect({
                 when: Answer('country').match(Condition.Equals('UK')),
                 goto: '/uk-address',
               }),
-              next({
+              redirect({
                 when: Answer('country').match(Condition.Equals('US')),
                 goto: '/us-address',
               }),
-              next({
+              redirect({
                 when: Answer('country').match(Condition.Equals('CA')),
                 goto: '/ca-address',
               }),
               // All other countries
-              next({ goto: '/international-address' }),
+              redirect({ goto: '/international-address' }),
             ],
           }
         `,
@@ -142,11 +142,11 @@ Always order from most specific to least specific:
           // Skip the address step if user says "no fixed address"
           onValid: {
             next: [
-              next({
+              redirect({
                 when: Answer('hasAddress').match(Condition.Equals('no')),
                 goto: '/contact-details',  // Skip address step
               }),
-              next({ goto: '/address' }),  // Normal flow
+              redirect({ goto: '/address' }),  // Normal flow
             ],
           }
         `,
@@ -161,7 +161,7 @@ Always order from most specific to least specific:
           onValid: {
             next: [
               // Premium business users get special flow
-              next({
+              redirect({
                 when: and(
                   Answer('userType').match(Condition.Equals('business')),
                   Answer('tier').match(Condition.Equals('premium'))
@@ -169,12 +169,12 @@ Always order from most specific to least specific:
                 goto: '/premium-onboarding',
               }),
               // Other business users
-              next({
+              redirect({
                 when: Answer('userType').match(Condition.Equals('business')),
                 goto: '/business-onboarding',
               }),
               // Everyone else
-              next({ goto: '/standard-onboarding' }),
+              redirect({ goto: '/standard-onboarding' }),
             ],
           }
         `,
@@ -192,7 +192,7 @@ Always order from most specific to least specific:
               validate: true,
               onValid: {
                 effects: [MyEffects.saveAnswers()],
-                next: [next({ goto: '/hub' })],
+                next: [redirect({ goto: '/hub' })],
               },
             }),
 
@@ -202,7 +202,7 @@ Always order from most specific to least specific:
               validate: true,
               onValid: {
                 effects: [MyEffects.saveAnswers()],
-                next: [next({ goto: '/next-step' })],
+                next: [redirect({ goto: '/next-step' })],
               },
             }),
           ]

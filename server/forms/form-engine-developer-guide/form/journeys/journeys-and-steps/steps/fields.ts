@@ -115,19 +115,10 @@ See the [Journey Configuration](/forms/form-engine-developer-guide/journeys-and-
 
 Steps can define lifecycle transitions that control behaviour at different points in the request lifecycle.
 
-### \`onLoad\` <span class="govuk-tag govuk-tag--grey">Optional</span>
-
-An array of load transitions that run when the step is accessed.
-Use this to fetch step-specific data.
-
-{{slot:onLoadExample}}
-
-See the [Load Transitions](/forms/form-engine-developer-guide/transitions/load) page for details.
-
 ### \`onAccess\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
-An array of access transitions that control access to this step.
-Use this for step-specific guards or redirects.
+An array of access transitions that run when the step is accessed.
+Use this to load step-specific data, check access, and redirect or return errors.
 
 {{slot:onAccessExample}}
 
@@ -261,23 +252,18 @@ backlink: ''`,
 }`,
       }),
     ],
-    onLoadExample: [
-      CodeBlock({
-        language: 'typescript',
-        code: `onLoad: [
-  loadTransition({
-    effects: [MyStepEffects.loadOptions()],
-  }),
-]`,
-      }),
-    ],
     onAccessExample: [
       CodeBlock({
         language: 'typescript',
         code: `onAccess: [
   accessTransition({
-    guards: Answer('termsAccepted').not.match(Condition.Equals(true)),
-    redirect: [next({ goto: '/terms' })],
+    effects: [MyStepEffects.loadOptions()],
+    next: [
+      redirect({
+        when: Answer('termsAccepted').not.match(Condition.Equals(true)),
+        goto: '/terms',
+      }),
+    ],
   }),
 ]`,
       }),
@@ -301,7 +287,7 @@ backlink: ''`,
     validate: true,
     onValid: {
       effects: [MyStepEffects.saveAnswers()],
-      next: [next({ goto: '/review' })],
+      next: [redirect({ goto: '/review' })],
     },
   }),
 ]`,

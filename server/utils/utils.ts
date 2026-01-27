@@ -21,3 +21,27 @@ export const initialiseName = (fullName?: string): string | null => {
   const array = fullName.split(' ')
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
+
+export const formatDate = (date: string, format: 'iso' | 'simple') => {
+  if (!date) {
+    return ''
+  }
+
+  const parsedDate = new Date(date)
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return ''
+  }
+
+  switch (format) {
+    case 'iso': // 'YYYY-MM-DD' - 1990-01-01
+      return parsedDate.toISOString().substring(0, 10)
+    case 'simple': // 'DD MMMMM YYYY' - 01 January 1990
+    default:
+      return parsedDate.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+  }
+}

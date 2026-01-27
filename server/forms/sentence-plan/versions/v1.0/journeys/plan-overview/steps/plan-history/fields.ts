@@ -1,0 +1,120 @@
+import { Data, Format, Item, when } from '@form-engine/form/builders'
+import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
+import { HtmlBlock } from '@form-engine/registry/components/html'
+import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
+import { Condition } from '@form-engine/registry/conditions'
+import { Transformer } from '@form-engine/registry/transformers'
+import { CaseData } from '../../../../constants'
+
+export const subtitleText = HtmlBlock({
+  content: '<p class="govuk-body">View all updates and changes made to this plan.</p>',
+})
+
+export const sectionBreak = HtmlBlock({
+  content: '<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">',
+})
+
+/**
+ * Displays the plan agreement history as a list of entries.
+ */
+export const agreementHistory = CollectionBlock({
+  collection: Data('planAgreements').each(
+    Iterator.Map(
+      HtmlBlock({
+        content: Format(
+          `%7
+          <div class="govuk-!-margin-bottom-6">
+            <p class="govuk-body"><strong>%1</strong> on %2 by %3%4</p>
+            <p class="govuk-body">%5</p>
+            %6
+          </div>`,
+          // %1: Status heading
+          when(
+            Item()
+              .path('status')
+              .match(Condition.Array.IsIn(['UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE'])),
+          )
+            .then('Agreement updated')
+            .else(
+              when(Item().path('status').match(Condition.Equals('AGREED')))
+                .then('Plan agreed')
+                .else('Plan created'),
+            ),
+          // %2: Date
+          Item().path('statusDate').pipe(Transformer.Date.ToUKLongDate()),
+          // %3: Practitioner
+          when(Item().path('createdBy').match(Condition.IsRequired())).then(Item().path('createdBy')).else('Unknown'),
+          // %4: Person (only shown for AGREED or UPDATED_AGREED status)
+          when(
+            Item()
+              .path('status')
+              .match(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED'])),
+          )
+            .then(Format(' and %1', CaseData.Forename))
+            .else(''),
+          // %5: Description
+          when(
+            Item()
+              .path('status')
+              .match(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED'])),
+          )
+            .then(Format('%1 agreed to this plan.', CaseData.Forename))
+            .else(
+              when(
+                Item()
+                  .path('status')
+                  .match(Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE'])),
+              )
+                .then(Format('%1 did not agree to this plan.', CaseData.Forename))
+                .else(Format('%1 could not answer.', CaseData.Forename)),
+            ),
+          // %6: Reason details and optional notes combined in a single paragraph
+          when(Item().path('detailsNo').match(Condition.IsRequired()))
+            .then(
+              when(Item().path('notes').match(Condition.IsRequired()))
+                .then(Format('<p class="govuk-body">%1<br>%2</p>', Item().path('detailsNo'), Item().path('notes')))
+                .else(Format('<p class="govuk-body">%1</p>', Item().path('detailsNo'))),
+            )
+            .else(
+              when(Item().path('detailsCouldNotAnswer').match(Condition.IsRequired()))
+                .then(
+                  when(Item().path('notes').match(Condition.IsRequired()))
+                    .then(
+                      Format(
+                        '<p class="govuk-body">%1<br>%2</p>',
+                        Item().path('detailsCouldNotAnswer'),
+                        Item().path('notes'),
+                      ),
+                    )
+                    .else(Format('<p class="govuk-body">%1</p>', Item().path('detailsCouldNotAnswer'))),
+                )
+                .else(
+                  when(Item().path('notes').match(Condition.IsRequired()))
+                    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes')))
+                    .else(''),
+                ),
+            ),
+          // %7: Section break (shown between entries, not before the first)
+          when(Item().index().match(Condition.Equals(0)))
+            .then('')
+            .else('<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">'),
+        ),
+      }),
+    ),
+  ),
+})
+
+/**
+ * Link to update the person's agreement - shown when latest status is COULD_NOT_ANSWER
+ */
+export const updateAgreementLink = HtmlBlock({
+  hidden: Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER')),
+  content: Format(
+    '<p class="govuk-body"><a href="#" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a></p>',
+    CaseData.Forename,
+  ),
+})
+
+export const backToTopLink = HtmlBlock({
+  content: '<p class="govuk-body"><a href="#" class="govuk-link">↑ Back to top</a></p>',
+})

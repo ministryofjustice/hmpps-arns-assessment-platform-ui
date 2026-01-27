@@ -26,14 +26,6 @@ test.describe('SignIn', () => {
     await expect(homePage.usersName).toHaveText('A. Test')
   })
 
-  test('Phase banner visible in header', async ({ page }) => {
-    await login(page)
-
-    const homePage = await HomePage.verifyOnPage(page)
-
-    await expect(homePage.phaseBanner).toHaveText('dev')
-  })
-
   test('User can sign out', async ({ page }) => {
     await login(page)
 

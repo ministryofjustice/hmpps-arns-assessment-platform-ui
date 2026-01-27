@@ -1,0 +1,67 @@
+{%- extends "partials/layout.njk" -%}
+{%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
+
+{% block head %}
+  {{ super() }}
+  {% block pageStylesheets %}
+    <link rel="stylesheet" href="{{ '/assets/css/forms/sentence-plan/assets/form.css' | assetMap }}">
+  {% endblock %}
+{% endblock %}
+
+{% block header %}
+  {{ super() }}
+  {% include "sentence-plan/views/partials/sentence-plan-nav.njk" %}
+  {% include "sentence-plan/views/partials/plan-header.njk" %}
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  {% block pageScripts %}
+    <script src="{{ '/assets/js/forms/sentence-plan/assets/form.js' | assetMap }}"></script>
+  {% endblock %}
+{% endblock %}
+
+{% block content %}
+  {% set sidebarIndex = twoColumnLayout.sidebarBlockIndex if twoColumnLayout else -1 %}
+
+  <div class="govuk-grid-row" data-qa-assessment-uuid="{{ data.assessmentUuid }}">
+    <div class="govuk-grid-column-full">
+      {% if backlink %}
+        <a href="{{ backlink }}" class="govuk-back-link">Back</a>
+      {% endif %}
+
+      <form method="post" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+        {% if twoColumnLayout %}
+          <div class="govuk-width-container">
+            <div class="govuk-grid-row">
+              <div class="govuk-grid-column-one-third">
+                {{ blocks[sidebarIndex] | safe }}
+              </div>
+              <div class="govuk-grid-column-two-thirds">
+                {{ govukErrorSummary({
+                  titleText: "There is a problem",
+                  errorList: validationErrors | toErrorSummary
+                }) if validationErrors.length }}
+
+                {% for block in blocks %}
+                  {{ block | safe if loop.index0 != sidebarIndex }}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% else %}
+          {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: validationErrors | toErrorSummary
+          }) if validationErrors.length }}
+
+          {% for block in blocks %}
+            {{ block | safe }}
+          {% endfor %}
+        {% endif %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

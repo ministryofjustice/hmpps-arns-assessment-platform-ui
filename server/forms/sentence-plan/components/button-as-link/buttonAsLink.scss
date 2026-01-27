@@ -1,0 +1,18 @@
+/**
+ * Button styled as a link component.
+ *
+ * Makes a <button> element look like a GOV.UK link while retaining
+ * button functionality for form submissions.
+ */
+
+.button-as-link {
+  @include govuk-link-common;
+  @include govuk-font-size(19, $line-height: 1.6, $important: false);
+
+  background: none;
+  color: $govuk-link-colour;
+  border: none;
+  padding: govuk-spacing(1);
+  cursor: pointer;
+  outline: inherit;
+}

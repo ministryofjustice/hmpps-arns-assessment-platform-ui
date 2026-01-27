@@ -5,7 +5,7 @@ import createError from 'http-errors'
 import FormEngine from '@form-engine/core/FormEngine'
 import { ExpressFrameworkAdapter } from '@form-engine-express-nunjucks/index'
 import { govukComponents } from '@form-engine-govuk-components/index'
-import { mojComponents } from '@form-engine-moj-components/components'
+import { mojComponents } from '@form-engine-moj-components/index'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './routes/error/errorHandler'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
@@ -19,11 +19,17 @@ import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
+import setUpPreferencesCookie from './middleware/setUpPreferencesCookie'
 
 import routes from './routes'
 import type { Services } from './services'
 import logger from '../logger'
+
+// Form packages
 import formEngineDeveloperGuide from './forms/form-engine-developer-guide'
+import accessFormPackage from './forms/access'
+import sentencePlanFormPackage from './forms/sentence-plan'
+import trainingSessionLauncher from './forms/training-session-launcher'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -44,6 +50,18 @@ export default function createApp(services: Services): express.Application {
     .registerComponents(govukComponents)
     .registerComponents(mojComponents)
     .registerFormPackage(formEngineDeveloperGuide)
+    .registerFormPackage(trainingSessionLauncher, {
+      coordinatorApiClient: services.coordinatorApiClient,
+      handoverApiClient: services.handoverApiClient,
+      preferencesStore: services.preferencesStore,
+    })
+    .registerFormPackage(accessFormPackage, {
+      deliusApi: services.deliusApiClient,
+      handoverApi: services.handoverApiClient,
+    })
+    .registerFormPackage(sentencePlanFormPackage, {
+      api: services.assessmentPlatformApiClient,
+    })
 
   // Setup middleware
   app.use(appInsightsMiddleware())
@@ -51,10 +69,11 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
   app.use(setUpWebRequestParsing())
+  app.use(setUpPreferencesCookie())
   app.use(setUpStaticResources())
   app.use(
     setUpAuthentication({
-      bypassPaths: ['/forms/form-engine-developer-guide'],
+      bypassPaths: ['/forms/form-engine-developer-guide', '/forms/training-session-launcher'],
     }),
   )
   app.use(authorisationMiddleware())

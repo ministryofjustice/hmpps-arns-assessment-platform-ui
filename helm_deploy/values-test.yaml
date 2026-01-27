@@ -1,0 +1,24 @@
+---
+# Per environment values which override defaults in hmpps-arns-assessment-platform-ui/values.yaml
+
+generic-service:
+  replicaCount: 2
+
+  ingress:
+    host: arns-assessment-platform-test.hmpps.service.justice.gov.uk
+
+  env:
+    INGRESS_URL: "https://arns-assessment-platform-test.hmpps.service.justice.gov.uk"
+    HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
+    HMPPS_ARNS_HANDOVER_URL: "https://arns-handover-service-test.hmpps.service.justice.gov.uk"
+    TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
+    AAP_API_URL: "https://arns-assessment-platform-api-test.hmpps.service.justice.gov.uk"
+    COORDINATOR_API_URL: "https://arns-coordinator-api-test.hmpps.service.justice.gov.uk"
+    DELIUS_API_URL: "https://sentence-plan-and-delius-dev.hmpps.service.justice.gov.uk"
+    ENVIRONMENT_NAME: DEV
+    AUDIT_ENABLED: "false"
+    FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "false"
+    TRAINING_SESSION_LAUNCHER_ENABLED: "true"
+
+generic-prometheus-alerts:
+  alertSeverity: hmpps-arns-non-prod

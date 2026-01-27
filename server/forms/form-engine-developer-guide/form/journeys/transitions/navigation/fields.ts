@@ -6,13 +6,13 @@ import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 /**
  * Transitions - Navigation
  *
- * The next() builder and navigation patterns.
+ * The redirect() builder and navigation patterns.
  */
 export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Navigation
 
-  The \`next()\` builder defines where users go after transitions.
+  The \`redirect()\` builder defines where users go after transitions.
   Used in \`onSubmission\` and \`redirect\` arrays. {.lead}
 
   ---
@@ -22,7 +22,7 @@ export const pageContent = TemplateWrapper({
   <h3 class="govuk-heading-s"><code>when</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
 
   Condition for this navigation to apply. If omitted, always matches (use as fallback).
-  In arrays, the first \`next()\` with a matching \`when\` is used.
+  In arrays, the first \`redirect()\` with a matching \`when\` is used.
 
   {{slot:whenCode}}
 
@@ -64,7 +64,7 @@ export const pageContent = TemplateWrapper({
 
   Navigation arrays use **first-match** semantics:
 
-  1. Each \`next()\` is evaluated in order
+  1. Each \`redirect()\` is evaluated in order
   2. The first one where \`when\` matches (or has no \`when\`) is used
   3. Remaining entries are ignored
 
@@ -84,8 +84,7 @@ export const pageContent = TemplateWrapper({
 
   ## Redirect Arrays
 
-  In \`accessTransition\`, use \`redirect\` instead of \`next\`.
-  It works the same way:
+  In \`accessTransition\`, use the \`next\` property with \`redirect()\`:
 
   {{slot:redirectCode}}
 
@@ -125,7 +124,7 @@ export const pageContent = TemplateWrapper({
       CodeBlock({
         language: 'typescript',
         code: `
-          next({
+          redirect({
             when: Answer('hasChildren').match(Condition.Equals('yes')),
             goto: '/children-details',
           })
@@ -152,10 +151,10 @@ export const pageContent = TemplateWrapper({
         language: 'typescript',
         code: `
           // Relative path (within current journey)
-          next({ goto: 'next-step' })
+          redirect({ goto: 'next-step' })
 
           // Absolute path
-          next({ goto: '/some-other-journey/step' })
+          redirect({ goto: '/some-other-journey/step' })
         `,
       }),
     ],
@@ -164,13 +163,13 @@ export const pageContent = TemplateWrapper({
         language: 'typescript',
         code: `
           // Navigate to edit page for specific item
-          next({ goto: Format('/items/%1/edit', Answer('selectedItemId')) })
+          redirect({ goto: Format('/items/%1/edit', Answer('selectedItemId')) })
 
           // Use URL parameter
-          next({ goto: Format('/assessments/%1/summary', Params('assessmentId')) })
+          redirect({ goto: Format('/assessments/%1/summary', Params('assessmentId')) })
 
           // Combine multiple values
-          next({ goto: Format('/users/%1/orders/%2', Answer('userId'), Answer('orderId')) })
+          redirect({ goto: Format('/users/%1/orders/%2', Answer('userId'), Answer('orderId')) })
         `,
       }),
     ],
@@ -182,16 +181,16 @@ export const pageContent = TemplateWrapper({
             effects: [MyEffects.saveAnswers()],
             next: [
               // Check conditions in order
-              next({
+              redirect({
                 when: Answer('hasChildren').match(Condition.Equals('yes')),
                 goto: '/children-details',
               }),
-              next({
+              redirect({
                 when: Answer('hasPartner').match(Condition.Equals('yes')),
                 goto: '/partner-details',
               }),
               // Fallback - always include one without 'when'
-              next({ goto: '/summary' }),
+              redirect({ goto: '/summary' }),
             ],
           }
         `,
@@ -207,7 +206,7 @@ export const pageContent = TemplateWrapper({
               validate: true,
               onValid: {
                 effects: [MyEffects.saveAnswers()],
-                next: [next({ goto: '/next-step' })],
+                next: [redirect({ goto: '/next-step' })],
               },
               // No onInvalid - stays on current step with errors
             }),
@@ -233,26 +232,32 @@ export const pageContent = TemplateWrapper({
         code: `
           onAccess: [
             accessTransition({
-              guards: Data('user.isAuthenticated').match(Condition.Equals(true)),
-              // redirect is always an array, even for single destination
-              redirect: [next({ goto: '/login' })],
+              // Denial condition: user is NOT authenticated
+              when: Data('user.isAuthenticated').not.match(Condition.Equals(true)),
+              // next is always an array, even for single destination
+              next: [redirect({ goto: '/login' })],
             }),
           ],
 
-          // Conditional redirect based on reason
+          // Conditional redirect based on assessment status
           onAccess: [
             accessTransition({
-              guards: Data('assessment.status').match(Condition.Equals('active')),
-              redirect: [
-                next({
+              // Load assessment data first
+              effects: [MyEffects.loadAssessment()],
+            }),
+            accessTransition({
+              // If assessment is not active, redirect based on status
+              when: Data('assessment.status').not.match(Condition.Equals('active')),
+              next: [
+                redirect({
                   when: Data('assessment.status').match(Condition.Equals('completed')),
                   goto: '/assessment-complete',
                 }),
-                next({
+                redirect({
                   when: Data('assessment.status').match(Condition.Equals('cancelled')),
                   goto: '/assessment-cancelled',
                 }),
-                next({ goto: '/assessments' }),
+                redirect({ goto: '/assessments' }),
               ],
             }),
           ],
@@ -270,11 +275,11 @@ export const pageContent = TemplateWrapper({
               validate: true,
               onValid: {
                 next: [
-                  next({
+                  redirect({
                     when: Answer('type').match(Condition.Equals('business')),
                     goto: '/business-details',  // Branch A
                   }),
-                  next({ goto: '/individual-details' }),  // Branch B
+                  redirect({ goto: '/individual-details' }),  // Branch B
                 ],
               },
             }),
@@ -285,7 +290,7 @@ export const pageContent = TemplateWrapper({
             submitTransition({
               validate: true,
               onValid: {
-                next: [next({ goto: '/summary' })],  // Merge
+                next: [redirect({ goto: '/summary' })],  // Merge
               },
             }),
           ],
@@ -295,7 +300,7 @@ export const pageContent = TemplateWrapper({
             submitTransition({
               validate: true,
               onValid: {
-                next: [next({ goto: '/summary' })],  // Merge
+                next: [redirect({ goto: '/summary' })],  // Merge
               },
             }),
           ],

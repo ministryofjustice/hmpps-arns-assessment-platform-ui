@@ -15,7 +15,7 @@ import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
  * Iterators Playground - Edit (CRUD Demo Spoke)
  *
  * Edit form for individual tasks, demonstrating the spoke page pattern
- * with Iterator syntax for access guards.
+ * with Iterator syntax for access checks.
  */
 export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
@@ -27,7 +27,7 @@ export const pageContent = TemplateWrapper({
 
   ## How this works
 
-  This spoke page uses \`Iterator.Find\` in the access guard
+  This spoke page uses \`Iterator.Find\` in the access condition
   to check if the item exists in the collection.
 
   {{slot:iteratorCode}}
@@ -164,7 +164,7 @@ export const pageContent = TemplateWrapper({
     ],
     iteratorCode: [
       GovUKDetails({
-        summaryText: 'View Iterator.Find access guard',
+        summaryText: 'View Iterator.Find access condition',
         content: [
           CodeBlock({
             language: 'typescript',
@@ -172,7 +172,7 @@ export const pageContent = TemplateWrapper({
               // Using Iterator.Find instead of Transformer.Array.Map + Array.IsIn
               onAccess: [
                 accessTransition({
-                  guards: and(
+                  when: and(
                     Params('itemId').not.match(Condition.Equals('new')),
                     // Use Iterator.Find to check if item exists
                     Data('playgroundItems')
@@ -181,7 +181,7 @@ export const pageContent = TemplateWrapper({
                       ))
                       .not.match(Condition.IsRequired()),
                   ),
-                  redirect: [next({ goto: 'hub' })],
+                  next: [redirect({ goto: 'hub' })],
                 }),
               ]
 
@@ -203,7 +203,7 @@ export const pageContent = TemplateWrapper({
               // Collection approach (using Transformer.Array.Map)
               onAccess: [
                 accessTransition({
-                  guards: and(
+                  when: and(
                     Params('itemId').not.match(Condition.Equals('new')),
                     Params('itemId').not.match(
                       Condition.Array.IsIn(
@@ -211,7 +211,7 @@ export const pageContent = TemplateWrapper({
                       )
                     ),
                   ),
-                  redirect: [next({ goto: 'hub' })],
+                  next: [redirect({ goto: 'hub' })],
                 }),
               ]
 

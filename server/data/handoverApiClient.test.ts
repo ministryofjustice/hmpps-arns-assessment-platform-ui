@@ -103,8 +103,8 @@ describe('HandoverApiClient', () => {
         user: mockPrincipal,
         subjectDetails: mockSubject,
         oasysAssessmentPk: '123456',
-        assessmentVersion: 'v1',
-        sentencePlanVersion: 'v2',
+        assessmentVersion: 1,
+        planVersion: 2,
       }
 
       const expectedResponse: CreateHandoverLinkResponse = {
@@ -162,7 +162,7 @@ describe('HandoverApiClient', () => {
         subject: mockSubject,
         assessmentContext: {
           oasysAssessmentPk: '123456',
-          assessmentVersion: 'v1',
+          assessmentVersion: 1,
         },
       }
 

@@ -2,7 +2,7 @@ import hmppsConfig from '@ministryofjustice/eslint-config-hmpps'
 
 export default [
   ...hmppsConfig({
-    extraIgnorePaths: ['test_results/'],
+    extraIgnorePaths: ['test_results/', 'server/forms/**/components/**/*.mjs'],
   }),
   {
     ignores: ['test_results/**'],
@@ -36,6 +36,14 @@ export default [
     rules: {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: './integration_tests/tsconfig.json',
+        },
+      },
+    },
   },
   {
     files: ['packages/form-engine-moj-components/**/*.ts'],
@@ -47,6 +55,20 @@ export default [
     files: ['packages/form-engine-govuk-components/**/*.ts'],
     rules: {
       'no-nested-ternary': 'off',
+    },
+  },
+  {
+    files: ['**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      sourceType: 'module',
+    },
+  },
+  {
+    files: ['assets/js/**/*.js', 'assets/js/**/*.mjs'],
+    rules: {
+      'import/namespace': 'off',
+      'no-console': 'off',
     },
   },
   {

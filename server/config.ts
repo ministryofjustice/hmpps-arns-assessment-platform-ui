@@ -93,6 +93,15 @@ export default {
       },
       agent: new AgentConfig(Number(get('AAP_API_TIMEOUT_RESPONSE', 5000))),
     },
+    deliusApi: {
+      url: get('DELIUS_API_URL', 'http://localhost:9091', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('DELIUS_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('DELIUS_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('DELIUS_API_TIMEOUT_RESPONSE', 5000))),
+    },
     coordinatorApi: {
       url: get('COORDINATOR_API_URL', 'http://localhost:8070', requiredInProduction),
       healthPath: '/health/ping',
@@ -110,7 +119,25 @@ export default {
     formEngineDeveloperGuide: {
       enabled: get('FORM_ENGINE_DEVELOPER_GUIDE_ENABLED', 'false') === 'true',
     },
+    sentencePlan: {
+      enabled: get('SENTENCE_PLAN_ENABLED', 'true') === 'true',
+    },
+    trainingSessionLauncher: {
+      enabled: get('TRAINING_SESSION_LAUNCHER_ENABLED', 'false') === 'true',
+    },
   },
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
+
+  // Target service OAuth client IDs for handover
+  handoverTargets: {
+    'sentence-plan': {
+      clientId: get('SP_HANDOVER_CLIENT_ID', 'sentence-plan'),
+      displayName: 'Sentence Plan',
+    },
+    'strengths-and-needs': {
+      clientId: get('SAN_HANDOVER_CLIENT_ID', 'strengths-and-needs-assessment'),
+      displayName: 'Strengths and Needs (SAN)',
+    },
+  },
 }

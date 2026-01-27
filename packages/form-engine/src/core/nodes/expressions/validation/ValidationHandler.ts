@@ -1,13 +1,14 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { ValidationASTNode } from '@form-engine/core/types/expressions.type'
 import {
-  HybridThunkHandler,
+  ThunkHandler,
   ThunkInvocationAdapter,
   HandlerResult,
   MetadataComputationDependencies,
-} from '@form-engine/core/ast/thunks/types'
-import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
-import { evaluateOperand } from '@form-engine/core/ast/thunks/evaluation'
+} from '@form-engine/core/compilation/thunks/types'
+import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
+import { evaluateOperand, evaluatePropertyValue } from '@form-engine/core/utils/thunkEvaluatorsAsync'
+import { evaluateOperandSync, evaluatePropertyValueSync } from '@form-engine/core/utils/thunkEvaluatorsSync'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 
 /**
@@ -53,7 +54,7 @@ export interface ValidationResult {
  * Synchronous when when predicate and message are sync.
  * Asynchronous when when predicate or message is async.
  */
-export default class ValidationHandler implements HybridThunkHandler {
+export default class ValidationHandler implements ThunkHandler {
   isAsync = true
 
   constructor(
@@ -75,8 +76,33 @@ export default class ValidationHandler implements HybridThunkHandler {
       messageIsAsync = messageHandler?.isAsync ?? true
     }
 
-    // Async if when or message is async
-    this.isAsync = whenIsAsync || messageIsAsync
+    // Check details for AST nodes
+    let detailsIsAsync = false
+
+    if (this.node.properties.details) {
+      detailsIsAsync = this.checkDetailsIsAsync(this.node.properties.details, deps)
+    }
+
+    // Async if when, message, or details is async
+    this.isAsync = whenIsAsync || messageIsAsync || detailsIsAsync
+  }
+
+  private checkDetailsIsAsync(details: Record<string, any>, deps: MetadataComputationDependencies): boolean {
+    for (const value of Object.values(details)) {
+      if (isASTNode(value)) {
+        const handler = deps.thunkHandlerRegistry.get(value.id)
+
+        if (handler?.isAsync ?? true) {
+          return true
+        }
+      } else if (value && typeof value === 'object') {
+        if (this.checkDetailsIsAsync(value, deps)) {
+          return true
+        }
+      }
+    }
+
+    return false
   }
 
   evaluateSync(context: ThunkEvaluationContext, invoker: ThunkInvocationAdapter): HandlerResult<ValidationResult> {
@@ -84,15 +110,10 @@ export default class ValidationHandler implements HybridThunkHandler {
     const predicateResult = invoker.invokeSync(this.node.properties.when.id, context)
 
     // Evaluate the message (needed for both success and error cases)
-    let message: unknown
+    const message = evaluateOperandSync(this.node.properties.message, context, invoker)
 
-    if (isASTNode(this.node.properties.message)) {
-      const result = invoker.invokeSync(this.node.properties.message.id, context)
-
-      message = result.error ? undefined : result.value
-    } else {
-      message = this.node.properties.message
-    }
+    // Evaluate details (resolve any AST nodes recursively)
+    const evaluatedDetails = evaluatePropertyValueSync(this.node.properties.details, context, invoker)
 
     // If predicate evaluation fails, treat as invalid with the user's message
     if (predicateResult.error) {
@@ -101,7 +122,7 @@ export default class ValidationHandler implements HybridThunkHandler {
           passed: false,
           message: String(message ?? 'Validation error'),
           submissionOnly: this.node.properties.submissionOnly ?? false,
-          details: this.node.properties.details,
+          details: evaluatedDetails,
         },
       }
     }
@@ -111,7 +132,7 @@ export default class ValidationHandler implements HybridThunkHandler {
         passed: !predicateResult.value,
         message: String(message ?? ''),
         submissionOnly: this.node.properties.submissionOnly ?? false,
-        details: this.node.properties.details,
+        details: evaluatedDetails,
       },
     }
   }
@@ -126,6 +147,9 @@ export default class ValidationHandler implements HybridThunkHandler {
     // Evaluate the message (needed for both success and error cases)
     const message = await evaluateOperand(this.node.properties.message, context, invoker)
 
+    // Evaluate details (resolve any AST nodes recursively)
+    const evaluatedDetails = await evaluatePropertyValue(this.node.properties.details, context, invoker)
+
     // If predicate evaluation fails, treat as invalid with the user's message
     if (predicateResult.error) {
       return {
@@ -133,7 +157,7 @@ export default class ValidationHandler implements HybridThunkHandler {
           passed: false,
           message: String(message ?? 'Validation error'),
           submissionOnly: this.node.properties.submissionOnly ?? false,
-          details: this.node.properties.details,
+          details: evaluatedDetails,
         },
       }
     }
@@ -143,7 +167,7 @@ export default class ValidationHandler implements HybridThunkHandler {
         passed: !predicateResult.value,
         message: String(message ?? ''),
         submissionOnly: this.node.properties.submissionOnly ?? false,
-        details: this.node.properties.details,
+        details: evaluatedDetails,
       },
     }
   }

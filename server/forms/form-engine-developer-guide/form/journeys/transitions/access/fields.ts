@@ -3,40 +3,45 @@ import { GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/com
 import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
+// Note: Code examples show `throwError` from '@form-engine/form/builders'
+
 /**
  * Transitions - Access
  *
- * onAccess transitions for access control and permission checks.
+ * onAccess transitions for data loading, access control, and conditional redirects.
  */
 export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
   # Access Transitions
 
-  \`accessTransition()\` defines denial conditions for accessing
-  a journey or step. When guards match, users are either redirected away
-  or shown an error page. {.lead}
+  \`accessTransition()\` runs during \`onAccess\` to load data, enforce permissions,
+  and optionally redirect or return error responses. It is the gateway for both
+  data loading and access control. {.lead}
 
   ---
 
   ## Interface
 
-  Access transitions have two variants: **redirect** (navigate away) or
-  **error response** (show error page). Both share \`guards\`
-  and \`effects\`, but differ in their response properties.
+  Access transitions have three common shapes:
+  **effects-only** (load data and continue),
+  **redirect** (navigate away), or
+  **error response** (return a specific status page).
+  All share \`when\` and \`effects\`, but differ in their \`next\` outcome.
 
   ### Shared Properties
 
-  <h3 class="govuk-heading-s"><code>guards</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
+  <h3 class="govuk-heading-s"><code>when</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
 
-  Denial condition. When this predicate evaluates to **true**, access is denied
-  and the redirect or error response executes. If omitted, the transition always triggers.
+  Execution condition. When this predicate evaluates to **true**, the transition executes.
+  Use a denial condition (e.g., "not authenticated") when you want to block access.
+  If omitted, the transition always executes.
 
-  {{slot:guardsCode}}
+  {{slot:whenCode}}
 
   <h3 class="govuk-heading-s"><code>effects</code> <span class="govuk-tag govuk-tag--grey">Optional</span></h3>
 
-  Effects to run when access is denied (before redirect/error). Useful for analytics,
-  logging, or cleanup.
+  Effects to run when the transition executes. Useful for data loading,
+  analytics, logging, or cleanup.
 
   {{slot:effectsCode}}
 
@@ -48,29 +53,40 @@ export const pageContent = TemplateWrapper({
 
   ---
 
-  ## Guard Semantics
+  ## When Semantics
 
-  Guards define **denial conditions** — when the condition is true,
-  access is denied and either \`redirect\` or \`status\`/\`message\` triggers:
+  \`when\` defines **execution conditions** — when the condition is true,
+  the transition executes (effects run, then redirect/error if configured):
 
-  - \`guards\` evaluates to **true** → access **denied** → redirect or error response
-  - \`guards\` evaluates to **false** → continue (check next transition or grant access)
-  - No matching guards → access granted
+  - \`when\` evaluates to **true** → execute effects, then redirect/error if configured
+  - \`when\` evaluates to **false** → skip to next transition
+  - No \`when\` → always executes
 
   <div class="govuk-inset-text">
-    Think of it as: <em>"<strong>When</strong> this denial condition is true,
-    redirect to this page or show this error."</em> — similar to validation's "when error condition is true, show message".
+    Think of it as: <em>"<strong>When</strong> this condition is true,
+    run this transition (and optionally redirect or show an error)."</em>
   </div>
 
   ---
 
-  ## Execution: First Match Executes
+  ## Execution: Sequential in Order
 
-  Access transitions use **first-match** semantics (like onAction/onSubmission):
+  Access transitions execute **sequentially**:
 
-  - Transitions are checked in order
-  - The first transition where guards match (evaluate to true) executes its redirect or error response
-  - If no guards match, access is granted
+  - Transitions run in order
+  - If \`when\` is false, skip to the next transition
+  - If \`when\` is true (or omitted), effects run
+  - If a transition redirects or returns an error, execution stops
+  - If no redirects/errors occur, access is granted
+
+  ---
+
+  ## Effects-Only (Data Loading)
+
+  Use an effects-only transition to load data or pre-populate answers
+  before rendering the step:
+
+  {{slot:effectsOnlyCode}}
 
   ---
 
@@ -101,7 +117,7 @@ export const pageContent = TemplateWrapper({
 
   ## Checking Loaded Data
 
-  Access guards can reference data loaded in \`onLoad\`:
+  Access checks can reference data loaded earlier in \`onAccess\`:
 
   {{slot:loadedDataCode}}
 
@@ -137,8 +153,8 @@ export const pageContent = TemplateWrapper({
 
   ## Effects for Analytics
 
-  Use \`effects\` for analytics or logging. Effects run when access is
-  **denied** (before redirect):
+  Use \`effects\` for analytics or logging. Effects run when the transition
+  executes (before redirect/error):
 
   {{slot:analyticsCode}}
 
@@ -146,27 +162,27 @@ export const pageContent = TemplateWrapper({
 
   ## Best Practices
 
-  - **Load before checking:** Ensure \`onLoad\` populates
-    any data your guards need
-  - **Provide redirect OR status/message:** Every accessTransition needs
-    either a redirect destination or a status code with message
+  - **Load before checking:** Ensure earlier \`onAccess\` transitions populate
+    any data your checks need
+  - **Provide redirect OR throwError:** Every accessTransition with an outcome needs
+    either a redirect destination or a throwError for HTTP errors
   - **Use error responses for terminal states:** 404 Not Found, 403 Forbidden, etc.
     should show error pages rather than redirect
-  - **Keep guards simple:** Complex permission logic should live in
+  - **Keep \`when\` conditions simple:** Complex permission logic should live in
     your effects, not in the form definition
   - **Use middleware for auth:** Basic authentication is often better
-    handled by route middleware rather than form guards
+    handled by route middleware rather than form access checks
 
   ---
 
   {{slot:pagination}}
 `),
   slots: {
-    guardsCode: [
+    whenCode: [
       CodeBlock({
         language: 'typescript',
         code: `
-          guards: Data('user.isAuthenticated').not.match(Condition.Equals(true))
+          when: Data('user.isAuthenticated').not.match(Condition.Equals(true))
           // When user is NOT authenticated → deny access
         `,
       }),
@@ -179,15 +195,30 @@ export const pageContent = TemplateWrapper({
         `,
       }),
     ],
+    effectsOnlyCode: [
+      CodeBlock({
+        language: 'typescript',
+        code: `
+          onAccess: [
+            accessTransition({
+              effects: [
+                MyEffects.loadUserProfile(),
+                MyEffects.loadReferenceData(),
+              ],
+            }),
+          ]
+        `,
+      }),
+    ],
     redirectVariant: [
       GovUKDetails({
         summaryText: 'Redirect Variant — navigate user to another page',
         content: [
           TemplateWrapper({
             template: parseGovUKMarkdown(`
-<h3 class="govuk-heading-s"><code>redirect</code> <span class="govuk-tag govuk-tag--red">Required</span></h3>
+<h3 class="govuk-heading-s"><code>next</code> <span class="govuk-tag govuk-tag--red">Required</span></h3>
 
-Array of \`next()\` destinations. The first matching destination is used.
+Array of \`redirect()\` destinations. The first matching destination is used.
 Use this when the user should be sent somewhere else (login, prerequisite step, etc.).
 
 {{slot:code}}
@@ -198,19 +229,19 @@ Use this when the user should be sent somewhere else (login, prerequisite step, 
                   language: 'typescript',
                   code: `
                     accessTransition({
-                      guards: Data('user.isAuthenticated').not.match(Condition.Equals(true)),
-                      redirect: [next({ goto: '/login' })],
+                      when: Data('user.isAuthenticated').not.match(Condition.Equals(true)),
+                      next: [redirect({ goto: '/login' })],
                     })
 
                     // Or with conditional destinations
                     accessTransition({
-                      guards: Data('session.expired').match(Condition.Equals(true)),
-                      redirect: [
-                        next({
+                      when: Data('session.expired').match(Condition.Equals(true)),
+                      next: [
+                        redirect({
                           when: Data('reason').match(Condition.Equals('timeout')),
                           goto: '/session-expired',
                         }),
-                        next({ goto: '/login' }),
+                        redirect({ goto: '/login' }),
                       ],
                     })
                   `,
@@ -227,14 +258,11 @@ Use this when the user should be sent somewhere else (login, prerequisite step, 
         content: [
           TemplateWrapper({
             template: parseGovUKMarkdown(`
-<h3 class="govuk-heading-s"><code>status</code> <span class="govuk-tag govuk-tag--red">Required</span></h3>
+<h3 class="govuk-heading-s"><code>next</code> with <code>throwError()</code> <span class="govuk-tag govuk-tag--red">Required</span></h3>
 
-HTTP status code to return. Common values: \`401\` (Unauthorized),
-\`403\` (Forbidden), \`404\` (Not Found).
-
-<h3 class="govuk-heading-s"><code>message</code> <span class="govuk-tag govuk-tag--red">Required</span></h3>
-
-Error message to display. Can be a static string or dynamic using \`Format()\`.
+Use \`throwError()\` in the \`next\` array to return an HTTP error page.
+Specify the \`status\` code and \`message\` to display.
+Common status codes: \`401\` (Unauthorized), \`403\` (Forbidden), \`404\` (Not Found).
 
 {{slot:code}}
             `),
@@ -243,17 +271,20 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
                 CodeBlock({
                   language: 'typescript',
                   code: `
+                    import { accessTransition, throwError } from '@form-engine/form/builders'
+
                     accessTransition({
-                      guards: Data('itemNotFound').match(Condition.Equals(true)),
-                      status: 404,
-                      message: 'Menu item not found',
+                      when: Data('itemNotFound').match(Condition.Equals(true)),
+                      next: [throwError({ status: 404, message: 'Menu item not found' })],
                     })
 
                     // Dynamic message
                     accessTransition({
-                      guards: Data('itemNotFound').match(Condition.Equals(true)),
-                      status: 404,
-                      message: Format('Item %1 was not found', Params('itemId')),
+                      when: Data('itemNotFound').match(Condition.Equals(true)),
+                      next: [throwError({
+                        status: 404,
+                        message: Format('Item %1 was not found', Params('itemId')),
+                      })],
                     })
                   `,
                 }),
@@ -271,18 +302,16 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
             code: 'protected-journey',
             path: '/protected',
 
-            onLoad: [
-              loadTransition({
-                effects: [MyEffects.loadCurrentUser()],
-              }),
-            ],
-
             onAccess: [
               accessTransition({
-                // Denial condition: user is NOT authenticated
-                guards: Data('user.isAuthenticated').not.match(Condition.Equals(true)),
-                // When true, redirect to login
-                redirect: [next({ goto: '/login' })],
+                effects: [MyEffects.loadCurrentUser()],
+                next: [
+                  // Denial condition: user is NOT authenticated
+                  redirect({
+                    when: Data('user.isAuthenticated').not.match(Condition.Equals(true)),
+                    goto: '/login',
+                  }),
+                ],
               }),
             ],
 
@@ -303,9 +332,9 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
             onAccess: [
               accessTransition({
                 // Denial condition: step 1 is NOT complete
-                guards: Answer('step1Complete').not.match(Condition.Equals(true)),
+                when: Answer('step1Complete').not.match(Condition.Equals(true)),
                 // When true, send back to step 1
-                redirect: [next({ goto: '/step-1' })],
+                next: [redirect({ goto: '/step-1' })],
               }),
             ],
 
@@ -322,22 +351,21 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
             path: '/edit/:itemId',
             title: 'Edit Item',
 
-            onLoad: [
-              loadTransition({
-                effects: [MyEffects.loadItem(Params('itemId'))],
-              }),
-            ],
-
             onAccess: [
-              // Denial: item was not found
               accessTransition({
-                guards: Data('itemNotFound').match(Condition.Equals(true)),
-                redirect: [next({ goto: '/items' })],
-              }),
-              // Denial: user cannot edit this item
-              accessTransition({
-                guards: Data('item.canEdit').not.match(Condition.Equals(true)),
-                redirect: [next({ goto: '/items' })],
+                effects: [MyEffects.loadItem(Params('itemId'))],
+                next: [
+                  // Item not found - redirect to list
+                  redirect({
+                    when: Data('itemNotFound').match(Condition.Equals(true)),
+                    goto: '/items',
+                  }),
+                  // User cannot edit - redirect to list
+                  redirect({
+                    when: Data('item.canEdit').not.match(Condition.Equals(true)),
+                    goto: '/items',
+                  }),
+                ],
               }),
             ],
 
@@ -350,29 +378,29 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
       CodeBlock({
         language: 'typescript',
         code: `
+          import { accessTransition, throwError } from '@form-engine/form/builders'
+
           step({
             path: '/edit/:itemId',
             title: 'Edit Item',
 
-            onLoad: [
-              loadTransition({
-                effects: [MyEffects.loadItem(Params('itemId'))],
-              }),
-            ],
-
             onAccess: [
-              // 404: Item not found
               accessTransition({
-                guards: Data('itemNotFound').match(Condition.Equals(true)),
-                status: 404,
-                message: 'Menu item not found',
-              }),
-
-              // 403: User cannot edit this item
-              accessTransition({
-                guards: Data('item.canEdit').not.match(Condition.Equals(true)),
-                status: 403,
-                message: 'You do not have permission to edit this item',
+                effects: [MyEffects.loadItem(Params('itemId'))],
+                next: [
+                  // 404: Item not found
+                  throwError({
+                    when: Data('itemNotFound').match(Condition.Equals(true)),
+                    status: 404,
+                    message: 'Menu item not found',
+                  }),
+                  // 403: User cannot edit this item
+                  throwError({
+                    when: Data('item.canEdit').not.match(Condition.Equals(true)),
+                    status: 403,
+                    message: 'You do not have permission to edit this item',
+                  }),
+                ],
               }),
             ],
 
@@ -385,11 +413,15 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
       CodeBlock({
         language: 'typescript',
         code: `
+          import { accessTransition, throwError } from '@form-engine/form/builders'
+
           onAccess: [
             accessTransition({
-              guards: Data('itemNotFound').match(Condition.Equals(true)),
-              status: 404,
-              message: Format('Item %1 was not found', Params('itemId')),
+              when: Data('itemNotFound').match(Condition.Equals(true)),
+              next: [throwError({
+                status: 404,
+                message: Format('Item %1 was not found', Params('itemId')),
+              })],
             }),
           ]
         `,
@@ -402,12 +434,12 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
           onAccess: [
             accessTransition({
               // Denial: not authenticated
-              guards: Data('user.isAuthenticated').not.match(Condition.Equals(true)),
+              when: Data('user.isAuthenticated').not.match(Condition.Equals(true)),
               effects: [
                 // Log the access denial before redirecting
                 Analytics.trackAccessDenied('unauthenticated'),
               ],
-              redirect: [next({ goto: '/login' })],
+              next: [redirect({ goto: '/login' })],
             }),
           ]
         `,
@@ -417,8 +449,8 @@ Error message to display. Can be a static string or dynamic using \`Format()\`.
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/transitions/load',
-          labelText: 'Load Transitions',
+          href: '/forms/form-engine-developer-guide/transitions/intro',
+          labelText: 'Introduction',
         },
         next: {
           href: '/forms/form-engine-developer-guide/transitions/action',

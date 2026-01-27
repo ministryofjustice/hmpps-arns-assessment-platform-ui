@@ -1,11 +1,11 @@
 import { AstNodeId, NodeId } from '@form-engine/core/types/engine.type'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { BlockType } from '@form-engine/form/types/enums'
-import { EvaluationResult } from '@form-engine/core/ast/thunks/ThunkEvaluator'
+import { EvaluationResult } from '@form-engine/core/compilation/thunks/ThunkEvaluator'
 import { BlockASTNode, JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
-import MetadataRegistry from '@form-engine/core/ast/registration/MetadataRegistry'
-import ThunkCacheManager from '@form-engine/core/ast/thunks/registries/ThunkCacheManager'
-import NodeRegistry from '@form-engine/core/ast/registration/NodeRegistry'
+import MetadataRegistry from '@form-engine/core/compilation/registries/MetadataRegistry'
+import ThunkCacheManager from '@form-engine/core/compilation/thunks/ThunkCacheManager'
+import NodeRegistry from '@form-engine/core/compilation/registries/NodeRegistry'
 import RenderContextFactory, { RenderContextOptions } from './RenderContextFactory'
 import { Evaluated, JourneyMetadata, StepMetadata } from './types'
 
@@ -121,9 +121,10 @@ describe('RenderContextFactory', () => {
   }
 
   const createMockNodeRegistry = (): NodeRegistry => {
-    // Create a mock registry that returns empty arrays for pseudo node lookups
+    // Create a mock registry that returns empty arrays for node lookups
     return {
       findByPseudoType: jest.fn().mockReturnValue([]),
+      findByType: jest.fn().mockReturnValue([]),
     } as unknown as NodeRegistry
   }
 
@@ -214,7 +215,6 @@ describe('RenderContextFactory', () => {
     it('should exclude transitions from step properties', () => {
       // Arrange
       const step = createMockStep('compile_ast:2', {
-        onLoad: [{ type: 'load-transition' }],
         onAction: [{ type: 'action-transition' }],
         onSubmission: [{ type: 'submit-transition' }],
         backlink: '/previous',
@@ -320,7 +320,6 @@ describe('RenderContextFactory', () => {
       // Arrange
       const step = createMockStep('compile_ast:2')
       const journey = createMockJourney('compile_ast:1', [step], {
-        onLoad: [{ type: ASTNodeType.TRANSITION }] as any,
         onAccess: [{ type: ASTNodeType.TRANSITION }] as any,
         title: 'Journey Title',
         metadata: { version: '1.0' },

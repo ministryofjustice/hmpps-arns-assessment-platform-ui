@@ -1,9 +1,9 @@
-import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
+import { WiringContext } from '@form-engine/core/compilation/dependency-graph/WiringContext'
 import { SubmitTransitionASTNode, TransitionASTNode, ExpressionASTNode } from '@form-engine/core/types/expressions.type'
 import { StepASTNode } from '@form-engine/core/types/structures.type'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { ExpressionType } from '@form-engine/form/types/enums'
-import { DependencyEdgeType } from '@form-engine/core/ast/dependencies/DependencyGraph'
+import { DependencyEdgeType } from '@form-engine/core/compilation/dependency-graph/DependencyGraph'
 import { isSubmitTransitionNode, isTransitionNode } from '@form-engine/core/typeguards/transition-nodes'
 import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
@@ -233,16 +233,17 @@ export default class SubmitWiring {
   }
 
   /**
-   * Wire next expressions array to the transition
-   * Creates edges: next → transition
+   * Wire next outcomes array to the transition
+   * Creates edges: outcome → transition
+   * Note: Outcome internal dependencies are wired by RedirectOutcomeWiring/ThrowErrorOutcomeWiring
    */
   private wireNext(transition: SubmitTransitionASTNode, next: ASTNode[] | undefined, branch: string) {
     if (!next) {
       return
     }
 
-    next.filter(isASTNode).forEach((nextExpr, index) => {
-      this.wiringContext.graph.addEdge(nextExpr.id, transition.id, DependencyEdgeType.DATA_FLOW, {
+    next.filter(isASTNode).forEach((outcome, index) => {
+      this.wiringContext.graph.addEdge(outcome.id, transition.id, DependencyEdgeType.DATA_FLOW, {
         property: `${branch}.next`,
         index,
       })

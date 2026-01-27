@@ -3,7 +3,8 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
 import { getCorrelationContext } from 'applicationinsights'
-import { initialiseName } from './utils'
+import { ValidationResult } from '@form-engine/core/nodes/expressions/validation/ValidationHandler'
+import { formatDate, initialiseName } from './utils'
 import config from '../config'
 import logger from '../../logger'
 
@@ -59,6 +60,7 @@ export default function nunjucksSetup(app?: express.Express) {
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('json', (obj, spaces = 2) => JSON.stringify(obj, null, spaces))
+  njkEnv.addFilter('formatSimpleDate', date => formatDate(date, 'simple'))
 
   // Global function to get the current request's operation ID for support purposes
   njkEnv.addGlobal('getRequestId', () => {
@@ -108,6 +110,13 @@ export default function nunjucksSetup(app?: express.Express) {
   njkEnv.addFilter('mapNavItem', mapNavItem)
 
   njkEnv.addFilter('isDeepestActive', isDeepestActive)
+
+  njkEnv.addFilter('toErrorSummary', (errors: ValidationResult[]) =>
+    errors.map(error => ({
+      text: error.message,
+      href: (error.details?.href as string | undefined) ?? (error.blockCode ? `#${error.blockCode}` : ''),
+    })),
+  )
 
   return njkEnv
 }

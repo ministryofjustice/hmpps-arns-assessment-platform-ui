@@ -3,11 +3,22 @@ import AuditService from './auditService'
 import AssessmentService from './assessmentService'
 
 export const services = () => {
-  const { applicationInfo, assessmentPlatformApiClient } = dataAccess()
+  const {
+    applicationInfo,
+    assessmentPlatformApiClient,
+    coordinatorApiClient,
+    handoverApiClient,
+    deliusApiClient,
+    preferencesStore,
+  } = dataAccess()
 
   return {
     applicationInfo,
     assessmentPlatformApiClient,
+    deliusApiClient,
+    coordinatorApiClient,
+    handoverApiClient,
+    preferencesStore,
     auditService: new AuditService(applicationInfo),
     assessmentService: new AssessmentService(assessmentPlatformApiClient),
   }

@@ -1,17 +1,18 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { SubmitTransitionASTNode } from '@form-engine/core/types/expressions.type'
 import {
-  HybridThunkHandler,
+  ThunkHandler,
   ThunkInvocationAdapter,
   HandlerResult,
   MetadataComputationDependencies,
   ThunkError,
-} from '@form-engine/core/ast/thunks/types'
+} from '@form-engine/core/compilation/thunks/types'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
-import ThunkEvaluationContext from '@form-engine/core/ast/thunks/ThunkEvaluationContext'
+import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { evaluateUntilFirstMatch, evaluateUntilFirstMatchSync } from '@form-engine/core/ast/thunks/evaluation'
-import getAncestorChain from '@form-engine/core/ast/utils/getAncestorChain'
+import getAncestorChain from '@form-engine/core/utils/getAncestorChain'
+import { evaluateNextOutcomes, OutcomeEvaluationResult } from '@form-engine/core/utils/thunkEvaluatorsAsync'
+import { evaluateNextOutcomesSync } from '@form-engine/core/utils/thunkEvaluatorsSync'
 
 /**
  * Result of a submit transition evaluation
@@ -33,9 +34,27 @@ export interface SubmitTransitionResult {
   isValid?: boolean
 
   /**
-   * Navigation target (from next expressions)
+   * The outcome of the transition:
+   * - 'continue': Transition completed, proceed to render
+   * - 'redirect': Halt and redirect to another page
+   * - 'error': Halt and return HTTP error response
    */
-  next?: string
+  outcome: 'continue' | 'redirect' | 'error'
+
+  /**
+   * Navigation target (only present when outcome is 'redirect')
+   */
+  redirect?: string
+
+  /**
+   * HTTP status code for error response (only present when outcome is 'error')
+   */
+  status?: number
+
+  /**
+   * Error message for error response (only present when outcome is 'error')
+   */
+  message?: string
 }
 
 /**
@@ -46,12 +65,17 @@ export interface SubmitTransitionResult {
  * 2. Running validation if validate=true
  * 3. Pushing @transitionType: 'submit' onto scope for effect execution
  * 4. Executing effects from appropriate branch (effects run immediately)
- * 5. Evaluating next expressions for navigation (AFTER effects have run)
+ * 5. Evaluating next outcomes for navigation/errors (AFTER effects have run)
  *
  * ## Key Design: Effects Execute Before Next
  * Effects are executed BEFORE next expressions are evaluated. This ensures
  * that data set by effects (e.g., goalUuid) is available when evaluating
  * next expressions that reference that data (e.g., Format('goal/%1', Data('goalUuid'))).
+ *
+ * ## Outcome Evaluation
+ * The `next` array in each branch contains redirect and throwError outcomes.
+ * Outcomes are evaluated in order until one matches (when condition is true or absent).
+ * First match wins and determines the transition result.
  *
  * ## Wiring Pattern
  * - when → transition (must evaluate before transition)
@@ -74,7 +98,7 @@ export interface SubmitTransitionResult {
  * The @transitionType scope variable enables EffectHandler to create
  * EffectFunctionContext with the correct transition type for answer source tracking.
  */
-export default class SubmitHandler implements HybridThunkHandler {
+export default class SubmitHandler implements ThunkHandler {
   isAsync = true
 
   constructor(
@@ -119,7 +143,7 @@ export default class SubmitHandler implements HybridThunkHandler {
         }
       }
 
-      // Check next expressions in branch
+      // Check next outcomes in branch
       if (branch?.next && Array.isArray(branch.next)) {
         const hasAsyncNext = branch.next.filter(isASTNode).some(node => {
           const handler = deps.thunkHandlerRegistry.get(node.id)
@@ -160,6 +184,7 @@ export default class SubmitHandler implements HybridThunkHandler {
         value: {
           executed: false,
           validated: false,
+          outcome: 'continue',
         },
       }
     }
@@ -172,6 +197,7 @@ export default class SubmitHandler implements HybridThunkHandler {
         value: {
           executed: false,
           validated: false,
+          outcome: 'continue',
         },
       }
     }
@@ -188,7 +214,7 @@ export default class SubmitHandler implements HybridThunkHandler {
     context.scope.push({ '@transitionType': 'submit' })
 
     // Execute effects and evaluate next from appropriate branch
-    let next: string | undefined
+    let outcomeResult: OutcomeEvaluationResult = { type: 'none' }
 
     if (validate === true) {
       // Execute onAlways effects first
@@ -209,7 +235,7 @@ export default class SubmitHandler implements HybridThunkHandler {
           return { error: result.error }
         }
 
-        next = result.next
+        outcomeResult = result.outcome
       } else {
         const result = this.executeBranchSync(this.node.properties.onInvalid, context, invoker)
 
@@ -219,7 +245,7 @@ export default class SubmitHandler implements HybridThunkHandler {
           return { error: result.error }
         }
 
-        next = result.next
+        outcomeResult = result.outcome
       }
     } else {
       // Skip validation transition
@@ -231,19 +257,14 @@ export default class SubmitHandler implements HybridThunkHandler {
         return { error: result.error }
       }
 
-      next = result.next
+      outcomeResult = result.outcome
     }
 
     // Pop scope after effects are done
     context.scope.pop()
 
     return {
-      value: {
-        executed: true,
-        validated: validate === true,
-        isValid,
-        next,
-      },
+      value: this.buildResult(validate === true, isValid, outcomeResult),
     }
   }
 
@@ -259,6 +280,7 @@ export default class SubmitHandler implements HybridThunkHandler {
         value: {
           executed: false,
           validated: false,
+          outcome: 'continue',
         },
       }
     }
@@ -271,6 +293,7 @@ export default class SubmitHandler implements HybridThunkHandler {
         value: {
           executed: false,
           validated: false,
+          outcome: 'continue',
         },
       }
     }
@@ -287,7 +310,7 @@ export default class SubmitHandler implements HybridThunkHandler {
     context.scope.push({ '@transitionType': 'submit' })
 
     // Execute effects and evaluate next from appropriate branch
-    let next: string | undefined
+    let outcomeResult: OutcomeEvaluationResult = { type: 'none' }
 
     if (validate === true) {
       // Execute onAlways effects first
@@ -308,7 +331,7 @@ export default class SubmitHandler implements HybridThunkHandler {
           return { error: result.error }
         }
 
-        next = result.next
+        outcomeResult = result.outcome
       } else {
         const result = await this.executeBranch(this.node.properties.onInvalid, context, invoker)
 
@@ -318,7 +341,7 @@ export default class SubmitHandler implements HybridThunkHandler {
           return { error: result.error }
         }
 
-        next = result.next
+        outcomeResult = result.outcome
       }
     } else {
       // Skip validation transition
@@ -330,19 +353,51 @@ export default class SubmitHandler implements HybridThunkHandler {
         return { error: result.error }
       }
 
-      next = result.next
+      outcomeResult = result.outcome
     }
 
     // Pop scope after effects are done
     context.scope.pop()
 
     return {
-      value: {
-        executed: true,
-        validated: validate === true,
-        isValid,
-        next,
-      },
+      value: this.buildResult(validate === true, isValid, outcomeResult),
+    }
+  }
+
+  /**
+   * Build the final result from outcome evaluation
+   */
+  private buildResult(
+    validated: boolean,
+    isValid: boolean | undefined,
+    outcomeResult: OutcomeEvaluationResult,
+  ): SubmitTransitionResult {
+    const baseResult = {
+      executed: true,
+      validated,
+      isValid,
+    }
+
+    if (outcomeResult.type === 'redirect') {
+      return {
+        ...baseResult,
+        outcome: 'redirect' as const,
+        redirect: outcomeResult.value,
+      }
+    }
+
+    if (outcomeResult.type === 'error') {
+      return {
+        ...baseResult,
+        outcome: 'error' as const,
+        status: outcomeResult.value.status,
+        message: outcomeResult.value.message,
+      }
+    }
+
+    return {
+      ...baseResult,
+      outcome: 'continue' as const,
     }
   }
 
@@ -527,49 +582,32 @@ export default class SubmitHandler implements HybridThunkHandler {
   }
 
   /**
-   * Execute effects and evaluate next from a branch
+   * Execute effects and evaluate next outcomes from a branch
    *
-   * IMPORTANT: Effects are executed FIRST, then next is evaluated.
+   * IMPORTANT: Effects are executed FIRST, then outcomes are evaluated.
    * This ensures data set by effects is available when evaluating next expressions.
    */
   private async executeBranch(
     branch: { effects?: unknown[]; next?: unknown[] } | undefined,
     context: ThunkEvaluationContext,
     invoker: ThunkInvocationAdapter,
-  ): Promise<{ error?: ThunkError; next: string | undefined }> {
+  ): Promise<{ error?: ThunkError; outcome: OutcomeEvaluationResult }> {
     if (!branch) {
-      return { next: undefined }
+      return { outcome: { type: 'none' } }
     }
 
     // Execute effects FIRST
     const error = await this.executeEffects(branch.effects, context, invoker)
 
     if (error) {
-      return { error, next: undefined }
+      return { error, outcome: { type: 'none' } }
     }
 
-    // THEN evaluate next (effects have already run, so Data('goalUuid') works)
-    const next = branch.next ? await this.evaluateNext(branch.next, context, invoker) : undefined
+    // THEN evaluate next outcomes (effects have already run, so Data('goalUuid') works)
+    const outcome = branch.next ? await evaluateNextOutcomes(branch.next, context, invoker) : { type: 'none' as const }
 
-    return { next }
+    return { outcome }
   }
-
-  /**
-   * Evaluate next expressions to determine navigation target
-   * Returns the first non-undefined result
-   */
-  private async evaluateNext(
-    nextExpressions: unknown[],
-    context: ThunkEvaluationContext,
-    invoker: ThunkInvocationAdapter,
-  ): Promise<string | undefined> {
-    const nextIds = nextExpressions.filter(isASTNode).map(node => node.id)
-    const result = await evaluateUntilFirstMatch(nextIds, context, invoker)
-
-    return result !== undefined ? String(result) : undefined
-  }
-
-  // Sync versions of private methods
 
   private evaluateWhenPredicateSync(context: ThunkEvaluationContext, invoker: ThunkInvocationAdapter): boolean {
     const when = this.node.properties.when
@@ -672,32 +710,22 @@ export default class SubmitHandler implements HybridThunkHandler {
     branch: { effects?: unknown[]; next?: unknown[] } | undefined,
     context: ThunkEvaluationContext,
     invoker: ThunkInvocationAdapter,
-  ): { error?: ThunkError; next: string | undefined } {
+  ): { error?: ThunkError; outcome: OutcomeEvaluationResult } {
     if (!branch) {
-      return { next: undefined }
+      return { outcome: { type: 'none' } }
     }
 
     // Execute effects FIRST
     const error = this.executeEffectsSync(branch.effects, context, invoker)
 
     if (error) {
-      return { error, next: undefined }
+      return { error, outcome: { type: 'none' } }
     }
 
-    // THEN evaluate next
-    const next = branch.next ? this.evaluateNextSync(branch.next, context, invoker) : undefined
+    // THEN evaluate next outcomes
+    const outcome = branch.next ? evaluateNextOutcomesSync(branch.next, context, invoker) : { type: 'none' as const }
 
-    return { next }
+    return { outcome }
   }
 
-  private evaluateNextSync(
-    nextExpressions: unknown[],
-    context: ThunkEvaluationContext,
-    invoker: ThunkInvocationAdapter,
-  ): string | undefined {
-    const nextIds = nextExpressions.filter(isASTNode).map(node => node.id)
-    const result = evaluateUntilFirstMatchSync(nextIds, context, invoker)
-
-    return result !== undefined ? String(result) : undefined
-  }
 }

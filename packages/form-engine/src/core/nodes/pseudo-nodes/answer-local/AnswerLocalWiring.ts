@@ -1,12 +1,12 @@
-import { WiringContext } from '@form-engine/core/ast/dependencies/WiringContext'
+import { WiringContext } from '@form-engine/core/compilation/dependency-graph/WiringContext'
 import { AnswerLocalPseudoNode, PostPseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
 import { FieldBlockASTNode } from '@form-engine/core/types/structures.type'
-import { DependencyEdgeType } from '@form-engine/core/ast/dependencies/DependencyGraph'
+import { DependencyEdgeType } from '@form-engine/core/compilation/dependency-graph/DependencyGraph'
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { isASTNode, isPseudoNode } from '@form-engine/core/typeguards/nodes'
 import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import { ReferenceASTNode } from '@form-engine/core/types/expressions.type'
-import { getPseudoNodeKey } from '@form-engine/core/ast/registration/pseudoNodeKeyExtractor'
+import { getPseudoNodeKey } from '@form-engine/core/utils/pseudoNodeKeyExtractor'
 
 /**
  * AnswerLocalWiring: Wires Answer.Local pseudo nodes to their data sources and consumers
@@ -17,7 +17,7 @@ import { getPseudoNodeKey } from '@form-engine/core/ast/registration/pseudoNodeK
  * - POST → ANSWER_LOCAL (raw form data)
  * - FORMATTERS[] → ANSWER_LOCAL (transformer functions, executed inline)
  * - DEFAULT_VALUE → ANSWER_LOCAL (default value expression)
- * - ONLOAD_TRANSITION → ANSWER_LOCAL (pre-population from onLoad effects)
+ * - ONACCESS_TRANSITION → ANSWER_LOCAL (pre-population from onAccess effects)
  * - ANSWER_LOCAL → Answer() references (consumers)
  */
 export default class AnswerLocalWiring {
@@ -119,7 +119,7 @@ export default class AnswerLocalWiring {
    * - POST pseudo node - raw form submission data
    * - formatters (if exist) - transformer functions executed inline after sanitization
    * - defaultValue expression (if exists) - default when no POST data exists
-   * - onLoad transition (if exists) - pre-populated value from effects
+   * - onAccess transition (if exists) - pre-populated value from effects
    */
   private wireProducers(answerPseudoNode: AnswerLocalPseudoNode) {
     const { baseFieldCode, fieldNodeId: baseFieldNodeId } = answerPseudoNode.properties
@@ -158,15 +158,20 @@ export default class AnswerLocalWiring {
       })
     }
 
-    // Wire the on load transition
-    const nearestOnLoadTransition = this.wiringContext.findLastOnLoadTransitionFrom(
+    // Wire the onAccess transition
+    const nearestOnAccessTransition = this.wiringContext.findLastOnAccessTransitionFrom(
       this.wiringContext.getCurrentStepNode().id,
     )
 
-    if (nearestOnLoadTransition) {
-      this.wiringContext.graph.addEdge(nearestOnLoadTransition.id, answerPseudoNode.id, DependencyEdgeType.DATA_FLOW, {
-        fieldCode: baseFieldCode,
-      })
+    if (nearestOnAccessTransition) {
+      this.wiringContext.graph.addEdge(
+        nearestOnAccessTransition.id,
+        answerPseudoNode.id,
+        DependencyEdgeType.DATA_FLOW,
+        {
+          fieldCode: baseFieldCode,
+        },
+      )
     }
   }
 }

@@ -37,7 +37,7 @@ the journey, components, and effect registries together.
 ### form/index.ts
 
 Defines the main journey using the \`journey()\` builder. Imports all steps
-and child journeys, configures load transitions and view templates.
+and child journeys, configures access transitions and view templates.
 
 {{slot:journeyExample}}
 
@@ -143,7 +143,7 @@ Custom Nunjucks templates for the form's HTML layout.
         language: 'typescript',
         code: `
           // my-form/form/index.ts
-          import { journey, loadTransition } from '@form-engine/form/builders'
+          import { journey, accessTransition } from '@form-engine/form/builders'
           import { introStep } from './steps/intro/step'
           import { summaryStep } from './steps/summary/step'
           import { MyFormEffects } from '../effects'
@@ -152,8 +152,8 @@ Custom Nunjucks templates for the form's HTML layout.
             code: 'my-form',
             title: 'My Form',
             path: '/my-form',
-            onLoad: [
-              loadTransition({
+            onAccess: [
+              accessTransition({
                 effects: [MyFormEffects.initializeSession()],
               }),
             ],
