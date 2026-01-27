@@ -3,7 +3,7 @@ import { test, TargetService } from '../../support/fixtures'
 import ConfirmRemoveGoalPage from '../../pages/sentencePlan/confirmRemoveGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
-import { getDatePlusDaysAsISO } from './sentencePlanUtils'
+import { getDatePlusDaysAsISO, navigateToSentencePlan } from './sentencePlanUtils'
 
 test.describe('Remove goal journey', () => {
   test.describe('confirm goal removal', () => {
@@ -16,7 +16,7 @@ test.describe('Remove goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
@@ -46,7 +46,7 @@ test.describe('Remove goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
@@ -74,7 +74,7 @@ test.describe('Remove goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
@@ -100,7 +100,7 @@ test.describe('Remove goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
@@ -132,7 +132,7 @@ test.describe('Remove goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
@@ -156,7 +156,7 @@ test.describe('Remove goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
@@ -194,7 +194,7 @@ test.describe('Remove goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to confirm-remove-goal page and confirm
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -243,7 +243,7 @@ test.describe('Remove goal journey', () => {
         .withAgreementStatus('AGREED')
         .save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Verify we start with 2 current goals
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -282,7 +282,7 @@ test.describe('Remove goal journey', () => {
         .withAgreementStatus('AGREED')
         .save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Verify removed goals tab is not visible initially
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -313,7 +313,7 @@ test.describe('Remove goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Remove the goal
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -345,7 +345,7 @@ test.describe('Remove goal journey', () => {
       const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Try to navigate to confirm-remove-goal page without agreeing plan
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)

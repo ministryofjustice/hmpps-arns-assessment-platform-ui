@@ -39,12 +39,13 @@ export interface StepConfig {
  * Note configuration for test setup.
  *
  * Note types track goal lifecycle events:
+ * - ACHIEVED: Created when a goal is marked as achieved (optional notes about how it helped)
  * - REMOVED: Created when a goal is removed from the plan
  * - READDED: Created when a previously removed goal is added back
  * - PROGRESS: General progress updates on active goals
  */
 export interface NoteConfig {
-  type: 'REMOVED' | 'READDED' | 'PROGRESS'
+  type: 'ACHIEVED' | 'REMOVED' | 'READDED' | 'PROGRESS'
   note: string
   createdBy?: string
 }
@@ -60,6 +61,8 @@ export interface GoalConfig {
   relatedAreasOfNeed?: string[]
   steps?: StepConfig[]
   notes?: NoteConfig[]
+  /** Name of the user who marked this goal as achieved. Only used when status is 'ACHIEVED'. */
+  achievedBy?: string
 }
 
 /**

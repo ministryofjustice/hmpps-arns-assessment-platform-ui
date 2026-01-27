@@ -3,13 +3,14 @@ import { test, TargetService } from '../../support/fixtures'
 import AgreePlanPage from '../../pages/sentencePlan/agreePlanPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoals, currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
+import { navigateToSentencePlan } from './sentencePlanUtils'
 
 test.describe('Agree plan journey', () => {
   test.describe('access validation - plan overview errors', () => {
     test('shows error when clicking Agree plan with no goals', async ({ page, createSession }) => {
       // Setup: create assessment with NO goals
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Verify we're on plan overview and Agree plan button is visible
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -39,7 +40,7 @@ test.describe('Agree plan journey', () => {
       // Setup: create assessment with goal but NO steps
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Click the Agree plan button
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -67,7 +68,7 @@ test.describe('Agree plan journey', () => {
       // Setup: create assessment with 2 goals but NO steps
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(2)).save()
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Click the Agree plan button
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -86,7 +87,7 @@ test.describe('Agree plan journey', () => {
     test('can access Agree plan page when goals have steps', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Click the Agree plan button
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -108,7 +109,7 @@ test.describe('Agree plan journey', () => {
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
       await page.goto('/sentence-plan/v1.0/plan/agree-plan')
@@ -133,7 +134,7 @@ test.describe('Agree plan journey', () => {
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
       await page.goto('/sentence-plan/v1.0/plan/agree-plan')
@@ -161,7 +162,7 @@ test.describe('Agree plan journey', () => {
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
       await page.goto('/sentence-plan/v1.0/plan/agree-plan')
@@ -187,7 +188,7 @@ test.describe('Agree plan journey', () => {
     test('can agree to plan with Yes option', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
       await page.goto('/sentence-plan/v1.0/plan/agree-plan')
@@ -214,7 +215,7 @@ test.describe('Agree plan journey', () => {
     test('can agree to plan with No option and details', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
       await page.goto('/sentence-plan/v1.0/plan/agree-plan')
@@ -248,7 +249,7 @@ test.describe('Agree plan journey', () => {
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
       await page.goto('/sentence-plan/v1.0/plan/agree-plan')
@@ -280,7 +281,7 @@ test.describe('Agree plan journey', () => {
     test('Agree plan button is visible for draft plans', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -291,7 +292,7 @@ test.describe('Agree plan journey', () => {
     test('Agree plan button is hidden after plan is agreed', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan and agree
       await page.goto('/sentence-plan/v1.0/plan/agree-plan')

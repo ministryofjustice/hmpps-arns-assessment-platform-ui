@@ -5,9 +5,11 @@ import { loadNotifications } from './notifications/loadNotifications'
 import { setNavigationReferrer } from './navigation/setNavigationReferrer'
 import { loadNavigationReferrer } from './navigation/loadNavigationReferrer'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
+import { loadSessionData } from './session/loadSessionData'
 import { loadPlan } from './plan/loadPlan'
 import { deriveGoalsWithStepsFromAssessment } from './goals/deriveGoalsWithStepsFromAssessment'
 import { derivePlanAgreementsFromAssessment } from './plan/derivePlanAgreementsFromAssessment'
+import { derivePlanHistoryEntries } from './plan/derivePlanHistoryEntries'
 import { updatePlanAgreementStatus } from './plan/updatePlanAgreementStatus'
 import { saveActiveGoal } from './goals/saveActiveGoal'
 import { deriveGoalCurrentAreaOfNeed } from './goals/deriveGoalCurrentAreaOfNeed'
@@ -24,6 +26,7 @@ import { initializeStepEditSession } from './steps/initializeStepEditSession'
 import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
 import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
 import { saveStepEditSession } from './steps/saveStepEditSession'
+import { setPrivacyAccepted } from './access/setPrivacyAccepted'
 
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
@@ -53,7 +56,12 @@ export type { AgreementStatus } from './types'
  */
 export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffectsRegistry } =
   defineEffectsWithDeps<SentencePlanEffectsDeps>()({
+    // Session
     initializeSessionFromAccess,
+    loadSessionData,
+
+    // Access
+    setPrivacyAccepted,
 
     // Notifications
     addNotification,
@@ -67,6 +75,7 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     loadPlan,
     deriveGoalsWithStepsFromAssessment,
     derivePlanAgreementsFromAssessment,
+    derivePlanHistoryEntries,
     updatePlanAgreementStatus,
 
     // Goals

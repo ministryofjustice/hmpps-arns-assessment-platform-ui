@@ -5,7 +5,7 @@ import ConfirmAchievedGoalPage from '../../pages/sentencePlan/confirmAchievedGoa
 import ConfirmRemoveGoalPage from '../../pages/sentencePlan/confirmRemoveGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
-import { getDatePlusDaysAsISO } from './sentencePlanUtils'
+import { getDatePlusDaysAsISO, navigateToSentencePlan } from './sentencePlanUtils'
 
 test.describe('View inactive goal page', () => {
   test.describe('view achieved goal', () => {
@@ -30,7 +30,7 @@ test.describe('View inactive goal page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -68,7 +68,7 @@ test.describe('View inactive goal page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -94,7 +94,7 @@ test.describe('View inactive goal page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -138,7 +138,7 @@ test.describe('View inactive goal page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as removed
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -172,7 +172,7 @@ test.describe('View inactive goal page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as removed
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -199,7 +199,7 @@ test.describe('View inactive goal page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as removed
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -243,7 +243,7 @@ test.describe('View inactive goal page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -285,7 +285,7 @@ test.describe('View inactive goal page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved with a note
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -320,7 +320,7 @@ test.describe('View inactive goal page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved without a note
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -360,7 +360,7 @@ test.describe('View inactive goal page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -395,7 +395,7 @@ test.describe('View inactive goal page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -423,7 +423,7 @@ test.describe('View inactive goal page', () => {
         .save()
       const invalidGoalUuid = '00000000-0000-0000-0000-000000000000'
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Try to navigate with invalid goal UUID
       await page.goto(`/sentence-plan/v1.0/goal/${invalidGoalUuid}/view-inactive-goal`)
