@@ -26,3 +26,37 @@
   float: right;
 }
 
+// Print styles
+@media print {
+  .moj-primary-navigation {
+    display: none !important;
+  }
+
+  // Only show the selected sub-navigation tab when printing
+  .moj-sub-navigation__item {
+    display: none !important;
+
+    &:has([aria-current="page"]) {
+      display: list-item !important;
+    }
+  }
+
+  // Style sub-navigation links to look like plain text, not links
+  .moj-sub-navigation__link {
+    color: govuk-colour("black") !important;
+    text-decoration: none !important;
+    font-weight: bold !important;
+  }
+
+  // Style links within main content to look like plain text when printing
+  .govuk-main-wrapper .govuk-link {
+    color: govuk-colour("black") !important;
+    text-decoration: none !important;
+  }
+
+  // Hide the GOV.UK footer when printing
+  .govuk-footer {
+    display: none !important;
+  }
+}
+
