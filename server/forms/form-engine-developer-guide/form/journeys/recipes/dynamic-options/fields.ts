@@ -57,9 +57,9 @@ Load options via an effect, then reference them with \`Data()\`:
 
 ## Related Concepts
 
-- [Effects](/forms/form-engine-developer-guide/effects/intro) - Loading data with effects
-- [References](/forms/form-engine-developer-guide/references/data) - Using Data() references
-- [Iterators](/forms/form-engine-developer-guide/iterators/intro) - Filtering and transforming arrays
+- [Effects](/form-engine-developer-guide/effects/intro) - Loading data with effects
+- [References](/form-engine-developer-guide/references/data) - Using Data() references
+- [Iterators](/form-engine-developer-guide/iterators/intro) - Filtering and transforming arrays
 
 ---
 
@@ -203,11 +203,11 @@ Load options via an effect, then reference them with \`Data()\`:
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/recipes/save-answers',
+          href: '/form-engine-developer-guide/recipes/save-answers',
           labelText: 'Save Answers on Submit',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/recipes/branching-navigation',
+          href: '/form-engine-developer-guide/recipes/branching-navigation',
           labelText: 'Branching Navigation',
         },
       }),

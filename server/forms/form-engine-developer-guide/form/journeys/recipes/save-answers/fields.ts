@@ -61,9 +61,9 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
 
 ## Related Concepts
 
-- [Transitions](/forms/form-engine-developer-guide/transitions/submit) - Full submit transition documentation
-- [Effects](/forms/form-engine-developer-guide/effects/intro) - Creating effects
-- [Load Data](/forms/form-engine-developer-guide/recipes/load-data) - Loading data on entry
+- [Transitions](/form-engine-developer-guide/transitions/submit) - Full submit transition documentation
+- [Effects](/form-engine-developer-guide/effects/intro) - Creating effects
+- [Load Data](/form-engine-developer-guide/recipes/load-data) - Loading data on entry
 
 ---
 
@@ -190,11 +190,11 @@ Use \`submitTransition\` with \`validate: true\` and an effect in \`onValid\`:
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/recipes/format-value',
+          href: '/form-engine-developer-guide/recipes/format-value',
           labelText: 'Format a Dynamic Value',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/recipes/dynamic-options',
+          href: '/form-engine-developer-guide/recipes/dynamic-options',
           labelText: 'Dynamic Dropdown Options',
         },
       }),

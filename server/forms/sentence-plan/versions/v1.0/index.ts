@@ -10,7 +10,7 @@ import { SentencePlanEffects } from '../../effects'
 /**
  * Sentence Plan v1.0 Journey
  *
- * Access is handled by the access form at /forms/access/sentence-plan/
+ * Access is handled by the access form at /access/sentence-plan/
  * which redirects to plan/overview after setting up session data.
  *
  * The plan overview step loads the plan and initializes session details
@@ -23,8 +23,8 @@ export const sentencePlanV1Journey = journey({
   view: {
     template: 'sentence-plan/views/sentence-plan-step',
     locals: {
-      basePath: '/forms/sentence-plan/v1.0',
-      hmppsHeaderServiceNameLink: '/forms/sentence-plan/v1.0/plan/overview',
+      basePath: '/sentence-plan/v1.0',
+      hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
       showPlanHistoryTab: Data('latestAgreementStatus').match(
         Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
       ),
@@ -48,7 +48,7 @@ export const sentencePlanV1Journey = journey({
         // Redirect to privacy screen if privacy not yet accepted this session
         redirect({
           when: Data('session.privacyAccepted').not.match(Condition.Equals(true)),
-          goto: '/forms/sentence-plan/privacy',
+          goto: '../../privacy',
         }),
       ],
     }),

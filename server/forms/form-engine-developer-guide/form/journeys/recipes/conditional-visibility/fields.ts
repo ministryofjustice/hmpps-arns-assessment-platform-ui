@@ -68,9 +68,9 @@ option is selected. This is the GOV.UK "conditional reveal" pattern.
 
 ## Related Concepts
 
-- [Conditions](/forms/form-engine-developer-guide/conditions/intro) - All available condition types
-- [References](/forms/form-engine-developer-guide/references/intro) - How Answer() and other references work
-- [Chaining](/forms/form-engine-developer-guide/references/chaining) - The fluent .match() API
+- [Conditions](/form-engine-developer-guide/conditions/intro) - All available condition types
+- [References](/form-engine-developer-guide/references/intro) - How Answer() and other references work
+- [Chaining](/form-engine-developer-guide/references/chaining) - The fluent .match() API
 
 ---
 
@@ -186,11 +186,11 @@ option is selected. This is the GOV.UK "conditional reveal" pattern.
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/recipes/intro',
+          href: '/form-engine-developer-guide/recipes/intro',
           labelText: 'Recipes Overview',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/recipes/custom-validation',
+          href: '/form-engine-developer-guide/recipes/custom-validation',
           labelText: 'Custom Validation',
         },
       }),

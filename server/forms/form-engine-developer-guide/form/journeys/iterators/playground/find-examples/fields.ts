@@ -360,11 +360,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/filter-examples',
+          href: '/form-engine-developer-guide/iterators/playground/filter-examples',
           labelText: 'Filter Examples',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/dynamic-fields',
+          href: '/form-engine-developer-guide/iterators/playground/dynamic-fields',
           labelText: 'Dynamic Fields',
         },
       }),

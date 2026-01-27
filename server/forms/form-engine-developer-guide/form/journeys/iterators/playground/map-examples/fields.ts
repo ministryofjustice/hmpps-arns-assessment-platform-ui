@@ -339,11 +339,11 @@ Literal(articles).each(Iterator.Map(
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/intro',
+          href: '/form-engine-developer-guide/iterators/playground/intro',
           labelText: 'Iterators Playground',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/filter-examples',
+          href: '/form-engine-developer-guide/iterators/playground/filter-examples',
           labelText: 'Filter Examples',
         },
       }),

@@ -77,7 +77,7 @@ fields collect user input.
 
 {{slot:blocksExample}}
 
-See the [Blocks & Fields](/forms/form-engine-developer-guide/blocks-and-fields/intro) section for details on defining blocks and fields.
+See the [Blocks & Fields](/form-engine-developer-guide/blocks-and-fields/intro) section for details on defining blocks and fields.
 
 ### \`view\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
@@ -107,7 +107,7 @@ Merged with inherited journey data (step values take precedence).
 
 {{slot:dataExample}}
 
-See the [Journey Configuration](/forms/form-engine-developer-guide/journeys-and-steps/journeys) page for full usage examples.
+See the [Journey Configuration](/form-engine-developer-guide/journeys-and-steps/journeys) page for full usage examples.
 
 ---
 
@@ -122,7 +122,7 @@ Use this to load step-specific data, check access, and redirect or return errors
 
 {{slot:onAccessExample}}
 
-See the [Access Transitions](/forms/form-engine-developer-guide/transitions/access) page for details.
+See the [Access Transitions](/form-engine-developer-guide/transitions/access) page for details.
 
 ### \`onAction\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
@@ -131,7 +131,7 @@ Use this for handling different button clicks or conditional logic.
 
 {{slot:onActionExample}}
 
-See the [Action Transitions](/forms/form-engine-developer-guide/transitions/action) page for details.
+See the [Action Transitions](/form-engine-developer-guide/transitions/action) page for details.
 
 ### \`onSubmission\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
@@ -140,7 +140,7 @@ and navigation to the next step.
 
 {{slot:onSubmissionExample}}
 
-See the [Submit Transitions](/forms/form-engine-developer-guide/transitions/submit) page for details.
+See the [Submit Transitions](/form-engine-developer-guide/transitions/submit) page for details.
 
 ---
 
@@ -154,7 +154,7 @@ Here's a step definition using common options:
 
 {{slot:pagination}}
 
-[← Back to Guide Hub](/forms/form-engine-developer-guide/hub)
+[← Back to Guide Hub](/form-engine-developer-guide/hub)
 `),
   slots: {
     basicCode: [
@@ -349,11 +349,11 @@ export const personalDetailsStep = step({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/journeys-and-steps/journeys',
+          href: '/form-engine-developer-guide/journeys-and-steps/journeys',
           labelText: 'Journey Configuration',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/journeys-and-steps/nested-journeys',
+          href: '/form-engine-developer-guide/journeys-and-steps/nested-journeys',
           labelText: 'Nested Journeys',
         },
       }),

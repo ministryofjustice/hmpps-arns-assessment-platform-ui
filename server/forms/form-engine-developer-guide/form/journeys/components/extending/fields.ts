@@ -248,11 +248,11 @@ export const enhancedTextInput = buildNunjucksComponent<EnhancedTextInput>(
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/components/custom',
+          href: '/form-engine-developer-guide/components/custom',
           labelText: 'Custom Components',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/hub',
+          href: '/form-engine-developer-guide/hub',
           labelText: 'Developer Guide Hub',
         },
       }),

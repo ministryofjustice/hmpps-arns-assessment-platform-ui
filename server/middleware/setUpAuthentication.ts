@@ -52,7 +52,7 @@ const authPaths = {
  * The access form handles loading handover context and redirecting to the target service.
  */
 const targetServicePaths: Record<string, string> = {
-  'sentence-plan': '/forms/access/sentence-plan/oasys',
+  'sentence-plan': '/access/sentence-plan/oasys',
 }
 
 passport.serializeUser((user, done) => {

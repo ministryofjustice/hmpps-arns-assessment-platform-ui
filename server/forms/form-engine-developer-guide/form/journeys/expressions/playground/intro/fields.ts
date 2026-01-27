@@ -18,15 +18,15 @@ export const pageContent = TemplateWrapper({
 
   ## Choose an expression type
 
-  - [**Format Expressions**](/forms/form-engine-developer-guide/expressions/playground/format)
+  - [**Format Expressions**](/form-engine-developer-guide/expressions/playground/format)
 
     String interpolation with \`Format()\` - combine values into dynamic text.
 
-  - [**Conditional Expressions**](/forms/form-engine-developer-guide/expressions/playground/conditional)
+  - [**Conditional Expressions**](/form-engine-developer-guide/expressions/playground/conditional)
 
     If/then/else logic with \`when()\` and \`Conditional()\`.
 
-  - [**Predicate Combinators**](/forms/form-engine-developer-guide/expressions/playground/predicates)
+  - [**Predicate Combinators**](/form-engine-developer-guide/expressions/playground/predicates)
 
     Boolean logic with \`and()\`, \`or()\`, and \`not()\`.
 
@@ -39,11 +39,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/expressions/predicates',
+          href: '/form-engine-developer-guide/expressions/predicates',
           labelText: 'Predicate Combinators',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/expressions/playground/format',
+          href: '/form-engine-developer-guide/expressions/playground/format',
           labelText: 'Format Playground',
         },
       }),

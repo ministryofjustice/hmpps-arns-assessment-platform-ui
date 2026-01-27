@@ -386,11 +386,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/expressions/playground/intro',
+          href: '/form-engine-developer-guide/expressions/playground/intro',
           labelText: 'Playground Hub',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/expressions/playground/conditional',
+          href: '/form-engine-developer-guide/expressions/playground/conditional',
           labelText: 'Conditional Playground',
         },
       }),

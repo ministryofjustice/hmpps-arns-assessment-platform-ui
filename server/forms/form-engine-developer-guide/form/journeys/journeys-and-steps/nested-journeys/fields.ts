@@ -45,7 +45,7 @@ You're currently viewing a nested journey. Here's how the URL breaks down:
 | Child Journey | \`journeys-and-steps\` | \`/journeys-and-steps\` |
 | Step | - | \`/nested-journeys\` |
 
-**Result:** \`/forms/form-engine-developer-guide/journeys-and-steps/nested-journeys\`
+**Result:** \`/form-engine-developer-guide/journeys-and-steps/nested-journeys\`
 
 ---
 
@@ -114,7 +114,7 @@ Child journeys inherit certain configuration from their parent:
 
 {{slot:pagination}}
 
-[← Back to Guide Hub](/forms/form-engine-developer-guide/hub)
+[← Back to Guide Hub](/form-engine-developer-guide/hub)
 `),
   slots: {
     formula: [
@@ -228,7 +228,7 @@ Child journeys inherit certain configuration from their parent:
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/journeys-and-steps/steps',
+          href: '/form-engine-developer-guide/journeys-and-steps/steps',
           labelText: 'Step Configuration',
         },
       }),

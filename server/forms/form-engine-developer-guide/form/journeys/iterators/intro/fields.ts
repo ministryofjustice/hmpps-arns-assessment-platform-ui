@@ -87,11 +87,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/hub',
+          href: '/form-engine-developer-guide/hub',
           labelText: 'Developer Guide Hub',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/iterators/map',
+          href: '/form-engine-developer-guide/iterators/map',
           labelText: 'Iterator.Map',
         },
       }),

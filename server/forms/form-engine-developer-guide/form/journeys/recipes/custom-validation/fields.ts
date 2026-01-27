@@ -67,8 +67,8 @@ the error is shown. Think of it as "show error when...":
 
 ## Related Concepts
 
-- [Validation](/forms/form-engine-developer-guide/validation/intro) - Full validation documentation
-- [Conditions](/forms/form-engine-developer-guide/conditions/intro) - All available condition types
+- [Validation](/form-engine-developer-guide/validation/intro) - Full validation documentation
+- [Conditions](/form-engine-developer-guide/conditions/intro) - All available condition types
 
 ---
 
@@ -181,11 +181,11 @@ the error is shown. Think of it as "show error when...":
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/recipes/conditional-visibility',
+          href: '/form-engine-developer-guide/recipes/conditional-visibility',
           labelText: 'Conditional Visibility',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/recipes/load-data',
+          href: '/form-engine-developer-guide/recipes/load-data',
           labelText: 'Load Data on Entry',
         },
       }),

@@ -442,7 +442,7 @@ dependent: or(
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/expressions/playground/conditional',
+          href: '/form-engine-developer-guide/expressions/playground/conditional',
           labelText: 'Conditional Playground',
         },
       }),
