@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test'
+import { areasOfNeed } from '@server/forms/sentence-plan/versions/v1.0/constants'
 import { test, TargetService } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
@@ -257,29 +258,25 @@ test.describe('Create Goal Journey', () => {
   })
 
   test.describe('Different Areas of Need', () => {
-    const areasOfNeed = [
-      'accommodation',
-      'employment-and-education',
-      'finances',
-      'drug-use',
-      'alcohol-use',
-      'health-and-wellbeing',
-      'personal-relationships-and-community',
-      'thinking-behaviours-and-attitudes',
-    ]
-
-    for (const area of areasOfNeed) {
-      test(`can create goal for ${area} area`, async ({ page, createSession }) => {
-        const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await page.goto(handoverLink)
-        await PlanOverviewPage.verifyOnPage(page)
-        await page.goto(`/forms/sentence-plan/v1.0/goal/new/add-goal/${area}`)
-
-        const createGoalPage = await CreateGoalPage.verifyOnPage(page)
-        await expect(createGoalPage.goalTitleInput).toBeVisible()
-
-        await expect(page).toHaveURL(new RegExp(`/add-goal/${area}`))
+    areasOfNeed
+      .map(need => {
+        return { area: need.slug, goals: need.goals }
       })
-    }
+      .forEach(({ area, goals }) => {
+        test(`can create goal for ${area} area`, async ({ page, createSession }) => {
+          const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+          await page.goto(handoverLink)
+          await PlanOverviewPage.verifyOnPage(page)
+          await page.goto(`/forms/sentence-plan/v1.0/goal/new/add-goal/${area}`)
+
+          const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+          await expect(createGoalPage.goalTitleInput).toBeVisible()
+          const goalTitles = await createGoalPage.goalTitles.textContent()
+          expect(JSON.parse(goalTitles))
+            .toEqual(expect.arrayContaining(goals))
+
+          await expect(page).toHaveURL(new RegExp(`/add-goal/${area}`))
+        })
+      })
   })
 })
