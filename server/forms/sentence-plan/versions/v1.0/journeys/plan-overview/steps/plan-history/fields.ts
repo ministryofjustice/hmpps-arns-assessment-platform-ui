@@ -115,11 +115,11 @@ const goalAchievedEntryContent = Format(
 
 /**
  * Renders a goal removed history entry.
- * Shows: heading, goal title (bold), removal reason, and view goal link.
+ * Shows: heading (bold), goal title (bold), removal reason, and view goal link.
  */
 const goalRemovedEntryContent = Format(
   `<div class="govuk-!-margin-bottom-6">
-    <p class="govuk-body">Goal removed on %1 by %2</p>
+    <p class="govuk-body"><strong>Goal removed</strong> on %1 by %2</p>
     <p class="govuk-body"><strong>%3</strong></p>
     %4
     <p class="govuk-body"><a href="%5" class="govuk-link govuk-link--no-visited-state">View goal</a></p>
