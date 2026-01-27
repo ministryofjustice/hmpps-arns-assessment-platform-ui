@@ -255,11 +255,11 @@ through onAccess transitions that pre-populate the answer store.
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/references/intro',
+          href: '/form-engine-developer-guide/references/intro',
           labelText: 'Understanding References',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/references/data',
+          href: '/form-engine-developer-guide/references/data',
           labelText: 'Data Reference',
         },
       }),

@@ -476,11 +476,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/conditions/playground/strings',
+          href: '/form-engine-developer-guide/conditions/playground/strings',
           labelText: 'String Conditions',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/conditions/playground/dates',
+          href: '/form-engine-developer-guide/conditions/playground/dates',
           labelText: 'Date Conditions',
         },
       }),

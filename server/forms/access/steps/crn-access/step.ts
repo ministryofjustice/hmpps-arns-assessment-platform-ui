@@ -4,7 +4,7 @@ import { AccessEffects } from '../../effects'
 /**
  * CRN access entry point.
  *
- * Route: /forms/access/:service/crn/:crn
+ * Route: /access/:service/crn/:crn
  *
  * Flow:
  * 1. Validate target service and set redirect path

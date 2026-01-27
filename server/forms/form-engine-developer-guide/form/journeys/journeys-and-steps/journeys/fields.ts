@@ -74,7 +74,7 @@ the individual pages users navigate through.
 
 {{slot:stepsExample}}
 
-See the [Step Configuration](/forms/form-engine-developer-guide/journeys-and-steps/steps) page for details on defining steps.
+See the [Step Configuration](/form-engine-developer-guide/journeys-and-steps/steps) page for details on defining steps.
 
 ### \`children\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
@@ -83,7 +83,7 @@ Child journeys have their paths prefixed with the parent journey's path.
 
 {{slot:childrenExample}}
 
-See the [Nested Journeys](/forms/form-engine-developer-guide/journeys-and-steps/nested-journeys) page for details on using children.
+See the [Nested Journeys](/form-engine-developer-guide/journeys-and-steps/nested-journeys) page for details on using children.
 
 ### \`view\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
@@ -147,7 +147,7 @@ Use this to load shared data, check permissions, and redirect or return errors.
 
 {{slot:onAccessExample}}
 
-See the [Access Transitions](/forms/form-engine-developer-guide/transitions/access) page for details.
+See the [Access Transitions](/form-engine-developer-guide/transitions/access) page for details.
 
 ---
 
@@ -161,7 +161,7 @@ Here's a journey definition using all the options:
 
 {{slot:pagination}}
 
-[← Back to Guide Hub](/forms/form-engine-developer-guide/hub)
+[← Back to Guide Hub](/form-engine-developer-guide/hub)
 `),
   slots: {
     basicCode: [
@@ -393,11 +393,11 @@ Here's a journey definition using all the options:
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/journeys-and-steps/intro',
+          href: '/form-engine-developer-guide/journeys-and-steps/intro',
           labelText: 'Introduction',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/journeys-and-steps/steps',
+          href: '/form-engine-developer-guide/journeys-and-steps/steps',
           labelText: 'Step Configuration',
         },
       }),

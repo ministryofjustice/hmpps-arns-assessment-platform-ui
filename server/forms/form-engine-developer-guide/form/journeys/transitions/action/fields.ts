@@ -236,11 +236,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/transitions/access',
+          href: '/form-engine-developer-guide/transitions/access',
           labelText: 'Access Transitions',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/transitions/submit',
+          href: '/form-engine-developer-guide/transitions/submit',
           labelText: 'Submit Transitions',
         },
       }),

@@ -64,9 +64,9 @@ Always order from most specific to least specific:
 
 ## Related Concepts
 
-- [Transitions](/forms/form-engine-developer-guide/transitions/navigation) - Full navigation documentation
-- [Conditions](/forms/form-engine-developer-guide/conditions/intro) - Available condition types
-- [References](/forms/form-engine-developer-guide/references/answer) - Using Answer() in conditions
+- [Transitions](/form-engine-developer-guide/transitions/navigation) - Full navigation documentation
+- [Conditions](/form-engine-developer-guide/conditions/intro) - Available condition types
+- [References](/form-engine-developer-guide/references/answer) - Using Answer() in conditions
 
 ---
 
@@ -213,11 +213,11 @@ Always order from most specific to least specific:
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/recipes/dynamic-options',
+          href: '/form-engine-developer-guide/recipes/dynamic-options',
           labelText: 'Dynamic Dropdown Options',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/recipes/action-lookup',
+          href: '/form-engine-developer-guide/recipes/action-lookup',
           labelText: 'In-Page Lookup',
         },
       }),

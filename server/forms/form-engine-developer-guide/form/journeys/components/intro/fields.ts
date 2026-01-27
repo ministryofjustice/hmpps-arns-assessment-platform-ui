@@ -18,7 +18,7 @@ interactive widgets. {.lead}
 
 > This section focuses on how components work under the hood and how to build your own.
 > For a quick overview of using \`block()\` and \`field()\` in forms,
-> see [Blocks & Fields](/forms/form-engine-developer-guide/blocks-and-fields/intro).
+> see [Blocks & Fields](/form-engine-developer-guide/blocks-and-fields/intro).
 
 ---
 
@@ -162,11 +162,11 @@ TypeScript autocomplete for that component's specific properties.
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/hub',
+          href: '/form-engine-developer-guide/hub',
           labelText: 'Developer Guide Hub',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/components/built-in',
+          href: '/form-engine-developer-guide/components/built-in',
           labelText: 'Built-in Components',
         },
       }),

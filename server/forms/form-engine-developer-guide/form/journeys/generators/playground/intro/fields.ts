@@ -18,7 +18,7 @@ export const pageContent = TemplateWrapper({
 
   ## Choose a generator type
 
-  - [**Date Generators**](/forms/form-engine-developer-guide/generators/playground/dates)
+  - [**Date Generators**](/form-engine-developer-guide/generators/playground/dates)
 
     Generate current dates and times for use in forms.
 
@@ -35,11 +35,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/generators/intro',
+          href: '/form-engine-developer-guide/generators/intro',
           labelText: 'Understanding Generators',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/generators/playground/dates',
+          href: '/form-engine-developer-guide/generators/playground/dates',
           labelText: 'Date Generators',
         },
       }),
