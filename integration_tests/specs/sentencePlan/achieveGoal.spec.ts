@@ -3,7 +3,12 @@ import { test, TargetService } from '../../support/fixtures'
 import ConfirmAchievedGoalPage from '../../pages/sentencePlan/confirmAchievedGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
-import { getDatePlusDaysAsISO, navigateToSentencePlan } from './sentencePlanUtils'
+import {
+  buildPageTitle,
+  getDatePlusDaysAsISO,
+  navigateToSentencePlan,
+  sentencePlanPageTitles,
+} from './sentencePlanUtils'
 
 test.describe('Achieve goal journey', () => {
   test.describe('confirm goal as achieved', () => {
@@ -86,7 +91,11 @@ test.describe('Achieve goal journey', () => {
   })
 
   test.describe('page content', () => {
-    test('displays page heading with person name', async ({ page, createSession, sentencePlanBuilder }) => {
+    test('displays page title and page heading with person name', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       const plan = await sentencePlanBuilder
         .extend(sentencePlanId)
@@ -102,6 +111,9 @@ test.describe('Achieve goal journey', () => {
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
+
+      // ensure page title is correct; there is no validation so no need in checking error page title
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.confirmAchievedGoal))
 
       // Check heading contains expected text
       const headerText = await achievePage.getHeaderText()

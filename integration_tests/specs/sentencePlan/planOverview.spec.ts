@@ -3,7 +3,7 @@ import { test, TargetService } from '../../support/fixtures'
 import { currentGoals, futureGoals, mixedGoals } from '../../builders/sentencePlanFactories'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
-import { navigateToSentencePlan } from './sentencePlanUtils'
+import { buildPageTitle, navigateToSentencePlan, sentencePlanPageTitles } from './sentencePlanUtils'
 
 test.describe('Plan Overview Page', () => {
   test.describe('Empty State', () => {
@@ -14,6 +14,9 @@ test.describe('Plan Overview Page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      // ensure page title is correct; error title is tested in agreePlan test suite
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.planOverview))
 
       await expect(planOverviewPage.noGoalsMessage).toBeVisible()
       await expect(planOverviewPage.noGoalsMessage).toContainText(/does not have any goals to work on now/i)

@@ -5,7 +5,12 @@ import ConfirmAchievedGoalPage from '../../pages/sentencePlan/confirmAchievedGoa
 import ConfirmRemoveGoalPage from '../../pages/sentencePlan/confirmRemoveGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
-import { getDatePlusDaysAsISO, navigateToSentencePlan } from './sentencePlanUtils'
+import {
+  buildPageTitle,
+  getDatePlusDaysAsISO,
+  navigateToSentencePlan,
+  sentencePlanPageTitles,
+} from './sentencePlanUtils'
 
 test.describe('View inactive goal page', () => {
   test.describe('view achieved goal', () => {
@@ -42,6 +47,9 @@ test.describe('View inactive goal page', () => {
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
+
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.viewAchievedGoal))
 
       // Verify page heading and goal title
       const headerText = await viewPage.getHeaderText()
@@ -150,6 +158,9 @@ test.describe('View inactive goal page', () => {
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
+
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.viewRemovedGoal))
 
       // Verify page heading and goal title
       const headerText = await viewPage.getHeaderText()

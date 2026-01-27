@@ -3,7 +3,12 @@ import { test, TargetService } from '../../support/fixtures'
 import AgreePlanPage from '../../pages/sentencePlan/agreePlanPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoals, currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
-import { navigateToSentencePlan } from './sentencePlanUtils'
+import {
+  buildErrorPageTitle,
+  buildPageTitle,
+  navigateToSentencePlan,
+  sentencePlanPageTitles,
+} from './sentencePlanUtils'
 
 test.describe('Agree plan journey', () => {
   test.describe('access validation - plan overview errors', () => {
@@ -20,6 +25,9 @@ test.describe('Agree plan journey', () => {
 
       // Should redirect back to overview with error param
       await expect(page).toHaveURL(/type=current.*error=no-active-goals|error=no-active-goals.*type=current/)
+
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.planOverview))
 
       // Should show error summary
       const errorSummary = page.locator('.govuk-error-summary')
@@ -49,6 +57,9 @@ test.describe('Agree plan journey', () => {
       // Should redirect back to overview with error param
       await expect(page).toHaveURL(/error=no-steps/)
 
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.planOverview))
+
       // Should show error summary with goal-specific error
       const errorSummary = page.locator('.govuk-error-summary')
       await expect(errorSummary).toBeVisible()
@@ -77,6 +88,9 @@ test.describe('Agree plan journey', () => {
       // Should redirect back to overview with error param
       await expect(page).toHaveURL(/error=no-steps/)
 
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.planOverview))
+
       // Should show error summary with both goals
       const errorSummary = page.locator('.govuk-error-summary')
       await expect(errorSummary).toBeVisible()
@@ -95,6 +109,9 @@ test.describe('Agree plan journey', () => {
 
       // Should successfully navigate to agree plan page
       await expect(page).toHaveURL(/\/agree-plan/)
+
+      // ensure page title is correct
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.agreePlan))
 
       // Verify we're on the agree plan page
       await AgreePlanPage.verifyOnPage(page)
@@ -117,6 +134,9 @@ test.describe('Agree plan journey', () => {
 
       // Click save without selecting an option
       await agreePlanPage.clickSave()
+
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.agreePlan))
 
       // Should show inline validation error on the field
       const hasFieldError = await agreePlanPage.hasValidationError('plan_agreement_question')
@@ -150,6 +170,9 @@ test.describe('Agree plan journey', () => {
       // Click save without entering details
       await agreePlanPage.clickSave()
 
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.agreePlan))
+
       // Should show validation error for details field
       const hasFieldError = await agreePlanPage.hasValidationError('plan_agreement_details_no')
       expect(hasFieldError).toBe(true)
@@ -177,6 +200,9 @@ test.describe('Agree plan journey', () => {
 
       // Click save without entering details
       await agreePlanPage.clickSave()
+
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.agreePlan))
 
       // Should show validation error for details field
       const hasFieldError = await agreePlanPage.hasValidationError('plan_agreement_details_could_not_answer')
