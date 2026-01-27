@@ -80,6 +80,8 @@ services:
       - ../integration_tests:/playwright/integration_tests
       - ../test_results:/playwright/test_results
       - node_modules:/playwright/node_modules
+      - ../server:/playwright/server
+      - ../packages/form-engine/src:/playwright/packages/form-engine/src
 
 volumes:
   node_modules:
