@@ -185,7 +185,7 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/chaining-examples',
+          href: '/form-engine-developer-guide/iterators/playground/chaining-examples',
           labelText: 'Chaining Examples',
         },
       }),

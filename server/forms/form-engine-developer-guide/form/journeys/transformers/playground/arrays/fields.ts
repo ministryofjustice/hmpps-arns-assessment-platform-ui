@@ -463,11 +463,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/transformers/playground/numbers',
+          href: '/form-engine-developer-guide/transformers/playground/numbers',
           labelText: 'Number Transformers',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/generators/intro',
+          href: '/form-engine-developer-guide/generators/intro',
           labelText: 'Generators',
         },
       }),

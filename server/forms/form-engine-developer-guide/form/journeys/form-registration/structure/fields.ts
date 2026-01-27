@@ -207,11 +207,11 @@ Custom Nunjucks templates for the form's HTML layout.
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/form-registration/intro',
+          href: '/form-engine-developer-guide/form-registration/intro',
           labelText: 'Form Packages Overview',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/form-registration/registration',
+          href: '/form-engine-developer-guide/form-registration/registration',
           labelText: 'Registration',
         },
       }),

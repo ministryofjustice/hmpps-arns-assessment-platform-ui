@@ -507,11 +507,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/effects/intro',
+          href: '/form-engine-developer-guide/effects/intro',
           labelText: 'Introduction',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/effects/custom',
+          href: '/form-engine-developer-guide/effects/custom',
           labelText: 'Custom Effects',
         },
       }),

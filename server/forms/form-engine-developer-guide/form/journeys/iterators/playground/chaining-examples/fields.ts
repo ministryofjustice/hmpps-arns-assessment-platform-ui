@@ -313,11 +313,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/dynamic-fields',
+          href: '/form-engine-developer-guide/iterators/playground/dynamic-fields',
           labelText: 'Dynamic Fields',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/hub',
+          href: '/form-engine-developer-guide/iterators/playground/hub',
           labelText: 'Hub-and-Spoke Demo',
         },
       }),

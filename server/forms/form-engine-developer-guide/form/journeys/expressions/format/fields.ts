@@ -303,11 +303,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/expressions/intro',
+          href: '/form-engine-developer-guide/expressions/intro',
           labelText: 'Expressions Overview',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/expressions/conditional',
+          href: '/form-engine-developer-guide/expressions/conditional',
           labelText: 'Conditional Expressions',
         },
       }),

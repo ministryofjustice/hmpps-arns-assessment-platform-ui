@@ -198,11 +198,11 @@ Data('products').each(Iterator.Find(
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/iterators/filter',
+          href: '/form-engine-developer-guide/iterators/filter',
           labelText: 'Iterator.Filter',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/iterators/chaining',
+          href: '/form-engine-developer-guide/iterators/chaining',
           labelText: 'Chaining Iterators',
         },
       }),

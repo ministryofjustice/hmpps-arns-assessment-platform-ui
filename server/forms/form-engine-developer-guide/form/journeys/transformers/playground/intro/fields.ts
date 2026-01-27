@@ -18,15 +18,15 @@ export const pageContent = TemplateWrapper({
 
   ## Choose a transformer type
 
-  - [**String Transformers**](/forms/form-engine-developer-guide/transformers/playground/strings)
+  - [**String Transformers**](/form-engine-developer-guide/transformers/playground/strings)
 
     Trim whitespace, change case, replace text, and convert types.
 
-  - [**Number Transformers**](/forms/form-engine-developer-guide/transformers/playground/numbers)
+  - [**Number Transformers**](/form-engine-developer-guide/transformers/playground/numbers)
 
     Round, clamp, and perform arithmetic operations.
 
-  - [**Array Transformers**](/forms/form-engine-developer-guide/transformers/playground/arrays)
+  - [**Array Transformers**](/form-engine-developer-guide/transformers/playground/arrays)
 
     Join, slice, filter, and transform array values.
 
@@ -39,11 +39,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/transformers/custom',
+          href: '/form-engine-developer-guide/transformers/custom',
           labelText: 'Custom Transformers',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/transformers/playground/strings',
+          href: '/form-engine-developer-guide/transformers/playground/strings',
           labelText: 'String Transformers',
         },
       }),

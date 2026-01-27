@@ -233,6 +233,10 @@ export class SentencePlanBuilderInstance {
       .withProperty('status', status)
       .withProperty('status_date', now)
 
+    if (config.achievedBy) {
+      goalItem.withProperty('achieved_by', config.achievedBy)
+    }
+
     if (config.targetDate) {
       goalItem.withAnswer('target_date', config.targetDate)
     }
