@@ -53,7 +53,7 @@ export default class CreateGoalPage extends AbstractPage {
     this.addStepsButton = page.getByRole('button', { name: /add steps/i })
     this.saveWithoutStepsButton = page.getByRole('button', { name: /save without steps/i })
     this.areaOfNeedNav = page.locator('[data-qa="area-of-need-nav"]')
-    this.goalTitles = page.locator('[data-qa="autocomplete-data-goal_title"]')
+    this.goalTitles = page.getByTestId('autocomplete-data-goal_title')
   }
 
   static async verifyOnPage(page: Page): Promise<CreateGoalPage> {

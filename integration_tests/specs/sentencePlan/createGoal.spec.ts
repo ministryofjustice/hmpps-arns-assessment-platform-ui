@@ -3,7 +3,7 @@ import { test, TargetService } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import { areasOfNeed } from '../../../server/forms/sentence-plan/versions/v1.0/constants'
+import { areasOfNeed } from '@server/forms/sentence-plan/versions/v1.0/constants'
 
 test.describe('Create Goal Journey', () => {
   test.describe('Create Goal with Steps', () => {
