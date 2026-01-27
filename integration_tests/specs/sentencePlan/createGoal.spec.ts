@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test'
+import { areasOfNeed } from '@server/forms/sentence-plan/versions/v1.0/constants'
 import { test, TargetService } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
@@ -263,8 +264,7 @@ test.describe('Create Goal Journey', () => {
           const createGoalPage = await CreateGoalPage.verifyOnPage(page)
           await expect(createGoalPage.goalTitleInput).toBeVisible()
           const goalTitles = await createGoalPage.goalTitles.textContent()
-          expect(JSON.parse(goalTitles))
-            .toEqual(expect.arrayContaining(goals))
+          expect(JSON.parse(goalTitles)).toEqual(expect.arrayContaining(goals))
 
           await expect(page).toHaveURL(new RegExp(`/add-goal/${area}`))
         })
