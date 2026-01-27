@@ -99,10 +99,17 @@ The form engine operates in two distinct phases:
 
 ## Testing
 
+### Prerequisites
+```bash
+npm i
+npx playwright install
+```
+
+### Running Tests
 ```bash
 make test                   # Run unit tests
-make e2e-docker             # Run Playwright tests in Docker container against application in Docker
-make e2e-local              # Run Playwright tests locally against application in Docker
+make e2e-ci                 # Run Playwright tests in Docker container against application in Docker
+make dev-up && make e2e-ui  # Run Playwright tests locally against application in Docker
 ```
 
 ## Deployment
