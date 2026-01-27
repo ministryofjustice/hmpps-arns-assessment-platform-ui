@@ -135,6 +135,7 @@ export const deriveGoalsWithStepsFromAssessment = () => async (context: Sentence
       collectionIndex,
       isFirstInStatus: false, // Will be calculated below
       isLastInStatus: false, // Will be calculated below
+      achievedBy: properties.achieved_by,
     }
   })
 

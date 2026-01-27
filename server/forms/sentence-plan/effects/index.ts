@@ -8,6 +8,7 @@ import { initializeSessionFromAccess } from './session/initializeSessionFromAcce
 import { loadPlan } from './plan/loadPlan'
 import { deriveGoalsWithStepsFromAssessment } from './goals/deriveGoalsWithStepsFromAssessment'
 import { derivePlanAgreementsFromAssessment } from './plan/derivePlanAgreementsFromAssessment'
+import { derivePlanHistoryEntries } from './plan/derivePlanHistoryEntries'
 import { updatePlanAgreementStatus } from './plan/updatePlanAgreementStatus'
 import { saveActiveGoal } from './goals/saveActiveGoal'
 import { deriveGoalCurrentAreaOfNeed } from './goals/deriveGoalCurrentAreaOfNeed'
@@ -67,6 +68,7 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     loadPlan,
     deriveGoalsWithStepsFromAssessment,
     derivePlanAgreementsFromAssessment,
+    derivePlanHistoryEntries,
     updatePlanAgreementStatus,
 
     // Goals
