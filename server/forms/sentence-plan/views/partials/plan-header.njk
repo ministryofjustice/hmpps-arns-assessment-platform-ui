@@ -57,7 +57,7 @@
                 <dd>{{ person.dateOfBirth | formatSimpleDate }}</dd>
               </div>
             </dl>
-            {% if headerPageHeading != 'Previous versions' and showNavigation != false %}
+            {% if headerPageHeading != 'Previous versions' and not hideNavigation %}
               <div class ="plan-header__subject-details__navigation-links" >
                 <a href="{{ basePath }}/plan-history/previous-versions"
                    class="govuk-link--no-visited-state govuk-!-display-none-print"

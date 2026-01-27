@@ -1,6 +1,6 @@
 {%- from "moj/components/primary-navigation/macro.njk" import mojPrimaryNavigation -%}
 
-{% if showNavigation != false %}
+{% if not hideNavigation %}
   {% set personName = data.caseData.name.forename if data.caseData and data.caseData.name else "Person" %}
   {% set isOnAboutPage = step.path == '/about-person' %}
   {% set isOnPlanHistoryPage = step.path == '/plan-history' %}

@@ -2,6 +2,7 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import PlanHistoryPage from '../../pages/sentencePlan/planHistoryPage'
+import { handlePrivacyScreenIfPresent } from './sentencePlanUtils'
 
 test.describe('Plan History Page', () => {
   test.describe('Could not answer then agreed scenario', () => {
@@ -14,6 +15,7 @@ test.describe('Plan History Page', () => {
       // 1. Initial: Could not answer (older - "Plan created")
       // 2. Update: Agreed (newer - "Agreement updated")
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+
       await sentencePlanBuilder
         .extend(sentencePlanId)
         .withGoal({
@@ -40,6 +42,7 @@ test.describe('Plan History Page', () => {
 
       // Navigate to plan overview
       await page.goto(handoverLink)
+      await handlePrivacyScreenIfPresent(page)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Click the "View plan history" link
@@ -120,6 +123,7 @@ test.describe('Plan History Page', () => {
         .save()
 
       await page.goto(handoverLink)
+      await handlePrivacyScreenIfPresent(page)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -152,6 +156,7 @@ test.describe('Plan History Page', () => {
         .save()
 
       await page.goto(handoverLink)
+      await handlePrivacyScreenIfPresent(page)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -190,6 +195,7 @@ test.describe('Plan History Page', () => {
         .save()
 
       await page.goto(handoverLink)
+      await handlePrivacyScreenIfPresent(page)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -241,6 +247,7 @@ test.describe('Plan History Page', () => {
         .save()
 
       await page.goto(handoverLink)
+      await handlePrivacyScreenIfPresent(page)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -286,6 +293,7 @@ test.describe('Plan History Page', () => {
         .save()
 
       await page.goto(handoverLink)
+      await handlePrivacyScreenIfPresent(page)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -319,6 +327,7 @@ test.describe('Plan History Page', () => {
         .save()
 
       await page.goto(handoverLink)
+      await handlePrivacyScreenIfPresent(page)
 
       // Verify the "View plan history" link is visible
       const viewHistoryLink = page.getByRole('link', { name: /View plan history/i })
@@ -349,6 +358,7 @@ test.describe('Plan History Page', () => {
         .save()
 
       await page.goto(handoverLink)
+      await handlePrivacyScreenIfPresent(page)
 
       // Try to navigate directly to plan history
       await page.goto(`/forms/sentence-plan/v1.0/plan/plan-history`)
