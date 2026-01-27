@@ -31,6 +31,45 @@ export const sentencePlanV1URLs = {
   GOAL_MANAGEMENT_ROOT_PATH: sentencePlanFormPath + v1Path + goalManagementJourneyPath, // '/forms/sentence-plan' + '/v1.0' + '/goal'
 }
 
+// Page titles for sentence plan - matches step.title or dynamicTitle values
+export const sentencePlanPageTitles = {
+  // Goal management
+  createGoal: 'Create a goal',
+  addSteps: 'Add or change steps',
+  updateGoalAndSteps: 'Update goal and steps',
+  changeGoal: 'Change goal',
+  confirmDeleteGoal: 'Confirm you want to delete this goal',
+  confirmAchievedGoal: 'Confirm they have achieved this goal',
+  confirmIfAchieved: 'Confirm if they have achieved this goal',
+  confirmRemoveGoal: 'Confirm you want to remove this goal',
+  confirmReAddGoal: 'Confirm you want to add this goal back into the plan',
+  viewAchievedGoal: 'View achieved goal',
+  viewRemovedGoal: 'View removed goal',
+
+  // Plan overview & agree plan
+  planOverview: 'Plan',
+  agreePlan: 'Do they agree to this plan?',
+  updateAgreePlan: 'Do they agree?',
+
+  // Plan history
+  planHistory: 'Plan history',
+
+  // Other
+  privacy: 'Remember to close any other applications before starting an appointment',
+  aboutPerson: 'About',
+  previousVersions: 'Previous versions',
+}
+
+export const sentencePlanServiceName = 'Sentence plan'
+
+// constructs page title:
+export const buildPageTitle = (stepTitle: string, serviceName: string = sentencePlanServiceName): string =>
+  `${stepTitle} - ${serviceName}`
+
+// constructs page error title:
+export const buildErrorPageTitle = (stepTitle: string, serviceName: string = sentencePlanServiceName): string =>
+  `Error: ${buildPageTitle(stepTitle, serviceName)}`
+
 /**
  * Handles the privacy screen if it appears, confirming and continuing.
  */
