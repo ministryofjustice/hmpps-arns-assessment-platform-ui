@@ -96,6 +96,7 @@ export interface DerivedPlanAgreement {
   detailsNo?: string
   detailsCouldNotAnswer?: string
   notes?: string
+  createdBy?: string
 }
 
 export type AreaOfNeed = (typeof areasOfNeed)[number]
@@ -129,6 +130,7 @@ export interface PlanAgreementAnswers {
   details_no?: string
   details_could_not_answer?: string
   notes?: string
+  created_by?: string
 }
 
 export interface PlanAgreementProperties {

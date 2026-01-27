@@ -98,6 +98,11 @@ export const updatePlanAgreementStatus = (deps: SentencePlanEffectsDeps) => asyn
     answers.notes = notes
   }
 
+  // Add created_by from the current user (same pattern as notes)
+  if (user.name) {
+    answers.created_by = user.name
+  }
+
   // Add the agreement record to the collection
   await deps.api.executeCommand({
     type: 'AddCollectionItemCommand',

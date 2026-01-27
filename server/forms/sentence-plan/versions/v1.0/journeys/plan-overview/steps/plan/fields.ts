@@ -100,17 +100,23 @@ const removedGoalsCount = Data('goals')
   .pipe(Transformer.Array.Length())
 
 export const planCreatedMessage = HtmlBlock({
-  hidden: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER'])),
-  content: when(Data('latestAgreementStatus').match(Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE'])))
+  hidden: Data('latestAgreementStatus').not.match(
+    Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER', 'UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']),
+  ),
+  content: when(
+    Data('latestAgreementStatus').match(
+      Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']),
+    ),
+  )
     .then(
       Format(
-        '<p class="govuk-body">Plan created on %1. <a href="#" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
+        '<p class="govuk-body">Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
         Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
       ),
     )
     .else(
       Format(
-        '<p class="govuk-body"><a href="#" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a> when you\'ve shared the plan with them.</p>',
+        '<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a> when you\'ve shared the plan with them.</p>',
         CaseData.Forename,
       ),
     ),
@@ -232,7 +238,13 @@ export const goalsSection = TemplateWrapper({
                   card: [
                     TemplateWrapper({
                       hidden: Data('latestAgreementStatus').match(
-                        Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']),
+                        Condition.Array.IsIn([
+                          'AGREED',
+                          'DO_NOT_AGREE',
+                          'COULD_NOT_ANSWER',
+                          'UPDATED_AGREED',
+                          'UPDATED_DO_NOT_AGREE',
+                        ]),
                       ),
                       template: '{{slot:draftCard}}',
                       slots: {
@@ -276,7 +288,13 @@ export const goalsSection = TemplateWrapper({
                     }),
                     TemplateWrapper({
                       hidden: Data('latestAgreementStatus').not.match(
-                        Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']),
+                        Condition.Array.IsIn([
+                          'AGREED',
+                          'DO_NOT_AGREE',
+                          'COULD_NOT_ANSWER',
+                          'UPDATED_AGREED',
+                          'UPDATED_DO_NOT_AGREE',
+                        ]),
                       ),
                       template: '{{slot:agreedCard}}',
                       slots: {
