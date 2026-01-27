@@ -5,7 +5,7 @@ import { CaseData } from '../../constants'
 
 export const aboutPersonStep = step({
   path: '/about-person',
-  title: 'About the Person',
+  title: 'About',
   view: {
     locals: {
       headerPageHeading: Format(`About %1`, CaseData.Forename),
@@ -13,6 +13,8 @@ export const aboutPersonStep = step({
         showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('handover')),
         showCreateGoalButton: true,
       },
+      // Hardcoded error until we have About page setup:
+      errorMessage: 'Some areas have incomplete information',
     },
   },
   blocks: [continueButton],

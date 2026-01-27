@@ -96,7 +96,7 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
 
   return step({
     path: '/privacy',
-    title: 'Confirm privacy',
+    title: 'Remember to close any other applications before starting an appointment',
     view: {
       template,
       locals: {
