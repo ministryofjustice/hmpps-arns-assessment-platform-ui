@@ -3,12 +3,12 @@
 
 {# ancestor[0].title is root journey title, in this case it's 'Sentence Plan' #}
 {# step.title is current step(page) of the journey #}
-{% set fullPageTitle = step.title + ' - ' + ancestors[0].title %}
+{% set fullPageTitle = (dynamicTitle or step.title) + ' - ' + ancestors[0].title %}
 {% set pageTitleWithError = 'Error: ' + fullPageTitle %}
 
 {% set pageTitle %}
   {% if not validationErrors.length and not hasPlanOverviewErrors%}
-    {{ dynamicTitle | default(fullPageTitle) }}
+    {{ fullPageTitle }}
   {% else %}
     {{ pageTitleWithError }}
   {% endif %}
