@@ -75,14 +75,14 @@
     <div class="govuk-summary-card__title-wrapper">
       <h2 class="govuk-summary-card__title" data-qa="goal-title">{{ params.goalTitle | safe }}</h2>
 
-      {#- Action links -#}
+      {#- Action links (hidden when printing) -#}
       {% if params.actions.length > 0 %}
         {% if params.actions.length == 1 %}
-          <div class="govuk-summary-card__actions">
+          <div class="govuk-summary-card__actions govuk-!-display-none-print">
             {{ _actionLink(params.actions[0], params.goalTitle) | trim }}
           </div>
         {% else %}
-          <ul class="govuk-summary-card__actions">
+          <ul class="govuk-summary-card__actions govuk-!-display-none-print">
             {% for action in params.actions %}
               <li class="govuk-summary-card__action">
                 {{ _actionLink(action, params.goalTitle) | trim }}
@@ -163,9 +163,9 @@
         {% endif %}
       </p>
 
-      {#- Move goal buttons -#}
+      {#- Move goal buttons (hidden when printing) -#}
       {% if params.showMoveUp or params.showMoveDown %}
-        <div class="govuk-button-group">
+        <div class="govuk-button-group govuk-!-display-none-print">
           {% if params.showMoveUp and params.moveUpHref %}
             {{ govukButton({
               text: "Move goal up",
@@ -185,9 +185,9 @@
         </div>
       {% endif %}
 
-      {#- Buttons -#}
+      {#- Buttons (hidden when printing) -#}
       {% if params.buttons.length > 0 %}
-        <div class="govuk-button-group">
+        <div class="govuk-button-group govuk-!-display-none-print">
           {% for button in params.buttons %}
             {{ govukButton({
               text: button.text,
