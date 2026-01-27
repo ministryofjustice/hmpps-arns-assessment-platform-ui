@@ -4,6 +4,29 @@ import { GoalStatus, StepStatus, AreaOfNeedSlug } from '../../server/forms/sente
 export { GoalStatus, StepStatus, AreaOfNeedSlug }
 
 /**
+ * Plan agreement status
+ */
+export type PlanAgreementStatus =
+  | 'AGREED'
+  | 'DO_NOT_AGREE'
+  | 'COULD_NOT_ANSWER'
+  | 'UPDATED_AGREED'
+  | 'UPDATED_DO_NOT_AGREE'
+
+/**
+ * Plan agreement configuration for test setup
+ */
+export interface PlanAgreementConfig {
+  status: PlanAgreementStatus
+  createdBy?: string
+  notes?: string
+  detailsNo?: string
+  detailsCouldNotAnswer?: string
+  /** Date offset in milliseconds from now (negative for past) */
+  dateOffset?: number
+}
+
+/**
  * Step configuration for test setup
  */
 export interface StepConfig {
@@ -16,12 +39,13 @@ export interface StepConfig {
  * Note configuration for test setup.
  *
  * Note types track goal lifecycle events:
+ * - ACHIEVED: Created when a goal is marked as achieved (optional notes about how it helped)
  * - REMOVED: Created when a goal is removed from the plan
  * - READDED: Created when a previously removed goal is added back
  * - PROGRESS: General progress updates on active goals
  */
 export interface NoteConfig {
-  type: 'REMOVED' | 'READDED' | 'PROGRESS'
+  type: 'ACHIEVED' | 'REMOVED' | 'READDED' | 'PROGRESS'
   note: string
   createdBy?: string
 }
@@ -37,6 +61,8 @@ export interface GoalConfig {
   relatedAreasOfNeed?: string[]
   steps?: StepConfig[]
   notes?: NoteConfig[]
+  /** Name of the user who marked this goal as achieved. Only used when status is 'ACHIEVED'. */
+  achievedBy?: string
 }
 
 /**

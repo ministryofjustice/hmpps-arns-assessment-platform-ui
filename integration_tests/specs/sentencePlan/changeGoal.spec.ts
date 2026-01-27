@@ -3,7 +3,7 @@ import { test, TargetService } from '../../support/fixtures'
 import ChangeGoalPage from '../../pages/sentencePlan/changeGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoals, futureGoals } from '../../builders/sentencePlanFactories'
-import { getDatePlusMonthsAsString } from './sentencePlanUtils'
+import { getDatePlusMonthsAsString, navigateToSentencePlan } from './sentencePlanUtils'
 
 test.describe('Change goal journey', () => {
   test.describe('current goal workflow', () => {
@@ -11,7 +11,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
@@ -25,7 +25,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
@@ -50,7 +50,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
@@ -79,7 +79,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
@@ -111,7 +111,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Verify the current goal shows target date
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -138,7 +138,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
@@ -158,7 +158,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
@@ -183,7 +183,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
@@ -211,7 +211,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
@@ -242,7 +242,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
@@ -265,7 +265,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
@@ -290,7 +290,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
@@ -311,7 +311,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
@@ -336,7 +336,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(futureGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to future goals tab and click change goal
       await PlanOverviewPage.verifyOnPage(page)
@@ -370,7 +370,7 @@ test.describe('Change goal journey', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(futureGoals(1)).save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to future goals tab and click change goal
       await PlanOverviewPage.verifyOnPage(page)

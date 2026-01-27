@@ -1,9 +1,27 @@
 import { createFormPackage, journey } from '@form-engine/form/builders'
 import { sentencePlanV1Journey } from './versions/v1.0'
 import { SentencePlanEffectsDeps } from './effects/types'
-import { SentencePlanEffectsRegistry } from './effects'
+import { SentencePlanEffects, SentencePlanEffectsRegistry } from './effects'
 import { sentencePlanComponents } from './components'
+import { createPrivacyScreen } from '../shared'
+import { CaseData } from './versions/v1.0/constants'
 import config from '../../config'
+
+/**
+ * Privacy screen for Sentence Plan
+ *
+ * Uses the shared privacy screen factory with Sentence Plan specific configuration.
+ */
+const privacyScreenStep = createPrivacyScreen({
+  loadEffects: [SentencePlanEffects.loadSessionData()],
+  submitEffect: SentencePlanEffects.setPrivacyAccepted(),
+  submitRedirectPath: 'v1.0/plan/overview',
+  alreadyAcceptedRedirectPath: 'v1.0/plan/overview',
+  template: 'sentence-plan/views/sentence-plan-step',
+  basePath: '/forms/sentence-plan/v1.0',
+  headerServiceNameLink: '/forms/sentence-plan/v1.0/plan/overview',
+  personForename: CaseData.Forename,
+})
 
 /**
  * Root Sentence Plan Journey
@@ -21,6 +39,7 @@ import config from '../../config'
  * Structure:
  * /forms/sentence-plan/
  * └── /v1.0/              - Version 1.0 sub-journey
+ *     ├── /privacy        - Privacy screen
  *     ├── /plan/overview  - Plan overview page (entry point)
  *     └── ...
  */
@@ -30,6 +49,7 @@ const sentencePlanRootJourney = journey({
   path: '/sentence-plan',
   entryPath: '/v1.0/plan/overview',
   children: [sentencePlanV1Journey],
+  steps: [privacyScreenStep],
 })
 
 /**

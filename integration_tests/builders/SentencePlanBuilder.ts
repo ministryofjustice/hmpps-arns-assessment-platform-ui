@@ -1,7 +1,14 @@
 import { AssessmentBuilder, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
 import type { AssessmentBuilderInstance } from './AssessmentBuilder'
 import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
-import type { CreatedAssessment, CreatedCollectionItem, GoalStatus, GoalConfig } from './types'
+import type {
+  CreatedAssessment,
+  CreatedCollectionItem,
+  GoalStatus,
+  PlanAgreementStatus,
+  PlanAgreementConfig,
+  GoalConfig,
+} from './types'
 import { AgreementStatus } from '../../server/forms/sentence-plan/effects'
 
 /**
@@ -73,7 +80,7 @@ export class SentencePlanBuilderInstance {
 
   private readonly goals: GoalConfig[] = []
 
-  private agreementStatus: AgreementStatus | undefined
+  private agreementStatus: AgreementStatus | PlanAgreementStatus | undefined
 
   constructor(assessmentBuilder: AssessmentBuilderInstance) {
     this.assessmentBuilder = assessmentBuilder
@@ -87,6 +94,8 @@ export class SentencePlanBuilderInstance {
 
     return this
   }
+
+  private planAgreements: PlanAgreementConfig[] = []
 
   /**
    * Add a goal to the sentence plan
@@ -107,9 +116,19 @@ export class SentencePlanBuilderInstance {
   }
 
   /**
-   * Set the plan agreement status ('AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER')
+   * Add multiple plan agreements with full configuration.
+   * Agreements are created in order (first = oldest, last = most recent).
+   * Use dateOffset to control the timing of each agreement.
    */
-  withAgreementStatus(status: AgreementStatus): this {
+  withPlanAgreements(agreements: PlanAgreementConfig[]): this {
+    this.planAgreements = agreements
+    return this
+  }
+
+  /**
+   * Set the plan agreement status ('AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER', 'UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE')
+   */
+  withAgreementStatus(status: AgreementStatus | PlanAgreementStatus): this {
     this.agreementStatus = status
 
     return this
@@ -138,6 +157,50 @@ export class SentencePlanBuilderInstance {
   }
 
   private buildAgreementCollection(): void {
+    // Handle multiple plan agreements (for plan history)
+    if (this.planAgreements.length > 0) {
+      const questionMap: Record<PlanAgreementStatus, string> = {
+        AGREED: 'yes',
+        DO_NOT_AGREE: 'no',
+        COULD_NOT_ANSWER: 'could_not_answer',
+        UPDATED_AGREED: 'yes',
+        UPDATED_DO_NOT_AGREE: 'no',
+      }
+
+      this.assessmentBuilder.withCollection('PLAN_AGREEMENTS', (collection: CollectionBuilder) => {
+        this.planAgreements.forEach(agreement => {
+          const date = new Date(Date.now() + (agreement.dateOffset ?? 0)).toISOString()
+
+          collection.withItem((item: CollectionItemBuilder) => {
+            item
+              .withAnswer('agreement_question', questionMap[agreement.status])
+              .withProperty('status', agreement.status)
+              .withProperty('status_date', date)
+
+            if (agreement.createdBy) {
+              item.withAnswer('created_by', agreement.createdBy)
+            }
+            if (agreement.notes) {
+              item.withAnswer('notes', agreement.notes)
+            }
+            if (agreement.detailsNo) {
+              item.withAnswer('details_no', agreement.detailsNo)
+            }
+            if (agreement.detailsCouldNotAnswer) {
+              item.withAnswer('details_could_not_answer', agreement.detailsCouldNotAnswer)
+            }
+
+            return item
+          })
+        })
+
+        return collection
+      })
+
+      return
+    }
+
+    // Handle single agreement status (legacy API)
     if (!this.agreementStatus) {
       return
     }
@@ -169,6 +232,10 @@ export class SentencePlanBuilderInstance {
       .withAnswer('related_areas_of_need', config.relatedAreasOfNeed ?? [])
       .withProperty('status', status)
       .withProperty('status_date', now)
+
+    if (config.achievedBy) {
+      goalItem.withProperty('achieved_by', config.achievedBy)
+    }
 
     if (config.targetDate) {
       goalItem.withAnswer('target_date', config.targetDate)

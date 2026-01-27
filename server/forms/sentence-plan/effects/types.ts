@@ -86,6 +86,11 @@ export interface DerivedGoal {
    * Controls visibility of "Move goal down" button on plan overview.
    */
   isLastInStatus: boolean
+  /**
+   * Name of the user who marked this goal as achieved.
+   * Only populated for goals with status 'ACHIEVED'.
+   */
+  achievedBy?: string
 }
 
 export interface DerivedPlanAgreement {
@@ -95,6 +100,34 @@ export interface DerivedPlanAgreement {
   agreementQuestion: string
   detailsNo?: string
   detailsCouldNotAnswer?: string
+  notes?: string
+  createdBy?: string
+}
+
+/**
+ * Unified plan history entry for displaying timeline events.
+ * Uses discriminated union pattern for type-safe rendering.
+ */
+export type PlanHistoryEntry = PlanAgreementHistoryEntry | GoalAchievedHistoryEntry
+
+export interface PlanAgreementHistoryEntry {
+  type: 'agreement'
+  uuid: string
+  date: Date
+  status: AgreementStatus
+  createdBy?: string
+  detailsNo?: string
+  detailsCouldNotAnswer?: string
+  notes?: string
+}
+
+export interface GoalAchievedHistoryEntry {
+  type: 'goal_achieved'
+  uuid: string
+  date: Date
+  goalUuid: string
+  goalTitle: string
+  achievedBy?: string
   notes?: string
 }
 
@@ -112,6 +145,7 @@ export interface GoalAnswers {
 export interface GoalProperties {
   status: GoalStatus
   status_date: string
+  achieved_by?: string
 }
 
 export interface StepAnswers {
@@ -129,6 +163,7 @@ export interface PlanAgreementAnswers {
   details_no?: string
   details_could_not_answer?: string
   notes?: string
+  created_by?: string
 }
 
 export interface PlanAgreementProperties {
@@ -203,6 +238,9 @@ export interface SentencePlanData extends Record<string, unknown> {
   latestAgreementStatus: AgreementStatus | undefined
   latestAgreementDate: Date | undefined
 
+  // Plan History (unified timeline of agreements + goal achievements)
+  planHistoryEntries: PlanHistoryEntry[]
+
   // Areas of need
   areasOfNeed: AreaOfNeed[]
   currentAreaOfNeed: AreaOfNeed
@@ -241,6 +279,7 @@ export interface SentencePlanSession {
   navigationReferrer?: string
   returnTo?: string
   assessmentUuid?: string
+  privacyAccepted?: boolean
   stepChanges?: StepChangesStorage
   notifications?: PlanNotification[]
   handoverContext?: HandoverContext

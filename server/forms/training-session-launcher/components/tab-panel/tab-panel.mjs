@@ -11,134 +11,134 @@
  * </div>
  */
 export class TabPanel extends HTMLElement {
-  static moduleName = 'tab-panel'
+  static moduleName = "tab-panel";
 
   /** @type {NodeListOf<HTMLButtonElement>} */
-  #tabs
+  #tabs;
 
   /** @type {NodeListOf<HTMLElement>} */
-  #panels
+  #panels;
 
   /** @type {string} */
-  #hiddenClass = 'tab-panel__panel--active'
+  #hiddenClass = "tab-panel__panel--active";
 
   /** @type {string} */
-  #selectedClass = 'tab-panel__item-btn--selected'
+  #selectedClass = "tab-panel__item-btn--selected";
 
   connectedCallback() {
-    this.#tabs = this.querySelectorAll('[role="tab"]')
-    this.#panels = this.querySelectorAll('[role="tabpanel"]')
+    this.#tabs = this.querySelectorAll('[role="tab"]');
+    this.#panels = this.querySelectorAll('[role="tabpanel"]');
 
     if (!this.#tabs.length || !this.#panels.length) {
-      console.warn('TabPanel: No tabs or panels found')
-      return
+      console.warn("TabPanel: No tabs or panels found");
+      return;
     }
 
-    this.#setup()
+    this.#setup();
   }
 
   disconnectedCallback() {
-    this.#teardown()
+    this.#teardown();
   }
 
   #setup() {
     // Set up ARIA attributes and event listeners
     this.#tabs.forEach((tab, index) => {
-      tab.setAttribute('tabindex', index === 0 ? '0' : '-1')
-      tab.addEventListener('click', this.#onTabClick)
-      tab.addEventListener('keydown', this.#onTabKeydown)
-    })
+      tab.setAttribute("tabindex", index === 0 ? "0" : "-1");
+      tab.addEventListener("click", this.#onTabClick);
+      tab.addEventListener("keydown", this.#onTabKeydown);
+    });
 
     // Ensure correct initial state
-    const selectedTab = this.querySelector('[aria-selected="true"]') || this.#tabs[0]
+    const selectedTab = this.querySelector('[aria-selected="true"]') || this.#tabs[0];
 
     if (selectedTab) {
-      this.#showTab(selectedTab)
+      this.#showTab(selectedTab);
     }
   }
 
   #teardown() {
-    this.#tabs.forEach(tab => {
-      tab.removeEventListener('click', this.#onTabClick)
-      tab.removeEventListener('keydown', this.#onTabKeydown)
-    })
+    this.#tabs.forEach((tab) => {
+      tab.removeEventListener("click", this.#onTabClick);
+      tab.removeEventListener("keydown", this.#onTabKeydown);
+    });
   }
 
   /**
    * Handle tab click
    * @param {Event} event
    */
-  #onTabClick = event => {
-    event.preventDefault()
-    const tab = event.currentTarget
+  #onTabClick = (event) => {
+    event.preventDefault();
+    const tab = event.currentTarget;
 
     if (!(tab instanceof HTMLElement)) {
-      return
+      return;
     }
 
-    const currentTab = this.#getCurrentTab()
+    const currentTab = this.#getCurrentTab();
 
     if (currentTab && currentTab !== tab) {
-      this.#hideTab(currentTab)
+      this.#hideTab(currentTab);
     }
 
-    this.#showTab(tab)
-  }
+    this.#showTab(tab);
+  };
 
   /**
    * Handle keyboard navigation
    * @param {KeyboardEvent} event
    */
-  #onTabKeydown = event => {
-    const currentTab = event.currentTarget
+  #onTabKeydown = (event) => {
+    const currentTab = event.currentTarget;
 
     if (!(currentTab instanceof HTMLElement)) {
-      return
+      return;
     }
 
     switch (event.key) {
-      case 'ArrowLeft':
-      case 'Left':
-        event.preventDefault()
-        this.#activatePreviousTab(currentTab)
-        break
+      case "ArrowLeft":
+      case "Left":
+        event.preventDefault();
+        this.#activatePreviousTab(currentTab);
+        break;
 
-      case 'ArrowRight':
-      case 'Right':
-        event.preventDefault()
-        this.#activateNextTab(currentTab)
-        break
+      case "ArrowRight":
+      case "Right":
+        event.preventDefault();
+        this.#activateNextTab(currentTab);
+        break;
 
-      case 'ArrowUp':
-      case 'Up':
-        event.preventDefault()
-        this.#activatePreviousTab(currentTab)
-        break
+      case "ArrowUp":
+      case "Up":
+        event.preventDefault();
+        this.#activatePreviousTab(currentTab);
+        break;
 
-      case 'ArrowDown':
-      case 'Down':
-        event.preventDefault()
-        this.#activateNextTab(currentTab)
-        break
+      case "ArrowDown":
+      case "Down":
+        event.preventDefault();
+        this.#activateNextTab(currentTab);
+        break;
 
-      case 'Home':
-        event.preventDefault()
-        this.#activateFirstTab(currentTab)
-        break
+      case "Home":
+        event.preventDefault();
+        this.#activateFirstTab(currentTab);
+        break;
 
-      case 'End':
-        event.preventDefault()
-        this.#activateLastTab(currentTab)
-        break
+      case "End":
+        event.preventDefault();
+        this.#activateLastTab(currentTab);
+        break;
     }
-  }
+  };
 
   /**
    * Get the currently selected tab
    * @returns {HTMLElement | null}
    */
   #getCurrentTab() {
-    return this.querySelector('[aria-selected="true"]')
+    return this.querySelector('[aria-selected="true"]');
   }
 
   /**
@@ -147,13 +147,13 @@ export class TabPanel extends HTMLElement {
    * @returns {HTMLElement | null}
    */
   #getPanel(tab) {
-    const panelId = tab.getAttribute('aria-controls')
+    const panelId = tab.getAttribute("aria-controls");
 
     if (!panelId) {
-      return null
+      return null;
     }
 
-    return this.querySelector(`#${panelId}`)
+    return this.querySelector(`#${panelId}`);
   }
 
   /**
@@ -161,15 +161,15 @@ export class TabPanel extends HTMLElement {
    * @param {HTMLElement} tab
    */
   #showTab(tab) {
-    tab.setAttribute('aria-selected', 'true')
-    tab.setAttribute('tabindex', '0')
-    tab.classList.add(this.#selectedClass)
+    tab.setAttribute("aria-selected", "true");
+    tab.setAttribute("tabindex", "0");
+    tab.classList.add(this.#selectedClass);
 
-    const panel = this.#getPanel(tab)
+    const panel = this.#getPanel(tab);
 
     if (panel) {
-      panel.removeAttribute('hidden')
-      panel.classList.add(this.#hiddenClass)
+      panel.removeAttribute("hidden");
+      panel.classList.add(this.#hiddenClass);
     }
   }
 
@@ -178,15 +178,15 @@ export class TabPanel extends HTMLElement {
    * @param {HTMLElement} tab
    */
   #hideTab(tab) {
-    tab.setAttribute('aria-selected', 'false')
-    tab.setAttribute('tabindex', '-1')
-    tab.classList.remove(this.#selectedClass)
+    tab.setAttribute("aria-selected", "false");
+    tab.setAttribute("tabindex", "-1");
+    tab.classList.remove(this.#selectedClass);
 
-    const panel = this.#getPanel(tab)
+    const panel = this.#getPanel(tab);
 
     if (panel) {
-      panel.setAttribute('hidden', '')
-      panel.classList.remove(this.#hiddenClass)
+      panel.setAttribute("hidden", "");
+      panel.classList.remove(this.#hiddenClass);
     }
   }
 
@@ -196,7 +196,7 @@ export class TabPanel extends HTMLElement {
    * @returns {number}
    */
   #getTabIndex(tab) {
-    return Array.from(this.#tabs).indexOf(tab)
+    return Array.from(this.#tabs).indexOf(tab);
   }
 
   /**
@@ -204,13 +204,13 @@ export class TabPanel extends HTMLElement {
    * @param {HTMLElement} currentTab
    */
   #activatePreviousTab(currentTab) {
-    const currentIndex = this.#getTabIndex(currentTab)
-    const previousIndex = currentIndex > 0 ? currentIndex - 1 : this.#tabs.length - 1
-    const previousTab = this.#tabs[previousIndex]
+    const currentIndex = this.#getTabIndex(currentTab);
+    const previousIndex = currentIndex > 0 ? currentIndex - 1 : this.#tabs.length - 1;
+    const previousTab = this.#tabs[previousIndex];
 
-    this.#hideTab(currentTab)
-    this.#showTab(previousTab)
-    previousTab.focus()
+    this.#hideTab(currentTab);
+    this.#showTab(previousTab);
+    previousTab.focus();
   }
 
   /**
@@ -218,13 +218,13 @@ export class TabPanel extends HTMLElement {
    * @param {HTMLElement} currentTab
    */
   #activateNextTab(currentTab) {
-    const currentIndex = this.#getTabIndex(currentTab)
-    const nextIndex = currentIndex < this.#tabs.length - 1 ? currentIndex + 1 : 0
-    const nextTab = this.#tabs[nextIndex]
+    const currentIndex = this.#getTabIndex(currentTab);
+    const nextIndex = currentIndex < this.#tabs.length - 1 ? currentIndex + 1 : 0;
+    const nextTab = this.#tabs[nextIndex];
 
-    this.#hideTab(currentTab)
-    this.#showTab(nextTab)
-    nextTab.focus()
+    this.#hideTab(currentTab);
+    this.#showTab(nextTab);
+    nextTab.focus();
   }
 
   /**
@@ -232,12 +232,12 @@ export class TabPanel extends HTMLElement {
    * @param {HTMLElement} currentTab
    */
   #activateFirstTab(currentTab) {
-    const firstTab = this.#tabs[0]
+    const firstTab = this.#tabs[0];
 
     if (firstTab !== currentTab) {
-      this.#hideTab(currentTab)
-      this.#showTab(firstTab)
-      firstTab.focus()
+      this.#hideTab(currentTab);
+      this.#showTab(firstTab);
+      firstTab.focus();
     }
   }
 
@@ -246,12 +246,12 @@ export class TabPanel extends HTMLElement {
    * @param {HTMLElement} currentTab
    */
   #activateLastTab(currentTab) {
-    const lastTab = this.#tabs[this.#tabs.length - 1]
+    const lastTab = this.#tabs[this.#tabs.length - 1];
 
     if (lastTab !== currentTab) {
-      this.#hideTab(currentTab)
-      this.#showTab(lastTab)
-      lastTab.focus()
+      this.#hideTab(currentTab);
+      this.#showTab(lastTab);
+      lastTab.focus();
     }
   }
 }
@@ -261,13 +261,13 @@ export class TabPanel extends HTMLElement {
  * (for compatibility with existing GOV.UK patterns)
  */
 export function initTabPanels() {
-  const panels = document.querySelectorAll('[data-module="tab-panel"]')
+  const panels = document.querySelectorAll('[data-module="tab-panel"]');
 
-  panels.forEach(panel => {
+  panels.forEach((panel) => {
     // Create instance and attach methods to the element
-    const instance = new TabPanelController(panel)
-    instance.init()
-  })
+    const instance = new TabPanelController(panel);
+    instance.init();
+  });
 }
 
 /**
@@ -275,52 +275,52 @@ export function initTabPanels() {
  * (works with data-module="tab-panel" pattern)
  */
 export class TabPanelController {
-  #element
-  #tabs
-  #panels
-  #hiddenClass = 'tab-panel__panel--active'
-  #selectedClass = 'tab-panel__item-btn--selected'
-  #queryParam = null
+  #element;
+  #tabs;
+  #panels;
+  #hiddenClass = "tab-panel__panel--active";
+  #selectedClass = "tab-panel__item-btn--selected";
+  #queryParam = null;
 
   /**
    * @param {HTMLElement} element
    */
   constructor(element) {
-    this.#element = element
-    this.#tabs = element.querySelectorAll('[role="tab"]')
-    this.#panels = element.querySelectorAll('[role="tabpanel"]')
-    this.#queryParam = element.getAttribute('data-query-param')
+    this.#element = element;
+    this.#tabs = element.querySelectorAll('[role="tab"]');
+    this.#panels = element.querySelectorAll('[role="tabpanel"]');
+    this.#queryParam = element.getAttribute("data-query-param");
   }
 
   init() {
     if (!this.#tabs.length || !this.#panels.length) {
-      console.warn('TabPanel: No tabs or panels found')
-      return
+      console.warn("TabPanel: No tabs or panels found");
+      return;
     }
 
-    this.#tabs.forEach(tab => {
-      const isSelected = tab.getAttribute('aria-selected') === 'true'
-      tab.setAttribute('tabindex', isSelected ? '0' : '-1')
-      tab.addEventListener('click', this.#onTabClick)
-      tab.addEventListener('keydown', this.#onTabKeydown)
-    })
+    this.#tabs.forEach((tab) => {
+      const isSelected = tab.getAttribute("aria-selected") === "true";
+      tab.setAttribute("tabindex", isSelected ? "0" : "-1");
+      tab.addEventListener("click", this.#onTabClick);
+      tab.addEventListener("keydown", this.#onTabKeydown);
+    });
 
     // If queryParam is configured, check URL for initial selection
     if (this.#queryParam) {
-      const urlParams = new URLSearchParams(window.location.search)
-      const selectedFromUrl = urlParams.get(this.#queryParam)
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedFromUrl = urlParams.get(this.#queryParam);
 
       if (selectedFromUrl) {
-        const tabToSelect = this.#findTabByPanelId(selectedFromUrl)
+        const tabToSelect = this.#findTabByPanelId(selectedFromUrl);
 
         if (tabToSelect) {
-          const currentTab = this.#getCurrentTab()
+          const currentTab = this.#getCurrentTab();
 
           if (currentTab && currentTab !== tabToSelect) {
-            this.#hideTab(currentTab)
+            this.#hideTab(currentTab);
           }
 
-          this.#showTab(tabToSelect, false) // Don't update URL on init
+          this.#showTab(tabToSelect, false); // Don't update URL on init
         }
       }
     }
@@ -332,76 +332,76 @@ export class TabPanelController {
    * @returns {HTMLElement | null}
    */
   #findTabByPanelId(panelId) {
-    return this.#element.querySelector(`[data-panel-id="${panelId}"]`)
+    return this.#element.querySelector(`[data-panel-id="${panelId}"]`);
   }
 
   destroy() {
-    this.#tabs.forEach(tab => {
-      tab.removeEventListener('click', this.#onTabClick)
-      tab.removeEventListener('keydown', this.#onTabKeydown)
-    })
+    this.#tabs.forEach((tab) => {
+      tab.removeEventListener("click", this.#onTabClick);
+      tab.removeEventListener("keydown", this.#onTabKeydown);
+    });
   }
 
-  #onTabClick = event => {
-    event.preventDefault()
-    const tab = event.currentTarget
+  #onTabClick = (event) => {
+    event.preventDefault();
+    const tab = event.currentTarget;
 
     if (!(tab instanceof HTMLElement)) {
-      return
+      return;
     }
 
-    const currentTab = this.#getCurrentTab()
+    const currentTab = this.#getCurrentTab();
 
     if (currentTab && currentTab !== tab) {
-      this.#hideTab(currentTab)
+      this.#hideTab(currentTab);
     }
 
-    this.#showTab(tab)
-  }
+    this.#showTab(tab);
+  };
 
-  #onTabKeydown = event => {
-    const currentTab = event.currentTarget
+  #onTabKeydown = (event) => {
+    const currentTab = event.currentTarget;
 
     if (!(currentTab instanceof HTMLElement)) {
-      return
+      return;
     }
 
     switch (event.key) {
-      case 'ArrowLeft':
-      case 'Left':
-      case 'ArrowUp':
-      case 'Up':
-        event.preventDefault()
-        this.#activateAdjacentTab(currentTab, -1)
-        break
+      case "ArrowLeft":
+      case "Left":
+      case "ArrowUp":
+      case "Up":
+        event.preventDefault();
+        this.#activateAdjacentTab(currentTab, -1);
+        break;
 
-      case 'ArrowRight':
-      case 'Right':
-      case 'ArrowDown':
-      case 'Down':
-        event.preventDefault()
-        this.#activateAdjacentTab(currentTab, 1)
-        break
+      case "ArrowRight":
+      case "Right":
+      case "ArrowDown":
+      case "Down":
+        event.preventDefault();
+        this.#activateAdjacentTab(currentTab, 1);
+        break;
 
-      case 'Home':
-        event.preventDefault()
-        this.#activateTabByIndex(currentTab, 0)
-        break
+      case "Home":
+        event.preventDefault();
+        this.#activateTabByIndex(currentTab, 0);
+        break;
 
-      case 'End':
-        event.preventDefault()
-        this.#activateTabByIndex(currentTab, this.#tabs.length - 1)
-        break
+      case "End":
+        event.preventDefault();
+        this.#activateTabByIndex(currentTab, this.#tabs.length - 1);
+        break;
     }
-  }
+  };
 
   #getCurrentTab() {
-    return this.#element.querySelector('[aria-selected="true"]')
+    return this.#element.querySelector('[aria-selected="true"]');
   }
 
   #getPanel(tab) {
-    const panelId = tab.getAttribute('aria-controls')
-    return panelId ? this.#element.querySelector(`#${panelId}`) : null
+    const panelId = tab.getAttribute("aria-controls");
+    return panelId ? this.#element.querySelector(`#${panelId}`) : null;
   }
 
   /**
@@ -410,72 +410,72 @@ export class TabPanelController {
    * @param {boolean} updateUrl - Whether to update the URL query param (default: true)
    */
   #showTab(tab, updateUrl = true) {
-    tab.setAttribute('aria-selected', 'true')
-    tab.setAttribute('tabindex', '0')
-    tab.classList.add(this.#selectedClass)
+    tab.setAttribute("aria-selected", "true");
+    tab.setAttribute("tabindex", "0");
+    tab.classList.add(this.#selectedClass);
 
-    const panel = this.#getPanel(tab)
+    const panel = this.#getPanel(tab);
 
     if (panel) {
-      panel.removeAttribute('hidden')
-      panel.classList.add(this.#hiddenClass)
+      panel.removeAttribute("hidden");
+      panel.classList.add(this.#hiddenClass);
     }
 
     // Update URL query param if configured
-    const panelId = tab.getAttribute('data-panel-id')
+    const panelId = tab.getAttribute("data-panel-id");
 
     if (updateUrl && this.#queryParam && panelId) {
-      const url = new URL(window.location.href)
-      url.searchParams.set(this.#queryParam, panelId)
-      window.history.replaceState({}, '', url)
+      const url = new URL(window.location.href);
+      url.searchParams.set(this.#queryParam, panelId);
+      window.history.replaceState({}, "", url);
     }
   }
 
   #hideTab(tab) {
-    tab.setAttribute('aria-selected', 'false')
-    tab.setAttribute('tabindex', '-1')
-    tab.classList.remove(this.#selectedClass)
+    tab.setAttribute("aria-selected", "false");
+    tab.setAttribute("tabindex", "-1");
+    tab.classList.remove(this.#selectedClass);
 
-    const panel = this.#getPanel(tab)
+    const panel = this.#getPanel(tab);
 
     if (panel) {
-      panel.setAttribute('hidden', '')
-      panel.classList.remove(this.#hiddenClass)
+      panel.setAttribute("hidden", "");
+      panel.classList.remove(this.#hiddenClass);
     }
   }
 
   #activateAdjacentTab(currentTab, direction) {
-    const tabs = Array.from(this.#tabs)
-    const currentIndex = tabs.indexOf(currentTab)
-    let nextIndex = currentIndex + direction
+    const tabs = Array.from(this.#tabs);
+    const currentIndex = tabs.indexOf(currentTab);
+    let nextIndex = currentIndex + direction;
 
     if (nextIndex < 0) {
-      nextIndex = tabs.length - 1
+      nextIndex = tabs.length - 1;
     } else if (nextIndex >= tabs.length) {
-      nextIndex = 0
+      nextIndex = 0;
     }
 
-    const nextTab = tabs[nextIndex]
-    this.#hideTab(currentTab)
-    this.#showTab(nextTab)
-    nextTab.focus()
+    const nextTab = tabs[nextIndex];
+    this.#hideTab(currentTab);
+    this.#showTab(nextTab);
+    nextTab.focus();
   }
 
   #activateTabByIndex(currentTab, index) {
-    const tabs = Array.from(this.#tabs)
-    const targetTab = tabs[index]
+    const tabs = Array.from(this.#tabs);
+    const targetTab = tabs[index];
 
     if (targetTab && targetTab !== currentTab) {
-      this.#hideTab(currentTab)
-      this.#showTab(targetTab)
-      targetTab.focus()
+      this.#hideTab(currentTab);
+      this.#showTab(targetTab);
+      targetTab.focus();
     }
   }
 }
 
 // Auto-initialize on DOM ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initTabPanels)
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initTabPanels);
 } else {
-  initTabPanels()
+  initTabPanels();
 }
