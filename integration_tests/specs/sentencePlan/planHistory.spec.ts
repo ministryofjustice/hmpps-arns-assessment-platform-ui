@@ -47,7 +47,7 @@ test.describe('Plan History Page', () => {
 
       // Click the "View plan history" link
       await page.getByRole('link', { name: /View plan history/i }).click()
-      
+
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
       await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
         - paragraph: View all updates and changes made to this plan.
