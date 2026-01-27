@@ -13,8 +13,6 @@ export const aboutPersonStep = step({
         showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('handover')),
         showCreateGoalButton: true,
       },
-      // Hardcoded error until we have About page setup:
-      errorMessage: 'Some areas have incomplete information',
     },
   },
   blocks: [continueButton],
