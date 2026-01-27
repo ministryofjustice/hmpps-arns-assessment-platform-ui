@@ -1,6 +1,6 @@
 import { accessTransition, Data, journey, redirect } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import { planHistoryJourney} from './journeys/plan-history'
+import { planHistoryJourney } from './journeys/plan-history'
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
