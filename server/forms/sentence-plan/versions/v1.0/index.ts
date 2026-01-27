@@ -48,7 +48,7 @@ export const sentencePlanV1Journey = journey({
         // Redirect to privacy screen if privacy not yet accepted this session
         redirect({
           when: Data('session.privacyAccepted').not.match(Condition.Equals(true)),
-          goto: '/forms/sentence-plan/privacy',
+          goto: '../../privacy',
         }),
       ],
     }),
