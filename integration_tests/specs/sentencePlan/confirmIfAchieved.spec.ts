@@ -3,7 +3,7 @@ import { test, TargetService } from '../../support/fixtures'
 import ConfirmIfAchievedPage from '../../pages/sentencePlan/confirmIfAchievedPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
-import { getDatePlusDaysAsISO, sentencePlanV1URLs } from './sentencePlanUtils'
+import { getDatePlusDaysAsISO, navigateToSentencePlan, sentencePlanV1URLs } from './sentencePlanUtils'
 
 const confirmIfAchievedPath = '/confirm-if-achieved'
 const planOverviewPageCurrentGoalsTabPath = `${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`
@@ -23,7 +23,7 @@ test.describe('Confirm if achieved page', () => {
       const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Try to access confirm-if-achieved page directly
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
@@ -41,7 +41,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -61,7 +61,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -81,7 +81,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Try to access confirm-if-achieved page directly
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
@@ -104,7 +104,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -135,7 +135,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -165,7 +165,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -189,7 +189,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -225,7 +225,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -256,7 +256,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -288,7 +288,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -319,7 +319,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -346,7 +346,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -380,7 +380,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-if-achieved`)
 
@@ -400,7 +400,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -427,7 +427,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -447,7 +447,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -474,7 +474,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -503,7 +503,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -538,7 +538,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -584,7 +584,7 @@ test.describe('Confirm if achieved page', () => {
         .withAgreementStatus('AGREED')
         .save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Verify we start with 2 current goals
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -624,7 +624,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
 
@@ -667,7 +667,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to update-goal-steps page
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
@@ -716,7 +716,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to update-goal-steps page
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
@@ -753,7 +753,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to update-goal-steps page
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
@@ -790,7 +790,7 @@ test.describe('Confirm if achieved page', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to update-goal-steps page
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
