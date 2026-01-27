@@ -52,6 +52,7 @@ export const derivePlanAgreementsFromAssessment = () => async (context: Sentence
       detailsNo: answers.details_no,
       detailsCouldNotAnswer: answers.details_could_not_answer,
       notes: answers.notes,
+      createdBy: answers.created_by,
     }
   })
 

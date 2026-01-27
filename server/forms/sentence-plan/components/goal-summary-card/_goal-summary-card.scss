@@ -1,4 +1,10 @@
 .goal-summary-card {
+  // Ensure long goal titles wrap within the card
+  .govuk-summary-card__title {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
   // Prevent links from turning purple when visited
   a:visited {
     color: $govuk-link-colour;
@@ -90,5 +96,25 @@
 
   .step-counter {
     margin-bottom: govuk-spacing(2);
+  }
+
+  // Print styles: auto-expand details element to show steps
+  @media print {
+    // Prevent the goal card from being split across pages
+    break-inside: avoid;
+
+    .govuk-details {
+      // Hide the "View steps" summary text when printing
+      > .govuk-details__summary {
+        display: none !important;
+      }
+
+      // Force the details content to be visible when printing
+      // ::details-content targets the browser's internal content wrapper
+      &::details-content {
+        content-visibility: visible;
+        height: auto !important;
+      }
+    }
   }
 }
