@@ -136,6 +136,7 @@ jobs:
     outputs:
       should_deploy: ${{ steps.check.outputs.should_deploy }}
       helm_substitutions: ${{ steps.check.outputs.helm_substitutions }}
+      pr_number: ${{ steps.check.outputs.pr_number }}
     steps:
       - name: Sync and prepare
         id: check
@@ -287,6 +288,7 @@ jobs:
             }
 
             core.setOutput('should_deploy', shouldDeploy ? 'true' : 'false');
+            core.setOutput('pr_number', prNumber.toString());
 
             // Parse helm substitutions if deploying
             if (shouldDeploy) {
@@ -305,6 +307,7 @@ jobs:
     if: needs.prepare.outputs.should_deploy == 'true'
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_ephemeral.yml@ephemeral-deployment
     with:
+      pr_number: ${{ needs.prepare.outputs.pr_number }}
       helm_substitutions: ${{ needs.prepare.outputs.helm_substitutions }}
     secrets: inherit
 
