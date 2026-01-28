@@ -26,7 +26,7 @@ import { SentencePlanEffects } from '../../../../../effects'
  */
 export const addStepsStep = step({
   path: '/add-steps',
-  title: 'Add Steps',
+  title: 'Add or change steps',
   isEntryPoint: true,
   view: {
     locals: {
