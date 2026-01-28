@@ -3,7 +3,13 @@ import { test, TargetService } from '../../support/fixtures'
 import ConfirmRemoveGoalPage from '../../pages/sentencePlan/confirmRemoveGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
-import { getDatePlusDaysAsISO, navigateToSentencePlan } from './sentencePlanUtils'
+import {
+  buildErrorPageTitle,
+  buildPageTitle,
+  getDatePlusDaysAsISO,
+  navigateToSentencePlan,
+  sentencePlanPageTitles,
+} from './sentencePlanUtils'
 
 test.describe('Remove goal journey', () => {
   test.describe('confirm goal removal', () => {
@@ -23,6 +29,9 @@ test.describe('Remove goal journey', () => {
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
 
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
+
+      // ensure page title is correct
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.confirmRemoveGoal))
 
       // Enter required removal note
       await removePage.enterRemovalNote('Goal is no longer relevant to their current situation')
@@ -56,6 +65,9 @@ test.describe('Remove goal journey', () => {
 
       // Click confirm without entering note
       await removePage.clickConfirm()
+
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.confirmRemoveGoal))
 
       // Should show validation error
       const hasError = await removePage.hasValidationError()

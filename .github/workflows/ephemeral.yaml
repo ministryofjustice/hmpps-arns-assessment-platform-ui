@@ -2,25 +2,32 @@ name: Ephemeral environment
 
 on:
   pull_request:
-    types: [opened, reopened, edited, labeled, unlabeled, synchronize, closed]
+    types: [opened, reopened, labeled, unlabeled, synchronize, closed]
+  issue_comment:
+    types: [edited]
   workflow_dispatch:
     inputs:
       pr_number:
-        description: 'PR number to add ephemeral config to'
+        description: 'PR number for deployment'
         required: true
         type: number
+      helm_substitutions:
+        description: 'Helm substitutions (multi-line key=value)'
+        required: false
+        type: string
 
 concurrency:
-  group: ephemeral-${{ github.event.pull_request.number || inputs.pr_number }}
+  group: ephemeral-${{ github.event.pull_request.number || github.event.issue.number || inputs.pr_number }}
   cancel-in-progress: false
 
 permissions:
+  actions: write
   contents: read
   pull-requests: write
   packages: write
 
 jobs:
-  # Add ephemeral config section to new PRs
+  # Add ephemeral config comment to new PRs
   setup:
     name: Setup PR
     if: |
@@ -31,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Generate and add ephemeral config section
+      - name: Generate and add ephemeral config comment
         uses: actions/github-script@v8
         env:
           PR_NUMBER: ${{ inputs.pr_number }}
@@ -46,6 +53,21 @@ jobs:
 
             if (!prNumber) {
               core.setFailed('Could not determine PR number');
+              return;
+            }
+
+            // Check if ephemeral config comment already exists
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            const marker = '<!-- ephemeral-config -->';
+            const existingComment = comments.find(c => c.body?.includes(marker));
+
+            if (existingComment) {
+              console.log('Ephemeral config comment already exists');
               return;
             }
 
@@ -78,15 +100,15 @@ jobs:
               : `pr-${prNumber}.dev.hmpps.service.justice.gov.uk`;
             const deployUrl = `https://${ingressHost}`;
 
-            // Build the markdown section
+            // Build the markdown comment
             const lines = [
-              '<details>',
-              '<summary><b>🚀 Ephemeral deployment</b></summary>',
+              marker,
+              '## 🚀 Ephemeral deployment',
               '',
-              '## Deploy',
+              '### Deploy',
               `- [ ] <!-- ephemeral --> Deploy to ${deployUrl}`,
               '',
-              '## Environment Overrides',
+              '### Environment Overrides',
               'Apply overrides to the `values-pr.yaml`. Changes trigger a re-deployment.',
               '| Variable | Value |',
               '|----------|-------|',
@@ -96,63 +118,64 @@ jobs:
               lines.push(`| \`${key}\` | <!-- env:${key} -->${defaultValue}<!-- /env --> |`);
             }
 
-            lines.push('', '</details>', '', '<!-- ephemeral-config-end -->');
-            const section = lines.join('\n');
+            const commentBody = lines.join('\n');
 
-            // Fetch current PR body
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: commentBody
+            });
+
+            console.log(`Added ephemeral config comment to PR #${prNumber}`);
+
+  # Handle issue_comment events - sync checkbox/label and trigger workflow_dispatch
+  handle_comment:
+    name: Handle comment
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Process comment and trigger deploy
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const prNumber = context.payload.issue.number;
+
             const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: prNumber
             });
 
-            let body = pr.body || '';
-            const marker = '<!-- ephemeral-config-end -->';
+            const labels = pr.labels.map(l => l.name);
+            const hasLabel = labels.includes('ephemeral');
 
-            if (body.includes(marker)) {
-              console.log('Ephemeral config section already exists');
+            // Find the ephemeral config comment
+            const marker = '<!-- ephemeral-config -->';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            const configComment = comments.find(c => c.body?.includes(marker));
+
+            if (!configComment) {
+              console.log('No ephemeral config comment found');
               return;
             }
 
-            body = body + '\n\n' + section;
+            // Only process if this is the config comment being edited
+            if (context.payload.comment.id !== configComment.id) {
+              console.log('Comment edited is not the ephemeral config comment, skipping');
+              return;
+            }
 
-            await github.rest.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNumber,
-              body: body
-            });
+            const commentBody = configComment.body;
+            const hasCheckedBox = commentBody.includes('- [x] <!-- ephemeral -->');
+            const hasUncheckedBox = commentBody.includes('- [ ] <!-- ephemeral -->');
 
-            console.log(`Added ephemeral config section to PR #${prNumber}`);
-
-  # Sync checkbox/label and prepare deployment
-  prepare:
-    name: Prepare
-    if: |
-      github.event.action == 'edited' ||
-      github.event.action == 'labeled' ||
-      github.event.action == 'unlabeled' ||
-      github.event.action == 'synchronize'
-    runs-on: ubuntu-latest
-    outputs:
-      should_deploy: ${{ steps.check.outputs.should_deploy }}
-      helm_substitutions: ${{ steps.check.outputs.helm_substitutions }}
-    steps:
-      - name: Sync and prepare
-        id: check
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const pr = context.payload.pull_request;
-            const body = pr.body || '';
-            const labels = pr.labels.map(l => l.name);
-            const action = context.payload.action;
-
-            const hasLabel = labels.includes('ephemeral');
-            const hasCheckedBox = body.includes('- [x] <!-- ephemeral -->');
-            const hasUncheckedBox = body.includes('- [ ] <!-- ephemeral -->');
-
-            // Helper to parse env vars from PR body
+            // Helper to parse env vars from comment body
             const parseEnvVars = (text) => {
               const vars = {};
               const pattern = /<!-- env:(\w+) -->([^<]*)<!-- \/env -->/g;
@@ -163,12 +186,12 @@ jobs:
               return vars;
             };
 
-            // Check if env vars changed (only on edit events)
+            // Check if env vars changed
             let envVarsChanged = false;
-            if (action === 'edited' && context.payload.changes?.body?.from) {
+            if (context.payload.changes?.body?.from) {
               const oldBody = context.payload.changes.body.from;
               const oldVars = parseEnvVars(oldBody);
-              const newVars = parseEnvVars(body);
+              const newVars = parseEnvVars(commentBody);
               envVarsChanged = JSON.stringify(oldVars) !== JSON.stringify(newVars);
               if (envVarsChanged) {
                 console.log('Env vars changed:');
@@ -177,73 +200,184 @@ jobs:
               }
             }
 
-            console.log(`Action: ${action}, Has label: ${hasLabel}, Checked: ${hasCheckedBox}, Unchecked: ${hasUncheckedBox}, Env vars changed: ${envVarsChanged}`);
+            console.log(`Has label: ${hasLabel}, Checked: ${hasCheckedBox}, Unchecked: ${hasUncheckedBox}, Env vars changed: ${envVarsChanged}`);
 
             let shouldDeploy = false;
 
             // Checkbox was ticked but label missing -> add label and trigger deploy
-            if (hasCheckedBox && !hasLabel && action === 'edited') {
+            if (hasCheckedBox && !hasLabel) {
               console.log('Checkbox ticked, adding ephemeral label');
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: pr.number,
+                issue_number: prNumber,
                 labels: ['ephemeral']
               });
               shouldDeploy = true;
             }
-            // Checkbox was unticked but label present -> remove label
-            else if (hasUncheckedBox && hasLabel && action === 'edited') {
+            // Checkbox was unticked but label present -> remove label (no deploy)
+            else if (hasUncheckedBox && hasLabel) {
               console.log('Checkbox unticked, removing ephemeral label');
               try {
                 await github.rest.issues.removeLabel({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  issue_number: pr.number,
+                  issue_number: prNumber,
                   name: 'ephemeral'
                 });
               } catch (error) {
                 if (error.status !== 404) throw error;
               }
-              shouldDeploy = false;
             }
+            // Env vars changed while ephemeral is active -> redeploy
+            else if (hasLabel && hasCheckedBox && envVarsChanged) {
+              console.log('Env vars changed, triggering redeploy');
+              shouldDeploy = true;
+            }
+
+            // Trigger workflow_dispatch on the PR branch if deploy needed
+            if (shouldDeploy) {
+              const envVars = parseEnvVars(commentBody);
+              const substitutions = Object.entries(envVars)
+                .filter(([, value]) => value)
+                .map(([key, value]) => `${key}=${value}`)
+                .join('\n');
+
+              console.log(`Triggering workflow_dispatch on branch: ${pr.head.ref}`);
+              console.log('Helm substitutions:', substitutions || '(none)');
+
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'ephemeral.yaml',
+                ref: pr.head.ref,
+                inputs: {
+                  pr_number: prNumber.toString(),
+                  helm_substitutions: substitutions
+                }
+              });
+
+              console.log('Workflow dispatch triggered');
+            }
+
+  # Prepare deployment (for pull_request events and workflow_dispatch)
+  prepare:
+    name: Prepare
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.action == 'labeled' ||
+      github.event.action == 'unlabeled' ||
+      github.event.action == 'synchronize'
+    runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.check.outputs.should_deploy }}
+      helm_substitutions: ${{ steps.check.outputs.helm_substitutions }}
+      pr_number: ${{ steps.check.outputs.pr_number }}
+    steps:
+      - name: Prepare deployment
+        id: check
+        uses: actions/github-script@v8
+        env:
+          INPUT_PR_NUMBER: ${{ inputs.pr_number }}
+          INPUT_HELM_SUBSTITUTIONS: ${{ inputs.helm_substitutions }}
+        with:
+          script: |
+            const isDispatch = context.eventName === 'workflow_dispatch';
+            const action = context.payload.action;
+
+            // For workflow_dispatch, use inputs directly
+            if (isDispatch) {
+              const prNumber = process.env.INPUT_PR_NUMBER;
+              const substitutions = process.env.INPUT_HELM_SUBSTITUTIONS || '';
+
+              console.log(`Workflow dispatch for PR #${prNumber}`);
+              console.log('Helm substitutions:', substitutions || '(none)');
+
+              core.setOutput('should_deploy', 'true');
+              core.setOutput('pr_number', prNumber);
+              core.setOutput('helm_substitutions', substitutions);
+              return;
+            }
+
+            // For pull_request events, check label and comment state
+            const prNumber = context.payload.pull_request.number;
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+
+            const labels = pr.labels.map(l => l.name);
+            const hasLabel = labels.includes('ephemeral');
+
+            // Find the ephemeral config comment
+            const marker = '<!-- ephemeral-config -->';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            const configComment = comments.find(c => c.body?.includes(marker));
+
+            if (!configComment) {
+              console.log('No ephemeral config comment found');
+              core.setOutput('should_deploy', 'false');
+              return;
+            }
+
+            const commentBody = configComment.body;
+            const hasCheckedBox = commentBody.includes('- [x] <!-- ephemeral -->');
+            const hasUncheckedBox = commentBody.includes('- [ ] <!-- ephemeral -->');
+
+            // Helper to parse env vars
+            const parseEnvVars = (text) => {
+              const vars = {};
+              const pattern = /<!-- env:(\w+) -->([^<]*)<!-- \/env -->/g;
+              let match;
+              while ((match = pattern.exec(text)) !== null) {
+                vars[match[1]] = match[2].trim();
+              }
+              return vars;
+            };
+
+            // Helper to update the config comment
+            const updateConfigComment = async (newBody) => {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: configComment.id,
+                body: newBody
+              });
+            };
+
+            console.log(`Action: ${action}, Has label: ${hasLabel}, Checked: ${hasCheckedBox}, Unchecked: ${hasUncheckedBox}`);
+
+            let shouldDeploy = false;
+
             // Label was added but checkbox not ticked -> tick checkbox and trigger deploy
-            else if (hasLabel && hasUncheckedBox && action === 'labeled' && context.payload.label?.name === 'ephemeral') {
+            if (hasLabel && hasUncheckedBox && action === 'labeled' && context.payload.label?.name === 'ephemeral') {
               console.log('Label added, ticking checkbox');
-              const newBody = body.replace(
+              const newBody = commentBody.replace(
                 '- [ ] <!-- ephemeral -->',
                 '- [x] <!-- ephemeral -->'
               );
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-                body: newBody
-              });
+              await updateConfigComment(newBody);
               shouldDeploy = true;
             }
             // Label was removed but checkbox still ticked -> untick checkbox
             else if (!hasLabel && hasCheckedBox && action === 'unlabeled' && context.payload.label?.name === 'ephemeral') {
               console.log('Label removed, unticking checkbox');
-              const newBody = body.replace(
+              const newBody = commentBody.replace(
                 '- [x] <!-- ephemeral -->',
                 '- [ ] <!-- ephemeral -->'
               );
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-                body: newBody
-              });
+              await updateConfigComment(newBody);
               shouldDeploy = false;
             }
             // Already has label and checkbox on labeled event
             else if (hasLabel && hasCheckedBox && action === 'labeled') {
-              shouldDeploy = true;
-            }
-            // Env vars changed while ephemeral is active -> redeploy
-            else if (hasLabel && hasCheckedBox && envVarsChanged && action === 'edited') {
-              console.log('Env vars changed, triggering redeploy');
               shouldDeploy = true;
             }
             // Code pushed while ephemeral is active -> redeploy
@@ -253,10 +387,10 @@ jobs:
             }
 
             core.setOutput('should_deploy', shouldDeploy ? 'true' : 'false');
+            core.setOutput('pr_number', prNumber.toString());
 
-            // Parse helm substitutions if deploying
             if (shouldDeploy) {
-              const envVars = parseEnvVars(body);
+              const envVars = parseEnvVars(commentBody);
               const substitutions = Object.entries(envVars)
                 .filter(([, value]) => value)
                 .map(([key, value]) => `${key}=${value}`)
@@ -271,6 +405,7 @@ jobs:
     if: needs.prepare.outputs.should_deploy == 'true'
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_ephemeral.yml@ephemeral-deployment
     with:
+      pr_number: ${{ needs.prepare.outputs.pr_number }}
       helm_substitutions: ${{ needs.prepare.outputs.helm_substitutions }}
     secrets: inherit
 
