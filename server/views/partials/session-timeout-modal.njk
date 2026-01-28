@@ -1,0 +1,16 @@
+{#
+  Session Timeout Modal Component
+
+  Displays a warning modal when the user has been inactive for a configurable period.
+  Configuration is passed from app.locals.sessionTimeoutConfig set in nunjucksSetup.ts
+
+  Usage:
+  {% include "./session-timeout-modal.njk" %}
+#}
+<moj-session-timeout-modal
+  data-warning-after-inactive-seconds="{{ sessionTimeoutConfig.warningAfterInactiveSeconds }}"
+  data-countdown-seconds="{{ sessionTimeoutConfig.countdownSeconds }}"
+  data-timeout-redirect-url="/sentence-plan/unsaved-information-deleted"
+  data-auth-source="{{ user.authSource if user else '' }}"
+  data-csrf-token="{{ csrfToken }}">
+</moj-session-timeout-modal>

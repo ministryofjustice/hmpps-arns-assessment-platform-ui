@@ -5,6 +5,7 @@ import { SentencePlanEffects, SentencePlanEffectsRegistry } from './effects'
 import { sentencePlanComponents } from './components'
 import { createPrivacyScreen } from '../shared'
 import { CaseData } from './versions/v1.0/constants'
+import { unsavedInformationDeletedStep } from './steps/unsaved-information-deleted/step'
 import config from '../../config'
 
 /**
@@ -49,7 +50,7 @@ const sentencePlanRootJourney = journey({
   path: '/sentence-plan',
   entryPath: '/v1.0/plan/overview',
   children: [sentencePlanV1Journey],
-  steps: [privacyScreenStep],
+  steps: [privacyScreenStep, unsavedInformationDeletedStep],
 })
 
 /**
