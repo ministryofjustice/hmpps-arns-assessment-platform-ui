@@ -63,8 +63,8 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
   }
 
   // Add removed goal entries
-  // Look for goals with REMOVED notes so that
-  // the removal event is still shown even if the goal has been re-added
+  // Look for goals with REMOVED notes so that the removal event is still shown
+  // even if the goal has been re-added.
   for (const goal of goals) {
     const removedNotes = goal.notes.filter(note => note.type === 'REMOVED')
     const isCurrentlyActive = goal.status === 'ACTIVE' || goal.status === 'FUTURE'
