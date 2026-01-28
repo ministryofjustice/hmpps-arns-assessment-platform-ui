@@ -5,16 +5,16 @@ import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import { navigateToSentencePlan } from '../sentencePlanUtils'
 
 test.describe('Accessible Autocomplete Component', () => {
-    test('should autocomplete suggested goals', async ({ page, createSession }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await navigateToSentencePlan(page, handoverLink)
+  test('should autocomplete suggested goals', async ({ page, createSession }) => {
+    const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+    await navigateToSentencePlan(page, handoverLink)
 
-      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+    const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
-      await planOverviewPage.clickCreateGoal()
-      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+    await planOverviewPage.clickCreateGoal()
+    const createGoalPage = await CreateGoalPage.verifyOnPage(page)
 
-      await createGoalPage.enterGoalTitle("Find")
-      await expect(createGoalPage.findAccomodationGoal).toBeVisible()
-    })
+    await createGoalPage.enterGoalTitle('Find')
+    await expect(createGoalPage.findAccomodationGoal).toBeVisible()
+  })
 })
