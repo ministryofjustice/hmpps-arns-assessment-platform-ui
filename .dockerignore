@@ -12,3 +12,7 @@ scss-report.txt
 eslint-report.html
 test-report.html
 docker-compose*
+docker/
+integration_tests/
+test_results/
+makefile
