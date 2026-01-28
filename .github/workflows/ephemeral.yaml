@@ -250,7 +250,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 workflow_id: 'ephemeral.yaml',
-                ref: pr.head.ref,
+                ref: `refs/pull/${prNumber}/merge`,
                 inputs: {
                   pr_number: prNumber.toString(),
                   helm_substitutions: substitutions
