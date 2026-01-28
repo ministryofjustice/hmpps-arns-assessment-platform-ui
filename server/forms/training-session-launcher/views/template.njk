@@ -28,3 +28,19 @@
   </div>
 {% endblock %}
 
+{% block supportWidget %}
+  {% set helpContent %}
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Get help</h3>
+    <p class="govuk-body-s govuk-!-margin-bottom-0">
+      Please provide the request details shown here, along with a description of the issue you experienced.
+    </p>
+  {% endset %}
+
+  {{ supportWidget({
+    helpContent: helpContent,
+    supportItems: [
+      { label: 'Preferences ID', value: data.preferencesId }
+    ] if data.preferencesId else []
+  }) }}
+{% endblock %}
+
