@@ -37,34 +37,51 @@
 
 .support-widget__content {
   margin-top: govuk-spacing(3);
+  padding-top: govuk-spacing(3);
+  border-top: 1px solid govuk-colour("mid-grey");
+}
+
+.support-widget__panels {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: govuk-spacing(4);
+
+  @include govuk-media-query($from: tablet) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.support-widget__panel--left {
+  padding: govuk-spacing(3);
+
+  @include govuk-media-query($from: tablet) {
+    padding-right: govuk-spacing(4);
+  }
+}
+
+.support-widget__panel--right {
   padding: govuk-spacing(3);
   background-color: govuk-colour("white");
   border: 1px solid govuk-colour("mid-grey");
 }
 
 .support-widget__data {
+  display: flex;
+  flex-direction: column;
+  gap: govuk-spacing(3);
   margin: 0;
 }
 
 .support-widget__data-row {
-  display: flex;
-  align-items: center;
-  gap: govuk-spacing(2);
-
-  &:not(:last-child) {
-    margin-bottom: govuk-spacing(2);
-  }
-
   dt {
-    @include govuk-font($size: 14, $weight: bold);
-    flex-shrink: 0;
+    @include govuk-font($size: 14);
+    color: govuk-colour("dark-grey");
+    margin-bottom: govuk-spacing(1);
   }
 
   dd {
     @include govuk-font($size: 14);
     margin: 0;
-    padding: govuk-spacing(2);
-    background-color: govuk-colour("light-grey");
     font-family: monospace;
     word-break: break-all;
     user-select: all;

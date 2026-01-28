@@ -28,6 +28,11 @@
 </div>
 {% endblock %}
 
+{% block footer %}
+  {% include "./support-widget.njk" %}
+  {{ super() }}
+{% endblock %}
+
 {%- block bodyEnd -%}
   <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
 {%- endblock -%}
