@@ -3,7 +3,7 @@ import { pageHeading, continueButton } from './fields'
 
 export const updateAgreePlanStep = step({
   path: '/update-agree-plan',
-  title: 'Update Agreement',
+  title: 'Do they agree?',
   blocks: [pageHeading, continueButton],
   onSubmission: [
     submitTransition({

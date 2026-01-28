@@ -3,7 +3,14 @@ import { test, TargetService } from '../../support/fixtures'
 import ConfirmIfAchievedPage from '../../pages/sentencePlan/confirmIfAchievedPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
-import { getDatePlusDaysAsISO, navigateToSentencePlan, sentencePlanV1URLs } from './sentencePlanUtils'
+import {
+  buildErrorPageTitle,
+  buildPageTitle,
+  getDatePlusDaysAsISO,
+  navigateToSentencePlan,
+  sentencePlanPageTitles,
+  sentencePlanV1URLs,
+} from './sentencePlanUtils'
 
 const confirmIfAchievedPath = '/confirm-if-achieved'
 const planOverviewPageCurrentGoalsTabPath = `${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`
@@ -44,6 +51,9 @@ test.describe('Confirm if achieved page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`)
+
+      // ensure page title is correct
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.confirmIfAchieved))
 
       // Should be on the confirm-if-achieved page
       await ConfirmIfAchievedPage.verifyOnPage(page)
@@ -112,6 +122,9 @@ test.describe('Confirm if achieved page', () => {
 
       // Submit without selecting an option
       await confirmPage.clickSaveAndContinue()
+
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.confirmIfAchieved))
 
       // Should show inline validation error near the radio buttons
       expect(confirmPage.hasInlineError())
