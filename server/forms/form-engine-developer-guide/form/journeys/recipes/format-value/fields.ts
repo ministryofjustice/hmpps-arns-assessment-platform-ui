@@ -56,9 +56,9 @@ Use \`Format()\` to interpolate values into text with \`%1\`, \`%2\` placeholder
 
 ## Related Concepts
 
-- [Expressions](/forms/form-engine-developer-guide/expressions/intro) - Full expressions documentation
-- [References](/forms/form-engine-developer-guide/references/intro) - Answer(), Data(), and other references
-- [Chaining](/forms/form-engine-developer-guide/references/chaining) - The fluent .pipe() API
+- [Expressions](/form-engine-developer-guide/expressions/intro) - Full expressions documentation
+- [References](/form-engine-developer-guide/references/intro) - Answer(), Data(), and other references
+- [Chaining](/form-engine-developer-guide/references/chaining) - The fluent .pipe() API
 
 ---
 
@@ -167,11 +167,11 @@ Use \`Format()\` to interpolate values into text with \`%1\`, \`%2\` placeholder
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/recipes/load-data',
+          href: '/form-engine-developer-guide/recipes/load-data',
           labelText: 'Load Data on Entry',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/recipes/save-answers',
+          href: '/form-engine-developer-guide/recipes/save-answers',
           labelText: 'Save Answers on Submit',
         },
       }),

@@ -41,7 +41,6 @@ export default function createApp(services: Services): express.Application {
   const nunjucksEnv = nunjucksSetup(app)
   const formEngine = new FormEngine({
     logger,
-    basePath: '/forms',
     frameworkAdapter: ExpressFrameworkAdapter.configure({
       nunjucksEnv,
       defaultTemplate: 'partials/form-step',
@@ -73,7 +72,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpStaticResources())
   app.use(
     setUpAuthentication({
-      bypassPaths: ['/forms/form-engine-developer-guide', '/forms/training-session-launcher'],
+      bypassPaths: ['/form-engine-developer-guide', '/training-session-launcher'],
     }),
   )
   app.use(authorisationMiddleware())

@@ -174,11 +174,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/hub',
+          href: '/form-engine-developer-guide/hub',
           labelText: 'Guide Hub',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/expressions/format',
+          href: '/form-engine-developer-guide/expressions/format',
           labelText: 'Format Expressions',
         },
       }),

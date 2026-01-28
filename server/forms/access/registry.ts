@@ -15,13 +15,13 @@ export interface TargetService {
  * Registry of target services accessible via the access form.
  *
  * Add new services here to enable access via:
- * - /forms/access/{service}/oasys (OASys handover flow)
- * - /forms/access/{service}/crn/:crn (Direct CRN access)
+ * - /access/{service}/oasys (OASys handover flow)
+ * - /access/{service}/crn/:crn (Direct CRN access)
  */
 export const targetServices: Record<string, TargetService> = {
   'sentence-plan': {
     name: 'Sentence Plan',
-    entryPath: '/forms/sentence-plan',
+    entryPath: '/sentence-plan',
   },
 }
 

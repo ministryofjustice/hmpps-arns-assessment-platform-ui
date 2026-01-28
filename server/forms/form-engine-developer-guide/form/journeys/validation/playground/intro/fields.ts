@@ -20,7 +20,7 @@ export const pageContent = TemplateWrapper({
 
   <ul class="govuk-list">
     <li>
-      <a href="/forms/form-engine-developer-guide/validation/playground/strings" class="govuk-link govuk-link--no-visited-state">
+      <a href="/form-engine-developer-guide/validation/playground/strings" class="govuk-link govuk-link--no-visited-state">
         <strong>String Validation</strong>
       </a>
       <p class="govuk-body govuk-!-margin-top-1">
@@ -28,7 +28,7 @@ export const pageContent = TemplateWrapper({
       </p>
     </li>
     <li class="govuk-!-margin-top-4">
-      <a href="/forms/form-engine-developer-guide/validation/playground/numbers" class="govuk-link govuk-link--no-visited-state">
+      <a href="/form-engine-developer-guide/validation/playground/numbers" class="govuk-link govuk-link--no-visited-state">
         <strong>Number Validation</strong>
       </a>
       <p class="govuk-body govuk-!-margin-top-1">
@@ -36,7 +36,7 @@ export const pageContent = TemplateWrapper({
       </p>
     </li>
     <li class="govuk-!-margin-top-4">
-      <a href="/forms/form-engine-developer-guide/validation/playground/dates" class="govuk-link govuk-link--no-visited-state">
+      <a href="/form-engine-developer-guide/validation/playground/dates" class="govuk-link govuk-link--no-visited-state">
         <strong>Date Validation</strong>
       </a>
       <p class="govuk-body govuk-!-margin-top-1">
@@ -44,7 +44,7 @@ export const pageContent = TemplateWrapper({
       </p>
     </li>
     <li class="govuk-!-margin-top-4">
-      <a href="/forms/form-engine-developer-guide/validation/playground/arrays" class="govuk-link govuk-link--no-visited-state">
+      <a href="/form-engine-developer-guide/validation/playground/arrays" class="govuk-link govuk-link--no-visited-state">
         <strong>Array Validation</strong>
       </a>
       <p class="govuk-body govuk-!-margin-top-1">
@@ -62,11 +62,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/validation/patterns',
+          href: '/form-engine-developer-guide/validation/patterns',
           labelText: 'Common Patterns',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/validation/playground/strings',
+          href: '/form-engine-developer-guide/validation/playground/strings',
           labelText: 'String Validation',
         },
       }),

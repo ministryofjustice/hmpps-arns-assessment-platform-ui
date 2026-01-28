@@ -252,11 +252,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/iterators/intro',
+          href: '/form-engine-developer-guide/iterators/intro',
           labelText: 'Understanding Iterators',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/iterators/filter',
+          href: '/form-engine-developer-guide/iterators/filter',
           labelText: 'Iterator.Filter',
         },
       }),

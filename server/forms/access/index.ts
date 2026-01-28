@@ -11,22 +11,22 @@ import { crnAccessStep } from './steps/crn-access/step'
  * to any registered target service.
  *
  * Routes:
- * /forms/access/:service/oasys     - OASys handover entry point
- * /forms/access/:service/crn/:crn  - CRN-based access entry point
+ * /access/:service/oasys     - OASys handover entry point
+ * /access/:service/crn/:crn  - CRN-based access entry point
  *
  * After processing, redirects to the target service's entry path.
  *
  * @example
  * // OASys flow to Sentence Plan
- * /forms/access/sentence-plan/oasys
+ * /access/sentence-plan/oasys
  *   → Loads handover context
- *   → Redirects to /forms/sentence-plan/v1.0/plan/overview
+ *   → Redirects to /sentence-plan/v1.0/plan/overview
  *
  * @example
  * // CRN flow to Sentence Plan
- * /forms/access/sentence-plan/crn/X123456
+ * /access/sentence-plan/crn/X123456
  *   → Loads case details from Delius
- *   → Redirects to /forms/sentence-plan/v1.0/plan/overview
+ *   → Redirects to /sentence-plan/v1.0/plan/overview
  */
 const accessJourney = journey({
   code: 'access',

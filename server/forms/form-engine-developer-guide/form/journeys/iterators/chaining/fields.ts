@@ -235,11 +235,11 @@ Literal(simpleListItems)
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/iterators/find',
+          href: '/form-engine-developer-guide/iterators/find',
           labelText: 'Iterator.Find',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/intro',
+          href: '/form-engine-developer-guide/iterators/playground/intro',
           labelText: 'Iterators Playground',
         },
       }),

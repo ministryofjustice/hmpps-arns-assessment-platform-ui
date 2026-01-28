@@ -105,11 +105,11 @@ export const pageContent = TemplateWrapper({
 
   ## Next Steps
 
-  - [**The Context Object →**](/forms/form-engine-developer-guide/effects/context)
+  - [**The Context Object →**](/form-engine-developer-guide/effects/context)
 
     Deep dive into the context API methods.
 
-  - [**Building Custom Effects →**](/forms/form-engine-developer-guide/effects/custom)
+  - [**Building Custom Effects →**](/form-engine-developer-guide/effects/custom)
 
     Learn how to create your own effects with dependency injection.
 
@@ -274,11 +274,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/generators/playground/dates',
+          href: '/form-engine-developer-guide/generators/playground/dates',
           labelText: 'Date Generators',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/effects/context',
+          href: '/form-engine-developer-guide/effects/context',
           labelText: 'The Context Object',
         },
       }),

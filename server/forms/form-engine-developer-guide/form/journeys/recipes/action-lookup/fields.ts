@@ -68,9 +68,9 @@ Show an error message when the lookup fails:
 
 ## Related Concepts
 
-- [Action Transitions](/forms/form-engine-developer-guide/transitions/action) - Full action transition documentation
-- [Effects](/forms/form-engine-developer-guide/effects/intro) - Creating effects with dependencies
-- [Save Answers](/forms/form-engine-developer-guide/recipes/save-answers) - Handling the submit button
+- [Action Transitions](/form-engine-developer-guide/transitions/action) - Full action transition documentation
+- [Effects](/form-engine-developer-guide/effects/intro) - Creating effects with dependencies
+- [Save Answers](/form-engine-developer-guide/recipes/save-answers) - Handling the submit button
 
 ---
 
@@ -246,11 +246,11 @@ Show an error message when the lookup fails:
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/recipes/branching-navigation',
+          href: '/form-engine-developer-guide/recipes/branching-navigation',
           labelText: 'Branching Navigation',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/hub',
+          href: '/form-engine-developer-guide/hub',
           labelText: 'Guide Hub',
         },
       }),

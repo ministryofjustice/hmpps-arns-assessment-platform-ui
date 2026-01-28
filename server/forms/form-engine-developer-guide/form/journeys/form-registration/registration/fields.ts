@@ -172,11 +172,11 @@ When you call \`registerFormPackage()\`, the FormEngine:
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/form-registration/structure',
+          href: '/form-engine-developer-guide/form-registration/structure',
           labelText: 'Directory Structure',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/hub',
+          href: '/form-engine-developer-guide/hub',
           labelText: 'Guide Hub',
         },
       }),
