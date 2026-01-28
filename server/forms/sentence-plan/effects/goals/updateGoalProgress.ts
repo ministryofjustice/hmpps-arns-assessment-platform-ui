@@ -17,12 +17,17 @@ import { Commands } from '../../../../interfaces/aap-api/command'
  */
 export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const user = context.getState('user')
+  const session = context.getSession()
   const assessmentUuid = context.getData('assessmentUuid')
   const activeGoal = context.getData('activeGoal')
 
   if (!user) {
     throw new InternalServerError('User is required to update goal progress')
   }
+
+  // Use practitioner display name from session (populated from handover context),
+  // falling back to user.name for HMPPS Auth users
+  const practitionerName = session.practitionerDetails?.displayName || user.name
 
   if (!assessmentUuid) {
     throw new InternalServerError('Assessment UUID is required to update goal progress')
@@ -98,7 +103,7 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
       }),
       answers: wrapAll({
         note: progressNotes.trim(),
-        created_by: user.name,
+        created_by: practitionerName,
       }),
       timeline: {
         type: 'NOTE_ADDED',
