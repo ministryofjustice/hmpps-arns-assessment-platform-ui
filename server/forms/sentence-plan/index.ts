@@ -46,7 +46,7 @@ const privacyScreenStep = createPrivacyScreen({
  */
 const sentencePlanRootJourney = journey({
   code: 'sentence-plan',
-  title: 'Sentence Plan',
+  title: 'Sentence plan',
   path: '/sentence-plan',
   entryPath: '/v1.0/plan/overview',
   children: [sentencePlanV1Journey],

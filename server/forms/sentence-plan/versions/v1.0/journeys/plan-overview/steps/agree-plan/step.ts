@@ -19,7 +19,7 @@ import { SentencePlanEffects } from '../../../../../../effects'
 
 export const agreePlanStep = step({
   path: '/agree-plan',
-  title: 'Agree Plan',
+  title: 'Do they agree to this plan?',
   blocks: [planAgreementQuestion, notesField, saveButton],
   view: {
     locals: {
