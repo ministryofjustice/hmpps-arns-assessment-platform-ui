@@ -29,12 +29,4 @@ export default class SessionTimeoutModalPage {
   async getCountdownText(): Promise<string> {
     return (await this.countdown.textContent()) || ''
   }
-
-  async clickContinue(): Promise<void> {
-    await this.continueButton.click()
-  }
-
-  async clickDelete(): Promise<void> {
-    await this.deleteLink.click()
-  }
 }

@@ -18,7 +18,8 @@
  * - data-auth-source: The authentication source (e.g., 'handover' for OASys) to pass through for re-authentication
  */
 
-const ACTIVITY_EVENTS = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart', 'click']
+// Only track meaningful interactions - not passive movements
+const ACTIVITY_EVENTS = ['mousedown', 'keydown', 'touchstart', 'click', 'submit']
 
 export class SessionTimeoutModal extends HTMLElement {
   constructor() {
@@ -231,12 +232,21 @@ export class SessionTimeoutModal extends HTMLElement {
     window.location.href = this.getRedirectUrl()
   }
 
-  // Focus trap: circular Tab/Shift+Tab navigation between button and link
+  // Focus trap and keyboard handling
+  // - Tab/Shift+Tab: circular navigation including dialog (for screen reader access to content)
+  // - Escape: intentionally does NOT close the modal - user must explicitly choose to continue or delete
   handleKeyDown(event) {
     if (!this.isModalOpen) return
 
+    // Prevent Escape from closing the modal - user must make an explicit choice
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      return
+    }
+
     if (event.key === 'Tab') {
-      const focusableElements = [this.$continueButton, this.$deleteLink]
+      // Include dialog in focus trap so screen reader users can Tab back to hear content
+      const focusableElements = [this.$dialog, this.$continueButton, this.$deleteLink]
       const currentIndex = focusableElements.indexOf(document.activeElement)
 
       event.preventDefault()

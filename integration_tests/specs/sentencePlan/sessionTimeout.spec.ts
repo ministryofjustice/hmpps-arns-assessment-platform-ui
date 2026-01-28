@@ -1,10 +1,10 @@
-import { expect } from '@playwright/test'
+import { expect, Page } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import SessionTimeoutModalPage from '../../pages/sentencePlan/sessionTimeoutModalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { navigateToSentencePlan } from './sentencePlanUtils'
 
-async function forceShowSessionTimeoutModal(page: import('@playwright/test').Page) {
+async function forceShowSessionTimeoutModal(page: Page) {
   await page.waitForFunction(() => {
     const modal = document.querySelector('moj-session-timeout-modal') as any
     return modal && typeof modal.showModal === 'function'
@@ -17,7 +17,7 @@ async function forceShowSessionTimeoutModal(page: import('@playwright/test').Pag
 }
 
 test.describe('Session Timeout Modal', () => {
-  test('Delete link redirects to unsaved-information-deleted page', async ({
+  test('Delete action redirects to unsaved-information-deleted page', async ({
     page,
     createSession,
     sentencePlanBuilder,
@@ -36,11 +36,13 @@ test.describe('Session Timeout Modal', () => {
     await expect(modalPage.modal).toBeVisible()
     await expect(modalPage.heading).toContainText('Your unsaved information will be deleted soon')
 
-    await modalPage.clickDelete()
+    await modalPage.deleteLink.click()
 
     await expect(page).toHaveURL(/\/unsaved-information-deleted/)
-    await expect(page.locator('h1')).toContainText('Your unsaved information has been deleted')
-    await expect(page.locator('.govuk-grid-column-two-thirds')).toContainText('This is to protect your information')
+    await expect(page.getByRole('heading', { name: 'Your unsaved information has been deleted' })).toBeVisible()
+    await expect(page.getByTestId('unsaved-information-deleted-content')).toContainText(
+      'This is to protect your information',
+    )
     await expect(page.getByRole('button', { name: 'Go to the plan' })).toBeVisible()
   })
 
@@ -60,10 +62,10 @@ test.describe('Session Timeout Modal', () => {
       response => response.url().includes('/session/extend') && response.request().method() === 'POST',
     )
 
-    await modalPage.clickContinue()
+    await modalPage.continueButton.click()
 
     const response = await responsePromise
-    expect(response.status()).toBe(204)
+    expect(response.ok()).toBe(true) // 204 No Content - session extended successfully
 
     await expect(modalPage.modal).toBeHidden()
     await expect(page).toHaveURL(/\/plan\/overview/)
@@ -91,10 +93,10 @@ test.describe('Session Timeout Modal', () => {
 
     await page.evaluate(() => {
       const modal = document.querySelector('moj-session-timeout-modal') as any
-      if (modal) modal.handleSessionExpired()
+      modal.handleSessionExpired()
     })
 
     await expect(page).toHaveURL(/\/unsaved-information-deleted/)
-    await expect(page.locator('h1')).toContainText('Your unsaved information has been deleted')
+    await expect(page.getByRole('heading', { name: 'Your unsaved information has been deleted' })).toBeVisible()
   })
 })
