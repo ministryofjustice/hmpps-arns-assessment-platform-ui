@@ -2,6 +2,7 @@ import { Router } from 'express'
 
 import type { Services } from '../services'
 import demo from './demo'
+import sessionRoutes from './session'
 
 export default function routes(services: Services): Router {
   const router = Router()
@@ -18,6 +19,7 @@ export default function routes(services: Services): Router {
   })
 
   router.use(demo(services))
+  router.use('/session', sessionRoutes())
 
   return router
 }

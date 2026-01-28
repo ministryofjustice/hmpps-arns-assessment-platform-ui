@@ -38,5 +38,8 @@
 {% endblock %}
 
 {%- block bodyEnd -%}
+  {% if not hideSessionTimeoutModal %}
+    {% include "./session-timeout-modal.njk" %}
+  {% endif %}
   <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
 {%- endblock -%}

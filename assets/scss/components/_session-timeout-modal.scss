@@ -1,0 +1,58 @@
+// Session Timeout Modal
+// Follows MOJ modal dialog design pattern
+// https://design-patterns.service.justice.gov.uk/components/modal-dialog/
+
+.moj-session-timeout-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.moj-session-timeout-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.moj-session-timeout-modal__dialog {
+  position: relative;
+  max-width: 500px;
+  margin: govuk-spacing(4);
+  padding: govuk-spacing(6);
+  background-color: govuk-colour("white");
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border-top: 5px solid govuk-colour("black");
+
+  @include govuk-media-query($from: tablet) {
+    padding: govuk-spacing(8);
+  }
+}
+
+.moj-session-timeout-modal__countdown {
+  color: govuk-colour("black");
+}
+
+.moj-session-timeout-modal__actions {
+  margin-top: govuk-spacing(6);
+
+  .govuk-button {
+    margin-bottom: govuk-spacing(3);
+  }
+}
+
+.moj-session-timeout-modal__delete-link {
+  @include govuk-font($size: 19);
+  display: block;
+}
+
+// Prevent body scroll when modal is open
+body.moj-session-timeout-modal--open {
+  overflow: hidden;
+}
