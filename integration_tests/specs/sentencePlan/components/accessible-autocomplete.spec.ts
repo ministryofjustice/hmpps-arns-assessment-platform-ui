@@ -5,7 +5,7 @@ import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import { navigateToSentencePlan } from '../sentencePlanUtils'
 
 test.describe('Accessible Autocomplete Component', () => {
-  test('should autocomplete suggested goals', async ({ page, createSession }) => {
+  test('should autocomplete suggested goals', async ({ page, createSession, makeAxeBuilder }) => {
     const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
     await navigateToSentencePlan(page, handoverLink)
 
@@ -16,5 +16,11 @@ test.describe('Accessible Autocomplete Component', () => {
 
     await createGoalPage.enterGoalTitle('Find')
     await expect(createGoalPage.findAccomodationGoal).toBeVisible()
+
+    const accessibilityScanResults = await makeAxeBuilder()
+      .include('accessible-autocomplete-wrapper')
+      .analyze()
+
+    expect(accessibilityScanResults.violations).toEqual([])
   })
 })

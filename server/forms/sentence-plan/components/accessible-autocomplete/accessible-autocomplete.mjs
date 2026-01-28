@@ -31,7 +31,7 @@ class AccessibleAutocomplete extends HTMLElement {
 
     accessibleAutocomplete({
       element: this,
-      id: `${inputId}`,
+      id: `${inputId}-autocomplete`,
       name: inputName,
       source,
       defaultValue,
