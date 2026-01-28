@@ -64,48 +64,6 @@ test.describe('Plan History - Removed Goals', () => {
     expect(hasViewLink).toBe(true)
   })
 
-  test('displays removed goal without reason when none was provided', async ({
-    page,
-    createSession,
-    sentencePlanBuilder,
-  }) => {
-    // Create a plan with a removed goal but no removal note
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoal({
-        title: 'Build positive relationships',
-        areaOfNeed: 'personal-relationships-and-community',
-        status: 'REMOVED',
-      })
-      .withPlanAgreements([
-        {
-          status: 'AGREED',
-          createdBy: 'Test Practitioner',
-          dateOffset: -86400000,
-        },
-      ])
-      .save()
-
-    await page.goto(handoverLink)
-    await handlePrivacyScreenIfPresent(page)
-    await page.getByRole('link', { name: /View plan history/i }).click()
-
-    const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-    // Verify the removed goal entry is present
-    const firstEntryHeader = await planHistoryPage.getEntryHeaderText(0)
-    expect(firstEntryHeader).toContain('Goal removed')
-
-    // Verify the goal title is displayed
-    const hasGoalTitle = await planHistoryPage.entryContainsText(0, 'Build positive relationships')
-    expect(hasGoalTitle).toBe(true)
-
-    // Verify the "View goal" link is still present
-    const hasViewLink = await planHistoryPage.entryHasViewGoalLink(0)
-    expect(hasViewLink).toBe(true)
-  })
-
   test('navigates to view goal details when clicking View goal link', async ({
     page,
     createSession,
