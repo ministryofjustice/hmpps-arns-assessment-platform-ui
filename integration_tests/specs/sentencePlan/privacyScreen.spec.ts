@@ -1,7 +1,12 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import { navigateToPrivacyScreen } from './sentencePlanUtils'
+import {
+  buildErrorPageTitle,
+  buildPageTitle,
+  navigateToPrivacyScreen,
+  sentencePlanPageTitles,
+} from './sentencePlanUtils'
 
 test.describe('Privacy Screen', () => {
   test.describe('Display and content', () => {
@@ -10,6 +15,9 @@ test.describe('Privacy Screen', () => {
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
       const privacyPage = await navigateToPrivacyScreen(page, handoverLink)
+
+      // ensure page title is correct
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.privacy))
 
       const headingText = await privacyPage.getHeadingText()
       expect(headingText).toContain('Remember to close any other applications before starting an appointment with')
@@ -51,6 +59,9 @@ test.describe('Privacy Screen', () => {
 
         await expect(page).toHaveURL(/\/privacy/)
 
+        // ensure error page title is correct:
+        await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.privacy))
+
         const hasError = await privacyPage.hasValidationError()
         expect(hasError).toBe(true)
 
@@ -65,6 +76,9 @@ test.describe('Privacy Screen', () => {
         const privacyPage = await navigateToPrivacyScreen(page, handoverLink)
 
         await privacyPage.clickConfirm()
+
+        // ensure error page title is correct:
+        await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.privacy))
 
         const errorLink = page.locator('.govuk-error-summary__list a')
         await expect(errorLink).toBeVisible()

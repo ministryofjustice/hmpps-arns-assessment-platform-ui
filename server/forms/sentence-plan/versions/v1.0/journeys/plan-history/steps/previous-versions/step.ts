@@ -3,7 +3,7 @@ import { Condition } from '@form-engine/registry/conditions'
 
 export const previousVersionsStep = step({
   path: '/previous-versions',
-  title: 'Previous Versions',
+  title: 'Previous versions',
   view: {
     locals: {
       headerPageHeading: 'Previous versions',

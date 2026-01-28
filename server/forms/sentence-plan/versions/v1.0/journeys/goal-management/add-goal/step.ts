@@ -21,7 +21,7 @@ import { CaseData } from '../../../constants'
  */
 export const createGoalStep = step({
   path: '/add-goal/:areaOfNeed',
-  title: 'Create Goal',
+  title: 'Create a goal',
   isEntryPoint: true,
   view: {
     locals: {

@@ -1,5 +1,15 @@
-import { accessTransition, Data, redirect, Post, step, submitTransition, when } from '@form-engine/form/builders'
+import {
+  accessTransition,
+  Data,
+  Format,
+  redirect,
+  Post,
+  step,
+  submitTransition,
+  when,
+} from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
+import { Transformer } from '@form-engine/registry/transformers'
 import { pageHeading, goalInfo, reviewStepsSection, viewAllNotesSection, addToPlanButton } from './fields'
 import { SentencePlanEffects } from '../../../../../effects'
 
@@ -17,7 +27,7 @@ import { SentencePlanEffects } from '../../../../../effects'
  */
 export const viewInactiveGoalStep = step({
   path: '/view-inactive-goal',
-  title: 'View goal details',
+  title: `View inactive goal`,
   isEntryPoint: true,
   view: {
     locals: {
@@ -28,6 +38,7 @@ export const viewInactiveGoalStep = step({
             .then('../../plan/overview?type=achieved')
             .else('../../plan/overview?type=removed'),
         ),
+      dynamicTitle: Format('View %1 goal', Data('activeGoal.status').pipe(Transformer.String.ToLowerCase())),
     },
   },
   blocks: [pageHeading, goalInfo, reviewStepsSection, viewAllNotesSection, addToPlanButton],

@@ -3,7 +3,13 @@ import { test, TargetService } from '../../support/fixtures'
 import ChangeGoalPage from '../../pages/sentencePlan/changeGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoals, futureGoals } from '../../builders/sentencePlanFactories'
-import { getDatePlusMonthsAsString, navigateToSentencePlan } from './sentencePlanUtils'
+import {
+  buildErrorPageTitle,
+  buildPageTitle,
+  getDatePlusMonthsAsString,
+  navigateToSentencePlan,
+  sentencePlanPageTitles,
+} from './sentencePlanUtils'
 
 test.describe('Change goal journey', () => {
   test.describe('current goal workflow', () => {
@@ -16,6 +22,9 @@ test.describe('Change goal journey', () => {
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
+
+      // ensure page title is correct
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.changeGoal))
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
       expect(changeGoalPage).toBeTruthy()
@@ -277,6 +286,9 @@ test.describe('Change goal journey', () => {
       await changeGoalPage.setGoalTitle('')
       await changeGoalPage.saveGoal()
 
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.changeGoal))
+
       // Check validation error is shown
       const hasError = await changeGoalPage.hasValidationError('goal_title')
       expect(hasError).toBe(true)
@@ -301,6 +313,9 @@ test.describe('Change goal journey', () => {
       // Select yes for related areas but don't select any
       await changeGoalPage.selectIsRelatedToOtherAreas(true)
       await changeGoalPage.saveGoal()
+
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.changeGoal))
 
       // Check validation error is shown
       const hasError = await changeGoalPage.hasValidationError('related_areas_of_need')

@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import PlanHistoryPage from '../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent } from './sentencePlanUtils'
+import { buildPageTitle, handlePrivacyScreenIfPresent, sentencePlanPageTitles } from './sentencePlanUtils'
 
 test.describe('Plan History - Agreements', () => {
   test.describe('Could not answer then agreed scenario', () => {
@@ -46,6 +46,9 @@ test.describe('Plan History - Agreements', () => {
 
       // Verify we're on the plan history page
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
+
+      // ensure page title is correct
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.planHistory))
 
       // Verify subtitle is visible
       await expect(planHistoryPage.subtitleText).toBeVisible()

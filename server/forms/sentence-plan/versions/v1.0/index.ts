@@ -18,7 +18,7 @@ import { SentencePlanEffects } from '../../effects'
  */
 export const sentencePlanV1Journey = journey({
   code: 'sentence-plan-v1',
-  title: 'Sentence Plan',
+  title: 'Sentence plan',
   path: '/v1.0',
   view: {
     template: 'sentence-plan/views/sentence-plan-step',

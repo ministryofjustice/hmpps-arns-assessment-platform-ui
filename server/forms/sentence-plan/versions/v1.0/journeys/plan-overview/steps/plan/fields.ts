@@ -1,4 +1,4 @@
-import { and, Data, Format, Item, or, Query, when } from '@form-engine/form/builders'
+import { and, Data, Format, Item, not, or, Query, when } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { MOJAlert, MOJSubNavigation } from '@form-engine-moj-components/components'
@@ -30,8 +30,13 @@ function buildMoveButtonProps() {
   }
 }
 
+// Error visibility conditions - reused by both error blocks and hasErrors flag
+// Temporary solution until agree button can trigger validationErrors nodes to be available on Plan overview page
+export const hasMissingActiveGoalError = Query('error').match(Condition.Equals('no-active-goals'))
+export const hasMissingStepsError = Query('error').match(Condition.Equals('no-steps'))
+
 export const noActiveGoalsErrorMessage = HtmlBlock({
-  hidden: Query('error').not.match(Condition.Equals('no-active-goals')),
+  hidden: not(hasMissingActiveGoalError),
   content: `<div class="govuk-error-summary" data-module="govuk-error-summary">
       <div role="alert">
         <h2 class="govuk-error-summary__title">
@@ -49,7 +54,7 @@ export const noActiveGoalsErrorMessage = HtmlBlock({
 })
 
 export const noStepsErrorMessage = HtmlBlock({
-  hidden: Query('error').not.match(Condition.Equals('no-steps')),
+  hidden: not(hasMissingStepsError),
   content: Format(
     `<div class="govuk-error-summary" data-module="govuk-error-summary">
       <div role="alert">

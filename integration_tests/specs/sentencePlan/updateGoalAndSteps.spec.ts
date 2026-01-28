@@ -11,6 +11,8 @@ import {
   postAgreementProcessStatuses,
   stepStatusOptions,
   sentencePlanV1URLs,
+  buildPageTitle,
+  sentencePlanPageTitles,
 } from './sentencePlanUtils'
 
 const updateGoalAndStepsPath = '/update-goal-steps'
@@ -114,6 +116,9 @@ test.describe('Update goal and steps page', () => {
       await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+
+      // ensure page title is correct; no validation on this page so no error title to check
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.updateGoalAndSteps))
 
       // check heading elements
       await expect(updatePage.pageHeading).toContainText('Update goal and steps')

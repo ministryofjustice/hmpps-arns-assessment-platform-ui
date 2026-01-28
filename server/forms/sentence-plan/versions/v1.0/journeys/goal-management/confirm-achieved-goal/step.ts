@@ -8,7 +8,7 @@ import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../.
 
 export const confirmAchievedGoalStep = step({
   path: '/confirm-achieved-goal',
-  title: 'Confirm Goal Achieved',
+  title: 'Confirm they have achieved this goal',
   isEntryPoint: true,
   blocks: [pageHeading, goalCard, howHelpedField, buttonGroup],
 

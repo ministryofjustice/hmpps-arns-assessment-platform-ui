@@ -5,7 +5,7 @@ import { CaseData } from '../../constants'
 
 export const aboutPersonStep = step({
   path: '/about-person',
-  title: 'About the Person',
+  title: 'About',
   view: {
     locals: {
       headerPageHeading: Format(`About %1`, CaseData.Forename),

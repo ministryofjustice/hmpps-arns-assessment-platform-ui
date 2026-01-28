@@ -10,7 +10,7 @@ import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../.
  */
 export const confirmIfAchievedStep = step({
   path: '/confirm-if-achieved',
-  title: 'Confirm If Achieved',
+  title: 'Confirm if they have achieved this goal',
   isEntryPoint: true,
   view: {
     locals: {

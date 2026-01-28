@@ -96,7 +96,7 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
 
   return step({
     path: '/privacy',
-    title: 'Confirm privacy',
+    title: 'Close other applications',
     view: {
       template,
       locals: {
