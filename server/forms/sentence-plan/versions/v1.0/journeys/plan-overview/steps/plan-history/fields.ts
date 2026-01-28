@@ -114,8 +114,33 @@ const goalAchievedEntryContent = Format(
 )
 
 /**
+ * Renders a goal removed history entry.
+ * Shows: heading (bold), goal title (bold), removal reason, and view goal link.
+ */
+const goalRemovedEntryContent = Format(
+  `<div class="govuk-!-margin-bottom-6">
+    <p class="govuk-body"><strong>Goal removed</strong> on %1 by %2</p>
+    <p class="govuk-body"><strong>%3</strong></p>
+    %4
+    <p class="govuk-body"><a href="%5" class="govuk-link govuk-link--no-visited-state">View goal</a></p>
+  </div>`,
+  // %1: Date
+  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+  // %2: Removed by
+  when(Item().path('removedBy').match(Condition.IsRequired())).then(Item().path('removedBy')).else('Unknown'),
+  // %3: Goal title
+  Item().path('goalTitle'),
+  // %4: Removal reason
+  when(Item().path('reason').match(Condition.IsRequired()))
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('reason')))
+    .else(''),
+  // %5: View goal link (relative to /v1.0/plan/, so ../goal/ resolves to /v1.0/goal/)
+  Format('../goal/%1/view-inactive-goal', Item().path('goalUuid')),
+)
+
+/**
  * Displays the unified plan history as a list of entries.
- * Combines plan agreement events and goal achieved events in chronological order.
+ * Combines plan agreement events, goal achieved events, and goal removed events in chronological order.
  */
 export const agreementHistory = CollectionBlock({
   collection: Data('planHistoryEntries').each(
@@ -130,7 +155,11 @@ export const agreementHistory = CollectionBlock({
           // %2: Entry content based on type
           when(Item().path('type').match(Condition.Equals('goal_achieved')))
             .then(goalAchievedEntryContent)
-            .else(agreementEntryContent),
+            .else(
+              when(Item().path('type').match(Condition.Equals('goal_removed')))
+                .then(goalRemovedEntryContent)
+                .else(agreementEntryContent),
+            ),
         ),
       }),
     ),

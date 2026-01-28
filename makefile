@@ -61,19 +61,23 @@ lint-fix: ## Automatically fixes linting issues.
 	docker compose exec ${SERVICE_NAME} npm run lint-fix
 
 install-node-modules: ## Installs Node modules into the Docker volume.
+	@docker volume create ${PROJECT_NAME}_node_modules > /dev/null 2>&1 || true
 	@docker run --rm \
 	  -v ./package.json:/package.json \
 	  -v ./package-lock.json:/package-lock.json \
 	  -v ~/.npm:/npm_cache \
 	  -v ${PROJECT_NAME}_node_modules:/node_modules \
 	  node:22-alpine \
-	  /bin/sh -c 'if [ ! -f /node_modules/.last-updated ] || [ /package.json -nt /node_modules/.last-updated ]; then \
-	    echo "Running npm ci as container node_modules is outdated or missing."; \
-	    npm ci --cache /npm_cache --prefer-offline; \
-	    touch /node_modules/.last-updated; \
-	  else \
-	    echo "Container node_modules is up-to-date."; \
-	  fi'
+	  /bin/sh -c '\
+	    CURRENT_HASH=$$(cat /package.json /package-lock.json | sha256sum | cut -d" " -f1); \
+	    STORED_HASH=$$(cat /node_modules/.package-hash 2>/dev/null || echo ""); \
+	    if [ "$$CURRENT_HASH" != "$$STORED_HASH" ]; then \
+	      echo "Package files changed, running npm ci..."; \
+	      npm ci --cache /npm_cache --prefer-offline && \
+	      echo "$$CURRENT_HASH" > /node_modules/.package-hash; \
+	    else \
+	      echo "node_modules is up-to-date."; \
+	    fi'
 
 clean: ## Stops and removes all project containers. Deletes local build/cache directories.
 	docker compose down
