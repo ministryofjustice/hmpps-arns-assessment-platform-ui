@@ -15,12 +15,17 @@ import { Commands } from '../../../../interfaces/aap-api/command'
  */
 export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const user = context.getState('user')
+  const session = context.getSession()
   const assessmentUuid = context.getData('assessmentUuid')
   const activeGoal = context.getData('activeGoal')
 
   if (!user) {
     throw new InternalServerError('User is required to mark goal as achieved')
   }
+
+  // Use practitioner display name from session (populated from handover context),
+  // falling back to user.name for HMPPS Auth users
+  const practitionerName = session.practitionerDetails?.displayName || user.name
 
   if (!assessmentUuid) {
     throw new InternalServerError('Assessment UUID is required to mark goal as achieved')
@@ -39,7 +44,7 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
     added: wrapAll({
       status: 'ACHIEVED',
       status_date: new Date().toISOString(),
-      achieved_by: user.name,
+      achieved_by: practitionerName,
     }),
     removed: [],
     assessmentUuid,
@@ -75,7 +80,7 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
       }),
       answers: wrapAll({
         note: howHelped.trim(),
-        created_by: user.name,
+        created_by: practitionerName,
       }),
       timeline: {
         type: 'NOTE_ADDED',
