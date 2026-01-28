@@ -41,9 +41,9 @@ ARG BUILD_NUMBER
 ARG GIT_REF
 ARG GIT_BRANCH
 
-RUN test -n "$BUILD_NUMBER" || (echo "BUILD_NUMBER not set" && false) \
-    && test -n "$GIT_REF" || (echo "GIT_REF not set" && false) \
-    && test -n "$GIT_BRANCH" || (echo "GIT_BRANCH not set" && false)
+RUN { test -n "$BUILD_NUMBER" || (echo "BUILD_NUMBER not set" && false); } \
+    && { test -n "$GIT_REF" || (echo "GIT_REF not set" && false); } \
+    && { test -n "$GIT_BRANCH" || (echo "GIT_BRANCH not set" && false); }
 
 ENV NODE_ENV=production \
     BUILD_NUMBER=${BUILD_NUMBER} \
