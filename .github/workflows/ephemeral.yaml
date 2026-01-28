@@ -2,7 +2,9 @@ name: Ephemeral environment
 
 on:
   pull_request:
-    types: [opened, reopened, edited, labeled, unlabeled, synchronize, closed]
+    types: [opened, reopened, labeled, unlabeled, synchronize, closed]
+  issue_comment:
+    types: [edited]
   workflow_dispatch:
     inputs:
       pr_number:
@@ -11,7 +13,7 @@ on:
         type: number
 
 concurrency:
-  group: ephemeral-${{ github.event.pull_request.number || inputs.pr_number }}
+  group: ephemeral-${{ github.event.pull_request.number || github.event.issue.number || inputs.pr_number }}
   cancel-in-progress: false
 
 permissions:
@@ -20,7 +22,7 @@ permissions:
   packages: write
 
 jobs:
-  # Add ephemeral config section to new PRs
+  # Add ephemeral config comment to new PRs
   setup:
     name: Setup PR
     if: |
@@ -31,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Generate and add ephemeral config section
+      - name: Generate and add ephemeral config comment
         uses: actions/github-script@v8
         env:
           PR_NUMBER: ${{ inputs.pr_number }}
@@ -46,6 +48,21 @@ jobs:
 
             if (!prNumber) {
               core.setFailed('Could not determine PR number');
+              return;
+            }
+
+            // Check if ephemeral config comment already exists
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            const marker = '<!-- ephemeral-config -->';
+            const existingComment = comments.find(c => c.body?.includes(marker));
+
+            if (existingComment) {
+              console.log('Ephemeral config comment already exists');
               return;
             }
 
@@ -78,15 +95,15 @@ jobs:
               : `pr-${prNumber}.dev.hmpps.service.justice.gov.uk`;
             const deployUrl = `https://${ingressHost}`;
 
-            // Build the markdown section
+            // Build the markdown comment
             const lines = [
-              '<details>',
-              '<summary><b>🚀 Ephemeral deployment</b></summary>',
+              marker,
+              '## 🚀 Ephemeral deployment',
               '',
-              '## Deploy',
+              '### Deploy',
               `- [ ] <!-- ephemeral --> Deploy to ${deployUrl}`,
               '',
-              '## Environment Overrides',
+              '### Environment Overrides',
               'Apply overrides to the `values-pr.yaml`. Changes trigger a re-deployment.',
               '| Variable | Value |',
               '|----------|-------|',
@@ -96,40 +113,22 @@ jobs:
               lines.push(`| \`${key}\` | <!-- env:${key} -->${defaultValue}<!-- /env --> |`);
             }
 
-            lines.push('', '</details>', '', '<!-- ephemeral-config-end -->');
-            const section = lines.join('\n');
+            const commentBody = lines.join('\n');
 
-            // Fetch current PR body
-            const { data: pr } = await github.rest.pulls.get({
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: prNumber
+              issue_number: prNumber,
+              body: commentBody
             });
 
-            let body = pr.body || '';
-            const marker = '<!-- ephemeral-config-end -->';
-
-            if (body.includes(marker)) {
-              console.log('Ephemeral config section already exists');
-              return;
-            }
-
-            body = body + '\n\n' + section;
-
-            await github.rest.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNumber,
-              body: body
-            });
-
-            console.log(`Added ephemeral config section to PR #${prNumber}`);
+            console.log(`Added ephemeral config comment to PR #${prNumber}`);
 
   # Sync checkbox/label and prepare deployment
   prepare:
     name: Prepare
     if: |
-      github.event.action == 'edited' ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request) ||
       github.event.action == 'labeled' ||
       github.event.action == 'unlabeled' ||
       github.event.action == 'synchronize'
@@ -143,16 +142,44 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
-            const pr = context.payload.pull_request;
-            const body = pr.body || '';
-            const labels = pr.labels.map(l => l.name);
             const action = context.payload.action;
+            const isCommentEvent = context.eventName === 'issue_comment';
 
+            // Get PR number and details
+            const prNumber = isCommentEvent
+              ? context.payload.issue.number
+              : context.payload.pull_request.number;
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+
+            const labels = pr.labels.map(l => l.name);
             const hasLabel = labels.includes('ephemeral');
-            const hasCheckedBox = body.includes('- [x] <!-- ephemeral -->');
-            const hasUncheckedBox = body.includes('- [ ] <!-- ephemeral -->');
 
-            // Helper to parse env vars from PR body
+            // Find the ephemeral config comment
+            const marker = '<!-- ephemeral-config -->';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            const configComment = comments.find(c => c.body?.includes(marker));
+
+            if (!configComment) {
+              console.log('No ephemeral config comment found');
+              core.setOutput('should_deploy', 'false');
+              return;
+            }
+
+            const commentBody = configComment.body;
+            const hasCheckedBox = commentBody.includes('- [x] <!-- ephemeral -->');
+            const hasUncheckedBox = commentBody.includes('- [ ] <!-- ephemeral -->');
+
+            // Helper to parse env vars from comment body
             const parseEnvVars = (text) => {
               const vars = {};
               const pattern = /<!-- env:(\w+) -->([^<]*)<!-- \/env -->/g;
@@ -163,12 +190,12 @@ jobs:
               return vars;
             };
 
-            // Check if env vars changed (only on edit events)
+            // Check if env vars changed (only on comment edit events)
             let envVarsChanged = false;
-            if (action === 'edited' && context.payload.changes?.body?.from) {
+            if (isCommentEvent && context.payload.comment.id === configComment.id && context.payload.changes?.body?.from) {
               const oldBody = context.payload.changes.body.from;
               const oldVars = parseEnvVars(oldBody);
-              const newVars = parseEnvVars(body);
+              const newVars = parseEnvVars(commentBody);
               envVarsChanged = JSON.stringify(oldVars) !== JSON.stringify(newVars);
               if (envVarsChanged) {
                 console.log('Env vars changed:');
@@ -177,29 +204,46 @@ jobs:
               }
             }
 
-            console.log(`Action: ${action}, Has label: ${hasLabel}, Checked: ${hasCheckedBox}, Unchecked: ${hasUncheckedBox}, Env vars changed: ${envVarsChanged}`);
+            // For comment events, only process if it's the config comment
+            if (isCommentEvent && context.payload.comment.id !== configComment.id) {
+              console.log('Comment edited is not the ephemeral config comment, skipping');
+              core.setOutput('should_deploy', 'false');
+              return;
+            }
+
+            console.log(`Action: ${action}, Event: ${context.eventName}, Has label: ${hasLabel}, Checked: ${hasCheckedBox}, Unchecked: ${hasUncheckedBox}, Env vars changed: ${envVarsChanged}`);
 
             let shouldDeploy = false;
 
+            // Helper to update the config comment
+            const updateConfigComment = async (newBody) => {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: configComment.id,
+                body: newBody
+              });
+            };
+
             // Checkbox was ticked but label missing -> add label and trigger deploy
-            if (hasCheckedBox && !hasLabel && action === 'edited') {
+            if (hasCheckedBox && !hasLabel && isCommentEvent) {
               console.log('Checkbox ticked, adding ephemeral label');
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: pr.number,
+                issue_number: prNumber,
                 labels: ['ephemeral']
               });
               shouldDeploy = true;
             }
             // Checkbox was unticked but label present -> remove label
-            else if (hasUncheckedBox && hasLabel && action === 'edited') {
+            else if (hasUncheckedBox && hasLabel && isCommentEvent) {
               console.log('Checkbox unticked, removing ephemeral label');
               try {
                 await github.rest.issues.removeLabel({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  issue_number: pr.number,
+                  issue_number: prNumber,
                   name: 'ephemeral'
                 });
               } catch (error) {
@@ -210,31 +254,21 @@ jobs:
             // Label was added but checkbox not ticked -> tick checkbox and trigger deploy
             else if (hasLabel && hasUncheckedBox && action === 'labeled' && context.payload.label?.name === 'ephemeral') {
               console.log('Label added, ticking checkbox');
-              const newBody = body.replace(
+              const newBody = commentBody.replace(
                 '- [ ] <!-- ephemeral -->',
                 '- [x] <!-- ephemeral -->'
               );
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-                body: newBody
-              });
+              await updateConfigComment(newBody);
               shouldDeploy = true;
             }
             // Label was removed but checkbox still ticked -> untick checkbox
             else if (!hasLabel && hasCheckedBox && action === 'unlabeled' && context.payload.label?.name === 'ephemeral') {
               console.log('Label removed, unticking checkbox');
-              const newBody = body.replace(
+              const newBody = commentBody.replace(
                 '- [x] <!-- ephemeral -->',
                 '- [ ] <!-- ephemeral -->'
               );
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-                body: newBody
-              });
+              await updateConfigComment(newBody);
               shouldDeploy = false;
             }
             // Already has label and checkbox on labeled event
@@ -242,7 +276,7 @@ jobs:
               shouldDeploy = true;
             }
             // Env vars changed while ephemeral is active -> redeploy
-            else if (hasLabel && hasCheckedBox && envVarsChanged && action === 'edited') {
+            else if (hasLabel && hasCheckedBox && envVarsChanged && isCommentEvent) {
               console.log('Env vars changed, triggering redeploy');
               shouldDeploy = true;
             }
@@ -256,7 +290,7 @@ jobs:
 
             // Parse helm substitutions if deploying
             if (shouldDeploy) {
-              const envVars = parseEnvVars(body);
+              const envVars = parseEnvVars(commentBody);
               const substitutions = Object.entries(envVars)
                 .filter(([, value]) => value)
                 .map(([key, value]) => `${key}=${value}`)
