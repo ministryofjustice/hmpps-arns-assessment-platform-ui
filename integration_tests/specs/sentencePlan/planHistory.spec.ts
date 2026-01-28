@@ -492,12 +492,6 @@ test.describe('Plan History Page', () => {
       await sentencePlanBuilder
         .extend(sentencePlanId)
         .withGoal({
-          title: 'Find stable accommodation',
-          areaOfNeed: 'accommodation',
-          status: 'ACTIVE',
-          steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
-        })
-        .withGoal({
           title: 'Reduce alcohol use',
           areaOfNeed: 'alcohol-use',
           status: 'REMOVED',
@@ -644,12 +638,6 @@ test.describe('Plan History Page', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder
         .extend(sentencePlanId)
-        .withGoal({
-          title: 'Active goal',
-          areaOfNeed: 'accommodation',
-          status: 'ACTIVE',
-          steps: [{ actor: 'probation_practitioner', description: 'Test step' }],
-        })
         .withGoal({
           title: 'Removed goal',
           areaOfNeed: 'alcohol-use',
