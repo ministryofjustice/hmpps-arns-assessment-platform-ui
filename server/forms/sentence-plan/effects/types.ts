@@ -108,7 +108,11 @@ export interface DerivedPlanAgreement {
  * Unified plan history entry for displaying timeline events.
  * Uses discriminated union pattern for type-safe rendering.
  */
-export type PlanHistoryEntry = PlanAgreementHistoryEntry | GoalAchievedHistoryEntry | GoalRemovedHistoryEntry
+export type PlanHistoryEntry =
+  | PlanAgreementHistoryEntry
+  | GoalAchievedHistoryEntry
+  | GoalRemovedHistoryEntry
+  | GoalReaddedHistoryEntry
 
 export interface PlanAgreementHistoryEntry {
   type: 'agreement'
@@ -138,6 +142,18 @@ export interface GoalRemovedHistoryEntry {
   goalUuid: string
   goalTitle: string
   removedBy?: string
+  reason?: string
+  /** True if the goal has been re-added and is now active/future */
+  isCurrentlyActive: boolean
+}
+
+export interface GoalReaddedHistoryEntry {
+  type: 'goal_readded'
+  uuid: string
+  date: Date
+  goalUuid: string
+  goalTitle: string
+  readdedBy?: string
   reason?: string
 }
 

@@ -5,7 +5,13 @@ import ConfirmRemoveGoalPage from '../../pages/sentencePlan/confirmRemoveGoalPag
 import ViewInactiveGoalPage from '../../pages/sentencePlan/viewInactiveGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { removedGoals } from '../../builders/sentencePlanFactories'
-import { getDatePlusDaysAsISO, navigateToSentencePlan } from './sentencePlanUtils'
+import {
+  buildErrorPageTitle,
+  buildPageTitle,
+  getDatePlusDaysAsISO,
+  navigateToSentencePlan,
+  sentencePlanPageTitles,
+} from './sentencePlanUtils'
 
 test.describe('Re-add goal journey', () => {
   test.describe('confirm goal re-add', () => {
@@ -20,6 +26,9 @@ test.describe('Re-add goal journey', () => {
 
       await navigateToSentencePlan(page, handoverLink)
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+
+      // ensure page title is correct
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.confirmReAddGoal))
 
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.enterReaddNote('Person is now ready to work on this goal again')
@@ -68,6 +77,9 @@ test.describe('Re-add goal journey', () => {
       await readdPage.selectCanStartNow(false)
       await readdPage.clickConfirm()
 
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.confirmReAddGoal))
+
       expect(await readdPage.hasValidationError()).toBe(true)
       expect(await readdPage.hasReaddNoteError()).toBe(true)
     })
@@ -91,6 +103,9 @@ test.describe('Re-add goal journey', () => {
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.enterReaddNote('Test note')
       await readdPage.clickConfirm()
+
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.confirmReAddGoal))
 
       expect(await readdPage.hasValidationError()).toBe(true)
       expect(await readdPage.hasCanStartNowError()).toBe(true)

@@ -2,6 +2,7 @@ import {
   DerivedGoal,
   DerivedPlanAgreement,
   GoalAchievedHistoryEntry,
+  GoalReaddedHistoryEntry,
   GoalRemovedHistoryEntry,
   PlanAgreementHistoryEntry,
   PlanHistoryEntry,
@@ -15,6 +16,7 @@ import {
  * - Plan agreement events (agreed, not agreed, could not answer)
  * - Goal achieved events (with optional notes)
  * - Goal removed events (with removal reason)
+ * - Goal re-added events (when a removed goal is added back into the plan)
  *
  * All entries are sorted by date (newest first) to provide a chronological timeline.
  *
@@ -61,21 +63,42 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
   }
 
   // Add removed goal entries
-  const removedGoals = goals.filter(goal => goal.status === 'REMOVED')
-  for (const goal of removedGoals) {
-    // Find the REMOVED note if one exists (contains the removal reason)
-    const removedNote = goal.notes.find(note => note.type === 'REMOVED')
-
-    const entry: GoalRemovedHistoryEntry = {
-      type: 'goal_removed',
-      uuid: `removed-${goal.uuid}`,
-      date: goal.statusDate,
-      goalUuid: goal.uuid,
-      goalTitle: goal.title,
-      removedBy: removedNote?.createdBy,
-      reason: removedNote?.note,
+  // Look for goals with REMOVED notes so that the removal event is still shown
+  // even if the goal has been re-added.
+  for (const goal of goals) {
+    const removedNotes = goal.notes.filter(note => note.type === 'REMOVED')
+    const isCurrentlyActive = goal.status === 'ACTIVE' || goal.status === 'FUTURE'
+    for (const note of removedNotes) {
+      const entry: GoalRemovedHistoryEntry = {
+        type: 'goal_removed',
+        uuid: `removed-${goal.uuid}-${note.uuid}`,
+        date: note.createdAt,
+        goalUuid: goal.uuid,
+        goalTitle: goal.title,
+        removedBy: note.createdBy,
+        reason: note.note,
+        isCurrentlyActive,
+      }
+      entries.push(entry)
     }
-    entries.push(entry)
+  }
+
+  // Add re-added goal entries
+  // A goal can be re-added (has READDED note) but is now ACTIVE or FUTURE
+  for (const goal of goals) {
+    const readdedNotes = goal.notes.filter(note => note.type === 'READDED')
+    for (const note of readdedNotes) {
+      const entry: GoalReaddedHistoryEntry = {
+        type: 'goal_readded',
+        uuid: `readded-${goal.uuid}-${note.uuid}`,
+        date: note.createdAt,
+        goalUuid: goal.uuid,
+        goalTitle: goal.title,
+        readdedBy: note.createdBy,
+        reason: note.note,
+      }
+      entries.push(entry)
+    }
   }
 
   // Sort by date, newest first
