@@ -5,7 +5,23 @@ import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import { navigateToSentencePlan } from '../sentencePlanUtils'
 
 test.describe('Accessible Autocomplete Component', () => {
-  test('should autocomplete suggested goals', async ({ page, createSession, makeAxeBuilder }) => {
+  test('should be accessible', async ({ page, createSession, makeAxeBuilder }) => {
+    const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+    await navigateToSentencePlan(page, handoverLink)
+
+    const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+    await planOverviewPage.clickCreateGoal()
+    await CreateGoalPage.verifyOnPage(page)
+
+    const accessibilityScanResults = await makeAxeBuilder()
+      .include('accessible-autocomplete-wrapper')
+      .analyze()
+
+    expect(accessibilityScanResults.violations).toEqual([])
+  })
+
+  test('should autocomplete suggested goals', async ({ page, createSession }) => {
     const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
     await navigateToSentencePlan(page, handoverLink)
 
@@ -16,11 +32,5 @@ test.describe('Accessible Autocomplete Component', () => {
 
     await createGoalPage.enterGoalTitle('Find')
     await expect(createGoalPage.findAccomodationGoal).toBeVisible()
-
-    const accessibilityScanResults = await makeAxeBuilder()
-      .include('accessible-autocomplete-wrapper')
-      .analyze()
-
-    expect(accessibilityScanResults.violations).toEqual([])
   })
 })
