@@ -21,16 +21,20 @@ export const viewInactiveGoalStep = step({
   isEntryPoint: true,
   view: {
     locals: {
-      backlink: when(Data('activeGoal.status').match(Condition.Equals('ACHIEVED')))
-        .then('../../plan/overview?type=achieved')
-        .else('../../plan/overview?type=removed'),
+      backlink: when(Data('navigationReferrer').match(Condition.Equals('plan-history')))
+        .then('../../plan/plan-history')
+        .else(
+          when(Data('activeGoal.status').match(Condition.Equals('ACHIEVED')))
+            .then('../../plan/overview?type=achieved')
+            .else('../../plan/overview?type=removed'),
+        ),
     },
   },
   blocks: [pageHeading, goalInfo, reviewStepsSection, viewAllNotesSection, addToPlanButton],
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.loadActiveGoalForEdit()],
+      effects: [SentencePlanEffects.loadNavigationReferrer(), SentencePlanEffects.loadActiveGoalForEdit()],
       next: [
         redirect({
           when: Data('activeGoal').not.match(Condition.IsRequired()),

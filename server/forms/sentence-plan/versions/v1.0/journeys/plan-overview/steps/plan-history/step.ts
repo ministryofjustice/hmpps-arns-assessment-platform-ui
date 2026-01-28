@@ -1,6 +1,7 @@
 import { accessTransition, Data, redirect, step } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { subtitleText, sectionBreak, agreementHistory, updateAgreementLink, backToTopLink } from './fields'
+import { SentencePlanEffects } from '../../../../../../effects'
 
 export const planHistoryStep = step({
   path: '/plan-history',
@@ -16,6 +17,7 @@ export const planHistoryStep = step({
   blocks: [subtitleText, sectionBreak, agreementHistory, updateAgreementLink, backToTopLink],
   onAccess: [
     accessTransition({
+      effects: [SentencePlanEffects.setNavigationReferrer('plan-history')],
       next: [
         // Redirect to plan overview if plan is not yet agreed
         redirect({
