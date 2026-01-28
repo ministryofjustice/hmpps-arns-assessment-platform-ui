@@ -268,34 +268,39 @@ test.describe('Plan History - Re-added Goals', () => {
     const entryCount = await planHistoryPage.getHistoryEntryCount()
     expect(entryCount).toBe(3)
 
-    // Check that both goal events are present (order depends on note creation time)
     const allEntriesText = await Promise.all([
       planHistoryPage.getEntryHeaderText(0),
       planHistoryPage.getEntryHeaderText(1),
       planHistoryPage.getEntryHeaderText(2),
     ])
 
-    const hasReaddedEntry = allEntriesText.some(text => text.includes('Goal added back into plan'))
-    const hasRemovedEntry = allEntriesText.some(text => text.includes('Goal removed'))
-    const hasAgreementEntry = allEntriesText.some(text => text.includes('Plan agreed'))
+    const readdedIndex = allEntriesText.findIndex(text => text.includes('Goal added back into plan'))
+    const removedIndex = allEntriesText.findIndex(text => text.includes('Goal removed'))
+    const agreementIndex = allEntriesText.findIndex(text => text.includes('Plan agreed'))
 
-    expect(hasReaddedEntry).toBe(true)
-    expect(hasRemovedEntry).toBe(true)
-    expect(hasAgreementEntry).toBe(true)
+    expect(readdedIndex).toBeGreaterThanOrEqual(0)
+    expect(removedIndex).toBeGreaterThanOrEqual(0)
+    expect(agreementIndex).toBeGreaterThanOrEqual(0)
 
     // Verify removal reason is displayed
-    const hasRemovalReason = await planHistoryPage.entryContainsText(1, 'Goal no longer relevant at this time.')
+    const hasRemovalReason = await planHistoryPage.entryContainsText(
+      removedIndex,
+      'Goal no longer relevant at this time.',
+    )
     expect(hasRemovalReason).toBe(true)
 
     // Verify re-add reason is displayed
-    const hasReaddReason = await planHistoryPage.entryContainsText(0, 'Circumstances changed, goal is relevant again.')
+    const hasReaddReason = await planHistoryPage.entryContainsText(
+      readdedIndex,
+      'Circumstances changed, goal is relevant again.',
+    )
     expect(hasReaddReason).toBe(true)
 
-    // Both entries should show "View latest version" since the goal is now active
-    const readdedViewLink = await planHistoryPage.getViewGoalLink(0)
+    // Both goal entries should show "View latest version" since the goal is now active
+    const readdedViewLink = await planHistoryPage.getViewGoalLink(readdedIndex)
     expect(await readdedViewLink.textContent()).toContain('View latest version')
 
-    const removedViewLink = await planHistoryPage.getViewGoalLink(1)
+    const removedViewLink = await planHistoryPage.getViewGoalLink(removedIndex)
     expect(await removedViewLink.textContent()).toContain('View latest version')
   })
 })
