@@ -30,6 +30,8 @@ export default class CreateGoalPage extends AbstractPage {
 
   readonly goalTitles: Locator
 
+  readonly findAccomodationGoal: Locator
+
   public constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
@@ -54,6 +56,7 @@ export default class CreateGoalPage extends AbstractPage {
     this.saveWithoutStepsButton = page.getByRole('button', { name: /save without steps/i })
     this.areaOfNeedNav = page.locator('[data-qa="area-of-need-nav"]')
     this.goalTitles = page.getByTestId('autocomplete-data-goal_title')
+    this.findAccomodationGoal = page.getByRole('option', { name: 'I will find accommodation' })
   }
 
   static async verifyOnPage(page: Page): Promise<CreateGoalPage> {
