@@ -7,21 +7,31 @@
       </button>
     </div>
     <div class="support-widget__content" id="support-widget-content" data-support-content>
-      <p class="govuk-body-s govuk-!-margin-bottom-2">
-        If you're experiencing problems, please contact support with this information:
-      </p>
-      <dl class="support-widget__data">
-        <div class="support-widget__data-row">
-          <dt>Request ID</dt>
-          <dd>{{ getRequestId() }}</dd>
+      <div class="support-widget__panels">
+        <div class="support-widget__panel support-widget__panel--left">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Get help</h3>
+          <p class="govuk-body-s govuk-!-margin-bottom-3">
+            If you are having problems with this page, you can report it using our <a href="#" class="govuk-link">ServiceNow form</a>.
+          </p>
+          <p class="govuk-body-s govuk-!-margin-bottom-0">
+            Please provide the request details shown here, along with a description of the issue you experienced.
+          </p>
         </div>
-        {% for item in supportData %}
-          <div class="support-widget__data-row">
-            <dt>{{ item.label }}</dt>
-            <dd>{{ item.value }}</dd>
-          </div>
-        {% endfor %}
-      </dl>
+        <div class="support-widget__panel support-widget__panel--right">
+          <dl class="support-widget__data">
+            <div class="support-widget__data-row">
+              <dt>Request ID</dt>
+              <dd>{{ getRequestId() }}</dd>
+            </div>
+            {% for item in supportData %}
+              <div class="support-widget__data-row">
+                <dt>{{ item.label }}</dt>
+                <dd>{{ item.value }}</dd>
+              </div>
+            {% endfor %}
+          </dl>
+        </div>
+      </div>
     </div>
   </div>
 </app-support-widget>
