@@ -1,4 +1,4 @@
-import { step, accessTransition, submitTransition, redirect, Post, Data } from '@form-engine/form/builders'
+import { step, submitTransition, redirect, Post, Data } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import {
   errorBanner,
@@ -21,12 +21,6 @@ import { TrainingSessionLauncherEffects } from '../../../effects'
 export const sessionsStep = step({
   path: '/sessions',
   title: 'Active Sessions',
-
-  onAccess: [
-    accessTransition({
-      effects: [TrainingSessionLauncherEffects.storeCsrf(), TrainingSessionLauncherEffects.loadPreferences()],
-    }),
-  ],
 
   blocks: [
     errorBanner,

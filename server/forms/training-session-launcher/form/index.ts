@@ -31,7 +31,7 @@ export const trainingSessionLauncherJourney = journey({
 
   onAccess: [
     accessTransition({
-      effects: [TrainingSessionLauncherEffects.storeCsrf()],
+      effects: [TrainingSessionLauncherEffects.storeCsrf(), TrainingSessionLauncherEffects.loadPreferences()],
     }),
   ],
 
