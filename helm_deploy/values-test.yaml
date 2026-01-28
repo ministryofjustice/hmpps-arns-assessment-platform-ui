@@ -20,5 +20,15 @@ generic-service:
     FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "false"
     TRAINING_SESSION_LAUNCHER_ENABLED: "true"
 
+  allowlist:
+    capita-dev: 51.104.16.30/31
+    captia-further: 172.167.141.40/32
+    capita-developers-vms-one: 85.115.52.180/32
+    capita-developers-vms-two: 85.115.52.200/29
+    capita-developers-vms-three: 85.115.53.180/32
+    capita-developers-vms-four: 85.115.53.200/29
+    capita-developers-vms-five: 85.115.54.180/32
+    capita-developers-vms-six: 85.115.54.200/29
+
 generic-prometheus-alerts:
   alertSeverity: hmpps-arns-non-prod
