@@ -251,6 +251,7 @@ export const loadPreferences =
 
     const preferences = allPreferences?.trainingLauncher ?? DEFAULT_PREFERENCES
 
+    context.setData('preferencesId', preferencesId)
     context.setData('savedScenarios', preferences.savedScenarios.map(resolveSavedScenario))
     context.setData('sessions', preferences.sessions.map(transformToDisplaySession).reverse())
   }

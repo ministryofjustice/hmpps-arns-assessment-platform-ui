@@ -31,7 +31,7 @@ export const customiseStep = step({
     }),
 
     accessTransition({
-      effects: [TrainingSessionLauncherEffects.storeCsrf(), TrainingSessionLauncherEffects.loadScenarioForCustomise()],
+      effects: [TrainingSessionLauncherEffects.loadScenarioForCustomise()],
     }),
   ],
 
