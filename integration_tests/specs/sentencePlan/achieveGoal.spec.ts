@@ -3,7 +3,7 @@ import { test, TargetService } from '../../support/fixtures'
 import ConfirmAchievedGoalPage from '../../pages/sentencePlan/confirmAchievedGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
-import { getDatePlusDaysAsISO } from './sentencePlanUtils'
+import { getDatePlusDaysAsISO, navigateToSentencePlan } from './sentencePlanUtils'
 
 test.describe('Achieve goal journey', () => {
   test.describe('confirm goal as achieved', () => {
@@ -16,11 +16,11 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
 
@@ -46,11 +46,11 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
 
@@ -69,11 +69,11 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
 
@@ -95,11 +95,11 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
 
@@ -125,11 +125,11 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
 
@@ -149,11 +149,11 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
 
@@ -185,10 +185,10 @@ test.describe('Achieve goal journey', () => {
         .save()
       const goalUuid = plan.goals[0].uuid
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to confirm-achieved-goal page and confirm
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
       await achievePage.clickConfirm()
 
@@ -231,7 +231,7 @@ test.describe('Achieve goal journey', () => {
         .withAgreementStatus('AGREED')
         .save()
 
-      await page.goto(handoverLink)
+      await navigateToSentencePlan(page, handoverLink)
 
       // Verify we start with 2 current goals
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -240,12 +240,12 @@ test.describe('Achieve goal journey', () => {
 
       // Navigate to confirm-achieved-goal page for first goal and confirm
       const goalUuid = plan.goals[0].uuid
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
       await achievePage.clickConfirm()
 
       // Navigate to current goals tab
-      await page.goto('/forms/sentence-plan/v1.0/plan/overview?type=current')
+      await page.goto('/sentence-plan/v1.0/plan/overview?type=current')
 
       // Verify only 1 goal remains in current goals
       planOverviewPage = await PlanOverviewPage.verifyOnPage(page)

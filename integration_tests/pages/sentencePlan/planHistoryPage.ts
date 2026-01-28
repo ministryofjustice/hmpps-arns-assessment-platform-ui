@@ -91,4 +91,20 @@ export default class PlanHistoryPage extends AbstractPage {
     // Should have section breaks (at least one if there are multiple entries)
     return count > 0
   }
+
+  /**
+   * Get the "View goal" link from an achieved goal entry
+   */
+  async getViewGoalLink(index: number): Promise<Locator> {
+    const entry = await this.getHistoryEntryByIndex(index)
+    return entry.getByRole('link', { name: /View goal/i })
+  }
+
+  /**
+   * Check if an entry has a "View goal" link
+   */
+  async entryHasViewGoalLink(index: number): Promise<boolean> {
+    const link = await this.getViewGoalLink(index)
+    return link.isVisible()
+  }
 }

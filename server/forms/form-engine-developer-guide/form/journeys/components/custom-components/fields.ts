@@ -259,11 +259,11 @@ formEngine.registerComponents({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/components/built-in',
+          href: '/form-engine-developer-guide/components/built-in',
           labelText: 'Built-in Components',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/components/extending',
+          href: '/form-engine-developer-guide/components/extending',
           labelText: 'Extending Components',
         },
       }),

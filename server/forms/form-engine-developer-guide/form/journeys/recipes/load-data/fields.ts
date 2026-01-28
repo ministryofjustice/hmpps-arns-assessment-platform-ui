@@ -68,9 +68,9 @@ Fetch data from an API or session when a step loads. {.lead}
 
 ## Related Concepts
 
-- [Effects](/forms/form-engine-developer-guide/effects/intro) - Full effects documentation
-- [Transitions](/forms/form-engine-developer-guide/transitions/intro) - Access and submit transitions
-- [References](/forms/form-engine-developer-guide/references/data) - Using Data() to access loaded data
+- [Effects](/form-engine-developer-guide/effects/intro) - Full effects documentation
+- [Transitions](/form-engine-developer-guide/transitions/intro) - Access and submit transitions
+- [References](/form-engine-developer-guide/references/data) - Using Data() to access loaded data
 
 ---
 
@@ -187,11 +187,11 @@ Fetch data from an API or session when a step loads. {.lead}
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/recipes/custom-validation',
+          href: '/form-engine-developer-guide/recipes/custom-validation',
           labelText: 'Custom Validation',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/recipes/format-value',
+          href: '/form-engine-developer-guide/recipes/format-value',
           labelText: 'Format a Dynamic Value',
         },
       }),

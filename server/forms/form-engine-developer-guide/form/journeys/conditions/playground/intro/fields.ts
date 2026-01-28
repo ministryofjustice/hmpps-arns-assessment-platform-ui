@@ -18,19 +18,19 @@ export const pageContent = TemplateWrapper({
 
   ## Choose a condition type
 
-  - [**String Conditions**](/forms/form-engine-developer-guide/conditions/playground/strings)
+  - [**String Conditions**](/form-engine-developer-guide/conditions/playground/strings)
 
     Test equality, length, patterns, and character validation.
 
-  - [**Number Conditions**](/forms/form-engine-developer-guide/conditions/playground/numbers)
+  - [**Number Conditions**](/form-engine-developer-guide/conditions/playground/numbers)
 
     Test numeric comparisons, ranges, and type checks.
 
-  - [**Date Conditions**](/forms/form-engine-developer-guide/conditions/playground/dates)
+  - [**Date Conditions**](/form-engine-developer-guide/conditions/playground/dates)
 
     Test date validity, comparisons, and relative checks.
 
-  - [**Predicate Combinators**](/forms/form-engine-developer-guide/conditions/playground/combinators)
+  - [**Predicate Combinators**](/form-engine-developer-guide/conditions/playground/combinators)
 
     Combine conditions with and(), or(), xor(), and not().
 
@@ -43,11 +43,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/conditions/custom',
+          href: '/form-engine-developer-guide/conditions/custom',
           labelText: 'Custom Conditions',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/conditions/playground/strings',
+          href: '/form-engine-developer-guide/conditions/playground/strings',
           labelText: 'String Conditions',
         },
       }),

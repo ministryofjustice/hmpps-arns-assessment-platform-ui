@@ -286,11 +286,11 @@ Literal(tasks)
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/map-examples',
+          href: '/form-engine-developer-guide/iterators/playground/map-examples',
           labelText: 'Map Examples',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/find-examples',
+          href: '/form-engine-developer-guide/iterators/playground/find-examples',
           labelText: 'Find Examples',
         },
       }),

@@ -5,7 +5,7 @@ import { login } from '../testUtils'
 test.describe('Auth Bypass', () => {
   test('Unauthenticated user can access bypassed path without redirect to sign-in', async ({ page }) => {
     // Act
-    const response = await page.goto('/forms/form-engine-developer-guide')
+    const response = await page.goto('/form-engine-developer-guide')
 
     // Assert - should not be redirected to sign-in page
     expect(page.url()).not.toContain('/sign-in')
@@ -14,7 +14,7 @@ test.describe('Auth Bypass', () => {
 
   test('Unauthenticated user can access nested bypassed path', async ({ page }) => {
     // Act
-    const response = await page.goto('/forms/form-engine-developer-guide/form-registration')
+    const response = await page.goto('/form-engine-developer-guide/form-registration')
 
     // Assert - should not be redirected to sign-in page
     expect(page.url()).not.toContain('/sign-in')
@@ -34,7 +34,7 @@ test.describe('Auth Bypass', () => {
 
   test('Similar but non-matching path still requires auth', async ({ page }) => {
     // Act - path that starts similarly but doesn't match the bypass prefix
-    await page.goto('/forms/form-engine-developer')
+    await page.goto('/form-engine-developer')
 
     // Assert - should be redirected to OAuth provider (via /sign-in redirect)
     const url = page.url()
@@ -48,11 +48,11 @@ test.describe('Auth Bypass', () => {
     await login(page)
 
     // Act
-    const response = await page.goto('/forms/form-engine-developer-guide')
+    const response = await page.goto('/form-engine-developer-guide')
 
     // Assert
     expect(response?.status()).toBeLessThan(400)
-    expect(page.url()).toContain('/forms/form-engine-developer-guide')
+    expect(page.url()).toContain('/form-engine-developer-guide')
 
     await expect(page.locator('[data-qa="header-user-name"]')).toHaveText('A. Test')
   })

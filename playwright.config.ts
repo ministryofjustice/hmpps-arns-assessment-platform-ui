@@ -89,4 +89,5 @@ export default defineConfig<PlaywrightExtendedConfig>({
       workers: 1,
     },
   ],
+  tsconfig: './integration_tests/tsconfig.json',
 })

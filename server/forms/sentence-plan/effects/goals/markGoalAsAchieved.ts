@@ -39,6 +39,7 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
     added: wrapAll({
       status: 'ACHIEVED',
       status_date: new Date().toISOString(),
+      achieved_by: user.name,
     }),
     removed: [],
     assessmentUuid,

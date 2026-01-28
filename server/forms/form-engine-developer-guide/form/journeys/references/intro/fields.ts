@@ -149,11 +149,11 @@ The following pages cover each reference type in detail:
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/hub',
+          href: '/form-engine-developer-guide/hub',
           labelText: 'Guide Hub',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/references/answer',
+          href: '/form-engine-developer-guide/references/answer',
           labelText: 'Answer Reference',
         },
       }),

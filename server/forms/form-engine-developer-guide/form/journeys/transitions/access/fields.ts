@@ -449,11 +449,11 @@ Common status codes: \`401\` (Unauthorized), \`403\` (Forbidden), \`404\` (Not F
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/transitions/intro',
+          href: '/form-engine-developer-guide/transitions/intro',
           labelText: 'Introduction',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/transitions/action',
+          href: '/form-engine-developer-guide/transitions/action',
           labelText: 'Action Transitions',
         },
       }),

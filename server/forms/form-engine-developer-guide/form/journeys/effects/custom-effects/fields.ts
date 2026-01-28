@@ -621,11 +621,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/effects/context',
+          href: '/form-engine-developer-guide/effects/context',
           labelText: 'The Context Object',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/transitions/intro',
+          href: '/form-engine-developer-guide/transitions/intro',
           labelText: 'Transitions',
         },
       }),

@@ -385,7 +385,7 @@ Here's a complete example showing multiple chaining techniques:
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/references/http',
+          href: '/form-engine-developer-guide/references/http',
           labelText: 'HTTP References',
         },
       }),

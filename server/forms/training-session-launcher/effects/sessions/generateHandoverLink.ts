@@ -172,7 +172,7 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
       identifier: values.practitionerIdentifier,
       displayName: values.practitionerDisplayName,
       accessMode: values.accessMode,
-      returnUrl: `${config.ingressUrl}/forms/training-session-launcher/sessions`,
+      returnUrl: `${config.ingressUrl}/training-session-launcher/sessions`,
     },
     subjectDetails: buildSubjectDetails(values),
     oasysAssessmentPk: values.oasysAssessmentPk,
