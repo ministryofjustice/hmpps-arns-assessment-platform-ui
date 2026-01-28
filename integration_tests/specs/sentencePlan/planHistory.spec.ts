@@ -511,7 +511,7 @@ test.describe('Plan History Page', () => {
       await handlePrivacyScreenIfPresent(page)
 
       // Try to navigate directly to plan history
-      await page.goto(`/forms/sentence-plan/v1.0/plan/plan-history`)
+      await page.goto(`/sentence-plan/v1.0/plan/plan-history`)
 
       // Should be redirected back to plan overview
       await expect(page).toHaveURL(/overview/)

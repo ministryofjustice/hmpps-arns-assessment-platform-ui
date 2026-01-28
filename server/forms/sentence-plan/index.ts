@@ -30,14 +30,14 @@ const privacyScreenStep = createPrivacyScreen({
  * OASys handover and CRN-based authentication flows.
  *
  * Entry points:
- * - /forms/access/sentence-plan/oasys     → OASys handover
- * - /forms/access/sentence-plan/crn/:crn  → CRN-based access
+ * - /access/sentence-plan/oasys     → OASys handover
+ * - /access/sentence-plan/crn/:crn  → CRN-based access
  *
- * Both redirect to /forms/sentence-plan/v1.0/plan/overview after
+ * Both redirect to /sentence-plan/v1.0/plan/overview after
  * setting up session with case details and access configuration.
  *
  * Structure:
- * /forms/sentence-plan/
+ * /sentence-plan/
  * └── /v1.0/              - Version 1.0 sub-journey
  *     ├── /privacy        - Privacy screen
  *     ├── /plan/overview  - Plan overview page (entry point)

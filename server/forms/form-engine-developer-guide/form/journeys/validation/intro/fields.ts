@@ -169,11 +169,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/conditions/intro',
+          href: '/form-engine-developer-guide/conditions/intro',
           labelText: 'Conditions',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/validation/patterns',
+          href: '/form-engine-developer-guide/validation/patterns',
           labelText: 'Common Patterns',
         },
       }),

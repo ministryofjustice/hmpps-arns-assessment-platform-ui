@@ -55,7 +55,7 @@ export const pageContent = TemplateWrapper({
 
   {{slot:validateExampleCode}}
 
-  See the [Validation](/forms/form-engine-developer-guide/validation/intro) page for full details on validation rules.
+  See the [Validation](/form-engine-developer-guide/validation/intro) page for full details on validation rules.
 
   ### \`formatters\` <span class="govuk-tag govuk-tag--grey">Optional</span>
 
@@ -231,9 +231,9 @@ export const pageContent = TemplateWrapper({
 
   {{slot:pagination}}
 
-  **Next:** Learn how to validate field input in the [Validation](/forms/form-engine-developer-guide/validation/intro) section.
+  **Next:** Learn how to validate field input in the [Validation](/form-engine-developer-guide/validation/intro) section.
 
-  [← Back to Guide Hub](/forms/form-engine-developer-guide/hub)
+  [← Back to Guide Hub](/form-engine-developer-guide/hub)
 `),
   slots: {
     basicUsageCode: [
@@ -546,7 +546,7 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/blocks-and-fields/blocks',
+          href: '/form-engine-developer-guide/blocks-and-fields/blocks',
           labelText: 'Block Types',
         },
       }),

@@ -267,11 +267,11 @@ Use \`Format()\` to build strings with item values:
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/references/self',
+          href: '/form-engine-developer-guide/references/self',
           labelText: 'Self Reference',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/references/http',
+          href: '/form-engine-developer-guide/references/http',
           labelText: 'HTTP References',
         },
       }),

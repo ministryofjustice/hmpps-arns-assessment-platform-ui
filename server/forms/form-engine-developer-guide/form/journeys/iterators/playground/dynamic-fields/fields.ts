@@ -449,11 +449,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/find-examples',
+          href: '/form-engine-developer-guide/iterators/playground/find-examples',
           labelText: 'Find Examples',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/chaining-examples',
+          href: '/form-engine-developer-guide/iterators/playground/chaining-examples',
           labelText: 'Chaining Examples',
         },
       }),

@@ -480,11 +480,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/transformers/intro',
+          href: '/form-engine-developer-guide/transformers/intro',
           labelText: 'Transformers Reference',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/transformers/playground/intro',
+          href: '/form-engine-developer-guide/transformers/playground/intro',
           labelText: 'Transformers Playground',
         },
       }),

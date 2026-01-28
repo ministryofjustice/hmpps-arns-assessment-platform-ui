@@ -18,32 +18,32 @@ export const pageContent = TemplateWrapper({
 
   ## Choose an example
 
-  - [**Iterator.Map Examples**](/forms/form-engine-developer-guide/iterators/playground/map-examples)
+  - [**Iterator.Map Examples**](/form-engine-developer-guide/iterators/playground/map-examples)
 
     Transform items to new shapes: property extraction, object mapping,
     and using \`Literal()\` for static arrays.
 
-  - [**Iterator.Filter Examples**](/forms/form-engine-developer-guide/iterators/playground/filter-examples)
+  - [**Iterator.Filter Examples**](/form-engine-developer-guide/iterators/playground/filter-examples)
 
     Filter collections by conditions: equality checks, negation,
     and combining predicates with \`and()\` / \`or()\`.
 
-  - [**Iterator.Find Examples**](/forms/form-engine-developer-guide/iterators/playground/find-examples)
+  - [**Iterator.Find Examples**](/form-engine-developer-guide/iterators/playground/find-examples)
 
     Find single items: lookup by ID, existence checks,
     and extracting properties from found items.
 
-  - [**Dynamic Fields**](/forms/form-engine-developer-guide/iterators/playground/dynamic-fields)
+  - [**Dynamic Fields**](/form-engine-developer-guide/iterators/playground/dynamic-fields)
 
     Generate form fields inside collections using \`Format()\`
     for unique field codes based on item ID or index.
 
-  - [**Chaining Examples**](/forms/form-engine-developer-guide/iterators/playground/chaining-examples)
+  - [**Chaining Examples**](/form-engine-developer-guide/iterators/playground/chaining-examples)
 
     Combine iterators: filter then map, nested iterations,
     and using \`.pipe()\` for array transforms.
 
-  - [**Hub-and-Spoke CRUD**](/forms/form-engine-developer-guide/iterators/playground/hub)
+  - [**Hub-and-Spoke CRUD**](/form-engine-developer-guide/iterators/playground/hub)
 
     Fully interactive task manager demonstrating Iterator syntax for CRUD operations.
 
@@ -70,11 +70,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/iterators/chaining',
+          href: '/form-engine-developer-guide/iterators/chaining',
           labelText: 'Chaining Iterators',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/iterators/playground/map-examples',
+          href: '/form-engine-developer-guide/iterators/playground/map-examples',
           labelText: 'Map Examples',
         },
       }),

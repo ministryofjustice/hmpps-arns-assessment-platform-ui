@@ -70,7 +70,7 @@ Look at the URL for this page. It demonstrates how paths compose:
 
 > **Current URL:**
 >
-> \`/forms/form-engine-developer-guide/journeys-and-steps/intro\`
+> \`/form-engine-developer-guide/journeys-and-steps/intro\`
 
 | Segment | Source | Description |
 |---------|--------|-------------|
@@ -91,11 +91,11 @@ with the step path. This creates clean, hierarchical URLs automatically.
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/hub',
+          href: '/form-engine-developer-guide/hub',
           labelText: 'Guide Hub',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/journeys-and-steps/journeys',
+          href: '/form-engine-developer-guide/journeys-and-steps/journeys',
           labelText: 'Journey Configuration',
         },
       }),

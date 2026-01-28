@@ -306,11 +306,11 @@ export const pageContent = TemplateWrapper({
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/validation/playground/intro',
+          href: '/form-engine-developer-guide/validation/playground/intro',
           labelText: 'Playground Hub',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/validation/playground/numbers',
+          href: '/form-engine-developer-guide/validation/playground/numbers',
           labelText: 'Number Validation',
         },
       }),

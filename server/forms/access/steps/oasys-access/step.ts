@@ -4,7 +4,7 @@ import { AccessEffects } from '../../effects'
 /**
  * OASys access entry point.
  *
- * Route: /forms/access/:service/oasys
+ * Route: /access/:service/oasys
  *
  * Flow:
  * 1. Validate target service and set redirect path
