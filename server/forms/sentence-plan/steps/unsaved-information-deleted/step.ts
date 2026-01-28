@@ -19,7 +19,7 @@ export const unsavedInformationDeletedStep = step({
       variant: 'html',
       content: `
         <h1 class="govuk-heading-l">Your unsaved information has been deleted</h1>
-        <div data-testid="unsaved-information-deleted-content">
+        <div data-qa="unsaved-information-deleted-content">
           <p class="govuk-body">This is to protect your information.</p>
           <p class="govuk-body">You can go to the plan to start again.</p>
         </div>
