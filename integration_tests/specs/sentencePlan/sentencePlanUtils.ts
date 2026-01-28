@@ -49,13 +49,13 @@ export const sentencePlanPageTitles = {
   // Plan overview & agree plan
   planOverview: 'Plan',
   agreePlan: 'Do they agree to this plan?',
-  updateAgreePlan: 'Do they agree?',
+  updateAgreePlan: 'Do they agree?', // need confirmation on title (currently it's same as old Sentence Plan)
 
   // Plan history
   planHistory: 'Plan history',
 
   // Other
-  privacy: 'Remember to close any other applications before starting an appointment',
+  privacy: 'Close other applications',
   aboutPerson: 'About',
   previousVersions: 'Previous versions',
 }
