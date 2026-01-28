@@ -43,9 +43,9 @@ export const pageContent = TemplateWrapper({
 
   ---
 
-  [← Back to tasks](/forms/form-engine-developer-guide/iterators/playground/hub)
+  [← Back to tasks](/form-engine-developer-guide/iterators/playground/hub)
 
-  [← Back to Guide Hub](/forms/form-engine-developer-guide/hub)
+  [← Back to Guide Hub](/form-engine-developer-guide/hub)
 `),
   slots: {
     heading: [
@@ -156,7 +156,7 @@ export const pageContent = TemplateWrapper({
             }),
             HtmlBlock({
               content:
-                '<a href="/forms/form-engine-developer-guide/iterators/playground/hub" class="govuk-link govuk-!-margin-left-3" style="line-height: 3;">Cancel</a>',
+                '<a href="/form-engine-developer-guide/iterators/playground/hub" class="govuk-link govuk-!-margin-left-3" style="line-height: 3;">Cancel</a>',
             }),
           ],
         },

@@ -222,7 +222,7 @@ test.describe('Plan Overview Page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate directly to future goals tab
-      await page.goto('/forms/sentence-plan/v1.0/plan/overview?type=future')
+      await page.goto('/sentence-plan/v1.0/plan/overview?type=future')
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const goalCount = await planOverviewPage.getGoalCount()

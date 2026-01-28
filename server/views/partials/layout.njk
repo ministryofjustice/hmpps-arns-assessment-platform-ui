@@ -1,5 +1,6 @@
 {%- extends "govuk/template.njk" -%}
 {%- from "govuk/components/tag/macro.njk" import govukTag -%}
+{%- from "partials/macros/support-widget/macro.njk" import supportWidget -%}
 
 {% if backlink %}
   {% set mainClasses = "govuk-main-wrapper--no-padding" %}
@@ -26,6 +27,14 @@
       {% block formContent %}{% endblock %}
     </div>
 </div>
+{% endblock %}
+
+{% block footer %}
+  {% block supportWidget %}
+    {{ supportWidget({}) }}
+  {% endblock %}
+
+  {{ super() }}
 {% endblock %}
 
 {%- block bodyEnd -%}

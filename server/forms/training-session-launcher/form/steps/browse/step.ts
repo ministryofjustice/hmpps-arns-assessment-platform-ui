@@ -17,7 +17,7 @@ export const browseStep = step({
 
     accessTransition({
       when: Query('scenario').not.match(Condition.IsRequired()),
-      next: [redirect({ goto: '/forms/training-session-launcher/browse?scenario=default' })],
+      next: [redirect({ goto: 'browse?scenario=default' })],
     }),
   ],
 

@@ -30,7 +30,7 @@ export default function setUpWebSecurity(): Router {
           styleSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
           fontSrc: ["'self'"],
           formAction: [
-            `'self' https://*.hmpps.service.justice.gov.uk ${config.apis.hmppsAuth.externalUrl} ${config.apis.arnsHandover.externalUrl}`,
+            `'self' https://*.hmpps.service.justice.gov.uk http://localhost:* ${config.apis.hmppsAuth.externalUrl} ${config.apis.arnsHandover.externalUrl}`,
           ],
           ...(config.https ? {} : { upgradeInsecureRequests: null }),
         },

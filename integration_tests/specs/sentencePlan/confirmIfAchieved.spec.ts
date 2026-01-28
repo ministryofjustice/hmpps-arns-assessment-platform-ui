@@ -395,7 +395,7 @@ test.describe('Confirm if achieved page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-if-achieved`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-if-achieved`)
 
       const confirmPage = await ConfirmIfAchievedPage.verifyOnPage(page)
 

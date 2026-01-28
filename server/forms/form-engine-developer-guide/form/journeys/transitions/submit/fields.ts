@@ -403,11 +403,11 @@ onSubmission: [
       GovUKPagination({
         classes: 'govuk-pagination--inline',
         previous: {
-          href: '/forms/form-engine-developer-guide/transitions/action',
+          href: '/form-engine-developer-guide/transitions/action',
           labelText: 'Action Transitions',
         },
         next: {
-          href: '/forms/form-engine-developer-guide/transitions/navigation',
+          href: '/form-engine-developer-guide/transitions/navigation',
           labelText: 'Navigation',
         },
       }),

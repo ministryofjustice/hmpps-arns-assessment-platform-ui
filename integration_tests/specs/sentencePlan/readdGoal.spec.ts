@@ -25,7 +25,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       // ensure page title is correct
       await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.confirmReAddGoal))
@@ -50,7 +50,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.enterReaddNote('Person will work on this in the future')
@@ -71,7 +71,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.selectCanStartNow(false)
@@ -98,7 +98,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.enterReaddNote('Test note')
@@ -121,7 +121,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.clickCancel()
@@ -141,7 +141,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       const headerText = await readdPage.getHeaderText()
@@ -169,7 +169,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
 
@@ -187,7 +187,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
 
@@ -204,7 +204,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
 
@@ -228,7 +228,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
       await viewPage.clickAddToPlan()
@@ -276,14 +276,14 @@ test.describe('Re-add goal journey', () => {
 
       // Verify initial state: 2 active goals
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto('/forms/sentence-plan/v1.0/plan/overview?type=current')
+      await page.goto('/sentence-plan/v1.0/plan/overview?type=current')
 
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       expect(await planOverviewPage.getGoalCount()).toBe(2)
 
       // Re-add the removed goal
       const removedGoalUuid = plan.goals[2].uuid
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${removedGoalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${removedGoalUuid}/confirm-readd-goal`)
 
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.enterReaddNote('Ready to work on this again')
@@ -326,7 +326,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.enterReaddNote('Ready to work on this again')
@@ -372,13 +372,13 @@ test.describe('Re-add goal journey', () => {
       expect(await planOverviewPage.goalCardHasTargetDateText(0)).toBe(true)
 
       // Remove the goal (this should clear the target_date via markGoalAsRemoved effect)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
       await removePage.enterRemovalNote('Temporarily removing this goal')
       await removePage.clickConfirm()
 
       // Now re-add as a future goal
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.enterReaddNote('Will work on this later')
       await readdPage.selectCanStartNow(false)
@@ -422,13 +422,13 @@ test.describe('Re-add goal journey', () => {
         .save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto('/forms/sentence-plan/v1.0/plan/overview?type=removed')
+      await page.goto('/sentence-plan/v1.0/plan/overview?type=removed')
 
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       expect(await planOverviewPage.getGoalCount()).toBe(2)
 
       const goalUuid = plan.goals[0].uuid
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.enterReaddNote('Re-adding this goal')
@@ -436,7 +436,7 @@ test.describe('Re-add goal journey', () => {
       await readdPage.selectTargetDateOption('date_in_6_months')
       await readdPage.clickConfirm()
 
-      await page.goto('/forms/sentence-plan/v1.0/plan/overview?type=removed')
+      await page.goto('/sentence-plan/v1.0/plan/overview?type=removed')
 
       planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       expect(await planOverviewPage.getGoalCount()).toBe(1)
@@ -455,7 +455,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       await expect(page).toHaveURL(/\/plan\/overview/)
     })
@@ -478,7 +478,7 @@ test.describe('Re-add goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-readd-goal`)
 
       await expect(page).toHaveURL(/\/plan\/overview/)
     })

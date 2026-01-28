@@ -1,0 +1,43 @@
+{% macro supportWidget(params = {}) %}
+{% set defaultHelpContent %}
+  <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Get help</h3>
+  <p class="govuk-body-s govuk-!-margin-bottom-3">
+    If you are having problems with this page, contact us.
+  </p>
+  <p class="govuk-body-s govuk-!-margin-bottom-0">
+    Please provide the request details shown here, along with a description of the issue you experienced.
+  </p>
+{% endset %}
+
+<app-support-widget class="support-widget">
+  <div class="govuk-width-container">
+    <div class="support-widget__inner">
+      <span class="support-widget__prompt">Is this page not working correctly?</span>
+      <button type="button" class="support-widget__button" data-support-toggle>
+        Report a problem with this page
+      </button>
+    </div>
+    <div class="support-widget__content" id="support-widget-content" data-support-content>
+      <div class="support-widget__panels">
+        <div class="support-widget__panel support-widget__panel--left">
+          {{ params.helpContent | default(defaultHelpContent) | safe }}
+        </div>
+        <div class="support-widget__panel support-widget__panel--right">
+          <dl class="support-widget__data">
+            <div class="support-widget__data-row">
+              <dt>Request ID</dt>
+              <dd>{{ getRequestId() }}</dd>
+            </div>
+            {% for item in params.supportItems %}
+              <div class="support-widget__data-row">
+                <dt>{{ item.label }}</dt>
+                <dd>{{ item.value }}</dd>
+              </div>
+            {% endfor %}
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-support-widget>
+{% endmacro %}

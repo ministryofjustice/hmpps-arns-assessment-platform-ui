@@ -38,13 +38,13 @@ test.describe('View inactive goal page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
       await achievePage.enterHowHelpedNote('Secured stable housing')
       await achievePage.clickConfirm()
 
       // Navigate to view-inactive-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
 
@@ -79,12 +79,12 @@ test.describe('View inactive goal page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
       await achievePage.clickConfirm()
 
       // Navigate to view-inactive-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
 
@@ -105,12 +105,12 @@ test.describe('View inactive goal page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
       await achievePage.clickConfirm()
 
       // Navigate to view-inactive-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
 
@@ -149,13 +149,13 @@ test.describe('View inactive goal page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as removed
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
       await removePage.enterRemovalNote('No longer relevant to current situation')
       await removePage.clickConfirm()
 
       // Navigate to view-inactive-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
 
@@ -186,13 +186,13 @@ test.describe('View inactive goal page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as removed
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
       await removePage.enterRemovalNote('Testing button visibility')
       await removePage.clickConfirm()
 
       // Navigate to view-inactive-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
 
@@ -213,13 +213,13 @@ test.describe('View inactive goal page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as removed
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
       const removePage = await ConfirmRemoveGoalPage.verifyOnPage(page)
       await removePage.enterRemovalNote('Testing back link')
       await removePage.clickConfirm()
 
       // Navigate to view-inactive-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
 
@@ -257,12 +257,12 @@ test.describe('View inactive goal page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
       await achievePage.clickConfirm()
 
       // Navigate to view-inactive-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
 
@@ -299,13 +299,13 @@ test.describe('View inactive goal page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved with a note
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
       await achievePage.enterHowHelpedNote('This helped them find stable housing')
       await achievePage.clickConfirm()
 
       // Navigate to view-inactive-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
 
@@ -334,12 +334,12 @@ test.describe('View inactive goal page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved without a note
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
       await achievePage.clickConfirm()
 
       // Navigate to view-inactive-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
 
@@ -374,12 +374,12 @@ test.describe('View inactive goal page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
       await achievePage.clickConfirm()
 
       // Navigate to view-inactive-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
 
@@ -409,12 +409,12 @@ test.describe('View inactive goal page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Mark goal as achieved
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
       const achievePage = await ConfirmAchievedGoalPage.verifyOnPage(page)
       await achievePage.clickConfirm()
 
       // Navigate to view-inactive-goal page
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
 
@@ -437,7 +437,7 @@ test.describe('View inactive goal page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Try to navigate with invalid goal UUID
-      await page.goto(`/forms/sentence-plan/v1.0/goal/${invalidGoalUuid}/view-inactive-goal`)
+      await page.goto(`/sentence-plan/v1.0/goal/${invalidGoalUuid}/view-inactive-goal`)
 
       // Should redirect to plan overview
       await expect(page).toHaveURL(/\/plan\/overview/)

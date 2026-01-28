@@ -41,7 +41,7 @@ export type { AgreementStatus } from './types'
  * - Plan agreement workflow
  * - Progress notes
  *
- * Access flow is handled by the access form (/forms/access).
+ * Access flow is handled by the access form (/access).
  * This form's entry point (plan/overview) calls initializeSessionFromAccess
  * to convert generic access data into sentence plan specific session.
  *

@@ -78,3 +78,25 @@
     </div>
   </div>
 {% endblock %}
+
+{% block supportWidget %}
+  {% set helpContent %}
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Get help</h3>
+    <p class="govuk-body-s govuk-!-margin-bottom-3">
+      If you are having problems with this page, you can report it using our <a href="#" class="govuk-link">ServiceNow form</a>.
+    </p>
+    <p class="govuk-body-s govuk-!-margin-bottom-0">
+      Please provide the request details shown here, along with a description of the issue you experienced.
+    </p>
+  {% endset %}
+
+  {{ supportWidget({
+    helpContent: helpContent,
+    supportItems: [
+      {
+        label: 'Assessment ID',
+        value: data.assessmentUuid
+      }
+    ] if data.assessmentUuid else []
+  }) }}
+{% endblock %}
