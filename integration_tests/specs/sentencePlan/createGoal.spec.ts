@@ -226,6 +226,9 @@ test.describe('Create Goal Journey', () => {
 
       const fieldError = page.locator('#goal_title-error')
       await expect(fieldError).toContainText('Select or enter what goal they should try to achieve')
+
+      await createGoalPage.errorSummary.getByRole('link').first().click()
+      await expect(createGoalPage.goalTitleInput).toBeFocused()
     })
 
     test('shows error when can start now is not selected', async ({ page, createSession }) => {
@@ -244,6 +247,9 @@ test.describe('Create Goal Journey', () => {
 
       const fieldError = page.locator('#can_start_now-error')
       await expect(fieldError).toBeVisible()
+
+      await createGoalPage.errorSummary.getByRole('link').first().click()
+      await expect(createGoalPage.canStartNowYes).toBeFocused()
     })
 
     test('shows error when target date is required but not selected', async ({ page, createSession }) => {
@@ -263,6 +269,9 @@ test.describe('Create Goal Journey', () => {
 
       const fieldError = page.locator('#target_date_option-error')
       await expect(fieldError).toBeVisible()
+
+      await createGoalPage.errorSummary.getByRole('link').first().click()
+      await expect(createGoalPage.targetDateOptions.first()).toBeFocused()
     })
   })
 
