@@ -41,7 +41,7 @@ export default function setUpWebSecurity(): Router {
           ...(config.https ? {} : { upgradeInsecureRequests: null }),
         },
       },
-      crossOriginEmbedderPolicy: true,
+      crossOriginEmbedderPolicy: false,
     }),
   )
   return router
