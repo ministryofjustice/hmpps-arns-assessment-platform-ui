@@ -11,6 +11,7 @@ import ThunkEvaluationError from '@form-engine/errors/ThunkEvaluationError'
 import { evaluateOperand } from '@form-engine/core/utils/thunkEvaluatorsAsync'
 import { evaluateOperandSync } from '@form-engine/core/utils/thunkEvaluatorsSync'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
+import { escapeHtmlEntities } from '@form-engine/core/utils/sanitize'
 
 /**
  * Handler for Format expression nodes
@@ -60,7 +61,7 @@ export default class FormatHandler implements ThunkHandler {
   }
 
   evaluateSync(context: ThunkEvaluationContext, invoker: ThunkInvocationAdapter): HandlerResult {
-    const template = this.node.properties.template
+    const { template, escape } = this.node.properties
     const rawArguments = this.node.properties.arguments
 
     // Evaluate all arguments (AST nodes invoked, primitives passed through)
@@ -68,7 +69,7 @@ export default class FormatHandler implements ThunkHandler {
 
     // Substitute arguments into template
     try {
-      const result = this.formatTemplate(template, evaluatedArguments)
+      const result = this.formatTemplate(template, evaluatedArguments, escape)
 
       return { value: result }
     } catch (cause) {
@@ -80,7 +81,7 @@ export default class FormatHandler implements ThunkHandler {
   }
 
   async evaluate(context: ThunkEvaluationContext, invoker: ThunkInvocationAdapter): Promise<HandlerResult> {
-    const template = this.node.properties.template
+    const { template, escape } = this.node.properties
     const rawArguments = this.node.properties.arguments
 
     // Evaluate all arguments (AST nodes invoked, primitives passed through)
@@ -88,7 +89,7 @@ export default class FormatHandler implements ThunkHandler {
 
     // Substitute arguments into template
     try {
-      const result = this.formatTemplate(template, evaluatedArguments)
+      const result = this.formatTemplate(template, evaluatedArguments, escape)
 
       return { value: result }
     } catch (cause) {
@@ -105,8 +106,11 @@ export default class FormatHandler implements ThunkHandler {
    * Replaces %1, %2, %3, etc. with corresponding argument values.
    * Placeholders are 1-indexed (first argument replaces %1).
    * Missing arguments are replaced with empty string.
+   *
+   * When escape is true (default), string values are HTML-escaped
+   * to prevent XSS attacks when the result is used in HTML context.
    */
-  private formatTemplate(template: string, args: unknown[]): string {
+  private formatTemplate(template: string, args: unknown[], escape: boolean): string {
     return template.replace(/%(\d+)/g, (match, index) => {
       const argIndex = parseInt(index, 10) - 1
 
@@ -120,7 +124,10 @@ export default class FormatHandler implements ThunkHandler {
         return ''
       }
 
-      return String(value)
+      const stringValue = String(value)
+
+      // HTML-escape string values when escape is enabled (default)
+      return escape ? escapeHtmlEntities(stringValue) : stringValue
     })
   }
 }

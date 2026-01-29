@@ -83,6 +83,13 @@ export interface FormatExpr {
    * The first argument replaces %1, second replaces %2, and so on.
    */
   arguments: ValueExpr[]
+
+  /**
+   * Whether to HTML-escape string values before substitution.
+   * Defaults to true for XSS prevention.
+   * Set to false only when intentionally embedding trusted HTML.
+   */
+  escape?: boolean
 }
 
 /**

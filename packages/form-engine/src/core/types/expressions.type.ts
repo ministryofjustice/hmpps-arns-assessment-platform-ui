@@ -87,6 +87,8 @@ export interface FormatASTNode extends ExpressionASTNode {
   properties: {
     template: string
     arguments: (ASTNode | any)[]
+    /** Whether to HTML-escape string values (defaults to true) */
+    escape: boolean
   }
 }
 

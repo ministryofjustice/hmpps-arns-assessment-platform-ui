@@ -9,6 +9,7 @@ import {
   FieldBlockDefinition,
 } from '@form-engine/form/types/structures.type'
 import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
+import { escapeHtmlEntities } from '@form-engine/core/utils/sanitize'
 
 /**
  * Props for the AccessibleAutocomplete component.
@@ -136,7 +137,7 @@ export const accessibleAutocomplete = buildNunjucksComponent<AccessibleAutocompl
     const wrapperAttrs = [
       'class="accessible-autocomplete-wrapper"',
       `data-autocomplete-source="${dataId}"`,
-      defaultValue !== undefined ? `data-autocomplete-default-value="${defaultValue}"` : '',
+      defaultValue !== undefined ? `data-autocomplete-default-value="${escapeHtmlEntities(String(defaultValue))}"` : '',
       block.dataKeyFrom ? `data-autocomplete-source-key-from="${block.dataKeyFrom}"` : '',
       block.minLength !== undefined ? `data-autocomplete-min-length="${block.minLength}"` : '',
       block.showNoOptionsFound !== undefined ? `data-autocomplete-show-no-options="${block.showNoOptionsFound}"` : '',

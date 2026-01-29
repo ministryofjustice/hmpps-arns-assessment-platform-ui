@@ -1,4 +1,4 @@
-import { and, Data, Format, Item, not, or, Query, when } from '@form-engine/form/builders'
+import { and, Data, Format, Item, not, or, Query, RawFormat, when } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { MOJAlert, MOJSubNavigation } from '@form-engine-moj-components/components'
@@ -55,7 +55,7 @@ export const noActiveGoalsErrorMessage = HtmlBlock({
 
 export const noStepsErrorMessage = HtmlBlock({
   hidden: not(hasMissingStepsError),
-  content: Format(
+  content: RawFormat(
     `<div class="govuk-error-summary" data-module="govuk-error-summary">
       <div role="alert">
         <h2 class="govuk-error-summary__title">
@@ -214,7 +214,7 @@ export const goalsSection = TemplateWrapper({
           .each(
             Iterator.Map(
               TemplateWrapper({
-                template: Format(
+                template: RawFormat(
                   '<li class="goal-list__item %2" id="goal-%1">%3{{slot:card}}</li>',
                   Item().path('uuid'),
                   when(
@@ -361,7 +361,7 @@ export const blankPlanOverviewContent = HtmlBlock({
       .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
       .match(Condition.IsRequired()),
   ),
-  content: Format(
+  content: RawFormat(
     `<div id="blank-plan-content" class="govuk-form-group %2">
       %3
       <p class="govuk-body govuk-!-display-none-print"> %1 does not have any goals to work on now. You can either:</p>

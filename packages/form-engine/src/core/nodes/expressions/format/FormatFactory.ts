@@ -32,6 +32,7 @@ export default class FormatFactory {
       properties: {
         template: json.template,
         arguments: transformedArgs,
+        escape: json.escape ?? true, // Default to escaping for XSS prevention
       },
       raw: json,
     }

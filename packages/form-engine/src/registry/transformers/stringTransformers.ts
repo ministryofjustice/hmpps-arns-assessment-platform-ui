@@ -1,6 +1,7 @@
 import { assertNumber, assertString } from '@form-engine/registry/utils/asserts'
 import { defineTransformers } from '@form-engine/registry/utils/createRegisterableFunction'
 import { ValueExpr } from '@form-engine/form/types/expressions.type'
+import { escapeHtmlEntities } from '@form-engine/core/utils/sanitize'
 
 /**
  * String transformation functions for data processing
@@ -10,6 +11,15 @@ import { ValueExpr } from '@form-engine/form/types/expressions.type'
  * - Dynamic: Transformer.String.Replace(Answer('search'), Answer('replace'))
  */
 export const { transformers: StringTransformers, registry: StringTransformersRegistry } = defineTransformers({
+  /**
+   * Escapes HTML entities in a string (< > & " ').
+   * Note: Format() escapes by default, so this is mainly for manual HTML construction.
+   */
+  EscapeHtml: (value: any) => {
+    assertString(value, 'Transformer.String.EscapeHtml')
+    return escapeHtmlEntities(value)
+  },
+
   /**
    * Removes whitespace from both ends of a string
    * @example

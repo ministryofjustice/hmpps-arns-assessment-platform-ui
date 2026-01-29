@@ -285,7 +285,7 @@ export function Self(): ChainableRef {
 
 /**
  * Creates a string formatting expression with placeholder substitution.
- * Placeholders are %1, %2, etc.
+ * Placeholders are %1, %2, etc. String values are HTML-escaped by default.
  *
  * @example
  * Format('Hello %1!', Answer('name'))
@@ -296,6 +296,23 @@ export function Format(template: string, ...args: ConditionalString[]): FormatEx
     type: ExpressionType.FORMAT,
     template,
     arguments: args,
+    escape: true,
+  }
+}
+
+/**
+ * Creates a string formatting expression WITHOUT HTML escaping.
+ * Only use when intentionally embedding trusted HTML content.
+ *
+ * @example
+ * RawFormat('<div>%1</div>', preRenderedHtmlBlock)
+ */
+export function RawFormat(template: string, ...args: ConditionalString[]): FormatExpr {
+  return {
+    type: ExpressionType.FORMAT,
+    template,
+    arguments: args,
+    escape: false,
   }
 }
 

@@ -11,10 +11,11 @@ import FormatHandler from './FormatHandler'
 /**
  * Helper to create a format AST node for testing
  */
-function createFormatNode(template: string, args: unknown[]): FormatASTNode {
+function createFormatNode(template: string, args: unknown[], escape = true): FormatASTNode {
   return ASTTestFactory.expression<FormatASTNode>(ExpressionType.FORMAT)
     .withProperty('template', template)
     .withProperty('arguments', args)
+    .withProperty('escape', escape)
     .build()
 }
 
@@ -242,6 +243,81 @@ describe('FormatHandler', () => {
 
       // Assert
       expect(result.value).toBe('Zero: , One: first')
+    })
+
+    it('should HTML-escape string values by default', async () => {
+      // Arrange
+      const formatNode = createFormatNode('<p>%1</p>', ['Fish & Chips'])
+      const mockContext = createMockContext()
+      const invoker = createMockInvoker()
+      const handler = new FormatHandler(formatNode.id, formatNode)
+
+      // Act
+      const result = await handler.evaluate(mockContext, invoker)
+
+      // Assert
+      expect(result.value).toBe('<p>Fish &amp; Chips</p>')
+    })
+
+    it('should escape all dangerous HTML characters', async () => {
+      // Arrange
+      const formatNode = createFormatNode('Value: %1', ['<script>alert("xss")</script>'])
+      const mockContext = createMockContext()
+      const invoker = createMockInvoker()
+      const handler = new FormatHandler(formatNode.id, formatNode)
+
+      // Act
+      const result = await handler.evaluate(mockContext, invoker)
+
+      // Assert
+      expect(result.value).toBe('Value: &lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;')
+    })
+
+    it('should preserve HTML entities in user input (prevent double-decoding)', async () => {
+      // Arrange - user literally typed "&amp;" as text
+      const formatNode = createFormatNode('<p>%1</p>', ['&amp; is an ampersand'])
+      const mockContext = createMockContext()
+      const invoker = createMockInvoker()
+      const handler = new FormatHandler(formatNode.id, formatNode)
+
+      // Act
+      const result = await handler.evaluate(mockContext, invoker)
+
+      // Assert - the & in &amp; should be escaped
+      expect(result.value).toBe('<p>&amp;amp; is an ampersand</p>')
+    })
+
+    it('should not escape when escape is false (RawFormat)', async () => {
+      // Arrange - embedding pre-rendered HTML from a trusted component
+      const formatNode = createFormatNode('<div>%1</div>', ['<strong class="govuk-tag">Active</strong>'], false)
+      const mockContext = createMockContext()
+      const invoker = createMockInvoker()
+      const handler = new FormatHandler(formatNode.id, formatNode)
+
+      // Act
+      const result = await handler.evaluate(mockContext, invoker)
+
+      // Assert
+      expect(result.value).toBe('<div><strong class="govuk-tag">Active</strong></div>')
+    })
+
+    it('should escape AST node evaluated values', async () => {
+      // Arrange - goal title from user input containing HTML
+      const refNode = ASTTestFactory.reference(['answers', 'goalTitle'])
+      const formatNode = createFormatNode('Goal: %1', [refNode])
+
+      const mockContext = createMockContext()
+      const invoker = createMockInvoker({
+        returnValueMap: new Map([[refNode.id, 'Attend <b>all</b> appointments']]),
+      })
+
+      const handler = new FormatHandler(formatNode.id, formatNode)
+
+      // Act
+      const result = await handler.evaluate(mockContext, invoker)
+
+      // Assert
+      expect(result.value).toBe('Goal: Attend &lt;b&gt;all&lt;/b&gt; appointments')
     })
   })
 })

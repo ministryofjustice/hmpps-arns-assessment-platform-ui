@@ -1,4 +1,4 @@
-import { Data, Format, Item, when } from '@form-engine/form/builders'
+import { Data, Format, Item, RawFormat, when } from '@form-engine/form/builders'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
@@ -18,7 +18,7 @@ export const sectionBreak = HtmlBlock({
  * Renders a plan agreement history entry.
  * Used for: Plan agreed, Plan created, Agreement updated events.
  */
-const agreementEntryContent = Format(
+const agreementEntryContent = RawFormat(
   `<div class="govuk-!-margin-bottom-6">
     <p class="govuk-body"><strong>%1</strong> on %2 by %3%4</p>
     <p class="govuk-body">%5</p>
@@ -39,7 +39,9 @@ const agreementEntryContent = Format(
   // %2: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %3: Practitioner
-  when(Item().path('createdBy').match(Condition.IsRequired())).then(Item().path('createdBy')).else('Unknown'),
+  when(Item().path('createdBy').match(Condition.IsRequired()))
+    .then(Format('%1', Item().path('createdBy')))
+    .else('Unknown'),
   // %4: Person (only shown for AGREED or UPDATED_AGREED status)
   when(
     Item()
@@ -92,7 +94,7 @@ const agreementEntryContent = Format(
  * Renders a goal achieved history entry.
  * Shows: heading (bold), goal title (bold), optional notes, and view goal link.
  */
-const goalAchievedEntryContent = Format(
+const goalAchievedEntryContent = RawFormat(
   `<div class="govuk-!-margin-bottom-6">
     <p class="govuk-body"><strong>Goal marked as achieved</strong> on %1 by %2</p>
     <p class="govuk-body"><strong>%3</strong></p>
@@ -102,9 +104,11 @@ const goalAchievedEntryContent = Format(
   // %1: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %2: Achieved by
-  when(Item().path('achievedBy').match(Condition.IsRequired())).then(Item().path('achievedBy')).else('Unknown'),
+  when(Item().path('achievedBy').match(Condition.IsRequired()))
+    .then(Format('%1', Item().path('achievedBy')))
+    .else('Unknown'),
   // %3: Goal title
-  Item().path('goalTitle'),
+  Format('%1', Item().path('goalTitle')),
   // %4: Optional notes
   when(Item().path('notes').match(Condition.IsRequired()))
     .then(Format('<p class="govuk-body">%1</p>', Item().path('notes')))
@@ -119,7 +123,7 @@ const goalAchievedEntryContent = Format(
  * If the goal has been re-added (isCurrentlyActive), shows "View latest version".
  * Otherwise shows "View goal".
  */
-const goalRemovedEntryContent = Format(
+const goalRemovedEntryContent = RawFormat(
   `<div class="govuk-!-margin-bottom-6">
     <p class="govuk-body"><strong>Goal removed</strong> on %1 by %2</p>
     <p class="govuk-body"><strong>%3</strong></p>
@@ -129,9 +133,11 @@ const goalRemovedEntryContent = Format(
   // %1: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %2: Removed by
-  when(Item().path('removedBy').match(Condition.IsRequired())).then(Item().path('removedBy')).else('Unknown'),
+  when(Item().path('removedBy').match(Condition.IsRequired()))
+    .then(Format('%1', Item().path('removedBy')))
+    .else('Unknown'),
   // %3: Goal title
-  Item().path('goalTitle'),
+  Format('%1', Item().path('goalTitle')),
   // %4: Removal reason
   when(Item().path('reason').match(Condition.IsRequired()))
     .then(Format('<p class="govuk-body">%1</p>', Item().path('reason')))
@@ -156,7 +162,7 @@ const goalRemovedEntryContent = Format(
  * Renders a goal re-added history entry.
  * Shows: heading (bold), goal title (bold), reason for re-adding, and view latest version link.
  */
-const goalReaddedEntryContent = Format(
+const goalReaddedEntryContent = RawFormat(
   `<div class="govuk-!-margin-bottom-6">
     <p class="govuk-body"><strong>Goal added back into plan</strong> on %1 by %2</p>
     <p class="govuk-body"><strong>%3</strong></p>
@@ -166,9 +172,11 @@ const goalReaddedEntryContent = Format(
   // %1: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %2: Re-added by
-  when(Item().path('readdedBy').match(Condition.IsRequired())).then(Item().path('readdedBy')).else('Unknown'),
+  when(Item().path('readdedBy').match(Condition.IsRequired()))
+    .then(Format('%1', Item().path('readdedBy')))
+    .else('Unknown'),
   // %3: Goal title
-  Item().path('goalTitle'),
+  Format('%1', Item().path('goalTitle')),
   // %4: Reason for re-adding
   when(Item().path('reason').match(Condition.IsRequired()))
     .then(Format('<p class="govuk-body">%1</p>', Item().path('reason')))
@@ -185,7 +193,7 @@ export const agreementHistory = CollectionBlock({
   collection: Data('planHistoryEntries').each(
     Iterator.Map(
       HtmlBlock({
-        content: Format(
+        content: RawFormat(
           '%1%2',
           // %1: Section break (shown between entries, not before the first)
           when(Item().index().match(Condition.Equals(0)))
