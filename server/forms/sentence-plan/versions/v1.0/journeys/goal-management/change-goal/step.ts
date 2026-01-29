@@ -23,7 +23,7 @@ import { SentencePlanEffects } from '../../../../../effects'
  */
 export const changeGoalStep = step({
   path: '/change-goal',
-  title: 'Change Goal',
+  title: 'Change goal',
   isEntryPoint: true,
   view: {
     locals: {

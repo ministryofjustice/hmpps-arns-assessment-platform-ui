@@ -129,7 +129,7 @@ export const accessibleAutocomplete = buildNunjucksComponent<AccessibleAutocompl
     const fieldCode = fieldBlock.code ?? 'autocomplete-field'
     const dataId = `autocomplete-data-${fieldCode}`
 
-    const dataScript = `<script type="application/json" data-qa="${dataId}">${JSON.stringify(block.data)}</script>`
+    const dataScript = `<script type="application/json" id="${dataId}" data-qa="${dataId}">${JSON.stringify(block.data)}</script>`
 
     const defaultValue = fieldBlock.value ?? fieldBlock.defaultValue
 

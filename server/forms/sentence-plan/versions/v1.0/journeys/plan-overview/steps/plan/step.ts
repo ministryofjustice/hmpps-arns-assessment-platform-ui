@@ -1,4 +1,4 @@
-import { Format, Data, step, accessTransition, Query, redirect } from '@form-engine/form/builders'
+import { Format, Data, step, accessTransition, Query, redirect, or } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import {
   blankPlanOverviewContent,
@@ -9,13 +9,15 @@ import {
   noActiveGoalsErrorMessage,
   noStepsErrorMessage,
   notificationBanners,
+  hasMissingActiveGoalError,
+  hasMissingStepsError,
 } from './fields'
 import { SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
 
 export const planStep = step({
   path: '/overview',
-  title: 'Plan overview',
+  title: 'Plan',
   view: {
     locals: {
       headerPageHeading: Format(`%1's plan`, CaseData.Forename),
@@ -27,6 +29,7 @@ export const planStep = step({
           Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
         ),
       },
+      hasPlanOverviewErrors: or(hasMissingActiveGoalError, hasMissingStepsError),
     },
   },
   isEntryPoint: true,

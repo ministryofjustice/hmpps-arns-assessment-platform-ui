@@ -1,0 +1,213 @@
+name: Ephemeral (PR)
+
+on:
+  pull_request:
+    types: [opened, reopened, closed, labeled, unlabeled]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to add ephemeral config to'
+        required: true
+        type: number
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  setup:
+    name: Setup PR
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.action == 'opened' ||
+      github.event.action == 'reopened'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Create config comment
+        uses: actions/github-script@v8
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
+        with:
+          script: |
+            const fs = require('fs');
+
+            const prNumber = process.env.PR_NUMBER
+              ? parseInt(process.env.PR_NUMBER)
+              : context.payload.pull_request?.number;
+
+            if (!prNumber) {
+              core.setFailed('Could not determine PR number');
+              return;
+            }
+
+            // Check if config comment already exists
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            const marker = '<!-- ephemeral-config -->';
+            if (comments.data.some(c => c.body.includes(marker))) {
+              console.log('Config comment already exists');
+              return;
+            }
+
+            // Read values-pr.yaml for overridable env vars
+            const valuesFile = fs.readFileSync('helm_deploy/values-pr.yaml', 'utf8');
+            const pattern = /^\s{4}(\w+_URL):\s*"(https:\/\/[^"$]+)"/gm;
+            const overridableVars = [];
+            let match;
+
+            while ((match = pattern.exec(valuesFile)) !== null) {
+              if (!match[2].includes('$')) {
+                overridableVars.push({ key: match[1], defaultValue: match[2] });
+              }
+            }
+
+            // Get ingress host
+            const ingressMatch = valuesFile.match(/ingress:\s*\n\s+host:\s*([^\s]+)/);
+            const ingressHost = ingressMatch
+              ? ingressMatch[1].replace('$PR_NUMBER', prNumber)
+              : `pr-${prNumber}.dev.hmpps.service.justice.gov.uk`;
+            const deployUrl = `https://${ingressHost}`;
+
+            // Build comment
+            const lines = [
+              marker,
+              '## 🚀 Ephemeral Deployment',
+              '',
+              '### Deploy',
+              `- [ ] <!-- ephemeral-checkbox --> Deploy to ${deployUrl}`,
+              ''
+            ];
+
+            if (overridableVars.length > 0) {
+              lines.push(
+                '### Environment Overrides',
+                'Edit values below to override defaults. Changes trigger re-deployment when checkbox is ticked.',
+                '',
+                '| Variable | Value |',
+                '|----------|-------|'
+              );
+              for (const { key, defaultValue } of overridableVars) {
+                lines.push(`| \`${key}\` | <!-- env:${key} -->${defaultValue}<!-- /env --> |`);
+              }
+            }
+
+            lines.push('', '<!-- /ephemeral-config -->');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: lines.join('\n')
+            });
+
+            console.log(`Created config comment on PR #${prNumber}`);
+
+  label-sync:
+    name: Sync checkbox
+    if: |
+      github.event_name == 'pull_request' &&
+      (github.event.action == 'labeled' || github.event.action == 'unlabeled') &&
+      github.event.label.name == 'ephemeral' &&
+      github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update checkbox
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const labelAdded = context.payload.action === 'labeled';
+
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            const marker = '<!-- ephemeral-config -->';
+            const configComment = comments.data.find(c => c.body.includes(marker));
+
+            if (!configComment) {
+              console.log('No config comment found');
+              return;
+            }
+
+            const oldPattern = labelAdded
+              ? '- [ ] <!-- ephemeral-checkbox -->'
+              : '- [x] <!-- ephemeral-checkbox -->';
+            const newPattern = labelAdded
+              ? '- [x] <!-- ephemeral-checkbox -->'
+              : '- [ ] <!-- ephemeral-checkbox -->';
+
+            if (!configComment.body.includes(oldPattern)) {
+              console.log('Checkbox already in correct state');
+              return;
+            }
+
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: configComment.id,
+              body: configComment.body.replace(oldPattern, newPattern)
+            });
+
+            console.log(`${labelAdded ? 'Ticked' : 'Unticked'} checkbox`);
+
+            // If label added, also trigger deploy
+            if (labelAdded) {
+              const { data: pr } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber
+              });
+
+              // Parse env vars from comment
+              const vars = [];
+              const pattern = /<!-- env:(\w+) -->([^<]*)<!-- \/env -->/g;
+              let match;
+              while ((match = pattern.exec(configComment.body)) !== null) {
+                if (match[2].trim()) {
+                  vars.push(`${match[1]}=${match[2].trim()}`);
+                }
+              }
+
+              await github.rest.repos.createDispatchEvent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                event_type: 'ephemeral-deploy',
+                client_payload: {
+                  pr_number: prNumber,
+                  sha: pr.head.sha,
+                  helm_substitutions: vars.join('\n')
+                }
+              });
+            }
+
+  cleanup:
+    name: Trigger cleanup
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.action == 'closed' &&
+      contains(github.event.pull_request.labels.*.name, 'ephemeral')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch cleanup
+        uses: actions/github-script@v8
+        with:
+          script: |
+            await github.rest.repos.createDispatchEvent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              event_type: 'ephemeral-cleanup',
+              client_payload: {
+                pr_number: context.payload.pull_request.number,
+                sha: context.payload.pull_request.head.sha
+              }
+            });
+            console.log('Dispatched cleanup');

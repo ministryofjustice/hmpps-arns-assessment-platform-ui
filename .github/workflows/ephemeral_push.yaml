@@ -1,0 +1,73 @@
+name: Ephemeral (push)
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  check:
+    name: Check and trigger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check and dispatch
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const branch = context.ref.replace('refs/heads/', '');
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${branch}`,
+              state: 'open'
+            });
+
+            if (prs.length === 0) {
+              console.log('No open PR for this branch');
+              return;
+            }
+
+            const pr = prs[0];
+            if (!pr.labels.some(l => l.name === 'ephemeral')) {
+              console.log('PR does not have ephemeral label');
+              return;
+            }
+
+            // Find config comment for env vars
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number
+            });
+
+            const marker = '<!-- ephemeral-config -->';
+            const configComment = comments.data.find(c => c.body.includes(marker));
+            let helmSubstitutions = '';
+
+            if (configComment) {
+              const pattern = /<!-- env:(\w+) -->([^<]*)<!-- \/env -->/g;
+              const vars = [];
+              let match;
+              while ((match = pattern.exec(configComment.body)) !== null) {
+                if (match[2].trim()) {
+                  vars.push(`${match[1]}=${match[2].trim()}`);
+                }
+              }
+              helmSubstitutions = vars.join('\n');
+            }
+
+            console.log(`Dispatching deploy for PR #${pr.number}`);
+            await github.rest.repos.createDispatchEvent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              event_type: 'ephemeral-deploy',
+              client_payload: {
+                pr_number: pr.number,
+                sha: context.sha,
+                helm_substitutions: helmSubstitutions
+              }
+            });

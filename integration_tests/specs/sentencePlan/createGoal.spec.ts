@@ -4,7 +4,12 @@ import { test, TargetService } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import { navigateToSentencePlan } from './sentencePlanUtils'
+import {
+  buildErrorPageTitle,
+  buildPageTitle,
+  navigateToSentencePlan,
+  sentencePlanPageTitles,
+} from './sentencePlanUtils'
 
 test.describe('Create Goal Journey', () => {
   test.describe('Create Goal with Steps', () => {
@@ -16,6 +21,9 @@ test.describe('Create Goal Journey', () => {
 
       await planOverviewPage.clickCreateGoal()
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+
+      // ensure page title is correct
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.createGoal))
 
       // Use special characters to verify they display correctly (not as HTML entities like &#39;)
       await createGoalPage.enterGoalTitle("Find stable accommodation so I'm not homeless ('sofa surfing')")
@@ -213,6 +221,9 @@ test.describe('Create Goal Journey', () => {
 
       await createGoalPage.clickSaveWithoutSteps()
 
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.createGoal))
+
       const fieldError = page.locator('#goal_title-error')
       await expect(fieldError).toContainText('Select or enter what goal they should try to achieve')
     })
@@ -227,6 +238,9 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.selectIsRelated(false)
 
       await createGoalPage.clickSaveWithoutSteps()
+
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.createGoal))
 
       const fieldError = page.locator('#can_start_now-error')
       await expect(fieldError).toBeVisible()
@@ -243,6 +257,9 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.selectCanStartNow(true)
 
       await createGoalPage.clickSaveWithoutSteps()
+
+      // ensure error page title is correct:
+      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.createGoal))
 
       const fieldError = page.locator('#target_date_option-error')
       await expect(fieldError).toBeVisible()

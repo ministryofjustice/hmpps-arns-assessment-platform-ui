@@ -28,12 +28,17 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
  */
 export const updatePlanAgreementStatus = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const user = context.getState('user')
+  const session = context.getSession()
   const assessmentUuid = context.getData('assessmentUuid')
   const agreementAnswer = context.getAnswer('plan_agreement_question') as string
 
   if (!user) {
     throw new InternalServerError('User is required to update plan agreement status')
   }
+
+  // Use practitioner display name from session (populated from handover context),
+  // falling back to user.name for HMPPS Auth users
+  const practitionerName = session.practitionerDetails?.displayName || user.name
 
   if (!assessmentUuid) {
     throw new InternalServerError('Assessment UUID is required to update plan agreement status')
@@ -98,9 +103,9 @@ export const updatePlanAgreementStatus = (deps: SentencePlanEffectsDeps) => asyn
     answers.notes = notes
   }
 
-  // Add created_by from the current user (same pattern as notes)
-  if (user.name) {
-    answers.created_by = user.name
+  // Add created_by from practitioner details (same pattern as notes)
+  if (practitionerName) {
+    answers.created_by = practitionerName
   }
 
   // Add the agreement record to the collection

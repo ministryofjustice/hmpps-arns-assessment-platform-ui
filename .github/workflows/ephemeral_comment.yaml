@@ -1,0 +1,120 @@
+name: Ephemeral (comment)
+
+on:
+  issue_comment:
+    types: [created, edited]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check:
+    name: Check and trigger
+    if: |
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, 'ephemeral-config')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check and dispatch
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const prNumber = context.issue.number;
+            const comment = context.payload.comment.body;
+            const action = context.payload.action;
+
+            // Get PR details
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+
+            const labels = pr.labels.map(l => l.name);
+            const hasLabel = labels.includes('ephemeral');
+            const hasCheckedBox = comment.includes('- [x] <!-- ephemeral-checkbox -->');
+            const hasUncheckedBox = comment.includes('- [ ] <!-- ephemeral-checkbox -->');
+
+            // Parse env vars
+            const parseEnvVars = (text) => {
+              const vars = [];
+              const pattern = /<!-- env:(\w+) -->([^<]*)<!-- \/env -->/g;
+              let match;
+              while ((match = pattern.exec(text)) !== null) {
+                if (match[2].trim()) {
+                  vars.push(`${match[1]}=${match[2].trim()}`);
+                }
+              }
+              return vars.join('\n');
+            };
+
+            // Check if env vars changed
+            let envVarsChanged = false;
+            if (action === 'edited' && context.payload.changes?.body?.from) {
+              const oldVars = parseEnvVars(context.payload.changes.body.from);
+              const newVars = parseEnvVars(comment);
+              envVarsChanged = oldVars !== newVars;
+            }
+
+            console.log(`Action: ${action}, Label: ${hasLabel}, Checked: ${hasCheckedBox}, Unchecked: ${hasUncheckedBox}, Env changed: ${envVarsChanged}`);
+
+            let shouldDeploy = false;
+
+            // Checkbox ticked, label missing -> add label, deploy
+            if (hasCheckedBox && !hasLabel) {
+              console.log('Checkbox ticked, adding ephemeral label');
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                labels: ['ephemeral']
+              });
+              shouldDeploy = true;
+            }
+            // Checkbox unticked, label present -> remove label, trigger cleanup
+            else if (hasUncheckedBox && hasLabel) {
+              console.log('Checkbox unticked, removing ephemeral label');
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  name: 'ephemeral'
+                });
+              } catch (error) {
+                if (error.status !== 404) throw error;
+              }
+
+              // Dispatch cleanup
+              await github.rest.repos.createDispatchEvent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                event_type: 'ephemeral-cleanup',
+                client_payload: {
+                  pr_number: prNumber,
+                  sha: pr.head.sha
+                }
+              });
+              return;
+            }
+            // Env vars changed while deployed -> redeploy
+            else if (hasLabel && hasCheckedBox && envVarsChanged) {
+              console.log('Env vars changed, triggering redeploy');
+              shouldDeploy = true;
+            }
+
+            if (shouldDeploy) {
+              const helmSubstitutions = parseEnvVars(comment);
+              console.log(`Dispatching deploy for PR #${prNumber}`);
+              await github.rest.repos.createDispatchEvent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                event_type: 'ephemeral-deploy',
+                client_payload: {
+                  pr_number: prNumber,
+                  sha: pr.head.sha,
+                  helm_substitutions: helmSubstitutions
+                }
+              });
+            }
