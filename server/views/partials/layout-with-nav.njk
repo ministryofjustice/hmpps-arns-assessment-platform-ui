@@ -9,7 +9,7 @@
 
 {%- block head -%}
   <!-- Matomo Tag Manager -->
-  <script>
+  <script nonce="{{ cspNonce }}">
     var _mtm = window._mtm = window._mtm || [];
     _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
     (function() {
@@ -20,7 +20,7 @@
   <!-- End Matomo Tag Manager -->
   <link href="{{ '/assets/css/index.css' | assetMap }}" rel="stylesheet"/>
   <!-- Matomo -->
-  <script>
+  <script nonce="{{ cspNonce }}">
     var _paq = window._paq = window._paq || [];
     /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
     _paq.push(['trackPageView']);
