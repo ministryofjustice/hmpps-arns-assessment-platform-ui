@@ -1,0 +1,178 @@
+name: Ephemeral environment (dispatch)
+
+on:
+  repository_dispatch:
+    types: [ephemeral-deploy, ephemeral-cleanup]
+
+permissions:
+  contents: read
+  pull-requests: write
+  packages: write
+  statuses: write
+  deployments: write
+
+jobs:
+  deploy:
+    name: Deploy
+    if: github.event.action == 'ephemeral-deploy'
+    runs-on: ubuntu-latest
+    outputs:
+      deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+      environment_url: ${{ steps.deployment.outputs.environment_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.client_payload.sha }}
+
+      - name: Create deployment
+        id: deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const prNumber = '${{ github.event.client_payload.pr_number }}';
+            const sha = '${{ github.event.client_payload.sha }}';
+            const environment = 'ephemeral';
+            const logUrl = `${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            // Read ingress host from values-pr.yaml
+            const valuesFile = fs.readFileSync('helm_deploy/values-pr.yaml', 'utf8');
+            const ingressMatch = valuesFile.match(/ingress:\s*\n\s+host:\s*([^\s]+)/);
+            const ingressHost = ingressMatch
+              ? ingressMatch[1].replace('$PR_NUMBER', prNumber)
+              : `pr-${prNumber}.example.com`;
+            const environmentUrl = `https://${ingressHost}`;
+
+            console.log(`Environment URL: ${environmentUrl}`);
+
+            // Create commit status
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: sha,
+              state: 'pending',
+              context: 'Ephemeral Deploy',
+              description: 'Deploying...',
+              target_url: logUrl
+            });
+
+            // Create deployment
+            const { data: deployment } = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: sha,
+              environment: environment,
+              auto_merge: false,
+              required_contexts: [],
+              description: `Ephemeral deployment for PR #${prNumber}`
+            });
+
+            console.log(`Created deployment ${deployment.id} for ${environment}`);
+
+            // Set deployment to in_progress
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.id,
+              state: 'in_progress',
+              environment_url: environmentUrl,
+              log_url: logUrl,
+              description: 'Deploying...'
+            });
+
+            core.setOutput('deployment_id', deployment.id);
+            core.setOutput('environment_url', environmentUrl);
+
+  deploy-run:
+    name: Run deployment
+    needs: deploy
+    if: github.event.action == 'ephemeral-deploy'
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_ephemeral.yml@ephemeral-deployment
+    with:
+      pr_number: ${{ github.event.client_payload.pr_number }}
+      helm_substitutions: ${{ github.event.client_payload.helm_substitutions }}
+    secrets: inherit
+
+  deploy-status:
+    name: Update status
+    needs: [deploy, deploy-run]
+    if: always() && github.event.action == 'ephemeral-deploy'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update deployment status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const success = '${{ needs.deploy-run.result }}' === 'success';
+            const deploymentId = '${{ needs.deploy.outputs.deployment_id }}';
+            const environmentUrl = '${{ needs.deploy.outputs.environment_url }}';
+            const sha = '${{ github.event.client_payload.sha }}';
+            const logUrl = `${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            // Update commit status
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: sha,
+              state: success ? 'success' : 'failure',
+              context: 'Ephemeral Deploy',
+              description: success ? 'Deployed' : 'Deploy failed',
+              target_url: logUrl
+            });
+
+            // Update deployment status
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: parseInt(deploymentId),
+              state: success ? 'success' : 'failure',
+              environment_url: environmentUrl,
+              log_url: logUrl,
+              description: success ? 'Deployed successfully' : 'Deployment failed'
+            });
+
+            console.log(`Updated deployment ${deploymentId} to ${success ? 'success' : 'failure'}`);
+
+  cleanup-run:
+    name: Run cleanup
+    if: github.event.action == 'ephemeral-cleanup'
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/cleanup_ephemeral.yml@ephemeral-deployment
+    with:
+      pr_number: ${{ github.event.client_payload.pr_number }}
+    secrets: inherit
+
+  cleanup-status:
+    name: Mark inactive
+    needs: cleanup-run
+    if: github.event.action == 'ephemeral-cleanup'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mark deployment inactive
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = '${{ github.event.client_payload.pr_number }}';
+            const sha = '${{ github.event.client_payload.sha }}';
+
+            // Find deployments for this SHA
+            const { data: deployments } = await github.rest.repos.listDeployments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              environment: 'ephemeral',
+              sha: sha
+            });
+
+            // Mark all deployments for this SHA as inactive
+            for (const deployment of deployments) {
+              await github.rest.repos.createDeploymentStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                deployment_id: deployment.id,
+                state: 'inactive',
+                description: 'Environment destroyed'
+              });
+              console.log(`Marked deployment ${deployment.id} as inactive`);
+            }
+
+            console.log(`Marked ${deployments.length} deployments as inactive for PR #${prNumber}`);
