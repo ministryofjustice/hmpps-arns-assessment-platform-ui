@@ -21,12 +21,6 @@ class AccessibleAutocomplete extends HTMLElement {
     const inputId = input.id
     const inputName = input.name
 
-    const label = document.querySelector(`label[for="${inputId}"]`)
-
-    if (label) {
-      label.setAttribute('for', `${inputId}-autocomplete`)
-    }
-
     input.remove()
 
     accessibleAutocomplete({
