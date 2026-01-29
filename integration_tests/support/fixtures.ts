@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright'
 import { test as base } from '@playwright/test'
 import { getTestApis } from './apis'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
@@ -52,6 +53,7 @@ type TestApiFixtures = {
   coordinatorBuilder: CoordinatorBuilderFactory
   handoverBuilder: HandoverBuilderFactory
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
+  makeAxeBuilder: () => AxeBuilder
 }
 
 /**
@@ -171,6 +173,13 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
     }
 
     await use(createSessionFn)
+  },
+  makeAxeBuilder: async ({ page }, use) => {
+    const makeAxeBuilder = () =>
+      new AxeBuilder({ page })
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+
+    await use(makeAxeBuilder)
   },
 })
 
