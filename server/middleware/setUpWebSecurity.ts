@@ -26,16 +26,22 @@ export default function setUpWebSecurity(): Router {
           // <link href="http://example.com/" rel="stylesheet" nonce="{{ cspNonce }}">
           // This ensures only scripts we trust are loaded, and not anything injected into the
           // page by an attacker.
-          scriptSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
+          scriptSrc: [
+            "'self'",
+            (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
+            'https://matomo-dev.hmpps.service.justice.gov.uk',
+          ],
           styleSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
           fontSrc: ["'self'"],
+          connectSrc: ["'self'", 'https://matomo-dev.hmpps.service.justice.gov.uk'],
+          imgSrc: ["'self'", 'https://matomo-dev.hmpps.service.justice.gov.uk'],
           formAction: [
             `'self' https://*.hmpps.service.justice.gov.uk http://localhost:* ${config.apis.hmppsAuth.externalUrl} ${config.apis.arnsHandover.externalUrl}`,
           ],
           ...(config.https ? {} : { upgradeInsecureRequests: null }),
         },
       },
-      crossOriginEmbedderPolicy: true,
+      crossOriginEmbedderPolicy: false,
     }),
   )
   return router
