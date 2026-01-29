@@ -226,7 +226,7 @@ test.describe('Create Goal Journey', () => {
 
       const fieldError = page.locator('#goal_title-error')
       await expect(fieldError).toContainText('Select or enter what goal they should try to achieve')
-      
+
       await createGoalPage.errorSummary.getByRole('link').first().click()
       await expect(createGoalPage.goalTitleInput).toBeFocused()
     })
