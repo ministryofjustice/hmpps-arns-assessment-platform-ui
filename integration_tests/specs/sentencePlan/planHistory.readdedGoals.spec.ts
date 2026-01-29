@@ -39,30 +39,19 @@ test.describe('Plan History - Re-added Goals', () => {
     await page.getByRole('link', { name: /View plan history/i }).click()
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-    // Should have 2 entries: the re-added goal and the plan agreement
-    const entryCount = await planHistoryPage.getHistoryEntryCount()
-    expect(entryCount).toBe(2)
-
-    // Find the re-added goal entry (should be most recent, index 0)
-    const firstEntryHeader = await planHistoryPage.getEntryHeaderText(0)
-    expect(firstEntryHeader).toContain('Goal added back into plan')
-    expect(firstEntryHeader).toContain('Jane Smith')
-
-    // Verify the goal title is displayed in bold
-    const hasGoalTitle = await planHistoryPage.entryContainsText(0, 'Find stable accommodation')
-    expect(hasGoalTitle).toBe(true)
-
-    // Verify the reason is displayed
-    const hasReason = await planHistoryPage.entryContainsText(
-      0,
-      'Circumstances have changed, goal is now relevant again.',
-    )
-    expect(hasReason).toBe(true)
-
-    // Verify the "View latest version" link is present
-    const viewLink = await planHistoryPage.getViewGoalLink(0)
-    expect(await viewLink.textContent()).toContain('View latest version')
+    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+      - paragraph: View all updates and changes made to this plan.
+      - separator
+      - paragraph:
+        - strong: Goal added back into plan
+        - text: /by Jane Smith/
+      - paragraph:
+        - strong: Find stable accommodation
+      - paragraph: Circumstances have changed, goal is now relevant again.
+      - paragraph:
+        - link "View latest version":
+          - /url: /update-goal-steps/
+    `)
   })
 
   test('displays re-added goal without reason when none was provided', async ({
@@ -101,19 +90,16 @@ test.describe('Plan History - Re-added Goals', () => {
     await page.getByRole('link', { name: /View plan history/i }).click()
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-    // Verify the re-added goal entry is present
-    const firstEntryHeader = await planHistoryPage.getEntryHeaderText(0)
-    expect(firstEntryHeader).toContain('Goal added back into plan')
-    expect(firstEntryHeader).toContain('John Doe')
-
-    // Verify the goal title is displayed
-    const hasGoalTitle = await planHistoryPage.entryContainsText(0, 'Build positive relationships')
-    expect(hasGoalTitle).toBe(true)
-
-    // Verify the "View latest version" link is still present
-    const viewLink = await planHistoryPage.getViewGoalLink(0)
-    expect(await viewLink.textContent()).toContain('View latest version')
+    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+      - paragraph:
+        - strong: Goal added back into plan
+        - text: /by John Doe/
+      - paragraph:
+        - strong: Build positive relationships
+      - paragraph:
+        - link "View latest version":
+          - /url: /update-goal-steps/
+    `)
   })
 
   test('navigates to update goal and steps page when clicking View latest version link', async ({
@@ -203,22 +189,17 @@ test.describe('Plan History - Re-added Goals', () => {
     await page.getByRole('link', { name: /View plan history/i }).click()
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-    // Should have 3 entries total
-    const entryCount = await planHistoryPage.getHistoryEntryCount()
-    expect(entryCount).toBe(3)
-
-    // Most recent should be the re-added goal (created with current timestamp)
-    const firstEntryHeader = await planHistoryPage.getEntryHeaderText(0)
-    expect(firstEntryHeader).toContain('Goal added back into plan')
-
-    // Second should be "Agreement updated"
-    const secondEntryHeading = await planHistoryPage.getEntryStatusHeading(1)
-    expect(secondEntryHeading).toBe('Agreement updated')
-
-    // Third should be "Plan created"
-    const thirdEntryHeading = await planHistoryPage.getEntryStatusHeading(2)
-    expect(thirdEntryHeading).toBe('Plan created')
+    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+      - separator
+      - paragraph:
+        - strong: Goal added back into plan
+      - separator
+      - paragraph:
+        - strong: Agreement updated
+      - separator
+      - paragraph:
+        - strong: Plan created
+    `)
   })
 
   test('displays both Goal removed and Goal added back into plan events for a re-added goal', async ({
@@ -263,44 +244,22 @@ test.describe('Plan History - Re-added Goals', () => {
     await page.getByRole('link', { name: /View plan history/i }).click()
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-    // Should have 3 entries: re-added, removed, and plan agreement
-    const entryCount = await planHistoryPage.getHistoryEntryCount()
-    expect(entryCount).toBe(3)
-
-    const allEntriesText = await Promise.all([
-      planHistoryPage.getEntryHeaderText(0),
-      planHistoryPage.getEntryHeaderText(1),
-      planHistoryPage.getEntryHeaderText(2),
-    ])
-
-    const readdedIndex = allEntriesText.findIndex(text => text.includes('Goal added back into plan'))
-    const removedIndex = allEntriesText.findIndex(text => text.includes('Goal removed'))
-    const agreementIndex = allEntriesText.findIndex(text => text.includes('Plan agreed'))
-
-    expect(readdedIndex).toBeGreaterThanOrEqual(0)
-    expect(removedIndex).toBeGreaterThanOrEqual(0)
-    expect(agreementIndex).toBeGreaterThanOrEqual(0)
-
-    // Verify removal reason is displayed
-    const hasRemovalReason = await planHistoryPage.entryContainsText(
-      removedIndex,
-      'Goal no longer relevant at this time.',
-    )
-    expect(hasRemovalReason).toBe(true)
-
-    // Verify re-add reason is displayed
-    const hasReaddReason = await planHistoryPage.entryContainsText(
-      readdedIndex,
-      'Circumstances changed, goal is relevant again.',
-    )
-    expect(hasReaddReason).toBe(true)
-
-    // Both goal entries should show "View latest version" since the goal is now active
-    const readdedViewLink = await planHistoryPage.getViewGoalLink(readdedIndex)
-    expect(await readdedViewLink.textContent()).toContain('View latest version')
-
-    const removedViewLink = await planHistoryPage.getViewGoalLink(removedIndex)
-    expect(await removedViewLink.textContent()).toContain('View latest version')
+    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+      - paragraph:
+        - strong: Goal removed
+      - paragraph:
+        - strong: Goal with full history
+      - paragraph: Goal no longer relevant at this time.
+      - paragraph:
+        - link "View latest version":
+          - /url: /update-goal-steps/
+      - separator
+      - paragraph:
+        - strong: Goal added back into plan
+      - paragraph: Circumstances changed, goal is relevant again.
+      - paragraph:
+        - link "View latest version":
+          - /url: /update-goal-steps/
+    `)
   })
 })

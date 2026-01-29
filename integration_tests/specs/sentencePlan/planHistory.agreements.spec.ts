@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import PlanHistoryPage from '../../pages/sentencePlan/planHistoryPage'
-import { buildPageTitle, handlePrivacyScreenIfPresent, sentencePlanPageTitles } from './sentencePlanUtils'
+import { handlePrivacyScreenIfPresent } from './sentencePlanUtils'
 
 test.describe('Plan History - Agreements', () => {
   test.describe('Could not answer then agreed scenario', () => {
