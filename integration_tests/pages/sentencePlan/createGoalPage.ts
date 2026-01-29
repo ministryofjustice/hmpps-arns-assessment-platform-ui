@@ -32,6 +32,8 @@ export default class CreateGoalPage extends AbstractPage {
 
   readonly findAccomodationGoal: Locator
 
+  readonly errorSummary: Locator
+
   public constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
@@ -57,6 +59,7 @@ export default class CreateGoalPage extends AbstractPage {
     this.areaOfNeedNav = page.locator('[data-qa="area-of-need-nav"]')
     this.goalTitles = page.getByTestId('autocomplete-data-goal_title')
     this.findAccomodationGoal = page.getByRole('option', { name: 'I will find accommodation' })
+    this.errorSummary = page.locator('[data-module="govuk-error-summary"]')
   }
 
   static async verifyOnPage(page: Page): Promise<CreateGoalPage> {
