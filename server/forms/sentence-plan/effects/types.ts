@@ -113,6 +113,7 @@ export type PlanHistoryEntry =
   | GoalAchievedHistoryEntry
   | GoalRemovedHistoryEntry
   | GoalReaddedHistoryEntry
+  | GoalUpdatedHistoryEntry
 
 export interface PlanAgreementHistoryEntry {
   type: 'agreement'
@@ -154,6 +155,16 @@ export interface GoalReaddedHistoryEntry {
   goalUuid: string
   goalTitle: string
   readdedBy?: string
+  reason?: string
+}
+
+export interface GoalUpdatedHistoryEntry {
+  type: 'goal_updated'
+  uuid: string
+  date: Date
+  goalUuid: string
+  goalTitle: string
+  updatedBy?: string
   reason?: string
 }
 

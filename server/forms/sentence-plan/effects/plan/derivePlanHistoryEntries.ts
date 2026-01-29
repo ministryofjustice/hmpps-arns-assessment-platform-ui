@@ -4,6 +4,7 @@ import {
   GoalAchievedHistoryEntry,
   GoalReaddedHistoryEntry,
   GoalRemovedHistoryEntry,
+  GoalUpdatedHistoryEntry,
   PlanAgreementHistoryEntry,
   PlanHistoryEntry,
   SentencePlanContext,
@@ -17,6 +18,7 @@ import {
  * - Goal achieved events (with optional notes)
  * - Goal removed events (with removal reason)
  * - Goal re-added events (when a removed goal is added back into the plan)
+ * - Goal updated events (when a goal or its steps are changed)
  *
  * All entries are sorted by date (newest first) to provide a chronological timeline.
  *
@@ -95,6 +97,23 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
         goalUuid: goal.uuid,
         goalTitle: goal.title,
         readdedBy: note.createdBy,
+        reason: note.note,
+      }
+      entries.push(entry)
+    }
+  }
+
+  // Add updated goal entries
+  for (const goal of goals) {
+    const updatedNotes = goal.notes.filter(note => note.type === 'UPDATED')
+    for (const note of updatedNotes) {
+      const entry: GoalUpdatedHistoryEntry = {
+        type: 'goal_updated',
+        uuid: `updated-${goal.uuid}-${note.uuid}`,
+        date: note.createdAt,
+        goalUuid: goal.uuid,
+        goalTitle: goal.title,
+        updatedBy: note.createdBy,
         reason: note.note,
       }
       entries.push(entry)

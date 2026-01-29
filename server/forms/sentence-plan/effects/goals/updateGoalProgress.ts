@@ -75,44 +75,43 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
     }
   })
 
-  // 2. Add progress note if provided
+  // 2. Find or create NOTES collection for the goal
   const progressNotes = context.getAnswer('progress_notes')
-  if (progressNotes && typeof progressNotes === 'string' && progressNotes.trim().length > 0) {
-    // Find or create NOTES collection for the goal
-    let collectionUuid = activeGoal.notesCollectionUuid
+  const noteText = typeof progressNotes === 'string' ? progressNotes.trim() : ''
 
-    if (!collectionUuid) {
-      // Create the NOTES collection (goal doesn't have one yet)
-      const createResult = await deps.api.executeCommand({
-        type: 'CreateCollectionCommand',
-        name: 'NOTES',
-        parentCollectionItemUuid: activeGoal.uuid,
-        assessmentUuid,
-        user,
-      })
+  let collectionUuid = activeGoal.notesCollectionUuid
 
-      collectionUuid = createResult.collectionUuid
-    }
-
-    // Add the note
-    commands.push({
-      type: 'AddCollectionItemCommand',
-      collectionUuid: collectionUuid!,
-      properties: wrapAll({
-        created_at: new Date().toISOString(),
-      }),
-      answers: wrapAll({
-        note: progressNotes.trim(),
-        created_by: practitionerName,
-      }),
-      timeline: {
-        type: 'NOTE_ADDED',
-        data: {},
-      },
+  if (!collectionUuid) {
+    const createResult = await deps.api.executeCommand({
+      type: 'CreateCollectionCommand',
+      name: 'NOTES',
+      parentCollectionItemUuid: activeGoal.uuid,
       assessmentUuid,
       user,
     })
+
+    collectionUuid = createResult.collectionUuid
   }
+
+  // 3. Add UPDATED note for plan history tracking
+  commands.push({
+    type: 'AddCollectionItemCommand',
+    collectionUuid: collectionUuid!,
+    properties: wrapAll({
+      created_at: new Date().toISOString(),
+      type: 'UPDATED',
+    }),
+    answers: wrapAll({
+      note: noteText,
+      created_by: practitionerName,
+    }),
+    timeline: {
+      type: 'NOTE_ADDED',
+      data: {},
+    },
+    assessmentUuid,
+    user,
+  })
 
   // Execute all commands in a single batch
   if (commands.length > 0) {
