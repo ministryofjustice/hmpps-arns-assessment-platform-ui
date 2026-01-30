@@ -81,7 +81,7 @@ test.describe('Plan History - Agreements', () => {
 
       // Verify the second entry description
       const secondEntryDescription = await planHistoryPage.getEntryDescriptionText(1)
-      expect(secondEntryDescription).toContain('could not agree to this plan')
+      expect(secondEntryDescription).toContain('could not answer')
 
       // Verify the reason and notes are displayed
       const secondEntryContainsReason = await planHistoryPage.entryContainsText(
