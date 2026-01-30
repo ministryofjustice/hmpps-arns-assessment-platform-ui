@@ -112,6 +112,49 @@ make e2e-ci                 # Run Playwright tests in Docker container against a
 make dev-up && make e2e-ui  # Run Playwright tests locally against application in Docker
 ```
 
+### Testing Types
+
+#### Integration Tests
+Playwright [assertion tests](https://playwright.dev/docs/writing-tests#first-test) to check behaviour in the browser.
+
+Key Scenarios:
+- Navigation
+- Validation
+- Functional behaviour
+
+*Example:* [createGoal.spec.ts](integration_tests/specs/sentencePlan/createGoal.spec.ts)
+
+#### Snapshot Tests
+Playwright [snapshot tests](https://playwright.dev/docs/aria-snapshots) you can assert the accessibility tree of a page.
+
+Key Scenarios:
+- Structural checks for complex UI components
+- Page content displayed on load
+
+```js
+await expect('#main-content').toMatchAriaSnapshot(`
+    - paragraph:
+        - strong: Agreement updated
+    - separator
+`)
+```
+
+*Full Example:* [planHistory.agreements.spec.ts](integration_tests/specs/sentencePlan/planHistory.achievedGoals.spec.ts)
+
+#### Accessibility Tests
+Axe is an accessibility testing engine for websites. [axe-core](https://www.npmjs.com/package/@axe-core/playwright) has been added to playwright fixture, to run a scan, see example below.
+
+```js
+test('should be accessible', async ({ page, makeAxeBuilder}) => {
+    const accessibilityScanResults = await makeAxeBuilder()
+    .include('#main-content')
+    .analyze()
+    expect(accessibilityScanResults.violations).toEqual([])
+})
+```
+
+*Full Example:* [accessible-autocomplete.spec.ts](integration_tests/specs/sentencePlan/components/accessible-autocomplete.spec.ts)
+
 ## Deployment
 
 The application is deployed to Cloud Platform environments using GitHub Actions and Helm charts.

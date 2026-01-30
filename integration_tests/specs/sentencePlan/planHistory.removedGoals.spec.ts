@@ -38,30 +38,17 @@ test.describe('Plan History - Removed Goals', () => {
     await page.getByRole('link', { name: /View plan history/i }).click()
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-    // Should have 2 entries: the removed goal and the plan agreement
-    const entryCount = await planHistoryPage.getHistoryEntryCount()
-    expect(entryCount).toBe(2)
-
-    // Find the removed goal entry (should be most recent, index 0)
-    const firstEntryHeader = await planHistoryPage.getEntryHeaderText(0)
-    expect(firstEntryHeader).toContain('Goal removed')
-    expect(firstEntryHeader).toContain('Jane Smith')
-
-    // Verify the goal title is displayed in bold
-    const hasGoalTitle = await planHistoryPage.entryContainsText(0, 'Reduce alcohol use')
-    expect(hasGoalTitle).toBe(true)
-
-    // Verify the removal reason is displayed
-    const hasReason = await planHistoryPage.entryContainsText(
-      0,
-      'Goal no longer relevant due to change in circumstances.',
-    )
-    expect(hasReason).toBe(true)
-
-    // Verify the "View goal" link is present
-    const hasViewLink = await planHistoryPage.entryHasViewGoalLink(0)
-    expect(hasViewLink).toBe(true)
+    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+      - paragraph:
+        - strong: Goal removed
+        - text: /by Jane Smith/
+      - paragraph:
+        - strong: Reduce alcohol use
+      - paragraph: Goal no longer relevant due to change in circumstances.
+      - paragraph:
+        - link "View goal":
+          - /url: /view-inactive-goal/
+    `)
   })
 
   test('navigates to view goal details when clicking View goal link', async ({
@@ -149,21 +136,15 @@ test.describe('Plan History - Removed Goals', () => {
     await page.getByRole('link', { name: /View plan history/i }).click()
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-    // Should have 3 entries total
-    const entryCount = await planHistoryPage.getHistoryEntryCount()
-    expect(entryCount).toBe(3)
-
-    // Most recent should be the removed goal (created with current timestamp)
-    const firstEntryHeader = await planHistoryPage.getEntryHeaderText(0)
-    expect(firstEntryHeader).toContain('Goal removed')
-
-    // Second should be "Agreement updated"
-    const secondEntryHeading = await planHistoryPage.getEntryStatusHeading(1)
-    expect(secondEntryHeading).toBe('Agreement updated')
-
-    // Third should be "Plan created"
-    const thirdEntryHeading = await planHistoryPage.getEntryStatusHeading(2)
-    expect(thirdEntryHeading).toBe('Plan created')
+    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+      - paragraph:
+        - strong: Goal removed
+      - separator
+      - paragraph:
+        - strong: Agreement updated
+      - separator
+      - paragraph:
+        - strong: Plan created
+    `)
   })
 })
