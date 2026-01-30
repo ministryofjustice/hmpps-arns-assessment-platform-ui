@@ -64,7 +64,7 @@ export default class AssessmentPlatformApiClient extends RestClient {
    * @example
    * const [assessmentResult, timelineResult] = await api.executeQueries(
    *   { type: 'AssessmentVersionQuery', ... },
-   *   { type: 'AssessmentTimelineQuery', ... },
+   *   { type: 'TimelineQuery', ... },
    * )
    */
   async executeQueries<T extends Queries[]>(...queries: T): Promise<QueryResultsFor<T>> {

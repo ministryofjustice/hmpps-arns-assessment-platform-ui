@@ -47,4 +47,8 @@ export interface TimelineItem {
   type: string
   createdAt: string
   data: Record<string, any>
+  user?: {
+    id: string
+    name: string
+  }
 }
