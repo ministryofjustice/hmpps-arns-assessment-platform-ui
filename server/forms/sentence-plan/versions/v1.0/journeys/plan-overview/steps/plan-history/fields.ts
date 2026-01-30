@@ -62,7 +62,7 @@ const agreementEntryContent = Format(
           .match(Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE'])),
       )
         .then(Format('%1 did not agree to this plan.', CaseData.Forename))
-        .else(Format('%1 could not answer.', CaseData.Forename)),
+        .else(Format('%1 could not agree to this plan.', CaseData.Forename)),
     ),
   // %6: Reason details and optional notes combined in a single paragraph
   when(Item().path('detailsNo').match(Condition.IsRequired()))
