@@ -19,8 +19,8 @@ const privacyScreenStep = createPrivacyScreen({
   submitRedirectPath: 'v1.0/plan/overview',
   alreadyAcceptedRedirectPath: 'v1.0/plan/overview',
   template: 'sentence-plan/views/sentence-plan-step',
-  basePath: '/forms/sentence-plan/v1.0',
-  headerServiceNameLink: '/forms/sentence-plan/v1.0/plan/overview',
+  basePath: '/sentence-plan/v1.0',
+  headerServiceNameLink: '/sentence-plan/v1.0/plan/overview',
   personForename: CaseData.Forename,
 })
 
