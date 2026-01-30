@@ -173,6 +173,7 @@ services:
       AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
       NODE_CLUSTER_ENABLED: true
       DELIUS_API_URL: http://wiremock:8080/delius
+      ARNS_API_URL: http://wiremock:8080/arns-api
       FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
 
   api:
@@ -215,6 +216,7 @@ services:
       WIREMOCK_HANDOVER_URL: http://arns-handover:7070
       WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
       WIREMOCK_DELIUS_URL: http://delius-api:8080
+      WIREMOCK_ARNS_API_URL: http://arns-api:8080
     command: --global-response-templating
 
 networks:
