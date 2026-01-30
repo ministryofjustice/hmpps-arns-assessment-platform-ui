@@ -30,6 +30,8 @@ export default class PlanOverviewPage extends AbstractPage {
 
   readonly agreePlanButton: Locator
 
+  readonly header: Locator
+
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
@@ -46,6 +48,7 @@ export default class PlanOverviewPage extends AbstractPage {
     this.noFutureGoalsMessage = page.getByText(/does not have any future goals/i)
     this.goalCardTitles = page.locator('[data-qa="goal-title"]')
     this.agreePlanButton = page.getByRole('button', { name: /agree plan/i })
+    this.header = page.getByTestId('plan-header')
   }
 
   static async verifyOnPage(page: Page): Promise<PlanOverviewPage> {
