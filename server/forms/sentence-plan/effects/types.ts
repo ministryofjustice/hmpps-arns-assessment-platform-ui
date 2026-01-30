@@ -5,15 +5,16 @@ import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/d
 import { areasOfNeed } from '../versions/v1.0/constants'
 import { AssessmentPlatformApiClient } from '../../../data'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
-import { SessionDetails, AccessType } from '../../../interfaces/sessionDetails'
+import { SessionDetails } from '../../../interfaces/sessionDetails'
 import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
 import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessMode } from '../../../interfaces/handover-api/shared'
 import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryResult'
 import { CreateAssessmentCommandResult } from '../../../interfaces/aap-api/commandResult'
+import { AuthSource } from '../../../interfaces/hmppsUser'
 
 export interface AccessDetails {
-  accessType: AccessType
+  accessType: AuthSource
   accessMode: AccessMode
   oasysRedirectUrl?: string
 }

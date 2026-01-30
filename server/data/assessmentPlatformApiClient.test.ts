@@ -35,6 +35,7 @@ describe('AssessmentPlatformApiClient', () => {
   const mockUser: User = {
     id: 'testuser',
     name: 'Test User',
+    authSource: 'DELIUS',
   }
 
   beforeEach(() => {

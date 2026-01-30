@@ -10,7 +10,7 @@ export const setAccessDetailsForCrn = () => (context: AccessContext) => {
   const session = context.getSession()
 
   session.accessDetails = {
-    accessType: 'hmpps-auth',
+    accessType: 'DELIUS',
     accessMode: 'READ_WRITE',
   }
 }

@@ -11,6 +11,7 @@ export default function routes({ assessmentService }: Services): Router {
       const user = {
         id: res.locals.user.username,
         name: res.locals.user.displayName,
+        authSource: res.locals.user.authSource,
       }
 
       const assessmentUuid = req.params.uuid
@@ -129,6 +130,7 @@ export default function routes({ assessmentService }: Services): Router {
       const user = {
         id: res.locals.user.username,
         name: res.locals.user.displayName,
+        authSource: res.locals.user.authSource,
       }
 
       const sleep = () => {
