@@ -9,6 +9,7 @@ import {
   PlanHistoryEntry,
   SentencePlanContext,
 } from '../types'
+import { TimelineItem } from '../../../../interfaces/aap-api/dataModel'
 
 /**
  * Derive unified plan history entries from plan agreements and goal events.
@@ -46,20 +47,19 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
     entries.push(entry)
   }
 
-  // Add achieved goal entries
-  const achievedGoals = goals.filter(goal => goal.status === 'ACHIEVED')
-  for (const goal of achievedGoals) {
-    // Find the ACHIEVED note if one exists (contains the "how it helped" text)
-    const achievedNote = goal.notes.find(note => note.type === 'ACHIEVED')
+  // Add achieved goal entries from timeline data
+  const planTimeline = (context.getData('planTimeline') as TimelineItem[] | undefined) ?? []
+  for (const item of planTimeline) {
+    if (item.type !== 'GOAL_ACHIEVED') continue
 
     const entry: GoalAchievedHistoryEntry = {
       type: 'goal_achieved',
-      uuid: `achieved-${goal.uuid}`,
-      date: goal.statusDate,
-      goalUuid: goal.uuid,
-      goalTitle: goal.title,
-      achievedBy: goal.achievedBy,
-      notes: achievedNote?.note,
+      uuid: `achieved-${item.data.goalUuid}`,
+      date: new Date(item.createdAt),
+      goalUuid: item.data.goalUuid,
+      goalTitle: item.data.goalTitle,
+      achievedBy: item.user?.name,
+      notes: item.data.notes,
     }
     entries.push(entry)
   }

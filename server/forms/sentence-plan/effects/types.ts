@@ -1,7 +1,7 @@
 import { FormatExpr } from '@form-engine/form/types/expressions.type'
 import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
 import { User } from '../../../interfaces/user'
-import { Answers, Properties } from '../../../interfaces/aap-api/dataModel'
+import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed } from '../versions/v1.0/constants'
 import { AssessmentPlatformApiClient } from '../../../data'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
@@ -274,6 +274,9 @@ export interface SentencePlanData extends Record<string, unknown> {
   planAgreementsCollectionUuid: string
   latestAgreementStatus: AgreementStatus | undefined
   latestAgreementDate: Date | undefined
+
+  // Plan Timeline (from AssessmentTimelineQuery)
+  planTimeline: TimelineItem[]
 
   // Plan History (unified timeline of agreements + goal achievements)
   planHistoryEntries: PlanHistoryEntry[]

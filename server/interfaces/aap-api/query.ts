@@ -12,8 +12,8 @@ export interface AssessmentVersionQuery extends Query {
   type: 'AssessmentVersionQuery'
 }
 
-export interface AssessmentTimelineQuery extends Query {
-  type: 'AssessmentTimelineQuery'
+export interface TimelineQuery extends Query {
+  type: 'TimelineQuery'
   timelineTypes?: string[]
 }
 
@@ -29,4 +29,4 @@ export interface CollectionItemQuery extends Query {
   depth: number
 }
 
-export type Queries = AssessmentVersionQuery | AssessmentTimelineQuery | CollectionQuery | CollectionItemQuery
+export type Queries = AssessmentVersionQuery | TimelineQuery | CollectionQuery | CollectionItemQuery
