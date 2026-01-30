@@ -37,6 +37,10 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
 
   const commands: Commands[] = []
 
+  // Read note text early so it can be included in the timeline data
+  const howHelped = context.getAnswer('how_helped')
+  const noteText = howHelped && typeof howHelped === 'string' ? howHelped.trim() : ''
+
   // 1. Update goal status to ACHIEVED
   commands.push({
     type: 'UpdateCollectionItemPropertiesCommand',
@@ -47,13 +51,20 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
       achieved_by: practitionerName,
     }),
     removed: [],
+    timeline: {
+      type: 'GOAL_ACHIEVED',
+      data: {
+        goalUuid: activeGoal.uuid,
+        goalTitle: activeGoal.title,
+        ...(noteText ? { notes: noteText } : {}),
+      },
+    },
     assessmentUuid,
     user,
   })
 
   // 2. Add achieved note if provided
-  const howHelped = context.getAnswer('how_helped')
-  if (howHelped && typeof howHelped === 'string' && howHelped.trim().length > 0) {
+  if (noteText) {
     // Find or create NOTES collection for the goal
     let collectionUuid = activeGoal.notesCollectionUuid
 
@@ -79,13 +90,9 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
         type: 'ACHIEVED',
       }),
       answers: wrapAll({
-        note: howHelped.trim(),
+        note: noteText,
         created_by: practitionerName,
       }),
-      timeline: {
-        type: 'NOTE_ADDED',
-        data: {},
-      },
       assessmentUuid,
       user,
     })

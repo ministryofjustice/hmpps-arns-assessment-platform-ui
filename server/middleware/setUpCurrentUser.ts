@@ -32,7 +32,7 @@ export default function setUpCurrentUser() {
         userRoles: roles.map(role => role.substring(role.indexOf('_') + 1)),
       }
 
-      if (res.locals.user.authSource === 'nomis') {
+      if (res.locals.user.authSource === 'NOMIS') {
         res.locals.user.staffId = parseInt(userId, 10) || undefined
       }
 

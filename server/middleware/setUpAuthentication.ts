@@ -84,7 +84,7 @@ passport.use(
       scope: 'openid profile',
     },
     (token, _refreshToken, params, _profile, done) => {
-      return done(null, { token, username: params.user_name, authSource: 'handover' })
+      return done(null, { token, username: params.user_name, authSource: 'OASYS' })
     },
   ),
 )
@@ -223,7 +223,7 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
       return next()
     }
 
-    if (req.isAuthenticated() && req.user.authSource === 'handover') {
+    if (req.isAuthenticated() && req.user.authSource === 'OASYS') {
       return next()
     }
 

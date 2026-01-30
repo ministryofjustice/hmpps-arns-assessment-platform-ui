@@ -1,10 +1,9 @@
 import { AccessMode } from './handover-api/shared'
 import { AssessmentIdentifiers } from './aap-api/identifier'
-
-export type AccessType = 'hmpps-auth' | 'handover'
+import { AuthSource } from './hmppsUser'
 
 export interface SessionDetails {
-  accessType: AccessType
+  accessType: AuthSource
   accessMode: AccessMode
   oasysRedirectUrl?: string
   planIdentifier?: AssessmentIdentifiers

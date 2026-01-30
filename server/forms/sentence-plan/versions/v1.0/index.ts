@@ -40,6 +40,7 @@ export const sentencePlanV1Journey = journey({
         SentencePlanEffects.loadSessionData(),
         SentencePlanEffects.initializeSessionFromAccess(),
         SentencePlanEffects.loadPlan(),
+        SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
         SentencePlanEffects.derivePlanHistoryEntries(),

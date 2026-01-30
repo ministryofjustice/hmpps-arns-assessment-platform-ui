@@ -19,6 +19,6 @@ export const setPractitionerDetailsFromAuth = () => (context: AccessContext) => 
   session.practitionerDetails = {
     identifier: user.id,
     displayName: user.name,
-    authSource: 'hmpps-auth',
+    authSource: 'DELIUS',
   }
 }

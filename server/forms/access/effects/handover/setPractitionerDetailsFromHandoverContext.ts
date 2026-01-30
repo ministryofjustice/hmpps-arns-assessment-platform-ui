@@ -20,6 +20,6 @@ export const setPractitionerDetailsFromHandoverContext = () => (context: AccessC
   session.practitionerDetails = {
     identifier: principal.identifier,
     displayName: principal.displayName,
-    authSource: 'handover',
+    authSource: 'OASYS',
   }
 }

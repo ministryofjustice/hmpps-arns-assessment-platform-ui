@@ -12,9 +12,17 @@ export interface AssessmentVersionQuery extends Query {
   type: 'AssessmentVersionQuery'
 }
 
-export interface AssessmentTimelineQuery extends Query {
-  type: 'AssessmentTimelineQuery'
-  timelineTypes?: string[]
+export interface TimelineQuery extends Query {
+  type: 'TimelineQuery'
+  includeCustomTypes?: string[]
+  excludeCustomTypes?: string[]
+  includeEventTypes?: string[]
+  excludeEventTypes?: string[]
+  subject?: { id: string; name: string }
+  from?: string
+  to?: string
+  pageNumber?: number
+  pageSize?: number
 }
 
 export interface CollectionQuery extends Query {
@@ -29,4 +37,4 @@ export interface CollectionItemQuery extends Query {
   depth: number
 }
 
-export type Queries = AssessmentVersionQuery | AssessmentTimelineQuery | CollectionQuery | CollectionItemQuery
+export type Queries = AssessmentVersionQuery | TimelineQuery | CollectionQuery | CollectionItemQuery
