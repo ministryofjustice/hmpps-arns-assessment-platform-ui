@@ -107,7 +107,7 @@ passport.use(
       },
     },
     (token, _refreshToken, params, _profile, done) => {
-      return done(null, { token, username: params.user_name, authSource: params.auth_source })
+      return done(null, { token, username: params.user_name, authSource: 'HMPPS_AUTH' })
     },
   ),
 )

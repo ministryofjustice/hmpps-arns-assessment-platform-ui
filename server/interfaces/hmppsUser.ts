@@ -1,4 +1,4 @@
-export type AuthSource = 'NOMIS' | 'DELIUS' | 'OASYS' | 'NOT_SPECIFIED' | 'EXTERNAL' | 'AZUREAD'
+export type AuthSource = 'OASYS' | 'HMPPS_AUTH' | 'NOT_SPECIFIED' | 'EXTERNAL'
 
 /**
  * These are the details that all user types share.
@@ -22,7 +22,7 @@ export interface BaseUser {
  * to) and store it here, an example can be found in `hmpps-prisoner-profile`.
  */
 export interface PrisonUser extends BaseUser {
-  authSource: 'NOMIS'
+  authSource: 'HMPPS_AUTH'
   staffId: number
 }
 
@@ -31,7 +31,7 @@ export interface PrisonUser extends BaseUser {
  * HMPPS Auth automatically grants these users a `ROLE_PROBATION` role.
  */
 export interface ProbationUser extends BaseUser {
-  authSource: 'DELIUS'
+  authSource: 'HMPPS_AUTH'
 }
 
 /**
@@ -53,7 +53,7 @@ export interface ExternalUser extends BaseUser {
  * and would have no user roles associated.
  */
 export interface AzureADUser extends BaseUser {
-  authSource: 'AZUREAD'
+  authSource: 'HMPPS_AUTH'
 }
 
 /**

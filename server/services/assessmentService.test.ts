@@ -17,7 +17,7 @@ describe('AssessmentService', () => {
     username: 'testuser',
     displayName: 'Test User',
     token: 'token',
-    authSource: 'NOMIS',
+    authSource: 'HMPPS_AUTH',
     staffId: 12345,
     userRoles: [],
   }
