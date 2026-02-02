@@ -2,6 +2,7 @@ import passport from 'passport'
 import flash from 'connect-flash'
 import { Router, Request } from 'express'
 import { Strategy } from 'passport-oauth2'
+import { jwtDecode } from 'jwt-decode'
 import { VerificationClient, AuthenticatedRequest } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import { HmppsUser } from '../interfaces/hmppsUser'
@@ -242,11 +243,31 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
 
     const hmppsUser = req.user as HmppsUser
     res.locals.user = hmppsUser
+
+    let { username } = hmppsUser
+    let displayName = hmppsUser.displayName
+
+    // TODO: Move user identity resolution to the API. The handover service OAuth2 token response
+    // does not include `user_name` in its params (unlike HMPPS Auth), so `username` is undefined
+    // for handover-authenticated users. This fallback decodes the JWT to extract the user identity
+    // from token claims (e.g. `sub`) so that API requests have a non-null user ID.
+    if (!username || !displayName) {
+      try {
+        const decoded = jwtDecode(hmppsUser.token) as Record<string, unknown>
+        const userId = (decoded.user_id ?? decoded.sub ?? decoded.user_name) as string | undefined
+        const name = decoded.name as string | undefined
+        username = username || userId
+        displayName = displayName || name
+      } catch (error) {
+        logger.error(error, 'Failed to decode JWT for user details fallback')
+      }
+    }
+
     req.state = {
       ...req.state,
       user: {
-        id: hmppsUser.username,
-        name: hmppsUser.displayName ?? hmppsUser.username,
+        id: username,
+        name: displayName ?? username,
         authSource: hmppsUser.authSource,
         token: hmppsUser.token,
       },
