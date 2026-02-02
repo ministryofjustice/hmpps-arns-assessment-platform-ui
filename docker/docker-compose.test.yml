@@ -55,7 +55,10 @@ services:
       INGRESS_URL: http://ui:3000
 
   playwright:
-    image: mcr.microsoft.com/playwright:v1.58.0-noble # Must match version in package-lock
+    build:
+      context: ../
+      dockerfile: playwright-windows.Dockerfile
+    platform: windows
     networks:
       - hmpps
     depends_on:
@@ -74,14 +77,14 @@ services:
     working_dir: /playwright
     command: npx playwright test
     volumes:
-      - ../package.json:/playwright/package.json
-      - ../package-lock.json:/playwright/package-lock.json
-      - ../playwright.config.ts:/playwright/playwright.config.ts
-      - ../integration_tests:/playwright/integration_tests
-      - ../test_results:/playwright/test_results
-      - node_modules:/playwright/node_modules
-      - ../server:/playwright/server
-      - ../packages/form-engine/src:/playwright/packages/form-engine/src
+      - ./package.json:C:/playwright/package.json
+      - ./package-lock.json:C:/playwright/package-lock.json
+      - ./playwright.config.ts:C:/playwright/playwright.config.ts
+      - ./integration_tests:C:/playwright/integration_tests
+      - ./test_results:C:/playwright/test_results
+      - node_modules:C:/playwright/node_modules
+      - ./server:C:/playwright/server
+      - ./packages/form-engine/src:C:/playwright/packages/form-engine/src
 
 volumes:
   node_modules:
