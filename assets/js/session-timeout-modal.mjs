@@ -15,7 +15,7 @@
  * - data-warning-after-inactive-seconds: Show warning after this many seconds of inactivity (default: 3000 = 50 mins)
  * - data-countdown-seconds: Countdown duration once modal is shown in seconds (default: 600 = 10 mins)
  * - data-timeout-redirect-url: URL to redirect to on timeout or delete (default: /sentence-plan/unsaved-information-deleted)
- * - data-auth-source: The authentication source (e.g., 'handover' for OASys) to pass through for re-authentication
+ * - data-auth-source: The authentication source (e.g., OASys) to pass through for re-authentication
  */
 
 // Only track meaningful interactions - not passive movements

@@ -7,7 +7,7 @@ import {
   GroupCommandResult,
 } from '../interfaces/aap-api/commandResult'
 import {
-  AssessmentTimelineQueryResult,
+  TimelineQueryResult,
   AssessmentVersionQueryResult,
   CollectionItemQueryResult,
   CollectionQueryResult,
@@ -28,7 +28,7 @@ import {
   UpdateFormVersionCommand,
 } from '../interfaces/aap-api/command'
 import {
-  AssessmentTimelineQuery,
+  TimelineQuery,
   AssessmentVersionQuery,
   CollectionItemQuery,
   CollectionQuery,
@@ -51,7 +51,7 @@ interface CommandMap {
 
 interface QueryMap {
   AssessmentVersion: { query: AssessmentVersionQuery; res: AssessmentVersionQueryResult }
-  AssessmentTimeline: { query: AssessmentTimelineQuery; res: AssessmentTimelineQueryResult }
+  Timeline: { query: TimelineQuery; res: TimelineQueryResult }
   Collection: { query: CollectionQuery; res: CollectionQueryResult }
   CollectionItem: { query: CollectionItemQuery; res: CollectionItemQueryResult }
 }

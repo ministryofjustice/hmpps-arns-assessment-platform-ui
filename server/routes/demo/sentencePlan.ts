@@ -11,6 +11,7 @@ export default function routes({ assessmentService }: Services): Router {
       const user = {
         id: res.locals.user.username,
         name: res.locals.user.displayName,
+        authSource: res.locals.user.authSource,
       }
 
       const assessmentUuid = req.params.uuid
@@ -21,8 +22,8 @@ export default function routes({ assessmentService }: Services): Router {
         user,
       })
 
-      const timelineResult = await assessmentService.query<'AssessmentTimeline'>({
-        type: 'AssessmentTimelineQuery',
+      const timelineResult = await assessmentService.query<'Timeline'>({
+        type: 'TimelineQuery',
         assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
@@ -73,9 +74,9 @@ export default function routes({ assessmentService }: Services): Router {
         user,
       })
 
-      const stepsTimelineResult = await assessmentService.query<'AssessmentTimeline'>({
-        type: 'AssessmentTimelineQuery',
-        timelineTypes: ['STEP_ADDED'],
+      const stepsTimelineResult = await assessmentService.query<'Timeline'>({
+        type: 'TimelineQuery',
+        includeCustomTypes: ['STEP_ADDED'],
         assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
@@ -98,8 +99,8 @@ export default function routes({ assessmentService }: Services): Router {
         user,
       })
 
-      const timelinePointInTime = await assessmentService.query<'AssessmentTimeline'>({
-        type: 'AssessmentTimelineQuery',
+      const timelinePointInTime = await assessmentService.query<'Timeline'>({
+        type: 'TimelineQuery',
         timestamp: timelineResult.timeline[1].createdAt,
         assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
@@ -129,6 +130,7 @@ export default function routes({ assessmentService }: Services): Router {
       const user = {
         id: res.locals.user.username,
         name: res.locals.user.displayName,
+        authSource: res.locals.user.authSource,
       }
 
       const sleep = () => {
@@ -392,8 +394,8 @@ export default function routes({ assessmentService }: Services): Router {
         user,
       })
 
-      const timelineResult = await assessmentService.query<'AssessmentTimeline'>({
-        type: 'AssessmentTimelineQuery',
+      const timelineResult = await assessmentService.query<'Timeline'>({
+        type: 'TimelineQuery',
         assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
@@ -441,9 +443,9 @@ export default function routes({ assessmentService }: Services): Router {
         user,
       })
 
-      const stepsTimelineResult = await assessmentService.query<'AssessmentTimeline'>({
-        type: 'AssessmentTimelineQuery',
-        timelineTypes: ['STEP_ADDED'],
+      const stepsTimelineResult = await assessmentService.query<'Timeline'>({
+        type: 'TimelineQuery',
+        includeCustomTypes: ['STEP_ADDED'],
         assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
@@ -466,8 +468,8 @@ export default function routes({ assessmentService }: Services): Router {
         user,
       })
 
-      const timelinePointInTime = await assessmentService.query<'AssessmentTimeline'>({
-        type: 'AssessmentTimelineQuery',
+      const timelinePointInTime = await assessmentService.query<'Timeline'>({
+        type: 'TimelineQuery',
         timestamp: timelineResult.timeline[1].createdAt,
         assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,

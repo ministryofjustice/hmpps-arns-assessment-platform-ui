@@ -21,7 +21,7 @@ export const setAccessDetailsFromHandoverContext = () => (context: AccessContext
   const { principal } = handoverContext
 
   session.accessDetails = {
-    accessType: 'handover',
+    accessType: 'OASYS',
     accessMode: principal.accessMode,
     oasysRedirectUrl: principal.returnUrl,
   }

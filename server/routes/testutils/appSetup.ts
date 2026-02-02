@@ -20,7 +20,7 @@ export const user: HmppsUser = {
   token: 'token',
   username: 'user1',
   displayName: 'First Last',
-  authSource: 'nomis',
+  authSource: 'HMPPS_AUTH',
   staffId: 1234,
   userRoles: [],
 }

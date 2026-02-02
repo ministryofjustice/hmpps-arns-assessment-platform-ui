@@ -17,7 +17,7 @@ describe('AssessmentService', () => {
     username: 'testuser',
     displayName: 'Test User',
     token: 'token',
-    authSource: 'nomis',
+    authSource: 'HMPPS_AUTH',
     staffId: 12345,
     userRoles: [],
   }
@@ -25,6 +25,7 @@ describe('AssessmentService', () => {
   const mockUser: User = {
     id: mockHmppsUser.username,
     name: mockHmppsUser.displayName,
+    authSource: mockHmppsUser.authSource,
   }
 
   beforeEach(() => {
