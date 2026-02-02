@@ -31,7 +31,7 @@ export const unsavedInformationDeletedStep = step({
       // If user came via OASys handover, redirect to handover sign-in to re-authenticate
       // Otherwise, go to plan overview (which will redirect to HMPPS Auth if session expired)
       href: Conditional({
-        when: Query('auth').match(Condition.Equals('handover')),
+        when: Query('auth').match(Condition.Equals('OASYS')),
         then: '/sign-in/handover?service=sentence-plan',
         else: '/sentence-plan/v1.0/plan/overview',
       }),
