@@ -25,7 +25,7 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: build_image
-          path: ${{ runner.temp }}
+          path: https://github.com/ministryofjustice/hmpps-arns-assessment-platform-ui/actions/runs/21589433796/artifacts/5342575786
 
       - name: Load image
         run: |
