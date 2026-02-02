@@ -48,15 +48,15 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
   // Add achieved goal entries from timeline data
   const planTimeline = (context.getData('planTimeline') as TimelineItem[] | undefined) ?? []
   for (const item of planTimeline) {
-    if (item.type === 'GOAL_ACHIEVED') {
+    if (item.customType === 'GOAL_ACHIEVED' && item.customData) {
       const entry: GoalAchievedHistoryEntry = {
         type: 'goal_achieved',
-        uuid: `achieved-${item.data.goalUuid}`,
-        date: new Date(item.createdAt),
-        goalUuid: item.data.goalUuid,
-        goalTitle: item.data.goalTitle,
-        achievedBy: item.user?.name,
-        notes: item.data.notes,
+        uuid: `achieved-${item.customData.goalUuid}`,
+        date: new Date(item.timestamp),
+        goalUuid: item.customData.goalUuid,
+        goalTitle: item.customData.goalTitle,
+        achievedBy: item.customData.achievedBy,
+        notes: item.customData.notes,
       }
       entries.push(entry)
     }

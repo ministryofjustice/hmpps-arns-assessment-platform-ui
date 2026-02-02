@@ -56,6 +56,7 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
       data: {
         goalUuid: activeGoal.uuid,
         goalTitle: activeGoal.title,
+        achievedBy: practitionerName,
         ...(noteText ? { notes: noteText } : {}),
       },
     },

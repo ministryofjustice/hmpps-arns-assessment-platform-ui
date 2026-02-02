@@ -44,9 +44,12 @@ export interface Collection {
 }
 
 export interface TimelineItem {
-  type: string
-  createdAt: string
+  timestamp: string
+  event: string
+  assessment: string
   data: Record<string, any>
+  customType?: string
+  customData?: Record<string, any>
   user?: {
     id: string
     name: string

@@ -61,9 +61,12 @@ export interface CreatedStep extends CreatedCollectionItem {
 export function SentencePlanBuilder(client: TestAapApiClient): SentencePlanBuilderFactory {
   return {
     fresh: () =>
-      new SentencePlanBuilderInstance(AssessmentBuilder(client).fresh().ofType('SENTENCE_PLAN').withFormVersion('1.0')),
+      new SentencePlanBuilderInstance(
+        client,
+        AssessmentBuilder(client).fresh().ofType('SENTENCE_PLAN').withFormVersion('1.0'),
+      ),
     extend: (sentencePlanId: string) =>
-      new SentencePlanBuilderInstance(AssessmentBuilder(client).extend(sentencePlanId)),
+      new SentencePlanBuilderInstance(client, AssessmentBuilder(client).extend(sentencePlanId)),
   }
 }
 
@@ -76,13 +79,16 @@ export interface SentencePlanBuilderFactory {
  * Fluent builder for SENTENCE_PLAN assessments with goals and steps.
  */
 export class SentencePlanBuilderInstance {
+  private readonly client: TestAapApiClient
+
   private readonly assessmentBuilder: AssessmentBuilderInstance
 
   private readonly goals: GoalConfig[] = []
 
   private agreementStatus: AgreementStatus | PlanAgreementStatus | undefined
 
-  constructor(assessmentBuilder: AssessmentBuilderInstance) {
+  constructor(client: TestAapApiClient, assessmentBuilder: AssessmentBuilderInstance) {
+    this.client = client
     this.assessmentBuilder = assessmentBuilder
   }
 
@@ -142,8 +148,39 @@ export class SentencePlanBuilderInstance {
     this.buildAgreementCollection()
 
     const assessment = await this.assessmentBuilder.save()
+    const result = this.mapToCreatedSentencePlan(assessment)
 
-    return this.mapToCreatedSentencePlan(assessment)
+    await this.createAchievedGoalTimelineEntries(result)
+
+    return result
+  }
+
+  private async createAchievedGoalTimelineEntries(plan: CreatedSentencePlan): Promise<void> {
+    for (const [index, goalConfig] of this.goals.entries()) {
+      if (goalConfig.status === 'ACHIEVED' && goalConfig.achievedBy) {
+        const createdGoal = plan.goals[index]
+        const achievedNote = goalConfig.notes?.find(n => n.type === 'ACHIEVED')
+
+        // eslint-disable-next-line no-await-in-loop
+        await this.client.executeCommand({
+          type: 'UpdateCollectionItemPropertiesCommand',
+          collectionItemUuid: createdGoal.uuid,
+          assessmentUuid: plan.uuid,
+          added: {},
+          removed: [],
+          timeline: {
+            type: 'GOAL_ACHIEVED',
+            data: {
+              goalUuid: createdGoal.uuid,
+              goalTitle: goalConfig.title,
+              achievedBy: goalConfig.achievedBy,
+              ...(achievedNote ? { notes: achievedNote.note } : {}),
+            },
+          },
+          user: { id: 'e2e-test', name: goalConfig.achievedBy, authSource: 'HMPPS_AUTH' },
+        })
+      }
+    }
   }
 
   private buildGoalsCollection(): void {

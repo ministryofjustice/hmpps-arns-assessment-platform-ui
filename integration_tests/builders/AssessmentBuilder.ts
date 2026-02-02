@@ -274,6 +274,7 @@ export class AssessmentBuilderInstance {
       assessmentUuid,
       answers: def.answers,
       properties: def.properties,
+      ...(def.timeline ? { timeline: def.timeline } : {}),
       user: this.user,
     })
 
@@ -352,6 +353,15 @@ export class CollectionItemBuilder {
   withCollection(name: string, configure: (collection: CollectionBuilder) => CollectionBuilder): this {
     const collectionBuilder = new CollectionBuilder(name)
     this.definition.collections.push(configure(collectionBuilder).build())
+
+    return this
+  }
+
+  /**
+   * Add a timeline entry for this item
+   */
+  withTimeline(type: string, data: Record<string, unknown>): this {
+    this.definition.timeline = { type, data }
 
     return this
   }

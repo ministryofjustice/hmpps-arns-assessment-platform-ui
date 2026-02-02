@@ -32,7 +32,7 @@ export default function routes({ assessmentService }: Services): Router {
         timelineResult.timeline.map(item =>
           assessmentService.query<'AssessmentVersion'>({
             type: 'AssessmentVersionQuery',
-            timestamp: item.createdAt,
+            timestamp: item.timestamp,
             assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
             user,
           }),
@@ -85,7 +85,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionQuery',
         collectionUuid: goalsUuid,
         depth: 1,
-        timestamp: stepsTimelineResult.timeline[0].createdAt,
+        timestamp: stepsTimelineResult.timeline[0].timestamp,
         assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
@@ -94,14 +94,14 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionItemQuery',
         collectionItemUuid: goalUuid,
         depth: 1,
-        timestamp: stepsTimelineResult.timeline[0].createdAt,
+        timestamp: stepsTimelineResult.timeline[0].timestamp,
         assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
       const timelinePointInTime = await assessmentService.query<'Timeline'>({
         type: 'TimelineQuery',
-        timestamp: timelineResult.timeline[1].createdAt,
+        timestamp: timelineResult.timeline[1].timestamp,
         assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
@@ -404,7 +404,7 @@ export default function routes({ assessmentService }: Services): Router {
         timelineResult.timeline.map(item =>
           assessmentService.query<'AssessmentVersion'>({
             type: 'AssessmentVersionQuery',
-            timestamp: item.createdAt,
+            timestamp: item.timestamp,
             assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
             user,
           }),
@@ -454,7 +454,7 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionQuery',
         collectionUuid: goalsCollectionUuid,
         depth: 1,
-        timestamp: stepsTimelineResult.timeline[0].createdAt,
+        timestamp: stepsTimelineResult.timeline[0].timestamp,
         assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
@@ -463,14 +463,14 @@ export default function routes({ assessmentService }: Services): Router {
         type: 'CollectionItemQuery',
         collectionItemUuid: goalUuid,
         depth: 1,
-        timestamp: stepsTimelineResult.timeline[0].createdAt,
+        timestamp: stepsTimelineResult.timeline[0].timestamp,
         assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
 
       const timelinePointInTime = await assessmentService.query<'Timeline'>({
         type: 'TimelineQuery',
-        timestamp: timelineResult.timeline[1].createdAt,
+        timestamp: timelineResult.timeline[1].timestamp,
         assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
         user,
       })
