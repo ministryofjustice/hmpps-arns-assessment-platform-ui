@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import PlanHistoryPage from '../../pages/sentencePlan/planHistoryPage'
-import { buildPageTitle, handlePrivacyScreenIfPresent, sentencePlanPageTitles } from './sentencePlanUtils'
+import { handlePrivacyScreenIfPresent } from './sentencePlanUtils'
 
 test.describe('Plan History - Agreements', () => {
   test.describe('Could not answer then agreed scenario', () => {
@@ -46,59 +46,23 @@ test.describe('Plan History - Agreements', () => {
 
       // Verify we're on the plan history page
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-      // ensure page title is correct
-      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.planHistory))
-
-      // Verify subtitle is visible
-      await expect(planHistoryPage.subtitleText).toBeVisible()
-
-      // Verify we have 2 history entries
-      const entryCount = await planHistoryPage.getHistoryEntryCount()
-      expect(entryCount).toBe(2)
-
-      // Verify the most recent entry (index 0) shows "Agreement updated" (UPDATED_AGREED)
-      const firstEntryHeading = await planHistoryPage.getEntryStatusHeading(0)
-      expect(firstEntryHeading).toBe('Agreement updated')
-
-      // Verify the first entry header includes practitioner name and person name
-      const firstEntryHeader = await planHistoryPage.getEntryHeaderText(0)
-      expect(firstEntryHeader).toContain('Follow-up Practitioner')
-      expect(firstEntryHeader).toContain(' and ') // Should include person's name
-
-      // Verify the first entry description
-      const firstEntryDescription = await planHistoryPage.getEntryDescriptionText(0)
-      expect(firstEntryDescription).toContain('agreed to this plan')
-
-      // Verify the older entry (index 1) shows "Plan created" (COULD_NOT_ANSWER)
-      const secondEntryHeading = await planHistoryPage.getEntryStatusHeading(1)
-      expect(secondEntryHeading).toBe('Plan created')
-
-      // Verify the second entry header only shows practitioner name (no person name for non-agreed)
-      const secondEntryHeader = await planHistoryPage.getEntryHeaderText(1)
-      expect(secondEntryHeader).toContain('Initial Practitioner')
-      expect(secondEntryHeader).not.toContain(' and ')
-
-      // Verify the second entry description
-      const secondEntryDescription = await planHistoryPage.getEntryDescriptionText(1)
-      expect(secondEntryDescription).toContain('could not answer')
-
-      // Verify the reason and notes are displayed
-      const secondEntryContainsReason = await planHistoryPage.entryContainsText(
-        1,
-        'Person was not available to discuss the plan',
-      )
-      expect(secondEntryContainsReason).toBe(true)
-
-      const firstEntryContainsNotes = await planHistoryPage.entryContainsText(
-        0,
-        'Person agreed after reviewing the plan',
-      )
-      expect(firstEntryContainsNotes).toBe(true)
-
-      // Verify there's a section break between entries
-      const hasSectionBreak = await planHistoryPage.hasSectionBreakBetweenEntries()
-      expect(hasSectionBreak).toBe(true)
+      await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+        - paragraph: View all updates and changes made to this plan.
+        - separator
+        - paragraph:
+          - strong: Agreement updated
+          - text: /Follow-up Practitioner and Test/
+        - paragraph: Test agreed to this plan.
+        - paragraph: Person agreed after reviewing the plan
+        - separator
+        - paragraph:
+          - strong: Plan created
+          - text: /^(?=.*Initial Practitioner)(?!.*and).*$/
+        - paragraph: Test could not agree to this plan.
+        - paragraph: Person was not available to discuss the plan
+        - paragraph:
+          - link /.+ Back to top/
+      `)
     })
 
     test('hides update agreement link when plan is agreed', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -126,10 +90,11 @@ test.describe('Plan History - Agreements', () => {
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-      // Verify the update agreement link is NOT visible
-      const isLinkVisible = await planHistoryPage.isUpdateAgreementLinkVisible()
-      expect(isLinkVisible).toBe(false)
+      await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+        - paragraph:
+          - strong: Plan agreed
+          - text: /Test Practitioner and Test/
+      `)
     })
   })
 
@@ -159,14 +124,11 @@ test.describe('Plan History - Agreements', () => {
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-      // Verify the entry shows "Plan agreed" (not "Agreement updated")
-      const entryHeading = await planHistoryPage.getEntryStatusHeading(0)
-      expect(entryHeading).toBe('Plan agreed')
-
-      // Verify the header includes "and" (person's name)
-      const entryHeader = await planHistoryPage.getEntryHeaderText(0)
-      expect(entryHeader).toContain(' and ')
+      await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+        - paragraph:
+          - strong: Plan agreed
+          - text: /First Practitioner and Test/
+      `)
     })
 
     test('displays "Plan created" for initial non-agreement (DO_NOT_AGREE)', async ({
@@ -198,18 +160,14 @@ test.describe('Plan History - Agreements', () => {
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-      // Verify the entry shows "Plan created"
-      const entryHeading = await planHistoryPage.getEntryStatusHeading(0)
-      expect(entryHeading).toBe('Plan created')
-
-      // Verify the description mentions not agreeing
-      const entryDescription = await planHistoryPage.getEntryDescriptionText(0)
-      expect(entryDescription).toContain('did not agree')
-
-      // Verify the reason is displayed
-      const containsReason = await planHistoryPage.entryContainsText(0, 'Person disagrees with the goals set')
-      expect(containsReason).toBe(true)
+      await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+        - paragraph: View all updates and changes made to this plan.
+        - separator
+        - paragraph:
+          - strong: Plan created
+        - paragraph: /did not agree/
+        - paragraph: Person disagrees with the goals set
+      `)
     })
   })
 
@@ -250,14 +208,13 @@ test.describe('Plan History - Agreements', () => {
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-      // Most recent should be "Agreement updated"
-      const firstEntryHeading = await planHistoryPage.getEntryStatusHeading(0)
-      expect(firstEntryHeading).toBe('Agreement updated')
-
-      // Older should be "Plan created" (COULD_NOT_ANSWER)
-      const secondEntryHeading = await planHistoryPage.getEntryStatusHeading(1)
-      expect(secondEntryHeading).toBe('Plan created')
+      await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+        - paragraph:
+          - strong: Agreement updated
+        - separator
+        - paragraph:
+          - strong: Plan created
+      `)
     })
 
     test('displays "Agreement updated" when person does not agree after initially not being able to answer', async ({
@@ -296,18 +253,15 @@ test.describe('Plan History - Agreements', () => {
       await page.getByRole('link', { name: /View plan history/i }).click()
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-      // Most recent should be "Agreement updated"
-      const firstEntryHeading = await planHistoryPage.getEntryStatusHeading(0)
-      expect(firstEntryHeading).toBe('Agreement updated')
-
-      // Should show "did not agree" in description
-      const firstEntryDescription = await planHistoryPage.getEntryDescriptionText(0)
-      expect(firstEntryDescription).toContain('did not agree')
-
-      // Older should be "Plan created" (COULD_NOT_ANSWER)
-      const secondEntryHeading = await planHistoryPage.getEntryStatusHeading(1)
-      expect(secondEntryHeading).toBe('Plan created')
+      await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+        - paragraph:
+          - strong: Agreement updated
+        - paragraph: Test did not agree to this plan.
+        - separator
+        - paragraph:
+          - strong: Plan created
+        - paragraph: Test could not agree to this plan.
+      `)
     })
   })
 })
