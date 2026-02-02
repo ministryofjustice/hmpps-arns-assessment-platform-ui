@@ -260,7 +260,7 @@ test.describe('Plan History - Agreements', () => {
         - separator
         - paragraph:
           - strong: Plan created
-        - paragraph: Test could not answer.
+        - paragraph: Test could not agree to this plan.
       `)
     })
   })
