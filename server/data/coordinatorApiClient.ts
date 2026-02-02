@@ -3,6 +3,7 @@ import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients
 import config from '../config'
 import logger from '../../logger'
 import { OasysCreateRequest, OasysCreateResponse } from '../interfaces/coordinator-api/oasysCreate'
+import { EntityAssessmentResponse } from '../interfaces/coordinator-api/entityAssessment'
 
 export default class CoordinatorApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {
@@ -25,5 +26,17 @@ export default class CoordinatorApiClient extends RestClient {
       },
       asSystem(),
     )
+  }
+
+  /**
+   * Get assessment data for an entity
+   * Retrieves the latest version of the assessment associated with the provided entity UUID
+   *
+   * @param entityUuid - The UUID of the entity (SAN assessment or Sentence Plan)
+   * @returns Assessment data including sanOasysEquivalent with practitioner analysis
+   * @throws 404 if no associated entities were found
+   */
+  async getEntityAssessment(entityUuid: string): Promise<EntityAssessmentResponse> {
+    return this.get({ path: `/entity/${entityUuid}/ASSESSMENT` }, asSystem())
   }
 }
