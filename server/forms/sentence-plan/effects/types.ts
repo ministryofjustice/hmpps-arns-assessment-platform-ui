@@ -5,7 +5,7 @@ import { Answers, Properties } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
 import { AssessmentPlatformApiClient, CoordinatorApiClient } from '../../../data'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
-import { SessionDetails, AccessType } from '../../../interfaces/sessionDetails'
+import { SessionDetails } from '../../../interfaces/sessionDetails'
 import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
 import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessMode } from '../../../interfaces/handover-api/shared'
@@ -23,9 +23,10 @@ import { AssessmentArea } from '../../../interfaces/coordinator-api/entityAssess
  * - 'error': Failed to load data from one or both sources
  */
 export type AssessmentInfoStatus = 'success' | 'error'
+import { AuthSource } from '../../../interfaces/hmppsUser'
 
 export interface AccessDetails {
-  accessType: AccessType
+  accessType: AuthSource
   accessMode: AccessMode
   oasysRedirectUrl?: string
 }
