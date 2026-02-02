@@ -28,6 +28,8 @@ export default class ChangeGoalPage extends AbstractPage {
 
   readonly saveGoalButton: Locator
 
+  readonly backLink: Locator
+
   private constructor(page: Page) {
     super(page)
     this.header = page.locator('h1')
@@ -43,6 +45,7 @@ export default class ChangeGoalPage extends AbstractPage {
     this.targetDateCustom = page.locator('input[name="target_date_option"][value="set_another_date"]')
     this.customDateInput = page.locator('#custom_target_date')
     this.saveGoalButton = page.getByRole('button', { name: 'Save goal' })
+    this.backLink = page.locator('.govuk-back-link')
   }
 
   static async verifyOnPage(page: Page): Promise<ChangeGoalPage> {
@@ -145,5 +148,9 @@ export default class ChangeGoalPage extends AbstractPage {
   async getValidationErrorMessage(fieldName: string): Promise<string> {
     const errorMessage = this.page.locator(`#${fieldName}-error`)
     return (await errorMessage.textContent()) ?? ''
+  }
+
+  async clickBackLink(): Promise<void> {
+    await this.backLink.click()
   }
 }
