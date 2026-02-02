@@ -28,6 +28,7 @@ const TARGET_SERVICE_CLIENT_IDS: Record<TargetService, string> = {
 export interface CreateSessionOptions {
   targetService: TargetService
   accessMode?: AccessMode
+  pnc?: string
 }
 
 export interface SessionFixture {
@@ -150,11 +151,15 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
     await use(HandoverBuilder(handoverClient))
   },
 
-  createSession: async ({ coordinatorBuilder, handoverBuilder }, use) => {
+  createSession: async ({ coordinatorBuilder, handoverBuilder}, use) => {
     const createSessionFn = async (options: CreateSessionOptions): Promise<SessionFixture> => {
       const association = await coordinatorBuilder.create().save()
 
-      const sessionBuilder = handoverBuilder.forAssociation(association)
+      let sessionBuilder = handoverBuilder.forAssociation(association)
+
+      if(options.pnc) {
+        sessionBuilder.withSubjectPNC(options.pnc)
+      }
 
       if (options.accessMode) {
         sessionBuilder.withAccessMode(options.accessMode)
