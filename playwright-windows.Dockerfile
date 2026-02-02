@@ -6,14 +6,13 @@ SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPref
 
 # 1. Install Node.js
 ENV NODE_VERSION 20.11.0
+# dist/v20.11.0/node-v20.11.0-win-x64.zip
 RUN Invoke-WebRequest -OutFile node.zip -Uri "https://nodejs.org/dist/v$env:NODE_VERSION/node-v$env:NODE_VERSION-win-x64.zip"; \
     Expand-Archive node.zip -DestinationPath C:\; \
-    Rename-Item "C:\node-v$env:NODE_VERSION-win-x64" C:\nodejs; \
+    Rename-Item "C:\\node-v$env:NODE_VERSION-win-x64" C:\nodejs; \
     Remove-Item node.zip
-
-# 2. Add Node.js to PATH
-RUN $env:PATH = 'C:\nodejs;' + $env:PATH; \
-    [Environment]::SetEnvironmentVariable('PATH', $env:PATH, [EnvironmentVariableTarget]::Machine)
+RUN SETX PATH C:\nodejs
+RUN npm config set registry https://registry.npmjs.org/
 
 WORKDIR /playwright
 
