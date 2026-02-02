@@ -27,10 +27,5 @@ COPY playwright.config.ts ./
 RUN npm install
 RUN npx playwright install chromium
 
-# 5. Copy the rest of the application
-COPY ./integration_tests ./integration_tests
-COPY ./server ./server
-COPY ./packages ./packages
-
 # Run tests by default
 CMD ["npx", "playwright", "test"]
