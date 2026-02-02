@@ -151,13 +151,13 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
     await use(HandoverBuilder(handoverClient))
   },
 
-  createSession: async ({ coordinatorBuilder, handoverBuilder}, use) => {
+  createSession: async ({ coordinatorBuilder, handoverBuilder }, use) => {
     const createSessionFn = async (options: CreateSessionOptions): Promise<SessionFixture> => {
       const association = await coordinatorBuilder.create().save()
 
-      let sessionBuilder = handoverBuilder.forAssociation(association)
+      const sessionBuilder = handoverBuilder.forAssociation(association)
 
-      if(options.pnc) {
+      if (options.pnc) {
         sessionBuilder.withSubjectPNC(options.pnc)
       }
 

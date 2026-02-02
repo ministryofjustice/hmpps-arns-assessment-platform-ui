@@ -17,16 +17,13 @@ test.describe('Header', () => {
     expect(accessibilityScanResults.violations).toEqual([])
   })
 
-  test('displays subject details', async ({
-        page,
-        createSession,
-      }) => {
-        const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN, pnc: '123' })
-        await navigateToSentencePlan(page, handoverLink)
+  test('displays subject details', async ({ page, createSession }) => {
+    const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN, pnc: '123' })
+    await navigateToSentencePlan(page, handoverLink)
 
-        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-       
-        await expect(planOverviewPage.header).toMatchAriaSnapshot(`
+    const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+    await expect(planOverviewPage.header).toMatchAriaSnapshot(`
             - paragraph: Test User
             - term: "CRN:"
             - definition
@@ -41,14 +38,14 @@ test.describe('Header', () => {
             - button "Create goal"
             - button "Agree plan"
         `)
-    })
+  })
 
-    test('displays unknown PNC', async ({ page, createSession }) => {
-        const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN, pnc: null })
-        await navigateToSentencePlan(page, handoverLink)
+  test('displays unknown PNC', async ({ page, createSession }) => {
+    const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN, pnc: null })
+    await navigateToSentencePlan(page, handoverLink)
 
-        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+    await PlanOverviewPage.verifyOnPage(page)
 
-        await expect(page.getByText('PNC: Unknown PNC')).toBeVisible()
-    })
+    await expect(page.getByText('PNC: Unknown PNC')).toBeVisible()
+  })
 })
