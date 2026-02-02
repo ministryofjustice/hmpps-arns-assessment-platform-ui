@@ -14,24 +14,25 @@ permissions:
   contents: read
 
 jobs:
+  build_docker:
+    name: Build docker image
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@v2
+    with:
+      docker_registry: 'ghcr.io'
+      registry_org: 'ministryofjustice'
+      tag_latest: false
+      push: false
+      load: true
+      docker_multiplatform: false
+      upload_image_artifact: true
+      image_artifact_retention_days: 2
+
   e2e_test:
     runs-on: ubuntu-latest
     env:
       APP_VERSION: ${{ inputs.app_version }}
     steps:
       - uses: actions/checkout@v6
-
-      - name: Build docker image
-        uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@v2
-        with:
-          docker_registry: 'ghcr.io'
-          registry_org: 'ministryofjustice'
-          tag_latest: false
-          push: false
-          load: true
-          docker_multiplatform: false
-          upload_image_artifact: true
-          image_artifact_retention_days: 2
 
       - name: Download docker image
         uses: actions/download-artifact@v7
