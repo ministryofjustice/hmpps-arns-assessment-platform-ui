@@ -347,7 +347,7 @@ export interface SentencePlanState extends Record<string, unknown> {
  * @example
  * const myEffect = (deps: Deps) => async (context: SentencePlanContext) => {
  *   context.getData('assessmentUuid')  // typed as string
- *   context.getSession().sessionDetails?.accessType  // typed as 'hmpps-auth' | 'handover' | undefined
+ *   context.getSession().sessionDetails?.accessType  // typed as 'hmpps-auth' | 'oasys' | undefined
  *   context.getState('user')           // typed as User
  * }
  */
