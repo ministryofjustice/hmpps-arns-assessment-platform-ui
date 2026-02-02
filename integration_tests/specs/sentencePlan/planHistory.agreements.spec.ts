@@ -58,7 +58,7 @@ test.describe('Plan History - Agreements', () => {
         - paragraph:
           - strong: Plan created
           - text: /^(?=.*Initial Practitioner)(?!.*and).*$/
-        - paragraph: Test could not answer.
+        - paragraph: Test could not agree to this plan.
         - paragraph: Person was not available to discuss the plan
         - paragraph:
           - link /.+ Back to top/
@@ -260,7 +260,7 @@ test.describe('Plan History - Agreements', () => {
         - separator
         - paragraph:
           - strong: Plan created
-        - paragraph: Test could not answer.
+        - paragraph: Test could not agree to this plan.
       `)
     })
   })
