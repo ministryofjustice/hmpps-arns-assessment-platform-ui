@@ -34,6 +34,12 @@ export default class CreateGoalPage extends AbstractPage {
 
   readonly errorSummary: Locator
 
+  readonly assessmentInfoDetails: Locator
+
+  readonly assessmentInfoSummary: Locator
+
+  readonly assessmentInfoContent: Locator
+
   public constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
@@ -60,6 +66,9 @@ export default class CreateGoalPage extends AbstractPage {
     this.goalTitles = page.getByTestId('autocomplete-data-goal_title')
     this.findAccomodationGoal = page.getByRole('option', { name: 'I will find accommodation' })
     this.errorSummary = page.locator('[data-module="govuk-error-summary"]')
+    this.assessmentInfoDetails = page.locator('[data-qa="assessment-info-details"]')
+    this.assessmentInfoSummary = this.assessmentInfoDetails.locator('summary')
+    this.assessmentInfoContent = this.assessmentInfoDetails.locator('.govuk-details__text')
   }
 
   static async verifyOnPage(page: Page): Promise<CreateGoalPage> {
@@ -104,5 +113,17 @@ export default class CreateGoalPage extends AbstractPage {
 
   async clickSaveWithoutSteps(): Promise<void> {
     await this.saveWithoutStepsButton.click()
+  }
+
+  async expandAssessmentInfo(): Promise<void> {
+    const isOpen = await this.assessmentInfoDetails.getAttribute('open')
+    if (isOpen === null) {
+      await this.assessmentInfoSummary.click()
+    }
+  }
+
+  async isAssessmentInfoCollapsed(): Promise<boolean> {
+    const isOpen = await this.assessmentInfoDetails.getAttribute('open')
+    return isOpen === null
   }
 }
