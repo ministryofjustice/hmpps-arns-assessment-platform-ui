@@ -62,40 +62,37 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
     }
   }
 
-  // Add removed goal entries
-  // Look for goals with REMOVED notes so that the removal event is still shown
-  // even if the goal has been re-added.
-  for (const goal of goals) {
-    const removedNotes = goal.notes.filter(note => note.type === 'REMOVED')
-    const isCurrentlyActive = goal.status === 'ACTIVE' || goal.status === 'FUTURE'
-    for (const note of removedNotes) {
+  // Add removed goal entries from timeline data
+  for (const item of planTimeline) {
+    if (item.customType === 'GOAL_REMOVED' && item.customData) {
+      const currentGoal = goals.find(g => g.uuid === item.customData.goalUuid)
+      const isCurrentlyActive = currentGoal ? currentGoal.status === 'ACTIVE' || currentGoal.status === 'FUTURE' : false
+
       const entry: GoalRemovedHistoryEntry = {
         type: 'goal_removed',
-        uuid: `removed-${goal.uuid}-${note.uuid}`,
-        date: note.createdAt,
-        goalUuid: goal.uuid,
-        goalTitle: goal.title,
-        removedBy: note.createdBy,
-        reason: note.note,
+        uuid: `removed-${item.customData.goalUuid}-${item.timestamp}`,
+        date: new Date(item.timestamp),
+        goalUuid: item.customData.goalUuid,
+        goalTitle: item.customData.goalTitle,
+        removedBy: item.customData.removedBy,
+        reason: item.customData.reason,
         isCurrentlyActive,
       }
       entries.push(entry)
     }
   }
 
-  // Add re-added goal entries
-  // A goal can be re-added (has READDED note) but is now ACTIVE or FUTURE
-  for (const goal of goals) {
-    const readdedNotes = goal.notes.filter(note => note.type === 'READDED')
-    for (const note of readdedNotes) {
+  // Add re-added goal entries from timeline data
+  for (const item of planTimeline) {
+    if (item.customType === 'GOAL_READDED' && item.customData) {
       const entry: GoalReaddedHistoryEntry = {
         type: 'goal_readded',
-        uuid: `readded-${goal.uuid}-${note.uuid}`,
-        date: note.createdAt,
-        goalUuid: goal.uuid,
-        goalTitle: goal.title,
-        readdedBy: note.createdBy,
-        reason: note.note,
+        uuid: `readded-${item.customData.goalUuid}-${item.timestamp}`,
+        date: new Date(item.timestamp),
+        goalUuid: item.customData.goalUuid,
+        goalTitle: item.customData.goalTitle,
+        readdedBy: item.customData.readdedBy,
+        reason: item.customData.reason,
       }
       entries.push(entry)
     }

@@ -56,6 +56,10 @@ export const markGoalAsActive = (deps: SentencePlanEffectsDeps) => async (contex
 
   const commands: Commands[] = []
 
+  // Read note text early so it can be included in the timeline data
+  const readdNote = context.getAnswer('readd_note')
+  const noteText = readdNote && typeof readdNote === 'string' ? readdNote.trim() : ''
+
   // 1. Update goal status and target date
   const propertiesToAdd: Record<string, unknown> = {
     status,
@@ -72,6 +76,15 @@ export const markGoalAsActive = (deps: SentencePlanEffectsDeps) => async (contex
     collectionItemUuid: activeGoal.uuid,
     added: wrapAll(propertiesToAdd),
     removed: [],
+    timeline: {
+      type: 'GOAL_READDED',
+      data: {
+        goalUuid: activeGoal.uuid,
+        goalTitle: activeGoal.title,
+        readdedBy: practitionerName,
+        ...(noteText ? { reason: noteText } : {}),
+      },
+    },
     assessmentUuid,
     user,
   })
@@ -89,8 +102,7 @@ export const markGoalAsActive = (deps: SentencePlanEffectsDeps) => async (contex
   }
 
   // 2. Add re-add note
-  const readdNote = context.getAnswer('readd_note')
-  if (readdNote && typeof readdNote === 'string' && readdNote.trim().length > 0) {
+  if (noteText) {
     // Find or create NOTES collection for the goal
     let collectionUuid = activeGoal.notesCollectionUuid
 
@@ -116,7 +128,7 @@ export const markGoalAsActive = (deps: SentencePlanEffectsDeps) => async (contex
         type: 'READDED',
       }),
       answers: wrapAll({
-        note: readdNote.trim(),
+        note: noteText,
         created_by: practitionerName,
       }),
       timeline: {

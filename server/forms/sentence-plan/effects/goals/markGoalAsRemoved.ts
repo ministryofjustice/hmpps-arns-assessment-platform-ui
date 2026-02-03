@@ -41,6 +41,10 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
 
   const commands: Commands[] = []
 
+  // Read note text early so it can be included in the timeline data
+  const removalNote = context.getAnswer('removal_note')
+  const noteText = removalNote && typeof removalNote === 'string' ? removalNote.trim() : ''
+
   // 1. Update goal status to REMOVED
   commands.push({
     type: 'UpdateCollectionItemPropertiesCommand',
@@ -50,6 +54,15 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
       status_date: new Date().toISOString(),
     }),
     removed: [],
+    timeline: {
+      type: 'GOAL_REMOVED',
+      data: {
+        goalUuid: activeGoal.uuid,
+        goalTitle: activeGoal.title,
+        removedBy: practitionerName,
+        ...(noteText ? { reason: noteText } : {}),
+      },
+    },
     assessmentUuid,
     user,
   })
@@ -65,8 +78,7 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
   })
 
   // 3. Add removal note
-  const removalNote = context.getAnswer('removal_note')
-  if (removalNote && typeof removalNote === 'string' && removalNote.trim().length > 0) {
+  if (noteText) {
     // Find or create NOTES collection for the goal
     let collectionUuid = activeGoal.notesCollectionUuid
 
@@ -92,7 +104,7 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
         type: 'REMOVED',
       }),
       answers: wrapAll({
-        note: removalNote.trim(),
+        note: noteText,
         created_by: practitionerName,
       }),
       timeline: {

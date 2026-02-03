@@ -150,15 +150,17 @@ export class SentencePlanBuilderInstance {
     const assessment = await this.assessmentBuilder.save()
     const result = this.mapToCreatedSentencePlan(assessment)
 
-    await this.createAchievedGoalTimelineEntries(result)
+    await this.createGoalTimelineEntries(result)
 
     return result
   }
 
-  private async createAchievedGoalTimelineEntries(plan: CreatedSentencePlan): Promise<void> {
+  private async createGoalTimelineEntries(plan: CreatedSentencePlan): Promise<void> {
     for (const [index, goalConfig] of this.goals.entries()) {
+      const createdGoal = plan.goals[index]
+
+      // GOAL_ACHIEVED timeline entry
       if (goalConfig.status === 'ACHIEVED' && goalConfig.achievedBy) {
-        const createdGoal = plan.goals[index]
         const achievedNote = goalConfig.notes?.find(n => n.type === 'ACHIEVED')
 
         // eslint-disable-next-line no-await-in-loop
@@ -178,6 +180,56 @@ export class SentencePlanBuilderInstance {
             },
           },
           user: { id: 'e2e-test', name: goalConfig.achievedBy, authSource: 'HMPPS_AUTH' },
+        })
+      }
+
+      // GOAL_REMOVED timeline entries
+      const removedNotes = goalConfig.notes?.filter(n => n.type === 'REMOVED') ?? []
+      for (const noteConfig of removedNotes) {
+        const userName = noteConfig.createdBy ?? 'E2E Test'
+
+        // eslint-disable-next-line no-await-in-loop
+        await this.client.executeCommand({
+          type: 'UpdateCollectionItemPropertiesCommand',
+          collectionItemUuid: createdGoal.uuid,
+          assessmentUuid: plan.uuid,
+          added: {},
+          removed: [],
+          timeline: {
+            type: 'GOAL_REMOVED',
+            data: {
+              goalUuid: createdGoal.uuid,
+              goalTitle: goalConfig.title,
+              removedBy: userName,
+              reason: noteConfig.note,
+            },
+          },
+          user: { id: 'e2e-test', name: userName, authSource: 'HMPPS_AUTH' },
+        })
+      }
+
+      // GOAL_READDED timeline entries
+      const readdedNotes = goalConfig.notes?.filter(n => n.type === 'READDED') ?? []
+      for (const noteConfig of readdedNotes) {
+        const userName = noteConfig.createdBy ?? 'E2E Test'
+
+        // eslint-disable-next-line no-await-in-loop
+        await this.client.executeCommand({
+          type: 'UpdateCollectionItemPropertiesCommand',
+          collectionItemUuid: createdGoal.uuid,
+          assessmentUuid: plan.uuid,
+          added: {},
+          removed: [],
+          timeline: {
+            type: 'GOAL_READDED',
+            data: {
+              goalUuid: createdGoal.uuid,
+              goalTitle: goalConfig.title,
+              readdedBy: userName,
+              reason: noteConfig.note,
+            },
+          },
+          user: { id: 'e2e-test', name: userName, authSource: 'HMPPS_AUTH' },
         })
       }
     }

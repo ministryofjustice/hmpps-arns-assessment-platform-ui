@@ -5,7 +5,7 @@ import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
  * Load plan timeline events from the API
  *
  * Fetches timeline events filtered by custom type using the TimelineQuery.
- * Currently loads GOAL_ACHIEVED events for plan history display.
+ * Loads GOAL_ACHIEVED, GOAL_REMOVED, and GOAL_READDED events for plan history display.
  *
  * Sets:
  * - Data('planTimeline'): Array of TimelineItem objects from the API
@@ -24,7 +24,7 @@ export const loadPlanTimeline = (deps: SentencePlanEffectsDeps) => async (contex
 
   const result = await deps.api.executeQuery({
     type: 'TimelineQuery',
-    includeCustomTypes: ['GOAL_ACHIEVED'],
+    includeCustomTypes: ['GOAL_ACHIEVED', 'GOAL_REMOVED', 'GOAL_READDED'],
     assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
     user,
   })
