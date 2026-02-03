@@ -14,7 +14,7 @@ import { PlanType } from './oasysCreate'
 export type OasysEquivalent = Record<string, string | string[]>
 
 /**
- * Raw response from GET /entity/{entityUuid}/ASSESSMENT
+ * Response from Coordinator API: GET /entity/{entityUuid}/ASSESSMENT
  */
 export interface EntityAssessmentResponse {
   sanAssessmentId: string
@@ -30,75 +30,50 @@ export interface EntityAssessmentResponse {
 }
 
 /**
- * Linked indicator values from OASys
+ * Linked indicator values from OASys practitioner analysis
  */
 export type LinkedIndicator = 'YES' | 'NO' | null
 
 /**
- * Motivation levels for making changes
+ * Motivation levels for making changes (from OASys practitioner analysis)
  */
 export type MotivationLevel =
-  | 'READY_TO_MAKE_CHANGES'
-  | 'WANTS_TO_MAKE_CHANGES'
+  | 'MADE_CHANGES'
+  | 'MAKING_CHANGES'
+  | 'WANT_TO_MAKE_CHANGES'
   | 'NEEDS_HELP_TO_MAKE_CHANGES'
+  | 'THINKING_ABOUT_MAKING_CHANGES'
   | 'DOES_NOT_WANT_TO_MAKE_CHANGES'
+  | 'DOES_NOT_WANT_TO_ANSWER'
+  | 'NOT_PRESENT'
+  | 'NOT_APPLICABLE'
   | null
 
 /**
- * Processed assessment area with extracted and transformed fields
+ * Processed assessment area with extracted and transformed fields.
  */
 export interface AssessmentArea {
-  /** Display name for the area */
   title: string
-  /** URL-friendly route segment */
   goalRoute: string
-  /** Whether the practitioner has completed this section */
   isAssessmentSectionComplete: boolean
-  /** Risk of serious harm indicator (YES/NO/null) */
   linkedToHarm: LinkedIndicator
-  /** Risk of reoffending indicator (YES/NO/null) */
   linkedToReoffending: LinkedIndicator
-  /** Strengths/protective factors indicator (YES/NO/null) */
   linkedToStrengthsOrProtectiveFactors: LinkedIndicator
-  /** Practitioner's analysis of risk of serious harm */
   riskOfSeriousHarmDetails: string
-  /** Practitioner's analysis of risk of reoffending */
   riskOfReoffendingDetails: string
-  /** Identified strengths or protective factors */
   strengthsOrProtectiveFactorsDetails: string
-  /** Motivation to make changes */
   motivationToMakeChanges: MotivationLevel
-  /** Calculated score for this area (if applicable) */
   score: number | null
-  /** Upper bound threshold for high-scoring classification */
   upperBound: number | null
-  /** Whether this area is classified as high-scoring */
+  threshold: number | null
   isHighScoring: boolean
-  /** Whether this area is classified as low-scoring */
   isLowScoring: boolean
 }
 
-/**
- * Assessment areas grouped by category for display
- */
-export interface FormattedAssessment {
-  /** Areas where the practitioner hasn't completed the section */
-  incompleteAreas: AssessmentArea[]
-  /** Areas with scores at or above threshold - require attention */
-  highScoring: AssessmentArea[]
-  /** Areas with scores below threshold - positive indicators */
-  lowScoring: AssessmentArea[]
-  /** Areas without scoring (e.g., Finance, Health) */
-  other: AssessmentArea[]
-}
-
-/**
- * Criminogenic needs data from a separate source (e.g., ARNS API)
- * Used to determine linked indicators and scores
- */
 export interface CriminogenicNeedArea {
   linkedToHarm: boolean | null
   linkedToReoffending: boolean | null
+  linkedToStrengthsOrProtectiveFactors: boolean | null
   score: number | null
 }
 

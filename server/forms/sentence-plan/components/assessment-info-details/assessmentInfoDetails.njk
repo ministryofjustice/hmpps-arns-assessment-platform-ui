@@ -1,0 +1,109 @@
+{#
+  Assessment Info Details Component
+
+  Displays practitioner analysis from the SAN assessment in a collapsible
+  GOV.UK Details component.
+
+  Params:
+    personName       - Person's forename
+    areaName         - Area of need name (e.g., "Accommodation")
+    isError          - True if API call failed
+    hasData          - True if at least one indicator has data
+    isComplete       - True if section is marked complete
+    roshLinked       - 'YES' | 'NO' | null
+    roshText         - 'is' | 'is not' | null
+    roshDetails      - Risk of serious harm details text
+    reoffendingLinked - 'YES' | 'NO' | null
+    reoffendingText  - 'is' | 'is not' | null
+    reoffendingDetails - Risk of reoffending details text
+    motivationText   - Motivation display text with person's name
+    motivationBypassed - True if motivation question was not applicable
+    strengthsLinked  - 'YES' | 'NO' | null
+    strengthsText    - 'are' | 'are no' | null
+    strengthsDetails - Strengths/protective factors details text
+    missingItems     - Array of missing item descriptions
+    hasMissingItems  - True if there are missing items
+#}
+
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{#- Build the content based on state -#}
+{% set detailsContent %}
+  {#- Error state -#}
+  {% if params.isError %}
+    {{ govukWarningText({
+      text: "There is a problem getting this information. Try reloading the page or try again later.",
+      iconFallbackText: "Warning"
+    }) }}
+
+  {#- No data state -#}
+  {% elif not params.hasData %}
+    {{ govukWarningText({
+      text: "No information is available yet as the assessment has not been started for this area.",
+      iconFallbackText: "Warning"
+    }) }}
+
+  {#- Has data -#}
+  {% else %}
+    {#- Incomplete warning -#}
+    {% if not params.isComplete %}
+      {{ govukWarningText({
+        text: "This area has not been marked as complete in the assessment yet, but you can check the latest information available below.",
+        iconFallbackText: "Warning"
+      }) }}
+    {% endif %}
+
+    {#- Risk of serious harm section -#}
+    {% if params.roshLinked %}
+      <p><strong>This area {{ params.roshText }} linked to RoSH (risk of serious harm)</strong></p>
+      {% if params.roshDetails %}
+        <p>{{ params.roshDetails }}</p>
+      {% endif %}
+    {% endif %}
+
+    {#- Risk of reoffending section -#}
+    {% if params.reoffendingLinked %}
+      <p><strong>This area {{ params.reoffendingText }} linked to risk of reoffending</strong></p>
+      {% if params.reoffendingDetails %}
+        <p>{{ params.reoffendingDetails }}</p>
+      {% endif %}
+    {% endif %}
+
+    {#- Motivation section -#}
+    {% if params.motivationText %}
+      <p><strong>Motivation to make changes in this area</strong></p>
+      <p>{{ params.motivationText }}</p>
+    {% elif params.motivationBypassed %}
+      <p><strong>Motivation to make changes in this area</strong></p>
+      <p>{{ params.personName }} did not have to answer this question.</p>
+    {% endif %}
+
+    {#- Strengths section -#}
+    {% if params.strengthsLinked %}
+      <p><strong>There {{ params.strengthsText }} strengths or protective factors related to this area</strong></p>
+      {% if params.strengthsDetails %}
+        <p>{{ params.strengthsDetails }}</p>
+      {% endif %}
+    {% endif %}
+
+    {#- Missing information section -#}
+    {% if params.hasMissingItems and not params.isComplete %}
+      <p><strong>Missing information:</strong></p>
+      <ul class="govuk-list govuk-list--bullet">
+        {% for item in params.missingItems %}
+          <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endif %}
+{% endset %}
+
+{{ govukDetails({
+  summaryText: "View information from " + params.personName + "'s assessment",
+  html: detailsContent,
+  attributes: {
+    "data-qa": "assessment-info-details"
+  }
+}) }}
