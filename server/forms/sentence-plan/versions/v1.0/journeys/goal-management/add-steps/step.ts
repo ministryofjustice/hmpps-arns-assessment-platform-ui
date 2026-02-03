@@ -89,6 +89,10 @@ export const addStepsStep = step({
         effects: [SentencePlanEffects.saveStepEditSession()],
         next: [
           redirect({
+            when: Data('navigationReferrer').match(Condition.Equals('update-goal-steps')),
+            goto: Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')),
+          }),
+          redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
             goto: '../../plan/overview?type=future',
           }),

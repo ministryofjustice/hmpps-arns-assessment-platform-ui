@@ -168,4 +168,10 @@ export default class PlanOverviewPage extends AbstractPage {
     const addStepsLink = card.getByRole('link', { name: /add or change steps/i })
     await addStepsLink.click()
   }
+
+  async clickUpdateGoal(index: number): Promise<void> {
+    const card = await this.getGoalCardByIndex(index)
+    const updateLink = card.getByRole('link', { name: /update/i })
+    await updateLink.click()
+  }
 }

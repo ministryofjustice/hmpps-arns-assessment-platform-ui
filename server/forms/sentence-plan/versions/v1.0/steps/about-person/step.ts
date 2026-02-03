@@ -15,6 +15,8 @@ export const aboutPersonStep = step({
       },
     },
   },
+  // TODO: once this page is build, we need to add SentencePlanEffects.setNavigationReferrer('about') into onLoad/onAccess effects
+  //  and add it as a link for back button in 'create a goal' and 'view previous versions pages'
   blocks: [continueButton],
   onSubmission: [
     submitTransition({
