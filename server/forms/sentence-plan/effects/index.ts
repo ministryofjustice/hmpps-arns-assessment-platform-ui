@@ -13,6 +13,7 @@ import { derivePlanHistoryEntries } from './plan/derivePlanHistoryEntries'
 import { updatePlanAgreementStatus } from './plan/updatePlanAgreementStatus'
 import { saveActiveGoal } from './goals/saveActiveGoal'
 import { deriveGoalCurrentAreaOfNeed } from './goals/deriveGoalCurrentAreaOfNeed'
+import { loadAreaAssessmentInfo } from './goals/loadAreaAssessmentInfo'
 import { setActiveGoalContext } from './goals/setActiveGoalContext'
 import { loadActiveGoalForEdit } from './goals/loadActiveGoalForEdit'
 import { updateActiveGoal } from './goals/updateActiveGoal'
@@ -81,6 +82,7 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     // Goals
     saveActiveGoal,
     deriveGoalCurrentAreaOfNeed,
+    loadAreaAssessmentInfo,
     setActiveGoalContext,
     loadActiveGoalForEdit,
     updateActiveGoal,

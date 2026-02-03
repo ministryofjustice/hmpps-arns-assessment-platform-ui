@@ -7,9 +7,8 @@ import { MOJSideNavigation } from '@form-engine-moj-components/components'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { CaseData } from '../../../constants'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
-import { AccessibleAutocomplete } from '../../../../../components'
+import { AccessibleAutocomplete, AssessmentInfoDetails } from '../../../../../components'
 
-// Side navigation for areas of need
 const sideNavigation = MOJSideNavigation({
   attributes: { 'data-qa': 'area-of-need-nav' },
   items: Data('areasOfNeed').each(
@@ -30,6 +29,13 @@ const pageHeading = HtmlBlock({
     Data('currentAreaOfNeed').path('text'),
     CaseData.Forename,
   ),
+})
+
+const assessmentInfoDetails = AssessmentInfoDetails({
+  personName: CaseData.Forename,
+  areaName: Data('currentAreaOfNeed').path('text'),
+  assessmentData: Data('currentAreaAssessment'),
+  status: Data('currentAreaAssessmentStatus'),
 })
 
 const goalTitle = AccessibleAutocomplete({
@@ -79,8 +85,13 @@ const buttonGroup = TemplateWrapper({
   },
 })
 
-// Export sidebar navigation for two-column layout
 export const sideNav = sideNavigation
 
-// Export content blocks for two-column layout
-export const contentBlocks = [pageHeading, goalTitle, isRelatedToOtherAreas, canStartNow, buttonGroup]
+export const contentBlocks = [
+  pageHeading,
+  assessmentInfoDetails,
+  goalTitle,
+  isRelatedToOtherAreas,
+  canStartNow,
+  buttonGroup,
+]
