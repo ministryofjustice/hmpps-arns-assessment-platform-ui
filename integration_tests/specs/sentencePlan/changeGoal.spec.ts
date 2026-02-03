@@ -414,7 +414,7 @@ test.describe('Change goal journey', () => {
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
         await planOverviewPage.clickCreateGoal()
 
-        // un create goal page:
+        // on create goal page:
         // tick 1 related area of need
         //  set can start working now to yes with 12 months
         const createGoalPage = await CreateGoalPage.verifyOnPage(page)
