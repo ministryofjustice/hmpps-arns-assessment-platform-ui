@@ -45,7 +45,10 @@ export const planStep = step({
   ],
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.loadNotifications('plan-overview')],
+      effects: [
+        SentencePlanEffects.loadNotifications('plan-overview'),
+        SentencePlanEffects.setNavigationReferrer('plan-overview'),
+      ],
       next: [
         redirect({
           when: Query('type').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
