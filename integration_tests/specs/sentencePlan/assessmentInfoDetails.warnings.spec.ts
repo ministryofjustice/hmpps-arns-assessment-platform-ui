@@ -4,7 +4,7 @@ import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import { navigateToSentencePlan } from './sentencePlanUtils'
 import coordinatorApi, { OasysEquivalent } from '../../mockApis/coordinatorApi'
 
-test.describe('Assessment Info Details - Edge Cases', () => {
+test.describe('Assessment Info Details - Warnings', () => {
   test.describe('No Information Available', () => {
     test('displays not started warning when assessment has no data for area', async ({ page, createSession }) => {
       // Pass criminogenic needs with NULL values for employment area to test "not started" scenario
@@ -75,69 +75,5 @@ test.describe('Assessment Info Details - Edge Cases', () => {
         - strong: /Warning.*There is a problem getting this information/
       `)
     })
-  })
-
-  test.describe('Motivation Question Not Applicable', () => {
-    test('displays bypass message when motivation question was not applicable (e.g., no drug use)', async ({
-      page,
-      createSession,
-    }) => {
-      const { handoverLink, sentencePlanId } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        criminogenicNeedsData: {
-          drugMisuse: {
-            drugLinkedToHarm: 'NO',
-            drugLinkedToReoffending: 'NO',
-            drugStrengths: 'NO',
-            drugOtherWeightedScore: '0',
-          },
-        },
-      })
-
-      const customOasysEquivalent: OasysEquivalent = {
-        drug_use_section_complete: 'YES',
-        // No motivation - person didn't have to answer
-      }
-
-      await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
-        sanOasysEquivalent: customOasysEquivalent,
-      })
-
-      await navigateToSentencePlan(page, handoverLink)
-      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/drug-use')
-      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
-
-      expect(await createGoalPage.isAssessmentInfoCollapsed()).toBe(true)
-
-      await createGoalPage.expandAssessmentInfo()
-      await expect(createGoalPage.assessmentInfoContent).toMatchAriaSnapshot(`
-        - paragraph:
-          - strong: /This area is not linked to RoSH/
-        - paragraph:
-          - strong: /This area is not linked to risk of reoffending/
-        - paragraph:
-          - strong: /Motivation to make changes/
-        - paragraph: /did not have to answer this question/
-        - paragraph:
-          - strong: /There are no strengths or protective factors/
-      `)
-    })
-  })
-
-  test.describe('Collapsed State Verification', () => {
-    const areasToTest = ['accommodation', 'drug-use', 'finances', 'employment-and-education']
-
-    for (const area of areasToTest) {
-      test(`assessment info is collapsed by default for ${area}`, async ({ page, createSession }) => {
-        const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await navigateToSentencePlan(page, handoverLink)
-
-        await page.goto(`/sentence-plan/v1.0/goal/new/add-goal/${area}`)
-        const createGoalPage = await CreateGoalPage.verifyOnPage(page)
-
-        await expect(createGoalPage.assessmentInfoDetails).toBeVisible()
-        expect(await createGoalPage.isAssessmentInfoCollapsed()).toBe(true)
-      })
-    }
   })
 })
