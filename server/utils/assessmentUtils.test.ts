@@ -1,12 +1,12 @@
 import { OasysEquivalent, CriminogenicNeedsData } from '../interfaces/coordinator-api/entityAssessment'
-import {
-  transformAssessmentData,
-  formatAssessmentAreas,
-  processAssessmentInfo,
-  getMotivationDisplayText,
-} from './assessmentUtils'
+import { transformAssessmentData } from './assessmentUtils'
 
 describe('assessmentUtils', () => {
+  // Note: The OASys equivalent keys (e.g. accommodation_practitioner_analysis_risk_of_serious_harm)
+  // come from SAN via the coordinator API, not directly from OASys. These represent practitioner
+  // analysis entered in SAN, formatted in an OASys-compatible structure. We don't use the YES/NO
+  // indicator values from these keys - instead we get linked indicators from the handover service
+  // (criminogenic needs data, which IS from OASys). We only use these SAN keys for the _details text.
   const createOasysEquivalent = (overrides: Partial<OasysEquivalent> = {}): OasysEquivalent => ({
     accommodation_section_complete: 'YES',
     accommodation_practitioner_analysis_risk_of_serious_harm: 'YES',
@@ -19,28 +19,86 @@ describe('assessmentUtils', () => {
   })
 
   const createCriminogenicNeedsData = (overrides: Partial<CriminogenicNeedsData> = {}): CriminogenicNeedsData => ({
-    accommodation: { linkedToHarm: true, linkedToReoffending: false, score: 4 },
-    educationTrainingEmployability: { linkedToHarm: false, linkedToReoffending: true, score: 3 },
-    finance: { linkedToHarm: false, linkedToReoffending: false, score: null },
-    drugMisuse: { linkedToHarm: false, linkedToReoffending: true, score: 5 },
-    alcoholMisuse: { linkedToHarm: true, linkedToReoffending: true, score: 3 },
-    healthAndWellbeing: { linkedToHarm: false, linkedToReoffending: false, score: null },
-    personalRelationshipsAndCommunity: { linkedToHarm: true, linkedToReoffending: true, score: 7 },
-    thinkingBehaviourAndAttitudes: { linkedToHarm: true, linkedToReoffending: true, score: 8 },
+    accommodation: {
+      linkedToHarm: true,
+      linkedToReoffending: false,
+      linkedToStrengthsOrProtectiveFactors: true,
+      score: 4,
+    },
+    educationTrainingEmployability: {
+      linkedToHarm: false,
+      linkedToReoffending: true,
+      linkedToStrengthsOrProtectiveFactors: false,
+      score: 3,
+    },
+    finance: {
+      linkedToHarm: false,
+      linkedToReoffending: false,
+      linkedToStrengthsOrProtectiveFactors: null,
+      score: null,
+    },
+    drugMisuse: {
+      linkedToHarm: false,
+      linkedToReoffending: true,
+      linkedToStrengthsOrProtectiveFactors: false,
+      score: 5,
+    },
+    alcoholMisuse: {
+      linkedToHarm: true,
+      linkedToReoffending: true,
+      linkedToStrengthsOrProtectiveFactors: false,
+      score: 3,
+    },
+    healthAndWellbeing: {
+      linkedToHarm: false,
+      linkedToReoffending: false,
+      linkedToStrengthsOrProtectiveFactors: null,
+      score: null,
+    },
+    personalRelationshipsAndCommunity: {
+      linkedToHarm: true,
+      linkedToReoffending: true,
+      linkedToStrengthsOrProtectiveFactors: false,
+      score: 7,
+    },
+    thinkingBehaviourAndAttitudes: {
+      linkedToHarm: true,
+      linkedToReoffending: true,
+      linkedToStrengthsOrProtectiveFactors: false,
+      score: 8,
+    },
     ...overrides,
   })
 
   describe('transformAssessmentData', () => {
     it('should transform OASys equivalent data into assessment areas', () => {
       const oasysEquivalent = createOasysEquivalent()
+      const crimNeeds = createCriminogenicNeedsData()
 
-      const result = transformAssessmentData(oasysEquivalent)
+      const result = transformAssessmentData(oasysEquivalent, crimNeeds)
 
       expect(result).toHaveLength(8)
       expect(result[0].title).toBe('Accommodation')
       expect(result[0].isAssessmentSectionComplete).toBe(true)
+      // Linked indicators come from handover (criminogenic needs), not OASys equivalent
       expect(result[0].linkedToHarm).toBe('YES')
+      expect(result[0].linkedToReoffending).toBe('NO')
+      expect(result[0].linkedToStrengthsOrProtectiveFactors).toBe('YES')
+      // Details come from OASys equivalent (coordinator API)
       expect(result[0].riskOfSeriousHarmDetails).toBe('Risk details for accommodation')
+    })
+
+    it('should return null for linked indicators when no criminogenic needs data provided', () => {
+      const oasysEquivalent = createOasysEquivalent()
+
+      const result = transformAssessmentData(oasysEquivalent)
+
+      // Without criminogenic needs, linked indicators should be null
+      expect(result[0].linkedToHarm).toBeNull()
+      expect(result[0].linkedToReoffending).toBeNull()
+      expect(result[0].linkedToStrengthsOrProtectiveFactors).toBeNull()
+      // Section complete still comes from OASys equivalent
+      expect(result[0].isAssessmentSectionComplete).toBe(true)
     })
 
     it('should handle incomplete sections', () => {
@@ -63,24 +121,32 @@ describe('assessmentUtils', () => {
 
     it('should extract NO details when indicator is NO', () => {
       const oasysEquivalent = createOasysEquivalent({
-        accommodation_practitioner_analysis_risk_of_serious_harm: 'NO',
         accommodation_practitioner_analysis_risk_of_serious_harm_no_details: 'No harm identified',
       })
+      const crimNeeds = createCriminogenicNeedsData({
+        accommodation: {
+          linkedToHarm: false,
+          linkedToReoffending: false,
+          linkedToStrengthsOrProtectiveFactors: true,
+          score: 4,
+        },
+      })
 
-      const result = transformAssessmentData(oasysEquivalent)
+      const result = transformAssessmentData(oasysEquivalent, crimNeeds)
 
+      // Linked indicator comes from handover, details come from OASys based on that indicator
       expect(result[0].linkedToHarm).toBe('NO')
       expect(result[0].riskOfSeriousHarmDetails).toBe('No harm identified')
     })
 
     it('should parse motivation levels correctly', () => {
       const oasysEquivalent = createOasysEquivalent({
-        accommodation_practitioner_analysis_motivation_to_make_changes: 'WANTS_TO_MAKE_CHANGES',
+        accommodation_practitioner_analysis_motivation_to_make_changes: 'WANT_TO_MAKE_CHANGES',
       })
 
       const result = transformAssessmentData(oasysEquivalent)
 
-      expect(result[0].motivationToMakeChanges).toBe('WANTS_TO_MAKE_CHANGES')
+      expect(result[0].motivationToMakeChanges).toBe('WANT_TO_MAKE_CHANGES')
     })
 
     it('should return null for invalid motivation values', () => {
@@ -108,7 +174,12 @@ describe('assessmentUtils', () => {
         personal_relationships_community_section_complete: 'YES',
       })
       const crimNeeds = createCriminogenicNeedsData({
-        personalRelationshipsAndCommunity: { linkedToHarm: true, linkedToReoffending: true, score: 7 },
+        personalRelationshipsAndCommunity: {
+          linkedToHarm: true,
+          linkedToReoffending: true,
+          linkedToStrengthsOrProtectiveFactors: false,
+          score: 7,
+        },
       })
 
       const result = transformAssessmentData(oasysEquivalent, crimNeeds)
@@ -123,12 +194,36 @@ describe('assessmentUtils', () => {
     it('should classify low-scoring areas correctly', () => {
       const oasysEquivalent = createOasysEquivalent()
       const crimNeeds = createCriminogenicNeedsData({
-        accommodation: { linkedToHarm: false, linkedToReoffending: false, score: 2 },
+        accommodation: {
+          linkedToHarm: false,
+          linkedToReoffending: false,
+          linkedToStrengthsOrProtectiveFactors: null,
+          score: 2,
+        },
       })
 
       const result = transformAssessmentData(oasysEquivalent, crimNeeds)
 
       expect(result[0].score).toBe(2)
+      expect(result[0].isHighScoring).toBe(false)
+      expect(result[0].isLowScoring).toBe(true)
+    })
+
+    it('should classify score at threshold as low-scoring', () => {
+      const oasysEquivalent = createOasysEquivalent()
+      const crimNeeds = createCriminogenicNeedsData({
+        accommodation: {
+          linkedToHarm: false,
+          linkedToReoffending: false,
+          linkedToStrengthsOrProtectiveFactors: null,
+          score: 6,
+        },
+      })
+
+      const result = transformAssessmentData(oasysEquivalent, crimNeeds)
+
+      expect(result[0].score).toBe(6)
+      expect(result[0].upperBound).toBe(6)
       expect(result[0].isHighScoring).toBe(false)
       expect(result[0].isLowScoring).toBe(true)
     })
@@ -151,100 +246,6 @@ describe('assessmentUtils', () => {
       expect(health?.upperBound).toBeNull()
       expect(health?.isHighScoring).toBe(false)
       expect(health?.isLowScoring).toBe(false)
-    })
-  })
-
-  describe('formatAssessmentAreas', () => {
-    it('should group incomplete areas', () => {
-      const areas = transformAssessmentData({
-        accommodation_section_complete: 'NO',
-        employment_education_section_complete: 'YES',
-      })
-
-      const result = formatAssessmentAreas(areas)
-
-      expect(result.incompleteAreas.length).toBeGreaterThan(0)
-      expect(result.incompleteAreas.some(a => a.title === 'Accommodation')).toBe(true)
-    })
-
-    it('should group high-scoring areas', () => {
-      const oasysEquivalent: OasysEquivalent = {
-        thinking_behaviours_attitudes_section_complete: 'YES',
-      }
-      const crimNeeds = createCriminogenicNeedsData({
-        thinkingBehaviourAndAttitudes: { linkedToHarm: true, linkedToReoffending: true, score: 10 },
-      })
-
-      const areas = transformAssessmentData(oasysEquivalent, crimNeeds)
-      const result = formatAssessmentAreas(areas)
-
-      expect(result.highScoring.some(a => a.title === 'Thinking, behaviours and attitudes')).toBe(true)
-    })
-
-    it('should group low-scoring areas', () => {
-      const oasysEquivalent: OasysEquivalent = {
-        accommodation_section_complete: 'YES',
-      }
-      const crimNeeds = createCriminogenicNeedsData({
-        accommodation: { linkedToHarm: false, linkedToReoffending: false, score: 2 },
-      })
-
-      const areas = transformAssessmentData(oasysEquivalent, crimNeeds)
-      const result = formatAssessmentAreas(areas)
-
-      expect(result.lowScoring.some(a => a.title === 'Accommodation')).toBe(true)
-    })
-
-    it('should group non-scoring areas into other', () => {
-      const oasysEquivalent: OasysEquivalent = {
-        finance_section_complete: 'YES',
-        health_wellbeing_section_complete: 'YES',
-      }
-
-      const areas = transformAssessmentData(oasysEquivalent)
-      const result = formatAssessmentAreas(areas)
-
-      expect(result.other.some(a => a.title === 'Finances')).toBe(true)
-      expect(result.other.some(a => a.title === 'Health and wellbeing')).toBe(true)
-    })
-  })
-
-  describe('processAssessmentInfo', () => {
-    it('should transform and format in one call', () => {
-      const oasysEquivalent = createOasysEquivalent({
-        accommodation_section_complete: 'YES',
-        finance_section_complete: 'YES',
-      })
-      const crimNeeds = createCriminogenicNeedsData()
-
-      const result = processAssessmentInfo(oasysEquivalent, crimNeeds)
-
-      expect(result).toHaveProperty('incompleteAreas')
-      expect(result).toHaveProperty('highScoring')
-      expect(result).toHaveProperty('lowScoring')
-      expect(result).toHaveProperty('other')
-    })
-  })
-
-  describe('getMotivationDisplayText', () => {
-    it('should return "Ready to make changes" for READY_TO_MAKE_CHANGES', () => {
-      expect(getMotivationDisplayText('READY_TO_MAKE_CHANGES')).toBe('Ready to make changes')
-    })
-
-    it('should return "Wants to make changes" for WANTS_TO_MAKE_CHANGES', () => {
-      expect(getMotivationDisplayText('WANTS_TO_MAKE_CHANGES')).toBe('Wants to make changes')
-    })
-
-    it('should return "Needs help to make changes" for NEEDS_HELP_TO_MAKE_CHANGES', () => {
-      expect(getMotivationDisplayText('NEEDS_HELP_TO_MAKE_CHANGES')).toBe('Needs help to make changes')
-    })
-
-    it('should return "Does not want to make changes" for DOES_NOT_WANT_TO_MAKE_CHANGES', () => {
-      expect(getMotivationDisplayText('DOES_NOT_WANT_TO_MAKE_CHANGES')).toBe('Does not want to make changes')
-    })
-
-    it('should return empty string for null', () => {
-      expect(getMotivationDisplayText(null)).toBe('')
     })
   })
 })
