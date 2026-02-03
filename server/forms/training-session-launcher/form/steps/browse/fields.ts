@@ -1,8 +1,26 @@
 import { block, Data, Format, Item, Iterator } from '@form-engine/form/builders'
 import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
+import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { GovUKButton, GovUKDetails, GovUKLinkButton } from '@form-engine-govuk-components/components'
+import { MOJAlert } from '@form-engine-moj-components/components'
 import { TabPanel } from '../../../components'
 import { scenarioDetailsBlock } from '../../blocks/scenarioDetailsBlock'
+
+/**
+ * Notification banners - renders any flash notifications from session using MOJ Alert
+ */
+export const notificationBanners = CollectionBlock({
+  collection: Data('notifications').each(
+    Iterator.Map(
+      MOJAlert({
+        alertVariant: Item().path('type'),
+        title: Item().path('title'),
+        text: Item().path('message'),
+        showTitleAsHeading: true,
+      }),
+    ),
+  ),
+})
 
 /**
  * Page heading with caption

@@ -4,8 +4,25 @@ import { HtmlBlock } from '@form-engine/registry/components/html'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKButton, GovUKDetails, GovUKLinkButton, GovUKSelectInput } from '@form-engine-govuk-components/components'
+import { MOJAlert } from '@form-engine-moj-components/components'
 import { scenarioDetailsBlock } from '../../blocks/scenarioDetailsBlock'
 import { TrainingSessionLauncherTransformers } from '../../../transformers'
+
+/**
+ * Notification banners - renders any flash notifications from session using MOJ Alert
+ */
+export const notificationBanners = CollectionBlock({
+  collection: Data('notifications').each(
+    Iterator.Map(
+      MOJAlert({
+        alertVariant: Item().path('type'),
+        title: Item().path('title'),
+        text: Item().path('message'),
+        showTitleAsHeading: true,
+      }),
+    ),
+  ),
+})
 
 /**
  * API failure error banner
