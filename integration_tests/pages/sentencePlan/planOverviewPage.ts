@@ -36,6 +36,8 @@ export default class PlanOverviewPage extends AbstractPage {
 
   readonly banner: Locator
 
+  readonly primaryNavigation: Locator
+
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
@@ -55,6 +57,7 @@ export default class PlanOverviewPage extends AbstractPage {
     this.header = page.getByTestId('plan-header')
     this.footer = page.locator('footer')
     this.banner = page.getByTestId('hmpps-header')
+    this.primaryNavigation = page.getByLabel('Primary navigation')
   }
 
   static async verifyOnPage(page: Page): Promise<PlanOverviewPage> {
