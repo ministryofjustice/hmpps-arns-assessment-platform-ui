@@ -60,7 +60,7 @@ function processAssessmentArea(
   oasysEquivalent: OasysEquivalent,
   criminogenicNeedsData: CriminogenicNeedsData | null,
 ): AssessmentArea {
-  const { assessmentKey, crimNeedsKey, text: title, slug: goalRoute, upperBound } = areaOfNeed
+  const { assessmentKey, crimNeedsKey, text: title, slug: goalRoute, upperBound, threshold } = areaOfNeed
 
   const crimNeedsArea: CriminogenicNeedArea | null = criminogenicNeedsData
     ? (criminogenicNeedsData[crimNeedsKey] ?? null)
@@ -107,10 +107,11 @@ function processAssessmentArea(
   // Score comes from handover (OASys) only
   const score = crimNeedsArea?.score ?? null
 
-  // High scoring: score exceeds threshold (score > upperBound)
-  // Low scoring: score at or below threshold (score <= upperBound)
-  const isHighScoring = upperBound !== null && score !== null && score > upperBound
-  const isLowScoring = upperBound !== null && score !== null && score <= upperBound
+  // High scoring: score exceeds threshold (score > threshold)
+  // Low scoring: score at or below threshold (score <= threshold)
+  // Areas without scoring (Finance, Health) have both as false
+  const isHighScoring = threshold !== null && score !== null && score > threshold
+  const isLowScoring = threshold !== null && score !== null && score <= threshold
 
   return {
     title,
@@ -125,6 +126,7 @@ function processAssessmentArea(
     motivationToMakeChanges,
     score,
     upperBound,
+    threshold,
     isHighScoring,
     isLowScoring,
   }

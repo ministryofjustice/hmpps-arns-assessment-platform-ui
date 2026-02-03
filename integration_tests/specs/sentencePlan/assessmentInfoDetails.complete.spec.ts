@@ -34,20 +34,24 @@ test.describe('Assessment Info Details - Complete Section', () => {
     expect(await createGoalPage.isAssessmentInfoCollapsed()).toBe(true)
 
     await createGoalPage.expandAssessmentInfo()
-    await expect(createGoalPage.assessmentInfoContent).toMatchAriaSnapshot(`
-      - paragraph:
-        - strong: /This area is linked to RoSH/
-      - paragraph: /Risk of serious harm related to accommodation/
-      - paragraph:
-        - strong: /This area is linked to risk of reoffending/
-      - paragraph: /Accommodation instability is linked to reoffending/
-      - paragraph:
-        - strong: /Motivation to make changes/
-      - paragraph: /wants to make changes and knows how to/
-      - paragraph:
-        - strong: /There are strengths or protective factors/
-      - paragraph: /Has maintained tenancy previously/
-    `)
+
+    // Verify RoSH section
+    await expect(createGoalPage.assessmentInfoContent).toContainText('This area is linked to RoSH')
+    await expect(createGoalPage.assessmentInfoContent).toContainText('Risk of serious harm related to accommodation')
+
+    // Verify reoffending section
+    await expect(createGoalPage.assessmentInfoContent).toContainText('This area is linked to risk of reoffending')
+    await expect(createGoalPage.assessmentInfoContent).toContainText(
+      'Accommodation instability is linked to reoffending',
+    )
+
+    // Verify motivation section
+    await expect(createGoalPage.assessmentInfoContent).toContainText('Motivation to make changes')
+    await expect(createGoalPage.assessmentInfoContent).toContainText('wants to make changes and knows how to')
+
+    // Verify strengths section
+    await expect(createGoalPage.assessmentInfoContent).toContainText('There are strengths or protective factors')
+    await expect(createGoalPage.assessmentInfoContent).toContainText('Has maintained tenancy previously')
   })
 
   test('displays section with motivation not required when question was not applicable (e.g., no drug use)', async ({

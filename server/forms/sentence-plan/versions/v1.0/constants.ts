@@ -41,7 +41,8 @@ export const actorLabelOptions = [
  * - crimNeedsKey: Key for CriminogenicNeedsData from handover/coordinator APIs
  * - assessmentKey: Key prefix for OASys equivalent fields from coordinator API
  * - handoverPrefix: Prefix for handover API field names (e.g., 'acc' → accLinkedToHarm)
- * - upperBound: Scoring threshold (null for areas without scoring)
+ * - upperBound: Maximum possible score for the area (null for areas without scoring)
+ * - threshold: Score above which an area is considered "high scoring" (null for areas without scoring)
  * - goals: Suggested goal templates for practitioners
  */
 export const areasOfNeed = [
@@ -53,6 +54,7 @@ export const areasOfNeed = [
     assessmentKey: 'accommodation',
     handoverPrefix: 'acc',
     upperBound: 6 as number | null,
+    threshold: 1 as number | null,
     goals: [
       'I will maintain my current accommodation so that [add why]',
       'I will find accommodation that is more suitable for me because [add why]',
@@ -69,6 +71,7 @@ export const areasOfNeed = [
     assessmentKey: 'employment_education',
     handoverPrefix: 'ete',
     upperBound: 4 as number | null,
+    threshold: 1 as number | null,
     goals: [
       'I will look to improve my confidence which will help me when looking for a job',
       'I will improve my skills in [add skill area] to help me find a better job',
@@ -84,6 +87,7 @@ export const areasOfNeed = [
     assessmentKey: 'finance',
     handoverPrefix: 'finance',
     upperBound: null as number | null,
+    threshold: null as number | null,
     goals: [
       'I will reduce my current debt from [a number] to [a number]',
       'I will find new ways to budget my money and keep to my income',
@@ -100,6 +104,7 @@ export const areasOfNeed = [
     assessmentKey: 'drug_use',
     handoverPrefix: 'drug',
     upperBound: 8 as number | null,
+    threshold: 0 as number | null,
     goals: [
       'I will increase the number of days I am drug-free each week from [number of days] to [number of days]',
       'I will continue to [add activity or behaviour] to help me stay drug free',
@@ -117,6 +122,7 @@ export const areasOfNeed = [
     assessmentKey: 'alcohol_use',
     handoverPrefix: 'alcohol',
     upperBound: 4 as number | null,
+    threshold: 1 as number | null,
     goals: [
       'I will become alcohol-free, so that [add why]',
       'I will continue to be alcohol-free, so that [add why]',
@@ -133,6 +139,7 @@ export const areasOfNeed = [
     assessmentKey: 'health_wellbeing',
     handoverPrefix: 'emo',
     upperBound: null as number | null,
+    threshold: null as number | null,
     goals: [
       'I will learn/find new ways to manage my emotions better so that I can improve my overall wellbeing',
       'I will set aside [add minutes or hours] each week for exercise to help reduce stress and improve my overall wellbeing',
@@ -151,6 +158,7 @@ export const areasOfNeed = [
     assessmentKey: 'personal_relationships_community',
     handoverPrefix: 'rel',
     upperBound: 6 as number | null,
+    threshold: 1 as number | null,
     goals: [
       "I will engage with Children's Services as part of my Children in Need (CIN)/Child Protection (CP) plan, so that I can have a better relationship with my children ",
       "I will continue to engage with Children's Services as part of my Child Protection (CP) plan, so that I can have a better relationship with my children",
@@ -170,6 +178,7 @@ export const areasOfNeed = [
     assessmentKey: 'thinking_behaviours_attitudes',
     handoverPrefix: 'think',
     upperBound: 10 as number | null,
+    threshold: 2 as number | null,
     goals: [
       'I will understand my own values to give me a better sense of purpose and motivation to achieve my goals',
       'I will learn more about what I enjoy and find things I can spend quality time doing, so that [add why]',

@@ -26,6 +26,7 @@ function createAssessmentArea(overrides: Partial<AssessmentArea> = {}): Assessme
     motivationToMakeChanges: null,
     score: null,
     upperBound: null,
+    threshold: null,
     isHighScoring: false,
     isLowScoring: false,
     ...overrides,

@@ -167,9 +167,10 @@ describe('assessmentUtils', () => {
 
       expect(result[0].score).toBe(4)
       expect(result[0].upperBound).toBe(6)
+      expect(result[0].threshold).toBe(1)
     })
 
-    it('should classify high-scoring areas correctly', () => {
+    it('should classify high-scoring areas correctly (score > threshold)', () => {
       const oasysEquivalent = createOasysEquivalent({
         personal_relationships_community_section_complete: 'YES',
       })
@@ -178,33 +179,34 @@ describe('assessmentUtils', () => {
           linkedToHarm: true,
           linkedToReoffending: true,
           linkedToStrengthsOrProtectiveFactors: false,
-          score: 7,
+          score: 2, // Score of 2 > threshold of 1 = high scoring
         },
       })
 
       const result = transformAssessmentData(oasysEquivalent, crimNeeds)
 
       const personalRelationships = result.find(a => a.title === 'Personal relationships and community')
-      expect(personalRelationships?.score).toBe(7)
-      expect(personalRelationships?.upperBound).toBe(6)
+      expect(personalRelationships?.score).toBe(2)
+      expect(personalRelationships?.threshold).toBe(1)
       expect(personalRelationships?.isHighScoring).toBe(true)
       expect(personalRelationships?.isLowScoring).toBe(false)
     })
 
-    it('should classify low-scoring areas correctly', () => {
+    it('should classify low-scoring areas correctly (score <= threshold)', () => {
       const oasysEquivalent = createOasysEquivalent()
       const crimNeeds = createCriminogenicNeedsData({
         accommodation: {
           linkedToHarm: false,
           linkedToReoffending: false,
           linkedToStrengthsOrProtectiveFactors: null,
-          score: 2,
+          score: 1, // Score of 1 <= threshold of 1 = low scoring
         },
       })
 
       const result = transformAssessmentData(oasysEquivalent, crimNeeds)
 
-      expect(result[0].score).toBe(2)
+      expect(result[0].score).toBe(1)
+      expect(result[0].threshold).toBe(1)
       expect(result[0].isHighScoring).toBe(false)
       expect(result[0].isLowScoring).toBe(true)
     })
@@ -216,19 +218,19 @@ describe('assessmentUtils', () => {
           linkedToHarm: false,
           linkedToReoffending: false,
           linkedToStrengthsOrProtectiveFactors: null,
-          score: 6,
+          score: 1, // Score equals threshold of 1 = low scoring (must be > threshold to be high)
         },
       })
 
       const result = transformAssessmentData(oasysEquivalent, crimNeeds)
 
-      expect(result[0].score).toBe(6)
-      expect(result[0].upperBound).toBe(6)
+      expect(result[0].score).toBe(1)
+      expect(result[0].threshold).toBe(1)
       expect(result[0].isHighScoring).toBe(false)
       expect(result[0].isLowScoring).toBe(true)
     })
 
-    it('should handle areas without scoring (Finance, Health)', () => {
+    it('should handle areas without scoring (Finance, Health) - both flags false', () => {
       const oasysEquivalent = createOasysEquivalent({
         finance_section_complete: 'YES',
         health_wellbeing_section_complete: 'YES',
@@ -239,11 +241,14 @@ describe('assessmentUtils', () => {
       const finance = result.find(a => a.title === 'Finances')
       const health = result.find(a => a.title === 'Health and wellbeing')
 
+      // Areas without scoring have both isHighScoring and isLowScoring as false
       expect(finance?.upperBound).toBeNull()
+      expect(finance?.threshold).toBeNull()
       expect(finance?.isHighScoring).toBe(false)
       expect(finance?.isLowScoring).toBe(false)
 
       expect(health?.upperBound).toBeNull()
+      expect(health?.threshold).toBeNull()
       expect(health?.isHighScoring).toBe(false)
       expect(health?.isLowScoring).toBe(false)
     })

@@ -65,6 +65,7 @@ export interface AssessmentArea {
   motivationToMakeChanges: MotivationLevel
   score: number | null
   upperBound: number | null
+  threshold: number | null
   isHighScoring: boolean
   isLowScoring: boolean
 }
