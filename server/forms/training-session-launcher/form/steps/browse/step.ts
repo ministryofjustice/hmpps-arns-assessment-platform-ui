@@ -1,6 +1,6 @@
 import { step, submitTransition, accessTransition, redirect, Query } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import { pageHeading, pageHelpText, scenarioPickerPanel } from './fields'
+import { notificationBanners, pageHeading, pageHelpText, scenarioPickerPanel } from './fields'
 import { TrainingSessionLauncherEffects } from '../../../effects'
 
 export const browseStep = step({
@@ -8,11 +8,14 @@ export const browseStep = step({
   title: 'Select a scenario',
   isEntryPoint: true,
 
-  blocks: [pageHeading, pageHelpText, scenarioPickerPanel],
+  blocks: [notificationBanners, pageHeading, pageHelpText, scenarioPickerPanel],
 
   onAccess: [
     accessTransition({
-      effects: [TrainingSessionLauncherEffects.loadScenarios()],
+      effects: [
+        TrainingSessionLauncherEffects.loadNotifications('browse'),
+        TrainingSessionLauncherEffects.loadScenarios(),
+      ],
     }),
 
     accessTransition({
