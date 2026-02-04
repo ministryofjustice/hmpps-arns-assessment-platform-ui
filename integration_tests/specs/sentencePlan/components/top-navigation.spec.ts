@@ -30,7 +30,6 @@ test.describe('Top navigation', () => {
             - text: HMPPS
             - link "Assess and plan":
               - /url: /sentence-plan/v1.0/plan/overview
-            - strong: dev
             - navigation "Account navigation":
               - list:
                 - listitem:
