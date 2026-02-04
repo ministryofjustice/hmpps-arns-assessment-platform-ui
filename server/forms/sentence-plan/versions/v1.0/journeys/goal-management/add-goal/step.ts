@@ -36,7 +36,7 @@ export const createGoalStep = step({
   blocks: [sideNav, ...contentBlocks],
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.deriveGoalCurrentAreaOfNeed()],
+      effects: [SentencePlanEffects.deriveGoalCurrentAreaOfNeed(), SentencePlanEffects.loadAreaAssessmentInfo()],
     }),
 
     // If UUID param is literally ':uuid', redirect to use 'new' instead

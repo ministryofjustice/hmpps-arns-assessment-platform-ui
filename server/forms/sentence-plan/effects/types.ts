@@ -2,8 +2,8 @@ import { FormatExpr } from '@form-engine/form/types/expressions.type'
 import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
 import { User } from '../../../interfaces/user'
 import { Answers, Properties } from '../../../interfaces/aap-api/dataModel'
-import { areasOfNeed } from '../versions/v1.0/constants'
-import { AssessmentPlatformApiClient } from '../../../data'
+import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
+import { AssessmentPlatformApiClient, CoordinatorApiClient } from '../../../data'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { SessionDetails, AccessType } from '../../../interfaces/sessionDetails'
 import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
@@ -11,6 +11,18 @@ import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessMode } from '../../../interfaces/handover-api/shared'
 import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryResult'
 import { CreateAssessmentCommandResult } from '../../../interfaces/aap-api/commandResult'
+import { AssessmentArea } from '../../../interfaces/coordinator-api/entityAssessment'
+
+/**
+ * Status of the assessment info loading operation.
+ * Data is combined from two sources:
+ * - Handover service (session): linked indicators (YES/NO) and scores
+ * - Coordinator API (SAN): practitioner analysis details, motivation, section complete
+ *
+ * - 'success': Data loaded successfully (data may or may not be present depending on assessment state)
+ * - 'error': Failed to load data from one or both sources
+ */
+export type AssessmentInfoStatus = 'success' | 'error'
 
 export interface AccessDetails {
   accessType: AccessType
@@ -159,7 +171,7 @@ export interface GoalReaddedHistoryEntry {
 
 export type AreaOfNeed = (typeof areasOfNeed)[number]
 
-export type AreaOfNeedSlug = AreaOfNeed['slug']
+export type { AreaOfNeedSlug }
 
 export interface GoalAnswers {
   title: string
@@ -278,6 +290,10 @@ export interface SentencePlanData extends Record<string, unknown> {
 
   // Case data (from Delius)
   caseData: unknown
+
+  // Assessment area info for current area of need (from coordinator API)
+  currentAreaAssessment: AssessmentArea | null
+  currentAreaAssessmentStatus: AssessmentInfoStatus
 }
 
 /**
@@ -347,4 +363,5 @@ export type SentencePlanContext = EffectFunctionContext<
  */
 export interface SentencePlanEffectsDeps {
   api: AssessmentPlatformApiClient
+  coordinatorApi: CoordinatorApiClient
 }

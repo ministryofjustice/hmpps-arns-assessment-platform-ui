@@ -1,6 +1,7 @@
-import { step, submitTransition, redirect, Post, Data } from '@form-engine/form/builders'
+import { step, submitTransition, accessTransition, redirect, Post, Data } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import {
+  notificationBanners,
   errorBanner,
   pageHeading,
   pageHelpText,
@@ -23,6 +24,7 @@ export const sessionsStep = step({
   title: 'Active Sessions',
 
   blocks: [
+    notificationBanners,
     errorBanner,
     pageHeading,
     pageHelpText,
@@ -31,6 +33,12 @@ export const sessionsStep = step({
     sectionBreak,
     newSessionButton,
     resetAllSessionsForm,
+  ],
+
+  onAccess: [
+    accessTransition({
+      effects: [TrainingSessionLauncherEffects.loadNotifications('sessions')],
+    }),
   ],
 
   onSubmission: [

@@ -2,10 +2,14 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import ChangeGoalPage from '../../pages/sentencePlan/changeGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
+import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
+import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
+import UpdateGoalAndStepsPage from '../../pages/sentencePlan/updateGoalAndStepsPage'
 import { currentGoals, futureGoals } from '../../builders/sentencePlanFactories'
 import {
   buildErrorPageTitle,
   buildPageTitle,
+  getDatePlusDaysAsISO,
   getDatePlusMonthsAsString,
   navigateToSentencePlan,
   sentencePlanPageTitles,
@@ -396,6 +400,281 @@ test.describe('Change goal journey', () => {
 
       // Check target date options are not visible for future goal
       await expect(changeGoalPage.targetDate3Months).not.toBeVisible()
+    })
+  })
+
+  test.describe('navigation', () => {
+    test.describe('access to change goal page through create a goal journey (agreed plan state)', () => {
+      test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
+        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        await sentencePlanBuilder.extend(sentencePlanId).withAgreementStatus('AGREED').save()
+        await navigateToSentencePlan(page, handoverLink)
+
+        // click create goal on plan overview
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+        await planOverviewPage.clickCreateGoal()
+
+        // on create goal page:
+        // tick 1 related area of need
+        //  set can start working now to yes with 12 months
+        const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+        await createGoalPage.enterGoalTitle('Test navigation goal')
+        await createGoalPage.selectIsRelated(true)
+        await createGoalPage.selectRelatedArea('finances')
+        await createGoalPage.selectCanStartNow(true)
+        await createGoalPage.selectTargetDateOption('date_in_12_months')
+        await createGoalPage.clickAddSteps()
+
+        // confirm we're on add steps page
+        await AddStepsPage.verifyOnPage(page)
+
+        // refresh the page and click back button which should bring us to change goal page
+        await page.reload()
+        const addStepsPage = await AddStepsPage.verifyOnPage(page)
+        await addStepsPage.clickBack()
+      })
+
+      test('back button from add steps navigates to change goal & saving goal redirects back to add steps', async ({
+        page,
+      }) => {
+        // confirm it brought us to change goal page
+        const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+
+        // change aim to achieve goal to in 6 months and click save goal
+        await changeGoalPage.selectTargetDateOption('6_months')
+        await changeGoalPage.saveGoal()
+
+        // confirm that we are back on add steps page
+        await AddStepsPage.verifyOnPage(page)
+      })
+
+      test('back button from change goal navigates to update goal and steps', async ({ page }) => {
+        // confirm it brought us to change goal page
+        const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+
+        // click back button on change goal page
+        await changeGoalPage.clickBackLink()
+
+        // confirm we are on plan overview page
+        await PlanOverviewPage.verifyOnPage(page)
+      })
+    })
+
+    test.describe('access to change goal page through update goal and steps journey (agreed plan state/active goal with no steps)', () => {
+      test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
+        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        await sentencePlanBuilder
+          .extend(sentencePlanId)
+          .withGoals([
+            {
+              title: 'Active Goal Without Steps',
+              areaOfNeed: 'accommodation',
+              status: 'ACTIVE',
+              targetDate: getDatePlusDaysAsISO(90),
+            },
+          ])
+          .withAgreementStatus('AGREED')
+          .save()
+
+        await navigateToSentencePlan(page, handoverLink)
+
+        // click update on that goal on plan overview
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+        await planOverviewPage.clickUpdateGoal(0)
+
+        // click change goal details link
+        const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+        await updateGoalAndStepsPage.clickChangeGoalDetails()
+
+        // check we are on change goal
+        await ChangeGoalPage.verifyOnPage(page)
+      })
+
+      test('back from change goal navigates to update goal and steps', async ({ page }) => {
+        // refresh the page and click back button
+        await page.reload()
+        const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+        await changeGoalPage.clickBackLink()
+
+        // check we are back to update goal and steps
+        await UpdateGoalAndStepsPage.verifyOnPage(page)
+      })
+
+      test('saving goal redirects to add steps', async ({ page }) => {
+        // refresh the page, change the target date for the goal and click save goal button
+        await page.reload()
+        const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+        await changeGoalPage.selectTargetDateOption('6_months')
+        await changeGoalPage.saveGoal()
+
+        // check we are on add steps page
+        await AddStepsPage.verifyOnPage(page)
+      })
+    })
+
+    test.describe('access to change goal page through update goal and steps journey (agreed plan state/future goal with no steps)', () => {
+      test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
+        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        await sentencePlanBuilder
+          .extend(sentencePlanId)
+          .withGoals([
+            {
+              title: 'Future Goal Without Steps',
+              areaOfNeed: 'finances',
+              status: 'FUTURE',
+            },
+          ])
+          .withAgreementStatus('AGREED')
+          .save()
+
+        await navigateToSentencePlan(page, handoverLink)
+
+        // go to future goals tab and click update on that goal
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+        await planOverviewPage.clickFutureGoalsTab()
+        await planOverviewPage.clickUpdateGoal(0)
+      })
+
+      test('saving goal redirects to update goal and steps', async ({ page }) => {
+        // click change goal details link
+        const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+        await updateGoalAndStepsPage.clickChangeGoalDetails()
+
+        // check we are on change goal
+        await ChangeGoalPage.verifyOnPage(page)
+        // refresh the page, save the goal with no changes
+        await page.reload()
+        const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+        await changeGoalPage.saveGoal()
+
+        // check we are on update goal and steps
+        await UpdateGoalAndStepsPage.verifyOnPage(page)
+      })
+
+      test('back from add steps navigates to update goal and steps', async ({ page }) => {
+        // click add steps link
+        const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+        await updateGoalAndStepsPage.clickAddSteps()
+
+        // check we are on add steps
+        await AddStepsPage.verifyOnPage(page)
+
+        // refresh the page and click back button
+        await page.reload()
+        const addStepsPage = await AddStepsPage.verifyOnPage(page)
+        await addStepsPage.clickBack()
+
+        // check we are on update goal and steps
+        await UpdateGoalAndStepsPage.verifyOnPage(page)
+      })
+    })
+
+    test.describe('access to change goal page through update goal and steps journey (agreed plan state/active goal with steps)', () => {
+      test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
+        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        await sentencePlanBuilder
+          .extend(sentencePlanId)
+          .withGoals([
+            {
+              title: 'Active Goal With Steps',
+              areaOfNeed: 'accommodation',
+              status: 'ACTIVE',
+              targetDate: getDatePlusDaysAsISO(90),
+              steps: [{ actor: 'probation_practitioner', description: 'Test step', status: 'NOT_STARTED' }],
+            },
+          ])
+          .withAgreementStatus('AGREED')
+          .save()
+
+        await navigateToSentencePlan(page, handoverLink)
+
+        // click update on that goal on plan overview
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+        await planOverviewPage.clickUpdateGoal(0)
+      })
+
+      test('saving goal redirects to update goal and steps', async ({ page }) => {
+        // click change goal details link
+        const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+        await updateGoalAndStepsPage.clickChangeGoalDetails()
+
+        // check we are on change goal
+        await ChangeGoalPage.verifyOnPage(page)
+
+        // refresh the page, change the target date for the goal and click save goal button
+        await page.reload()
+        const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+        await changeGoalPage.selectTargetDateOption('6_months')
+        await changeGoalPage.saveGoal()
+
+        // check we are on update goal and steps
+        await UpdateGoalAndStepsPage.verifyOnPage(page)
+      })
+
+      test('adding step and saving redirects to update goal and steps', async ({ page }) => {
+        // click add or change steps link
+        const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+        await updateGoalAndStepsPage.clickAddOrChangeSteps()
+
+        // check we are on add steps
+        await AddStepsPage.verifyOnPage(page)
+
+        // refresh the page, add another step, click save and continue button
+        await page.reload()
+        const addStepsPage = await AddStepsPage.verifyOnPage(page)
+        await addStepsPage.clickAddStep()
+        await addStepsPage.enterStep(1, 'person_on_probation', 'New additional step')
+        await addStepsPage.clickSaveAndContinue()
+
+        // check we are on update goal and steps
+        await UpdateGoalAndStepsPage.verifyOnPage(page)
+      })
+    })
+
+    test.describe('access to change goal page through create a goal journey (draft plan state)', () => {
+      test('back button from add steps navigates to change goal, saving goal redirects back to add steps', async ({
+        page,
+        createSession,
+        sentencePlanBuilder,
+      }) => {
+        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        await sentencePlanBuilder.extend(sentencePlanId).save()
+
+        await navigateToSentencePlan(page, handoverLink)
+
+        // click create goal on plan overview
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+        await planOverviewPage.clickCreateGoal()
+
+        // on create goal page:
+        // tick 1 related area of need
+        // set can start working now to yes with 12 months
+        const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+        await createGoalPage.enterGoalTitle('Test navigation goal for draft plan')
+        await createGoalPage.selectIsRelated(true)
+        await createGoalPage.selectRelatedArea('finances')
+        await createGoalPage.selectCanStartNow(true)
+        await createGoalPage.selectTargetDateOption('date_in_12_months')
+        await createGoalPage.clickAddSteps()
+
+        // check we're on add steps page
+        await AddStepsPage.verifyOnPage(page)
+
+        // refresh the page and click back button
+        await page.reload()
+        const addStepsPage = await AddStepsPage.verifyOnPage(page)
+        await addStepsPage.clickBack()
+
+        // check it brought us to change goal page
+        const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+
+        // change aim to achieve goal to in 6 months and click save goal
+        await changeGoalPage.selectTargetDateOption('6_months')
+        await changeGoalPage.saveGoal()
+
+        // check that we are back on add steps page
+        await AddStepsPage.verifyOnPage(page)
+      })
     })
   })
 })

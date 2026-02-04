@@ -59,6 +59,7 @@ export default function createApp(services: Services): express.Application {
     })
     .registerFormPackage(sentencePlanFormPackage, {
       api: services.assessmentPlatformApiClient,
+      coordinatorApi: services.coordinatorApiClient,
     })
 
   // Setup middleware

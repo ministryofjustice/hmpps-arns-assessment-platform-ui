@@ -38,7 +38,10 @@ export const updateGoalAndStepsStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.loadActiveGoalForEdit()],
+      effects: [
+        SentencePlanEffects.loadActiveGoalForEdit(),
+        SentencePlanEffects.setNavigationReferrer('update-goal-steps'),
+      ],
       next: [
         // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
         redirect({
@@ -55,12 +58,11 @@ export const updateGoalAndStepsStep = step({
   ],
 
   onSubmission: [
-    // Navigate to add-steps page with referrer set
+    // Navigate to add-steps page with referrer set (it's set in onAccess)
     submitTransition({
       when: Post('action').match(Condition.Equals('goToAddSteps')),
       validate: false,
       onAlways: {
-        effects: [SentencePlanEffects.setNavigationReferrer('update-goal-steps')],
         next: [redirect({ goto: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')) })],
       },
     }),

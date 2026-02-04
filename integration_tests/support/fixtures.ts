@@ -13,7 +13,61 @@ import { CoordinatorBuilder } from '../builders/CoordinatorBuilder'
 import type { CoordinatorBuilderFactory } from '../builders/CoordinatorBuilder'
 import { HandoverBuilder } from '../builders/HandoverBuilder'
 import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
-import type { AccessMode } from '../../server/interfaces/handover-api/shared'
+import type { AccessMode, CriminogenicNeedsData } from '../../server/interfaces/handover-api/shared'
+
+/**
+ * Default criminogenic needs data for E2E tests.
+ * Provides linked indicators and scores for all areas so tests work by default.
+ * Tests can override specific areas as needed.
+ */
+const defaultCriminogenicNeedsData: CriminogenicNeedsData = {
+  accommodation: {
+    accLinkedToHarm: 'YES',
+    accLinkedToReoffending: 'YES',
+    accStrengths: 'YES',
+    accOtherWeightedScore: '6',
+  },
+  educationTrainingEmployability: {
+    eteLinkedToHarm: 'YES',
+    eteLinkedToReoffending: 'YES',
+    eteStrengths: 'YES',
+    eteOtherWeightedScore: '4',
+  },
+  finance: {
+    financeLinkedToHarm: 'YES',
+    financeLinkedToReoffending: 'YES',
+    financeStrengths: 'YES',
+  },
+  drugMisuse: {
+    drugLinkedToHarm: 'YES',
+    drugLinkedToReoffending: 'YES',
+    drugStrengths: 'YES',
+    drugOtherWeightedScore: '6',
+  },
+  alcoholMisuse: {
+    alcoholLinkedToHarm: 'YES',
+    alcoholLinkedToReoffending: 'YES',
+    alcoholStrengths: 'YES',
+    alcoholOtherWeightedScore: '4',
+  },
+  healthAndWellbeing: {
+    emoLinkedToHarm: 'YES',
+    emoLinkedToReoffending: 'YES',
+    emoStrengths: 'YES',
+  },
+  personalRelationshipsAndCommunity: {
+    relLinkedToHarm: 'YES',
+    relLinkedToReoffending: 'YES',
+    relStrengths: 'YES',
+    relOtherWeightedScore: '6',
+  },
+  thinkingBehaviourAndAttitudes: {
+    thinkLinkedToHarm: 'YES',
+    thinkLinkedToReoffending: 'YES',
+    thinkStrengths: 'YES',
+    thinkOtherWeightedScore: '8',
+  },
+}
 
 export enum TargetService {
   SENTENCE_PLAN = 'sentence-plan',
@@ -28,6 +82,14 @@ const TARGET_SERVICE_CLIENT_IDS: Record<TargetService, string> = {
 export interface CreateSessionOptions {
   targetService: TargetService
   accessMode?: AccessMode
+  pnc?: string
+  /**
+   * Criminogenic needs data from OASys (via handover).
+   * Provides linked indicators (YES/NO) and scores for assessment areas.
+   * Defaults to all areas having YES for all indicators with typical scores.
+   * Pass specific overrides or `null` to test missing data scenarios.
+   */
+  criminogenicNeedsData?: CriminogenicNeedsData | null
 }
 
 export interface SessionFixture {
@@ -156,8 +218,21 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
 
       const sessionBuilder = handoverBuilder.forAssociation(association)
 
+      if (options.pnc) {
+        sessionBuilder.withSubjectPNC(options.pnc)
+      }
+
       if (options.accessMode) {
         sessionBuilder.withAccessMode(options.accessMode)
+      }
+
+      // Handle criminogenic needs data:
+      // - If explicitly null, don't set any data (for testing missing data scenarios)
+      // - If provided, use the provided data
+      // - Otherwise use defaults so tests work without explicit setup
+      if (options.criminogenicNeedsData !== null) {
+        const criminogenicNeeds = options.criminogenicNeedsData ?? defaultCriminogenicNeedsData
+        sessionBuilder.withCriminogenicNeeds(criminogenicNeeds)
       }
 
       const session = await sessionBuilder.save()
@@ -175,9 +250,7 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
     await use(createSessionFn)
   },
   makeAxeBuilder: async ({ page }, use) => {
-    const makeAxeBuilder = () =>
-      new AxeBuilder({ page })
-        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+    const makeAxeBuilder = () => new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
 
     await use(makeAxeBuilder)
   },

@@ -164,6 +164,15 @@ export class HandoverBuilderInstance {
   }
 
   /**
+   * Set the subject PNC.
+   */
+  withSubjectPNC(pnc: string): this {
+    this.subject.pnc = pnc
+
+    return this
+  }
+
+  /**
    * Set criminogenic needs data from OASys
    */
   withCriminogenicNeeds(needs: CriminogenicNeedsData): this {
@@ -184,6 +193,7 @@ export class HandoverBuilderInstance {
 
       const subjectDetails: HandoverSubjectDetails = {
         crn: this.association.crn,
+        pnc: this.subject.pnc,
         givenName: this.subject.givenName ?? 'Test',
         familyName: this.subject.familyName ?? 'User',
         dateOfBirth: this.subject.dateOfBirth ?? '1990-01-01',
