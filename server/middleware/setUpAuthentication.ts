@@ -84,8 +84,9 @@ passport.use(
       },
       scope: 'openid profile',
     },
-    (token, _refreshToken, params, _profile, done) => {
-      return done(null, { token, username: params.user_name, authSource: 'OASYS' })
+    (token, _refreshToken, _params, _profile, done) => {
+      const { user_name: username } = jwtDecode(token) as { user_name?: string }
+      return done(null, { token, username, authSource: 'OASYS' })
     },
   ),
 )

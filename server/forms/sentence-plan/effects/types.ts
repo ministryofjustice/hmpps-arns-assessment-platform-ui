@@ -12,6 +12,7 @@ import { AccessMode } from '../../../interfaces/handover-api/shared'
 import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryResult'
 import { CreateAssessmentCommandResult } from '../../../interfaces/aap-api/commandResult'
 import { AssessmentArea } from '../../../interfaces/coordinator-api/entityAssessment'
+import { AuthSource } from '../../../interfaces/hmppsUser'
 
 /**
  * Status of the assessment info loading operation.
@@ -23,7 +24,6 @@ import { AssessmentArea } from '../../../interfaces/coordinator-api/entityAssess
  * - 'error': Failed to load data from one or both sources
  */
 export type AssessmentInfoStatus = 'success' | 'error'
-import { AuthSource } from '../../../interfaces/hmppsUser'
 
 export interface AccessDetails {
   accessType: AuthSource

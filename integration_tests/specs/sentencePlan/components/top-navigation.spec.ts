@@ -10,9 +10,7 @@ test.describe('Top navigation', () => {
 
     await PlanOverviewPage.verifyOnPage(page)
 
-    const topNavAccessibilityScanResults = await makeAxeBuilder()
-      .include('[data-qa="hmpps-header"]')
-      .analyze()
+    const topNavAccessibilityScanResults = await makeAxeBuilder().include('[data-qa="hmpps-header"]').analyze()
     const primaryNavAccessibilityScanResults = await makeAxeBuilder()
       .include('[aria-label="Primary navigation"]')
       .analyze()
@@ -31,15 +29,16 @@ test.describe('Top navigation', () => {
           - banner:
             - text: HMPPS
             - link "Assess and plan":
-              - /url: /sentence-plan/(.*?)/plan/overview/
+              - /url: /sentence-plan/v1.0/plan/overview
+            - strong: dev
             - navigation "Account navigation":
               - list:
                 - listitem:
-                  - link "Manage your details":
-                    - /url: /account-details/
+                  - link "T. User Manage your details":
+                    - /url: /account-details
                 - listitem:
                   - link "Sign out":
-                    - /url: /sign-out/
+                    - /url: /sign-out
         `)
 
     await page.getByRole('link', { name: 'Assess and plan' }).click()
@@ -58,10 +57,10 @@ test.describe('Top navigation', () => {
             - list:
               - listitem:
                 - link "Test's plan":
-                  - /url: /sentence-plan/(.*?)/plan/overview/
+                  - /url: /sentence-plan/v1.0/plan/overview
               - listitem:
                 - link "About Test":
-                  - /url: /sentence-plan/(.*?)/about-person/
+                  - /url: /sentence-plan/v1.0/about-person
         `)
 
     await page.getByRole('link', { name: 'About Test' }).click()
