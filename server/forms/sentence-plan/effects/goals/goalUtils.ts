@@ -1,6 +1,6 @@
 import { InternalServerError } from 'http-errors'
 import { User } from '../../../../interfaces/user'
-import { AreaOfNeed, DerivedGoal, GoalAnswers, GoalProperties, GoalStatus, SentencePlanContext } from '../types'
+import { AreaOfNeed, GoalAnswers, GoalProperties, GoalStatus, SentencePlanContext } from '../types'
 
 export const MONTHS_BY_OPTION: Record<string, number> = {
   date_in_3_months: 3,
