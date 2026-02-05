@@ -1,7 +1,8 @@
+import { InternalServerError } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
-import { assertGoalEffectContext } from './goalUtils'
+import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
 
 /**
@@ -15,7 +16,14 @@ import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
  * - how_helped: Optional note about how achieving this goal has helped
  */
 export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const { user, assessmentUuid, activeGoal, practitionerName } = assertGoalEffectContext(context, 'markGoalAsAchieved')
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'markGoalAsAchieved')
+  const activeGoal = context.getData('activeGoal')
+
+  if (!activeGoal?.uuid) {
+    throw new InternalServerError('Active goal is required for markGoalAsAchieved')
+  }
+
+  const practitionerName = getPractitionerName(context, user)
 
   const commands: Commands[] = []
 

@@ -1,7 +1,8 @@
+import { InternalServerError } from 'http-errors'
 import { DerivedStep, SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
-import { assertGoalEffectContext } from './goalUtils'
+import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
 
 /**
@@ -17,7 +18,14 @@ import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
  * - progress_notes: Optional progress note text
  */
 export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const { user, assessmentUuid, activeGoal, practitionerName } = assertGoalEffectContext(context, 'updateGoalProgress')
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'updateGoalProgress')
+  const activeGoal = context.getData('activeGoal')
+
+  if (!activeGoal?.uuid) {
+    throw new InternalServerError('Active goal is required for updateGoalProgress')
+  }
+
+  const practitionerName = getPractitionerName(context, user)
 
   const steps: DerivedStep[] = activeGoal.steps ?? []
   const commands: Commands[] = []

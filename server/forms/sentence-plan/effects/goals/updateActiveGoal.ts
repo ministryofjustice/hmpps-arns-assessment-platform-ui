@@ -1,8 +1,9 @@
+import { InternalServerError } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import {
-  assertGoalEffectContext,
+  getRequiredEffectContext,
   calculateTargetDate,
   determineGoalStatus,
   buildGoalProperties,
@@ -27,7 +28,12 @@ import {
  * - custom_target_date: Custom date (if set_another_date)
  */
 export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const { user, assessmentUuid, activeGoal } = assertGoalEffectContext(context, 'updateActiveGoal')
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'updateActiveGoal')
+  const activeGoal = context.getData('activeGoal')
+
+  if (!activeGoal?.uuid) {
+    throw new InternalServerError('Active goal is required for updateActiveGoal')
+  }
 
   // Get form answers
   const goalTitle = context.getAnswer('goal_title')

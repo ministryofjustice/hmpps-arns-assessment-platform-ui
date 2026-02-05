@@ -1,5 +1,6 @@
+import { InternalServerError } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
-import { assertGoalEffectContext } from './goalUtils'
+import { getRequiredEffectContext } from './goalUtils'
 
 /**
  * Delete the active goal
@@ -10,7 +11,12 @@ import { assertGoalEffectContext } from './goalUtils'
  * Requires activeGoal to be set in context (via loadActiveGoalForEdit or setActiveGoalContext).
  */
 export const deleteActiveGoal = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const { user, assessmentUuid, activeGoal } = assertGoalEffectContext(context, 'deleteActiveGoal')
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'deleteActiveGoal')
+  const activeGoal = context.getData('activeGoal')
+
+  if (!activeGoal?.uuid) {
+    throw new InternalServerError('Active goal is required for deleteActiveGoal')
+  }
 
   await deps.api.executeCommand({
     type: 'RemoveCollectionItemCommand',

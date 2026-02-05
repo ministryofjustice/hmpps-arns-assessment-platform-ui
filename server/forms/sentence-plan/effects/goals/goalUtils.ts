@@ -77,63 +77,19 @@ export const buildGoalAnswers = (
 // ============================================================================
 
 /**
- * Context for effects that operate on an active goal.
- * Provides validated user, assessment, goal, and practitioner name.
+ * Validated base context for effects.
  */
-export interface GoalEffectContext {
-  user: User
-  assessmentUuid: string
-  activeGoal: DerivedGoal
-  practitionerName: string
-}
-
-/**
- * Assert and extract context required for goal-related effects.
- *
- * Validates that user, assessmentUuid, and activeGoal are present,
- * and extracts the practitioner name from session (falling back to user.name).
- *
- * @throws InternalServerError if any required field is missing
- */
-export const assertGoalEffectContext = (context: SentencePlanContext, effectName: string): GoalEffectContext => {
-  const user = context.getState('user')
-  const session = context.getSession()
-  const assessmentUuid = context.getData('assessmentUuid')
-  const activeGoal = context.getData('activeGoal')
-
-  if (!user) {
-    throw new InternalServerError(`User is required for ${effectName}`)
-  }
-
-  if (!assessmentUuid) {
-    throw new InternalServerError(`Assessment UUID is required for ${effectName}`)
-  }
-
-  if (!activeGoal?.uuid) {
-    throw new InternalServerError(`Active goal is required for ${effectName}`)
-  }
-
-  const practitionerName = session.practitionerDetails?.displayName || user.name
-
-  return { user, assessmentUuid, activeGoal, practitionerName }
-}
-
-/**
- * Context for effects that don't require an active goal.
- */
-export interface BaseEffectContext {
+export interface EffectContext {
   user: User
   assessmentUuid: string
 }
 
 /**
- * Assert and extract base context (user and assessmentUuid only).
- *
- * Use this for effects that don't operate on a specific goal.
+ * Assert and extract base context (user and assessmentUuid).
  *
  * @throws InternalServerError if user or assessmentUuid is missing
  */
-export const assertBaseEffectContext = (context: SentencePlanContext, effectName: string): BaseEffectContext => {
+export const getRequiredEffectContext = (context: SentencePlanContext, effectName: string): EffectContext => {
   const user = context.getState('user')
   const assessmentUuid = context.getData('assessmentUuid')
 
@@ -146,6 +102,14 @@ export const assertBaseEffectContext = (context: SentencePlanContext, effectName
   }
 
   return { user, assessmentUuid }
+}
+
+/**
+ * Get practitioner display name from session, falling back to user.name.
+ */
+export const getPractitionerName = (context: SentencePlanContext, user: User): string => {
+  const session = context.getSession()
+  return session.practitionerDetails?.displayName || user.name
 }
 
 // ============================================================================

@@ -1,7 +1,8 @@
+import { InternalServerError } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
-import { assertGoalEffectContext } from './goalUtils'
+import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
 
 /**
@@ -19,7 +20,14 @@ import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
  * - removal_note: Optional note about why the goal was removed
  */
 export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const { user, assessmentUuid, activeGoal, practitionerName } = assertGoalEffectContext(context, 'markGoalAsRemoved')
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'markGoalAsRemoved')
+  const activeGoal = context.getData('activeGoal')
+
+  if (!activeGoal?.uuid) {
+    throw new InternalServerError('Active goal is required for markGoalAsRemoved')
+  }
+
+  const practitionerName = getPractitionerName(context, user)
 
   const commands: Commands[] = []
 

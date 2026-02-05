@@ -1,7 +1,8 @@
+import { InternalServerError } from 'http-errors'
 import { DerivedGoal, SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
-import { assertGoalEffectContext, calculateTargetDate, determineGoalStatus } from './goalUtils'
+import { getRequiredEffectContext, calculateTargetDate, determineGoalStatus, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
 
 /**
@@ -24,7 +25,14 @@ import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
  * - custom_target_date: Custom date (if set_another_date)
  */
 export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const { user, assessmentUuid, activeGoal, practitionerName } = assertGoalEffectContext(context, 'readdGoalToPlan')
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'readdGoalToPlan')
+  const activeGoal = context.getData('activeGoal')
+
+  if (!activeGoal?.uuid) {
+    throw new InternalServerError('Active goal is required for readdGoalToPlan')
+  }
+
+  const practitionerName = getPractitionerName(context, user)
 
   // Get form answers
   const canStartNow = context.getAnswer('can_start_now') as string
