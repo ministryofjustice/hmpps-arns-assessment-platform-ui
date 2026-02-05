@@ -6,7 +6,7 @@ import { resourceFromAttributes } from '@opentelemetry/resources'
 import { BatchSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base'
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'
-import { useAzureMonitor, AzureMonitorOpenTelemetryOptions } from '@azure/monitor-opentelemetry'
+import { AzureMonitorTraceExporter } from '@azure/monitor-opentelemetry-exporter'
 import type { TelemetryConfig } from './types/TelemetryConfig'
 import type { SpanProcessorFn } from './types/SpanProcessor'
 import { FilteringSpanProcessor } from './FilteringSpanProcessor'
@@ -48,33 +48,34 @@ function initialiseWithAzureMonitor(config: TelemetryConfig, processors: SpanPro
 
   logger.info(`Telemetry: Initialising Azure Monitor for ${config.serviceName}`)
 
-  const spanProcessors = []
+  const resource = resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: config.serviceName,
+    [ATTR_SERVICE_VERSION]: config.serviceVersion || 'unknown',
+  })
+
+  const azureExporter = new AzureMonitorTraceExporter({
+    connectionString: config.connectionString,
+  })
+
+  const spanProcessors = [new FilteringSpanProcessor(new BatchSpanProcessor(azureExporter), processors)]
 
   if (config.debug) {
     logger.info('Telemetry: Debug mode enabled - spans will be logged to console')
     spanProcessors.push(new FilteringSpanProcessor(new BatchSpanProcessor(new ConsoleSpanExporter()), processors))
   }
 
-  const options: AzureMonitorOpenTelemetryOptions = {
-    azureMonitorExporterOptions: {
-      connectionString: config.connectionString,
-    },
-    resource: resourceFromAttributes({
-      [ATTR_SERVICE_NAME]: config.serviceName,
-      [ATTR_SERVICE_VERSION]: config.serviceVersion || 'unknown',
-    }),
-    instrumentationOptions: {
-      bunyan: { enabled: true },
-    },
+  const provider = new NodeTracerProvider({
+    resource,
     spanProcessors,
-  }
+  })
 
-  useAzureMonitor(options)
+  provider.register()
 
   registerInstrumentations({
-    tracerProvider: trace.getTracerProvider(),
+    tracerProvider: provider,
     meterProvider: metrics.getMeterProvider(),
     instrumentations: [
+      new HttpInstrumentation(),
       new ExpressInstrumentation({
         ignoreLayersType: [ExpressLayerType.MIDDLEWARE, ExpressLayerType.ROUTER, ExpressLayerType.REQUEST_HANDLER],
       }),
