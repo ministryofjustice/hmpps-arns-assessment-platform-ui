@@ -5,8 +5,6 @@ import { AssessmentInfoHelper } from '../helpers'
 export default class AddStepsPage extends AbstractPage {
   readonly pageHeading: Locator
 
-  readonly stepRows: Locator
-
   readonly addStepButton: Locator
 
   readonly saveAndContinueButton: Locator
@@ -18,7 +16,6 @@ export default class AddStepsPage extends AbstractPage {
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
-    this.stepRows = page.locator('[data-qa="step-row"]')
     this.addStepButton = page.getByRole('button', { name: /add another step/i })
     this.saveAndContinueButton = page.getByRole('button', { name: /save and continue/i })
     this.backLink = page.locator('.govuk-back-link')
@@ -27,10 +24,6 @@ export default class AddStepsPage extends AbstractPage {
 
   get assessmentInfoDetails(): Locator {
     return this.assessmentInfo.details
-  }
-
-  get assessmentInfoSummary(): Locator {
-    return this.assessmentInfo.summary
   }
 
   get assessmentInfoContent(): Locator {

@@ -13,13 +13,9 @@ export default class CreateGoalPage extends AbstractPage {
 
   readonly isRelatedNo: Locator
 
-  readonly relatedAreasCheckboxes: Locator
-
   readonly addStepsButton: Locator
 
   readonly saveWithoutStepsButton: Locator
-
-  readonly areaOfNeedNav: Locator
 
   readonly goalTitles: Locator
 
@@ -44,10 +40,8 @@ export default class CreateGoalPage extends AbstractPage {
     this.isRelatedNo = page
       .getByRole('group', { name: /related to any other area/i })
       .getByRole('radio', { name: 'No' })
-    this.relatedAreasCheckboxes = page.locator('[name="related_areas_of_need"]')
     this.addStepsButton = page.getByRole('button', { name: /add steps/i })
     this.saveWithoutStepsButton = page.getByRole('button', { name: /save without steps/i })
-    this.areaOfNeedNav = page.locator('[data-qa="area-of-need-nav"]')
     this.goalTitles = page.getByTestId('autocomplete-data-goal_title')
     this.findAccomodationGoal = page.getByRole('option', { name: 'I will find accommodation' })
     this.errorSummary = page.locator('[data-module="govuk-error-summary"]')
@@ -60,24 +54,12 @@ export default class CreateGoalPage extends AbstractPage {
     return this.canStartNow.yesRadio
   }
 
-  get canStartNowNo(): Locator {
-    return this.canStartNow.noRadio
-  }
-
   get targetDateOptions(): Locator {
     return this.targetDate.options
   }
 
-  get customTargetDateInput(): Locator {
-    return this.targetDate.customDateInput
-  }
-
   get assessmentInfoDetails(): Locator {
     return this.assessmentInfo.details
-  }
-
-  get assessmentInfoSummary(): Locator {
-    return this.assessmentInfo.summary
   }
 
   get assessmentInfoContent(): Locator {

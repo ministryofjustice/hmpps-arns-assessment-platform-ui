@@ -40,26 +40,6 @@ export default class ConfirmReaddGoalPage extends AbstractPage {
     this.targetDate = new TargetDateHelper(page)
   }
 
-  get canStartNowYes(): Locator {
-    return this.canStartNow.yesRadio
-  }
-
-  get canStartNowNo(): Locator {
-    return this.canStartNow.noRadio
-  }
-
-  get targetDateOptions(): Locator {
-    return this.targetDate.options
-  }
-
-  get customTargetDateInput(): Locator {
-    return this.targetDate.customDateInput
-  }
-
-  get errorSummary(): Locator {
-    return this.validation.errorSummary
-  }
-
   static async verifyOnPage(page: Page): Promise<ConfirmReaddGoalPage> {
     const confirmReaddGoalPage = new ConfirmReaddGoalPage(page)
     await expect(confirmReaddGoalPage.header).toContainText('Confirm you want to add this goal back')
