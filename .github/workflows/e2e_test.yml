@@ -25,9 +25,18 @@ jobs:
           name: build_image
           path: ${{ runner.temp }}
 
-      - name: Load image
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+
+      - name: Load image and pull dependencies
         run: |
+          docker compose -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml pull --ignore-buildable &
+          docker pull node:22-alpine &
           docker load --input ${{ runner.temp }}/build_image.tar
+          wait
 
       - name: Run Playwright tests
         run: |
