@@ -1,12 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
-import {
-  AssessmentInfoHelper,
-  BackLinkHelper,
-  ValidationHelper,
-  TargetDateHelper,
-  type TargetDateOption,
-} from '../helpers'
+import { AssessmentInfoHelper, ValidationHelper, TargetDateHelper, type TargetDateOption } from '../helpers'
 
 export default class ChangeGoalPage extends AbstractPage {
   readonly header: Locator
@@ -25,9 +19,9 @@ export default class ChangeGoalPage extends AbstractPage {
 
   readonly saveGoalButton: Locator
 
-  private assessmentInfo: AssessmentInfoHelper
+  readonly backLink: Locator
 
-  private backLinkHelper: BackLinkHelper
+  private assessmentInfo: AssessmentInfoHelper
 
   private validation: ValidationHelper
 
@@ -43,8 +37,8 @@ export default class ChangeGoalPage extends AbstractPage {
     this.canStartNowYes = page.locator('input[name="can_start_now"][value="yes"]')
     this.canStartNowNo = page.locator('input[name="can_start_now"][value="no"]')
     this.saveGoalButton = page.getByRole('button', { name: 'Save goal' })
+    this.backLink = page.locator('.govuk-back-link')
     this.assessmentInfo = new AssessmentInfoHelper(page)
-    this.backLinkHelper = new BackLinkHelper(page)
     this.validation = new ValidationHelper(page)
     this.targetDate = new TargetDateHelper(page)
   }
@@ -67,10 +61,6 @@ export default class ChangeGoalPage extends AbstractPage {
 
   get customDateInput(): Locator {
     return this.targetDate.customDateInput
-  }
-
-  get backLink(): Locator {
-    return this.backLinkHelper.link
   }
 
   get assessmentInfoDetails(): Locator {
@@ -159,7 +149,7 @@ export default class ChangeGoalPage extends AbstractPage {
   }
 
   async clickBackLink(): Promise<void> {
-    return this.backLinkHelper.click()
+    await this.backLink.click()
   }
 
   async expandAssessmentInfo(): Promise<void> {

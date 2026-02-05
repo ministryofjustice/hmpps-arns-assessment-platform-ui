@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
-import { GoalSummaryCardHelper, ValidationHelper } from '../helpers'
+import { ValidationHelper } from '../helpers'
 
 export default class ConfirmRemoveGoalPage extends AbstractPage {
   readonly header: Locator
@@ -11,7 +11,9 @@ export default class ConfirmRemoveGoalPage extends AbstractPage {
 
   readonly cancelButton: Locator
 
-  private goalSummaryCard: GoalSummaryCardHelper
+  readonly goalCard: Locator
+
+  readonly goalTitle: Locator
 
   private validation: ValidationHelper
 
@@ -21,16 +23,9 @@ export default class ConfirmRemoveGoalPage extends AbstractPage {
     this.removalNoteTextarea = page.locator('#removal_note')
     this.confirmButton = page.getByRole('button', { name: 'Confirm' })
     this.cancelButton = page.getByRole('button', { name: 'Do not remove goal' })
-    this.goalSummaryCard = new GoalSummaryCardHelper(page)
+    this.goalCard = page.locator('[data-qa="goal-summary-card"]')
+    this.goalTitle = page.locator('[data-qa="goal-title"]')
     this.validation = new ValidationHelper(page)
-  }
-
-  get goalCard(): Locator {
-    return this.goalSummaryCard.card
-  }
-
-  get goalTitle(): Locator {
-    return this.goalSummaryCard.title
   }
 
   get errorSummary(): Locator {
@@ -60,7 +55,7 @@ export default class ConfirmRemoveGoalPage extends AbstractPage {
   }
 
   async getGoalTitle(): Promise<string> {
-    return this.goalSummaryCard.getTitle()
+    return (await this.goalTitle.textContent()) ?? ''
   }
 
   async getHeaderText(): Promise<string> {

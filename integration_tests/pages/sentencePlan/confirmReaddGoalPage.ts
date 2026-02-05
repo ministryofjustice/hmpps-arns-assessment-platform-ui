@@ -1,12 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
-import {
-  GoalSummaryCardHelper,
-  ValidationHelper,
-  CanStartNowHelper,
-  TargetDateHelper,
-  type TargetDateOption,
-} from '../helpers'
+import { ValidationHelper, CanStartNowHelper, TargetDateHelper, type TargetDateOption } from '../helpers'
 
 export default class ConfirmReaddGoalPage extends AbstractPage {
   readonly header: Locator
@@ -21,7 +15,9 @@ export default class ConfirmReaddGoalPage extends AbstractPage {
 
   readonly canStartNowError: Locator
 
-  private goalSummaryCard: GoalSummaryCardHelper
+  readonly goalCard: Locator
+
+  readonly goalTitle: Locator
 
   private validation: ValidationHelper
 
@@ -37,18 +33,11 @@ export default class ConfirmReaddGoalPage extends AbstractPage {
     this.cancelButton = page.getByRole('button', { name: 'Do not add goal back into plan' })
     this.readdNoteError = page.locator('#readd_note-error')
     this.canStartNowError = page.locator('#can_start_now-error')
-    this.goalSummaryCard = new GoalSummaryCardHelper(page)
+    this.goalCard = page.locator('[data-qa="goal-summary-card"]')
+    this.goalTitle = page.locator('[data-qa="goal-title"]')
     this.validation = new ValidationHelper(page)
     this.canStartNow = new CanStartNowHelper(page)
     this.targetDate = new TargetDateHelper(page)
-  }
-
-  get goalCard(): Locator {
-    return this.goalSummaryCard.card
-  }
-
-  get goalTitle(): Locator {
-    return this.goalSummaryCard.title
   }
 
   get canStartNowYes(): Locator {
@@ -102,7 +91,7 @@ export default class ConfirmReaddGoalPage extends AbstractPage {
   }
 
   async getGoalTitle(): Promise<string> {
-    return this.goalSummaryCard.getTitle()
+    return (await this.goalTitle.textContent()) ?? ''
   }
 
   async getHeaderText(): Promise<string> {

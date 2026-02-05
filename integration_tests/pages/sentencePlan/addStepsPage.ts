@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
-import { AssessmentInfoHelper, BackLinkHelper } from '../helpers'
+import { AssessmentInfoHelper } from '../helpers'
 
 export default class AddStepsPage extends AbstractPage {
   readonly pageHeading: Locator
@@ -11,9 +11,9 @@ export default class AddStepsPage extends AbstractPage {
 
   readonly saveAndContinueButton: Locator
 
-  private assessmentInfo: AssessmentInfoHelper
+  readonly backLink: Locator
 
-  private backLinkHelper: BackLinkHelper
+  private assessmentInfo: AssessmentInfoHelper
 
   private constructor(page: Page) {
     super(page)
@@ -21,12 +21,8 @@ export default class AddStepsPage extends AbstractPage {
     this.stepRows = page.locator('[data-qa="step-row"]')
     this.addStepButton = page.getByRole('button', { name: /add another step/i })
     this.saveAndContinueButton = page.getByRole('button', { name: /save and continue/i })
+    this.backLink = page.locator('.govuk-back-link')
     this.assessmentInfo = new AssessmentInfoHelper(page)
-    this.backLinkHelper = new BackLinkHelper(page)
-  }
-
-  get backLink(): Locator {
-    return this.backLinkHelper.link
   }
 
   get assessmentInfoDetails(): Locator {
@@ -81,7 +77,7 @@ export default class AddStepsPage extends AbstractPage {
   }
 
   async clickBack(): Promise<void> {
-    return this.backLinkHelper.click()
+    await this.backLink.click()
   }
 
   async expandAssessmentInfo(): Promise<void> {
