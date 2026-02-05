@@ -1,12 +1,9 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
+import { GoalSummaryCardHelper } from '../helpers'
 
 export default class ConfirmAchievedGoalPage extends AbstractPage {
   readonly header: Locator
-
-  readonly goalCard: Locator
-
-  readonly goalTitle: Locator
 
   readonly howHelpedTextarea: Locator
 
@@ -14,14 +11,23 @@ export default class ConfirmAchievedGoalPage extends AbstractPage {
 
   readonly cancelButton: Locator
 
+  private goalSummaryCard: GoalSummaryCardHelper
+
   private constructor(page: Page) {
     super(page)
     this.header = page.locator('h1')
-    this.goalCard = page.locator('[data-qa="goal-summary-card"]')
-    this.goalTitle = page.locator('[data-qa="goal-title"]')
     this.howHelpedTextarea = page.locator('#how_helped')
     this.confirmButton = page.getByRole('button', { name: 'Confirm' })
     this.cancelButton = page.getByRole('button', { name: 'Do not mark as achieved' })
+    this.goalSummaryCard = new GoalSummaryCardHelper(page)
+  }
+
+  get goalCard(): Locator {
+    return this.goalSummaryCard.card
+  }
+
+  get goalTitle(): Locator {
+    return this.goalSummaryCard.title
   }
 
   static async verifyOnPage(page: Page): Promise<ConfirmAchievedGoalPage> {
@@ -47,7 +53,7 @@ export default class ConfirmAchievedGoalPage extends AbstractPage {
   }
 
   async getGoalTitle(): Promise<string> {
-    return (await this.goalTitle.textContent()) ?? ''
+    return this.goalSummaryCard.getTitle()
   }
 
   async getHeaderText(): Promise<string> {

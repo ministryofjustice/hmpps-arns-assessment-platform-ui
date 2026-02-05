@@ -1,12 +1,9 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
+import { GoalSummaryCardHelper, ValidationHelper } from '../helpers'
 
 export default class ConfirmRemoveGoalPage extends AbstractPage {
   readonly header: Locator
-
-  readonly goalCard: Locator
-
-  readonly goalTitle: Locator
 
   readonly removalNoteTextarea: Locator
 
@@ -14,20 +11,30 @@ export default class ConfirmRemoveGoalPage extends AbstractPage {
 
   readonly cancelButton: Locator
 
-  readonly errorSummary: Locator
+  private goalSummaryCard: GoalSummaryCardHelper
 
-  readonly removalNoteError: Locator
+  private validation: ValidationHelper
 
   private constructor(page: Page) {
     super(page)
     this.header = page.locator('h1')
-    this.goalCard = page.locator('[data-qa="goal-summary-card"]')
-    this.goalTitle = page.locator('[data-qa="goal-title"]')
     this.removalNoteTextarea = page.locator('#removal_note')
     this.confirmButton = page.getByRole('button', { name: 'Confirm' })
     this.cancelButton = page.getByRole('button', { name: 'Do not remove goal' })
-    this.errorSummary = page.locator('.govuk-error-summary')
-    this.removalNoteError = page.locator('#removal_note-error')
+    this.goalSummaryCard = new GoalSummaryCardHelper(page)
+    this.validation = new ValidationHelper(page)
+  }
+
+  get goalCard(): Locator {
+    return this.goalSummaryCard.card
+  }
+
+  get goalTitle(): Locator {
+    return this.goalSummaryCard.title
+  }
+
+  get errorSummary(): Locator {
+    return this.validation.errorSummary
   }
 
   static async verifyOnPage(page: Page): Promise<ConfirmRemoveGoalPage> {
@@ -53,7 +60,7 @@ export default class ConfirmRemoveGoalPage extends AbstractPage {
   }
 
   async getGoalTitle(): Promise<string> {
-    return (await this.goalTitle.textContent()) ?? ''
+    return this.goalSummaryCard.getTitle()
   }
 
   async getHeaderText(): Promise<string> {
@@ -61,10 +68,10 @@ export default class ConfirmRemoveGoalPage extends AbstractPage {
   }
 
   async hasValidationError(): Promise<boolean> {
-    return this.removalNoteError.isVisible()
+    return this.validation.hasFieldError('removal_note')
   }
 
   async getValidationErrorMessage(): Promise<string> {
-    return (await this.removalNoteError.textContent()) ?? ''
+    return this.validation.getFieldErrorMessage('removal_note')
   }
 }

@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
+import { AssessmentInfoHelper, BackLinkHelper } from '../helpers'
 
 export default class AddStepsPage extends AbstractPage {
   readonly pageHeading: Locator
@@ -10,7 +11,9 @@ export default class AddStepsPage extends AbstractPage {
 
   readonly saveAndContinueButton: Locator
 
-  readonly backLink: Locator
+  private assessmentInfo: AssessmentInfoHelper
+
+  private backLinkHelper: BackLinkHelper
 
   private constructor(page: Page) {
     super(page)
@@ -18,7 +21,24 @@ export default class AddStepsPage extends AbstractPage {
     this.stepRows = page.locator('[data-qa="step-row"]')
     this.addStepButton = page.getByRole('button', { name: /add another step/i })
     this.saveAndContinueButton = page.getByRole('button', { name: /save and continue/i })
-    this.backLink = page.locator('.govuk-back-link')
+    this.assessmentInfo = new AssessmentInfoHelper(page)
+    this.backLinkHelper = new BackLinkHelper(page)
+  }
+
+  get backLink(): Locator {
+    return this.backLinkHelper.link
+  }
+
+  get assessmentInfoDetails(): Locator {
+    return this.assessmentInfo.details
+  }
+
+  get assessmentInfoSummary(): Locator {
+    return this.assessmentInfo.summary
+  }
+
+  get assessmentInfoContent(): Locator {
+    return this.assessmentInfo.content
   }
 
   static async verifyOnPage(page: Page): Promise<AddStepsPage> {
@@ -61,6 +81,14 @@ export default class AddStepsPage extends AbstractPage {
   }
 
   async clickBack(): Promise<void> {
-    await this.backLink.click()
+    return this.backLinkHelper.click()
+  }
+
+  async expandAssessmentInfo(): Promise<void> {
+    return this.assessmentInfo.expand()
+  }
+
+  async isAssessmentInfoCollapsed(): Promise<boolean> {
+    return this.assessmentInfo.isCollapsed()
   }
 }

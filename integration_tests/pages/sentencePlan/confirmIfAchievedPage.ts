@@ -1,14 +1,11 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
+import { GoalSummaryCardHelper } from '../helpers'
 
 export default class ConfirmIfAchievedPage extends AbstractPage {
   readonly header: Locator
 
   readonly allStepsCompletedMessage: Locator
-
-  readonly goalCard: Locator
-
-  readonly goalTitle: Locator
 
   readonly hasAchievedGoalFieldset: Locator
 
@@ -22,18 +19,27 @@ export default class ConfirmIfAchievedPage extends AbstractPage {
 
   readonly hasAchievedGoalError: Locator
 
+  private goalSummaryCard: GoalSummaryCardHelper
+
   private constructor(page: Page) {
     super(page)
     this.header = page.locator('h1')
     this.allStepsCompletedMessage = page.locator('p.govuk-body').filter({ hasText: 'All steps have been completed' })
-    this.goalCard = page.locator('[data-qa="goal-summary-card"]')
-    this.goalTitle = page.locator('[data-qa="goal-title"]')
     this.hasAchievedGoalFieldset = page.locator('fieldset').filter({ hasText: 'achieved this goal?' })
     this.yesRadio = page.locator('input[name="has_achieved_goal"][value="yes"]')
     this.noRadio = page.locator('input[name="has_achieved_goal"][value="no"]')
     this.howHelpedTextarea = page.locator('#how_helped')
     this.saveAndContinueButton = page.getByRole('button', { name: 'Save and continue' })
     this.hasAchievedGoalError = page.locator('#has_achieved_goal-error')
+    this.goalSummaryCard = new GoalSummaryCardHelper(page)
+  }
+
+  get goalCard(): Locator {
+    return this.goalSummaryCard.card
+  }
+
+  get goalTitle(): Locator {
+    return this.goalSummaryCard.title
   }
 
   static async verifyOnPage(page: Page): Promise<ConfirmIfAchievedPage> {
@@ -60,7 +66,7 @@ export default class ConfirmIfAchievedPage extends AbstractPage {
   }
 
   async getGoalTitle(): Promise<string> {
-    return (await this.goalTitle.textContent()) ?? ''
+    return this.goalSummaryCard.getTitle()
   }
 
   async isYesSelected(): Promise<boolean> {
