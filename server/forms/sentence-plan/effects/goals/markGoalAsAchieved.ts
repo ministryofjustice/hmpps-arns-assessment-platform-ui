@@ -25,6 +25,9 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
 
   const practitionerName = getPractitionerName(context, user)
 
+  // Read form answers before building commands (needed for timeline data)
+  const howHelped = context.getAnswer('how_helped')
+
   const commands: Commands[] = []
 
   // 1. Update goal status to ACHIEVED
@@ -37,12 +40,20 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
       achieved_by: practitionerName,
     }),
     removed: [],
+    timeline: {
+      type: 'GOAL_ACHIEVED',
+      data: {
+        goalUuid: activeGoal.uuid,
+        goalTitle: activeGoal.title,
+        achievedBy: practitionerName,
+        notes: (typeof howHelped === 'string' && howHelped.trim()) || undefined,
+      },
+    },
     assessmentUuid,
     user,
   })
 
   // 2. Add achieved note if provided
-  const howHelped = context.getAnswer('how_helped')
   if (howHelped && typeof howHelped === 'string' && howHelped.trim().length > 0) {
     const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
 
