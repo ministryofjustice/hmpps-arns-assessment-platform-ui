@@ -175,7 +175,6 @@ services:
       DELIUS_API_URL: http://wiremock:8080/delius
       ARNS_API_URL: http://wiremock:8080/arns-api
       FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
-      DEBUG_TELEMETRY: true
 
   api:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:2026-01-30.328.ec9d03c
