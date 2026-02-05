@@ -8,7 +8,7 @@ export const previousVersionsStep = step({
     locals: {
       headerPageHeading: 'Previous versions',
       buttons: {
-        showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('handover')),
+        showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('OASYS')),
       },
     },
   },

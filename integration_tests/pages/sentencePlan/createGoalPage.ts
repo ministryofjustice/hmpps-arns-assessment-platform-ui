@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
+import { AssessmentInfoHelper, CanStartNowHelper, TargetDateHelper, type TargetDateOption } from '../helpers'
 
 export default class CreateGoalPage extends AbstractPage {
   readonly pageHeading: Locator
@@ -12,27 +13,21 @@ export default class CreateGoalPage extends AbstractPage {
 
   readonly isRelatedNo: Locator
 
-  readonly relatedAreasCheckboxes: Locator
-
-  readonly canStartNowYes: Locator
-
-  readonly canStartNowNo: Locator
-
-  readonly targetDateOptions: Locator
-
-  readonly customTargetDateInput: Locator
-
   readonly addStepsButton: Locator
 
   readonly saveWithoutStepsButton: Locator
-
-  readonly areaOfNeedNav: Locator
 
   readonly goalTitles: Locator
 
   readonly findAccomodationGoal: Locator
 
   readonly errorSummary: Locator
+
+  private assessmentInfo: AssessmentInfoHelper
+
+  private canStartNow: CanStartNowHelper
+
+  private targetDate: TargetDateHelper
 
   public constructor(page: Page) {
     super(page)
@@ -45,21 +40,30 @@ export default class CreateGoalPage extends AbstractPage {
     this.isRelatedNo = page
       .getByRole('group', { name: /related to any other area/i })
       .getByRole('radio', { name: 'No' })
-    this.relatedAreasCheckboxes = page.locator('[name="related_areas_of_need"]')
-    this.canStartNowYes = page
-      .getByRole('group', { name: /can.*start working on this goal/i })
-      .getByRole('radio', { name: 'Yes' })
-    this.canStartNowNo = page
-      .getByRole('group', { name: /can.*start working on this goal/i })
-      .getByRole('radio', { name: /no.*future goal/i })
-    this.targetDateOptions = page.locator('[name="target_date_option"]')
-    this.customTargetDateInput = page.locator('#custom_target_date')
     this.addStepsButton = page.getByRole('button', { name: /add steps/i })
     this.saveWithoutStepsButton = page.getByRole('button', { name: /save without steps/i })
-    this.areaOfNeedNav = page.locator('[data-qa="area-of-need-nav"]')
     this.goalTitles = page.getByTestId('autocomplete-data-goal_title')
     this.findAccomodationGoal = page.getByRole('option', { name: 'I will find accommodation' })
     this.errorSummary = page.locator('[data-module="govuk-error-summary"]')
+    this.assessmentInfo = new AssessmentInfoHelper(page)
+    this.canStartNow = new CanStartNowHelper(page)
+    this.targetDate = new TargetDateHelper(page)
+  }
+
+  get canStartNowYes(): Locator {
+    return this.canStartNow.yesRadio
+  }
+
+  get targetDateOptions(): Locator {
+    return this.targetDate.options
+  }
+
+  get assessmentInfoDetails(): Locator {
+    return this.assessmentInfo.details
+  }
+
+  get assessmentInfoContent(): Locator {
+    return this.assessmentInfo.content
   }
 
   static async verifyOnPage(page: Page): Promise<CreateGoalPage> {
@@ -85,17 +89,11 @@ export default class CreateGoalPage extends AbstractPage {
   }
 
   async selectCanStartNow(canStart: boolean): Promise<void> {
-    if (canStart) {
-      await this.canStartNowYes.click()
-    } else {
-      await this.canStartNowNo.click()
-    }
+    return this.canStartNow.select(canStart)
   }
 
-  async selectTargetDateOption(option: string): Promise<void> {
-    const targetDateRadio = this.page.locator(`[name="target_date_option"][value="${option}"]`)
-    await targetDateRadio.waitFor({ state: 'visible' })
-    await targetDateRadio.click()
+  async selectTargetDateOption(option: TargetDateOption): Promise<void> {
+    return this.targetDate.selectOption(option)
   }
 
   async clickAddSteps(): Promise<void> {
@@ -104,5 +102,13 @@ export default class CreateGoalPage extends AbstractPage {
 
   async clickSaveWithoutSteps(): Promise<void> {
     await this.saveWithoutStepsButton.click()
+  }
+
+  async expandAssessmentInfo(): Promise<void> {
+    return this.assessmentInfo.expand()
+  }
+
+  async isAssessmentInfoCollapsed(): Promise<boolean> {
+    return this.assessmentInfo.isCollapsed()
   }
 }

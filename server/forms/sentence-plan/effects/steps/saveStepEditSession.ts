@@ -1,14 +1,14 @@
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { SentencePlanContext, SentencePlanEffectsDeps, StepAnswers, StepChangesStorage, StepProperties } from '../types'
 import { Commands } from '../../../../interfaces/aap-api/command'
+import { getRequiredEffectContext } from '../goals/goalUtils'
 
 /**
  * Save the step edit session to the API
  */
 export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const user = context.getState('user')
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'saveStepEditSession')
   const session = context.getSession()
-  const assessmentUuid = context.getData('assessmentUuid')
   const activeGoalUuid = context.getData('activeGoalUuid')
 
   const storage: StepChangesStorage = session?.stepChanges ?? {}

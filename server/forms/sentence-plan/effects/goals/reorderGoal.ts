@@ -1,5 +1,5 @@
-import { InternalServerError } from 'http-errors'
 import { DerivedGoal, SentencePlanContext, SentencePlanEffectsDeps } from '../types'
+import { getRequiredEffectContext } from './goalUtils'
 
 /**
  * Reorder a goal within its status group.
@@ -13,10 +13,6 @@ import { DerivedGoal, SentencePlanContext, SentencePlanEffectsDeps } from '../ty
  * - direction: 'up' or 'down' within the same status group
  */
 export const reorderGoal = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const user = context.getState('user')
-  const assessmentUuid = context.getData('assessmentUuid')
-  const goals = context.getData('goals') as DerivedGoal[]
-
   const goalUuid = context.getQueryParam('goalUuid') as string | undefined
   const direction = context.getQueryParam('direction') as 'up' | 'down' | undefined
 
@@ -25,13 +21,8 @@ export const reorderGoal = (deps: SentencePlanEffectsDeps) => async (context: Se
     return
   }
 
-  if (!user) {
-    throw new InternalServerError('User is required to reorder a goal')
-  }
-
-  if (!assessmentUuid) {
-    throw new InternalServerError('Assessment UUID is required to reorder a goal')
-  }
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'reorderGoal')
+  const goals = context.getData('goals') as DerivedGoal[]
 
   // Empty plan - nothing to reorder
   if (!goals?.length) {

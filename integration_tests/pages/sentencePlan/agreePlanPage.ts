@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
+import { ValidationHelper } from '../helpers'
 
 export default class AgreePlanPage extends AbstractPage {
   readonly header: Locator
@@ -20,7 +21,7 @@ export default class AgreePlanPage extends AbstractPage {
 
   readonly saveButton: Locator
 
-  readonly errorSummary: Locator
+  private validation: ValidationHelper
 
   private constructor(page: Page) {
     super(page)
@@ -33,7 +34,11 @@ export default class AgreePlanPage extends AbstractPage {
     this.detailsForCouldNotAnswerTextarea = page.locator('#plan_agreement_details_could_not_answer')
     this.notesTextarea = page.locator('#plan_agreement_notes')
     this.saveButton = page.getByRole('button', { name: 'Save' })
-    this.errorSummary = page.locator('.govuk-error-summary')
+    this.validation = new ValidationHelper(page)
+  }
+
+  get errorSummary(): Locator {
+    return this.validation.errorSummary
   }
 
   static async verifyOnPage(page: Page): Promise<AgreePlanPage> {
@@ -71,21 +76,19 @@ export default class AgreePlanPage extends AbstractPage {
   }
 
   async hasValidationError(fieldName: string): Promise<boolean> {
-    const errorMessage = this.page.locator(`#${fieldName}-error`)
-    return errorMessage.isVisible()
+    return this.validation.hasFieldError(fieldName)
   }
 
   async getValidationErrorMessage(fieldName: string): Promise<string> {
-    const errorMessage = this.page.locator(`#${fieldName}-error`)
-    return (await errorMessage.textContent()) ?? ''
+    return this.validation.getFieldErrorMessage(fieldName)
   }
 
   async isErrorSummaryVisible(): Promise<boolean> {
-    return this.errorSummary.isVisible()
+    return this.validation.isErrorSummaryVisible()
   }
 
   async getErrorSummaryText(): Promise<string> {
-    return (await this.errorSummary.textContent()) ?? ''
+    return this.validation.getErrorSummaryText()
   }
 
   async isDetailsForNoVisible(): Promise<boolean> {

@@ -1,8 +1,28 @@
-// Require app insights before anything else to allow for instrumentation of bunyan and express
-import 'applicationinsights'
 import cluster from 'cluster'
 import os from 'os'
+import { initialiseTelemetry, flushTelemetry, telemetry } from './server/utils/telemetry'
 import logger from './logger'
+
+initialiseTelemetry({
+  serviceName: 'hmpps-arns-assessment-platform-ui',
+  serviceVersion: process.env.BUILD_NUMBER || 'unknown',
+  logger,
+  connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
+  debug: process.env.DEBUG_TELEMETRY === 'true',
+})
+  .addSpanProcessor(telemetry.helpers.filterSpanByPath(['/health', '/ping', '/assets/*', '/favicon.ico']))
+  .addSpanProcessor(telemetry.helpers.filterSpanWhereClient)
+  .addSpanProcessor(telemetry.helpers.renameSpanToHttpRoute)
+  .startRecording()
+
+const shutdown = async (signal: string) => {
+  logger.info(`${signal} received, shutting down...`)
+  await flushTelemetry()
+  process.exit(0)
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'))
+process.on('SIGINT', () => shutdown('SIGINT'))
 
 const clusterEnabled = process.env.NODE_CLUSTER_ENABLED === 'true'
 const workerCount = Number(process.env.NODE_CLUSTER_WORKERS) || Math.min(os.cpus().length, 2)

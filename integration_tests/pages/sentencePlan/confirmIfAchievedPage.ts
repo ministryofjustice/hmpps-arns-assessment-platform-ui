@@ -6,10 +6,6 @@ export default class ConfirmIfAchievedPage extends AbstractPage {
 
   readonly allStepsCompletedMessage: Locator
 
-  readonly goalCard: Locator
-
-  readonly goalTitle: Locator
-
   readonly hasAchievedGoalFieldset: Locator
 
   readonly yesRadio: Locator
@@ -22,18 +18,22 @@ export default class ConfirmIfAchievedPage extends AbstractPage {
 
   readonly hasAchievedGoalError: Locator
 
+  readonly goalCard: Locator
+
+  readonly goalTitle: Locator
+
   private constructor(page: Page) {
     super(page)
     this.header = page.locator('h1')
     this.allStepsCompletedMessage = page.locator('p.govuk-body').filter({ hasText: 'All steps have been completed' })
-    this.goalCard = page.locator('[data-qa="goal-summary-card"]')
-    this.goalTitle = page.locator('[data-qa="goal-title"]')
     this.hasAchievedGoalFieldset = page.locator('fieldset').filter({ hasText: 'achieved this goal?' })
     this.yesRadio = page.locator('input[name="has_achieved_goal"][value="yes"]')
     this.noRadio = page.locator('input[name="has_achieved_goal"][value="no"]')
     this.howHelpedTextarea = page.locator('#how_helped')
     this.saveAndContinueButton = page.getByRole('button', { name: 'Save and continue' })
     this.hasAchievedGoalError = page.locator('#has_achieved_goal-error')
+    this.goalCard = page.locator('[data-qa="goal-summary-card"]')
+    this.goalTitle = page.locator('[data-qa="goal-title"]')
   }
 
   static async verifyOnPage(page: Page): Promise<ConfirmIfAchievedPage> {

@@ -1,5 +1,12 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
+import {
+  AssessmentInfoHelper,
+  CanStartNowHelper,
+  ValidationHelper,
+  TargetDateHelper,
+  type TargetDateOption,
+} from '../helpers'
 
 export default class ChangeGoalPage extends AbstractPage {
   readonly header: Locator
@@ -12,23 +19,17 @@ export default class ChangeGoalPage extends AbstractPage {
 
   readonly isRelatedNo: Locator
 
-  readonly canStartNowYes: Locator
-
-  readonly canStartNowNo: Locator
-
-  readonly targetDate3Months: Locator
-
-  readonly targetDate6Months: Locator
-
-  readonly targetDate12Months: Locator
-
-  readonly targetDateCustom: Locator
-
-  readonly customDateInput: Locator
-
   readonly saveGoalButton: Locator
 
   readonly backLink: Locator
+
+  private assessmentInfo: AssessmentInfoHelper
+
+  private canStartNow: CanStartNowHelper
+
+  private validation: ValidationHelper
+
+  private targetDate: TargetDateHelper
 
   private constructor(page: Page) {
     super(page)
@@ -37,15 +38,24 @@ export default class ChangeGoalPage extends AbstractPage {
     this.goalTitleInput = this.goalTitleAutocomplete.getByRole('combobox')
     this.isRelatedYes = page.locator('input[name="is_related_to_other_areas"][value="yes"]')
     this.isRelatedNo = page.locator('input[name="is_related_to_other_areas"][value="no"]')
-    this.canStartNowYes = page.locator('input[name="can_start_now"][value="yes"]')
-    this.canStartNowNo = page.locator('input[name="can_start_now"][value="no"]')
-    this.targetDate3Months = page.locator('input[name="target_date_option"][value="date_in_3_months"]')
-    this.targetDate6Months = page.locator('input[name="target_date_option"][value="date_in_6_months"]')
-    this.targetDate12Months = page.locator('input[name="target_date_option"][value="date_in_12_months"]')
-    this.targetDateCustom = page.locator('input[name="target_date_option"][value="set_another_date"]')
-    this.customDateInput = page.locator('#custom_target_date')
     this.saveGoalButton = page.getByRole('button', { name: 'Save goal' })
     this.backLink = page.locator('.govuk-back-link')
+    this.assessmentInfo = new AssessmentInfoHelper(page)
+    this.canStartNow = new CanStartNowHelper(page)
+    this.validation = new ValidationHelper(page)
+    this.targetDate = new TargetDateHelper(page)
+  }
+
+  get targetDate3Months(): Locator {
+    return this.targetDate.threeMonths
+  }
+
+  get assessmentInfoDetails(): Locator {
+    return this.assessmentInfo.details
+  }
+
+  get assessmentInfoContent(): Locator {
+    return this.assessmentInfo.content
   }
 
   static async verifyOnPage(page: Page): Promise<ChangeGoalPage> {
@@ -76,40 +86,16 @@ export default class ChangeGoalPage extends AbstractPage {
     await checkbox.check()
   }
 
-  async unselectRelatedArea(areaSlug: string): Promise<void> {
-    const checkbox = this.page.locator(`input[name="related_areas_of_need"][value="${areaSlug}"]`)
-    await checkbox.uncheck()
-  }
-
   async selectCanStartNow(canStart: boolean): Promise<void> {
-    if (canStart) {
-      await this.canStartNowYes.check()
-    } else {
-      await this.canStartNowNo.check()
-    }
+    return this.canStartNow.select(canStart)
   }
 
-  async selectTargetDateOption(option: '3_months' | '6_months' | '12_months' | 'custom'): Promise<void> {
-    switch (option) {
-      case '3_months':
-        await this.targetDate3Months.check()
-        break
-      case '6_months':
-        await this.targetDate6Months.check()
-        break
-      case '12_months':
-        await this.targetDate12Months.check()
-        break
-      case 'custom':
-        await this.targetDateCustom.check()
-        break
-      default:
-        throw new Error(`Invalid target date option. Use one of: '3_months', '6_months', '12_months', or 'custom'`)
-    }
+  async selectTargetDateOption(option: TargetDateOption): Promise<void> {
+    return this.targetDate.selectOption(option)
   }
 
   async setCustomTargetDate(date: string): Promise<void> {
-    await this.customDateInput.fill(date)
+    return this.targetDate.setCustomDate(date)
   }
 
   async saveGoal(): Promise<void> {
@@ -117,40 +103,26 @@ export default class ChangeGoalPage extends AbstractPage {
   }
 
   async isCanStartNowSelected(): Promise<boolean> {
-    return this.canStartNowYes.isChecked()
+    return this.canStartNow.isYesChecked()
   }
 
   async isCanStartNowFutureSelected(): Promise<boolean> {
-    return this.canStartNowNo.isChecked()
-  }
-
-  async getSelectedTargetDateOption(): Promise<string | null> {
-    let result: string | null = null
-
-    if (await this.targetDate3Months.isChecked()) {
-      result = '3_months'
-    } else if (await this.targetDate6Months.isChecked()) {
-      result = '6_months'
-    } else if (await this.targetDate12Months.isChecked()) {
-      result = '12_months'
-    } else if (await this.targetDateCustom.isChecked()) {
-      result = 'custom'
-    }
-
-    return result
+    return this.canStartNow.isNoChecked()
   }
 
   async hasValidationError(fieldName: string): Promise<boolean> {
-    const errorMessage = this.page.locator(`#${fieldName}-error`)
-    return errorMessage.isVisible()
-  }
-
-  async getValidationErrorMessage(fieldName: string): Promise<string> {
-    const errorMessage = this.page.locator(`#${fieldName}-error`)
-    return (await errorMessage.textContent()) ?? ''
+    return this.validation.hasFieldError(fieldName)
   }
 
   async clickBackLink(): Promise<void> {
     await this.backLink.click()
+  }
+
+  async expandAssessmentInfo(): Promise<void> {
+    return this.assessmentInfo.expand()
+  }
+
+  async isAssessmentInfoCollapsed(): Promise<boolean> {
+    return this.assessmentInfo.isCollapsed()
   }
 }

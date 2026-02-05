@@ -21,8 +21,8 @@ export interface AssessmentVersionQueryResult extends QueryResult {
   identifiers: Identifiers
 }
 
-export interface AssessmentTimelineQueryResult extends QueryResult {
-  type: 'AssessmentTimelineQueryResult'
+export interface TimelineQueryResult extends QueryResult {
+  type: 'TimelineQueryResult'
   timeline: TimelineItem[]
 }
 
@@ -38,7 +38,7 @@ export interface CollectionItemQueryResult extends QueryResult {
 
 export type QueryResults =
   | AssessmentVersionQueryResult
-  | AssessmentTimelineQueryResult
+  | TimelineQueryResult
   | CollectionQueryResult
   | CollectionItemQueryResult
 
@@ -48,7 +48,7 @@ export type QueryResults =
  */
 export interface QueryResultMap {
   AssessmentVersionQuery: AssessmentVersionQueryResult
-  AssessmentTimelineQuery: AssessmentTimelineQueryResult
+  TimelineQuery: TimelineQueryResult
   CollectionQuery: CollectionQueryResult
   CollectionItemQuery: CollectionItemQueryResult
 }

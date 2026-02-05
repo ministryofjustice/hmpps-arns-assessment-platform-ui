@@ -2,6 +2,7 @@ import { jwtDecode } from 'jwt-decode'
 import express from 'express'
 import { convertToTitleCase } from '../utils/utils'
 import logger from '../../logger'
+import { telemetry } from '../utils/telemetry'
 
 export default function setUpCurrentUser() {
   const router = express.Router()
@@ -32,15 +33,22 @@ export default function setUpCurrentUser() {
         userRoles: roles.map(role => role.substring(role.indexOf('_') + 1)),
       }
 
-      if (res.locals.user.authSource === 'nomis') {
-        res.locals.user.staffId = parseInt(userId, 10) || undefined
-      }
-
       req.session.principal = {
         identifier: userId || res.locals.user.username,
         username: res.locals.user.username,
         displayName: convertToTitleCase(name),
       }
+
+      telemetry.helpers.enrichSpanWithUser({
+        id: res.locals.user.userId,
+        authSource: res.locals.user.authSource,
+        roles: res.locals.user.userRoles,
+      })
+
+      telemetry.addSpanEvent('UserSessionPopulated', {
+        authSource: res.locals.user.authSource || 'unknown',
+        hasRoles: roles.length > 0,
+      })
 
       return next()
     } catch (error) {

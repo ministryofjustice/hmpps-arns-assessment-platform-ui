@@ -1,17 +1,6 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 
-/**
- * OASys equivalent data structure - flat key-value pairs following naming convention:
- * {area}_section_complete
- * {area}_practitioner_analysis_risk_of_serious_harm
- * {area}_practitioner_analysis_risk_of_serious_harm_{yes|no}_details
- * {area}_practitioner_analysis_risk_of_reoffending
- * {area}_practitioner_analysis_risk_of_reoffending_{yes|no}_details
- * {area}_practitioner_analysis_strengths_or_protective_factors
- * {area}_practitioner_analysis_strengths_or_protective_factors_{yes|no}_details
- * {area}_practitioner_analysis_motivation_to_make_changes
- */
 export type OasysEquivalent = Record<string, string | string[]>
 
 export interface EntityAssessmentResponse {
@@ -28,7 +17,6 @@ export interface EntityAssessmentResponse {
 }
 
 const defaultSanOasysEquivalent: OasysEquivalent = {
-  // Accommodation
   accommodation_section_complete: 'YES',
   accommodation_practitioner_analysis_risk_of_serious_harm: 'YES',
   accommodation_practitioner_analysis_risk_of_serious_harm_yes_details:
@@ -39,22 +27,22 @@ const defaultSanOasysEquivalent: OasysEquivalent = {
   accommodation_practitioner_analysis_strengths_or_protective_factors: 'YES',
   accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details:
     'Has maintained tenancy previously for 2 years. Eligible for housing support.',
-  accommodation_practitioner_analysis_motivation_to_make_changes: 'READY_TO_MAKE_CHANGES',
+  accommodation_practitioner_analysis_motivation_to_make_changes: 'WANT_TO_MAKE_CHANGES',
 
-  // Thinking, behaviours and attitudes
-  thinking_behaviours_attitudes_section_complete: 'YES',
-  thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm: 'YES',
-  thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details:
-    'Impulsive decision-making and poor anger management have led to violent incidents.',
-  thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending: 'YES',
-  thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details:
-    'Pattern of acting impulsively without considering consequences.',
-  thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors: 'YES',
-  thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors_yes_details:
-    'Shows genuine remorse and insight into offending behaviour.',
-  thinking_behaviours_attitudes_practitioner_analysis_motivation_to_make_changes: 'READY_TO_MAKE_CHANGES',
+  finance_section_complete: 'NO',
+  finance_practitioner_analysis_risk_of_reoffending: 'NO',
+  finance_practitioner_analysis_strengths_or_protective_factors: 'YES',
+  finance_practitioner_analysis_strengths_or_protective_factors_yes_details:
+    'Has managed finances responsibly in the past when employed.',
 
-  // Alcohol use
+  drug_use_section_complete: 'NO',
+  drug_use_practitioner_analysis_risk_of_serious_harm: 'NO',
+  drug_use_practitioner_analysis_risk_of_reoffending: 'YES',
+  drug_use_practitioner_analysis_risk_of_reoffending_yes_details:
+    'Previous offences were committed to fund drug habit.',
+  drug_use_practitioner_analysis_strengths_or_protective_factors: 'NO',
+  drug_use_practitioner_analysis_motivation_to_make_changes: 'NEEDS_HELP_TO_MAKE_CHANGES',
+
   alcohol_use_section_complete: 'YES',
   alcohol_use_practitioner_analysis_risk_of_serious_harm: 'YES',
   alcohol_use_practitioner_analysis_risk_of_serious_harm_yes_details:
@@ -65,9 +53,8 @@ const defaultSanOasysEquivalent: OasysEquivalent = {
   alcohol_use_practitioner_analysis_strengths_or_protective_factors: 'YES',
   alcohol_use_practitioner_analysis_strengths_or_protective_factors_yes_details:
     'Periods of abstinence in the past. Family support for recovery.',
-  alcohol_use_practitioner_analysis_motivation_to_make_changes: 'READY_TO_MAKE_CHANGES',
+  alcohol_use_practitioner_analysis_motivation_to_make_changes: 'MADE_CHANGES',
 
-  // Personal relationships
   personal_relationships_community_section_complete: 'YES',
   personal_relationships_community_practitioner_analysis_risk_of_serious_harm: 'YES',
   personal_relationships_community_practitioner_analysis_risk_of_serious_harm_yes_details:
@@ -78,7 +65,16 @@ const defaultSanOasysEquivalent: OasysEquivalent = {
   personal_relationships_community_practitioner_analysis_strengths_or_protective_factors: 'YES',
   personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_yes_details:
     'Strong family support from parents. Positive relationship with children.',
-  personal_relationships_community_practitioner_analysis_motivation_to_make_changes: 'READY_TO_MAKE_CHANGES',
+  personal_relationships_community_practitioner_analysis_motivation_to_make_changes: 'MAKING_CHANGES',
+
+  thinking_behaviours_attitudes_section_complete: 'NO',
+  thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm: 'YES',
+  thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details:
+    'Impulsive decision-making and poor anger management have led to violent incidents.',
+  thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending: 'YES',
+  thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details:
+    'Pattern of acting impulsively without considering consequences.',
+  thinking_behaviours_attitudes_practitioner_analysis_motivation_to_make_changes: 'THINKING_ABOUT_MAKING_CHANGES',
 }
 
 const defaultEntityAssessmentResponse: EntityAssessmentResponse = {
@@ -94,6 +90,7 @@ const defaultEntityAssessmentResponse: EntityAssessmentResponse = {
   lastUpdatedTimestampSP: new Date().toISOString(),
 }
 
+// Always use unique UUIDs from createSession() - hardcoded UUIDs cause flaky parallel tests
 export default {
   stubGetEntityAssessment: (entityUuid: string, response: Partial<EntityAssessmentResponse> = {}): SuperAgentRequest =>
     stubFor({
