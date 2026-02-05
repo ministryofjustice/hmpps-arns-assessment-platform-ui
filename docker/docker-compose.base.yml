@@ -120,7 +120,7 @@ services:
       CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in
 
   ui:
-    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:local
+    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:${APP_VERSION:-local}
     networks:
       - hmpps
     depends_on:
