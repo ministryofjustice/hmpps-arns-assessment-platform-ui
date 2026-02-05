@@ -1,4 +1,5 @@
 import crypto from 'node:crypto'
+import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 import { TrainingScenarioFlag } from '../../constants'
 import { scenarioFieldKeys, scenarioFieldSchema, ScenarioValues } from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session } from '../../types'
@@ -97,6 +98,12 @@ export const createSessionFromCustomize =
 
     // Store the session ID for use by subsequent effects or redirects
     context.setData('generatedSessionId', session.id)
+
+    telemetry.trackEvent('TrainingSessionCreated', {
+      sessionId: session.id,
+      sessionName: scenarioName,
+      source: 'customize',
+    })
 
     // Add success notification
     const userSession = context.getSession()
