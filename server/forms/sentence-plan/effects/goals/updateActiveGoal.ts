@@ -1,7 +1,13 @@
-import { InternalServerError } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { calculateTargetDate, determineGoalStatus, buildGoalProperties, buildGoalAnswers } from './goalUtils'
+import { Commands } from '../../../../interfaces/aap-api/command'
+import {
+  assertGoalEffectContext,
+  calculateTargetDate,
+  determineGoalStatus,
+  buildGoalProperties,
+  buildGoalAnswers,
+} from './goalUtils'
 
 /**
  * Update an existing goal
@@ -21,21 +27,7 @@ import { calculateTargetDate, determineGoalStatus, buildGoalProperties, buildGoa
  * - custom_target_date: Custom date (if set_another_date)
  */
 export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const user = context.getState('user')
-  const assessmentUuid = context.getData('assessmentUuid')
-  const activeGoal = context.getData('activeGoal')
-
-  if (!user) {
-    throw new InternalServerError('User is required to update a goal')
-  }
-
-  if (!assessmentUuid) {
-    throw new InternalServerError('Assessment UUID is required to update a goal')
-  }
-
-  if (!activeGoal?.uuid) {
-    throw new InternalServerError('Active goal is required to update')
-  }
+  const { user, assessmentUuid, activeGoal } = assertGoalEffectContext(context, 'updateActiveGoal')
 
   // Get form answers
   const goalTitle = context.getAnswer('goal_title')
@@ -55,27 +47,29 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
   // If changing to a future goal, clear the target_date
   const answersToRemove = targetDate ? [] : ['target_date']
 
-  // Update the goal answers
-  await deps.api.executeCommand({
-    type: 'UpdateCollectionItemAnswersCommand',
-    collectionItemUuid: activeGoal.uuid,
-    added: wrapAll(answers),
-    removed: answersToRemove,
-    timeline: {
-      type: 'GOAL_UPDATED',
-      data: {},
+  // Batch both updates in a single API call for atomicity
+  const commands: Commands[] = [
+    {
+      type: 'UpdateCollectionItemAnswersCommand',
+      collectionItemUuid: activeGoal.uuid,
+      added: wrapAll(answers),
+      removed: answersToRemove,
+      timeline: {
+        type: 'GOAL_UPDATED',
+        data: {},
+      },
+      assessmentUuid,
+      user,
     },
-    assessmentUuid,
-    user,
-  })
+    {
+      type: 'UpdateCollectionItemPropertiesCommand',
+      collectionItemUuid: activeGoal.uuid,
+      added: wrapAll(properties),
+      removed: [],
+      assessmentUuid,
+      user,
+    },
+  ]
 
-  // Update the goal properties
-  await deps.api.executeCommand({
-    type: 'UpdateCollectionItemPropertiesCommand',
-    collectionItemUuid: activeGoal.uuid,
-    added: wrapAll(properties),
-    removed: [],
-    assessmentUuid,
-    user,
-  })
+  await deps.api.executeCommands(...commands)
 }

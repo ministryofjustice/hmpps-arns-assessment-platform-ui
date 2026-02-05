@@ -71,7 +71,7 @@ export const confirmAddGoalStep = step({
       validate: true,
       onValid: {
         effects: [
-          SentencePlanEffects.markGoalAsActive(),
+          SentencePlanEffects.readdGoalToPlan(),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You added a goal back into %1 plan', CaseData.ForenamePossessive),

@@ -17,21 +17,21 @@ import { calculateTargetDate, determineGoalStatus, buildGoalProperties, buildGoa
  * - target_date_option: Target date option
  * - custom_target_date: Custom date (if set_another_date)
  */
-export const saveActiveGoal = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
+export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const user = context.getState('user')
   const areaOfNeedSlug = context.getRequestParam('areaOfNeed')
   const assessmentUuid = context.getData('assessmentUuid')
 
   if (!user) {
-    throw new InternalServerError('User is required to save a goal')
+    throw new InternalServerError('User is required to create a goal')
   }
 
   if (!assessmentUuid) {
-    throw new InternalServerError('Assessment UUID is required to save a goal')
+    throw new InternalServerError('Assessment UUID is required to create a goal')
   }
 
   if (!areaOfNeedSlug) {
-    throw new BadRequest('Area of need is required to save a goal')
+    throw new BadRequest('Area of need is required to create a goal')
   }
 
   // Get form answers

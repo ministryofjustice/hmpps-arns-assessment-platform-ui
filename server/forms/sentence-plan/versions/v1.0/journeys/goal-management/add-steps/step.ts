@@ -55,6 +55,8 @@ export const addStepsStep = step({
       effects: [
         SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.setActiveGoalContext(),
+        SentencePlanEffects.setAreaDataFromActiveGoal(),
+        SentencePlanEffects.loadAreaAssessmentInfo(),
         SentencePlanEffects.initializeStepEditSession(),
       ],
       next: [
