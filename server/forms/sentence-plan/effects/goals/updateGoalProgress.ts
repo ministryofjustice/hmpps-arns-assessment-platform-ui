@@ -1,7 +1,9 @@
 import { InternalServerError } from 'http-errors'
-import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
+import { DerivedStep, SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
+import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
+import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
 
 /**
  * Update goal progress - update step statuses and add progress note
@@ -9,39 +11,27 @@ import { Commands } from '../../../../interfaces/aap-api/command'
  * This effect:
  * 1. Updates the status of each step based on form fields (step_status_0, step_status_1, etc.)
  * 2. Adds a progress note if the user entered one
- * 3. sets 'allStepsCompleted' boolean variable in context (used in confirm-if-achieved journey)
+ * 3. Sets 'allStepsCompleted' boolean in context (used by confirm-if-achieved journey)
  *
  * Form fields used:
  * - step_status_{index}: Status for each step
  * - progress_notes: Optional progress note text
  */
 export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const user = context.getState('user')
-  const session = context.getSession()
-  const assessmentUuid = context.getData('assessmentUuid')
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'updateGoalProgress')
   const activeGoal = context.getData('activeGoal')
 
-  if (!user) {
-    throw new InternalServerError('User is required to update goal progress')
-  }
-
-  // Use practitioner display name from session (populated from handover context),
-  // falling back to user.name for HMPPS Auth users
-  const practitionerName = session.practitionerDetails?.displayName || user.name
-
-  if (!assessmentUuid) {
-    throw new InternalServerError('Assessment UUID is required to update goal progress')
-  }
-
   if (!activeGoal?.uuid) {
-    throw new InternalServerError('Active goal is required to update progress')
+    throw new InternalServerError('Active goal is required for updateGoalProgress')
   }
 
-  const steps = activeGoal.steps ?? []
+  const practitionerName = getPractitionerName(context, user)
+
+  const steps: DerivedStep[] = activeGoal.steps ?? []
   const commands: Commands[] = []
 
   // 1. Update step statuses
-  steps.forEach((step: any, index: number) => {
+  steps.forEach((step, index) => {
     const newStatus = context.getAnswer(`step_status_${index}`)
 
     // Only update if status has changed
@@ -78,40 +68,18 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
   // 2. Add progress note if provided
   const progressNotes = context.getAnswer('progress_notes')
   if (progressNotes && typeof progressNotes === 'string' && progressNotes.trim().length > 0) {
-    // Find or create NOTES collection for the goal
-    let collectionUuid = activeGoal.notesCollectionUuid
+    const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
 
-    if (!collectionUuid) {
-      // Create the NOTES collection (goal doesn't have one yet)
-      const createResult = await deps.api.executeCommand({
-        type: 'CreateCollectionCommand',
-        name: 'NOTES',
-        parentCollectionItemUuid: activeGoal.uuid,
+    commands.push(
+      buildAddNoteCommand({
+        collectionUuid,
+        noteText: progressNotes,
+        // No noteType for progress notes
+        createdBy: practitionerName,
         assessmentUuid,
         user,
-      })
-
-      collectionUuid = createResult.collectionUuid
-    }
-
-    // Add the note
-    commands.push({
-      type: 'AddCollectionItemCommand',
-      collectionUuid: collectionUuid!,
-      properties: wrapAll({
-        created_at: new Date().toISOString(),
       }),
-      answers: wrapAll({
-        note: progressNotes.trim(),
-        created_by: practitionerName,
-      }),
-      timeline: {
-        type: 'NOTE_ADDED',
-        data: {},
-      },
-      assessmentUuid,
-      user,
-    })
+    )
   }
 
   // Execute all commands in a single batch
@@ -119,10 +87,10 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
     await deps.api.executeCommands(...commands)
   }
 
-  // check if all steps are now COMPLETED (using the new statuses from form submission):
+  // Check if all steps are now COMPLETED (using the new statuses from form submission)
   const allStepsCompleted =
     steps.length > 0 &&
-    steps.every((_step: any, index: number) => {
+    steps.every((_step, index) => {
       const newStatus = context.getAnswer(`step_status_${index}`)
       return newStatus === 'COMPLETED'
     })

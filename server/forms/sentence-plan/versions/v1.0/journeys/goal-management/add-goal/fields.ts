@@ -36,6 +36,7 @@ const assessmentInfoDetails = AssessmentInfoDetails({
   areaName: Data('currentAreaOfNeed').path('text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
+  fullWidth: true,
 })
 
 const goalTitle = AccessibleAutocomplete({

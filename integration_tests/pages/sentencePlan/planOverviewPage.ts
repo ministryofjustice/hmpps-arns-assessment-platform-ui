@@ -8,13 +8,7 @@ export default class PlanOverviewPage extends AbstractPage {
 
   readonly createGoalButton: Locator
 
-  readonly currentGoalsSection: Locator
-
-  readonly futureGoalsSection: Locator
-
   readonly goalCards: Locator
-
-  readonly tabNavigation: Locator
 
   readonly currentGoalsTab: Locator
 
@@ -25,8 +19,6 @@ export default class PlanOverviewPage extends AbstractPage {
   readonly noGoalsMessage: Locator
 
   readonly noFutureGoalsMessage: Locator
-
-  readonly goalCardTitles: Locator
 
   readonly agreePlanButton: Locator
 
@@ -43,16 +35,12 @@ export default class PlanOverviewPage extends AbstractPage {
     this.pageHeading = page.locator('h1')
     this.createGoalLink = page.getByRole('link', { name: /create a goal/i })
     this.createGoalButton = page.getByRole('button', { name: /create goal/i })
-    this.currentGoalsSection = page.getByRole(`region`, { name: /Goals to work on now/i })
-    this.futureGoalsSection = page.getByRole(`region`, { name: /Future goals/i })
     this.goalCards = page.locator('[data-qa="goal-summary-card"]')
-    this.tabNavigation = page.locator('.moj-sub-navigation')
     this.currentGoalsTab = page.getByRole('link', { name: /Goals to work on now/i })
     this.futureGoalsTab = page.getByRole('link', { name: /Future goals/i })
     this.removedGoalsTab = page.getByRole('link', { name: /Removed goals/i })
     this.noGoalsMessage = page.getByText(/does not have any goals/i)
     this.noFutureGoalsMessage = page.getByText(/does not have any future goals/i)
-    this.goalCardTitles = page.locator('[data-qa="goal-title"]')
     this.agreePlanButton = page.getByRole('button', { name: /agree plan/i })
     this.header = page.getByTestId('plan-header')
     this.footer = page.locator('footer')

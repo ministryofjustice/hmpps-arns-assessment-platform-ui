@@ -1,7 +1,10 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
-import { navigateToSentencePlan } from './sentencePlanUtils'
+import ChangeGoalPage from '../../pages/sentencePlan/changeGoalPage'
+import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
+import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
+import { navigateToSentencePlan, getDatePlusDaysAsISO } from './sentencePlanUtils'
 import coordinatorApi, { OasysEquivalent } from '../../mockApis/coordinatorApi'
 
 test.describe('Assessment Info Details - Complete Section', () => {
@@ -114,5 +117,115 @@ test.describe('Assessment Info Details - Complete Section', () => {
         expect(await createGoalPage.isAssessmentInfoCollapsed()).toBe(true)
       })
     }
+  })
+
+  test.describe('Assessment Info on Change Goal Page', () => {
+    test('displays assessment info on change-goal page', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { handoverLink, sentencePlanId } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+
+      // Create a goal in accommodation area
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
+          {
+            title: 'Test Goal for Change',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+          },
+        ])
+        .save()
+
+      const completeAccommodationData: OasysEquivalent = {
+        accommodation_section_complete: 'YES',
+        accommodation_practitioner_analysis_risk_of_serious_harm: 'YES',
+        accommodation_practitioner_analysis_risk_of_serious_harm_yes_details:
+          'Risk of serious harm related to accommodation.',
+        accommodation_practitioner_analysis_risk_of_reoffending: 'NO',
+        accommodation_practitioner_analysis_strengths_or_protective_factors: 'YES',
+        accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details: 'Has family support.',
+        accommodation_practitioner_analysis_motivation_to_make_changes: 'MAKING_CHANGES',
+      }
+
+      await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
+        sanOasysEquivalent: completeAccommodationData,
+      })
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      // Navigate to change goal
+      await PlanOverviewPage.verifyOnPage(page)
+      await page.getByRole('link', { name: 'Change goal' }).click()
+
+      const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+
+      // Verify assessment info is visible and collapsed
+      await expect(changeGoalPage.assessmentInfoDetails).toBeVisible()
+      expect(await changeGoalPage.isAssessmentInfoCollapsed()).toBe(true)
+
+      // Expand and verify content
+      await changeGoalPage.expandAssessmentInfo()
+      await expect(changeGoalPage.assessmentInfoContent).toContainText('This area is linked to RoSH')
+      await expect(changeGoalPage.assessmentInfoContent).toContainText('Risk of serious harm related to accommodation')
+    })
+  })
+
+  test.describe('Assessment Info on Add Steps Page', () => {
+    test('displays assessment info on add-steps page', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { handoverLink, sentencePlanId } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        criminogenicNeedsData: {
+          accommodation: {
+            accLinkedToHarm: 'NO',
+            accLinkedToReoffending: 'YES',
+            accStrengths: 'NO',
+          },
+        },
+      })
+
+      // Create a goal in accommodation area
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
+          {
+            title: 'Test Goal for Steps',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+          },
+        ])
+        .save()
+
+      const completeAccommodationData: OasysEquivalent = {
+        accommodation_section_complete: 'YES',
+        accommodation_practitioner_analysis_risk_of_serious_harm: 'NO',
+        accommodation_practitioner_analysis_risk_of_reoffending: 'YES',
+        accommodation_practitioner_analysis_risk_of_reoffending_yes_details: 'Linked to reoffending risk.',
+        accommodation_practitioner_analysis_strengths_or_protective_factors: 'NO',
+        accommodation_practitioner_analysis_motivation_to_make_changes: 'WANT_TO_MAKE_CHANGES',
+      }
+
+      await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
+        sanOasysEquivalent: completeAccommodationData,
+      })
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      // Navigate to add steps via the goal card
+      await PlanOverviewPage.verifyOnPage(page)
+      await page.getByRole('link', { name: 'Add steps' }).click()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+
+      // Verify assessment info is visible and collapsed
+      await expect(addStepsPage.assessmentInfoDetails).toBeVisible()
+      expect(await addStepsPage.isAssessmentInfoCollapsed()).toBe(true)
+
+      // Expand and verify content
+      await addStepsPage.expandAssessmentInfo()
+      await expect(addStepsPage.assessmentInfoContent).toContainText('This area is not linked to RoSH')
+      await expect(addStepsPage.assessmentInfoContent).toContainText('This area is linked to risk of reoffending')
+      await expect(addStepsPage.assessmentInfoContent).toContainText('Linked to reoffending risk')
+    })
   })
 })

@@ -14,6 +14,7 @@ export interface AssessmentInfoDetailsProps {
   areaName: ConditionalString
   assessmentData: AssessmentArea | null | ChainableRef
   status: ConditionalString
+  fullWidth?: boolean
 }
 
 export interface AssessmentInfoDetailsBlock extends BlockDefinition, AssessmentInfoDetailsProps {
@@ -73,7 +74,7 @@ export function hasAnyData(data: AssessmentArea | null): boolean {
  * Builds the template parameters for rendering.
  */
 export function buildParams(block: EvaluatedBlock<AssessmentInfoDetailsBlock>) {
-  const { personName, areaName, assessmentData, status } = block
+  const { personName, areaName, assessmentData, status, fullWidth } = block
   const data = assessmentData as AssessmentArea | null
 
   const isError = status === 'error'
@@ -133,6 +134,7 @@ export function buildParams(block: EvaluatedBlock<AssessmentInfoDetailsBlock>) {
     strengthsDetails,
     missingItems,
     hasMissingItems: missingItems.length > 0,
+    fullWidth,
   }
 }
 

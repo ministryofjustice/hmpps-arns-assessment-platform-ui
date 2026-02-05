@@ -422,7 +422,7 @@ test.describe('Change goal journey', () => {
         await createGoalPage.selectIsRelated(true)
         await createGoalPage.selectRelatedArea('finances')
         await createGoalPage.selectCanStartNow(true)
-        await createGoalPage.selectTargetDateOption('date_in_12_months')
+        await createGoalPage.selectTargetDateOption('12_months')
         await createGoalPage.clickAddSteps()
 
         // confirm we're on add steps page
@@ -654,7 +654,7 @@ test.describe('Change goal journey', () => {
         await createGoalPage.selectIsRelated(true)
         await createGoalPage.selectRelatedArea('finances')
         await createGoalPage.selectCanStartNow(true)
-        await createGoalPage.selectTargetDateOption('date_in_12_months')
+        await createGoalPage.selectTargetDateOption('12_months')
         await createGoalPage.clickAddSteps()
 
         // check we're on add steps page

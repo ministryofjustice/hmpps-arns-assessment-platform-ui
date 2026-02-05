@@ -11,8 +11,9 @@ import { deriveGoalsWithStepsFromAssessment } from './goals/deriveGoalsWithSteps
 import { derivePlanAgreementsFromAssessment } from './plan/derivePlanAgreementsFromAssessment'
 import { derivePlanHistoryEntries } from './plan/derivePlanHistoryEntries'
 import { updatePlanAgreementStatus } from './plan/updatePlanAgreementStatus'
-import { saveActiveGoal } from './goals/saveActiveGoal'
-import { deriveGoalCurrentAreaOfNeed } from './goals/deriveGoalCurrentAreaOfNeed'
+import { createGoal } from './goals/createGoal'
+import { setAreaDataFromUrlParam } from './goals/setAreaDataFromUrlParam'
+import { setAreaDataFromActiveGoal } from './goals/setAreaDataFromActiveGoal'
 import { loadAreaAssessmentInfo } from './goals/loadAreaAssessmentInfo'
 import { setActiveGoalContext } from './goals/setActiveGoalContext'
 import { loadActiveGoalForEdit } from './goals/loadActiveGoalForEdit'
@@ -20,7 +21,7 @@ import { updateActiveGoal } from './goals/updateActiveGoal'
 import { updateGoalProgress } from './goals/updateGoalProgress'
 import { markGoalAsAchieved } from './goals/markGoalAsAchieved'
 import { markGoalAsRemoved } from './goals/markGoalAsRemoved'
-import { markGoalAsActive } from './goals/markGoalAsActive'
+import { readdGoalToPlan } from './goals/readdGoalToPlan'
 import { deleteActiveGoal } from './goals/deleteActiveGoal'
 import { reorderGoal } from './goals/reorderGoal'
 import { initializeStepEditSession } from './steps/initializeStepEditSession'
@@ -52,7 +53,7 @@ export type { AgreementStatus } from './types'
  *
  * SentencePlanEffects.initializeSessionFromAccess()
  * SentencePlanEffects.loadPlan()
- * SentencePlanEffects.saveActiveGoal()
+ * SentencePlanEffects.createGoal()
  * ```
  */
 export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffectsRegistry } =
@@ -80,8 +81,9 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     updatePlanAgreementStatus,
 
     // Goals
-    saveActiveGoal,
-    deriveGoalCurrentAreaOfNeed,
+    createGoal,
+    setAreaDataFromUrlParam,
+    setAreaDataFromActiveGoal,
     loadAreaAssessmentInfo,
     setActiveGoalContext,
     loadActiveGoalForEdit,
@@ -89,7 +91,7 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     updateGoalProgress,
     markGoalAsAchieved,
     markGoalAsRemoved,
-    markGoalAsActive,
+    readdGoalToPlan,
     deleteActiveGoal,
     reorderGoal,
 

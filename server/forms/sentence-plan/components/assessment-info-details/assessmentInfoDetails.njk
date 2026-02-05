@@ -4,6 +4,9 @@
   Displays practitioner analysis from the SAN assessment in a collapsible
   GOV.UK Details component.
 
+  By default, the component is wrapped in a two-thirds width container.
+  Use fullWidth: true when the component is already within a constrained layout.
+
   Params:
     personName       - Person's forename
     areaName         - Area of need name (e.g., "Accommodation")
@@ -23,6 +26,7 @@
     strengthsDetails - Strengths/protective factors details text
     missingItems     - Array of missing item descriptions
     hasMissingItems  - True if there are missing items
+    fullWidth        - True to skip the two-thirds wrapper
 #}
 
 {% from "govuk/components/details/macro.njk" import govukDetails %}
@@ -100,10 +104,22 @@
   {% endif %}
 {% endset %}
 
-{{ govukDetails({
-  summaryText: "View information from " + params.personName + "'s assessment",
-  html: detailsContent,
-  attributes: {
-    "data-qa": "assessment-info-details"
-  }
-}) }}
+{% set detailsComponent %}
+  {{ govukDetails({
+    summaryText: "View information from " + params.personName + "'s assessment",
+    html: detailsContent,
+    attributes: {
+      "data-qa": "assessment-info-details"
+    }
+  }) }}
+{% endset %}
+
+{% if params.fullWidth %}
+  {{ detailsComponent | safe }}
+{% else %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {{ detailsComponent | safe }}
+    </div>
+  </div>
+{% endif %}

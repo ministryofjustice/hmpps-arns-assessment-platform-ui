@@ -6,8 +6,8 @@ import { TemplateWrapper } from '@form-engine/registry/components/templateWrappe
 import { GovUKSelectInput, GovUKTextInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
-import { ButtonAsLink } from '../../../../../components'
-import { actorLabelOptions } from '../../../constants'
+import { AssessmentInfoDetails, ButtonAsLink } from '../../../../../components'
+import { actorLabelOptions, CaseData } from '../../../constants'
 
 /**
  * Goal title caption showing the goal being worked on
@@ -18,6 +18,16 @@ export const pageHeading = HtmlBlock({
              <h1 class="govuk-heading-l">Add or change steps</h1>`,
     Data('activeGoal.title'),
   ),
+})
+
+/**
+ * Assessment info details - shows practitioner analysis from SAN assessment
+ */
+export const assessmentInfoDetails = AssessmentInfoDetails({
+  personName: CaseData.Forename,
+  areaName: Data('currentAreaOfNeed').path('text'),
+  assessmentData: Data('currentAreaAssessment'),
+  status: Data('currentAreaAssessmentStatus'),
 })
 
 /**
@@ -152,6 +162,7 @@ export const pageLayout = TemplateWrapper({
       {{slot:hiddenDefaultSubmit}}
       <div>
         {{slot:pageHeading}}
+        {{slot:assessmentInfoDetails}}
         {{slot:columnHeaders}}
         {{slot:stepRows}}
         {{slot:buttonGroup}}
@@ -162,6 +173,7 @@ export const pageLayout = TemplateWrapper({
   slots: {
     hiddenDefaultSubmit: [hiddenDefaultSubmit],
     pageHeading: [pageHeading],
+    assessmentInfoDetails: [assessmentInfoDetails],
     columnHeaders: [columnHeaders],
     stepRows: [stepRows],
     saveAndContinueButton: [saveAndContinueButton],

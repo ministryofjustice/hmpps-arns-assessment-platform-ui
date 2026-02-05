@@ -2,6 +2,8 @@ import { InternalServerError } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
+import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
+import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
 
 /**
  * Mark a goal as achieved
@@ -14,26 +16,14 @@ import { Commands } from '../../../../interfaces/aap-api/command'
  * - how_helped: Optional note about how achieving this goal has helped
  */
 export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const user = context.getState('user')
-  const session = context.getSession()
-  const assessmentUuid = context.getData('assessmentUuid')
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'markGoalAsAchieved')
   const activeGoal = context.getData('activeGoal')
 
-  if (!user) {
-    throw new InternalServerError('User is required to mark goal as achieved')
-  }
-
-  // Use practitioner display name from session (populated from handover context),
-  // falling back to user.name for HMPPS Auth users
-  const practitionerName = session.practitionerDetails?.displayName || user.name
-
-  if (!assessmentUuid) {
-    throw new InternalServerError('Assessment UUID is required to mark goal as achieved')
-  }
-
   if (!activeGoal?.uuid) {
-    throw new InternalServerError('Active goal is required to mark as achieved')
+    throw new InternalServerError('Active goal is required for markGoalAsAchieved')
   }
+
+  const practitionerName = getPractitionerName(context, user)
 
   const commands: Commands[] = []
 
@@ -54,41 +44,18 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
   // 2. Add achieved note if provided
   const howHelped = context.getAnswer('how_helped')
   if (howHelped && typeof howHelped === 'string' && howHelped.trim().length > 0) {
-    // Find or create NOTES collection for the goal
-    let collectionUuid = activeGoal.notesCollectionUuid
+    const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
 
-    if (!collectionUuid) {
-      // Create the NOTES collection (goal doesn't have one yet)
-      const createResult = await deps.api.executeCommand({
-        type: 'CreateCollectionCommand',
-        name: 'NOTES',
-        parentCollectionItemUuid: activeGoal.uuid,
+    commands.push(
+      buildAddNoteCommand({
+        collectionUuid,
+        noteText: howHelped,
+        noteType: 'ACHIEVED',
+        createdBy: practitionerName,
         assessmentUuid,
         user,
-      })
-
-      collectionUuid = createResult.collectionUuid
-    }
-
-    // Add the note with type ACHIEVED
-    commands.push({
-      type: 'AddCollectionItemCommand',
-      collectionUuid: collectionUuid!,
-      properties: wrapAll({
-        created_at: new Date().toISOString(),
-        type: 'ACHIEVED',
       }),
-      answers: wrapAll({
-        note: howHelped.trim(),
-        created_by: practitionerName,
-      }),
-      timeline: {
-        type: 'NOTE_ADDED',
-        data: {},
-      },
-      assessmentUuid,
-      user,
-    })
+    )
   }
 
   // Execute all commands in a single batch

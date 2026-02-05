@@ -1,7 +1,13 @@
-import { BadRequest, InternalServerError } from 'http-errors'
+import { BadRequest } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { calculateTargetDate, determineGoalStatus, buildGoalProperties, buildGoalAnswers } from './goalUtils'
+import {
+  getRequiredEffectContext,
+  calculateTargetDate,
+  determineGoalStatus,
+  buildGoalProperties,
+  buildGoalAnswers,
+} from './goalUtils'
 
 /**
  * Create a new goal
@@ -17,21 +23,12 @@ import { calculateTargetDate, determineGoalStatus, buildGoalProperties, buildGoa
  * - target_date_option: Target date option
  * - custom_target_date: Custom date (if set_another_date)
  */
-export const saveActiveGoal = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const user = context.getState('user')
+export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'createGoal')
   const areaOfNeedSlug = context.getRequestParam('areaOfNeed')
-  const assessmentUuid = context.getData('assessmentUuid')
-
-  if (!user) {
-    throw new InternalServerError('User is required to save a goal')
-  }
-
-  if (!assessmentUuid) {
-    throw new InternalServerError('Assessment UUID is required to save a goal')
-  }
 
   if (!areaOfNeedSlug) {
-    throw new BadRequest('Area of need is required to save a goal')
+    throw new BadRequest('Area of need is required to create a goal')
   }
 
   // Get form answers
