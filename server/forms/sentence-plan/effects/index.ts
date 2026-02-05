@@ -9,6 +9,7 @@ import { loadSessionData } from './session/loadSessionData'
 import { loadPlan } from './plan/loadPlan'
 import { deriveGoalsWithStepsFromAssessment } from './goals/deriveGoalsWithStepsFromAssessment'
 import { derivePlanAgreementsFromAssessment } from './plan/derivePlanAgreementsFromAssessment'
+import { loadPlanTimeline } from './plan/loadPlanTimeline'
 import { derivePlanHistoryEntries } from './plan/derivePlanHistoryEntries'
 import { updatePlanAgreementStatus } from './plan/updatePlanAgreementStatus'
 import { saveActiveGoal } from './goals/saveActiveGoal'
@@ -76,6 +77,7 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     loadPlan,
     deriveGoalsWithStepsFromAssessment,
     derivePlanAgreementsFromAssessment,
+    loadPlanTimeline,
     derivePlanHistoryEntries,
     updatePlanAgreementStatus,
 
