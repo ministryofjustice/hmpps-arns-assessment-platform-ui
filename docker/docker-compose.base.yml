@@ -86,7 +86,7 @@ services:
       CLIENT_SECRET: clientsecret
 
   arns-handover:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:2026-01-22.12.c13529c
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:2026-02-03.15.2b33228
     depends_on:
       - redis
       - localstack
