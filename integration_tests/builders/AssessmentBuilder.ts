@@ -89,7 +89,7 @@ export class AssessmentBuilderInstance {
     collections: [],
   }
 
-  private user: User = { id: 'e2e-test', name: 'E2E_TEST' }
+  private user: User = { id: 'e2e-test', name: 'E2E_TEST', authSource: 'HMPPS_AUTH' }
 
   constructor(client: TestAapApiClient, mode: BuilderMode, existingAssessmentUuid?: string) {
     this.client = client

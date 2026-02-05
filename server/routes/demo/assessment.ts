@@ -10,6 +10,7 @@ export default function routes({ assessmentService, auditService }: Services): R
       const user = {
         id: res.locals.user.username,
         name: res.locals.user.displayName,
+        authSource: res.locals.user.authSource,
       }
 
       const { assessmentUuid, message } = await assessmentService.command<'CreateAssessment'>({

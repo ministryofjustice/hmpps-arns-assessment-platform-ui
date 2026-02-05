@@ -10,7 +10,7 @@ export const planHistoryStep = step({
     locals: {
       headerPageHeading: 'Plan history',
       buttons: {
-        showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('handover')),
+        showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('OASYS')),
       },
     },
   },
