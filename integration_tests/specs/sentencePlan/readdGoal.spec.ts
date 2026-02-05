@@ -33,7 +33,7 @@ test.describe('Re-add goal journey', () => {
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.enterReaddNote('Person is now ready to work on this goal again')
       await readdPage.selectCanStartNow(true)
-      await readdPage.selectTargetDateOption('date_in_3_months')
+      await readdPage.selectTargetDateOption('3_months')
       await readdPage.clickConfirm()
 
       await expect(page).toHaveURL(/plan\/overview.*type=current/)
@@ -288,7 +288,7 @@ test.describe('Re-add goal journey', () => {
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.enterReaddNote('Ready to work on this again')
       await readdPage.selectCanStartNow(true)
-      await readdPage.selectTargetDateOption('date_in_3_months')
+      await readdPage.selectTargetDateOption('3_months')
       await readdPage.clickConfirm()
 
       await expect(page).toHaveURL(/type=current/)
@@ -331,7 +331,7 @@ test.describe('Re-add goal journey', () => {
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.enterReaddNote('Ready to work on this again')
       await readdPage.selectCanStartNow(true)
-      await readdPage.selectTargetDateOption('date_in_3_months')
+      await readdPage.selectTargetDateOption('3_months')
       await readdPage.clickConfirm()
 
       await expect(page).toHaveURL(/type=current/)
@@ -433,7 +433,7 @@ test.describe('Re-add goal journey', () => {
       const readdPage = await ConfirmReaddGoalPage.verifyOnPage(page)
       await readdPage.enterReaddNote('Re-adding this goal')
       await readdPage.selectCanStartNow(true)
-      await readdPage.selectTargetDateOption('date_in_6_months')
+      await readdPage.selectTargetDateOption('6_months')
       await readdPage.clickConfirm()
 
       await page.goto('/sentence-plan/v1.0/plan/overview?type=removed')
