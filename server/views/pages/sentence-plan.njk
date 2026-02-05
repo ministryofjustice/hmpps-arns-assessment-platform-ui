@@ -129,7 +129,7 @@
 
     {% set index = index + 1 %}
     <div class="{{ colour(index) }}">
-      <h2 class="govuk-heading-l">Full timeline at {{ timelineResult.timeline[1].createdAt }}</h2>
+      <h2 class="govuk-heading-l">Full timeline at {{ timelineResult.timeline[1].timestamp }}</h2>
       <pre>{{ timelinePointInTime | json }}</pre>
     </div>
 
