@@ -49,6 +49,7 @@ export const markGoalAsActive = (deps: SentencePlanEffectsDeps) => async (contex
   const canStartNow = context.getAnswer('can_start_now') as string
   const targetDateOption = context.getAnswer('target_date_option') as string
   const customDate = context.getAnswer('custom_target_date') as string
+  const readdNote = context.getAnswer('readd_note')
 
   // Calculate target date and status
   const targetDate = calculateTargetDate(canStartNow, targetDateOption, customDate)
@@ -72,6 +73,15 @@ export const markGoalAsActive = (deps: SentencePlanEffectsDeps) => async (contex
     collectionItemUuid: activeGoal.uuid,
     added: wrapAll(propertiesToAdd),
     removed: [],
+    timeline: {
+      type: 'GOAL_READDED',
+      data: {
+        goalUuid: activeGoal.uuid,
+        goalTitle: activeGoal.title,
+        readdedBy: practitionerName,
+        reason: (typeof readdNote === 'string' && readdNote.trim()) || undefined,
+      },
+    },
     assessmentUuid,
     user,
   })
@@ -89,7 +99,6 @@ export const markGoalAsActive = (deps: SentencePlanEffectsDeps) => async (contex
   }
 
   // 2. Add re-add note
-  const readdNote = context.getAnswer('readd_note')
   if (readdNote && typeof readdNote === 'string' && readdNote.trim().length > 0) {
     // Find or create NOTES collection for the goal
     let collectionUuid = activeGoal.notesCollectionUuid
