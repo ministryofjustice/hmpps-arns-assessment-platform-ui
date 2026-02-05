@@ -42,7 +42,6 @@ export const sentencePlanV1Journey = journey({
         SentencePlanEffects.loadPlan(),
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
-        SentencePlanEffects.derivePlanHistoryEntries(),
       ],
       next: [
         // Redirect to privacy screen if privacy not yet accepted this session

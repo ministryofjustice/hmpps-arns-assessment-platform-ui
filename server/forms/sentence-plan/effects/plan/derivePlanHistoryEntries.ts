@@ -1,33 +1,84 @@
+import { TimelineItem } from '../../../../interfaces/aap-api/dataModel'
 import {
   DerivedGoal,
   DerivedPlanAgreement,
-  GoalAchievedHistoryEntry,
-  GoalReaddedHistoryEntry,
-  GoalRemovedHistoryEntry,
   PlanAgreementHistoryEntry,
   PlanHistoryEntry,
   SentencePlanContext,
 } from '../types'
 
 /**
- * Derive unified plan history entries from plan agreements and goal events.
+ * Derive unified plan history entries from timeline events and plan agreements.
  *
- * This effect combines:
- * - Plan agreement events (agreed, not agreed, could not answer)
- * - Goal achieved events (with optional notes)
- * - Goal removed events (with removal reason)
- * - Goal re-added events (when a removed goal is added back into the plan)
+ * Transforms raw timeline items from Data('planTimeline') into typed history
+ * entries, merges with plan agreement entries, and sorts by date (newest first).
  *
- * All entries are sorted by date (newest first) to provide a chronological timeline.
+ * Requires:
+ * - Data('planTimeline'): Populated by loadPlanTimeline
+ * - Data('planAgreements'): Populated by derivePlanAgreementsFromAssessment
+ * - Data('goals'): Populated by deriveGoalsWithStepsFromAssessment (for isCurrentlyActive on removed goals)
  *
  * Sets:
  * - Data('planHistoryEntries'): Array of unified history entries
  */
 export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => {
+  const planTimeline = (context.getData('planTimeline') as TimelineItem[] | undefined) ?? []
   const planAgreements = (context.getData('planAgreements') as DerivedPlanAgreement[] | undefined) ?? []
   const goals = (context.getData('goals') as DerivedGoal[] | undefined) ?? []
 
   const entries: PlanHistoryEntry[] = []
+
+  // Map timeline items to goal lifecycle entries
+  for (const item of planTimeline) {
+    const customData = item.customData ?? {}
+    const date = new Date(item.timestamp)
+
+    switch (item.customType) {
+      case 'GOAL_ACHIEVED':
+        entries.push({
+          type: 'goal_achieved',
+          uuid: `achieved-${customData.goalUuid}-${item.timestamp}`,
+          date,
+          goalUuid: customData.goalUuid,
+          goalTitle: customData.goalTitle,
+          achievedBy: customData.achievedBy,
+          notes: customData.notes,
+        })
+        break
+
+      case 'GOAL_REMOVED': {
+        const isCurrentlyActive = goals.some(
+          g => g.uuid === customData.goalUuid && (g.status === 'ACTIVE' || g.status === 'FUTURE'),
+        )
+        entries.push({
+          type: 'goal_removed',
+          uuid: `removed-${customData.goalUuid}-${item.timestamp}`,
+          date,
+          goalUuid: customData.goalUuid,
+          goalTitle: customData.goalTitle,
+          removedBy: customData.removedBy,
+          reason: customData.reason,
+          isCurrentlyActive,
+        })
+        break
+      }
+
+      case 'GOAL_READDED':
+        entries.push({
+          type: 'goal_readded',
+          uuid: `readded-${customData.goalUuid}-${item.timestamp}`,
+          date,
+          goalUuid: customData.goalUuid,
+          goalTitle: customData.goalTitle,
+          readdedBy: customData.readdedBy,
+          reason: customData.reason,
+        })
+        break
+
+      default:
+        break
+    }
+  }
 
   // Add plan agreement entries
   for (const agreement of planAgreements) {
@@ -42,63 +93,6 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
       notes: agreement.notes,
     }
     entries.push(entry)
-  }
-
-  // Add achieved goal entries
-  const achievedGoals = goals.filter(goal => goal.status === 'ACHIEVED')
-  for (const goal of achievedGoals) {
-    // Find the ACHIEVED note if one exists (contains the "how it helped" text)
-    const achievedNote = goal.notes.find(note => note.type === 'ACHIEVED')
-
-    const entry: GoalAchievedHistoryEntry = {
-      type: 'goal_achieved',
-      uuid: `achieved-${goal.uuid}`,
-      date: goal.statusDate,
-      goalUuid: goal.uuid,
-      goalTitle: goal.title,
-      achievedBy: goal.achievedBy,
-      notes: achievedNote?.note,
-    }
-    entries.push(entry)
-  }
-
-  // Add removed goal entries
-  // Look for goals with REMOVED notes so that the removal event is still shown
-  // even if the goal has been re-added.
-  for (const goal of goals) {
-    const removedNotes = goal.notes.filter(note => note.type === 'REMOVED')
-    const isCurrentlyActive = goal.status === 'ACTIVE' || goal.status === 'FUTURE'
-    for (const note of removedNotes) {
-      const entry: GoalRemovedHistoryEntry = {
-        type: 'goal_removed',
-        uuid: `removed-${goal.uuid}-${note.uuid}`,
-        date: note.createdAt,
-        goalUuid: goal.uuid,
-        goalTitle: goal.title,
-        removedBy: note.createdBy,
-        reason: note.note,
-        isCurrentlyActive,
-      }
-      entries.push(entry)
-    }
-  }
-
-  // Add re-added goal entries
-  // A goal can be re-added (has READDED note) but is now ACTIVE or FUTURE
-  for (const goal of goals) {
-    const readdedNotes = goal.notes.filter(note => note.type === 'READDED')
-    for (const note of readdedNotes) {
-      const entry: GoalReaddedHistoryEntry = {
-        type: 'goal_readded',
-        uuid: `readded-${goal.uuid}-${note.uuid}`,
-        date: note.createdAt,
-        goalUuid: goal.uuid,
-        goalTitle: goal.title,
-        readdedBy: note.createdBy,
-        reason: note.note,
-      }
-      entries.push(entry)
-    }
   }
 
   // Sort by date, newest first
