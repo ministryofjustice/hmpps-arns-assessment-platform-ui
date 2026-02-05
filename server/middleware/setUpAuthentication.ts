@@ -2,6 +2,7 @@ import passport from 'passport'
 import flash from 'connect-flash'
 import { Router, Request } from 'express'
 import { Strategy } from 'passport-oauth2'
+import { jwtDecode } from 'jwt-decode'
 import { VerificationClient, AuthenticatedRequest } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import { HmppsUser } from '../interfaces/hmppsUser'
@@ -83,8 +84,9 @@ passport.use(
       },
       scope: 'openid profile',
     },
-    (token, _refreshToken, params, _profile, done) => {
-      return done(null, { token, username: params.user_name, authSource: 'handover' })
+    (token, _refreshToken, _params, _profile, done) => {
+      const { user_name: username } = jwtDecode(token) as { user_name?: string }
+      return done(null, { token, username, authSource: 'OASYS' })
     },
   ),
 )
@@ -107,7 +109,7 @@ passport.use(
       },
     },
     (token, _refreshToken, params, _profile, done) => {
-      return done(null, { token, username: params.user_name, authSource: params.auth_source })
+      return done(null, { token, username: params.user_name, authSource: 'HMPPS_AUTH' })
     },
   ),
 )
@@ -223,7 +225,7 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
       return next()
     }
 
-    if (req.isAuthenticated() && req.user.authSource === 'handover') {
+    if (req.isAuthenticated() && req.user.authSource === 'OASYS') {
       return next()
     }
 
@@ -242,6 +244,7 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
 
     const hmppsUser = req.user as HmppsUser
     res.locals.user = hmppsUser
+
     req.state = {
       ...req.state,
       user: {

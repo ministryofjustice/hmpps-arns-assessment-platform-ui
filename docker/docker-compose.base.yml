@@ -86,7 +86,7 @@ services:
       CLIENT_SECRET: clientsecret
 
   arns-handover:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:2026-01-22.12.c13529c
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:2026-02-03.15.2b33228
     depends_on:
       - redis
       - localstack
@@ -120,7 +120,7 @@ services:
       CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in
 
   ui:
-    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:local
+    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:${APP_VERSION:-local}
     networks:
       - hmpps
     depends_on:
