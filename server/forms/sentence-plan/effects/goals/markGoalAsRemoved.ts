@@ -67,8 +67,6 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
   })
 
   // 3. Add removal note if provided
-  const removalNote = context.getAnswer('removal_note')
-  // 3. Add removal note
   if (removalNote && typeof removalNote === 'string' && removalNote.trim().length > 0) {
     const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
 

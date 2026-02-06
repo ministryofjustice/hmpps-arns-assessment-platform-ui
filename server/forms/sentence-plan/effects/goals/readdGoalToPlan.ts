@@ -88,8 +88,6 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
   }
 
   // 2. Add re-add note if provided
-  const readdNote = context.getAnswer('readd_note')
-  // 2. Add re-add note
   if (readdNote && typeof readdNote === 'string' && readdNote.trim().length > 0) {
     const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
 
