@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import { navigateToSentencePlan } from './sentencePlanUtils'
-import coordinatorApi, { OasysEquivalent } from '../../mockApis/coordinatorApi'
+import coordinatorApi, { SanAssessmentData } from '../../mockApis/coordinatorApi'
 
 test.describe('Assessment Info Details - Warnings', () => {
   test.describe('No Information Available', () => {
@@ -28,19 +28,19 @@ test.describe('Assessment Info Details - Warnings', () => {
         },
       })
 
-      const oasysEquivalentNoEmploymentData: OasysEquivalent = {
-        accommodation_section_complete: 'YES',
-        accommodation_practitioner_analysis_risk_of_serious_harm: 'YES',
-        accommodation_practitioner_analysis_risk_of_serious_harm_yes_details: 'Test details',
-        accommodation_practitioner_analysis_risk_of_reoffending: 'YES',
-        accommodation_practitioner_analysis_risk_of_reoffending_yes_details: 'Test details',
-        accommodation_practitioner_analysis_strengths_or_protective_factors: 'YES',
-        accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details: 'Test details',
-        accommodation_practitioner_analysis_motivation_to_make_changes: 'WANT_TO_MAKE_CHANGES',
+      const sanAssessmentDataNoEmploymentData: SanAssessmentData = {
+        accommodation_section_complete: { value: 'YES' },
+        accommodation_practitioner_analysis_risk_of_serious_harm: { value: 'YES' },
+        accommodation_practitioner_analysis_risk_of_serious_harm_yes_details: { value: 'Test details' },
+        accommodation_practitioner_analysis_risk_of_reoffending: { value: 'YES' },
+        accommodation_practitioner_analysis_risk_of_reoffending_yes_details: { value: 'Test details' },
+        accommodation_practitioner_analysis_strengths_or_protective_factors: { value: 'YES' },
+        accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details: { value: 'Test details' },
+        accommodation_changes: { value: 'WANT_TO_MAKE_CHANGES' },
       }
 
       await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
-        sanOasysEquivalent: oasysEquivalentNoEmploymentData,
+        sanAssessmentData: sanAssessmentDataNoEmploymentData,
       })
 
       await navigateToSentencePlan(page, handoverLink)

@@ -63,7 +63,8 @@ export function getMotivationText(motivation: MotivationLevel, personName: strin
  */
 export function hasAnyData(data: AssessmentArea | null): boolean {
   if (!data) return false
-  return data.linkedToHarm != null ||
+  return data.isAssessmentSectionComplete ||
+    data.linkedToHarm != null ||
     data.linkedToReoffending != null ||
     data.linkedToStrengthsOrProtectiveFactors != null ||
     data.motivationToMakeChanges != null ||

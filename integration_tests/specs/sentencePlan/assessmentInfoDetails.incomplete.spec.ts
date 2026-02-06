@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import { navigateToSentencePlan } from './sentencePlanUtils'
-import coordinatorApi, { OasysEquivalent } from '../../mockApis/coordinatorApi'
+import coordinatorApi, { SanAssessmentData } from '../../mockApis/coordinatorApi'
 
 test.describe('Assessment Info Details - Incomplete Section', () => {
   test('displays warning when section is incomplete but all data is present', async ({ page, createSession }) => {
@@ -18,14 +18,16 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
       },
     })
 
-    const incompleteDrugUseData: OasysEquivalent = {
-      drug_use_section_complete: 'NO',
-      drug_use_practitioner_analysis_risk_of_reoffending_yes_details: 'Cannabis use linked to peer group.',
-      drug_use_practitioner_analysis_motivation_to_make_changes: 'NEEDS_HELP_TO_MAKE_CHANGES',
+    const incompleteDrugUseData: SanAssessmentData = {
+      drug_use_section_complete: { value: 'NO' },
+      drug_use_practitioner_analysis_risk_of_reoffending_yes_details: {
+        value: 'Cannabis use linked to peer group.',
+      },
+      drug_use_changes: { value: 'NEEDS_HELP_TO_MAKE_CHANGES' },
     }
 
     await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
-      sanOasysEquivalent: incompleteDrugUseData,
+      sanAssessmentData: incompleteDrugUseData,
     })
 
     await navigateToSentencePlan(page, handoverLink)
@@ -69,14 +71,14 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
       },
     })
 
-    const incompleteAccommodationData: OasysEquivalent = {
-      accommodation_section_complete: 'NO',
+    const incompleteAccommodationData: SanAssessmentData = {
+      accommodation_section_complete: { value: 'NO' },
       // Only motivation is answered - triggers "incomplete with data" state
-      accommodation_practitioner_analysis_motivation_to_make_changes: 'WANT_TO_MAKE_CHANGES',
+      accommodation_changes: { value: 'WANT_TO_MAKE_CHANGES' },
     }
 
     await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
-      sanOasysEquivalent: incompleteAccommodationData,
+      sanAssessmentData: incompleteAccommodationData,
     })
 
     await navigateToSentencePlan(page, handoverLink)
@@ -114,17 +116,19 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
       },
     })
 
-    const incompleteThinkingData: OasysEquivalent = {
-      thinking_behaviours_attitudes_section_complete: 'NO',
-      thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details:
-        'Impulsive decision-making and poor anger management.',
-      thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details:
-        'Pattern of acting impulsively.',
-      thinking_behaviours_attitudes_practitioner_analysis_motivation_to_make_changes: 'THINKING_ABOUT_MAKING_CHANGES',
+    const incompleteThinkingData: SanAssessmentData = {
+      thinking_behaviours_attitudes_section_complete: { value: 'NO' },
+      thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details: {
+        value: 'Impulsive decision-making and poor anger management.',
+      },
+      thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details: {
+        value: 'Pattern of acting impulsively.',
+      },
+      thinking_behaviours_attitudes_changes: { value: 'THINKING_ABOUT_MAKING_CHANGES' },
     }
 
     await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
-      sanOasysEquivalent: incompleteThinkingData,
+      sanAssessmentData: incompleteThinkingData,
     })
 
     await navigateToSentencePlan(page, handoverLink)
@@ -165,13 +169,15 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
       },
     })
 
-    const incompleteFinanceData: OasysEquivalent = {
-      finance_section_complete: 'NO',
-      finance_practitioner_analysis_strengths_or_protective_factors_yes_details: 'Has managed finances responsibly.',
+    const incompleteFinanceData: SanAssessmentData = {
+      finance_section_complete: { value: 'NO' },
+      finance_practitioner_analysis_strengths_or_protective_factors_yes_details: {
+        value: 'Has managed finances responsibly.',
+      },
     }
 
     await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
-      sanOasysEquivalent: incompleteFinanceData,
+      sanAssessmentData: incompleteFinanceData,
     })
 
     await navigateToSentencePlan(page, handoverLink)

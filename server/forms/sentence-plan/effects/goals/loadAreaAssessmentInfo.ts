@@ -28,10 +28,10 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
 
   try {
     const entityAssessment = await deps.coordinatorApi.getEntityAssessment(assessmentUuid)
-    const oasysEquivalent = entityAssessment.sanOasysEquivalent
+    const sanAssessmentData = entityAssessment.sanAssessmentData
 
     const criminogenicNeedsData = mapHandoverToCriminogenicNeeds(handoverCriminogenicNeeds)
-    const areas = transformAssessmentData(oasysEquivalent, criminogenicNeedsData)
+    const areas = transformAssessmentData(sanAssessmentData, criminogenicNeedsData)
 
     // goalRoute now matches slug directly in the unified areasOfNeed config
     const currentAreaAssessment = areas.find(area => area.goalRoute === currentAreaOfNeed.slug)
