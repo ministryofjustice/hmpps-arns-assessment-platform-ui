@@ -9,6 +9,7 @@ import type {
   UserLocation,
   SubjectDetails,
 } from '../../server/interfaces/coordinator-api/oasysCreate'
+import { generateUserId } from './utils'
 
 /**
  * Result of creating a coordinator association.
@@ -65,8 +66,9 @@ export class CoordinatorBuilderInstance {
 
   private assessmentType: AssessmentType = 'SAN_SP'
 
+  // Generate unique user ID to avoid "duplicate key" errors in parallel tests
   private userDetails: OasysUserDetails = {
-    id: 'e2e-test-user',
+    id: generateUserId(),
     name: 'Test User',
     location: 'COMMUNITY',
   }

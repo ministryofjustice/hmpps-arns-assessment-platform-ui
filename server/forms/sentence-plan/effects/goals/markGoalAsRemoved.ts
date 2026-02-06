@@ -29,6 +29,9 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
 
   const practitionerName = getPractitionerName(context, user)
 
+  // Read form answers before building commands (needed for timeline data)
+  const removalNote = context.getAnswer('removal_note')
+
   const commands: Commands[] = []
 
   // 1. Update goal status to REMOVED
@@ -40,6 +43,15 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
       status_date: new Date().toISOString(),
     }),
     removed: [],
+    timeline: {
+      type: 'GOAL_REMOVED',
+      data: {
+        goalUuid: activeGoal.uuid,
+        goalTitle: activeGoal.title,
+        removedBy: practitionerName,
+        reason: (typeof removalNote === 'string' && removalNote.trim()) || undefined,
+      },
+    },
     assessmentUuid,
     user,
   })
@@ -55,7 +67,6 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
   })
 
   // 3. Add removal note if provided
-  const removalNote = context.getAnswer('removal_note')
   if (removalNote && typeof removalNote === 'string' && removalNote.trim().length > 0) {
     const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
 

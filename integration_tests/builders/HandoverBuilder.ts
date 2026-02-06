@@ -9,6 +9,7 @@ import type {
   AccessMode,
   Location,
 } from '../../server/interfaces/handover-api/shared'
+import { generateUserId } from './utils'
 
 /**
  * Result of creating a handover session.
@@ -67,8 +68,9 @@ export class HandoverBuilderInstance {
 
   private criminogenicNeeds: CriminogenicNeedsData | undefined
 
+  // Generate unique user ID to avoid "duplicate key" errors in parallel tests
   private defaultPrincipal: HandoverPrincipalDetails = {
-    identifier: 'e2e-test-user',
+    identifier: generateUserId(),
     displayName: 'Test User',
     accessMode: 'READ_WRITE',
     returnUrl: 'http://localhost:3000',

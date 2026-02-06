@@ -1,3 +1,5 @@
+import type { Commands } from '@server/interfaces/aap-api/command'
+import { AgreementStatus } from '@server/forms/sentence-plan/effects'
 import { AssessmentBuilder, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
 import type { AssessmentBuilderInstance } from './AssessmentBuilder'
 import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
@@ -8,8 +10,9 @@ import type {
   PlanAgreementStatus,
   PlanAgreementConfig,
   GoalConfig,
+  NoteConfig,
 } from './types'
-import { AgreementStatus } from '../../server/forms/sentence-plan/effects'
+import { generateUserId } from './utils'
 
 /**
  * Created sentence plan with typed goal information
@@ -61,9 +64,12 @@ export interface CreatedStep extends CreatedCollectionItem {
 export function SentencePlanBuilder(client: TestAapApiClient): SentencePlanBuilderFactory {
   return {
     fresh: () =>
-      new SentencePlanBuilderInstance(AssessmentBuilder(client).fresh().ofType('SENTENCE_PLAN').withFormVersion('1.0')),
+      new SentencePlanBuilderInstance(
+        client,
+        AssessmentBuilder(client).fresh().ofType('SENTENCE_PLAN').withFormVersion('1.0'),
+      ),
     extend: (sentencePlanId: string) =>
-      new SentencePlanBuilderInstance(AssessmentBuilder(client).extend(sentencePlanId)),
+      new SentencePlanBuilderInstance(client, AssessmentBuilder(client).extend(sentencePlanId)),
   }
 }
 
@@ -76,13 +82,16 @@ export interface SentencePlanBuilderFactory {
  * Fluent builder for SENTENCE_PLAN assessments with goals and steps.
  */
 export class SentencePlanBuilderInstance {
+  private readonly client: TestAapApiClient
+
   private readonly assessmentBuilder: AssessmentBuilderInstance
 
   private readonly goals: GoalConfig[] = []
 
   private agreementStatus: AgreementStatus | PlanAgreementStatus | undefined
 
-  constructor(assessmentBuilder: AssessmentBuilderInstance) {
+  constructor(client: TestAapApiClient, assessmentBuilder: AssessmentBuilderInstance) {
+    this.client = client
     this.assessmentBuilder = assessmentBuilder
   }
 
@@ -142,8 +151,11 @@ export class SentencePlanBuilderInstance {
     this.buildAgreementCollection()
 
     const assessment = await this.assessmentBuilder.save()
+    const result = this.mapToCreatedSentencePlan(assessment)
 
-    return this.mapToCreatedSentencePlan(assessment)
+    await this.emitGoalLifecycleTimelineEvents(assessment.uuid, result.goals)
+
+    return result
   }
 
   private buildGoalsCollection(): void {
@@ -278,6 +290,123 @@ export class SentencePlanBuilderInstance {
     }
 
     return goalItem
+  }
+
+  /**
+   * Emit timeline events for goal lifecycle changes (achieved, removed, readded).
+   *
+   * These mirror the real app's behavior where markGoalAsAchieved, markGoalAsRemoved,
+   * and readdGoalToPlan emit timeline events via UpdateCollectionItemPropertiesCommand.
+   * The plan history page reads these events via loadPlanTimeline.
+   */
+  private async emitGoalLifecycleTimelineEvents(assessmentUuid: string, createdGoals: CreatedGoal[]): Promise<void> {
+    // Generate unique user ID to avoid "duplicate key" errors in parallel tests
+    const user = { id: generateUserId(), name: 'E2E_TEST', authSource: 'HMPPS_AUTH' as const }
+
+    for (let i = 0; i < this.goals.length; i++) {
+      const goalConfig = this.goals[i]
+      const createdGoal = createdGoals[i]
+
+      if (createdGoal) {
+        const timelineEvents = this.buildGoalTimelineEvents(goalConfig, createdGoal.uuid)
+
+        for (const timeline of timelineEvents) {
+          const command: Commands = {
+            type: 'UpdateCollectionItemPropertiesCommand',
+            collectionItemUuid: createdGoal.uuid,
+            added: {},
+            removed: [],
+            timeline,
+            assessmentUuid,
+            user,
+          }
+          // eslint-disable-next-line no-await-in-loop
+          await this.client.executeCommand(command)
+        }
+      }
+    }
+  }
+
+  private buildGoalTimelineEvents(
+    goalConfig: GoalConfig,
+    goalUuid: string,
+  ): Array<{ type: string; data: Record<string, unknown> }> {
+    const events: Array<{ type: string; data: Record<string, unknown> }> = []
+
+    // Build timeline events from notes
+    if (goalConfig.notes) {
+      for (const note of goalConfig.notes) {
+        const event = this.noteToTimelineEvent(note, goalConfig, goalUuid)
+        if (event) events.push(event)
+      }
+    }
+
+    // If ACHIEVED status but no ACHIEVED note, still emit a GOAL_ACHIEVED event
+    if (goalConfig.status === 'ACHIEVED' && !events.some(e => e.type === 'GOAL_ACHIEVED')) {
+      events.push({
+        type: 'GOAL_ACHIEVED',
+        data: {
+          goalUuid,
+          goalTitle: goalConfig.title,
+          achievedBy: goalConfig.achievedBy || 'E2E Test',
+        },
+      })
+    }
+
+    // If REMOVED status but no REMOVED note, still emit a GOAL_REMOVED event
+    if (goalConfig.status === 'REMOVED' && !events.some(e => e.type === 'GOAL_REMOVED')) {
+      events.push({
+        type: 'GOAL_REMOVED',
+        data: {
+          goalUuid,
+          goalTitle: goalConfig.title,
+          removedBy: 'E2E Test',
+        },
+      })
+    }
+
+    return events
+  }
+
+  private noteToTimelineEvent(
+    note: NoteConfig,
+    goalConfig: GoalConfig,
+    goalUuid: string,
+  ): { type: string; data: Record<string, unknown> } | undefined {
+    switch (note.type) {
+      case 'ACHIEVED':
+        return {
+          type: 'GOAL_ACHIEVED',
+          data: {
+            goalUuid,
+            goalTitle: goalConfig.title,
+            achievedBy: note.createdBy || goalConfig.achievedBy || 'E2E Test',
+            notes: note.note?.trim() || undefined,
+          },
+        }
+      case 'REMOVED':
+        return {
+          type: 'GOAL_REMOVED',
+          data: {
+            goalUuid,
+            goalTitle: goalConfig.title,
+            removedBy: note.createdBy || 'E2E Test',
+            reason: note.note?.trim() || undefined,
+          },
+        }
+      case 'READDED':
+        return {
+          type: 'GOAL_READDED',
+          data: {
+            goalUuid,
+            goalTitle: goalConfig.title,
+            readdedBy: note.createdBy || 'E2E Test',
+            reason: note.note?.trim() || undefined,
+          },
+        }
+      default:
+        return undefined
+    }
   }
 
   private mapToCreatedSentencePlan(assessment: CreatedAssessment): CreatedSentencePlan {

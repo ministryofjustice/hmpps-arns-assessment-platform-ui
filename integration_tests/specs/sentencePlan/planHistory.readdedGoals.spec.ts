@@ -246,17 +246,21 @@ test.describe('Plan History - Re-added Goals', () => {
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
       - paragraph:
-        - strong: Goal removed
+        - strong: Goal added back into plan
+        - text: /by Re-add Practitioner/
       - paragraph:
         - strong: Goal with full history
-      - paragraph: Goal no longer relevant at this time.
+      - paragraph: Circumstances changed, goal is relevant again.
       - paragraph:
         - link "View latest version":
           - /url: /update-goal-steps/
       - separator
       - paragraph:
-        - strong: Goal added back into plan
-      - paragraph: Circumstances changed, goal is relevant again.
+        - strong: Goal removed
+        - text: /by Removal Practitioner/
+      - paragraph:
+        - strong: Goal with full history
+      - paragraph: Goal no longer relevant at this time.
       - paragraph:
         - link "View latest version":
           - /url: /update-goal-steps/

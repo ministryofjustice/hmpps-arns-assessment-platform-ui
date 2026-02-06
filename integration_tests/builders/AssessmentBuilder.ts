@@ -16,6 +16,7 @@ import type {
   CreatedCollectionItem,
 } from './types'
 import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
+import { generateUserId } from './utils'
 
 const single = (value: string): SingleValue => ({ type: 'Single', value })
 const multi = (values: string[]): MultiValue => ({ type: 'Multi', values })
@@ -89,7 +90,8 @@ export class AssessmentBuilderInstance {
     collections: [],
   }
 
-  private user: User = { id: 'e2e-test', name: 'E2E_TEST', authSource: 'HMPPS_AUTH' }
+  // Generate unique user ID to avoid "duplicate key" errors in parallel tests
+  private user: User = { id: generateUserId(), name: 'E2E_TEST', authSource: 'HMPPS_AUTH' }
 
   constructor(client: TestAapApiClient, mode: BuilderMode, existingAssessmentUuid?: string) {
     this.client = client
