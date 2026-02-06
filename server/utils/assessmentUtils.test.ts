@@ -1,20 +1,24 @@
-import { OasysEquivalent, CriminogenicNeedsData } from '../interfaces/coordinator-api/entityAssessment'
+import { SanAssessmentData, CriminogenicNeedsData } from '../interfaces/coordinator-api/entityAssessment'
 import { transformAssessmentData } from './assessmentUtils'
 
 describe('assessmentUtils', () => {
-  // Note: The OASys equivalent keys (e.g. accommodation_practitioner_analysis_risk_of_serious_harm)
-  // come from SAN via the coordinator API, not directly from OASys. These represent practitioner
-  // analysis entered in SAN, formatted in an OASys-compatible structure. We don't use the YES/NO
-  // indicator values from these keys - instead we get linked indicators from the handover service
-  // (criminogenic needs data, which IS from OASys). We only use these SAN keys for the _details text.
-  const createOasysEquivalent = (overrides: Partial<OasysEquivalent> = {}): OasysEquivalent => ({
-    accommodation_section_complete: 'YES',
-    accommodation_practitioner_analysis_risk_of_serious_harm: 'YES',
-    accommodation_practitioner_analysis_risk_of_serious_harm_yes_details: 'Risk details for accommodation',
-    accommodation_practitioner_analysis_risk_of_reoffending: 'NO',
-    accommodation_practitioner_analysis_strengths_or_protective_factors: 'YES',
-    accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details: 'Has stable housing history',
-    accommodation_practitioner_analysis_motivation_to_make_changes: 'READY_TO_MAKE_CHANGES',
+  // Note: The SAN assessment data keys (e.g. accommodation_practitioner_analysis_risk_of_serious_harm)
+  // come from SAN via the coordinator API, representing raw form answers. Each value is an AnswerDto
+  // with a `value` property. We don't use the YES/NO indicator values from these keys - instead we get
+  // linked indicators from the handover service (criminogenic needs data, which IS from OASys).
+  // We only use these SAN keys for the _details text.
+  const createSanAssessmentData = (overrides: Partial<SanAssessmentData> = {}): SanAssessmentData => ({
+    accommodation_section_complete: { value: 'YES' },
+    accommodation_practitioner_analysis_risk_of_serious_harm: { value: 'YES' },
+    accommodation_practitioner_analysis_risk_of_serious_harm_yes_details: {
+      value: 'Risk details for accommodation',
+    },
+    accommodation_practitioner_analysis_risk_of_reoffending: { value: 'NO' },
+    accommodation_practitioner_analysis_strengths_or_protective_factors: { value: 'YES' },
+    accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details: {
+      value: 'Has stable housing history',
+    },
+    accommodation_changes: { value: 'READY_TO_MAKE_CHANGES' },
     ...overrides,
   })
 
@@ -71,57 +75,59 @@ describe('assessmentUtils', () => {
   })
 
   describe('transformAssessmentData', () => {
-    it('should transform OASys equivalent data into assessment areas', () => {
-      const oasysEquivalent = createOasysEquivalent()
+    it('should transform SAN assessment data into assessment areas', () => {
+      const sanAssessmentData = createSanAssessmentData()
       const crimNeeds = createCriminogenicNeedsData()
 
-      const result = transformAssessmentData(oasysEquivalent, crimNeeds)
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
 
       expect(result).toHaveLength(8)
       expect(result[0].title).toBe('Accommodation')
       expect(result[0].isAssessmentSectionComplete).toBe(true)
-      // Linked indicators come from handover (criminogenic needs), not OASys equivalent
+      // Linked indicators come from handover (criminogenic needs), not SAN assessment data
       expect(result[0].linkedToHarm).toBe('YES')
       expect(result[0].linkedToReoffending).toBe('NO')
       expect(result[0].linkedToStrengthsOrProtectiveFactors).toBe('YES')
-      // Details come from OASys equivalent (coordinator API)
+      // Details come from SAN assessment data (coordinator API)
       expect(result[0].riskOfSeriousHarmDetails).toBe('Risk details for accommodation')
     })
 
     it('should return null for linked indicators when no criminogenic needs data provided', () => {
-      const oasysEquivalent = createOasysEquivalent()
+      const sanAssessmentData = createSanAssessmentData()
 
-      const result = transformAssessmentData(oasysEquivalent)
+      const result = transformAssessmentData(sanAssessmentData)
 
       // Without criminogenic needs, linked indicators should be null
       expect(result[0].linkedToHarm).toBeNull()
       expect(result[0].linkedToReoffending).toBeNull()
       expect(result[0].linkedToStrengthsOrProtectiveFactors).toBeNull()
-      // Section complete still comes from OASys equivalent
+      // Section complete still comes from SAN assessment data
       expect(result[0].isAssessmentSectionComplete).toBe(true)
     })
 
     it('should handle incomplete sections', () => {
-      const oasysEquivalent = createOasysEquivalent({
-        accommodation_section_complete: 'NO',
+      const sanAssessmentData = createSanAssessmentData({
+        accommodation_section_complete: { value: 'NO' },
       })
 
-      const result = transformAssessmentData(oasysEquivalent)
+      const result = transformAssessmentData(sanAssessmentData)
 
       expect(result[0].isAssessmentSectionComplete).toBe(false)
     })
 
     it('should handle missing section complete value', () => {
-      const oasysEquivalent: OasysEquivalent = {}
+      const sanAssessmentData: SanAssessmentData = {}
 
-      const result = transformAssessmentData(oasysEquivalent)
+      const result = transformAssessmentData(sanAssessmentData)
 
       expect(result[0].isAssessmentSectionComplete).toBe(false)
     })
 
     it('should extract NO details when indicator is NO', () => {
-      const oasysEquivalent = createOasysEquivalent({
-        accommodation_practitioner_analysis_risk_of_serious_harm_no_details: 'No harm identified',
+      const sanAssessmentData = createSanAssessmentData({
+        accommodation_practitioner_analysis_risk_of_serious_harm_no_details: {
+          value: 'No harm identified',
+        },
       })
       const crimNeeds = createCriminogenicNeedsData({
         accommodation: {
@@ -132,38 +138,38 @@ describe('assessmentUtils', () => {
         },
       })
 
-      const result = transformAssessmentData(oasysEquivalent, crimNeeds)
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
 
-      // Linked indicator comes from handover, details come from OASys based on that indicator
+      // Linked indicator comes from handover, details come from SAN based on that indicator
       expect(result[0].linkedToHarm).toBe('NO')
       expect(result[0].riskOfSeriousHarmDetails).toBe('No harm identified')
     })
 
     it('should parse motivation levels correctly', () => {
-      const oasysEquivalent = createOasysEquivalent({
-        accommodation_practitioner_analysis_motivation_to_make_changes: 'WANT_TO_MAKE_CHANGES',
+      const sanAssessmentData = createSanAssessmentData({
+        accommodation_changes: { value: 'WANT_TO_MAKE_CHANGES' },
       })
 
-      const result = transformAssessmentData(oasysEquivalent)
+      const result = transformAssessmentData(sanAssessmentData)
 
       expect(result[0].motivationToMakeChanges).toBe('WANT_TO_MAKE_CHANGES')
     })
 
     it('should return null for invalid motivation values', () => {
-      const oasysEquivalent = createOasysEquivalent({
-        accommodation_practitioner_analysis_motivation_to_make_changes: 'INVALID_VALUE',
+      const sanAssessmentData = createSanAssessmentData({
+        accommodation_changes: { value: 'INVALID_VALUE' },
       })
 
-      const result = transformAssessmentData(oasysEquivalent)
+      const result = transformAssessmentData(sanAssessmentData)
 
       expect(result[0].motivationToMakeChanges).toBeNull()
     })
 
     it('should include criminogenic needs scores when provided', () => {
-      const oasysEquivalent = createOasysEquivalent()
+      const sanAssessmentData = createSanAssessmentData()
       const crimNeeds = createCriminogenicNeedsData()
 
-      const result = transformAssessmentData(oasysEquivalent, crimNeeds)
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
 
       expect(result[0].score).toBe(4)
       expect(result[0].upperBound).toBe(6)
@@ -171,8 +177,8 @@ describe('assessmentUtils', () => {
     })
 
     it('should classify high-scoring areas correctly (score > threshold)', () => {
-      const oasysEquivalent = createOasysEquivalent({
-        personal_relationships_community_section_complete: 'YES',
+      const sanAssessmentData = createSanAssessmentData({
+        personal_relationships_community_section_complete: { value: 'YES' },
       })
       const crimNeeds = createCriminogenicNeedsData({
         personalRelationshipsAndCommunity: {
@@ -183,7 +189,7 @@ describe('assessmentUtils', () => {
         },
       })
 
-      const result = transformAssessmentData(oasysEquivalent, crimNeeds)
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
 
       const personalRelationships = result.find(a => a.title === 'Personal relationships and community')
       expect(personalRelationships?.score).toBe(2)
@@ -193,7 +199,7 @@ describe('assessmentUtils', () => {
     })
 
     it('should classify low-scoring areas correctly (score <= threshold)', () => {
-      const oasysEquivalent = createOasysEquivalent()
+      const sanAssessmentData = createSanAssessmentData()
       const crimNeeds = createCriminogenicNeedsData({
         accommodation: {
           linkedToHarm: false,
@@ -203,7 +209,7 @@ describe('assessmentUtils', () => {
         },
       })
 
-      const result = transformAssessmentData(oasysEquivalent, crimNeeds)
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
 
       expect(result[0].score).toBe(1)
       expect(result[0].threshold).toBe(1)
@@ -212,7 +218,7 @@ describe('assessmentUtils', () => {
     })
 
     it('should classify score at threshold as low-scoring', () => {
-      const oasysEquivalent = createOasysEquivalent()
+      const sanAssessmentData = createSanAssessmentData()
       const crimNeeds = createCriminogenicNeedsData({
         accommodation: {
           linkedToHarm: false,
@@ -222,7 +228,7 @@ describe('assessmentUtils', () => {
         },
       })
 
-      const result = transformAssessmentData(oasysEquivalent, crimNeeds)
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
 
       expect(result[0].score).toBe(1)
       expect(result[0].threshold).toBe(1)
@@ -231,12 +237,12 @@ describe('assessmentUtils', () => {
     })
 
     it('should handle areas without scoring (Finance, Health) - both flags false', () => {
-      const oasysEquivalent = createOasysEquivalent({
-        finance_section_complete: 'YES',
-        health_wellbeing_section_complete: 'YES',
+      const sanAssessmentData = createSanAssessmentData({
+        finance_section_complete: { value: 'YES' },
+        health_wellbeing_section_complete: { value: 'YES' },
       })
 
-      const result = transformAssessmentData(oasysEquivalent)
+      const result = transformAssessmentData(sanAssessmentData)
 
       const finance = result.find(a => a.title === 'Finances')
       const health = result.find(a => a.title === 'Health and wellbeing')

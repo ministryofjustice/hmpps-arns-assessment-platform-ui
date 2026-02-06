@@ -113,12 +113,12 @@ describe('CoordinatorApiClient', () => {
       const expectedResponse: EntityAssessmentResponse = {
         sanAssessmentId: entityUuid,
         sanAssessmentVersion: 1,
-        sanAssessmentData: {},
-        sanOasysEquivalent: {
-          accommodation_section_complete: 'YES',
-          accommodation_practitioner_analysis_risk_of_serious_harm: 'YES',
-          accommodation_practitioner_analysis_risk_of_serious_harm_yes_details: 'Risk details',
+        sanAssessmentData: {
+          accommodation_section_complete: { value: 'YES' },
+          accommodation_practitioner_analysis_risk_of_serious_harm: { value: 'YES' },
+          accommodation_practitioner_analysis_risk_of_serious_harm_yes_details: { value: 'Risk details' },
         },
+        sanOasysEquivalent: {},
         lastUpdatedTimestampSAN: '2024-01-01T10:00:00Z',
         sentencePlanId: 'sp-uuid-123',
         sentencePlanVersion: 1,

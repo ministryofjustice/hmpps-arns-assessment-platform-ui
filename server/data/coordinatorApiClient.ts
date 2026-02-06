@@ -33,7 +33,7 @@ export default class CoordinatorApiClient extends RestClient {
    * Retrieves the latest version of the assessment associated with the provided entity UUID
    *
    * @param entityUuid - The UUID of the entity (SAN assessment or Sentence Plan)
-   * @returns Assessment data including sanOasysEquivalent with practitioner analysis
+   * @returns Assessment data including sanAssessmentData with practitioner analysis
    * @throws 404 if no associated entities were found
    */
   async getEntityAssessment(entityUuid: string): Promise<EntityAssessmentResponse> {

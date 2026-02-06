@@ -1,5 +1,5 @@
 import {
-  OasysEquivalent,
+  SanAssessmentData,
   LinkedIndicator,
   MotivationLevel,
   AssessmentArea,
@@ -19,12 +19,13 @@ function toLinkedIndicator(value: boolean | null | undefined): LinkedIndicator {
   return null
 }
 
-function getOasysValue(oasysEquivalent: OasysEquivalent, key: string): string {
-  const value = oasysEquivalent[key]
-  if (Array.isArray(value)) {
-    return value.join(', ')
+function getAssessmentValue(sanAssessmentData: SanAssessmentData, key: string): string {
+  const answer = sanAssessmentData[key]
+  if (!answer) return ''
+  if (Array.isArray(answer.values)) {
+    return answer.values.join(', ')
   }
-  return typeof value === 'string' ? value : ''
+  return typeof answer.value === 'string' ? answer.value : ''
 }
 
 function parseMotivation(value: string): MotivationLevel {
@@ -43,7 +44,7 @@ function parseMotivation(value: string): MotivationLevel {
 }
 
 function getLinkedDetails(
-  oasysEquivalent: OasysEquivalent,
+  sanAssessmentData: SanAssessmentData,
   assessmentKey: string,
   detailType: 'risk_of_serious_harm' | 'risk_of_reoffending' | 'strengths_or_protective_factors',
   linkedIndicator: LinkedIndicator,
@@ -52,12 +53,12 @@ function getLinkedDetails(
 
   const suffix = linkedIndicator.toLowerCase()
   const key = `${assessmentKey}_practitioner_analysis_${detailType}_${suffix}_details`
-  return getOasysValue(oasysEquivalent, key)
+  return getAssessmentValue(sanAssessmentData, key)
 }
 
 function processAssessmentArea(
   areaOfNeed: AreaOfNeed,
-  oasysEquivalent: OasysEquivalent,
+  sanAssessmentData: SanAssessmentData,
   criminogenicNeedsData: CriminogenicNeedsData | null,
 ): AssessmentArea {
   const { assessmentKey, crimNeedsKey, text: title, slug: goalRoute, upperBound, threshold } = areaOfNeed
@@ -66,8 +67,8 @@ function processAssessmentArea(
     ? (criminogenicNeedsData[crimNeedsKey] ?? null)
     : null
 
-  // Section complete comes from coordinator API (sanOasysEquivalent)
-  const sectionCompleteValue = getOasysValue(oasysEquivalent, `${assessmentKey}_section_complete`)
+  // Section complete comes from coordinator API (sanAssessmentData)
+  const sectionCompleteValue = getAssessmentValue(sanAssessmentData, `${assessmentKey}_section_complete`)
   const isAssessmentSectionComplete = sectionCompleteValue === 'YES'
 
   // Linked indicators come from handover (OASys)
@@ -75,33 +76,30 @@ function processAssessmentArea(
   const linkedToReoffending = toLinkedIndicator(crimNeedsArea?.linkedToReoffending)
   const linkedToStrengthsOrProtectiveFactors = toLinkedIndicator(crimNeedsArea?.linkedToStrengthsOrProtectiveFactors)
 
-  // Details come from coordinator API (sanOasysEquivalent), keyed by the linked indicator value
+  // Details come from coordinator API (sanAssessmentData), keyed by the linked indicator value
   const riskOfSeriousHarmDetails = getLinkedDetails(
-    oasysEquivalent,
+    sanAssessmentData,
     assessmentKey,
     'risk_of_serious_harm',
     linkedToHarm,
   )
 
   const riskOfReoffendingDetails = getLinkedDetails(
-    oasysEquivalent,
+    sanAssessmentData,
     assessmentKey,
     'risk_of_reoffending',
     linkedToReoffending,
   )
 
   const strengthsOrProtectiveFactorsDetails = getLinkedDetails(
-    oasysEquivalent,
+    sanAssessmentData,
     assessmentKey,
     'strengths_or_protective_factors',
     linkedToStrengthsOrProtectiveFactors,
   )
 
-  // Motivation comes from coordinator API (sanOasysEquivalent)
-  const motivationValue = getOasysValue(
-    oasysEquivalent,
-    `${assessmentKey}_practitioner_analysis_motivation_to_make_changes`,
-  )
+  // Motivation comes from coordinator API (sanAssessmentData)
+  const motivationValue = getAssessmentValue(sanAssessmentData, `${assessmentKey}_changes`)
   const motivationToMakeChanges = parseMotivation(motivationValue)
 
   // Score comes from handover (OASys) only
@@ -133,8 +131,8 @@ function processAssessmentArea(
 }
 
 export function transformAssessmentData(
-  oasysEquivalent: OasysEquivalent,
+  sanAssessmentData: SanAssessmentData,
   criminogenicNeedsData: CriminogenicNeedsData | null = null,
 ): AssessmentArea[] {
-  return areasOfNeed.map(areaOfNeed => processAssessmentArea(areaOfNeed, oasysEquivalent, criminogenicNeedsData))
+  return areasOfNeed.map(areaOfNeed => processAssessmentArea(areaOfNeed, sanAssessmentData, criminogenicNeedsData))
 }

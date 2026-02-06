@@ -5,28 +5,31 @@ import ChangeGoalPage from '../../pages/sentencePlan/changeGoalPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { navigateToSentencePlan, getDatePlusDaysAsISO } from './sentencePlanUtils'
-import coordinatorApi, { OasysEquivalent } from '../../mockApis/coordinatorApi'
+import coordinatorApi, { SanAssessmentData } from '../../mockApis/coordinatorApi'
 
 test.describe('Assessment Info Details - Complete Section', () => {
   test('displays assessment info collapsed when section is complete with all data', async ({ page, createSession }) => {
     const { handoverLink, sentencePlanId } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
 
-    const completeAccommodationData: OasysEquivalent = {
-      accommodation_section_complete: 'YES',
-      accommodation_practitioner_analysis_risk_of_serious_harm: 'YES',
-      accommodation_practitioner_analysis_risk_of_serious_harm_yes_details:
-        'Risk of serious harm related to accommodation instability.',
-      accommodation_practitioner_analysis_risk_of_reoffending: 'YES',
-      accommodation_practitioner_analysis_risk_of_reoffending_yes_details:
-        'Accommodation instability is linked to reoffending.',
-      accommodation_practitioner_analysis_strengths_or_protective_factors: 'YES',
-      accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details:
-        'Has maintained tenancy previously for 2 years.',
-      accommodation_practitioner_analysis_motivation_to_make_changes: 'WANT_TO_MAKE_CHANGES',
+    const completeAccommodationData: SanAssessmentData = {
+      accommodation_section_complete: { value: 'YES' },
+      accommodation_practitioner_analysis_risk_of_serious_harm: { value: 'YES' },
+      accommodation_practitioner_analysis_risk_of_serious_harm_yes_details: {
+        value: 'Risk of serious harm related to accommodation instability.',
+      },
+      accommodation_practitioner_analysis_risk_of_reoffending: { value: 'YES' },
+      accommodation_practitioner_analysis_risk_of_reoffending_yes_details: {
+        value: 'Accommodation instability is linked to reoffending.',
+      },
+      accommodation_practitioner_analysis_strengths_or_protective_factors: { value: 'YES' },
+      accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details: {
+        value: 'Has maintained tenancy previously for 2 years.',
+      },
+      accommodation_changes: { value: 'WANT_TO_MAKE_CHANGES' },
     }
 
     await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
-      sanOasysEquivalent: completeAccommodationData,
+      sanAssessmentData: completeAccommodationData,
     })
 
     await navigateToSentencePlan(page, handoverLink)
@@ -73,13 +76,13 @@ test.describe('Assessment Info Details - Complete Section', () => {
       },
     })
 
-    const customOasysEquivalent: OasysEquivalent = {
-      drug_use_section_complete: 'YES',
+    const customSanAssessmentData: SanAssessmentData = {
+      drug_use_section_complete: { value: 'YES' },
       // No motivation - person didn't have to answer
     }
 
     await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
-      sanOasysEquivalent: customOasysEquivalent,
+      sanAssessmentData: customSanAssessmentData,
     })
 
     await navigateToSentencePlan(page, handoverLink)
@@ -136,19 +139,22 @@ test.describe('Assessment Info Details - Complete Section', () => {
         ])
         .save()
 
-      const completeAccommodationData: OasysEquivalent = {
-        accommodation_section_complete: 'YES',
-        accommodation_practitioner_analysis_risk_of_serious_harm: 'YES',
-        accommodation_practitioner_analysis_risk_of_serious_harm_yes_details:
-          'Risk of serious harm related to accommodation.',
-        accommodation_practitioner_analysis_risk_of_reoffending: 'NO',
-        accommodation_practitioner_analysis_strengths_or_protective_factors: 'YES',
-        accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details: 'Has family support.',
-        accommodation_practitioner_analysis_motivation_to_make_changes: 'MAKING_CHANGES',
+      const completeAccommodationData: SanAssessmentData = {
+        accommodation_section_complete: { value: 'YES' },
+        accommodation_practitioner_analysis_risk_of_serious_harm: { value: 'YES' },
+        accommodation_practitioner_analysis_risk_of_serious_harm_yes_details: {
+          value: 'Risk of serious harm related to accommodation.',
+        },
+        accommodation_practitioner_analysis_risk_of_reoffending: { value: 'NO' },
+        accommodation_practitioner_analysis_strengths_or_protective_factors: { value: 'YES' },
+        accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details: {
+          value: 'Has family support.',
+        },
+        accommodation_changes: { value: 'MAKING_CHANGES' },
       }
 
       await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
-        sanOasysEquivalent: completeAccommodationData,
+        sanAssessmentData: completeAccommodationData,
       })
 
       await navigateToSentencePlan(page, handoverLink)
@@ -196,17 +202,19 @@ test.describe('Assessment Info Details - Complete Section', () => {
         ])
         .save()
 
-      const completeAccommodationData: OasysEquivalent = {
-        accommodation_section_complete: 'YES',
-        accommodation_practitioner_analysis_risk_of_serious_harm: 'NO',
-        accommodation_practitioner_analysis_risk_of_reoffending: 'YES',
-        accommodation_practitioner_analysis_risk_of_reoffending_yes_details: 'Linked to reoffending risk.',
-        accommodation_practitioner_analysis_strengths_or_protective_factors: 'NO',
-        accommodation_practitioner_analysis_motivation_to_make_changes: 'WANT_TO_MAKE_CHANGES',
+      const completeAccommodationData: SanAssessmentData = {
+        accommodation_section_complete: { value: 'YES' },
+        accommodation_practitioner_analysis_risk_of_serious_harm: { value: 'NO' },
+        accommodation_practitioner_analysis_risk_of_reoffending: { value: 'YES' },
+        accommodation_practitioner_analysis_risk_of_reoffending_yes_details: {
+          value: 'Linked to reoffending risk.',
+        },
+        accommodation_practitioner_analysis_strengths_or_protective_factors: { value: 'NO' },
+        accommodation_changes: { value: 'WANT_TO_MAKE_CHANGES' },
       }
 
       await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
-        sanOasysEquivalent: completeAccommodationData,
+        sanAssessmentData: completeAccommodationData,
       })
 
       await navigateToSentencePlan(page, handoverLink)
