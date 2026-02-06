@@ -6,4 +6,5 @@ path = "./node_modules/@ministryofjustice/hmpps-precommit-hooks/config.toml"
 description = "Local development secrets and false positives"
 paths = [
   '''docker/auth_db/V1000_0__local_clients\.sql''',
+  '''(?i)makefile''',
 ]
