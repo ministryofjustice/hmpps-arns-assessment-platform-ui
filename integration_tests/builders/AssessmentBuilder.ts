@@ -16,6 +16,7 @@ import type {
   CreatedCollectionItem,
 } from './types'
 import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
+import { generateUserId } from './utils'
 
 const single = (value: string): SingleValue => ({ type: 'Single', value })
 const multi = (values: string[]): MultiValue => ({ type: 'Multi', values })
@@ -30,19 +31,6 @@ function generateCrn(): string {
     .padStart(6, '0')
 
   return `${letter}${digits}`
-}
-
-/**
- * Generate a unique user ID to avoid conflicts in parallel tests.
- * Uses timestamp + random suffix for uniqueness.
- */
-function generateUserId(): string {
-  const timestamp = Date.now()
-  const random = Math.floor(Math.random() * 10000)
-    .toString()
-    .padStart(4, '0')
-
-  return `e2e-test-${timestamp}-${random}`
 }
 
 type BuilderMode = 'fresh' | 'extend'

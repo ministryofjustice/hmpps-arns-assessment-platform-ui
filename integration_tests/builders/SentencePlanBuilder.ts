@@ -12,6 +12,7 @@ import type {
   GoalConfig,
   NoteConfig,
 } from './types'
+import { generateUserId } from './utils'
 
 /**
  * Created sentence plan with typed goal information
@@ -299,7 +300,8 @@ export class SentencePlanBuilderInstance {
    * The plan history page reads these events via loadPlanTimeline.
    */
   private async emitGoalLifecycleTimelineEvents(assessmentUuid: string, createdGoals: CreatedGoal[]): Promise<void> {
-    const user = { id: 'e2e-test', name: 'E2E_TEST', authSource: 'HMPPS_AUTH' as const }
+    // Generate unique user ID to avoid "duplicate key" errors in parallel tests
+    const user = { id: generateUserId(), name: 'E2E_TEST', authSource: 'HMPPS_AUTH' as const }
 
     for (let i = 0; i < this.goals.length; i++) {
       const goalConfig = this.goals[i]
