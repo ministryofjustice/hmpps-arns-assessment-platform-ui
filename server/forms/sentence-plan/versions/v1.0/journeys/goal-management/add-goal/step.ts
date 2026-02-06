@@ -36,7 +36,7 @@ export const createGoalStep = step({
   blocks: [sideNav, ...contentBlocks],
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.deriveGoalCurrentAreaOfNeed()],
+      effects: [SentencePlanEffects.setAreaDataFromUrlParam(), SentencePlanEffects.loadAreaAssessmentInfo()],
     }),
 
     // If UUID param is literally ':uuid', redirect to use 'new' instead
@@ -56,7 +56,7 @@ export const createGoalStep = step({
       when: Post('action').match(Condition.Equals('addSteps')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.saveActiveGoal(), SentencePlanEffects.setNavigationReferrer('add-goal')],
+        effects: [SentencePlanEffects.createGoal(), SentencePlanEffects.setNavigationReferrer('add-goal')],
         next: [redirect({ goto: Format('../%1/add-steps', Data('activeGoalUuid')) })],
       },
     }),
@@ -65,7 +65,7 @@ export const createGoalStep = step({
       validate: true,
       onValid: {
         effects: [
-          SentencePlanEffects.saveActiveGoal(),
+          SentencePlanEffects.createGoal(),
           SentencePlanEffects.addNotification({
             type: 'success',
             title: 'Goal added',

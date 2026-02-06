@@ -29,7 +29,7 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.enterGoalTitle("Find stable accommodation so I'm not homeless ('sofa surfing')")
       await createGoalPage.selectIsRelated(false)
       await createGoalPage.selectCanStartNow(true)
-      await createGoalPage.selectTargetDateOption('date_in_3_months')
+      await createGoalPage.selectTargetDateOption('3_months')
 
       await createGoalPage.clickAddSteps()
 
@@ -61,7 +61,7 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.enterGoalTitle('Find stable accommodation')
       await createGoalPage.selectIsRelated(false)
       await createGoalPage.selectCanStartNow(true)
-      await createGoalPage.selectTargetDateOption('date_in_6_months')
+      await createGoalPage.selectTargetDateOption('6_months')
       await createGoalPage.clickAddSteps()
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
@@ -154,7 +154,7 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.enterGoalTitle('Current goal')
       await createGoalPage.selectIsRelated(false)
       await createGoalPage.selectCanStartNow(true)
-      await createGoalPage.selectTargetDateOption('date_in_3_months')
+      await createGoalPage.selectTargetDateOption('3_months')
       await createGoalPage.clickSaveWithoutSteps()
 
       await expect(page).toHaveURL(/type=current/)

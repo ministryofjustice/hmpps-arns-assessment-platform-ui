@@ -14,8 +14,6 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
 
   readonly changeGoalDetailsLink: Locator
 
-  readonly reviewStepsHeading: Locator
-
   readonly stepsTable: Locator
 
   readonly noStepsMessage: Locator
@@ -52,7 +50,6 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
     this.targetDateMessage = page.locator('p.govuk-body').filter({ hasText: 'Aim to achieve this by' })
     this.futureGoalMessage = page.locator('p.govuk-body').filter({ hasText: 'This is a future goal' })
     this.changeGoalDetailsLink = page.getByRole('link', { name: 'Change goal details' })
-    this.reviewStepsHeading = page.locator('h2.govuk-heading-m').filter({ hasText: 'Review steps' })
     this.stepsTable = page.locator('table.goal-summary-card__steps')
     this.noStepsMessage = page.locator('.goal-summary-card__steps--empty-no-shadow')
     this.addStepsLink = page
@@ -110,12 +107,6 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
     return rows.count()
   }
 
-  async getStepActorByIndex(index: number): Promise<string> {
-    const row = this.stepsTable.locator('tbody tr').nth(index)
-    const actorCell = row.locator('td').first()
-    return (await actorCell.textContent()) ?? ''
-  }
-
   async getStepDescriptionByIndex(index: number): Promise<string> {
     const row = this.stepsTable.locator('tbody tr').nth(index)
     const descriptionCell = row.locator('td').nth(1)
@@ -130,14 +121,6 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
   async setStepStatusByIndex(index: number, status: string): Promise<void> {
     const select = this.page.locator(`select[name="step_status_${index}"]`)
     await select.selectOption(status)
-  }
-
-  async getStepStatusOptions(index: number): Promise<string[]> {
-    const select = this.page.locator(`select[name="step_status_${index}"]`)
-    const options = select.locator('option')
-    return options.evaluateAll(opts =>
-      opts.map(opt => opt.getAttribute('value')).filter((v): v is string => v !== null),
-    )
   }
 
   async enterProgressNotes(notes: string): Promise<void> {

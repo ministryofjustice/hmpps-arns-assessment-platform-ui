@@ -2,7 +2,7 @@ import crypto from 'node:crypto'
 import { TrainingScenarioFlag } from '../../constants'
 import { scenarioFieldKeys, ScenarioValues } from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, SavedScenario } from '../../types'
-import { TrainingSessionLauncherEffectsDeps } from '../types'
+import { TrainingSessionLauncherEffectsDeps, TrainingLauncherNotification } from '../types'
 
 /**
  * Default empty preferences
@@ -89,4 +89,16 @@ export const saveCustomPreset =
         },
       }
     })
+
+    // Add success notification
+    const session = context.getSession()
+    session.notifications = session.notifications || []
+
+    const notification: TrainingLauncherNotification = {
+      type: 'success',
+      title: 'Scenario saved',
+      message: `'${scenarioName}' has been saved to your scenarios.`,
+      target: 'browse',
+    }
+    session.notifications.push(notification)
   }

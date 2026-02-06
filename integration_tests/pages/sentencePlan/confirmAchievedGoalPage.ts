@@ -4,24 +4,24 @@ import AbstractPage from '../abstractPage'
 export default class ConfirmAchievedGoalPage extends AbstractPage {
   readonly header: Locator
 
-  readonly goalCard: Locator
-
-  readonly goalTitle: Locator
-
   readonly howHelpedTextarea: Locator
 
   readonly confirmButton: Locator
 
   readonly cancelButton: Locator
 
+  readonly goalCard: Locator
+
+  readonly goalTitle: Locator
+
   private constructor(page: Page) {
     super(page)
     this.header = page.locator('h1')
-    this.goalCard = page.locator('[data-qa="goal-summary-card"]')
-    this.goalTitle = page.locator('[data-qa="goal-title"]')
     this.howHelpedTextarea = page.locator('#how_helped')
     this.confirmButton = page.getByRole('button', { name: 'Confirm' })
     this.cancelButton = page.getByRole('button', { name: 'Do not mark as achieved' })
+    this.goalCard = page.locator('[data-qa="goal-summary-card"]')
+    this.goalTitle = page.locator('[data-qa="goal-title"]')
   }
 
   static async verifyOnPage(page: Page): Promise<ConfirmAchievedGoalPage> {

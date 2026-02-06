@@ -10,14 +10,18 @@ export const planHistoryStep = step({
     locals: {
       headerPageHeading: 'Plan history',
       buttons: {
-        showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('handover')),
+        showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('OASYS')),
       },
     },
   },
   blocks: [subtitleText, sectionBreak, agreementHistory, updateAgreementLink, backToTopLink],
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.setNavigationReferrer('plan-history')],
+      effects: [
+        SentencePlanEffects.loadPlanTimeline(),
+        SentencePlanEffects.derivePlanHistoryEntries(),
+        SentencePlanEffects.setNavigationReferrer('plan-history'),
+      ],
       next: [
         // Redirect to plan overview if plan is not yet agreed
         redirect({

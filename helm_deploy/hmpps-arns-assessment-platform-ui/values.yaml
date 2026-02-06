@@ -67,6 +67,7 @@ generic-service:
   allowlist:
     groups:
       - internal
+      - prisons
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui

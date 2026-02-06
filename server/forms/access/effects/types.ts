@@ -3,15 +3,15 @@ import { DeliusApiClient, HandoverApiClient } from '../../../data'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
-import { AccessType } from '../../../interfaces/sessionDetails'
 import { AccessMode } from '../../../interfaces/handover-api/shared'
+import { AuthSource } from '../../../interfaces/hmppsUser'
 
 /**
  * Generic session details for access flows.
  * Does not include form-specific identifiers - target forms add those.
  */
 export interface AccessSessionDetails {
-  accessType: AccessType
+  accessType: AuthSource
   accessMode: AccessMode
   oasysRedirectUrl?: string
 }

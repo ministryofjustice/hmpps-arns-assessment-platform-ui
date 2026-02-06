@@ -1,4 +1,6 @@
-import { GoalAnswers, GoalProperties, GoalStatus } from '../types'
+import { InternalServerError } from 'http-errors'
+import { User } from '../../../../interfaces/user'
+import { AreaOfNeed, GoalAnswers, GoalProperties, GoalStatus, SentencePlanContext } from '../types'
 
 export const MONTHS_BY_OPTION: Record<string, number> = {
   date_in_3_months: 3,
@@ -67,5 +69,72 @@ export const buildGoalAnswers = (
     area_of_need: areaOfNeed,
     related_areas_of_need: relatedAreasOfNeed,
     ...(targetDate && { target_date: targetDate }),
+  }
+}
+
+// ============================================================================
+// Context Assertion Helpers
+// ============================================================================
+
+/**
+ * Validated base context for effects.
+ */
+export interface EffectContext {
+  user: User
+  assessmentUuid: string
+}
+
+/**
+ * Assert and extract base context (user and assessmentUuid).
+ *
+ * @throws InternalServerError if user or assessmentUuid is missing
+ */
+export const getRequiredEffectContext = (context: SentencePlanContext, effectName: string): EffectContext => {
+  const user = context.getState('user')
+  const assessmentUuid = context.getData('assessmentUuid')
+
+  if (!user) {
+    throw new InternalServerError(`User is required for ${effectName}`)
+  }
+
+  if (!assessmentUuid) {
+    throw new InternalServerError(`Assessment UUID is required for ${effectName}`)
+  }
+
+  return { user, assessmentUuid }
+}
+
+/**
+ * Get practitioner display name from session, falling back to user.name.
+ */
+export const getPractitionerName = (context: SentencePlanContext, user: User): string => {
+  const session = context.getSession()
+  return session.practitionerDetails?.displayName || user.name
+}
+
+// ============================================================================
+// Area of Need Helpers
+// ============================================================================
+
+/**
+ * Derive area of need data from a list of areas and a current area slug.
+ *
+ * Returns the current area, other areas (sorted alphabetically), and all slugs.
+ * This is a pure function that can be used by multiple effects.
+ */
+export const deriveAreasOfNeedData = (
+  areasOfNeed: AreaOfNeed[],
+  currentAreaSlug: string,
+): {
+  currentAreaOfNeed: AreaOfNeed | undefined
+  otherAreasOfNeed: AreaOfNeed[]
+  areaOfNeedSlugs: string[]
+} => {
+  return {
+    currentAreaOfNeed: areasOfNeed.find(a => a.slug === currentAreaSlug),
+    otherAreasOfNeed: areasOfNeed
+      .filter(a => a.slug !== currentAreaSlug)
+      .sort((a, b) => a.text.localeCompare(b.text)),
+    areaOfNeedSlugs: areasOfNeed.map(a => a.slug),
   }
 }

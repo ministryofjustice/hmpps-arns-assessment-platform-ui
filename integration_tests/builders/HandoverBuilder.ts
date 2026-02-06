@@ -9,6 +9,7 @@ import type {
   AccessMode,
   Location,
 } from '../../server/interfaces/handover-api/shared'
+import { generateUserId } from './utils'
 
 /**
  * Result of creating a handover session.
@@ -67,8 +68,9 @@ export class HandoverBuilderInstance {
 
   private criminogenicNeeds: CriminogenicNeedsData | undefined
 
+  // Generate unique user ID to avoid "duplicate key" errors in parallel tests
   private defaultPrincipal: HandoverPrincipalDetails = {
-    identifier: 'e2e-test-user',
+    identifier: generateUserId(),
     displayName: 'Test User',
     accessMode: 'READ_WRITE',
     returnUrl: 'http://localhost:3000',
@@ -164,6 +166,15 @@ export class HandoverBuilderInstance {
   }
 
   /**
+   * Set the subject PNC.
+   */
+  withSubjectPNC(pnc: string): this {
+    this.subject.pnc = pnc
+
+    return this
+  }
+
+  /**
    * Set criminogenic needs data from OASys
    */
   withCriminogenicNeeds(needs: CriminogenicNeedsData): this {
@@ -184,6 +195,7 @@ export class HandoverBuilderInstance {
 
       const subjectDetails: HandoverSubjectDetails = {
         crn: this.association.crn,
+        pnc: this.subject.pnc,
         givenName: this.subject.givenName ?? 'Test',
         familyName: this.subject.familyName ?? 'User',
         dateOfBirth: this.subject.dateOfBirth ?? '1990-01-01',

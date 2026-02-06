@@ -2,6 +2,8 @@ import { InternalServerError } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
+import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
+import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
 
 /**
  * Mark a goal as removed
@@ -18,26 +20,17 @@ import { Commands } from '../../../../interfaces/aap-api/command'
  * - removal_note: Optional note about why the goal was removed
  */
 export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const user = context.getState('user')
-  const session = context.getSession()
-  const assessmentUuid = context.getData('assessmentUuid')
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'markGoalAsRemoved')
   const activeGoal = context.getData('activeGoal')
 
-  if (!user) {
-    throw new InternalServerError('User is required to mark goal as removed')
-  }
-
-  // Use practitioner display name from session (populated from handover context),
-  // falling back to user.name for HMPPS Auth users
-  const practitionerName = session.practitionerDetails?.displayName || user.name
-
-  if (!assessmentUuid) {
-    throw new InternalServerError('Assessment UUID is required to mark goal as removed')
-  }
-
   if (!activeGoal?.uuid) {
-    throw new InternalServerError('Active goal is required to mark as removed')
+    throw new InternalServerError('Active goal is required for markGoalAsRemoved')
   }
+
+  const practitionerName = getPractitionerName(context, user)
+
+  // Read form answers before building commands (needed for timeline data)
+  const removalNote = context.getAnswer('removal_note')
 
   const commands: Commands[] = []
 
@@ -50,6 +43,15 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
       status_date: new Date().toISOString(),
     }),
     removed: [],
+    timeline: {
+      type: 'GOAL_REMOVED',
+      data: {
+        goalUuid: activeGoal.uuid,
+        goalTitle: activeGoal.title,
+        removedBy: practitionerName,
+        reason: (typeof removalNote === 'string' && removalNote.trim()) || undefined,
+      },
+    },
     assessmentUuid,
     user,
   })
@@ -64,44 +66,20 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
     user,
   })
 
-  // 3. Add removal note
-  const removalNote = context.getAnswer('removal_note')
+  // 3. Add removal note if provided
   if (removalNote && typeof removalNote === 'string' && removalNote.trim().length > 0) {
-    // Find or create NOTES collection for the goal
-    let collectionUuid = activeGoal.notesCollectionUuid
+    const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
 
-    if (!collectionUuid) {
-      // Create the NOTES collection (goal doesn't have one yet)
-      const createResult = await deps.api.executeCommand({
-        type: 'CreateCollectionCommand',
-        name: 'NOTES',
-        parentCollectionItemUuid: activeGoal.uuid,
+    commands.push(
+      buildAddNoteCommand({
+        collectionUuid,
+        noteText: removalNote,
+        noteType: 'REMOVED',
+        createdBy: practitionerName,
         assessmentUuid,
         user,
-      })
-
-      collectionUuid = createResult.collectionUuid
-    }
-
-    // Add the note with type REMOVED
-    commands.push({
-      type: 'AddCollectionItemCommand',
-      collectionUuid: collectionUuid!,
-      properties: wrapAll({
-        created_at: new Date().toISOString(),
-        type: 'REMOVED',
       }),
-      answers: wrapAll({
-        note: removalNote.trim(),
-        created_by: practitionerName,
-      }),
-      timeline: {
-        type: 'NOTE_ADDED',
-        data: {},
-      },
-      assessmentUuid,
-      user,
-    })
+    )
   }
 
   // Execute all commands in a single batch

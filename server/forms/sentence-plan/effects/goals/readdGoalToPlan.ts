@@ -2,10 +2,11 @@ import { InternalServerError } from 'http-errors'
 import { DerivedGoal, SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
-import { calculateTargetDate, determineGoalStatus } from './goalUtils'
+import { getRequiredEffectContext, calculateTargetDate, determineGoalStatus, getPractitionerName } from './goalUtils'
+import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
 
 /**
- * Mark a goal as active (re-add a removed goal)
+ * Re-add a removed goal back to the plan
  *
  * This effect:
  * 1. Updates the goal status from 'REMOVED' to 'ACTIVE' or 'FUTURE'
@@ -23,32 +24,21 @@ import { calculateTargetDate, determineGoalStatus } from './goalUtils'
  * - target_date_option: Target date option (if can_start_now is 'yes')
  * - custom_target_date: Custom date (if set_another_date)
  */
-export const markGoalAsActive = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const user = context.getState('user')
-  const session = context.getSession()
-  const assessmentUuid = context.getData('assessmentUuid')
+export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'readdGoalToPlan')
   const activeGoal = context.getData('activeGoal')
 
-  if (!user) {
-    throw new InternalServerError('User is required to mark goal as active')
-  }
-
-  // Use practitioner display name from session (populated from handover context),
-  // falling back to user.name for HMPPS Auth users
-  const practitionerName = session.practitionerDetails?.displayName || user.name
-
-  if (!assessmentUuid) {
-    throw new InternalServerError('Assessment UUID is required to mark goal as active')
-  }
-
   if (!activeGoal?.uuid) {
-    throw new InternalServerError('Active goal is required to mark as active')
+    throw new InternalServerError('Active goal is required for readdGoalToPlan')
   }
+
+  const practitionerName = getPractitionerName(context, user)
 
   // Get form answers
   const canStartNow = context.getAnswer('can_start_now') as string
   const targetDateOption = context.getAnswer('target_date_option') as string
   const customDate = context.getAnswer('custom_target_date') as string
+  const readdNote = context.getAnswer('readd_note')
 
   // Calculate target date and status
   const targetDate = calculateTargetDate(canStartNow, targetDateOption, customDate)
@@ -72,6 +62,15 @@ export const markGoalAsActive = (deps: SentencePlanEffectsDeps) => async (contex
     collectionItemUuid: activeGoal.uuid,
     added: wrapAll(propertiesToAdd),
     removed: [],
+    timeline: {
+      type: 'GOAL_READDED',
+      data: {
+        goalUuid: activeGoal.uuid,
+        goalTitle: activeGoal.title,
+        readdedBy: practitionerName,
+        reason: (typeof readdNote === 'string' && readdNote.trim()) || undefined,
+      },
+    },
     assessmentUuid,
     user,
   })
@@ -88,44 +87,20 @@ export const markGoalAsActive = (deps: SentencePlanEffectsDeps) => async (contex
     })
   }
 
-  // 2. Add re-add note
-  const readdNote = context.getAnswer('readd_note')
+  // 2. Add re-add note if provided
   if (readdNote && typeof readdNote === 'string' && readdNote.trim().length > 0) {
-    // Find or create NOTES collection for the goal
-    let collectionUuid = activeGoal.notesCollectionUuid
+    const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
 
-    if (!collectionUuid) {
-      // Create the NOTES collection (goal doesn't have one yet)
-      const createResult = await deps.api.executeCommand({
-        type: 'CreateCollectionCommand',
-        name: 'NOTES',
-        parentCollectionItemUuid: activeGoal.uuid,
+    commands.push(
+      buildAddNoteCommand({
+        collectionUuid,
+        noteText: readdNote,
+        noteType: 'READDED',
+        createdBy: practitionerName,
         assessmentUuid,
         user,
-      })
-
-      collectionUuid = createResult.collectionUuid
-    }
-
-    // Add the note with type READDED
-    commands.push({
-      type: 'AddCollectionItemCommand',
-      collectionUuid: collectionUuid!,
-      properties: wrapAll({
-        created_at: new Date().toISOString(),
-        type: 'READDED',
       }),
-      answers: wrapAll({
-        note: readdNote.trim(),
-        created_by: practitionerName,
-      }),
-      timeline: {
-        type: 'NOTE_ADDED',
-        data: {},
-      },
-      assessmentUuid,
-      user,
-    })
+    )
   }
 
   // Execute all commands in a single batch

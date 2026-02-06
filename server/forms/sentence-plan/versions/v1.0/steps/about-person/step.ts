@@ -10,11 +10,13 @@ export const aboutPersonStep = step({
     locals: {
       headerPageHeading: Format(`About %1`, CaseData.Forename),
       buttons: {
-        showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('handover')),
+        showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('OASYS')),
         showCreateGoalButton: true,
       },
     },
   },
+  // TODO: once this page is build, we need to add SentencePlanEffects.setNavigationReferrer('about') into onLoad/onAccess effects
+  //  and add it as a link for back button in 'create a goal' and 'view previous versions pages'
   blocks: [continueButton],
   onSubmission: [
     submitTransition({

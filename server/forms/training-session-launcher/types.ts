@@ -1,6 +1,7 @@
 import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
 import { YesNoNullOrNA } from '../../interfaces/handover-api/shared'
 import { TrainingScenarioFlag } from './constants'
+import { TrainingLauncherNotification } from './effects/types'
 import { ScenarioFieldKey, ScenarioValues, ResolvedScenario } from './scenarios'
 
 /**
@@ -80,6 +81,9 @@ export interface TrainingSessionLauncherData extends RandomizedFieldFlags {
 
   // Session creation
   generatedSessionId: string
+
+  // Notifications
+  notifications: TrainingLauncherNotification[]
 }
 
 /**
@@ -164,7 +168,9 @@ export interface TrainingLauncherPreferences {
 /**
  * Session data stored in the user's web session
  */
-export type TrainingSessionLauncherSession = Record<string, unknown>
+export interface TrainingSessionLauncherSession extends Record<string, unknown> {
+  notifications?: TrainingLauncherNotification[]
+}
 
 /**
  * Request state via context.getState()

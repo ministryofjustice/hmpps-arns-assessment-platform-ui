@@ -1,10 +1,36 @@
 {%- extends "partials/layout.njk" -%}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 
 {% block head %}
   {{ super() }}
   {% block pageStylesheets %}
     <link rel="stylesheet" href="{{ '/assets/css/forms/training-session-launcher/assets/form.css' | assetMap }}">
   {% endblock %}
+{% endblock %}
+
+{% block header %}
+  {{ super() }}
+  {% set isOnBrowsePage = step.path == '/browse' %}
+  {% set isOnCustomisePage = step.path == '/customise' %}
+  {% set isOnSessionsPage = step.path == '/sessions' %}
+  {% set isScenariosActive = isOnBrowsePage or isOnCustomisePage %}
+
+  {{ govukServiceNavigation({
+    serviceName: "Training",
+    serviceUrl: "#",
+    navigation: [
+      {
+        href: "/training-session-launcher/browse",
+        text: "Scenarios",
+        active: isScenariosActive
+      },
+      {
+        href: "/training-session-launcher/sessions",
+        text: "Your sessions",
+        active: isOnSessionsPage
+      }
+    ]
+  }) }}
 {% endblock %}
 
 {% block bodyEnd %}

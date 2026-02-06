@@ -1,4 +1,4 @@
-export type AuthSource = 'nomis' | 'delius' | 'external' | 'azuread' | 'handover'
+export type AuthSource = 'OASYS' | 'HMPPS_AUTH' | 'NOT_SPECIFIED' | 'EXTERNAL'
 
 /**
  * These are the details that all user types share.
@@ -22,7 +22,7 @@ export interface BaseUser {
  * to) and store it here, an example can be found in `hmpps-prisoner-profile`.
  */
 export interface PrisonUser extends BaseUser {
-  authSource: 'nomis'
+  authSource: 'HMPPS_AUTH'
   staffId: number
 }
 
@@ -31,7 +31,7 @@ export interface PrisonUser extends BaseUser {
  * HMPPS Auth automatically grants these users a `ROLE_PROBATION` role.
  */
 export interface ProbationUser extends BaseUser {
-  authSource: 'delius'
+  authSource: 'HMPPS_AUTH'
 }
 
 /**
@@ -40,7 +40,7 @@ export interface ProbationUser extends BaseUser {
  * services but have neither NOMIS nor nDelius access.
  */
 export interface ExternalUser extends BaseUser {
-  authSource: 'external'
+  authSource: 'EXTERNAL'
 }
 
 /**
@@ -53,7 +53,7 @@ export interface ExternalUser extends BaseUser {
  * and would have no user roles associated.
  */
 export interface AzureADUser extends BaseUser {
-  authSource: 'azuread'
+  authSource: 'HMPPS_AUTH'
 }
 
 /**
@@ -62,7 +62,7 @@ export interface AzureADUser extends BaseUser {
  * The Handover service handles the OAuth2 flow and provides user context.
  */
 export interface HandoverUser extends BaseUser {
-  authSource: 'handover'
+  authSource: 'OASYS'
 }
 
 export type HmppsUser = PrisonUser | ProbationUser | ExternalUser | AzureADUser | HandoverUser

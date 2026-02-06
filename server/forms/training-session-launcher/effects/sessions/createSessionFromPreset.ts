@@ -1,8 +1,9 @@
 import crypto from 'node:crypto'
+import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 import { getExcludedFields } from '../../flags/handlers'
 import { applyRandomization, getPresetById, getRandomizeFields, resolvePreset } from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session } from '../../types'
-import { TrainingSessionLauncherEffectsDeps } from '../types'
+import { TrainingSessionLauncherEffectsDeps, TrainingLauncherNotification } from '../types'
 import { createInCoordinatorAndUpdatePreferences } from './coordinatorHelpers'
 
 /**
@@ -120,4 +121,22 @@ async function saveSessionAndCreateInBackend(
 
   // Store the session ID for use by subsequent effects or redirects
   context.setData('generatedSessionId', session.id)
+
+  telemetry.trackEvent('TrainingSessionCreated', {
+    sessionId: session.id,
+    sessionName: session.name,
+    source: 'preset',
+  })
+
+  // Add success notification
+  const userSession = context.getSession()
+  userSession.notifications = userSession.notifications || []
+
+  const notification: TrainingLauncherNotification = {
+    type: 'success',
+    title: 'Session created',
+    message: `'${session.name}' session is ready. Generate a handover link to begin.`,
+    target: 'sessions',
+  }
+  userSession.notifications.push(notification)
 }

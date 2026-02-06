@@ -23,7 +23,7 @@ export const planStep = step({
       headerPageHeading: Format(`%1's plan`, CaseData.Forename),
       currentTab: Query('type'),
       buttons: {
-        showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('handover')),
+        showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('OASYS')),
         showCreateGoalButton: true,
         showAgreePlanButton: Data('latestAgreementStatus').not.match(
           Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
@@ -45,7 +45,10 @@ export const planStep = step({
   ],
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.loadNotifications('plan-overview')],
+      effects: [
+        SentencePlanEffects.loadNotifications('plan-overview'),
+        SentencePlanEffects.setNavigationReferrer('plan-overview'),
+      ],
       next: [
         redirect({
           when: Query('type').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),

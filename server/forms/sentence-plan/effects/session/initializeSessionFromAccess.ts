@@ -31,7 +31,7 @@ export const initializeSessionFromAccess = () => (context: SentencePlanContext) 
   // Build plan identifier based on access type
   let planIdentifier
 
-  if (accessDetails.accessType === 'handover' && handoverContext?.sentencePlanContext?.planId) {
+  if (accessDetails.accessType === 'OASYS' && handoverContext?.sentencePlanContext?.planId) {
     // Handover
     planIdentifier = {
       type: 'UUID' as const,

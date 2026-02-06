@@ -55,6 +55,8 @@ export const addStepsStep = step({
       effects: [
         SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.setActiveGoalContext(),
+        SentencePlanEffects.setAreaDataFromActiveGoal(),
+        SentencePlanEffects.loadAreaAssessmentInfo(),
         SentencePlanEffects.initializeStepEditSession(),
       ],
       next: [
@@ -88,6 +90,10 @@ export const addStepsStep = step({
       onValid: {
         effects: [SentencePlanEffects.saveStepEditSession()],
         next: [
+          redirect({
+            when: Data('navigationReferrer').match(Condition.Equals('update-goal-steps')),
+            goto: Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')),
+          }),
           redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
             goto: '../../plan/overview?type=future',

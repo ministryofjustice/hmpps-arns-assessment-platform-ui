@@ -4,9 +4,9 @@ import { CommandError } from '../errors/aap-api/CommandError'
 import { QueryError } from '../errors/aap-api/QueryError'
 import { CommandsResponse, QueriesResponse } from '../interfaces/aap-api/response'
 import { CreateAssessmentCommand, UpdateAssessmentAnswersCommand } from '../interfaces/aap-api/command'
-import { AssessmentVersionQuery, AssessmentTimelineQuery } from '../interfaces/aap-api/query'
+import { AssessmentVersionQuery, TimelineQuery } from '../interfaces/aap-api/query'
 import { CreateAssessmentCommandResult, CommandResult, CommandResults } from '../interfaces/aap-api/commandResult'
-import { AssessmentVersionQueryResult, AssessmentTimelineQueryResult } from '../interfaces/aap-api/queryResult'
+import { AssessmentVersionQueryResult, TimelineQueryResult } from '../interfaces/aap-api/queryResult'
 import { User } from '../interfaces/user'
 
 jest.mock('../config', () => ({
@@ -35,6 +35,7 @@ describe('AssessmentPlatformApiClient', () => {
   const mockUser: User = {
     id: 'testuser',
     name: 'Test User',
+    authSource: 'HMPPS_AUTH',
   }
 
   beforeEach(() => {
@@ -256,8 +257,8 @@ describe('AssessmentPlatformApiClient', () => {
       assessmentIdentifier: { type: 'UUID', uuid: 'uuid-123' },
     }
 
-    const query2: AssessmentTimelineQuery = {
-      type: 'AssessmentTimelineQuery',
+    const query2: TimelineQuery = {
+      type: 'TimelineQuery',
       user: mockUser,
       assessmentIdentifier: { type: 'UUID', uuid: 'uuid-123' },
     }
@@ -279,8 +280,8 @@ describe('AssessmentPlatformApiClient', () => {
         identifiers: {},
       }
 
-      const result2: AssessmentTimelineQueryResult = {
-        type: 'AssessmentTimelineQueryResult',
+      const result2: TimelineQueryResult = {
+        type: 'TimelineQueryResult',
         timeline: [],
       }
 
@@ -322,7 +323,7 @@ describe('AssessmentPlatformApiClient', () => {
       const response: QueriesResponse = {
         queries: [
           { request: query1, result: result1 },
-          { request: query2, result: undefined as unknown as AssessmentTimelineQueryResult },
+          { request: query2, result: undefined as unknown as TimelineQueryResult },
         ],
       }
 
@@ -335,7 +336,7 @@ describe('AssessmentPlatformApiClient', () => {
         await client.executeQueries(query1, query2)
       } catch (error) {
         expect(error).toBeInstanceOf(QueryError)
-        expect((error as QueryError).queryType).toBe('AssessmentTimelineQuery')
+        expect((error as QueryError).queryType).toBe('TimelineQuery')
         expect((error as QueryError).resultIndex).toBe(1)
       }
     })

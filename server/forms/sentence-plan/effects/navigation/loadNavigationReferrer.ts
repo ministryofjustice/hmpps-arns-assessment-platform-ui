@@ -13,9 +13,6 @@ export const loadNavigationReferrer = () => async (context: SentencePlanContext)
   const session = context.getSession()
   const referrer: string | null = session.navigationReferrer || null
 
-  // Clear from session (single-use)
-  delete session.navigationReferrer
-
   // Make available for backlink logic
   context.setData('navigationReferrer', referrer)
 }

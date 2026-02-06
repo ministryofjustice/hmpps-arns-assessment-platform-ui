@@ -1,5 +1,4 @@
-// Require app insights before anything else to allow for instrumentation of bunyan and express
-import 'applicationinsights'
+import './server/utils/azureAppInsights'
 import cluster from 'cluster'
 import os from 'os'
 import logger from './logger'

@@ -46,7 +46,7 @@ const confirmButton = block<GovUKButton>({
 
 const returnToOasysLink = block<HtmlBlock>({
   variant: 'html',
-  hidden: Data('accessDetails.accessType').not.match(Condition.Equals('handover')),
+  hidden: Data('accessDetails.accessType').not.match(Condition.Equals('OASYS')),
   content: Format(
     '<a href="%1" class="govuk-link govuk-link--no-visited-state">Return to OASys</a>',
     Data('accessDetails.oasysRedirectUrl'),

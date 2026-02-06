@@ -7,6 +7,7 @@ import {
   SentencePlanEffectsDeps,
 } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
+import { getRequiredEffectContext } from '../goals/goalUtils'
 
 /**
  * Add a new plan agreement record to the PLAN_AGREEMENTS collection
@@ -27,22 +28,13 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
  * - plan_agreement_notes: Optional notes
  */
 export const updatePlanAgreementStatus = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  const user = context.getState('user')
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'updatePlanAgreementStatus')
   const session = context.getSession()
-  const assessmentUuid = context.getData('assessmentUuid')
   const agreementAnswer = context.getAnswer('plan_agreement_question') as string
-
-  if (!user) {
-    throw new InternalServerError('User is required to update plan agreement status')
-  }
 
   // Use practitioner display name from session (populated from handover context),
   // falling back to user.name for HMPPS Auth users
   const practitionerName = session.practitionerDetails?.displayName || user.name
-
-  if (!assessmentUuid) {
-    throw new InternalServerError('Assessment UUID is required to update plan agreement status')
-  }
 
   if (!agreementAnswer) {
     throw new InternalServerError('Agreement answer is required to update plan agreement status')

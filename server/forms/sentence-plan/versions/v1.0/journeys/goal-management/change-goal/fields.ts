@@ -4,7 +4,7 @@ import { GovUKButton } from '@form-engine-govuk-components/components/button/gov
 import { GovUKTextInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { AccessibleAutocomplete } from '../../../../../components'
+import { AccessibleAutocomplete, AssessmentInfoDetails } from '../../../../../components'
 import { CaseData } from '../../../constants'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 
@@ -15,6 +15,13 @@ const pageHeading = HtmlBlock({
     Data('activeGoal.areaOfNeedLabel'),
     CaseData.Forename,
   ),
+})
+
+const assessmentInfoDetails = AssessmentInfoDetails({
+  personName: CaseData.Forename,
+  areaName: Data('currentAreaOfNeed').path('text'),
+  assessmentData: Data('currentAreaAssessment'),
+  status: Data('currentAreaAssessmentStatus'),
 })
 
 const goalTitle = block<AccessibleAutocomplete>({
@@ -48,6 +55,7 @@ export const pageLayout = TemplateWrapper({
   template: `
     <div>
       {{slot:pageHeading}}
+      {{slot:assessmentInfoDetails}}
       {{slot:goalTitle}}
       {{slot:isRelatedToOtherAreas}}
       {{slot:canStartNow}}
@@ -56,6 +64,7 @@ export const pageLayout = TemplateWrapper({
   `,
   slots: {
     pageHeading: [pageHeading],
+    assessmentInfoDetails: [assessmentInfoDetails],
     goalTitle: [goalTitle],
     isRelatedToOtherAreas: [isRelatedToOtherAreas],
     canStartNow: [canStartNow],
