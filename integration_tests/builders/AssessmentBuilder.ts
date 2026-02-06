@@ -32,6 +32,19 @@ function generateCrn(): string {
   return `${letter}${digits}`
 }
 
+/**
+ * Generate a unique user ID to avoid conflicts in parallel tests.
+ * Uses timestamp + random suffix for uniqueness.
+ */
+function generateUserId(): string {
+  const timestamp = Date.now()
+  const random = Math.floor(Math.random() * 10000)
+    .toString()
+    .padStart(4, '0')
+
+  return `e2e-test-${timestamp}-${random}`
+}
+
 type BuilderMode = 'fresh' | 'extend'
 
 /**
@@ -89,7 +102,8 @@ export class AssessmentBuilderInstance {
     collections: [],
   }
 
-  private user: User = { id: 'e2e-test', name: 'E2E_TEST', authSource: 'HMPPS_AUTH' }
+  // Generate unique user ID to avoid "duplicate key" errors in parallel tests
+  private user: User = { id: generateUserId(), name: 'E2E_TEST', authSource: 'HMPPS_AUTH' }
 
   constructor(client: TestAapApiClient, mode: BuilderMode, existingAssessmentUuid?: string) {
     this.client = client
