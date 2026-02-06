@@ -177,7 +177,7 @@ services:
       FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
 
   api:
-    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:2026-02-03.346.3c702fc
+    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
     networks:
       - hmpps
     ports:
