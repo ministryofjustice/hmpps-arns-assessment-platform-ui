@@ -75,6 +75,18 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
         })
         break
 
+      case 'GOAL_UPDATED':
+        entries.push({
+          type: 'goal_updated',
+          uuid: `updated-${customData.goalUuid}-${item.timestamp}`,
+          date,
+          goalUuid: customData.goalUuid,
+          goalTitle: customData.goalTitle,
+          updatedBy: customData.updatedBy,
+          notes: customData.notes,
+        })
+        break
+
       default:
         break
     }
