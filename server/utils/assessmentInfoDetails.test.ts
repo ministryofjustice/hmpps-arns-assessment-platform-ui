@@ -147,6 +147,11 @@ describe('Assessment Info Details Component', () => {
       const data = createAssessmentArea({ score: 4, upperBound: 6 })
       expect(hasAnyData(data)).toBe(true)
     })
+
+    it('returns true when section is marked complete even if all indicators are null', () => {
+      const data = createAssessmentArea({ isAssessmentSectionComplete: true })
+      expect(hasAnyData(data)).toBe(true)
+    })
   })
 
   describe('buildParams', () => {

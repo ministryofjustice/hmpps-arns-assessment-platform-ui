@@ -14,12 +14,28 @@ import { PlanType } from './oasysCreate'
 export type OasysEquivalent = Record<string, string | string[]>
 
 /**
+ * SAN assessment answer - the raw form answer structure from SAN.
+ * Single answers use `value`, multi-select uses `values`, repeating groups use `collection`.
+ */
+export interface AnswerDto {
+  value?: string
+  values?: string[]
+  collection?: Record<string, AnswerDto>[]
+}
+
+/**
+ * SAN assessment data - raw form answers keyed by SAN field codes.
+ * Keys follow the pattern: {area}_section_complete, {area}_practitioner_analysis_*, {area}_changes
+ */
+export type SanAssessmentData = Record<string, AnswerDto>
+
+/**
  * Response from Coordinator API: GET /entity/{entityUuid}/ASSESSMENT
  */
 export interface EntityAssessmentResponse {
   sanAssessmentId: string
   sanAssessmentVersion: number
-  sanAssessmentData: Record<string, unknown>
+  sanAssessmentData: SanAssessmentData
   sanOasysEquivalent: OasysEquivalent
   lastUpdatedTimestampSAN: string
   sentencePlanId: string
