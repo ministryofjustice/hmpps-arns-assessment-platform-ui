@@ -4,6 +4,7 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import {
   getRequiredEffectContext,
+  getPractitionerName,
   calculateTargetDate,
   determineGoalStatus,
   buildGoalProperties,
@@ -35,6 +36,8 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
     throw new InternalServerError('Active goal is required for updateActiveGoal')
   }
 
+  const practitionerName = getPractitionerName(context, user)
+
   // Get form answers
   const goalTitle = context.getAnswer('goal_title')
   const isRelatedToOtherAreas = context.getAnswer('is_related_to_other_areas')
@@ -62,7 +65,11 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
       removed: answersToRemove,
       timeline: {
         type: 'GOAL_UPDATED',
-        data: {},
+        data: {
+          goalUuid: activeGoal.uuid,
+          goalTitle: goalTitle || activeGoal.title,
+          updatedBy: practitionerName,
+        },
       },
       assessmentUuid,
       user,
