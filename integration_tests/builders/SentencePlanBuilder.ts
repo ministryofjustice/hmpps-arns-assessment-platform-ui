@@ -404,6 +404,16 @@ export class SentencePlanBuilderInstance {
             reason: note.note?.trim() || undefined,
           },
         }
+      case 'UPDATED':
+        return {
+          type: 'GOAL_UPDATED',
+          data: {
+            goalUuid,
+            goalTitle: goalConfig.title,
+            updatedBy: note.createdBy || 'E2E Test',
+            notes: note.note?.trim() || undefined,
+          },
+        }
       default:
         return undefined
     }
