@@ -119,14 +119,24 @@ export const planCreatedMessage = HtmlBlock({
   ),
   content: when(
     Data('latestAgreementStatus').match(
-      Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']),
+      Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE', 'UPDATED_AGREED']),
     ),
   )
     .then(
-      Format(
-        '<p class="govuk-body">Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
-        Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
-      ),
+      when(Data('latestAgreementStatus').match(Condition.Equals('UPDATED_AGREED')))
+        .then(
+          Format(
+            '<p class="govuk-body">%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
+            CaseData.Forename,
+            Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
+          ),
+        )
+        .else(
+          Format(
+            '<p class="govuk-body">Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
+            Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
+          ),
+        ),
     )
     .else(
       Format(

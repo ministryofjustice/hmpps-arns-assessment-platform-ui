@@ -277,7 +277,7 @@ export const agreementHistory = CollectionBlock({
 export const updateAgreementLink = HtmlBlock({
   hidden: Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER')),
   content: Format(
-    '<p class="govuk-body"><a href="#" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a></p>',
+    '<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a></p>',
     CaseData.Forename,
   ),
 })
