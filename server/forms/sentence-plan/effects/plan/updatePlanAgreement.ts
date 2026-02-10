@@ -12,7 +12,7 @@ import { getRequiredEffectContext } from '../goals/goalUtils'
 export const updatePlanAgreement = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const { user, assessmentUuid } = getRequiredEffectContext(context, 'updatePlanAgreement')
   const session = context.getSession()
-  const agreementAnswer = context.getAnswer('plan_agreement_question') as string
+  const agreementAnswer = context.getAnswer('update_plan_agreement_question') as string
 
   // Use practitioner display name from session (populated from handover context),
   // falling back to user.name for HMPPS Auth users
@@ -60,7 +60,7 @@ export const updatePlanAgreement = (deps: SentencePlanEffectsDeps) => async (con
   }
 
   // Add conditional details if present
-  const detailsNo = context.getAnswer('plan_agreement_details_no') as string | undefined
+  const detailsNo = context.getAnswer('update_plan_agreement_details_no') as string | undefined
   if (detailsNo) {
     answers.details_no = detailsNo
   }

@@ -1,5 +1,4 @@
 import { Answer, block, field, Format, Self, validation } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKRadioInput, GovUKTextareaInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
@@ -7,9 +6,9 @@ import { CaseData } from '../../../../constants'
 
 const detailsForNoField = field<GovUKTextareaInput>({
   variant: 'govukTextarea',
-  code: 'plan_agreement_details_no',
+  code: 'update_plan_agreement_details_no',
   label: 'Enter details',
-  dependent: Answer('plan_agreement_question').match(Condition.Equals('no')),
+  dependent: Answer('update_plan_agreement_question').match(Condition.Equals('no')),
   validate: [
     validation({
       when: Self().not.match(Condition.IsRequired()),
@@ -20,7 +19,7 @@ const detailsForNoField = field<GovUKTextareaInput>({
 
 export const updatePlanAgreementQuestion = field<GovUKRadioInput>({
   variant: 'govukRadioInput',
-  code: 'plan_agreement_question',
+  code: 'update_plan_agreement_question',
   fieldset: {
     legend: {
       text: Format('Does %1 agree to their plan?', CaseData.Forename),
