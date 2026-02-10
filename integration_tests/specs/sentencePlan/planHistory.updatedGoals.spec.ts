@@ -52,11 +52,6 @@ test.describe('Plan History - Updated Goals', () => {
       - paragraph:
         - link "View latest version":
           - /url: /goal/
-      - separator
-      - paragraph:
-        - strong: Plan agreed
-        - text: /Test Practitioner and Test/
-      - paragraph: Test agreed to this plan.
     `)
   })
 
@@ -96,22 +91,12 @@ test.describe('Plan History - Updated Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
-      - separator
-      - paragraph:
-        - strong: Goal updated
-        - text: /Jane Smith/
       - paragraph:
         - strong: I will maintain my current accommodation
       - paragraph: Buster has taken steps to maintain his accommodation.
       - paragraph:
         - link "View latest version":
           - /url: /goal/
-      - separator
-      - paragraph:
-        - strong: Plan agreed
-        - text: /Test Practitioner and Test/
-      - paragraph: Test agreed to this plan.
     `)
   })
 
@@ -168,11 +153,6 @@ test.describe('Plan History - Updated Goals', () => {
       - paragraph:
         - link "View latest version":
           - /url: /goal/
-      - separator
-      - paragraph:
-        - strong: Plan agreed
-        - text: /Test Practitioner and Test/
-      - paragraph: Test agreed to this plan.
     `)
   })
 
@@ -231,11 +211,6 @@ test.describe('Plan History - Updated Goals', () => {
       - paragraph:
         - link "View latest version":
           - /url: /goal/
-      - separator
-      - paragraph:
-        - strong: Plan agreed
-        - text: /Test Practitioner and Test/
-      - paragraph: Test agreed to this plan.
     `)
   })
 })
