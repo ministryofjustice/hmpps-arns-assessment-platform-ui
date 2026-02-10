@@ -14,7 +14,7 @@ const config = {
   // keep your existing bits:
   collectCoverageFrom: ['{server,packages}/**/*.{ts,js,jsx,mjs}', '!server/forms/**'],
   testMatch: ['<rootDir>/(server|packages|job)/**/?(*.)(cy|test).{ts,js,jsx,mjs}'],
-  testPathIgnorePatterns: ['/node_modules/', '/server/forms/'],
+  testPathIgnorePatterns: ['/node_modules/'],
   reporters: [
     'default',
     ['jest-junit', { outputDirectory: 'test_results/jest/' }],

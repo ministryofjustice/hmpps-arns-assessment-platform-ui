@@ -125,6 +125,7 @@ integration_tests/screenshots/
 */*.iml
 **/Chart.lock
 **/.DS_Store
+pacts/
 
 # LocalStack volume data
 volume/
