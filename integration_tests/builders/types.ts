@@ -1,5 +1,5 @@
-import { Answers, Properties } from '../../server/interfaces/aap-api/dataModel'
-import { GoalStatus, StepStatus, AreaOfNeedSlug } from '../../server/forms/sentence-plan/effects/types'
+import { Answers, Properties } from '@server/interfaces/aap-api/dataModel'
+import { GoalStatus, StepStatus, AreaOfNeedSlug } from '@server/forms/sentence-plan/effects/types'
 
 export { GoalStatus, StepStatus, AreaOfNeedSlug }
 
@@ -42,10 +42,11 @@ export interface StepConfig {
  * - ACHIEVED: Created when a goal is marked as achieved (optional notes about how it helped)
  * - REMOVED: Created when a goal is removed from the plan
  * - READDED: Created when a previously removed goal is added back
+ * - UPDATED: Created when a goal's steps or notes are updated
  * - PROGRESS: General progress updates on active goals
  */
 export interface NoteConfig {
-  type: 'ACHIEVED' | 'REMOVED' | 'READDED' | 'PROGRESS'
+  type: 'ACHIEVED' | 'REMOVED' | 'READDED' | 'UPDATED' | 'PROGRESS'
   note: string
   createdBy?: string
 }
