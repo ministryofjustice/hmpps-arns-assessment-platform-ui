@@ -49,9 +49,12 @@ e2e: ## Run Playwright tests locally (dev environment must be running).
 e2e-ui: ## Run Playwright tests with UI mode (dev environment must be running).
 	npx playwright test --ui
 
+SHARD ?=
+export SHARD
+
 e2e-ci: ## Run Playwright tests in Docker container (for CI).
 	@make install-node-modules
-	docker compose $(CI_COMPOSE_FILES) up $(SERVICE_NAME) --wait && \
+	docker compose $(CI_COMPOSE_FILES) up $(SERVICE_NAME) --wait $(if $(filter local,$(APP_VERSION)),--build) && \
 	docker compose $(CI_COMPOSE_FILES) run --rm playwright
 
 lint: ## Runs the linter.

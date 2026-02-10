@@ -53,9 +53,22 @@ jobs:
 
   e2e_test:
     needs: [ build_docker ]
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
     uses: ./.github/workflows/e2e_test.yml
     with:
       app_version: ${{ needs.build_docker.outputs.app_version }}
+      shard: ${{ matrix.shard }}
+      total_shards: 4
+
+  e2e_merge_reports:
+    name: Merge e2e test reports
+    if: ${{ !cancelled() }}
+    needs: [e2e_test]
+    uses: ./.github/workflows/e2e_merge_reports.yml
+    secrets: inherit
 
   publish-test-results:
     name: "Publish Tests Results"
@@ -83,7 +96,8 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           path: artifacts
-          pattern: test_results
+          pattern: test_results-*
+          merge-multiple: true
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@27d65e188ec43221b20d26de30f4892fad91df2f # v2.22.0
