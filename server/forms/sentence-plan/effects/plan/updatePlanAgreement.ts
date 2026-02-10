@@ -1,0 +1,86 @@
+import { InternalServerError } from 'http-errors'
+import {
+  AgreementStatus,
+  PlanAgreementAnswers,
+  PlanAgreementProperties,
+  SentencePlanContext,
+  SentencePlanEffectsDeps,
+} from '../types'
+import { wrapAll } from '../../../../data/aap-api/wrappers'
+import { getRequiredEffectContext } from '../goals/goalUtils'
+
+export const updatePlanAgreement = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
+  const { user, assessmentUuid } = getRequiredEffectContext(context, 'updatePlanAgreement')
+  const session = context.getSession()
+  const agreementAnswer = context.getAnswer('plan_agreement_question') as string
+
+  // Use practitioner display name from session (populated from handover context),
+  // falling back to user.name for HMPPS Auth users
+  const practitionerName = session.practitionerDetails?.displayName || user.name
+
+  if (!agreementAnswer) {
+    throw new InternalServerError('Agreement answer is required to update plan agreement status')
+  }
+
+  // Map the form answer to the status value
+  const statusMap: Record<string, AgreementStatus> = {
+    yes: 'UPDATED_AGREED',
+    no: 'UPDATED_DO_NOT_AGREE',
+  }
+
+  const agreementStatus = statusMap[agreementAnswer]
+
+  if (!agreementStatus) {
+    throw new InternalServerError(`Invalid agreement answer: ${agreementAnswer}`)
+  }
+
+  // Get or create PLAN_AGREEMENTS collection
+  let planAgreementsCollectionUuid = context.getData('planAgreementsCollectionUuid')
+
+  if (!planAgreementsCollectionUuid) {
+    const createResult = await deps.api.executeCommand({
+      type: 'CreateCollectionCommand',
+      name: 'PLAN_AGREEMENTS',
+      assessmentUuid,
+      user,
+    })
+
+    planAgreementsCollectionUuid = createResult.collectionUuid
+  }
+
+  // Build properties
+  const properties: PlanAgreementProperties = {
+    status: agreementStatus,
+    status_date: new Date().toISOString(),
+  }
+
+  // Build answers
+  const answers: PlanAgreementAnswers = {
+    agreement_question: agreementAnswer,
+  }
+
+  // Add conditional details if present
+  const detailsNo = context.getAnswer('plan_agreement_details_no') as string | undefined
+  if (detailsNo) {
+    answers.details_no = detailsNo
+  }
+
+  // Add created_by from practitioner details (same pattern as notes)
+  if (practitionerName) {
+    answers.created_by = practitionerName
+  }
+
+  // Add the agreement record to the collection
+  await deps.api.executeCommand({
+    type: 'AddCollectionItemCommand',
+    collectionUuid: planAgreementsCollectionUuid,
+    properties: wrapAll(properties),
+    answers: wrapAll(answers),
+    timeline: {
+      type: 'PLAN_AGREEMENT_STATUS_CHANGED',
+      data: { status: agreementStatus },
+    },
+    assessmentUuid,
+    user,
+  })
+}
