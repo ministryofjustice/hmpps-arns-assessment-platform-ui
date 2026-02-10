@@ -178,8 +178,35 @@ const goalReaddedEntryContent = Format(
 )
 
 /**
+ * Renders a goal updated history entry.
+ * Shows: heading (bold), goal title (bold), optional notes, and view latest version link.
+ * Used for: Step status updates and progress note additions.
+ */
+const goalUpdatedEntryContent = Format(
+  `<div class="govuk-!-margin-bottom-6">
+    <p class="govuk-body"><strong>Goal updated</strong> on %1 by %2</p>
+    <p class="govuk-body"><strong>%3</strong></p>
+    %4
+    <p class="govuk-body"><a href="%5" class="govuk-link govuk-link--no-visited-state">View latest version</a></p>
+  </div>`,
+  // %1: Date
+  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+  // %2: Updated by
+  when(Item().path('updatedBy').match(Condition.IsRequired())).then(Item().path('updatedBy')).else('Unknown'),
+  // %3: Goal title
+  Item().path('goalTitle'),
+  // %4: Optional notes
+  when(Item().path('notes').match(Condition.IsRequired()))
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes')))
+    .else(''),
+  // %5: View latest version link (goes to update-goal-steps page)
+  Format('../goal/%1/update-goal-steps', Item().path('goalUuid')),
+)
+
+/**
  * Displays the unified plan history as a list of entries.
- * Combines plan agreement events, goal achieved events, goal removed events, and goal re-added events in chronological order.
+ * Combines plan agreement events, goal achieved events, goal removed events, goal re-added and goal-updated events
+ * in chronological order.
  */
 export const agreementHistory = CollectionBlock({
   collection: Data('planHistoryEntries').each(
@@ -200,7 +227,11 @@ export const agreementHistory = CollectionBlock({
                 .else(
                   when(Item().path('type').match(Condition.Equals('goal_readded')))
                     .then(goalReaddedEntryContent)
-                    .else(agreementEntryContent),
+                    .else(
+                      when(Item().path('type').match(Condition.Equals('goal_updated')))
+                        .then(goalUpdatedEntryContent)
+                        .else(agreementEntryContent),
+                    ),
                 ),
             ),
         ),
