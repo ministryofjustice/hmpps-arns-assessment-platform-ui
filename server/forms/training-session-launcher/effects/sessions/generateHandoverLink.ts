@@ -1,6 +1,6 @@
 import config from '../../../../config'
 import { CreateHandoverLinkRequest } from '../../../../interfaces/handover-api/request'
-import { CriminogenicNeedsData, HandoverSubjectDetails } from '../../../../interfaces/handover-api/shared'
+import { CriminogenicNeedsData, HandoverSubjectDetails, YesNoNull } from '../../../../interfaces/handover-api/shared'
 import { resolveHandoverConfig } from '../../flags/handlers'
 import { ScenarioValues } from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session, TargetApplication } from '../../types'
@@ -35,13 +35,23 @@ const DEFAULT_PREFERENCES: TrainingLauncherPreferences = {
   sessions: [],
 }
 
+interface SubjectDetails {
+  crn: string
+  givenName: string
+  familyName: string
+  gender: string
+  dateOfBirth: string
+  location: string
+  sexuallyMotivatedOffenceHistory: YesNoNull
+  [key: string]: any
+}
+
 /**
  * Build HandoverSubjectDetails from session values
  */
 function buildSubjectDetails(values: ScenarioValues): HandoverSubjectDetails {
-  return {
+  const subjectDetails: SubjectDetails = {
     crn: values.crn,
-    pnc: values.pnc,
     givenName: values.givenName,
     familyName: values.familyName,
     gender: values.gender,
@@ -49,6 +59,10 @@ function buildSubjectDetails(values: ScenarioValues): HandoverSubjectDetails {
     location: values.location,
     sexuallyMotivatedOffenceHistory: values.sexuallyMotivatedOffenceHistory,
   }
+  if (values.pnc) {
+    subjectDetails.pnc = values.pnc
+  }
+  return subjectDetails as HandoverSubjectDetails
 }
 
 /**
