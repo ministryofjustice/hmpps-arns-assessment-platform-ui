@@ -8,6 +8,7 @@ import { CollectionBlock } from '@form-engine/registry/components/collectionBloc
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
+import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
 
 const isReadOnly = Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY'))
 
@@ -112,7 +113,7 @@ const removedGoalsCount = Data('goals')
 export const planCreatedMessage = HtmlBlock({
   hidden: or(
     Data('latestAgreementStatus').not.match(
-      Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER', 'UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']),
+      Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
     ),
     // In READ_ONLY mode, hide this block for COULD_NOT_ANSWER so we do not show the "Update agreement" action link.
     and(isReadOnly, Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))),
@@ -284,13 +285,7 @@ export const goalsSection = TemplateWrapper({
                     TemplateWrapper({
                       // Before any agreement status exists, render the draft card variant.
                       hidden: Data('latestAgreementStatus').match(
-                        Condition.Array.IsIn([
-                          'AGREED',
-                          'DO_NOT_AGREE',
-                          'COULD_NOT_ANSWER',
-                          'UPDATED_AGREED',
-                          'UPDATED_DO_NOT_AGREE',
-                        ]),
+                        Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
                       ),
                       template: '{{slot:draftCard}}',
                       slots: {
@@ -336,13 +331,7 @@ export const goalsSection = TemplateWrapper({
                     TemplateWrapper({
                       // Once an agreement status exists (including "could not answer"), use the agreed variant.
                       hidden: Data('latestAgreementStatus').not.match(
-                        Condition.Array.IsIn([
-                          'AGREED',
-                          'DO_NOT_AGREE',
-                          'COULD_NOT_ANSWER',
-                          'UPDATED_AGREED',
-                          'UPDATED_DO_NOT_AGREE',
-                        ]),
+                        Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
                       ),
                       template: '{{slot:agreedCard}}',
                       slots: {

@@ -9,6 +9,11 @@ import {
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { getRequiredEffectContext } from '../goals/goalUtils'
 
+/**
+ * Updates the plan agreement status by adding a new agreement record to the PLAN_AGREEMENTS collection.
+ * Used when re-agreeing to a plan after changes, producing UPDATED_AGREED or UPDATED_DO_NOT_AGREE statuses.
+ */
+
 export const updatePlanAgreement = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const { user, assessmentUuid } = getRequiredEffectContext(context, 'updatePlanAgreement')
   const session = context.getSession()
@@ -66,9 +71,7 @@ export const updatePlanAgreement = (deps: SentencePlanEffectsDeps) => async (con
   }
 
   // Add created_by from practitioner details (same pattern as notes)
-  if (practitionerName) {
-    answers.created_by = practitionerName
-  }
+  answers.created_by = practitionerName
 
   // Add the agreement record to the collection
   await deps.api.executeCommand({
