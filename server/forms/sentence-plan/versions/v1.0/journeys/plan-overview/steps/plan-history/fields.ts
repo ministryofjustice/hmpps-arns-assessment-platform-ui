@@ -206,7 +206,7 @@ const goalUpdatedEntryContent = Format(
 /**
  * Displays the unified plan history as a list of entries.
  * Combines plan agreement events, goal achieved events, goal removed events, goal re-added and goal-updated events
- * in chronological order.ß
+ * in chronological order.
  */
 export const agreementHistory = CollectionBlock({
   collection: Data('planHistoryEntries').each(
