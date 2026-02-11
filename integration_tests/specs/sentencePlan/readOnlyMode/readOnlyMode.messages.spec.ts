@@ -6,7 +6,7 @@ import { navigateToSentencePlan } from '../sentencePlanUtils'
 
 test.describe('READ_ONLY Access Mode', () => {
   test.describe('Plan Created Message', () => {
-    test('shows plan creation date without View plan history link', async ({
+    test('shows plan creation date with View plan history link', async ({
       page,
       createSession,
       sentencePlanBuilder,
@@ -23,9 +23,9 @@ test.describe('READ_ONLY Access Mode', () => {
       const planCreatedMessage = page.getByText(/Plan created on/i)
       await expect(planCreatedMessage).toBeVisible()
 
-      // The "View plan history" link should NOT be present in the plan created message
+      // The "View plan history" link should be present in the plan created message
       const viewHistoryLink = page.getByRole('link', { name: /View plan history/i })
-      await expect(viewHistoryLink).not.toBeVisible()
+      await expect(viewHistoryLink).toBeVisible()
     })
   })
 

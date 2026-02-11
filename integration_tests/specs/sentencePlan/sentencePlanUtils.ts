@@ -17,18 +17,36 @@ const v1Path = '/v1.0'
 const oasysAccessStepPath = '/oasys'
 const crnAccessStepPath = '/crn'
 const privacyStepPath = '/privacy'
+const aboutPersonStepPath = '/about-person'
 const planOverviewJourneyPath = '/plan'
 const planStepPath = '/overview'
+const agreePlanStepPath = '/agree-plan'
+const updateAgreePlanStepPath = '/update-agree-plan'
+const reorderGoalStepPath = '/reorder-goal'
 const goalManagementJourneyPath = '/goal'
 const planHistoryPath = '/plan-history'
+const previousVersionsStepPath = '/previous-versions'
 
 export const sentencePlanV1URLs = {
   OASYS_ENTRY_POINT: `${accessFormPath}/sentence-plan${oasysAccessStepPath}`, // '/access/sentence-plan/oasys'
   CRN_ENTRY_POINT: `${accessFormPath}/sentence-plan${crnAccessStepPath}`, // '/access/sentence-plan/crn/:crn'
   PRIVACY_SCREEN: `${sentencePlanFormPath}/${privacyStepPath}`, // '/sentence-plan/privacy'
+  ABOUT_PERSON: sentencePlanFormPath + v1Path + aboutPersonStepPath, // '/sentence-plan' + '/v1.0' + '/about-person'
   PLAN_OVERVIEW: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/overview'
+  PLAN_AGREE: sentencePlanFormPath + v1Path + planOverviewJourneyPath + agreePlanStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/agree-plan'
+  PLAN_UPDATE_AGREE: sentencePlanFormPath + v1Path + planOverviewJourneyPath + updateAgreePlanStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/update-agree-plan'
+  PLAN_REORDER_GOAL: sentencePlanFormPath + v1Path + planOverviewJourneyPath + reorderGoalStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/reorder-goal'
   PLAN_HISTORY: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planHistoryPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/plan-history'
+  PLAN_HISTORY_PREVIOUS_VERSIONS: sentencePlanFormPath + v1Path + planHistoryPath + previousVersionsStepPath, // '/sentence-plan' + '/v1.0' + '/plan-history' + '/previous-versions'
   GOAL_MANAGEMENT_ROOT_PATH: sentencePlanFormPath + v1Path + goalManagementJourneyPath, // '/sentence-plan' + '/v1.0' + '/goal'
+}
+
+export const sentencePlanV1UrlBuilders = {
+  goalChange: (goalUuid: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/change-goal`,
+  goalUpdateSteps: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/update-goal-steps`,
+  planReorderGoal: (goalUuid: string, direction: 'up' | 'down', status: 'ACTIVE' | 'FUTURE' | 'ACHIEVED' | 'REMOVED') =>
+    `${sentencePlanV1URLs.PLAN_REORDER_GOAL}?goalUuid=${goalUuid}&direction=${direction}&status=${status}`,
 }
 
 // Page titles for sentence plan - matches step.title or dynamicTitle values

@@ -123,19 +123,10 @@ export const planCreatedMessage = HtmlBlock({
     ),
   )
     .then(
-      when(isReadOnly)
-        .then(
-          Format(
-            '<p class="govuk-body">Plan created on %1.</p>',
-            Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
-          ),
-        )
-        .else(
-          Format(
-            '<p class="govuk-body">Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
-            Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
-          ),
-        ),
+      Format(
+        '<p class="govuk-body">Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
+        Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
+      ),
     )
     .else(
       Format(
@@ -387,7 +378,7 @@ export const blankPlanOverviewContentReadOnly = HtmlBlock({
   hidden: or(not(isReadOnly), hideBlankPlanOverviewContent),
   content: Format(
     `<div id="blank-plan-content">
-      <p class="govuk-body"> %1 does not have any goals to work on now.</p>
+      <p class="govuk-body">%1 does not have any goals to work on now.</p>
     </div>`,
     CaseData.Forename,
   ),
@@ -398,7 +389,7 @@ export const blankPlanOverviewContent = HtmlBlock({
   content: Format(
     `<div id="blank-plan-content" class="govuk-form-group %2">
       %3
-      <p class="govuk-body govuk-!-display-none-print"> %1 does not have any goals to work on now. You can either:</p>
+      <p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can either:</p>
       <ul class="govuk-list govuk-list--bullet govuk-!-display-none-print">
         <li><a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a></li>
         <li><a href="../about-person" class="govuk-link govuk-link--no-visited-state">view information from %1's assessment</a></li>
