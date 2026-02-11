@@ -35,22 +35,11 @@ const DEFAULT_PREFERENCES: TrainingLauncherPreferences = {
   sessions: [],
 }
 
-interface SubjectDetails {
-  crn: string
-  givenName: string
-  familyName: string
-  gender: string
-  dateOfBirth: string
-  location: string
-  sexuallyMotivatedOffenceHistory: YesNoNull
-  [key: string]: any
-}
-
 /**
  * Build HandoverSubjectDetails from session values
  */
 function buildSubjectDetails(values: ScenarioValues): HandoverSubjectDetails {
-  const subjectDetails: SubjectDetails = {
+  const subjectDetails: HandoverSubjectDetails = {
     crn: values.crn,
     givenName: values.givenName,
     familyName: values.familyName,
@@ -62,7 +51,7 @@ function buildSubjectDetails(values: ScenarioValues): HandoverSubjectDetails {
   if (values.pnc) {
     subjectDetails.pnc = values.pnc
   }
-  return subjectDetails as HandoverSubjectDetails
+  return subjectDetails
 }
 
 /**
