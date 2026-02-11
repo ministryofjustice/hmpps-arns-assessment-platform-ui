@@ -1,6 +1,6 @@
 import config from '../../../../config'
 import { CreateHandoverLinkRequest } from '../../../../interfaces/handover-api/request'
-import { CriminogenicNeedsData, HandoverSubjectDetails, YesNoNull } from '../../../../interfaces/handover-api/shared'
+import { CriminogenicNeedsData, HandoverSubjectDetails } from '../../../../interfaces/handover-api/shared'
 import { resolveHandoverConfig } from '../../flags/handlers'
 import { ScenarioValues } from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session, TargetApplication } from '../../types'
