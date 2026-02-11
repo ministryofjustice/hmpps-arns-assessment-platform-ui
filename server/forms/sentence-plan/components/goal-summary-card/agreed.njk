@@ -75,8 +75,8 @@
     <div class="govuk-summary-card__title-wrapper">
       <h2 class="govuk-summary-card__title" data-qa="goal-title">{{ params.goalTitle }}</h2>
 
-      {#- Action links (hidden when printing) -#}
-      {% if params.actions.length > 0 %}
+      {#- Action links (hidden when printing and in read-only mode) -#}
+      {% if not params.isReadOnly and params.actions.length > 0 %}
         {% if params.actions.length == 1 %}
           <div class="govuk-summary-card__actions govuk-!-display-none-print">
             {{ _actionLink(params.actions[0], params.goalTitle) | trim }}
@@ -149,7 +149,7 @@
         {#- No steps -#}
         <div class="goal-summary-card__steps--empty">
           <strong>No steps added</strong>
-          {% if params.actions.length > 0 and params.goalUuid %}
+          {% if not params.isReadOnly and params.actions.length > 0 and params.goalUuid %}
             <a class="govuk-!-display-none-print" href="../goal/{{ params.goalUuid }}/add-steps">Add steps</a>
           {% endif %}
         </div>

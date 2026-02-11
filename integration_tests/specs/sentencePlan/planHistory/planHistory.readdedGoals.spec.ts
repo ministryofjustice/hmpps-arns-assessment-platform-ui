@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../support/fixtures'
-import PlanHistoryPage from '../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent } from './sentencePlanUtils'
+import { test, TargetService } from '../../../support/fixtures'
+import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
+import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
 
 test.describe('Plan History - Re-added Goals', () => {
   test('displays re-added goal entry with title, assessor name, reason, and view link', async ({

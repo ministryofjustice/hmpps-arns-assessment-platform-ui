@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../support/fixtures'
-import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
-import { navigateToSentencePlan } from './sentencePlanUtils'
-import coordinatorApi, { SanAssessmentData } from '../../mockApis/coordinatorApi'
+import { test, TargetService } from '../../../support/fixtures'
+import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
+import { navigateToSentencePlan } from '../sentencePlanUtils'
+import coordinatorApi, { SanAssessmentData } from '../../../mockApis/coordinatorApi'
 
 test.describe('Assessment Info Details - Warnings', () => {
   test.describe('No Information Available', () => {
