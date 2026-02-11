@@ -9,16 +9,21 @@ import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
 
+const isReadOnly = Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY'))
+
 /**
  * Builds move buttons for goal cards.
- * Shows/hides buttons based on position within status group.
+ * Hide controls when the goal cannot move:
+ * - READ_ONLY users cannot reorder
+ * - first item cannot move up
+ * - last item cannot move down
  */
 function buildMoveButtonProps() {
   return {
-    showMoveUp: when(Item().path('isFirstInStatus').match(Condition.Equals(true)))
+    showMoveUp: when(or(isReadOnly, Item().path('isFirstInStatus').match(Condition.Equals(true))))
       .then(false)
       .else(true),
-    showMoveDown: when(Item().path('isLastInStatus').match(Condition.Equals(true)))
+    showMoveDown: when(or(isReadOnly, Item().path('isLastInStatus').match(Condition.Equals(true))))
       .then(false)
       .else(true),
     moveUpHref: Format('reorder-goal?goalUuid=%1&direction=up&status=%2', Item().path('uuid'), Item().path('status')),
@@ -36,7 +41,7 @@ export const hasMissingActiveGoalError = Query('error').match(Condition.Equals('
 export const hasMissingStepsError = Query('error').match(Condition.Equals('no-steps'))
 
 export const noActiveGoalsErrorMessage = HtmlBlock({
-  hidden: not(hasMissingActiveGoalError),
+  hidden: or(isReadOnly, not(hasMissingActiveGoalError)),
   content: `<div class="govuk-error-summary" data-module="govuk-error-summary">
       <div role="alert">
         <h2 class="govuk-error-summary__title">
@@ -54,7 +59,7 @@ export const noActiveGoalsErrorMessage = HtmlBlock({
 })
 
 export const noStepsErrorMessage = HtmlBlock({
-  hidden: not(hasMissingStepsError),
+  hidden: or(isReadOnly, not(hasMissingStepsError)),
   content: Format(
     `<div class="govuk-error-summary" data-module="govuk-error-summary">
       <div role="alert">
@@ -105,8 +110,12 @@ const removedGoalsCount = Data('goals')
   .pipe(Transformer.Array.Length())
 
 export const planCreatedMessage = HtmlBlock({
-  hidden: Data('latestAgreementStatus').not.match(
-    Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER', 'UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']),
+  hidden: or(
+    Data('latestAgreementStatus').not.match(
+      Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER', 'UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']),
+    ),
+    // In READ_ONLY mode, hide this block for COULD_NOT_ANSWER so we do not show the "Update agreement" action link.
+    and(isReadOnly, Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))),
   ),
   content: when(
     Data('latestAgreementStatus').match(
@@ -114,10 +123,19 @@ export const planCreatedMessage = HtmlBlock({
     ),
   )
     .then(
-      Format(
-        '<p class="govuk-body">Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
-        Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
-      ),
+      when(isReadOnly)
+        .then(
+          Format(
+            '<p class="govuk-body">Plan created on %1.</p>',
+            Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
+          ),
+        )
+        .else(
+          Format(
+            '<p class="govuk-body">Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
+            Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
+          ),
+        ),
     )
     .else(
       Format(
@@ -242,6 +260,7 @@ export const goalsSection = TemplateWrapper({
                 slots: {
                   card: [
                     TemplateWrapper({
+                      // Before any agreement status exists, render the draft card variant.
                       hidden: Data('latestAgreementStatus').match(
                         Condition.Array.IsIn([
                           'AGREED',
@@ -272,19 +291,20 @@ export const goalsSection = TemplateWrapper({
                                 }),
                               ),
                             actions: [
-                              {
+                              when(not(isReadOnly)).then({
                                 text: 'Change goal',
                                 href: Format('../goal/%1/change-goal', Item().path('uuid')),
-                              },
-                              {
+                              }) as any,
+                              when(not(isReadOnly)).then({
                                 text: 'Add or change steps',
                                 href: Format('../goal/%1/add-steps', Item().path('uuid')),
-                              },
-                              {
+                              }) as any,
+                              when(not(isReadOnly)).then({
                                 text: 'Delete',
                                 href: Format('../goal/%1/confirm-delete-goal', Item().path('uuid')),
-                              },
+                              }) as any,
                             ],
+                            isReadOnly: when(isReadOnly).then(true).else(false),
                             index: Item().index(),
                             ...buildMoveButtonProps(),
                           }),
@@ -292,6 +312,7 @@ export const goalsSection = TemplateWrapper({
                       },
                     }),
                     TemplateWrapper({
+                      // Once an agreement status exists (including "could not answer"), use the agreed variant.
                       hidden: Data('latestAgreementStatus').not.match(
                         Condition.Array.IsIn([
                           'AGREED',
@@ -336,6 +357,7 @@ export const goalsSection = TemplateWrapper({
                                   href: Format('../goal/%1/update-goal-steps', Item().path('uuid')),
                                 }) as any,
                             ],
+                            isReadOnly: when(isReadOnly).then(true).else(false),
                             index: Item().index(),
                             ...buildMoveButtonProps(),
                           }),
@@ -352,15 +374,27 @@ export const goalsSection = TemplateWrapper({
   },
 })
 
-export const blankPlanOverviewContent = HtmlBlock({
-  hidden: or(
-    Query('type').match(Condition.Equals('future')),
-    Query('type').match(Condition.Equals('achieved')),
-    Query('type').match(Condition.Equals('removed')),
-    Data('goals')
-      .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
-      .match(Condition.IsRequired()),
+const hideBlankPlanOverviewContent = or(
+  Query('type').match(Condition.Equals('future')),
+  Query('type').match(Condition.Equals('achieved')),
+  Query('type').match(Condition.Equals('removed')),
+  Data('goals')
+    .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
+    .match(Condition.IsRequired()),
+)
+
+export const blankPlanOverviewContentReadOnly = HtmlBlock({
+  hidden: or(not(isReadOnly), hideBlankPlanOverviewContent),
+  content: Format(
+    `<div id="blank-plan-content">
+      <p class="govuk-body"> %1 does not have any goals to work on now.</p>
+    </div>`,
+    CaseData.Forename,
   ),
+})
+
+export const blankPlanOverviewContent = HtmlBlock({
+  hidden: or(isReadOnly, hideBlankPlanOverviewContent),
   content: Format(
     `<div id="blank-plan-content" class="govuk-form-group %2">
       %3

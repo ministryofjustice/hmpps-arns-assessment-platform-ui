@@ -1,6 +1,10 @@
 {%- from "moj/components/primary-navigation/macro.njk" import mojPrimaryNavigation -%}
 
 {% if not hideNavigation %}
+  {% set isReadOnly = data.sessionDetails and data.sessionDetails.accessMode == 'READ_ONLY' %}
+
+  {# In READ_ONLY mode we hide primary navigation links to avoid showing editable journey entry points. #}
+  {% if not isReadOnly %}
   {% set personName = data.caseData.name.forename if data.caseData and data.caseData.name else "Person" %}
   {% set isOnAboutPage = step.path == '/about-person' %}
   {% set isOnPlanHistoryPage = step.path == '/plan-history' %}
@@ -27,4 +31,5 @@
       }
     ] | select | list
   }) }}
+  {% endif %}
 {% endif %}

@@ -1,7 +1,8 @@
-import { Format, Data, step, accessTransition, Query, redirect, or } from '@form-engine/form/builders'
+import { Format, Data, step, accessTransition, Query, redirect, or, and } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import {
   blankPlanOverviewContent,
+  blankPlanOverviewContentReadOnly,
   futureGoalsContent,
   goalsSection,
   planCreatedMessage,
@@ -24,9 +25,11 @@ export const planStep = step({
       currentTab: Query('type'),
       buttons: {
         showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('OASYS')),
-        showCreateGoalButton: true,
-        showAgreePlanButton: Data('latestAgreementStatus').not.match(
-          Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
+        showCreateGoalButton: Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
+        // Only show "Agree plan" while still in draft and when the user has edit access.
+        showAgreePlanButton: and(
+          Data('latestAgreementStatus').not.match(Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE'])),
+          Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
         ),
       },
       hasPlanOverviewErrors: or(hasMissingActiveGoalError, hasMissingStepsError),
@@ -40,6 +43,7 @@ export const planStep = step({
     notificationBanners,
     subNavigation,
     goalsSection,
+    blankPlanOverviewContentReadOnly,
     blankPlanOverviewContent,
     futureGoalsContent,
   ],
