@@ -8,6 +8,7 @@ import {
   buildPageTitle,
   navigateToSentencePlan,
   sentencePlanPageTitles,
+  sentencePlanV1URLs,
 } from './sentencePlanUtils'
 
 test.describe('Agree plan journey', () => {
@@ -129,7 +130,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
 
       // Click save without selecting an option
@@ -157,7 +158,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
 
       // Select No option
@@ -188,7 +189,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
 
       // Select Could not answer option
@@ -217,7 +218,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
 
       await agreePlanPage.selectAgreeYes()
@@ -244,7 +245,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
 
       // Select No
@@ -278,7 +279,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
 
       // Select Could not answer
@@ -321,7 +322,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan and agree
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
       await agreePlanPage.selectAgreeYes()
       await agreePlanPage.clickSave()
