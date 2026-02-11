@@ -105,11 +105,11 @@ function processAssessmentArea(
   // Score comes from handover (OASys) only
   const score = crimNeedsArea?.score ?? null
 
-  // High scoring: score exceeds threshold (score > threshold)
-  // Low scoring: score at or below threshold (score <= threshold)
+  // High scoring: score at or above threshold (score >= threshold)
+  // Low scoring: score below threshold (score < threshold)
   // Areas without scoring (Finance, Health) have both as false
-  const isHighScoring = threshold !== null && score !== null && score > threshold
-  const isLowScoring = threshold !== null && score !== null && score <= threshold
+  const isHighScoring = threshold !== null && score !== null && score >= threshold
+  const isLowScoring = threshold !== null && score !== null && score < threshold
 
   return {
     title,
