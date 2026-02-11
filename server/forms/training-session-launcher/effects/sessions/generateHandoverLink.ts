@@ -39,9 +39,8 @@ const DEFAULT_PREFERENCES: TrainingLauncherPreferences = {
  * Build HandoverSubjectDetails from session values
  */
 function buildSubjectDetails(values: ScenarioValues): HandoverSubjectDetails {
-  return {
+  const subjectDetails: HandoverSubjectDetails = {
     crn: values.crn,
-    pnc: values.pnc,
     givenName: values.givenName,
     familyName: values.familyName,
     gender: values.gender,
@@ -49,6 +48,10 @@ function buildSubjectDetails(values: ScenarioValues): HandoverSubjectDetails {
     location: values.location,
     sexuallyMotivatedOffenceHistory: values.sexuallyMotivatedOffenceHistory,
   }
+  if (values.pnc) {
+    subjectDetails.pnc = values.pnc
+  }
+  return subjectDetails
 }
 
 /**
