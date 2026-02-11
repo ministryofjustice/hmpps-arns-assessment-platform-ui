@@ -36,7 +36,7 @@ export const updatePlanAgreementQuestion = field<GovUKRadioInput>({
   validate: [
     validation({
       when: Self().not.match(Condition.IsRequired()),
-      message: 'Enter details about why they do not agree',
+      message: 'Select if they agree to the plan',
     }),
   ],
 })

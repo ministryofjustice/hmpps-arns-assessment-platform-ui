@@ -1,7 +1,7 @@
 import { accessTransition, Data, redirect, step } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { subtitleText, sectionBreak, agreementHistory, updateAgreementLink, backToTopLink } from './fields'
-import { SentencePlanEffects } from '../../../../../../effects'
+import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../../effects'
 
 export const planHistoryStep = step({
   path: '/plan-history',
@@ -25,15 +25,7 @@ export const planHistoryStep = step({
       next: [
         // Redirect to plan overview if plan is not yet agreed
         redirect({
-          when: Data('latestAgreementStatus').not.match(
-            Condition.Array.IsIn([
-              'AGREED',
-              'DO_NOT_AGREE',
-              'COULD_NOT_ANSWER',
-              'UPDATED_AGREED',
-              'UPDATED_DO_NOT_AGREE',
-            ]),
-          ),
+          when: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
           goto: 'overview?type=current',
         }),
       ],

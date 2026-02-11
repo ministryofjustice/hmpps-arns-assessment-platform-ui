@@ -1,8 +1,8 @@
 import { accessTransition, Data, Post, redirect, step, submitTransition, when } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import { sentencePlanOverviewPath } from '../../../../constants'
 import { updatePlanAgreementQuestion, buttonGroup } from './fields'
 import { SentencePlanEffects } from '../../../../../../effects'
+import { sentencePlanOverviewPath } from '../../../../constants'
 
 export const updateAgreePlanStep = step({
   path: '/update-agree-plan',
@@ -14,6 +14,10 @@ export const updateAgreePlanStep = step({
     }),
     accessTransition({
       when: Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY')),
+      next: [redirect({ goto: sentencePlanOverviewPath })],
+    }),
+    accessTransition({
+      when: Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER')),
       next: [redirect({ goto: sentencePlanOverviewPath })],
     }),
   ],

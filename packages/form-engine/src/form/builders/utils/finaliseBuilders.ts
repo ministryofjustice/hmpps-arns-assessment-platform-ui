@@ -15,6 +15,7 @@ const isBuildable = (value: unknown): value is Buildable => {
  * returning the raw builder on subsequent encounters.
  *
  * @param input - Objects, arrays that contain builders
+ * @param cache - WeakMap tracking already-processed objects to handle circular references and shared instances
  */
 export const finaliseBuilders = <T>(input: T, cache: WeakMap<object, unknown> = new WeakMap()): unknown => {
   if (input === null || typeof input !== 'object') {
@@ -28,14 +29,18 @@ export const finaliseBuilders = <T>(input: T, cache: WeakMap<object, unknown> = 
   }
 
   if (Array.isArray(input)) {
-    const result = input.map(item => finaliseBuilders(item, cache))
+    const result: unknown[] = []
     cache.set(input, result)
+    input.forEach(item => result.push(finaliseBuilders(item, cache)))
     return result
   }
 
   if (isBuildable(input)) {
-    // Recursively finalise in case build() returns more builders
-    const result = finaliseBuilders(input.build(), cache)
+    // Build first, then cache before recursing to prevent infinite loops
+    // if the build output contains a reference back to this builder
+    const built = input.build()
+    cache.set(input, built)
+    const result = finaliseBuilders(built, cache)
     cache.set(input, result)
     return result
   }
