@@ -75,7 +75,7 @@
     <div class="govuk-summary-card__title-wrapper">
       <h2 class="govuk-summary-card__title" data-qa="goal-title">{{ params.goalTitle }}</h2>
 
-      {#- Action links (hidden when printing) -#}
+      {#- Action links (hidden when printing and in read-only mode) -#}
       {% if not params.isReadOnly and params.actions.length > 0 %}
         {% if params.actions.length == 1 %}
           <div class="govuk-summary-card__actions govuk-!-display-none-print">
