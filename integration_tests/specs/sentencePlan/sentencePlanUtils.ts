@@ -1,6 +1,6 @@
 import { expect, Page } from '@playwright/test'
-import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
 import { AgreementStatus } from '@server/forms/sentence-plan/effects'
+import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
 // Note: UPDATED_AGREED and UPDATED_DO_NOT_AGREE are only valid as follow-up statuses

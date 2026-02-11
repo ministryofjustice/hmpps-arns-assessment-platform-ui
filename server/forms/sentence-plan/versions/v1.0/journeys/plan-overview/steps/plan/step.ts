@@ -28,8 +28,7 @@ export const planStep = step({
         showCreateGoalButton: Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
         // Only show "Agree plan" while still in draft and when the user has edit access.
         showAgreePlanButton: and(
-          Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
-          ),
+          Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
           Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
         ),
       },

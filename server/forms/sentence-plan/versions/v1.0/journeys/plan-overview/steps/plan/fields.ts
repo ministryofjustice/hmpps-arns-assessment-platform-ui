@@ -112,9 +112,7 @@ const removedGoalsCount = Data('goals')
 
 export const planCreatedMessage = HtmlBlock({
   hidden: or(
-    Data('latestAgreementStatus').not.match(
-      Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
-    ),
+    Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
     // In READ_ONLY mode, hide this block for COULD_NOT_ANSWER so we do not show the "Update agreement" action link.
     and(isReadOnly, Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))),
   ),
