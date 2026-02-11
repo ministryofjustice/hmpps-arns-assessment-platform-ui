@@ -136,38 +136,59 @@ export const planCreatedMessage = HtmlBlock({
     ),
 })
 
+const currentGoalsNavigationItem = {
+  text: Format('Goals to work on now (%1)', activeGoalsCount),
+  href: 'overview?type=current',
+  active: when(Query('type').match(Condition.Equals('current')))
+    .then(true)
+    .else(false),
+}
+
+const futureGoalsNavigationItem = {
+  text: Format('Future goals (%1)', futureGoalsCount),
+  href: 'overview?type=future',
+  active: when(Query('type').match(Condition.Equals('future')))
+    .then(true)
+    .else(false),
+}
+
+const achievedGoalsNavigationItem = {
+  text: Format('Achieved goals (%1)', achievedGoalsCount),
+  href: 'overview?type=achieved',
+  active: when(Query('type').match(Condition.Equals('achieved')))
+    .then(true)
+    .else(false),
+}
+
+const removedGoalsNavigationItem = {
+  text: Format('Removed goals (%1)', removedGoalsCount),
+  href: 'overview?type=removed',
+  active: when(Query('type').match(Condition.Equals('removed')))
+    .then(true)
+    .else(false),
+}
+
+const hasAchievedGoals = achievedGoalsCount.match(Condition.Number.GreaterThan(0))
+const hasRemovedGoals = removedGoalsCount.match(Condition.Number.GreaterThan(0))
+
 export const subNavigation = MOJSubNavigation({
   label: 'Plan sections',
-  items: [
-    {
-      text: Format('Goals to work on now (%1)', activeGoalsCount),
-      href: 'overview?type=current',
-      active: when(Query('type').match(Condition.Equals('current')))
-        .then(true)
-        .else(false),
-    },
-    {
-      text: Format('Future goals (%1)', futureGoalsCount),
-      href: 'overview?type=future',
-      active: when(Query('type').match(Condition.Equals('future')))
-        .then(true)
-        .else(false),
-    },
-    when(achievedGoalsCount.match(Condition.Number.GreaterThan(0))).then({
-      text: Format('Achieved goals (%1)', achievedGoalsCount),
-      href: 'overview?type=achieved',
-      active: when(Query('type').match(Condition.Equals('achieved')))
-        .then(true)
-        .else(false),
-    }) as any,
-    when(removedGoalsCount.match(Condition.Number.GreaterThan(0))).then({
-      text: Format('Removed goals (%1)', removedGoalsCount),
-      href: 'overview?type=removed',
-      active: when(Query('type').match(Condition.Equals('removed')))
-        .then(true)
-        .else(false),
-    }) as any,
-  ],
+  items: when(hasAchievedGoals)
+    .then(
+      when(hasRemovedGoals)
+        .then([
+          currentGoalsNavigationItem,
+          futureGoalsNavigationItem,
+          achievedGoalsNavigationItem,
+          removedGoalsNavigationItem,
+        ])
+        .else([currentGoalsNavigationItem, futureGoalsNavigationItem, achievedGoalsNavigationItem]),
+    )
+    .else(
+      when(hasRemovedGoals)
+        .then([currentGoalsNavigationItem, futureGoalsNavigationItem, removedGoalsNavigationItem])
+        .else([currentGoalsNavigationItem, futureGoalsNavigationItem]),
+    ),
 })
 
 /**
@@ -282,18 +303,18 @@ export const goalsSection = TemplateWrapper({
                                 }),
                               ),
                             actions: [
-                              when(not(isReadOnly)).then({
+                              {
                                 text: 'Change goal',
                                 href: Format('../goal/%1/change-goal', Item().path('uuid')),
-                              }) as any,
-                              when(not(isReadOnly)).then({
+                              },
+                              {
                                 text: 'Add or change steps',
                                 href: Format('../goal/%1/add-steps', Item().path('uuid')),
-                              }) as any,
-                              when(not(isReadOnly)).then({
+                              },
+                              {
                                 text: 'Delete',
                                 href: Format('../goal/%1/confirm-delete-goal', Item().path('uuid')),
-                              }) as any,
+                              },
                             ],
                             isReadOnly: when(isReadOnly).then(true).else(false),
                             index: Item().index(),
@@ -334,19 +355,22 @@ export const goalsSection = TemplateWrapper({
                                 }),
                               ),
                             actions: [
-                              when(
-                                Item()
-                                  .path('status')
-                                  .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
-                              )
-                                .then({
-                                  text: 'View details',
-                                  href: Format('../goal/%1/view-inactive-goal', Item().path('uuid')),
-                                })
-                                .else({
-                                  text: 'Update',
-                                  href: Format('../goal/%1/update-goal-steps', Item().path('uuid')),
-                                }) as any,
+                              {
+                                text: when(
+                                  Item()
+                                    .path('status')
+                                    .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
+                                )
+                                  .then('View details')
+                                  .else('Update'),
+                                href: when(
+                                  Item()
+                                    .path('status')
+                                    .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
+                                )
+                                  .then(Format('../goal/%1/view-inactive-goal', Item().path('uuid')))
+                                  .else(Format('../goal/%1/update-goal-steps', Item().path('uuid'))),
+                              },
                             ],
                             isReadOnly: when(isReadOnly).then(true).else(false),
                             index: Item().index(),
