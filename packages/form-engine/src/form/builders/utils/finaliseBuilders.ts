@@ -37,8 +37,13 @@ export const finaliseBuilders = <T>(input: T, cache: WeakMap<object, unknown> = 
 
   if (isBuildable(input)) {
     // Build first, then cache before recursing to prevent infinite loops
-    // if the build output contains a reference back to this builder
-    const built = input.build()
+    // if the build output contains a reference back to this builder.
+    //
+    // Known limitation: if a builder's build() output circularly references the builder
+    // itself, the circular encounter will receive the un-finalised build output. This
+    // cannot happen in the form engine because builders (e.g. Data(), Format(), field())
+    // always produce plain JSON — they never reference the builder that created them.
+    const built = input.build();
     cache.set(input, built)
     const result = finaliseBuilders(built, cache)
     cache.set(input, result)

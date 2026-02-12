@@ -39,18 +39,11 @@ export const updatePlanAgreement = (deps: SentencePlanEffectsDeps) => async (con
     throw new InternalServerError(`Invalid agreement answer: ${agreementAnswer}`)
   }
 
-  // Get or create PLAN_AGREEMENTS collection
-  let planAgreementsCollectionUuid = context.getData('planAgreementsCollectionUuid')
+  // Get PLAN_AGREEMENTS collection
+  const planAgreementsCollectionUuid = context.getData('planAgreementsCollectionUuid')
 
   if (!planAgreementsCollectionUuid) {
-    const createResult = await deps.api.executeCommand({
-      type: 'CreateCollectionCommand',
-      name: 'PLAN_AGREEMENTS',
-      assessmentUuid,
-      user,
-    })
-
-    planAgreementsCollectionUuid = createResult.collectionUuid
+    throw new InternalServerError('PLAN_AGREEMENTS collection not found')
   }
 
   // Build properties
@@ -64,9 +57,12 @@ export const updatePlanAgreement = (deps: SentencePlanEffectsDeps) => async (con
     agreement_question: agreementAnswer,
   }
 
-  // Add conditional details if present
-  const detailsNo = context.getAnswer('update_plan_agreement_details_no') as string | undefined
-  if (detailsNo) {
+  // Add details when the practitioner selected "no" (mandatory field, validated before this runs)
+  if (agreementAnswer === 'no') {
+    const detailsNo = context.getAnswer('update_plan_agreement_details_no') as string | undefined
+    if (!detailsNo) {
+      throw new InternalServerError('Agreement details are required when the answer is "no"')
+    }
     answers.details_no = detailsNo
   }
 
