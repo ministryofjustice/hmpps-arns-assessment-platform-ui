@@ -1,0 +1,10 @@
+{%- from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner -%}
+
+<div class="govuk-width-container">
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Beta"
+    },
+    html: '<a class="govuk-link" href="' + (feedbackFormUrl | escape) + '" target="_blank" rel="noopener noreferrer">Give feedback (opens in a new tab)</a> or <a class="govuk-link" href="#report-a-problem" data-report-problem-link="">report a problem</a> to help us improve it.'
+  }) }}
+</div>
