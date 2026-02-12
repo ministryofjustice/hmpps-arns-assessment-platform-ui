@@ -16,6 +16,8 @@ export default function nunjucksSetup(app?: express.Express) {
     app.locals.applicationName = 'Assess and plan'
     app.locals.environmentName = config.environmentName
     app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
+    app.locals.feedbackFormUrl = config.feedbackFormUrl
+    app.locals.serviceNowFormUrl = config.serviceNowFormUrl
 
     // Session timeout modal configuration (in seconds)
     app.locals.sessionTimeoutConfig = {
