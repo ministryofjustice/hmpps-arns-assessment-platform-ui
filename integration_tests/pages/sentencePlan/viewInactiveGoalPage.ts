@@ -25,7 +25,7 @@ export default class ViewInactiveGoalPage extends AbstractPage {
     this.caption = page.locator('.govuk-caption-l')
     this.statusText = page.locator('.govuk-body').first()
     this.stepsTable = page.locator('.govuk-table')
-    this.viewAllNotesDetails = page.locator('.govuk-details')
+    this.viewAllNotesDetails = page.locator('[data-qa="main-form"] .govuk-details')
     this.addToPlanButton = page.getByRole('button', { name: 'Add to plan' })
     this.backLink = page.locator('.govuk-back-link')
   }
