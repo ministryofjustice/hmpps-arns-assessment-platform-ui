@@ -18,7 +18,7 @@ export const goalManagementJourney = journey({
   path: '/goal/:uuid',
   onAccess: [
     accessTransition({
-      when: Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY')),
+      when: Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY')),
       next: [redirect({ goto: sentencePlanOverviewPath })],
     }),
   ],

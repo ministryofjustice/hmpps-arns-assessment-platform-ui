@@ -25,11 +25,11 @@ export const planStep = step({
       currentTab: Query('type'),
       buttons: {
         showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('OASYS')),
-        showCreateGoalButton: Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
+        showCreateGoalButton: Data('sessionDetails.planAccessMode').not.match(Condition.Equals('READ_ONLY')),
         // Only show "Agree plan" while still in draft and when the user has edit access.
         showAgreePlanButton: and(
           Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
-          Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
+          Data('sessionDetails.planAccessMode').not.match(Condition.Equals('READ_ONLY')),
         ),
       },
       hasPlanOverviewErrors: or(hasMissingActiveGoalError, hasMissingStepsError),

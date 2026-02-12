@@ -11,7 +11,7 @@ export const aboutPersonStep = step({
       headerPageHeading: Format(`About %1`, CaseData.Forename),
       buttons: {
         showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('OASYS')),
-        showCreateGoalButton: Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
+        showCreateGoalButton: Data('sessionDetails.planAccessMode').not.match(Condition.Equals('READ_ONLY')),
       },
     },
   },

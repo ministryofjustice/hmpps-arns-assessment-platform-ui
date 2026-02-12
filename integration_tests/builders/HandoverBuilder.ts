@@ -40,7 +40,7 @@ export interface HandoverSession {
  * test('my test', async ({ handoverBuilder }) => {
  *   const session = await handoverBuilder
  *     .forAssociation(association)
- *     .withAccessMode('READ_ONLY')
+ *     .withPlanAccessMode('READ_ONLY')
  *     .save()
  * })
  */
@@ -72,7 +72,7 @@ export class HandoverBuilderInstance {
   private defaultPrincipal: HandoverPrincipalDetails = {
     identifier: generateUserId(),
     displayName: 'Test User',
-    accessMode: 'READ_WRITE',
+    planAccessMode: 'READ_WRITE',
     returnUrl: 'http://localhost:3000',
   }
 
@@ -110,10 +110,10 @@ export class HandoverBuilderInstance {
   }
 
   /**
-   * Set the principal's access mode
+   * Set the principal's plan access mode
    */
-  withAccessMode(accessMode: AccessMode): this {
-    this.principal.accessMode = accessMode
+  withPlanAccessMode(planAccessMode: AccessMode): this {
+    this.principal.planAccessMode = planAccessMode
 
     return this
   }

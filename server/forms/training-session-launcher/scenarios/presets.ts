@@ -64,7 +64,7 @@ export const scenarioPresets: ScenarioPreset[] = [
     description: 'Scenario with fully randomized subject details, practitioner details, and criminogenic needs scores.',
     flags: [],
     fixedValues: {
-      accessMode: 'READ_WRITE',
+      planAccessMode: 'READ_WRITE',
     },
   },
   {
@@ -75,7 +75,7 @@ export const scenarioPresets: ScenarioPreset[] = [
     flags: ['SP_NATIONAL_ROLLOUT'],
     fixedValues: {
       location: 'COMMUNITY',
-      accessMode: 'READ_WRITE',
+      planAccessMode: 'READ_WRITE',
     },
   },
   {
@@ -86,7 +86,7 @@ export const scenarioPresets: ScenarioPreset[] = [
     flags: ['SP_NATIONAL_ROLLOUT'],
     fixedValues: {
       location: 'PRISON',
-      accessMode: 'READ_WRITE',
+      planAccessMode: 'READ_WRITE',
     },
   },
   {
@@ -96,7 +96,7 @@ export const scenarioPresets: ScenarioPreset[] = [
     description: 'Scenario with fully randomized criminogenic needs data for testing needs-based features.',
     flags: [],
     fixedValues: {
-      accessMode: 'READ_WRITE',
+      planAccessMode: 'READ_WRITE',
     },
   },
 ]
