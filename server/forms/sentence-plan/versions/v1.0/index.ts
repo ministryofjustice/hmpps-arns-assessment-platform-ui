@@ -26,6 +26,7 @@ export const sentencePlanV1Journey = journey({
     locals: {
       basePath: '/sentence-plan/v1.0',
       hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
+      showAboutTab: Data('assessment.assessmentType').match(Condition.Equals('SAN_SP')),
       showPlanHistoryTab: hasPostAgreementStatus,
     },
   },
