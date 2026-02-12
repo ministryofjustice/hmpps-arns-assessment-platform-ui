@@ -1,9 +1,9 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../support/fixtures'
-import PlanHistoryPage from '../../pages/sentencePlan/planHistoryPage'
-import UpdateGoalAndStepsPage from '../../pages/sentencePlan/updateGoalAndStepsPage'
-import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import { handlePrivacyScreenIfPresent, navigateToSentencePlan, sentencePlanV1URLs } from './sentencePlanUtils'
+import { test, TargetService } from '../../../support/fixtures'
+import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
+import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
+import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
+import { handlePrivacyScreenIfPresent, navigateToSentencePlan, sentencePlanV1URLs } from '../sentencePlanUtils'
 
 test.describe('Plan History - Updated Goals', () => {
   test('displays updated goal entry with title, updater name, and view link', async ({

@@ -16,6 +16,7 @@ import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { Transformer } from '@form-engine/registry/transformers'
 import { planAgreementQuestion, notesField, saveButton } from './fields'
 import { SentencePlanEffects } from '../../../../../../effects'
+import { sentencePlanOverviewPath } from '../../../../constants'
 
 export const agreePlanStep = step({
   path: '/agree-plan',
@@ -29,6 +30,10 @@ export const agreePlanStep = step({
     },
   },
   onAccess: [
+    accessTransition({
+      when: Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY')),
+      next: [redirect({ goto: sentencePlanOverviewPath })],
+    }),
     accessTransition({
       next: [
         // Check if there are no active goals at all

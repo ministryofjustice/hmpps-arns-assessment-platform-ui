@@ -8,17 +8,23 @@ import { CollectionBlock } from '@form-engine/registry/components/collectionBloc
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
+import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
+
+const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
 /**
  * Builds move buttons for goal cards.
- * Shows/hides buttons based on position within status group.
+ * Hide controls when the goal cannot move:
+ * - READ_ONLY users cannot reorder
+ * - first item cannot move up
+ * - last item cannot move down
  */
 function buildMoveButtonProps() {
   return {
-    showMoveUp: when(Item().path('isFirstInStatus').match(Condition.Equals(true)))
+    showMoveUp: when(or(isReadOnly, Item().path('isFirstInStatus').match(Condition.Equals(true))))
       .then(false)
       .else(true),
-    showMoveDown: when(Item().path('isLastInStatus').match(Condition.Equals(true)))
+    showMoveDown: when(or(isReadOnly, Item().path('isLastInStatus').match(Condition.Equals(true))))
       .then(false)
       .else(true),
     moveUpHref: Format('reorder-goal?goalUuid=%1&direction=up&status=%2', Item().path('uuid'), Item().path('status')),
@@ -36,7 +42,7 @@ export const hasMissingActiveGoalError = Query('error').match(Condition.Equals('
 export const hasMissingStepsError = Query('error').match(Condition.Equals('no-steps'))
 
 export const noActiveGoalsErrorMessage = HtmlBlock({
-  hidden: not(hasMissingActiveGoalError),
+  hidden: or(isReadOnly, not(hasMissingActiveGoalError)),
   content: `<div class="govuk-error-summary" data-module="govuk-error-summary">
       <div role="alert">
         <h2 class="govuk-error-summary__title">
@@ -54,7 +60,7 @@ export const noActiveGoalsErrorMessage = HtmlBlock({
 })
 
 export const noStepsErrorMessage = HtmlBlock({
-  hidden: not(hasMissingStepsError),
+  hidden: or(isReadOnly, not(hasMissingStepsError)),
   content: Format(
     `<div class="govuk-error-summary" data-module="govuk-error-summary">
       <div role="alert">
@@ -105,19 +111,31 @@ const removedGoalsCount = Data('goals')
   .pipe(Transformer.Array.Length())
 
 export const planCreatedMessage = HtmlBlock({
-  hidden: Data('latestAgreementStatus').not.match(
-    Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER', 'UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']),
+  hidden: or(
+    Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
+    // In READ_ONLY mode, hide this block for COULD_NOT_ANSWER so we do not show the "Update agreement" action link.
+    and(isReadOnly, Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))),
   ),
   content: when(
     Data('latestAgreementStatus').match(
-      Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']),
+      Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE', 'UPDATED_AGREED']),
     ),
   )
     .then(
-      Format(
-        '<p class="govuk-body">Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
-        Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
-      ),
+      when(Data('latestAgreementStatus').match(Condition.Equals('UPDATED_AGREED')))
+        .then(
+          Format(
+            '<p class="govuk-body">%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
+            CaseData.Forename,
+            Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
+          ),
+        )
+        .else(
+          Format(
+            '<p class="govuk-body">Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
+            Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
+          ),
+        ),
     )
     .else(
       Format(
@@ -127,38 +145,59 @@ export const planCreatedMessage = HtmlBlock({
     ),
 })
 
+const currentGoalsNavigationItem = {
+  text: Format('Goals to work on now (%1)', activeGoalsCount),
+  href: 'overview?type=current',
+  active: when(Query('type').match(Condition.Equals('current')))
+    .then(true)
+    .else(false),
+}
+
+const futureGoalsNavigationItem = {
+  text: Format('Future goals (%1)', futureGoalsCount),
+  href: 'overview?type=future',
+  active: when(Query('type').match(Condition.Equals('future')))
+    .then(true)
+    .else(false),
+}
+
+const achievedGoalsNavigationItem = {
+  text: Format('Achieved goals (%1)', achievedGoalsCount),
+  href: 'overview?type=achieved',
+  active: when(Query('type').match(Condition.Equals('achieved')))
+    .then(true)
+    .else(false),
+}
+
+const removedGoalsNavigationItem = {
+  text: Format('Removed goals (%1)', removedGoalsCount),
+  href: 'overview?type=removed',
+  active: when(Query('type').match(Condition.Equals('removed')))
+    .then(true)
+    .else(false),
+}
+
+const hasAchievedGoals = achievedGoalsCount.match(Condition.Number.GreaterThan(0))
+const hasRemovedGoals = removedGoalsCount.match(Condition.Number.GreaterThan(0))
+
 export const subNavigation = MOJSubNavigation({
   label: 'Plan sections',
-  items: [
-    {
-      text: Format('Goals to work on now (%1)', activeGoalsCount),
-      href: 'overview?type=current',
-      active: when(Query('type').match(Condition.Equals('current')))
-        .then(true)
-        .else(false),
-    },
-    {
-      text: Format('Future goals (%1)', futureGoalsCount),
-      href: 'overview?type=future',
-      active: when(Query('type').match(Condition.Equals('future')))
-        .then(true)
-        .else(false),
-    },
-    when(achievedGoalsCount.match(Condition.Number.GreaterThan(0))).then({
-      text: Format('Achieved goals (%1)', achievedGoalsCount),
-      href: 'overview?type=achieved',
-      active: when(Query('type').match(Condition.Equals('achieved')))
-        .then(true)
-        .else(false),
-    }) as any,
-    when(removedGoalsCount.match(Condition.Number.GreaterThan(0))).then({
-      text: Format('Removed goals (%1)', removedGoalsCount),
-      href: 'overview?type=removed',
-      active: when(Query('type').match(Condition.Equals('removed')))
-        .then(true)
-        .else(false),
-    }) as any,
-  ],
+  items: when(hasAchievedGoals)
+    .then(
+      when(hasRemovedGoals)
+        .then([
+          currentGoalsNavigationItem,
+          futureGoalsNavigationItem,
+          achievedGoalsNavigationItem,
+          removedGoalsNavigationItem,
+        ])
+        .else([currentGoalsNavigationItem, futureGoalsNavigationItem, achievedGoalsNavigationItem]),
+    )
+    .else(
+      when(hasRemovedGoals)
+        .then([currentGoalsNavigationItem, futureGoalsNavigationItem, removedGoalsNavigationItem])
+        .else([currentGoalsNavigationItem, futureGoalsNavigationItem]),
+    ),
 })
 
 /**
@@ -242,14 +281,9 @@ export const goalsSection = TemplateWrapper({
                 slots: {
                   card: [
                     TemplateWrapper({
+                      // Before any agreement status exists, render the draft card variant.
                       hidden: Data('latestAgreementStatus').match(
-                        Condition.Array.IsIn([
-                          'AGREED',
-                          'DO_NOT_AGREE',
-                          'COULD_NOT_ANSWER',
-                          'UPDATED_AGREED',
-                          'UPDATED_DO_NOT_AGREE',
-                        ]),
+                        Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
                       ),
                       template: '{{slot:draftCard}}',
                       slots: {
@@ -285,6 +319,7 @@ export const goalsSection = TemplateWrapper({
                                 href: Format('../goal/%1/confirm-delete-goal', Item().path('uuid')),
                               },
                             ],
+                            isReadOnly: when(isReadOnly).then(true).else(false),
                             index: Item().index(),
                             ...buildMoveButtonProps(),
                           }),
@@ -292,14 +327,9 @@ export const goalsSection = TemplateWrapper({
                       },
                     }),
                     TemplateWrapper({
+                      // Once an agreement status exists (including "could not answer"), use the agreed variant.
                       hidden: Data('latestAgreementStatus').not.match(
-                        Condition.Array.IsIn([
-                          'AGREED',
-                          'DO_NOT_AGREE',
-                          'COULD_NOT_ANSWER',
-                          'UPDATED_AGREED',
-                          'UPDATED_DO_NOT_AGREE',
-                        ]),
+                        Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
                       ),
                       template: '{{slot:agreedCard}}',
                       slots: {
@@ -322,20 +352,24 @@ export const goalsSection = TemplateWrapper({
                                 }),
                               ),
                             actions: [
-                              when(
-                                Item()
-                                  .path('status')
-                                  .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
-                              )
-                                .then({
-                                  text: 'View details',
-                                  href: Format('../goal/%1/view-inactive-goal', Item().path('uuid')),
-                                })
-                                .else({
-                                  text: 'Update',
-                                  href: Format('../goal/%1/update-goal-steps', Item().path('uuid')),
-                                }) as any,
+                              {
+                                text: when(
+                                  Item()
+                                    .path('status')
+                                    .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
+                                )
+                                  .then('View details')
+                                  .else('Update'),
+                                href: when(
+                                  Item()
+                                    .path('status')
+                                    .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
+                                )
+                                  .then(Format('../goal/%1/view-inactive-goal', Item().path('uuid')))
+                                  .else(Format('../goal/%1/update-goal-steps', Item().path('uuid'))),
+                              },
                             ],
+                            isReadOnly: when(isReadOnly).then(true).else(false),
                             index: Item().index(),
                             ...buildMoveButtonProps(),
                           }),
@@ -352,19 +386,31 @@ export const goalsSection = TemplateWrapper({
   },
 })
 
-export const blankPlanOverviewContent = HtmlBlock({
-  hidden: or(
-    Query('type').match(Condition.Equals('future')),
-    Query('type').match(Condition.Equals('achieved')),
-    Query('type').match(Condition.Equals('removed')),
-    Data('goals')
-      .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
-      .match(Condition.IsRequired()),
+const hideBlankPlanOverviewContent = or(
+  Query('type').match(Condition.Equals('future')),
+  Query('type').match(Condition.Equals('achieved')),
+  Query('type').match(Condition.Equals('removed')),
+  Data('goals')
+    .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
+    .match(Condition.IsRequired()),
+)
+
+export const blankPlanOverviewContentReadOnly = HtmlBlock({
+  hidden: or(not(isReadOnly), hideBlankPlanOverviewContent),
+  content: Format(
+    `<div id="blank-plan-content">
+      <p class="govuk-body">%1 does not have any goals to work on now.</p>
+    </div>`,
+    CaseData.Forename,
   ),
+})
+
+export const blankPlanOverviewContent = HtmlBlock({
+  hidden: or(isReadOnly, hideBlankPlanOverviewContent),
   content: Format(
     `<div id="blank-plan-content" class="govuk-form-group %2">
       %3
-      <p class="govuk-body govuk-!-display-none-print"> %1 does not have any goals to work on now. You can either:</p>
+      <p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can either:</p>
       <ul class="govuk-list govuk-list--bullet govuk-!-display-none-print">
         <li><a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a></li>
         <li><a href="../about-person" class="govuk-link govuk-link--no-visited-state">view information from %1's assessment</a></li>

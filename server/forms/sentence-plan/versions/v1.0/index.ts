@@ -1,11 +1,11 @@
-import { accessTransition, Data, journey, redirect } from '@form-engine/form/builders'
+import { accessTransition, and, Data, journey, redirect } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { planHistoryJourney } from './journeys/plan-history'
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
 import { actorLabels, areasOfNeed } from './constants'
-import { SentencePlanEffects } from '../../effects'
+import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../effects'
 
 /**
  * Sentence Plan v1.0 Journey
@@ -25,9 +25,7 @@ export const sentencePlanV1Journey = journey({
     locals: {
       basePath: '/sentence-plan/v1.0',
       hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
-      showPlanHistoryTab: Data('latestAgreementStatus').match(
-        Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
-      ),
+      showPlanHistoryTab: Data('latestAgreementStatus').match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
     },
   },
   data: {
@@ -44,9 +42,12 @@ export const sentencePlanV1Journey = journey({
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
       ],
       next: [
-        // Redirect to privacy screen if privacy not yet accepted this session
+        // READ_ONLY users skip privacy and go straight to overview; edit users must accept privacy first.
         redirect({
-          when: Data('session.privacyAccepted').not.match(Condition.Equals(true)),
+          when: and(
+            Data('session.privacyAccepted').not.match(Condition.Equals(true)),
+            Data('sessionDetails.planAccessMode').not.match(Condition.Equals('READ_ONLY')),
+          ),
           goto: '../../privacy',
         }),
       ],

@@ -1,6 +1,7 @@
-import { accessTransition, redirect, Query, step } from '@form-engine/form/builders'
+import { accessTransition, Data, redirect, Query, step } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { SentencePlanEffects } from '../../../../../../effects'
+import { sentencePlanOverviewPath } from '../../../../constants'
 
 /**
  * Reorder goal step
@@ -21,6 +22,10 @@ export const reorderGoalStep = step({
   blocks: [], // No visible content - immediate redirect
 
   onAccess: [
+    accessTransition({
+      when: Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY')),
+      next: [redirect({ goto: sentencePlanOverviewPath })],
+    }),
     accessTransition({
       effects: [SentencePlanEffects.reorderGoal()],
       next: [

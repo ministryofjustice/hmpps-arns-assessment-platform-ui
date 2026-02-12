@@ -27,7 +27,7 @@ export type AssessmentInfoStatus = 'success' | 'error'
 
 export interface AccessDetails {
   accessType: AuthSource
-  accessMode: AccessMode
+  planAccessMode: AccessMode
   oasysRedirectUrl?: string
 }
 
@@ -35,10 +35,22 @@ export type GoalStatus = 'ACTIVE' | 'FUTURE' | 'REMOVED' | 'ACHIEVED'
 export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
 
 // Plan agreement statuses - DRAFT is the initial status before any agreement action
-export type AgreementStatus = 'DRAFT' | 'AGREED' | 'DO_NOT_AGREE' | 'COULD_NOT_ANSWER'
+export type AgreementStatus =
+  | 'DRAFT'
+  | 'AGREED'
+  | 'DO_NOT_AGREE'
+  | 'COULD_NOT_ANSWER'
+  | 'UPDATED_AGREED'
+  | 'UPDATED_DO_NOT_AGREE'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
-export const POST_AGREEMENT_PROCESS_STATUSES: AgreementStatus[] = ['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']
+export const POST_AGREEMENT_PROCESS_STATUSES: AgreementStatus[] = [
+  'AGREED',
+  'DO_NOT_AGREE',
+  'COULD_NOT_ANSWER',
+  'UPDATED_AGREED',
+  'UPDATED_DO_NOT_AGREE',
+]
 
 export interface RawCollection {
   name: string

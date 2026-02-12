@@ -4,7 +4,7 @@ import { AuthSource } from './hmppsUser'
 
 export interface SessionDetails {
   accessType: AuthSource
-  accessMode: AccessMode
+  planAccessMode: AccessMode
   oasysRedirectUrl?: string
   planIdentifier?: AssessmentIdentifiers
 }

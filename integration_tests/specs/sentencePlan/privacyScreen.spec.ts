@@ -7,18 +7,29 @@ import {
   navigateToPrivacyScreen,
   sentencePlanPageTitles,
 } from './sentencePlanUtils'
+import { login } from '../../testUtils'
 
 test.describe('Privacy Screen', () => {
   test.describe('Display and content', () => {
+    test('hides OASys navigation links for CRN (MPOP) access', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      await login(page)
+      await page.goto(`/access/sentence-plan/crn/${crn}`)
+      await expect(page).toHaveURL(/\/privacy/)
+
+      await expect(page.locator('.govuk-back-link')).toHaveCount(0)
+      await expect(page.getByRole('link', { name: 'Return to OASys' })).toHaveCount(0)
+    })
+
     test('should be accessible', async ({ page, createSession, makeAxeBuilder, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
       await navigateToPrivacyScreen(page, handoverLink)
 
-      const accessibilityScanResults = await makeAxeBuilder()
-        .include('#main-content')
-        .analyze()
+      const accessibilityScanResults = await makeAxeBuilder().include('#main-content').analyze()
 
       expect(accessibilityScanResults.violations).toEqual([])
     })
