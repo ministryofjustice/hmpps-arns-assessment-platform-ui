@@ -27,7 +27,7 @@ export type AssessmentInfoStatus = 'success' | 'error'
 
 export interface AccessDetails {
   accessType: AuthSource
-  accessMode: AccessMode
+  planAccessMode: AccessMode
   oasysRedirectUrl?: string
 }
 

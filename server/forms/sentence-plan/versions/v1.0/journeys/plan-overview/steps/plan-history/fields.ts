@@ -6,7 +6,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { CaseData } from '../../../../constants'
 
-const isReadOnly = Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY'))
+const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
 export const subtitleText = HtmlBlock({
   content: '<p class="govuk-body">View all updates and changes made to this plan.</p>',

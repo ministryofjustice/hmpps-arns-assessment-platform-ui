@@ -81,7 +81,7 @@ const TARGET_SERVICE_CLIENT_IDS: Record<TargetService, string> = {
 
 export interface CreateSessionOptions {
   targetService: TargetService
-  accessMode?: AccessMode
+  planAccessMode?: AccessMode
   pnc?: string
   /**
    * Criminogenic needs data from OASys (via handover).
@@ -222,8 +222,8 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
         sessionBuilder.withSubjectPNC(options.pnc)
       }
 
-      if (options.accessMode) {
-        sessionBuilder.withAccessMode(options.accessMode)
+      if (options.planAccessMode) {
+        sessionBuilder.withPlanAccessMode(options.planAccessMode)
       }
 
       // Handle criminogenic needs data:

@@ -10,7 +10,7 @@ import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../c
 import { CaseData } from '../../../../constants'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
 
-const isReadOnly = Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY'))
+const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
 /**
  * Builds move buttons for goal cards.

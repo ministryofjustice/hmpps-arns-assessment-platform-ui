@@ -13,7 +13,7 @@ test.describe('READ_ONLY Access Mode', () => {
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
@@ -30,7 +30,7 @@ test.describe('READ_ONLY Access Mode', () => {
     test('hides Create Goal button', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
@@ -43,7 +43,7 @@ test.describe('READ_ONLY Access Mode', () => {
     test('hides Agree Plan button', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
@@ -58,7 +58,7 @@ test.describe('READ_ONLY Access Mode', () => {
     test('tab navigation still works in READ_ONLY mode', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder
         .extend(sentencePlanId)
@@ -87,7 +87,7 @@ test.describe('READ_ONLY Access Mode', () => {
     test('shows primary navigation links in READ_ONLY mode', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
 
@@ -108,7 +108,7 @@ test.describe('READ_ONLY Access Mode', () => {
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
 
@@ -128,7 +128,7 @@ test.describe('READ_ONLY Access Mode', () => {
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
 
       const sentencePlan = await sentencePlanBuilder
@@ -157,7 +157,7 @@ test.describe('READ_ONLY Access Mode', () => {
     test('allows visiting non-edit routes directly', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
 
@@ -178,7 +178,7 @@ test.describe('READ_ONLY Access Mode', () => {
     test('hides goal action links in READ_ONLY mode', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder
         .extend(sentencePlanId)

@@ -46,7 +46,7 @@ export const sentencePlanV1Journey = journey({
         redirect({
           when: and(
             Data('session.privacyAccepted').not.match(Condition.Equals(true)),
-            Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
+            Data('sessionDetails.planAccessMode').not.match(Condition.Equals('READ_ONLY')),
           ),
           goto: '../../privacy',
         }),

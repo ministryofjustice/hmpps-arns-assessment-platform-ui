@@ -13,7 +13,7 @@ test.describe('READ_ONLY Access Mode', () => {
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
@@ -32,7 +32,7 @@ test.describe('READ_ONLY Access Mode', () => {
     test('hides move buttons on goal cards', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(2)).save()
 
@@ -50,7 +50,7 @@ test.describe('READ_ONLY Access Mode', () => {
     test('hides Add steps link when a goal has no steps', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder
         .extend(sentencePlanId)
@@ -71,7 +71,7 @@ test.describe('READ_ONLY Access Mode', () => {
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder
         .extend(sentencePlanId)
@@ -104,7 +104,7 @@ test.describe('READ_ONLY Access Mode', () => {
     test('hides Update link on agreed goal cards', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder
         .extend(sentencePlanId)
@@ -130,7 +130,7 @@ test.describe('READ_ONLY Access Mode', () => {
     test('hides move buttons on agreed goal cards', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder
         .extend(sentencePlanId)
