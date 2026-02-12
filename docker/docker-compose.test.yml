@@ -71,8 +71,9 @@ services:
       HMPPS_AUTH_URL: http://hmpps-auth:9090/auth
       CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-e2e
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
+      SHARD: ${SHARD:-}
     working_dir: /playwright
-    command: npx playwright test
+    command: ["sh", "-c", "npx playwright test $${SHARD:+--shard=$$SHARD}"]
     volumes:
       - ../package.json:/playwright/package.json
       - ../package-lock.json:/playwright/package-lock.json

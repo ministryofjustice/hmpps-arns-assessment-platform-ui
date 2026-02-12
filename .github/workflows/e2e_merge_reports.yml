@@ -1,0 +1,49 @@
+name: Merge e2e test reports
+
+on:
+  workflow_call:
+    inputs:
+      artifact_pattern:
+        description: 'Pattern to match blob report artifacts'
+        required: false
+        type: string
+        default: 'test_results-*'
+      retention_days:
+        description: 'Number of days to retain the merged report'
+        required: false
+        type: number
+        default: 14
+      node_version_file:
+        description: "Passed to setup-node action to specify where to source the version of node from"
+        required: false
+        type: string
+        default: ".nvmrc"
+
+permissions:
+  contents: read
+
+jobs:
+  merge_reports:
+    name: Merge reports
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: ${{ inputs.node_version_file }}
+      - name: Install Playwright
+        run: npx playwright install
+      - name: Download reports
+        uses: actions/download-artifact@v7
+        with:
+          pattern: ${{ inputs.artifact_pattern }}
+          path: all-shard-reports
+          merge-multiple: true
+      - name: Merge reports
+        run: npx playwright merge-reports --reporter html ./all-shard-reports/blob-report
+      - name: Upload merged report
+        uses: actions/upload-artifact@v6
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: ${{ inputs.retention_days }}
