@@ -1,4 +1,4 @@
-import { Data, Format, Item, when } from '@form-engine/form/builders'
+import { Data, Format, Item, or, when } from '@form-engine/form/builders'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
@@ -275,7 +275,7 @@ export const agreementHistory = CollectionBlock({
  * Link to update the person's agreement - shown when latest status is COULD_NOT_ANSWER
  */
 export const updateAgreementLink = HtmlBlock({
-  hidden: Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER')),
+  hidden: or(isReadOnly, Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER'))),
   content: Format(
     '<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a></p>',
     CaseData.Forename,
