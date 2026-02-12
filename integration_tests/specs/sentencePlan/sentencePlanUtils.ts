@@ -1,6 +1,6 @@
 import { expect, Page } from '@playwright/test'
+import { AgreementStatus } from '@server/forms/sentence-plan/effects'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
-import { AgreementStatus } from '../../../server/forms/sentence-plan/effects'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
 // Note: UPDATED_AGREED and UPDATED_DO_NOT_AGREE are only valid as follow-up statuses
@@ -67,7 +67,7 @@ export const sentencePlanPageTitles = {
   // Plan overview & agree plan
   planOverview: 'Plan',
   agreePlan: 'Do they agree to this plan?',
-  updateAgreePlan: 'Do they agree?', // need confirmation on title (currently it's same as old Sentence Plan)
+  updateAgreePlan: 'Do they agree to their plan?',
 
   // Plan history
   planHistory: 'Plan history',

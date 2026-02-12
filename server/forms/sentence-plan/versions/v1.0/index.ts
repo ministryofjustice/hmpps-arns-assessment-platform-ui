@@ -5,7 +5,7 @@ import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
 import { actorLabels, areasOfNeed } from './constants'
-import { SentencePlanEffects } from '../../effects'
+import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../effects'
 
 /**
  * Sentence Plan v1.0 Journey
@@ -25,9 +25,7 @@ export const sentencePlanV1Journey = journey({
     locals: {
       basePath: '/sentence-plan/v1.0',
       hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
-      showPlanHistoryTab: Data('latestAgreementStatus').match(
-        Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
-      ),
+      showPlanHistoryTab: Data('latestAgreementStatus').match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
     },
   },
   data: {

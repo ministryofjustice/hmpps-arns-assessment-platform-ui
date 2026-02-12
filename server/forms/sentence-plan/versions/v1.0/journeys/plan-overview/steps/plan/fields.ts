@@ -8,6 +8,7 @@ import { CollectionBlock } from '@form-engine/registry/components/collectionBloc
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
+import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
 
 const isReadOnly = Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY'))
 
@@ -111,22 +112,30 @@ const removedGoalsCount = Data('goals')
 
 export const planCreatedMessage = HtmlBlock({
   hidden: or(
-    Data('latestAgreementStatus').not.match(
-      Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER', 'UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']),
-    ),
+    Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
     // In READ_ONLY mode, hide this block for COULD_NOT_ANSWER so we do not show the "Update agreement" action link.
     and(isReadOnly, Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))),
   ),
   content: when(
     Data('latestAgreementStatus').match(
-      Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']),
+      Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE', 'UPDATED_AGREED']),
     ),
   )
     .then(
-      Format(
-        '<p class="govuk-body">Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
-        Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
-      ),
+      when(Data('latestAgreementStatus').match(Condition.Equals('UPDATED_AGREED')))
+        .then(
+          Format(
+            '<p class="govuk-body">%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
+            CaseData.Forename,
+            Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
+          ),
+        )
+        .else(
+          Format(
+            '<p class="govuk-body">Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
+            Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
+          ),
+        ),
     )
     .else(
       Format(
@@ -274,13 +283,7 @@ export const goalsSection = TemplateWrapper({
                     TemplateWrapper({
                       // Before any agreement status exists, render the draft card variant.
                       hidden: Data('latestAgreementStatus').match(
-                        Condition.Array.IsIn([
-                          'AGREED',
-                          'DO_NOT_AGREE',
-                          'COULD_NOT_ANSWER',
-                          'UPDATED_AGREED',
-                          'UPDATED_DO_NOT_AGREE',
-                        ]),
+                        Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
                       ),
                       template: '{{slot:draftCard}}',
                       slots: {
@@ -326,13 +329,7 @@ export const goalsSection = TemplateWrapper({
                     TemplateWrapper({
                       // Once an agreement status exists (including "could not answer"), use the agreed variant.
                       hidden: Data('latestAgreementStatus').not.match(
-                        Condition.Array.IsIn([
-                          'AGREED',
-                          'DO_NOT_AGREE',
-                          'COULD_NOT_ANSWER',
-                          'UPDATED_AGREED',
-                          'UPDATED_DO_NOT_AGREE',
-                        ]),
+                        Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
                       ),
                       template: '{{slot:agreedCard}}',
                       slots: {
