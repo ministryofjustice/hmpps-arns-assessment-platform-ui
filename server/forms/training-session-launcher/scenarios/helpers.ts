@@ -117,9 +117,9 @@ export function randomLocation(): Location {
 }
 
 /**
- * Random access mode
+ * Random plan access mode
  */
-export function randomAccessMode(): AccessMode {
+export function randomPlanAccessMode(): AccessMode {
   return faker.helpers.arrayElement<AccessMode>(['READ_ONLY', 'READ_WRITE'])
 }
 

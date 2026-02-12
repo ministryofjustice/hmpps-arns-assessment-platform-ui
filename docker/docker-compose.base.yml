@@ -61,7 +61,7 @@ services:
       SPRING_FLYWAY_LOCATIONS: classpath:db/auth,db/auth_{vendor},db/dev/data/auth_{vendor},db/dev/data/auth,filesystem:/auth_db
 
   coordinator-api:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:2026-01-23.23.09b9a43
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:2026-02-12.4.7942eec
     depends_on:
       - postgres
       - hmpps-auth
@@ -86,7 +86,7 @@ services:
       CLIENT_SECRET: clientsecret
 
   arns-handover:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:2026-02-03.15.2b33228
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:2026-02-12.16.0bd0a7c
     depends_on:
       - redis
       - localstack

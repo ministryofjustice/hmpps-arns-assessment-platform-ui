@@ -13,7 +13,7 @@ test.describe('READ_ONLY Access Mode', () => {
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
 
@@ -37,7 +37,7 @@ test.describe('READ_ONLY Access Mode', () => {
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
-        accessMode: 'READ_ONLY',
+        planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
