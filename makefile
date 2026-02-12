@@ -86,7 +86,7 @@ clean: ## Stops and removes all project containers. Deletes local build/cache di
 	rm -rf dist node_modules test_results
 
 update: ## Downloads the latest versions of container images.
-	docker compose ${DEV_COMPOSE_FILES} pull
+	docker compose ${DEV_COMPOSE_FILES} pull --ignore-buildable
 
 save-logs: ## Saves docker container logs in a directory defined by OUTPUT_LOGS_DIR=
 	docker system info
