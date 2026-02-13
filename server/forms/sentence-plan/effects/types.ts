@@ -253,7 +253,7 @@ export interface PlanNotification {
  *
  * Keep this as a constrained set so link logic cannot drift due to typos.
  */
-export const NAVIGATION_REFERRERS = ['plan-overview', 'plan-history', 'add-goal', 'update-goal-steps'] as const
+export const NAVIGATION_REFERRERS = ['plan-overview', 'plan-history', 'add-goal', 'update-goal-steps', 'about'] as const
 export type NavigationReferrer = (typeof NAVIGATION_REFERRERS)[number]
 
 /**
