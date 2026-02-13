@@ -3,8 +3,7 @@ import { NavigationReferrer, SentencePlanContext } from '../types'
 /**
  * Load navigation referrer from session
  *
- * Reads the referrer from session, makes it available as Data('navigationReferrer'),
- * and clears it from session.
+ * Reads the referrer from session and makes it available as Data('navigationReferrer').
  *
  * Call this in onLoad of pages that need to check where the user came from
  * for dynamic backlink logic.
@@ -15,5 +14,4 @@ export const loadNavigationReferrer = () => async (context: SentencePlanContext)
 
   // Make available for backlink logic
   context.setData('navigationReferrer', referrer)
-  session.navigationReferrer = undefined
 }
