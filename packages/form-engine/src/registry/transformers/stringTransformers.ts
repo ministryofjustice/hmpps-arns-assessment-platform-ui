@@ -284,4 +284,120 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
 
     return `${paddedYear}-${paddedMonth}-${paddedDay}`
   },
+
+  // Converts an ISO-8601 date string to a Date object.
+  // Supports both date-only (YYYY-MM-DD) and full ISO format with time/timezone.
+  // Throws on invalid input so pipeline errors and original value is preserved.
+  // @example
+  // ISOToDate("2024-03-15") >> Date object
+  // ISOToDate("2024-03-15T14:30:00Z") >> Date object
+  // ISOToDate("") >> throws Error
+  // ISOToDate("15/03/2024") >> throws Error (UK format not supported)
+  ISOToDate: (value: any) => {
+    assertString(value, 'Transformer.String.ISOToDate')
+
+    // removes leading/trailing whitespace to handle "  2029-02-12  " gracefully:
+    const trimmed = value.trim()
+
+    // rejects empty strings:
+    if (!trimmed) {
+      throw new Error(`Transformer.String.ISOToDate: "${value}" is not a valid ISO date`)
+    }
+
+    const date = new Date(trimmed)
+
+    if (Number.isNaN(date.getTime())) {
+      throw new Error(`Transformer.String.ISOToDate: "${value}" is not a valid ISO date`)
+    }
+
+    return date
+  },
+
+  // Calculates the duration between two ISO date strings and formats it as a sentence length.
+  // Returns a string in the form "(X years and Y months)" with appropriate pluralisation.
+  // Components with zero value are omitted from the output.
+
+  // @param value - The start date as an ISO-8601 string (YYYY-MM-DD)
+  // @param endDate - The end date as an ISO-8601 string (YYYY-MM-DD)
+  // @returns Formatted sentence length string, for example: "(1 year and 6 months)"
+
+  // @example
+  // ToSentenceLength("2024-01-01", "2025-07-01") >>> "(1 year and 6 months)"
+  // ToSentenceLength("2024-01-01", "2024-03-15") >>> "(2 months and 14 days)"
+  // ToSentenceLength("2024-01-01", "2026-01-01") >>> "(2 years)"
+  ToSentenceLength: (value: string, endDate: string | ValueExpr) => {
+    assertString(value, 'Transformer.String.ToSentenceLength (startDate)')
+    assertString(endDate, 'Transformer.String.ToSentenceLength (endDate)')
+
+    let sentenceLengthString = ''
+    const startTrimmed = value.trim()
+    const endTrimmed = endDate.trim()
+
+    if (!startTrimmed || !endTrimmed) {
+      sentenceLengthString = ''
+    }
+
+    const start = new Date(startTrimmed)
+    const end = new Date(endTrimmed)
+
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+      sentenceLengthString = ''
+    }
+
+    // calculate years, months, and days between dates
+    let years = end.getFullYear() - start.getFullYear()
+    let months = end.getMonth() - start.getMonth()
+    let days = end.getDate() - start.getDate()
+
+    // since months and days are subtracted directly there is a chance months/days values could be negative:
+
+    // adjust for negative days:
+    // - borrows 1 from the months column
+    // - adds the number of days in the previous month
+    // example: 15 January 2024 >> 10 March 2025;
+    // before: years = 2025 - 2024 = 1, months = 3 - 1 = 2, days = 10 - 15 = -5;
+    // borrow: months = 2 - 1 = 1, days = -5 + 29 = 24
+    // after:  years=1, months=1, days=24
+    if (days < 0) {
+      months -= 1
+      // when passing 0 as the day/date parameter for new Date(), js rolls back to the last day of the previous month,
+      // hence no (-1) substruction in second param for month index
+      const prevMonth = new Date(end.getFullYear(), end.getMonth(), 0)
+      days += prevMonth.getDate()
+    }
+
+    // adjust for negative months:
+    // - borrows 1 from the years column & adds 12 months:
+    // example: 1 November 2024 >> 1 February 2025;
+    // before: years = 2025 - 2024 = 1, months = 2 - 11 = -9;
+    // borrow: years = 1 - 1 = 0, months = -9 + 12 = 3
+    // after:  years=0, months=3, days=0
+    if (months < 0) {
+      years -= 1
+      months += 12
+    }
+
+    // helper to pluralise units
+    const pluralise = (count: number, unit: string): string => {
+      return count === 1 ? `${count} ${unit}` : `${count} ${unit}s`
+    }
+
+    if (years > 0 && months > 0 && days > 0) {
+      sentenceLengthString = `(${pluralise(years, 'year')}, ${pluralise(months, 'month')} and ${pluralise(days, 'day')})`
+    } else if (years > 0 && months > 0) {
+      sentenceLengthString = `(${pluralise(years, 'year')} and ${pluralise(months, 'month')})`
+    } else if (months > 0 && days > 0) {
+      sentenceLengthString = `(${pluralise(months, 'month')} and ${pluralise(days, 'day')})`
+    } else if (years > 0 && days > 0) {
+      sentenceLengthString = `(${pluralise(years, 'year')} and ${pluralise(days, 'day')})`
+    } else if (years > 0) {
+      sentenceLengthString = `(${pluralise(years, 'year')})`
+    } else if (months > 0) {
+      sentenceLengthString = `(${pluralise(months, 'month')})`
+    } else if (days > 0) {
+      sentenceLengthString = `(${pluralise(days, 'day')})`
+    }
+
+    return sentenceLengthString
+  },
 })
