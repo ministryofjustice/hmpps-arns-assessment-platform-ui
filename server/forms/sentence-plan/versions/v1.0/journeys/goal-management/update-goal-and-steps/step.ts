@@ -17,7 +17,8 @@ import {
   viewAllNotesSection,
   actionButtons,
 } from './fields'
-import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanEffects } from '../../../../../effects'
+import { redirectIfNotPostAgreement } from '../../../guards'
 
 /**
  * Update goal and steps
@@ -42,12 +43,11 @@ export const updateGoalAndStepsStep = step({
         SentencePlanEffects.loadActiveGoalForEdit(),
         SentencePlanEffects.setNavigationReferrer('update-goal-steps'),
       ],
+    }),
+    // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
+    redirectIfNotPostAgreement('../../plan/overview'),
+    accessTransition({
       next: [
-        // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
-        redirect({
-          when: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
-          goto: '../../plan/overview',
-        }),
         // Redirect if goal not found
         redirect({
           when: Data('activeGoal').not.match(Condition.IsRequired()),

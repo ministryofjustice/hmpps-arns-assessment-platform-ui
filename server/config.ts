@@ -139,6 +139,8 @@ export default {
   },
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
+  feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
+  serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#'),
 
   // Target service OAuth client IDs for handover
   handoverTargets: {

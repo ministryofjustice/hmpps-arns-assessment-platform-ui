@@ -1,7 +1,7 @@
-import { Data, Format, redirect, step, submitTransition } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import { Format, redirect, step, submitTransition } from '@form-engine/form/builders'
 import { continueButton } from './fields'
 import { CaseData } from '../../constants'
+import { isOasysAccess, isReadWriteAccess } from '../../guards'
 
 export const aboutPersonStep = step({
   path: '/about-person',
@@ -10,8 +10,8 @@ export const aboutPersonStep = step({
     locals: {
       headerPageHeading: Format(`About %1`, CaseData.Forename),
       buttons: {
-        showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('OASYS')),
-        showCreateGoalButton: Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
+        showReturnToOasysButton: isOasysAccess,
+        showCreateGoalButton: isReadWriteAccess,
       },
     },
   },

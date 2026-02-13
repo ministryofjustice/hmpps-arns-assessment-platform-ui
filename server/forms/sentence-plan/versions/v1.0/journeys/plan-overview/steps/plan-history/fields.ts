@@ -1,4 +1,4 @@
-import { Data, Format, Item, when } from '@form-engine/form/builders'
+import { Data, Format, Item, or, when } from '@form-engine/form/builders'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
@@ -6,7 +6,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { CaseData } from '../../../../constants'
 
-const isReadOnly = Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY'))
+const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
 export const subtitleText = HtmlBlock({
   content: '<p class="govuk-body">View all updates and changes made to this plan.</p>',
@@ -275,7 +275,7 @@ export const agreementHistory = CollectionBlock({
  * Link to update the person's agreement - shown when latest status is COULD_NOT_ANSWER
  */
 export const updateAgreementLink = HtmlBlock({
-  hidden: Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER')),
+  hidden: or(isReadOnly, Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER'))),
   content: Format(
     '<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a></p>',
     CaseData.Forename,

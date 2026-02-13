@@ -16,9 +16,7 @@ test.describe('Privacy Screen', () => {
 
       await navigateToPrivacyScreen(page, handoverLink)
 
-      const accessibilityScanResults = await makeAxeBuilder()
-        .include('#main-content')
-        .analyze()
+      const accessibilityScanResults = await makeAxeBuilder().include('#main-content').analyze()
 
       expect(accessibilityScanResults.violations).toEqual([])
     })

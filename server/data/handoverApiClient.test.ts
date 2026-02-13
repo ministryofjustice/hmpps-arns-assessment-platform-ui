@@ -32,7 +32,7 @@ describe('HandoverApiClient', () => {
   const mockPrincipal: HandoverPrincipalDetails = {
     identifier: 'user-123',
     displayName: 'Test User',
-    accessMode: 'READ_WRITE',
+    planAccessMode: 'READ_WRITE',
     returnUrl: 'http://localhost:3000',
   }
 

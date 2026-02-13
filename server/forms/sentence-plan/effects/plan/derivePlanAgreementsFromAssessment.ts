@@ -15,7 +15,7 @@ import {
  *
  * Sets:
  * - Data('planAgreements'): Array of derived plan agreements (sorted newest first)
- * - Data('latestAgreementStatus'): Status of the most recent agreement (or undefined if none)
+ * - Data('latestAgreementStatus'): Status of the most recent agreement (or 'DRAFT' if none)
  * - Data('latestAgreementDate'): Status date of the most recent agreement (or undefined if none)
  * - Data('planAgreementsCollectionUuid'): UUID of the PLAN_AGREEMENTS collection (for adding new agreements)
  */
