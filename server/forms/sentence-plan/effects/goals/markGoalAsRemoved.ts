@@ -4,7 +4,6 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
-import { addPlanOverviewSuccessNotification, getPlanOwnerPossessive } from '../notifications/notificationUtils'
 
 /**
  * Mark a goal as removed
@@ -87,7 +86,4 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
   if (commands.length > 0) {
     await deps.api.executeCommands(...commands)
   }
-
-  const planOwnerPossessive = getPlanOwnerPossessive(context)
-  await addPlanOverviewSuccessNotification(context, `You removed a goal from ${planOwnerPossessive} plan`)
 }

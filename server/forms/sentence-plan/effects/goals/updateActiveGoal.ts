@@ -2,7 +2,6 @@ import { InternalServerError } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
-import { addPlanOverviewSuccessNotification, getPlanOwnerPossessive } from '../notifications/notificationUtils'
 import {
   getRequiredEffectContext,
   calculateTargetDate,
@@ -75,7 +74,4 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
   ]
 
   await deps.api.executeCommands(...commands)
-
-  const planOwnerPossessive = getPlanOwnerPossessive(context)
-  await addPlanOverviewSuccessNotification(context, `You changed a goal in ${planOwnerPossessive} plan`)
 }

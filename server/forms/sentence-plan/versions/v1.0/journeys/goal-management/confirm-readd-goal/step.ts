@@ -1,7 +1,17 @@
-import { accessTransition, Answer, Data, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
+import {
+  accessTransition,
+  Answer,
+  Data,
+  Format,
+  redirect,
+  Post,
+  step,
+  submitTransition,
+} from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, readdNoteSection, canStartNowSection, buttonGroup } from './fields'
 import { SentencePlanEffects } from '../../../../../effects'
+import { CaseData } from '../../../constants'
 
 /**
  * Confirm re-add goal page
@@ -60,7 +70,14 @@ export const confirmAddGoalStep = step({
       when: Post('action').match(Condition.Equals('confirm')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.readdGoalToPlan()],
+        effects: [
+          SentencePlanEffects.readdGoalToPlan(),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            message: Format('You added a goal back into %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+          }),
+        ],
         next: [
           redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
