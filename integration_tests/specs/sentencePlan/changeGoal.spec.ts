@@ -78,6 +78,9 @@ test.describe('Change goal journey', () => {
       // Check user is redirected to plan overview with current goals
       await expect(page).toHaveURL(/plan\/overview.*type=current/)
 
+      // Verify success alert is shown on plan overview
+      await expect(page.locator('.moj-alert--success')).toContainText(/You changed a goal in .* plan/i)
+
       // Verify the updated title appears on plan overview
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       const updatedGoalTitle = await planOverviewPage.getGoalCardTitle(0)

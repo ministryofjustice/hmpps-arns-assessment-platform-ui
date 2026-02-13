@@ -13,6 +13,7 @@ import {
 import { Condition } from '@form-engine/registry/conditions'
 import { pageLayout } from './fields'
 import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
+import { CaseData } from '../../../constants'
 
 /**
  * Change Goal page
@@ -68,7 +69,14 @@ export const changeGoalStep = step({
       when: Post('action').match(Condition.Equals('saveGoal')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.updateActiveGoal()],
+        effects: [
+          SentencePlanEffects.updateActiveGoal(),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            message: Format('You changed a goal in %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+          }),
+        ],
         next: [
           // if accessed through 'create a goal' page > 'add steps' and clicked 'back' then redirect to 'add-steps':
           redirect({
