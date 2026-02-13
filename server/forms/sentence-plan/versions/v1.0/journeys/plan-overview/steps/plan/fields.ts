@@ -9,6 +9,7 @@ import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
+import { isSanSpAssessment } from '../../../../guards'
 
 const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
@@ -425,7 +426,7 @@ export const blankPlanOverviewContent = HtmlBlock({
         '<span class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span>To agree the plan, create a goal to work on now</span>',
       )
       .else(''),
-    when(Data('assessment.assessmentType').match(Condition.Equals('SAN_SP')))
+    when(isSanSpAssessment)
       .then(
         Format(
           '<li><a href="../about-person" class="govuk-link govuk-link--no-visited-state">view information from %1\'s assessment</a></li>',

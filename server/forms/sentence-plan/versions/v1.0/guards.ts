@@ -10,7 +10,9 @@ import { sentencePlanOverviewPath } from './constants'
  * - who came from OASYS
  * - who is read-only
  * - whether a plan has passed agreement
+ * - which assessment type is active
  */
+
 export const isOasysAccess = Data('sessionDetails.accessType').match(Condition.Equals('OASYS'))
 
 export const isReadOnlyAccess = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
@@ -53,5 +55,22 @@ export const redirectIfNotPostAgreement = (goto: string) =>
 export const redirectUnlessCouldNotAnswer = (goto: string) =>
   accessTransition({
     when: lacksCouldNotAnswerStatus,
+    next: [redirect({ goto })],
+  })
+
+/**
+ * True when the assessment type is SAN_SP (private beta).
+ * Used to conditionally show features only available to SAN/SP users (e.g. About tab).
+ */
+export const isSanSpAssessment = Data('assessment.assessmentType').match(Condition.Equals('SAN_SP'))
+
+export const isNotSanSpAssessment = Data('assessment.assessmentType').not.match(Condition.Equals('SAN_SP'))
+
+/**
+ * Redirect users unless the assessment type is SAN_SP.
+ */
+export const redirectUnlessSanSp = (goto: string) =>
+  accessTransition({
+    when: isNotSanSpAssessment,
     next: [redirect({ goto })],
   })

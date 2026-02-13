@@ -6,7 +6,7 @@ import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
 import { actorLabels, areasOfNeed } from './constants'
 import { SentencePlanEffects } from '../../effects'
-import { hasPostAgreementStatus, isReadWriteAccess } from './guards'
+import { hasPostAgreementStatus, isSanSpAssessment, isReadWriteAccess } from './guards'
 
 /**
  * Sentence Plan v1.0 Journey
@@ -26,7 +26,7 @@ export const sentencePlanV1Journey = journey({
     locals: {
       basePath: '/sentence-plan/v1.0',
       hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
-      showAboutTab: Data('assessment.assessmentType').match(Condition.Equals('SAN_SP')),
+      showAboutTab: isSanSpAssessment,
       showPlanHistoryTab: hasPostAgreementStatus,
     },
   },
