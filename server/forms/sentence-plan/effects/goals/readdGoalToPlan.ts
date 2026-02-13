@@ -4,6 +4,7 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, calculateTargetDate, determineGoalStatus, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
+import { addPlanOverviewSuccessNotification, getPlanOwnerPossessive } from '../notifications/notificationUtils'
 
 /**
  * Re-add a removed goal back to the plan
@@ -125,4 +126,7 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
       })
     }
   }
+
+  const planOwnerPossessive = getPlanOwnerPossessive(context)
+  await addPlanOverviewSuccessNotification(context, `You added a goal back into ${planOwnerPossessive} plan`)
 }

@@ -1,8 +1,7 @@
-import { accessTransition, Data, Format, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
+import { accessTransition, Data, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, introText, goalCard, removalNoteSection, buttonGroup } from './fields'
 import { SentencePlanEffects } from '../../../../../effects'
-import { CaseData } from '../../../constants'
 
 /**
  * Confirm remove goal page
@@ -54,14 +53,7 @@ export const removeGoalStep = step({
       when: Post('action').match(Condition.Equals('confirm')),
       validate: true,
       onValid: {
-        effects: [
-          SentencePlanEffects.markGoalAsRemoved(),
-          SentencePlanEffects.addNotification({
-            type: 'success',
-            message: Format('You removed a goal from %1 plan', CaseData.ForenamePossessive),
-            target: 'plan-overview',
-          }),
-        ],
+        effects: [SentencePlanEffects.markGoalAsRemoved()],
         // Redirect to plan overview with "Removed goals" tab active
         next: [redirect({ goto: '../../plan/overview?type=removed' })],
       },

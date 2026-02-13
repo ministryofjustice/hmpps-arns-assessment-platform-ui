@@ -1,6 +1,7 @@
 import { InternalServerError } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { getRequiredEffectContext } from './goalUtils'
+import { addPlanOverviewSuccessNotification, getPlanOwnerPossessive } from '../notifications/notificationUtils'
 
 /**
  * Delete the active goal
@@ -28,4 +29,7 @@ export const deleteActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
     assessmentUuid,
     user,
   })
+
+  const planOwnerPossessive = getPlanOwnerPossessive(context)
+  await addPlanOverviewSuccessNotification(context, `You deleted a goal to ${planOwnerPossessive} plan`, 'Goal deleted')
 }

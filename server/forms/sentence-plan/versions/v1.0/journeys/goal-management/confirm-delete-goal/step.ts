@@ -1,17 +1,7 @@
-import {
-  accessTransition,
-  Data,
-  Format,
-  redirect,
-  Post,
-  step,
-  submitTransition,
-  when,
-} from '@form-engine/form/builders'
+import { accessTransition, Data, redirect, Post, step, submitTransition, when } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, introText, goalCard, buttonGroup } from './fields'
 import { SentencePlanEffects } from '../../../../../effects'
-import { CaseData } from '../../../constants'
 
 /**
  * Confirm delete goal page
@@ -67,15 +57,7 @@ export const confirmDeleteGoalStep = step({
     submitTransition({
       when: Post('action').match(Condition.Equals('confirm')),
       onAlways: {
-        effects: [
-          SentencePlanEffects.deleteActiveGoal(),
-          SentencePlanEffects.addNotification({
-            type: 'success',
-            title: 'Goal deleted',
-            message: Format('You deleted a goal to %1 plan', CaseData.ForenamePossessive),
-            target: 'plan-overview',
-          }),
-        ],
+        effects: [SentencePlanEffects.deleteActiveGoal()],
         next: [
           redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
