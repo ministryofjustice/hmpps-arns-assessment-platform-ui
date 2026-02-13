@@ -1,7 +1,7 @@
 import type nunjucks from 'nunjucks'
 import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
 import { BlockDefinition, ConditionalString, EvaluatedBlock } from '@form-engine/form/types/structures.type'
-import { ChainableRef } from '@form-engine/form/builders/types'
+import { ChainableRef, ChainableScopedRef } from '@form-engine/form/builders/types'
 import { block as blockBuilder } from '@form-engine/form/builders'
 import {
   AssessmentArea,
@@ -12,9 +12,14 @@ import {
 export interface AssessmentInfoDetailsProps {
   personName: ConditionalString
   areaName: ConditionalString
-  assessmentData: AssessmentArea | null | ChainableRef
+  // assessment data: can be static, a Data() reference, or an Item() scoped reference
+  assessmentData: AssessmentArea | null | ChainableRef | ChainableScopedRef
   status: ConditionalString
   fullWidth?: boolean
+  // when true (default), wraps content in a govuk details component.
+  // - can be set to false so that content rendered directly without the collapsible wrapper
+  // (useful when embedding inside other expandable containers like accordions)
+  showAsDetails?: boolean
 }
 
 export interface AssessmentInfoDetailsBlock extends BlockDefinition, AssessmentInfoDetailsProps {
@@ -75,7 +80,7 @@ export function hasAnyData(data: AssessmentArea | null): boolean {
  * Builds the template parameters for rendering.
  */
 export function buildParams(block: EvaluatedBlock<AssessmentInfoDetailsBlock>) {
-  const { personName, areaName, assessmentData, status, fullWidth } = block
+  const { personName, areaName, assessmentData, status, fullWidth, showAsDetails = true } = block
   const data = assessmentData as AssessmentArea | null
 
   const isError = status === 'error'
@@ -98,7 +103,10 @@ export function buildParams(block: EvaluatedBlock<AssessmentInfoDetailsBlock>) {
   const strengthsDetails = strengthsLinked ? data?.strengthsOrProtectiveFactorsDetails : null
 
   const missingItems: string[] = []
-  if (data && !isComplete) {
+
+  // NOTE: removed '&& !isComplete': this is to account for edge cases where SAN returns assessment data with section complete
+  // but area didn't receive score from OASYS for some reason yet (even though threshold is present)
+  if (data) {
     if (data.linkedToHarm == null) {
       missingItems.push('whether this area is linked to RoSH (risk of serious harm)')
     }
@@ -136,6 +144,7 @@ export function buildParams(block: EvaluatedBlock<AssessmentInfoDetailsBlock>) {
     missingItems,
     hasMissingItems: missingItems.length > 0,
     fullWidth,
+    showAsDetails,
   }
 }
 

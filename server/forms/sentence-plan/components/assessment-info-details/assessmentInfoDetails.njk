@@ -1,8 +1,10 @@
 {#
   Assessment Info Details Component
 
-  Displays practitioner analysis from the SAN assessment in a collapsible
-  GOV.UK Details component.
+  Displays practitioner analysis from the SAN assessment.
+
+  By default, wraps content in a collapsible govUk details element.
+  When showAsDetails set to false, renders content directly (useful for accordion panels, for example on About page).
 
   By default, the component is wrapped in a two-thirds width container.
   Use fullWidth: true when the component is already within a constrained layout.
@@ -27,6 +29,7 @@
     missingItems     - Array of missing item descriptions
     hasMissingItems  - True if there are missing items
     fullWidth        - True to skip the two-thirds wrapper
+    showAsDetails    - True (default) wraps in govukDetails (used for create/change goal page), false renders content directly (used for about page)
 #}
 
 {% from "govuk/components/details/macro.njk" import govukDetails %}
@@ -36,7 +39,7 @@
 {#- Build the content based on state -#}
 {% set detailsContent %}
   {#- Error state -#}
-  {% if params.isError %}
+  {% if params.isError and params.showAsDetails %}
     {{ govukWarningText({
       text: "There is a problem getting this information. Try reloading the page or try again later.",
       iconFallbackText: "Warning"
@@ -45,14 +48,14 @@
   {#- No data state -#}
   {% elif not params.hasData %}
     {{ govukWarningText({
-      text: "No information is available yet as the assessment has not been started for this area.",
+      text: "No information is available yet as the assessment has not been started for this area." if params.showAsDetails else "No information is available yet",
       iconFallbackText: "Warning"
     }) }}
 
   {#- Has data -#}
   {% else %}
     {#- Incomplete warning -#}
-    {% if not params.isComplete %}
+    {% if not params.isComplete and params.showAsDetails%}
       {{ govukWarningText({
         text: "This area has not been marked as complete in the assessment yet, but you can check the latest information available below.",
         iconFallbackText: "Warning"
@@ -92,34 +95,56 @@
       {% endif %}
     {% endif %}
 
+    {#- Score section (only shown on about page, not in collapsible details) -#}
+    {% if params.hasScore and not params.showAsDetails %}
+      <div class="govuk-!-margin-top-4">
+        <p><strong>{{ params.areaName }} need score</strong></p>
+        <p>{{ params.score }} out of {{ params.upperBound }}. (Scores above {{ params.threshold }} are high-scoring.)</p>
+      </div>
+    {% endif %}
+
     {#- Missing information section -#}
-    {% if params.hasMissingItems and not params.isComplete %}
+    {# NOTE: removed 'and not params.IsComplete' to account for edge case where score is not returned for some reason -#}
+    {% if params.hasMissingItems %}
+      {% if not params.showAsDetails %}
+        <div class="govuk-inset-text">
+      {% endif %}
       <p><strong>Missing information:</strong></p>
-      <ul class="govuk-list govuk-list--bullet">
+      <ul class="{{ 'govuk-list govuk-list--bullet' if params.showAsDetails else '' }}">
         {% for item in params.missingItems %}
           <li>{{ item }}</li>
         {% endfor %}
       </ul>
+      {% if not params.showAsDetails %}
+        </div>
+      {% endif %}
     {% endif %}
   {% endif %}
 {% endset %}
 
-{% set detailsComponent %}
-  {{ govukDetails({
-    summaryText: "View information from " + params.personName + "'s assessment",
-    html: detailsContent,
-    attributes: {
-      "data-qa": "assessment-info-details"
-    }
-  }) }}
-{% endset %}
+{% if params.showAsDetails %}
+  {% set detailsComponent %}
+    {{ govukDetails({
+      summaryText: "View information from " + params.personName + "'s assessment",
+      html: detailsContent,
+      attributes: {
+        "data-qa": "assessment-info-details"
+      }
+    }) }}
+  {% endset %}
 
-{% if params.fullWidth %}
-  {{ detailsComponent | safe }}
-{% else %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      {{ detailsComponent | safe }}
+  {% if params.fullWidth %}
+    {{ detailsComponent | safe }}
+  {% else %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {{ detailsComponent | safe }}
+      </div>
     </div>
+  {% endif %}
+{% else %}
+  {#- Render content directly without Details wrapper -#}
+  <div data-qa="assessment-info-and-score-content">
+    {{ detailsContent | safe }}
   </div>
 {% endif %}
