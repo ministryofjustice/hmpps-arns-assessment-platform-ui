@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../support/fixtures'
-import PlanHistoryPage from '../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent } from './sentencePlanUtils'
+import { test, TargetService } from '../../../support/fixtures'
+import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
+import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
 
 test.describe('Plan History - Navigation', () => {
   test('can navigate to plan history from plan overview', async ({ page, createSession, sentencePlanBuilder }) => {

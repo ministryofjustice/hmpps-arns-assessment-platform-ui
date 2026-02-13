@@ -1,0 +1,58 @@
+.app-report-problem {
+  border-top: 1px solid $govuk-border-colour;
+  padding: govuk-spacing(3) 0;
+
+  .govuk-details {
+    margin-bottom: 0;
+  }
+}
+
+.app-report-problem__info {
+  display: inline-flex;
+  max-width: 100%;
+  border: 1px solid $govuk-border-colour;
+  background-color: govuk-colour("white");
+}
+
+.app-report-problem__details {
+  @include govuk-font($size: 16);
+  margin: 0;
+  padding: govuk-spacing(3);
+  white-space: pre-wrap;
+  word-break: break-all;
+  min-width: 0;
+}
+
+.app-report-problem__copy {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0 govuk-spacing(3);
+}
+
+.app-report-problem__copy-button {
+  margin-bottom: 0;
+}
+
+// MOJ copy button pattern: hide when JS is disabled, disable during "Copied" state
+.copy-button {
+  display: none;
+}
+
+body.js-enabled {
+  .copy-button {
+    display: inline;
+  }
+
+  @media print {
+    .copy-button {
+      display: none;
+    }
+  }
+}
+
+.disable-click {
+  pointer-events: none;
+  background-color: transparent;
+  box-shadow: none;
+}

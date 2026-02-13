@@ -1,7 +1,8 @@
-import { Format, Data, step, accessTransition, Query, redirect, or } from '@form-engine/form/builders'
+import { Format, step, accessTransition, Query, redirect, or, and } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import {
   blankPlanOverviewContent,
+  blankPlanOverviewContentReadOnly,
   futureGoalsContent,
   goalsSection,
   planCreatedMessage,
@@ -14,6 +15,7 @@ import {
 } from './fields'
 import { SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
+import { isOasysAccess, isReadWriteAccess, lacksPostAgreementStatus } from '../../../../guards'
 
 export const planStep = step({
   path: '/overview',
@@ -23,11 +25,10 @@ export const planStep = step({
       headerPageHeading: Format(`%1's plan`, CaseData.Forename),
       currentTab: Query('type'),
       buttons: {
-        showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('OASYS')),
-        showCreateGoalButton: true,
-        showAgreePlanButton: Data('latestAgreementStatus').not.match(
-          Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
-        ),
+        showReturnToOasysButton: isOasysAccess,
+        showCreateGoalButton: isReadWriteAccess,
+        // Only show "Agree plan" while still in draft and when the user has edit access.
+        showAgreePlanButton: and(lacksPostAgreementStatus, isReadWriteAccess),
       },
       hasPlanOverviewErrors: or(hasMissingActiveGoalError, hasMissingStepsError),
     },
@@ -40,6 +41,7 @@ export const planStep = step({
     notificationBanners,
     subNavigation,
     goalsSection,
+    blankPlanOverviewContentReadOnly,
     blankPlanOverviewContent,
     futureGoalsContent,
   ],

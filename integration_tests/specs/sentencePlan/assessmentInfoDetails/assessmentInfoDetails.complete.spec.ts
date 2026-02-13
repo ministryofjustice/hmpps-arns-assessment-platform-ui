@@ -1,11 +1,11 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../support/fixtures'
-import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
-import ChangeGoalPage from '../../pages/sentencePlan/changeGoalPage'
-import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
-import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import { navigateToSentencePlan, getDatePlusDaysAsISO } from './sentencePlanUtils'
-import coordinatorApi, { SanAssessmentData } from '../../mockApis/coordinatorApi'
+import { test, TargetService } from '../../../support/fixtures'
+import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
+import ChangeGoalPage from '../../../pages/sentencePlan/changeGoalPage'
+import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
+import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
+import { navigateToSentencePlan, getDatePlusDaysAsISO } from '../sentencePlanUtils'
+import coordinatorApi, { SanAssessmentData } from '../../../mockApis/coordinatorApi'
 
 test.describe('Assessment Info Details - Complete Section', () => {
   test('displays assessment info collapsed when section is complete with all data', async ({ page, createSession }) => {

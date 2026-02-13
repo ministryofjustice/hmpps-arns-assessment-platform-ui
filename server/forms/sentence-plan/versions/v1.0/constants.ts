@@ -13,6 +13,11 @@ export const CaseData = {
 }
 
 /**
+ * Canonical plan overview URL.
+ */
+export const sentencePlanOverviewPath = '/sentence-plan/v1.0/plan/overview'
+
+/**
  * Actor enum values to human-readable labels.
  * Note: 'person_on_probation' is handled specially using the person's name.
  */

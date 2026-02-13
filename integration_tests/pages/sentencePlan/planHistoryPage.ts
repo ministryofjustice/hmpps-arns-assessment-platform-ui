@@ -8,11 +8,14 @@ export default class PlanHistoryPage extends AbstractPage {
 
   readonly mainContent: Locator
 
+  readonly updateAgreementLink: Locator
+
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
     this.historyEntries = page.locator('.govuk-\\!-margin-bottom-6')
     this.mainContent = page.getByTestId('main-form')
+    this.updateAgreementLink = page.getByRole('link', { name: /Update .+'s agreement/i })
   }
 
   static async verifyOnPage(page: Page): Promise<PlanHistoryPage> {

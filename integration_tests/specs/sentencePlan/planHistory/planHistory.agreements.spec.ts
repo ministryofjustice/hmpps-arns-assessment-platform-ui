@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../support/fixtures'
-import PlanHistoryPage from '../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent } from './sentencePlanUtils'
+import { test, TargetService } from '../../../support/fixtures'
+import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
+import { handlePrivacyScreenIfPresent, navigateToSentencePlan } from '../sentencePlanUtils'
 
 test.describe('Plan History - Agreements', () => {
   test.describe('Could not answer then agreed scenario', () => {
@@ -168,6 +168,42 @@ test.describe('Plan History - Agreements', () => {
         - paragraph: /did not agree/
         - paragraph: Person disagrees with the goals set
       `)
+    })
+  })
+
+  test.describe('Read-only access', () => {
+    test('hides update agreement link in read-only mode even when status is COULD_NOT_ANSWER', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        planAccessMode: 'READ_ONLY',
+      })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoal({
+          title: 'Improve communication skills',
+          areaOfNeed: 'thinking-behaviours-and-attitudes',
+          status: 'ACTIVE',
+          steps: [{ actor: 'probation_practitioner', description: 'Attend group sessions' }],
+        })
+        .withPlanAgreements([
+          {
+            status: 'COULD_NOT_ANSWER',
+            createdBy: 'Test Practitioner',
+            detailsCouldNotAnswer: 'Person was not available',
+            dateOffset: 0,
+          },
+        ])
+        .save()
+
+      await navigateToSentencePlan(page, handoverLink)
+      await page.getByRole('link', { name: /Plan history/i }).click()
+
+      const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
+      await expect(planHistoryPage.updateAgreementLink).not.toBeVisible()
     })
   })
 

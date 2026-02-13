@@ -12,7 +12,7 @@ jobs:
     name: Helm lint
     strategy:
       matrix:
-        environments: [ 'dev', 'preprod', 'prod' ]
+        environments: [ 'dev', 'test', 'preprod', 'prod' ]
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/test_helm_lint.yml@v2
     secrets: inherit
     with:
@@ -33,7 +33,7 @@ jobs:
 
   build_docker:
     name: Build docker image
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@v2
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@parallel-native-builders
     with:
       docker_registry: 'ghcr.io'
       registry_org: 'ministryofjustice'
@@ -42,13 +42,14 @@ jobs:
       load: true
       docker_multiplatform: false
       upload_image_artifact: true
-      image_artifact_retention_days: 2
+      image_artifact_retention_days: 1
 
   e2e_test:
     needs: [build_docker]
     uses: ./.github/workflows/e2e_test.yml
     with:
       app_version: ${{ needs.build_docker.outputs.app_version }}
+      docker_multiplatform: false
 
   publish-test-results:
     name: "Publish Tests Results"

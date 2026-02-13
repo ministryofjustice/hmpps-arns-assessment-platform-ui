@@ -27,7 +27,7 @@ export type AssessmentInfoStatus = 'success' | 'error'
 
 export interface AccessDetails {
   accessType: AuthSource
-  accessMode: AccessMode
+  planAccessMode: AccessMode
   oasysRedirectUrl?: string
 }
 
@@ -35,10 +35,22 @@ export type GoalStatus = 'ACTIVE' | 'FUTURE' | 'REMOVED' | 'ACHIEVED'
 export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
 
 // Plan agreement statuses - DRAFT is the initial status before any agreement action
-export type AgreementStatus = 'DRAFT' | 'AGREED' | 'DO_NOT_AGREE' | 'COULD_NOT_ANSWER'
+export type AgreementStatus =
+  | 'DRAFT'
+  | 'AGREED'
+  | 'DO_NOT_AGREE'
+  | 'COULD_NOT_ANSWER'
+  | 'UPDATED_AGREED'
+  | 'UPDATED_DO_NOT_AGREE'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
-export const POST_AGREEMENT_PROCESS_STATUSES: AgreementStatus[] = ['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']
+export const POST_AGREEMENT_PROCESS_STATUSES: AgreementStatus[] = [
+  'AGREED',
+  'DO_NOT_AGREE',
+  'COULD_NOT_ANSWER',
+  'UPDATED_AGREED',
+  'UPDATED_DO_NOT_AGREE',
+]
 
 export interface RawCollection {
   name: string
@@ -237,6 +249,14 @@ export interface PlanNotification {
 }
 
 /**
+ * Navigation referrers used for dynamic backlink behaviour.
+ *
+ * Keep this as a constrained set so link logic cannot drift due to typos.
+ */
+export const NAVIGATION_REFERRERS = ['plan-overview', 'plan-history', 'add-goal', 'update-goal-steps', 'about'] as const
+export type NavigationReferrer = (typeof NAVIGATION_REFERRERS)[number]
+
+/**
  * Step data structure stored in session during step editing
  */
 export interface StepSession {
@@ -285,7 +305,7 @@ export interface SentencePlanData extends Record<string, unknown> {
   // Plan Agreements
   planAgreements: DerivedPlanAgreement[]
   planAgreementsCollectionUuid: string
-  latestAgreementStatus: AgreementStatus | undefined
+  latestAgreementStatus: AgreementStatus
   latestAgreementDate: Date | undefined
 
   // Plan Timeline (raw timeline events from API)
@@ -309,6 +329,7 @@ export interface SentencePlanData extends Record<string, unknown> {
   // Assessment area info for current area of need (from coordinator API)
   currentAreaAssessment: AssessmentArea | null
   currentAreaAssessmentStatus: AssessmentInfoStatus
+  navigationReferrer?: NavigationReferrer | null
 
   // all assessment areas grouped by scoring category (for about page; from coordinator API)
   allAssessmentAreas: AssessmentArea[]
@@ -319,6 +340,7 @@ export interface SentencePlanData extends Record<string, unknown> {
   isAssessmentComplete: boolean
   assessmentLastUpdated: string | null
   allAreasAssessmentStatus: AssessmentInfoStatus
+
 }
 
 /**
@@ -343,7 +365,7 @@ export interface SentencePlanAnswers extends Record<string, unknown> {
  * Session data via context.getSession()
  */
 export interface SentencePlanSession {
-  navigationReferrer?: string
+  navigationReferrer?: NavigationReferrer
   returnTo?: string
   assessmentUuid?: string
   privacyAccepted?: boolean
@@ -371,7 +393,7 @@ export interface SentencePlanState extends Record<string, unknown> {
  * @example
  * const myEffect = (deps: Deps) => async (context: SentencePlanContext) => {
  *   context.getData('assessmentUuid')  // typed as string
- *   context.getSession().sessionDetails?.accessType  // typed as 'hmpps-auth' | 'handover' | undefined
+ *   context.getSession().sessionDetails?.accessType  // typed as AuthSource | undefined
  *   context.getState('user')           // typed as User
  * }
  */

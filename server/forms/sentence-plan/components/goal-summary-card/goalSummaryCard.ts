@@ -103,6 +103,9 @@ export interface GoalSummaryCardProps {
   /** Action links shown in the card header */
   actions?: ConditionalArray<GoalAction>
 
+  /** Whether the page is in read-only mode */
+  isReadOnly?: ConditionalBoolean
+
   /** Buttons shown at the bottom of the card */
   buttons?: ConditionalArray<GoalButton>
 
@@ -192,6 +195,7 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
     notes,
     removedNote,
     actions,
+    isReadOnly: block.isReadOnly,
     buttons,
     errorMessage: block.errorMessage,
     index: block.index,
