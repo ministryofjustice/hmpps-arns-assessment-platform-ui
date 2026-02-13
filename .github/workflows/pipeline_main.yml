@@ -56,6 +56,7 @@ jobs:
     uses: ./.github/workflows/e2e_test.yml
     with:
       app_version: ${{ needs.build_docker.outputs.app_version }}
+      docker_multiplatform: true
 
   publish-test-results:
     name: "Publish Tests Results"

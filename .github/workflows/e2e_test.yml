@@ -7,6 +7,11 @@ on:
         description: App version
         required: true
         type: string
+      docker_multiplatform:
+        description: Docker image is a multiplatform artifact
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -20,10 +25,18 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Download docker image
+        if: ${{ ! inputs.docker_multiplatform }}
         uses: actions/download-artifact@v7
         with:
           name: build_image
           path: ${{ runner.temp }}
+
+      - name: Download amd64 docker image
+        if: ${{ inputs.docker_multiplatform }}
+        uses: actions/download-artifact@v7
+        with:
+          name: image-linux-amd64
+          path: ${{ runner.temp }}/image-linux-amd64
 
       - name: Restore npm cache
         uses: actions/cache@v5
@@ -35,7 +48,13 @@ jobs:
         run: |
           docker compose -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml pull --ignore-buildable &
           docker pull node:22-alpine &
-          docker load --input ${{ runner.temp }}/build_image.tar
+
+          if [[ "${{ inputs.docker_multiplatform }}" == "true" ]]; then
+            docker load --input ${{ runner.temp }}/image-linux-amd64/image.tar
+          else
+            docker load --input ${{ runner.temp }}/build_image.tar
+          fi
+
           wait
 
       - name: Run Playwright tests
