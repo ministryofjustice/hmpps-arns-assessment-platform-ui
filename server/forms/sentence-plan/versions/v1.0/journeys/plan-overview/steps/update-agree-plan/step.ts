@@ -3,6 +3,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { updatePlanAgreementQuestion, buttonGroup } from './fields'
 import { SentencePlanEffects } from '../../../../../../effects'
 import { sentencePlanOverviewPath } from '../../../../constants'
+import { redirectUnlessCouldNotAnswer, redirectToOverviewIfReadOnly } from '../../../../guards'
 
 export const updateAgreePlanStep = step({
   path: '/update-agree-plan',
@@ -12,14 +13,8 @@ export const updateAgreePlanStep = step({
     accessTransition({
       effects: [SentencePlanEffects.loadNavigationReferrer()],
     }),
-    accessTransition({
-      when: Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY')),
-      next: [redirect({ goto: sentencePlanOverviewPath })],
-    }),
-    accessTransition({
-      when: Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER')),
-      next: [redirect({ goto: sentencePlanOverviewPath })],
-    }),
+    redirectToOverviewIfReadOnly(),
+    redirectUnlessCouldNotAnswer(sentencePlanOverviewPath),
   ],
   view: {
     locals: {

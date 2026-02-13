@@ -1,5 +1,5 @@
-import { Data, step } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import { step } from '@form-engine/form/builders'
+import { isOasysAccess } from '../../../../guards'
 
 export const previousVersionsStep = step({
   path: '/previous-versions',
@@ -8,7 +8,7 @@ export const previousVersionsStep = step({
     locals: {
       headerPageHeading: 'Previous versions',
       buttons: {
-        showReturnToOasysButton: Data('sessionDetails.accessType').match(Condition.Equals('OASYS')),
+        showReturnToOasysButton: isOasysAccess,
       },
     },
   },

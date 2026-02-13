@@ -1,7 +1,7 @@
-import { accessTransition, Data, redirect, step } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import { accessTransition, step } from '@form-engine/form/builders'
 import { subtitleText, sectionBreak, agreementHistory, updateAgreementLink, backToTopLink } from './fields'
-import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../../effects'
+import { SentencePlanEffects } from '../../../../../../effects'
+import { isOasysAccess, redirectIfNotPostAgreement } from '../../../../guards'
 
 export const planHistoryStep = step({
   path: '/plan-history',
@@ -10,7 +10,7 @@ export const planHistoryStep = step({
     locals: {
       headerPageHeading: 'Plan history',
       buttons: {
-        showReturnToOasysButton: Data('user.authSource').match(Condition.Equals('OASYS')),
+        showReturnToOasysButton: isOasysAccess,
       },
     },
   },
@@ -22,13 +22,9 @@ export const planHistoryStep = step({
         SentencePlanEffects.derivePlanHistoryEntries(),
         SentencePlanEffects.setNavigationReferrer('plan-history'),
       ],
-      next: [
-        // Redirect to plan overview if plan is not yet agreed
-        redirect({
-          when: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
-          goto: 'overview?type=current',
-        }),
-      ],
     }),
+    // Redirect to plan overview if plan is not yet agreed.
+    // The overview step defaults missing type to current.
+    redirectIfNotPostAgreement('overview'),
   ],
 })

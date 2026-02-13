@@ -5,7 +5,8 @@ import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
 import { actorLabels, areasOfNeed } from './constants'
-import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../effects'
+import { SentencePlanEffects } from '../../effects'
+import { hasPostAgreementStatus, isReadWriteAccess } from './guards'
 
 /**
  * Sentence Plan v1.0 Journey
@@ -25,7 +26,7 @@ export const sentencePlanV1Journey = journey({
     locals: {
       basePath: '/sentence-plan/v1.0',
       hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
-      showPlanHistoryTab: Data('latestAgreementStatus').match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
+      showPlanHistoryTab: hasPostAgreementStatus,
     },
   },
   data: {
@@ -44,10 +45,7 @@ export const sentencePlanV1Journey = journey({
       next: [
         // READ_ONLY users skip privacy and go straight to overview; edit users must accept privacy first.
         redirect({
-          when: and(
-            Data('session.privacyAccepted').not.match(Condition.Equals(true)),
-            Data('sessionDetails.planAccessMode').not.match(Condition.Equals('READ_ONLY')),
-          ),
+          when: and(Data('session.privacyAccepted').not.match(Condition.Equals(true)), isReadWriteAccess),
           goto: '../../privacy',
         }),
       ],
