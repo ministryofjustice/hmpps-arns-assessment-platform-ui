@@ -1,5 +1,4 @@
-import { accessTransition, Data, journey, redirect } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import { journey } from '@form-engine/form/builders'
 import { createGoalStep } from './add-goal/step'
 import { addStepsStep } from './add-steps/step'
 import { changeGoalStep } from './change-goal/step'
@@ -10,18 +9,13 @@ import { confirmAddGoalStep } from './confirm-readd-goal/step'
 import { removeGoalStep } from './confirm-remove-goal/step'
 import { viewInactiveGoalStep } from './view-inactive-goal/step'
 import { updateGoalAndStepsStep } from './update-goal-and-steps/step'
-import { sentencePlanOverviewPath } from '../../constants'
+import { redirectToOverviewIfReadOnly } from '../../guards'
 
 export const goalManagementJourney = journey({
   code: 'goal-management',
   title: 'Goal Management',
   path: '/goal/:uuid',
-  onAccess: [
-    accessTransition({
-      when: Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY')),
-      next: [redirect({ goto: sentencePlanOverviewPath })],
-    }),
-  ],
+  onAccess: [redirectToOverviewIfReadOnly()],
   steps: [
     createGoalStep,
     addStepsStep,

@@ -1,4 +1,4 @@
-import { SentencePlanContext } from '../types'
+import { NavigationReferrer, SentencePlanContext } from '../types'
 
 /**
  * Load navigation referrer from session
@@ -11,8 +11,9 @@ import { SentencePlanContext } from '../types'
  */
 export const loadNavigationReferrer = () => async (context: SentencePlanContext) => {
   const session = context.getSession()
-  const referrer: string | null = session.navigationReferrer || null
+  const referrer: NavigationReferrer | null = session.navigationReferrer ?? null
 
   // Make available for backlink logic
   context.setData('navigationReferrer', referrer)
+  session.navigationReferrer = undefined
 }
