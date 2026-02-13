@@ -1,0 +1,45 @@
+// About page accordion styling
+// used for criminogenic needs accordions (high-scoring, low-scoring, incomplete, other areas)
+
+// Accordion header badges (display inline with the title)
+// used for crim needs titles
+.accordion-header-badges {
+  display: inline-flex;
+  gap: govuk-spacing(4);
+  margin-left: govuk-spacing(4);
+  vertical-align: middle;
+
+  .moj-badge {
+    text-transform: none;
+  }
+}
+
+// accordion layout
+.govuk-accordion {
+  margin-left: govuk-spacing(9);
+
+  // ensure accordion heading titles are NOT bold
+  .govuk-accordion__section-heading,
+  .govuk-accordion__section-button {
+    font-weight: normal;
+  }
+
+  // position Show/Hide toggle on the same line as title (to the right)
+  .govuk-accordion__section-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    padding-top: govuk-spacing(3);
+    padding-bottom: govuk-spacing(0);
+  }
+
+  .govuk-accordion__section-content {
+    padding-bottom: govuk-spacing(3);
+  }
+
+  .govuk-accordion__section-toggle {
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+}
