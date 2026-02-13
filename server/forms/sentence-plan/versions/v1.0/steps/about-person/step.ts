@@ -1,7 +1,23 @@
-import { Data, Format, redirect, step, submitTransition } from '@form-engine/form/builders'
+import { Data, Format, step, accessTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import { continueButton } from './fields'
+import {
+  noAssessmentDataErrorWarning,
+  incompleteAssessmentWarning,
+  sentenceHeading,
+  sentenceTable,
+  noSentenceInfo,
+  assessmentLastUpdated,
+  incompleteAreasHeading,
+  incompleteAreasAccordion,
+  highScoringAreasHeading,
+  highScoringAreasAccordion,
+  lowScoringAreasHeading,
+  lowScoringAreasAccordion,
+  otherAreasHeading,
+  otherAreasAccordion,
+} from './fields'
 import { CaseData } from '../../constants'
+import { SentencePlanEffects } from '../../../../effects'
 
 export const aboutPersonStep = step({
   path: '/about-person',
@@ -15,14 +31,25 @@ export const aboutPersonStep = step({
       },
     },
   },
-  // TODO: once this page is build, we need to add SentencePlanEffects.setNavigationReferrer('about') into onLoad/onAccess effects
-  //  and add it as a link for back button in 'create a goal' and 'view previous versions pages'
-  blocks: [continueButton],
-  onSubmission: [
-    submitTransition({
-      onAlways: {
-        next: [redirect({ goto: '/plan-overview/plan' })],
-      },
+  blocks: [
+    incompleteAssessmentWarning,
+    assessmentLastUpdated,
+    sentenceHeading,
+    sentenceTable,
+    noSentenceInfo,
+    noAssessmentDataErrorWarning,
+    incompleteAreasHeading,
+    incompleteAreasAccordion,
+    highScoringAreasHeading,
+    ...highScoringAreasAccordion,
+    lowScoringAreasHeading,
+    ...lowScoringAreasAccordion,
+    otherAreasHeading,
+    otherAreasAccordion,
+  ],
+  onAccess: [
+    accessTransition({
+      effects: [SentencePlanEffects.loadAllAreasAssessmentInfo(), SentencePlanEffects.setNavigationReferrer('about')],
     }),
   ],
 })

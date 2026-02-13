@@ -309,6 +309,16 @@ export interface SentencePlanData extends Record<string, unknown> {
   // Assessment area info for current area of need (from coordinator API)
   currentAreaAssessment: AssessmentArea | null
   currentAreaAssessmentStatus: AssessmentInfoStatus
+
+  // all assessment areas grouped by scoring category (for about page; from coordinator API)
+  allAssessmentAreas: AssessmentArea[]
+  highScoringAreas: AssessmentArea[]
+  lowScoringAreas: AssessmentArea[]
+  otherAreas: AssessmentArea[]
+  incompleteAreas: AssessmentArea[]
+  isAssessmentComplete: boolean
+  assessmentLastUpdated: string | null
+  allAreasAssessmentStatus: AssessmentInfoStatus
 }
 
 /**
