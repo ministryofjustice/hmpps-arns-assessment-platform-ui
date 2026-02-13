@@ -14,6 +14,7 @@ import {
 import { Condition } from '@form-engine/registry/conditions'
 import { sideNav, contentBlocks } from './fields'
 import { SentencePlanEffects } from '../../../../../effects'
+import { CaseData } from '../../../constants'
 
 /**
  * For adding a new goal.
@@ -63,7 +64,15 @@ export const createGoalStep = step({
       when: Post('action').match(Condition.Equals('saveWithoutSteps')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.createGoal({ addPlanOverviewNotification: true })],
+        effects: [
+          SentencePlanEffects.createGoal(),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            title: 'Goal added',
+            message: Format('You added a goal to %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+          }),
+        ],
         next: [
           redirect({
             when: Query('type').match(Condition.IsRequired()),
