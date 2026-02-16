@@ -10,19 +10,6 @@ services:
       CLIENT_SP_HANDOVER_REDIRECT_URI: http://ui:3000/sign-in/handover?service=sentence-plan
 
   wiremock:
-    image: wiremock/wiremock:3.13.2
-    networks:
-      - hmpps
-    depends_on:
-      hmpps-auth:
-        condition: service_healthy
-      api:
-        condition: service_healthy
-    restart: always
-    ports:
-      - "9091:8080"
-    volumes:
-      - ./wiremock/mappings:/home/wiremock/mappings
     environment:
       WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:9090
       WIREMOCK_AAP_API_URL: http://api:8080
@@ -35,11 +22,6 @@ services:
   ui:
     build:
       target: production
-    networks:
-      - hmpps
-    depends_on:
-      - wiremock
-      - hmpps-auth
     command: npm run start
     environment:
       NODE_ENV: production

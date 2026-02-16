@@ -15,11 +15,11 @@ services:
     image: postgres:18
     networks:
       - hmpps
+    tmpfs:
+      - /var/lib/postgresql
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: dev
-    tmpfs:
-      - /var/lib/postgresql
 
   localstack:
     image: localstack/localstack:4
@@ -27,6 +27,15 @@ services:
       - hmpps
     ports:
       - "4566:4566"
+    healthcheck:
+      test: [ "CMD", "bash", "/scripts/wait/healthcheck.sh" ]
+      interval: 5s
+      timeout: 10s
+      retries: 50
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "./scripts/localstack/init:/etc/localstack/init/ready.d"
+      - "./scripts/localstack/wait:/scripts/wait"
     environment:
       - SERVICES=sqs
       - LOCALSTACK_HOST=localstack:4566
@@ -34,24 +43,17 @@ services:
       - DEFAULT_REGION=eu-west-2
       - AWS_DEFAULT_REGION=eu-west-2
       - USE_SSL=false
-    volumes:
-      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
-      - "./scripts/localstack/init:/etc/localstack/init/ready.d"
-      - "./scripts/localstack/wait:/scripts/wait"
-    healthcheck:
-      test: ["CMD", "bash", "/scripts/wait/healthcheck.sh"]
-      interval: 5s
-      timeout: 10s
-      retries: 50
 
   hmpps-auth:
-    image: ghcr.io/ministryofjustice/hmpps-auth:latest
+    image: ghcr.io/ministryofjustice/hmpps-auth:2026-01-19.282.b6537e8
     networks:
       - hmpps
     ports:
       - "9090:9090"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9090/auth/health" ]
+      interval: 5s
+      retries: 20
     volumes:
       - ./auth_db:/auth_db
     environment:
@@ -61,16 +63,15 @@ services:
       SPRING_FLYWAY_LOCATIONS: classpath:db/auth,db/auth_{vendor},db/dev/data/auth_{vendor},db/dev/data/auth,filesystem:/auth_db
 
   coordinator-api:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:2026-02-12.4.7942eec
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:national-rollout
     depends_on:
       - postgres
-      - hmpps-auth
     networks:
       - hmpps
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://coordinator-api:8080/health/ping" ]
       interval: 5s
-      retries: 60
+      retries: 20
     environment:
       SERVER_PORT: 8080
       SPRING_PROFILES_ACTIVE: postgres
@@ -86,15 +87,14 @@ services:
       CLIENT_SECRET: clientsecret
 
   arns-handover:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:2026-02-12.16.0bd0a7c
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:national-rollout
     depends_on:
       - redis
       - localstack
-      - coordinator-api
     healthcheck:
       test: [ "CMD", "wget", "-q", "-O", "-", "http://arns-handover:7070/health/ping" ]
       interval: 5s
-      retries: 60
+      retries: 20
     networks:
       - hmpps
     ports:
@@ -125,9 +125,7 @@ services:
       - hmpps
     depends_on:
       - redis
-      - api
       - localstack
-      - arns-handover
       - wiremock
     build:
       context: ../
@@ -142,6 +140,8 @@ services:
       - "9229:9229"
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/health"]
+      interval: 5s
+      retries: 20
     environment:
       PRODUCT_ID: 'UNASSIGNED'
       REDIS_ENABLED: true
@@ -155,15 +155,16 @@ services:
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
       TOKEN_VERIFICATION_ENABLED: false
       TOKEN_VERIFICATION_API_URL: http://localhost:9090/verification
-      HMPPS_AUTH_URL: http://hmpps-auth:9090/auth
+      HMPPS_AUTH_URL: http://wiremock:8080/auth
       HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
-      AAP_API_URL: http://api:8080
-      COORDINATOR_API_URL: http://coordinator-api:8080
-      HMPPS_ARNS_HANDOVER_URL: http://arns-handover:7070
+      AAP_API_URL: http://wiremock:8080/aap-api
+      COORDINATOR_API_URL: http://wiremock:8080/coordinator-api
+      DELIUS_API_URL: http://wiremock:8080/delius
+      ARNS_API_URL: http://wiremock:8080/arns-api
+      HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080/handover
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
       HMPPS_ARNS_HANDOVER_CLIENT_ID: sentence-plan
       HMPPS_ARNS_HANDOVER_CLIENT_SECRET: sp-secret
-      OASYS_URL: http://localhost:7072
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
       AWS_ENDPOINT_URL: http://localstack:4566
@@ -172,18 +173,21 @@ services:
       AUDIT_SQS_REGION: eu-west-2
       AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
       NODE_CLUSTER_ENABLED: true
-      DELIUS_API_URL: http://wiremock:8080/delius
-      ARNS_API_URL: http://wiremock:8080/arns-api
       FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
 
   api:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
     networks:
       - hmpps
+    depends_on:
+      - postgres
+      - localstack
     ports:
       - "8080:8080"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
+      interval: 5s
+      retries: 20
     environment:
       - SERVER_PORT=8080
       - HMPPS_AUTH_URL=http://hmpps-auth:9090/auth
@@ -192,10 +196,6 @@ services:
       - HMPPS_SQS_PROVIDER=localstack
       - HMPPS_SQS_LOCALSTACK_URL=http://localstack:4566
       - HMPPS_SQS_QUEUES_AUDIT_QUEUE_NAME=audit-queue
-    depends_on:
-      - postgres
-      - hmpps-auth
-      - localstack
 
   wiremock:
     image: wiremock/wiremock:3.13.2
@@ -203,6 +203,12 @@ services:
       - hmpps
     depends_on:
       api:
+        condition: service_healthy
+      coordinator-api:
+        condition: service_healthy
+      arns-handover:
+        condition: service_healthy
+      hmpps-auth:
         condition: service_healthy
     restart: always
     ports:
