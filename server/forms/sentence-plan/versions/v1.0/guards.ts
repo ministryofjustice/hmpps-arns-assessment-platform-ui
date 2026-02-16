@@ -59,7 +59,7 @@ export const redirectUnlessCouldNotAnswer = (goto: string) =>
   })
 
 /**
- * True when the assessment type is SAN_SP (private beta).
+ * True when the assessment type is SAN_SP.
  * Used to conditionally show features only available to SAN/SP users (e.g. About tab).
  */
 export const isSanSpAssessment = Data('assessment.assessmentType').match(Condition.Equals('SAN_SP'))
