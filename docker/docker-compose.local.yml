@@ -33,6 +33,16 @@ services:
       TOKEN_VERIFICATION_ENABLED: true
       DELIUS_API_URL: http://wiremock:8080/delius
       INGRESS_URL: http://localhost:3000
+      FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: false
+
+  api:
+    environment:
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_MVC_SERVLET_LOAD_ON_STARTUP: "1"
+
+  postgres:
+    ports:
+      - "5432:5432"
 
 volumes:
   node_modules:

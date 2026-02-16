@@ -19,6 +19,7 @@ import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
 import setUpPreferencesCookie from './middleware/setUpPreferencesCookie'
+import runOptionalTestFormEngineHook from './utils/formEngineHook'
 
 import routes from './routes'
 import type { Services } from './services'
@@ -28,7 +29,7 @@ import logger from '../logger'
 import formEngineDeveloperGuide from './forms/form-engine-developer-guide'
 import accessFormPackage from './forms/access'
 import sentencePlanFormPackage from './forms/sentence-plan'
-import trainingSessionLauncher from './forms/training-session-launcher'
+import trainingSessionLauncher from './forms/training-session-launcher' // This breaks jest, as it uses faker esm.
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -61,6 +62,9 @@ export default function createApp(services: Services): express.Application {
       api: services.assessmentPlatformApiClient,
       coordinatorApi: services.coordinatorApiClient,
     })
+
+  // Register variant here
+  runOptionalTestFormEngineHook(formEngine, sentencePlanFormPackage.journey)
 
   // Setup middleware
   app.use(setUpHealthChecks(services.applicationInfo))

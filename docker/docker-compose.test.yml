@@ -35,6 +35,7 @@ services:
       TOKEN_VERIFICATION_ENABLED: true
       DELIUS_API_URL: http://wiremock:8080/delius
       INGRESS_URL: http://ui:3000
+      PLAYWRIGHT_INTEGRATION_TESTS: "true"
 
   playwright:
     image: mcr.microsoft.com/playwright:v1.58.0-noble # Must match version in package-lock

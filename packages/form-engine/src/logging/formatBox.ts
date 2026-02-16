@@ -17,7 +17,7 @@ const CHARS = {
 } as const
 
 const DEFAULTS = {
-  width: 58,
+  width: 78,
   minWidth: 30,
   minLabelWidth: 4,
   minValueWidth: 10,
