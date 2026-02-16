@@ -59,12 +59,12 @@ export const redirectUnlessCouldNotAnswer = (goto: string) =>
   })
 
 /**
- * True when the assessment type is SAN_SP.
+ * True when the plan has the SAN_BETA flag (private beta).
  * Used to conditionally show features only available to SAN/SP users (e.g. About tab).
  */
-export const isSanSpAssessment = Data('assessment.assessmentType').match(Condition.Equals('SAN_SP'))
+export const isSanSpAssessment = Data('assessment.flags').match(Condition.Array.Contains('SAN_BETA'))
 
-export const isNotSanSpAssessment = Data('assessment.assessmentType').not.match(Condition.Equals('SAN_SP'))
+export const isNotSanSpAssessment = Data('assessment.flags').not.match(Condition.Array.Contains('SAN_BETA'))
 
 /**
  * Redirect users unless the assessment type is SAN_SP.

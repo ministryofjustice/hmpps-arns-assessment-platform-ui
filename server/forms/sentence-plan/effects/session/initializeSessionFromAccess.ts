@@ -43,7 +43,7 @@ export const initializeSessionFromAccess = () => (context: SentencePlanContext) 
       type: 'EXTERNAL' as const,
       identifier: caseDetails.crn,
       identifierType: IdentifierType.CRN,
-      assessmentType: 'SAN_SP',
+      assessmentType: 'SENTENCE_PLAN',
     }
   } else {
     throw new InternalServerError('Cannot determine plan identifier - no planId or CRN available')
