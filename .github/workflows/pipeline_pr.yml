@@ -33,7 +33,7 @@ jobs:
 
   build_docker:
     name: Build docker image
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@parallel-native-builders
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@v2
     with:
       docker_registry: 'ghcr.io'
       registry_org: 'ministryofjustice'
