@@ -9,6 +9,7 @@ import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
+import { isSanSpAssessment } from '../../../../guards'
 
 const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
@@ -413,7 +414,7 @@ export const blankPlanOverviewContent = HtmlBlock({
       <p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can either:</p>
       <ul class="govuk-list govuk-list--bullet govuk-!-display-none-print">
         <li><a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a></li>
-        <li><a href="../about-person" class="govuk-link govuk-link--no-visited-state">view information from %1's assessment</a></li>
+        %4
       </ul>
     </div>`,
     CaseData.Forename,
@@ -423,6 +424,14 @@ export const blankPlanOverviewContent = HtmlBlock({
     when(Query('error').match(Condition.Equals('no-active-goals')))
       .then(
         '<span class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span>To agree the plan, create a goal to work on now</span>',
+      )
+      .else(''),
+    when(isSanSpAssessment)
+      .then(
+        Format(
+          '<li><a href="../about-person" class="govuk-link govuk-link--no-visited-state">view information from %1\'s assessment</a></li>',
+          CaseData.Forename,
+        ),
       )
       .else(''),
   ),

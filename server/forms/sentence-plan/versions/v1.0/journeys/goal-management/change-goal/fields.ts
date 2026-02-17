@@ -1,4 +1,4 @@
-import { block, Data, Format, Self, validation } from '@form-engine/form/builders'
+import { block, Data, Format, not, Self, validation } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKTextInput } from '@form-engine-govuk-components/components'
@@ -6,6 +6,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { AccessibleAutocomplete, AssessmentInfoDetails } from '../../../../../components'
 import { CaseData } from '../../../constants'
+import { isSanSpAssessment } from '../../../guards'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 
 const pageHeading = HtmlBlock({
@@ -22,6 +23,7 @@ const assessmentInfoDetails = AssessmentInfoDetails({
   areaName: Data('currentAreaOfNeed').path('text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
+  hidden: not(isSanSpAssessment),
 })
 
 const goalTitle = block<AccessibleAutocomplete>({

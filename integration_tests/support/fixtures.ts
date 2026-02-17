@@ -14,6 +14,7 @@ import type { CoordinatorBuilderFactory } from '../builders/CoordinatorBuilder'
 import { HandoverBuilder } from '../builders/HandoverBuilder'
 import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
 import type { AccessMode, CriminogenicNeedsData } from '../../server/interfaces/handover-api/shared'
+import type { AssessmentType } from '../../server/interfaces/coordinator-api/oasysCreate'
 
 /**
  * Default criminogenic needs data for E2E tests.
@@ -82,6 +83,7 @@ const TARGET_SERVICE_CLIENT_IDS: Record<TargetService, string> = {
 export interface CreateSessionOptions {
   targetService: TargetService
   planAccessMode?: AccessMode
+  assessmentType?: AssessmentType
   pnc?: string
   /**
    * Criminogenic needs data from OASys (via handover).
@@ -217,7 +219,13 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
 
   createSession: async ({ coordinatorBuilder, handoverBuilder }, use) => {
     const createSessionFn = async (options: CreateSessionOptions): Promise<SessionFixture> => {
-      const association = await coordinatorBuilder.create().save()
+      const builder = coordinatorBuilder.create()
+
+      if (options.assessmentType) {
+        builder.withAssessmentType(options.assessmentType)
+      }
+
+      const association = await builder.save()
 
       const sessionBuilder = handoverBuilder.forAssociation(association)
 

@@ -34,21 +34,24 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">{{ title }}</h1>
 
+    {% if status !== 404 %}
       <code>
-        {% if status %}
-        Status code: {{ status }}
-        {% endif %}
-        {% if status === 404 %}
-          - {{ message }}
-        {% endif %}
+          Status code: {{ status }}
       </code>
+    {% endif %}
 
-      <div class="govuk-!-margin-top-8">
-        <ul class="govuk-list govuk-list--bullet">
+      <div class="govuk-!-margin-top-6">
+        {% if status === 404 %}
           {% for suggestion in suggestions %}
-            <li class="govuk-body-m">{{ suggestion }}</li>
+            <p class="govuk-body">{{ suggestion }}</p>
           {% endfor %}
-        </ul>
+        {% else %}
+          <ul class="govuk-list govuk-list--bullet">
+            {% for suggestion in suggestions %}
+              <li class="govuk-body-m">{{ suggestion }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
       </div>
     </div>
   </div>
