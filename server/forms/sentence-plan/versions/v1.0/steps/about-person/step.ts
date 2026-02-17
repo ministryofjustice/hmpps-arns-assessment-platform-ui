@@ -1,5 +1,5 @@
-import { Format, step, accessTransition } from '@form-engine/form/builders'
-import { isOasysAccess, isReadWriteAccess } from '../../guards'
+import { Format, redirect, step, accessTransition } from '@form-engine/form/builders'
+import { isOasysAccess, isReadWriteAccess, redirectUnlessSanSp } from '../../guards'
 import {
   noAssessmentDataErrorWarning,
   incompleteAssessmentWarning,
@@ -16,7 +16,7 @@ import {
   otherAreasHeading,
   otherAreasAccordion,
 } from './fields'
-import { CaseData } from '../../constants'
+import { CaseData, sentencePlanOverviewPath } from '../../constants'
 import { SentencePlanEffects } from '../../../../effects'
 
 export const aboutPersonStep = step({
@@ -48,6 +48,7 @@ export const aboutPersonStep = step({
     otherAreasAccordion,
   ],
   onAccess: [
+    redirectUnlessSanSp(sentencePlanOverviewPath),
     accessTransition({
       effects: [SentencePlanEffects.loadAllAreasAssessmentInfo(), SentencePlanEffects.setNavigationReferrer('about')],
     }),

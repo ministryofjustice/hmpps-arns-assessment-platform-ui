@@ -162,17 +162,17 @@ export const criminogenicNeedsTabContent = [
     hasScore: false,
   }),
 
-  // Drug Misuse (Section 8)
+  // Drug Use (Section 8)
   createNeedSection({
-    title: 'Drug Misuse',
+    title: 'Drug Use',
     prefix: 'drug',
     hasScore: true,
     maxScore: 8,
   }),
 
-  // Alcohol Misuse (Section 9)
+  // Alcohol Use (Section 9)
   createNeedSection({
-    title: 'Alcohol Misuse',
+    title: 'Alcohol Use',
     prefix: 'alcohol',
     hasScore: true,
     maxScore: 4,

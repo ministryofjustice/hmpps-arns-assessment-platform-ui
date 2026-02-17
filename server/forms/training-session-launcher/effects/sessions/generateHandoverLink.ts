@@ -92,7 +92,7 @@ function buildCriminogenicNeeds(values: ScenarioValues): CriminogenicNeedsData |
     }
   }
 
-  // Drug Misuse
+  // Drug Use
   if (values.drugLinkedToHarm || values.drugLinkedToReoffending || values.drugStrengths) {
     needs.drugMisuse = {
       drugLinkedToHarm: values.drugLinkedToHarm,
@@ -103,7 +103,7 @@ function buildCriminogenicNeeds(values: ScenarioValues): CriminogenicNeedsData |
     }
   }
 
-  // Alcohol Misuse
+  // Alcohol Use
   if (values.alcoholLinkedToHarm || values.alcoholLinkedToReoffending || values.alcoholStrengths) {
     needs.alcoholMisuse = {
       alcoholLinkedToHarm: values.alcoholLinkedToHarm,
