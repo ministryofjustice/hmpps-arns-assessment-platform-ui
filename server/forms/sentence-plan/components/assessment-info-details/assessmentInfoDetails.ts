@@ -124,6 +124,12 @@ export function buildParams(block: EvaluatedBlock<AssessmentInfoDetailsBlock>) {
     }
   }
 
+  // score section data (only shown when not showAsDetails (for use on About page))
+  const score = data?.score ?? null
+  const upperBound = data?.upperBound ?? null
+  const threshold = data?.threshold ?? null
+  const hasScore = score !== null && upperBound !== null && threshold !== null
+
   return {
     personName,
     areaName,
@@ -141,6 +147,10 @@ export function buildParams(block: EvaluatedBlock<AssessmentInfoDetailsBlock>) {
     strengthsLinked,
     strengthsText,
     strengthsDetails,
+    score,
+    upperBound,
+    threshold,
+    hasScore,
     missingItems,
     hasMissingItems: missingItems.length > 0,
     fullWidth,

@@ -125,6 +125,13 @@ const createAccordionItems = (dataKey: string) =>
             showAsDetails: false,
             fullWidth: true,
           }),
+          HtmlBlock({
+            content: Format(
+              `<p class="add-goal-link"><a href="goal/new/add-goal/%1">Create %2 goal</a></p>`,
+              Item().path('goalRoute'),
+              Item().path('title').pipe(Transformer.String.ToLowerCase()),
+            ),
+          }),
         ],
       },
     }),
