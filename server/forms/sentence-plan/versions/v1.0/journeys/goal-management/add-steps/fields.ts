@@ -1,4 +1,4 @@
-import { Data, Format, Item, Iterator, Self, validation, when } from '@form-engine/form/builders'
+import { Data, Format, Item, Iterator, not, Self, validation, when } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
@@ -8,6 +8,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { AssessmentInfoDetails, ButtonAsLink } from '../../../../../components'
 import { actorLabelOptions, CaseData } from '../../../constants'
+import { isSanSpAssessment } from '../../../guards'
 
 /**
  * Goal title caption showing the goal being worked on
@@ -28,6 +29,7 @@ export const assessmentInfoDetails = AssessmentInfoDetails({
   areaName: Data('currentAreaOfNeed').path('text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
+  hidden: not(isSanSpAssessment),
 })
 
 /**
