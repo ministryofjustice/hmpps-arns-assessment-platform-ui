@@ -130,6 +130,10 @@ export function buildParams(block: EvaluatedBlock<AssessmentInfoDetailsBlock>) {
   const threshold = data?.threshold ?? null
   const hasScore = score !== null && upperBound !== null && threshold !== null
 
+  // sub-area data (for example, Lifestyle and associates within Thinking, behaviours and attitudes)
+  const subArea = data?.subArea ?? null
+  const hasSubArea = subArea !== null && subArea.score !== null
+
   return {
     personName,
     areaName,
@@ -151,6 +155,8 @@ export function buildParams(block: EvaluatedBlock<AssessmentInfoDetailsBlock>) {
     upperBound,
     threshold,
     hasScore,
+    subArea,
+    hasSubArea,
     missingItems,
     hasMissingItems: missingItems.length > 0,
     fullWidth,

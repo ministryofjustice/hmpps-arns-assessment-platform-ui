@@ -32,6 +32,8 @@
     upperBound       - Maximum possible score for the area
     threshold        - Score threshold for high-scoring classification
     hasScore         - True if score, upperBound, and threshold are all available
+    subArea          - Sub-area data object (for example, Lifestyle within Thinking, behaviours and attitudes) with title, score, upperBound, threshold
+    hasSubArea       - True if sub-area data is available
     fullWidth        - True to skip the two-thirds wrapper
     showAsDetails    - True (default) wraps in govukDetails (used for create/change goal page), false renders content directly (used for about page)
 #}
@@ -109,6 +111,19 @@
             score: params.score,
             upperBound: params.upperBound,
             thresholdValue: params.threshold
+          }) }}
+      </div>
+    {% endif %}
+
+    {#- Sub-area score section (for example, Lifestyle and associates within Thinking, behaviours and attitudes) -#}
+    {% if params.hasSubArea and not params.showAsDetails %}
+      <div class="govuk-!-margin-top-4">
+        <p><strong>{{ params.subArea.title }} need score</strong></p>
+        <p>{{ params.subArea.score }} out of {{ params.subArea.upperBound }}. (Scores above {{ params.subArea.threshold }} are high-scoring.)</p>
+          {{ needsScore({
+            score: params.subArea.score,
+            upperBound: params.subArea.upperBound,
+            thresholdValue: params.subArea.threshold
           }) }}
       </div>
     {% endif %}

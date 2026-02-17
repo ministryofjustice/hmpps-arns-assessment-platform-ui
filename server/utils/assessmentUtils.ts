@@ -5,8 +5,9 @@ import {
   AssessmentArea,
   CriminogenicNeedsData,
   CriminogenicNeedArea,
+  SubAreaData,
 } from '../interfaces/coordinator-api/entityAssessment'
-import { areasOfNeed } from '../forms/sentence-plan/versions/v1.0/constants'
+import { areasOfNeed, subAreasOfNeed } from '../forms/sentence-plan/versions/v1.0/constants'
 import { AreaOfNeed } from '../forms/sentence-plan/effects/types'
 
 /**
@@ -102,14 +103,36 @@ function processAssessmentArea(
   const motivationValue = getAssessmentValue(sanAssessmentData, `${assessmentKey}_changes`)
   const motivationToMakeChanges = parseMotivation(motivationValue)
 
+  // sub area section:
+  let subArea: SubAreaData | undefined
+  let subAreaIsHighScoring = false
+
+  // attach sub-area data to parent area of need:
+  const childSubAreaMatch = subAreasOfNeed.find(childArea => childArea.parentAreaOfNeedCrimKey === crimNeedsKey)
+  if (childSubAreaMatch && criminogenicNeedsData?.[childSubAreaMatch.crimNeedsKey]) {
+    const subAreaCrimNeeds = criminogenicNeedsData?.[childSubAreaMatch.crimNeedsKey]
+    const subAreaScore = subAreaCrimNeeds?.score ?? null
+    if (subAreaScore !== null) {
+      subArea = {
+        title: childSubAreaMatch.text,
+        score: subAreaScore,
+        upperBound: childSubAreaMatch.upperBound,
+        threshold: childSubAreaMatch.threshold,
+      }
+      if (childSubAreaMatch.threshold !== null && subAreaScore >= childSubAreaMatch.threshold) {
+        subAreaIsHighScoring = true
+      }
+    }
+  }
+
   // Score comes from handover (OASys) only
   const score = crimNeedsArea?.score ?? null
 
-  // High scoring: score at or above threshold (score >= threshold)
-  // Low scoring: score below threshold (score < threshold)
+  // High scoring: main area score >= threshold or sub-area exceeds its threshold
+  // Low scoring: main area score < threshold AND no sub-area is high-scoring
   // Areas without scoring (Finance, Health) have both as false
-  const isHighScoring = threshold !== null && score !== null && score >= threshold
-  const isLowScoring = threshold !== null && score !== null && score < threshold
+  const isHighScoring = (threshold !== null && score !== null && score >= threshold) || subAreaIsHighScoring
+  const isLowScoring = threshold !== null && score !== null && score < threshold && !subAreaIsHighScoring
 
   return {
     title,
@@ -127,6 +150,7 @@ function processAssessmentArea(
     threshold,
     isHighScoring,
     isLowScoring,
+    subArea,
   }
 }
 
