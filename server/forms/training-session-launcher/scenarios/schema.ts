@@ -163,56 +163,56 @@ export const scenarioFieldSchema = {
     randomize: randomYesNo,
   },
 
-  // Criminogenic needs - Drug Misuse
+  // Criminogenic needs - Drug Use
   drugLinkedToHarm: {
-    label: 'Drug misuse - Linked to harm',
+    label: 'Drug use - Linked to harm',
     group: 'criminogenicNeeds',
     randomize: randomYesNo,
   },
   drugLinkedToReoffending: {
-    label: 'Drug misuse - Linked to reoffending',
+    label: 'Drug use - Linked to reoffending',
     group: 'criminogenicNeeds',
     randomize: randomYesNo,
   },
   drugStrengths: {
-    label: 'Drug misuse - Strengths',
+    label: 'Drug use - Strengths',
     group: 'criminogenicNeeds',
     randomize: randomYesNo,
   },
   drugOtherWeightedScore: {
-    label: 'Drug misuse - Score',
+    label: 'Drug use - Score',
     group: 'criminogenicNeeds',
     randomize: randomScore(8),
   },
   drugThreshold: {
-    label: 'Drug misuse - Threshold',
+    label: 'Drug use - Threshold',
     group: 'criminogenicNeeds',
     randomize: randomYesNo,
   },
 
-  // Criminogenic needs - Alcohol Misuse
+  // Criminogenic needs - Alcohol Use
   alcoholLinkedToHarm: {
-    label: 'Alcohol misuse - Linked to harm',
+    label: 'Alcohol use - Linked to harm',
     group: 'criminogenicNeeds',
     randomize: randomYesNo,
   },
   alcoholLinkedToReoffending: {
-    label: 'Alcohol misuse - Linked to reoffending',
+    label: 'Alcohol use - Linked to reoffending',
     group: 'criminogenicNeeds',
     randomize: randomYesNo,
   },
   alcoholStrengths: {
-    label: 'Alcohol misuse - Strengths',
+    label: 'Alcohol use - Strengths',
     group: 'criminogenicNeeds',
     randomize: randomYesNo,
   },
   alcoholOtherWeightedScore: {
-    label: 'Alcohol misuse - Score',
+    label: 'Alcohol use - Score',
     group: 'criminogenicNeeds',
     randomize: randomScore(4),
   },
   alcoholThreshold: {
-    label: 'Alcohol misuse - Threshold',
+    label: 'Alcohol use - Threshold',
     group: 'criminogenicNeeds',
     randomize: randomYesNo,
   },
