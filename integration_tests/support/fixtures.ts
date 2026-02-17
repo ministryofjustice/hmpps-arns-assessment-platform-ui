@@ -157,6 +157,7 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
   aapClient: async ({ apis }, use, testInfo) => {
     const { aapClient } = getTestApis({
       aapApiUrl: apis.aapApi.url,
+      aapDbConnectionString: apis.aapApi.dbConnectionString,
       handoverApiUrl: apis.handoverApi.url,
       coordinatorApiUrl: apis.coordinatorApi.url,
       hmppsAuthUrl: apis.hmppsAuth.url,
@@ -171,6 +172,7 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
   handoverClient: async ({ apis }, use, testInfo) => {
     const { handoverClient } = getTestApis({
       aapApiUrl: apis.aapApi.url,
+      aapDbConnectionString: apis.aapApi.dbConnectionString,
       handoverApiUrl: apis.handoverApi.url,
       coordinatorApiUrl: apis.coordinatorApi.url,
       hmppsAuthUrl: apis.hmppsAuth.url,
@@ -185,6 +187,7 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
   coordinatorClient: async ({ apis }, use, testInfo) => {
     const { coordinatorClient } = getTestApis({
       aapApiUrl: apis.aapApi.url,
+      aapDbConnectionString: apis.aapApi.dbConnectionString,
       handoverApiUrl: apis.handoverApi.url,
       coordinatorApiUrl: apis.coordinatorApi.url,
       hmppsAuthUrl: apis.hmppsAuth.url,

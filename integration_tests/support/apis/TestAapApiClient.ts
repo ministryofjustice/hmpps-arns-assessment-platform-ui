@@ -1,6 +1,7 @@
 import { RestClient, asSystem, AgentConfig } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import type { TestInfo } from '@playwright/test'
+import { Client } from 'pg'
 import type { Commands } from '../../../server/interfaces/aap-api/command'
 import type { CommandsResponse } from '../../../server/interfaces/aap-api/response'
 import type { CommandResults } from '../../../server/interfaces/aap-api/commandResult'
@@ -8,6 +9,7 @@ import { noopLogger } from './noopLogger'
 
 export interface TestAapApiClientConfig {
   baseUrl: string
+  dbConnectionString: string
   authenticationClient: AuthenticationClient
   testInfo?: TestInfo
 }
@@ -19,6 +21,8 @@ export interface TestAapApiClientConfig {
  */
 export class TestAapApiClient extends RestClient {
   private readonly testInfo?: TestInfo
+
+  private readonly dbClient: Client
 
   constructor(config: TestAapApiClientConfig) {
     super(
@@ -32,6 +36,7 @@ export class TestAapApiClient extends RestClient {
       config.authenticationClient,
     )
     this.testInfo = config.testInfo
+    this.dbClient = new Client({ connectionString: config.dbConnectionString })
   }
 
   /**
@@ -95,6 +100,57 @@ export class TestAapApiClient extends RestClient {
       }
 
       throw error
+    }
+  }
+
+  /**
+   * Backdates events and timeline items, distributing them evenly across the provided time period
+   */
+  async backdateEvents(assessmentUuid: string, from: Date, to: Date): Promise<void> {
+    await this.dbClient.connect()
+
+    try {
+      const redistribute = async (table: 'event' | 'timeline') => {
+        const tableRef = `"assessment-platform".${table}`
+        await this.dbClient.query(
+          `
+          WITH ordered AS (
+            SELECT
+              id,
+              ROW_NUMBER() OVER (ORDER BY created_at ASC) - 1 AS idx,
+              COUNT(*) OVER () AS total_count
+            FROM ${tableRef}
+            WHERE assessment_uuid = $1
+          )
+          UPDATE ${tableRef} t
+          SET created_at =
+            CASE
+              WHEN ordered.total_count <= 1 THEN $2::timestamptz
+              ELSE
+                $2::timestamptz + (
+                  (ordered.idx::double precision / (ordered.total_count - 1))
+                  * ($3::timestamptz - $2::timestamptz)
+                )
+            END
+          FROM ordered
+          WHERE t.id = ordered.id
+          `,
+          [assessmentUuid, from, to],
+        )
+      }
+
+      await this.dbClient.query('BEGIN')
+      await redistribute('event')
+      await redistribute('timeline')
+      await this.dbClient.query(`DELETE FROM "assessment-platform"."aggregate" where assessment_uuid = $1`, [
+        assessmentUuid,
+      ])
+      await this.dbClient.query('COMMIT')
+    } catch (err) {
+      await this.dbClient.query('ROLLBACK')
+      throw err
+    } finally {
+      await this.dbClient.end()
     }
   }
 }

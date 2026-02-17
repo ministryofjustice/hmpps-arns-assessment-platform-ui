@@ -16,6 +16,7 @@ generic-service:
     COORDINATOR_API_URL: "https://arns-coordinator-api-test.hmpps.service.justice.gov.uk"
     DELIUS_API_URL: "https://sentence-plan-and-delius-dev.hmpps.service.justice.gov.uk"
     ARNS_API_URL: "https://assess-risks-and-needs-test.hmpps.service.justice.gov.uk"
+    SAN_URL: "https://strengths-based-needs-assessments-test.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: DEV
     AUDIT_ENABLED: "false"
     FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "false"

@@ -1,4 +1,5 @@
 import { SuperAgentRequest } from 'superagent'
+import { PreviousVersionsResponse } from '@server/interfaces/coordinator-api/previousVersions'
 import { stubFor } from './wiremock'
 
 export interface AnswerDto {
@@ -162,6 +163,20 @@ export default {
           developerMessage: 'An unexpected error occurred',
           moreInfo: null,
         },
+      },
+      priority: 1,
+    }),
+
+  stubGetEntityVersions: (entityUuid: string, versions: PreviousVersionsResponse): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/coordinator-api/entity/versions/${entityUuid}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+        jsonBody: versions,
       },
       priority: 1,
     }),

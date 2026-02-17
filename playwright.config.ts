@@ -9,6 +9,7 @@ export interface PlaywrightExtendedConfig {
     }
     aapApi: {
       url: string
+      dbConnectionString: string
     }
     handoverApi: {
       url: string
@@ -65,6 +66,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
       },
       aapApi: {
         url: process.env.AAP_API_URL || 'http://localhost:8080',
+        dbConnectionString: process.env.AAP_DATABASE_CONNECTION_STRING || 'postgres://root:dev@localhost:5432/postgres',
       },
       handoverApi: {
         url: process.env.HANDOVER_API_URL || 'http://localhost:9091/handover',

@@ -81,6 +81,10 @@ export class AssessmentBuilderInstance {
 
   private existingAssessmentUuid: string | undefined
 
+  private backdateEventsFrom: Date
+
+  private backdateEventsTo: Date
+
   private definition: AssessmentDefinition = {
     assessmentType: 'DEFAULT',
     formVersion: '1',
@@ -173,6 +177,16 @@ export class AssessmentBuilderInstance {
   }
 
   /**
+   * Backdates events and timeline items, distributing them evenly across the provided time period
+   */
+  withEventsBackdated(from: Date, to: Date): this {
+    this.backdateEventsFrom = from
+    this.backdateEventsTo = to
+
+    return this
+  }
+
+  /**
    * Save the assessment to the backend.
    * - For fresh(): creates a new assessment then populates it
    * - For extend(): populates an existing assessment
@@ -202,6 +216,10 @@ export class AssessmentBuilderInstance {
         // eslint-disable-next-line no-await-in-loop
         const created = await this.createCollection(assessmentUuid, collectionDef)
         createdCollections.push(created)
+      }
+
+      if (this.backdateEventsFrom && this.backdateEventsTo) {
+        await this.client.backdateEvents(assessmentUuid, this.backdateEventsFrom, this.backdateEventsTo)
       }
 
       return {
