@@ -1,4 +1,4 @@
-import { Data, Format, Item, Iterator, Params, Self, validation } from '@form-engine/form/builders'
+import { Data, Format, Item, Iterator, not, Params, Self, validation } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKTextInput } from '@form-engine-govuk-components/components'
@@ -6,6 +6,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { MOJSideNavigation } from '@form-engine-moj-components/components'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { CaseData } from '../../../constants'
+import { isSanSpAssessment } from '../../../guards'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 import { AccessibleAutocomplete, AssessmentInfoDetails } from '../../../../../components'
 
@@ -37,6 +38,7 @@ const assessmentInfoDetails = AssessmentInfoDetails({
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
   fullWidth: true,
+  hidden: not(isSanSpAssessment),
 })
 
 const goalTitle = AccessibleAutocomplete({
