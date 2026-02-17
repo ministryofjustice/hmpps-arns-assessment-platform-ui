@@ -21,7 +21,7 @@ export default class ViewInactiveGoalPage extends AbstractPage {
   private constructor(page: Page) {
     super(page)
     this.header = page.locator('h1')
-    this.goalHeading = page.locator('h2')
+    this.goalHeading = page.locator('[data-qa="main-form"] h2')
     this.caption = page.locator('.govuk-caption-l')
     this.statusText = page.locator('.govuk-body').first()
     this.stepsTable = page.locator('.govuk-table')
