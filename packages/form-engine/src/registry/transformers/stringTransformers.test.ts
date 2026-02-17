@@ -571,8 +571,20 @@ describe('String Transformers', () => {
       expect(() => evaluate('   ')).toThrow('is not a valid date')
     })
 
-    it('should throw for ISO format (not supported)', () => {
-      expect(() => evaluate('2024-03-15')).toThrow('is not a valid UK date')
+    it('should parse ISO format (YYYY-MM-DD)', () => {
+      const result = evaluate('2024-03-15')
+      expect(result).toBeInstanceOf(Date)
+      expect(result.getFullYear()).toBe(2024)
+      expect(result.getMonth()).toBe(2)
+      expect(result.getDate()).toBe(15)
+    })
+
+    it('should parse ISO format with time and timezone', () => {
+      const result = evaluate('2024-03-15T14:30:00Z')
+      expect(result).toBeInstanceOf(Date)
+      expect(result.getFullYear()).toBe(2024)
+      expect(result.getMonth()).toBe(2)
+      expect(result.getDate()).toBe(15)
     })
 
     it('should throw for US format (not supported)', () => {
@@ -580,7 +592,7 @@ describe('String Transformers', () => {
     })
 
     it('should throw for invalid date string', () => {
-      expect(() => evaluate('not a date')).toThrow('is not a valid UK date')
+      expect(() => evaluate('not a date')).toThrow('is not a valid date')
     })
 
     it('should throw for invalid day', () => {
@@ -596,11 +608,11 @@ describe('String Transformers', () => {
     })
 
     it('should throw for wrong format', () => {
-      expect(() => evaluate('2024/03/15')).toThrow('is not a valid UK date')
+      expect(() => evaluate('2024/03/15')).toThrow('is not a valid date')
     })
 
     it('should throw for partial dates', () => {
-      expect(() => evaluate('15/03')).toThrow('is not a valid UK date')
+      expect(() => evaluate('15/03')).toThrow('is not a valid date')
     })
 
     it('should throw error for non-string values', () => {

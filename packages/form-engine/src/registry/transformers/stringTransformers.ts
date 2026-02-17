@@ -199,18 +199,21 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
   },
 
   /**
-   * Converts a UK-formatted date string to a Date (local time).
+   * Converts a date string to a Date object (local time).
+   * Supports both UK format (DD/MM/YYYY) and ISO-8601 format (YYYY-MM-DD or full ISO with time/timezone).
    * Throws on invalid input so pipeline errors and original value is preserved.
    *
    * //TODO: This probably needs to support supplying/choosing a format.
    * @example
    * // ToDate("15/03/2024") -> 2024-03-15T00:00:00 local
    * // ToDate("15-03-2024") -> 2024-03-15T00:00:00 local
-   * // ToDate("2024-03-15") -> throws Error (ISO format not supported)
+   * // ToDate("2024-03-15") -> 2024-03-15T00:00:00 local
+   * // ToDate("2024-03-15T14:30:00Z") -> Date object with time
    * // ToDate("") -> throws Error
    */
   ToDate: (value: any) => {
     const UK_DATE_RE = /^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/
+    const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}/
     assertString(value, 'Transformer.String.ToDate')
 
     const trimmed = value.trim()
@@ -219,23 +222,33 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
       throw new Error(`Transformer.String.ToDate: "${value}" is not a valid date`)
     }
 
-    const match = UK_DATE_RE.exec(trimmed)
+    const ukMatch = UK_DATE_RE.exec(trimmed)
 
-    if (!match) {
-      throw new Error(`Transformer.String.ToDate: "${value}" is not a valid UK date (expected DD/MM/YYYY)`)
+    if (ukMatch) {
+      const day = Number(ukMatch[1])
+      const month = Number(ukMatch[2])
+      const year = Number(ukMatch[3])
+
+      const date = new Date(year, month - 1, day)
+
+      if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+        throw new Error(`Transformer.String.ToDate: "${value}" is not a valid date`)
+      }
+
+      return date
     }
 
-    const day = Number(match[1])
-    const month = Number(match[2])
-    const year = Number(match[3])
+    if (ISO_DATE_RE.test(trimmed)) {
+      const date = new Date(trimmed)
 
-    const date = new Date(year, month - 1, day)
+      if (Number.isNaN(date.getTime())) {
+        throw new Error(`Transformer.String.ToDate: "${value}" is not a valid ISO date`)
+      }
 
-    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
-      throw new Error(`Transformer.String.ToDate: "${value}" is not a valid date`)
+      return date
     }
 
-    return date
+    throw new Error(`Transformer.String.ToDate: "${value}" is not a valid date (expected DD/MM/YYYY or YYYY-MM-DD)`)
   },
 
   /**
@@ -283,34 +296,6 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
     const paddedDay = String(day).padStart(2, '0')
 
     return `${paddedYear}-${paddedMonth}-${paddedDay}`
-  },
-
-  // Converts an ISO-8601 date string to a Date object.
-  // Supports both date-only (YYYY-MM-DD) and full ISO format with time/timezone.
-  // Throws on invalid input so pipeline errors and original value is preserved.
-  // @example
-  // ISOToDate("2024-03-15") >> Date object
-  // ISOToDate("2024-03-15T14:30:00Z") >> Date object
-  // ISOToDate("") >> throws Error
-  // ISOToDate("15/03/2024") >> throws Error (UK format not supported)
-  ISOToDate: (value: any) => {
-    assertString(value, 'Transformer.String.ISOToDate')
-
-    // removes leading/trailing whitespace to handle "  2029-02-12  " gracefully:
-    const trimmed = value.trim()
-
-    // rejects empty strings:
-    if (!trimmed) {
-      throw new Error(`Transformer.String.ISOToDate: "${value}" is not a valid ISO date`)
-    }
-
-    const date = new Date(trimmed)
-
-    if (Number.isNaN(date.getTime())) {
-      throw new Error(`Transformer.String.ISOToDate: "${value}" is not a valid ISO date`)
-    }
-
-    return date
   },
 
   // Calculates the duration between two ISO date strings and formats it as a sentence length.

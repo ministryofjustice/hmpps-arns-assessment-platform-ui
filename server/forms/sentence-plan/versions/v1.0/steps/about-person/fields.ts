@@ -57,7 +57,7 @@ export const sentenceTable = GovUKTable({
             .pipe(Transformer.String.ToSentenceLength(Item().path('endDate'))),
         ),
       },
-      { text: Item().path('endDate').pipe(Transformer.String.ISOToDate(), Transformer.Date.ToUKLongDate()) },
+      { text: Item().path('endDate').pipe(Transformer.String.ToDate(), Transformer.Date.ToUKLongDate()) },
       {
         text: when(Item().path('unpaidWorkHoursOrdered').match(Condition.Number.GreaterThan(0)))
           .then(Format('%1 hours', Item().path('unpaidWorkHoursOrdered')))
