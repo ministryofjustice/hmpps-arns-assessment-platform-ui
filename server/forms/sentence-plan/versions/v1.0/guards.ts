@@ -1,4 +1,4 @@
-import { accessTransition, Data, redirect } from '@form-engine/form/builders'
+import { accessTransition, Data, not, redirect } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
 import { sentencePlanOverviewPath } from './constants'
@@ -64,13 +64,11 @@ export const redirectUnlessCouldNotAnswer = (goto: string) =>
  */
 export const isSanSpAssessment = Data('assessment.flags').match(Condition.Array.Contains('SAN_BETA'))
 
-export const isNotSanSpAssessment = Data('assessment.flags').not.match(Condition.Array.Contains('SAN_BETA'))
-
 /**
  * Redirect users unless the assessment type is SAN_SP.
  */
 export const redirectUnlessSanSp = (goto: string) =>
   accessTransition({
-    when: isNotSanSpAssessment,
+    when: not(isSanSpAssessment),
     next: [redirect({ goto })],
   })
