@@ -1,5 +1,10 @@
 import { SanAssessmentData, CriminogenicNeedsData } from '../interfaces/coordinator-api/entityAssessment'
 import { transformAssessmentData } from './assessmentUtils'
+import { areasOfNeed } from '../forms/sentence-plan/versions/v1.0/constants'
+
+const areasOfNeedThresholdsAndUpperBounds = Object.fromEntries(
+  areasOfNeed.map(area => [area.crimNeedsKey, { threshold: area.threshold, upperBound: area.upperBound }]),
+)
 
 describe('assessmentUtils', () => {
   // Note: The SAN assessment data keys (e.g. accommodation_practitioner_analysis_risk_of_serious_harm)
@@ -86,29 +91,31 @@ describe('assessmentUtils', () => {
       const crimNeeds = createCriminogenicNeedsData()
 
       const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
 
       expect(result).toHaveLength(8)
-      expect(result[0].title).toBe('Accommodation')
-      expect(result[0].isAssessmentSectionComplete).toBe(true)
+      expect(accommodationArea.title).toBe('Accommodation')
+      expect(accommodationArea.isAssessmentSectionComplete).toBe(true)
       // Linked indicators come from handover (criminogenic needs), not SAN assessment data
-      expect(result[0].linkedToHarm).toBe('YES')
-      expect(result[0].linkedToReoffending).toBe('NO')
-      expect(result[0].linkedToStrengthsOrProtectiveFactors).toBe('YES')
+      expect(accommodationArea.linkedToHarm).toBe('YES')
+      expect(accommodationArea.linkedToReoffending).toBe('NO')
+      expect(accommodationArea.linkedToStrengthsOrProtectiveFactors).toBe('YES')
       // Details come from SAN assessment data (coordinator API)
-      expect(result[0].riskOfSeriousHarmDetails).toBe('Risk details for accommodation')
+      expect(accommodationArea.riskOfSeriousHarmDetails).toBe('Risk details for accommodation')
     })
 
     it('should return null for linked indicators when no criminogenic needs data provided', () => {
       const sanAssessmentData = createSanAssessmentData()
 
       const result = transformAssessmentData(sanAssessmentData)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
 
       // Without criminogenic needs, linked indicators should be null
-      expect(result[0].linkedToHarm).toBeNull()
-      expect(result[0].linkedToReoffending).toBeNull()
-      expect(result[0].linkedToStrengthsOrProtectiveFactors).toBeNull()
+      expect(accommodationArea.linkedToHarm).toBeNull()
+      expect(accommodationArea.linkedToReoffending).toBeNull()
+      expect(accommodationArea.linkedToStrengthsOrProtectiveFactors).toBeNull()
       // Section complete still comes from SAN assessment data
-      expect(result[0].isAssessmentSectionComplete).toBe(true)
+      expect(accommodationArea.isAssessmentSectionComplete).toBe(true)
     })
 
     it('should handle incomplete sections', () => {
@@ -117,16 +124,18 @@ describe('assessmentUtils', () => {
       })
 
       const result = transformAssessmentData(sanAssessmentData)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
 
-      expect(result[0].isAssessmentSectionComplete).toBe(false)
+      expect(accommodationArea.isAssessmentSectionComplete).toBe(false)
     })
 
     it('should handle missing section complete value', () => {
       const sanAssessmentData: SanAssessmentData = {}
 
       const result = transformAssessmentData(sanAssessmentData)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
 
-      expect(result[0].isAssessmentSectionComplete).toBe(false)
+      expect(accommodationArea.isAssessmentSectionComplete).toBe(false)
     })
 
     it('should extract NO details when indicator is NO', () => {
@@ -145,10 +154,11 @@ describe('assessmentUtils', () => {
       })
 
       const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
 
       // Linked indicator comes from handover, details come from SAN based on that indicator
-      expect(result[0].linkedToHarm).toBe('NO')
-      expect(result[0].riskOfSeriousHarmDetails).toBe('No harm identified')
+      expect(accommodationArea.linkedToHarm).toBe('NO')
+      expect(accommodationArea.riskOfSeriousHarmDetails).toBe('No harm identified')
     })
 
     it('should parse motivation levels correctly', () => {
@@ -157,8 +167,9 @@ describe('assessmentUtils', () => {
       })
 
       const result = transformAssessmentData(sanAssessmentData)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
 
-      expect(result[0].motivationToMakeChanges).toBe('WANT_TO_MAKE_CHANGES')
+      expect(accommodationArea.motivationToMakeChanges).toBe('WANT_TO_MAKE_CHANGES')
     })
 
     it('should return null for invalid motivation values', () => {
@@ -167,8 +178,9 @@ describe('assessmentUtils', () => {
       })
 
       const result = transformAssessmentData(sanAssessmentData)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
 
-      expect(result[0].motivationToMakeChanges).toBeNull()
+      expect(accommodationArea.motivationToMakeChanges).toBeNull()
     })
 
     it('should include criminogenic needs scores when provided', () => {
@@ -176,10 +188,11 @@ describe('assessmentUtils', () => {
       const crimNeeds = createCriminogenicNeedsData()
 
       const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
 
-      expect(result[0].score).toBe(4)
-      expect(result[0].upperBound).toBe(6)
-      expect(result[0].threshold).toBe(1)
+      expect(accommodationArea.score).toBe(4)
+      expect(accommodationArea.upperBound).toBe(areasOfNeedThresholdsAndUpperBounds.accommodation.upperBound)
+      expect(accommodationArea.threshold).toBe(areasOfNeedThresholdsAndUpperBounds.accommodation.threshold)
     })
 
     it('should classify high-scoring areas correctly (score > threshold)', () => {
@@ -199,7 +212,9 @@ describe('assessmentUtils', () => {
 
       const personalRelationships = result.find(a => a.title === 'Personal relationships and community')
       expect(personalRelationships?.score).toBe(2)
-      expect(personalRelationships?.threshold).toBe(1)
+      expect(personalRelationships?.threshold).toBe(
+        areasOfNeedThresholdsAndUpperBounds.personalRelationshipsAndCommunity.threshold,
+      )
       expect(personalRelationships?.isHighScoring).toBe(true)
       expect(personalRelationships?.isLowScoring).toBe(false)
     })
@@ -216,11 +231,12 @@ describe('assessmentUtils', () => {
       })
 
       const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
 
-      expect(result[0].score).toBe(1)
-      expect(result[0].threshold).toBe(1)
-      expect(result[0].isHighScoring).toBe(false)
-      expect(result[0].isLowScoring).toBe(true)
+      expect(accommodationArea.score).toBe(1)
+      expect(accommodationArea.threshold).toBe(areasOfNeedThresholdsAndUpperBounds.accommodation.threshold)
+      expect(accommodationArea.isHighScoring).toBe(false)
+      expect(accommodationArea.isLowScoring).toBe(true)
     })
 
     it('should classify score at threshold as low-scoring', () => {
@@ -235,11 +251,12 @@ describe('assessmentUtils', () => {
       })
 
       const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
 
-      expect(result[0].score).toBe(1)
-      expect(result[0].threshold).toBe(1)
-      expect(result[0].isHighScoring).toBe(false)
-      expect(result[0].isLowScoring).toBe(true)
+      expect(accommodationArea.score).toBe(1)
+      expect(accommodationArea.threshold).toBe(areasOfNeedThresholdsAndUpperBounds.accommodation.threshold)
+      expect(accommodationArea.isHighScoring).toBe(false)
+      expect(accommodationArea.isLowScoring).toBe(true)
     })
 
     it('should handle areas without scoring (Finance, Health) - both flags false', () => {
