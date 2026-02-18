@@ -19,9 +19,9 @@
           {%- elif i == needsScore.thresholdValue %}
           {% set classes = classes.concat('thresholdmarker-rightside') %}
         {%- endif %}
-        {%- if needsScore.score >= needsScore.thresholdValue and i < needsScore.score %}
+        {%- if needsScore.score > needsScore.thresholdValue and i < needsScore.score %}
           {% set classes = classes.concat('highscoring') %}
-          {%- elif needsScore.score < needsScore.thresholdValue and i < needsScore.score %}
+          {%- elif needsScore.score <= needsScore.thresholdValue and i < needsScore.score %}
           {% set classes = classes.concat('lowscoring') %}
         {%- endif %}
         <div class="{{ classes | join(' ') }}">
