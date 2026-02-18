@@ -24,7 +24,7 @@
         text: "About " + personName,
         href: basePath + "/about-person",
         active: isOnAboutPage
-      }
+      } if showAboutTab
     ] | select | list
   }) }}
 {% endif %}

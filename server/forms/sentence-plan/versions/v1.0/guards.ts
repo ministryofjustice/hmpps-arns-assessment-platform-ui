@@ -1,4 +1,4 @@
-import { accessTransition, Data, redirect } from '@form-engine/form/builders'
+import { accessTransition, Data, not, redirect } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
 import { sentencePlanOverviewPath } from './constants'
@@ -10,7 +10,9 @@ import { sentencePlanOverviewPath } from './constants'
  * - who came from OASYS
  * - who is read-only
  * - whether a plan has passed agreement
+ * - which assessment type is active
  */
+
 export const isOasysAccess = Data('sessionDetails.accessType').match(Condition.Equals('OASYS'))
 
 export const isReadOnlyAccess = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
@@ -53,5 +55,20 @@ export const redirectIfNotPostAgreement = (goto: string) =>
 export const redirectUnlessCouldNotAnswer = (goto: string) =>
   accessTransition({
     when: lacksCouldNotAnswerStatus,
+    next: [redirect({ goto })],
+  })
+
+/**
+ * True when the plan has the SAN_BETA flag (private beta).
+ * Used to conditionally show features only available to SAN/SP users (e.g. About tab).
+ */
+export const isSanSpAssessment = Data('assessment.flags').match(Condition.Array.Contains('SAN_BETA'))
+
+/**
+ * Redirect users unless the assessment type is SAN_SP.
+ */
+export const redirectUnlessSanSp = (goto: string) =>
+  accessTransition({
+    when: not(isSanSpAssessment),
     next: [redirect({ goto })],
   })

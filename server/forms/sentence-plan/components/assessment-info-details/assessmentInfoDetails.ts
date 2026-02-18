@@ -1,6 +1,11 @@
 import type nunjucks from 'nunjucks'
 import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
-import { BlockDefinition, ConditionalString, EvaluatedBlock } from '@form-engine/form/types/structures.type'
+import {
+  BasicBlockProps,
+  BlockDefinition,
+  ConditionalString,
+  EvaluatedBlock,
+} from '@form-engine/form/types/structures.type'
 import { ChainableRef } from '@form-engine/form/builders/types'
 import { block as blockBuilder } from '@form-engine/form/builders'
 import {
@@ -9,7 +14,7 @@ import {
   MotivationLevel,
 } from '../../../../interfaces/coordinator-api/entityAssessment'
 
-export interface AssessmentInfoDetailsProps {
+export interface AssessmentInfoDetailsProps extends BasicBlockProps {
   personName: ConditionalString
   areaName: ConditionalString
   assessmentData: AssessmentArea | null | ChainableRef
