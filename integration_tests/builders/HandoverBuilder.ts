@@ -72,6 +72,7 @@ export class HandoverBuilderInstance {
   private defaultPrincipal: HandoverPrincipalDetails = {
     identifier: generateUserId(),
     displayName: 'Test User',
+    accessMode: 'READ_WRITE',
     planAccessMode: 'READ_WRITE',
     returnUrl: 'http://localhost:3000',
   }

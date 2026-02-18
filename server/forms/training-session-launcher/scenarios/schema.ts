@@ -10,6 +10,7 @@ import {
   randomLastName,
   randomGender,
   randomLocation,
+  randomAccessMode,
   randomPlanAccessMode,
   randomPractitionerIdentifier,
 } from './helpers'
@@ -86,8 +87,13 @@ export const scenarioFieldSchema = {
     group: 'practitioner',
     randomize: randomPractitionerName,
   },
+  accessMode: {
+    label: 'Access mode (general)',
+    group: 'practitioner',
+    randomize: randomAccessMode,
+  },
   planAccessMode: {
-    label: 'Access mode',
+    label: 'Plan access mode',
     group: 'practitioner',
     randomize: randomPlanAccessMode,
   },
