@@ -4,7 +4,8 @@
   {% set personName = data.caseData.name.forename if data.caseData and data.caseData.name else "Person" %}
   {% set isOnAboutPage = step.path == '/about-person' %}
   {% set isOnPlanHistoryPage = step.path == '/plan-history' %}
-  {% set isOnPlanPage = not isOnAboutPage and not isOnPlanHistoryPage %}
+  {% set isOnPolicyPage = step.path == '/accessibility' or step.path == '/cookies-policy' or step.path == '/privacy-policy' %}
+  {% set isOnPlanPage = not isOnAboutPage and not isOnPlanHistoryPage and not isOnPolicyPage %}
 
   {# use '| select | list' to filter out the undefined or falsy values from the items array #}
   {{ mojPrimaryNavigation({

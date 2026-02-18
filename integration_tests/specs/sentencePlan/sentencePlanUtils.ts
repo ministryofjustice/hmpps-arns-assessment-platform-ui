@@ -18,6 +18,9 @@ const oasysAccessStepPath = '/oasys'
 const crnAccessStepPath = '/crn'
 const privacyStepPath = '/privacy'
 const aboutPersonStepPath = '/about-person'
+const accessibilityStepPath = '/accessibility'
+const cookiesPolicyStepPath = '/cookies-policy'
+const privacyPolicyStepPath = '/privacy-policy'
 const planOverviewJourneyPath = '/plan'
 const planStepPath = '/overview'
 const agreePlanStepPath = '/agree-plan'
@@ -31,6 +34,9 @@ export const sentencePlanV1URLs = {
   OASYS_ENTRY_POINT: `${accessFormPath}/sentence-plan${oasysAccessStepPath}`, // '/access/sentence-plan/oasys'
   CRN_ENTRY_POINT: `${accessFormPath}/sentence-plan${crnAccessStepPath}`, // '/access/sentence-plan/crn/:crn'
   PRIVACY_SCREEN: `${sentencePlanFormPath}/${privacyStepPath}`, // '/sentence-plan/privacy'
+  ACCESSIBILITY: `${sentencePlanFormPath}${accessibilityStepPath}`, // '/sentence-plan/accessibility'
+  COOKIES_POLICY: `${sentencePlanFormPath}${cookiesPolicyStepPath}`, // '/sentence-plan/cookies-policy'
+  PRIVACY_POLICY: `${sentencePlanFormPath}${privacyPolicyStepPath}`, // '/sentence-plan/privacy-policy'
   ABOUT_PERSON: sentencePlanFormPath + v1Path + aboutPersonStepPath, // '/sentence-plan' + '/v1.0' + '/about-person'
   PLAN_OVERVIEW: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/overview'
   PLAN_AGREE: sentencePlanFormPath + v1Path + planOverviewJourneyPath + agreePlanStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/agree-plan'
@@ -74,6 +80,9 @@ export const sentencePlanPageTitles = {
 
   // Other
   privacy: 'Close other applications',
+  accessibility: 'Accessibility',
+  cookiesPolicy: 'Cookies policy',
+  privacyPolicy: 'Privacy policy',
   aboutPerson: 'About',
   previousVersions: 'Previous versions',
 }
