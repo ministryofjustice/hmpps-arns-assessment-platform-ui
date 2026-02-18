@@ -174,6 +174,7 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
     user: {
       identifier: values.practitionerIdentifier,
       displayName: values.practitionerDisplayName,
+      accessMode: values.accessMode,
       planAccessMode: values.planAccessMode,
       returnUrl: `${config.ingressUrl}/training-session-launcher/sessions`,
     },

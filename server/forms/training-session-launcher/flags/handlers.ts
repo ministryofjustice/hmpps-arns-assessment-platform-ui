@@ -51,6 +51,9 @@ export interface FlagHandler {
  */
 const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
   SAN_PRIVATE_BETA: {
+    session: {
+      modifyRequest: request => ({ ...request, assessmentType: 'SAN_SP' }),
+    },
     handover: {
       availableServices: Object.keys(config.handoverTargets) as TargetApplication[],
     },
