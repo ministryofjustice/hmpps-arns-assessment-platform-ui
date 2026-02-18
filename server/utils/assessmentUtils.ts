@@ -119,7 +119,7 @@ function processAssessmentArea(
         upperBound: childSubAreaMatch.upperBound,
         threshold: childSubAreaMatch.threshold,
       }
-      if (childSubAreaMatch.threshold !== null && subAreaScore >= childSubAreaMatch.threshold) {
+      if (childSubAreaMatch.threshold !== null && subAreaScore > childSubAreaMatch.threshold) {
         subAreaIsHighScoring = true
       }
     }
@@ -128,11 +128,11 @@ function processAssessmentArea(
   // Score comes from handover (OASys) only
   const score = crimNeedsArea?.score ?? null
 
-  // High scoring: main area score >= threshold or sub-area exceeds its threshold
-  // Low scoring: main area score < threshold AND no sub-area is high-scoring
+  // High scoring: main area score > threshold or sub-area exceeds its threshold
+  // Low scoring: main area score <= threshold AND no sub-area is high-scoring
   // Areas without scoring (Finance, Health) have both as false
-  const isHighScoring = (threshold !== null && score !== null && score >= threshold) || subAreaIsHighScoring
-  const isLowScoring = threshold !== null && score !== null && score < threshold && !subAreaIsHighScoring
+  const isHighScoring = (threshold !== null && score !== null && score > threshold) || subAreaIsHighScoring
+  const isLowScoring = threshold !== null && score !== null && score <= threshold && !subAreaIsHighScoring
 
   return {
     title,

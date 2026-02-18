@@ -71,6 +71,12 @@ describe('assessmentUtils', () => {
       linkedToStrengthsOrProtectiveFactors: false,
       score: 8,
     },
+    lifestyleAndAssociates: {
+      linkedToHarm: false,
+      linkedToReoffending: false,
+      linkedToStrengthsOrProtectiveFactors: false,
+      score: 2,
+    },
     ...overrides,
   })
 
@@ -176,7 +182,7 @@ describe('assessmentUtils', () => {
       expect(result[0].threshold).toBe(1)
     })
 
-    it('should classify high-scoring areas correctly (score >= threshold)', () => {
+    it('should classify high-scoring areas correctly (score > threshold)', () => {
       const sanAssessmentData = createSanAssessmentData({
         personal_relationships_community_section_complete: { value: 'YES' },
       })
@@ -185,7 +191,7 @@ describe('assessmentUtils', () => {
           linkedToHarm: true,
           linkedToReoffending: true,
           linkedToStrengthsOrProtectiveFactors: false,
-          score: 2, // Score of 2 >= threshold of 1 = high scoring
+          score: 2, // Score of 2 > threshold of 1 = high scoring
         },
       })
 
@@ -198,33 +204,14 @@ describe('assessmentUtils', () => {
       expect(personalRelationships?.isLowScoring).toBe(false)
     })
 
-    it('should classify low-scoring areas correctly (score < threshold)', () => {
+    it('should classify low-scoring areas correctly (score <= threshold)', () => {
       const sanAssessmentData = createSanAssessmentData()
       const crimNeeds = createCriminogenicNeedsData({
         accommodation: {
           linkedToHarm: false,
           linkedToReoffending: false,
           linkedToStrengthsOrProtectiveFactors: null,
-          score: 0, // Score of 0 < threshold of 1 = low scoring
-        },
-      })
-
-      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
-
-      expect(result[0].score).toBe(0)
-      expect(result[0].threshold).toBe(1)
-      expect(result[0].isHighScoring).toBe(false)
-      expect(result[0].isLowScoring).toBe(true)
-    })
-
-    it('should classify score at threshold as high-scoring', () => {
-      const sanAssessmentData = createSanAssessmentData()
-      const crimNeeds = createCriminogenicNeedsData({
-        accommodation: {
-          linkedToHarm: false,
-          linkedToReoffending: false,
-          linkedToStrengthsOrProtectiveFactors: null,
-          score: 1, // Score equals threshold of 1 = high scoring (>= threshold is high)
+          score: 1, // Score of 1 <= threshold of 1 = low scoring
         },
       })
 
@@ -232,8 +219,27 @@ describe('assessmentUtils', () => {
 
       expect(result[0].score).toBe(1)
       expect(result[0].threshold).toBe(1)
-      expect(result[0].isHighScoring).toBe(true)
-      expect(result[0].isLowScoring).toBe(false)
+      expect(result[0].isHighScoring).toBe(false)
+      expect(result[0].isLowScoring).toBe(true)
+    })
+
+    it('should classify score at threshold as low-scoring', () => {
+      const sanAssessmentData = createSanAssessmentData()
+      const crimNeeds = createCriminogenicNeedsData({
+        accommodation: {
+          linkedToHarm: false,
+          linkedToReoffending: false,
+          linkedToStrengthsOrProtectiveFactors: null,
+          score: 1, // Score equals threshold of 1 = low scoring (must be > threshold to be high)
+        },
+      })
+
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+
+      expect(result[0].score).toBe(1)
+      expect(result[0].threshold).toBe(1)
+      expect(result[0].isHighScoring).toBe(false)
+      expect(result[0].isLowScoring).toBe(true)
     })
 
     it('should handle areas without scoring (Finance, Health) - both flags false', () => {
@@ -257,6 +263,52 @@ describe('assessmentUtils', () => {
       expect(health?.threshold).toBeNull()
       expect(health?.isHighScoring).toBe(false)
       expect(health?.isLowScoring).toBe(false)
+    })
+
+    it('should handle areas with sub-areas correctly - high-scoring sub area should mark main area as isHighScoring ', () => {
+      const sanAssessmentData = createSanAssessmentData()
+      const crimNeeds = createCriminogenicNeedsData({
+        thinkingBehaviourAndAttitudes: {
+          linkedToHarm: false,
+          linkedToReoffending: false,
+          linkedToStrengthsOrProtectiveFactors: false,
+          score: 0,
+        },
+        lifestyleAndAssociates: {
+          linkedToHarm: false,
+          linkedToReoffending: false,
+          linkedToStrengthsOrProtectiveFactors: false,
+          score: 2,
+        },
+      })
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const thinkingBehavioursAttitudesArea = result.find(a => a.goalRoute === 'thinking-behaviours-and-attitudes')
+
+      expect(thinkingBehavioursAttitudesArea?.isHighScoring).toBe(true)
+      expect(thinkingBehavioursAttitudesArea?.isLowScoring).toBe(false)
+    })
+
+    it('should handle areas with sub-areas correctly - low-scoring main area is classified as isLowScoring if sub area score = threshold', () => {
+      const sanAssessmentData = createSanAssessmentData()
+      const crimNeeds = createCriminogenicNeedsData({
+        thinkingBehaviourAndAttitudes: {
+          linkedToHarm: false,
+          linkedToReoffending: false,
+          linkedToStrengthsOrProtectiveFactors: false,
+          score: 0,
+        },
+        lifestyleAndAssociates: {
+          linkedToHarm: false,
+          linkedToReoffending: false,
+          linkedToStrengthsOrProtectiveFactors: false,
+          score: 1,
+        },
+      })
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const thinkingBehavioursAttitudesArea = result.find(a => a.goalRoute === 'thinking-behaviours-and-attitudes')
+
+      expect(thinkingBehavioursAttitudesArea?.isHighScoring).toBe(false)
+      expect(thinkingBehavioursAttitudesArea?.isLowScoring).toBe(true)
     })
   })
 })
