@@ -12,6 +12,7 @@ export type YesNoNullOrNA = YesNoNull | 'N/A'
 export interface HandoverPrincipalDetails {
   identifier: string
   displayName: string
+  accessMode: AccessMode
   planAccessMode: AccessMode
   returnUrl?: string
 }

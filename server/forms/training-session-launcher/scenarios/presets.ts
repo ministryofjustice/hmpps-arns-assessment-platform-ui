@@ -64,6 +64,7 @@ export const scenarioPresets: ScenarioPreset[] = [
     description: 'Scenario with fully randomized subject details and practitioner details.',
     flags: [],
     fixedValues: {
+      accessMode: 'READ_WRITE',
       planAccessMode: 'READ_WRITE',
     },
   },
@@ -75,6 +76,7 @@ export const scenarioPresets: ScenarioPreset[] = [
     flags: [],
     fixedValues: {
       location: 'COMMUNITY',
+      accessMode: 'READ_WRITE',
       planAccessMode: 'READ_WRITE',
     },
   },
@@ -85,7 +87,8 @@ export const scenarioPresets: ScenarioPreset[] = [
     description: 'Scenario configured for Sentence Plan with private beta access.',
     flags: ['SAN_PRIVATE_BETA'],
     fixedValues: {
-      location: 'PRISON',
+      location: 'COMMUNITY',
+      accessMode: 'READ_WRITE',
       planAccessMode: 'READ_WRITE',
     },
   },
