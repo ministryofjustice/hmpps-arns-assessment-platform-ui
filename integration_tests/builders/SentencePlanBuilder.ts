@@ -116,6 +116,15 @@ export class SentencePlanBuilderInstance {
   }
 
   /**
+   * Backdates events and timeline items, distributing them evenly across the provided time period
+   */
+  withEventsBackdated(from: Date, to: Date): this {
+    this.assessmentBuilder.withEventsBackdated(from, to)
+
+    return this
+  }
+
+  /**
    * Add multiple goals to the sentence plan
    */
   withGoals(configs: GoalConfig[]): this {

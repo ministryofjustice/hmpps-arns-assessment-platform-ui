@@ -1,0 +1,113 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% macro showStatusTag( tableConfig, previousStatusKey, trackStatus, tagStatus ) %}
+  {% set tagKey = "" %}
+
+  {% for key, tag in params.tags %}
+    {%- if tagStatus in tag.statuses -%}
+      {% set tagKey = key %}
+    {%- endif -%}
+  {% endfor %}
+
+  {% if trackStatus and tagKey == previousStatusKey %}
+    {% set tagKey = "" %}
+  {% endif %}
+
+  {% if tagKey %}
+    {{ govukTag({
+      text: params.tags[tagKey].text,
+      classes: params.tags[tagKey].classes
+    }) }}
+  {% endif %}
+{% endmacro %}
+
+
+{% macro generateTable( versions, tableConfig, trackStatus, showTableCaption) %}
+  <div class="govuk-grid-column-three-quarters">
+    {% set tableRows = [] %}
+    {% set versionList = [] %}
+    {% set previousStatusKey  = "" %}
+
+    {% for date, version in versions %}
+      {% set versionList = versionList.concat([{ date: date, version: version }]) %}
+    {% endfor %}
+    {% set versionList = versionList | sort(attribute='date') %}
+
+    {% for entry in versionList %}
+      {% set date = entry.date %}
+      {% set version = entry.version %}
+      {% set tagStatus = version.planVersion[tableConfig.tagSource] %} {# eg "DO_NOT_AGREE" #}
+
+      {% set assessmentVersionLink %}
+        {% if version.assessmentVersion %}
+          <a href="{{ params.sanUrl }}/view-previous-version/{{ version.assessmentVersion.uuid }}" class="govuk-link" rel="noreferrer noopener" target="_blank">View<span class="govuk-visually-hidden"> assessment from {{ version.assessmentVersion.updatedAt }} (opens in new tab) </span></a>
+        {% endif %}
+      {% endset %}
+
+      {% set planVersionLink %}
+        {% if version.planVersion %}
+          <a href="/view-historic/{{ version.planVersion.version }}" class="govuk-link" rel="noreferrer noopener" target="_blank">View<span class="govuk-visually-hidden"> plan from {{ version.planVersion.updatedAt }} (opens in new tab) </span></a>
+        {% endif %}
+      {% endset %}
+
+      {% set planVersionTag %}
+        {{ showStatusTag( tableConfig, previousStatusKey, trackStatus, tagStatus) }}
+      {% endset %}
+
+      {% if trackStatus %}
+        {% for key, tag in params.tags %}
+          {% if tagStatus in tag.statuses %}
+            {% set previousStatusKey = key %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+      {% set row = [
+        { html: [date | formatSimpleDate, version.description] | join("<br>") },
+        { html: assessmentVersionLink },
+        { html: planVersionLink },
+        { html: planVersionTag }
+      ]  | reject('string')
+      %}
+      {% set tableRows = [row].concat(tableRows) %}
+    {% endfor %}
+
+    {{ govukTable({
+      caption: tableConfig.tableHeading if showTableCaption,
+      captionClasses: "govuk-table__caption--m govuk-!-margin-top-3" if showTableCaption,
+      firstCellIsHeader: false,
+      classes: "previous-versions-table",
+      head: [
+        { text: "Date and what was updated", classes: "date-column"},
+        { text: "Assessment", classes: "view-link-column" },
+        { text: "Sentence plan", classes: "view-link-column" },
+        { text: "Status", classes: "status-column" }
+      ] | reject('string'),
+      rows: tableRows })
+    }}
+  </div>
+{% endmacro %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    {% if params.versions.allVersions | length or params.versions.countersignedVersions | length %}
+      <p>Check versions of {{ params.personName }}'s current assessment and plan. The links will open in a new tab.</p>
+    {% else %}
+      <p class="govuk-body govuk-!-margin-top-3 ">There are no previous versions of {{ params.personName }}'s assessment and plan yet.</p>
+    {% endif %}
+  </div>
+
+  {% if params.versions.countersignedVersions | length %}
+    {% set showTableCaption = true %}
+    {% set trackStatus = false %}
+    {{ generateTable(params.versions.countersignedVersions, params.tables.countersignedVersions, trackStatus, showTableCaption) }}
+  {% endif %}
+
+  {% if params.versions.allVersions | length %}
+    {% set showTableCaption = params.versions.countersignedVersions | length > 0 %}
+    {% set trackStatus = true %}
+    {{ generateTable(params.versions.allVersions, params.tables.allVersions, trackStatus, showTableCaption) }}
+  {% endif %}
+</div>
+
