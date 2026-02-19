@@ -9,10 +9,10 @@ import { CaseData, sentencePlanOverviewPath } from '../../constants'
 import { AssessmentInfoDetails } from '../../../../components'
 
 // condition to check if assessment data failed to load - used to hide area sections on error and display warning
-const isAssessmentError = Data('allAreasAssessmentStatus').not.match(Condition.Equals('error'))
+const isAssessmentError = Data('allAreasAssessmentStatus').match(Condition.Equals('error'))
 
 // condition to check if NDelius data (sentences) failed to load
-const isSentenceInformationEmpty = Data('caseData.sentences').match(Condition.IsRequired())
+const isSentenceInformationEmpty = Data('caseData.sentences').not.match(Condition.IsRequired())
 
 // condition for when both assessment and NDelius sentence data failed to load
 export const isSentenceInformationAndAssessmentLoadingError = and(isAssessmentError, isSentenceInformationEmpty)
