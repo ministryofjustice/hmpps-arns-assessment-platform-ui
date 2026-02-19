@@ -10,7 +10,6 @@ export const accessibilityStep = step({
     template: 'sentence-plan/views/sentence-plan-step',
     locals: {
       basePath: '/sentence-plan/v1.0',
-      backlink: '/sentence-plan/v1.0/plan/overview',
       hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
       showAboutTab: isSanSpAssessment,
       showPlanHistoryTab: hasPostAgreementStatus,

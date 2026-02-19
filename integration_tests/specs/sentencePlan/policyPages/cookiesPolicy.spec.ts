@@ -26,11 +26,7 @@ test.describe('Cookies policy page', () => {
     await expect(page.locator('footer')).toBeVisible()
   })
 
-  test('back link navigates to plan overview', async ({ page }) => {
-    const backLink = page.getByRole('link', { name: 'Back', exact: true })
-    await expect(backLink).toHaveAttribute('href', sentencePlanV1URLs.PLAN_OVERVIEW)
-    await backLink.click()
-
-    await expect(page).toHaveURL(/\/sentence-plan\/v1\.0\/plan\/overview(\?type=current)?/)
+  test('does not show a back link', async ({ page }) => {
+    await expect(page.locator('.govuk-back-link')).not.toBeVisible()
   })
 })
