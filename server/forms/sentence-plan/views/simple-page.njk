@@ -1,5 +1,5 @@
 {%- extends "partials/layout.njk" -%}
-{%- from "govuk/components/footer/macro.njk" import govukFooter -%}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 {%- from "partials/macros/support-widget/macro.njk" import supportWidget -%}
 
 {% block content %}
@@ -14,23 +14,7 @@
 
 {% block footer %}
   {{ supportWidget({}) }}
-  {{ govukFooter({
-    classes: "app-footer",
-    meta: {
-      items: [
-        {
-          href: "/sentence-plan/accessibility",
-          text: "Accessibility"
-        },
-        {
-          href: "/sentence-plan/cookies-policy",
-          text: "Cookies policy"
-        },
-        {
-          href: "/sentence-plan/privacy-policy",
-          text: "Privacy policy"
-        }
-      ]
-    }
+  {{ pdsFooter({
+    baseUrl: "/sentence-plan"
   }) }}
 {% endblock %}
