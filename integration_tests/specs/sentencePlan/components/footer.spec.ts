@@ -20,16 +20,17 @@ test.describe('Footer', () => {
     await navigateToSentencePlan(page, handoverLink)
 
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-
-    await expect(planOverviewPage.footer).toMatchAriaSnapshot(`
-          - contentinfo:
-            - list:
-              - listitem:
-                - link "Accessibility"
-              - listitem:
-                - link "Cookies policy"
-              - listitem:
-                - link "Privacy policy"
-        `)
+    await expect(planOverviewPage.footer.getByRole('link', { name: 'Accessibility' })).toHaveAttribute(
+      'href',
+      '/sentence-plan/accessibility',
+    )
+    await expect(planOverviewPage.footer.getByRole('link', { name: 'Cookies policy' })).toHaveAttribute(
+      'href',
+      '/sentence-plan/cookies-policy',
+    )
+    await expect(planOverviewPage.footer.getByRole('link', { name: 'Privacy policy' })).toHaveAttribute(
+      'href',
+      '/sentence-plan/privacy-policy',
+    )
   })
 })
