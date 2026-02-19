@@ -14,6 +14,7 @@ export interface TestApis {
 
 export interface GetTestApisOptions {
   aapApiUrl: string
+  aapDbConnectionString: string
   handoverApiUrl: string
   coordinatorApiUrl: string
   hmppsAuthUrl: string
@@ -35,6 +36,7 @@ export function getTestApis(options: GetTestApisOptions): TestApis {
 
   const aapClient = new TestAapApiClient({
     baseUrl: options.aapApiUrl,
+    dbConnectionString: options.aapDbConnectionString,
     authenticationClient: authClient as unknown as AuthenticationClient,
     testInfo: options.testInfo,
   })

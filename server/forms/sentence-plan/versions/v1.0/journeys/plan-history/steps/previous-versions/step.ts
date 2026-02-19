@@ -1,5 +1,7 @@
-import { step } from '@form-engine/form/builders'
+import { accessTransition, step } from '@form-engine/form/builders'
 import { isOasysAccess } from '../../../../guards'
+import { SentencePlanEffects } from '../../../../../../effects'
+import { backToTopLink, previousVersions } from './fields'
 
 export const previousVersionsStep = step({
   path: '/previous-versions',
@@ -13,5 +15,10 @@ export const previousVersionsStep = step({
     },
   },
   isEntryPoint: true,
-  blocks: [],
+  blocks: [previousVersions, backToTopLink],
+  onAccess: [
+    accessTransition({
+      effects: [SentencePlanEffects.loadPreviousVersions()],
+    }),
+  ],
 })

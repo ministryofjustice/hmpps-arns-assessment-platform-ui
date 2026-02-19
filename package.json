@@ -91,6 +91,7 @@
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
+    "@types/pg": "^8.16.0",
     "@types/superagent": "^8.1.9",
     "@types/supertest": "^6.0.3",
     "@yikes2000/prettier-plugin-merge-extras": "^0.7.3-extras.2",
@@ -111,6 +112,7 @@
     "lint-staged": "^16.1.4",
     "mocha-junit-reporter": "^2.2.1",
     "nock": "^14.0.9",
+    "pg": "^8.18.0",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.1",
     "typescript": "^5.9.2"
