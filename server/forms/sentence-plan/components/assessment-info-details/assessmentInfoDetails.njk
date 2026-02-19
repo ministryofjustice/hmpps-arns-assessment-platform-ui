@@ -54,10 +54,18 @@
 
   {#- No data state -#}
   {% elif not params.hasData %}
-    {{ govukWarningText({
-      text: "No information is available yet as the assessment has not been started for this area." if params.showAsDetails else "No information is available yet",
-      iconFallbackText: "Warning"
-    }) }}
+    {% if params.showAsDetails %}
+      {{ govukWarningText({
+        text: "No information is available yet as the assessment has not been started for this area.",
+        iconFallbackText: "Warning"
+      }) }}
+    {% else %}
+      {{ govukWarningText({
+        text: "No information is available yet",
+        iconFallbackText: "Warning",
+        classes: "govuk-warning-text--no-icon"
+      }) }}
+    {% endif %}
 
   {#- Has data -#}
   {% else %}

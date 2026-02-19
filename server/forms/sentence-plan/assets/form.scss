@@ -24,6 +24,20 @@
   }
 }
 
+// warning text without icon - hides icon and removes left padding
+.govuk-warning-text--no-icon {
+  padding-top: 0;
+  margin-bottom: govuk-spacing(2);
+
+  .govuk-warning-text__text {
+    padding-left: 0;
+  }
+
+  .govuk-warning-text__icon {
+    display: none;
+  }
+}
+
 // Plan overview sub-navigation - position "Removed goals" tab on the right
 .moj-sub-navigation__list > li:has(> a[href$="type=removed"]) {
   float: right;
