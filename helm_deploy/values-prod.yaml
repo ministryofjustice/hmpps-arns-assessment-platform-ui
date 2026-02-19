@@ -16,6 +16,7 @@ generic-service:
     ARNS_API_URL: "https://assess-risks-and-needs.hmpps.service.justice.gov.uk"
     SAN_URL: "https://strengths-based-needs-assessments.hmpps.service.justice.gov.uk"
     AUDIT_ENABLED: "false"
+    # SMART_SURVEY_POPUP_CODE: "1U32TA"
     FEEDBACK_FORM_URL: "https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u"
     SERVICE_NOW_FORM_URL: "#" # TODO: the link to the ServiceNow form itself does not yet exist
 

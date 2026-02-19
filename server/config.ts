@@ -142,6 +142,7 @@ export default {
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
   serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#'),
+  smartSurveyPopupCode: get('SMART_SURVEY_POPUP_CODE', ''),
 
   // Target service OAuth client IDs for handover
   handoverTargets: {
