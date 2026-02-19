@@ -44,6 +44,13 @@ function parseMotivation(value: string): MotivationLevel {
   return validLevels.includes(value as MotivationLevel) ? (value as MotivationLevel) : null
 }
 
+// clamps a score to the area's upperBound:
+// guards against bad data where score exceeds the valid range.
+const clampScore = (score: number | null | undefined, upperBound: number): number | null => {
+  if (score === null || score === undefined) return null
+  return score > upperBound ? upperBound : score
+}
+
 function getLinkedDetails(
   sanAssessmentData: SanAssessmentData,
   assessmentKey: string,
@@ -105,13 +112,13 @@ function processAssessmentArea(
 
   // sub area section:
   let subArea: SubAreaData | undefined
-  let subAreaIsHighScoring = false
+  let isSubAreaHighScoring = false
 
   // attach sub-area data to parent area of need:
   const childSubAreaMatch = subAreasOfNeed.find(childArea => childArea.parentAreaOfNeedCrimKey === crimNeedsKey)
   if (childSubAreaMatch && criminogenicNeedsData?.[childSubAreaMatch.crimNeedsKey]) {
     const subAreaCrimNeeds = criminogenicNeedsData?.[childSubAreaMatch.crimNeedsKey]
-    const subAreaScore = subAreaCrimNeeds?.score ?? null
+    const subAreaScore = clampScore(subAreaCrimNeeds?.score, childSubAreaMatch.upperBound)
     if (subAreaScore !== null) {
       subArea = {
         title: childSubAreaMatch.text,
@@ -120,19 +127,22 @@ function processAssessmentArea(
         threshold: childSubAreaMatch.threshold,
       }
       if (childSubAreaMatch.threshold !== null && subAreaScore > childSubAreaMatch.threshold) {
-        subAreaIsHighScoring = true
+        isSubAreaHighScoring = true
       }
     }
   }
 
   // Score comes from handover (OASys) only
-  const score = crimNeedsArea?.score ?? null
+  const score = clampScore(crimNeedsArea?.score, upperBound)
 
   // High scoring: main area score > threshold or sub-area exceeds its threshold
   // Low scoring: main area score <= threshold AND no sub-area is high-scoring
   // Areas without scoring (Finance, Health) have both as false
-  const isHighScoring = (threshold !== null && score !== null && score > threshold) || subAreaIsHighScoring
-  const isLowScoring = threshold !== null && score !== null && score <= threshold && !subAreaIsHighScoring
+  const isMainAreaScoredAndNotNull = threshold !== null && score !== null
+  const isMainAreaHighScoring = isMainAreaScoredAndNotNull && score > threshold
+
+  const isHighScoring = isMainAreaHighScoring || (isMainAreaScoredAndNotNull && isSubAreaHighScoring)
+  const isLowScoring = isMainAreaScoredAndNotNull && score <= threshold && !isSubAreaHighScoring
 
   return {
     title,
