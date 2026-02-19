@@ -33,7 +33,7 @@ const previousVersionsStepPath = '/previous-versions'
 export const sentencePlanV1URLs = {
   OASYS_ENTRY_POINT: `${accessFormPath}/sentence-plan${oasysAccessStepPath}`, // '/access/sentence-plan/oasys'
   CRN_ENTRY_POINT: `${accessFormPath}/sentence-plan${crnAccessStepPath}`, // '/access/sentence-plan/crn/:crn'
-  PRIVACY_SCREEN: `${sentencePlanFormPath}/${privacyStepPath}`, // '/sentence-plan/privacy'
+  PRIVACY_SCREEN: `${sentencePlanFormPath}${privacyStepPath}`, // '/sentence-plan/privacy'
   ACCESSIBILITY: `${sentencePlanFormPath}${accessibilityStepPath}`, // '/sentence-plan/accessibility'
   COOKIES_POLICY: `${sentencePlanFormPath}${cookiesPolicyStepPath}`, // '/sentence-plan/cookies-policy'
   PRIVACY_POLICY: `${sentencePlanFormPath}${privacyPolicyStepPath}`, // '/sentence-plan/privacy-policy'
