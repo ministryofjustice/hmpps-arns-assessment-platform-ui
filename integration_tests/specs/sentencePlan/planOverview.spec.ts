@@ -33,6 +33,27 @@ test.describe('Plan Overview Page', () => {
       await expect(planOverviewPage.createGoalLink).toBeVisible()
     })
 
+    test('shows single line wording without about page link for SP users', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        assessmentType: 'SP',
+      })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      await expect(planOverviewPage.noGoalsMessage).toBeVisible()
+      await expect(planOverviewPage.noGoalsMessage).not.toContainText(/You can either/i)
+      await expect(planOverviewPage.noGoalsMessage).toContainText(/You can create a goal with/i)
+      await expect(page.getByRole('link', { name: /view information from.*assessment/i })).not.toBeVisible()
+    })
+
     test('shows empty message when no future goals exist', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).save()

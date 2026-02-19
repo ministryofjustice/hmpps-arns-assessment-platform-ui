@@ -32,6 +32,7 @@ import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSes
 import { saveStepEditSession } from './steps/saveStepEditSession'
 import { setPrivacyAccepted } from './access/setPrivacyAccepted'
 import { updatePlanAgreement } from './plan/updatePlanAgreement'
+import { loadPreviousVersions } from './plan/loadPreviousVersions'
 
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
@@ -84,6 +85,7 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     derivePlanHistoryEntries,
     updatePlanAgreementStatus,
     updatePlanAgreement,
+    loadPreviousVersions,
 
     // Goals
     createGoal,

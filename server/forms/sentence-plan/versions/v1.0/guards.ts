@@ -1,4 +1,4 @@
-import { accessTransition, Data, not, redirect } from '@form-engine/form/builders'
+import { accessTransition, and, Data, not, redirect } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
 import { sentencePlanOverviewPath } from './constants'
@@ -71,4 +71,14 @@ export const redirectUnlessSanSp = (goto: string) =>
   accessTransition({
     when: not(isSanSpAssessment),
     next: [redirect({ goto })],
+  })
+
+/**
+ * Redirect READ_WRITE users to privacy until they have accepted it.
+ * READ_ONLY users are not sent through the privacy screen.
+ */
+export const redirectToPrivacyUnlessAccepted = () =>
+  accessTransition({
+    when: and(Data('session.privacyAccepted').not.match(Condition.Equals(true)), isReadWriteAccess),
+    next: [redirect({ goto: '/sentence-plan/privacy' })],
   })

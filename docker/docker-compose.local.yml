@@ -34,6 +34,10 @@ services:
       DELIUS_API_URL: http://wiremock:8080/delius
       INGRESS_URL: http://localhost:3000
 
+  postgres:
+    ports:
+      - "5432:5432"
+
 volumes:
   node_modules:
     external: true

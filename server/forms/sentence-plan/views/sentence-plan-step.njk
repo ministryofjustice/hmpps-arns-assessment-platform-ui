@@ -1,6 +1,7 @@
 {%- extends "partials/layout.njk" -%}
 {%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
+{%- from "govuk/components/footer/macro.njk" import govukFooter -%}
 
 {# ancestor[0].title is root journey title, in this case it's 'Sentence Plan' #}
 {# step.title is current step(page) of the journey #}
@@ -34,6 +35,20 @@
   {% block pageScripts %}
     <script src="{{ '/assets/js/forms/sentence-plan/assets/form.js' | assetMap }}"></script>
   {% endblock %}
+  {% if smartSurveyPopupCode and currentTab is defined %}
+    <script nonce="{{ cspNonce }}">
+      (function(d){
+        var s,ss;
+        ss=d.createElement("script");
+        ss.type="text/javascript";
+        ss.async=true;
+        ss.type="module";
+        ss.src="https://embed.smartsurvey.io/index.js?popupCode={{ smartSurveyPopupCode }}";
+        s=d.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(ss, s);
+      })(document);
+    </script>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -81,32 +96,54 @@
   </div>
 {% endblock %}
 
-{% block supportWidget %}
-  {% set reportProblemHtml %}
-    <p class="govuk-body">
-      Copy this information and paste it into the
-      <a href="{{ serviceNowFormUrl }}" class="govuk-link" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
-    </p>
-    <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
-    <div class="app-report-problem__info">
-      <pre class="app-report-problem__details" id="report-problem-details">CRN: {{ data.caseData.crn if data.caseData }}
+{% block footer %}
+  {% block supportWidget %}
+    {% set reportProblemHtml %}
+      <p class="govuk-body">
+        Copy this information and paste it into the
+        <a href="{{ serviceNowFormUrl }}" class="govuk-link" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
+      </p>
+      <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
+      <div class="app-report-problem__info">
+        <pre class="app-report-problem__details" id="report-problem-details">CRN: {{ data.caseData.crn if data.caseData }}
 Request ID: {{ getRequestId() if getRequestId() != 'unavailable' }}
 Assessment ID: {{ data.assessmentUuid }}
 OASys PK: {{ data.oasysAssessmentPk }}</pre>
-      <div class="app-report-problem__copy">
-        <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
-          Copy
-        </button>
+        <div class="app-report-problem__copy">
+          <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
+            Copy
+          </button>
+        </div>
+      </div>
+    {% endset %}
+
+    <div class="app-report-problem" id="report-a-problem">
+      <div class="govuk-width-container">
+        {{ govukDetails({
+          summaryText: "Report a problem",
+          html: reportProblemHtml
+        }) }}
       </div>
     </div>
-  {% endset %}
+  {% endblock %}
 
-  <div class="app-report-problem" id="report-a-problem">
-    <div class="govuk-width-container">
-      {{ govukDetails({
-        summaryText: "Report a problem",
-        html: reportProblemHtml
-      }) }}
-    </div>
-  </div>
+  {{ govukFooter({
+    classes: "app-footer",
+    meta: {
+      items: [
+        {
+          href: "/sentence-plan/accessibility",
+          text: "Accessibility"
+        },
+        {
+          href: "/sentence-plan/cookies-policy",
+          text: "Cookies policy"
+        },
+        {
+          href: "/sentence-plan/privacy-policy",
+          text: "Privacy policy"
+        }
+      ]
+    }
+  }) }}
 {% endblock %}

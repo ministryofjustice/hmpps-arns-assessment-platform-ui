@@ -1,4 +1,6 @@
 {%- extends "partials/layout.njk" -%}
+{%- from "govuk/components/footer/macro.njk" import govukFooter -%}
+{%- from "partials/macros/support-widget/macro.njk" import supportWidget -%}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -8,4 +10,27 @@
       {% endfor %}
     </div>
   </div>
+{% endblock %}
+
+{% block footer %}
+  {{ supportWidget({}) }}
+  {{ govukFooter({
+    classes: "app-footer",
+    meta: {
+      items: [
+        {
+          href: "/sentence-plan/accessibility",
+          text: "Accessibility"
+        },
+        {
+          href: "/sentence-plan/cookies-policy",
+          text: "Cookies policy"
+        },
+        {
+          href: "/sentence-plan/privacy-policy",
+          text: "Privacy policy"
+        }
+      ]
+    }
+  }) }}
 {% endblock %}

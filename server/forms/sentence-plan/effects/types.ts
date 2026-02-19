@@ -13,6 +13,7 @@ import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryR
 import { CreateAssessmentCommandResult } from '../../../interfaces/aap-api/commandResult'
 import { AssessmentArea } from '../../../interfaces/coordinator-api/entityAssessment'
 import { AuthSource } from '../../../interfaces/hmppsUser'
+import { PreviousVersionsResponse } from '../../../interfaces/coordinator-api/previousVersions'
 
 /**
  * Status of the assessment info loading operation.
@@ -313,6 +314,9 @@ export interface SentencePlanData extends Record<string, unknown> {
 
   // Plan History (unified timeline of agreements + goal achievements)
   planHistoryEntries: PlanHistoryEntry[]
+
+  // Plan Previous Versions
+  previousVersions: PreviousVersionsResponse
 
   // Areas of need
   areasOfNeed: AreaOfNeed[]

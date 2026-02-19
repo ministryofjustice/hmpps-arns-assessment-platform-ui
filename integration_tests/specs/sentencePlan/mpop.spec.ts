@@ -56,6 +56,15 @@ test.describe('MPoP access flow', () => {
   })
 
   test.describe('After confirming privacy', () => {
+    test('shows Sign out link on plan overview', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      await navigateToPlanOverviewViaMpop(page, crn)
+
+      await expect(page.getByRole('link', { name: 'Sign out' })).toBeVisible()
+    })
+
     test('does not show Return to OASys button on plan overview', async ({
       page,
       createSession,

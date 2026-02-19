@@ -3,6 +3,7 @@ import { asSystem } from '@ministryofjustice/hmpps-rest-client'
 import CoordinatorApiClient from './coordinatorApiClient'
 import { OasysCreateRequest, OasysCreateResponse } from '../interfaces/coordinator-api/oasysCreate'
 import { EntityAssessmentResponse } from '../interfaces/coordinator-api/entityAssessment'
+import { PreviousVersionsResponse } from '../interfaces/coordinator-api/previousVersions'
 
 jest.mock('../config', () => ({
   apis: {
@@ -145,6 +146,58 @@ describe('CoordinatorApiClient', () => {
 
       // Act & Assert
       await expect(client.getEntityAssessment(entityUuid)).rejects.toThrow('Not found')
+    })
+  })
+
+  describe('getVersionsByEntityId()', () => {
+    it('should fetch assessment versions with system auth', async () => {
+      // Arrange
+      const entityUuid = '90a71d16-fecd-4e1a-85b9-98178bf0f8d0'
+      const expectedResponse: PreviousVersionsResponse = {
+        allVersions: {
+          '2024-01-01': {
+            description: 'Assessment and plan updated',
+            assessmentVersion: {
+              uuid: 'san-version-uuid',
+              version: 0,
+              createdAt: '2024-01-01T10:00:00Z',
+              updatedAt: '2024-01-01T10:00:00Z',
+              status: 'UNSIGNED',
+              planAgreementStatus: null,
+              entityType: 'ASSESSMENT',
+            },
+            planVersion: {
+              uuid: 'sp-version-uuid',
+              version: 123456789,
+              createdAt: '2024-01-01T10:00:00Z',
+              updatedAt: '2024-01-01T10:00:00Z',
+              status: 'UNSIGNED',
+              planAgreementStatus: 'AGREED',
+              entityType: 'AAP_PLAN',
+            },
+          },
+        },
+        countersignedVersions: {},
+      }
+
+      mockGet.mockResolvedValue(expectedResponse)
+
+      // Act
+      const result = await client.getVersionsByEntityId(entityUuid)
+
+      // Assert
+      expect(result).toEqual(expectedResponse)
+      expect(mockGet).toHaveBeenCalledWith({ path: `/entity/versions/${entityUuid}` }, asSystem())
+    })
+
+    it('should propagate 404 errors', async () => {
+      // Arrange
+      const entityUuid = 'non-existent-uuid'
+      const error = new Error('Not found')
+      mockGet.mockRejectedValue(error)
+
+      // Act & Assert
+      await expect(client.getVersionsByEntityId(entityUuid)).rejects.toThrow('Not found')
     })
   })
 })

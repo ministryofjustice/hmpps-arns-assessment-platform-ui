@@ -40,6 +40,19 @@
     }
   }
 
+  &__account-details {
+    color: govuk-colour('white');
+
+    &__sub-text {
+      @include govuk-font(16);
+      display: none;
+
+      @include govuk-media-query($from: tablet) {
+        display: block;
+      }
+    }
+  }
+
   &__link {
     @include govuk-link-common;
     @include govuk-link-style-default;
@@ -63,14 +76,6 @@
       }
     }
 
-    &__sub-text {
-      @include govuk-font(16);
-      display: none;
-
-      @include govuk-media-query($from: tablet) {
-        display: block;
-      }
-    }
   }
 
   &__navigation {
