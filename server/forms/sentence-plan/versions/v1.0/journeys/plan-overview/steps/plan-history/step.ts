@@ -1,7 +1,7 @@
 import { accessTransition, step } from '@form-engine/form/builders'
 import { subtitleText, sectionBreak, agreementHistory, updateAgreementLink, backToTopLink } from './fields'
 import { SentencePlanEffects } from '../../../../../../effects'
-import { isOasysAccess, redirectIfNotPostAgreement } from '../../../../guards'
+import { isOasysAccess, redirectIfNotPostAgreement, redirectToPrivacyUnlessAccepted } from '../../../../guards'
 
 export const planHistoryStep = step({
   path: '/plan-history',
@@ -16,6 +16,7 @@ export const planHistoryStep = step({
   },
   blocks: [subtitleText, sectionBreak, agreementHistory, updateAgreementLink, backToTopLink],
   onAccess: [
+    redirectToPrivacyUnlessAccepted(),
     accessTransition({
       effects: [
         SentencePlanEffects.loadPlanTimeline(),
