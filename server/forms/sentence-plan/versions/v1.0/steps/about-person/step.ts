@@ -1,4 +1,4 @@
-import { Format, step, accessTransition } from '@form-engine/form/builders'
+import { Format, step, accessTransition, when } from '@form-engine/form/builders'
 import { isOasysAccess, isReadWriteAccess, redirectUnlessSanSp } from '../../guards'
 import {
   noAssessmentDataErrorWarning,
@@ -15,6 +15,8 @@ import {
   lowScoringAreasAccordion,
   otherAreasHeading,
   otherAreasAccordion,
+  sentenceInformationMissingAndAssessmentErrorMessage,
+  isSentenceInformationAndAssessmentLoadingError,
 } from './fields'
 import { CaseData, sentencePlanOverviewPath } from '../../constants'
 import { SentencePlanEffects } from '../../../../effects'
@@ -24,7 +26,9 @@ export const aboutPersonStep = step({
   title: 'About',
   view: {
     locals: {
-      headerPageHeading: Format(`About %1`, CaseData.Forename),
+      headerPageHeading: when(isSentenceInformationAndAssessmentLoadingError)
+        .then('Sorry, there is a problem')
+        .else(Format(`About %1`, CaseData.Forename)),
       buttons: {
         showReturnToOasysButton: isOasysAccess,
         showCreateGoalButton: isReadWriteAccess,
@@ -32,6 +36,7 @@ export const aboutPersonStep = step({
     },
   },
   blocks: [
+    sentenceInformationMissingAndAssessmentErrorMessage,
     incompleteAssessmentWarning,
     assessmentLastUpdated,
     sentenceHeading,
