@@ -21,7 +21,6 @@ import {
 import { CaseData, sentencePlanOverviewPath } from '../../constants'
 import { SentencePlanEffects } from '../../../../effects'
 
-
 export const aboutPersonStep = step({
   path: '/about-person',
   title: 'About',
