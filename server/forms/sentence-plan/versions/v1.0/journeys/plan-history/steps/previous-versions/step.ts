@@ -1,5 +1,5 @@
 import { step } from '@form-engine/form/builders'
-import { isOasysAccess } from '../../../../guards'
+import { isOasysAccess, redirectToPrivacyUnlessAccepted } from '../../../../guards'
 
 export const previousVersionsStep = step({
   path: '/previous-versions',
@@ -13,5 +13,6 @@ export const previousVersionsStep = step({
     },
   },
   isEntryPoint: true,
+  onAccess: [redirectToPrivacyUnlessAccepted()],
   blocks: [],
 })

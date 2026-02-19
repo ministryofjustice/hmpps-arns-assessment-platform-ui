@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
-import { navigateToSentencePlan, sentencePlanV1URLs } from '../sentencePlanUtils'
+import { navigateToPrivacyScreen, navigateToSentencePlan, sentencePlanV1URLs } from '../sentencePlanUtils'
 
 test.describe('Accessibility page', () => {
   test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
@@ -28,5 +28,27 @@ test.describe('Accessibility page', () => {
 
   test('does not show a back link', async ({ page }) => {
     await expect(page.locator('.govuk-back-link')).not.toBeVisible()
+  })
+
+  // TODO: Test should be split out to each pages spec files once they are built.
+  test('redirects user back to privacy page when bypassed', async ({ page, createSession, sentencePlanBuilder }) => {
+    const { sentencePlanId, handoverLink } = await createSession({
+      targetService: TargetService.SENTENCE_PLAN,
+      assessmentType: 'SAN_SP',
+    })
+    await sentencePlanBuilder.extend(sentencePlanId).withAgreementStatus('AGREED').save()
+
+    await navigateToPrivacyScreen(page, handoverLink)
+    await page.goto(sentencePlanV1URLs.ACCESSIBILITY)
+    await expect(page).toHaveURL(sentencePlanV1URLs.ACCESSIBILITY)
+
+    await page.goto(sentencePlanV1URLs.ABOUT_PERSON)
+    await expect(page).toHaveURL(/\/sentence-plan\/privacy/)
+
+    await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
+    await expect(page).toHaveURL(/\/sentence-plan\/privacy/)
+
+    await page.goto(sentencePlanV1URLs.PLAN_HISTORY_PREVIOUS_VERSIONS)
+    await expect(page).toHaveURL(/\/sentence-plan\/privacy/)
   })
 })

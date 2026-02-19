@@ -1,12 +1,11 @@
-import { accessTransition, and, Data, journey, redirect } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import { accessTransition, journey } from '@form-engine/form/builders'
 import { planHistoryJourney } from './journeys/plan-history'
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
 import { actorLabels, areasOfNeed } from './constants'
 import { SentencePlanEffects } from '../../effects'
-import { hasPostAgreementStatus, isSanSpAssessment, isReadWriteAccess } from './guards'
+import { hasPostAgreementStatus, isSanSpAssessment, redirectToPrivacyUnlessAccepted } from './guards'
 
 /**
  * Sentence Plan v1.0 Journey
@@ -43,14 +42,9 @@ export const sentencePlanV1Journey = journey({
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
       ],
-      next: [
-        // READ_ONLY users skip privacy and go straight to overview; edit users must accept privacy first.
-        redirect({
-          when: and(Data('session.privacyAccepted').not.match(Condition.Equals(true)), isReadWriteAccess),
-          goto: '../../privacy',
-        }),
-      ],
     }),
+    // READ_ONLY users skip privacy and go straight to overview; edit users must accept privacy first.
+    redirectToPrivacyUnlessAccepted(),
   ],
   steps: [aboutPersonStep],
   children: [planOverviewJourney, goalManagementJourney, planHistoryJourney],
