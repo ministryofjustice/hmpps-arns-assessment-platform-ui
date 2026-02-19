@@ -34,6 +34,20 @@
   {% block pageScripts %}
     <script src="{{ '/assets/js/forms/sentence-plan/assets/form.js' | assetMap }}"></script>
   {% endblock %}
+  {% if smartSurveyPopupCode and currentTab is defined %}
+    <script nonce="{{ cspNonce }}">
+      (function(d){
+        var s,ss;
+        ss=d.createElement("script");
+        ss.type="text/javascript";
+        ss.async=true;
+        ss.type="module";
+        ss.src="https://embed.smartsurvey.io/index.js?popupCode={{ smartSurveyPopupCode }}";
+        s=d.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(ss, s);
+      })(document);
+    </script>
+  {% endif %}
 {% endblock %}
 
 {% block content %}

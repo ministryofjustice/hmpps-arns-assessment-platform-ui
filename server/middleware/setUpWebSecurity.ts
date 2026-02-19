@@ -26,11 +26,18 @@ export default function setUpWebSecurity(): Router {
           // <link href="http://example.com/" rel="stylesheet" nonce="{{ cspNonce }}">
           // This ensures only scripts we trust are loaded, and not anything injected into the
           // page by an attacker.
-          scriptSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
+          scriptSrc: [
+            "'self'",
+            (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
+            'https://embed.smartsurvey.io',
+          ],
           styleSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
-          fontSrc: ["'self'"],
-          connectSrc: ["'self'"],
-          imgSrc: ["'self'"],
+          // SmartSurvey injects <style> elements and inline style attributes without nonces
+          styleSrcElem: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+          styleSrcAttr: ["'unsafe-inline'"],
+          fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+          connectSrc: ["'self'", 'https://www.smartsurvey.co.uk'],
+          imgSrc: ["'self'", 'https://embed.smartsurvey.io'],
           formAction: [
             `'self' https://*.hmpps.service.justice.gov.uk http://localhost:* ${config.apis.hmppsAuth.externalUrl} ${config.apis.arnsHandover.externalUrl}`,
           ],
