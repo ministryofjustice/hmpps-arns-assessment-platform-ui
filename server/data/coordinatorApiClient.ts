@@ -4,6 +4,7 @@ import config from '../config'
 import logger from '../../logger'
 import { OasysCreateRequest, OasysCreateResponse } from '../interfaces/coordinator-api/oasysCreate'
 import { EntityAssessmentResponse } from '../interfaces/coordinator-api/entityAssessment'
+import { PreviousVersionsResponse } from '../interfaces/coordinator-api/previousVersions'
 
 export default class CoordinatorApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {
@@ -38,5 +39,13 @@ export default class CoordinatorApiClient extends RestClient {
    */
   async getEntityAssessment(entityUuid: string): Promise<EntityAssessmentResponse> {
     return this.get({ path: `/entity/${entityUuid}/ASSESSMENT` }, asSystem())
+  }
+
+  /**
+   * Get all previous versions of a sentence plan and its associated SAN assessment
+   * @param entityUuid
+   */
+  async getVersionsByEntityId(entityUuid: string): Promise<PreviousVersionsResponse> {
+    return this.get({ path: `/entity/versions/${entityUuid}` }, asSystem())
   }
 }

@@ -123,6 +123,7 @@ export default {
       agent: new AgentConfig(Number(get('COORDINATOR_API_TIMEOUT_RESPONSE', 10000))),
     },
   },
+  sanUrl: get('SAN_URL', 'http://localhost:3000', requiredInProduction),
   sqs: {
     audit: auditConfig(),
   },
