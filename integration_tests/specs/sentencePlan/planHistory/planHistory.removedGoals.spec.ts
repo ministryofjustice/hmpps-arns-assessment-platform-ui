@@ -92,7 +92,7 @@ test.describe('Plan History - Removed Goals', () => {
 
     // Verify we're on the view inactive goal page
     await expect(page).toHaveURL(/view-inactive-goal/)
-    await expect(page.locator('h2')).toContainText('Test removed goal')
+    await expect(page.locator('[data-qa="main-form"] h2')).toContainText('Test removed goal')
   })
 
   test('displays removed goal in correct chronological order with other events', async ({

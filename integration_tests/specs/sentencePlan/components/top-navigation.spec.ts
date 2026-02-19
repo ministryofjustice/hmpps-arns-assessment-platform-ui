@@ -25,19 +25,15 @@ test.describe('Top navigation', () => {
 
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
-    await expect(planOverviewPage.banner).toMatchAriaSnapshot(`
-          - banner:
-            - text: HMPPS
-            - link "Assess and plan":
-              - /url: /sentence-plan/v1.0/plan/overview
-            - navigation "Account navigation":
-              - list:
-                - listitem:
-                  - link "T. User Manage your details":
-                    - /url: /account-details
-                - listitem:
-                  - link "Sign out":
-                    - /url: /sign-out
+    await expect(page.getByRole('link', { name: 'Assess and plan' })).toHaveAttribute(
+      'href',
+      '/sentence-plan/v1.0/plan/overview',
+    )
+
+    await expect(planOverviewPage.banner.getByRole('navigation', { name: 'Account navigation' })).toMatchAriaSnapshot(`
+          - navigation "Account navigation":
+            - list:
+              - listitem: T. User OASys User
         `)
 
     await page.getByRole('link', { name: 'Assess and plan' }).click()

@@ -12,22 +12,18 @@ export default class AbstractPage {
   /** link to sign out */
   readonly signoutLink: Locator
 
-  /** link to manage user details */
-  readonly manageUserDetails: Locator
+  /** account type text shown under username in header */
+  readonly accountType: Locator
 
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
     this.usersName = page.getByTestId('header-user-name')
     this.signoutLink = page.getByText('Sign out')
-    this.manageUserDetails = page.getByTestId('manageDetails')
+    this.accountType = page.locator('.hmpps-header__account-details__sub-text')
   }
 
   async signOut() {
     await this.signoutLink.first().click()
-  }
-
-  async clickManageUserDetails() {
-    await this.manageUserDetails.first().click()
   }
 }

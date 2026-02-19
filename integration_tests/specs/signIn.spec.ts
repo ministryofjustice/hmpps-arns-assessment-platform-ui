@@ -35,22 +35,11 @@ test.describe('SignIn', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')
   })
 
-  test('User can manage their details', async ({ page, context }) => {
+  test('User account type visible in header', async ({ page }) => {
     await login(page)
 
     const homePage = await HomePage.verifyOnPage(page)
-
-    // Workaround: HMPPS Auth sets cookies with SameSite=Strict, which prevents them
-    // from being sent on cross-site navigations. Re-add them with SameSite=Lax.
-    const cookies = await context.cookies()
-    const authCookies = cookies
-      .filter(c => c.domain.includes('hmpps-auth') || c.domain.includes('localhost'))
-      .map(c => ({ ...c, sameSite: 'Lax' as const }))
-    await context.addCookies(authCookies)
-
-    await homePage.clickManageUserDetails()
-
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Your account details')
+    await expect(homePage.accountType).toHaveText('Auth User')
   })
 
   test('Token verification failure redirects user to auth @serial', async ({ page }) => {

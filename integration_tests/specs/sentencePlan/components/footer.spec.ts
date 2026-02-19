@@ -10,9 +10,7 @@ test.describe('Footer', () => {
 
     await PlanOverviewPage.verifyOnPage(page)
 
-    const accessibilityScanResults = await makeAxeBuilder()
-      .include('footer')
-      .analyze()
+    const accessibilityScanResults = await makeAxeBuilder().include('footer').analyze()
 
     expect(accessibilityScanResults.violations).toEqual([])
   })
@@ -25,10 +23,13 @@ test.describe('Footer', () => {
 
     await expect(planOverviewPage.footer).toMatchAriaSnapshot(`
           - contentinfo:
-            - text: All content is available under the
-            - link /Open Government Licence/
-            - text: ", except where otherwise stated"
-            - link "© Crown copyright"
+            - list:
+              - listitem:
+                - link "Accessibility"
+              - listitem:
+                - link "Cookies policy"
+              - listitem:
+                - link "Privacy policy"
         `)
   })
 })
