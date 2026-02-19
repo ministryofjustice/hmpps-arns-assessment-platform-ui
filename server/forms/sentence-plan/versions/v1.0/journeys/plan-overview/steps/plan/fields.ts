@@ -411,11 +411,7 @@ export const blankPlanOverviewContent = HtmlBlock({
   content: Format(
     `<div id="blank-plan-content" class="govuk-form-group %2">
       %3
-      <p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can either:</p>
-      <ul class="govuk-list govuk-list--bullet govuk-!-display-none-print">
-        <li><a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a></li>
-        %4
-      </ul>
+      %4
     </div>`,
     CaseData.Forename,
     when(Query('error').match(Condition.Equals('no-active-goals')))
@@ -429,11 +425,20 @@ export const blankPlanOverviewContent = HtmlBlock({
     when(isSanSpAssessment)
       .then(
         Format(
-          '<li><a href="../about-person" class="govuk-link govuk-link--no-visited-state">view information from %1\'s assessment</a></li>',
+          `<p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can either:</p>
+      <ul class="govuk-list govuk-list--bullet govuk-!-display-none-print">
+        <li><a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a></li>
+        <li><a href="../about-person" class="govuk-link govuk-link--no-visited-state">view information from %1's assessment</a></li>
+      </ul>`,
           CaseData.Forename,
         ),
       )
-      .else(''),
+      .else(
+        Format(
+          '<p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can <a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a>.</p>',
+          CaseData.Forename,
+        ),
+      ),
   ),
 })
 
