@@ -9,7 +9,7 @@ import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
-import { isSanSpAssessment } from '../../../../guards'
+import { hasPostAgreementStatus, isSanSpAssessment } from '../../../../guards'
 
 const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
@@ -180,12 +180,13 @@ const removedGoalsNavigationItem = {
 
 const hasAchievedGoals = achievedGoalsCount.match(Condition.Number.GreaterThan(0))
 const hasRemovedGoals = removedGoalsCount.match(Condition.Number.GreaterThan(0))
+const showRemovedGoalsTab = and(hasRemovedGoals, hasPostAgreementStatus)
 
 export const subNavigation = MOJSubNavigation({
   label: 'Plan sections',
   items: when(hasAchievedGoals)
     .then(
-      when(hasRemovedGoals)
+      when(showRemovedGoalsTab)
         .then([
           currentGoalsNavigationItem,
           futureGoalsNavigationItem,
@@ -195,7 +196,7 @@ export const subNavigation = MOJSubNavigation({
         .else([currentGoalsNavigationItem, futureGoalsNavigationItem, achievedGoalsNavigationItem]),
     )
     .else(
-      when(hasRemovedGoals)
+      when(showRemovedGoalsTab)
         .then([currentGoalsNavigationItem, futureGoalsNavigationItem, removedGoalsNavigationItem])
         .else([currentGoalsNavigationItem, futureGoalsNavigationItem]),
     ),
@@ -306,6 +307,14 @@ export const goalsSection = TemplateWrapper({
                                   status: Item().path('status'),
                                 }),
                               ),
+                            notes: Item()
+                              .path('notes')
+                              .each(
+                                Iterator.Map({
+                                  type: Item().path('type'),
+                                  note: Item().path('note'),
+                                }),
+                              ),
                             actions: [
                               {
                                 text: 'Change goal',
@@ -350,6 +359,14 @@ export const goalsSection = TemplateWrapper({
                                   actor: Item().path('actorLabel'),
                                   description: Item().path('description'),
                                   status: Item().path('status'),
+                                }),
+                              ),
+                            notes: Item()
+                              .path('notes')
+                              .each(
+                                Iterator.Map({
+                                  type: Item().path('type'),
+                                  note: Item().path('note'),
                                 }),
                               ),
                             actions: [
