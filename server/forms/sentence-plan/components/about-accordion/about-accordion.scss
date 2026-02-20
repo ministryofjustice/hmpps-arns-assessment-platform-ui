@@ -3,7 +3,7 @@
 
 // Accordion header badges (display inline with the title)
 // used for crim needs titles
-.accordion-header-badges {
+.about-page-accordion-header-badges {
   display: inline-flex;
   gap: govuk-spacing(4);
   margin-left: govuk-spacing(4);
@@ -15,7 +15,7 @@
 }
 
 // accordion layout
-.govuk-accordion {
+.about-page-accordion {
   margin-left: govuk-spacing(9);
 
   // ensure accordion heading titles are NOT bold

@@ -141,7 +141,11 @@ const createAccordionItems = (dataKey: string) =>
   Data(dataKey).each(
     Iterator.Map({
       heading: {
-        html: Format('%1 <span class="accordion-header-badges">%2</span>', Item().path('title'), accordionHeaderBadges),
+        html: Format(
+          '%1 <span class="about-page-accordion-header-badges">%2</span>',
+          Item().path('title'),
+          accordionHeaderBadges,
+        ),
       },
       content: {
         blocks: [
@@ -177,6 +181,7 @@ const createAccordion = (dataKey: string, accordionId: string) =>
       not(Data(dataKey).match(Condition.IsRequired())),
     ),
     id: accordionId,
+    classes: 'about-page-accordion',
     rememberExpanded: false,
     items: createAccordionItems(dataKey),
   })
