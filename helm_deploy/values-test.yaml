@@ -19,7 +19,6 @@ generic-service:
     SAN_URL: "https://strengths-based-needs-assessments-test.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: TEST
     AUDIT_ENABLED: "false"
-    SERVICE_NOW_FORM_URL: "https://mojprod.service-now.com/moj_sp?id=sc_cat_item&sys_id=276572591bce4910a93242ead34bcb53"
     FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "false"
     TRAINING_SESSION_LAUNCHER_ENABLED: "true"
     SMART_SURVEY_POPUP_CODE: "XF5PNV"
