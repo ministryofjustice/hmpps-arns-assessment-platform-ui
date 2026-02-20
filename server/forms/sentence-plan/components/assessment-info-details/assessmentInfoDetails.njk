@@ -1,13 +1,16 @@
 {#
   Assessment Info Details Component
+  Displays practitioner analysis, risk links, motivation, strengths (from SAN assessment)
+  and scores (from HandoverContext/ARNS HANDOVER) for an area of need.
 
-  Displays practitioner analysis from the SAN assessment.
-
-  By default, wraps content in a collapsible govUk details element.
-  When showAsDetails set to false, renders content directly (useful for accordion panels, for example on About page).
-
-  By default, the component is wrapped in a two-thirds width container.
-  Use fullWidth: true when the component is already within a constrained layout.
+  Modes:
+    - showAsDetails:
+    -- true (default): collapsible details panel for goal pages
+    -- false: direct content with score bars for About page accordion
+  Layout:
+    - fullWidth:
+    -- false (default): wraps in two-thirds column
+    -- true: no wrapper (when already in constrained layout)
 
   Params:
     personName       - Person's forename
