@@ -1,7 +1,7 @@
 {%- extends "partials/layout.njk" -%}
 {%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
-{%- from "govuk/components/footer/macro.njk" import govukFooter -%}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 
 {# ancestor[0].title is root journey title, in this case it's 'Sentence Plan' #}
 {# step.title is current step(page) of the journey #}
@@ -127,23 +127,7 @@ OASys PK: {{ data.oasysAssessmentPk }}</pre>
     </div>
   {% endblock %}
 
-  {{ govukFooter({
-    classes: "app-footer",
-    meta: {
-      items: [
-        {
-          href: "/sentence-plan/accessibility",
-          text: "Accessibility"
-        },
-        {
-          href: "/sentence-plan/cookies-policy",
-          text: "Cookies policy"
-        },
-        {
-          href: "/sentence-plan/privacy-policy",
-          text: "Privacy policy"
-        }
-      ]
-    }
+  {{ pdsFooter({
+    baseUrl: "/sentence-plan"
   }) }}
 {% endblock %}
