@@ -18,7 +18,7 @@ generic-service:
     AUDIT_ENABLED: "false"
     # SMART_SURVEY_POPUP_CODE: "1U32TA"
     FEEDBACK_FORM_URL: "https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u"
-    SERVICE_NOW_FORM_URL: "#" # TODO: the link to the ServiceNow form itself does not yet exist
+    SERVICE_NOW_FORM_URL: "https://mojprod.service-now.com/moj_sp?id=sc_cat_item&sys_id=276572591bce4910a93242ead34bcb53"
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-arns-prod
