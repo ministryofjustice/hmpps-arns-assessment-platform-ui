@@ -31,6 +31,11 @@ export const flagsTabContent = [
         text: 'SAN Private Beta',
         hint: 'Enables Strengths and Needs private beta features and criminogenic needs',
       },
+      {
+        value: 'NEW_PERIOD_OF_SUPERVISION',
+        text: 'New Period of Supervision',
+        hint: 'Triggers a plan reset. Paste the OASys PK from an existing session that has active/future goals.',
+      },
     ],
   }),
 ]
