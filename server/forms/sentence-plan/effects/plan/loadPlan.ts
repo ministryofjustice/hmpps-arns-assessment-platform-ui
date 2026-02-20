@@ -37,4 +37,19 @@ export const loadPlan = (deps: SentencePlanEffectsDeps) => async (context: Sente
   if (session.caseDetails) {
     context.setData('caseData', session.caseDetails)
   }
+
+  const forename = session.handoverContext?.subject?.givenName
+  const existingForename = assessment.properties?.SUBJECT_FORENAME
+
+  if (forename && !existingForename) {
+    await deps.api.executeCommand({
+      type: 'UpdateAssessmentPropertiesCommand',
+      assessmentUuid: assessment.assessmentUuid,
+      user,
+      added: {
+        SUBJECT_FORENAME: { type: 'Single', value: forename },
+      },
+      removed: [],
+    })
+  }
 }
