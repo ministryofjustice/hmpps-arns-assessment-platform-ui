@@ -239,10 +239,20 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
     }
 
     if (ISO_DATE_RE.test(trimmed)) {
+      const [datePart] = trimmed.split('T')
+      const [yearStr, monthStr, dayStr] = datePart.split('-')
+      const year = Number(yearStr)
+      const month = Number(monthStr)
+      const day = Number(dayStr)
+
       const date = new Date(trimmed)
 
       if (Number.isNaN(date.getTime())) {
         throw new Error(`Transformer.String.ToDate: "${value}" is not a valid ISO date`)
+      }
+
+      if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+        throw new Error(`Transformer.String.ToDate: "${value}" is not a valid date`)
       }
 
       return date

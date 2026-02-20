@@ -587,6 +587,12 @@ describe('String Transformers', () => {
       expect(result.getDate()).toBe(15)
     })
 
+    it('should throw for non realistic ISO dates that js would silently roll over', () => {
+      expect(() => evaluate('2026-02-30')).toThrow('is not a valid date')
+      expect(() => evaluate('2024-04-31')).toThrow('is not a valid date')
+      expect(() => evaluate('2023-02-29')).toThrow('is not a valid date')
+    })
+
     it('should throw for US format (not supported)', () => {
       expect(() => evaluate('03/15/2024')).toThrow('is not a valid date')
     })
