@@ -16,7 +16,7 @@ import type { GoalConfig } from '../../../builders/types'
  * the UI renders correctly.
  */
 
-const systemRemovalNote = 'Automatically removed as the previous supervision period has ended.'
+const systemRemovalNote = "Automatically removed as Test's previous supervision period has ended."
 
 function autoRemovedGoals(count: number): GoalConfig[] {
   const goals: GoalConfig[] = []
