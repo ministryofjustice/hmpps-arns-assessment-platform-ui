@@ -31,6 +31,11 @@ export const flagsTabContent = [
         text: 'SAN Private Beta',
         hint: 'Enables Strengths and Needs private beta features and criminogenic needs',
       },
+      {
+        value: 'NEW_PERIOD_OF_SUPERVISION',
+        text: 'New Period of Supervision',
+        hint: 'Simulates a new period of supervision. The session will be created with the plan in a reset state.',
+      },
     ],
   }),
 ]
