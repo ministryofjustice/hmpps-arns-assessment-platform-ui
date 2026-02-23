@@ -10,9 +10,7 @@ test.describe('Footer', () => {
 
     await PlanOverviewPage.verifyOnPage(page)
 
-    const accessibilityScanResults = await makeAxeBuilder()
-      .include('footer')
-      .analyze()
+    const accessibilityScanResults = await makeAxeBuilder().include('footer').analyze()
 
     expect(accessibilityScanResults.violations).toEqual([])
   })
@@ -22,13 +20,17 @@ test.describe('Footer', () => {
     await navigateToSentencePlan(page, handoverLink)
 
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-
-    await expect(planOverviewPage.footer).toMatchAriaSnapshot(`
-          - contentinfo:
-            - text: All content is available under the
-            - link /Open Government Licence/
-            - text: ", except where otherwise stated"
-            - link "© Crown copyright"
-        `)
+    await expect(planOverviewPage.footer.getByRole('link', { name: 'Accessibility' })).toHaveAttribute(
+      'href',
+      '/sentence-plan/accessibility',
+    )
+    await expect(planOverviewPage.footer.getByRole('link', { name: 'Cookies policy' })).toHaveAttribute(
+      'href',
+      '/sentence-plan/cookies-policy',
+    )
+    await expect(planOverviewPage.footer.getByRole('link', { name: 'Privacy policy' })).toHaveAttribute(
+      'href',
+      '/sentence-plan/privacy-policy',
+    )
   })
 })

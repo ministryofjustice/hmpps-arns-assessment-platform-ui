@@ -141,7 +141,10 @@ export default {
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
-  serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#'),
+  serviceNowFormUrl: get(
+    'SERVICE_NOW_FORM_URL',
+    'https://mojprod.service-now.com/moj_sp?id=sc_cat_item&sys_id=276572591bce4910a93242ead34bcb53',
+  ),
   smartSurveyPopupCode: get('SMART_SURVEY_POPUP_CODE', ''),
 
   // Target service OAuth client IDs for handover

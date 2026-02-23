@@ -6,6 +6,9 @@ import { sentencePlanComponents } from './components'
 import { createPrivacyScreen } from '../shared'
 import { CaseData } from './versions/v1.0/constants'
 import { unsavedInformationDeletedStep } from './steps/unsaved-information-deleted/step'
+import { accessibilityStep } from './steps/accessibility/step'
+import { cookiesPolicyStep } from './steps/cookies-policy/step'
+import { privacyPolicyStep } from './steps/privacy-policy/step'
 import config from '../../config'
 
 /**
@@ -50,7 +53,7 @@ const sentencePlanRootJourney = journey({
   path: '/sentence-plan',
   entryPath: '/v1.0/plan/overview',
   children: [sentencePlanV1Journey],
-  steps: [privacyScreenStep, unsavedInformationDeletedStep],
+  steps: [privacyScreenStep, unsavedInformationDeletedStep, accessibilityStep, cookiesPolicyStep, privacyPolicyStep],
 })
 
 /**

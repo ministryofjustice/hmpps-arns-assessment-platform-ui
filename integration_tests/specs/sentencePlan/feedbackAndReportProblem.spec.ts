@@ -22,16 +22,18 @@ test.describe('Feedback and Report a Problem', () => {
 
       // AC1: Check the full banner content text
       await expect(phaseBanner).toContainText(
-        'Give feedback (opens in a new tab) or report a problem to help us improve it.',
+        'This is a new service. Give feedback (opens in a new tab) to help us improve it, or report a problem.',
       )
 
       // AC2: Feedback link opens in a new tab
       const feedbackLink = phaseBanner.getByRole('link', { name: /give feedback/i })
       await expect(feedbackLink).toBeVisible()
       await expect(feedbackLink).toHaveAttribute('target', '_blank')
+      await expect(feedbackLink).toHaveClass(/govuk-link--no-visited-state/)
 
       const reportProblemLink = phaseBanner.getByRole('link', { name: /report a problem/i })
       await expect(reportProblemLink).toBeVisible()
+      await expect(reportProblemLink).toHaveClass(/govuk-link--no-visited-state/)
     })
 
     // AC1: Phase banner appears on every SP page, including the privacy screen

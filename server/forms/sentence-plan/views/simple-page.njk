@@ -1,4 +1,6 @@
 {%- extends "partials/layout.njk" -%}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+{%- from "partials/macros/support-widget/macro.njk" import supportWidget -%}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -8,4 +10,11 @@
       {% endfor %}
     </div>
   </div>
+{% endblock %}
+
+{% block footer %}
+  {{ supportWidget({}) }}
+  {{ pdsFooter({
+    baseUrl: "/sentence-plan"
+  }) }}
 {% endblock %}

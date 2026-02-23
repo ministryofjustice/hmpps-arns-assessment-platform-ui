@@ -1,6 +1,7 @@
 {%- extends "partials/layout.njk" -%}
 {%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 
 {# ancestor[0].title is root journey title, in this case it's 'Sentence Plan' #}
 {# step.title is current step(page) of the journey #}
@@ -95,32 +96,38 @@
   </div>
 {% endblock %}
 
-{% block supportWidget %}
-  {% set reportProblemHtml %}
-    <p class="govuk-body">
-      Copy this information and paste it into the
-      <a href="{{ serviceNowFormUrl }}" class="govuk-link" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
-    </p>
-    <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
-    <div class="app-report-problem__info">
-      <pre class="app-report-problem__details" id="report-problem-details">CRN: {{ data.caseData.crn if data.caseData }}
+{% block footer %}
+  {% block supportWidget %}
+    {% set reportProblemHtml %}
+      <p class="govuk-body">
+        Copy this information and paste it into the
+        <a href="{{ serviceNowFormUrl }}" class="govuk-link" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
+      </p>
+      <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
+      <div class="app-report-problem__info">
+        <pre class="app-report-problem__details" id="report-problem-details">CRN: {{ data.caseData.crn if data.caseData }}
 Request ID: {{ getRequestId() if getRequestId() != 'unavailable' }}
 Assessment ID: {{ data.assessmentUuid }}
 OASys PK: {{ data.oasysAssessmentPk }}</pre>
-      <div class="app-report-problem__copy">
-        <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
-          Copy
-        </button>
+        <div class="app-report-problem__copy">
+          <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
+            Copy
+          </button>
+        </div>
+      </div>
+    {% endset %}
+
+    <div class="app-report-problem" id="report-a-problem">
+      <div class="govuk-width-container">
+        {{ govukDetails({
+          summaryText: "Report a problem",
+          html: reportProblemHtml
+        }) }}
       </div>
     </div>
-  {% endset %}
+  {% endblock %}
 
-  <div class="app-report-problem" id="report-a-problem">
-    <div class="govuk-width-container">
-      {{ govukDetails({
-        summaryText: "Report a problem",
-        html: reportProblemHtml
-      }) }}
-    </div>
-  </div>
+  {{ pdsFooter({
+    baseUrl: "/sentence-plan"
+  }) }}
 {% endblock %}
