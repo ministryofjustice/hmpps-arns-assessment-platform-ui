@@ -34,7 +34,7 @@ export const flagsTabContent = [
       {
         value: 'NEW_PERIOD_OF_SUPERVISION',
         text: 'New Period of Supervision',
-        hint: 'Triggers a plan reset. Paste the OASys PK from an existing session that has active/future goals.',
+        hint: 'Simulates a new period of supervision. The session will be created with the plan in a reset state.',
       },
     ],
   }),
