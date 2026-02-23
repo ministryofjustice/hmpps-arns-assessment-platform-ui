@@ -3,6 +3,7 @@ import { CreateHandoverLinkRequest } from '../../../interfaces/handover-api/requ
 import { OasysCreateRequest } from '../../../interfaces/coordinator-api/oasysCreate'
 import { TrainingScenarioFlag } from '../constants'
 import { ScenarioFieldKey, getFieldsByGroup } from '../scenarios'
+import { randomOasysAssessmentPk } from '../scenarios/helpers'
 import { TrainingSessionLauncherContext, TargetApplication } from '../types'
 import { TrainingSessionLauncherEffectsDeps } from '../effects/types'
 
@@ -63,6 +64,8 @@ const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
     session: {
       modifyRequest: request => ({
         ...request,
+        oasysAssessmentPk: randomOasysAssessmentPk(),
+        previousOasysSpPk: request.oasysAssessmentPk,
         newPeriodOfSupervision: 'Y' as const,
       }),
     },
