@@ -76,6 +76,7 @@ export const sentencePlanPageTitles = {
   privacy: 'Close other applications',
   aboutPerson: 'About',
   previousVersions: 'Previous versions',
+  historicPlan: 'View historic version',
 }
 
 export const sentencePlanServiceName = 'Sentence plan'

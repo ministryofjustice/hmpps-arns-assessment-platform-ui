@@ -140,6 +140,10 @@ export class TestAapApiClient extends RestClient {
       }
 
       await this.dbClient.query('BEGIN')
+      await this.dbClient.query(
+        `UPDATE "assessment-platform"."assessment" SET created_at = $1::timestamptz WHERE uuid = $2`,
+        [from, assessmentUuid],
+      )
       await redistribute('event')
       await redistribute('timeline')
       await this.dbClient.query(`DELETE FROM "assessment-platform"."aggregate" where assessment_uuid = $1`, [

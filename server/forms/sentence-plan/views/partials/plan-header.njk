@@ -1,5 +1,5 @@
 {% from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions %}
-
+{% from "moj/components/alert/macro.njk" import mojAlert %}
 
 {% if data.caseData %}
   {% set person = data.caseData %}
@@ -57,9 +57,9 @@
                 <dd>{{ person.dateOfBirth | formatSimpleDate }}</dd>
               </div>
             </dl>
-            {% if headerPageHeading != 'Previous versions' and not hideNavigation %}
+            {% if not hidePreviousVersions %}
               <div class ="plan-header__subject-details__navigation-links" >
-                <a href="{{ basePath }}/plan-history/previous-versions"
+                <a href="{{ basePath }}/plan/previous-versions"
                    class="govuk-link--no-visited-state govuk-!-display-none-print"
                    data-previous-versions-link>
                   View previous versions
@@ -68,6 +68,21 @@
             {% endif %}
           </div>
       </div>
+
+      {% if alert %}
+        <div class="plan-header__previous-version-date-banner">
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+              {{ mojAlert({
+                variant: "information",
+                title: alert.title,
+                dismissible: false,
+                html: '<span class="moj-alert__heading">' ~ alert.message ~ '</span>'})
+              }}
+            </div>
+          </div>
+        </div>
+      {% endif %}
 
       {% if headerPageHeading or buttonItems | length %}
         <div class="plan-header__header-actions">
