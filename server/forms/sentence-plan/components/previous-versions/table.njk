@@ -47,7 +47,7 @@
 
       {% set planVersionLink %}
         {% if version.planVersion %}
-          <a href="/view-historic/{{ version.planVersion.version }}" class="govuk-link" rel="noreferrer noopener" target="_blank">View<span class="govuk-visually-hidden"> plan from {{ version.planVersion.updatedAt }} (opens in new tab) </span></a>
+          <a href="view-historic/{{ version.planVersion.version }}?type=current" class="govuk-link" rel="noreferrer noopener" target="_blank">View<span class="govuk-visually-hidden"> plan from {{ version.planVersion.updatedAt }} (opens in new tab) </span></a>
         {% endif %}
       {% endset %}
 
