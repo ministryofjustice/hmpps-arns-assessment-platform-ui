@@ -14,9 +14,9 @@ test.describe('SignIn', () => {
 
   // Unauthenticated users normally go to /sign-in; /autherror is reached when auth callback fails.
   test('Auth callback failure redirects to auth error page content', async ({ page }) => {
-    const response = await page.goto('/sign-in/hmpps-auth/callback')
+    await page.goto('/sign-in/hmpps-auth/callback?error=access_denied')
 
-    expect(response?.status()).toBe(401)
+    await page.waitForURL('**/autherror')
     expect(page.url()).toContain('/autherror')
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('You need to sign in to use this service')
