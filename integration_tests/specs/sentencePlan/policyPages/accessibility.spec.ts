@@ -48,7 +48,7 @@ test.describe('Accessibility page', () => {
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     await expect(page).toHaveURL(/\/sentence-plan\/privacy/)
 
-    await page.goto(sentencePlanV1URLs.PLAN_HISTORY_PREVIOUS_VERSIONS)
+    await page.goto(sentencePlanV1URLs.PREVIOUS_VERSIONS)
     await expect(page).toHaveURL(/\/sentence-plan\/privacy/)
   })
 })

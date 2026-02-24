@@ -13,28 +13,26 @@ test.describe('Previous Versions - Multiple previous versions, including Counter
 
     const today = new Date()
     const yesterday = new Date()
-    const threeDaysAgo = new Date()
 
     yesterday.setDate(today.getDate() - 1)
-    threeDaysAgo.setDate(today.getDate() - 3)
 
     const countersignedVersions: VersionsTable = {
-      [`${yesterday.toISOString().split('T')[0]}`]: {
+      [`${today.toISOString().split('T')[0]}`]: {
         description: 'Assessment and plan updated',
         assessmentVersion: {
           uuid: crypto.randomUUID(),
           version: 2,
-          createdAt: yesterday.toISOString(),
-          updatedAt: yesterday.toISOString(),
+          createdAt: today.toISOString(),
+          updatedAt: today.toISOString(),
           status: 'COUNTERSIGNED',
           planAgreementStatus: '',
           entityType: 'ASSESSMENT',
         },
         planVersion: {
           uuid: crypto.randomUUID(),
-          version: yesterday.getTime(),
-          createdAt: yesterday.toISOString(),
-          updatedAt: yesterday.toISOString(),
+          version: today.getTime(),
+          createdAt: today.toISOString(),
+          updatedAt: today.toISOString(),
           status: 'COUNTERSIGNED',
           planAgreementStatus: '',
           entityType: 'AAP_PLAN',
@@ -44,14 +42,14 @@ test.describe('Previous Versions - Multiple previous versions, including Counter
 
     await coordinatorApi.stubGetEntityVersions(sentencePlanId, {
       allVersions: {
-        [`${threeDaysAgo.toISOString().split('T')[0]}`]: {
+        [`${yesterday.toISOString().split('T')[0]}`]: {
           description: 'Plan updated',
           assessmentVersion: null,
           planVersion: {
             uuid: crypto.randomUUID(),
-            version: threeDaysAgo.getTime(),
-            createdAt: threeDaysAgo.toISOString(),
-            updatedAt: threeDaysAgo.toISOString(),
+            version: yesterday.getTime(),
+            createdAt: yesterday.toISOString(),
+            updatedAt: yesterday.toISOString(),
             status: 'UNSIGNED',
             planAgreementStatus: 'AGREED',
             entityType: 'AAP_PLAN',
@@ -111,7 +109,7 @@ test.describe('Previous Versions - Multiple previous versions, including Counter
 
     await expect(countersignedColumns).toHaveCount(4)
 
-    const expectedCountersignedDate = yesterday.toLocaleDateString('en-GB', {
+    const expectedCountersignedDate = today.toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
@@ -134,7 +132,7 @@ test.describe('Previous Versions - Multiple previous versions, including Counter
 
     await expect(allVersionsColumns).toHaveCount(4)
 
-    const expectedAgreedDate = threeDaysAgo.toLocaleDateString('en-GB', {
+    const expectedAgreedDate = yesterday.toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
