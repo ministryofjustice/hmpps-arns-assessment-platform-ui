@@ -23,4 +23,8 @@ export default class PreviousVersionsPage extends AbstractPage {
     await expect(previousVersionsPage.pageHeading).toContainText('Previous versions')
     return previousVersionsPage
   }
+
+  async clickViewVersionOnDate(date: string): Promise<void> {
+    await this.table.locator('tr', { hasText: date }).locator('a').click()
+  }
 }

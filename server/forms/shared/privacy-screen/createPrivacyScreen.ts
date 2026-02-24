@@ -102,6 +102,7 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
       locals: {
         basePath,
         hideNavigation: true,
+        hidePreviousVersions: true,
         hmppsHeaderServiceNameLink: headerServiceNameLink,
         backlink: when(Data('accessDetails.accessType').match(Condition.Equals('OASYS')))
           .then(Data('accessDetails.oasysRedirectUrl'))
