@@ -1,11 +1,23 @@
 import { unwrapAll } from '../../../../data/aap-api/wrappers'
 import {
+  AgreementStatus,
   DerivedPlanAgreement,
   PlanAgreementAnswers,
   PlanAgreementProperties,
   RawCollection,
   SentencePlanContext,
 } from '../types'
+
+interface PlanAgreementsData {
+  planAgreements: DerivedPlanAgreement[]
+  planAgreementsCollectionUuid: string | undefined
+  latestAgreementStatus: AgreementStatus
+  latestAgreementDate: Date | undefined
+}
+
+interface AssessmentData {
+  collections?: RawCollection[]
+}
 
 /**
  * Derive plan agreements from the loaded assessment
@@ -20,25 +32,31 @@ import {
  * - Data('planAgreementsCollectionUuid'): UUID of the PLAN_AGREEMENTS collection (for adding new agreements)
  */
 export const derivePlanAgreementsFromAssessment = () => async (context: SentencePlanContext) => {
-  const assessment = context.getData('assessment') as { collections?: RawCollection[] } | undefined
+  const planAgreementsData = derivePlanAgreementsData(context.getData('assessment') as AssessmentData | undefined)
+
+  context.setData('planAgreements', planAgreementsData.planAgreements)
+  context.setData('planAgreementsCollectionUuid', planAgreementsData.planAgreementsCollectionUuid)
+  context.setData('latestAgreementStatus', planAgreementsData.latestAgreementStatus)
+  context.setData('latestAgreementDate', planAgreementsData.latestAgreementDate)
+}
+
+export const derivePlanAgreementsData = (assessment: AssessmentData): PlanAgreementsData => {
+  const noPlanAgreements: PlanAgreementsData = {
+    planAgreements: [],
+    planAgreementsCollectionUuid: undefined,
+    latestAgreementStatus: 'DRAFT',
+    latestAgreementDate: undefined,
+  }
 
   if (!assessment?.collections) {
-    context.setData('planAgreements', [])
-    context.setData('latestAgreementStatus', 'DRAFT')
-    context.setData('latestAgreementDate', undefined)
-    return
+    return noPlanAgreements
   }
 
   const planAgreementsCollection = assessment.collections.find(c => c.name === 'PLAN_AGREEMENTS')
 
   if (!planAgreementsCollection) {
-    context.setData('planAgreements', [])
-    context.setData('latestAgreementStatus', 'DRAFT')
-    context.setData('latestAgreementDate', undefined)
-    return
+    return noPlanAgreements
   }
-
-  context.setData('planAgreementsCollectionUuid', planAgreementsCollection.uuid)
 
   const agreements: DerivedPlanAgreement[] = planAgreementsCollection.items.map(item => {
     const answers = unwrapAll<PlanAgreementAnswers>(item.answers)
@@ -59,9 +77,10 @@ export const derivePlanAgreementsFromAssessment = () => async (context: Sentence
   // Sort by status date, newest first
   agreements.sort((a, b) => b.statusDate.getTime() - a.statusDate.getTime())
 
-  context.setData('planAgreements', agreements)
-
-  // Set the latest agreement status and date for easy access
-  context.setData('latestAgreementStatus', agreements[0]?.status ?? 'DRAFT')
-  context.setData('latestAgreementDate', agreements[0]?.statusDate)
+  return {
+    planAgreements: agreements,
+    planAgreementsCollectionUuid: planAgreementsCollection.uuid,
+    latestAgreementStatus: agreements[0]?.status ?? 'DRAFT',
+    latestAgreementDate: agreements[0]?.statusDate,
+  }
 }

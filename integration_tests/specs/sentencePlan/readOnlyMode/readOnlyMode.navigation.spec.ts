@@ -169,8 +169,8 @@ test.describe('READ_ONLY Access Mode', () => {
       await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
       await expect(page).toHaveURL(sentencePlanV1URLs.PLAN_HISTORY)
 
-      await page.goto(sentencePlanV1URLs.PLAN_HISTORY_PREVIOUS_VERSIONS)
-      await expect(page).toHaveURL(sentencePlanV1URLs.PLAN_HISTORY_PREVIOUS_VERSIONS)
+      await page.goto(sentencePlanV1URLs.PREVIOUS_VERSIONS)
+      await expect(page).toHaveURL(sentencePlanV1URLs.PREVIOUS_VERSIONS)
     })
   })
 

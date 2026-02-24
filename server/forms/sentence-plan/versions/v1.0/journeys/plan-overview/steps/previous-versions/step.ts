@@ -8,6 +8,7 @@ export const previousVersionsStep = step({
   title: 'Previous versions',
   view: {
     locals: {
+      hidePreviousVersions: true,
       headerPageHeading: 'Previous versions',
       buttons: {
         showReturnToOasysButton: isOasysAccess,

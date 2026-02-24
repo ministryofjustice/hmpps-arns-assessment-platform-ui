@@ -43,7 +43,7 @@ export const sentencePlanV1URLs = {
   PLAN_UPDATE_AGREE: sentencePlanFormPath + v1Path + planOverviewJourneyPath + updateAgreePlanStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/update-agree-plan'
   PLAN_REORDER_GOAL: sentencePlanFormPath + v1Path + planOverviewJourneyPath + reorderGoalStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/reorder-goal'
   PLAN_HISTORY: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planHistoryPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/plan-history'
-  PLAN_HISTORY_PREVIOUS_VERSIONS: sentencePlanFormPath + v1Path + planHistoryPath + previousVersionsStepPath, // '/sentence-plan' + '/v1.0' + '/plan-history' + '/previous-versions'
+  PREVIOUS_VERSIONS: sentencePlanFormPath + v1Path + planOverviewJourneyPath + previousVersionsStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/previous-versions'
   GOAL_MANAGEMENT_ROOT_PATH: sentencePlanFormPath + v1Path + goalManagementJourneyPath, // '/sentence-plan' + '/v1.0' + '/goal'
 }
 
@@ -85,6 +85,7 @@ export const sentencePlanPageTitles = {
   privacyPolicy: 'Privacy policy',
   aboutPerson: 'About',
   previousVersions: 'Previous versions',
+  historicPlan: 'View historic version',
 }
 
 export const sentencePlanServiceName = 'Sentence plan'

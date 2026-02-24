@@ -1,5 +1,4 @@
 import { accessTransition, journey } from '@form-engine/form/builders'
-import { planHistoryJourney } from './journeys/plan-history'
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
@@ -47,5 +46,5 @@ export const sentencePlanV1Journey = journey({
     redirectToPrivacyUnlessAccepted(),
   ],
   steps: [aboutPersonStep],
-  children: [planOverviewJourney, goalManagementJourney, planHistoryJourney],
+  children: [planOverviewJourney, goalManagementJourney],
 })
