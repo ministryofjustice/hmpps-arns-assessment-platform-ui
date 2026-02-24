@@ -13,6 +13,7 @@ import nock from 'nock'
 import { assessmentVersionQuery } from './loadPlan'
 import { SentencePlanEffectsDeps } from '../types'
 import { AssessmentIdentifiers } from '../../../../interfaces/aap-api/identifier'
+import { PactWrapper } from './PactWrapper'
 
 jest.mock('../../../../../logger', () => ({
   info: jest.fn(),
@@ -21,17 +22,18 @@ jest.mock('../../../../../logger', () => ({
   debug: jest.fn(),
 }))
 
-jest.mock('../../../../config', () => ({ apis: {
+jest.mock('../../../../config', () => ({
+  apis: {
     aapApi: {
       url: 'http://localhost:8080',
       timeout: { response: 10000, deadline: 10000 },
       agent: { maxSockets: 100, maxFreeSockets: 10, freeSocketTimeout: 30000 },
     },
-  }, 
+  },
 }))
 
 // Create a 'pact' between the two applications in the integration we are testing
-const provider = new PactV3({
+let provider = new PactV3({
   dir: path.resolve(process.cwd(), 'pacts'),
   consumer: 'MyConsumer',
   provider: 'MyProvider',
@@ -80,16 +82,16 @@ describe('AssessmentPlatformApiClient', () => {
     nock.cleanAll()
   })
 
-describe('GET plan', () => {
-  const planIdentifier = { type: 'UUID', uuid: 'uuid-123' } as AssessmentIdentifiers
-  const query: AssessmentVersionQuery = {
-    type: 'AssessmentVersionQuery',
-    user: mockUser,
-    assessmentIdentifier: planIdentifier,
-  }
+  describe('GET plan', () => {
+    const planIdentifier = { type: 'UUID', uuid: 'uuid-123' } as AssessmentIdentifiers
+    const query: AssessmentVersionQuery = {
+      type: 'AssessmentVersionQuery',
+      user: mockUser,
+      assessmentIdentifier: planIdentifier,
+    }
 
-  it('returns an HTTP 200 and a assessment version', () => {
-    const expectedResult: AssessmentVersionQueryResult = {
+    it('returns an HTTP 200 and a assessment version', () => {
+      const expectedResult: AssessmentVersionQueryResult = {
         type: 'AssessmentVersionQueryResult',
         assessmentUuid: 'uuid-123',
         aggregateUuid: 'agg-123',
@@ -104,71 +106,87 @@ describe('GET plan', () => {
         identifiers: {},
       }
 
-    const response: QueriesResponse = {
-      queries: [{ request: query, result: expectedResult }],
-    }
-    // Arrange: Setup our expected interactions
-    //
-    // We use Pact to mock out the backend API
-    provider
-      .given('I have a sentence plan')
-      .uponReceiving('a request for plan by uuid')
-      .withRequest({
-        method: 'POST',
-        path: '/query',
-        body: { queries: [query] },
-      })
-      .willRespondWith({
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-        body: response,
-      })
+      const response: QueriesResponse = {
+        queries: [{ request: query, result: expectedResult }],
+      }
 
-    return provider.executeTest(async (mockserver) => {
+      const pactWrapper = new PactWrapper(provider)
+
+      pactWrapper.provider
+        .given('I have a sentence plan')
+        .uponReceiving('a request for plan by uuid')
       
-      jest.doMock('../../../../config', () => ({ apis: {
-          aapApi: {
-            url: mockserver.url,
-            timeout: { response: 10000, deadline: 10000 },
-            agent: { maxSockets: 100, maxFreeSockets: 10, freeSocketTimeout: 30000 },
-          },
-        }, 
-      }))
+      pactWrapper
+        .withQuery(query)
+        .withResult(
+          200,
+          { 'Content-Type': 'application/json' },
+          expectedResult
+        )
 
-      //mockPost.mockResolvedValue(response)
-
-      let pactClient: AssessmentPlatformApiClient
-
-      //var tokenStore = new InMemoryTokenStore()
-
-      config.apis.aapApi.url = mockserver.url
-
-      //jest.spyOn(tokenStore, 'getToken').mockResolvedValue('user-token')
-
-      // jest.spyOn(restClient, 'asSystem').mockReturnValue({
-      //   tokenType: 'USER_TOKEN',
-      //   user: mockUser
-      // } as restClient.AuthOptions)
-
-      pactClient = new AssessmentPlatformApiClient(hmppsAuthTokenClient)
-
-      const deps = {
-        api: pactClient
-      } as SentencePlanEffectsDeps
-
-      const loadPlan = await assessmentVersionQuery(deps, mockUser, planIdentifier)
-
-      // Act
-      //const result = await pactClient.executeQuery(query)
-      // Act: test our API client behaves correctly
+      // Arrange: Setup our expected interactions
       //
-      // Note we configure the DogService API client dynamically to
-      // point to the mock service Pact created for us, instead of
-      // the real one
+      // We use Pact to mock out the backend API
+      // provider
+      //   .given('I have a sentence plan')
+      //   .uponReceiving('a request for plan by uuid')
+      //   .withRequest({
+      //     method: 'POST',
+      //     path: '/query',
+      //     body: { queries: [query] },
+      //   })
+      //   .willRespondWith({
+      //     status: 200,
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: response,
+      //   })
 
-      // Assert: check the result
-      expect(loadPlan.assessmentType).toBe('TEST')
+      return pactWrapper.provider.executeTest(async (mockserver) => {
+
+        jest.doMock('../../../../config', () => ({
+          apis: {
+            aapApi: {
+              url: mockserver.url,
+              timeout: { response: 10000, deadline: 10000 },
+              agent: { maxSockets: 100, maxFreeSockets: 10, freeSocketTimeout: 30000 },
+            },
+          },
+        }))
+
+        //mockPost.mockResolvedValue(response)
+
+        let pactClient: AssessmentPlatformApiClient
+
+        //var tokenStore = new InMemoryTokenStore()
+
+        config.apis.aapApi.url = mockserver.url
+
+        //jest.spyOn(tokenStore, 'getToken').mockResolvedValue('user-token')
+
+        // jest.spyOn(restClient, 'asSystem').mockReturnValue({
+        //   tokenType: 'USER_TOKEN',
+        //   user: mockUser
+        // } as restClient.AuthOptions)
+
+        pactClient = new AssessmentPlatformApiClient(hmppsAuthTokenClient)
+
+        const deps = {
+          api: pactClient
+        } as SentencePlanEffectsDeps
+
+        const loadPlan = await assessmentVersionQuery(deps, mockUser, planIdentifier)
+
+        // Act
+        //const result = await pactClient.executeQuery(query)
+        // Act: test our API client behaves correctly
+        //
+        // Note we configure the DogService API client dynamically to
+        // point to the mock service Pact created for us, instead of
+        // the real one
+
+        // Assert: check the result
+        expect(loadPlan.assessmentType).toBe('TEST')
+      })
     })
   })
-})
 })
