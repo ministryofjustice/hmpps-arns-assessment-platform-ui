@@ -17,7 +17,6 @@ test.describe('SignIn', () => {
     await page.goto('/sign-in/hmpps-auth/callback?error=access_denied')
 
     await page.waitForURL('**/autherror')
-    expect(page.url()).toContain('/autherror')
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('You need to sign in to use this service')
     await expect(page.getByText('You can sign in from:')).toBeVisible()
