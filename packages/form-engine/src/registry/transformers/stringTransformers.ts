@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import { assertNumber, assertString } from '@form-engine/registry/utils/asserts'
 import { defineTransformers } from '@form-engine/registry/utils/createRegisterableFunction'
 import { ValueExpr } from '@form-engine/form/types/expressions.type'
@@ -329,68 +330,34 @@ export const { transformers: StringTransformers, registry: StringTransformersReg
     const endTrimmed = endDate.trim()
 
     if (!startTrimmed || !endTrimmed) {
-      sentenceLengthString = ''
+      return ''
     }
 
-    const start = new Date(startTrimmed)
-    const end = new Date(endTrimmed)
-
-    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
-      sentenceLengthString = ''
-    }
-
-    // calculate years, months, and days between dates
-    let years = end.getFullYear() - start.getFullYear()
-    let months = end.getMonth() - start.getMonth()
-    let days = end.getDate() - start.getDate()
-
-    // since months and days are subtracted directly there is a chance months/days values could be negative:
-
-    // adjust for negative days:
-    // - borrows 1 from the months column
-    // - adds the number of days in the previous month
-    // example: 15 January 2024 >> 10 March 2025;
-    // before: years = 2025 - 2024 = 1, months = 3 - 1 = 2, days = 10 - 15 = -5;
-    // borrow: months = 2 - 1 = 1, days = -5 + 29 = 24
-    // after:  years=1, months=1, days=24
-    if (days < 0) {
-      months -= 1
-      // when passing 0 as the day/date parameter for new Date(), js rolls back to the last day of the previous month,
-      // hence no (-1) substruction in second param for month index
-      const prevMonth = new Date(end.getFullYear(), end.getMonth(), 0)
-      days += prevMonth.getDate()
-    }
-
-    // adjust for negative months:
-    // - borrows 1 from the years column & adds 12 months:
-    // example: 1 November 2024 >> 1 February 2025;
-    // before: years = 2025 - 2024 = 1, months = 2 - 11 = -9;
-    // borrow: years = 1 - 1 = 0, months = -9 + 12 = 3
-    // after:  years=0, months=3, days=0
-    if (months < 0) {
-      years -= 1
-      months += 12
-    }
+    const { years, months, days } = DateTime.fromISO(endTrimmed).diff(DateTime.fromISO(startTrimmed), [
+      'years',
+      'months',
+      'days',
+    ])
 
     // helper to pluralise units
     const pluralise = (count: number, unit: string): string => {
       return count === 1 ? `${count} ${unit}` : `${count} ${unit}s`
     }
 
-    if (years > 0 && months > 0 && days > 0) {
-      sentenceLengthString = `(${pluralise(years, 'year')}, ${pluralise(months, 'month')} and ${pluralise(days, 'day')})`
-    } else if (years > 0 && months > 0) {
-      sentenceLengthString = `(${pluralise(years, 'year')} and ${pluralise(months, 'month')})`
-    } else if (months > 0 && days > 0) {
-      sentenceLengthString = `(${pluralise(months, 'month')} and ${pluralise(days, 'day')})`
-    } else if (years > 0 && days > 0) {
-      sentenceLengthString = `(${pluralise(years, 'year')} and ${pluralise(days, 'day')})`
-    } else if (years > 0) {
-      sentenceLengthString = `(${pluralise(years, 'year')})`
-    } else if (months > 0) {
-      sentenceLengthString = `(${pluralise(months, 'month')})`
-    } else if (days > 0) {
-      sentenceLengthString = `(${pluralise(days, 'day')})`
+    const parts = [
+      years > 0 ? pluralise(years, 'year') : null,
+      months > 0 ? pluralise(months, 'month') : null,
+      days > 0 ? pluralise(days, 'day') : null,
+    ].filter((part): part is string => Boolean(part))
+
+    if (parts.length === 0) {
+      sentenceLengthString = ''
+    } else if (parts.length === 1) {
+      sentenceLengthString = `(${parts[0]})`
+    } else if (parts.length === 2) {
+      sentenceLengthString = `(${parts[0]} and ${parts[1]})`
+    } else {
+      sentenceLengthString = `(${parts[0]}, ${parts[1]} and ${parts[2]})`
     }
 
     return sentenceLengthString
