@@ -13,7 +13,7 @@ import nock from 'nock'
 import { assessmentVersionQuery } from './loadPlan'
 import { SentencePlanEffectsDeps } from '../types'
 import { AssessmentIdentifiers } from '../../../../interfaces/aap-api/identifier'
-import { PactWrapper } from './PactWrapper'
+import { PactWrapper } from '../../../../testutils/PactWrapper'
 
 jest.mock('../../../../../logger', () => ({
   info: jest.fn(),
@@ -91,7 +91,7 @@ describe('AssessmentPlatformApiClient', () => {
     }
 
     it('returns an HTTP 200 and a assessment version', () => {
-      const expectedResult: AssessmentVersionQueryResult = {
+      const queryResult: AssessmentVersionQueryResult = {
         type: 'AssessmentVersionQueryResult',
         assessmentUuid: 'uuid-123',
         aggregateUuid: 'agg-123',
@@ -106,9 +106,9 @@ describe('AssessmentPlatformApiClient', () => {
         identifiers: {},
       }
 
-      const response: QueriesResponse = {
-        queries: [{ request: query, result: expectedResult }],
-      }
+      // const response: QueriesResponse = {
+      //   queries: [{ request: query, result: queryResult }],
+      // }
 
       const pactWrapper = new PactWrapper(provider)
 
@@ -117,12 +117,8 @@ describe('AssessmentPlatformApiClient', () => {
         .uponReceiving('a request for plan by uuid')
       
       pactWrapper
-        .withQuery(query)
-        .withResult(
-          200,
-          { 'Content-Type': 'application/json' },
-          expectedResult
-        )
+        .withQuery<AssessmentVersionQuery>('/query', query)
+        .withResult<AssessmentVersionQueryResult>(200, queryResult)
 
       // Arrange: Setup our expected interactions
       //

@@ -1,11 +1,5 @@
 import { PactV3 } from "@pact-foundation/pact";
-import { QueriesResponse } from "../../../../interfaces/aap-api/response"
-
-interface ExpectedResult {
-    status: number
-    headers: Record<string, string>
-    body: any
-}
+import { QueriesResponse, QueryResponse } from "../interfaces/aap-api/response"
 
 export class PactWrapper {
     public provider: PactV3
@@ -15,24 +9,24 @@ export class PactWrapper {
         this.provider = provider
     }
 
-    withQuery(query: any) {
+    withQuery<T>(path: string, query: T): PactWrapper {
         this.query = { queries: [query] }
         this.provider.withRequest({
           method: 'POST',
-          path: '/query',
+          path: path,
           body: { queries: [query] },
         })
         return this
     }
     
-    withResult(status: any, headers: any, result: any) {
-        const body: QueriesResponse = {
-            queries: [{ request: this.query, result: result }],
+    withResult<T>(status: number, result: T): PactWrapper {
+        const queriesResponse: QueriesResponse = {
+            queries: [{ request: this.query, result: result } as QueryResponse],
         }
         this.provider.willRespondWith({
             status: status,
-            headers: headers,
-            body: body
+            headers: { 'Content-Type': 'application/json' },
+            body: queriesResponse
         })
         return this
     }
