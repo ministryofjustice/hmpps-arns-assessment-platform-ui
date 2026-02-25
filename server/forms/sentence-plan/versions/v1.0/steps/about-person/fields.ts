@@ -40,6 +40,7 @@ export const incompleteAssessmentWarning = MOJBanner({
      <h2 class='govuk-heading-m'>Some areas have incomplete information</h2>
      <p class="govuk-body">This means the areas have not been marked as complete in the assessment, but you can still see the latest information available.</p>
   `,
+  attributes: { 'data-qa': 'incomplete-assessment-warning' },
 })
 
 // Assessment Last Updated:
@@ -106,6 +107,7 @@ export const noSentenceInfo = GovUKWarningText({
   hidden: or(isSentenceInformationAndAssessmentLoadingError, not(isSentenceInformationEmpty)),
   text: 'There is a problem getting the sentence information from NDelius. Try reloading the page or try again later',
   iconFallbackText: 'Warning',
+  attributes: { 'data-qa': 'no-sentence-info-warning' },
 })
 // -------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------------
@@ -116,6 +118,7 @@ export const noAssessmentDataErrorWarning = GovUKWarningText({
   hidden: or(isSentenceInformationAndAssessmentLoadingError, not(isAssessmentError)),
   text: 'There is a problem getting assessment information. Try reloading the page or try again later.',
   iconFallbackText: 'Warning',
+  attributes: { 'data-qa': 'no-assessment-data-warning' },
 })
 
 // -------------------------------------------------------------------------------------------------------------------

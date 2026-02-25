@@ -68,6 +68,12 @@ const defaultCriminogenicNeedsData: CriminogenicNeedsData = {
     thinkStrengths: 'YES',
     thinkOtherWeightedScore: '8',
   },
+  lifestyleAndAssociates: {
+    lifestyleLinkedToHarm: 'YES',
+    lifestyleLinkedToReoffending: 'YES',
+    lifestyleStrengths: 'YES',
+    lifestyleOtherWeightedScore: '4',
+  },
 }
 
 export enum TargetService {
