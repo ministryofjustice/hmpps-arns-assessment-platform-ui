@@ -19,15 +19,13 @@ export const loadPreviousVersions = (deps: SentencePlanEffectsDeps) => async (co
     throw new NotFound('Previous versions not found')
   }
 
-  // remove the latest(current) version from allVersions
-  const trimmedAllVersions = Object.fromEntries(
-    Object.entries(previousVersions.allVersions)
-      .sort((a, b) => b[0].localeCompare(a[0]))
-      .slice(1),
-  )
+  // remove today's version from allVersions
+  const today = new Date().toISOString().split('T')[0]
+  const sortedAllVersions = Object.entries(previousVersions.allVersions).sort((a, b) => b[0].localeCompare(a[0]))
+  const trimmedAllVersions = sortedAllVersions[0]?.[0] === today ? sortedAllVersions.slice(1) : sortedAllVersions
 
   context.setData('previousVersions', {
     ...previousVersions,
-    allVersions: trimmedAllVersions,
+    allVersions: Object.fromEntries(trimmedAllVersions),
   })
 }

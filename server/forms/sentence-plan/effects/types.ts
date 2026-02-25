@@ -234,6 +234,13 @@ export interface PlanAgreementProperties {
   status_date: string
 }
 
+export interface HistoricPlanData {
+  assessment: AssessmentVersionQueryResult
+  goals: DerivedGoal[]
+  latestAgreementStatus: AgreementStatus
+  latestAgreementDate: Date | undefined
+}
+
 /**
  * Alert variant types matching MOJ Alert component
  */
@@ -254,7 +261,14 @@ export interface PlanNotification {
  *
  * Keep this as a constrained set so link logic cannot drift due to typos.
  */
-export const NAVIGATION_REFERRERS = ['plan-overview', 'plan-history', 'add-goal', 'update-goal-steps', 'about'] as const
+export const NAVIGATION_REFERRERS = [
+  'plan-overview',
+  'plan-history',
+  'previous-versions',
+  'add-goal',
+  'update-goal-steps',
+  'about',
+] as const
 export type NavigationReferrer = (typeof NAVIGATION_REFERRERS)[number]
 
 /**
@@ -317,6 +331,7 @@ export interface SentencePlanData extends Record<string, unknown> {
 
   // Plan Previous Versions
   previousVersions: PreviousVersionsResponse
+  historic: HistoricPlanData
 
   // Areas of need
   areasOfNeed: AreaOfNeed[]
