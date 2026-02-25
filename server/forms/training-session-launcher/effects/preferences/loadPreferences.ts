@@ -210,6 +210,7 @@ function resolveSavedScenario(saved: SavedScenario): DisplayScenario {
     oasysAssessmentPk: values.oasysAssessmentPk || '',
 
     displayNeeds: transformToDisplayNeeds(values),
+    isCustom: true,
     rawScenario: {
       id: saved.id,
       name: saved.name,
