@@ -1,9 +1,8 @@
-import { AuditEvent } from '@server/services/auditService'
 import { test, TargetService } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import { navigateToSentencePlan } from '../../sentencePlan/sentencePlanUtils'
 import coordinatorApi from '../../../mockApis/coordinatorApi'
-import { expectAuditEvent } from './helpers'
+import { AuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Previous Versions List Page', () => {
   test('visiting previous versions page', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {

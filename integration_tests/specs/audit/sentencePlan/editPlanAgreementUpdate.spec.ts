@@ -1,10 +1,9 @@
 import { expect } from '@playwright/test'
-import { AuditEvent } from '@server/services/auditService'
 import { test, TargetService } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import UpdateAgreePlanPage from '../../../pages/sentencePlan/updateAgreePlanPage'
 import { navigateToSentencePlan, sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
-import { expectAuditEvent } from './helpers'
+import { AuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Update Agreement', () => {
   test('updating agreement with yes', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {

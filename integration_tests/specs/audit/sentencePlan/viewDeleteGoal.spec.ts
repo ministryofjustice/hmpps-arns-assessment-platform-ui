@@ -1,8 +1,7 @@
-import { AuditEvent } from '@server/services/auditService'
 import { test, TargetService } from '../../../support/fixtures'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { expectAuditEvent } from './helpers'
+import { AuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Delete Goal page', () => {
   test('visiting delete goal page', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {

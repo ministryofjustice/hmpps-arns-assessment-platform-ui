@@ -1,9 +1,8 @@
 import { expect } from '@playwright/test'
-import { AuditEvent } from '@server/services/auditService'
 import { test, TargetService } from '../../../support/fixtures'
 import ConfirmRemoveGoalPage from '../../../pages/sentencePlan/confirmRemoveGoalPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { activeGoalWithSteps, expectAuditEvent } from './helpers'
+import { AuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
 
 test.describe('Remove a goal', () => {
   test('confirming goal removal', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {

@@ -1,9 +1,8 @@
-import { AuditEvent } from '@server/services/auditService'
 import { test, TargetService } from '../../../support/fixtures'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
 import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { expectAuditEvent } from './helpers'
+import { AuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Add or Change Steps', () => {
   test('visiting add steps page', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {

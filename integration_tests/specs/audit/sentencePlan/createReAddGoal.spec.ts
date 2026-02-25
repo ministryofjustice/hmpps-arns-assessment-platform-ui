@@ -1,10 +1,9 @@
 import { expect } from '@playwright/test'
-import { AuditEvent } from '@server/services/auditService'
 import { test, TargetService } from '../../../support/fixtures'
 import { removedGoals } from '../../../builders/sentencePlanFactories'
 import ConfirmReaddGoalPage from '../../../pages/sentencePlan/confirmReaddGoalPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { expectAuditEvent } from './helpers'
+import { AuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Add a Goal Back to Plan', () => {
   test('confirming goal re-add', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {

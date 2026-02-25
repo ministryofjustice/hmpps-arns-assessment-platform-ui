@@ -1,10 +1,9 @@
 import { expect } from '@playwright/test'
-import { AuditEvent } from '@server/services/auditService'
 import { test, TargetService } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { activeGoalWithSteps, expectAuditEvent } from './helpers'
+import { AuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
 
 test.describe('Update Steps', () => {
   test('save action', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {

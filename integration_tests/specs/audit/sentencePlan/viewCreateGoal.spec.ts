@@ -1,9 +1,8 @@
 import { expect } from '@playwright/test'
-import { AuditEvent } from '@server/services/auditService'
 import { test, TargetService } from '../../../support/fixtures'
 import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { expectAuditEvent } from './helpers'
+import { AuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Create a Goal page', () => {
   test('visiting create goal page', async ({ page, createSession, auditQueue }) => {

@@ -1,9 +1,8 @@
-import { AuditEvent } from '@server/services/auditService'
 import { test, TargetService } from '../../../support/fixtures'
 import { removedGoals } from '../../../builders/sentencePlanFactories'
 import ConfirmReaddGoalPage from '../../../pages/sentencePlan/confirmReaddGoalPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { expectAuditEvent } from './helpers'
+import { AuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Add a goal back to plan confirmation', () => {
   test('visiting confirm re-add page', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {

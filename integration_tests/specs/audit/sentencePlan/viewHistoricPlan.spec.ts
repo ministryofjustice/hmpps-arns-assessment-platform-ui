@@ -1,10 +1,9 @@
 import { expect } from '@playwright/test'
-import { AuditEvent } from '@server/services/auditService'
 import { test, TargetService } from '../../../support/fixtures'
 import { navigateToSentencePlan } from '../../sentencePlan/sentencePlanUtils'
 import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPage'
 import coordinatorApi from '../../../mockApis/coordinatorApi'
-import { expectAuditEvent } from './helpers'
+import { AuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Views previous version of Sentence Plan', () => {
   test('viewing a historic plan version', async ({ page, createSession, auditQueue }) => {
