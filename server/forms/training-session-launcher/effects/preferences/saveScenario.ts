@@ -1,6 +1,6 @@
 import { InternalServerError } from 'http-errors'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, SavedScenario } from '../../types'
-import { TrainingSessionLauncherEffectsDeps } from '../types'
+import { TrainingSessionLauncherEffectsDeps, TrainingLauncherNotification } from '../types'
 
 /**
  * Default empty preferences
@@ -46,13 +46,20 @@ export const saveScenario =
 
 /**
  * Delete a saved scenario from user preferences.
+ *
+ * Reads the scenario ID from POST data (scenarioId field).
  */
 export const deleteScenario =
-  (deps: TrainingSessionLauncherEffectsDeps) => async (context: TrainingSessionLauncherContext, scenarioId: string) => {
+  (deps: TrainingSessionLauncherEffectsDeps) => async (context: TrainingSessionLauncherContext) => {
     const preferencesId = context.getState('preferencesId')
+    const scenarioId = context.getPostData('scenarioId') as string | undefined
 
     if (!preferencesId) {
       throw InternalServerError('Missing preferencesId in req.state')
+    }
+
+    if (!scenarioId) {
+      throw InternalServerError('Missing scenarioId in POST data')
     }
 
     await deps.preferencesStore.update<{ trainingLauncher?: TrainingLauncherPreferences }>(preferencesId, current => {
@@ -66,4 +73,16 @@ export const deleteScenario =
         },
       }
     })
+
+    // Add success notification
+    const session = context.getSession()
+    session.notifications = session.notifications || []
+
+    const notification: TrainingLauncherNotification = {
+      type: 'success',
+      title: 'Scenario deleted',
+      message: 'The custom scenario has been deleted.',
+      target: 'browse',
+    }
+    session.notifications.push(notification)
   }
