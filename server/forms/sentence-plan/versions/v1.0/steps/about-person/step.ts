@@ -56,7 +56,11 @@ export const aboutPersonStep = step({
     redirectToPrivacyUnlessAccepted(),
     redirectUnlessSanSp(sentencePlanOverviewPath),
     accessTransition({
-      effects: [SentencePlanEffects.loadAllAreasAssessmentInfo(), SentencePlanEffects.setNavigationReferrer('about')],
+      effects: [
+        SentencePlanEffects.loadSentenceInformation(),
+        SentencePlanEffects.loadAllAreasAssessmentInfo(),
+        SentencePlanEffects.setNavigationReferrer('about'),
+      ],
     }),
   ],
 })

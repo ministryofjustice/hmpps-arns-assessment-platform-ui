@@ -3,7 +3,7 @@ import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/Ef
 import { User } from '../../../interfaces/user'
 import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
-import { AssessmentPlatformApiClient, CoordinatorApiClient } from '../../../data'
+import { AssessmentPlatformApiClient, CoordinatorApiClient, DeliusApiClient } from '../../../data'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { SessionDetails } from '../../../interfaces/sessionDetails'
 import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
@@ -344,7 +344,6 @@ export interface SentencePlanData extends Record<string, unknown> {
   isAssessmentComplete: boolean
   assessmentLastUpdated: string | null
   allAreasAssessmentStatus: AssessmentInfoStatus
-
 }
 
 /**
@@ -410,9 +409,10 @@ export type SentencePlanContext = EffectFunctionContext<
 
 /**
  * Dependencies for sentence plan effects.
- * Access-related dependencies (deliusApi, handoverApi) are now in the access form.
+ * Note: delius api used to load sentence information for about page via handover context access.
  */
 export interface SentencePlanEffectsDeps {
   api: AssessmentPlatformApiClient
   coordinatorApi: CoordinatorApiClient
+  deliusApi: DeliusApiClient
 }

@@ -6,6 +6,7 @@ import { setNavigationReferrer } from './navigation/setNavigationReferrer'
 import { loadNavigationReferrer } from './navigation/loadNavigationReferrer'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
+import { loadSentenceInformation } from './session/loadSentenceInformation'
 import { loadPlan } from './plan/loadPlan'
 import { deriveGoalsWithStepsFromAssessment } from './goals/deriveGoalsWithStepsFromAssessment'
 import { derivePlanAgreementsFromAssessment } from './plan/derivePlanAgreementsFromAssessment'
@@ -65,6 +66,7 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     // Session
     initializeSessionFromAccess,
     loadSessionData,
+    loadSentenceInformation,
 
     // Access
     setPrivacyAccepted,
