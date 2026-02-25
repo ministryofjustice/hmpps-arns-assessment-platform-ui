@@ -57,6 +57,7 @@ services:
       HMPPS_AUTH_URL: http://hmpps-auth:9090/auth
       CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-e2e
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
+      LOCALSTACK_URL: http://localstack:4566
     working_dir: /playwright
     command: npx playwright test
     volumes:
