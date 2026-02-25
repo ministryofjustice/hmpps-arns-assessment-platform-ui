@@ -85,6 +85,7 @@ export interface AssessmentArea {
   isHighScoring: boolean
   isLowScoring: boolean
   subArea?: SubAreaData
+  effectiveScoreToThresholdDistance: number | null
 }
 
 export interface CriminogenicNeedArea {

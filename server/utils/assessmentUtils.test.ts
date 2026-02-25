@@ -327,5 +327,200 @@ describe('assessmentUtils', () => {
       expect(thinkingBehavioursAttitudesArea?.isHighScoring).toBe(false)
       expect(thinkingBehavioursAttitudesArea?.isLowScoring).toBe(true)
     })
+
+    describe('effectiveScoreToThresholdDistance calculation', () => {
+      it('should set effectiveDistance to (score - threshold) for areas without sub-areas', () => {
+        const sanAssessmentData = createSanAssessmentData()
+        const crimNeeds = createCriminogenicNeedsData({
+          accommodation: {
+            linkedToHarm: true,
+            linkedToReoffending: false,
+            linkedToStrengthsOrProtectiveFactors: true,
+            score: 4, // threshold is 1, so distance = 4 - 1 = 3
+          },
+        })
+
+        const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+        const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
+
+        expect(accommodationArea?.score).toBe(4)
+        expect(accommodationArea?.threshold).toBe(1)
+        expect(accommodationArea?.effectiveScoreToThresholdDistance).toBe(3)
+      })
+
+      it('should use sub-area distance when sub-area has greater excess over its threshold', () => {
+        const sanAssessmentData = createSanAssessmentData({
+          thinking_behaviours_attitudes_section_complete: { value: 'YES' },
+        })
+        const crimNeeds = createCriminogenicNeedsData({
+          thinkingBehaviourAndAttitudes: {
+            linkedToHarm: true,
+            linkedToReoffending: true,
+            linkedToStrengthsOrProtectiveFactors: false,
+            score: 2, // at threshold of 2, distance = 0
+          },
+          lifestyleAndAssociates: {
+            linkedToHarm: true,
+            linkedToReoffending: true,
+            linkedToStrengthsOrProtectiveFactors: false,
+            score: 4, // above threshold of 1, distance = 3
+          },
+        })
+
+        const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+        const thinkingArea = result.find(a => a.goalRoute === 'thinking-behaviours-and-attitudes')
+
+        expect(thinkingArea?.score).toBe(2)
+        expect(thinkingArea?.threshold).toBe(2)
+        expect(thinkingArea?.subArea?.score).toBe(4)
+        expect(thinkingArea?.subArea?.threshold).toBe(1)
+        expect(thinkingArea?.effectiveScoreToThresholdDistance).toBe(3) // MAX(0, 3) = 3
+        expect(thinkingArea?.isHighScoring).toBe(true)
+      })
+
+      it('should use main area distance when main area has greater excess over threshold', () => {
+        const sanAssessmentData = createSanAssessmentData({
+          thinking_behaviours_attitudes_section_complete: { value: 'YES' },
+        })
+        const crimNeeds = createCriminogenicNeedsData({
+          thinkingBehaviourAndAttitudes: {
+            linkedToHarm: true,
+            linkedToReoffending: true,
+            linkedToStrengthsOrProtectiveFactors: false,
+            score: 8, // threshold 2, distance = 6
+          },
+          lifestyleAndAssociates: {
+            linkedToHarm: false,
+            linkedToReoffending: false,
+            linkedToStrengthsOrProtectiveFactors: false,
+            score: 3, // threshold 1, distance = 2
+          },
+        })
+
+        const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+        const thinkingArea = result.find(a => a.goalRoute === 'thinking-behaviours-and-attitudes')
+
+        expect(thinkingArea?.score).toBe(8)
+        expect(thinkingArea?.subArea?.score).toBe(3)
+        expect(thinkingArea?.effectiveScoreToThresholdDistance).toBe(6) // MAX(6, 2) = 6
+      })
+
+      it('should use positive sub-area distance when main area distance is negative (below threshold)', () => {
+        const sanAssessmentData = createSanAssessmentData({
+          thinking_behaviours_attitudes_section_complete: { value: 'YES' },
+        })
+        const crimNeeds = createCriminogenicNeedsData({
+          thinkingBehaviourAndAttitudes: {
+            linkedToHarm: true,
+            linkedToReoffending: true,
+            linkedToStrengthsOrProtectiveFactors: false,
+            score: 1, // below threshold of 2, distance = -1
+          },
+          lifestyleAndAssociates: {
+            linkedToHarm: true,
+            linkedToReoffending: true,
+            linkedToStrengthsOrProtectiveFactors: false,
+            score: 4, // above threshold of 1, distance = 3
+          },
+        })
+
+        const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+        const thinkingArea = result.find(a => a.goalRoute === 'thinking-behaviours-and-attitudes')
+
+        expect(thinkingArea?.score).toBe(1)
+        expect(thinkingArea?.threshold).toBe(2)
+        expect(thinkingArea?.subArea?.score).toBe(4)
+        expect(thinkingArea?.subArea?.threshold).toBe(1)
+        expect(thinkingArea?.effectiveScoreToThresholdDistance).toBe(3) // MAX(-1, 3) = 3
+        expect(thinkingArea?.isHighScoring).toBe(true) // pushed by lifestyle
+      })
+
+      it('should use positive main area distance when sub-area distance is negative', () => {
+        const sanAssessmentData = createSanAssessmentData({
+          thinking_behaviours_attitudes_section_complete: { value: 'YES' },
+        })
+        const crimNeeds = createCriminogenicNeedsData({
+          thinkingBehaviourAndAttitudes: {
+            linkedToHarm: true,
+            linkedToReoffending: true,
+            linkedToStrengthsOrProtectiveFactors: false,
+            score: 5, // above threshold of 2, distance = 3
+          },
+          lifestyleAndAssociates: {
+            linkedToHarm: false,
+            linkedToReoffending: false,
+            linkedToStrengthsOrProtectiveFactors: false,
+            score: 0, // below threshold of 1, distance = -1
+          },
+        })
+
+        const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+        const thinkingArea = result.find(a => a.goalRoute === 'thinking-behaviours-and-attitudes')
+
+        expect(thinkingArea?.score).toBe(5)
+        expect(thinkingArea?.subArea?.score).toBe(0)
+        expect(thinkingArea?.effectiveScoreToThresholdDistance).toBe(3) // MAX(3, -1) = 3
+        expect(thinkingArea?.isHighScoring).toBe(true) // high due to main area
+      })
+
+      it('should return least negative distance when both distances are negative', () => {
+        const sanAssessmentData = createSanAssessmentData({
+          thinking_behaviours_attitudes_section_complete: { value: 'YES' },
+        })
+        const crimNeeds = createCriminogenicNeedsData({
+          thinkingBehaviourAndAttitudes: {
+            linkedToHarm: false,
+            linkedToReoffending: false,
+            linkedToStrengthsOrProtectiveFactors: false,
+            score: 0, // below threshold of 2, distance = -2
+          },
+          lifestyleAndAssociates: {
+            linkedToHarm: false,
+            linkedToReoffending: false,
+            linkedToStrengthsOrProtectiveFactors: false,
+            score: 0, // below threshold of 1, distance = -1
+          },
+        })
+
+        const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+        const thinkingArea = result.find(a => a.goalRoute === 'thinking-behaviours-and-attitudes')
+
+        expect(thinkingArea?.score).toBe(0)
+        expect(thinkingArea?.subArea?.score).toBe(0)
+        expect(thinkingArea?.effectiveScoreToThresholdDistance).toBe(-1) // MAX(-2, -1) = -1
+        expect(thinkingArea?.isHighScoring).toBe(false) // neither exceeds threshold
+        expect(thinkingArea?.isLowScoring).toBe(true)
+      })
+
+      it('should set effectiveScoreToThresholdDistance to null when score is null', () => {
+        const sanAssessmentData = createSanAssessmentData()
+        const crimNeeds = createCriminogenicNeedsData({
+          accommodation: {
+            linkedToHarm: false,
+            linkedToReoffending: false,
+            linkedToStrengthsOrProtectiveFactors: null,
+            score: null,
+          },
+        })
+
+        const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+        const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
+
+        expect(accommodationArea?.score).toBeNull()
+        expect(accommodationArea?.effectiveScoreToThresholdDistance).toBeNull()
+      })
+
+      it('should set effectiveScoreToThresholdDistance to null for areas without threshold (Finance, Health)', () => {
+        const sanAssessmentData = createSanAssessmentData({
+          finance_section_complete: { value: 'YES' },
+        })
+
+        const result = transformAssessmentData(sanAssessmentData)
+        const financeArea = result.find(a => a.title === 'Finances')
+
+        expect(financeArea?.threshold).toBeNull()
+        expect(financeArea?.effectiveScoreToThresholdDistance).toBeNull()
+      })
+    })
   })
 })

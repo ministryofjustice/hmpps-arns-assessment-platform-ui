@@ -51,6 +51,24 @@ const clampScore = (score: number | null | undefined, upperBound: number): numbe
   return score > upperBound ? upperBound : score
 }
 
+// calculates the effective distance from threshold for sorting purposes (accounts for sub-areas):
+const calculateEffectiveScoreToThresholdDistance = (
+  score: number | null,
+  threshold: number | null,
+  subArea: SubAreaData | undefined,
+): number | null => {
+  if (score === null || threshold === null) return null
+
+  const mainDistance = score - threshold
+
+  if (!subArea || subArea.score === null || subArea.threshold === null) {
+    return mainDistance
+  }
+
+  const subAreaDistance = subArea.score - subArea.threshold
+  return Math.max(mainDistance, subAreaDistance)
+}
+
 function getLinkedDetails(
   sanAssessmentData: SanAssessmentData,
   assessmentKey: string,
@@ -143,6 +161,7 @@ function processAssessmentArea(
 
   const isHighScoring = isMainAreaHighScoring || (isMainAreaScoredAndNotNull && isSubAreaHighScoring)
   const isLowScoring = isMainAreaScoredAndNotNull && score <= threshold && !isSubAreaHighScoring
+  const effectiveScoreToThresholdDistance = calculateEffectiveScoreToThresholdDistance(score, threshold, subArea)
 
   return {
     title,
@@ -161,6 +180,7 @@ function processAssessmentArea(
     isHighScoring,
     isLowScoring,
     subArea,
+    effectiveScoreToThresholdDistance,
   }
 }
 

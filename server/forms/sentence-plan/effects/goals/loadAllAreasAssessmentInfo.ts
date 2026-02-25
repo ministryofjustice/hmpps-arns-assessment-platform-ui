@@ -131,13 +131,13 @@ const sortAlphabetically = (areas: AssessmentArea[]): AssessmentArea[] => {
   return areas.sort((a, b) => a.title.localeCompare(b.title))
 }
 
-// sorts areas by risk flags first, then by score distance from threshold, then alphabetically.
+// sorts areas by risk flags first, then by distance from threshold, then alphabetically.
 // priority:
 //  1.Risk of Harm AND Reoffending (both flags)
 //  2.Risk of Harm only
 //  3.Risk of Reoffending only
 //  4.No flags
-// within each risk tier: sort by (score - threshold) descending, then alphabetically.
+// within each risk tier: sort by effectiveDistance (accounts for sub-areas) descending, then alphabetically.
 const sortByRiskAndScore = (areas: AssessmentArea[]): AssessmentArea[] => {
   return areas.sort((a, b) => {
     // calculates risk tier using weighted scoring
@@ -157,19 +157,14 @@ const sortByRiskAndScore = (areas: AssessmentArea[]): AssessmentArea[] => {
       return riskB - riskA
     }
 
-    // within the same risk tier, sort by score distance from threshold
-    // only compares if both areas have valid scores and thresholds
-    // distance = score - threshold (how far above/below the threshold)
-    // larger distance between score and threshold comes first (descending)
-    if (a.score != null && a.threshold != null && b.score != null && b.threshold != null) {
-      const distanceA = a.score - a.threshold
-      const distanceB = b.score - b.threshold
-      if (distanceA !== distanceB) {
-        return distanceB - distanceA
+    // within the same risk tier, sort by pre-calculated effectiveDistance
+    if (a.effectiveScoreToThresholdDistance != null && b.effectiveScoreToThresholdDistance != null) {
+      if (a.effectiveScoreToThresholdDistance !== b.effectiveScoreToThresholdDistance) {
+        return b.effectiveScoreToThresholdDistance - a.effectiveScoreToThresholdDistance
       }
     }
 
-    // if same risk tier and same score distance, sort alphabetically by title
+    // if same risk tier and same effectiveDistance, sort alphabetically by title
     return a.title.localeCompare(b.title)
   })
 }
