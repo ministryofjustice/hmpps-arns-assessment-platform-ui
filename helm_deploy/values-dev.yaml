@@ -19,6 +19,7 @@ generic-service:
     SAN_URL: "https://strengths-based-needs-assessments-dev.hmpps.service.justice.gov.uk"
     OASYS_URL: "https://arns-assessment-platform-dev.hmpps.service.justice.gov.uk/training-session-launcher/sessions"
     MPOP_URL: "https://manage-people-on-probation-dev.hmpps.service.justice.gov.uk"
+    SERVICE_NOW_FORM_URL: "#service-now-link"
     ENVIRONMENT_NAME: DEV
     AUDIT_ENABLED: "false"
     FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "true"
