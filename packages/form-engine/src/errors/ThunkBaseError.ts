@@ -1,6 +1,6 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { ThunkError, ThunkErrorType } from '@form-engine/core/compilation/thunks/types'
-import formatFields from "@form-engine/utils/utils";
+import formatFields from '@form-engine/utils/utils'
 
 export default class ThunkBaseError extends Error {
   readonly type: ThunkErrorType

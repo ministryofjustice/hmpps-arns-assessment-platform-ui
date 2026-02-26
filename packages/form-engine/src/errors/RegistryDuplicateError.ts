@@ -1,4 +1,4 @@
-import formatFields from "@form-engine/utils/utils";
+import formatFields from '@form-engine/utils/utils'
 
 interface RegistryDuplicateErrorOptions {
   /** Type of registry (function or component) */

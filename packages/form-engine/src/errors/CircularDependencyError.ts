@@ -1,5 +1,5 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
-import formatFields from "@form-engine/utils/utils";
+import formatFields from '@form-engine/utils/utils'
 
 interface CircularDependencyErrorOptions {
   /** Human-readable error message */

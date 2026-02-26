@@ -1,4 +1,4 @@
-import formatFields from "@form-engine/utils/utils";
+import formatFields from '@form-engine/utils/utils'
 
 interface DuplicateRouteErrorOptions {
   /** The duplicate route path */
