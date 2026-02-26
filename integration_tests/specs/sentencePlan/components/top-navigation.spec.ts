@@ -30,10 +30,10 @@ test.describe('Top navigation', () => {
       '/sentence-plan/v1.0/plan/overview',
     )
 
-    await expect(planOverviewPage.banner.getByRole('navigation', { name: 'Account navigation' })).toMatchAriaSnapshot(`
-          - navigation "Account navigation":
-            - list:
-              - listitem: T. User OASys User
+    await expect(planOverviewPage.banner.getByRole('navigation', { name: 'Navigation menu' })).toMatchAriaSnapshot(`
+          - navigation "Navigation menu":
+            - heading "Navigation menu" [level=2]
+            - text: OASys Account T. User
         `)
 
     await page.getByRole('link', { name: 'Assess and plan' }).click()

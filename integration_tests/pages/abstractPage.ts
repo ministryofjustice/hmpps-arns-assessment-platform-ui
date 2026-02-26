@@ -24,6 +24,12 @@ export default class AbstractPage {
   }
 
   async signOut() {
+    const menuToggle = this.page.locator('.arns-common-header__user-menu-toggle')
+
+    if (await menuToggle.isVisible()) {
+      await menuToggle.click()
+    }
+
     await this.signoutLink.first().click()
   }
 }
