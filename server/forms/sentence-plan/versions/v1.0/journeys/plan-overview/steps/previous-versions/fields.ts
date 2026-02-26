@@ -6,6 +6,7 @@ import { CaseData } from '../../../../constants'
 export const previousVersions = PreviousVersions({
   personName: CaseData.Forename,
   previousVersions: Data('previousVersions'),
+  showAssessmentColumn: Data('showAssessmentColumn'),
 })
 
 export const backToTopLink = HtmlBlock({

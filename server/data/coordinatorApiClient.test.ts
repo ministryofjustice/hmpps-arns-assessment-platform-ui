@@ -150,7 +150,7 @@ describe('CoordinatorApiClient', () => {
   })
 
   describe('getVersionsByEntityId()', () => {
-    it('should fetch assessment versions with system auth', async () => {
+    it('should fetch assessment and plan versions with system auth', async () => {
       // Arrange
       const entityUuid = '90a71d16-fecd-4e1a-85b9-98178bf0f8d0'
       const expectedResponse: PreviousVersionsResponse = {
@@ -188,6 +188,38 @@ describe('CoordinatorApiClient', () => {
       // Assert
       expect(result).toEqual(expectedResponse)
       expect(mockGet).toHaveBeenCalledWith({ path: `/entity/versions/${entityUuid}` }, asSystem())
+    })
+
+    it('should fetch plan-only versions when authType is HMPPS_AUTH', async () => {
+      // Arrange
+      const entityUuid = '90a71d16-fecd-4e1a-85b9-98178bf0f8d0'
+      const expectedResponse: PreviousVersionsResponse = {
+        allVersions: {
+          '2024-01-01': {
+            description: 'Plan updated',
+            assessmentVersion: null,
+            planVersion: {
+              uuid: 'sp-version-uuid',
+              version: 123456789,
+              createdAt: '2024-01-01T10:00:00Z',
+              updatedAt: '2024-01-01T10:00:00Z',
+              status: 'UNSIGNED',
+              planAgreementStatus: 'AGREED',
+              entityType: 'AAP_PLAN',
+            },
+          },
+        },
+        countersignedVersions: {},
+      }
+
+      mockGet.mockResolvedValue(expectedResponse)
+
+      // Act
+      const result = await client.getVersionsByEntityId(entityUuid, 'HMPPS_AUTH')
+
+      // Assert
+      expect(result).toEqual(expectedResponse)
+      expect(mockGet).toHaveBeenCalledWith({ path: `/entity/versions/${entityUuid}/HMPPS_AUTH` }, asSystem())
     })
 
     it('should propagate 404 errors', async () => {

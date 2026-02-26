@@ -63,27 +63,34 @@
         {% endfor %}
       {% endif %}
 
-      {% set row = [
-        { html: [date | formatSimpleDate, version.description] | join("<br>") },
-        { html: assessmentVersionLink },
-        { html: planVersionLink },
-        { html: planVersionTag }
-      ]  | reject('string')
-      %}
+      {% set row = [{ html: [date | formatSimpleDate, version.description] | join("<br>") }] %}
+      {% if params.showAssessmentColumn %}
+        {% set row = row.concat([{ html: assessmentVersionLink }]) %}
+      {% endif %}
+      {% set row = row.concat([{ html: planVersionLink }, { html: planVersionTag }]) %}
       {% set tableRows = [row].concat(tableRows) %}
     {% endfor %}
+
+    {% set tableHeaders = [{ text: "Date and what was updated", classes: "date-column"}] %}
+    {% if params.showAssessmentColumn %}
+      {% set tableHeaders = tableHeaders.concat([{ text: "Assessment", classes: "view-link-column" }]) %}
+    {% endif %}
+    {% set tableHeaders = tableHeaders.concat([
+      { text: "Sentence plan", classes: "view-link-column" },
+      { text: "Status", classes: "status-column" }
+    ]) %}
+
+    {% set tableClasses = "previous-versions-table" %}
+    {% if not params.showAssessmentColumn %}
+      {% set tableClasses = tableClasses + " previous-versions-table--sentence-plan-only" %}
+    {% endif %}
 
     {{ govukTable({
       caption: tableConfig.tableHeading if showTableCaption,
       captionClasses: "govuk-table__caption--m govuk-!-margin-top-3" if showTableCaption,
       firstCellIsHeader: false,
-      classes: "previous-versions-table",
-      head: [
-        { text: "Date and what was updated", classes: "date-column"},
-        { text: "Assessment", classes: "view-link-column" },
-        { text: "Sentence plan", classes: "view-link-column" },
-        { text: "Status", classes: "status-column" }
-      ] | reject('string'),
+      classes: tableClasses,
+      head: tableHeaders,
       rows: tableRows })
     }}
   </div>
@@ -92,9 +99,17 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     {% if params.versions.allVersions | length or params.versions.countersignedVersions | length %}
-      <p>Check versions of {{ params.personName }}'s current assessment and plan. The links will open in a new tab.</p>
+      {% if params.showAssessmentColumn %}
+        <p>Check versions of {{ params.personName }}'s current assessment and plan. The links will open in a new tab.</p>
+      {% else %}
+        <p>Check versions of {{ params.personName }}'s current plan. The links will open in a new tab.</p>
+      {% endif %}
     {% else %}
-      <p class="govuk-body govuk-!-margin-top-3 ">There are no previous versions of {{ params.personName }}'s assessment and plan yet.</p>
+      {% if params.showAssessmentColumn %}
+        <p class="govuk-body govuk-!-margin-top-3 ">There are no previous versions of {{ params.personName }}'s assessment and plan yet.</p>
+      {% else %}
+        <p class="govuk-body govuk-!-margin-top-3 ">There are no previous versions of {{ params.personName }}'s plan yet.</p>
+      {% endif %}
     {% endif %}
   </div>
 
@@ -110,4 +125,3 @@
     {{ generateTable(params.versions.allVersions, params.tables.allVersions, trackStatus, showTableCaption) }}
   {% endif %}
 </div>
-
