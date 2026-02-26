@@ -12,7 +12,7 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageLayout } from './fields'
-import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 
 /**
@@ -53,6 +53,7 @@ export const changeGoalStep = step({
         SentencePlanEffects.loadActiveGoalForEdit(),
         SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CHANGE_GOAL),
       ],
       next: [
         // If goal not found, redirect to plan overview
@@ -71,6 +72,11 @@ export const changeGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.updateActiveGoal(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL, {
+            planStatus: when(Data('latestAgreementStatus').match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)))
+              .then('POST_AGREE')
+              .else('PRE_AGREE'),
+          }),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You changed a goal in %1 plan', CaseData.ForenamePossessive),

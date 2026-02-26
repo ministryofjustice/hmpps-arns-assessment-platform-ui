@@ -13,7 +13,7 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { sideNav, contentBlocks } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 
 /**
@@ -36,7 +36,11 @@ export const createGoalStep = step({
   blocks: [sideNav, ...contentBlocks],
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.setAreaDataFromUrlParam(), SentencePlanEffects.loadAreaAssessmentInfo()],
+      effects: [
+        SentencePlanEffects.setAreaDataFromUrlParam(),
+        SentencePlanEffects.loadAreaAssessmentInfo(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+      ],
     }),
 
     // If UUID param is literally ':uuid', redirect to use 'new' instead
@@ -66,6 +70,7 @@ export const createGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.createGoal(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
           SentencePlanEffects.addNotification({
             type: 'success',
             title: 'Goal added',

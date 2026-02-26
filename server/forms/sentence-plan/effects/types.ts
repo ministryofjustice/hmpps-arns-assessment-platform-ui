@@ -4,6 +4,7 @@ import { User } from '../../../interfaces/user'
 import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
 import { AssessmentPlatformApiClient, CoordinatorApiClient } from '../../../data'
+import AuditService from '../../../services/auditService'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { SessionDetails } from '../../../interfaces/sessionDetails'
 import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
@@ -392,6 +393,7 @@ export interface SentencePlanSession {
  */
 export interface SentencePlanState extends Record<string, unknown> {
   user: User & { authSource: string; token: string }
+  requestId: string
 }
 
 /**
@@ -420,4 +422,5 @@ export type SentencePlanContext = EffectFunctionContext<
 export interface SentencePlanEffectsDeps {
   api: AssessmentPlatformApiClient
   coordinatorApi: CoordinatorApiClient
+  auditService: AuditService
 }
