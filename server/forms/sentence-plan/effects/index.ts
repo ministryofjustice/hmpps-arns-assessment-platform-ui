@@ -33,9 +33,11 @@ import { setPrivacyAccepted } from './access/setPrivacyAccepted'
 import { updatePlanAgreement } from './plan/updatePlanAgreement'
 import { loadPreviousVersions } from './plan/loadPreviousVersions'
 import { loadHistoricPlan } from './plan/loadHistoricPlan'
+import { sendAuditEvent } from './audit/sendAuditEvent'
 
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
+export { AuditEvent } from '../../../services/auditService'
 
 /**
  * Sentence Plan Effects
@@ -108,4 +110,7 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     addStepToStepEditSession,
     removeStepFromStepEditSession,
     saveStepEditSession,
+
+    // Audit
+    sendAuditEvent,
   })

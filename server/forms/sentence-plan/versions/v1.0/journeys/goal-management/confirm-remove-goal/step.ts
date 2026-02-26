@@ -1,7 +1,7 @@
 import { accessTransition, Data, Format, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, introText, goalCard, removalNoteSection, buttonGroup } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 
 /**
@@ -24,7 +24,10 @@ export const removeGoalStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.setActiveGoalContext()],
+      effects: [
+        SentencePlanEffects.setActiveGoalContext(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_REMOVED),
+      ],
       next: [
         // Only allow removing goals if plan is agreed (soft-delete for agreed plans only)
         // Draft plans should use "delete" instead
@@ -56,6 +59,7 @@ export const removeGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.markGoalAsRemoved(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL_REMOVED),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You removed a goal from %1 plan', CaseData.ForenamePossessive),

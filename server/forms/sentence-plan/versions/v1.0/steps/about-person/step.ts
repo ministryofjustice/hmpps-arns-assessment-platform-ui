@@ -1,7 +1,8 @@
-import { Format, redirect, step, submitTransition } from '@form-engine/form/builders'
+import { accessTransition, Format, redirect, step, submitTransition } from '@form-engine/form/builders'
 import { continueButton } from './fields'
 import { CaseData, sentencePlanOverviewPath } from '../../constants'
 import { isOasysAccess, isReadWriteAccess, redirectToPrivacyUnlessAccepted, redirectUnlessSanSp } from '../../guards'
+import { AuditEvent, SentencePlanEffects } from '../../../../effects'
 
 export const aboutPersonStep = step({
   path: '/about-person',
@@ -15,7 +16,13 @@ export const aboutPersonStep = step({
       },
     },
   },
-  onAccess: [redirectToPrivacyUnlessAccepted(), redirectUnlessSanSp(sentencePlanOverviewPath)],
+  onAccess: [
+    redirectToPrivacyUnlessAccepted(),
+    redirectUnlessSanSp(sentencePlanOverviewPath),
+    accessTransition({
+      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ABOUT_PERSON)],
+    }),
+  ],
   // TODO: once this page is build, we need to add SentencePlanEffects.setNavigationReferrer('about') into onLoad/onAccess effects
   //  and add it as a link for back button in 'create a goal' and 'view previous versions pages'
   blocks: [continueButton],

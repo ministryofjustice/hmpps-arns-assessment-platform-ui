@@ -13,7 +13,7 @@ import {
   hasMissingActiveGoalError,
   hasMissingStepsError,
 } from './fields'
-import { SentencePlanEffects } from '../../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
 import { isOasysAccess, isReadWriteAccess, lacksPostAgreementStatus } from '../../../../guards'
 
@@ -50,6 +50,7 @@ export const planStep = step({
       effects: [
         SentencePlanEffects.loadNotifications('plan-overview'),
         SentencePlanEffects.setNavigationReferrer('plan-overview'),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('type') }),
       ],
       next: [
         redirect({

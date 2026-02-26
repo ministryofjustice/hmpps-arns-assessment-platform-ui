@@ -1,7 +1,7 @@
 import { accessTransition, Data, Format, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, howHelpedField, buttonGroup } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfNotPostAgreement } from '../../../guards'
 
 // This page is for manually marking a goal as achieved and is only accessible after a plan has been agreed.
@@ -15,7 +15,10 @@ export const confirmAchievedGoalStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.setActiveGoalContext()],
+      effects: [
+        SentencePlanEffects.setActiveGoalContext(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_ACHIEVED),
+      ],
     }),
     // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
     redirectIfNotPostAgreement('../../plan/overview'),
@@ -41,7 +44,10 @@ export const confirmAchievedGoalStep = step({
       when: Post('action').match(Condition.Equals('confirm')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.markGoalAsAchieved()],
+        effects: [
+          SentencePlanEffects.markGoalAsAchieved(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL_ACHIEVED),
+        ],
         next: [redirect({ goto: '../../plan/overview?type=achieved' })],
       },
     }),
