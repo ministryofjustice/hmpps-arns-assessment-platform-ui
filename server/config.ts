@@ -139,6 +139,7 @@ export default {
     },
   },
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
+  logLevel: get('LOG_LEVEL', 'info'),
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
   serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#service-now-link', requiredInProduction),
