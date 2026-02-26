@@ -17,6 +17,10 @@ on:
         default: ''
         type: string
 
+env:
+  dev: 'playwright-action.yml'
+  test: 'playwright-action-test.yml'
+
 jobs:
   deploy_to_env:
     uses: ministryofjustice/hmpps-assess-risks-and-needs-github-actions/.github/workflows/deploy_to_env.yml@v1
@@ -24,3 +28,28 @@ jobs:
     with:
       environment: ${{ inputs.environment }}
       image_tag: ${{ inputs.image_tag }}
+  trigger_integration_tests:
+    name: Trigger integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@v2
+        id: generate-token
+        with:
+          app-id: ${{ secrets.INTEGRATION_TESTS_TRIGGER_APP_ID }}
+          private-key: ${{ secrets.INTEGRATION_TESTS_TRIGGER_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          permission-actions: write
+          repositories:
+            hmpps-arns-integrations-test-playwright
+      - name: Run integration tests
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ steps.generate-token.outputs.token }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: 'hmpps-arns-integrations-test-playwright',
+              workflow_id: ${{ env[inputs.environment] }},
+              ref: 'main'
+            })
