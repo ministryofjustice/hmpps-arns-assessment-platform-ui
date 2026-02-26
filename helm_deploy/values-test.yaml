@@ -35,6 +35,7 @@ generic-service:
     capita-developers-vms-four: 85.115.53.200/29
     capita-developers-vms-five: 85.115.54.180/32
     capita-developers-vms-six: 85.115.54.200/29
+    kpmg-pentest: 195.68.59.74/32
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-arns-non-prod
