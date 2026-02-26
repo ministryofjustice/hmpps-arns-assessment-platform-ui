@@ -17,7 +17,7 @@ generic-service:
     DELIUS_API_URL: "https://sentence-plan-and-delius-dev.hmpps.service.justice.gov.uk"
     ARNS_API_URL: "https://assess-risks-and-needs-test.hmpps.service.justice.gov.uk"
     SAN_URL: "https://strengths-based-needs-assessments-test.hmpps.service.justice.gov.uk"
-    OASYS_URL: "https://arns-assessment-platform-test.hmpps.service.justice.gov.uk/training-session-launcher/sessions"
+    OASYS_URL: "https://arns-assessment-platform-test.hmpps.service.justice.gov.uk"
     MPOP_URL: "https://manage-people-on-probation-test.hmpps.service.justice.gov.uk"
     SERVICE_NOW_FORM_URL: "#service-now-link"
     ENVIRONMENT_NAME: TEST
