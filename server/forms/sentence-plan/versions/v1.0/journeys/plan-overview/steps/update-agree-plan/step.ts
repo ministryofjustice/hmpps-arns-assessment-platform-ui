@@ -1,7 +1,7 @@
 import { accessTransition, Data, Post, redirect, step, submitTransition, when } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { updatePlanAgreementQuestion, buttonGroup } from './fields'
-import { SentencePlanEffects } from '../../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { sentencePlanOverviewPath } from '../../../../constants'
 import { redirectUnlessCouldNotAnswer, redirectToOverviewIfReadOnly } from '../../../../guards'
 
@@ -28,7 +28,12 @@ export const updateAgreePlanStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.updatePlanAgreement()],
+        effects: [
+          SentencePlanEffects.updatePlanAgreement(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_PLAN_AGREEMENT_UPDATE, {
+            agreementStatus: Post('update_plan_agreement_question'),
+          }),
+        ],
         next: [redirect({ goto: 'overview?type=current' })],
       },
     }),

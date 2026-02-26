@@ -17,6 +17,11 @@ export interface PlaywrightExtendedConfig {
     coordinatorApi: {
       url: string
     }
+    localstack: {
+      url: string
+      queueUrl: string
+      region: string
+    }
   }
 }
 
@@ -74,8 +79,15 @@ export default defineConfig<PlaywrightExtendedConfig>({
       coordinatorApi: {
         url: process.env.COORDINATOR_API_URL || 'http://localhost:9091/coordinator-api',
       },
+      localstack: {
+        url: process.env.LOCALSTACK_URL || 'http://localhost:4566',
+        queueUrl: `${process.env.LOCALSTACK_URL || 'http://localhost:4566'}/000000000000/audit-queue`,
+        region: 'eu-west-2',
+      },
     },
   },
+
+  globalSetup: './integration_tests/specs/audit/globalSetup.ts',
 
   /* Configure projects */
   projects: [
