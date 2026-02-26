@@ -205,7 +205,7 @@ describe('FormEngine', () => {
       // Verify structured logging
       expect(mockLogger.info).toHaveBeenCalledWith(
         { form: 'test-form', routes: 3 },
-        'FormEngine: Registered "Test Form" with 3 routes',
+        "FormEngine: Registered form 'Test Form' with 3 routes",
       )
     })
 
