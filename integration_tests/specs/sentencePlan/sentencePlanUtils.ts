@@ -152,3 +152,12 @@ export const getDatePlusMonthsAsString = (months: number) => {
 export const getDatePlusDaysAsISO = (days: number): string => {
   return new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString()
 }
+
+// navigates to the About page via handover link, handling privacy screen and clicking the About nav link.
+export const navigateToAboutPage = async (page: Page, handoverLink: string): Promise<void> => {
+  await navigateToSentencePlan(page, handoverLink)
+  await page
+    .getByLabel('Primary navigation')
+    .getByRole('link', { name: /^About /i })
+    .click()
+}

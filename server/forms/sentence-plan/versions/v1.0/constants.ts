@@ -197,6 +197,18 @@ export const areasOfNeed = [
   },
 ]
 
+export const subAreasOfNeed = [
+  {
+    parentAreaOfNeedCrimKey: 'thinkingBehaviourAndAttitudes',
+    text: 'Lifestyle and associates',
+    value: 'area_lifestyle_and_associates',
+    crimNeedsKey: 'lifestyleAndAssociates' as keyof CriminogenicNeedsData,
+    handoverPrefix: 'lifestyle',
+    upperBound: 6 as number | null,
+    threshold: 1 as number | null,
+  },
+]
+
 export const areaOfNeedSlugs = areasOfNeed.map(a => a.slug)
 
 export type AreaOfNeedSlug = (typeof areaOfNeedSlugs)[number]
