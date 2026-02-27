@@ -1,0 +1,115 @@
+.arns-common-header {
+  display: block;
+  @extend .probation-common-header;
+
+  &__logo {
+    @extend .probation-common-header__logo;
+  }
+
+  &__title {
+    @extend .probation-common-header__title;
+
+    &__organisation-name {
+      @extend .probation-common-header__title__organisation-name;
+    }
+  }
+
+  &__service-name {
+    @include govuk-font($size: 24);
+    font-weight: normal;
+    margin-left: govuk-spacing(2);
+    display: none;
+
+    @include govuk-media-query($from: desktop) {
+      display: inline;
+    }
+  }
+
+  &__submenu-link {
+    @extend .probation-common-header__submenu-link;
+  }
+
+  &__link {
+    @extend .probation-common-header__link;
+  }
+
+  &__button-width-container {
+    @extend .probation-common-header__button-width-container;
+  }
+
+  &__button-container {
+    @extend .probation-common-header__button-container;
+  }
+
+  &__navigation {
+    @extend .probation-common-header__navigation;
+
+    &__item {
+      @extend .probation-common-header__navigation__item;
+    }
+  }
+
+  &__menu-toggle {
+    @extend .probation-common-header__menu-toggle;
+  }
+
+  &__toggle-open {
+    @extend .probation-common-header__toggle-open;
+  }
+
+  &__user-menu {
+    @extend .probation-common-header__user-menu;
+  }
+
+  &__pushdown-menu {
+    @extend .probation-common-header__pushdown-menu;
+  }
+
+  &__icon-link-wrapper {
+    @extend .probation-common-header__icon-link-wrapper;
+  }
+
+  &__services-menu {
+    @extend .probation-common-header__services-menu;
+  }
+
+  &__user-menu-link {
+    @extend .probation-common-header__user-menu-link;
+  }
+
+  &__services-menu-link {
+    @extend .probation-common-header__services-menu-link;
+  }
+
+  &__menu-toggle-label {
+    @extend .probation-common-header__menu-toggle-label;
+  }
+
+  // OASys static account display — mirrors __icon-link-wrapper a > span structure
+  &__oasys-account {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    color: govuk-colour('white');
+    @include govuk-font(16);
+
+    > span {
+      display: flex;
+      height: 100%;
+      padding: 0 15px;
+      border-left: 1px solid govuk-colour('white');
+      align-items: center;
+    }
+  }
+
+  &__oasys-account-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+  }
+
+  &__oasys-account-label {
+    @include govuk-font($size: 14);
+  }
+}
