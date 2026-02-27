@@ -50,6 +50,6 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: 'hmpps-arns-integrations-test-playwright',
-              workflow_id: ${{ env[inputs.environment] }},
+              workflow_id: '${{ env[inputs.environment] }}',
               ref: 'main'
             })
