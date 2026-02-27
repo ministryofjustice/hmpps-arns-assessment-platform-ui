@@ -29,6 +29,7 @@ function createAssessmentArea(overrides: Partial<AssessmentArea> = {}): Assessme
     threshold: null,
     isHighScoring: false,
     isLowScoring: false,
+    effectiveScoreToThresholdDistance: null,
     ...overrides,
   }
 }

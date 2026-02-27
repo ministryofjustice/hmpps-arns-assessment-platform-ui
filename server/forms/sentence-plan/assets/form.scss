@@ -9,7 +9,11 @@
 @import "../components/button-as-link/buttonAsLink";
 @import "../components/goal-summary-card/goal-summary-card";
 @import "../components/goal-summary-card/goal-list";
+@import "../components/sentence-information-table/sentence-information-table";
+@import "../components/about-accordion/about-accordion";
+@import "../components/score-bar/needs-score";
 @import "../components/previous-versions/previous-versions";
+
 
 // Step rows - align remove button with input fields
 .step-row {
@@ -19,6 +23,20 @@
 
   .govuk-form-group {
     margin-bottom: 0;
+  }
+}
+
+// warning text without icon - hides icon and removes left padding
+.govuk-warning-text--no-icon {
+  padding-top: 0;
+  margin-bottom: govuk-spacing(2);
+
+  .govuk-warning-text__text {
+    padding-left: 0;
+  }
+
+  .govuk-warning-text__icon {
+    display: none;
   }
 }
 
