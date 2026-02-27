@@ -1,11 +1,11 @@
 import { Format, step, accessTransition, when } from '@form-engine/form/builders'
 import { isOasysAccess, isReadWriteAccess, redirectToPrivacyUnlessAccepted, redirectUnlessSanSp } from '../../guards'
 import {
-  noAssessmentDataErrorWarning,
+  assessmentDataLoadFailureWarning,
   incompleteAssessmentWarning,
   sentenceHeading,
   sentenceTable,
-  noSentenceInfo,
+  nDeliusFailureWarningNoSentenceInfo,
   assessmentLastUpdated,
   incompleteAreasHeading,
   incompleteAreasAccordion,
@@ -20,7 +20,6 @@ import {
 } from './fields'
 import { CaseData, sentencePlanOverviewPath } from '../../constants'
 import { AuditEvent, SentencePlanEffects } from '../../../../effects'
-
 
 export const aboutPersonStep = step({
   path: '/about-person',
@@ -42,8 +41,8 @@ export const aboutPersonStep = step({
     assessmentLastUpdated,
     sentenceHeading,
     sentenceTable,
-    noSentenceInfo,
-    noAssessmentDataErrorWarning,
+    nDeliusFailureWarningNoSentenceInfo,
+    assessmentDataLoadFailureWarning,
     incompleteAreasHeading,
     incompleteAreasAccordion,
     highScoringAreasHeading,
