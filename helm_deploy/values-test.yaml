@@ -27,6 +27,9 @@ generic-service:
     SMART_SURVEY_POPUP_CODE: "XF5PNV"
 
   allowlist:
+    mp-nat-egress-one: 13.43.9.198/32
+    mp-nat-egress-two: 13.42.163.245/32
+    mp-nat-egress-three: 18.132.208.127/32
     capita-dev: 51.104.16.30/31
     captia-further: 172.167.141.40/32
     capita-developers-vms-one: 85.115.52.180/32
@@ -36,6 +39,7 @@ generic-service:
     capita-developers-vms-five: 85.115.54.180/32
     capita-developers-vms-six: 85.115.54.200/29
     kpmg-pentest: 195.68.59.74/32
+    t1-jump2022-1: 10.26.8.12/32
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-arns-non-prod

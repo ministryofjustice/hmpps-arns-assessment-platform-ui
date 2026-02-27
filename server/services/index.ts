@@ -19,7 +19,7 @@ export const services = () => {
     coordinatorApiClient,
     handoverApiClient,
     preferencesStore,
-    auditService: new AuditService(applicationInfo),
+    auditService: new AuditService(applicationInfo.applicationName),
     assessmentService: new AssessmentService(assessmentPlatformApiClient),
   }
 }

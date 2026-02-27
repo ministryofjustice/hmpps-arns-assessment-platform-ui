@@ -19,7 +19,8 @@ import {
   isSentenceInformationAndAssessmentLoadingError,
 } from './fields'
 import { CaseData, sentencePlanOverviewPath } from '../../constants'
-import { SentencePlanEffects } from '../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../effects'
+
 
 export const aboutPersonStep = step({
   path: '/about-person',
@@ -57,6 +58,7 @@ export const aboutPersonStep = step({
     redirectUnlessSanSp(sentencePlanOverviewPath),
     accessTransition({
       effects: [
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ABOUT_PERSON),
         SentencePlanEffects.loadSentenceInformation(),
         SentencePlanEffects.loadAllAreasAssessmentInfo(),
         SentencePlanEffects.setNavigationReferrer('about'),

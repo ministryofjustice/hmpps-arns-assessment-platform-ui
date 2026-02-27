@@ -15,7 +15,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { Transformer } from '@form-engine/registry/transformers'
 import { planAgreementQuestion, notesField, saveButton } from './fields'
-import { SentencePlanEffects } from '../../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { redirectToOverviewIfReadOnly } from '../../../../guards'
 
 export const agreePlanStep = step({
@@ -64,7 +64,12 @@ export const agreePlanStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.updatePlanAgreementStatus()],
+        effects: [
+          SentencePlanEffects.updatePlanAgreementStatus(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_PLAN_AGREEMENT, {
+            agreementStatus: Post('plan_agreement_question'),
+          }),
+        ],
         next: [redirect({ goto: 'overview' })],
       },
     }),

@@ -2,6 +2,8 @@ import { Data } from '@form-engine/form/builders'
 import { Transformer } from '@form-engine/registry/transformers'
 import { CriminogenicNeedsData } from '../../../../interfaces/coordinator-api/entityAssessment'
 
+export const formVersion = 'v1.0'
+
 /**
  * Centralised data accessors for case data.
  * Use these throughout the form configuration so if paths change, we only update here.
