@@ -31,6 +31,7 @@ jobs:
   trigger_integration_tests:
     name: Trigger integration tests
     runs-on: ubuntu-latest
+    needs: deploy_to_env
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@v2
