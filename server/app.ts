@@ -60,6 +60,7 @@ export default function createApp(services: Services): express.Application {
     .registerFormPackage(sentencePlanFormPackage, {
       api: services.assessmentPlatformApiClient,
       coordinatorApi: services.coordinatorApiClient,
+      deliusApi: services.deliusApiClient,
       auditService: services.auditService,
     })
 

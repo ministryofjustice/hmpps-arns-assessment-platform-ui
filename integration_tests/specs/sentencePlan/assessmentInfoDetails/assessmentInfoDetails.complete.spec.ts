@@ -4,8 +4,10 @@ import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
 import ChangeGoalPage from '../../../pages/sentencePlan/changeGoalPage'
 import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
-import { navigateToSentencePlan, getDatePlusDaysAsISO } from '../sentencePlanUtils'
+import AboutPage from '../../../pages/sentencePlan/aboutPage'
+import { navigateToSentencePlan, navigateToAboutPage, getDatePlusDaysAsISO } from '../sentencePlanUtils'
 import coordinatorApi, { SanAssessmentData } from '../../../mockApis/coordinatorApi'
+import { createAssessmentData } from '../../../builders/AssessmentDataFactories'
 
 test.describe('Assessment Info Details - Complete Section', () => {
   test('displays assessment info collapsed when section is complete with all data', async ({ page, createSession }) => {
@@ -234,6 +236,124 @@ test.describe('Assessment Info Details - Complete Section', () => {
       await expect(addStepsPage.assessmentInfoContent).toContainText('This area is not linked to RoSH')
       await expect(addStepsPage.assessmentInfoContent).toContainText('This area is linked to risk of reoffending')
       await expect(addStepsPage.assessmentInfoContent).toContainText('Linked to reoffending risk')
+    })
+  })
+
+  test.describe('Assessment Info on About Page (showAsDetails set to false)', () => {
+    test('renders content directly without details element wrapper', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { handoverLink, sentencePlanId } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        assessmentType: 'SAN_SP',
+      })
+
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+      await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
+        sanAssessmentData: createAssessmentData('complete'),
+      })
+
+      await navigateToAboutPage(page, handoverLink)
+
+      const aboutPage = await AboutPage.verifyOnPage(page)
+      await aboutPage.expandAccordionSection(aboutPage.highScoringAreasAccordion, 0)
+
+      const accordionSection = aboutPage.highScoringAreasAccordion.locator('.govuk-accordion__section').first()
+
+      await expect(accordionSection.locator('[data-qa="assessment-info-and-score-content"]')).toBeVisible()
+      await expect(accordionSection.locator('details[data-qa="assessment-info-details"]')).not.toBeVisible()
+    })
+
+    test('displays need score section with score value, threshold info, and score bar', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { handoverLink, sentencePlanId } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        assessmentType: 'SAN_SP',
+        criminogenicNeedsData: {
+          accommodation: {
+            accLinkedToHarm: 'YES',
+            accLinkedToReoffending: 'YES',
+            accStrengths: 'NO',
+            accOtherWeightedScore: '5', // score 5 out of 6, threshold 1
+          },
+        },
+      })
+
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+      await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
+        sanAssessmentData: createAssessmentData('complete'),
+      })
+
+      await navigateToAboutPage(page, handoverLink)
+
+      const aboutPage = await AboutPage.verifyOnPage(page)
+      await aboutPage.expandAccordionSection(aboutPage.highScoringAreasAccordion, 0)
+
+      const sectionContent = aboutPage.highScoringAreasAccordion
+        .locator('.govuk-accordion__section')
+        .first()
+        .locator('[data-qa="assessment-info-and-score-content"]')
+
+      await expect(sectionContent.getByText('Accommodation need score')).toBeVisible()
+      await expect(sectionContent.getByText('5 out of 6. (Scores above 1 are high-scoring.)')).toBeVisible()
+
+      await expect(sectionContent.locator('.needs-score')).toBeVisible()
+      await expect(sectionContent.locator('.needsScoreMain')).toHaveText('5')
+      await expect(sectionContent.locator('.needsScoreSub')).toContainText('out of 6')
+    })
+
+    test('displays sub-area (Lifestyle) score section within Thinking accordion', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { handoverLink, sentencePlanId } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        assessmentType: 'SAN_SP',
+        criminogenicNeedsData: {
+          thinkingBehaviourAndAttitudes: {
+            thinkLinkedToHarm: 'YES',
+            thinkLinkedToReoffending: 'YES',
+            thinkStrengths: 'NO',
+            thinkOtherWeightedScore: '4', // main thinking score
+          },
+          lifestyleAndAssociates: {
+            lifestyleLinkedToHarm: 'YES',
+            lifestyleLinkedToReoffending: 'NO',
+            lifestyleStrengths: 'NO',
+            lifestyleOtherWeightedScore: '3', // sub-area score - threshold 1, so high-scoring
+          },
+        },
+      })
+
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+      await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
+        sanAssessmentData: createAssessmentData('complete'),
+      })
+
+      await navigateToAboutPage(page, handoverLink)
+
+      const aboutPage = await AboutPage.verifyOnPage(page)
+
+      const thinkingSection = aboutPage.highScoringAreasAccordion
+        .locator('.govuk-accordion__section')
+        .filter({ hasText: 'Thinking, behaviours and attitudes' })
+
+      await thinkingSection.locator('.govuk-accordion__section-button').click()
+
+      const sectionContent = thinkingSection.locator('[data-qa="assessment-info-and-score-content"]')
+      await expect(sectionContent.getByText('Thinking, behaviours and attitudes need score')).toBeVisible()
+
+      await expect(sectionContent.getByText('Lifestyle and associates need score')).toBeVisible()
+      await expect(sectionContent.getByText('3 out of 6. (Scores above 1 are high-scoring.)')).toBeVisible()
+
+      const subAreaScoreBar = sectionContent.locator('.needs-score').last()
+      await expect(subAreaScoreBar.locator('.needsScoreMain')).toHaveText('3')
     })
   })
 })
