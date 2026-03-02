@@ -1060,14 +1060,15 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": [],
-          "value": []
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
         },
+        "allValue": "^$",
         "definition": "label_values(aws_rds_database_connections_average{dbinstance_identifier!=''}, dbinstance_identifier)",
         "hide": 0,
-        "includeAll": false,
-        "label": "DB Instance",
+        "includeAll": true,
+        "label": "DB Instance (All = None)",
         "multi": true,
         "name": "db_instance",
         "query": {
