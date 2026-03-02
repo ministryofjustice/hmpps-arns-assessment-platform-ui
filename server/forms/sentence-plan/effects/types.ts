@@ -332,6 +332,7 @@ export interface SentencePlanData extends Record<string, unknown> {
 
   // Plan Previous Versions
   previousVersions: PreviousVersionsResponse
+  showAssessmentColumn?: boolean
   historic: HistoricPlanData
 
   // Areas of need

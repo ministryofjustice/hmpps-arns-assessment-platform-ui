@@ -92,6 +92,23 @@ export const scenarioPresets: ScenarioPreset[] = [
       planAccessMode: 'READ_WRITE',
     },
   },
+  {
+    id: 'pqip-pso-entrant-training',
+    name: 'PQiP/PSO Entrant Training',
+    shortDescription: 'National rollout scenario',
+    description: 'Scenario configured for PQiP/PSO entrant training.',
+    flags: [],
+    fixedValues: {
+      givenName: 'Charlie',
+      familyName: 'Patterson',
+      dateOfBirth: '1995-07-19',
+      gender: '1',
+      location: 'COMMUNITY',
+      sexuallyMotivatedOffenceHistory: 'NO',
+      accessMode: 'READ_WRITE',
+      planAccessMode: 'READ_WRITE',
+    },
+  },
 ]
 
 /**
