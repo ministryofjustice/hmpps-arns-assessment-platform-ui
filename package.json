@@ -95,7 +95,7 @@
     "@types/passport-oauth2": "^1.8.0",
     "@types/pg": "^8.16.0",
     "@types/superagent": "^8.1.9",
-    "@types/supertest": "^6.0.3",
+    "@types/supertest": "^7.2.0",
     "@yikes2000/prettier-plugin-merge-extras": "^0.7.3-extras.2",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
