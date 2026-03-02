@@ -1,5 +1,5 @@
 $app-vertical-nav-button-menu-color: govuk-colour("blue") !default;
-$app-vertical-nav-button-menu-hover-color: govuk-shade($app-vertical-nav-button-menu-color, 20%) !default;
+$app-vertical-nav-button-menu-hover-color: govuk-colour("blue", $variant: "shade-25") !default;
 
 .app-vertical-nav {
   position: relative;

@@ -23,7 +23,7 @@
 
   // Left sidebar
   &__sidebar {
-    background-color: govuk-colour("light-grey");
+    background-color: govuk-colour("black", $variant: "tint-95");
     padding: govuk-spacing(4);
     overflow-y: auto;
     min-height: 0;
@@ -31,13 +31,13 @@
     &-title {
       margin-bottom: govuk-spacing(3);
       padding-bottom: govuk-spacing(2);
-      border-bottom: 1px solid govuk-colour("mid-grey");
+      border-bottom: 1px solid govuk-colour("black", $variant: "tint-80");
     }
 
     &-footer {
       margin-top: govuk-spacing(4);
       padding-top: govuk-spacing(4);
-      border-top: 1px solid govuk-colour("mid-grey");
+      border-top: 1px solid govuk-colour("black", $variant: "tint-80");
     }
   }
 
@@ -67,8 +67,8 @@
       transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
 
       &:hover {
-        background-color: govuk-colour("light-grey");
-        border-color: govuk-colour("dark-grey");
+        background-color: govuk-colour("black", $variant: "tint-95");
+        border-color: govuk-colour("black", $variant: "tint-25");
       }
 
       &:focus-visible {
@@ -93,7 +93,7 @@
     }
 
     &-sublabel {
-      color: govuk-colour("dark-grey");
+      color: govuk-colour("black", $variant: "tint-25");
       margin-top: govuk-spacing(1);
     }
   }
@@ -107,7 +107,7 @@
 
     // Firefox scrollbar styling
     scrollbar-width: auto;
-    scrollbar-color: govuk-colour("mid-grey") govuk-colour("light-grey");
+    scrollbar-color: govuk-colour("black", $variant: "tint-80") govuk-colour("black", $variant: "tint-95");
 
     // WebKit (Chrome, Safari, Edge) scrollbar styling
     &::-webkit-scrollbar {
@@ -116,17 +116,17 @@
     }
 
     &::-webkit-scrollbar-track {
-      background: govuk-colour("light-grey");
+      background: govuk-colour("black", $variant: "tint-95");
       border-radius: 5px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: govuk-colour("mid-grey");
+      background-color: govuk-colour("black", $variant: "tint-80");
       border-radius: 5px;
-      border: 2px solid govuk-colour("light-grey");
+      border: 2px solid govuk-colour("black", $variant: "tint-95");
 
       &:hover {
-        background-color: govuk-colour("dark-grey");
+        background-color: govuk-colour("black", $variant: "tint-25");
       }
     }
 

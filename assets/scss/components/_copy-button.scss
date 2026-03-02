@@ -20,7 +20,7 @@
   @include govuk-font(16);
 
   &:hover {
-    background-color: govuk-tint(govuk-colour("green"), 90);
+    background-color: govuk-colour("green", $variant: "tint-95");
   }
 
   &:focus:not(:hover) {

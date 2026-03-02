@@ -29,9 +29,9 @@
 
   // Unknown/missing score variant (grey)
   &--unknown {
-    background-color: govuk-colour("light-grey");
-    border-color: govuk-colour("mid-grey");
-    color: govuk-colour("mid-grey");
+    background-color: govuk-colour("black", $variant: "tint-95");
+    border-color: govuk-colour("black", $variant: "tint-80");
+    color: govuk-colour("black", $variant: "tint-80");
   }
 }
 
