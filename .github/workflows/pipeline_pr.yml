@@ -68,7 +68,7 @@ jobs:
           pattern: npm_unit_test_artifacts
 
       - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@27d65e188ec43221b20d26de30f4892fad91df2f # v2.22.0
+        uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
         with:
           files: "unit_test_artifacts/**/*.xml"
           check_name: "Unit Test Results"
@@ -80,7 +80,7 @@ jobs:
           pattern: test_results
 
       - name: Publish E2E Test Results
-        uses: EnricoMi/publish-unit-test-result-action@27d65e188ec43221b20d26de30f4892fad91df2f # v2.22.0
+        uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2.23.0
         with:
           files: "artifacts/**/*.xml"
           check_name: "Playwright Test Results"
