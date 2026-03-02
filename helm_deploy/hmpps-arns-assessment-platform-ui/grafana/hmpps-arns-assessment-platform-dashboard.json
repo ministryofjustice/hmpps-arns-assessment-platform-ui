@@ -789,6 +789,209 @@
       ],
       "title": "Request Volume (requests/s)",
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 43
+      },
+      "id": 15,
+      "panels": [],
+      "title": "Database Health",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 44
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "max_over_time(aws_rds_database_connections_average{dbinstance_identifier=~'$db_instance'}[5m])",
+          "legendFormat": "{{dbinstance_identifier}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Database Connections",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 44
+      },
+      "id": 17,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time(aws_rds_cpuutilization_average{dbinstance_identifier=~'$db_instance'}[5m])",
+          "legendFormat": "{{dbinstance_identifier}} CPU",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Database Load",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 10
+              },
+              {
+                "color": "green",
+                "value": 30
+              }
+            ]
+          },
+          "unit": "gbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 44
+      },
+      "id": 18,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "min_over_time(aws_rds_free_storage_space_average{dbinstance_identifier=~'$db_instance'}[15m]) / 1024 / 1024 / 1024",
+          "legendFormat": "{{dbinstance_identifier}} free",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Database Storage",
+      "type": "timeseries"
     }
   ],
   "refresh": "30s",
@@ -852,6 +1055,26 @@
         },
         "refresh": 1,
         "regex": "/^(hmpps-arns-assessment-platform-ui|hmpps-arns-assessment-platform-api|hmpps-assess-risks-and-needs-coordinator-api|hmpps-assess-risks-and-needs-handover-service)$/",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "definition": "label_values(aws_rds_database_connections_average{tag_name=~'.*(arns-assessment-platform|assess-risks-and-needs).*'}, dbinstance_identifier)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "DB Instance",
+        "multi": true,
+        "name": "db_instance",
+        "query": {
+          "query": "label_values(aws_rds_database_connections_average{tag_name=~'.*(arns-assessment-platform|assess-risks-and-needs).*'}, dbinstance_identifier)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
         "sort": 1,
         "type": "query"
       }
