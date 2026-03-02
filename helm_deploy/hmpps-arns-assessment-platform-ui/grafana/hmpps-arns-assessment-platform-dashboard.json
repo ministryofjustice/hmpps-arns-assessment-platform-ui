@@ -162,7 +162,7 @@
           "refId": "A"
         }
       ],
-      "title": "Latency (p95)",
+      "title": "Request Duration (p95)",
       "type": "timeseries"
     },
     {
@@ -224,7 +224,7 @@
           "refId": "A"
         }
       ],
-      "title": "Response Time (p99)",
+      "title": "Request Duration (p99)",
       "type": "timeseries"
     },
     {
@@ -292,7 +292,7 @@
           "refId": "A"
         }
       ],
-      "title": "Average Request Time",
+      "title": "Average Request Duration",
       "type": "stat"
     },
     {
@@ -328,11 +328,11 @@
               },
               {
                 "color": "red",
-                "value": 1
+                "value": 80
               }
             ]
           },
-          "unit": "decmbytes"
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -361,7 +361,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(container_memory_usage_bytes{namespace=~'$namespace',container=~'$service',container!='POD',container!=''}[5m]) / 1024 / 1024) by (container)",
+          "expr": "100 * (sum(container_memory_working_set_bytes{namespace=~'$namespace',container=~'$service',container!='POD',container!=''}) by (container) / clamp_min(sum(kube_pod_container_resource_limits{namespace=~'$namespace',container=~'$service',resource='memory'}) by (container), 1))",
           "legendFormat": "{{container}}",
           "range": true,
           "refId": "A"
@@ -390,11 +390,11 @@
               },
               {
                 "color": "red",
-                "value": 1
+                "value": 80
               }
             ]
           },
-          "unit": "cores"
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -423,7 +423,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=~'$namespace',container=~'$service',container!='POD',container!=''}[5m])) by (container)",
+          "expr": "100 * (sum(rate(container_cpu_usage_seconds_total{namespace=~'$namespace',container=~'$service',container!='POD',container!=''}[5m])) by (container) / clamp_min(sum(kube_pod_container_resource_limits{namespace=~'$namespace',container=~'$service',resource='cpu'}) by (container), 0.001))",
           "legendFormat": "{{container}}",
           "range": true,
           "refId": "A"
@@ -553,7 +553,11 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "custom": {
+            "axisSoftMax": 20,
+            "axisSoftMin": 0
+          }
         },
         "overrides": []
       },
@@ -624,68 +628,6 @@
               },
               {
                 "color": "red",
-                "value": 10
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 27
-      },
-      "id": 12,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',status=~'4..|5..'}[5m])) by (status)",
-          "legendFormat": "HTTP {{status}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Errors (4xx and 5xx)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
                 "value": 1
               }
             ]
@@ -696,8 +638,8 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
+        "w": 24,
+        "x": 0,
         "y": 27
       },
       "id": 13,
@@ -752,7 +694,7 @@
               }
             ]
           },
-          "unit": "reqps"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -781,13 +723,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace'}[5m])) by (ingress)",
-          "legendFormat": "{{ingress}}",
+          "expr": "sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace'}[5m])) * 60",
+          "legendFormat": "Total requests/min",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Request Volume (requests/s)",
+      "title": "Request Volume (requests/min)",
       "type": "timeseries"
     },
     {
@@ -797,6 +739,158 @@
         "w": 24,
         "x": 0,
         "y": 43
+      },
+      "id": 19,
+      "panels": [],
+      "title": "Service Quality",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 95
+              },
+              {
+                "color": "green",
+                "value": 99
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 44
+      },
+      "id": 20,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "100 * (sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',ingress=~'$service',status=~'2..|3..'}[5m])) by (ingress) / clamp_min(sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',ingress=~'$service'}[5m])) by (ingress), 0.001))",
+          "legendFormat": "{{ingress}} success",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "100 * (sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',ingress=~'$service',status=~'5..'}[5m])) by (ingress) / clamp_min(sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',ingress=~'$service'}[5m])) by (ingress), 0.001))",
+          "legendFormat": "{{ingress}} 5xx",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Response Mix (%)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 50
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 52
+      },
+      "id": 22,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',ingress=~'$service',status=~'2..|3..|4..|5..'}[5m])) by (ingress, status)",
+          "legendFormat": "{{ingress}} {{status}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "HTTP Status by Service",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 60
       },
       "id": 15,
       "panels": [],
@@ -835,7 +929,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 44
+        "y": 61
       },
       "id": 16,
       "options": {
@@ -897,7 +991,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 44
+        "y": 61
       },
       "id": 17,
       "options": {
@@ -963,7 +1057,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 44
+        "y": 61
       },
       "id": 18,
       "options": {
