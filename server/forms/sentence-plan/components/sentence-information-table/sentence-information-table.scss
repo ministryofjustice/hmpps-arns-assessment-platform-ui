@@ -1,0 +1,23 @@
+// Sentence Information table for About page
+// displays sentence details with grey background
+.sentence-information-table {
+  background-color: govuk-colour("light-grey");
+
+  // remove table borders
+  &,
+  th,
+  td {
+    border: none;
+  }
+
+  // headers as smaller body text (not bold table headers)
+  th {
+    @include govuk-font($size: 16, $weight: regular);
+    padding: govuk-spacing(3) govuk-spacing(4) govuk-spacing(1) govuk-spacing(4);
+  }
+
+  td {
+    @include govuk-font($size: 24);
+    padding: govuk-spacing(1) govuk-spacing(4) govuk-spacing(3) govuk-spacing(4);
+  }
+}

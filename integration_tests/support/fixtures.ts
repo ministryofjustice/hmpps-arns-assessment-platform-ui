@@ -15,6 +15,7 @@ import { HandoverBuilder } from '../builders/HandoverBuilder'
 import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
 import type { AccessMode, CriminogenicNeedsData } from '../../server/interfaces/handover-api/shared'
 import type { AssessmentType } from '../../server/interfaces/coordinator-api/oasysCreate'
+import { AuditQueueClient } from './AuditQueueClient'
 
 /**
  * Default criminogenic needs data for E2E tests.
@@ -68,6 +69,12 @@ const defaultCriminogenicNeedsData: CriminogenicNeedsData = {
     thinkStrengths: 'YES',
     thinkOtherWeightedScore: '8',
   },
+  lifestyleAndAssociates: {
+    lifestyleLinkedToHarm: 'YES',
+    lifestyleLinkedToReoffending: 'YES',
+    lifestyleStrengths: 'YES',
+    lifestyleOtherWeightedScore: '4',
+  },
 }
 
 export enum TargetService {
@@ -117,6 +124,7 @@ type TestApiFixtures = {
   coordinatorBuilder: CoordinatorBuilderFactory
   handoverBuilder: HandoverBuilderFactory
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
+  auditQueue: AuditQueueClient
   makeAxeBuilder: () => AxeBuilder
 }
 
@@ -260,6 +268,15 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
 
     await use(createSessionFn)
   },
+  auditQueue: async ({ apis }, use) => {
+    const client = AuditQueueClient.getInstance({
+      queueUrl: apis.localstack.queueUrl,
+      region: apis.localstack.region,
+      endpoint: apis.localstack.url,
+    })
+    await use(client)
+  },
+
   makeAxeBuilder: async ({ page }, use) => {
     const makeAxeBuilder = () => new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
 

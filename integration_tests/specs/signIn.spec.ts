@@ -12,6 +12,18 @@ test.describe('SignIn', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')
   })
 
+  // Unauthenticated users normally go to /sign-in; /autherror is reached when auth callback fails.
+  test('Auth callback failure redirects to auth error page content', async ({ page }) => {
+    await page.goto('/sign-in/hmpps-auth/callback?error=access_denied')
+
+    await page.waitForURL('**/autherror')
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('You need to sign in to use this service')
+    await expect(page.getByText('You can sign in from:')).toBeVisible()
+    await expect(page.getByRole('link', { name: 'the OASys homepage' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Manage people on probation' })).toBeVisible()
+  })
+
   test('Unauthenticated user navigating to sign in page directed to auth', async ({ page }) => {
     await page.goto('/sign-in')
 
@@ -39,7 +51,7 @@ test.describe('SignIn', () => {
     await login(page)
 
     const homePage = await HomePage.verifyOnPage(page)
-    await expect(homePage.accountType).toHaveText('Auth User')
+    await expect(homePage.accountType).toHaveText('Account')
   })
 
   test('Token verification failure redirects user to auth @serial', async ({ page }) => {

@@ -10,7 +10,7 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, readdNoteSection, canStartNowSection, buttonGroup } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 
 /**
@@ -38,7 +38,10 @@ export const confirmAddGoalStep = step({
   onAccess: [
     // Load data first (no `when` = always runs)
     accessTransition({
-      effects: [SentencePlanEffects.setActiveGoalContext()],
+      effects: [
+        SentencePlanEffects.setActiveGoalContext(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_RE_ADD_GOAL),
+      ],
     }),
     // Only allow re-adding goals if plan is agreed
     accessTransition({
@@ -72,6 +75,7 @@ export const confirmAddGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.readdGoalToPlan(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_RE_ADD_GOAL),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You added a goal back into %1 plan', CaseData.ForenamePossessive),

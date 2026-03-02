@@ -3,7 +3,8 @@ import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/Ef
 import { User } from '../../../interfaces/user'
 import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
-import { AssessmentPlatformApiClient, CoordinatorApiClient } from '../../../data'
+import { AssessmentPlatformApiClient, CoordinatorApiClient, DeliusApiClient } from '../../../data'
+import AuditService from '../../../services/auditService'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { SessionDetails } from '../../../interfaces/sessionDetails'
 import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
@@ -349,6 +350,16 @@ export interface SentencePlanData extends Record<string, unknown> {
   currentAreaAssessment: AssessmentArea | null
   currentAreaAssessmentStatus: AssessmentInfoStatus
   navigationReferrer?: NavigationReferrer | null
+
+  // all assessment areas grouped by scoring category (for about page; from coordinator API)
+  allAssessmentAreas: AssessmentArea[]
+  highScoringAreas: AssessmentArea[]
+  lowScoringAreas: AssessmentArea[]
+  otherAreas: AssessmentArea[]
+  incompleteAreas: AssessmentArea[]
+  isAssessmentComplete: boolean
+  assessmentLastUpdated: string | null
+  allAreasAssessmentStatus: AssessmentInfoStatus
 }
 
 /**
@@ -391,6 +402,7 @@ export interface SentencePlanSession {
  */
 export interface SentencePlanState extends Record<string, unknown> {
   user: User & { authSource: string; token: string }
+  requestId: string
 }
 
 /**
@@ -414,9 +426,11 @@ export type SentencePlanContext = EffectFunctionContext<
 
 /**
  * Dependencies for sentence plan effects.
- * Access-related dependencies (deliusApi, handoverApi) are now in the access form.
+ * Note: delius api used to load sentence information for about page via handover context access.
  */
 export interface SentencePlanEffectsDeps {
   api: AssessmentPlatformApiClient
   coordinatorApi: CoordinatorApiClient
+  deliusApi: DeliusApiClient
+  auditService: AuditService
 }

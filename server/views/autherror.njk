@@ -1,10 +1,52 @@
 {% extends "./partials/layout.njk" %}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+{%- from "govuk/components/details/macro.njk" import govukDetails -%}
+
+{% block header %}
+  {{ super() }}
+  {% include "sentence-plan/views/partials/phase-banner.njk" %}
+{% endblock %}
 
 {% block content %}
-  <h1 class="govuk-heading-l">
-    Authorisation Error
-  </h1>
-  <p>
-    You are not authorised to use this application.
-  </p>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-xl">You need to sign in to use this service</h1>
+      <p class="govuk-body">You can sign in from:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          <a class="govuk-link govuk-link--no-visited-state" href="{{ oasysUrl }}">the OASys homepage</a>
+        </li>
+        <li>
+          <a class="govuk-link govuk-link--no-visited-state" href="{{ mpopUrl }}">Manage people on probation</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}
+  {% set reportProblemHtml %}
+    <p class="govuk-body">
+      If there is a problem with this page, include your Request ID when reporting it.
+    </p>
+    <p class="govuk-body">
+      Request ID: {{ getRequestId() if getRequestId() != 'unavailable' else 'Unavailable' }}
+    </p>
+    <p class="govuk-body">
+      <a href="{{ serviceNowFormUrl }}" class="govuk-link" target="_blank" rel="noopener noreferrer">Open ServiceNow form (opens in a new tab)</a>
+    </p>
+  {% endset %}
+
+  <div class="app-report-problem" id="report-a-problem">
+    <div class="govuk-width-container">
+      {{ govukDetails({
+        summaryText: "Report a problem",
+        html: reportProblemHtml
+      }) }}
+    </div>
+  </div>
+
+  {{ pdsFooter({
+    baseUrl: "/sentence-plan"
+  }) }}
 {% endblock %}

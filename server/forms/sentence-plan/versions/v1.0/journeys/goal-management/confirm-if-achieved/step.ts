@@ -1,7 +1,7 @@
 import { accessTransition, Data, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, allStepsCompletedField, hasAchievedGoal, saveAndContinueButton } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfNotPostAgreement } from '../../../guards'
 
 /**
@@ -22,7 +22,10 @@ export const confirmIfAchievedStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.setActiveGoalContext()],
+      effects: [
+        SentencePlanEffects.setActiveGoalContext(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_ACHIEVED),
+      ],
     }),
     // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
     redirectIfNotPostAgreement('../../plan/overview'),
@@ -43,7 +46,10 @@ export const confirmIfAchievedStep = step({
       when: Post('has_achieved_goal').match(Condition.Equals('yes')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.markGoalAsAchieved()],
+        effects: [
+          SentencePlanEffects.markGoalAsAchieved(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL_ACHIEVED),
+        ],
         next: [redirect({ goto: '../../plan/overview?type=achieved' })],
       },
     }),
