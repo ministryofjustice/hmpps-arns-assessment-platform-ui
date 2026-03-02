@@ -856,7 +856,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "max_over_time(aws_rds_database_connections_average{dbinstance_identifier=~'$db_instance'}[5m])",
+          "expr": "max by (dbinstance_identifier) (max_over_time(aws_rds_database_connections_average{dbinstance_identifier=~'$db_instance',dbinstance_identifier!=''}[5m]))",
           "legendFormat": "{{dbinstance_identifier}}",
           "range": true,
           "refId": "A"
@@ -918,7 +918,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg_over_time(aws_rds_cpuutilization_average{dbinstance_identifier=~'$db_instance'}[5m])",
+          "expr": "avg by (dbinstance_identifier) (avg_over_time(aws_rds_cpuutilization_average{dbinstance_identifier=~'$db_instance',dbinstance_identifier!=''}[5m]))",
           "legendFormat": "{{dbinstance_identifier}} CPU",
           "range": true,
           "refId": "A"
@@ -984,7 +984,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "min_over_time(aws_rds_free_storage_space_average{dbinstance_identifier=~'$db_instance'}[15m]) / 1024 / 1024 / 1024",
+          "expr": "min by (dbinstance_identifier) (min_over_time(aws_rds_free_storage_space_average{dbinstance_identifier=~'$db_instance',dbinstance_identifier!=''}[15m])) / 1024 / 1024 / 1024",
           "legendFormat": "{{dbinstance_identifier}} free",
           "range": true,
           "refId": "A"
@@ -1061,17 +1061,17 @@
       {
         "current": {
           "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "text": [],
+          "value": []
         },
-        "definition": "label_values(aws_rds_database_connections_average{tag_name=~'.*(arns-assessment-platform|assess-risks-and-needs).*'}, dbinstance_identifier)",
+        "definition": "label_values(aws_rds_database_connections_average{dbinstance_identifier!=''}, dbinstance_identifier)",
         "hide": 0,
-        "includeAll": true,
+        "includeAll": false,
         "label": "DB Instance",
         "multi": true,
         "name": "db_instance",
         "query": {
-          "query": "label_values(aws_rds_database_connections_average{tag_name=~'.*(arns-assessment-platform|assess-risks-and-needs).*'}, dbinstance_identifier)",
+          "query": "label_values(aws_rds_database_connections_average{dbinstance_identifier!=''}, dbinstance_identifier)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
