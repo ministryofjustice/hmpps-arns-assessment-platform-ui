@@ -42,10 +42,12 @@ export default class CoordinatorApiClient extends RestClient {
   }
 
   /**
-   * Get all previous versions of a sentence plan and its associated SAN assessment
-   * @param entityUuid
+   * Get previous versions for an entity.
+   *
+   * When authType is `HMPPS_AUTH`, coordinator returns plan versions only.
    */
-  async getVersionsByEntityId(entityUuid: string): Promise<PreviousVersionsResponse> {
-    return this.get({ path: `/entity/versions/${entityUuid}` }, asSystem())
+  async getVersionsByEntityId(entityUuid: string, authType?: 'HMPPS_AUTH'): Promise<PreviousVersionsResponse> {
+    const path = authType ? `/entity/versions/${entityUuid}/${authType}` : `/entity/versions/${entityUuid}`
+    return this.get({ path }, asSystem())
   }
 }
