@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
-import { ValidationHelper, CanStartNowHelper, TargetDateHelper, type TargetDateOption } from '../helpers'
+import { CanStartNowHelper, TargetDateHelper, type TargetDateOption } from '../helpers'
 
 export default class ConfirmReaddGoalPage extends AbstractPage {
   readonly header: Locator
@@ -19,8 +19,6 @@ export default class ConfirmReaddGoalPage extends AbstractPage {
 
   readonly goalTitle: Locator
 
-  private validation: ValidationHelper
-
   private canStartNow: CanStartNowHelper
 
   private targetDate: TargetDateHelper
@@ -35,7 +33,6 @@ export default class ConfirmReaddGoalPage extends AbstractPage {
     this.canStartNowError = page.locator('#can_start_now-error')
     this.goalCard = page.locator('[data-qa="goal-summary-card"]')
     this.goalTitle = page.locator('[data-qa="goal-title"]')
-    this.validation = new ValidationHelper(page)
     this.canStartNow = new CanStartNowHelper(page)
     this.targetDate = new TargetDateHelper(page)
   }
