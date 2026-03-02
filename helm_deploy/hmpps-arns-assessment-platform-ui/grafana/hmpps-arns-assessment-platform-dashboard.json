@@ -15,24 +15,6 @@
           "type": "dashboard"
         },
         "type": "dashboard"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "enable": true,
-        "hide": false,
-        "iconColor": "rgba(255, 96, 96, 1)",
-        "name": "Deployment Events",
-        "target": {
-          "expr": "changes(kube_deployment_metadata_generation{namespace=~'$namespace',deployment=~'$service'}[5m]) > 0",
-          "legendFormat": "{{deployment}}",
-          "refId": "Deployments"
-        },
-        "textFormat": "{{deployment}} rollout",
-        "titleFormat": "Deployment",
-        "type": "dashboard"
       }
     ]
   },
