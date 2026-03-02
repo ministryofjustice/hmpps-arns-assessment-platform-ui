@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
+import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
 import { AuditEvent, expectAuditEvent } from './helpers'
 
@@ -16,6 +17,28 @@ test.describe('Create a Goal', () => {
     await createGoalPage.selectIsRelated(false)
     await createGoalPage.selectCanStartNow(false)
     await createGoalPage.clickSaveWithoutSteps()
+    await expect(page).toHaveURL(/\/plan\/overview/)
+
+    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.CREATE_GOAL)
+    expectAuditEvent(event)
+    expect(event.details.areaOfNeed).toBe('accommodation')
+  })
+
+  test('saving goal with steps', async ({ page, createSession, auditQueue }) => {
+    const { crn, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+
+    await navigateToSentencePlan(page, handoverLink)
+    await page.goto(sentencePlanV1UrlBuilders.goalCreate('accommodation'))
+
+    const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+    await createGoalPage.enterGoalTitle('Audit test goal with steps')
+    await createGoalPage.selectIsRelated(false)
+    await createGoalPage.selectCanStartNow(false)
+    await createGoalPage.clickAddSteps()
+
+    const addStepsPage = await AddStepsPage.verifyOnPage(page)
+    await addStepsPage.enterStep(0, 'probation_practitioner', 'Test step')
+    await addStepsPage.clickSaveAndContinue()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
     const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.CREATE_GOAL)
