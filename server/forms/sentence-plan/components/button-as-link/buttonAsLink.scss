@@ -10,7 +10,7 @@
   @include govuk-font-size(19, $line-height: 1.6, $important: false);
 
   background: none;
-  color: $govuk-link-colour;
+  color: govuk-functional-colour(link);
   border: none;
   padding: govuk-spacing(1);
   cursor: pointer;

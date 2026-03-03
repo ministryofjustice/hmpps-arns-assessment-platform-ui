@@ -1,7 +1,7 @@
 .support-widget {
   display: block;
-  background-color: govuk-colour("light-grey");
-  border-top: 1px solid govuk-colour("mid-grey");
+  background-color: govuk-colour("black", $variant: "tint-95");
+  border-top: 1px solid govuk-functional-colour(border);
   padding: govuk-spacing(3) 0;
 }
 
@@ -27,7 +27,7 @@
   cursor: pointer;
 
   &:hover {
-    background-color: govuk-colour("light-grey");
+    background-color: govuk-colour("black", $variant: "tint-95");
   }
 
   &:focus {
@@ -38,7 +38,7 @@
 .support-widget__content {
   margin-top: govuk-spacing(3);
   padding-top: govuk-spacing(3);
-  border-top: 1px solid govuk-colour("mid-grey");
+  border-top: 1px solid govuk-functional-colour(border);
 }
 
 .support-widget__panels {
@@ -62,7 +62,7 @@
 .support-widget__panel--right {
   padding: govuk-spacing(3);
   background-color: govuk-colour("white");
-  border: 1px solid govuk-colour("mid-grey");
+  border: 1px solid govuk-functional-colour(border);
 }
 
 .support-widget__data {
@@ -74,13 +74,13 @@
 
 .support-widget__data-row {
   dt {
-    @include govuk-font($size: 14);
-    color: govuk-colour("dark-grey");
+    @include govuk-font($size: 16);
+    color: govuk-colour("black", $variant: "tint-25");
     margin-bottom: govuk-spacing(1);
   }
 
   dd {
-    @include govuk-font($size: 14);
+    @include govuk-font($size: 16);
     margin: 0;
     font-family: monospace;
     word-break: break-all;
