@@ -51,7 +51,7 @@ function buildParams(block: EvaluatedBlock<PreviousVersions>) {
       countersigned: {
         statuses: ['COUNTERSIGNED', 'DOUBLE_COUNTERSIGNED'],
         text: 'Countersigned',
-        classes: 'govuk-tag--turquoise',
+        classes: 'govuk-tag--teal',
       },
       agreed: {
         statuses: ['AGREED'],

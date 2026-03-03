@@ -2,7 +2,7 @@
 {%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
 
-{% block header %}
+{% block govukHeader %}
   {{ super() }}
   {% include "sentence-plan/views/partials/phase-banner.njk" %}
 {% endblock %}
@@ -24,7 +24,7 @@
   </div>
 {% endblock %}
 
-{% block footer %}
+{% block govukFooter %}
   {% set reportProblemHtml %}
     <p class="govuk-body">
       If there is a problem with this page, include your Request ID when reporting it.

@@ -1,3 +1,5 @@
+@use "sass:map";
+
 $high-needs-score-colour: #d4351c;
 $low-needs-score-colour: #28a197;
 $white-needs-score-background-colour: #ffffff;
@@ -13,7 +15,7 @@ $white-needs-score-background-colour: #ffffff;
 }
 
 .needs-score {
-  width: map-get($govuk-grid-widths, 'full');
+  width: map.get($govuk-grid-widths, 'full');
   @include govuk-media-query($from: "desktop") {
     // We don't want this to resize when at desktop sizes
     width: 350px;
@@ -57,7 +59,7 @@ $white-needs-score-background-colour: #ffffff;
   }
 
   & p {
-    @include govuk-font(14, "regular");
+    @include govuk-font(16, "regular");
   }
 }
 
