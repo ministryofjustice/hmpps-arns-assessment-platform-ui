@@ -86,7 +86,11 @@ export const noStepsErrorMessage = HtmlBlock({
       )
       .each(
         Iterator.Map(
-          Format('<li><a href="#goal-%1">Add steps to \'%2\'</a></li>', Item().path('uuid'), Item().path('title')),
+          Format(
+            '<li><a href="#goal-%1">Add steps to \'%2\'</a></li>',
+            Item().path('uuid'),
+            Item().path('title').pipe(Transformer.String.EscapeHtml()),
+          ),
         ),
       )
       .pipe(Transformer.Array.Join('')),
@@ -275,7 +279,7 @@ export const goalsSection = TemplateWrapper({
                     .then(
                       Format(
                         '<span class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span>Add steps to \'%1\'</span>',
-                        Item().path('title'),
+                        Item().path('title').pipe(Transformer.String.EscapeHtml()),
                       ),
                     )
                     .else(''),

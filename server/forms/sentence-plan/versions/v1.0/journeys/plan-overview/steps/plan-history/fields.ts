@@ -70,21 +70,36 @@ const agreementEntryContent = Format(
   when(Item().path('detailsNo').match(Condition.IsRequired()))
     .then(
       when(Item().path('notes').match(Condition.IsRequired()))
-        .then(Format('<p class="govuk-body">%1<br>%2</p>', Item().path('detailsNo'), Item().path('notes')))
-        .else(Format('<p class="govuk-body">%1</p>', Item().path('detailsNo'))),
+        .then(
+          Format(
+            '<p class="govuk-body">%1<br>%2</p>',
+            Item().path('detailsNo').pipe(Transformer.String.EscapeHtml()),
+            Item().path('notes').pipe(Transformer.String.EscapeHtml()),
+          ),
+        )
+        .else(Format('<p class="govuk-body">%1</p>', Item().path('detailsNo').pipe(Transformer.String.EscapeHtml()))),
     )
     .else(
       when(Item().path('detailsCouldNotAnswer').match(Condition.IsRequired()))
         .then(
           when(Item().path('notes').match(Condition.IsRequired()))
             .then(
-              Format('<p class="govuk-body">%1<br>%2</p>', Item().path('detailsCouldNotAnswer'), Item().path('notes')),
+              Format(
+                '<p class="govuk-body">%1<br>%2</p>',
+                Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
+                Item().path('notes').pipe(Transformer.String.EscapeHtml()),
+              ),
             )
-            .else(Format('<p class="govuk-body">%1</p>', Item().path('detailsCouldNotAnswer'))),
+            .else(
+              Format(
+                '<p class="govuk-body">%1</p>',
+                Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
+              ),
+            ),
         )
         .else(
           when(Item().path('notes').match(Condition.IsRequired()))
-            .then(Format('<p class="govuk-body">%1</p>', Item().path('notes')))
+            .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
             .else(''),
         ),
     ),
@@ -105,12 +120,14 @@ const goalAchievedEntryContent = Format(
   // %1: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %2: Achieved by
-  when(Item().path('achievedBy').match(Condition.IsRequired())).then(Item().path('achievedBy')).else('Unknown'),
+  when(Item().path('achievedBy').match(Condition.IsRequired()))
+    .then(Item().path('achievedBy').pipe(Transformer.String.EscapeHtml()))
+    .else('Unknown'),
   // %3: Goal title
-  Item().path('goalTitle'),
+  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
   // %4: Optional notes
   when(Item().path('notes').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes')))
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
     .else(''),
   // %5: View goal link (shown only in READ_WRITE mode)
   when(isReadOnly)
@@ -140,12 +157,14 @@ const goalRemovedEntryContent = Format(
   // %1: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %2: Removed by
-  when(Item().path('removedBy').match(Condition.IsRequired())).then(Item().path('removedBy')).else('Unknown'),
+  when(Item().path('removedBy').match(Condition.IsRequired()))
+    .then(Item().path('removedBy').pipe(Transformer.String.EscapeHtml()))
+    .else('Unknown'),
   // %3: Goal title
-  Item().path('goalTitle'),
+  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
   // %4: Removal reason
   when(Item().path('reason').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('reason')))
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('reason').pipe(Transformer.String.EscapeHtml())))
     .else(''),
   // %5: View link (shown only in READ_WRITE mode)
   when(isReadOnly)
@@ -182,12 +201,14 @@ const goalReaddedEntryContent = Format(
   // %1: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %2: Re-added by
-  when(Item().path('readdedBy').match(Condition.IsRequired())).then(Item().path('readdedBy')).else('Unknown'),
+  when(Item().path('readdedBy').match(Condition.IsRequired()))
+    .then(Item().path('readdedBy').pipe(Transformer.String.EscapeHtml()))
+    .else('Unknown'),
   // %3: Goal title
-  Item().path('goalTitle'),
+  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
   // %4: Reason for re-adding
   when(Item().path('reason').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('reason')))
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('reason').pipe(Transformer.String.EscapeHtml())))
     .else(''),
   // %5: View latest version link (shown only in READ_WRITE mode)
   when(isReadOnly)
@@ -216,12 +237,14 @@ const goalUpdatedEntryContent = Format(
   // %1: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %2: Updated by
-  when(Item().path('updatedBy').match(Condition.IsRequired())).then(Item().path('updatedBy')).else('Unknown'),
+  when(Item().path('updatedBy').match(Condition.IsRequired()))
+    .then(Item().path('updatedBy').pipe(Transformer.String.EscapeHtml()))
+    .else('Unknown'),
   // %3: Goal title
-  Item().path('goalTitle'),
+  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
   // %4: Optional notes
   when(Item().path('notes').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes')))
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
     .else(''),
   // %5: View latest version link (shown only in READ_WRITE mode)
   when(isReadOnly)
