@@ -30,6 +30,10 @@ export default class PlanOverviewPage extends AbstractPage {
 
   readonly banner: Locator
 
+  readonly notificationBanner: Locator
+
+  readonly notificationBannerText: Locator
+
   readonly primaryNavigation: Locator
 
   private constructor(page: Page) {
@@ -48,6 +52,8 @@ export default class PlanOverviewPage extends AbstractPage {
     this.header = page.getByTestId('plan-header')
     this.footer = page.locator('footer')
     this.banner = page.getByTestId('hmpps-header')
+    this.notificationBanner = page.locator('[data-module="moj-alert"]')
+    this.notificationBannerText = page.locator('.moj-alert__content')
     this.primaryNavigation = page.getByLabel('Primary navigation')
   }
 

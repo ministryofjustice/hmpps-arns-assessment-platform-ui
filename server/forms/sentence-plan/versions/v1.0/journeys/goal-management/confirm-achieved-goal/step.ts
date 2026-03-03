@@ -3,6 +3,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, howHelpedField, buttonGroup } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfNotPostAgreement } from '../../../guards'
+import { CaseData } from '../../../constants'
 
 // This page is for manually marking a goal as achieved and is only accessible after a plan has been agreed.
 // Page is accessed through 'Mark as achieved' button on 'Update goal and steps' page
@@ -47,6 +48,11 @@ export const confirmAchievedGoalStep = step({
         effects: [
           SentencePlanEffects.markGoalAsAchieved(),
           SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL_ACHIEVED),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            message: Format('Congratulations on achieving a goal, %1', CaseData.Forename),
+            target: 'plan-overview',
+          }),
         ],
         next: [redirect({ goto: '../../plan/overview?type=achieved' })],
       },
