@@ -171,7 +171,8 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/coordinator-api/entity/versions/${entityUuid}`,
+        // Versions endpoint can include optional authType suffix (e.g. /HMPPS_AUTH)
+        urlPattern: `/coordinator-api/entity/versions/${entityUuid}(/HMPPS_AUTH)?`,
       },
       response: {
         status: 200,

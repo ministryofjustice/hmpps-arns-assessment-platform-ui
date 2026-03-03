@@ -1,4 +1,4 @@
-import AxeBuilder from '@axe-core/playwright'
+import { AxeBuilder } from '@axe-core/playwright'
 import { test as base } from '@playwright/test'
 import { getTestApis } from './apis'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'

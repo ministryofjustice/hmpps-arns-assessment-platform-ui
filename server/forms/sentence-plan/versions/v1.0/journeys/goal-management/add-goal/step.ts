@@ -60,7 +60,11 @@ export const createGoalStep = step({
       when: Post('action').match(Condition.Equals('addSteps')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.createGoal(), SentencePlanEffects.setNavigationReferrer('add-goal')],
+        effects: [
+          SentencePlanEffects.createGoal(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+          SentencePlanEffects.setNavigationReferrer('add-goal'),
+        ],
         next: [redirect({ goto: Format('../%1/add-steps', Data('activeGoalUuid')) })],
       },
     }),

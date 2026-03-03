@@ -1,5 +1,10 @@
 import { block as blockBuilder, ChainableRef } from '@form-engine/form/builders'
-import { BlockDefinition, ConditionalString, EvaluatedBlock } from '@form-engine/form/types/structures.type'
+import {
+  BlockDefinition,
+  ConditionalBoolean,
+  ConditionalString,
+  EvaluatedBlock,
+} from '@form-engine/form/types/structures.type'
 import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
 import type nunjucks from 'nunjucks'
 import { PreviousVersionsResponse } from '../../../../interfaces/coordinator-api/previousVersions'
@@ -11,6 +16,7 @@ import config from '../../../../config'
 export interface PreviousVersionsProps {
   personName: ConditionalString
   previousVersions: PreviousVersionsResponse | ChainableRef
+  showAssessmentColumn?: ConditionalBoolean
 }
 
 /**
@@ -29,6 +35,7 @@ function buildParams(block: EvaluatedBlock<PreviousVersions>) {
   return {
     personName: block.personName,
     versions: block.previousVersions,
+    showAssessmentColumn: block.showAssessmentColumn ?? true,
     sanUrl: config.sanUrl,
     tables: {
       allVersions: {

@@ -26,14 +26,14 @@ jobs:
 
       - name: Download docker image
         if: ${{ ! inputs.docker_multiplatform }}
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: build_image
           path: ${{ runner.temp }}
 
       - name: Download amd64 docker image
         if: ${{ inputs.docker_multiplatform }}
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: image-linux-amd64
           path: ${{ runner.temp }}/image-linux-amd64
@@ -63,7 +63,7 @@ jobs:
 
       - name: Upload test results
         if: '!cancelled()'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: test_results
           path: |
@@ -71,7 +71,7 @@ jobs:
 
       - name: Archive screenshots
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: screenshots
           path: |
@@ -83,7 +83,7 @@ jobs:
 
       - name: Upload docker logs
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: e2e_docker_logs
           path: |

@@ -65,10 +65,12 @@ export class AuditQueueClient {
     const start = Date.now()
 
     while (Date.now() - start < timeout) {
-      const match = this.cachedMessages().find(
+      const matches = this.cachedMessages().filter(
         m => m.subjectId === crn && m.what === eventName && (!options?.additionalFilter || options.additionalFilter(m)),
       )
-      if (match) return match
+      if (matches.length === 1) return matches[0]
+      if (matches.length > 1)
+        throw new Error(`Expected exactly one audit event '${eventName}' for '${crn}', but found ${matches.length}.`)
       await sleep(500) // eslint-disable-line no-await-in-loop
     }
 

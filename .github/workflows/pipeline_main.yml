@@ -69,7 +69,7 @@ jobs:
 
     steps:
       - name: Download Unit Test Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: unit_test_artifacts
           pattern: npm_unit_test_artifacts
@@ -81,7 +81,7 @@ jobs:
           check_name: "Unit Test Results"
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: artifacts
           pattern: test_results
