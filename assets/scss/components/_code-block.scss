@@ -21,7 +21,7 @@ pre {
 code {
   display: inline-block;
   padding: 2px 8px 3px;
-  border: 1px solid govuk-colour("black", $variant: "tint-80");
+  border: 1px solid govuk-functional-colour(border);
   background-color: govuk-colour("white");
   @include govuk-font-size($size: 19);
   line-height: 23px; // 25px minus 2px for border
@@ -32,16 +32,16 @@ pre code {
   display: block;
   overflow-x: auto;
   border: $govuk-focus-width solid transparent;
-  outline: 1px solid govuk-colour("black", $variant: "tint-80");
-  color: $govuk-text-colour;
+  outline: 1px solid govuk-functional-colour(border);
+  color: govuk-functional-colour(text);
   background-color: govuk-colour("white");
   @include govuk-responsive-padding(3);
 }
 
 // Focus state for keyboard navigation
 pre code:focus {
-  border-color: $govuk-focus-colour;
-  outline: $govuk-focus-width solid $govuk-focus-colour;
+  border-color: govuk-functional-colour(focus);
+  outline: $govuk-focus-width solid govuk-functional-colour(focus);
 }
 
 // Allow text to wrap for markdown/plaintext

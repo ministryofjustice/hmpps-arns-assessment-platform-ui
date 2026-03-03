@@ -7,7 +7,7 @@
 
   // Prevent links from turning purple when visited
   a:visited {
-    color: $govuk-link-colour;
+    color: govuk-functional-colour(link);
   }
 
   // Prevent button-as-link from turning blue when visited
@@ -66,18 +66,18 @@
     }
 
     &--empty {
-      box-shadow: inset 0 -1px $govuk-border-colour;
+      box-shadow: inset 0 -1px govuk-functional-colour(border);
     }
   }
 
   &__areas-of-need {
     margin-bottom: 0;
     @include govuk-font($size: 16, $weight: "normal");
-    color: $govuk-secondary-text-colour;
+    color: govuk-functional-colour(secondary-text);
 
     &:not(:last-child) {
       padding-bottom: govuk-spacing(2);
-      box-shadow: inset 0 -1px $govuk-border-colour;
+      box-shadow: inset 0 -1px govuk-functional-colour(border);
     }
 
     &--agreed {
@@ -87,7 +87,7 @@
 
   &--error {
     padding-left: govuk-spacing(3);
-    border-left: $govuk-border-width-form-group-error solid $govuk-error-colour;
+    border-left: $govuk-border-width-form-group-error solid govuk-functional-colour(error);
   }
 
   .govuk-details {

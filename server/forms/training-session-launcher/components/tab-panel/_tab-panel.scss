@@ -31,13 +31,13 @@
     &-title {
       margin-bottom: govuk-spacing(3);
       padding-bottom: govuk-spacing(2);
-      border-bottom: 1px solid govuk-colour("black", $variant: "tint-80");
+      border-bottom: 1px solid govuk-functional-colour(border);
     }
 
     &-footer {
       margin-top: govuk-spacing(4);
       padding-top: govuk-spacing(4);
-      border-top: 1px solid govuk-colour("black", $variant: "tint-80");
+      border-top: 1px solid govuk-functional-colour(border);
     }
   }
 
@@ -107,7 +107,7 @@
 
     // Firefox scrollbar styling
     scrollbar-width: auto;
-    scrollbar-color: govuk-colour("black", $variant: "tint-80") govuk-colour("black", $variant: "tint-95");
+    scrollbar-color: govuk-functional-colour(border) govuk-colour("black", $variant: "tint-95");
 
     // WebKit (Chrome, Safari, Edge) scrollbar styling
     &::-webkit-scrollbar {
@@ -121,7 +121,7 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: govuk-colour("black", $variant: "tint-80");
+      background-color: govuk-functional-colour(border);
       border-radius: 5px;
       border: 2px solid govuk-colour("black", $variant: "tint-95");
 

@@ -16,7 +16,7 @@
     &-header {
       margin-bottom: govuk-spacing(5);
       padding-bottom: govuk-spacing(4);
-      border-bottom: 1px solid govuk-colour("black", $variant: "tint-80");
+      border-bottom: 1px solid govuk-functional-colour(border);
     }
 
     &-title {
@@ -113,12 +113,12 @@
   margin-bottom: govuk-spacing(4);
 
   &__details {
-    border: 1px solid govuk-colour("black", $variant: "tint-80");
+    border: 1px solid govuk-functional-colour(border);
     background-color: govuk-colour("white");
 
     &[open] {
       .session-card__summary {
-        border-bottom: 1px solid govuk-colour("black", $variant: "tint-80");
+        border-bottom: 1px solid govuk-functional-colour(border);
       }
     }
   }

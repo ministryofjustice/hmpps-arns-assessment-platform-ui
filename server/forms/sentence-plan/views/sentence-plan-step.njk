@@ -23,7 +23,7 @@
   {% endblock %}
 {% endblock %}
 
-{% block header %}
+{% block govukHeader %}
   {{ super() }}
   {% include "sentence-plan/views/partials/sentence-plan-nav.njk" %}
   {% include "sentence-plan/views/partials/phase-banner.njk" %}
@@ -96,7 +96,7 @@
   </div>
 {% endblock %}
 
-{% block footer %}
+{% block govukFooter %}
   {% block supportWidget %}
     {% set reportProblemHtml %}
       <p class="govuk-body">
