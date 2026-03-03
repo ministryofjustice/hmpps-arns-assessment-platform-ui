@@ -21,7 +21,7 @@ generic-service:
     MPOP_URL: "https://manage-people-on-probation-dev.hmpps.service.justice.gov.uk"
     SERVICE_NOW_FORM_URL: "#service-now-link"
     ENVIRONMENT_NAME: DEV
-    AUDIT_ENABLED: "false"
+    AUDIT_ENABLED: "true"
     FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "true"
     TRAINING_SESSION_LAUNCHER_ENABLED: "true"
 

@@ -20,7 +20,7 @@ generic-service:
     OASYS_URL: "https://pp.oasys.service.justice.gov.uk"
     MPOP_URL: "https://manage-people-on-probation-preprod.hmpps.service.justice.gov.uk"
     ENVIRONMENT_NAME: PRE-PRODUCTION
-    AUDIT_ENABLED: "false"
+    AUDIT_ENABLED: "true"
     SERVICE_NOW_FORM_URL: "https://mojprod.service-now.com/moj_sp?id=sc_cat_item&sys_id=276572591bce4910a93242ead34bcb53"
 
 generic-prometheus-alerts:
