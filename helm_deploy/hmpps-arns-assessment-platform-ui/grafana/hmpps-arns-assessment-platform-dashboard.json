@@ -632,7 +632,7 @@
               }
             ]
           },
-          "unit": "reqps"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -661,13 +661,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',status=~'403|429'}[5m])) by (ingress, status)",
-          "legendFormat": "{{ingress}} {{status}}",
+          "expr": "sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',service=~'$service',status=~'403|429'}[5m])) by (service, status) * 60",
+          "legendFormat": "{{service}} {{status}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Blocked Requests (403 / 429)",
+      "title": "Blocked Requests by Service (403/429 per min)",
       "type": "timeseries"
     },
     {
@@ -802,8 +802,8 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "100 * (sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',ingress=~'$service',status=~'2..|3..'}[5m])) by (ingress) / clamp_min(sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',ingress=~'$service'}[5m])) by (ingress), 0.001))",
-          "legendFormat": "{{ingress}} success",
+          "expr": "100 * (sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',service=~'$service',status=~'2..|3..'}[5m])) by (service) / clamp_min(sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',service=~'$service'}[5m])) by (service), 0.001))",
+          "legendFormat": "{{service}} success",
           "range": true,
           "refId": "A"
         },
@@ -813,13 +813,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "100 * (sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',ingress=~'$service',status=~'5..'}[5m])) by (ingress) / clamp_min(sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',ingress=~'$service'}[5m])) by (ingress), 0.001))",
-          "legendFormat": "{{ingress}} 5xx",
+          "expr": "100 * (sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',service=~'$service',status=~'5..'}[5m])) by (service) / clamp_min(sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',service=~'$service'}[5m])) by (service), 0.001))",
+          "legendFormat": "{{service}} 5xx",
           "range": true,
           "refId": "B"
         }
       ],
-      "title": "Response Mix (%)",
+      "title": "Response Mix by Service (%)",
       "type": "timeseries"
     },
     {
@@ -846,7 +846,7 @@
               }
             ]
           },
-          "unit": "reqps"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -875,13 +875,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',ingress=~'$service',status=~'2..|3..|4..|5..'}[5m])) by (ingress, status)",
-          "legendFormat": "{{ingress}} {{status}}",
+          "expr": "sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',service=~'$service',status=~'2..|3..|4..|5..'}[5m])) by (service, status) * 60",
+          "legendFormat": "{{service}} {{status}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "HTTP Status by Service",
+      "title": "HTTP Status by Service (per min)",
       "type": "timeseries"
     },
     {
