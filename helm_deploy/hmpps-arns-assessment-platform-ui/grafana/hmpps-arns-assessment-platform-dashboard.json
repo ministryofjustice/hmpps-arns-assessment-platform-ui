@@ -100,7 +100,7 @@
           "refId": "A"
         }
       ],
-      "title": "Availability",
+      "title": "Availability (non-5xx success percentage)",
       "type": "stat"
     },
     {
@@ -162,7 +162,7 @@
           "refId": "A"
         }
       ],
-      "title": "Request Duration (p95)",
+      "title": "Request Duration - Typical Slow (p95)",
       "type": "timeseries"
     },
     {
@@ -224,7 +224,7 @@
           "refId": "A"
         }
       ],
-      "title": "Request Duration (p99)",
+      "title": "Request Duration - Worst Slow (p99)",
       "type": "timeseries"
     },
     {
@@ -292,7 +292,7 @@
           "refId": "A"
         }
       ],
-      "title": "Average Request Duration",
+      "title": "Request Duration - Average",
       "type": "stat"
     },
     {
@@ -367,7 +367,7 @@
           "refId": "A"
         }
       ],
-      "title": "Memory Usage",
+      "title": "Memory Usage (% of limit)",
       "type": "timeseries"
     },
     {
@@ -429,7 +429,7 @@
           "refId": "A"
         }
       ],
-      "title": "CPU Usage",
+      "title": "CPU Usage (% of limit)",
       "type": "timeseries"
     },
     {
@@ -503,7 +503,7 @@
           "refId": "B"
         }
       ],
-      "title": "Replication Count",
+      "title": "Pods Running vs Desired",
       "transformations": [
         {
           "id": "joinByField",
@@ -592,7 +592,7 @@
           "refId": "A"
         }
       ],
-      "title": "Pod Restarts (15m increase)",
+      "title": "Pod Restarts (last 15 min)",
       "type": "timeseries"
     },
     {
@@ -605,7 +605,7 @@
       },
       "id": 11,
       "panels": [],
-      "title": "Traffic and Errors",
+      "title": "Traffic and Errors - Per minute",
       "type": "row"
     },
     {
@@ -640,7 +640,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 35
       },
       "id": 13,
       "options": {
@@ -661,13 +661,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',service=~'$service',status=~'403|429'}[5m])) by (service, status) * 60",
-          "legendFormat": "{{service}} {{status}}",
+          "expr": "sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',exported_service=~'$service',status=~'403|429'}[5m])) by (exported_service, status) * 60",
+          "legendFormat": "{{exported_service}} {{status}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Blocked Requests by Service (403/429 per min)",
+      "title": "Rejected Requests by Service (403/429)",
       "type": "timeseries"
     },
     {
@@ -702,7 +702,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 27
       },
       "id": 14,
       "options": {
@@ -729,21 +729,8 @@
           "refId": "A"
         }
       ],
-      "title": "Request Volume (requests/min)",
+      "title": "Request Volume",
       "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 43
-      },
-      "id": 19,
-      "panels": [],
-      "title": "Service Quality",
-      "type": "row"
     },
     {
       "datasource": {
@@ -760,20 +747,16 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
+                "color": "green",
                 "value": null
               },
               {
-                "color": "yellow",
-                "value": 95
-              },
-              {
-                "color": "green",
-                "value": 99
+                "color": "red",
+                "value": 10
               }
             ]
           },
-          "unit": "percent"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -781,7 +764,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 43
       },
       "id": 20,
       "options": {
@@ -802,24 +785,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "100 * (sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',service=~'$service',status=~'2..|3..'}[5m])) by (service) / clamp_min(sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',service=~'$service'}[5m])) by (service), 0.001))",
-          "legendFormat": "{{service}} success",
+          "expr": "sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',exported_service=~'$service',status=~'5..'}[5m])) by (exported_service) * 60",
+          "legendFormat": "{{exported_service}}",
           "range": true,
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "100 * (sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',service=~'$service',status=~'5..'}[5m])) by (service) / clamp_min(sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',service=~'$service'}[5m])) by (service), 0.001))",
-          "legendFormat": "{{service}} 5xx",
-          "range": true,
-          "refId": "B"
         }
       ],
-      "title": "Response Mix by Service (%)",
+      "title": "Errors by Service (5xx)",
       "type": "timeseries"
     },
     {
@@ -841,12 +813,16 @@
                 "value": null
               },
               {
+                "color": "#EAB839",
+                "value": 1
+              },
+              {
                 "color": "red",
-                "value": 50
+                "value": 5
               }
             ]
           },
-          "unit": "short"
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -854,7 +830,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 52
+        "y": 51
       },
       "id": 22,
       "options": {
@@ -875,13 +851,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',service=~'$service',status=~'2..|3..|4..|5..'}[5m])) by (service, status) * 60",
-          "legendFormat": "{{service}} {{status}}",
+          "expr": "(100 * ((sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',exported_service=~'$service',status=~'5..'}[5m])) by (exported_service) * 60) / clamp_min((sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',exported_service=~'$service',status=~'2..|3..|4..|5..'}[5m])) by (exported_service) * 60), 0.001))) or on (exported_service) (0 * sum(rate(nginx_ingress_controller_requests{exported_namespace=~'$namespace',exported_service=~'$service',status=~'2..|3..|4..|5..'}[5m])) by (exported_service))",
+          "legendFormat": "{{exported_service}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "HTTP Status by Service (per min)",
+      "title": "Error Rate by Service (5xx %)",
       "type": "timeseries"
     },
     {
@@ -890,7 +866,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 60
+        "y": 59
       },
       "id": 15,
       "panels": [],
@@ -929,7 +905,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 61
+        "y": 60
       },
       "id": 16,
       "options": {
@@ -991,7 +967,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 61
+        "y": 60
       },
       "id": 17,
       "options": {
@@ -1018,7 +994,7 @@
           "refId": "A"
         }
       ],
-      "title": "Database Load",
+      "title": "Database CPU Load (%)",
       "type": "timeseries"
     },
     {
@@ -1057,7 +1033,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 61
+        "y": 60
       },
       "id": 18,
       "options": {
@@ -1084,7 +1060,7 @@
           "refId": "A"
         }
       ],
-      "title": "Database Storage",
+      "title": "Database Free Storage (GiB)",
       "type": "timeseries"
     }
   ],
