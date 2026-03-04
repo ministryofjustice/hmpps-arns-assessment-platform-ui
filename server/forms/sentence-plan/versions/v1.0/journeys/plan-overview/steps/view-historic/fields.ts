@@ -195,7 +195,7 @@ export const goalsSection = TemplateWrapper({
                     .then(
                       Format(
                         '<span class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span>Add steps to \'%1\'</span>',
-                        Item().path('title'),
+                        Item().path('title').pipe(Transformer.String.EscapeHtml()),
                       ),
                     )
                     .else(''),
