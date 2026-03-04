@@ -4,17 +4,17 @@ import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
- * References - HTTP References (Params, Query, Post, Request)
+ * References - HTTP References (Params, Query, Post, Request, Session)
  *
- * Documentation for references that access HTTP request data:
- * Params(), Query(), Post(), and Request.*().
+ * Documentation for references that access request and session context:
+ * Params(), Query(), Post(), Request.*(), and Session().
  */
 export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # HTTP References
 
-Four reference types access data from the HTTP request:
-\`Params()\`, \`Query()\`, \`Post()\`, and \`Request.*()\`.
+Five reference types access request or session context:
+\`Params()\`, \`Query()\`, \`Post()\`, \`Request.*()\`, and \`Session()\`.
 These are always available without needing to load data first. {.lead}
 
 ---
@@ -102,6 +102,23 @@ Access request metadata that is not covered by \`Params()\`, \`Query()\`, or \`P
 
 ---
 
+## Session()
+
+Access server-side session data for the current request:
+
+{{slot:sessionSignature}}
+
+\`Session()\` gives you direct access to values stored in the session object.
+Use dot notation to read nested properties from a base session key.
+
+{{slot:sessionCode}}
+
+### Common Use Cases
+
+{{slot:sessionUseCases}}
+
+---
+
 ## Availability Summary
 
 | Reference | Source | When Available |
@@ -110,6 +127,7 @@ Access request metadata that is not covered by \`Params()\`, \`Query()\`, or \`P
 | \`Query()\` | URL query string | Always (may be undefined) |
 | \`Post()\` | HTTP POST body | Only after form submission |
 | \`Request.*()\` | Request metadata | Always (may be undefined for keyed lookups) |
+| \`Session()\` | Server-side session | Always (may be undefined) |
 
 ---
 
@@ -117,6 +135,7 @@ Access request metadata that is not covered by \`Params()\`, \`Query()\`, or \`P
 
 - **Prefer Answer() over Post():** In most cases, you want the formatted/cleaned value from \`Answer()\`
 - **Use Request for metadata:** Reach for \`Request.*()\` when you need URL, method, headers, cookies, or request state directly in the form.
+- **Use Session for persisted context:** Reach for \`Session()\` when the value lives in server-side session state rather than the incoming request transport.
 - **Validate Params in effects:** Route params come from user input (URLs can be typed directly). Validate them before using.
 - **Handle missing Query params:** Query params are optional. Use \`Condition.IsPresent()\` or provide defaults.
 - **Don't trust Post() for security:** Like all user input, POST data should be validated server-side.
@@ -310,6 +329,45 @@ Access request metadata that is not covered by \`Params()\`, \`Query()\`, or \`P
           // 3. Read request-scoped user data
           HtmlBlock({
             content: Format('Signed in as %1', Request.State('user.name')),
+          })
+        `,
+      }),
+    ],
+    sessionSignature: [
+      CodeBlock({
+        language: 'typescript',
+        code: `Session(key: string): ReferenceExpr`,
+      }),
+    ],
+    sessionCode: [
+      CodeBlock({
+        language: 'typescript',
+        code: `
+          Session('user')              // { name: 'Alex Smith', role: 'manager' }
+          Session('user.name')         // 'Alex Smith'
+          Session('permissions.edit')  // true
+        `,
+      }),
+    ],
+    sessionUseCases: [
+      CodeBlock({
+        language: 'typescript',
+        code: `
+          // 1. Show the signed-in user
+          HtmlBlock({
+            content: Format('Signed in as %1', Session('user.name')),
+          })
+
+          // 2. Gate content on permissions stored in session
+          HtmlBlock({
+            hidden: Session('permissions.canEdit').not.match(Condition.Equals(true)),
+            content: '<p class="govuk-body">Editing is enabled for this account.</p>',
+          })
+
+          // 3. Reuse session-backed feature flags
+          HtmlBlock({
+            hidden: Session('features.goalPreview').not.match(Condition.Equals(true)),
+            content: '<p class="govuk-body">Goal preview is enabled.</p>',
           })
         `,
       }),

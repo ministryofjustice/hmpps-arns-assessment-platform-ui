@@ -33,7 +33,7 @@ export class WiringContext {
   }
 
   findReferenceNodes(
-    referenceSource: 'post' | 'query' | 'params' | 'data' | 'answers' | 'request',
+    referenceSource: 'post' | 'query' | 'params' | 'data' | 'answers' | 'request' | 'session',
   ): ReferenceASTNode[] {
     return (
       this.nodeRegistry.findByType<ReferenceASTNode>(ExpressionType.REFERENCE)

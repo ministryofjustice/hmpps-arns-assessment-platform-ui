@@ -7,6 +7,7 @@ import {
   PostPseudoNode,
   QueryPseudoNode,
   RequestPseudoNode,
+  SessionPseudoNode,
 } from '@form-engine/core/types/pseudoNodes.type'
 import { NodeId } from '@form-engine/core/types/engine.type'
 import PostFactory from '@form-engine/core/nodes/pseudo-nodes/post/PostFactory'
@@ -16,6 +17,7 @@ import DataFactory from '@form-engine/core/nodes/pseudo-nodes/data/DataFactory'
 import QueryFactory from '@form-engine/core/nodes/pseudo-nodes/query/QueryFactory'
 import ParamsFactory from '@form-engine/core/nodes/pseudo-nodes/params/ParamsFactory'
 import RequestFactory from '@form-engine/core/nodes/pseudo-nodes/request/RequestFactory'
+import SessionFactory from '@form-engine/core/nodes/pseudo-nodes/session/SessionFactory'
 
 /**
  * PseudoNodeFactory: Creates pseudo nodes with dependency-injected ID generation
@@ -39,6 +41,8 @@ export default class PseudoNodeFactory {
 
   private readonly requestFactory: RequestFactory
 
+  private readonly sessionFactory: SessionFactory
+
   constructor(
     nodeIDGenerator: NodeIDGenerator,
     category: NodeIDCategory.COMPILE_PSEUDO | NodeIDCategory.RUNTIME_PSEUDO,
@@ -50,6 +54,7 @@ export default class PseudoNodeFactory {
     this.queryFactory = new QueryFactory(nodeIDGenerator, category)
     this.paramsFactory = new ParamsFactory(nodeIDGenerator, category)
     this.requestFactory = new RequestFactory(nodeIDGenerator, category)
+    this.sessionFactory = new SessionFactory(nodeIDGenerator, category)
   }
 
   createPostPseudoNode(baseFieldCode: string, fieldNodeId?: NodeId): PostPseudoNode {
@@ -78,5 +83,9 @@ export default class PseudoNodeFactory {
 
   createRequestPseudoNode(requestPath: string): RequestPseudoNode {
     return this.requestFactory.create(requestPath)
+  }
+
+  createSessionPseudoNode(baseSessionKey: string): SessionPseudoNode {
+    return this.sessionFactory.create(baseSessionKey)
   }
 }

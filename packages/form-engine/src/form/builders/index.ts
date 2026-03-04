@@ -257,6 +257,13 @@ export function Data(key: string): ChainableRef {
 }
 
 /**
+ * References server-side session data from the current request context.
+ */
+export function Session(key: string): ChainableRef {
+  return ReferenceBuilder.create(['session', ...splitKey(key)])
+}
+
+/**
  * References an answer using its target field or a string code.
  *
  * @example

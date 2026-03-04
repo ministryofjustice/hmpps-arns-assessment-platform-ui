@@ -23,6 +23,7 @@ The form-engine provides these reference types, each pointing to a different dat
 | `Answer('code')` | Field responses | Referencing user input from any field |
 | `Data('key')` | External data | API responses, database lookups, configuration |
 | `Request.*()` | Request metadata | URL, method, headers, cookies, and request state |
+| `Session('key')` | Server-side session | Persisted user/session data |
 | `Self()` | Current field | Validation rules, field-scoped logic |
 | `Item()` | Iterator item | Accessing current item in `.each()` iterations |
 | `Params('key')` | URL path params | Route parameters like `/users/:id` |
@@ -33,7 +34,7 @@ The form-engine provides these reference types, each pointing to a different dat
 
 ```typescript
 import {
-  Answer, Data, Request, Self, Item, Post, Params, Query, Iterator,
+  Answer, Data, Request, Session, Self, Item, Post, Params, Query, Iterator,
 } from '@form-engine/form/builders'
 ```
 
@@ -260,6 +261,42 @@ HtmlBlock({
 // Read request-scoped user state
 HtmlBlock({
   content: Format('Signed in as %1', Request.State('user.name')),
+})
+```
+
+---
+
+## `Session()` - Server-Side Session Data
+
+Use `Session()` when you need persisted server-side session values directly in your form definitions.
+
+### Signature
+
+```typescript
+Session(key: string): ReferenceExpr
+```
+
+### Basic Usage
+
+```typescript
+Session('user')
+Session('user.name')
+Session('permissions.canEdit')
+Session('featureFlags.betaAccess')
+```
+
+### Common Use Cases
+
+```typescript
+// Show the signed-in user from session state
+HtmlBlock({
+  content: Format('Signed in as %1', Session('user.name')),
+})
+
+// Branch based on session permissions
+HtmlBlock({
+  hidden: Session('permissions.canEdit').not.match(Condition.Equals(true)),
+  content: '<p class="govuk-body">Editing is enabled for this account.</p>',
 })
 ```
 

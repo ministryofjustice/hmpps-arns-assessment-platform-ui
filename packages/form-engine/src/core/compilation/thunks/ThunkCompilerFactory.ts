@@ -26,6 +26,7 @@ import PostReferenceHandler from '@form-engine/core/nodes/expressions/reference/
 import QueryReferenceHandler from '@form-engine/core/nodes/expressions/reference/query/QueryReferenceHandler'
 import ParamsReferenceHandler from '@form-engine/core/nodes/expressions/reference/params/ParamsReferenceHandler'
 import RequestReferenceHandler from '@form-engine/core/nodes/expressions/reference/request/RequestReferenceHandler'
+import SessionReferenceHandler from '@form-engine/core/nodes/expressions/reference/session/SessionReferenceHandler'
 import BaseReferenceHandler from '@form-engine/core/nodes/expressions/reference/base/BaseReferenceHandler'
 import IterateHandler from '@form-engine/core/nodes/expressions/iterate/IterateHandler'
 import ConditionalHandler from '@form-engine/core/nodes/expressions/conditional/ConditionalHandler'
@@ -57,6 +58,7 @@ import QueryHandler from '@form-engine/core/nodes/pseudo-nodes/query/QueryHandle
 import ParamsHandler from '@form-engine/core/nodes/pseudo-nodes/params/ParamsHandler'
 import DataHandler from '@form-engine/core/nodes/pseudo-nodes/data/DataHandler'
 import RequestHandler from '@form-engine/core/nodes/pseudo-nodes/request/RequestHandler'
+import SessionHandler from '@form-engine/core/nodes/pseudo-nodes/session/SessionHandler'
 import AnswerLocalHandler from '@form-engine/core/nodes/pseudo-nodes/answer-local/AnswerLocalHandler'
 import AnswerRemoteHandler from '@form-engine/core/nodes/pseudo-nodes/answer-remote/AnswerRemoteHandler'
 import PipelineHandler from '@form-engine/core/nodes/expressions/pipeline/PipelineHandler'
@@ -146,7 +148,7 @@ export default class ThunkCompilerFactory {
    *
    * Creates appropriate handler based on node type using typeguards.
    * Handler selection order:
-   * 1. Pseudo nodes (AnswerLocal, AnswerRemote, Post, Query, Params, Data, Request)
+   * 1. Pseudo nodes (AnswerLocal, AnswerRemote, Post, Query, Params, Data, Request, Session)
    * 2. Expression nodes (Reference, Iterate, Conditional, TestPredicate, AndPredicate, OrPredicate, XorPredicate, NotPredicate, Format, Pipeline, Function)
    * 3. Transition nodes (Access, Action, Submit)
    * 4. Structural nodes (Journey, Step, Block)
@@ -177,6 +179,9 @@ export default class ThunkCompilerFactory {
         case PseudoNodeType.REQUEST:
           return new RequestHandler(nodeId, node)
 
+        case PseudoNodeType.SESSION:
+          return new SessionHandler(nodeId, node)
+
         case PseudoNodeType.ANSWER_LOCAL:
           return new AnswerLocalHandler(nodeId, node)
 
@@ -190,6 +195,7 @@ export default class ThunkCompilerFactory {
             PseudoNodeType.PARAMS,
             PseudoNodeType.DATA,
             PseudoNodeType.REQUEST,
+            PseudoNodeType.SESSION,
             PseudoNodeType.ANSWER_LOCAL,
             PseudoNodeType.ANSWER_REMOTE,
           ])
@@ -228,6 +234,9 @@ export default class ThunkCompilerFactory {
         case 'request':
           return new RequestReferenceHandler(nodeId, node)
 
+        case 'session':
+          return new SessionReferenceHandler(nodeId, node)
+
         default:
           throw ThunkTypeMismatchError.invalidNodeType(nodeId, `REFERENCE:${namespace}`, [
             '@scope',
@@ -237,6 +246,7 @@ export default class ThunkCompilerFactory {
             'query',
             'params',
             'request',
+            'session',
           ])
       }
     }
