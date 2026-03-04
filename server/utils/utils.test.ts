@@ -1,4 +1,4 @@
-import { convertToTitleCase, formatDate, initialiseName } from './utils'
+import { convertToTitleCase, formatDate, initialiseName, possessive } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -26,6 +26,24 @@ describe('initialise name', () => {
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
   ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
     expect(initialiseName(a)).toEqual(expected)
+  })
+})
+
+describe('possessive', () => {
+  it.each([
+    ['Name not ending in s', 'John', "John's"],
+    ['Name ending in s', 'James', "James'"],
+    ['Name ending in S (uppercase)', 'JAMES', "JAMES'"],
+    ['Single character', 'S', "S'"],
+    ['Single character not s', 'A', "A's"],
+    ['Empty string', '', ''],
+  ])('%s possessive(%s) = %s', (_: string, input: string, expected: string) => {
+    expect(possessive(input)).toEqual(expected)
+  })
+
+  it('should return null when input is null', () => {
+    const result = possessive(null)
+    expect(result).toEqual(null)
   })
 })
 
