@@ -1,7 +1,7 @@
 import { User } from '../../../../interfaces/user'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { DerivedGoal, SentencePlanEffectsDeps } from '../types'
+import { DerivedGoal } from '../types'
 
 /**
  * Note types used in goal lifecycle events
@@ -9,25 +9,26 @@ import { DerivedGoal, SentencePlanEffectsDeps } from '../types'
 export type NoteType = 'READDED' | 'REMOVED' | 'ACHIEVED'
 
 /**
- * Get existing notes collection UUID or create one if it doesn't exist.
+ * Get existing notes collection UUID or add a CreateCollectionCommand to the batch
+ * and return a placeholder reference.
  *
  * Used by effects that need to add notes to a goal (remove, achieve, re-add, progress).
  */
-export const getOrCreateNotesCollection = async (
-  deps: SentencePlanEffectsDeps,
+export const getOrCreateNotesCollectionUuid = (
+  commands: Commands[],
   params: {
     activeGoal: DerivedGoal
     assessmentUuid: string
     user: User
   },
-): Promise<string> => {
+): string => {
   const { activeGoal, assessmentUuid, user } = params
 
   if (activeGoal.notesCollectionUuid) {
     return activeGoal.notesCollectionUuid
   }
 
-  const createResult = await deps.api.executeCommand({
+  commands.push({
     type: 'CreateCollectionCommand',
     name: 'NOTES',
     parentCollectionItemUuid: activeGoal.uuid,
@@ -35,7 +36,7 @@ export const getOrCreateNotesCollection = async (
     user,
   })
 
-  return createResult.collectionUuid
+  return `@${commands.length - 1}`
 }
 
 /**

@@ -1,8 +1,10 @@
 // eslint-disable-next-line max-classes-per-file
 import { test } from '@playwright/test'
 import type { User } from '../../server/interfaces/user'
+import type { Commands } from '../../server/interfaces/aap-api/command'
 import type { SingleValue, MultiValue } from '../../server/interfaces/aap-api/dataModel'
 import type {
+  CommandResults,
   CreateAssessmentCommandResult,
   CreateCollectionCommandResult,
   AddCollectionItemCommandResult,
@@ -34,6 +36,17 @@ function generateCrn(): string {
 }
 
 type BuilderMode = 'fresh' | 'extend'
+
+interface CollectionCommandPlan {
+  name: string
+  createCommandIndex: number
+  items: CollectionItemCommandPlan[]
+}
+
+interface CollectionItemCommandPlan {
+  createCommandIndex: number
+  collections: CollectionCommandPlan[]
+}
 
 /**
  * Factory for creating AssessmentBuilder instances with a bound client.
@@ -199,24 +212,9 @@ export class AssessmentBuilderInstance {
 
     return test.step(stepName, async () => {
       const assessmentUuid = await this.resolveAssessmentUuid()
-
-      if (Object.keys(this.definition.answers).length > 0) {
-        await this.client.executeCommand({
-          type: 'UpdateAssessmentAnswersCommand',
-          assessmentUuid,
-          user: this.user,
-          added: this.definition.answers,
-          removed: [],
-        })
-      }
-
-      const createdCollections: CreatedCollection[] = []
-
-      for (const collectionDef of this.definition.collections) {
-        // eslint-disable-next-line no-await-in-loop
-        const created = await this.createCollection(assessmentUuid, collectionDef)
-        createdCollections.push(created)
-      }
+      const { commands, collectionPlans } = this.buildPopulateCommands(assessmentUuid)
+      const commandResults = commands.length > 0 ? await this.client.executeCommands(...commands) : []
+      const createdCollections = this.materializeCreatedCollections(collectionPlans, commandResults)
 
       if (this.backdateEventsFrom && this.backdateEventsTo) {
         await this.client.backdateEvents(assessmentUuid, this.backdateEventsFrom, this.backdateEventsTo)
@@ -254,62 +252,173 @@ export class AssessmentBuilderInstance {
     return createResult.assessmentUuid
   }
 
-  private async createCollection(
-    assessmentUuid: string,
-    def: CollectionDefinition,
-    parentItemUuid?: string,
-  ): Promise<CreatedCollection> {
-    const createResult = await this.client.executeCommand<CreateCollectionCommandResult>({
-      type: 'CreateCollectionCommand',
-      name: def.name,
-      assessmentUuid,
-      parentCollectionItemUuid: parentItemUuid,
-      user: this.user,
-    })
+  private buildPopulateCommands(assessmentUuid: string): {
+    commands: Commands[]
+    collectionPlans: CollectionCommandPlan[]
+  } {
+    const commands: Commands[] = []
+    const collectionPlans: CollectionCommandPlan[] = []
 
-    const collectionUuid = createResult.collectionUuid
-    const createdItems: CreatedCollectionItem[] = []
-
-    for (const itemDef of def.items) {
-      // eslint-disable-next-line no-await-in-loop
-      const created = await this.createCollectionItem(assessmentUuid, collectionUuid, itemDef)
-      createdItems.push(created)
+    if (Object.keys(this.definition.answers).length > 0) {
+      commands.push({
+        type: 'UpdateAssessmentAnswersCommand',
+        assessmentUuid,
+        user: this.user,
+        added: this.definition.answers,
+        removed: [],
+      })
     }
 
+    this.definition.collections.forEach(collectionDef => {
+      collectionPlans.push(
+        this.planCollectionCreation({
+          assessmentUuid,
+          definition: collectionDef,
+          commands,
+        }),
+      )
+    })
+
+    return { commands, collectionPlans }
+  }
+
+  private planCollectionCreation(params: {
+    assessmentUuid: string
+    definition: CollectionDefinition
+    commands: Commands[]
+    parentItemReference?: string
+  }): CollectionCommandPlan {
+    const { assessmentUuid, definition, commands, parentItemReference } = params
+    const createCommandIndex =
+      commands.push({
+        type: 'CreateCollectionCommand',
+        name: definition.name,
+        assessmentUuid,
+        ...(parentItemReference ? { parentCollectionItemUuid: parentItemReference } : {}),
+        user: this.user,
+      }) - 1
+    const collectionReference = `@${createCommandIndex}`
+    const itemPlans = definition.items.map(itemDef =>
+      this.planCollectionItemCreation({
+        assessmentUuid,
+        definition: itemDef,
+        commands,
+        collectionReference,
+      }),
+    )
+
     return {
-      name: def.name,
-      uuid: collectionUuid,
+      name: definition.name,
+      createCommandIndex,
+      items: itemPlans,
+    }
+  }
+
+  private planCollectionItemCreation(params: {
+    assessmentUuid: string
+    definition: CollectionItemDefinition
+    commands: Commands[]
+    collectionReference: string
+  }): CollectionItemCommandPlan {
+    const { assessmentUuid, definition, commands, collectionReference } = params
+    const createCommandIndex =
+      commands.push({
+        type: 'AddCollectionItemCommand',
+        collectionUuid: collectionReference,
+        assessmentUuid,
+        answers: definition.answers,
+        properties: definition.properties,
+        ...(definition.timeline ? { timeline: definition.timeline } : {}),
+        user: this.user,
+      }) - 1
+    const collectionItemReference = `@${createCommandIndex}`
+    const collectionPlans = definition.collections.map(nestedDef =>
+      this.planCollectionCreation({
+        assessmentUuid,
+        definition: nestedDef,
+        commands,
+        parentItemReference: collectionItemReference,
+      }),
+    )
+
+    return {
+      createCommandIndex,
+      collections: collectionPlans,
+    }
+  }
+
+  private materializeCreatedCollections(
+    collectionPlans: CollectionCommandPlan[],
+    commandResults: CommandResults[],
+  ): CreatedCollection[] {
+    return collectionPlans.map(collectionPlan => this.materializeCreatedCollection(collectionPlan, commandResults))
+  }
+
+  private materializeCreatedCollection(
+    collectionPlan: CollectionCommandPlan,
+    commandResults: CommandResults[],
+  ): CreatedCollection {
+    const createResult = this.getCreateCollectionResult(commandResults, collectionPlan.createCommandIndex)
+    const createdItems = collectionPlan.items.map(itemPlan =>
+      this.materializeCreatedCollectionItem(itemPlan, commandResults),
+    )
+
+    return {
+      name: collectionPlan.name,
+      uuid: createResult.collectionUuid,
       items: createdItems,
     }
   }
 
-  private async createCollectionItem(
-    assessmentUuid: string,
-    collectionUuid: string,
-    def: CollectionItemDefinition,
-  ): Promise<CreatedCollectionItem> {
-    const createResult = await this.client.executeCommand<AddCollectionItemCommandResult>({
-      type: 'AddCollectionItemCommand',
-      collectionUuid,
-      assessmentUuid,
-      answers: def.answers,
-      properties: def.properties,
-      user: this.user,
-    })
-
-    const collectionItemUuid = createResult.collectionItemUuid
-    const nestedCollections: CreatedCollection[] = []
-
-    for (const nestedDef of def.collections) {
-      // eslint-disable-next-line no-await-in-loop
-      const created = await this.createCollection(assessmentUuid, nestedDef, collectionItemUuid)
-      nestedCollections.push(created)
-    }
+  private materializeCreatedCollectionItem(
+    itemPlan: CollectionItemCommandPlan,
+    commandResults: CommandResults[],
+  ): CreatedCollectionItem {
+    const createResult = this.getAddCollectionItemResult(commandResults, itemPlan.createCommandIndex)
+    const nestedCollections = itemPlan.collections.map(collectionPlan =>
+      this.materializeCreatedCollection(collectionPlan, commandResults),
+    )
 
     return {
-      uuid: collectionItemUuid,
+      uuid: createResult.collectionItemUuid,
       collections: nestedCollections,
     }
+  }
+
+  private getCreateCollectionResult(
+    commandResults: CommandResults[],
+    commandIndex: number,
+  ): CreateCollectionCommandResult {
+    const result = commandResults[commandIndex]
+
+    if (!this.isCreateCollectionCommandResult(result)) {
+      throw new Error(`Expected CreateCollectionCommandResult at command index ${commandIndex}`)
+    }
+
+    return result
+  }
+
+  private getAddCollectionItemResult(
+    commandResults: CommandResults[],
+    commandIndex: number,
+  ): AddCollectionItemCommandResult {
+    const result = commandResults[commandIndex]
+
+    if (!this.isAddCollectionItemCommandResult(result)) {
+      throw new Error(`Expected AddCollectionItemCommandResult at command index ${commandIndex}`)
+    }
+
+    return result
+  }
+
+  private isCreateCollectionCommandResult(result: CommandResults | undefined): result is CreateCollectionCommandResult {
+    return !!result && result.type === 'CreateCollectionCommandResult' && 'collectionUuid' in result
+  }
+
+  private isAddCollectionItemCommandResult(
+    result: CommandResults | undefined,
+  ): result is AddCollectionItemCommandResult {
+    return !!result && result.type === 'AddCollectionItemCommandResult' && 'collectionItemUuid' in result
   }
 }
 
