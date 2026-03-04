@@ -566,6 +566,11 @@ test.describe('Confirm if achieved page', () => {
 
       // Goal should be visible in achieved tab
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      // ensure notification banner is visible
+      await expect(planOverviewPage.notificationBanner).toBeVisible()
+      await expect(planOverviewPage.notificationBannerText).toContainText('Congratulations on achieving a goal,')
+
       const goalTitle = await planOverviewPage.getGoalCardTitle(0)
       expect(goalTitle).toContain('Goal To Be Achieved')
     })

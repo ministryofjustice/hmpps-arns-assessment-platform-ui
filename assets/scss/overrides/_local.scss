@@ -1,5 +1,6 @@
 .govuk-main-wrapper {
   min-height: 600px;
+  padding-top: govuk-spacing(5);
 }
 
 .govuk-main-wrapper--no-padding {
@@ -14,7 +15,7 @@
 .code-block {
   display: block;
   overflow: auto;
-  background-color: govuk-colour('light-grey');
+  background-color: govuk-colour("black", $variant: "tint-95");
   @include govuk-responsive-padding(4);
 }
 

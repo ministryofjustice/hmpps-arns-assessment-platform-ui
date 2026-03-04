@@ -6,7 +6,7 @@ import {
   CriminogenicNeedsData as InternalCriminogenicNeedsData,
   CriminogenicNeedArea,
 } from '../interfaces/coordinator-api/entityAssessment'
-import { areasOfNeed } from '../forms/sentence-plan/versions/v1.0/constants'
+import { areasOfNeed, subAreasOfNeed } from '../forms/sentence-plan/versions/v1.0/constants'
 
 interface AreaMapping {
   internalKey: keyof InternalCriminogenicNeedsData
@@ -17,18 +17,26 @@ interface AreaMapping {
   scoreKey: string
 }
 
-/**
- * Derives handover API field mappings from areasOfNeed configuration.
- * Field names follow the pattern: {prefix}LinkedToHarm, {prefix}LinkedToReoffending, etc.
- */
-const areaMappings: AreaMapping[] = areasOfNeed.map(area => ({
-  internalKey: area.crimNeedsKey,
-  handoverKey: area.crimNeedsKey as keyof HandoverCriminogenicNeedsData,
-  harmKey: `${area.handoverPrefix}LinkedToHarm`,
-  reoffendingKey: `${area.handoverPrefix}LinkedToReoffending`,
-  strengthsKey: `${area.handoverPrefix}Strengths`,
-  scoreKey: `${area.handoverPrefix}OtherWeightedScore`,
-}))
+interface AreaConfig {
+  crimNeedsKey: keyof InternalCriminogenicNeedsData
+  handoverPrefix: string
+}
+
+// creates handover API field mappings from area configuration.
+// field names follow the pattern: {prefix}LinkedToHarm, {prefix}LinkedToReoffending, etc.
+const createAreaMappings = (areas: AreaConfig[]): AreaMapping[] => {
+  return areas.map(area => ({
+    internalKey: area.crimNeedsKey,
+    handoverKey: area.crimNeedsKey as keyof HandoverCriminogenicNeedsData,
+    harmKey: `${area.handoverPrefix}LinkedToHarm`,
+    reoffendingKey: `${area.handoverPrefix}LinkedToReoffending`,
+    strengthsKey: `${area.handoverPrefix}Strengths`,
+    scoreKey: `${area.handoverPrefix}OtherWeightedScore`,
+  }))
+}
+
+// all area mappings including main areas and sub-areas (for example Lifestyle and Associates).
+const areaMappings: AreaMapping[] = createAreaMappings([...areasOfNeed, ...subAreasOfNeed])
 
 function yesNoToBoolean(value: YesNoNullOrNA | undefined): boolean | null {
   if (value === 'YES') return true

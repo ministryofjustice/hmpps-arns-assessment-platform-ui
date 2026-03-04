@@ -5,8 +5,9 @@ import {
   AssessmentArea,
   CriminogenicNeedsData,
   CriminogenicNeedArea,
+  SubAreaData,
 } from '../interfaces/coordinator-api/entityAssessment'
-import { areasOfNeed } from '../forms/sentence-plan/versions/v1.0/constants'
+import { areasOfNeed, subAreasOfNeed } from '../forms/sentence-plan/versions/v1.0/constants'
 import { AreaOfNeed } from '../forms/sentence-plan/effects/types'
 
 /**
@@ -41,6 +42,31 @@ function parseMotivation(value: string): MotivationLevel {
     'NOT_APPLICABLE',
   ]
   return validLevels.includes(value as MotivationLevel) ? (value as MotivationLevel) : null
+}
+
+// clamps a score to the area's upperBound:
+// guards against bad data where score exceeds the valid range.
+const clampScore = (score: number | null | undefined, upperBound: number): number | null => {
+  if (score === null || score === undefined) return null
+  return score > upperBound ? upperBound : score
+}
+
+// calculates the effective distance from threshold for sorting purposes (accounts for sub-areas):
+const calculateEffectiveScoreToThresholdDistance = (
+  score: number | null,
+  threshold: number | null,
+  subArea: SubAreaData | undefined,
+): number | null => {
+  if (score === null || threshold === null) return null
+
+  const mainDistance = score - threshold
+
+  if (!subArea || subArea.score === null || subArea.threshold === null) {
+    return mainDistance
+  }
+
+  const subAreaDistance = subArea.score - subArea.threshold
+  return Math.max(mainDistance, subAreaDistance)
 }
 
 function getLinkedDetails(
@@ -102,14 +128,40 @@ function processAssessmentArea(
   const motivationValue = getAssessmentValue(sanAssessmentData, `${assessmentKey}_changes`)
   const motivationToMakeChanges = parseMotivation(motivationValue)
 
-  // Score comes from handover (OASys) only
-  const score = crimNeedsArea?.score ?? null
+  // sub area section:
+  let subArea: SubAreaData | undefined
+  let isSubAreaHighScoring = false
 
-  // High scoring: score at or above threshold (score >= threshold)
-  // Low scoring: score below threshold (score < threshold)
+  // attach sub-area data to parent area of need:
+  const childSubAreaMatch = subAreasOfNeed.find(childArea => childArea.parentAreaOfNeedCrimKey === crimNeedsKey)
+  if (childSubAreaMatch && criminogenicNeedsData?.[childSubAreaMatch.crimNeedsKey]) {
+    const subAreaCrimNeeds = criminogenicNeedsData?.[childSubAreaMatch.crimNeedsKey]
+    const subAreaScore = clampScore(subAreaCrimNeeds?.score, childSubAreaMatch.upperBound)
+    if (subAreaScore !== null) {
+      subArea = {
+        title: childSubAreaMatch.text,
+        score: subAreaScore,
+        upperBound: childSubAreaMatch.upperBound,
+        threshold: childSubAreaMatch.threshold,
+      }
+      if (childSubAreaMatch.threshold !== null && subAreaScore > childSubAreaMatch.threshold) {
+        isSubAreaHighScoring = true
+      }
+    }
+  }
+
+  // Score comes from handover (OASys) only
+  const score = clampScore(crimNeedsArea?.score, upperBound)
+
+  // High scoring: main area score > threshold or sub-area exceeds its threshold
+  // Low scoring: main area score <= threshold AND no sub-area is high-scoring
   // Areas without scoring (Finance, Health) have both as false
-  const isHighScoring = threshold !== null && score !== null && score >= threshold
-  const isLowScoring = threshold !== null && score !== null && score < threshold
+  const isMainAreaScoredAndNotNull = threshold !== null && score !== null
+  const isMainAreaHighScoring = isMainAreaScoredAndNotNull && score > threshold
+
+  const isHighScoring = isMainAreaHighScoring || (isMainAreaScoredAndNotNull && isSubAreaHighScoring)
+  const isLowScoring = isMainAreaScoredAndNotNull && score <= threshold && !isSubAreaHighScoring
+  const effectiveScoreToThresholdDistance = calculateEffectiveScoreToThresholdDistance(score, threshold, subArea)
 
   return {
     title,
@@ -127,6 +179,8 @@ function processAssessmentArea(
     threshold,
     isHighScoring,
     isLowScoring,
+    subArea,
+    effectiveScoreToThresholdDistance,
   }
 }
 

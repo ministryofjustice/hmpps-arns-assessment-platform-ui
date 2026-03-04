@@ -3,6 +3,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "5 3 * * 1" # Every Monday at 03:05 UTC
+
+permissions:
+  contents: read
+
 jobs:
   security-veracode-policy-check:
     name: Project security veracode policy scan

@@ -37,10 +37,7 @@
     },
     {
       "matchManagers": ["github-actions"],
-      "matchFileNames": [
-        "**/.github/workflows/**/*.ya?ml",
-        "**/.github/actions/**/*.ya?ml"
-        ]
+      "matchFileNames": ["**/.github/workflows/**/*.ya?ml", "**/.github/actions/**/*.ya?ml"]
     }
   ],
   "vulnerabilityAlerts": {

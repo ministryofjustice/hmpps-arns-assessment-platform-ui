@@ -12,8 +12,8 @@ export type VersionDetails = {
 
 export interface LastVersionsOnDate {
   description: string
-  assessmentVersion: VersionDetails
-  planVersion: VersionDetails
+  assessmentVersion: VersionDetails | null
+  planVersion: VersionDetails | null
 }
 
 export type VersionsTable = Record<string, LastVersionsOnDate>

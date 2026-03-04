@@ -20,10 +20,16 @@ export default class AbstractPage {
     this.phaseBanner = page.getByTestId('header-phase-banner')
     this.usersName = page.getByTestId('header-user-name')
     this.signoutLink = page.getByText('Sign out')
-    this.accountType = page.locator('.hmpps-header__account-details__sub-text')
+    this.accountType = page.locator('.arns-common-header__menu-toggle-label, .arns-common-header__oasys-account-label')
   }
 
   async signOut() {
+    const menuToggle = this.page.locator('.arns-common-header__user-menu-toggle')
+
+    if (await menuToggle.isVisible()) {
+      await menuToggle.click()
+    }
+
     await this.signoutLink.first().click()
   }
 }

@@ -1,7 +1,8 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
-import { navigateToSentencePlan } from '../sentencePlanUtils'
+import AboutPage from '../../../pages/sentencePlan/aboutPage'
+import { navigateToSentencePlan, navigateToAboutPage } from '../sentencePlanUtils'
 import coordinatorApi, { SanAssessmentData } from '../../../mockApis/coordinatorApi'
 
 test.describe('Assessment Info Details - Incomplete Section', () => {
@@ -202,5 +203,54 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
         - listitem: /whether this area is linked to RoSH/
         - listitem: /motivation to make changes/
     `)
+  })
+
+  test.describe('About Page (showAsDetails set to false)', () => {
+    test('displays missing information in inset text format (not bullet list)', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { handoverLink, sentencePlanId } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        assessmentType: 'SAN_SP',
+        criminogenicNeedsData: {
+          accommodation: {
+            accLinkedToHarm: 'YES',
+            accLinkedToReoffending: null,
+            accStrengths: null,
+            accOtherWeightedScore: '4',
+          },
+        },
+      })
+
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+      await coordinatorApi.stubGetEntityAssessment(sentencePlanId, {
+        sanAssessmentData: {
+          accommodation_section_complete: { value: 'YES' },
+          accommodation_practitioner_analysis_risk_of_serious_harm: { value: 'YES' },
+          accommodation_practitioner_analysis_risk_of_serious_harm_yes_details: {
+            value: 'Accommodation risk details',
+          },
+        },
+      })
+
+      await navigateToAboutPage(page, handoverLink)
+
+      const aboutPage = await AboutPage.verifyOnPage(page)
+      await aboutPage.expandAccordionSection(aboutPage.highScoringAreasAccordion, 0)
+
+      const sectionContent = aboutPage.highScoringAreasAccordion
+        .locator('.govuk-accordion__section')
+        .first()
+        .locator('[data-qa="assessment-info-and-score-content"]')
+
+      const insetText = sectionContent.locator('.govuk-inset-text')
+      await expect(insetText).toBeVisible()
+      await expect(insetText.getByText('Missing information:')).toBeVisible()
+
+      const listInInset = insetText.locator('ul')
+      await expect(listInInset).not.toHaveClass(/govuk-list--bullet/)
+    })
   })
 })

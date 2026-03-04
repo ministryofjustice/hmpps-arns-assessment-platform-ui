@@ -51,6 +51,18 @@ export const sentencePlanV1UrlBuilders = {
   goalChange: (goalUuid: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/change-goal`,
   goalUpdateSteps: (goalUuid: string) =>
     `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/update-goal-steps`,
+  goalAddSteps: (goalUuid: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/add-steps`,
+  goalConfirmDelete: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/confirm-delete-goal`,
+  goalConfirmAchieved: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/confirm-achieved-goal`,
+  goalConfirmRemoved: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/confirm-remove-goal`,
+  goalConfirmReAdd: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/confirm-readd-goal`,
+  goalViewInactive: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/view-inactive-goal`,
+  goalCreate: (areaOfNeed: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/new/add-goal/${areaOfNeed}`,
   planReorderGoal: (goalUuid: string, direction: 'up' | 'down', status: 'ACTIVE' | 'FUTURE' | 'ACHIEVED' | 'REMOVED') =>
     `${sentencePlanV1URLs.PLAN_REORDER_GOAL}?goalUuid=${goalUuid}&direction=${direction}&status=${status}`,
 }
@@ -139,4 +151,13 @@ export const getDatePlusMonthsAsString = (months: number) => {
 /** Returns an ISO date string for a date N days from now. Useful for goal target dates in tests. */
 export const getDatePlusDaysAsISO = (days: number): string => {
   return new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString()
+}
+
+// navigates to the About page via handover link, handling privacy screen and clicking the About nav link.
+export const navigateToAboutPage = async (page: Page, handoverLink: string): Promise<void> => {
+  await navigateToSentencePlan(page, handoverLink)
+  await page
+    .getByLabel('Primary navigation')
+    .getByRole('link', { name: /^About /i })
+    .click()
 }

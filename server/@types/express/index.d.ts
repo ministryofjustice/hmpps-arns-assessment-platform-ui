@@ -24,6 +24,7 @@ declare global {
       cspNonce?: string
       csrfToken?: string
       preferencesId?: string
+      requestId?: string
       user?: {
         id: string
         name: string

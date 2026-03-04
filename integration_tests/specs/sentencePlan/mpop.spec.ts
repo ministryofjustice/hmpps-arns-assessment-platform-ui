@@ -62,6 +62,7 @@ test.describe('MPoP access flow', () => {
 
       await navigateToPlanOverviewViaMpop(page, crn)
 
+      await page.locator('.arns-common-header__user-menu-toggle').click()
       await expect(page.getByRole('link', { name: 'Sign out' })).toBeVisible()
     })
 

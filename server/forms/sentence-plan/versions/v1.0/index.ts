@@ -2,7 +2,7 @@ import { accessTransition, journey } from '@form-engine/form/builders'
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
-import { actorLabels, areasOfNeed } from './constants'
+import { actorLabels, areasOfNeed, formVersion } from './constants'
 import { SentencePlanEffects } from '../../effects'
 import { hasPostAgreementStatus, isSanSpAssessment, redirectToPrivacyUnlessAccepted } from './guards'
 
@@ -31,6 +31,7 @@ export const sentencePlanV1Journey = journey({
   data: {
     areasOfNeed,
     actorLabels,
+    formVersion,
   },
   onAccess: [
     accessTransition({

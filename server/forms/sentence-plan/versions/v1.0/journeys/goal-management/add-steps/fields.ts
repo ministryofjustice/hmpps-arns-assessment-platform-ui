@@ -17,7 +17,7 @@ export const pageHeading = HtmlBlock({
   content: Format(
     `<p class="govuk-caption-l">%1</p>
              <h1 class="govuk-heading-l">Add or change steps</h1>`,
-    Data('activeGoal.title'),
+    Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()),
   ),
 })
 

@@ -11,7 +11,7 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageLayout } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 
 /**
  * Add Steps page
@@ -58,6 +58,7 @@ export const addStepsStep = step({
         SentencePlanEffects.setAreaDataFromActiveGoal(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
         SentencePlanEffects.initializeStepEditSession(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ADD_STEPS),
       ],
       next: [
         // If goal not found, redirect to plan overview
@@ -88,7 +89,7 @@ export const addStepsStep = step({
       when: Post('action').match(Condition.Equals('saveAndContinue')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.saveStepEditSession()],
+        effects: [SentencePlanEffects.saveStepEditSession(), SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEPS)],
         next: [
           redirect({
             when: Data('navigationReferrer').match(Condition.Equals('update-goal-steps')),

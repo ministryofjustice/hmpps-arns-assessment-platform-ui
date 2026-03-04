@@ -2,6 +2,8 @@ import { Data } from '@form-engine/form/builders'
 import { Transformer } from '@form-engine/registry/transformers'
 import { CriminogenicNeedsData } from '../../../../interfaces/coordinator-api/entityAssessment'
 
+export const formVersion = 'v1.0'
+
 /**
  * Centralised data accessors for case data.
  * Use these throughout the form configuration so if paths change, we only update here.
@@ -192,6 +194,18 @@ export const areasOfNeed = [
       'I will identify people I can talk to when I have a problem, so they can help me deal with it in a positive way',
       'I will follow my [add licence conditions, curfew or exclusion zone]',
     ],
+  },
+]
+
+export const subAreasOfNeed = [
+  {
+    parentAreaOfNeedCrimKey: 'thinkingBehaviourAndAttitudes',
+    text: 'Lifestyle and associates',
+    value: 'area_lifestyle_and_associates',
+    crimNeedsKey: 'lifestyleAndAssociates' as keyof CriminogenicNeedsData,
+    handoverPrefix: 'lifestyle',
+    upperBound: 6 as number | null,
+    threshold: 1 as number | null,
   },
 ]
 

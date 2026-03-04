@@ -5,14 +5,34 @@
 
 .previous-versions-table {
   .date-column{
-    width: 34% !important;
+    width: 34%;
   }
 
   .view-link-column {
-    width: 20% !important;
+    width: 20%;
   }
 
   .status-column {
-    width: 26% !important;
+    width: 26%;
+  }
+}
+
+.previous-versions-table--sentence-plan-only {
+  table-layout: fixed;
+  width: 100%;
+
+  th:nth-child(1),
+  td:nth-child(1) {
+    width: 32%;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2) {
+    width: 20%;
+  }
+
+  th:nth-child(3),
+  td:nth-child(3) {
+    width: 48%;
   }
 }

@@ -9,7 +9,7 @@ import {
   subNavigation,
   notificationBanners,
 } from './fields'
-import { SentencePlanEffects } from '../../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
 
 export const viewHistoricStep = step({
@@ -46,7 +46,13 @@ export const viewHistoricStep = step({
   ],
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.loadHistoricPlan(), SentencePlanEffects.setNavigationReferrer('previous-versions')],
+      effects: [
+        SentencePlanEffects.loadHistoricPlan(),
+        SentencePlanEffects.setNavigationReferrer('previous-versions'),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_HISTORIC_PLAN, {
+          planVersionTimestamp: Params('timestamp'),
+        }),
+      ],
       next: [
         redirect({
           when: Query('type').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),

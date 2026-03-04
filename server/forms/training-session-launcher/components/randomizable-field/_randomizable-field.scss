@@ -67,8 +67,8 @@
       .govuk-input,
       .govuk-select,
       .govuk-textarea {
-        background-color: govuk-colour("light-grey");
-        color: $govuk-secondary-text-colour;
+        background-color: govuk-colour("black", $variant: "tint-95");
+        color: govuk-functional-colour(secondary-text);
         cursor: not-allowed;
       }
     }

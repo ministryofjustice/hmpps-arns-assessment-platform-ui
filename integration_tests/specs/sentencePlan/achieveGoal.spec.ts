@@ -212,6 +212,10 @@ test.describe('Achieve goal journey', () => {
       const goalCount = await planOverviewPage.getGoalCount()
       expect(goalCount).toBe(1)
 
+      // ensure notification banner is visible
+      await expect(planOverviewPage.notificationBanner).toBeVisible()
+      await expect(planOverviewPage.notificationBannerText).toContainText('Congratulations on achieving a goal,')
+
       const goalTitle = await planOverviewPage.getGoalCardTitle(0)
       expect(goalTitle).toContain('Achieve Test Goal')
     })

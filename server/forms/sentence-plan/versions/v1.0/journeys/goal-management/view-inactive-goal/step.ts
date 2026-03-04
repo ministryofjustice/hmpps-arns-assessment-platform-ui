@@ -11,7 +11,7 @@ import {
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { pageHeading, goalInfo, reviewStepsSection, viewAllNotesSection, addToPlanButton } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 
 /**
  * Shared view for inactive goals (achieved or removed)
@@ -45,7 +45,11 @@ export const viewInactiveGoalStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.loadNavigationReferrer(), SentencePlanEffects.loadActiveGoalForEdit()],
+      effects: [
+        SentencePlanEffects.loadNavigationReferrer(),
+        SentencePlanEffects.loadActiveGoalForEdit(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_INACTIVE_GOAL, { goalStatus: Data('activeGoal.status') }),
+      ],
       next: [
         redirect({
           when: Data('activeGoal').not.match(Condition.IsRequired()),

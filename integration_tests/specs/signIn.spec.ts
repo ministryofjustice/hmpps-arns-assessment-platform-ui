@@ -51,7 +51,7 @@ test.describe('SignIn', () => {
     await login(page)
 
     const homePage = await HomePage.verifyOnPage(page)
-    await expect(homePage.accountType).toHaveText('Auth User')
+    await expect(homePage.accountType).toHaveText('Account')
   })
 
   test('Token verification failure redirects user to auth @serial', async ({ page }) => {
