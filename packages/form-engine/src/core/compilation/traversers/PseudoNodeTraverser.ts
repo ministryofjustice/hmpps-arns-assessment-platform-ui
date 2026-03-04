@@ -38,6 +38,7 @@ export default class PseudoNodeTraverser {
     this.created.set(PseudoNodeType.QUERY, new Set())
     this.created.set(PseudoNodeType.PARAMS, new Set())
     this.created.set(PseudoNodeType.DATA, new Set())
+    this.created.set(PseudoNodeType.REQUEST, new Set())
   }
 
   createPseudoNodes() {
@@ -85,6 +86,10 @@ export default class PseudoNodeTraverser {
               case 'data':
                 // Create pseudo node with only base property name
                 this.createDataPseudoNode(baseFieldCode)
+                break
+
+              case 'request':
+                this.createRequestPseudoNode(path)
                 break
 
               case 'answers':
@@ -233,5 +238,42 @@ export default class PseudoNodeTraverser {
 
     this.nodeRegistry.register(node.id, node)
     this.created.get(PseudoNodeType.DATA)!.add(baseProperty)
+  }
+
+  /**
+   * Create a REQUEST pseudo node with deduplication
+   */
+  private createRequestPseudoNode(path: unknown[]): void {
+    const requestRef = this.parseRequestReference(path)
+
+    if (!requestRef) {
+      return
+    }
+
+    if (
+      this.created.get(PseudoNodeType.REQUEST)!.has(requestRef.requestPath) ||
+      this.pseudoNodeExists(PseudoNodeType.REQUEST, requestRef.requestPath)
+    ) {
+      return
+    }
+
+    const node = this.pseudoNodeFactory.createRequestPseudoNode(requestRef.requestPath)
+
+    this.nodeRegistry.register(node.id, node)
+    this.created.get(PseudoNodeType.REQUEST)!.add(requestRef.requestPath)
+  }
+
+  private parseRequestReference(path: unknown[]): { requestPath: string } | undefined {
+    const [, source, key] = path
+
+    if (source === 'url' || source === 'path' || source === 'method') {
+      return { requestPath: source }
+    }
+
+    if ((source === 'headers' || source === 'cookies' || source === 'state') && typeof key === 'string') {
+      return { requestPath: `${source}.${key}` }
+    }
+
+    return undefined
   }
 }

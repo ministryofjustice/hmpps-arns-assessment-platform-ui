@@ -73,16 +73,30 @@ describe('WiringContext', () => {
       const postRef1 = ASTTestFactory.reference(['post', 'firstName'])
       const postRef2 = ASTTestFactory.reference(['post', 'lastName'])
       const queryRef = ASTTestFactory.reference(['query', 'id'])
+      const requestRef = ASTTestFactory.reference(['request', 'method'])
 
       when(mockNodeRegistry.findByType)
         .calledWith(ExpressionType.REFERENCE)
-        .mockReturnValue([postRef1, postRef2, queryRef])
+        .mockReturnValue([postRef1, postRef2, queryRef, requestRef])
 
       const result = context.findReferenceNodes('post')
 
       expect(result).toHaveLength(2)
       expect(result).toContain(postRef1)
       expect(result).toContain(postRef2)
+    })
+
+    it('should find request reference nodes', () => {
+      const requestRef = ASTTestFactory.reference(['request', 'headers', 'referer'])
+      const queryRef = ASTTestFactory.reference(['query', 'id'])
+
+      when(mockNodeRegistry.findByType)
+        .calledWith(ExpressionType.REFERENCE)
+        .mockReturnValue([requestRef, queryRef])
+
+      const result = context.findReferenceNodes('request')
+
+      expect(result).toEqual([requestRef])
     })
 
     it('should return empty array when no references match source', () => {

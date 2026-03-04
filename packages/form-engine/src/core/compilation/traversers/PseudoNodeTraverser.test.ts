@@ -33,6 +33,7 @@ describe('PseudoNodeTraverser', () => {
       createQueryPseudoNode: jest.fn(),
       createParamsPseudoNode: jest.fn(),
       createDataPseudoNode: jest.fn(),
+      createRequestPseudoNode: jest.fn(),
     } as unknown as jest.Mocked<PseudoNodeFactory>
 
     traverser = new PseudoNodeTraverser(mockNodeRegistry, mockPseudoNodeFactory, mockMetadataRegistry)
@@ -234,6 +235,8 @@ describe('PseudoNodeTraverser', () => {
           .reference(['post', 'firstName'])
         const dataRef = ASTTestFactory
           .reference(['data', 'userData'])
+        const requestRef = ASTTestFactory
+          .reference(['request', 'headers', 'x-request-id'])
         const answersRef = ASTTestFactory
           .reference(['answers', 'age'])
 
@@ -245,6 +248,8 @@ describe('PseudoNodeTraverser', () => {
           .postPseudoNode('firstName')
         const dataPseudo = ASTTestFactory
           .dataPseudoNode('userData')
+        const requestPseudo = ASTTestFactory
+          .requestPseudoNode('headers.x-request-id')
         const answerRemotePseudo = ASTTestFactory
           .answerRemotePseudoNode('age')
 
@@ -254,7 +259,7 @@ describe('PseudoNodeTraverser', () => {
 
         when(mockNodeRegistry.findByType)
           .calledWith(ExpressionType.REFERENCE)
-          .mockReturnValue([queryRef, paramsRef, postRef, dataRef, answersRef])
+          .mockReturnValue([queryRef, paramsRef, postRef, dataRef, requestRef, answersRef])
 
         when(mockPseudoNodeFactory.createQueryPseudoNode)
           .calledWith('returnUrl')
@@ -272,6 +277,10 @@ describe('PseudoNodeTraverser', () => {
           .calledWith('userData')
           .mockReturnValue(dataPseudo)
 
+        when(mockPseudoNodeFactory.createRequestPseudoNode)
+          .calledWith('headers.x-request-id')
+          .mockReturnValue(requestPseudo)
+
         when(mockPseudoNodeFactory.createAnswerRemotePseudoNode)
           .calledWith('age')
           .mockReturnValue(answerRemotePseudo)
@@ -284,7 +293,35 @@ describe('PseudoNodeTraverser', () => {
         expect(mockNodeRegistry.register).toHaveBeenCalledWith(paramsPseudo.id, paramsPseudo)
         expect(mockNodeRegistry.register).toHaveBeenCalledWith(postPseudo.id, postPseudo)
         expect(mockNodeRegistry.register).toHaveBeenCalledWith(dataPseudo.id, dataPseudo)
+        expect(mockNodeRegistry.register).toHaveBeenCalledWith(requestPseudo.id, requestPseudo)
         expect(mockNodeRegistry.register).toHaveBeenCalledWith(answerRemotePseudo.id, answerRemotePseudo)
+      })
+
+      it('should use the base key for Request.State dotted paths', () => {
+        // Arrange
+        const requestRef1 = ASTTestFactory.reference(['request', 'state', 'user', 'name'])
+        const requestRef2 = ASTTestFactory.reference(['request', 'state', 'user', 'role'])
+        const requestPseudo = ASTTestFactory.requestPseudoNode('state.user')
+
+        when(mockNodeRegistry.findByType)
+          .calledWith(BlockType.FIELD)
+          .mockReturnValue([])
+
+        when(mockNodeRegistry.findByType)
+          .calledWith(ExpressionType.REFERENCE)
+          .mockReturnValue([requestRef1, requestRef2])
+
+        when(mockPseudoNodeFactory.createRequestPseudoNode)
+          .calledWith('state.user')
+          .mockReturnValue(requestPseudo)
+
+        // Act
+        traverser.createPseudoNodes()
+
+        // Assert
+        expect(mockPseudoNodeFactory.createRequestPseudoNode).toHaveBeenCalledTimes(1)
+        expect(mockNodeRegistry.register).toHaveBeenCalledTimes(1)
+        expect(mockNodeRegistry.register).toHaveBeenCalledWith(requestPseudo.id, requestPseudo)
       })
 
       it('should deduplicate pseudo nodes with same key', () => {
@@ -502,6 +539,8 @@ describe('PseudoNodeTraverser', () => {
         .reference(['query', 'returnUrl'])
       const dataRef = ASTTestFactory
         .reference(['data', 'userData'])
+      const requestRef = ASTTestFactory
+        .reference(['request', 'method'])
       const answersRef = ASTTestFactory
         .reference(['answers', 'age'])
 
@@ -517,6 +556,8 @@ describe('PseudoNodeTraverser', () => {
         .queryPseudoNode('returnUrl')
       const dataPseudo = ASTTestFactory
         .dataPseudoNode('userData')
+      const requestPseudo = ASTTestFactory
+        .requestPseudoNode('method')
       const answerRemotePseudo = ASTTestFactory
         .answerRemotePseudoNode('age')
 
@@ -526,7 +567,7 @@ describe('PseudoNodeTraverser', () => {
 
       when(mockNodeRegistry.findByType)
         .calledWith(ExpressionType.REFERENCE)
-        .mockReturnValue([queryRef, dataRef, answersRef])
+        .mockReturnValue([queryRef, dataRef, requestRef, answersRef])
 
       when(mockMetadataRegistry.get)
         .calledWith(firstNameBlock.id, 'isDescendantOfStep', false)
@@ -560,6 +601,10 @@ describe('PseudoNodeTraverser', () => {
         .calledWith('userData')
         .mockReturnValue(dataPseudo)
 
+      when(mockPseudoNodeFactory.createRequestPseudoNode)
+        .calledWith('method')
+        .mockReturnValue(requestPseudo)
+
       when(mockPseudoNodeFactory.createAnswerRemotePseudoNode)
         .calledWith('age')
         .mockReturnValue(answerRemotePseudo)
@@ -574,8 +619,9 @@ describe('PseudoNodeTraverser', () => {
       expect(mockNodeRegistry.register).toHaveBeenCalledWith(lastNamePost.id, lastNamePost)
       expect(mockNodeRegistry.register).toHaveBeenCalledWith(queryPseudo.id, queryPseudo)
       expect(mockNodeRegistry.register).toHaveBeenCalledWith(dataPseudo.id, dataPseudo)
+      expect(mockNodeRegistry.register).toHaveBeenCalledWith(requestPseudo.id, requestPseudo)
       expect(mockNodeRegistry.register).toHaveBeenCalledWith(answerRemotePseudo.id, answerRemotePseudo)
-      expect(mockNodeRegistry.register).toHaveBeenCalledTimes(7)
+      expect(mockNodeRegistry.register).toHaveBeenCalledTimes(8)
     })
 
     it('should handle empty node registry', () => {
@@ -597,6 +643,7 @@ describe('PseudoNodeTraverser', () => {
       expect(mockPseudoNodeFactory.createQueryPseudoNode).not.toHaveBeenCalled()
       expect(mockPseudoNodeFactory.createParamsPseudoNode).not.toHaveBeenCalled()
       expect(mockPseudoNodeFactory.createDataPseudoNode).not.toHaveBeenCalled()
+      expect(mockPseudoNodeFactory.createRequestPseudoNode).not.toHaveBeenCalled()
       expect(mockPseudoNodeFactory.createAnswerRemotePseudoNode).not.toHaveBeenCalled()
       expect(mockNodeRegistry.register).not.toHaveBeenCalled()
     })

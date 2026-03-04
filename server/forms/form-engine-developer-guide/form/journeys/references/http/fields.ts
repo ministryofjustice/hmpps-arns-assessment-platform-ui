@@ -4,17 +4,17 @@ import { CodeBlock } from '../../../../components'
 import { parseGovUKMarkdown } from '../../../../helpers/markdown'
 
 /**
- * References - HTTP References (Params, Query, Post)
+ * References - HTTP References (Params, Query, Post, Request)
  *
  * Documentation for references that access HTTP request data:
- * Params(), Query(), and Post().
+ * Params(), Query(), Post(), and Request.*().
  */
 export const pageContent = TemplateWrapper({
   template: parseGovUKMarkdown(`
 # HTTP References
 
-Three reference types access data from the HTTP request:
-\`Params()\`, \`Query()\`, and \`Post()\`.
+Four reference types access data from the HTTP request:
+\`Params()\`, \`Query()\`, \`Post()\`, and \`Request.*()\`.
 These are always available without needing to load data first. {.lead}
 
 ---
@@ -79,6 +79,29 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
 
 ---
 
+## Request.*
+
+Access request metadata that is not covered by \`Params()\`, \`Query()\`, or \`Post()\`:
+
+{{slot:requestSignature}}
+
+### Available Methods
+
+- \`Request.Url()\` - full request URL
+- \`Request.Path()\` - pathname derived from the request URL
+- \`Request.Method()\` - HTTP method
+- \`Request.Headers('name')\` - exact request header lookup
+- \`Request.Cookies('name')\` - exact request cookie lookup
+- \`Request.State('user.name')\` - request state using dot notation
+
+{{slot:requestCode}}
+
+### Common Use Cases
+
+{{slot:requestUseCases}}
+
+---
+
 ## Availability Summary
 
 | Reference | Source | When Available |
@@ -86,12 +109,14 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
 | \`Params()\` | URL path segments | Always (on any route with params) |
 | \`Query()\` | URL query string | Always (may be undefined) |
 | \`Post()\` | HTTP POST body | Only after form submission |
+| \`Request.*()\` | Request metadata | Always (may be undefined for keyed lookups) |
 
 ---
 
 ## Best Practices
 
 - **Prefer Answer() over Post():** In most cases, you want the formatted/cleaned value from \`Answer()\`
+- **Use Request for metadata:** Reach for \`Request.*()\` when you need URL, method, headers, cookies, or request state directly in the form.
 - **Validate Params in effects:** Route params come from user input (URLs can be typed directly). Validate them before using.
 - **Handle missing Query params:** Query params are optional. Use \`Condition.IsPresent()\` or provide defaults.
 - **Don't trust Post() for security:** Like all user input, POST data should be validated server-side.
@@ -237,6 +262,54 @@ Unlike \`Answer()\`, this is the untransformed input exactly as submitted.
           actionTransition({
             when: Post('_method').match(Condition.String.Equals('PUT')),
             effects: [MyEffects.updateRecord()],
+          })
+        `,
+      }),
+    ],
+    requestSignature: [
+      CodeBlock({
+        language: 'typescript',
+        code: `
+          Request.Url(): ReferenceExpr
+          Request.Path(): ReferenceExpr
+          Request.Method(): ReferenceExpr
+          Request.Headers(name: string): ReferenceExpr
+          Request.Cookies(name: string): ReferenceExpr
+          Request.State(key: string): ReferenceExpr
+        `,
+      }),
+    ],
+    requestCode: [
+      CodeBlock({
+        language: 'typescript',
+        code: `
+          Request.Url()                 // 'https://example.test/forms/plan?type=current'
+          Request.Path()                // '/forms/plan'
+          Request.Method()              // 'GET'
+          Request.Headers('referer')    // 'https://example.test/dashboard'
+          Request.Cookies('session_id') // 'abc123'
+          Request.State('user.name')    // 'Alex Smith'
+        `,
+      }),
+    ],
+    requestUseCases: [
+      CodeBlock({
+        language: 'typescript',
+        code: `
+          // 1. Show the current path in supporting content
+          HtmlBlock({
+            content: Format('Current path: %1', Request.Path()),
+          })
+
+          // 2. Branch on the request method
+          HtmlBlock({
+            hidden: Request.Method().not.match(Condition.Equals('POST')),
+            content: '<p class="govuk-body">Form submitted successfully.</p>',
+          })
+
+          // 3. Read request-scoped user data
+          HtmlBlock({
+            content: Format('Signed in as %1', Request.State('user.name')),
           })
         `,
       }),

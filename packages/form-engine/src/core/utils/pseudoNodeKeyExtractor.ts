@@ -15,6 +15,9 @@ export function getPseudoNodeKey(node: PseudoNode): string | undefined {
     case PseudoNodeType.DATA:
       return node.properties.baseProperty
 
+    case PseudoNodeType.REQUEST:
+      return node.properties.requestPath
+
     case PseudoNodeType.POST:
     case PseudoNodeType.ANSWER_LOCAL:
     case PseudoNodeType.ANSWER_REMOTE:

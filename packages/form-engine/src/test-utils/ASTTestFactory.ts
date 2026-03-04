@@ -27,6 +27,7 @@ import {
   QueryPseudoNode,
   ParamsPseudoNode,
   DataPseudoNode,
+  RequestPseudoNode,
   AnswerLocalPseudoNode,
   AnswerRemotePseudoNode,
 } from '@form-engine/core/types/pseudoNodes.type'
@@ -222,6 +223,19 @@ export class ASTTestFactory {
       type: PseudoNodeType.DATA,
       properties: {
         baseProperty,
+      },
+    }
+  }
+
+  /**
+   * Create a REQUEST pseudo node
+   */
+  static requestPseudoNode(requestPath: string): RequestPseudoNode {
+    return {
+      id: ASTTestFactory.getPseudoId(),
+      type: PseudoNodeType.REQUEST,
+      properties: {
+        requestPath,
       },
     }
   }

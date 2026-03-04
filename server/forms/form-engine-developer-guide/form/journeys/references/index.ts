@@ -16,7 +16,7 @@ import { chainingStep } from './chaining/step'
  * - Data() for external data
  * - Self() for current field scope
  * - Item() for collection iteration
- * - Params(), Query(), Post() for HTTP request data
+ * - Params(), Query(), Post(), Request.*() for HTTP request data
  * - Chaining with .pipe(), .match(), Format(), Conditional()
  */
 export const referencesJourney = journey({
