@@ -22,7 +22,7 @@ export const planStep = step({
   title: 'Plan',
   view: {
     locals: {
-      headerPageHeading: Format(`%1's plan`, CaseData.Forename),
+      headerPageHeading: Format(`%1 plan`, CaseData.ForenamePossessive),
       currentTab: Query('type'),
       buttons: {
         showReturnToOasysButton: isOasysAccess,

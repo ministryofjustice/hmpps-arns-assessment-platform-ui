@@ -4,7 +4,7 @@ import express from 'express'
 import fs from 'fs'
 import { trace } from '@ministryofjustice/hmpps-azure-telemetry'
 import { ValidationResult } from '@form-engine/core/nodes/expressions/validation/ValidationHandler'
-import { formatDate, initialiseName } from './utils'
+import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
 import logger from '../../logger'
 
@@ -67,6 +67,8 @@ export default function nunjucksSetup(app?: express.Express) {
       express: app,
     },
   )
+
+  njkEnv.addFilter('possessive', possessive)
 
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
