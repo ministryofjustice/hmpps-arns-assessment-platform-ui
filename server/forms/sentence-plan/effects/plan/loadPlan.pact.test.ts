@@ -62,8 +62,8 @@ describe('AssessmentPlatformApiClient', () => {
   }
 
   const mockUser: User = {
-    id: 'testuser',
-    name: 'Test User',
+    id: 'FOO_USER',
+    name: 'Foo User',
     authSource: 'HMPPS_AUTH',
   }
 
@@ -83,7 +83,9 @@ describe('AssessmentPlatformApiClient', () => {
   })
 
   describe('GET plan', () => {
-    const planIdentifier = { type: 'UUID', uuid: 'uuid-123' } as AssessmentIdentifiers
+    const assessmentUuid = '0cb5ffb3-2572-423d-97cd-4a05b681e6c0'
+    const aggregateUuid = 'bd12ef70-5c20-4a01-8394-d71f8026a69b'
+    const planIdentifier = { type: 'UUID', uuid: assessmentUuid } as AssessmentIdentifiers
     const query: AssessmentVersionQuery = {
       type: 'AssessmentVersionQuery',
       user: mockUser,
@@ -93,8 +95,8 @@ describe('AssessmentPlatformApiClient', () => {
     it('returns an HTTP 200 and a assessment version', () => {
       const queryResult: AssessmentVersionQueryResult = {
         type: 'AssessmentVersionQueryResult',
-        assessmentUuid: 'uuid-123',
-        aggregateUuid: 'agg-123',
+        assessmentUuid: assessmentUuid,
+        aggregateUuid: aggregateUuid,
         assessmentType: 'TEST',
         formVersion: '1',
         createdAt: '2025-01-01T00:00:00Z',
@@ -113,7 +115,7 @@ describe('AssessmentPlatformApiClient', () => {
       const pactWrapper = new PactWrapper(provider)
 
       pactWrapper.provider
-        .given('I have a sentence plan')
+        .given('I have a sentence plan', { 'assessmentUuid' : assessmentUuid, 'userId' : mockUser.id })
         .uponReceiving('a request for plan by uuid')
       
       pactWrapper

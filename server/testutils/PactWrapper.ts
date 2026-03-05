@@ -1,18 +1,29 @@
-import { PactV3 } from "@pact-foundation/pact";
+import { PactV3, MatchersV3 } from "@pact-foundation/pact";
 import { QueriesResponse, QueryResponse } from "../interfaces/aap-api/response"
+const {
+  eachLike,
+  atLeastLike,
+  integer,
+  timestamp,
+  boolean,
+  string,
+  regex,
+  like,
+} = MatchersV3
 
 export class PactWrapper {
     public provider: PactV3
-    query: any
+    queryResponse: any
 
     constructor(provider: PactV3) {
         this.provider = provider
     }
 
     withQuery<T>(path: string, query: T): PactWrapper {
-        this.query = { queries: [query] }
+        this.queryResponse = query
         this.provider.withRequest({
           method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           path: path,
           body: { queries: [query] },
         })
@@ -20,8 +31,16 @@ export class PactWrapper {
     }
     
     withResult<T>(status: number, result: T): PactWrapper {
-        const queriesResponse: QueriesResponse = {
-            queries: [{ request: this.query, result: result } as QueryResponse],
+        const pactResult: any = result
+        pactResult.aggregateUuid = like('bd12ef70-5c20-4a01-8394-d71f8026a69b')
+        pactResult.createdAt = like('2025-01-01T00:00:00Z')
+        pactResult.updatedAt = like('2025-01-01T00:00:00Z')
+        pactResult.collaborators = [{
+            id: string('FOO_USER'),
+            name: string('Foo User')
+        }]
+        const queriesResponse: any = {
+            queries: [{ request: this.queryResponse, result: pactResult }],
         }
         this.provider.willRespondWith({
             status: status,
