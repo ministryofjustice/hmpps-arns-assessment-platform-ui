@@ -12,7 +12,7 @@
     label: "Primary navigation",
     items: [
       {
-        text: personName + "'s plan",
+        text: (personName | possessive) + " plan",
         href: basePath + "/plan/overview",
         active: isOnPlanPage
       },

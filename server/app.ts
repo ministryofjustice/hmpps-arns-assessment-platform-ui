@@ -82,7 +82,7 @@ export default function createApp(services: Services): express.Application {
       ],
     }),
   )
-  app.use(authorisationMiddleware())
+  app.use(authorisationMiddleware([], services.deliusApiClient))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
 
