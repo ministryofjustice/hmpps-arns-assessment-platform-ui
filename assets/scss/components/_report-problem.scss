@@ -1,5 +1,5 @@
 .app-report-problem {
-  border-top: 1px solid $govuk-border-colour;
+  border-top: 1px solid govuk-functional-colour(border);
   padding: govuk-spacing(3) 0;
 
   .govuk-details {
@@ -10,7 +10,7 @@
 .app-report-problem__info {
   display: inline-flex;
   max-width: 100%;
-  border: 1px solid $govuk-border-colour;
+  border: 1px solid govuk-functional-colour(border);
   background-color: govuk-colour("white");
 }
 

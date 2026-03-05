@@ -23,7 +23,7 @@ test.describe('Accessibility page', () => {
     await expect(page.getByLabel('Primary navigation')).toBeVisible()
     await expect(page.locator('.govuk-phase-banner').first()).toBeVisible()
     await expect(page.locator('#report-a-problem details')).toBeVisible()
-    await expect(page.locator('footer')).toBeVisible()
+    await expect(page.locator('footer').first()).toBeVisible()
   })
 
   test('does not show a back link', async ({ page }) => {

@@ -19,12 +19,13 @@ export const pageHeading = block<HtmlBlock>({
         `<span class="govuk-caption-l">%1 (and %2)</span>
     <h1 class="govuk-heading-l govuk-!-margin-bottom-2">View goal details</h1>
     <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Goal: %3</h2>`,
-        Data('activeGoal.areaOfNeedLabel'),
+        Data('activeGoal.areaOfNeedLabel').pipe(Transformer.String.EscapeHtml()),
         Data('activeGoal.relatedAreasOfNeedLabels').pipe(
           Transformer.Array.Join(', '),
           Transformer.String.ToLowerCase(),
+          Transformer.String.EscapeHtml(),
         ),
-        Data('activeGoal.title'),
+        Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()),
       ),
     )
     .else(
@@ -32,8 +33,8 @@ export const pageHeading = block<HtmlBlock>({
         `<span class="govuk-caption-l">%1</span>
     <h1 class="govuk-heading-l govuk-!-margin-bottom-2">View goal details</h1>
     <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Goal: %2</h2>`,
-        Data('activeGoal.areaOfNeedLabel'),
-        Data('activeGoal.title'),
+        Data('activeGoal.areaOfNeedLabel').pipe(Transformer.String.EscapeHtml()),
+        Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()),
       ),
     ),
 })
@@ -82,8 +83,8 @@ const reviewStepsTable = TemplateWrapper({
                   <td class="govuk-table__cell">%2</td>
                   <td class="govuk-table__cell">{{slot:statusField}}</td>
                 </tr>`,
-                Item().path('actorLabel'),
-                Item().path('description'),
+                Item().path('actorLabel').pipe(Transformer.String.EscapeHtml()),
+                Item().path('description').pipe(Transformer.String.EscapeHtml()),
               ),
               slots: {
                 statusField: [
@@ -149,7 +150,7 @@ export const viewAllNotesSection = block<GovUKDetails>({
                     `<label class="govuk-heading-s">%1 by %2</label>{{slot:typeLabel}}<p class="goal-note">%3</p>`,
                     Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
                     Item().path('createdBy'),
-                    Item().path('note'),
+                    Item().path('note').pipe(Transformer.String.EscapeHtml()),
                   ),
                   slots: {
                     typeLabel: [

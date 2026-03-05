@@ -3,6 +3,7 @@ import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKTextInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
+import { Transformer } from '@form-engine/registry/transformers'
 import { MOJSideNavigation } from '@form-engine-moj-components/components'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { CaseData } from '../../../constants'
@@ -27,7 +28,7 @@ const pageHeading = HtmlBlock({
   content: Format(
     `<span class="govuk-caption-l">%1</span>
     <h1 class="govuk-heading-l">Create a goal with %2</h1>`,
-    Data('currentAreaOfNeed').path('text'),
+    Data('currentAreaOfNeed').path('text').pipe(Transformer.String.EscapeHtml()),
     CaseData.Forename,
   ),
 })

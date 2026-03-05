@@ -64,7 +64,7 @@ export const scenarioDetailsBlock = TemplateWrapper({
       CollectionBlock({
         collection: Item()
           .path('flags')
-          .each(Iterator.Map(GovUKTag({ text: Item().value(), classes: 'govuk-tag--turquoise' }))),
+          .each(Iterator.Map(GovUKTag({ text: Item().value(), classes: 'govuk-tag--teal' }))),
         fallback: [HtmlBlock({ content: '<p class="govuk-body-s govuk-!-margin-bottom-0">No flags set</p>' })],
       }),
     ],

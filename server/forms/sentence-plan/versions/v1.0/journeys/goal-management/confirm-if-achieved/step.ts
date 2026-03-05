@@ -1,8 +1,9 @@
-import { accessTransition, Data, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
+import { accessTransition, Data, redirect, Post, step, submitTransition, Format } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, allStepsCompletedField, hasAchievedGoal, saveAndContinueButton } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfNotPostAgreement } from '../../../guards'
+import { CaseData } from '../../../constants'
 
 /**
  * This page is only accessible after a plan has been agreed.
@@ -49,6 +50,11 @@ export const confirmIfAchievedStep = step({
         effects: [
           SentencePlanEffects.markGoalAsAchieved(),
           SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL_ACHIEVED),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            message: Format('Congratulations on achieving a goal, %1', CaseData.Forename),
+            target: 'plan-overview',
+          }),
         ],
         next: [redirect({ goto: '../../plan/overview?type=achieved' })],
       },
