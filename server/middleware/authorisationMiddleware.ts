@@ -14,8 +14,8 @@ const getCrnFromAccessPath = (path: string): string | undefined => {
 }
 
 export default function authorisationMiddleware(
-  authorisedRoles: string[] = [],
-  fineGrainedAccessClient?: FineGrainedAccessClient,
+  authorisedRoles: string[],
+  fineGrainedAccessClient: FineGrainedAccessClient,
 ): RequestHandler {
   return async (req, res, next) => {
     if (req.authBypassed) {
@@ -38,7 +38,7 @@ export default function authorisationMiddleware(
 
       const crn = getCrnFromAccessPath(req.path)
 
-      if (crn && res.locals.user.authSource === 'HMPPS_AUTH' && username && fineGrainedAccessClient) {
+      if (crn && res.locals.user.authSource === 'HMPPS_AUTH' && username) {
         try {
           const access = await fineGrainedAccessClient.getUserAccess(username, crn)
 

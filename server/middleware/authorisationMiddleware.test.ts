@@ -44,7 +44,6 @@ describe('authorisationMiddleware', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
-    accessClient.getUserAccess.mockReset()
     req = {
       authBypassed: false,
       path: '/sentence-plan/v1.0/plan/overview',
@@ -54,7 +53,7 @@ describe('authorisationMiddleware', () => {
   it('should return next when no required roles', async () => {
     const res = createResWithToken({ authorities: [] })
 
-    await authorisationMiddleware()(req, res, next)
+    await authorisationMiddleware([], accessClient)(req, res, next)
 
     expect(next).toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()
@@ -63,7 +62,7 @@ describe('authorisationMiddleware', () => {
   it('should redirect when user has no authorised roles', async () => {
     const res = createResWithToken({ authorities: [] })
 
-    await authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
+    await authorisationMiddleware(['SOME_REQUIRED_ROLE'], accessClient)(req, res, next)
 
     expect(next).not.toHaveBeenCalled()
     expect(res.redirect).toHaveBeenCalledWith('/authError')
@@ -72,7 +71,7 @@ describe('authorisationMiddleware', () => {
   it('should return next when user has authorised role', async () => {
     const res = createResWithToken({ authorities: ['ROLE_SOME_REQUIRED_ROLE'] })
 
-    await authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
+    await authorisationMiddleware(['SOME_REQUIRED_ROLE'], accessClient)(req, res, next)
 
     expect(next).toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()
@@ -81,7 +80,7 @@ describe('authorisationMiddleware', () => {
   it('should return next when user has authorised role and middleware created with ROLE_ prefix', async () => {
     const res = createResWithToken({ authorities: ['ROLE_SOME_REQUIRED_ROLE'] })
 
-    await authorisationMiddleware(['ROLE_SOME_REQUIRED_ROLE'])(req, res, next)
+    await authorisationMiddleware(['ROLE_SOME_REQUIRED_ROLE'], accessClient)(req, res, next)
 
     expect(next).toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()
@@ -91,7 +90,7 @@ describe('authorisationMiddleware', () => {
     req.authBypassed = true
     const res = createResWithToken({ authorities: [] })
 
-    await authorisationMiddleware(['SOME_REQUIRED_ROLE'])(req, res, next)
+    await authorisationMiddleware(['SOME_REQUIRED_ROLE'], accessClient)(req, res, next)
 
     expect(next).toHaveBeenCalled()
     expect(res.redirect).not.toHaveBeenCalled()
