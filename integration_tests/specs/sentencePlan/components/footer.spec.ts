@@ -22,15 +22,15 @@ test.describe('Footer', () => {
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
     await expect(planOverviewPage.footer.getByRole('link', { name: 'Accessibility' })).toHaveAttribute(
       'href',
-      '/sentence-plan/accessibility',
+      '/platform/accessibility',
     )
     await expect(planOverviewPage.footer.getByRole('link', { name: 'Cookies policy' })).toHaveAttribute(
       'href',
-      '/sentence-plan/cookies-policy',
+      '/platform/cookies-policy',
     )
     await expect(planOverviewPage.footer.getByRole('link', { name: 'Privacy policy' })).toHaveAttribute(
       'href',
-      '/sentence-plan/privacy-policy',
+      '/platform/privacy-policy',
     )
   })
 })
