@@ -35,8 +35,8 @@ jest.mock('../../../../config', () => ({
 // Create a 'pact' between the two applications in the integration we are testing
 let provider = new PactV3({
   dir: path.resolve(process.cwd(), 'pacts'),
-  consumer: 'MyConsumer',
-  provider: 'MyProvider',
+  consumer: 'hmpps-arns-assessment-platform-ui',
+  provider: 'hmpps-arns-assessment-platform-api',
   logLevel: "debug"
 })
 

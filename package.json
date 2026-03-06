@@ -17,6 +17,7 @@
     "test": "jest",
     "test:ci": "jest --runInBand",
     "test:coverage": "jest --coverage",
+    "pact:test": "jest server/forms/sentence-plan/effects/plan/loadPlan.pact.test.ts",
     "security_audit": "npx audit-ci --config audit-ci.json",
     "int-test": "npx playwright test",
     "int-test-ui": "npx playwright test --ui",
