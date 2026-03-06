@@ -2,7 +2,6 @@ import { defineEffectsWithDeps } from '@form-engine/registry/utils/createRegiste
 import { SentencePlanEffectsDeps } from './types'
 import { addNotification } from './notifications/addNotification'
 import { loadNotifications } from './notifications/loadNotifications'
-import { setNavigationReferrer } from './navigation/setNavigationReferrer'
 import { loadNavigationReferrer } from './navigation/loadNavigationReferrer'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
@@ -31,7 +30,6 @@ import { initializeStepEditSession } from './steps/initializeStepEditSession'
 import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
 import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
 import { saveStepEditSession } from './steps/saveStepEditSession'
-import { setPrivacyAccepted } from './access/setPrivacyAccepted'
 import { updatePlanAgreement } from './plan/updatePlanAgreement'
 import { loadPreviousVersions } from './plan/loadPreviousVersions'
 import { loadHistoricPlan } from './plan/loadHistoricPlan'
@@ -71,15 +69,11 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     loadSessionData,
     loadSentenceInformation,
 
-    // Access
-    setPrivacyAccepted,
-
     // Notifications
     addNotification,
     loadNotifications,
 
     // Navigation
-    setNavigationReferrer,
     loadNavigationReferrer,
 
     // Plan

@@ -1,0 +1,76 @@
+import { block, field, Format, validation, Self, Data } from '@form-engine/form/builders'
+import { TemplateWrapper } from '@form-engine/registry/components'
+import { Condition } from '@form-engine/registry/conditions'
+import { HtmlBlock } from '@form-engine/registry/components/html'
+import { GovUKButton, GovUKCheckboxInput } from '@form-engine-govuk-components/components'
+
+export const privacyCheckbox = field<GovUKCheckboxInput>({
+  variant: 'govukCheckboxInput',
+  code: 'confirm_privacy',
+  multiple: true,
+  items: [
+    {
+      value: 'confirmed',
+      text: "I confirm I'll do this before starting an appointment",
+    },
+  ],
+  validate: [
+    validation({
+      when: Self().not.match(Condition.Array.Contains('confirmed')),
+      message: 'Confirm you will do this before starting an appointment',
+    }),
+  ],
+})
+
+const confirmButton = block<GovUKButton>({
+  variant: 'govukButton',
+  text: 'Confirm',
+  name: 'action',
+  value: 'confirm',
+  preventDoubleClick: true,
+})
+
+const returnToOasysLink = block<HtmlBlock>({
+  variant: 'html',
+  hidden: Data('accessDetails.accessType').not.match(Condition.Equals('OASYS')),
+  content: Format(
+    '<a href="%1" class="govuk-link govuk-link--no-visited-state">Return to OASys</a>',
+    Data('accessDetails.oasysRedirectUrl'),
+  ),
+})
+
+export const buttonGroup = block<TemplateWrapper>({
+  variant: 'templateWrapper',
+  template: '<div class="govuk-button-group">{{slot:buttons}}</div>',
+  slots: {
+    buttons: [confirmButton, returnToOasysLink],
+  },
+})
+
+export const privacyScreenContent = block<TemplateWrapper>({
+  variant: 'templateWrapper',
+  template: `
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {{slot:content}}
+      </div>
+    </div>
+  `,
+  slots: {
+    content: [
+      block<HtmlBlock>({
+        variant: 'html',
+        content: Format(
+          `<h1 class="govuk-heading-l">Remember to close any other applications before starting an appointment with %1</h1>
+    <p class="govuk-body">For example, Outlook, Teams or NDelius.</p>
+    <p class="govuk-body">You must also close other people's assessments or plans if you have them open in other tabs.</p>
+    <p class="govuk-body">Do not let %1 use your device either.</p>
+    <p class="govuk-body">This is to avoid sharing sensitive information.</p>`,
+          Data('caseData.name.forename'),
+        ),
+      }),
+      privacyCheckbox,
+      buttonGroup,
+    ],
+  },
+})

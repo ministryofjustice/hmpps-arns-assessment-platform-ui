@@ -21,10 +21,10 @@ export const crnAccessStep = step({
     accessTransition({
       effects: [
         AccessEffects.clearAccessSession(),
-        AccessEffects.setTargetServiceAndRedirect(),
         AccessEffects.setCaseDetailsFromCrn(),
         AccessEffects.setPractitionerDetailsFromAuth(),
         AccessEffects.setAccessDetailsForCrn(),
+        AccessEffects.setTargetServiceAndRedirect(),
       ],
       next: [redirect({ goto: Data('redirectPath') })],
     }),

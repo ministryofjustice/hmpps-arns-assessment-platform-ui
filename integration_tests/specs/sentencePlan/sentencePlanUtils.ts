@@ -16,11 +16,8 @@ const accessFormPath = '/access'
 const v1Path = '/v1.0'
 const oasysAccessStepPath = '/oasys'
 const crnAccessStepPath = '/crn'
-const privacyStepPath = '/privacy'
+const privacyStepPath = '/privacy-screen'
 const aboutPersonStepPath = '/about-person'
-const accessibilityStepPath = '/accessibility'
-const cookiesPolicyStepPath = '/cookies-policy'
-const privacyPolicyStepPath = '/privacy-policy'
 const planOverviewJourneyPath = '/plan'
 const planStepPath = '/overview'
 const agreePlanStepPath = '/agree-plan'
@@ -33,10 +30,7 @@ const previousVersionsStepPath = '/previous-versions'
 export const sentencePlanV1URLs = {
   OASYS_ENTRY_POINT: `${accessFormPath}/sentence-plan${oasysAccessStepPath}`, // '/access/sentence-plan/oasys'
   CRN_ENTRY_POINT: `${accessFormPath}/sentence-plan${crnAccessStepPath}`, // '/access/sentence-plan/crn/:crn'
-  PRIVACY_SCREEN: `${sentencePlanFormPath}${privacyStepPath}`, // '/sentence-plan/privacy'
-  ACCESSIBILITY: `${sentencePlanFormPath}${accessibilityStepPath}`, // '/sentence-plan/accessibility'
-  COOKIES_POLICY: `${sentencePlanFormPath}${cookiesPolicyStepPath}`, // '/sentence-plan/cookies-policy'
-  PRIVACY_POLICY: `${sentencePlanFormPath}${privacyPolicyStepPath}`, // '/sentence-plan/privacy-policy'
+  PRIVACY_SCREEN: `${accessFormPath}${privacyStepPath}`, // '/access/privacy-screen'
   ABOUT_PERSON: sentencePlanFormPath + v1Path + aboutPersonStepPath, // '/sentence-plan' + '/v1.0' + '/about-person'
   PLAN_OVERVIEW: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/overview'
   PLAN_AGREE: sentencePlanFormPath + v1Path + planOverviewJourneyPath + agreePlanStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/agree-plan'
@@ -92,9 +86,6 @@ export const sentencePlanPageTitles = {
 
   // Other
   privacy: 'Close other applications',
-  accessibility: 'Accessibility',
-  cookiesPolicy: 'Cookies policy',
-  privacyPolicy: 'Privacy policy',
   aboutPerson: 'About',
   previousVersions: 'Previous versions',
   historicPlan: 'View historic version',
@@ -114,7 +105,7 @@ export const buildErrorPageTitle = (stepTitle: string, serviceName: string = sen
  * Handles the privacy screen if it appears, confirming and continuing.
  */
 export const handlePrivacyScreenIfPresent = async (page: Page): Promise<void> => {
-  if (page.url().includes('/privacy')) {
+  if (page.url().includes('/privacy-screen')) {
     const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
     await privacyPage.confirmAndContinue()
   }
@@ -137,7 +128,7 @@ export const navigateToSentencePlan = async (page: Page, handoverLink: string): 
  */
 export const navigateToPrivacyScreen = async (page: Page, handoverLink: string): Promise<PrivacyScreenPage> => {
   await page.goto(handoverLink)
-  await expect(page).toHaveURL(/\/privacy/)
+  await expect(page).toHaveURL(/\/access\/privacy-screen/)
   return PrivacyScreenPage.verifyOnPage(page)
 }
 

@@ -22,7 +22,9 @@ export const setTargetServiceAndRedirect = () => (context: AccessContext) => {
   }
 
   const session = context.getSession()
+  const shouldShowPrivacyScreen =
+    targetService.requiresPrivacyScreen && session.accessDetails?.planAccessMode !== 'READ_ONLY'
 
   session.targetService = service
-  context.setData('redirectPath', targetService.entryPath)
+  context.setData('redirectPath', shouldShowPrivacyScreen ? '/access/privacy-screen' : targetService.serviceEntryPath)
 }

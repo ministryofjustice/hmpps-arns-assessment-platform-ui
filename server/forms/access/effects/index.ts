@@ -9,6 +9,9 @@ import { setPractitionerDetailsFromAuth } from './crn/setPractitionerDetailsFrom
 import { setAccessDetailsForCrn } from './crn/setAccessDetailsForCrn'
 import { clearAccessSession } from './common/clearAccessSession'
 import { setTargetServiceAndRedirect } from './common/setTargetServiceAndRedirect'
+import { loadPrivacyScreenSessionData } from './privacy/loadPrivacyScreenSessionData'
+import { sendPrivacyScreenAuditEvent } from './privacy/sendPrivacyScreenAuditEvent'
+import { setPrivacyAccepted } from './privacy/setPrivacyAccepted'
 
 /**
  * Access form effects for handling OASys/CRN authentication flows.
@@ -20,6 +23,9 @@ export const { effects: AccessEffects, createRegistry: AccessEffectsRegistry } =
     // Common effects
     clearAccessSession,
     setTargetServiceAndRedirect,
+    loadPrivacyScreenSessionData,
+    setPrivacyAccepted,
+    sendPrivacyScreenAuditEvent,
 
     // Handover flow effects
     loadHandoverContext,

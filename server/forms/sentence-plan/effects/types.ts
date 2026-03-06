@@ -350,7 +350,7 @@ export interface SentencePlanData extends Record<string, unknown> {
   // Assessment area info for current area of need (from coordinator API)
   currentAreaAssessment: AssessmentArea | null
   currentAreaAssessmentStatus: AssessmentInfoStatus
-  navigationReferrer?: NavigationReferrer | null
+  navigationReferrer?: NavigationReferrer
 
   // all assessment areas grouped by scoring category (for about page; from coordinator API)
   allAssessmentAreas: AssessmentArea[]
@@ -385,7 +385,6 @@ export interface SentencePlanAnswers extends Record<string, unknown> {
  * Session data via context.getSession()
  */
 export interface SentencePlanSession {
-  navigationReferrer?: NavigationReferrer
   returnTo?: string
   assessmentUuid?: string
   privacyAccepted?: boolean
@@ -404,6 +403,7 @@ export interface SentencePlanSession {
 export interface SentencePlanState extends Record<string, unknown> {
   user: User & { authSource: string; token: string }
   requestId: string
+  previousPageUrl?: string
 }
 
 /**

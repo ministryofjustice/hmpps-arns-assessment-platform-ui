@@ -1,34 +1,10 @@
 import { createFormPackage, journey } from '@form-engine/form/builders'
 import { sentencePlanV1Journey } from './versions/v1.0'
 import { SentencePlanEffectsDeps } from './effects/types'
-import { AuditEvent, SentencePlanEffects, SentencePlanEffectsRegistry } from './effects'
+import { SentencePlanEffectsRegistry } from './effects'
 import { sentencePlanComponents } from './components'
-import { createPrivacyScreen } from '../shared'
-import { CaseData } from './versions/v1.0/constants'
 import { unsavedInformationDeletedStep } from './steps/unsaved-information-deleted/step'
-import { accessibilityStep } from './steps/accessibility/step'
-import { cookiesPolicyStep } from './steps/cookies-policy/step'
-import { privacyPolicyStep } from './steps/privacy-policy/step'
 import config from '../../config'
-
-/**
- * Privacy screen for Sentence Plan
- *
- * Uses the shared privacy screen factory with Sentence Plan specific configuration.
- */
-const privacyScreenStep = createPrivacyScreen({
-  loadEffects: [SentencePlanEffects.loadSessionData()],
-  submitEffects: [
-    SentencePlanEffects.setPrivacyAccepted(),
-    SentencePlanEffects.sendAuditEvent(AuditEvent.CONFIRM_PRIVACY_SCREEN),
-  ],
-  submitRedirectPath: 'v1.0/plan/overview',
-  alreadyAcceptedRedirectPath: 'v1.0/plan/overview',
-  template: 'sentence-plan/views/sentence-plan-step',
-  basePath: '/sentence-plan/v1.0',
-  headerServiceNameLink: '/sentence-plan/v1.0/plan/overview',
-  personForename: CaseData.Forename,
-})
 
 /**
  * Root Sentence Plan Journey
@@ -40,13 +16,12 @@ const privacyScreenStep = createPrivacyScreen({
  * - /access/sentence-plan/oasys     → OASys handover
  * - /access/sentence-plan/crn/:crn  → CRN-based access
  *
- * Both redirect to /sentence-plan/v1.0/plan/overview after
- * setting up session with case details and access configuration.
+ * READ_WRITE users are sent through the platform privacy screen before
+ * entering the form. READ_ONLY users go straight to plan overview.
  *
  * Structure:
  * /sentence-plan/
  * └── /v1.0/              - Version 1.0 sub-journey
- *     ├── /privacy        - Privacy screen
  *     ├── /plan/overview  - Plan overview page (entry point)
  *     └── ...
  */
@@ -56,7 +31,7 @@ const sentencePlanRootJourney = journey({
   path: '/sentence-plan',
   entryPath: '/v1.0/plan/overview',
   children: [sentencePlanV1Journey],
-  steps: [privacyScreenStep, unsavedInformationDeletedStep, accessibilityStep, cookiesPolicyStep, privacyPolicyStep],
+  steps: [unsavedInformationDeletedStep],
 })
 
 /**

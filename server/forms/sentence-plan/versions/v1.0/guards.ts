@@ -80,5 +80,5 @@ export const redirectUnlessSanSp = (goto: string) =>
 export const redirectToPrivacyUnlessAccepted = () =>
   accessTransition({
     when: and(Data('session.privacyAccepted').not.match(Condition.Equals(true)), isReadWriteAccess),
-    next: [redirect({ goto: '/sentence-plan/privacy' })],
+    next: [redirect({ goto: '/access/privacy-screen' })],
   })
