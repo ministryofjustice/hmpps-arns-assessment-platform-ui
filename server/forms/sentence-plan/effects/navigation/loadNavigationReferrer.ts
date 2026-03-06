@@ -1,4 +1,5 @@
-import { NavigationReferrer, SentencePlanContext } from '../types'
+import { SentencePlanContext } from '../types'
+import { getNavigationReferrerFromPreviousPageUrl } from './getNavigationReferrerFromPreviousPageUrl'
 
 /**
  * Load navigation referrer from session
@@ -9,8 +10,8 @@ import { NavigationReferrer, SentencePlanContext } from '../types'
  * for dynamic backlink logic.
  */
 export const loadNavigationReferrer = () => async (context: SentencePlanContext) => {
-  const session = context.getSession()
-  const referrer: NavigationReferrer | null = session.navigationReferrer ?? null
+  const previousPageUrl = context.getState('previousPageUrl')
+  const referrer = getNavigationReferrerFromPreviousPageUrl(previousPageUrl)
 
   // Make available for backlink logic
   context.setData('navigationReferrer', referrer)

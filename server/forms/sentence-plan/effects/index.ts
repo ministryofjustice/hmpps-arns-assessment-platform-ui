@@ -2,7 +2,6 @@ import { defineEffectsWithDeps } from '@form-engine/registry/utils/createRegiste
 import { SentencePlanEffectsDeps } from './types'
 import { addNotification } from './notifications/addNotification'
 import { loadNotifications } from './notifications/loadNotifications'
-import { setNavigationReferrer } from './navigation/setNavigationReferrer'
 import { loadNavigationReferrer } from './navigation/loadNavigationReferrer'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
@@ -79,7 +78,6 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     loadNotifications,
 
     // Navigation
-    setNavigationReferrer,
     loadNavigationReferrer,
 
     // Plan

@@ -48,7 +48,6 @@ export const viewHistoricStep = step({
     accessTransition({
       effects: [
         SentencePlanEffects.loadHistoricPlan(),
-        SentencePlanEffects.setNavigationReferrer('previous-versions'),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_HISTORIC_PLAN, {
           planVersionTimestamp: Params('timestamp'),
         }),

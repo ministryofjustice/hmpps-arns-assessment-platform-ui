@@ -41,7 +41,6 @@ export const updateGoalAndStepsStep = step({
     accessTransition({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
-        SentencePlanEffects.setNavigationReferrer('update-goal-steps'),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_UPDATE_GOAL_AND_STEPS),
       ],
     }),
@@ -59,7 +58,6 @@ export const updateGoalAndStepsStep = step({
   ],
 
   onSubmission: [
-    // Navigate to add-steps page with referrer set (it's set in onAccess)
     submitTransition({
       when: Post('action').match(Condition.Equals('goToAddSteps')),
       validate: false,
