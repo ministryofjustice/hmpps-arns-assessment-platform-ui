@@ -19,6 +19,7 @@ import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
 import setUpPreferencesCookie from './middleware/setUpPreferencesCookie'
+import setUpPreviousPageTracking from './middleware/setUpPreviousPageTracking'
 
 import routes from './routes'
 import type { Services } from './services'
@@ -88,6 +89,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware([], services.deliusApiClient))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
+  app.use(setUpPreviousPageTracking())
 
   // Mount routes
   app.use(routes(services))
