@@ -3,7 +3,7 @@ import { DerivedGoal, SentencePlanContext, SentencePlanEffectsDeps } from '../ty
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, calculateTargetDate, determineGoalStatus, getPractitionerName } from './goalUtils'
-import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
+import { getOrCreateNotesCollectionUuid, buildAddNoteCommand } from './noteUtils'
 
 /**
  * Re-add a removed goal back to the plan
@@ -89,7 +89,7 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
 
   // 2. Add re-add note if provided
   if (readdNote && typeof readdNote === 'string' && readdNote.trim().length > 0) {
-    const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
+    const collectionUuid = getOrCreateNotesCollectionUuid(commands, { activeGoal, assessmentUuid, user })
 
     commands.push(
       buildAddNoteCommand({
@@ -103,20 +103,14 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
     )
   }
 
-  // Execute all commands in a single batch
-  if (commands.length > 0) {
-    await deps.api.executeCommands(...commands)
-  }
-
-  // Move goal to bottom of the list
+  // 3. Move goal to bottom of the list
   const goals = context.getData('goals') as DerivedGoal[]
 
   if (goals && goals.length > 1) {
     const maxCollectionIndex = Math.max(...goals.map(g => g.collectionIndex))
 
-    // Only reorder if the goal isn't already at the bottom
     if (activeGoal.collectionIndex < maxCollectionIndex) {
-      await deps.api.executeCommand({
+      commands.push({
         type: 'ReorderCollectionItemCommand',
         collectionItemUuid: activeGoal.uuid,
         index: maxCollectionIndex,
@@ -124,5 +118,10 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
         user,
       })
     }
+  }
+
+  // Execute all commands in a single batch
+  if (commands.length > 0) {
+    await deps.api.executeCommands(...commands)
   }
 }

@@ -3,7 +3,7 @@ import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
-import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
+import { getOrCreateNotesCollectionUuid, buildAddNoteCommand } from './noteUtils'
 
 /**
  * Mark a goal as removed
@@ -68,7 +68,7 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
 
   // 3. Add removal note if provided
   if (removalNote && typeof removalNote === 'string' && removalNote.trim().length > 0) {
-    const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
+    const collectionUuid = getOrCreateNotesCollectionUuid(commands, { activeGoal, assessmentUuid, user })
 
     commands.push(
       buildAddNoteCommand({
