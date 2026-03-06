@@ -52,10 +52,8 @@ export default function setUpRequestLogging(): Router {
 
         if (res.statusCode >= 400) {
           requestLogger.warn(fields, 'Request completed')
-          return
-        }
 
-        requestLogger.info(fields, 'Request completed')
+        }
       })
 
       next()
