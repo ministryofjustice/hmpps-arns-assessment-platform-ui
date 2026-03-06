@@ -19,6 +19,7 @@ import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
 import setUpPreferencesCookie from './middleware/setUpPreferencesCookie'
+import setUpRequestLogging from './middleware/setUpRequestLogging'
 
 import routes from './routes'
 import type { Services } from './services'
@@ -68,6 +69,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
+  app.use(setUpRequestLogging())
   app.use(setUpWebRequestParsing())
   app.use(setUpPreferencesCookie())
   app.use(setUpStaticResources())
@@ -91,7 +93,7 @@ export default function createApp(services: Services): express.Application {
   app.use(formEngine.getRouter() as express.Router)
 
   app.use((req, _res, next) => {
-    logger.error({ path: req.path }, 'Page not found')
+    logger.warn({ path: req.path }, 'Page not found')
     next(createError(404, 'Not found'))
   })
   app.use(errorHandler(process.env.NODE_ENV === 'production'))

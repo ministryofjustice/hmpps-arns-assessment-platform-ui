@@ -32,7 +32,7 @@ export default function authorisationMiddleware(
       }
 
       if (authorisedAuthorities.length && !roles.some(role => authorisedAuthorities.includes(role))) {
-        logger.error('User is not authorised to access this')
+        logger.warn({ username, path: req.path }, 'User is not authorised to access this')
         return res.redirect('/authError')
       }
 
@@ -43,11 +43,11 @@ export default function authorisationMiddleware(
           const access = await fineGrainedAccessClient.getUserAccess(username, crn)
 
           if (!access.canAccess) {
-            logger.error({ username, crn }, 'User cannot access requested CRN')
+            logger.warn({ username, crn }, 'User cannot access requested CRN')
             return res.redirect('/authError')
           }
         } catch (error) {
-          logger.error({ error, username, crn }, 'Unable to verify fine-grained CRN access')
+          logger.error({ err: error, username, crn }, 'Unable to verify fine-grained CRN access')
           return next(error)
         }
       }
