@@ -3,6 +3,7 @@ import { AccessEffectsDeps } from './effects/types'
 import { AccessEffectsRegistry } from './effects'
 import { oasysAccessStep } from './steps/oasys-access/step'
 import { crnAccessStep } from './steps/crn-access/step'
+import { privacyScreenStep } from './steps/privacy-screen/step'
 
 /**
  * Access Form Journey
@@ -14,25 +15,26 @@ import { crnAccessStep } from './steps/crn-access/step'
  * /access/:service/oasys     - OASys handover entry point
  * /access/:service/crn/:crn  - CRN-based access entry point
  *
- * After processing, redirects to the target service's entry path.
+ * After processing, redirects either to the platform privacy screen
+ * or directly to the target service entry path.
  *
  * @example
  * // OASys flow to Sentence Plan
  * /access/sentence-plan/oasys
  *   → Loads handover context
- *   → Redirects to /sentence-plan/v1.0/plan/overview
+ *   → Redirects to /access/privacy-screen
  *
  * @example
  * // CRN flow to Sentence Plan
  * /access/sentence-plan/crn/X123456
  *   → Loads case details from Delius
- *   → Redirects to /sentence-plan/v1.0/plan/overview
+ *   → Redirects to /access/privacy-screen
  */
 const accessJourney = journey({
   code: 'access',
   title: 'Access',
   path: '/access',
-  steps: [oasysAccessStep, crnAccessStep],
+  steps: [oasysAccessStep, crnAccessStep, privacyScreenStep],
 })
 
 /**

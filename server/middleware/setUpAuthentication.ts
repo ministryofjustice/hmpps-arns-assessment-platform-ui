@@ -48,12 +48,12 @@ const authPaths = {
   hmppsToken: '/oauth/token',
 }
 
-/**
- * Mapping of service names to their access form entry paths after handover auth.
- * The access form handles loading handover context and redirecting to the target service.
- */
-const targetServicePaths: Record<string, string> = {
-  'sentence-plan': '/access/sentence-plan/oasys',
+const getTargetServicePath = (targetService?: string) => {
+  if (!targetService) {
+    return '/'
+  }
+
+  return `/access/${targetService}/oasys`
 }
 
 passport.serializeUser((user, done) => {
@@ -161,8 +161,7 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
           req.session.csrfToken = csrfToken
         }
 
-        // Redirect to the service path, or fallback to root
-        const redirectPath = targetService ? targetServicePaths[targetService] : '/'
+        const redirectPath = getTargetServicePath(targetService)
 
         return res.redirect(redirectPath)
       })

@@ -1,0 +1,49 @@
+{%- extends "partials/layout.njk" -%}
+{%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+{%- from "partials/macros/support-widget/macro.njk" import supportWidget -%}
+
+{% set fullPageTitle = step.title + ' - ' + applicationName %}
+
+{% set pageTitle %}
+  {% if not validationErrors.length %}
+    {{ fullPageTitle }}
+  {% else %}
+    {{ 'Error: ' + fullPageTitle }}
+  {% endif %}
+{% endset %}
+
+{% block govukHeader %}
+  {{ super() }}
+  {% include "sentence-plan/views/partials/phase-banner.njk" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if backlink %}
+        <a href="{{ backlink }}" class="govuk-back-link">Back</a>
+      {% endif %}
+
+      <form method="post" novalidate data-qa="main-form">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: validationErrors | toErrorSummary
+        }) if validationErrors.length }}
+
+        {% for block in blocks %}
+          {{ block | safe }}
+        {% endfor %}
+      </form>
+    </div>
+  </div>
+{% endblock %}
+
+{% block govukFooter %}
+  {{ supportWidget({}) }}
+  {{ pdsFooter({
+    baseUrl: footerBaseUrl or "/platform"
+  }) }}
+{% endblock %}

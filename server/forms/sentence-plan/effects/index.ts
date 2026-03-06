@@ -30,7 +30,6 @@ import { initializeStepEditSession } from './steps/initializeStepEditSession'
 import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
 import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
 import { saveStepEditSession } from './steps/saveStepEditSession'
-import { setPrivacyAccepted } from './access/setPrivacyAccepted'
 import { updatePlanAgreement } from './plan/updatePlanAgreement'
 import { loadPreviousVersions } from './plan/loadPreviousVersions'
 import { loadHistoricPlan } from './plan/loadHistoricPlan'
@@ -69,9 +68,6 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     initializeSessionFromAccess,
     loadSessionData,
     loadSentenceInformation,
-
-    // Access
-    setPrivacyAccepted,
 
     // Notifications
     addNotification,

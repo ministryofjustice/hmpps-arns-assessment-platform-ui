@@ -20,11 +20,11 @@ export const oasysAccessStep = step({
     accessTransition({
       effects: [
         AccessEffects.clearAccessSession(),
-        AccessEffects.setTargetServiceAndRedirect(),
         AccessEffects.loadHandoverContext(),
         AccessEffects.setCaseDetailsFromHandoverContext(),
         AccessEffects.setPractitionerDetailsFromHandoverContext(),
         AccessEffects.setAccessDetailsFromHandoverContext(),
+        AccessEffects.setTargetServiceAndRedirect(),
       ],
       next: [redirect({ goto: Data('redirectPath') })],
     }),

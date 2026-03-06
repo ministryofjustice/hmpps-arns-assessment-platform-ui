@@ -5,6 +5,7 @@ import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
 import { AccessMode } from '../../../interfaces/handover-api/shared'
 import { AuthSource } from '../../../interfaces/hmppsUser'
+import AuditService from '../../../services/auditService'
 
 /**
  * Generic session details for access flows.
@@ -26,6 +27,7 @@ export interface AccessSession {
   practitionerDetails?: PractitionerDetails
   accessDetails?: AccessSessionDetails
   targetService?: string
+  privacyAccepted?: boolean
 }
 
 /**
@@ -56,4 +58,5 @@ export type AccessContext = EffectFunctionContext<
 export interface AccessEffectsDeps {
   deliusApi: DeliusApiClient
   handoverApi: HandoverApiClient
+  auditService: AuditService
 }

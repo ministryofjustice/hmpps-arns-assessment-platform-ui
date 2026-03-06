@@ -59,6 +59,7 @@ export default function createApp(services: Services): express.Application {
     .registerFormPackage(accessFormPackage, {
       deliusApi: services.deliusApiClient,
       handoverApi: services.handoverApiClient,
+      auditService: services.auditService,
     })
     .registerFormPackage(sentencePlanFormPackage, {
       api: services.assessmentPlatformApiClient,
@@ -79,7 +80,9 @@ export default function createApp(services: Services): express.Application {
       bypassPaths: [
         '/form-engine-developer-guide',
         '/training-session-launcher',
-        '/platform',
+        '/platform/accessibility',
+        '/platform/cookies-policy',
+        '/platform/privacy-policy',
         // Allow access to session timeout page even with expired session
         // so we can show the "information deleted" message and re-auth link
         '/sentence-plan/unsaved-information-deleted',
