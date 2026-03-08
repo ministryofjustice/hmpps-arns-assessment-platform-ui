@@ -6,6 +6,7 @@ import { initScrollRestore } from './scroll-restore.mjs'
 import { CopyCode } from './copy-code.mjs'
 import { SessionTimeoutModal } from './session-timeout-modal.mjs'
 import { ArnsCommonHeader } from './arns-common-header.mjs'
+import '../../server/forms/sentence-plan/components/copy-button/copy-button.mjs'
 
 govukFrontend.initAll()
 mojFrontend.initAll()

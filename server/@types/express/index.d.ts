@@ -27,6 +27,7 @@ declare global {
       pageHistory?: string[]
       preferencesId?: string
       requestId?: string
+      traceId?: string
       user?: {
         id: string
         name: string
@@ -52,6 +53,13 @@ declare global {
     interface Locals {
       user: HmppsUser
       pageHistory?: string[]
+      requestId?: string
+      traceId?: string
+      cspNonce?: string
+      csrfToken?: string
+      message?: string
+      status?: number
+      stack?: string | null
     }
   }
 }

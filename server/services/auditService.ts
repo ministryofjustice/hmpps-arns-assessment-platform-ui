@@ -58,9 +58,26 @@ export default class AuditService {
         service: this.serviceName,
         details: message.details ? JSON.stringify(message.details) : undefined,
       })
-      logger.info(`HMPPS Audit event sent successfully (${message.action})`)
+      logger.info(
+        {
+          action: message.action,
+          correlationId: message.correlationId,
+          subjectId: message.subjectId,
+          subjectType: message.subjectType,
+        },
+        'HMPPS audit event sent successfully',
+      )
     } catch (error) {
-      logger.error(`Error sending HMPPS Audit event (${message.action}):`, error)
+      logger.error(
+        {
+          err: error,
+          action: message.action,
+          correlationId: message.correlationId,
+          subjectId: message.subjectId,
+          subjectType: message.subjectType,
+        },
+        'Error sending HMPPS audit event',
+      )
     }
   }
 }

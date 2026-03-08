@@ -1,4 +1,6 @@
 {% extends "../partials/layout.njk" %}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+{%- from "govuk/components/details/macro.njk" import govukDetails -%}
 
 {% if status === 401 %}
   {% set title = "You need to sign in" %}
@@ -65,4 +67,35 @@
       </div>
     </div>
   {% endif %}
+{% endblock %}
+
+{% block govukFooter %}
+  {% set reportProblemHtml %}
+    <p class="govuk-body">
+      Copy this information and paste it into the
+      <a href="{{ serviceNowFormUrl }}" class="govuk-link" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
+    </p>
+    <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
+    <div class="app-report-problem__info">
+      <pre class="app-report-problem__details" id="report-problem-details">Request ID: {{ requestId or 'Unavailable' }}</pre>
+      <div class="app-report-problem__copy">
+        <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
+          Copy
+        </button>
+      </div>
+    </div>
+  {% endset %}
+
+  <div class="app-report-problem" id="report-a-problem">
+    <div class="govuk-width-container">
+      {{ govukDetails({
+        summaryText: "Report a problem",
+        html: reportProblemHtml
+      }) }}
+    </div>
+  </div>
+
+  {{ pdsFooter({
+    baseUrl: "/sentence-plan"
+  }) }}
 {% endblock %}
