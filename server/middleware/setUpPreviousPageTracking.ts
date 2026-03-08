@@ -19,13 +19,12 @@ export default function setUpPreviousPageTracking(): Router {
   router.use((req, res, next) => {
     const currentUrl = req.originalUrl
     const pageHistory = req.session.pageHistory ?? []
-    const previousPageUrl = pageHistory.findLast(url => url !== currentUrl)
 
     req.state = {
       ...req.state,
-      previousPageUrl,
+      pageHistory,
     }
-    res.locals.previousPageUrl = previousPageUrl
+    res.locals.pageHistory = pageHistory
 
     res.end = new Proxy(res.end, {
       apply(target, thisArg, args) {

@@ -24,7 +24,7 @@ declare global {
     interface RequestState {
       cspNonce?: string
       csrfToken?: string
-      previousPageUrl?: string
+      pageHistory?: string[]
       preferencesId?: string
       requestId?: string
       user?: {
@@ -51,7 +51,7 @@ declare global {
 
     interface Locals {
       user: HmppsUser
-      previousPageUrl?: string
+      pageHistory?: string[]
     }
   }
 }

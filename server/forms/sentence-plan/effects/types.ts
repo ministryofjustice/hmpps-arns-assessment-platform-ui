@@ -403,7 +403,7 @@ export interface SentencePlanSession {
 export interface SentencePlanState extends Record<string, unknown> {
   user: User & { authSource: string; token: string }
   requestId: string
-  previousPageUrl?: string
+  pageHistory?: string[]
 }
 
 /**

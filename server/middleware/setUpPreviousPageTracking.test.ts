@@ -24,9 +24,9 @@ const buildApp = (): Express => {
 
   app.get('/inspect', (req, res) => {
     return res.json({
-      previousPageUrlFromState: req.state.previousPageUrl,
-      previousPageUrlFromLocals: res.locals.previousPageUrl,
-      pageHistory: req.session.pageHistory ?? [],
+      pageHistoryFromState: req.state.pageHistory ?? [],
+      pageHistoryFromLocals: res.locals.pageHistory ?? [],
+      pageHistoryFromSession: req.session.pageHistory ?? [],
     })
   })
 
@@ -60,7 +60,7 @@ describe('setUpPreviousPageTracking', () => {
     app = buildApp()
   })
 
-  it('should expose the previous page URL from session history in state and locals', async () => {
+  it('should expose the page history from session in state and locals', async () => {
     const agent = request.agent(app)
 
     // Arrange
@@ -70,8 +70,8 @@ describe('setUpPreviousPageTracking', () => {
     const response = await agent.get('/inspect')
 
     // Assert
-    expect(response.body.previousPageUrlFromState).toBe('/page/first')
-    expect(response.body.previousPageUrlFromLocals).toBe('/page/first')
+    expect(response.body.pageHistoryFromState).toEqual(['/page/first'])
+    expect(response.body.pageHistoryFromLocals).toEqual(['/page/first'])
   })
 
   it('should record only successful internal HTML GET requests', async () => {
@@ -89,10 +89,10 @@ describe('setUpPreviousPageTracking', () => {
     const response = await agent.get('/inspect')
 
     // Assert
-    expect(response.body.pageHistory).toEqual(['/page/first'])
+    expect(response.body.pageHistoryFromSession).toEqual(['/page/first'])
   })
 
-  it('should preserve query strings when recording previous page URLs', async () => {
+  it('should preserve query strings when recording page history', async () => {
     const agent = request.agent(app)
 
     // Arrange
@@ -102,8 +102,8 @@ describe('setUpPreviousPageTracking', () => {
     const response = await agent.get('/inspect')
 
     // Assert
-    expect(response.body.previousPageUrlFromState).toBe('/page/first?type=current')
-    expect(response.body.pageHistory).toEqual(['/page/first?type=current'])
+    expect(response.body.pageHistoryFromState).toEqual(['/page/first?type=current'])
+    expect(response.body.pageHistoryFromSession).toEqual(['/page/first?type=current'])
   })
 
   it('should not record duplicate consecutive URLs when the page is refreshed', async () => {
@@ -117,7 +117,7 @@ describe('setUpPreviousPageTracking', () => {
     const response = await agent.get('/inspect')
 
     // Assert
-    expect(response.body.pageHistory).toEqual(['/page/first'])
+    expect(response.body.pageHistoryFromSession).toEqual(['/page/first'])
   })
 
   it('should keep the most recent ten page visits when history exceeds the limit', async () => {
@@ -135,7 +135,7 @@ describe('setUpPreviousPageTracking', () => {
     const response = await agent.get('/inspect')
 
     // Assert
-    expect(response.body.pageHistory).toEqual([
+    expect(response.body.pageHistoryFromSession).toEqual([
       '/page/3',
       '/page/4',
       '/page/5',

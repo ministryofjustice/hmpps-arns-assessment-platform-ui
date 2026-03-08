@@ -12,12 +12,17 @@ const navigationReferrerMatchers: ReadonlyArray<[RegExp, NavigationReferrer]> = 
   [new RegExp(`^${versionPrefix}/goal/[^/]+/update-goal-steps$`), 'update-goal-steps'],
 ]
 
-export const getNavigationReferrerFromPreviousPageUrl = (previousPageUrl?: string): NavigationReferrer | undefined => {
-  if (!previousPageUrl) {
-    return undefined
-  }
-
-  const pathname = previousPageUrl.split('?')[0]
+const getNavigationReferrerFromUrl = (url: string): NavigationReferrer | undefined => {
+  const pathname = url.split('?')[0]
 
   return navigationReferrerMatchers.find(([pattern]) => pattern.test(pathname))?.[1]
+}
+
+export const getNavigationReferrerFromPageHistory = (
+  pageHistory: readonly string[] = [],
+): NavigationReferrer | undefined => {
+  return [...pageHistory]
+    .reverse()
+    .map(getNavigationReferrerFromUrl)
+    .find(referrer => referrer !== undefined)
 }
