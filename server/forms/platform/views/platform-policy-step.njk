@@ -2,7 +2,7 @@
 {%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 {%- from "partials/macros/support-widget/macro.njk" import supportWidget -%}
 
-{% set backlink = previousPageUrl %}
+{% set backlink = pageHistory[pageHistory.length - 1] if pageHistory and pageHistory.length else undefined %}
 {% set fullPageTitle = step.title + ' - ' + applicationName %}
 
 {% set pageTitle %}
