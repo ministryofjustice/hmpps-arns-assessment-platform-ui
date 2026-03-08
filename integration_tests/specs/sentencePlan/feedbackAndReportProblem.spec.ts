@@ -107,27 +107,26 @@ test.describe('Feedback and Report a Problem', () => {
       await expect(copyButton).toBeVisible()
     })
 
-    // AC5: Fields show as blank when data is unavailable.
-    //       On the privacy screen, CRN and OASys PK are available from the session
-    //       but Assessment ID is not yet set.
-    test('unavailable fields are blank on privacy screen', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+    test('privacy screen shows the generic support widget details', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
       await navigateToPrivacyScreen(page, handoverLink)
 
-      await page.locator('#report-a-problem summary').click()
+      const supportWidget = page.locator('app-support-widget')
+      await supportWidget.getByRole('button', { name: /report a problem with this page/i }).click()
 
-      const detailsText = page.locator('#report-problem-details')
-      await expect(detailsText).toBeVisible()
+      const supportData = supportWidget.locator('.support-widget__data')
+      await expect(supportData).toBeVisible()
 
-      // Fields available from the session should be populated
-      await expect(detailsText).toContainText(`CRN: ${crn}`)
-      await expect(detailsText).toContainText(/Request ID:/)
-
-      // Assessment ID is not available on the privacy screen and should be blank
-      const text = await detailsText.textContent()
-      expect(text).toMatch(/Assessment ID:\s*\n/)
+      await expect(supportData).toContainText('Request ID')
+      await expect(supportData).not.toContainText('CRN')
+      await expect(supportData).not.toContainText('Assessment ID')
+      await expect(supportData).not.toContainText('OASys PK')
     })
   })
 
