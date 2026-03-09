@@ -1,19 +1,15 @@
 import type { Request, Response } from 'express'
+import logger from '../../logger'
 import setUpRequestLogging from './setUpRequestLogging'
 
-jest.mock('../../logger', () => {
-  const childLogger = {
+jest.mock('../../logger', () => ({
+  __esModule: true,
+  default: {
     info: jest.fn(),
     warn: jest.fn(),
     error: jest.fn(),
-  }
-
-  return {
-    __esModule: true,
-    createChildLogger: jest.fn(() => childLogger),
-    runWithLogger: jest.fn((_logger, callback: () => unknown) => callback()),
-  }
-})
+  },
+}))
 
 jest.mock('@ministryofjustice/hmpps-azure-telemetry', () => ({
   trace: {
@@ -25,10 +21,7 @@ jest.mock('@ministryofjustice/hmpps-azure-telemetry', () => ({
   },
 }))
 
-const loggerModule = jest.requireMock('../../logger') as {
-  createChildLogger: jest.Mock
-  runWithLogger: jest.Mock
-}
+const mockLogger = jest.mocked(logger)
 
 describe('setUpRequestLogging', () => {
   beforeEach(() => {
@@ -72,23 +65,9 @@ describe('setUpRequestLogging', () => {
 
     finishListeners.finish()
 
-    expect(loggerModule.createChildLogger).toHaveBeenCalledWith({
-      requestId: 'req-123',
-      traceId: 'trace-123',
-      requestMethod: 'GET',
-      requestPath: '/test',
-    })
-    expect(loggerModule.runWithLogger).toHaveBeenCalled()
-
-    const childLogger = loggerModule.createChildLogger.mock.results[0].value as {
-      info: jest.Mock
-      warn: jest.Mock
-      error: jest.Mock
-    }
-
-    expect(childLogger.info).not.toHaveBeenCalled()
-    expect(childLogger.warn).not.toHaveBeenCalled()
-    expect(childLogger.error).not.toHaveBeenCalled()
+    expect(mockLogger.info).not.toHaveBeenCalled()
+    expect(mockLogger.warn).not.toHaveBeenCalled()
+    expect(mockLogger.error).not.toHaveBeenCalled()
   })
 
   it('should log 4xx request completion as a warning', () => {
@@ -120,11 +99,7 @@ describe('setUpRequestLogging', () => {
 
     finishListeners.finish()
 
-    const childLogger = loggerModule.createChildLogger.mock.results[0].value as {
-      warn: jest.Mock
-    }
-
-    expect(childLogger.warn).toHaveBeenCalledWith(
+    expect(mockLogger.warn).toHaveBeenCalledWith(
       expect.objectContaining({
         event: 'request.completed',
         statusCode: 404,
@@ -163,11 +138,7 @@ describe('setUpRequestLogging', () => {
 
     finishListeners.finish()
 
-    const childLogger = loggerModule.createChildLogger.mock.results[0].value as {
-      error: jest.Mock
-    }
-
-    expect(childLogger.error).toHaveBeenCalledWith(
+    expect(mockLogger.error).toHaveBeenCalledWith(
       expect.objectContaining({
         event: 'request.completed',
         statusCode: 500,

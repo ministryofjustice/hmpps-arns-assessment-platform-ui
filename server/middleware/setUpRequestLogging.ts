@@ -1,6 +1,6 @@
 import express, { Router } from 'express'
 import { trace } from '@ministryofjustice/hmpps-azure-telemetry'
-import { createChildLogger, runWithLogger } from '../../logger'
+import logger from '../../logger'
 
 const roundDurationMs = (durationMs: number): number => Number(durationMs.toFixed(1))
 
@@ -22,42 +22,34 @@ export default function setUpRequestLogging(): Router {
     res.locals.requestId = requestId
     res.locals.traceId = traceId
 
-    const requestLogger = createChildLogger({
-      requestId,
-      traceId,
-      requestMethod: req.method,
-      requestPath: req.path,
-    })
-
     const startTime = process.hrtime.bigint()
 
-    return runWithLogger(requestLogger, () => {
-      // Logging on `finish` captures the final status code after all downstream
-      // middleware and routes have had a chance to handle the request.
-      res.on('finish', () => {
-        const durationMs = roundDurationMs(Number(process.hrtime.bigint() - startTime) / 1_000_000)
-        const fields = {
-          event: 'request.completed',
-          statusCode: res.statusCode,
-          durationMs,
-          originalUrl: req.originalUrl,
-          userId: res.locals.user?.username,
-          authSource: res.locals.user?.authSource,
-        }
+    // Logging on `finish` captures the final status code after all downstream
+    // middleware and routes have had a chance to handle the request.
+    res.on('finish', () => {
+      const durationMs = roundDurationMs(Number(process.hrtime.bigint() - startTime) / 1_000_000)
+      const fields = {
+        event: 'request.completed',
+        requestId,
+        traceId,
+        statusCode: res.statusCode,
+        durationMs,
+        originalUrl: req.originalUrl,
+        userId: res.locals.user?.username,
+        authSource: res.locals.user?.authSource,
+      }
 
-        if (res.statusCode >= 500) {
-          requestLogger.error(fields, 'Request completed')
-          return
-        }
+      if (res.statusCode >= 500) {
+        logger.error(fields, 'Request completed')
+        return
+      }
 
-        if (res.statusCode >= 400) {
-          requestLogger.warn(fields, 'Request completed')
-
-        }
-      })
-
-      next()
+      if (res.statusCode >= 400) {
+        logger.warn(fields, 'Request completed')
+      }
     })
+
+    next()
   })
 
   return router
