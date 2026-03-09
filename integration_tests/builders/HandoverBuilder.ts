@@ -1,6 +1,4 @@
 import { test } from '@playwright/test'
-import type { TestHandoverApiClient } from '../support/apis/TestHandoverApiClient'
-import type { CoordinatorAssociation } from './CoordinatorBuilder'
 import type { CreateHandoverLinkRequest } from '@server/interfaces/handover-api/request'
 import type {
   HandoverPrincipalDetails,
@@ -9,6 +7,8 @@ import type {
   AccessMode,
   Location,
 } from '@server/interfaces/handover-api/shared'
+import type { TestHandoverApiClient } from '../support/apis/TestHandoverApiClient'
+import type { CoordinatorAssociation } from './CoordinatorBuilder'
 import { generateUserId } from './utils'
 
 /**
