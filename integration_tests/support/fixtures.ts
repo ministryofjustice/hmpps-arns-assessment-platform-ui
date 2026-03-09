@@ -99,6 +99,11 @@ export interface CreateSessionOptions {
    * Pass specific overrides or `null` to test missing data scenarios.
    */
   criminogenicNeedsData?: CriminogenicNeedsData | null
+  /**
+   * Plan version to include in the handover request.
+   * When set, indicates the user is accessing a previous version of the plan.
+   */
+  planVersion?: number
 }
 
 export interface SessionFixture {
@@ -252,6 +257,10 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
       if (options.criminogenicNeedsData !== null) {
         const criminogenicNeeds = options.criminogenicNeedsData ?? defaultCriminogenicNeedsData
         sessionBuilder.withCriminogenicNeeds(criminogenicNeeds)
+      }
+
+      if (options.planVersion) {
+        sessionBuilder.withPlanVersion(options.planVersion)
       }
 
       const session = await sessionBuilder.save()
