@@ -55,5 +55,8 @@ export const initializeSessionFromAccess = () => (context: SentencePlanContext) 
     planAccessMode: accessDetails.planAccessMode,
     oasysRedirectUrl: accessDetails.oasysRedirectUrl,
     planIdentifier,
+    planVersion: handoverContext?.sentencePlanContext?.planVersion,
   }
+
+  context.setData('sessionDetails', session.sessionDetails)
 }
