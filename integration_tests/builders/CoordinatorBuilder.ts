@@ -1,5 +1,4 @@
 import { test } from '@playwright/test'
-import type { TestCoordinatorApiClient } from '../support/apis/TestCoordinatorApiClient'
 import type {
   OasysCreateRequest,
   OasysCreateResponse,
@@ -8,7 +7,9 @@ import type {
   AssessmentType,
   UserLocation,
   SubjectDetails,
-} from '../../server/interfaces/coordinator-api/oasysCreate'
+} from '@server/interfaces/coordinator-api/oasysCreate'
+import type { SignType, OasysSignResponse } from '@server/interfaces/coordinator-api/oasysSign'
+import type { TestCoordinatorApiClient } from '../support/apis/TestCoordinatorApiClient'
 import { generateUserId } from './utils'
 
 /**
@@ -247,6 +248,28 @@ export class CoordinatorBuilderInstance {
         sentencePlanId: response.sentencePlanId,
         sentencePlanVersion: response.sentencePlanVersion,
       }
+    })
+  }
+
+  /**
+   * Lock the OASys assessment. Must be called after save() and before sign().
+   */
+  async lock(association: CoordinatorAssociation): Promise<void> {
+    return test.step('Lock coordinator association', async () => {
+      await this.client.lock(association.oasysAssessmentPk, this.userDetails)
+    })
+  }
+
+  /**
+   * Sign the OASys assessment. Must be called after lock().
+   * Returns the new version numbers.
+   */
+  async sign(association: CoordinatorAssociation, signType: SignType = 'SELF'): Promise<OasysSignResponse> {
+    return test.step('Sign coordinator association', async () => {
+      return this.client.sign(association.oasysAssessmentPk, {
+        signType,
+        userDetails: this.userDetails,
+      })
     })
   }
 }
