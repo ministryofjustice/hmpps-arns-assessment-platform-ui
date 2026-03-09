@@ -1,8 +1,5 @@
 import express, { Router } from 'express'
-import { trace } from '@ministryofjustice/hmpps-azure-telemetry'
-import logger from '../../logger'
-
-const roundDurationMs = (durationMs: number): number => Number(durationMs.toFixed(1))
+import { trace, telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 
 export default function setUpRequestLogging(): Router {
   const router = express.Router()
@@ -22,30 +19,13 @@ export default function setUpRequestLogging(): Router {
     res.locals.requestId = requestId
     res.locals.traceId = traceId
 
-    const startTime = process.hrtime.bigint()
-
-    // Logging on `finish` captures the final status code after all downstream
-    // middleware and routes have had a chance to handle the request.
     res.on('finish', () => {
-      const durationMs = roundDurationMs(Number(process.hrtime.bigint() - startTime) / 1_000_000)
-      const fields = {
-        event: 'request.completed',
-        requestId,
-        traceId,
-        statusCode: res.statusCode,
-        durationMs,
-        originalUrl: req.originalUrl,
-        userId: res.locals.user?.username,
-        authSource: res.locals.user?.authSource,
-      }
-
       if (res.statusCode >= 500) {
-        logger.error(fields, 'Request completed')
-        return
-      }
-
-      if (res.statusCode >= 400) {
-        logger.warn(fields, 'Request completed')
+        telemetry.trackEvent('ServerError', {
+          statusCode: res.statusCode,
+          originalUrl: req.originalUrl,
+          method: req.method,
+        })
       }
     })
 
