@@ -189,7 +189,7 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
   }
 
   if (targetApplication === 'sentence-plan' && session.sentencePlanVersion) {
-    request.planVersion = session.sentencePlanVersion
+    request.sentencePlanVersion = session.sentencePlanVersion
   }
 
   return request

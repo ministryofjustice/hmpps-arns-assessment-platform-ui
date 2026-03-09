@@ -7,4 +7,5 @@ export interface SessionDetails {
   planAccessMode: AccessMode
   oasysRedirectUrl?: string
   planIdentifier?: AssessmentIdentifiers
+  planVersion?: number
 }
