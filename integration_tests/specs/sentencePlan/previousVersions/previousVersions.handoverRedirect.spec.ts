@@ -4,8 +4,7 @@ import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFa
 import { buildPageTitle, handlePrivacyScreenIfPresent, sentencePlanPageTitles } from '../sentencePlanUtils'
 import HistoricPlanPage from '../../../pages/sentencePlan/historicPlanPage'
 
-// TODO: Enable this again once Handover national-rollout branch is fixed.
-test.skip('Previous Versions - Handover Redirect', () => {
+test.describe('Previous Versions - Handover Redirect', () => {
   test('should redirect to historic plan view when handover provides a planVersion', async ({
     page,
     coordinatorBuilder,
