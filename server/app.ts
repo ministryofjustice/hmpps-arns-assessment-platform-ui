@@ -63,6 +63,7 @@ export default function createApp(services: Services): express.Application {
       coordinatorApi: services.coordinatorApiClient,
       deliusApi: services.deliusApiClient,
       auditService: services.auditService,
+      featureFlagService: services.featureFlagService,
     })
 
   // Setup middleware
