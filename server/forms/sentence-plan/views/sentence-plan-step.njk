@@ -3,6 +3,10 @@
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
 {%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 
+{% set isPrivateBetaUser = data.assessment.flags and 'SAN_BETA' in data.assessment.flags %}
+{% set showSmartSurveyForPrivateBeta = data.featureFlags.smartSurveyInPrivateBetaEnabled and isPrivateBetaUser %}
+{% set showSmartSurveyForNationalRollout = data.featureFlags.smartSurveyInNationalRolloutEnabled and not isPrivateBetaUser %}
+
 {# ancestor[0].title is root journey title, in this case it's 'Sentence Plan' #}
 {# step.title is current step(page) of the journey #}
 {% set fullPageTitle = (dynamicTitle or step.title) + ' - ' + ancestors[0].title %}
@@ -35,19 +39,21 @@
   {% block pageScripts %}
     <script src="{{ '/assets/js/forms/sentence-plan/assets/form.js' | assetMap }}"></script>
   {% endblock %}
-  {% if smartSurveyPopupCode and currentTab is defined %}
-    <script nonce="{{ cspNonce }}">
-      (function(d){
-        var s,ss;
-        ss=d.createElement("script");
-        ss.type="text/javascript";
-        ss.async=true;
-        ss.type="module";
-        ss.src="https://embed.smartsurvey.io/index.js?popupCode={{ smartSurveyPopupCode }}";
-        s=d.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(ss, s);
-      })(document);
-    </script>
+  {% if showSmartSurveyForPrivateBeta or showSmartSurveyForNationalRollout %}
+    {% if smartSurveyPopupCode and currentTab is defined %}
+      <script nonce="{{ cspNonce }}">
+        (function(d){
+          var s,ss;
+          ss=d.createElement("script");
+          ss.type="text/javascript";
+          ss.async=true;
+          ss.type="module";
+          ss.src="https://embed.smartsurvey.io/index.js?popupCode={{ smartSurveyPopupCode }}";
+          s=d.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(ss, s);
+        })(document);
+      </script>
+    {% endif %}
   {% endif %}
 {% endblock %}
 
