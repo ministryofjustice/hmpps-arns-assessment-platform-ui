@@ -211,6 +211,7 @@ export class HandoverBuilderInstance {
         pnc: this.subject.pnc,
         givenName: this.subject.givenName ?? 'Test',
         familyName: this.subject.familyName ?? 'User',
+        gender: this.subject.gender ?? '1',
         dateOfBirth: this.subject.dateOfBirth ?? '1990-01-01',
         location: this.subject.location ?? 'COMMUNITY',
         ...this.subject,
