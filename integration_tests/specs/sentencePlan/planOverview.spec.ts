@@ -1,6 +1,11 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
-import { currentGoals, futureGoals, mixedGoals } from '../../builders/sentencePlanFactories'
+import {
+  currentGoals,
+  currentGoalsWithCompletedSteps,
+  futureGoals,
+  mixedGoals,
+} from '../../builders/sentencePlanFactories'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import { buildPageTitle, navigateToSentencePlan, sentencePlanPageTitles } from './sentencePlanUtils'
@@ -485,6 +490,20 @@ test.describe('Plan Overview Page', () => {
         const firstFutureHasMoveUp = await planOverviewPage.goalCardHasMoveUpButton(0)
         expect(firstFutureHasMoveUp).toBe(false)
       })
+    })
+  })
+
+  test.describe('Accessibility', () => {
+    test('should be accessible', async ({ page, createSession, makeAxeBuilder, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(3)).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      await PlanOverviewPage.verifyOnPage(page)
+
+      const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
+      expect(accessibilityScanResults.violations).toEqual([])
     })
   })
 })
