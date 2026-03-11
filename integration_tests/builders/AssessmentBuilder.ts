@@ -389,36 +389,14 @@ export class AssessmentBuilderInstance {
     commandResults: CommandResults[],
     commandIndex: number,
   ): CreateCollectionCommandResult {
-    const result = commandResults[commandIndex]
-
-    if (!this.isCreateCollectionCommandResult(result)) {
-      throw new Error(`Expected CreateCollectionCommandResult at command index ${commandIndex}`)
-    }
-
-    return result
+    return commandResults[commandIndex] as CreateCollectionCommandResult
   }
 
   private getAddCollectionItemResult(
     commandResults: CommandResults[],
     commandIndex: number,
   ): AddCollectionItemCommandResult {
-    const result = commandResults[commandIndex]
-
-    if (!this.isAddCollectionItemCommandResult(result)) {
-      throw new Error(`Expected AddCollectionItemCommandResult at command index ${commandIndex}`)
-    }
-
-    return result
-  }
-
-  private isCreateCollectionCommandResult(result: CommandResults | undefined): result is CreateCollectionCommandResult {
-    return !!result && result.type === 'CreateCollectionCommandResult' && 'collectionUuid' in result
-  }
-
-  private isAddCollectionItemCommandResult(
-    result: CommandResults | undefined,
-  ): result is AddCollectionItemCommandResult {
-    return !!result && result.type === 'AddCollectionItemCommandResult' && 'collectionItemUuid' in result
+    return commandResults[commandIndex] as AddCollectionItemCommandResult
   }
 }
 
