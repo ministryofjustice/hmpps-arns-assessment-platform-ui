@@ -43,11 +43,8 @@ export default class CoordinatorApiClient extends RestClient {
 
   /**
    * Get previous versions for an entity.
-   *
-   * When authType is `HMPPS_AUTH`, coordinator returns plan versions only.
    */
-  async getVersionsByEntityId(entityUuid: string, authType?: 'HMPPS_AUTH'): Promise<PreviousVersionsResponse> {
-    const path = authType ? `/entity/versions/${entityUuid}/${authType}` : `/entity/versions/${entityUuid}`
-    return this.get({ path }, asSystem())
+  async getVersionsByEntityId(entityUuid: string): Promise<PreviousVersionsResponse> {
+    return this.get({ path: `/entity/versions/${entityUuid}` }, asSystem())
   }
 }
