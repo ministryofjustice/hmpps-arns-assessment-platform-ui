@@ -7,6 +7,7 @@ import {
   FeatureFlagConfig,
   FeatureFlagsConfig,
   UPDATE_INTERVAL_SECONDS,
+  getFallbackFeatureFlags,
 } from '../utils/featureFlagsUtils'
 
 const getConfig = (): FeatureFlagConfig => {
@@ -49,11 +50,7 @@ export default class FeatureFlagService {
 
     if (!client) {
       logger.error('Unable to initialise Flipt client for feature flag evaluation')
-      // TODO: check if we need a default state for each flag
-      for (const flag of Object.values(featureFlags)) {
-        booleanFeatureFlags[flag.nunjucksKey] = false
-      }
-      return { booleanFeatureFlags }
+      return { booleanFeatureFlags: getFallbackFeatureFlags(featureFlags) }
     }
 
     const entityId = userId || 'fallbackUser'
@@ -65,7 +62,7 @@ export default class FeatureFlagService {
         booleanFeatureFlags[flag.nunjucksKey] = result.enabled
       } catch (error) {
         logger.error(`Error evaluating feature flag ${flag.fliptKey}:`, error)
-        booleanFeatureFlags[flag.nunjucksKey] = false
+        booleanFeatureFlags[flag.nunjucksKey] = flag.fallbackState
       }
     }
 
