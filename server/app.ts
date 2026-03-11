@@ -20,6 +20,7 @@ import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
 import setUpPreferencesCookie from './middleware/setUpPreferencesCookie'
 import setUpRequestLogging from './middleware/setUpRequestLogging'
+import setUpPreviousPageTracking from './middleware/setUpPreviousPageTracking'
 
 import routes from './routes'
 import type { Services } from './services'
@@ -28,6 +29,7 @@ import logger from '../logger'
 // Form packages
 import formEngineDeveloperGuide from './forms/form-engine-developer-guide'
 import accessFormPackage from './forms/access'
+import platformPoliciesFormPackage from './forms/platform'
 import sentencePlanFormPackage from './forms/sentence-plan'
 import trainingSessionLauncher from './forms/training-session-launcher'
 
@@ -54,6 +56,7 @@ export default function createApp(services: Services): express.Application {
       handoverApiClient: services.handoverApiClient,
       preferencesStore: services.preferencesStore,
     })
+    .registerFormPackage(platformPoliciesFormPackage)
     .registerFormPackage(accessFormPackage, {
       deliusApi: services.deliusApiClient,
       handoverApi: services.handoverApiClient,
@@ -79,6 +82,7 @@ export default function createApp(services: Services): express.Application {
       bypassPaths: [
         '/form-engine-developer-guide',
         '/training-session-launcher',
+        '/platform',
         // Allow access to session timeout page even with expired session
         // so we can show the "information deleted" message and re-auth link
         '/sentence-plan/unsaved-information-deleted',
@@ -88,6 +92,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware([], services.deliusApiClient))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
+  app.use(setUpPreviousPageTracking())
 
   // Mount routes
   app.use(routes(services))
