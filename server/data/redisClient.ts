@@ -18,13 +18,13 @@ export const createRedisClient = (): RedisClient => {
       reconnectStrategy: (attempts: number) => {
         // Exponential back off: 20ms, 40ms, 80ms..., capped to retry every 30 seconds
         const nextDelay = Math.min(2 ** attempts * 20, 30000)
-        logger.info(`Retry Redis connection attempt: ${attempts}, next attempt in: ${nextDelay}ms`)
+        logger.info({ attempts, nextDelay }, 'Retrying Redis connection')
         return nextDelay
       },
     },
   })
 
-  client.on('error', (e: Error) => logger.error('Redis client error', e))
+  client.on('error', (e: Error) => logger.error({ err: e }, 'Redis client error'))
 
   return client
 }

@@ -6,6 +6,7 @@ const formatOut = bunyanFormat({ outputMode: 'short', color: !config.production 
 
 const logger = bunyan.createLogger({
   name: 'HMPPS ARNS Assessment Platform UI',
+  serializers: bunyan.stdSerializers,
   stream: formatOut,
   level: config.logLevel as LogLevel,
 })

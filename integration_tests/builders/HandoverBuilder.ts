@@ -1,14 +1,14 @@
 import { test } from '@playwright/test'
-import type { TestHandoverApiClient } from '../support/apis/TestHandoverApiClient'
-import type { CoordinatorAssociation } from './CoordinatorBuilder'
-import type { CreateHandoverLinkRequest } from '../../server/interfaces/handover-api/request'
+import type { CreateHandoverLinkRequest } from '@server/interfaces/handover-api/request'
 import type {
   HandoverPrincipalDetails,
   HandoverSubjectDetails,
   CriminogenicNeedsData,
   AccessMode,
   Location,
-} from '../../server/interfaces/handover-api/shared'
+} from '@server/interfaces/handover-api/shared'
+import type { TestHandoverApiClient } from '../support/apis/TestHandoverApiClient'
+import type { CoordinatorAssociation } from './CoordinatorBuilder'
 import { generateUserId } from './utils'
 
 /**
@@ -67,6 +67,8 @@ export class HandoverBuilderInstance {
   private subject: Partial<HandoverSubjectDetails> = {}
 
   private criminogenicNeeds: CriminogenicNeedsData | undefined
+
+  private planVersion: number | undefined
 
   // Generate unique user ID to avoid "duplicate key" errors in parallel tests
   private defaultPrincipal: HandoverPrincipalDetails = {
@@ -185,6 +187,16 @@ export class HandoverBuilderInstance {
   }
 
   /**
+   * Set the plan version to include in the handover request.
+   * When set, indicates the user is accessing a previous version of the plan.
+   */
+  withPlanVersion(version: number): this {
+    this.planVersion = version
+
+    return this
+  }
+
+  /**
    * Save the handover session via the handover API.
    */
   async save(): Promise<HandoverSession> {
@@ -199,6 +211,7 @@ export class HandoverBuilderInstance {
         pnc: this.subject.pnc,
         givenName: this.subject.givenName ?? 'Test',
         familyName: this.subject.familyName ?? 'User',
+        gender: this.subject.gender ?? '1',
         dateOfBirth: this.subject.dateOfBirth ?? '1990-01-01',
         location: this.subject.location ?? 'COMMUNITY',
         ...this.subject,
@@ -208,6 +221,7 @@ export class HandoverBuilderInstance {
         user: principalDetails,
         subjectDetails,
         oasysAssessmentPk: this.association.oasysAssessmentPk,
+        sentencePlanVersion: this.planVersion,
         criminogenicNeedsData: this.criminogenicNeeds,
       }
 

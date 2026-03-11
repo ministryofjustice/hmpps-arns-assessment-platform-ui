@@ -106,8 +106,9 @@
       <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
       <div class="app-report-problem__info">
         <pre class="app-report-problem__details" id="report-problem-details">CRN: {{ data.caseData.crn if data.caseData }}
-Request ID: {{ getRequestId() if getRequestId() != 'unavailable' }}
-Assessment ID: {{ data.assessmentUuid }}
+Request ID: {{ requestId or 'Unavailable' }}
+{% if traceId and traceId != requestId %}Trace ID: {{ traceId }}
+{% endif %}Assessment ID: {{ data.assessmentUuid }}
 OASys PK: {{ data.oasysAssessmentPk }}</pre>
         <div class="app-report-problem__copy">
           <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
@@ -128,6 +129,6 @@ OASys PK: {{ data.oasysAssessmentPk }}</pre>
   {% endblock %}
 
   {{ pdsFooter({
-    baseUrl: "/sentence-plan"
+    baseUrl: footerBaseUrl or "/platform"
   }) }}
 {% endblock %}

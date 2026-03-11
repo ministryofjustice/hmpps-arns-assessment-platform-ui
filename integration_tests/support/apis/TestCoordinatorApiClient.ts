@@ -1,7 +1,13 @@
 import { RestClient, asSystem, AgentConfig } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import type { TestInfo } from '@playwright/test'
-import type { OasysCreateRequest, OasysCreateResponse } from '../../../server/interfaces/coordinator-api/oasysCreate'
+import type {
+  OasysCreateRequest,
+  OasysCreateResponse,
+  OasysUserDetails,
+} from '../../../server/interfaces/coordinator-api/oasysCreate'
+import type { OasysSignRequest, OasysSignResponse } from '../../../server/interfaces/coordinator-api/oasysSign'
+import type { PreviousVersionsResponse } from '../../../server/interfaces/coordinator-api/previousVersions'
 import { noopLogger } from './noopLogger'
 
 export interface TestCoordinatorApiClientConfig {
@@ -37,10 +43,49 @@ export class TestCoordinatorApiClient extends RestClient {
    * Links an OASys assessment PK to ARNS entities (SAN, Sentence Plan).
    */
   async createOasysAssociation(request: OasysCreateRequest): Promise<OasysCreateResponse> {
-    const operation = 'createOasysAssociation'
+    return this.request('createOasysAssociation', request, () =>
+      this.post({ path: '/oasys/create', data: { ...request } }, asSystem()),
+    )
+  }
 
+  /**
+   * Lock an OASys assessment.
+   * Must be called before signing.
+   */
+  async lock(oasysAssessmentPk: string, userDetails: OasysUserDetails): Promise<void> {
+    const request = { userDetails }
+
+    return this.request('lock', request, () =>
+      this.post({ path: `/oasys/${oasysAssessmentPk}/lock`, data: request }, asSystem()),
+    )
+  }
+
+  /**
+   * Sign an OASys assessment.
+   * Creates a new version and returns the updated version numbers.
+   */
+  async sign(oasysAssessmentPk: string, request: OasysSignRequest): Promise<OasysSignResponse> {
+    return this.request('sign', request, () =>
+      this.post({ path: `/oasys/${oasysAssessmentPk}/sign`, data: { ...request } }, asSystem()),
+    )
+  }
+
+  /**
+   * Get previous versions for an entity.
+   */
+  async getVersionsByEntityId(entityUuid: string): Promise<PreviousVersionsResponse> {
+    return this.request('getVersionsByEntityId', { entityUuid }, () =>
+      this.get({ path: `/entity/versions/${entityUuid}` }, asSystem()),
+    )
+  }
+
+  private async request<TRequest, TResponse>(
+    operation: string,
+    request: TRequest,
+    fn: () => Promise<TResponse>,
+  ): Promise<TResponse> {
     try {
-      const response: OasysCreateResponse = await this.post({ path: '/oasys/create', data: { ...request } }, asSystem())
+      const response = await fn()
 
       if (this.testInfo) {
         await this.testInfo.attach(`TEST COORDINATOR API SUCCESS: ${operation}`, {

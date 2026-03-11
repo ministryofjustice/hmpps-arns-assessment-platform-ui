@@ -20,15 +20,19 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
   const assessmentUuid = context.getData('assessmentUuid')
   const session = context.getSession()
   const handoverCriminogenicNeeds = session.handoverContext?.criminogenicNeedsData
+  const crn = session.caseDetails?.crn
 
   if (!assessmentUuid) {
-    logger.error('Cannot load all areas assessment info: missing assessmentUuid')
+    logger.error({ crn }, 'Cannot load all areas assessment info: missing assessmentUuid')
     setErrorState(context)
     return
   }
 
   if (!handoverCriminogenicNeeds) {
-    logger.error('Cannot load all areas assessment info: missing handover criminogenic needs data')
+    logger.error(
+      { assessmentUuid, crn },
+      'Cannot load all areas assessment info: missing handover criminogenic needs data',
+    )
     setErrorState(context)
     return
   }
@@ -70,7 +74,7 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
 
     context.setData('allAreasAssessmentStatus', 'success')
   } catch (error) {
-    logger.error('Failed to load all areas assessment info', error)
+    logger.error({ err: error, assessmentUuid, crn }, 'Failed to load all areas assessment info')
     setErrorState(context)
   }
 }

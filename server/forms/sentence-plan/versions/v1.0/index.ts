@@ -1,4 +1,5 @@
-import { accessTransition, journey } from '@form-engine/form/builders'
+import { accessTransition, and, Data, Format, journey, redirect, Request } from '@form-engine/form/builders'
+import { Condition } from '@form-engine/registry/conditions'
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
@@ -36,11 +37,22 @@ export const sentencePlanV1Journey = journey({
   onAccess: [
     accessTransition({
       effects: [
-        SentencePlanEffects.loadSessionData(),
         SentencePlanEffects.initializeSessionFromAccess(),
+        SentencePlanEffects.loadSessionData(),
         SentencePlanEffects.loadPlan(),
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
+      ],
+    }),
+    accessTransition({
+      when: and(
+        Data('sessionDetails.planVersion').match(Condition.IsRequired()),
+        Request.Path().not.match(Condition.String.MatchesRegex('view-historic')),
+      ),
+      next: [
+        redirect({
+          goto: Format('/sentence-plan/v1.0/plan/view-historic/%1?type=current', Data('sessionDetails.planVersion')),
+        }),
       ],
     }),
     // READ_ONLY users skip privacy and go straight to overview; edit users must accept privacy first.
