@@ -34,13 +34,7 @@ export const loadPreviousVersions = (deps: SentencePlanEffectsDeps) => async (co
   const showAssessmentColumn = hasPrivateBetaOasysAccess(context)
   context.setData('showAssessmentColumn', showAssessmentColumn)
 
-  // Use coordinator's HMPPS_AUTH mode for all plan-only journeys (including
-  // national rollout users who entered via OASYS). This forces coordinator to
-  // return PLAN versions only, so we avoid unnecessary SAN lookups/failures.
-  const previousVersions = await deps.coordinatorApi.getVersionsByEntityId(
-    assessmentUuid,
-    showAssessmentColumn ? undefined : 'HMPPS_AUTH',
-  )
+  const previousVersions = await deps.coordinatorApi.getVersionsByEntityId(assessmentUuid)
 
   if (!previousVersions) {
     throw new NotFound('Previous versions not found')

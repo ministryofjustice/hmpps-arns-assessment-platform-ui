@@ -5,6 +5,7 @@ export declare module 'express-session' {
   interface SessionData {
     returnTo: string
     nowInMinutes: number
+    pageHistory?: string[]
     crn?: string
     assessmentUuid?: string
     assessmentVersion?: number
@@ -23,6 +24,8 @@ declare global {
     interface RequestState {
       cspNonce?: string
       csrfToken?: string
+      pageHistory?: string[]
+      previousPageUrl?: string
       preferencesId?: string
       requestId?: string
       traceId?: string
@@ -50,6 +53,8 @@ declare global {
 
     interface Locals {
       user: HmppsUser
+      pageHistory?: string[]
+      previousPageUrl?: string
       requestId?: string
       traceId?: string
       cspNonce?: string
