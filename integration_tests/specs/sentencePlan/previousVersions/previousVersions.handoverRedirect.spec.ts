@@ -40,6 +40,7 @@ test.describe('Previous Versions - Handover Redirect', () => {
 
     const historicPlanPage = await HistoricPlanPage.verifyOnPage(page)
     await expect(historicPlanPage.alertHeading).toContainText('This version is from')
+    await expect(historicPlanPage.primaryNavigation).toBeHidden()
   })
 
   test('should navigate to plan overview when handover does not provide a planVersion', async ({

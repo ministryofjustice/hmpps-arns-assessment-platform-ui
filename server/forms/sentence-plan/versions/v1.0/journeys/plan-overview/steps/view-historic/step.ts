@@ -19,6 +19,7 @@ export const viewHistoricStep = step({
   view: {
     locals: {
       hidePreviousVersions: true,
+      hideNavigation: true,
       headerPageHeading: Format(`%1's plan`, CaseData.Forename),
       currentTab: Query('type'),
       buttons: {
