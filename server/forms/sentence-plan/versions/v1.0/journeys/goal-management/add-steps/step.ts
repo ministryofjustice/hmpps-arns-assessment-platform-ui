@@ -101,7 +101,7 @@ export const addStepsStep = step({
           SentencePlanEffects.addNotification({
             type: 'success',
 
-            message: Format('You added a goal to %1 plan', CaseData.ForenamePossessive),
+            message: Format('You added a goal with steps to %1 plan', CaseData.ForenamePossessive),
             target: 'plan-overview',
           }),
         ],

@@ -103,7 +103,7 @@ test.describe('Create Goal Journey', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.notificationBanner).toBeVisible()
-      await expect(planOverviewPage.notificationBannerText).toContainText(/You added a goal to .+'s plan/i)
+      await expect(planOverviewPage.notificationBannerText).toContainText(/You added a goal with steps to .+'s plan/i)
     })
 
     test('future goal with steps redirects to future goals tab', async ({ page, createSession }) => {
