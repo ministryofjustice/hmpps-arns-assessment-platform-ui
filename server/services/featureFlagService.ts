@@ -23,25 +23,35 @@ export default class FeatureFlagService {
 
   private client: FliptClient
 
+  private clientPromise: Promise<FliptClient> | undefined
+
   constructor() {
     this.clientConfig = getConfig()
   }
 
-  private async initClient(): Promise<void> {
+  private async initClient(): Promise<FliptClient> | undefined {
     if (!this.clientConfig) {
       logger.error('Unable to initiate FliptClient: config is missing')
       return undefined
     }
 
-    return await FliptClient.init(this.clientConfig)
+    return FliptClient.init(this.clientConfig)
   }
 
-  private async getClient(): Promise<FliptClient | undefined> {
+  private async getClient(): Promise<FliptClient> | undefined {
     if (this.client) {
       return this.client
     }
+
+    if (!this.clientPromise) {
+      this.clientPromise = this.initClient().then(client => {
+        this.client = client
+        return client
+      })
+    }
+
     this.client = this.initClient()
-    return this.client
+    return this.clientPromise
   }
 
   async evaluateBooleanFlags(featureFlags: FeatureFlagsConfig, userId?: string): Promise<BooleanFeatureFlagsResult> {
