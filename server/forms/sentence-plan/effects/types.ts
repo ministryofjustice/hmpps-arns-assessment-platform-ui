@@ -15,6 +15,7 @@ import { CreateAssessmentCommandResult } from '../../../interfaces/aap-api/comma
 import { AssessmentArea } from '../../../interfaces/coordinator-api/entityAssessment'
 import { AuthSource } from '../../../interfaces/hmppsUser'
 import { PreviousVersionsResponse } from '../../../interfaces/coordinator-api/previousVersions'
+import FeatureFlagService from '../../../services/featureFlagService'
 
 /**
  * Status of the assessment info loading operation.
@@ -352,6 +353,9 @@ export interface SentencePlanData extends Record<string, unknown> {
   currentAreaAssessmentStatus: AssessmentInfoStatus
   navigationReferrer?: NavigationReferrer | null
 
+  // Feature flags
+  featureFlags?: Record<string, boolean>
+
   // all assessment areas grouped by scoring category (for about page; from coordinator API)
   allAssessmentAreas: AssessmentArea[]
   highScoringAreas: AssessmentArea[]
@@ -434,4 +438,5 @@ export interface SentencePlanEffectsDeps {
   coordinatorApi: CoordinatorApiClient
   deliusApi: DeliusApiClient
   auditService: AuditService
+  featureFlagService: FeatureFlagService
 }
