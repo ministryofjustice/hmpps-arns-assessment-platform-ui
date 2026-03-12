@@ -100,7 +100,7 @@ export const addStepsStep = step({
           SentencePlanEffects.sendAuditEvent(AuditEvent.ADD_STEPS),
           SentencePlanEffects.addNotification({
             type: 'success',
-            title: 'Goal added',
+
             message: Format('You added a goal to %1 plan', CaseData.ForenamePossessive),
             target: 'plan-overview',
           }),

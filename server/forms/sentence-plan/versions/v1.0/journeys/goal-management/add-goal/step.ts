@@ -77,7 +77,7 @@ export const createGoalStep = step({
           SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
           SentencePlanEffects.addNotification({
             type: 'success',
-            title: 'Goal added',
+
             message: Format('You added a goal to %1 plan', CaseData.ForenamePossessive),
             target: 'plan-overview',
           }),
