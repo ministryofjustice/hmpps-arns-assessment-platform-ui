@@ -1,3 +1,5 @@
+import MCR from 'monocart-coverage-reports'
+import coverageOptions from '../../mcr.config'
 import { AuditQueueClient } from '../../support/AuditQueueClient'
 
 /**
@@ -12,6 +14,8 @@ async function globalSetup() {
     endpoint: localstackUrl,
   })
   await client.purge()
+  const mcr = MCR(coverageOptions)
+  mcr.cleanCache()
 }
 
 export default globalSetup

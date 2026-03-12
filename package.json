@@ -114,8 +114,11 @@
     "jsonwebtoken": "^9.0.2",
     "lint-staged": "^16.1.4",
     "mocha-junit-reporter": "^2.2.1",
+    "monocart-coverage-reports": "2.12.9",
     "nock": "^14.0.9",
+    "nyc": "18.0.0",
     "pg": "^8.18.0",
+    "playwright-test-coverage": "1.2.12",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.1",
     "typescript": "^5.9.2"

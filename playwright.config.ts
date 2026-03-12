@@ -60,6 +60,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
     screenshot: 'only-on-failure',
     trace: process.env.CI ? 'off' : 'on',
     ...devices['Desktop Chrome'],
+    channel: 'chromium',
     testIdAttribute: 'data-qa',
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
 
@@ -88,6 +89,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
   },
 
   globalSetup: './integration_tests/specs/audit/globalSetup.ts',
+  globalTeardown: './integration_tests/globalTeardown.ts',
 
   /* Configure projects */
   projects: [
