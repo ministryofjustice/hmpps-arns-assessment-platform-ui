@@ -146,6 +146,7 @@ export default {
   oasysUrl: get('OASYS_URL', 'http://localhost:3000/training-session-launcher/sessions', requiredInProduction),
   mpopUrl: get('MPOP_URL', 'http://localhost:3000/sign-in', requiredInProduction),
   smartSurveyPopupCode: get('SMART_SURVEY_POPUP_CODE', ''),
+  featureFlagUrl: get('FEATURE_FLAG_URL', ''),
 
   // Target service OAuth client IDs for handover
   handoverTargets: {
