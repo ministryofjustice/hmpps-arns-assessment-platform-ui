@@ -3,7 +3,7 @@ import { DerivedStep, SentencePlanContext, SentencePlanEffectsDeps } from '../ty
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
-import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
+import { getOrCreateNotesCollectionUuid, buildAddNoteCommand } from './noteUtils'
 
 /**
  * Update goal progress - update step statuses and add progress note
@@ -70,7 +70,7 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
 
   // 2. Add progress note if provided
   if (hasProgressNotes) {
-    const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
+    const collectionUuid = getOrCreateNotesCollectionUuid(commands, { activeGoal, assessmentUuid, user })
 
     commands.push(
       buildAddNoteCommand({
