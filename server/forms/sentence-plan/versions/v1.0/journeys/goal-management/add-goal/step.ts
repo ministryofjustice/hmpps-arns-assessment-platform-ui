@@ -84,10 +84,6 @@ export const createGoalStep = step({
         ],
         next: [
           redirect({
-            when: Query('type').match(Condition.IsRequired()),
-            goto: Format('../../plan/overview?type=%1', Query('type')),
-          }),
-          redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
             goto: '../../plan/overview?type=future',
           }),

@@ -1,6 +1,7 @@
 import {
   accessTransition,
   actionTransition,
+  and,
   Data,
   Format,
   Post,
@@ -12,6 +13,7 @@ import {
 import { Condition } from '@form-engine/registry/conditions'
 import { pageLayout } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { CaseData } from '../../../constants'
 
 /**
  * Add Steps page
@@ -85,6 +87,35 @@ export const addStepsStep = step({
   ],
 
   onSubmission: [
+    // Save steps after creating a new goal — show "goal added" notification
+    submitTransition({
+      when: and(
+        Post('action').match(Condition.Equals('saveAndContinue')),
+        Data('navigationReferrer').match(Condition.Equals('add-goal')),
+      ),
+      validate: true,
+      onValid: {
+        effects: [
+          SentencePlanEffects.saveStepEditSession(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.ADD_STEPS),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            title: 'Goal added',
+            message: Format('You added a goal to %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+          }),
+        ],
+        next: [
+          redirect({
+            when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
+            goto: '../../plan/overview?type=future',
+          }),
+          redirect({ goto: '../../plan/overview?type=current' }),
+        ],
+      },
+    }),
+
+    // Save steps for an existing goal — no notification
     submitTransition({
       when: Post('action').match(Condition.Equals('saveAndContinue')),
       validate: true,
