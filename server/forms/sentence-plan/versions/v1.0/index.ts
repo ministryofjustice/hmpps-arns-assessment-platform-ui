@@ -37,6 +37,7 @@ export const sentencePlanV1Journey = journey({
   onAccess: [
     accessTransition({
       effects: [
+        SentencePlanEffects.loadFeatureFlags(),
         SentencePlanEffects.initializeSessionFromAccess(),
         SentencePlanEffects.loadSessionData(),
         SentencePlanEffects.loadPlan(),
