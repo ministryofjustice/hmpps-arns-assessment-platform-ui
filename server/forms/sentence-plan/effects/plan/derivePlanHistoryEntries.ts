@@ -34,6 +34,17 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
     const date = new Date(item.timestamp)
 
     switch (item.customType) {
+      case 'GOAL_CREATED':
+        entries.push({
+          type: 'goal_created',
+          uuid: `created-${item.uuid}-${item.timestamp}`,
+          date,
+          goalUuid: customData.goalUuid,
+          goalTitle: customData.goalTitle,
+          createdBy: customData.createdBy,
+        })
+        break
+
       case 'GOAL_ACHIEVED':
         entries.push({
           type: 'goal_achieved',

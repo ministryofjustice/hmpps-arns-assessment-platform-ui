@@ -64,6 +64,8 @@ export interface GoalConfig {
   notes?: NoteConfig[]
   /** Name of the user who marked this goal as achieved. Only used when status is 'ACHIEVED'. */
   achievedBy?: string
+  /** Name of the user who created this goal. Used for GOAL_CREATED timeline events. */
+  createdBy?: string
 }
 
 /**
