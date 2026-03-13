@@ -137,6 +137,7 @@ export interface DerivedPlanAgreement {
  * Uses discriminated union pattern for type-safe rendering.
  */
 export type PlanHistoryEntry =
+  | GoalCreatedHistoryEntry
   | PlanAgreementHistoryEntry
   | GoalAchievedHistoryEntry
   | GoalRemovedHistoryEntry
@@ -152,6 +153,15 @@ export interface PlanAgreementHistoryEntry {
   detailsNo?: string
   detailsCouldNotAnswer?: string
   notes?: string
+}
+
+export interface GoalCreatedHistoryEntry {
+  type: 'goal_created'
+  uuid: string
+  date: Date
+  goalUuid: string
+  goalTitle: string
+  createdBy?: string
 }
 
 export interface GoalAchievedHistoryEntry {

@@ -106,6 +106,36 @@ const agreementEntryContent = Format(
 )
 
 /**
+ * Renders a newly created goal history entry.
+ * Shows: heading (bold), goal title (bold).
+ * For READ_WRITE users, also shows a "View goal" link.
+ */
+const goalAddedEntryContent = Format(
+  `<div class="govuk-!-margin-bottom-6">
+    <p class="govuk-body"><strong>Goal created</strong> on %1 by %2</p>
+    <p class="govuk-body"><strong>%3</strong></p>
+    %4
+  </div>`,
+  // %1: Date
+  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+  // %2: created by
+  when(Item().path('createdBy').match(Condition.IsRequired()))
+    .then(Item().path('createdBy').pipe(Transformer.String.EscapeHtml()))
+    .else('Unknown'),
+  // %3: Goal title
+  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
+  // %4: View goal link (shown only in READ_WRITE mode)
+  when(isReadOnly)
+    .then('')
+    .else(
+      Format(
+        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state">View goal</a></p>',
+        Item().path('goalUuid'),
+      ),
+    ),
+)
+
+/**
  * Renders a goal achieved history entry.
  * Shows: heading (bold), goal title (bold), and optional notes.
  * For READ_WRITE users, also shows a "View goal" link.
@@ -276,15 +306,19 @@ export const agreementHistory = CollectionBlock({
           when(Item().path('type').match(Condition.Equals('goal_achieved')))
             .then(goalAchievedEntryContent)
             .else(
-              when(Item().path('type').match(Condition.Equals('goal_removed')))
-                .then(goalRemovedEntryContent)
+              when(Item().path('type').match(Condition.Equals('goal_created')))
+                .then(goalAddedEntryContent)
                 .else(
-                  when(Item().path('type').match(Condition.Equals('goal_readded')))
-                    .then(goalReaddedEntryContent)
+                  when(Item().path('type').match(Condition.Equals('goal_removed')))
+                    .then(goalRemovedEntryContent)
                     .else(
-                      when(Item().path('type').match(Condition.Equals('goal_updated')))
-                        .then(goalUpdatedEntryContent)
-                        .else(agreementEntryContent),
+                      when(Item().path('type').match(Condition.Equals('goal_readded')))
+                        .then(goalReaddedEntryContent)
+                        .else(
+                          when(Item().path('type').match(Condition.Equals('goal_updated')))
+                            .then(goalUpdatedEntryContent)
+                            .else(agreementEntryContent),
+                        ),
                     ),
                 ),
             ),
