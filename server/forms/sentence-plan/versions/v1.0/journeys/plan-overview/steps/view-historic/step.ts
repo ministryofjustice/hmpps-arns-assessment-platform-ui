@@ -11,7 +11,6 @@ import {
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
-import { isOasysAccess } from '../../../../guards'
 
 export const viewHistoricStep = step({
   path: '/view-historic/:timestamp',
