@@ -11,7 +11,6 @@ import {
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
-import { isOasysAccess } from '../../../../guards'
 
 export const viewHistoricStep = step({
   path: '/view-historic/:timestamp',
@@ -19,10 +18,13 @@ export const viewHistoricStep = step({
   view: {
     locals: {
       hidePreviousVersions: true,
+      hideNavigation: true,
+      hideFooter: true,
+      disableHeaderLink: true,
       headerPageHeading: Format(`%1's plan`, CaseData.Forename),
       currentTab: Query('type'),
       buttons: {
-        showReturnToOasysButton: isOasysAccess,
+        showReturnToOasysButton: false,
         showCreateGoalButton: false,
         showAgreePlanButton: false,
       },
