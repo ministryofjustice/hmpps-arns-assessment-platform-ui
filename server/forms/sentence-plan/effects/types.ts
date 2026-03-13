@@ -162,7 +162,6 @@ export interface GoalCreatedHistoryEntry {
   goalUuid: string
   goalTitle: string
   createdBy?: string
-  notes?: string
 }
 
 export interface GoalAchievedHistoryEntry {
