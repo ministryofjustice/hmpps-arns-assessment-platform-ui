@@ -20,10 +20,12 @@ export const viewHistoricStep = step({
     locals: {
       hidePreviousVersions: true,
       hideNavigation: true,
+      hideFooter: true,
+      disableHeaderLink: true,
       headerPageHeading: Format(`%1's plan`, CaseData.Forename),
       currentTab: Query('type'),
       buttons: {
-        showReturnToOasysButton: isOasysAccess,
+        showReturnToOasysButton: false,
         showCreateGoalButton: false,
         showAgreePlanButton: false,
       },
