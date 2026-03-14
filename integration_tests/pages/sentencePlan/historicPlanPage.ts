@@ -26,6 +26,8 @@ export default class HistoricPlanPage extends AbstractPage {
 
   readonly primaryNavigation: Locator
 
+  readonly headerServiceName: Locator
+
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
@@ -40,6 +42,7 @@ export default class HistoricPlanPage extends AbstractPage {
     this.footer = page.locator('footer')
     this.banner = page.getByTestId('hmpps-header')
     this.primaryNavigation = page.getByLabel('Primary navigation')
+    this.headerServiceName = page.locator('span.arns-common-header__title__organisation-name')
   }
 
   static async verifyOnPage(page: Page): Promise<HistoricPlanPage> {
