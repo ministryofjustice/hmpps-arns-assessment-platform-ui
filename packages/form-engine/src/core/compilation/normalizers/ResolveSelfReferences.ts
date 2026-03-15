@@ -10,62 +10,7 @@ import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
 import { isFieldBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
 import { FieldBlockASTNode } from '@form-engine/core/types/structures.type'
 import { NodeIDCategory, NodeIDGenerator } from '@form-engine/core/compilation/id-generators/NodeIDGenerator'
-import { isASTNode } from '@form-engine/core/typeguards/nodes'
-
-/**
- * Deep clone a value with special handling for AST nodes
- *
- * AST nodes are cloned without their `id` property, allowing them to be
- * re-registered with new identities.
- */
-function cloneASTValue<T>(value: T): T {
-  if (value === null || value === undefined) {
-    return value
-  }
-
-  if (typeof value !== 'object') {
-    return value
-  }
-
-  if (Array.isArray(value)) {
-    return value.map(item => cloneASTValue(item)) as unknown as T
-  }
-
-  // AST nodes: clone all properties except `id`
-  if (isASTNode(value)) {
-    const cloned: Record<string, unknown> = {}
-
-    Object.entries(value).forEach(([key, val]) => {
-      if (key === 'id') {
-        return
-      }
-
-      cloned[key] = cloneASTValue(val)
-    })
-
-    return cloned as T
-  }
-
-  // Clone Maps with recursive value cloning
-  if (value instanceof Map) {
-    const clonedMap = new Map<unknown, unknown>()
-
-    value.forEach((mapValue, key) => {
-      clonedMap.set(key, cloneASTValue(mapValue))
-    })
-
-    return clonedMap as unknown as T
-  }
-
-  // Clone plain objects
-  const cloned: Record<string, unknown> = {}
-
-  Object.entries(value as Record<string, unknown>).forEach(([key, val]) => {
-    cloned[key] = cloneASTValue(val)
-  })
-
-  return cloned as unknown as T
-}
+import { cloneASTValue, assignIdsToClonedValue } from '@form-engine/core/utils/astValueCloning'
 
 function findContainingField(ancestors: any[], self: ASTNode): FieldBlockASTNode | undefined {
   for (let i = ancestors.length - 1; i >= 0; i -= 1) {
@@ -88,31 +33,6 @@ function isPropertySentinel(obj: any): obj is { kind: 'property'; key: string; o
  * This is needed when embedding cloned AST nodes inside other nodes' properties,
  * since cloneASTValue strips IDs expecting re-registration.
  */
-function assignIdsToClonedValue(
-  value: any,
-  nodeIdGenerator: NodeIDGenerator,
-  category: NodeIDCategory.COMPILE_AST | NodeIDCategory.RUNTIME_AST,
-): void {
-  if (value === null || value === undefined || typeof value !== 'object') {
-    return
-  }
-
-  if (Array.isArray(value)) {
-    value.forEach(item => assignIdsToClonedValue(item, nodeIdGenerator, category))
-    return
-  }
-
-  // If this is an AST node without an ID, assign one
-  if (isASTNode(value) && !value.id) {
-    ;(value as any).id = nodeIdGenerator.next(category)
-  }
-
-  // Recursively process all properties (including nested nodes in 'properties')
-  Object.values(value).forEach(propValue => {
-    assignIdsToClonedValue(propValue, nodeIdGenerator, category)
-  })
-}
-
 /**
  * Normalizer that resolves Self() references by replacing `answers('@self')` path segment
  * with the nearest containing field's `code` property (string or expression AST).

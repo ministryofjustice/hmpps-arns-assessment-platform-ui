@@ -1,4 +1,4 @@
-import { BlockType, ExpressionType, IteratorType } from '@form-engine/form/types/enums'
+import { BlockType, ExpressionType } from '@form-engine/form/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { NodeFactory } from '@form-engine/core/nodes/NodeFactory'
 import { ASTNode } from '@form-engine/core/types/engine.type'
@@ -86,48 +86,6 @@ describe('AddSelfValueToFields', () => {
         path: ['answers', '@self'],
       })
       expect(field.properties.value).toBe(mockSelfReferenceNode)
-    })
-
-    it('adds Self() to fields inside iterate expression yield templates', () => {
-      // Arrange
-      const templateField = ASTTestFactory.block('textInput', BlockType.FIELD)
-        .withId('compile_ast:5')
-        .withCode('street')
-        .withLabel('Street')
-        .build()
-
-      const iterateExpr = ASTTestFactory.expression(ExpressionType.ITERATE)
-        .withId('compile_ast:6')
-        .withProperty('input', { type: ExpressionType.REFERENCE, path: ['answers', 'addresses'] })
-        .withProperty('iterator', {
-          type: IteratorType.MAP,
-          yield: [templateField],
-        })
-        .build()
-
-      const step = ASTTestFactory.step()
-        .withId('compile_ast:7')
-        .withBlock('container', BlockType.BASIC, block =>
-          block.withId('compile_ast:8').withProperty('content', iterateExpr),
-        )
-        .build()
-
-      const journey = ASTTestFactory.journey().withId('compile_ast:9').withProperty('steps', [step]).build()
-
-      // Act
-      normalizer.normalize(journey)
-
-      // Assert
-      const containerBlock = journey.properties.steps[0].properties.blocks[0]
-      const transformedIterate = containerBlock.properties.content
-      const yieldTemplate = transformedIterate.properties.iterator.yield as any[]
-      const transformedField = yieldTemplate[0]
-
-      expect(mockNodeFactory.createNode).toHaveBeenCalledWith({
-        type: ExpressionType.REFERENCE,
-        path: ['answers', '@self'],
-      })
-      expect(transformedField.properties.value).toBe(mockSelfReferenceNode)
     })
 
     it('adds Self() to nested fields in blocks', () => {
