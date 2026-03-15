@@ -14,11 +14,6 @@ import { isIterateExprNode } from '@form-engine/core/typeguards/expression-nodes
  *
  * Wiring pattern for ITERATE:
  * - INPUT → ITERATE_NODE (input must be evaluated first)
- *
- * Note: yield/predicate are stored as raw JSON and instantiated at runtime,
- * similar to Collection.template. No compile-time wiring needed for them.
- * TODO: I think at some point i'll change this to pre-make the nodes, and then
- *  just dynamically give em IDs at runtime
  */
 export default class IterateWiring {
   constructor(private readonly wiringContext: WiringContext) {}

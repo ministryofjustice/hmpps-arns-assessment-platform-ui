@@ -129,7 +129,7 @@ export default class IterateHandler implements ThunkHandler {
     invoker: ThunkInvocationAdapter,
     hooks: ThunkRuntimeHooks,
   ): Promise<HandlerResult> {
-    const predicate = this.node.properties.iterator.predicate
+    const predicate = this.node.properties.iterator.predicateTemplate
     const results: unknown[] = []
 
     // Filter out null items and preserve indices
@@ -143,7 +143,7 @@ export default class IterateHandler implements ThunkHandler {
       // eslint-disable-next-line no-await-in-loop
       const passesFilter = await evaluateWithScope(itemScope, context, async () => {
         // Transform and register the predicate for this item
-        const predicateNode = hooks.transformValue(predicate)
+        const predicateNode = hooks.instantiateTemplateValue(predicate)
 
         if (isASTNode(predicateNode)) {
           await hooks.registerRuntimeNodesBatch([predicateNode], 'predicate')
@@ -176,7 +176,7 @@ export default class IterateHandler implements ThunkHandler {
     invoker: ThunkInvocationAdapter,
     hooks: ThunkRuntimeHooks,
   ): Promise<HandlerResult> {
-    const predicate = this.node.properties.iterator.predicate
+    const predicate = this.node.properties.iterator.predicateTemplate
 
     // Filter out null items and preserve indices
     const validItems = inputArray
@@ -188,7 +188,7 @@ export default class IterateHandler implements ThunkHandler {
 
       // eslint-disable-next-line no-await-in-loop
       const matchesPredicate = await evaluateWithScope(itemScope, context, async () => {
-        const predicateNode = hooks.transformValue(predicate)
+        const predicateNode = hooks.instantiateTemplateValue(predicate)
 
         if (isASTNode(predicateNode)) {
           await hooks.registerRuntimeNodesBatch([predicateNode], 'predicate')
@@ -224,7 +224,7 @@ export default class IterateHandler implements ThunkHandler {
     invoker: ThunkInvocationAdapter,
     hooks: ThunkRuntimeHooks,
   ): Promise<HandlerResult> {
-    const yieldTemplate = this.node.properties.iterator.yield
+    const yieldTemplate = this.node.properties.iterator.yieldTemplate
     const results: unknown[] = []
 
     // Phase 1: Create nodes for all items (filter out nulls and preserve indices)
@@ -232,7 +232,7 @@ export default class IterateHandler implements ThunkHandler {
       .map((item, index) => ({ item, index }))
       .filter(({ item }) => item != null)
       .map(({ item, index }) => ({
-        node: hooks.transformValue(yieldTemplate),
+        node: hooks.instantiateTemplateValue(yieldTemplate),
         itemScope: this.createItemScope(item, index),
       }))
 
