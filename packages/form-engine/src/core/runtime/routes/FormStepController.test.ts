@@ -1,10 +1,11 @@
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { TransitionType } from '@form-engine/form/types/enums'
+import { ExpressionType, IteratorType, TransitionType } from '@form-engine/form/types/enums'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import { JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
 import {
   AccessTransitionASTNode,
   ActionTransitionASTNode,
+  ExpressionASTNode,
   SubmitTransitionASTNode,
 } from '@form-engine/core/types/expressions.type'
 import { FormInstanceDependencies, NodeId, AstNodeId } from '@form-engine/core/types/engine.type'
@@ -15,6 +16,7 @@ import { CompiledForm } from '@form-engine/core/compilation/FormCompilationFacto
 import { JourneyMetadata } from '@form-engine/core/runtime/rendering/types'
 import ThunkEvaluator, { EvaluationResult } from '@form-engine/core/compilation/thunks/ThunkEvaluator'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
+import { PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
 import FormStepController from './FormStepController'
 import { StepRequest, StepResponse, CookieMutation, CookieOptions } from './types'
 
@@ -488,6 +490,110 @@ describe('FormStepController', () => {
 
         // Act & Assert
         await expect(controller.post(mockReq, mockRes)).rejects.toThrow('Access denied')
+      })
+
+      it('should evaluate dynamic answer pseudo nodes after iterator expansion on POST', async () => {
+        // Arrange
+        const iterateNode = ASTTestFactory.expression(ExpressionType.ITERATE)
+          .withId('compile_ast:iterate')
+          .withProperty('input', { id: 'compile_ast:input', type: ASTNodeType.EXPRESSION })
+          .withProperty('iterator', { type: IteratorType.MAP })
+          .build() as ExpressionASTNode
+
+        const dynamicAnswerNode: { id: NodeId; type: PseudoNodeType.ANSWER_LOCAL } = {
+          id: 'runtime_pseudo:1',
+          type: PseudoNodeType.ANSWER_LOCAL,
+        }
+
+        const step = createStepWithTransitions({})
+        mockCompiledForm = createCompiledForm(step)
+
+        let iteratorExpanded = false
+
+        mockContext.metadataRegistry.findNodesWhere = jest.fn().mockImplementation((key: string, value: boolean) => {
+          if (key === 'isDescendantOfStep' && value) {
+            return [iterateNode.id]
+          }
+
+          return []
+        })
+
+        mockContext.metadataRegistry.get = jest.fn().mockImplementation((nodeId: NodeId, key: string) => {
+          if (nodeId === iterateNode.id && key === 'attachedToParentNode') {
+            return step.id
+          }
+
+          if (nodeId === step.id && key === 'isCurrentStep') {
+            return true
+          }
+
+          return undefined
+        })
+
+        mockContext.nodeRegistry.get = jest.fn().mockImplementation((nodeId: NodeId) => {
+          if (nodeId === iterateNode.id) {
+            return iterateNode
+          }
+
+          if (nodeId === step.id) {
+            return step
+          }
+
+          return undefined
+        })
+
+        mockContext.nodeRegistry.findByType = jest.fn().mockImplementation((type: string) => {
+          if (type === PseudoNodeType.ANSWER_LOCAL && iteratorExpanded) {
+            return [dynamicAnswerNode]
+          }
+
+          return []
+        })
+
+        mockEvaluator.invoke.mockImplementation(async (nodeId: NodeId) => {
+          if (nodeId === iterateNode.id) {
+            iteratorExpanded = true
+
+            return {
+              value: [],
+              metadata: { source: 'test', timestamp: Date.now() },
+            }
+          }
+
+          if (nodeId === dynamicAnswerNode.id) {
+            return {
+              value: 'dynamic answer',
+              metadata: { source: 'test', timestamp: Date.now() },
+            }
+          }
+
+          return {
+            value: { executed: false },
+            metadata: { source: 'test', timestamp: Date.now() },
+          }
+        })
+
+        mockEvaluator.evaluate.mockResolvedValue({
+          context: mockContext,
+          journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
+        })
+
+        const controller = new FormStepController(
+          mockCompiledForm,
+          mockDependencies,
+          mockNavigationMetadata,
+          mockCurrentStepPath,
+        )
+
+        // Act
+        await controller.post(mockReq, mockRes)
+
+        // Assert
+        const invokedNodeIds = mockEvaluator.invoke.mock.calls.map(([nodeId]) => nodeId)
+
+        expect(invokedNodeIds).toContain(iterateNode.id)
+        expect(invokedNodeIds).toContain(dynamicAnswerNode.id)
+        expect(invokedNodeIds.indexOf(iterateNode.id)).toBeLessThan(invokedNodeIds.indexOf(dynamicAnswerNode.id))
       })
     })
 

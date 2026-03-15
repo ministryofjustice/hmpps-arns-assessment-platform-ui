@@ -11,6 +11,11 @@ import ThunkHandlerRegistry from '@form-engine/core/compilation/registries/Thunk
 import MetadataRegistry from '@form-engine/core/compilation/registries/MetadataRegistry'
 import DependencyGraph from '@form-engine/core/compilation/dependency-graph/DependencyGraph'
 import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
+import { ASTNodeType } from '@form-engine/core/types/enums'
+import { NodeIDGenerator } from '@form-engine/core/compilation/id-generators/NodeIDGenerator'
+import { isTemplateNode } from '@form-engine/core/typeguards/nodes'
+import { TemplateValue } from '@form-engine/core/types/template.type'
+import TemplateFactory from '@form-engine/core/nodes/template/TemplateFactory'
 
 function createMockRuntimeOverlayBuilder(): RuntimeOverlayBuilder {
   return {
@@ -45,7 +50,7 @@ describe('ThunkRuntimeHooksFactory', () => {
 
     mockCompilationDependencies = {
       nodeIdGenerator: {
-        next: jest.fn().mockReturnValue('runtime_pseudo:1'),
+        next: jest.fn().mockReturnValue('runtime_ast:1'),
       },
       createOverlay: jest.fn(),
     } as unknown as jest.Mocked<CompilationDependencies>
@@ -62,7 +67,7 @@ describe('ThunkRuntimeHooksFactory', () => {
   })
 
   describe('create()', () => {
-    it('should return hooks with transformValue and registerRuntimeNodesBatch', () => {
+    it('should return hooks with template instantiation, transformValue and registerRuntimeNodesBatch', () => {
       // Arrange
       const mockBuilder = createMockRuntimeOverlayBuilder()
       factory = new ThunkRuntimeHooksFactory(
@@ -78,8 +83,10 @@ describe('ThunkRuntimeHooksFactory', () => {
       const hooks = factory.create(currentNodeId)
 
       // Assert
+      expect(hooks.instantiateTemplateValue).toBeDefined()
       expect(hooks.transformValue).toBeDefined()
       expect(hooks.registerRuntimeNodesBatch).toBeDefined()
+      expect(typeof hooks.instantiateTemplateValue).toBe('function')
       expect(typeof hooks.transformValue).toBe('function')
       expect(typeof hooks.registerRuntimeNodesBatch).toBe('function')
     })
@@ -108,6 +115,127 @@ describe('ThunkRuntimeHooksFactory', () => {
       // Assert
       expect(mockBuilder.nodeFactory.transformValue).toHaveBeenCalledWith(inputValue)
       expect(result).toBe(transformedValue)
+    })
+
+    it('should instantiate compiled templates without pre-registering runtime ids', () => {
+      // Arrange
+      const mockBuilder = createMockRuntimeOverlayBuilder()
+      factory = new ThunkRuntimeHooksFactory(
+        mockCompilationDependencies,
+        mockCompiler,
+        mockCacheManager,
+        mockBuilder,
+        mockFunctionRegistry,
+      )
+
+      const hooks = factory.create('compile_ast:1' as AstNodeId)
+      const templateFactory = new TemplateFactory(new NodeIDGenerator())
+      const template = templateFactory.compile({
+        type: ASTNodeType.EXPRESSION,
+        expressionType: 'ExpressionType.Reference',
+        properties: {
+          path: ['answers', 'name'],
+        },
+      })
+
+      // Act
+      const result = hooks.instantiateTemplateValue(template) as {
+        id?: string
+        type: ASTNodeType
+        expressionType: string
+        properties: { path: string[] }
+      }
+
+      // Assert
+      expect(result.id).toBeUndefined()
+      expect(result.type).toBe(ASTNodeType.EXPRESSION)
+      expect(result.expressionType).toBe('ExpressionType.Reference')
+      expect(result.properties.path).toEqual(['answers', 'name'])
+      expect(mockCompilationDependencies.nodeIdGenerator.next).not.toHaveBeenCalled()
+    })
+
+    it('should detach shared template references when instantiating runtime values', () => {
+      // Arrange
+      const mockBuilder = createMockRuntimeOverlayBuilder()
+      factory = new ThunkRuntimeHooksFactory(
+        mockCompilationDependencies,
+        mockCompiler,
+        mockCacheManager,
+        mockBuilder,
+        mockFunctionRegistry,
+      )
+
+      const hooks = factory.create('compile_ast:1' as AstNodeId)
+      const sharedTemplateNode: TemplateValue = {
+        type: ASTNodeType.TEMPLATE,
+        originalType: ASTNodeType.EXPRESSION,
+        id: 'template:1' as `template:${number}`,
+        expressionType: 'ExpressionType.Reference',
+        properties: {
+          path: ['answers', 'name'],
+        },
+      }
+      const template: TemplateValue = {
+        left: sharedTemplateNode,
+        right: sharedTemplateNode,
+      }
+
+      // Act
+      const result = hooks.instantiateTemplateValue(template) as {
+        left: { id?: string; properties: { path: string[] } }
+        right: { id?: string; properties: { path: string[] } }
+      }
+
+      // Assert
+      expect(result.left).not.toBe(result.right)
+      expect(result.left.id).toBeUndefined()
+      expect(result.right.id).toBeUndefined()
+      expect(result.left.properties.path).not.toBe(result.right.properties.path)
+    })
+
+    it('should preserve nested iterator templates as compiled templates until nested evaluation', () => {
+      // Arrange
+      const mockBuilder = createMockRuntimeOverlayBuilder()
+      factory = new ThunkRuntimeHooksFactory(
+        mockCompilationDependencies,
+        mockCompiler,
+        mockCacheManager,
+        mockBuilder,
+        mockFunctionRegistry,
+      )
+
+      const hooks = factory.create('compile_ast:1' as AstNodeId)
+      const templateFactory = new TemplateFactory(new NodeIDGenerator())
+      const outerIterateTemplate = templateFactory.compile({
+        type: ASTNodeType.EXPRESSION,
+        expressionType: 'ExpressionType.Iterate',
+        properties: {
+          input: ['flag'],
+          iterator: {
+            type: 'IteratorType.Map',
+            yieldTemplate: templateFactory.compile({
+              type: ASTNodeType.BLOCK,
+              variant: 'govukTag',
+              blockType: 'BlockType.basic',
+              properties: {
+                text: 'flag',
+              },
+            }),
+          },
+        },
+      })
+
+      // Act
+      const outerIterateNode = hooks.instantiateTemplateValue(outerIterateTemplate) as {
+        properties: {
+          iterator: {
+            yieldTemplate: TemplateValue
+          }
+        }
+      }
+
+      // Assert
+      expect(isTemplateNode(outerIterateNode.properties.iterator.yieldTemplate)).toBe(true)
     })
   })
 })

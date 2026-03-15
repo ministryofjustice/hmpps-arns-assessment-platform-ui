@@ -441,8 +441,11 @@ export function createMockInvokerWithError(
  * expect(hooks.registerRuntimeNodesBatch).toHaveBeenCalledWith([node], 'template')
  */
 export function createMockHooks(): jest.Mocked<ThunkRuntimeHooks> {
+  const templateValueMock = jest.fn()
+
   return {
-    transformValue: jest.fn(),
+    instantiateTemplateValue: templateValueMock,
+    transformValue: templateValueMock,
     registerRuntimeNodesBatch: jest.fn(),
   }
 }

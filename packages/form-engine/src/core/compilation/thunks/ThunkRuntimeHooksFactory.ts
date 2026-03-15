@@ -7,6 +7,9 @@ import RegistrationTraverser from '@form-engine/core/compilation/traversers/Regi
 import { NodeIDCategory } from '@form-engine/core/compilation/id-generators/NodeIDGenerator'
 import { CompilationDependencies } from '@form-engine/core/compilation/CompilationDependencies'
 import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
+import { TemplateValue } from '@form-engine/core/types/template.type'
+import TemplateFactory from '@form-engine/core/nodes/template/TemplateFactory'
+import { assignIdsToClonedValue } from '@form-engine/core/utils/astValueCloning'
 
 /**
  * Factory for creating runtime hooks used during thunk evaluation.
@@ -43,6 +46,10 @@ export default class ThunkRuntimeHooksFactory {
       return runtimeOverlay.nodeFactory.transformValue(value)
     }
 
+    const instantiateTemplate = (template: TemplateValue): any => {
+      return TemplateFactory.instantiate(template)
+    }
+
     const registerRuntimeNodesBatch = async (nodes: ASTNode[], property: string): Promise<void> => {
       if (nodes.length === 0) {
         return
@@ -51,6 +58,8 @@ export default class ThunkRuntimeHooksFactory {
       const { deps: pendingOverlay, flush, getPendingNodeIds } = this.compilationDependencies.createOverlay()
 
       nodes.forEach(node => {
+        assignIdsToClonedValue(node, pendingOverlay.nodeIdGenerator, NodeIDCategory.RUNTIME_AST)
+
         // Phase 1: Normalize nodes
         NodeCompilationPipeline.normalize(node, pendingOverlay, NodeIDCategory.RUNTIME_AST)
 
@@ -122,6 +131,7 @@ export default class ThunkRuntimeHooksFactory {
     }
 
     return {
+      instantiateTemplateValue: instantiateTemplate,
       transformValue,
       registerRuntimeNodesBatch,
     }
