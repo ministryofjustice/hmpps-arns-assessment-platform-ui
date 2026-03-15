@@ -116,8 +116,8 @@ services:
       CLIENT_SP_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/handover/callback
       CLIENT_SP_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in/handover?service=sentence-plan
       CLIENT_SAN_SECRET: san-secret
-      CLIENT_SAN_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/callback
-      CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in
+      CLIENT_SAN_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/handover/callback
+      CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in/handover?service=strengths-and-needs
 
   ui:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:${APP_VERSION:-local}

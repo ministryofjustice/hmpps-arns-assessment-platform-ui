@@ -1,5 +1,6 @@
 import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import { OasysCreateRequest, OasysCreateResponse } from '../../../../interfaces/coordinator-api/oasysCreate'
+import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
 import {
   applyCreateSessionModifiers,
   runBeforeCreateSessionHooks,
@@ -15,6 +16,33 @@ import logger from '../../../../../logger'
 const DEFAULT_PREFERENCES: TrainingLauncherPreferences = {
   savedScenarios: [],
   sessions: [],
+}
+
+const SAN_FORM_VERSION = 'v1.0'
+
+async function createSanAssessmentForPrivateBeta(
+  deps: TrainingSessionLauncherEffectsDeps,
+  session: Session,
+): Promise<Pick<Session, 'sanAssessmentId' | 'sanAssessmentVersion'>> {
+  // TODO: Remove this once coordinator creates and returns a real SAN AAP assessment for private beta sessions.
+  const result = await deps.assessmentPlatformApiClient.executeCommand({
+    type: 'CreateAssessmentCommand',
+    assessmentType: 'SAN_SP',
+    formVersion: SAN_FORM_VERSION,
+    identifiers: {
+      [IdentifierType.CRN]: session.values.crn,
+    },
+    user: {
+      id: session.values.practitionerIdentifier,
+      name: session.values.practitionerDisplayName,
+      authSource: 'OASYS',
+    },
+  })
+
+  return {
+    sanAssessmentId: result.assessmentUuid,
+    sanAssessmentVersion: 1,
+  }
 }
 
 /**
@@ -92,8 +120,12 @@ export async function createInCoordinatorAndUpdatePreferences(
   // Run after hooks
   await runAfterCreateSessionHooks(session.flags, deps, context)
 
+  const sanAssessmentOverride = session.flags.includes('SAN_PRIVATE_BETA')
+    ? await createSanAssessmentForPrivateBeta(deps, session)
+    : undefined
+
   // Update session in preferences with response IDs (only if we got a response)
-  if (coordinatorResponse) {
+  if (coordinatorResponse || sanAssessmentOverride) {
     await deps.preferencesStore.update<{ trainingLauncher?: TrainingLauncherPreferences }>(preferencesId, current => {
       const trainingLauncher = current?.trainingLauncher ?? DEFAULT_PREFERENCES
 
@@ -101,10 +133,11 @@ export async function createInCoordinatorAndUpdatePreferences(
         if (s.id === session.id) {
           return {
             ...s,
-            sanAssessmentId: coordinatorResponse.sanAssessmentId,
-            sanAssessmentVersion: coordinatorResponse.sanAssessmentVersion,
-            sentencePlanId: coordinatorResponse.sentencePlanId,
-            sentencePlanVersion: coordinatorResponse.sentencePlanVersion,
+            sanAssessmentId: sanAssessmentOverride?.sanAssessmentId ?? coordinatorResponse?.sanAssessmentId,
+            sanAssessmentVersion:
+              sanAssessmentOverride?.sanAssessmentVersion ?? coordinatorResponse?.sanAssessmentVersion,
+            sentencePlanId: coordinatorResponse?.sentencePlanId,
+            sentencePlanVersion: coordinatorResponse?.sentencePlanVersion,
           }
         }
 
