@@ -43,6 +43,5 @@ generic-service:
     t1-jump2022-1: 10.26.8.12/32
     accessibility-audit: 5.181.59.114/32
 
-
 generic-prometheus-alerts:
   alertSeverity: hmpps-arns-non-prod
