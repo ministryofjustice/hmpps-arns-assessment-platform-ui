@@ -77,16 +77,12 @@ export const createGoalStep = step({
           SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
           SentencePlanEffects.addNotification({
             type: 'success',
-            title: 'Goal added',
+
             message: Format('You added a goal to %1 plan', CaseData.ForenamePossessive),
             target: 'plan-overview',
           }),
         ],
         next: [
-          redirect({
-            when: Query('type').match(Condition.IsRequired()),
-            goto: Format('../../plan/overview?type=%1', Query('type')),
-          }),
           redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
             goto: '../../plan/overview?type=future',

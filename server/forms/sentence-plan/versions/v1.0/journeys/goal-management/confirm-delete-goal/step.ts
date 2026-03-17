@@ -75,8 +75,7 @@ export const confirmDeleteGoalStep = step({
           SentencePlanEffects.sendAuditEvent(AuditEvent.DELETE_GOAL),
           SentencePlanEffects.addNotification({
             type: 'success',
-            title: 'Goal deleted',
-            message: Format('You deleted a goal to %1 plan', CaseData.ForenamePossessive),
+            message: Format('You deleted a goal from %1 plan', CaseData.ForenamePossessive),
             target: 'plan-overview',
           }),
         ],

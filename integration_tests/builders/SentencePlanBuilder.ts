@@ -342,6 +342,16 @@ export class SentencePlanBuilderInstance {
   ): Array<{ type: string; data: Record<string, unknown> }> {
     const events: Array<{ type: string; data: Record<string, unknown> }> = []
 
+    // Every goal emits a GOAL_CREATED event (mirrors createGoal effect)
+    events.push({
+      type: 'GOAL_CREATED',
+      data: {
+        goalUuid,
+        goalTitle: goalConfig.title,
+        createdBy: goalConfig.createdBy || 'E2E Test',
+      },
+    })
+
     // Build timeline events from notes
     if (goalConfig.notes) {
       for (const note of goalConfig.notes) {
