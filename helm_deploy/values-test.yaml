@@ -44,4 +44,4 @@ generic-service:
     accessibility-audit: 5.181.59.114/32
 
 generic-prometheus-alerts:
-  alertSeverity: hmpps-arns-non-prod
+  alertSeverity: hmpps-arns-alerts-nonprod
