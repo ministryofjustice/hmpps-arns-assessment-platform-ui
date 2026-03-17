@@ -37,7 +37,7 @@ export class SessionTimeoutModal extends HTMLElement {
     this.isModalOpen = false
     this.inactivityTimer = null
     this.countdownTimer = null
-    this.remainingSeconds = 0
+    this.countdownEndTime = null
 
     // Bind methods
     this.handleActivity = this.handleActivity.bind(this)
@@ -112,7 +112,7 @@ export class SessionTimeoutModal extends HTMLElement {
     if (this.isModalOpen) return
 
     this.isModalOpen = true
-    this.remainingSeconds = this.countdownSeconds
+    this.countdownEndTime = Date.now() + this.countdownSeconds * 1000
 
     // Lazy render - only add modal to DOM when needed
     if (!this.$modal) {
@@ -129,13 +129,15 @@ export class SessionTimeoutModal extends HTMLElement {
     // Focus the dialog for screen reader announcement (not the button, to avoid yellow highlight)
     this.$dialog.focus()
 
+    this.remainingSeconds = this.countdownSeconds
     this.updateCountdown()
     this.countdownTimer = setInterval(() => {
-      this.remainingSeconds -= 1
+      const remainingMs = this.countdownEndTime - Date.now()
 
-      if (this.remainingSeconds <= 0) {
+      if (remainingMs <= 0) {
         this.handleSessionExpired()
       } else {
+        this.remainingSeconds = Math.ceil(remainingMs / 1000)
         this.updateCountdown()
       }
     }, 1000)
