@@ -9,6 +9,7 @@ test.describe('Plan History - Updated Goals', () => {
   test('displays updated goal entry with title, updater name, and view link', async ({
     page,
     createSession,
+    makeAxeBuilder,
     sentencePlanBuilder,
   }) => {
     const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
@@ -53,6 +54,10 @@ test.describe('Plan History - Updated Goals', () => {
         - link "View latest version":
           - /url: /goal/
     `)
+
+    // Accessibility
+    const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
+    expect(accessibilityScanResults.violations).toEqual([])
   })
 
   test('displays updated goal entry with notes when a progress note was added', async ({

@@ -54,7 +54,7 @@ export class SessionTimeoutModal extends HTMLElement {
     this.innerHTML = `
       <div class="moj-session-timeout-modal" role="alertdialog" aria-labelledby="session-timeout-title" aria-describedby="session-timeout-description" aria-modal="true">
         <div class="moj-session-timeout-modal__backdrop"></div>
-        <div class="moj-session-timeout-modal__dialog" tabindex="-1">
+        <div class="moj-session-timeout-modal__dialog" tabindex="-1" data-qa="session-timeout">
           <h2 class="govuk-heading-l" id="session-timeout-title">Your unsaved information will be deleted soon</h2>
           <p class="govuk-body" id="session-timeout-description">
             We will delete any unsaved information if you do not continue in the next <strong class="moj-session-timeout-modal__countdown"></strong>. This is to protect your information.

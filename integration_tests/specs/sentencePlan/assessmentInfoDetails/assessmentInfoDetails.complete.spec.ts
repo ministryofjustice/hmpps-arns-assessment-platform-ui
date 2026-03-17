@@ -10,7 +10,11 @@ import coordinatorApi, { SanAssessmentData } from '../../../mockApis/coordinator
 import { createAssessmentData } from '../../../builders/AssessmentDataFactories'
 
 test.describe('Assessment Info Details - Complete Section', () => {
-  test('displays assessment info collapsed when section is complete with all data', async ({ page, createSession }) => {
+  test('displays assessment info collapsed when section is complete with all data', async ({
+    page,
+    createSession,
+    makeAxeBuilder,
+  }) => {
     const { handoverLink, sentencePlanId } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
 
     const completeAccommodationData: SanAssessmentData = {
@@ -60,6 +64,10 @@ test.describe('Assessment Info Details - Complete Section', () => {
     // Verify strengths section
     await expect(createGoalPage.assessmentInfoContent).toContainText('There are strengths or protective factors')
     await expect(createGoalPage.assessmentInfoContent).toContainText('Has maintained tenancy previously')
+
+    // Accessibility
+    const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="assessment-info-details"]').analyze()
+    expect(accessibilityScanResults.violations).toEqual([])
   })
 
   test('displays section with motivation not required when question was not applicable (e.g., no drug use)', async ({

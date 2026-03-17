@@ -58,6 +58,7 @@ test.describe('Change goal journey', () => {
     test('can update goal title and verify change on plan overview', async ({
       page,
       createSession,
+      makeAxeBuilder,
       sentencePlanBuilder,
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
@@ -70,6 +71,14 @@ test.describe('Change goal journey', () => {
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+
+      // Accessibility
+      const accessibilityScanResults = await makeAxeBuilder()
+        .include('[data-qa="main-form"]')
+        // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
+        .disableRules(['aria-allowed-attr'])
+        .analyze()
+      expect(accessibilityScanResults.violations).toEqual([])
 
       // Update the goal title
       await changeGoalPage.setGoalTitle('Updated test goal title')
