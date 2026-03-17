@@ -57,6 +57,13 @@ test.describe('About Page: complete assessment state', () => {
         await expect(aboutPage.incompleteAreasHeading).not.toBeVisible()
         await expect(aboutPage.incompleteAreasAccordion).not.toBeVisible()
       })
+
+      test('should be accessible', async ({ page, makeAxeBuilder }) => {
+        await AboutPage.verifyOnPage(page)
+
+        const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
+        expect(accessibilityScanResults.violations).toEqual([])
+      })
     })
 
     // sentence information from default wiremock stub:

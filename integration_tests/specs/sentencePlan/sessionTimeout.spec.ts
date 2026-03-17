@@ -46,7 +46,12 @@ test.describe('Session Timeout Modal', () => {
     await expect(page.getByRole('button', { name: 'Go to the plan' })).toBeVisible()
   })
 
-  test('Continue button extends session and closes modal', async ({ page, createSession, sentencePlanBuilder }) => {
+  test('Continue button extends session and closes modal', async ({
+    page,
+    createSession,
+    makeAxeBuilder,
+    sentencePlanBuilder,
+  }) => {
     const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
     await sentencePlanBuilder.extend(sentencePlanId).save()
 
@@ -62,6 +67,10 @@ test.describe('Session Timeout Modal', () => {
       response => response.url().includes('/session/extend') && response.request().method() === 'POST',
     )
 
+    // Accessibility
+    const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="session-timeout"]').analyze()
+    expect(accessibilityScanResults.violations).toEqual([])
+
     await modalPage.continueButton.click()
 
     const response = await responsePromise
@@ -75,6 +84,7 @@ test.describe('Session Timeout Modal', () => {
   test('countdown expires and automatically redirects to unsaved-information-deleted page', async ({
     page,
     createSession,
+    makeAxeBuilder,
     sentencePlanBuilder,
   }) => {
     const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
@@ -98,5 +108,9 @@ test.describe('Session Timeout Modal', () => {
 
     await expect(page).toHaveURL(/\/unsaved-information-deleted/)
     await expect(page.getByRole('heading', { name: 'Your unsaved information has been deleted' })).toBeVisible()
+
+    // Accessibility
+    const accessibilityScanResults = await makeAxeBuilder().include('#main-content').analyze()
+    expect(accessibilityScanResults.violations).toEqual([])
   })
 })

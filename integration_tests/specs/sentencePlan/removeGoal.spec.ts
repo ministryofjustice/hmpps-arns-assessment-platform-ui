@@ -13,7 +13,12 @@ import {
 
 test.describe('Remove goal journey', () => {
   test.describe('confirm goal removal', () => {
-    test('can confirm goal removal with required note', async ({ page, createSession, sentencePlanBuilder }) => {
+    test('can confirm goal removal with required note', async ({
+      page,
+      createSession,
+      makeAxeBuilder,
+      sentencePlanBuilder,
+    }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       const plan = await sentencePlanBuilder
         .extend(sentencePlanId)
@@ -35,6 +40,10 @@ test.describe('Remove goal journey', () => {
 
       // Enter required removal note
       await removePage.enterRemovalNote('Goal is no longer relevant to their current situation')
+
+      // Accessibility
+      const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
+      expect(accessibilityScanResults.violations).toEqual([])
 
       // Click confirm
       await removePage.clickConfirm()

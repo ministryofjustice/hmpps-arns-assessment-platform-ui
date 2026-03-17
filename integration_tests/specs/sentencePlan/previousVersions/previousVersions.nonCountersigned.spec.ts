@@ -5,7 +5,12 @@ import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPa
 import sanApi from '../../../mockApis/sanApi'
 
 test.describe('Previous Versions - Multiple non-countersigned previous versions', () => {
-  test('it lists multiple previous versions of the plan', async ({ page, createSession, sentencePlanBuilder }) => {
+  test('it lists multiple previous versions of the plan', async ({
+    page,
+    createSession,
+    makeAxeBuilder,
+    sentencePlanBuilder,
+  }) => {
     const { sentencePlanId, sanAssessmentId, handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
     })
@@ -129,5 +134,9 @@ test.describe('Previous Versions - Multiple non-countersigned previous versions'
         await expect(link).toHaveAttribute('target', '_blank')
       }
     }
+
+    // Accessibility
+    const accessibilityScanResults = await makeAxeBuilder().include('#main-content').analyze()
+    expect(accessibilityScanResults.violations).toEqual([])
   })
 })
