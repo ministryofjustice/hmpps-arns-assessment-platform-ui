@@ -102,7 +102,7 @@
   </div>
 {% endblock %}
 
-{% block govukFooter %}
+{% block footer %}
   {% block supportWidget %}
     {% set reportProblemHtml %}
       <p class="govuk-body">
@@ -133,9 +133,11 @@ OASys PK: {{ data.oasysAssessmentPk }}</pre>
     </div>
   {% endblock %}
 
-  {% if not hideFooter %}
-    {{ pdsFooter({
-      baseUrl: footerBaseUrl or "/platform"
-    }) }}
-  {% endif %}
+  {% block govukFooter %}
+    {% if not hideFooter %}
+      {{ pdsFooter({
+        baseUrl: footerBaseUrl or "/platform"
+      }) }}
+    {% endif %}
+  {% endblock %}
 {% endblock %}
