@@ -116,21 +116,21 @@ Request ID: {{ requestId or 'Unavailable' }}
 {% if traceId and traceId != requestId %}Trace ID: {{ traceId }}
 {% endif %}Assessment ID: {{ data.assessmentUuid }}
 OASys PK: {{ data.oasysAssessmentPk }}</pre>
-        <div class="app-report-problem__copy">
-          <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
-            Copy
-          </button>
+          <div class="app-report-problem__copy">
+            <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
+              Copy
+            </button>
+          </div>
+        </div>
+      {% endset %}
+      <div class="app-report-problem govuk-!-display-none-print" id="report-a-problem" data-qa="report-a-problem">
+        <div class="govuk-width-container">
+          {{ govukDetails({
+            summaryText: "Report a problem",
+            html: reportProblemHtml
+          }) }}
         </div>
       </div>
-    {% endset %}
-    <div class="app-report-problem" id="report-a-problem" data-qa="report-a-problem">
-      <div class="govuk-width-container">
-        {{ govukDetails({
-          summaryText: "Report a problem",
-          html: reportProblemHtml
-        }) }}
-      </div>
-    </div>
   {% endblock %}
 
   {% block govukFooter %}
