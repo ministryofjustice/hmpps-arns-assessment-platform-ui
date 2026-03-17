@@ -28,4 +28,5 @@ generic-service:
     SMART_SURVEY_POPUP_CODE: "XF5PNV"
 
 generic-prometheus-alerts:
-  alertSeverity: hmpps-arns-alerts-nonprod
+  targetApplication: hmpps-arns-assessment-platform-ui
+  alertSeverity: hmpps-assess-risks-and-needs-integrations-dev
