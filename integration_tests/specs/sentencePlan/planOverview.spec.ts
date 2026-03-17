@@ -272,7 +272,27 @@ test.describe('Plan Overview Page', () => {
       expect(hasChangeLink).toBe(true)
     })
 
-    test('shows Add or change steps link on goal cards', async ({ page, createSession, sentencePlanBuilder }) => {
+    test('shows Add or change steps link on goal cards only when goal has at least one step (draft plan)', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      const hasAddStepsLink = await planOverviewPage.goalCardHasAddStepsLink(0)
+      expect(hasAddStepsLink).toBe(true)
+    })
+
+    test(`doesn't show Add or change steps link on goal cards for a goal with no steps (draft plan)`, async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
@@ -281,7 +301,7 @@ test.describe('Plan Overview Page', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const hasAddStepsLink = await planOverviewPage.goalCardHasAddStepsLink(0)
-      expect(hasAddStepsLink).toBe(true)
+      expect(hasAddStepsLink).toBe(false)
     })
 
     test('shows Delete link on goal cards', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -302,7 +322,7 @@ test.describe('Plan Overview Page', () => {
       sentencePlanBuilder,
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
 
       await navigateToSentencePlan(page, handoverLink)
 
