@@ -12,6 +12,7 @@ import { SubmitTransitionResult } from '@form-engine/core/nodes/transitions/subm
 import { ActionTransitionResult } from '@form-engine/core/nodes/transitions/action/ActionHandler'
 import { ThunkInvocationAdapter, ThunkResult } from '@form-engine/core/compilation/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
+import { StepRuntimePlan } from '@form-engine/core/compilation/StepRuntimePlanBuilder'
 import TransitionExecutor from './TransitionExecutor'
 
 function createStep(options: {
@@ -80,6 +81,20 @@ function setupExecutor(step: StepASTNode): {
   const executor = new TransitionExecutor(logger as unknown as Console)
 
   return { executor, context, invoker, logger }
+}
+
+function createRuntimePlan(step: StepASTNode, options: Partial<StepRuntimePlan> = {}): StepRuntimePlan {
+  return {
+    stepId: step.id,
+    accessAncestorIds: [step.id],
+    actionTransitionIds: (step.properties.onAction ?? []).map(transition => transition.id),
+    submitTransitionIds: (step.properties.onSubmission ?? []).map(transition => transition.id),
+    iteratorRootIds: [],
+    validationBlockIds: [],
+    renderAncestorIds: [],
+    renderStepId: step.id,
+    ...options,
+  }
 }
 
 function successResult<T>(value: T): ThunkResult<T> {
@@ -236,9 +251,10 @@ describe('TransitionExecutor', () => {
       // Arrange
       const step = createStep({})
       const { executor, context, invoker } = setupExecutor(step)
+      const runtimePlan = createRuntimePlan(step)
 
       // Act
-      const result = await executor.executeActionTransitions(step.id, invoker, context)
+      const result = await executor.executeActionTransitions(runtimePlan, invoker, context)
 
       // Assert
       expect(result).toEqual({ executed: false })
@@ -250,6 +266,7 @@ describe('TransitionExecutor', () => {
       const action2 = ASTTestFactory.transition(TransitionType.ACTION).build() as ActionTransitionASTNode
       const step = createStep({ onAction: [action1, action2] })
       const { executor, context, invoker } = setupExecutor(step)
+      const runtimePlan = createRuntimePlan(step)
 
       invoker.invoke.mockImplementation(async (nodeId: NodeId) => {
         if (nodeId === action1.id) {
@@ -260,7 +277,7 @@ describe('TransitionExecutor', () => {
       })
 
       // Act
-      const result = await executor.executeActionTransitions(step.id, invoker, context)
+      const result = await executor.executeActionTransitions(runtimePlan, invoker, context)
 
       // Assert
       expect(result).toEqual({ executed: true })
@@ -274,11 +291,12 @@ describe('TransitionExecutor', () => {
       const action2 = ASTTestFactory.transition(TransitionType.ACTION).build() as ActionTransitionASTNode
       const step = createStep({ onAction: [action1, action2] })
       const { executor, context, invoker } = setupExecutor(step)
+      const runtimePlan = createRuntimePlan(step)
 
       invoker.invoke.mockResolvedValue(successResult<ActionTransitionResult>({ executed: false }))
 
       // Act
-      const result = await executor.executeActionTransitions(step.id, invoker, context)
+      const result = await executor.executeActionTransitions(runtimePlan, invoker, context)
 
       // Assert
       expect(result).toEqual({ executed: false })
@@ -291,6 +309,7 @@ describe('TransitionExecutor', () => {
       const action2 = ASTTestFactory.transition(TransitionType.ACTION).build() as ActionTransitionASTNode
       const step = createStep({ onAction: [action1, action2] })
       const { executor, context, invoker } = setupExecutor(step)
+      const runtimePlan = createRuntimePlan(step)
 
       invoker.invoke.mockImplementation(async (nodeId: NodeId) => {
         if (nodeId === action1.id) {
@@ -301,7 +320,7 @@ describe('TransitionExecutor', () => {
       })
 
       // Act
-      const result = await executor.executeActionTransitions(step.id, invoker, context)
+      const result = await executor.executeActionTransitions(runtimePlan, invoker, context)
 
       // Assert
       expect(result).toEqual({ executed: true })
@@ -314,9 +333,10 @@ describe('TransitionExecutor', () => {
       // Arrange
       const step = createStep({})
       const { executor, context, invoker } = setupExecutor(step)
+      const runtimePlan = createRuntimePlan(step)
 
       // Act
-      const result = await executor.executeSubmitTransitions(step.id, invoker, context)
+      const result = await executor.executeSubmitTransitions(runtimePlan, invoker, context)
 
       // Assert
       expect(result).toEqual({ executed: false, validated: false, outcome: 'continue' })
@@ -328,6 +348,7 @@ describe('TransitionExecutor', () => {
       const submit2 = ASTTestFactory.transition(TransitionType.SUBMIT).build() as SubmitTransitionASTNode
       const step = createStep({ onSubmission: [submit1, submit2] })
       const { executor, context, invoker } = setupExecutor(step)
+      const runtimePlan = createRuntimePlan(step)
 
       const submitResult: SubmitTransitionResult = {
         executed: true,
@@ -345,7 +366,7 @@ describe('TransitionExecutor', () => {
       })
 
       // Act
-      const result = await executor.executeSubmitTransitions(step.id, invoker, context)
+      const result = await executor.executeSubmitTransitions(runtimePlan, invoker, context)
 
       // Assert
       expect(result).toEqual(submitResult)
@@ -358,6 +379,7 @@ describe('TransitionExecutor', () => {
       const submit = ASTTestFactory.transition(TransitionType.SUBMIT).build() as SubmitTransitionASTNode
       const step = createStep({ onSubmission: [submit] })
       const { executor, context, invoker } = setupExecutor(step)
+      const runtimePlan = createRuntimePlan(step)
 
       const submitResult: SubmitTransitionResult = {
         executed: true,
@@ -369,7 +391,7 @@ describe('TransitionExecutor', () => {
       invoker.invoke.mockResolvedValue(successResult(submitResult))
 
       // Act
-      const result = await executor.executeSubmitTransitions(step.id, invoker, context)
+      const result = await executor.executeSubmitTransitions(runtimePlan, invoker, context)
 
       // Assert
       expect(result).toEqual(submitResult)
@@ -381,13 +403,14 @@ describe('TransitionExecutor', () => {
       const submit2 = ASTTestFactory.transition(TransitionType.SUBMIT).build() as SubmitTransitionASTNode
       const step = createStep({ onSubmission: [submit1, submit2] })
       const { executor, context, invoker } = setupExecutor(step)
+      const runtimePlan = createRuntimePlan(step)
 
       invoker.invoke.mockResolvedValue(
         successResult<SubmitTransitionResult>({ executed: false, validated: false, outcome: 'continue' }),
       )
 
       // Act
-      const result = await executor.executeSubmitTransitions(step.id, invoker, context)
+      const result = await executor.executeSubmitTransitions(runtimePlan, invoker, context)
 
       // Assert
       expect(result).toEqual({ executed: false, validated: false, outcome: 'continue' })
@@ -400,6 +423,7 @@ describe('TransitionExecutor', () => {
       const submit2 = ASTTestFactory.transition(TransitionType.SUBMIT).build() as SubmitTransitionASTNode
       const step = createStep({ onSubmission: [submit1, submit2] })
       const { executor, context, invoker } = setupExecutor(step)
+      const runtimePlan = createRuntimePlan(step)
 
       invoker.invoke.mockImplementation(async (nodeId: NodeId) => {
         if (nodeId === submit1.id) {
@@ -415,7 +439,7 @@ describe('TransitionExecutor', () => {
       })
 
       // Act
-      const result = await executor.executeSubmitTransitions(step.id, invoker, context)
+      const result = await executor.executeSubmitTransitions(runtimePlan, invoker, context)
 
       // Assert
       expect(result).toEqual({ executed: true, validated: false, outcome: 'redirect', redirect: 'next' })
@@ -428,17 +452,18 @@ describe('TransitionExecutor', () => {
       executor: TransitionExecutor
       context: jest.Mocked<ThunkEvaluationContext>
       invoker: jest.Mocked<ThunkInvocationAdapter>
+      runtimePlan: StepRuntimePlan
     } {
-      const ancestorIds = ancestors.map(a => a.id) as AstNodeId[]
+      const accessAncestorIds = ancestors.map(a => a.id) as AstNodeId[]
 
       const context = {
         metadataRegistry: {
           get: jest.fn().mockImplementation((nodeId: NodeId, key: string) => {
             if (key === 'attachedToParentNode') {
-              const index = ancestorIds.indexOf(nodeId as AstNodeId)
+              const index = accessAncestorIds.indexOf(nodeId as AstNodeId)
 
               if (index > 0) {
-                return ancestorIds[index - 1]
+                return accessAncestorIds[index - 1]
               }
             }
 
@@ -463,17 +488,20 @@ describe('TransitionExecutor', () => {
 
       const logger = { debug: jest.fn(), info: jest.fn(), warn: jest.fn(), error: jest.fn() }
       const executor = new TransitionExecutor(logger as unknown as Console)
+      const runtimePlan = createRuntimePlan(ancestors.at(-1)! as StepASTNode, {
+        accessAncestorIds,
+      })
 
-      return { executor, context, invoker }
+      return { executor, context, invoker, runtimePlan }
     }
 
     it('should return continue when no ancestors have transitions', async () => {
       // Arrange
       const step = createStep({})
-      const { executor, context, invoker } = setupLifecycle([step])
+      const { executor, context, invoker, runtimePlan } = setupLifecycle([step])
 
       // Act
-      const result = await executor.executeAccessLifecycle(step.id, invoker, context)
+      const result = await executor.executeAccessLifecycle(runtimePlan, invoker, context)
 
       // Assert
       expect(result).toEqual({ executed: true, outcome: 'continue' })
@@ -487,7 +515,7 @@ describe('TransitionExecutor', () => {
 
       const journey = createJourney({ onAccess: [journeyAccess] })
       const step = createStep({ onAccess: [stepAccess] })
-      const { executor, context, invoker } = setupLifecycle([journey, step])
+      const { executor, context, invoker, runtimePlan } = setupLifecycle([journey, step])
 
       const invocationOrder: string[] = []
       invoker.invoke.mockImplementation(async (nodeId: NodeId) => {
@@ -497,7 +525,7 @@ describe('TransitionExecutor', () => {
       })
 
       // Act
-      await executor.executeAccessLifecycle(step.id, invoker, context)
+      await executor.executeAccessLifecycle(runtimePlan, invoker, context)
 
       // Assert
       expect(invocationOrder.indexOf(journeyAccess.id)).toBeLessThan(invocationOrder.indexOf(stepAccess.id))
@@ -510,14 +538,14 @@ describe('TransitionExecutor', () => {
 
       const journey = createJourney({ onAccess: [journeyAccess] })
       const step = createStep({ onAccess: [stepAccess] })
-      const { executor, context, invoker } = setupLifecycle([journey, step])
+      const { executor, context, invoker, runtimePlan } = setupLifecycle([journey, step])
 
       invoker.invoke.mockResolvedValue(
         successResult<AccessTransitionResult>({ executed: true, outcome: 'redirect', redirect: '/login' }),
       )
 
       // Act
-      const result = await executor.executeAccessLifecycle(step.id, invoker, context)
+      const result = await executor.executeAccessLifecycle(runtimePlan, invoker, context)
 
       // Assert
       expect(result).toEqual({ executed: true, outcome: 'redirect', redirect: '/login' })
@@ -532,14 +560,14 @@ describe('TransitionExecutor', () => {
 
       const journey = createJourney({ onAccess: [journeyAccess] })
       const step = createStep({ onAccess: [stepAccess] })
-      const { executor, context, invoker } = setupLifecycle([journey, step])
+      const { executor, context, invoker, runtimePlan } = setupLifecycle([journey, step])
 
       invoker.invoke.mockResolvedValue(
         successResult<AccessTransitionResult>({ executed: true, outcome: 'error', status: 403 }),
       )
 
       // Act
-      const result = await executor.executeAccessLifecycle(step.id, invoker, context)
+      const result = await executor.executeAccessLifecycle(runtimePlan, invoker, context)
 
       // Assert
       expect(result.outcome).toBe('error')
@@ -555,12 +583,12 @@ describe('TransitionExecutor', () => {
       const outerJourney = createJourney({ onAccess: [outerAccess] })
       const innerJourney = createJourney({ onAccess: [innerAccess] })
       const step = createStep({ onAccess: [stepAccess] })
-      const { executor, context, invoker } = setupLifecycle([outerJourney, innerJourney, step])
+      const { executor, context, invoker, runtimePlan } = setupLifecycle([outerJourney, innerJourney, step])
 
       invoker.invoke.mockResolvedValue(successResult<AccessTransitionResult>({ executed: true, outcome: 'continue' }))
 
       // Act
-      const result = await executor.executeAccessLifecycle(step.id, invoker, context)
+      const result = await executor.executeAccessLifecycle(runtimePlan, invoker, context)
 
       // Assert
       expect(invoker.invoke).toHaveBeenCalledTimes(3)

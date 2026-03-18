@@ -1,9 +1,8 @@
-import { NodeId } from '@form-engine/core/types/engine.type'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import ThunkEvaluator from '@form-engine/core/compilation/thunks/ThunkEvaluator'
 import { StepRequest, StepResponse } from '@form-engine/core/runtime/routes/types'
-import getAncestorChain from '@form-engine/core/utils/getAncestorChain'
 import { JourneyASTNode } from '@form-engine/core/types/structures.type'
+import { StepRuntimePlan } from '@form-engine/core/compilation/StepRuntimePlanBuilder'
 
 /**
  * ContextPreparer - Creates and prepares the evaluation context before transitions run
@@ -24,14 +23,14 @@ export default class ContextPreparer {
    * @returns A context ready for transition execution and evaluation
    */
   prepare(
-    stepId: NodeId,
+    runtimePlan: StepRuntimePlan,
     evaluator: ThunkEvaluator,
     request: StepRequest,
     response: StepResponse,
   ): ThunkEvaluationContext {
     const context = evaluator.createContext(request, response)
 
-    this.mergeStaticData(stepId, context)
+    this.mergeStaticData(runtimePlan, context)
 
     return context
   }
@@ -42,9 +41,9 @@ export default class ContextPreparer {
    * Merge order is outermost first (journeys before step), so later ancestors
    * override earlier ones via shallow merge.
    */
-  private mergeStaticData(stepId: NodeId, context: ThunkEvaluationContext): void {
-    const ancestors = getAncestorChain(stepId, context.metadataRegistry)
-      .map(nodeId => context.nodeRegistry.get(nodeId)) as JourneyASTNode[]
+  private mergeStaticData(runtimePlan: StepRuntimePlan, context: ThunkEvaluationContext): void {
+    const ancestors = runtimePlan.accessAncestorIds
+      .map(nodeId => context.nodeRegistry.get(nodeId) as JourneyASTNode)
 
     ancestors.forEach(ancestor => {
       const staticData = ancestor.properties.data

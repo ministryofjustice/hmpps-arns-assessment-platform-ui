@@ -17,6 +17,7 @@ import { JourneyMetadata } from '@form-engine/core/runtime/rendering/types'
 import ThunkEvaluator, { EvaluationResult } from '@form-engine/core/compilation/thunks/ThunkEvaluator'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import { PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
+import { StepRuntimePlan } from '@form-engine/core/compilation/StepRuntimePlanBuilder'
 import FormStepController from './FormStepController'
 import { StepRequest, StepResponse, CookieMutation, CookieOptions } from './types'
 
@@ -157,6 +158,17 @@ describe('FormStepController', () => {
   })
 
   function createCompiledForm(stepNode: StepASTNode): CompiledForm[number] {
+    const runtimePlan: StepRuntimePlan = {
+      stepId: stepNode.id,
+      accessAncestorIds: [stepNode.id],
+      actionTransitionIds: (stepNode.properties.onAction ?? []).map(transition => transition.id),
+      submitTransitionIds: (stepNode.properties.onSubmission ?? []).map(transition => transition.id),
+      iteratorRootIds: [],
+      validationBlockIds: [],
+      renderAncestorIds: [],
+      renderStepId: stepNode.id,
+    }
+
     return {
       artefact: {
         nodeRegistry: {
@@ -167,6 +179,7 @@ describe('FormStepController', () => {
         },
       } as any,
       currentStepId: stepNode.id,
+      runtimePlan,
     }
   }
 
@@ -201,6 +214,11 @@ describe('FormStepController', () => {
 
   function setupAncestorChain(ancestors: (JourneyASTNode | StepASTNode)[]): void {
     const ancestorIds = ancestors.map(a => a.id) as AstNodeId[]
+
+    if (mockCompiledForm) {
+      mockCompiledForm.runtimePlan.accessAncestorIds = ancestorIds
+      mockCompiledForm.runtimePlan.renderAncestorIds = ancestorIds.slice(0, -1)
+    }
 
     mockContext.metadataRegistry.get = jest.fn().mockImplementation((nodeId: NodeId, key: string) => {
       if (key === 'attachedToParentNode') {
@@ -507,28 +525,9 @@ describe('FormStepController', () => {
 
         const step = createStepWithTransitions({})
         mockCompiledForm = createCompiledForm(step)
+        mockCompiledForm.runtimePlan.iteratorRootIds = [iterateNode.id]
 
         let iteratorExpanded = false
-
-        mockContext.metadataRegistry.findNodesWhere = jest.fn().mockImplementation((key: string, value: boolean) => {
-          if (key === 'isDescendantOfStep' && value) {
-            return [iterateNode.id]
-          }
-
-          return []
-        })
-
-        mockContext.metadataRegistry.get = jest.fn().mockImplementation((nodeId: NodeId, key: string) => {
-          if (nodeId === iterateNode.id && key === 'attachedToParentNode') {
-            return step.id
-          }
-
-          if (nodeId === step.id && key === 'isCurrentStep') {
-            return true
-          }
-
-          return undefined
-        })
 
         mockContext.nodeRegistry.get = jest.fn().mockImplementation((nodeId: NodeId) => {
           if (nodeId === iterateNode.id) {

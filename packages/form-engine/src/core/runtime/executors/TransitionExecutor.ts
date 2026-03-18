@@ -1,16 +1,12 @@
-import { NodeId, FormInstanceDependencies } from '@form-engine/core/types/engine.type'
+import { FormInstanceDependencies } from '@form-engine/core/types/engine.type'
 import { ThunkInvocationAdapter } from '@form-engine/core/compilation/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import { AccessTransitionResult } from '@form-engine/core/nodes/transitions/access/AccessHandler'
 import { ActionTransitionResult } from '@form-engine/core/nodes/transitions/action/ActionHandler'
 import { SubmitTransitionResult } from '@form-engine/core/nodes/transitions/submit/SubmitHandler'
-import {
-  AccessTransitionASTNode,
-  ActionTransitionASTNode,
-  SubmitTransitionASTNode,
-} from '@form-engine/core/types/expressions.type'
+import { AccessTransitionASTNode } from '@form-engine/core/types/expressions.type'
 import { JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
-import getAncestorChain from '@form-engine/core/utils/getAncestorChain'
+import { StepRuntimePlan } from '@form-engine/core/compilation/StepRuntimePlanBuilder'
 
 /**
  * TransitionExecutor - Runs lifecycle transitions for form steps
@@ -41,12 +37,12 @@ export default class TransitionExecutor {
    * @returns The first halting result (redirect/error), or 'continue' if all ancestors pass
    */
   async executeAccessLifecycle(
-    stepId: NodeId,
+    runtimePlan: StepRuntimePlan,
     invoker: ThunkInvocationAdapter,
     context: ThunkEvaluationContext,
   ): Promise<AccessTransitionResult> {
-    const ancestors = getAncestorChain(stepId, context.metadataRegistry)
-      .map(nodeId => context.nodeRegistry.get(nodeId)) as JourneyASTNode[]
+    const ancestors = runtimePlan.accessAncestorIds
+      .map(nodeId => context.nodeRegistry.get(nodeId) as JourneyASTNode)
 
     for (const ancestor of ancestors) {
       // eslint-disable-next-line no-await-in-loop
@@ -103,16 +99,13 @@ export default class TransitionExecutor {
    * Run onAction transitions for a step with first-match semantics.
    */
   async executeActionTransitions(
-    stepId: NodeId,
+    runtimePlan: StepRuntimePlan,
     invoker: ThunkInvocationAdapter,
     context: ThunkEvaluationContext,
   ): Promise<ActionTransitionResult> {
-    const step = context.nodeRegistry.get(stepId) as StepASTNode
-    const transitions: ActionTransitionASTNode[] = step.properties.onAction ?? []
-
-    for (const transition of transitions) {
+    for (const transitionId of runtimePlan.actionTransitionIds) {
       // eslint-disable-next-line no-await-in-loop
-      const result = await invoker.invoke<ActionTransitionResult>(transition.id, context)
+      const result = await invoker.invoke<ActionTransitionResult>(transitionId, context)
 
       if (!result.error && result.value?.executed) {
         return result.value
@@ -126,16 +119,13 @@ export default class TransitionExecutor {
    * Run onSubmission transitions for a step with first-match semantics.
    */
   async executeSubmitTransitions(
-    stepId: NodeId,
+    runtimePlan: StepRuntimePlan,
     invoker: ThunkInvocationAdapter,
     context: ThunkEvaluationContext,
   ): Promise<SubmitTransitionResult> {
-    const step = context.nodeRegistry.get(stepId) as StepASTNode
-    const transitions: SubmitTransitionASTNode[] = step.properties.onSubmission ?? []
-
-    for (const transition of transitions) {
+    for (const transitionId of runtimePlan.submitTransitionIds) {
       // eslint-disable-next-line no-await-in-loop
-      const result = await invoker.invoke<SubmitTransitionResult>(transition.id, context)
+      const result = await invoker.invoke<SubmitTransitionResult>(transitionId, context)
 
       if (!result.error && result.value?.executed) {
         return result.value

@@ -3,9 +3,10 @@ import { JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.
 import RegistrationTraverser from '@form-engine/core/compilation/traversers/RegistrationTraverser'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { NodeCompilationPipeline } from '@form-engine/core/compilation/NodeCompilationPipeline'
-import { FormInstanceDependencies, NodeId } from '@form-engine/core/types/engine.type'
+import { AstNodeId, FormInstanceDependencies, NodeId } from '@form-engine/core/types/engine.type'
 import { CompilationDependencies } from '@form-engine/core/compilation/CompilationDependencies'
 import { NodeIDCategory } from '@form-engine/core/compilation/id-generators/NodeIDGenerator'
+import StepRuntimePlanBuilder, { StepRuntimePlan } from '@form-engine/core/compilation/StepRuntimePlanBuilder'
 
 export type StepIndex = Map<NodeId, StepASTNode>
 
@@ -13,6 +14,12 @@ export interface SharedCompiledForm {
   rootNode: JourneyASTNode
   sharedDependencies: CompilationDependencies
   stepIndex: StepIndex
+}
+
+export interface CompiledStep {
+  artefact: CompilationDependencies
+  currentStepId: AstNodeId
+  runtimePlan: StepRuntimePlan
 }
 
 /**
@@ -97,16 +104,18 @@ export default class FormCompilationFactory {
     // Phase 8 - Wire step-scope dependencies (pseudo nodes and onLoad transitions)
     NodeCompilationPipeline.wireStepScopeDependencies(compilationDependencies)
 
+    const runtimePlan = new StepRuntimePlanBuilder().build(stepNode, compilationDependencies)
+
     // Phase 9 - Compile thunk handlers
     NodeCompilationPipeline.compileThunks(compilationDependencies, this.formInstanceDependencies.functionRegistry)
 
     return {
       artefact: compilationDependencies,
       currentStepId: stepNode.id,
+      runtimePlan,
     }
   }
 }
 
 export type CompiledForm = ReturnType<FormCompilationFactory['compile']>
-export type CompiledStep = ReturnType<FormCompilationFactory['compileStep']>
 export type CompilationArtefact = CompiledStep['artefact']
