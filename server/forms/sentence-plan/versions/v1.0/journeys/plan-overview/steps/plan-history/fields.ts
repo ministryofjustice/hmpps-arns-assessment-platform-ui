@@ -129,7 +129,7 @@ const goalAddedEntryContent = Format(
     .then('')
     .else(
       Format(
-        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state">View goal</a></p>',
+        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View goal</a></p>',
         Item().path('goalUuid'),
       ),
     ),
@@ -164,7 +164,7 @@ const goalAchievedEntryContent = Format(
     .then('')
     .else(
       Format(
-        '<p class="govuk-body"><a href="../goal/%1/view-inactive-goal" class="govuk-link govuk-link--no-visited-state">View goal</a></p>',
+        '<p class="govuk-body"><a href="../goal/%1/view-inactive-goal" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View goal</a></p>',
         Item().path('goalUuid'),
       ),
     ),
@@ -203,13 +203,13 @@ const goalRemovedEntryContent = Format(
       when(Item().path('isCurrentlyActive').match(Condition.Equals(true)))
         .then(
           Format(
-            '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state">View latest version</a></p>',
+            '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View latest version</a></p>',
             Item().path('goalUuid'),
           ),
         )
         .else(
           Format(
-            '<p class="govuk-body"><a href="../goal/%1/view-inactive-goal" class="govuk-link govuk-link--no-visited-state">View goal</a></p>',
+            '<p class="govuk-body"><a href="../goal/%1/view-inactive-goal" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View goal</a></p>',
             Item().path('goalUuid'),
           ),
         ),
@@ -245,7 +245,7 @@ const goalReaddedEntryContent = Format(
     .then('')
     .else(
       Format(
-        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state">View latest version</a></p>',
+        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View latest version</a></p>',
         Item().path('goalUuid'),
       ),
     ),
@@ -281,7 +281,7 @@ const goalUpdatedEntryContent = Format(
     .then('')
     .else(
       Format(
-        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state">View latest version</a></p>',
+        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View latest version</a></p>',
         Item().path('goalUuid'),
       ),
     ),
@@ -334,11 +334,11 @@ export const agreementHistory = CollectionBlock({
 export const updateAgreementLink = HtmlBlock({
   hidden: or(isReadOnly, Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER'))),
   content: Format(
-    '<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a></p>',
+    '<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">Update %1\'s agreement</a></p>',
     CaseData.Forename,
   ),
 })
 
 export const backToTopLink = HtmlBlock({
-  content: '<p class="govuk-body"><a href="#" class="govuk-link">↑ Back to top</a></p>',
+  content: '<p class="govuk-body"><a href="#" class="govuk-link govuk-!-display-none-print">↑ Back to top</a></p>',
 })
