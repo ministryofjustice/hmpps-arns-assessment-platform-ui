@@ -16,6 +16,7 @@ import { isASTNode } from '@form-engine/core/typeguards/nodes'
  *
  * Evaluates block properties for rendering/data use.
  * Validation properties are skipped because validation runs via ValidationExecutor.
+ * Dependent properties are skipped because answer processing and validation own that logic.
  * Formatters are also skipped here because they are applied during submission.
  *
  * Synchronous when all nested AST nodes in properties are sync.
@@ -38,7 +39,7 @@ export default class BlockHandler implements ThunkHandler {
         continue // eslint-disable-line no-continue
       }
 
-      const isRelevant = key !== 'formatters' && key !== 'validate'
+      const isRelevant = key !== 'formatters' && key !== 'validate' && key !== 'dependent'
 
       if (!isRelevant) {
         continue // eslint-disable-line no-continue
@@ -127,7 +128,9 @@ export default class BlockHandler implements ThunkHandler {
   }
 
   private getPropertiesToEvaluate(): Record<string, unknown> {
-    return Object.fromEntries(Object.entries(this.node.properties).filter(([key]) => key !== 'validate'))
+    return Object.fromEntries(
+      Object.entries(this.node.properties).filter(([key]) => key !== 'validate' && key !== 'dependent'),
+    )
   }
 
   private evaluateBlockPropertiesSync(

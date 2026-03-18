@@ -312,7 +312,7 @@ describe('BlockHandler', () => {
       expect(mockInvoker.invoke).not.toHaveBeenCalledWith(validationNode.id, mockContext)
     })
 
-    it('should still evaluate dependent when validation is skipped', async () => {
+    it('should skip dependent when validation is skipped', async () => {
       // Arrange
       const dependentNode = ASTTestFactory.reference(['answers', 'businessType'])
       const predicateNode = ASTTestFactory.predicate(PredicateType.TEST)
@@ -342,8 +342,9 @@ describe('BlockHandler', () => {
       const result = await handler.evaluate(mockContext, mockInvoker)
 
       // Assert
-      expect((result.value as FieldBlockASTNode).properties.dependent).toBe(true)
+      expect((result.value as FieldBlockASTNode).properties.dependent).toBeUndefined()
       expect((result.value as FieldBlockASTNode).properties.validate).toBeUndefined()
+      expect(mockInvoker.invoke).not.toHaveBeenCalledWith(dependentNode.id, mockContext)
       expect(mockInvoker.invoke).not.toHaveBeenCalledWith(validationNode.id, mockContext)
     })
 
