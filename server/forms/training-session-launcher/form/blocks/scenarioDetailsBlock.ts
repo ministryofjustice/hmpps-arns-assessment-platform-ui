@@ -39,6 +39,10 @@ export const scenarioDetailsBlock = TemplateWrapper({
             <dt>OASys</dt>
             <dd>{{oasysAssessmentPk}}</dd>
           </div>
+          <div class="scenario-picker__inline-summary-item">
+            <dt>Sentence Plan Version</dt>
+            <dd>{{sentencePlanVersion}}</dd>
+          </div>
         </dl>
 
         <h3 class="govuk-heading-s">Flags</h3>
@@ -58,6 +62,7 @@ export const scenarioDetailsBlock = TemplateWrapper({
     crn: Item().path('crn'),
     pnc: Item().path('pnc'),
     oasysAssessmentPk: Item().path('oasysAssessmentPk'),
+    sentencePlanVersion: Item().path('sentencePlanVersion'),
   },
   slots: {
     flags: [

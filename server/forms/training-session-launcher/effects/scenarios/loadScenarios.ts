@@ -193,6 +193,7 @@ function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolea
     crn: values.crn || '',
     pnc: values.pnc || '',
     oasysAssessmentPk: values.oasysAssessmentPk || '',
+    sentencePlanVersion: values.sentencePlanVersion || null,
 
     displayNeeds: transformToDisplayNeeds(values),
     isCustom,
