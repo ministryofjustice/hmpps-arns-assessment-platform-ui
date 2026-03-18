@@ -4,22 +4,13 @@ import { CompiledForm } from '@form-engine/core/compilation/FormCompilationFacto
 import ThunkEvaluator, { EvaluationResult } from '@form-engine/core/compilation/thunks/ThunkEvaluator'
 import { ThunkInvocationAdapter } from '@form-engine/core/compilation/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
-import { AccessTransitionResult } from '@form-engine/core/nodes/transitions/access/AccessHandler'
-import { SubmitTransitionResult } from '@form-engine/core/nodes/transitions/submit/SubmitHandler'
-import { ActionTransitionResult } from '@form-engine/core/nodes/transitions/action/ActionHandler'
-import {
-  AccessTransitionASTNode,
-  ActionTransitionASTNode,
-  ExpressionASTNode,
-  SubmitTransitionASTNode,
-} from '@form-engine/core/types/expressions.type'
-import { JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
-import { isJourneyStructNode, isStepStructNode } from '@form-engine/core/typeguards/structure-nodes'
-import getAncestorChain from '@form-engine/core/utils/getAncestorChain'
+import { ExpressionASTNode } from '@form-engine/core/types/expressions.type'
 import { PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
 import RenderContextFactory from '@form-engine/core/runtime/rendering/RenderContextFactory'
 import { JourneyMetadata } from '@form-engine/core/runtime/rendering/types'
 import { ExpressionType } from '@form-engine/form/types/enums'
+import TransitionExecutor from '@form-engine/core/runtime/executors/TransitionExecutor'
+import ContextPreparer from '@form-engine/core/runtime/executors/ContextPreparer'
 import { StepController } from './types'
 
 /**
@@ -48,12 +39,19 @@ import { StepController } from './types'
  * 6. Otherwise → evaluate AST and render (with validation errors if applicable)
  */
 export default class FormStepController<TRequest, TResponse> implements StepController<TRequest, TResponse> {
+  private readonly contextPreparer: ContextPreparer
+
+  private readonly transitionExecutor: TransitionExecutor
+
   constructor(
     private readonly compiledForm: CompiledForm[number],
     private readonly dependencies: FormInstanceDependencies,
     private readonly navigationMetadata: JourneyMetadata[],
     private readonly currentStepPath: string,
-  ) {}
+  ) {
+    this.contextPreparer = new ContextPreparer()
+    this.transitionExecutor = new TransitionExecutor(this.dependencies.logger)
+  }
 
   /** Handle GET request: run access lifecycle, evaluate AST, render response. */
   async get(req: TRequest, res: TResponse): Promise<void> {
@@ -61,22 +59,20 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
     const response = this.dependencies.frameworkAdapter.toStepResponse(res)
 
     const evaluator = ThunkEvaluator.withRuntimeOverlay(this.compiledForm.artefact, this.dependencies)
-    const context = evaluator.createContext(request, response)
-    const ancestors = this.findLifecycleAncestors(context)
+    const context = this.contextPreparer.prepare(this.compiledForm.currentStepId, evaluator, request, response)
 
-    for (const ancestor of ancestors) {
-      this.mergeStaticData(ancestor, context)
+    const accessResult = await this.transitionExecutor.executeAccessLifecycle(
+      this.compiledForm.currentStepId,
+      evaluator,
+      context,
+    )
 
-      // eslint-disable-next-line no-await-in-loop
-      const accessResult = await this.runAccessTransitions(evaluator, ancestor, context)
+    if (accessResult.outcome === 'redirect') {
+      return this.redirect(res, req, accessResult.redirect, context)
+    }
 
-      if (accessResult.outcome === 'redirect') {
-        return this.redirect(res, req, accessResult.redirect, context)
-      }
-
-      if (accessResult.outcome === 'error') {
-        throw createHttpError(accessResult.status, accessResult.message || 'Access denied')
-      }
+    if (accessResult.outcome === 'error') {
+      throw createHttpError(accessResult.status, accessResult.message || 'Access denied')
     }
 
     // TODO: Add 'reachability' check
@@ -96,22 +92,20 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
     const response = this.dependencies.frameworkAdapter.toStepResponse(res)
 
     const evaluator = ThunkEvaluator.withRuntimeOverlay(this.compiledForm.artefact, this.dependencies)
-    const context = evaluator.createContext(request, response)
-    const ancestors = this.findLifecycleAncestors(context)
+    const context = this.contextPreparer.prepare(this.compiledForm.currentStepId, evaluator, request, response)
 
-    for (const ancestor of ancestors) {
-      this.mergeStaticData(ancestor, context)
+    const accessResult = await this.transitionExecutor.executeAccessLifecycle(
+      this.compiledForm.currentStepId,
+      evaluator,
+      context,
+    )
 
-      // eslint-disable-next-line no-await-in-loop
-      const accessResult = await this.runAccessTransitions(evaluator, ancestor, context)
+    if (accessResult.outcome === 'redirect') {
+      return this.redirect(res, req, accessResult.redirect, context)
+    }
 
-      if (accessResult.outcome === 'redirect') {
-        return this.redirect(res, req, accessResult.redirect, context)
-      }
-
-      if (accessResult.outcome === 'error') {
-        throw createHttpError(accessResult.status, accessResult.message || 'Access denied')
-      }
+    if (accessResult.outcome === 'error') {
+      throw createHttpError(accessResult.status, accessResult.message || 'Access denied')
     }
 
     // TODO: Add 'reachability' check
@@ -120,11 +114,13 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
 
     await this.evaluateAnswerPseudoNodes(evaluator, context)
 
-    const currentStep = this.getCurrentStep(context)
+    await this.transitionExecutor.executeActionTransitions(this.compiledForm.currentStepId, evaluator, context)
 
-    await this.runActionTransitions(evaluator, currentStep, context)
-
-    const submitResult = await this.runSubmitTransitions(evaluator, currentStep, context)
+    const submitResult = await this.transitionExecutor.executeSubmitTransitions(
+      this.compiledForm.currentStepId,
+      evaluator,
+      context,
+    )
 
     if (submitResult.outcome === 'error') {
       throw createHttpError(submitResult.status!, submitResult.message || 'Submission error')
@@ -170,114 +166,6 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
     })
 
     return this.dependencies.frameworkAdapter.render(renderContext, req, res)
-  }
-
-  /**
-   * Merge static data from an ancestor into context.global.data
-   *
-   * Called before runAccessTransitions() so that:
-   * 1. Static data is available to effects via context.getData()
-   * 2. Effects can override static data if needed
-   * 3. Later ancestors (steps) override earlier ones (journeys) with shallow merge
-   */
-  private mergeStaticData(ancestor: JourneyASTNode | StepASTNode, context: ThunkEvaluationContext): void {
-    const staticData = ancestor.properties.data
-
-    if (staticData !== undefined) {
-      Object.assign(context.global.data, staticData)
-    }
-  }
-
-  /**
-   * Run onAccess transitions for an ancestor
-   *
-   * Transitions are evaluated in sequence. Each transition can:
-   * - Execute effects (data loading, analytics)
-   * - Continue to next transition (outcome: 'continue')
-   * - Halt with redirect (outcome: 'redirect')
-   * - Halt with error (outcome: 'error')
-   *
-   * @returns The final outcome - 'continue' if all transitions passed, or the halting outcome
-   */
-  private async runAccessTransitions(
-    invoker: ThunkInvocationAdapter,
-    ancestor: JourneyASTNode | StepASTNode,
-    context: ThunkEvaluationContext,
-  ): Promise<AccessTransitionResult> {
-    const transitions: AccessTransitionASTNode[] = ancestor.properties.onAccess ?? []
-
-    for (const transition of transitions) {
-      // eslint-disable-next-line no-await-in-loop
-      const result = await invoker.invoke<AccessTransitionResult>(transition.id, context)
-
-      if (result.error) {
-        this.dependencies.logger.warn(`Access transition error: ${result.error.message}`)
-        // I can't come up with a way to do a promise in a loop, without using continue, and still have it be neat.
-        // eslint-disable-next-line no-continue
-        continue
-      }
-
-      // Skip if transition didn't execute (when condition was false)
-      if (!result.value?.executed) {
-        // eslint-disable-next-line no-continue
-        continue
-      }
-
-      // Halt on redirect or error
-      if (result.value.outcome === 'redirect' || result.value.outcome === 'error') {
-        return result.value
-      }
-    }
-
-    // All transitions completed - access granted
-    return { executed: true, outcome: 'continue' }
-  }
-
-  /**
-   * Run onAction transitions with first-match semantics
-   * Effects are executed immediately during transition evaluation
-   */
-  private async runActionTransitions(
-    invoker: ThunkInvocationAdapter,
-    step: StepASTNode,
-    context: ThunkEvaluationContext,
-  ): Promise<ActionTransitionResult> {
-    const transitions: ActionTransitionASTNode[] = step.properties.onAction ?? []
-
-    for (const transition of transitions) {
-      // eslint-disable-next-line no-await-in-loop
-      const result = await invoker.invoke<ActionTransitionResult>(transition.id, context)
-
-      // ActionTransitionResult.executed: true if when predicate matched (first-match semantics)
-      if (!result.error && result.value?.executed) {
-        return result.value
-      }
-    }
-
-    return { executed: false }
-  }
-
-  /**
-   * Run onSubmission transitions with first-match semantics
-   * Effects are executed immediately during transition evaluation
-   */
-  private async runSubmitTransitions(
-    invoker: ThunkInvocationAdapter,
-    step: StepASTNode,
-    context: ThunkEvaluationContext,
-  ): Promise<SubmitTransitionResult> {
-    const transitions: SubmitTransitionASTNode[] = step.properties.onSubmission ?? []
-
-    for (const transition of transitions) {
-      // eslint-disable-next-line no-await-in-loop
-      const result = await invoker.invoke<SubmitTransitionResult>(transition.id, context)
-
-      if (!result.error && result.value?.executed) {
-        return result.value
-      }
-    }
-
-    return { executed: false, validated: false, outcome: 'continue' }
   }
 
   /**
@@ -385,17 +273,5 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
       // eslint-disable-next-line no-await-in-loop
       await invoker.invoke(node.id, context)
     }
-  }
-
-  /** Find the ancestor chain from outermost journey to current step. */
-  private findLifecycleAncestors(context: ThunkEvaluationContext): (StepASTNode | JourneyASTNode)[] {
-    return getAncestorChain(this.compiledForm.currentStepId, context.metadataRegistry)
-      .map(nodeId => context.nodeRegistry.get(nodeId))
-      .filter(node => isStepStructNode(node) || isJourneyStructNode(node))
-  }
-
-  /** Get the current step node from the context. */
-  private getCurrentStep(context: ThunkEvaluationContext): StepASTNode {
-    return context.nodeRegistry.get(this.compiledForm.currentStepId) as StepASTNode
   }
 }
