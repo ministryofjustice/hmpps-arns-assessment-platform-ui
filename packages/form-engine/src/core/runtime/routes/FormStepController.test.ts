@@ -86,8 +86,7 @@ jest.mock('@form-engine/core/compilation/thunks/ThunkEvaluator')
 const mockRenderContextFactoryBuild = jest.fn().mockReturnValue({ step: {}, blocks: [], ancestors: [] })
 const mockValidationExecutorExecute = jest.fn().mockResolvedValue({
   isValid: true,
-  expandedIterateNodeIds: [],
-  evaluatedBlockIds: [],
+  failures: [],
 })
 
 jest.mock('@form-engine/core/runtime/executors/ValidationExecutor', () => {
@@ -125,8 +124,7 @@ describe('FormStepController', () => {
     ;(ValidationExecutor as jest.Mock).mockClear()
     mockValidationExecutorExecute.mockResolvedValue({
       isValid: true,
-      expandedIterateNodeIds: [],
-      evaluatedBlockIds: [],
+      failures: [],
     })
 
     mockCurrentStepPath = '/journey/step-1'
@@ -721,8 +719,15 @@ describe('FormStepController', () => {
         }
         mockValidationExecutorExecute.mockResolvedValue({
           isValid: false,
-          expandedIterateNodeIds: [],
-          evaluatedBlockIds: [],
+          failures: [
+            {
+              blockId: 'compile_ast:999',
+              blockCode: 'email',
+              passed: false,
+              message: 'Enter an email address',
+              submissionOnly: true,
+            },
+          ],
         })
         mockEvaluator.invoke.mockResolvedValue({
           value: submitResult,
@@ -752,6 +757,15 @@ describe('FormStepController', () => {
           stepId: mockCompiledForm.runtimePlan.stepId,
           validated: true,
           isValid: false,
+          failures: [
+            {
+              blockId: 'compile_ast:999',
+              blockCode: 'email',
+              passed: false,
+              message: 'Enter an email address',
+              submissionOnly: true,
+            },
+          ],
         })
       })
 

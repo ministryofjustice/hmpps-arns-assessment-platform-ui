@@ -318,6 +318,7 @@ describe('SubmitHandler', () => {
             stepId: 'compile_ast:1',
             validated: true,
             isValid: true,
+            failures: [],
           },
         },
         logger: {
@@ -374,6 +375,7 @@ describe('SubmitHandler', () => {
             stepId: 'compile_ast:1',
             validated: true,
             isValid: true,
+            failures: [],
           },
         },
         logger: {
@@ -429,6 +431,7 @@ describe('SubmitHandler', () => {
             stepId: 'compile_ast:1',
             validated: true,
             isValid: false,
+            failures: [],
           },
         },
         logger: {

@@ -186,6 +186,7 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
       stepId: this.compiledForm.runtimePlan.stepId,
       validated: true,
       isValid: validation.isValid,
+      failures: validation.failures,
     }
   }
 

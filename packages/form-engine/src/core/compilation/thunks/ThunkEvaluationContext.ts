@@ -3,11 +3,17 @@ import { CompilationDependencies } from '@form-engine/core/compilation/Compilati
 import { AnswerHistory } from '@form-engine/core/compilation/thunks/types'
 import ThunkCacheManager from '@form-engine/core/compilation/thunks/ThunkCacheManager'
 import { StepResponse, StepRequest } from '@form-engine/core/runtime/routes/types'
+import { ValidationResult } from '@form-engine/core/nodes/expressions/validation/ValidationHandler'
+
+export interface StepValidationFailure extends ValidationResult {
+  blockId: NodeId
+}
 
 export interface StepValidationState {
   stepId: NodeId
   validated: boolean
   isValid: boolean
+  failures: StepValidationFailure[]
 }
 
 /**
