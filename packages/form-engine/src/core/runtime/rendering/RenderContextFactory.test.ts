@@ -212,6 +212,76 @@ describe('RenderContextFactory', () => {
       expect(result.showValidationFailures).toBe(true)
     })
 
+    it('should use stored validation failures for rendered blocks and summary', () => {
+      // Arrange
+      const block = createMockBlock('compile_ast:3')
+
+      block.properties.validate = [{ passed: false, message: 'Old cached error', submissionOnly: true }]
+
+      const step = createMockStep('compile_ast:2', { blocks: [block] })
+      const journey = createMockJourney('compile_ast:1', [step])
+      const evaluationResult = createMockEvaluationResult(journey)
+
+      evaluationResult.context.global.validation = {
+        stepId: step.id,
+        validated: true,
+        isValid: false,
+        failures: [
+          {
+            blockId: block.id,
+            blockCode: 'email',
+            passed: false,
+            message: 'Enter your email address',
+            submissionOnly: true,
+            details: { code: 'required' },
+          },
+        ],
+      }
+
+      // Act
+      const result = RenderContextFactory.build(evaluationResult, 'compile_ast:2', { showValidationFailures: true })
+
+      // Assert
+      expect(result.validationErrors).toEqual([
+        {
+          blockCode: 'email',
+          passed: false,
+          message: 'Enter your email address',
+          submissionOnly: true,
+          details: { code: 'required' },
+        },
+      ])
+      expect(result.blocks[0].properties.validate).toEqual([
+        {
+          blockCode: 'email',
+          passed: false,
+          message: 'Enter your email address',
+          submissionOnly: true,
+          details: { code: 'required' },
+        },
+      ])
+    })
+
+    it('should not scan cached blocks for validation failures when validation state is missing', () => {
+      // Arrange
+      const block = createMockBlock('compile_ast:3')
+
+      block.properties.validate = [{ passed: false, message: 'Old cached error', submissionOnly: true }]
+
+      const step = createMockStep('compile_ast:2', { blocks: [block] })
+      const journey = createMockJourney('compile_ast:1', [step])
+      const evaluationResult = createMockEvaluationResult(journey)
+
+      // Act
+      const result = RenderContextFactory.build(evaluationResult, 'compile_ast:2', { showValidationFailures: true })
+
+      // Assert
+      expect(result.validationErrors).toEqual([])
+      expect(result.blocks[0].properties.validate).toEqual([
+        { passed: false, message: 'Old cached error', submissionOnly: true },
+      ])
+    })
+
     it('should exclude transitions from step properties', () => {
       // Arrange
       const step = createMockStep('compile_ast:2', {

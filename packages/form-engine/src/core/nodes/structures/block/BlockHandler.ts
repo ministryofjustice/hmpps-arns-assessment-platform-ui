@@ -14,17 +14,9 @@ import { isASTNode } from '@form-engine/core/typeguards/nodes'
 /**
  * Handler for Block structure nodes (both field and basic blocks)
  *
- * Evaluates properties in the block based on whether it's on the current step:
- *
- * For blocks on CURRENT STEP (isDescendantOfStep = true):
- * - All properties are evaluated (rendering, validation, etc.)
- *
- * For blocks on OTHER STEPS:
- * - Only validation/data properties: code, validate, dependent
- * - Rendering properties (label, hint, items, etc.) are skipped
- *
- * This runtime filtering replaces compile-time filtering in findRelevantNodes,
- * allowing thunks to be compiled once and shared across all step artefacts.
+ * Evaluates block properties for rendering/data use.
+ * Validation properties are skipped because validation runs via ValidationExecutor.
+ * Formatters are also skipped here because they are applied during submission.
  *
  * Synchronous when all nested AST nodes in properties are sync.
  * Asynchronous when any nested AST node is async.
@@ -32,18 +24,12 @@ import { isASTNode } from '@form-engine/core/typeguards/nodes'
 export default class BlockHandler implements ThunkHandler {
   isAsync = true
 
-  // Properties needed for validation/data on non-current steps
-  private static readonly VALIDATION_PROPS = ['code', 'validate', 'dependent']
-
-  private static readonly VALIDATION_PROPS_SET = new Set(BlockHandler.VALIDATION_PROPS)
-
   constructor(
     public readonly nodeId: NodeId,
     private readonly node: BlockASTNode,
   ) {}
 
   computeIsAsync(deps: MetadataComputationDependencies): void {
-    const isOnCurrentStep = deps.metadataRegistry.get(this.nodeId, 'isDescendantOfStep', false)
     const properties = this.node.properties as Record<string, unknown>
 
     // eslint-disable-next-line no-restricted-syntax -- for...in avoids Object.keys() allocation in this hot path
@@ -52,7 +38,7 @@ export default class BlockHandler implements ThunkHandler {
         continue // eslint-disable-line no-continue
       }
 
-      const isRelevant = isOnCurrentStep ? key !== 'formatters' : BlockHandler.VALIDATION_PROPS_SET.has(key)
+      const isRelevant = key !== 'formatters' && key !== 'validate'
 
       if (!isRelevant) {
         continue // eslint-disable-line no-continue
@@ -111,7 +97,7 @@ export default class BlockHandler implements ThunkHandler {
   }
 
   evaluateSync(context: ThunkEvaluationContext, invoker: ThunkInvocationAdapter): HandlerResult {
-    const propertiesToEvaluate = this.getPropertiesToEvaluate(context)
+    const propertiesToEvaluate = this.getPropertiesToEvaluate()
     const evaluatedProperties = this.evaluateBlockPropertiesSync(propertiesToEvaluate, context, invoker)
 
     return {
@@ -126,7 +112,7 @@ export default class BlockHandler implements ThunkHandler {
   }
 
   async evaluate(context: ThunkEvaluationContext, invoker: ThunkInvocationAdapter): Promise<HandlerResult> {
-    const propertiesToEvaluate = this.getPropertiesToEvaluate(context)
+    const propertiesToEvaluate = this.getPropertiesToEvaluate()
     const evaluatedProperties = await this.evaluateBlockProperties(propertiesToEvaluate, context, invoker)
 
     return {
@@ -140,52 +126,18 @@ export default class BlockHandler implements ThunkHandler {
     }
   }
 
-  /**
-   * Determine which properties to evaluate based on step context
-   *
-   * Current step blocks: all properties (for full rendering)
-   * Other step blocks: only validation properties (for cross-step validation)
-   */
-  private getPropertiesToEvaluate(context: ThunkEvaluationContext): Record<string, unknown> {
-    const isOnCurrentStep = context.metadataRegistry.get(this.nodeId, 'isDescendantOfStep', false)
-
-    if (isOnCurrentStep) {
-      return this.node.properties
-    }
-
-    // For blocks on other steps, only include validation/data properties
-    return Object.fromEntries(
-      Object.entries(this.node.properties).filter(([key]) => BlockHandler.VALIDATION_PROPS.includes(key)),
-    )
+  private getPropertiesToEvaluate(): Record<string, unknown> {
+    return Object.fromEntries(Object.entries(this.node.properties).filter(([key]) => key !== 'validate'))
   }
 
-  /**
-   * Sync version: Evaluate block properties with special handling for dependent/validate relationship
-   */
   private evaluateBlockPropertiesSync(
     properties: Record<string, unknown>,
     context: ThunkEvaluationContext,
     invoker: ThunkInvocationAdapter,
   ): Record<string, unknown> {
-    // First, check if there's a dependent property
-    const hasDependentProperty = 'dependent' in properties
-    let isDependentActive = true
-
-    if (hasDependentProperty) {
-      const dependentValue = evaluatePropertyValueSync(properties.dependent, context, invoker)
-      isDependentActive = Boolean(dependentValue)
-    }
-
-    // Evaluate all properties
     const result: Record<string, unknown> = {}
 
     Object.entries(properties).forEach(([key, value]) => {
-      // Skip validation evaluation if dependent is false
-      if (key === 'validate' && !isDependentActive) {
-        result[key] = []
-        return
-      }
-
       // Skip formatters - they are applied during submission, not rendering
       if (key === 'formatters') {
         result[key] = value
@@ -199,36 +151,17 @@ export default class BlockHandler implements ThunkHandler {
   }
 
   /**
-   * Evaluate block properties with special handling for dependent/validate relationship
-   *
-   * If a block has a 'dependent' property that evaluates to false, the 'validate'
-   * property will not be evaluated (returns empty array instead).
+   * Evaluate block properties for render/data use.
    */
   private async evaluateBlockProperties(
     properties: Record<string, unknown>,
     context: ThunkEvaluationContext,
     invoker: ThunkInvocationAdapter,
   ): Promise<Record<string, unknown>> {
-    // First, check if there's a dependent property
-    const hasDependentProperty = 'dependent' in properties
-    let isDependentActive = true
-
-    if (hasDependentProperty) {
-      const dependentValue = await evaluatePropertyValue(properties.dependent, context, invoker)
-      isDependentActive = Boolean(dependentValue)
-    }
-
-    // Evaluate all properties
     const result: Record<string, unknown> = {}
 
     await Promise.all(
       Object.entries(properties).map(async ([key, value]) => {
-        // Skip validation evaluation if dependent is false
-        if (key === 'validate' && !isDependentActive) {
-          result[key] = []
-          return
-        }
-
         // Skip formatters - they are applied during submission, not rendering
         if (key === 'formatters') {
           result[key] = value
