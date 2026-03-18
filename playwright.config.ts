@@ -36,7 +36,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
   /* Maximum time test suite canm run for. (millis) */
   globalTimeout: 60 * 60 * 1000,
   fullyParallel: true,
-  workers: 3,
+  workers: 6,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
