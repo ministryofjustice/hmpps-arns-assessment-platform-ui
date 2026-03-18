@@ -18,7 +18,7 @@ import {
   actionButtons,
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
-import { redirectIfNotPostAgreement } from '../../../guards'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
 
 /**
  * Update goal and steps
@@ -47,15 +47,7 @@ export const updateGoalAndStepsStep = step({
     }),
     // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
     redirectIfNotPostAgreement('../../plan/overview'),
-    accessTransition({
-      next: [
-        // Redirect if goal not found
-        redirect({
-          when: Data('activeGoal').not.match(Condition.IsRequired()),
-          goto: '../../plan/overview',
-        }),
-      ],
-    }),
+    redirectIfGoalNotFound('../../plan/overview'),
   ],
 
   onSubmission: [
