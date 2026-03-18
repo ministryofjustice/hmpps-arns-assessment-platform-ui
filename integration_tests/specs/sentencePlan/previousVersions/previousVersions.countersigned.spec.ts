@@ -140,7 +140,7 @@ test.describe('Previous Versions - Multiple previous versions, including Counter
 
     await expect(allVersionsColumns.nth(dateColumnIndex)).toContainText(expectedAgreedDate)
     await expect(allVersionsColumns.nth(dateColumnIndex)).toContainText('Plan updated')
-    await expect(allVersionsColumns.nth(statusColumnIndex)).toContainText('Plan agreed')
+    await expect(allVersionsColumns.nth(statusColumnIndex)).toContainText('Plan first agreed')
 
     const assessmentLink = allVersionsColumns.nth(assessmentColumnIndex).locator('a', { hasText: 'View' })
     await expect(assessmentLink).toHaveCount(0)

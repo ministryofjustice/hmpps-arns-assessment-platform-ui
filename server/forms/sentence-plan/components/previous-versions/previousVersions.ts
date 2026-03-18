@@ -55,7 +55,7 @@ function buildParams(block: EvaluatedBlock<PreviousVersions>) {
       },
       agreed: {
         statuses: ['AGREED'],
-        text: 'Plan agreed',
+        text: 'Plan first agreed',
         classes: 'govuk-tag--blue',
       },
     },
