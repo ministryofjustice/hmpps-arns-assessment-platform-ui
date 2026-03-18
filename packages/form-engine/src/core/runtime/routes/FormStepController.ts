@@ -75,6 +75,8 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
 
     // TODO: Add 'reachability' check
 
+    this.logValidationPlan()
+
     await this.expandIteratorsForStep(this.compiledForm.runtimePlan.iteratorRootIds, evaluator, context)
 
     await this.evaluateAnswerPseudoNodes(evaluator, context)
@@ -107,6 +109,8 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
     }
 
     // TODO: Add 'reachability' check
+
+    this.logValidationPlan()
 
     await this.expandIteratorsForStep(this.compiledForm.runtimePlan.iteratorRootIds, evaluator, context)
 
@@ -164,6 +168,15 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
     })
 
     return this.dependencies.frameworkAdapter.render(renderContext, req, res)
+  }
+
+  private logValidationPlan(): void {
+    // eslint-disable-next-line no-console
+    console.log('validation plan', {
+      stepId: this.compiledForm.runtimePlan.stepId,
+      validationIterateNodeIds: this.compiledForm.runtimePlan.validationIterateNodeIds,
+      validationBlockIds: this.compiledForm.runtimePlan.validationBlockIds,
+    })
   }
 
   /**
