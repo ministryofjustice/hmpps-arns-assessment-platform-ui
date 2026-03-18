@@ -1,14 +1,16 @@
 import createHttpError from 'http-errors'
-import { NodeId, FormInstanceDependencies } from '@form-engine/core/types/engine.type'
+import { FormInstanceDependencies } from '@form-engine/core/types/engine.type'
 import { CompiledForm } from '@form-engine/core/compilation/FormCompilationFactory'
 import ThunkEvaluator, { EvaluationResult } from '@form-engine/core/compilation/thunks/ThunkEvaluator'
 import { ThunkInvocationAdapter } from '@form-engine/core/compilation/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
-import { PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
+import { SubmitTransitionASTNode } from '@form-engine/core/types/expressions.type'
 import RenderContextFactory from '@form-engine/core/runtime/rendering/RenderContextFactory'
 import { JourneyMetadata } from '@form-engine/core/runtime/rendering/types'
 import TransitionExecutor from '@form-engine/core/runtime/executors/TransitionExecutor'
 import ContextPreparer from '@form-engine/core/runtime/executors/ContextPreparer'
+import ValidationExecutor from '@form-engine/core/runtime/executors/ValidationExecutor'
+import AnswerPreparer from '@form-engine/core/runtime/executors/AnswerPreparer'
 import { StepController } from './types'
 
 /**
@@ -41,6 +43,10 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
 
   private readonly transitionExecutor: TransitionExecutor
 
+  private readonly validationExecutor: ValidationExecutor
+
+  private readonly answerPreparer: AnswerPreparer
+
   constructor(
     private readonly compiledForm: CompiledForm[number],
     private readonly dependencies: FormInstanceDependencies,
@@ -49,6 +55,8 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
   ) {
     this.contextPreparer = new ContextPreparer()
     this.transitionExecutor = new TransitionExecutor(this.dependencies.logger)
+    this.validationExecutor = new ValidationExecutor()
+    this.answerPreparer = new AnswerPreparer()
   }
 
   /** Handle GET request: run access lifecycle, evaluate AST, render response. */
@@ -75,11 +83,7 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
 
     // TODO: Add 'reachability' check
 
-    this.logValidationPlan()
-
-    await this.expandIteratorsForStep(this.compiledForm.runtimePlan.iteratorRootIds, evaluator, context)
-
-    await this.evaluateAnswerPseudoNodes(evaluator, context)
+    await this.answerPreparer.prepare(this.compiledForm.runtimePlan, evaluator, context)
 
     const evaluationResult = await evaluator.evaluate(context)
 
@@ -110,13 +114,11 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
 
     // TODO: Add 'reachability' check
 
-    this.logValidationPlan()
-
-    await this.expandIteratorsForStep(this.compiledForm.runtimePlan.iteratorRootIds, evaluator, context)
-
-    await this.evaluateAnswerPseudoNodes(evaluator, context)
+    await this.answerPreparer.prepare(this.compiledForm.runtimePlan, evaluator, context)
 
     await this.transitionExecutor.executeActionTransitions(this.compiledForm.runtimePlan, evaluator, context)
+
+    await this.evaluateValidationForSubmitTransitionsIfNeeded(evaluator, context)
 
     const submitResult = await this.transitionExecutor.executeSubmitTransitions(
       this.compiledForm.runtimePlan,
@@ -170,65 +172,30 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
     return this.dependencies.frameworkAdapter.render(renderContext, req, res)
   }
 
-  private logValidationPlan(): void {
-    // eslint-disable-next-line no-console
-    console.log('validation plan', {
-      stepId: this.compiledForm.runtimePlan.stepId,
-      validationIterateNodeIds: this.compiledForm.runtimePlan.validationIterateNodeIds,
-      validationBlockIds: this.compiledForm.runtimePlan.validationBlockIds,
-    })
-  }
-
-  /**
-   * Expand iterators on the current step to create runtime field nodes.
-   *
-   * This must run before evaluateAnswerPseudoNodes so that dynamic fields
-   * (created by Iterator.Map) have their ANSWER_LOCAL pseudo
-   * nodes registered before answer processing.
-   *
-   * The runtime plan already contains the deduplicated root nodes that
-   * need invoking for iterator expansion on this step.
-   */
-  private async expandIteratorsForStep(
-    iteratorRootIds: NodeId[],
+  private async evaluateValidationForSubmitTransitionsIfNeeded(
     invoker: ThunkInvocationAdapter,
     context: ThunkEvaluationContext,
   ): Promise<void> {
-    if (iteratorRootIds.length === 0) {
+    if (!this.hasValidatingSubmitTransition()) {
       return
     }
 
-    for (const ancestorId of iteratorRootIds) {
-      // eslint-disable-next-line no-await-in-loop
-      await invoker.invoke(ancestorId, context)
+    const validation = await this.validationExecutor.execute(this.compiledForm.runtimePlan, invoker, context)
+
+    context.global.validation = {
+      stepId: this.compiledForm.runtimePlan.stepId,
+      validated: true,
+      isValid: validation.isValid,
     }
   }
 
-  /**
-   * Evaluate all answer pseudo nodes before action/submit transitions.
-   *
-   * This ensures that effects in onAction and onSubmission can access
-   * resolved answers, not just raw POST data. Each answer pseudo
-   * node is invoked to trigger the full resolution pipeline:
-   * POST → sanitize → format → dependent check.
-   *
-   * Both ANSWER_LOCAL (fields on this step) and ANSWER_REMOTE (fields
-   * from other steps) are evaluated.
-   *
-   * If an action later modifies an answer via setAnswer(), the cache
-   * is automatically invalidated, ensuring subsequent access sees
-   * the action-modified value.
-   */
-  private async evaluateAnswerPseudoNodes(
-    invoker: ThunkInvocationAdapter,
-    context: ThunkEvaluationContext,
-  ): Promise<void> {
-    const localAnswerNodes = context.nodeRegistry.findByType(PseudoNodeType.ANSWER_LOCAL)
-    const remoteAnswerNodes = context.nodeRegistry.findByType(PseudoNodeType.ANSWER_REMOTE)
+  private hasValidatingSubmitTransition(): boolean {
+    return this.compiledForm.runtimePlan.submitTransitionIds.some(transitionId => {
+      const transition = this.compiledForm.artefact.nodeRegistry.get(transitionId) as
+        | SubmitTransitionASTNode
+        | undefined
 
-    for (const node of [...localAnswerNodes, ...remoteAnswerNodes]) {
-      // eslint-disable-next-line no-await-in-loop
-      await invoker.invoke(node.id, context)
-    }
+      return transition?.properties.validate === true
+    })
   }
 }

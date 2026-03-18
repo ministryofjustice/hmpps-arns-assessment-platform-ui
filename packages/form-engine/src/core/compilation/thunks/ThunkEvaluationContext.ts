@@ -1,8 +1,14 @@
-import { FormInstanceDependencies } from '@form-engine/core/types/engine.type'
+import { FormInstanceDependencies, NodeId } from '@form-engine/core/types/engine.type'
 import { CompilationDependencies } from '@form-engine/core/compilation/CompilationDependencies'
 import { AnswerHistory } from '@form-engine/core/compilation/thunks/types'
 import ThunkCacheManager from '@form-engine/core/compilation/thunks/ThunkCacheManager'
 import { StepResponse, StepRequest } from '@form-engine/core/runtime/routes/types'
+
+export interface StepValidationState {
+  stepId: NodeId
+  validated: boolean
+  isValid: boolean
+}
 
 /**
  * Global mutable state that persists across thunk evaluations
@@ -10,6 +16,7 @@ import { StepResponse, StepRequest } from '@form-engine/core/runtime/routes/type
 export interface ThunkEvaluationGlobalState {
   data: Record<string, unknown>
   answers: Record<string, AnswerHistory>
+  validation?: StepValidationState
 }
 
 /**
