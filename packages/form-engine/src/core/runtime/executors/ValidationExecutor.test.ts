@@ -51,7 +51,6 @@ function createRuntimePlan(stepId: NodeId, options: Partial<StepRuntimePlan> = {
     accessAncestorIds: [stepId],
     actionTransitionIds: [],
     submitTransitionIds: [],
-    fieldIterateNodeIds: [],
     fieldIteratorRootIds: [],
     validationIterateNodeIds: [],
     validationBlockIds: [],

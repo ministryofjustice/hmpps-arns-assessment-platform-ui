@@ -71,7 +71,6 @@ function setupMocks(ancestors: (JourneyASTNode | StepASTNode)[]): {
     accessAncestorIds,
     actionTransitionIds: [],
     submitTransitionIds: [],
-    fieldIterateNodeIds: [],
     fieldIteratorRootIds: [],
     validationIterateNodeIds: [],
     validationBlockIds: [],

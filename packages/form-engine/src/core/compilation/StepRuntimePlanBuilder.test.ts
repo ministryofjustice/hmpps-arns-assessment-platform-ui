@@ -192,15 +192,12 @@ describe('StepRuntimePlanBuilder', () => {
         accessAncestorIds: [journey.id, step.id],
         actionTransitionIds: [action.id],
         submitTransitionIds: [submit.id],
-        fieldIterateNodeIds: [iterateA.id, iterateB.id],
         fieldIteratorRootIds: [block.id],
         validationIterateNodeIds: [iterateA.id],
         validationBlockIds: [staticValidatingField.id],
         renderAncestorIds: [journey.id],
         renderStepId: step.id,
       })
-      expect(dependencies.metadataRegistry.get(submit.id, 'validationIterateNodeIds')).toEqual([iterateA.id])
-      expect(dependencies.metadataRegistry.get(submit.id, 'validationBlockIds')).toEqual([staticValidatingField.id])
     })
   })
 })

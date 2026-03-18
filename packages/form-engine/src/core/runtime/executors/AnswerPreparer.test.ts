@@ -11,7 +11,6 @@ function createRuntimePlan(options: Partial<StepRuntimePlan> = {}): StepRuntimeP
     accessAncestorIds: ['compile_ast:1'],
     actionTransitionIds: [],
     submitTransitionIds: [],
-    fieldIterateNodeIds: [],
     fieldIteratorRootIds: [],
     validationIterateNodeIds: [],
     validationBlockIds: [],

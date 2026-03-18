@@ -146,7 +146,6 @@ describe('FormEngineRouter', () => {
           accessAncestorIds: [compiled.currentStepId],
           actionTransitionIds: [],
           submitTransitionIds: [],
-          fieldIterateNodeIds: [],
           fieldIteratorRootIds: [],
           validationIterateNodeIds: [],
           validationBlockIds: [],

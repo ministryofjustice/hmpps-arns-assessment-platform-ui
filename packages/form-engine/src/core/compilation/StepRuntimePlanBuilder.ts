@@ -11,7 +11,6 @@ export interface StepRuntimePlan {
   accessAncestorIds: NodeId[]
   actionTransitionIds: NodeId[]
   submitTransitionIds: NodeId[]
-  fieldIterateNodeIds: NodeId[]
   fieldIteratorRootIds: NodeId[]
   validationIterateNodeIds: NodeId[]
   validationBlockIds: NodeId[]
@@ -29,19 +28,11 @@ export default class StepRuntimePlanBuilder {
     const validationIterateNodeIds = this.findValidationIterateNodeIds(fieldIterateNodeIds, compilationDependencies)
     const validationBlockIds = this.findValidationBlockIds(compilationDependencies)
 
-    this.attachValidationMetadata(
-      submitTransitionIds,
-      compilationDependencies,
-      validationBlockIds,
-      validationIterateNodeIds,
-    )
-
     return {
       stepId: stepNode.id,
       accessAncestorIds,
       actionTransitionIds,
       submitTransitionIds,
-      fieldIterateNodeIds,
       fieldIteratorRootIds,
       validationIterateNodeIds,
       validationBlockIds,
@@ -90,20 +81,6 @@ export default class StepRuntimePlanBuilder {
       .filter(node => compilationDependencies.metadataRegistry.get(node.id, 'isDescendantOfStep', false))
       .filter(node => Array.isArray(node.properties.validate) && node.properties.validate.length > 0)
       .map(node => node.id)
-  }
-
-  private attachValidationMetadata(
-    submitTransitionIds: NodeId[],
-    compilationDependencies: CompilationDependencies,
-    validationBlockIds: NodeId[],
-    validationIterateNodeIds: NodeId[],
-  ): void {
-    submitTransitionIds.forEach(transitionId => {
-      compilationDependencies.metadataRegistry.set(transitionId, 'validationBlockIds', [...validationBlockIds])
-      compilationDependencies.metadataRegistry.set(transitionId, 'validationIterateNodeIds', [
-        ...validationIterateNodeIds,
-      ])
-    })
   }
 
   private findTopmostAncestorUnderStep(
