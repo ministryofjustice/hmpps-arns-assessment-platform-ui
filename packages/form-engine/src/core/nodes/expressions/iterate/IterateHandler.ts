@@ -13,9 +13,9 @@ import ThunkTypeMismatchError from '@form-engine/errors/ThunkTypeMismatchError'
 import { evaluateWithScope } from '@form-engine/core/utils/thunkEvaluatorsAsync'
 import { evaluateWithScopeSync } from '@form-engine/core/utils/thunkEvaluatorsSync'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
-import { structuralTraverse, StructuralVisitResult } from '@form-engine/core/compilation/traversers/StructuralTraverser'
 import { isFieldBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
-import TemplateAsyncAnalyzer from '@form-engine/core/compilation/TemplateAsyncAnalyzer'
+import TemplateAsyncAnalyzer from '@form-engine/core/compilation/analyzers/TemplateAsyncAnalyzer'
+import ValidationTemplateAnalyzer from '@form-engine/core/compilation/analyzers/ValidationTemplateAnalyzer'
 
 /**
  * Handler for Iterate expressions
@@ -35,6 +35,8 @@ export default class IterateHandler implements ThunkHandler {
   isAsync = false
 
   private isTemplateAsync = false
+
+  private templateYieldsFields = false
 
   constructor(
     public readonly nodeId: NodeId,
@@ -57,6 +59,7 @@ export default class IterateHandler implements ThunkHandler {
       TemplateAsyncAnalyzer.containsAsyncNodes(iterator.predicateTemplate, deps.functionRegistry)
 
     this.isAsync = inputIsAsync || this.isTemplateAsync
+    this.templateYieldsFields = ValidationTemplateAnalyzer.mayYieldFields(iterator.yieldTemplate)
     deps.metadataRegistry.set(this.nodeId, 'isTemplateAsync', this.isTemplateAsync)
   }
 
@@ -420,21 +423,23 @@ export default class IterateHandler implements ThunkHandler {
       }))
 
     // Phase 2a: Resolve dynamic codes for each node
-    for (const { node, itemScope } of nodesToEvaluate) {
-      if (isASTNode(node)) {
-        const fieldsWithExprCodes = this.findFieldsWithExpressionCodes(node)
+    if (this.templateYieldsFields) {
+      for (const { node, itemScope } of nodesToEvaluate) {
+        if (isASTNode(node)) {
+          const fieldsWithExprCodes = this.findFieldsWithExpressionCodes(node)
 
-        if (fieldsWithExprCodes.length > 0) {
-          evaluateWithScopeSync(itemScope, context, () => {
-            const exprNodes = fieldsWithExprCodes.map(f => f.properties.code as ASTNode)
-            hooks.registerRuntimeNodesBatch(exprNodes, 'code')
+          if (fieldsWithExprCodes.length > 0) {
+            evaluateWithScopeSync(itemScope, context, () => {
+              const exprNodes = fieldsWithExprCodes.map(f => f.properties.code as ASTNode)
+              hooks.registerRuntimeNodesBatch(exprNodes, 'code')
 
-            for (const field of fieldsWithExprCodes) {
-              const codeNode = field.properties.code as ASTNode
-              const result = invoker.invokeSync(codeNode.id, context)
-              field.properties.code = String(result.value)
-            }
-          })
+              for (const field of fieldsWithExprCodes) {
+                const codeNode = field.properties.code as ASTNode
+                const result = invoker.invokeSync(codeNode.id, context)
+                field.properties.code = String(result.value)
+              }
+            })
+          }
         }
       }
     }
@@ -493,22 +498,23 @@ export default class IterateHandler implements ThunkHandler {
 
     // Phase 2a: Resolve dynamic codes for each node (needs scope per item for @index)
     // This must happen BEFORE batch registration so pseudo nodes are created correctly
-    for (const { node, itemScope } of nodesToEvaluate) {
-      if (isASTNode(node)) {
-        const fieldsWithExprCodes = this.findFieldsWithExpressionCodes(node)
+    if (this.templateYieldsFields) {
+      for (const { node, itemScope } of nodesToEvaluate) {
+        if (isASTNode(node)) {
+          const fieldsWithExprCodes = this.findFieldsWithExpressionCodes(node)
 
-        if (fieldsWithExprCodes.length > 0) {
+          if (fieldsWithExprCodes.length > 0) {
+            evaluateWithScopeSync(itemScope, context, () => {
+              const exprNodes = fieldsWithExprCodes.map(f => f.properties.code as ASTNode)
+              hooks.registerRuntimeNodesBatch(exprNodes, 'code')
 
-          evaluateWithScopeSync(itemScope, context, () => {
-            const exprNodes = fieldsWithExprCodes.map(f => f.properties.code as ASTNode)
-            hooks.registerRuntimeNodesBatch(exprNodes, 'code')
-
-            for (const field of fieldsWithExprCodes) {
-              const codeNode = field.properties.code as ASTNode
-              const result = invoker.invokeSync(codeNode.id, context)
-              field.properties.code = String(result.value)
-            }
-          })
+              for (const field of fieldsWithExprCodes) {
+                const codeNode = field.properties.code as ASTNode
+                const result = invoker.invokeSync(codeNode.id, context)
+                field.properties.code = String(result.value)
+              }
+            })
+          }
         }
       }
     }
@@ -726,16 +732,32 @@ export default class IterateHandler implements ThunkHandler {
   private findFieldsWithExpressionCodes(node: ASTNode): ASTNode[] {
     const fields: ASTNode[] = []
 
-    structuralTraverse(node, {
-      enterNode(n) {
-        if (isFieldBlockStructNode(n) && isASTNode(n.properties.code)) {
-          fields.push(n)
-        }
-
-        return StructuralVisitResult.CONTINUE
-      },
-    })
+    this.collectFieldsWithExpressionCodes(node, fields)
 
     return fields
+  }
+
+  private collectFieldsWithExpressionCodes(value: unknown, fields: ASTNode[]): void {
+    if (value == null || typeof value !== 'object') {
+      return
+    }
+
+    if (isASTNode(value)) {
+      if (isFieldBlockStructNode(value) && isASTNode(value.properties.code)) {
+        fields.push(value)
+      }
+
+      this.collectFieldsWithExpressionCodes(value.properties, fields)
+
+      return
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach(item => this.collectFieldsWithExpressionCodes(item, fields))
+
+      return
+    }
+
+    Object.values(value as Record<string, unknown>).forEach(val => this.collectFieldsWithExpressionCodes(val, fields))
   }
 }
