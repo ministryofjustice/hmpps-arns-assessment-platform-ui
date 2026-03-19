@@ -3,13 +3,12 @@ import { RuntimeOverlayBuilder, MetadataComputationDependencies } from '@form-en
 import ThunkCompilerFactory from '@form-engine/core/compilation/thunks/ThunkCompilerFactory'
 import ThunkCacheManager from '@form-engine/core/compilation/thunks/ThunkCacheManager'
 import { NodeCompilationPipeline } from '@form-engine/core/compilation/NodeCompilationPipeline'
-import RegistrationTraverser from '@form-engine/core/compilation/traversers/RegistrationTraverser'
+import NodeRegistrationWalker from '@form-engine/core/compilation/traversers/NodeRegistrationWalker'
 import { NodeIDCategory } from '@form-engine/core/compilation/id-generators/NodeIDGenerator'
 import { CompilationDependencies } from '@form-engine/core/compilation/CompilationDependencies'
 import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
 import { TemplateValue } from '@form-engine/core/types/template.type'
 import TemplateFactory from '@form-engine/core/nodes/template/TemplateFactory'
-import { assignIdsToClonedValue } from '@form-engine/core/utils/astValueCloning'
 
 /**
  * Factory for creating runtime hooks used during thunk evaluation.
@@ -57,22 +56,26 @@ export default class ThunkRuntimeHooksFactory {
 
       const { deps: pendingOverlay, flush, getPendingNodeIds } = this.compilationDependencies.createOverlay()
 
+      const insideStep = this.compilationDependencies.metadataRegistry.get<boolean>(
+        currentNodeId,
+        'isDescendantOfStep',
+        false,
+      )
+
+      const walker = new NodeRegistrationWalker(
+        pendingOverlay.nodeIdGenerator,
+        NodeIDCategory.RUNTIME_AST,
+        pendingOverlay.nodeRegistry,
+        pendingOverlay.nodeFactory,
+        pendingOverlay.metadataRegistry,
+        insideStep,
+      )
+
       nodes.forEach(node => {
-        assignIdsToClonedValue(node, pendingOverlay.nodeIdGenerator, NodeIDCategory.RUNTIME_AST)
-
-        // Phase 1: Normalize nodes
-        NodeCompilationPipeline.normalize(node, pendingOverlay, NodeIDCategory.RUNTIME_AST)
-
-        // Phase 2: Register nodes
-        new RegistrationTraverser(pendingOverlay.nodeRegistry).register(node)
-
-        // Phase 3: Set node metadata
-        pendingOverlay.metadataRegistry.set(node.id, 'attachedToParentNode', currentNodeId)
-        pendingOverlay.metadataRegistry.set(node.id, 'attachedToParentProperty', property)
-        NodeCompilationPipeline.setRuntimeMetadata(node, pendingOverlay)
+        walker.register(node, currentNodeId, property)
       })
 
-      // Phase 4: Add registered AST nodes to the runtime nodes map
+      // Add registered AST nodes to the runtime nodes map
       const astNodeIds = getPendingNodeIds()
 
       astNodeIds
@@ -81,14 +84,14 @@ export default class ThunkRuntimeHooksFactory {
           runtimeOverlay.runtimeNodes.set(runtimeNode.id, runtimeNode)
         })
 
-      // Phase 5: Create pseudo nodes
-      NodeCompilationPipeline.createPseudoNodes(pendingOverlay)
+      // Create pseudo nodes (scan only pending nodes, not the full registry)
+      NodeCompilationPipeline.createPseudoNodes(pendingOverlay, pendingOverlay.nodeRegistry.getPendingRegistry())
 
-      // Phase 6: Wire dependencies for ALL nodes (AST + pseudo)
+      // Wire dependencies for ALL nodes (AST + pseudo)
       const allPendingIds = getPendingNodeIds()
       NodeCompilationPipeline.wireRuntimeDependencies(pendingOverlay, allPendingIds)
 
-      // Phase 7: Compile handlers for all newly registered nodes
+      // Compile handlers for all newly registered nodes
       allPendingIds.forEach(nodeId => {
         const registeredNode = pendingOverlay.nodeRegistry.get(nodeId)
 
@@ -100,7 +103,7 @@ export default class ThunkRuntimeHooksFactory {
         pendingOverlay.thunkHandlerRegistry.register(nodeId, compiledHandler)
       })
 
-      // Phase 8: Compute isAsync metadata for hybrid handlers
+      // Compute isAsync metadata for hybrid handlers
       // Skip when the parent iterate handler's template is known-sync at compile time,
       // since all handlers default to isAsync = false and no async source exists in the template
       const isTemplateAsync = this.compilationDependencies.metadataRegistry.get<boolean>(
@@ -117,8 +120,6 @@ export default class ThunkRuntimeHooksFactory {
           metadataRegistry: pendingOverlay.metadataRegistry,
         }
 
-        // Use topological sort to compute in dependency order (leaves → roots)
-        // This ensures children compute before parents, so parents see accurate isAsync values
         const sortResult = pendingOverlay.dependencyGraph.topologicalSortPending()
 
         sortResult.sort
@@ -131,10 +132,10 @@ export default class ThunkRuntimeHooksFactory {
           })
       }
 
-      // Phase 9: Merge pending → main
+      // Merge pending → main
       flush()
 
-      // Phase 10: Invalidate caches for ALL pending nodes (AST + pseudo)
+      // Invalidate caches for ALL pending nodes (AST + pseudo)
       allPendingIds.forEach(nodeId => {
         this.cacheManager.invalidateCascading(nodeId, runtimeOverlay.dependencyGraph)
       })

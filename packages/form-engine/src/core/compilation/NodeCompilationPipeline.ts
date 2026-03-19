@@ -1,13 +1,12 @@
 import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
 import NodeRegistry from '@form-engine/core/compilation/registries/NodeRegistry'
+import MetadataRegistry from '@form-engine/core/compilation/registries/MetadataRegistry'
 import PseudoNodeCreator from '@form-engine/core/compilation/traversers/PseudoNodeCreator'
 import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
-import { MetadataTraverser } from '@form-engine/core/compilation/traversers/MetadataTraverser'
 import { FieldBlockASTNode, JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
 import { ReferenceASTNode } from '@form-engine/core/types/expressions.type'
 import { BlockType, ExpressionType } from '@form-engine/form/types/enums'
-import { AddSelfValueToFieldsNormalizer } from '@form-engine/core/compilation/normalizers/AddSelfValueToFields'
-import { ResolveSelfReferencesNormalizer } from '@form-engine/core/compilation/normalizers/ResolveSelfReferences'
+import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import { WiringContext } from '@form-engine/core/compilation/dependency-graph/WiringContext'
 import StructuralWiring from '@form-engine/core/nodes/structures/StructuralWiring'
 import SubmitWiring from '@form-engine/core/nodes/transitions/submit/SubmitWiring'
@@ -34,7 +33,6 @@ import FormatWiring from '@form-engine/core/nodes/expressions/format/FormatWirin
 import IterateWiring from '@form-engine/core/nodes/expressions/iterate/IterateWiring'
 import TestWiring from '@form-engine/core/nodes/predicates/test/TestWiring'
 import { CompilationDependencies } from '@form-engine/core/compilation/CompilationDependencies'
-import { NodeIDCategory } from '@form-engine/core/compilation/id-generators/NodeIDGenerator'
 import ThunkCompilerFactory from '@form-engine/core/compilation/thunks/ThunkCompilerFactory'
 
 /**
@@ -57,74 +55,66 @@ export class NodeCompilationPipeline {
   }
 
   /**
-   * Compile Phase 2 / Runtime Phase 1: Normalize nodes
-   *
-   * Runs all normalizers on the provided nodes. Normalizers modify nodes in-place.
-   * Can operate on full tree (compile-time) or subset of nodes (runtime).
-   *
-   * Normalizers applied:
-   * 1. AddSelfValueToFieldsNormalizer - Adds Self() references to field blocks
-   * 2. ResolveSelfReferencesNormalizer - Resolves Self() references to actual field codes
-   *
-   * @param nodes - Root node(s) to normalize. Can be single node or array.
-   * @param compilationDependencies
-   * @param idCategory
-   */
-  static normalize(
-    nodes: ASTNode | ASTNode[],
-    compilationDependencies: CompilationDependencies,
-    idCategory: NodeIDCategory.COMPILE_AST | NodeIDCategory.RUNTIME_AST = NodeIDCategory.COMPILE_AST,
-  ): void {
-    const nodesToNormalize = Array.isArray(nodes) ? nodes : [nodes]
-
-    // Create normalizers
-    const normalizers = [
-      new AddSelfValueToFieldsNormalizer(compilationDependencies.nodeFactory),
-      new ResolveSelfReferencesNormalizer(compilationDependencies.nodeIdGenerator, idCategory),
-    ]
-
-    // Run each normalizer on each node
-    // Normalizers use structuralTraverse internally to walk the tree
-    nodesToNormalize.forEach(node => {
-      normalizers.forEach(normalizer => {
-        normalizer.normalize(node)
-      })
-    })
-  }
-
-  /**
-   * Compile Phase 4: Set parent metadata via MetadataTraverser
-   *
-   * Marks nodes with parent attachment metadata:
-   * - attachedToParentNode: NodeId of parent
-   * - attachedToParentProperty: Property key on parent
-   *
-   * @param rootNode - Root journey node to traverse from
-   * @param compilationDependencies
-   */
-  static setParentMetadata(rootNode: JourneyASTNode, compilationDependencies: CompilationDependencies): void {
-    new MetadataTraverser(compilationDependencies.metadataRegistry).setParentMetadata(rootNode)
-  }
-
-  /**
    * Compile Phase 6: Set step-scope metadata (isCurrentStep, isDescendantOfStep, isAncestorOfStep)
+   * TODO: Come back and remove this. I think i can actually get rid of step-scoping, just need to get rid of the
+   *  dep graph first!
+   *
+   * Walks UP from the step node via attachedToParentNode metadata to mark ancestors,
+   * then walks DOWN through the step subtree to mark descendants.
    */
   static setStepScopeMetadata(
-    rootNode: JourneyASTNode,
+    _rootNode: JourneyASTNode,
     stepNode: StepASTNode,
     compilationDependencies: CompilationDependencies,
   ): void {
-    new MetadataTraverser(compilationDependencies.metadataRegistry).setStepScopeMetadata(rootNode, stepNode)
+    const { metadataRegistry } = compilationDependencies
+
+    // Mark the step node itself
+    metadataRegistry.set(stepNode.id, 'isCurrentStep', true)
+    metadataRegistry.set(stepNode.id, 'isAncestorOfStep', true)
+    metadataRegistry.set(stepNode.id, 'isDescendantOfStep', true)
+
+    // Walk UP: Mark all ancestors as isAncestorOfStep
+    let currentId = metadataRegistry.get<NodeId>(stepNode.id, 'attachedToParentNode')
+
+    while (currentId) {
+      metadataRegistry.set(currentId, 'isAncestorOfStep', true)
+      currentId = metadataRegistry.get<NodeId>(currentId, 'attachedToParentNode')
+    }
+
+    // Walk DOWN: Mark all descendants as isDescendantOfStep
+    this.markDescendants(stepNode, metadataRegistry)
   }
 
-  /**
-   * Runtime Phase 3: Set metadata for runtime node
-   *
-   * @param node - Root node to traverse
-   * @param compilationDependencies
-   */
-  static setRuntimeMetadata(node: ASTNode, compilationDependencies: CompilationDependencies): void {
-    new MetadataTraverser(compilationDependencies.metadataRegistry).traverseSubtree(node)
+  private static markDescendants(node: ASTNode, metadataRegistry: MetadataRegistry): void {
+    if (!(node as any).properties) {
+      return
+    }
+
+    Object.values((node as any).properties).forEach((value: unknown) => {
+      this.walkDescendantValues(value, metadataRegistry)
+    })
+  }
+
+  private static walkDescendantValues(value: unknown, metadataRegistry: MetadataRegistry): void {
+    if (value === null || value === undefined || typeof value !== 'object') {
+      return
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach(item => this.walkDescendantValues(item, metadataRegistry))
+
+      return
+    }
+
+    if (isASTNode(value)) {
+      metadataRegistry.set(value.id, 'isDescendantOfStep', true)
+      this.markDescendants(value, metadataRegistry)
+
+      return
+    }
+
+    Object.values(value).forEach(v => this.walkDescendantValues(v, metadataRegistry))
   }
 
   /**
