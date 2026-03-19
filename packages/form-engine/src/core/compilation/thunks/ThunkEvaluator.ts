@@ -329,7 +329,7 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
     // (because sync handlers were already handled in invokeWithRetry)
     // So we handle the sync case gracefully just in case
     if (!handler.isAsync) {
-      return handler.evaluateSync(context, this) as ThunkResult<T>
+      return handler.evaluateSync(context, this, hooks) as ThunkResult<T>
     }
 
     return (await handler.evaluate(context, this, hooks)) as ThunkResult<T>
@@ -345,7 +345,9 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
    * @returns Evaluation result
    */
   private executeSyncHandler<T>(handler: ThunkHandler, context: ThunkEvaluationContext): ThunkResult<T> {
-    return handler.evaluateSync(context, this) as ThunkResult<T>
+    const hooks = this.runtimeHooksFactory.create(handler.nodeId)
+
+    return handler.evaluateSync(context, this, hooks) as ThunkResult<T>
   }
 
   /**
