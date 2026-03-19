@@ -200,7 +200,7 @@ export class HandoverBuilderInstance {
    * Save the handover session via the handover API.
    */
   async save(): Promise<HandoverSession> {
-    return test.step('Create handover session', async () => {
+    return await test.step('Create handover session', async () => {
       const principalDetails: HandoverPrincipalDetails = {
         ...this.defaultPrincipal,
         ...this.principal,
@@ -225,8 +225,8 @@ export class HandoverBuilderInstance {
         criminogenicNeedsData: this.criminogenicNeeds,
       }
 
-      const handoverResponse = await test.step('POST /handover (createHandoverLink)', () =>
-        this.client.createHandoverLink(createRequest))
+      const handoverResponse = await test.step('POST /handover (createHandoverLink)', async () =>
+        await this.client.createHandoverLink(createRequest))
 
       return {
         handoverSessionId: handoverResponse.handoverSessionId,

@@ -212,7 +212,7 @@ export class CoordinatorBuilderInstance {
    * Save the OASys association via the coordinator API.
    */
   async save(): Promise<CoordinatorAssociation> {
-    return test.step('Create coordinator association', async () => {
+    return await test.step('Create coordinator association', async () => {
       if (!this.crn) {
         // It'd probably be a good idea to expose this somehow as part of the create request,
         // as this does get saved as the `CRN` identifier in the AAP.
@@ -255,7 +255,7 @@ export class CoordinatorBuilderInstance {
    * Lock the OASys assessment. Must be called after save() and before sign().
    */
   async lock(association: CoordinatorAssociation): Promise<void> {
-    return test.step('Lock coordinator association', async () => {
+    return await test.step('Lock coordinator association', async () => {
       await this.client.lock(association.oasysAssessmentPk, this.userDetails)
     })
   }
@@ -265,7 +265,7 @@ export class CoordinatorBuilderInstance {
    * Returns the new version numbers.
    */
   async sign(association: CoordinatorAssociation, signType: SignType = 'SELF'): Promise<OasysSignResponse> {
-    return test.step('Sign coordinator association', async () => {
+    return await test.step('Sign coordinator association', async () => {
       return this.client.sign(association.oasysAssessmentPk, {
         signType,
         userDetails: this.userDetails,

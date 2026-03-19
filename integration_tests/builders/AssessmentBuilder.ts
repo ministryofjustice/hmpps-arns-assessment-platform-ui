@@ -197,7 +197,7 @@ export class AssessmentBuilderInstance {
         ? `Create ${this.definition.assessmentType} assessment`
         : `Extend assessment ${this.existingAssessmentUuid}`
 
-    return test.step(stepName, async () => {
+    return await test.step(stepName, async () => {
       const assessmentUuid = await this.resolveAssessmentUuid()
 
       if (Object.keys(this.definition.answers).length > 0) {

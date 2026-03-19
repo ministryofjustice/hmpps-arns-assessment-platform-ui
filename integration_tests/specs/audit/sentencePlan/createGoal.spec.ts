@@ -6,10 +6,16 @@ import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentenc
 import { AuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Create a Goal', () => {
-  test('saving goal without steps', async ({ page, createSession, auditQueue }) => {
+  let HandoverLink: string
+  let CRN: string
+  test.beforeAll(async ({ createSession }) => {
     const { crn, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+    HandoverLink = handoverLink
+    CRN = crn
+  })
 
-    await navigateToSentencePlan(page, handoverLink)
+  test('saving goal without steps', async ({ page, auditQueue }) => {
+    await navigateToSentencePlan(page, HandoverLink)
     await page.goto(sentencePlanV1UrlBuilders.goalCreate('accommodation'))
 
     const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -19,15 +25,13 @@ test.describe('Create a Goal', () => {
     await createGoalPage.clickSaveWithoutSteps()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.CREATE_GOAL)
+    const event = await auditQueue.waitForAuditEvent(CRN, AuditEvent.CREATE_GOAL)
     expectAuditEvent(event)
     expect(event.details.areaOfNeed).toBe('accommodation')
   })
 
-  test('saving goal with steps', async ({ page, createSession, auditQueue }) => {
-    const { crn, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-
-    await navigateToSentencePlan(page, handoverLink)
+  test('saving goal with steps', async ({ page, auditQueue }) => {
+    await navigateToSentencePlan(page, HandoverLink)
     await page.goto(sentencePlanV1UrlBuilders.goalCreate('accommodation'))
 
     const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -41,7 +45,7 @@ test.describe('Create a Goal', () => {
     await addStepsPage.clickSaveAndContinue()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.CREATE_GOAL)
+    const event = await auditQueue.waitForAuditEvent(CRN, AuditEvent.CREATE_GOAL)
     expectAuditEvent(event)
     expect(event.details.areaOfNeed).toBe('accommodation')
   })
