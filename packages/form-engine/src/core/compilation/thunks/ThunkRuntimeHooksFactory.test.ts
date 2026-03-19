@@ -1,7 +1,6 @@
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import ThunkRuntimeHooksFactory from '@form-engine/core/compilation/thunks/ThunkRuntimeHooksFactory'
 import ThunkCompilerFactory from '@form-engine/core/compilation/thunks/ThunkCompilerFactory'
-import ThunkCacheManager from '@form-engine/core/compilation/thunks/ThunkCacheManager'
 import { CompilationDependencies } from '@form-engine/core/compilation/CompilationDependencies'
 import { RuntimeOverlayBuilder } from '@form-engine/core/compilation/thunks/types'
 import { AstNodeId } from '@form-engine/core/types/engine.type'
@@ -42,7 +41,6 @@ describe('ThunkRuntimeHooksFactory', () => {
   let factory: ThunkRuntimeHooksFactory
   let mockCompilationDependencies: jest.Mocked<CompilationDependencies>
   let mockCompiler: jest.Mocked<ThunkCompilerFactory>
-  let mockCacheManager: jest.Mocked<ThunkCacheManager>
   let mockFunctionRegistry: jest.Mocked<FunctionRegistry>
 
   beforeEach(() => {
@@ -59,10 +57,6 @@ describe('ThunkRuntimeHooksFactory', () => {
       compileASTNode: jest.fn(),
     } as unknown as jest.Mocked<ThunkCompilerFactory>
 
-    mockCacheManager = {
-      invalidateCascading: jest.fn(),
-    } as unknown as jest.Mocked<ThunkCacheManager>
-
     mockFunctionRegistry = {} as jest.Mocked<FunctionRegistry>
   })
 
@@ -73,7 +67,6 @@ describe('ThunkRuntimeHooksFactory', () => {
       factory = new ThunkRuntimeHooksFactory(
         mockCompilationDependencies,
         mockCompiler,
-        mockCacheManager,
         mockBuilder,
         mockFunctionRegistry,
       )
@@ -101,7 +94,6 @@ describe('ThunkRuntimeHooksFactory', () => {
       factory = new ThunkRuntimeHooksFactory(
         mockCompilationDependencies,
         mockCompiler,
-        mockCacheManager,
         mockBuilder,
         mockFunctionRegistry,
       )
@@ -123,7 +115,6 @@ describe('ThunkRuntimeHooksFactory', () => {
       factory = new ThunkRuntimeHooksFactory(
         mockCompilationDependencies,
         mockCompiler,
-        mockCacheManager,
         mockBuilder,
         mockFunctionRegistry,
       )
@@ -160,7 +151,6 @@ describe('ThunkRuntimeHooksFactory', () => {
       factory = new ThunkRuntimeHooksFactory(
         mockCompilationDependencies,
         mockCompiler,
-        mockCacheManager,
         mockBuilder,
         mockFunctionRegistry,
       )
@@ -199,7 +189,6 @@ describe('ThunkRuntimeHooksFactory', () => {
       factory = new ThunkRuntimeHooksFactory(
         mockCompilationDependencies,
         mockCompiler,
-        mockCacheManager,
         mockBuilder,
         mockFunctionRegistry,
       )
@@ -311,17 +300,7 @@ describe('ThunkRuntimeHooksFactory', () => {
         compileASTNode: jest.fn().mockReturnValue(pending.mockHandler),
       } as unknown as ThunkCompilerFactory
 
-      const cacheManager = {
-        invalidateCascading: jest.fn(),
-      } as unknown as ThunkCacheManager
-
-      const f = new ThunkRuntimeHooksFactory(
-        compilationDeps,
-        compiler,
-        cacheManager,
-        mockBuilder,
-        new FunctionRegistry(),
-      )
+      const f = new ThunkRuntimeHooksFactory(compilationDeps, compiler, mockBuilder, new FunctionRegistry())
 
       return { factory: f, pending }
     }

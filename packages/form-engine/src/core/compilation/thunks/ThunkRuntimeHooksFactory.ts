@@ -1,7 +1,6 @@
 import { NodeId, ASTNode } from '@form-engine/core/types/engine.type'
 import { RuntimeOverlayBuilder, MetadataComputationDependencies } from '@form-engine/core/compilation/thunks/types'
 import ThunkCompilerFactory from '@form-engine/core/compilation/thunks/ThunkCompilerFactory'
-import ThunkCacheManager from '@form-engine/core/compilation/thunks/ThunkCacheManager'
 import { NodeCompilationPipeline } from '@form-engine/core/compilation/NodeCompilationPipeline'
 import NodeRegistrationWalker from '@form-engine/core/compilation/traversers/NodeRegistrationWalker'
 import { NodeIDCategory } from '@form-engine/core/compilation/id-generators/NodeIDGenerator'
@@ -21,13 +20,11 @@ import TemplateFactory from '@form-engine/core/nodes/template/TemplateFactory'
  * - Creating and normalizing runtime AST nodes
  * - Registering nodes and their handlers
  * - Wiring dependencies for runtime nodes
- * - Invalidating caches when new dependencies are added
  */
 export default class ThunkRuntimeHooksFactory {
   constructor(
     private readonly compilationDependencies: CompilationDependencies,
     private readonly compiler: ThunkCompilerFactory,
-    private readonly cacheManager: ThunkCacheManager,
     private readonly runtimeOverlayBuilder: RuntimeOverlayBuilder,
     private readonly functionRegistry: FunctionRegistry,
   ) {}
@@ -134,11 +131,6 @@ export default class ThunkRuntimeHooksFactory {
 
       // Merge pending → main
       flush()
-
-      // Invalidate caches for ALL pending nodes (AST + pseudo)
-      allPendingIds.forEach(nodeId => {
-        this.cacheManager.invalidateCascading(nodeId, runtimeOverlay.dependencyGraph)
-      })
     }
 
     return {

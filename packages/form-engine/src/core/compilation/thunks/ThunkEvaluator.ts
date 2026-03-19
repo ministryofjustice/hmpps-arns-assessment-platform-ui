@@ -80,7 +80,6 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
     this.runtimeHooksFactory = new ThunkRuntimeHooksFactory(
       compilationDependencies,
       new ThunkCompilerFactory(),
-      this.cacheManager,
       runtimeOverlayBuilder,
       formInstanceDependencies.functionRegistry,
     )
