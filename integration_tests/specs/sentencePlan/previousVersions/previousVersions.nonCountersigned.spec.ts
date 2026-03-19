@@ -58,7 +58,7 @@ test.describe('Previous Versions - Multiple non-countersigned previous versions'
             createdAt: twoDaysAgo.toISOString(),
             updatedAt: twoDaysAgo.toISOString(),
             status: 'UNSIGNED',
-            planAgreementStatus: 'AGREED',
+            planAgreementStatus: '',
             entityType: 'AAP_PLAN',
           },
         },
