@@ -1,11 +1,11 @@
 import { NodeId, ASTNode } from '@form-engine/core/types/engine.type'
 import NodeRegistry from '@form-engine/core/compilation/registries/NodeRegistry'
-import DependencyGraph from '@form-engine/core/compilation/dependency-graph/DependencyGraph'
 import ThunkHandlerRegistry from '@form-engine/core/compilation/registries/ThunkHandlerRegistry'
 import { NodeFactory } from '@form-engine/core/nodes/NodeFactory'
 import MetadataRegistry from '@form-engine/core/compilation/registries/MetadataRegistry'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
+import ASTNodeTree from '@form-engine/core/compilation/ASTNodeTree'
 import ThunkRuntimeHooksFactory from '@form-engine/core/compilation/thunks/ThunkRuntimeHooksFactory'
 
 /**
@@ -197,6 +197,12 @@ export interface MetadataComputationDependencies {
    * Used to determine step context during metadata computation
    */
   metadataRegistry: MetadataRegistry
+
+  /**
+   * AST node tree for structural queries (children, parent, leaf detection)
+   * Used to check children's async status without recursive property walks
+   */
+  astNodeTree: ASTNodeTree
 }
 
 /**
@@ -360,9 +366,6 @@ export interface RuntimeOverlayBuilder {
   /** Cloned metadata registry - accumulates metadata for compile-time and runtime nodes */
   metadataRegistry: MetadataRegistry
 
-  /** Cloned dependency graph - accumulates edges for compile-time and runtime nodes */
-  dependencyGraph: DependencyGraph
-
   /** Fresh node factory using cloned dependencies */
   nodeFactory: NodeFactory
 
@@ -371,7 +374,7 @@ export interface RuntimeOverlayBuilder {
 }
 
 /**
- * Runtime hooks for extending evaluation (overlay builder, instrumentation, etc.)
+ * Runtime hooks for extending evaluation (overlay builder, etc.)
  * Derived from ThunkRuntimeHooksFactory.create()
  */
 export type ThunkRuntimeHooks = ReturnType<ThunkRuntimeHooksFactory['create']>

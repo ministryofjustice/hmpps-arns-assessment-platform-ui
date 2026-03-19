@@ -8,7 +8,6 @@ import { NodeFactory } from '@form-engine/core/nodes/NodeFactory'
 import NodeRegistry from '@form-engine/core/compilation/registries/NodeRegistry'
 import ThunkHandlerRegistry from '@form-engine/core/compilation/registries/ThunkHandlerRegistry'
 import MetadataRegistry from '@form-engine/core/compilation/registries/MetadataRegistry'
-import DependencyGraph from '@form-engine/core/compilation/dependency-graph/DependencyGraph'
 import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { NodeIDGenerator } from '@form-engine/core/compilation/id-generators/NodeIDGenerator'
@@ -26,9 +25,6 @@ function createMockRuntimeOverlayBuilder(): RuntimeOverlayBuilder {
       has: jest.fn().mockReturnValue(false),
     } as unknown as ThunkHandlerRegistry,
     metadataRegistry: {} as MetadataRegistry,
-    dependencyGraph: {
-      addEdge: jest.fn(),
-    } as unknown as DependencyGraph,
     nodeFactory: {
       createNode: jest.fn(),
       transformValue: jest.fn(),
@@ -254,12 +250,9 @@ describe('ThunkRuntimeHooksFactory', () => {
             register: jest.fn(),
             get: jest.fn().mockReturnValue(mockHandler),
           },
-          dependencyGraph: {
+          astNodeTree: {
+            postOrder: jest.fn().mockReturnValue(['runtime_ast:1']),
             addNode: jest.fn(),
-            addEdge: jest.fn(),
-            topologicalSortPending: jest
-              .fn()
-              .mockReturnValue({ sort: ['runtime_ast:1'], cycles: [], hasCycles: false }),
           },
         },
         flush: jest.fn(),
@@ -315,7 +308,7 @@ describe('ThunkRuntimeHooksFactory', () => {
       hooks.registerRuntimeNodesBatch([node as any], 'yield')
 
       // Assert
-      expect(pending.overlay.dependencyGraph.topologicalSortPending).not.toHaveBeenCalled()
+      expect(pending.overlay.astNodeTree.postOrder).not.toHaveBeenCalled()
       expect(pending.mockHandler.computeIsAsync).not.toHaveBeenCalled()
     })
 
@@ -329,7 +322,7 @@ describe('ThunkRuntimeHooksFactory', () => {
       hooks.registerRuntimeNodesBatch([node as any], 'yield')
 
       // Assert
-      expect(pending.overlay.dependencyGraph.topologicalSortPending).toHaveBeenCalled()
+      expect(pending.overlay.astNodeTree.postOrder).toHaveBeenCalled()
       expect(pending.mockHandler.computeIsAsync).toHaveBeenCalled()
     })
 
@@ -343,7 +336,7 @@ describe('ThunkRuntimeHooksFactory', () => {
       hooks.registerRuntimeNodesBatch([node as any], 'yield')
 
       // Assert
-      expect(pending.overlay.dependencyGraph.topologicalSortPending).toHaveBeenCalled()
+      expect(pending.overlay.astNodeTree.postOrder).toHaveBeenCalled()
       expect(pending.mockHandler.computeIsAsync).toHaveBeenCalled()
     })
   })

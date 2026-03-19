@@ -19,7 +19,6 @@ import TemplateFactory from '@form-engine/core/nodes/template/TemplateFactory'
  * The factory encapsulates all the complex logic for:
  * - Creating and normalizing runtime AST nodes
  * - Registering nodes and their handlers
- * - Wiring dependencies for runtime nodes
  */
 export default class ThunkRuntimeHooksFactory {
   constructor(
@@ -66,6 +65,7 @@ export default class ThunkRuntimeHooksFactory {
         pendingOverlay.nodeFactory,
         pendingOverlay.metadataRegistry,
         insideStep,
+        pendingOverlay.astNodeTree,
       )
 
       nodes.forEach(node => {
@@ -84,9 +84,7 @@ export default class ThunkRuntimeHooksFactory {
       // Create pseudo nodes (scan only pending nodes, not the full registry)
       NodeCompilationPipeline.createPseudoNodes(pendingOverlay, pendingOverlay.nodeRegistry.getPendingRegistry())
 
-      // Wire dependencies for ALL nodes (AST + pseudo)
       const allPendingIds = getPendingNodeIds()
-      NodeCompilationPipeline.wireRuntimeDependencies(pendingOverlay, allPendingIds)
 
       // Compile handlers for all newly registered nodes
       allPendingIds.forEach(nodeId => {
@@ -115,18 +113,21 @@ export default class ThunkRuntimeHooksFactory {
           functionRegistry: this.functionRegistry,
           nodeRegistry: pendingOverlay.nodeRegistry,
           metadataRegistry: pendingOverlay.metadataRegistry,
+          astNodeTree: pendingOverlay.astNodeTree,
         }
 
-        const sortResult = pendingOverlay.dependencyGraph.topologicalSortPending()
+        const pendingPostOrder = pendingOverlay.astNodeTree.postOrder()
+        const pendingTreeSet = new Set(pendingPostOrder)
+        const pendingPseudoIds = allPendingIds.filter(id => !pendingTreeSet.has(id))
+        const computeOrder = [...pendingPseudoIds, ...pendingPostOrder]
 
-        sortResult.sort
-          .forEach(nodeId => {
-            const handler = pendingOverlay.thunkHandlerRegistry.get(nodeId)
+        computeOrder.forEach(nodeId => {
+          const handler = pendingOverlay.thunkHandlerRegistry.get(nodeId)
 
-            if (handler) {
-              handler.computeIsAsync(metadataDeps)
-            }
-          })
+          if (handler) {
+            handler.computeIsAsync(metadataDeps)
+          }
+        })
       }
 
       // Merge pending → main

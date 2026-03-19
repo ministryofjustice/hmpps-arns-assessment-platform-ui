@@ -27,7 +27,6 @@ export interface CompiledStep {
  *
  * Each artefact contains:
  * - Full AST with all nodes
- * - Dependency graph for evaluation ordering
  * - Compiled thunk handlers
  */
 export default class FormCompilationFactory {
@@ -59,12 +58,10 @@ export default class FormCompilationFactory {
       sharedDependencies.nodeFactory,
       sharedDependencies.metadataRegistry,
       false,
+      sharedDependencies.astNodeTree,
     )
 
     walker.register(rootNode)
-
-    // Phase 5 - Wire static dependencies
-    NodeCompilationPipeline.wireStaticDependencies(sharedDependencies)
 
     const stepNodes = sharedDependencies.nodeRegistry.findByType<StepASTNode>(ASTNodeType.STEP)
 
@@ -103,9 +100,6 @@ export default class FormCompilationFactory {
 
     // Phase 7 - Add pseudo-nodes
     NodeCompilationPipeline.createPseudoNodes(compilationDependencies)
-
-    // Phase 8 - Wire step-scope dependencies (pseudo nodes and onLoad transitions)
-    NodeCompilationPipeline.wireStepScopeDependencies(compilationDependencies)
 
     const runtimePlan = new StepRuntimePlanBuilder().build(stepNode, compilationDependencies)
 

@@ -105,7 +105,6 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
     const overlay: RuntimeOverlayBuilder = {
       handlerRegistry: runtimeDeps.thunkHandlerRegistry,
       metadataRegistry: runtimeDeps.metadataRegistry,
-      dependencyGraph: runtimeDeps.dependencyGraph,
       nodeRegistry: runtimeDeps.nodeRegistry,
       nodeFactory: runtimeDeps.nodeFactory,
       runtimeNodes: new Map<NodeId, ASTNode>(),

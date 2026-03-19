@@ -9,7 +9,6 @@ import {
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import { evaluatePropertyValue } from '@form-engine/core/utils/thunkEvaluatorsAsync'
 import { evaluatePropertyValueSync } from '@form-engine/core/utils/thunkEvaluatorsSync'
-import { isASTNode } from '@form-engine/core/typeguards/nodes'
 
 /**
  * Handler for Block structure nodes (both field and basic blocks)
