@@ -2,7 +2,7 @@ import { accessTransition, Data, Format, redirect, Post, step, submitTransition 
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, howHelpedField, buttonGroup } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
-import { redirectIfNotPostAgreement } from '../../../guards'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
 import { CaseData } from '../../../constants'
 
 // This page is for manually marking a goal as achieved and is only accessible after a plan has been agreed.
@@ -23,15 +23,7 @@ export const confirmAchievedGoalStep = step({
     }),
     // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
     redirectIfNotPostAgreement('../../plan/overview'),
-    accessTransition({
-      next: [
-        // Redirect if goal not found
-        redirect({
-          when: Data('activeGoal').not.match(Condition.IsRequired()),
-          goto: '../../plan/overview',
-        }),
-      ],
-    }),
+    redirectIfGoalNotFound('../../plan/overview'),
   ],
 
   onSubmission: [

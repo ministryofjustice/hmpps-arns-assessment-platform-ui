@@ -9,6 +9,7 @@ test.describe('Feedback and Report a Problem', () => {
     test('shows phase banner with Beta tag, feedback link and report a problem link', async ({
       page,
       createSession,
+      makeAxeBuilder,
       sentencePlanBuilder,
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
@@ -16,7 +17,7 @@ test.describe('Feedback and Report a Problem', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      const phaseBanner = page.locator('.govuk-phase-banner', { hasText: 'Beta' })
+      const phaseBanner = page.getByTestId('phase-banner')
       await expect(phaseBanner).toBeVisible()
       await expect(phaseBanner.locator('.govuk-tag')).toHaveText('Beta')
 
@@ -34,6 +35,10 @@ test.describe('Feedback and Report a Problem', () => {
       const reportProblemLink = phaseBanner.getByRole('link', { name: /report a problem/i })
       await expect(reportProblemLink).toBeVisible()
       await expect(reportProblemLink).toHaveClass(/govuk-link--no-visited-state/)
+
+      // Accessibility
+      const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="phase-banner"]').analyze()
+      expect(accessibilityScanResults.violations).toEqual([])
     })
 
     // AC1: Phase banner appears on every SP page, including the privacy screen
@@ -73,6 +78,7 @@ test.describe('Feedback and Report a Problem', () => {
     test('expander shows ServiceNow link and support details when opened', async ({
       page,
       createSession,
+      makeAxeBuilder,
       sentencePlanBuilder,
     }) => {
       const { sentencePlanId, handoverLink, crn } = await createSession({
@@ -82,7 +88,7 @@ test.describe('Feedback and Report a Problem', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.locator('#report-a-problem summary').click()
+      await page.getByTestId('report-a-problem').locator('summary').click()
 
       // Check instruction text
       const expanderContent = page.locator('#report-a-problem .govuk-details__text')
@@ -105,6 +111,10 @@ test.describe('Feedback and Report a Problem', () => {
       // Check Copy button is present
       const copyButton = page.locator('#report-a-problem').getByRole('button', { name: /copy/i })
       await expect(copyButton).toBeVisible()
+
+      // Accessibility
+      const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="report-a-problem"]').analyze()
+      expect(accessibilityScanResults.violations).toEqual([])
     })
 
     // AC5: Fields show as blank when data is unavailable.

@@ -12,6 +12,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, readdNoteSection, canStartNowSection, buttonGroup } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
 
 /**
  * Confirm re-add goal page
@@ -44,17 +45,8 @@ export const confirmAddGoalStep = step({
       ],
     }),
     // Only allow re-adding goals if plan is agreed
-    accessTransition({
-      when: Data('latestAgreementStatus').not.match(
-        Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
-      ),
-      next: [redirect({ goto: '../../plan/overview' })],
-    }),
-    // Redirect if goal not found
-    accessTransition({
-      when: Data('activeGoal').not.match(Condition.IsRequired()),
-      next: [redirect({ goto: '../../plan/overview' })],
-    }),
+    redirectIfNotPostAgreement('../../plan/overview'),
+    redirectIfGoalNotFound('../../plan/overview'),
     // Only allow re-adding REMOVED goals (not achieved)
     accessTransition({
       when: Data('activeGoal.status').not.match(Condition.Equals('REMOVED')),

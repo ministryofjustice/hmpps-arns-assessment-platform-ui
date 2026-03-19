@@ -37,6 +37,7 @@ import { loadPreviousVersions } from './plan/loadPreviousVersions'
 import { loadHistoricPlan } from './plan/loadHistoricPlan'
 import { sendAuditEvent } from './audit/sendAuditEvent'
 import { loadFeatureFlags } from './feature-flags/loadFeatureFlags'
+import { sendTelemetryEvent } from './telemetry/sendTelemetryEvent'
 
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
@@ -118,6 +119,9 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
 
     // Audit
     sendAuditEvent,
+
+    // Telemetry
+    sendTelemetryEvent,
 
     // FeatureFlags
     loadFeatureFlags,

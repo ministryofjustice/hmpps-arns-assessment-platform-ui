@@ -14,6 +14,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { pageLayout } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
+import { redirectIfGoalNotFound } from '../../../guards'
 
 /**
  * Add Steps page
@@ -62,14 +63,8 @@ export const addStepsStep = step({
         SentencePlanEffects.initializeStepEditSession(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ADD_STEPS),
       ],
-      next: [
-        // If goal not found, redirect to plan overview
-        redirect({
-          when: Data('activeGoal').not.match(Condition.IsRequired()),
-          goto: '../../plan/overview',
-        }),
-      ],
     }),
+    redirectIfGoalNotFound('../../plan/overview'),
   ],
 
   onAction: [
@@ -97,6 +92,7 @@ export const addStepsStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.saveStepEditSession(),
+          SentencePlanEffects.sendTelemetryEvent('CREATE_GOAL_WITH_STEPS_END', false),
           SentencePlanEffects.sendAuditEvent(AuditEvent.ADD_STEPS),
           SentencePlanEffects.addNotification({
             type: 'success',

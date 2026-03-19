@@ -38,19 +38,23 @@ export default class FeatureFlagService {
     return FliptClient.init(this.clientConfig)
   }
 
-  private async getClient(): Promise<FliptClient> | undefined {
+  private async getClient(): Promise<FliptClient | undefined> {
     if (this.client) {
       return this.client
     }
 
     if (!this.clientPromise) {
-      this.clientPromise = this.initClient().then(client => {
-        this.client = client
-        return client
-      })
+      this.clientPromise = this.initClient()
+        .then(client => {
+          this.client = client
+          return client
+        })
+        .catch((error): undefined => {
+          logger.error('Failed to initialise Flipt client:', error)
+          return undefined
+        })
     }
 
-    this.client = this.initClient()
     return this.clientPromise
   }
 

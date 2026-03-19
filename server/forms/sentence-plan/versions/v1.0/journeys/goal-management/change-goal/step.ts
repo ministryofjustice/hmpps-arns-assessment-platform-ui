@@ -14,6 +14,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { pageLayout } from './fields'
 import { AuditEvent, POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
+import { hasPostAgreementStatus, redirectIfGoalNotFound } from '../../../guards'
 
 /**
  * Change Goal page
@@ -55,14 +56,8 @@ export const changeGoalStep = step({
         SentencePlanEffects.loadAreaAssessmentInfo(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CHANGE_GOAL),
       ],
-      next: [
-        // If goal not found, redirect to plan overview
-        redirect({
-          when: Data('activeGoal').not.match(Condition.IsRequired()),
-          goto: '../../plan/overview',
-        }),
-      ],
     }),
+    redirectIfGoalNotFound('../../plan/overview'),
   ],
 
   onSubmission: [
@@ -93,7 +88,7 @@ export const changeGoalStep = step({
           // - current goal with no steps > go to 'add-steps'
           // - current goal with steps OR future goal > go back to 'update-goal-steps'
           redirect({
-            when: Data('latestAgreementStatus').match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
+            when: hasPostAgreementStatus,
             goto: when(
               and(
                 Answer('can_start_now').match(Condition.Equals('yes')),

@@ -43,6 +43,7 @@ test.describe('Previous Versions - Handover Redirect', () => {
     await expect(historicPlanPage.primaryNavigation).toBeHidden()
     await expect(historicPlanPage.footer).toBeHidden()
     await expect(historicPlanPage.headerServiceName).toBeVisible()
+    await expect(historicPlanPage.returnToOasysButton).toBeVisible()
   })
 
   test('should navigate to plan overview when handover does not provide a planVersion', async ({

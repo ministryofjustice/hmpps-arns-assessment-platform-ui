@@ -327,6 +327,11 @@ export const goalsSection = TemplateWrapper({
                               {
                                 text: 'Add or change steps',
                                 href: Format('../goal/%1/add-steps', Item().path('uuid')),
+                                hidden: when(
+                                  Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
+                                )
+                                  .then(true)
+                                  .else(false),
                               },
                               {
                                 text: 'Delete',

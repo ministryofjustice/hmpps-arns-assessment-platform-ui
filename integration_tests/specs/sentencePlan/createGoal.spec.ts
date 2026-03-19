@@ -13,7 +13,7 @@ import {
 
 test.describe('Create Goal Journey', () => {
   test.describe('Create Goal with Steps', () => {
-    test('can create a goal and add steps - happy path', async ({ page, createSession }) => {
+    test('can create a goal and add steps - happy path', async ({ page, createSession, makeAxeBuilder }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
 
@@ -31,12 +31,24 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.selectCanStartNow(true)
       await createGoalPage.selectTargetDateOption('3_months')
 
+      // Create goal accessibility
+      const createGoalScanResults = await makeAxeBuilder()
+        .include('[data-qa="main-form"]')
+        // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
+        .disableRules(['aria-allowed-attr'])
+        .analyze()
+      expect(createGoalScanResults.violations).toEqual([])
+
       await createGoalPage.clickAddSteps()
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
       await expect(page).toHaveURL(/\/add-steps/)
 
       await addStepsPage.enterStep(0, 'probation_practitioner', "Contact housing services about 'emergency housing'")
+
+      // Add steps accessibility
+      const addStepsScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
+      expect(addStepsScanResults.violations).toEqual([])
 
       await addStepsPage.clickSaveAndContinue()
 

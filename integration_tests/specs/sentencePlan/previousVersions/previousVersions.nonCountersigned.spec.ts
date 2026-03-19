@@ -2,44 +2,90 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
 import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPage'
-import sanApi from '../../../mockApis/sanApi'
+import coordinatorApi from '../../../mockApis/coordinatorApi'
 
 test.describe('Previous Versions - Multiple non-countersigned previous versions', () => {
-  test('it lists multiple previous versions of the plan', async ({ page, createSession, sentencePlanBuilder }) => {
-    const { sentencePlanId, sanAssessmentId, handoverLink } = await createSession({
+  test('it lists multiple previous versions of the plan', async ({
+    page,
+    createSession,
+    makeAxeBuilder,
+    sentencePlanBuilder,
+  }) => {
+    const { sentencePlanId, handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
     })
 
     const today = new Date()
     const yesterday = new Date()
+    const twoDaysAgo = new Date()
     const threeDaysAgo = new Date()
 
     yesterday.setDate(today.getDate() - 1)
+    twoDaysAgo.setDate(today.getDate() - 2)
     threeDaysAgo.setDate(today.getDate() - 3)
 
-    await sanApi.stubGetAssessmentVersions(sanAssessmentId, [
-      {
-        uuid: `${crypto.randomUUID()}`,
-        createdAt: `${today.toISOString()}`,
-        updatedAt: `${today.toISOString()}`,
-        tag: 'LOCKED',
-        versionNumber: 2,
+    const toDateKey = (d: Date) => d.toISOString().split('T')[0]
+
+    await coordinatorApi.stubGetEntityVersions(sentencePlanId, {
+      allVersions: {
+        [toDateKey(yesterday)]: {
+          description: 'Assessment and plan updated',
+          assessmentVersion: {
+            uuid: crypto.randomUUID(),
+            version: yesterday.getTime(),
+            createdAt: yesterday.toISOString(),
+            updatedAt: yesterday.toISOString(),
+            status: 'UNSIGNED',
+            planAgreementStatus: '',
+            entityType: 'ASSESSMENT',
+          },
+          planVersion: {
+            uuid: crypto.randomUUID(),
+            version: yesterday.getTime(),
+            createdAt: yesterday.toISOString(),
+            updatedAt: yesterday.toISOString(),
+            status: 'UNSIGNED',
+            planAgreementStatus: '',
+            entityType: 'AAP_PLAN',
+          },
+        },
+        [toDateKey(twoDaysAgo)]: {
+          description: 'Plan updated',
+          assessmentVersion: null,
+          planVersion: {
+            uuid: crypto.randomUUID(),
+            version: twoDaysAgo.getTime(),
+            createdAt: twoDaysAgo.toISOString(),
+            updatedAt: twoDaysAgo.toISOString(),
+            status: 'UNSIGNED',
+            planAgreementStatus: '',
+            entityType: 'AAP_PLAN',
+          },
+        },
+        [toDateKey(threeDaysAgo)]: {
+          description: 'Assessment and plan updated',
+          assessmentVersion: {
+            uuid: crypto.randomUUID(),
+            version: threeDaysAgo.getTime(),
+            createdAt: threeDaysAgo.toISOString(),
+            updatedAt: threeDaysAgo.toISOString(),
+            status: 'UNSIGNED',
+            planAgreementStatus: '',
+            entityType: 'ASSESSMENT',
+          },
+          planVersion: {
+            uuid: crypto.randomUUID(),
+            version: threeDaysAgo.getTime(),
+            createdAt: threeDaysAgo.toISOString(),
+            updatedAt: threeDaysAgo.toISOString(),
+            status: 'UNSIGNED',
+            planAgreementStatus: '',
+            entityType: 'AAP_PLAN',
+          },
+        },
       },
-      {
-        uuid: `${crypto.randomUUID()}`,
-        createdAt: `${yesterday.toISOString()}`,
-        updatedAt: `${yesterday.toISOString()}`,
-        tag: 'UNSIGNED',
-        versionNumber: 1,
-      },
-      {
-        uuid: `${crypto.randomUUID()}`,
-        createdAt: `${threeDaysAgo.toISOString()}`,
-        updatedAt: `${threeDaysAgo.toISOString()}`,
-        tag: 'UNSIGNED',
-        versionNumber: 0,
-      },
-    ])
+      countersignedVersions: {},
+    })
 
     await sentencePlanBuilder
       .extend(sentencePlanId)
@@ -123,11 +169,23 @@ test.describe('Previous Versions - Multiple non-countersigned previous versions'
       // eslint-disable-next-line no-await-in-loop
       await expect(columns.nth(statusColumnIndex)).toBeEmpty()
 
-      for (const linkIndex of [assessmentColumnIndex, planColumnIndex]) {
-        const link = columns.nth(linkIndex).locator('a', { hasText: 'View' })
+      const planLink = columns.nth(planColumnIndex).locator('a', { hasText: 'View' })
+      // eslint-disable-next-line no-await-in-loop
+      await expect(planLink).toHaveAttribute('target', '_blank')
+
+      const assessmentLink = columns.nth(assessmentColumnIndex).locator('a', { hasText: 'View' })
+
+      if (expectedRowCaptions[index].includes('Assessment')) {
         // eslint-disable-next-line no-await-in-loop
-        await expect(link).toHaveAttribute('target', '_blank')
+        await expect(assessmentLink).toHaveAttribute('target', '_blank')
+      } else {
+        // eslint-disable-next-line no-await-in-loop
+        await expect(assessmentLink).toHaveCount(0)
       }
     }
+
+    // Accessibility
+    const accessibilityScanResults = await makeAxeBuilder().include('#main-content').analyze()
+    expect(accessibilityScanResults.violations).toEqual([])
   })
 })
