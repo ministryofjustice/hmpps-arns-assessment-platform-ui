@@ -1,7 +1,7 @@
 import { AstNodeId, NodeId } from '@form-engine/core/types/engine.type'
 import { IterateASTNode } from '@form-engine/core/types/expressions.type'
 import { ASTNodeType } from '@form-engine/core/types/enums'
-import { ExpressionType, IteratorType } from '@form-engine/form/types/enums'
+import { ExpressionType, FunctionType, IteratorType } from '@form-engine/form/types/enums'
 import { MetadataComputationDependencies, ThunkResult } from '@form-engine/core/compilation/thunks/types'
 import { ASTTestFactory } from '@form-engine/test-utils/ASTTestFactory'
 import {
@@ -12,6 +12,7 @@ import {
 } from '@form-engine/test-utils/thunkTestHelpers'
 import { NodeIDGenerator } from '@form-engine/core/compilation/id-generators/NodeIDGenerator'
 import TemplateFactory from '@form-engine/core/nodes/template/TemplateFactory'
+import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
 import IterateHandler from './IterateHandler'
 
 type IteratorTestInput = IterateASTNode['properties']['iterator'] & {
@@ -60,9 +61,12 @@ describe('IterateHandler', () => {
       thunkHandlerRegistry: {
         get: jest.fn().mockReturnValue(undefined),
       },
-      functionRegistry: {},
+      functionRegistry: new FunctionRegistry(),
       nodeRegistry: {},
-      metadataRegistry: {},
+      metadataRegistry: {
+        set: jest.fn(),
+        get: jest.fn(),
+      },
       ...overrides,
     } as unknown as MetadataComputationDependencies
   }
@@ -150,6 +154,122 @@ describe('IterateHandler', () => {
 
       // Assert
       expect(handler.isAsync).toBe(false)
+    })
+
+    it('should set isAsync to true when yield template contains an async function', () => {
+      // Arrange
+      const inputSourceId = 'compile_ast:1'
+      const nodeId = 'compile_ast:2'
+      const asyncRegistry = new FunctionRegistry()
+      asyncRegistry.register({ fetchData: { name: 'fetchData', evaluate: (): undefined => undefined, isAsync: true } })
+
+      iterateNode = createIterateNode(nodeId, inputSourceId, {
+        type: IteratorType.MAP,
+        yield: {
+          type: ASTNodeType.EXPRESSION,
+          expressionType: FunctionType.CONDITION,
+          properties: { name: 'fetchData', arguments: [] },
+        },
+      })
+      handler = new IterateHandler(nodeId, iterateNode)
+
+      const deps = createMockMetadataDeps({
+        thunkHandlerRegistry: {
+          get: jest.fn().mockReturnValue({ isAsync: false }),
+        } as any,
+        functionRegistry: asyncRegistry,
+      })
+
+      // Act
+      handler.computeIsAsync(deps)
+
+      // Assert
+      expect(handler.isAsync).toBe(true)
+    })
+
+    it('should set isAsync to true when predicate template contains an async function', () => {
+      // Arrange
+      const inputSourceId = 'compile_ast:1'
+      const nodeId = 'compile_ast:2'
+      const asyncRegistry = new FunctionRegistry()
+      asyncRegistry.register({ fetchData: { name: 'fetchData', evaluate: (): undefined => undefined, isAsync: true } })
+
+      iterateNode = createIterateNode(nodeId, inputSourceId, {
+        type: IteratorType.FILTER,
+        predicate: {
+          type: ASTNodeType.EXPRESSION,
+          expressionType: FunctionType.CONDITION,
+          properties: { name: 'fetchData', arguments: [] },
+        },
+      })
+      handler = new IterateHandler(nodeId, iterateNode)
+
+      const deps = createMockMetadataDeps({
+        thunkHandlerRegistry: {
+          get: jest.fn().mockReturnValue({ isAsync: false }),
+        } as any,
+        functionRegistry: asyncRegistry,
+      })
+
+      // Act
+      handler.computeIsAsync(deps)
+
+      // Assert
+      expect(handler.isAsync).toBe(true)
+    })
+
+    it('should set isAsync to false when templates contain only sync functions', () => {
+      // Arrange
+      const inputSourceId = 'compile_ast:1'
+      const nodeId = 'compile_ast:2'
+      const syncRegistry = new FunctionRegistry()
+      syncRegistry.register({ isEqual: { name: 'isEqual', evaluate: (): undefined => undefined, isAsync: false } })
+
+      iterateNode = createIterateNode(nodeId, inputSourceId, {
+        type: IteratorType.MAP,
+        yield: {
+          type: ASTNodeType.EXPRESSION,
+          expressionType: FunctionType.CONDITION,
+          properties: { name: 'isEqual', arguments: [] },
+        },
+      })
+      handler = new IterateHandler(nodeId, iterateNode)
+
+      const deps = createMockMetadataDeps({
+        thunkHandlerRegistry: {
+          get: jest.fn().mockReturnValue({ isAsync: false }),
+        } as any,
+        functionRegistry: syncRegistry,
+      })
+
+      // Act
+      handler.computeIsAsync(deps)
+
+      // Assert
+      expect(handler.isAsync).toBe(false)
+    })
+
+    it('should store isTemplateAsync in metadata registry', () => {
+      // Arrange
+      const inputSourceId = 'compile_ast:1'
+      const nodeId = 'compile_ast:2'
+      iterateNode = createIterateNode(nodeId, inputSourceId, {
+        type: IteratorType.MAP,
+        yield: { type: ExpressionType.REFERENCE, path: ['@scope', '0', 'name'] },
+      })
+      handler = new IterateHandler(nodeId, iterateNode)
+
+      const deps = createMockMetadataDeps({
+        thunkHandlerRegistry: {
+          get: jest.fn().mockReturnValue({ isAsync: false }),
+        } as any,
+      })
+
+      // Act
+      handler.computeIsAsync(deps)
+
+      // Assert
+      expect(deps.metadataRegistry.set).toHaveBeenCalledWith(nodeId, 'isTemplateAsync', false)
     })
   })
 

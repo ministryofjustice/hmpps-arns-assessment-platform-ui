@@ -15,6 +15,7 @@ import { evaluateWithScopeSync } from '@form-engine/core/utils/thunkEvaluatorsSy
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import { structuralTraverse, StructuralVisitResult } from '@form-engine/core/compilation/traversers/StructuralTraverser'
 import { isFieldBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
+import TemplateAsyncAnalyzer from '@form-engine/core/compilation/TemplateAsyncAnalyzer'
 
 /**
  * Handler for Iterate expressions
@@ -26,11 +27,14 @@ import { isFieldBlockStructNode } from '@form-engine/core/typeguards/structure-n
  *
  * Uses scope management to enable Item() references within predicates and yields.
  *
- * Sync-capable when input node is sync. Runtime template children are registered
- * synchronously via registerRuntimeNodesBatch and evaluated via invokeSync.
+ * Sync-capable when input node and template contents are both sync.
+ * Template async status is determined at compile time via TemplateAsyncAnalyzer
+ * and stored in metadata for use by ThunkRuntimeHooksFactory.
  */
 export default class IterateHandler implements ThunkHandler {
   isAsync = false
+
+  private isTemplateAsync = false
 
   constructor(
     public readonly nodeId: NodeId,
@@ -39,14 +43,21 @@ export default class IterateHandler implements ThunkHandler {
 
   computeIsAsync(deps: MetadataComputationDependencies): void {
     const input = this.node.properties.input
+    const iterator = this.node.properties.iterator
+
+    let inputIsAsync = false
 
     if (isASTNode(input)) {
       const handler = deps.thunkHandlerRegistry.get(input.id)
-      this.isAsync = handler?.isAsync ?? true
-    } else {
-      // Literal input (array or primitive) - always sync
-      this.isAsync = false
+      inputIsAsync = handler?.isAsync ?? true
     }
+
+    this.isTemplateAsync =
+      TemplateAsyncAnalyzer.containsAsyncNodes(iterator.yieldTemplate, deps.functionRegistry) ||
+      TemplateAsyncAnalyzer.containsAsyncNodes(iterator.predicateTemplate, deps.functionRegistry)
+
+    this.isAsync = inputIsAsync || this.isTemplateAsync
+    deps.metadataRegistry.set(this.nodeId, 'isTemplateAsync', this.isTemplateAsync)
   }
 
   evaluateSync(
