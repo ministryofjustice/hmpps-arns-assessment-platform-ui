@@ -253,6 +253,9 @@ describe('ThunkRuntimeHooksFactory', () => {
             register: jest.fn(),
             findByType: jest.fn().mockReturnValue([]),
             getAllEntries: jest.fn().mockReturnValue(new Map()),
+            getPendingRegistry: jest.fn().mockReturnValue({
+              findByType: jest.fn().mockReturnValue([]),
+            }),
           },
           metadataRegistry: {
             set: jest.fn(),

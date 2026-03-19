@@ -1,8 +1,11 @@
 import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
-import PseudoNodeTraverser from '@form-engine/core/compilation/traversers/PseudoNodeTraverser'
+import NodeRegistry from '@form-engine/core/compilation/registries/NodeRegistry'
+import PseudoNodeCreator from '@form-engine/core/compilation/traversers/PseudoNodeCreator'
 import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
 import { MetadataTraverser } from '@form-engine/core/compilation/traversers/MetadataTraverser'
-import { JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
+import { FieldBlockASTNode, JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
+import { ReferenceASTNode } from '@form-engine/core/types/expressions.type'
+import { BlockType, ExpressionType } from '@form-engine/form/types/enums'
 import { AddSelfValueToFieldsNormalizer } from '@form-engine/core/compilation/normalizers/AddSelfValueToFields'
 import { ResolveSelfReferencesNormalizer } from '@form-engine/core/compilation/normalizers/ResolveSelfReferences'
 import { WiringContext } from '@form-engine/core/compilation/dependency-graph/WiringContext'
@@ -141,13 +144,17 @@ export class NodeCompilationPipeline {
    *
    * @param compilationDependencies
    */
-  static createPseudoNodes(compilationDependencies: CompilationDependencies): void {
-    // Create pseudo nodes by scanning the entire registry
-    new PseudoNodeTraverser(
+  static createPseudoNodes(compilationDependencies: CompilationDependencies, scanSource?: NodeRegistry): void {
+    const registry = scanSource ?? compilationDependencies.nodeRegistry
+
+    const creator = new PseudoNodeCreator(
       compilationDependencies.nodeRegistry,
       compilationDependencies.pseudoNodeFactory,
       compilationDependencies.metadataRegistry,
-    ).createPseudoNodes()
+    )
+
+    creator.createForFields(registry.findByType<FieldBlockASTNode>(BlockType.FIELD))
+    creator.createForReferences(registry.findByType<ReferenceASTNode>(ExpressionType.REFERENCE))
   }
 
   /**
