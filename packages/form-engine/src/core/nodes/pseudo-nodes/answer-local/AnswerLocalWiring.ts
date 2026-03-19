@@ -17,7 +17,6 @@ import { getPseudoNodeKey } from '@form-engine/core/utils/pseudoNodeKeyExtractor
  * - POST → ANSWER_LOCAL (raw form data)
  * - FORMATTERS[] → ANSWER_LOCAL (transformer functions, executed inline)
  * - DEFAULT_VALUE → ANSWER_LOCAL (default value expression)
- * - ONACCESS_TRANSITION → ANSWER_LOCAL (pre-population from onAccess effects)
  * - ANSWER_LOCAL → Answer() references (consumers)
  */
 export default class AnswerLocalWiring {
@@ -119,7 +118,6 @@ export default class AnswerLocalWiring {
    * - POST pseudo node - raw form submission data
    * - formatters (if exist) - transformer functions executed inline after sanitization
    * - defaultValue expression (if exists) - default when no POST data exists
-   * - onAccess transition (if exists) - pre-populated value from effects
    */
   private wireProducers(answerPseudoNode: AnswerLocalPseudoNode) {
     const { baseFieldCode, fieldNodeId: baseFieldNodeId } = answerPseudoNode.properties
@@ -156,22 +154,6 @@ export default class AnswerLocalWiring {
         propertyName: 'defaultValue',
         fieldCode: answerPseudoNode.properties.baseFieldCode,
       })
-    }
-
-    // Wire the onAccess transition
-    const nearestOnAccessTransition = this.wiringContext.findLastOnAccessTransitionFrom(
-      this.wiringContext.getCurrentStepNode().id,
-    )
-
-    if (nearestOnAccessTransition) {
-      this.wiringContext.graph.addEdge(
-        nearestOnAccessTransition.id,
-        answerPseudoNode.id,
-        DependencyEdgeType.DATA_FLOW,
-        {
-          fieldCode: baseFieldCode,
-        },
-      )
     }
   }
 }

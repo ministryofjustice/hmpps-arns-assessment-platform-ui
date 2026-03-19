@@ -2,7 +2,6 @@ import { WiringContext } from '@form-engine/core/compilation/dependency-graph/Wi
 import { AnswerRemotePseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
 import { DependencyEdgeType } from '@form-engine/core/compilation/dependency-graph/DependencyGraph'
 import { NodeId } from '@form-engine/core/types/engine.type'
-import { isPseudoNode } from '@form-engine/core/typeguards/nodes'
 import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import { ReferenceASTNode } from '@form-engine/core/types/expressions.type'
 import { getPseudoNodeKey } from '@form-engine/core/utils/pseudoNodeKeyExtractor'
@@ -13,7 +12,6 @@ import { getPseudoNodeKey } from '@form-engine/core/utils/pseudoNodeKeyExtractor
  * Creates dependency edges for remote field answer values (fields from other steps).
  *
  * Wiring pattern for ANSWER_REMOTE:
- * - ONACCESS_TRANSITION → ANSWER_REMOTE (loaded from remote source)
  * - ANSWER_REMOTE → Answer() references (consumers)
  */
 export default class AnswerRemoteWiring {
@@ -27,7 +25,6 @@ export default class AnswerRemoteWiring {
 
     this.wiringContext.nodeRegistry.findByType<AnswerRemotePseudoNode>(PseudoNodeType.ANSWER_REMOTE)
       .forEach(answerPseudoNode => {
-        this.wireProducers(answerPseudoNode)
         this.wireConsumersFromIndex(answerPseudoNode, answerRefsByFieldCode)
       })
   }
@@ -37,14 +34,6 @@ export default class AnswerRemoteWiring {
    */
   wireNodes(nodeIds: NodeId[]) {
     const nodes = nodeIds.map(id => this.wiringContext.nodeRegistry.get(id))
-
-    // Handle new Answer.Remote pseudo nodes
-    nodes
-      .filter(isPseudoNode)
-      .filter((node): node is AnswerRemotePseudoNode => node.type === PseudoNodeType.ANSWER_REMOTE)
-      .forEach(pseudoNode => {
-        this.wireProducers(pseudoNode)
-      })
 
     // Handle new Answer() references pointing to remote fields
     const answerRefs = nodes.filter(isReferenceExprNode).filter(ref => {
@@ -108,29 +97,4 @@ export default class AnswerRemoteWiring {
     })
   }
 
-  /**
-   * Wire data sources (producers) to a remote answer pseudo node
-   *
-   * Remote answers are from fields in other steps, loaded via onAccess transitions.
-   * They only have one producer: the nearest onAccess transition that loads remote data.
-   */
-  private wireProducers(answerPseudoNode: AnswerRemotePseudoNode) {
-    const { baseFieldCode } = answerPseudoNode.properties
-
-    // Wire the onAccess transition
-    const nearestOnAccessTransition = this.wiringContext.findLastOnAccessTransitionFrom(
-      this.wiringContext.getCurrentStepNode().id,
-    )
-
-    if (nearestOnAccessTransition) {
-      this.wiringContext.graph.addEdge(
-        nearestOnAccessTransition.id,
-        answerPseudoNode.id,
-        DependencyEdgeType.DATA_FLOW,
-        {
-          fieldCode: baseFieldCode,
-        },
-      )
-    }
-  }
 }

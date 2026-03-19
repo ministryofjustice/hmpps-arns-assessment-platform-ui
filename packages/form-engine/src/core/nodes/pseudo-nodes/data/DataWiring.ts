@@ -2,40 +2,37 @@ import { WiringContext } from '@form-engine/core/compilation/dependency-graph/Wi
 import { DataPseudoNode, PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
 import { DependencyEdgeType } from '@form-engine/core/compilation/dependency-graph/DependencyGraph'
 import { NodeId } from '@form-engine/core/types/engine.type'
-import { isPseudoNode } from '@form-engine/core/typeguards/nodes'
 import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import { getPseudoNodeKey } from '@form-engine/core/utils/pseudoNodeKeyExtractor'
 
 /**
- * DataWiring: Wires Data pseudo nodes to their data sources and consumers
+ * DataWiring: Wires Data pseudo nodes to their consumers
  *
- * Creates dependency edges for data values loaded via onAccess transitions:
- * - Data values come from external sources (APIs, databases, etc.)
- * - Must be loaded before the step can be evaluated
+ * DATA pseudo nodes are runtime data lookups. They do not have a single static
+ * producer in the AST, so wiring them to a "nearest onAccess" transition creates
+ * incorrect cycles when access transitions also consume Data() references.
  *
  * Wiring pattern for DATA:
- * - ONACCESS_TRANSITION → DATA (data loaded from external source)
  * - DATA → Data() references (consumers)
  */
 export default class DataWiring {
   constructor(private readonly wiringContext: WiringContext) {}
 
   /**
-   * Wire all Data pseudo nodes to their producers and consumers
+   * Wire all Data pseudo nodes to their consumers
    */
   wire() {
     this.wiringContext.nodeRegistry.findByType<DataPseudoNode>(PseudoNodeType.DATA)
       .forEach(dataPseudoNode => {
-        this.wireProducers(dataPseudoNode)
         this.wireConsumers(dataPseudoNode)
       })
   }
 
   /**
    * Wire only the specified nodes (scoped wiring for runtime nodes)
-   * Handles both directions:
-   * - New pseudo nodes: wire producers only (consumers handled below via new references)
-   * - New references: wire existing/new pseudo nodes to them
+   * Handles consumer edges only:
+   * - New Data pseudo nodes do not need producer edges
+   * - New references wire existing/new pseudo nodes to them
    *
    * Note: We don't call wireConsumers for new pseudo nodes because:
    * 1. Existing references can't reference a data key that was just created
@@ -43,15 +40,6 @@ export default class DataWiring {
    */
   wireNodes(nodeIds: NodeId[]) {
     const nodes = nodeIds.map(id => this.wiringContext.nodeRegistry.get(id))
-
-    // Handle new Data pseudo nodes (PULL producers only)
-    // Consumers are wired below when we process new references
-    nodes
-      .filter(isPseudoNode)
-      .filter((node): node is DataPseudoNode => node.type === PseudoNodeType.DATA)
-      .forEach(pseudoNode => {
-        this.wireProducers(pseudoNode)
-      })
 
     // Handle new Data() references (PUSH: existing pseudo node → new reference)
     const dataRefs = nodes
@@ -75,26 +63,6 @@ export default class DataWiring {
         })
       }
     })
-  }
-
-  /**
-   * Wire data sources (producers) to a data pseudo node
-   *
-   * Data values are loaded via onAccess transitions from external sources.
-   * They only have one producer: the nearest onAccess transition that loads data.
-   */
-  private wireProducers(dataPseudoNode: DataPseudoNode) {
-    const { baseProperty } = dataPseudoNode.properties
-
-    const nearestOnAccessTransition = this.wiringContext.findLastOnAccessTransitionFrom(
-      this.wiringContext.getCurrentStepNode().id,
-    )
-
-    if (nearestOnAccessTransition) {
-      this.wiringContext.graph.addEdge(nearestOnAccessTransition.id, dataPseudoNode.id, DependencyEdgeType.DATA_FLOW, {
-        baseProperty,
-      })
-    }
   }
 
   /**
