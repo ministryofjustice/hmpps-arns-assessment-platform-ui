@@ -50,7 +50,7 @@ export default class ThunkRuntimeHooksFactory {
       return TemplateFactory.instantiate(template)
     }
 
-    const registerRuntimeNodesBatch = async (nodes: ASTNode[], property: string): Promise<void> => {
+    const registerRuntimeNodesBatch = (nodes: ASTNode[], property: string): void => {
       if (nodes.length === 0) {
         return
       }

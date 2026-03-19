@@ -6,10 +6,12 @@ import {
   ThunkInvocationAdapter,
   HandlerResult,
   ThunkRuntimeHooks,
+  MetadataComputationDependencies,
 } from '@form-engine/core/compilation/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import ThunkTypeMismatchError from '@form-engine/errors/ThunkTypeMismatchError'
 import { evaluateWithScope } from '@form-engine/core/utils/thunkEvaluatorsAsync'
+import { evaluateWithScopeSync } from '@form-engine/core/utils/thunkEvaluatorsSync'
 import { isASTNode } from '@form-engine/core/typeguards/nodes'
 import { structuralTraverse, StructuralVisitResult } from '@form-engine/core/compilation/traversers/StructuralTraverser'
 import { isFieldBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
@@ -24,23 +26,79 @@ import { isFieldBlockStructNode } from '@form-engine/core/typeguards/structure-n
  *
  * Uses scope management to enable Item() references within predicates and yields.
  *
- * Always asynchronous due to runtime node creation and hooks usage.
+ * Sync-capable when input node is sync. Runtime template children are registered
+ * synchronously via registerRuntimeNodesBatch and evaluated via invokeSync.
  */
 export default class IterateHandler implements ThunkHandler {
-  isAsync = true
+  isAsync = false
 
   constructor(
     public readonly nodeId: NodeId,
     private readonly node: IterateASTNode,
   ) {}
 
-  computeIsAsync(): void {
-    // Always async - uses hooks.registerRuntimeNodesBatch() which is async
-    this.isAsync = true
+  computeIsAsync(deps: MetadataComputationDependencies): void {
+    const input = this.node.properties.input
+
+    if (isASTNode(input)) {
+      const handler = deps.thunkHandlerRegistry.get(input.id)
+      this.isAsync = handler?.isAsync ?? true
+    } else {
+      // Literal input (array or primitive) - always sync
+      this.isAsync = false
+    }
   }
 
-  evaluateSync(): HandlerResult {
-    throw new Error(`IterateHandler.evaluateSync() called but Iterate is always async (nodeId: ${this.nodeId})`)
+  evaluateSync(
+    context: ThunkEvaluationContext,
+    invoker: ThunkInvocationAdapter,
+    hooks?: ThunkRuntimeHooks,
+  ): HandlerResult {
+    if (!hooks) {
+      throw new Error(`IterateHandler.evaluateSync() requires hooks (nodeId: ${this.nodeId})`)
+    }
+
+    // 1. Evaluate input to get array
+    const inputResult = this.evaluateInputSync(context, invoker)
+
+    if ('error' in inputResult) {
+      return { error: inputResult.error }
+    }
+
+    // 2. Normalize input to array
+    const inputArray = this.normalizeToArray(inputResult.value)
+
+    if (inputArray === undefined) {
+      const error = ThunkTypeMismatchError.value(this.nodeId, 'array or object', typeof inputResult.value)
+      return { error: error.toThunkError() }
+    }
+
+    // 3. Apply iterator based on type
+    const iteratorType = this.node.properties.iterator.type
+
+    // 4. If empty, return appropriate empty value
+    if (inputArray.length === 0) {
+      if (iteratorType === IteratorType.FIND) {
+        return { value: undefined, metadata: { source: 'IterateHandler.find.empty' } }
+      }
+
+      return { value: [], metadata: { source: 'IterateHandler.empty' } }
+    }
+
+    if (iteratorType === IteratorType.FILTER) {
+      return this.evaluateFilterSync(inputArray, context, invoker, hooks)
+    }
+
+    if (iteratorType === IteratorType.MAP) {
+      return this.evaluateMapSync(inputArray, context, invoker, hooks)
+    }
+
+    if (iteratorType === IteratorType.FIND) {
+      return this.evaluateFindSync(inputArray, context, invoker, hooks)
+    }
+
+    const error = ThunkTypeMismatchError.value(this.nodeId, 'valid iterator type', iteratorType)
+    return { error: error.toThunkError() }
   }
 
   async evaluate(
@@ -93,6 +151,32 @@ export default class IterateHandler implements ThunkHandler {
   }
 
   /**
+   * Evaluate the input expression synchronously.
+   */
+  private evaluateInputSync(
+    context: ThunkEvaluationContext,
+    invoker: ThunkInvocationAdapter,
+  ): { value: unknown } | { error: any } {
+    const input = this.node.properties.input
+
+    if (Array.isArray(input)) {
+      return { value: input }
+    }
+
+    if (isASTNode(input)) {
+      const result = invoker.invokeSync(input.id, context)
+
+      if (result.error) {
+        return { error: result.error }
+      }
+
+      return { value: result.value }
+    }
+
+    return { value: input }
+  }
+
+  /**
    * Evaluate the input expression to get the source array.
    */
   private async evaluateInput(
@@ -121,6 +205,49 @@ export default class IterateHandler implements ThunkHandler {
   }
 
   /**
+   * Filter (sync): Keep items where predicate evaluates to true.
+   */
+  private evaluateFilterSync(
+    inputArray: unknown[],
+    context: ThunkEvaluationContext,
+    invoker: ThunkInvocationAdapter,
+    hooks: ThunkRuntimeHooks,
+  ): HandlerResult {
+    const predicate = this.node.properties.iterator.predicateTemplate
+    const results: unknown[] = []
+
+    const validItems = inputArray
+      .map((item, index) => ({ item, index }))
+      .filter(({ item }) => item != null)
+
+    for (const { item, index } of validItems) {
+      const itemScope = this.createItemScope(item, index)
+
+      const passesFilter = evaluateWithScopeSync(itemScope, context, () => {
+        const predicateNode = hooks.instantiateTemplateValue(predicate)
+
+        if (isASTNode(predicateNode)) {
+          hooks.registerRuntimeNodesBatch([predicateNode], 'predicate')
+          const result = invoker.invokeSync(predicateNode.id, context)
+
+          return Boolean(result.value)
+        }
+
+        return Boolean(predicateNode)
+      })
+
+      if (passesFilter) {
+        results.push(item)
+      }
+    }
+
+    return {
+      value: results,
+      metadata: { source: 'IterateHandler.filter' },
+    }
+  }
+
+  /**
    * Filter: Keep items where predicate evaluates to true.
    */
   private async evaluateFilter(
@@ -146,7 +273,7 @@ export default class IterateHandler implements ThunkHandler {
         const predicateNode = hooks.instantiateTemplateValue(predicate)
 
         if (isASTNode(predicateNode)) {
-          await hooks.registerRuntimeNodesBatch([predicateNode], 'predicate')
+          hooks.registerRuntimeNodesBatch([predicateNode], 'predicate')
           const result = await invoker.invoke(predicateNode.id, context)
 
           return Boolean(result.value)
@@ -164,6 +291,51 @@ export default class IterateHandler implements ThunkHandler {
     return {
       value: results,
       metadata: { source: 'IterateHandler.filter' },
+    }
+  }
+
+  /**
+   * Find (sync): Return first item where predicate evaluates to true.
+   */
+  private evaluateFindSync(
+    inputArray: unknown[],
+    context: ThunkEvaluationContext,
+    invoker: ThunkInvocationAdapter,
+    hooks: ThunkRuntimeHooks,
+  ): HandlerResult {
+    const predicate = this.node.properties.iterator.predicateTemplate
+
+    const validItems = inputArray
+      .map((item, index) => ({ item, index }))
+      .filter(({ item }) => item != null)
+
+    for (const { item, index } of validItems) {
+      const itemScope = this.createItemScope(item, index)
+
+      const matchesPredicate = evaluateWithScopeSync(itemScope, context, () => {
+        const predicateNode = hooks.instantiateTemplateValue(predicate)
+
+        if (isASTNode(predicateNode)) {
+          hooks.registerRuntimeNodesBatch([predicateNode], 'predicate')
+          const result = invoker.invokeSync(predicateNode.id, context)
+
+          return Boolean(result.value)
+        }
+
+        return Boolean(predicateNode)
+      })
+
+      if (matchesPredicate) {
+        return {
+          value: item,
+          metadata: { source: 'IterateHandler.find' },
+        }
+      }
+    }
+
+    return {
+      value: undefined,
+      metadata: { source: 'IterateHandler.find.notFound' },
     }
   }
 
@@ -191,7 +363,7 @@ export default class IterateHandler implements ThunkHandler {
         const predicateNode = hooks.instantiateTemplateValue(predicate)
 
         if (isASTNode(predicateNode)) {
-          await hooks.registerRuntimeNodesBatch([predicateNode], 'predicate')
+          hooks.registerRuntimeNodesBatch([predicateNode], 'predicate')
           const result = await invoker.invoke(predicateNode.id, context)
 
           return Boolean(result.value)
@@ -212,6 +384,78 @@ export default class IterateHandler implements ThunkHandler {
     return {
       value: undefined,
       metadata: { source: 'IterateHandler.find.notFound' },
+    }
+  }
+
+  /**
+   * Map (sync): Transform each item using yield template.
+   */
+  private evaluateMapSync(
+    inputArray: unknown[],
+    context: ThunkEvaluationContext,
+    invoker: ThunkInvocationAdapter,
+    hooks: ThunkRuntimeHooks,
+  ): HandlerResult {
+    const yieldTemplate = this.node.properties.iterator.yieldTemplate
+    const results: unknown[] = []
+
+    // Phase 1: Create nodes for all items
+    const nodesToEvaluate = inputArray
+      .map((item, index) => ({ item, index }))
+      .filter(({ item }) => item != null)
+      .map(({ item, index }) => ({
+        node: hooks.instantiateTemplateValue(yieldTemplate),
+        itemScope: this.createItemScope(item, index),
+      }))
+
+    // Phase 2a: Resolve dynamic codes for each node
+    for (const { node, itemScope } of nodesToEvaluate) {
+      if (isASTNode(node)) {
+        const fieldsWithExprCodes = this.findFieldsWithExpressionCodes(node)
+
+        if (fieldsWithExprCodes.length > 0) {
+          evaluateWithScopeSync(itemScope, context, () => {
+            const exprNodes = fieldsWithExprCodes.map(f => f.properties.code as ASTNode)
+            hooks.registerRuntimeNodesBatch(exprNodes, 'code')
+
+            for (const field of fieldsWithExprCodes) {
+              const codeNode = field.properties.code as ASTNode
+              const result = invoker.invokeSync(codeNode.id, context)
+              field.properties.code = String(result.value)
+            }
+          })
+        }
+      }
+    }
+
+    // Phase 2b: Batch register all nodes
+    const allNodes = nodesToEvaluate.map(({ node }) => node).filter(isASTNode)
+    const nestedNodes = nodesToEvaluate.flatMap(({ node }) => (isASTNode(node) ? [] : this.findNestedASTNodes(node)))
+
+    if (allNodes.length > 0) {
+      hooks.registerRuntimeNodesBatch(allNodes, 'yield')
+    }
+
+    if (nestedNodes.length > 0) {
+      hooks.registerRuntimeNodesBatch(nestedNodes, 'yield')
+    }
+
+    // Phase 3: Evaluate each with its scope
+    for (const { node, itemScope } of nodesToEvaluate) {
+      evaluateWithScopeSync(itemScope, context, () => {
+        if (isASTNode(node)) {
+          const result = invoker.invokeSync(node.id, context)
+          results.push(result.value)
+        } else {
+          const evaluated = this.evaluateNestedNodesSync(node, invoker, context)
+          results.push(evaluated)
+        }
+      })
+    }
+
+    return {
+      value: results,
+      metadata: { source: 'IterateHandler.map' },
     }
   }
 
@@ -243,17 +487,14 @@ export default class IterateHandler implements ThunkHandler {
         const fieldsWithExprCodes = this.findFieldsWithExpressionCodes(node)
 
         if (fieldsWithExprCodes.length > 0) {
-          // eslint-disable-next-line no-await-in-loop
-          await evaluateWithScope(itemScope, context, async () => {
+
+          evaluateWithScopeSync(itemScope, context, () => {
             const exprNodes = fieldsWithExprCodes.map(f => f.properties.code as ASTNode)
-            await hooks.registerRuntimeNodesBatch(exprNodes, 'code')
+            hooks.registerRuntimeNodesBatch(exprNodes, 'code')
 
             for (const field of fieldsWithExprCodes) {
               const codeNode = field.properties.code as ASTNode
-
-              // eslint-disable-next-line no-await-in-loop
-              const result = await invoker.invoke(codeNode.id, context)
-
+              const result = invoker.invokeSync(codeNode.id, context)
               field.properties.code = String(result.value)
             }
           })
@@ -267,22 +508,22 @@ export default class IterateHandler implements ThunkHandler {
     const nestedNodes = nodesToEvaluate.flatMap(({ node }) => (isASTNode(node) ? [] : this.findNestedASTNodes(node)))
 
     if (allNodes.length > 0) {
-      await hooks.registerRuntimeNodesBatch(allNodes, 'yield')
+      hooks.registerRuntimeNodesBatch(allNodes, 'yield')
     }
 
     if (nestedNodes.length > 0) {
-      await hooks.registerRuntimeNodesBatch(nestedNodes, 'yield')
+      hooks.registerRuntimeNodesBatch(nestedNodes, 'yield')
     }
 
     // Phase 3: Evaluate each with its scope
     for (const { node, itemScope } of nodesToEvaluate) {
-      // eslint-disable-next-line no-await-in-loop
-      await evaluateWithScope(itemScope, context, async () => {
+
+      evaluateWithScopeSync(itemScope, context, () => {
         if (isASTNode(node)) {
-          const result = await invoker.invoke(node.id, context)
+          const result = invoker.invokeSync(node.id, context)
           results.push(result.value)
         } else {
-          const evaluated = await this.evaluateNestedNodes(node, invoker, context)
+          const evaluated = this.evaluateNestedNodesSync(node, invoker, context)
           results.push(evaluated)
         }
       })
@@ -385,35 +626,33 @@ export default class IterateHandler implements ThunkHandler {
   }
 
   /**
-   * Recursively evaluate a plain object by invoking any nested AST nodes
-   * and substituting their values.
+   * Recursively evaluate a plain object synchronously by invoking any nested
+   * AST nodes and substituting their values.
    */
-  private async evaluateNestedNodes(
+  private evaluateNestedNodesSync(
     value: unknown,
     invoker: ThunkInvocationAdapter,
     context: ThunkEvaluationContext,
-  ): Promise<unknown> {
+  ): unknown {
     if (value === null || value === undefined) {
       return value
     }
 
     if (isASTNode(value)) {
-      const result = await invoker.invoke(value.id, context)
+      const result = invoker.invokeSync(value.id, context)
       return result.value
     }
 
     if (Array.isArray(value)) {
-      return Promise.all(value.map(item => this.evaluateNestedNodes(item, invoker, context)))
+      return value.map(item => this.evaluateNestedNodesSync(item, invoker, context))
     }
 
     if (typeof value === 'object') {
       const result: Record<string, unknown> = {}
 
-      await Promise.all(
-        Object.entries(value).map(async ([key, val]) => {
-          result[key] = await this.evaluateNestedNodes(val, invoker, context)
-        }),
-      )
+      Object.entries(value).forEach(([key, val]) => {
+        result[key] = this.evaluateNestedNodesSync(val, invoker, context)
+      })
 
       return result
     }

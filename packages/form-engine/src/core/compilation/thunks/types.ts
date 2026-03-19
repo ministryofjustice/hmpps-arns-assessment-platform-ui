@@ -244,9 +244,14 @@ export interface ThunkHandler {
    *
    * @param context - Runtime evaluation context with data and services
    * @param invoker - Adapter for recursively evaluating other nodes
+   * @param hooks - Optional runtime hooks for sync handlers that instantiate runtime nodes
    * @returns The evaluation result (no Promise)
    */
-  evaluateSync(context: ThunkEvaluationContext, invoker: ThunkInvocationAdapter): HandlerResult<unknown>
+  evaluateSync(
+    context: ThunkEvaluationContext,
+    invoker: ThunkInvocationAdapter,
+    hooks?: ThunkRuntimeHooks,
+  ): HandlerResult<unknown>
 
   /**
    * Evaluate asynchronously and return Promise
@@ -322,6 +327,17 @@ export interface ThunkInvocationAdapter {
    * @throws Error if handler is not synchronous
    */
   invokeSync<T = unknown>(nodeId: NodeId, context: ThunkEvaluationContext): ThunkResult<T>
+
+  /**
+   * Check whether a node's handler is synchronous
+   *
+   * Used by executors to decide whether to take the sync fast-path
+   * (no Promise overhead) or the async path for property evaluation.
+   *
+   * @param nodeId - The node to check
+   * @returns true if the handler exists and is synchronous
+   */
+  isSync?(nodeId: NodeId): boolean
 }
 
 /**
