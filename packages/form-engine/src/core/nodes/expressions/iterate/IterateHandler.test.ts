@@ -537,7 +537,7 @@ describe('IterateHandler', () => {
 
   describe('evaluate()', () => {
     describe('MAP iterator', () => {
-      it('should transform each item using yield template', async () => {
+      it('should transform each item using yield template with sync templates', async () => {
         // Arrange
         const inputSourceId = 'compile_ast:1'
         const nodeId = 'compile_ast:2'
@@ -558,7 +558,17 @@ describe('IterateHandler', () => {
           { id: 'runtime_ast:101', type: ASTNodeType.EXPRESSION },
           { id: 'runtime_ast:102', type: ASTNodeType.EXPRESSION },
         ]
-        const mockInvoker = createSequentialMockInvoker([inputData, 'Alice', 'Bob', 'Charlie'])
+
+        let syncCallIndex = 0
+        const syncValues = ['Alice', 'Bob', 'Charlie']
+        const mockInvoker = createMockInvoker({
+          invokeImpl: async () => ({ value: inputData, metadata: { source: 'test', timestamp: Date.now() } }),
+          invokeSyncImpl: () => {
+            const value = syncValues[syncCallIndex]
+            syncCallIndex += 1
+            return { value, metadata: { source: 'test', timestamp: Date.now() } }
+          },
+        })
         const mockHooks = createMockHooks()
 
         yieldNodes.forEach(node => {
@@ -573,6 +583,58 @@ describe('IterateHandler', () => {
         expect(result.metadata).toEqual({ source: 'IterateHandler.map' })
         expect(mockHooks.instantiateTemplateValue).toHaveBeenCalledTimes(3)
         expect(mockHooks.registerRuntimeNodesBatch).toHaveBeenCalledWith(yieldNodes, 'yield')
+      })
+
+      it('should transform each item using yield template with async templates', async () => {
+        // Arrange
+        const inputSourceId = 'compile_ast:1'
+        const nodeId = 'compile_ast:2'
+        const asyncRegistry = new FunctionRegistry()
+        asyncRegistry.register({
+          fetchData: { name: 'fetchData', evaluate: (): undefined => undefined, isAsync: true },
+        })
+
+        iterateNode = createIterateNode(nodeId, inputSourceId, {
+          type: IteratorType.MAP,
+          yield: {
+            type: ASTNodeType.EXPRESSION,
+            expressionType: FunctionType.CONDITION,
+            properties: { name: 'fetchData', arguments: [] },
+          },
+        })
+        handler = new IterateHandler(nodeId, iterateNode)
+
+        const deps = createMockMetadataDeps({
+          thunkHandlerRegistry: {
+            get: jest.fn().mockReturnValue({ isAsync: true }),
+          } as any,
+          functionRegistry: asyncRegistry,
+        })
+        handler.computeIsAsync(deps)
+
+        const mockContext = createMockContext()
+        const inputData = [
+          { id: 1, name: 'Alice' },
+          { id: 2, name: 'Bob' },
+        ]
+        const yieldNodes = [
+          { id: 'runtime_ast:100', type: ASTNodeType.EXPRESSION },
+          { id: 'runtime_ast:101', type: ASTNodeType.EXPRESSION },
+        ]
+        const mockInvoker = createSequentialMockInvoker([inputData, 'Alice', 'Bob'])
+        const mockHooks = createMockHooks()
+
+        yieldNodes.forEach(node => {
+          mockHooks.instantiateTemplateValue.mockReturnValueOnce(node as any)
+        })
+
+        // Act
+        const result = await handler.evaluate(mockContext, mockInvoker, mockHooks)
+
+        // Assert
+        expect(result.value).toEqual(['Alice', 'Bob'])
+        expect(mockInvoker.invoke).toHaveBeenCalledTimes(3)
+        expect(mockInvoker.invokeSync).not.toHaveBeenCalled()
       })
 
       it('should evaluate plain object yield templates with nested AST nodes', async () => {
@@ -595,7 +657,17 @@ describe('IterateHandler', () => {
         ]
         const labelNode = { id: 'runtime_ast:200', type: ASTNodeType.EXPRESSION }
         const valueNode = { id: 'runtime_ast:201', type: ASTNodeType.EXPRESSION }
-        const mockInvoker = createSequentialMockInvoker([inputData, 'Option 1', 'opt1', 'Option 2', 'opt2'])
+
+        let syncCallIndex = 0
+        const syncValues = ['Option 1', 'opt1', 'Option 2', 'opt2']
+        const mockInvoker = createMockInvoker({
+          invokeImpl: async () => ({ value: inputData, metadata: { source: 'test', timestamp: Date.now() } }),
+          invokeSyncImpl: () => {
+            const value = syncValues[syncCallIndex]
+            syncCallIndex += 1
+            return { value, metadata: { source: 'test', timestamp: Date.now() } }
+          },
+        })
         const mockHooks = createMockHooks()
 
         mockHooks.instantiateTemplateValue.mockImplementation(() => ({

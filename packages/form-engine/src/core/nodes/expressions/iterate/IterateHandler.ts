@@ -528,16 +528,28 @@ export default class IterateHandler implements ThunkHandler {
 
     // Phase 3: Evaluate each with its scope
     for (const { node, itemScope } of nodesToEvaluate) {
-
-      evaluateWithScopeSync(itemScope, context, () => {
-        if (isASTNode(node)) {
-          const result = invoker.invokeSync(node.id, context)
-          results.push(result.value)
-        } else {
-          const evaluated = this.evaluateNestedNodesSync(node, invoker, context)
-          results.push(evaluated)
-        }
-      })
+      if (this.isTemplateAsync) {
+        // eslint-disable-next-line no-await-in-loop
+        await evaluateWithScope(itemScope, context, async () => {
+          if (isASTNode(node)) {
+            const result = await invoker.invoke(node.id, context)
+            results.push(result.value)
+          } else {
+            const evaluated = await this.evaluateNestedNodes(node, invoker, context)
+            results.push(evaluated)
+          }
+        })
+      } else {
+        evaluateWithScopeSync(itemScope, context, () => {
+          if (isASTNode(node)) {
+            const result = invoker.invokeSync(node.id, context)
+            results.push(result.value)
+          } else {
+            const evaluated = this.evaluateNestedNodesSync(node, invoker, context)
+            results.push(evaluated)
+          }
+        })
+      }
     }
 
     return {
@@ -634,6 +646,42 @@ export default class IterateHandler implements ThunkHandler {
     }
 
     return nodes
+  }
+
+  /**
+   * Recursively evaluate a plain object by invoking any nested
+   * AST nodes asynchronously and substituting their values.
+   */
+  private async evaluateNestedNodes(
+    value: unknown,
+    invoker: ThunkInvocationAdapter,
+    context: ThunkEvaluationContext,
+  ): Promise<unknown> {
+    if (value === null || value === undefined) {
+      return value
+    }
+
+    if (isASTNode(value)) {
+      const result = await invoker.invoke(value.id, context)
+      return result.value
+    }
+
+    if (Array.isArray(value)) {
+      return Promise.all(value.map(item => this.evaluateNestedNodes(item, invoker, context)))
+    }
+
+    if (typeof value === 'object') {
+      const result: Record<string, unknown> = {}
+
+      for (const [key, val] of Object.entries(value)) {
+        // eslint-disable-next-line no-await-in-loop
+        result[key] = await this.evaluateNestedNodes(val, invoker, context)
+      }
+
+      return result
+    }
+
+    return value
   }
 
   /**
