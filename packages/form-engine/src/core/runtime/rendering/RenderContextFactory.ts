@@ -1,12 +1,8 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
-import { EvaluationResult } from '@form-engine/core/compilation/thunks/ThunkEvaluator'
-import { BlockASTNode, JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
-import getAncestorChain from '@form-engine/core/utils/getAncestorChain'
-import MetadataRegistry from '@form-engine/core/compilation/registries/MetadataRegistry'
-import ThunkCacheManager from '@form-engine/core/compilation/thunks/ThunkCacheManager'
 import { StepValidationFailure } from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import { ValidationResult } from '@form-engine/core/nodes/expressions/validation/ValidationHandler'
 import { isBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
+import { BlockASTNode } from '@form-engine/core/types/structures.type'
 import { BlockType } from '@form-engine/form/types/enums'
 import { isObjectValue } from '@form-engine/typeguards/primitives'
 import {
@@ -31,81 +27,34 @@ export interface RenderContextOptions {
   currentStepPath?: string
 }
 
-/** Builds RenderContext from evaluated AST for template rendering. */
+export interface RenderContextInput {
+  step: RenderContext['step']
+  ancestors: JourneyAncestor[]
+  blocks: Evaluated<BlockASTNode>[]
+  answers: Record<string, unknown>
+  data: Record<string, unknown>
+  validationFailures?: StepValidationFailure[]
+}
+
+/** Builds RenderContext from explicit evaluated render inputs. */
 export default class RenderContextFactory {
-  static build(
-    evaluationResult: EvaluationResult,
-    currentStepId: NodeId,
-    options: RenderContextOptions = {},
-  ): RenderContext {
-    const { cacheManager, metadataRegistry } = evaluationResult.context
+  static build(input: RenderContextInput, options: RenderContextOptions = {}): RenderContext {
     const showValidationFailures = options.showValidationFailures ?? false
-
-    const step = getStepFromCache(cacheManager, currentStepId)
-    const ancestors = resolveAncestors(cacheManager, metadataRegistry, currentStepId)
-    const navigation = buildNavigationTree(options.navigationMetadata ?? [], options.currentStepPath ?? '')
-
-    const validationFailures = showValidationFailures
-      ? getStoredValidationFailures(evaluationResult, currentStepId)
-      : []
-
+    const validationFailures = showValidationFailures ? (input.validationFailures ?? []) : []
     const blocks =
-      validationFailures.length > 0
-        ? attachValidationToBlocks(step.properties.blocks ?? [], validationFailures)
-        : (step.properties.blocks ?? [])
+      validationFailures.length > 0 ? attachValidationToBlocks(input.blocks, validationFailures) : input.blocks
 
     return {
-      navigation,
-      step: stripStepInternals(step),
-      ancestors: ancestors.map(stripJourneyInternals),
+      navigation: buildNavigationTree(options.navigationMetadata ?? [], options.currentStepPath ?? ''),
+      step: input.step,
+      ancestors: input.ancestors,
       blocks,
       showValidationFailures,
       validationErrors: validationFailures.map(stripBlockId),
-      answers: evaluationResult.context.global.answers,
-      data: evaluationResult.context.global.data,
+      answers: input.answers,
+      data: input.data,
     }
   }
-}
-
-function getStepFromCache(cacheManager: ThunkCacheManager, stepId: NodeId): Evaluated<StepASTNode> {
-  const result = cacheManager.get<Evaluated<StepASTNode>>(stepId)
-
-  if (!result?.value) {
-    throw new Error(`Step not found in cache: ${stepId}`)
-  }
-
-  return result.value
-}
-
-function stripStepInternals(step: Evaluated<StepASTNode>): RenderContext['step'] {
-  const { onAction, onSubmission, blocks, ...properties } = step.properties
-
-  return properties
-}
-
-function resolveAncestors(
-  cacheManager: ThunkCacheManager,
-  metadataRegistry: MetadataRegistry,
-  stepId: NodeId,
-): JourneyASTNode[] {
-  const chain = getAncestorChain(stepId, metadataRegistry)
-  const ancestorIds = chain.slice(0, -1)
-
-  return ancestorIds.map(id => {
-    const result = cacheManager.get<JourneyASTNode>(id)
-
-    if (!result?.value) {
-      throw new Error(`Ancestor not found in cache: ${id}`)
-    }
-
-    return result.value
-  })
-}
-
-function stripJourneyInternals(journey: JourneyASTNode): JourneyAncestor {
-  const { onAccess, children, steps, ...properties } = journey.properties
-
-  return properties
 }
 
 function buildNavigationTree(metadata: JourneyMetadata[], currentStepPath: string): NavigationTree {
@@ -142,19 +91,6 @@ function toNavigationStep(stored: StepMetadata, currentStepPath: string): Naviga
   }
 }
 
-function getStoredValidationFailures(
-  evaluationResult: EvaluationResult,
-  currentStepId: NodeId,
-): StepValidationFailure[] {
-  const validation = evaluationResult.context.global.validation
-
-  if (validation?.validated === true && validation.stepId === currentStepId) {
-    return validation.failures
-  }
-
-  return []
-}
-
 function attachValidationToBlocks(
   blocks: Evaluated<BlockASTNode>[],
   failures: StepValidationFailure[],
@@ -182,19 +118,23 @@ function attachValidationToBlock(
   const properties = walkPropertiesForBlocks(block.properties, failuresByBlockId)
 
   if (block.blockType !== BlockType.FIELD) {
-    return { ...block, properties }
+    return {
+      ...block,
+      properties,
+    }
+  }
+
+  const fieldProperties = {
+    ...properties,
+    validate: failuresByBlockId.get(block.id) ?? [],
   }
 
   return {
     ...block,
-    properties: {
-      ...properties,
-      validate: failuresByBlockId.get(block.id) ?? [],
-    },
+    properties: fieldProperties,
   }
 }
 
-/** Walks property values recursively to find and update nested blocks with validation. */
 function walkPropertiesForBlocks(
   properties: Record<string, unknown>,
   failuresByBlockId: Map<NodeId, ValidationResult[]>,
