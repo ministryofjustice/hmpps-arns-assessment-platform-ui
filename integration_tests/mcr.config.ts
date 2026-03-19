@@ -8,8 +8,7 @@ const coverageOptions: CoverageReportOptions = {
 
   entryFilter: {
     '**/node_modules/**': false,
-    '**/sentence-plan/v1.0/**': true,
-    '**/sentence-plan/components/**': true,
+    '**/sentence-plan/**': true,
     '**/assets/**': false,
     '**/auth/**': false,
     '**/*.css': false,
@@ -17,8 +16,7 @@ const coverageOptions: CoverageReportOptions = {
 
   sourceFilter: {
     '**/node_modules/**': false,
-    '**/sentence-plan/v1.0/**': true,
-    '**/sentence-plan/components/**': true,
+    '**/sentence-plan/**': true,
     '**/assets/**': false,
     '**/auth/**': false,
     '**/*.css': false,
