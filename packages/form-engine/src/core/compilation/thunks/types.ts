@@ -5,7 +5,7 @@ import { NodeFactory } from '@form-engine/core/nodes/NodeFactory'
 import MetadataRegistry from '@form-engine/core/compilation/registries/MetadataRegistry'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
-import ASTNodeTree from '@form-engine/core/compilation/ASTNodeTree'
+import ASTNodeTree from '@form-engine/core/compilation/node-tree/ASTNodeTree'
 import ThunkRuntimeHooksFactory from '@form-engine/core/compilation/thunks/ThunkRuntimeHooksFactory'
 
 /**

@@ -1,5 +1,5 @@
 import { ThunkInvocationAdapter } from '@form-engine/core/compilation/thunks/types'
-import ValidationTemplateAnalyzer from '@form-engine/core/compilation/ValidationTemplateAnalyzer'
+import ValidationTemplateAnalyzer from '@form-engine/core/compilation/analyzers/ValidationTemplateAnalyzer'
 import { StepRuntimePlan } from '@form-engine/core/compilation/StepRuntimePlanBuilder'
 import ThunkEvaluationContext, {
   StepValidationFailure,

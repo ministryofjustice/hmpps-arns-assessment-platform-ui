@@ -1,5 +1,5 @@
 import { NodeId } from '@form-engine/core/types/engine.type'
-import ASTNodeTree from '@form-engine/core/compilation/ASTNodeTree'
+import ASTNodeTree from '@form-engine/core/compilation/node-tree/ASTNodeTree'
 
 export default class OverlayASTNodeTree extends ASTNodeTree {
   constructor(private readonly main: ASTNodeTree) {

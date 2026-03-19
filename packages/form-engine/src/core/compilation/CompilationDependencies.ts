@@ -8,8 +8,8 @@ import OverlayNodeRegistry from '@form-engine/core/compilation/registries/Overla
 import OverlayMetadataRegistry from '@form-engine/core/compilation/registries/OverlayMetadataRegistry'
 import ThunkHandlerRegistry from '@form-engine/core/compilation/registries/ThunkHandlerRegistry'
 import OverlayThunkHandlerRegistry from '@form-engine/core/compilation/registries/OverlayThunkHandlerRegistry'
-import ASTNodeTree from '@form-engine/core/compilation/ASTNodeTree'
-import OverlayASTNodeTree from '@form-engine/core/compilation/OverlayASTNodeTree'
+import ASTNodeTree from '@form-engine/core/compilation/node-tree/ASTNodeTree'
+import OverlayASTNodeTree from '@form-engine/core/compilation/node-tree/OverlayASTNodeTree'
 import { NodeId } from '@form-engine/core/types/engine.type'
 
 export type OverlayDependencies = CompilationDependencies & {

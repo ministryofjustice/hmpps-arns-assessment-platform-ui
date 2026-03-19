@@ -11,7 +11,7 @@ import { isFieldBlockStructNode } from '@form-engine/core/typeguards/structure-n
 import { isReferenceExprNode } from '@form-engine/core/typeguards/expression-nodes'
 import { cloneASTValue } from '@form-engine/core/utils/astValueCloning'
 import InvalidNodeError from '@form-engine/errors/InvalidNodeError'
-import ASTNodeTree from '@form-engine/core/compilation/ASTNodeTree'
+import ASTNodeTree from '@form-engine/core/compilation/node-tree/ASTNodeTree'
 
 /**
  * Single-pass walker that replaces 4 separate structuralTraverse passes

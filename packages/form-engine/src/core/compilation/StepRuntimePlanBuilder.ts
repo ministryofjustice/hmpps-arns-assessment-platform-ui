@@ -1,5 +1,5 @@
 import { CompilationDependencies } from '@form-engine/core/compilation/CompilationDependencies'
-import ValidationTemplateAnalyzer from '@form-engine/core/compilation/ValidationTemplateAnalyzer'
+import ValidationTemplateAnalyzer from '@form-engine/core/compilation/analyzers/ValidationTemplateAnalyzer'
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { IterateASTNode } from '@form-engine/core/types/expressions.type'
 import { FieldBlockASTNode, StepASTNode } from '@form-engine/core/types/structures.type'

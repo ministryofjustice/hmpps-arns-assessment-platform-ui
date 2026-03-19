@@ -1,4 +1,4 @@
-import ASTNodeTree from '@form-engine/core/compilation/ASTNodeTree'
+import ASTNodeTree from '@form-engine/core/compilation/node-tree/ASTNodeTree'
 import { NodeId } from '@form-engine/core/types/engine.type'
 
 describe('ASTNodeTree', () => {
