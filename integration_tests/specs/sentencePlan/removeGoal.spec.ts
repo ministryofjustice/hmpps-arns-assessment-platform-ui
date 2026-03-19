@@ -10,6 +10,8 @@ import {
   navigateToSentencePlan,
   sentencePlanPageTitles,
 } from './sentencePlanUtils'
+import UpdateAgreePlanPage from '../../pages/sentencePlan/updateAgreePlanPage'
+import UpdateGoalAndStepsPage from '../../pages/sentencePlan/updateGoalAndStepsPage'
 
 test.describe('Remove goal journey', () => {
   test.describe('confirm goal removal', () => {
@@ -53,6 +55,41 @@ test.describe('Remove goal journey', () => {
 
       // Verify we're on the plan overview page
       await PlanOverviewPage.verifyOnPage(page)
+    })
+
+    test('can access confirm remove goal page when plan has updated agreement status (UPDATED_AGREED/UPDATED_DO_NOT_AGREE))', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('COULD_NOT_ANSWER')
+        .save()
+      await navigateToSentencePlan(page, handoverLink)
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      // update agreement to 'Yes, I agree'
+      await planOverviewPage.updateAgreementLink.click()
+      const updateAgreePlanPage = await UpdateAgreePlanPage.verifyOnPage(page)
+      await updateAgreePlanPage.selectAgreeYes()
+      await updateAgreePlanPage.clickSave()
+
+      // should redirect to plan overview
+      await PlanOverviewPage.verifyOnPage(page)
+
+      // click update on goal for first goal
+      await planOverviewPage.clickUpdateGoal(0)
+      const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+
+      // click 'remove goal from plan' > navigates to confirm-remove-goal
+      await updateGoalAndStepsPage.clickRemoveGoal()
+      await ConfirmRemoveGoalPage.verifyOnPage(page)
+
+      // ensure page title is correct
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.confirmRemoveGoal))
     })
 
     test('shows validation error when removal note is empty', async ({ page, createSession, sentencePlanBuilder }) => {

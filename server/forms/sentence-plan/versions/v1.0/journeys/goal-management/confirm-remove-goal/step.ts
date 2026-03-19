@@ -1,8 +1,9 @@
-import { accessTransition, Data, Format, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
+import { accessTransition, Format, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, introText, goalCard, removalNoteSection, buttonGroup } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
 
 /**
  * Confirm remove goal page
@@ -28,22 +29,11 @@ export const removeGoalStep = step({
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_REMOVED),
       ],
-      next: [
-        // Only allow removing goals if plan is agreed (soft-delete for agreed plans only)
-        // Draft plans should use "delete" instead
-        redirect({
-          when: Data('latestAgreementStatus').not.match(
-            Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
-          ),
-          goto: '../../plan/overview',
-        }),
-        // Redirect if goal not found
-        redirect({
-          when: Data('activeGoal').not.match(Condition.IsRequired()),
-          goto: '../../plan/overview',
-        }),
-      ],
     }),
+    // Only allow removing goals if plan is agreed (soft-delete for agreed plans only)
+    // Draft plans should use "delete" instead
+    redirectIfNotPostAgreement('../../plan/overview'),
+    redirectIfGoalNotFound('../../plan/overview'),
   ],
 
   onSubmission: [
