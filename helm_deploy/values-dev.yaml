@@ -30,3 +30,4 @@ generic-service:
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui
   alertSeverity: hmpps-assess-risks-and-needs-integrations-dev
+  businessHoursOnly: true
