@@ -8,6 +8,13 @@ services:
       HMPPS_HANDOVER_EXTERNAL_URL: http://arns-handover:7070
       CLIENT_SP_OAUTH_REDIRECT_URI: http://ui:3000/sign-in/handover/callback
       CLIENT_SP_HANDOVER_REDIRECT_URI: http://ui:3000/sign-in/handover?service=sentence-plan
+      # dummy connection string to prevent app insights Java agent errors in e2e tests.
+      APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=00000000-0000-0000-0000-000000000000"
+
+  api:
+    environment:
+      # dummy connection string to prevent app insights Java agent errors in e2e tests.
+      APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=00000000-0000-0000-0000-000000000000"
 
   wiremock:
     environment:
