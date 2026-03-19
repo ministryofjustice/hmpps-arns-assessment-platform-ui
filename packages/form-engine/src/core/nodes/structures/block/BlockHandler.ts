@@ -22,78 +22,43 @@ import { evaluatePropertyValueSync } from '@form-engine/core/utils/thunkEvaluato
  * Asynchronous when any nested AST node is async.
  */
 export default class BlockHandler implements ThunkHandler {
-  isAsync = true
+  isAsync = false
+
+  private propertiesWithNodes: ReadonlySet<string> | undefined
 
   constructor(
     public readonly nodeId: NodeId,
     private readonly node: BlockASTNode,
   ) {}
 
+  private static readonly SKIP_PROPS = new Set(['formatters', 'validate', 'dependent'])
+
   computeIsAsync(deps: MetadataComputationDependencies): void {
-    const properties = this.node.properties as Record<string, unknown>
+    const propertiesWithNodes = new Set<string>()
+    let hasAsync = false
 
-    // eslint-disable-next-line no-restricted-syntax -- for...in avoids Object.keys() allocation in this hot path
-    for (const key in properties) {
-      if (!Object.prototype.hasOwnProperty.call(properties, key)) {
-        continue // eslint-disable-line no-continue
-      }
+    deps.astNodeTree.getChildren(this.nodeId).forEach(childId => {
+      const property = deps.metadataRegistry.get<string>(childId, 'attachedToParentProperty')
 
-      const isRelevant = key !== 'formatters' && key !== 'validate' && key !== 'dependent'
-
-      if (!isRelevant) {
-        continue // eslint-disable-line no-continue
-      }
-
-      if (this.containsAsyncNodes(properties[key], deps)) {
-        this.isAsync = true
+      if (!property) {
         return
       }
-    }
 
-    this.isAsync = false
-  }
+      propertiesWithNodes.add(property)
 
-  /**
-   * Recursively check if a value contains any async AST nodes
-   */
-  private containsAsyncNodes(root: unknown, deps: MetadataComputationDependencies): boolean {
-    const stack: unknown[] = [root]
-
-    while (stack.length > 0) {
-      const value = stack.pop()
-
-      if (value === null || value === undefined) {
-        continue // eslint-disable-line no-continue
+      if (hasAsync || BlockHandler.SKIP_PROPS.has(property)) {
+        return
       }
 
-      if (isASTNode(value)) {
-        const handler = deps.thunkHandlerRegistry.get(value.id)
+      const handler = deps.thunkHandlerRegistry.get(childId)
 
-        if (handler?.isAsync ?? true) {
-          return true
-        }
-
-        continue // eslint-disable-line no-continue
+      if (handler?.isAsync ?? true) {
+        hasAsync = true
       }
+    })
 
-      if (Array.isArray(value)) {
-        value.forEach(item => stack.push(item))
-        continue // eslint-disable-line no-continue
-      }
-
-      if (typeof value === 'object') {
-        const obj = value as Record<string, unknown>
-
-        // eslint-disable-next-line no-restricted-syntax -- for...in avoids Object.values() allocation in this hot path
-        for (const key in obj) {
-          if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            stack.push(obj[key])
-          }
-        }
-      }
-    }
-
-    return false
+    this.isAsync = hasAsync
+    this.propertiesWithNodes = propertiesWithNodes
   }
 
   evaluateSync(context: ThunkEvaluationContext, invoker: ThunkInvocationAdapter): HandlerResult {
@@ -140,8 +105,7 @@ export default class BlockHandler implements ThunkHandler {
     const result: Record<string, unknown> = {}
 
     Object.entries(properties).forEach(([key, value]) => {
-      // Skip formatters - they are applied during submission, not rendering
-      if (key === 'formatters') {
+      if (key === 'formatters' || (this.propertiesWithNodes && !this.propertiesWithNodes.has(key))) {
         result[key] = value
         return
       }
@@ -164,8 +128,7 @@ export default class BlockHandler implements ThunkHandler {
 
     await Promise.all(
       Object.entries(properties).map(async ([key, value]) => {
-        // Skip formatters - they are applied during submission, not rendering
-        if (key === 'formatters') {
+        if (key === 'formatters' || (this.propertiesWithNodes && !this.propertiesWithNodes.has(key))) {
           result[key] = value
           return
         }
