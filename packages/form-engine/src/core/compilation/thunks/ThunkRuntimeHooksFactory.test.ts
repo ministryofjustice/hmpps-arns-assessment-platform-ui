@@ -238,4 +238,131 @@ describe('ThunkRuntimeHooksFactory', () => {
       expect(isTemplateNode(outerIterateNode.properties.iterator.yieldTemplate)).toBe(true)
     })
   })
+
+  describe('registerRuntimeNodesBatch() Phase 8 optimization', () => {
+    function createMockPendingOverlay() {
+      const mockHandler = { computeIsAsync: jest.fn(), isAsync: false, nodeId: 'runtime_ast:1' }
+      const pendingNodeIds: string[] = []
+
+      return {
+        overlay: {
+          nodeIdGenerator: { next: jest.fn().mockReturnValue('runtime_ast:1') },
+          nodeFactory: { transformValue: jest.fn() },
+          nodeRegistry: {
+            get: jest.fn().mockReturnValue({ id: 'runtime_ast:1', type: ASTNodeType.EXPRESSION }),
+            register: jest.fn(),
+            findByType: jest.fn().mockReturnValue([]),
+            getAllEntries: jest.fn().mockReturnValue(new Map()),
+          },
+          metadataRegistry: {
+            set: jest.fn(),
+            get: jest.fn(),
+          },
+          thunkHandlerRegistry: {
+            register: jest.fn(),
+            get: jest.fn().mockReturnValue(mockHandler),
+          },
+          dependencyGraph: {
+            addNode: jest.fn(),
+            addEdge: jest.fn(),
+            topologicalSortPending: jest
+              .fn()
+              .mockReturnValue({ sort: ['runtime_ast:1'], cycles: [], hasCycles: false }),
+          },
+        },
+        flush: jest.fn(),
+        getPendingNodeIds: jest.fn().mockImplementation(() => {
+          if (pendingNodeIds.length === 0) {
+            pendingNodeIds.push('runtime_ast:1')
+          }
+
+          return [...pendingNodeIds]
+        }),
+        mockHandler,
+      }
+    }
+
+    function createFactoryWithMetadata(isTemplateAsync: boolean | undefined) {
+      const mockBuilder = createMockRuntimeOverlayBuilder()
+      const pending = createMockPendingOverlay()
+
+      const compilationDeps = {
+        nodeIdGenerator: { next: jest.fn().mockReturnValue('runtime_ast:1') },
+        metadataRegistry: {
+          get: jest.fn().mockImplementation((_nodeId: string, key: string, defaultValue: unknown) => {
+            if (key === 'isTemplateAsync') {
+              return isTemplateAsync ?? defaultValue
+            }
+
+            return defaultValue
+          }),
+        },
+        createOverlay: jest.fn().mockReturnValue({
+          deps: pending.overlay,
+          flush: pending.flush,
+          getPendingNodeIds: pending.getPendingNodeIds,
+        }),
+      } as unknown as CompilationDependencies
+
+      const compiler = {
+        compileASTNode: jest.fn().mockReturnValue(pending.mockHandler),
+      } as unknown as ThunkCompilerFactory
+
+      const cacheManager = {
+        invalidateCascading: jest.fn(),
+      } as unknown as ThunkCacheManager
+
+      const f = new ThunkRuntimeHooksFactory(
+        compilationDeps,
+        compiler,
+        cacheManager,
+        mockBuilder,
+        new FunctionRegistry(),
+      )
+
+      return { factory: f, pending }
+    }
+
+    it('should skip computeIsAsync pass when isTemplateAsync is false', () => {
+      // Arrange
+      const { factory: f, pending } = createFactoryWithMetadata(false)
+      const hooks = f.create('compile_ast:1' as AstNodeId)
+      const node = { id: 'runtime_ast:1', type: ASTNodeType.EXPRESSION }
+
+      // Act
+      hooks.registerRuntimeNodesBatch([node as any], 'yield')
+
+      // Assert
+      expect(pending.overlay.dependencyGraph.topologicalSortPending).not.toHaveBeenCalled()
+      expect(pending.mockHandler.computeIsAsync).not.toHaveBeenCalled()
+    })
+
+    it('should run computeIsAsync pass when isTemplateAsync is true', () => {
+      // Arrange
+      const { factory: f, pending } = createFactoryWithMetadata(true)
+      const hooks = f.create('compile_ast:1' as AstNodeId)
+      const node = { id: 'runtime_ast:1', type: ASTNodeType.EXPRESSION }
+
+      // Act
+      hooks.registerRuntimeNodesBatch([node as any], 'yield')
+
+      // Assert
+      expect(pending.overlay.dependencyGraph.topologicalSortPending).toHaveBeenCalled()
+      expect(pending.mockHandler.computeIsAsync).toHaveBeenCalled()
+    })
+
+    it('should run computeIsAsync pass when isTemplateAsync metadata is not set', () => {
+      // Arrange
+      const { factory: f, pending } = createFactoryWithMetadata(undefined)
+      const hooks = f.create('compile_ast:1' as AstNodeId)
+      const node = { id: 'runtime_ast:1', type: ASTNodeType.EXPRESSION }
+
+      // Act
+      hooks.registerRuntimeNodesBatch([node as any], 'yield')
+
+      // Assert
+      expect(pending.overlay.dependencyGraph.topologicalSortPending).toHaveBeenCalled()
+      expect(pending.mockHandler.computeIsAsync).toHaveBeenCalled()
+    })
+  })
 })

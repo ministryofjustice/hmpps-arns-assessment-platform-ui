@@ -101,25 +101,35 @@ export default class ThunkRuntimeHooksFactory {
       })
 
       // Phase 8: Compute isAsync metadata for hybrid handlers
-      const metadataDeps: MetadataComputationDependencies = {
-        thunkHandlerRegistry: pendingOverlay.thunkHandlerRegistry,
-        functionRegistry: this.functionRegistry,
-        nodeRegistry: pendingOverlay.nodeRegistry,
-        metadataRegistry: pendingOverlay.metadataRegistry,
+      // Skip when the parent iterate handler's template is known-sync at compile time,
+      // since all handlers default to isAsync = false and no async source exists in the template
+      const isTemplateAsync = this.compilationDependencies.metadataRegistry.get<boolean>(
+        currentNodeId,
+        'isTemplateAsync',
+        true,
+      )
+
+      if (isTemplateAsync) {
+        const metadataDeps: MetadataComputationDependencies = {
+          thunkHandlerRegistry: pendingOverlay.thunkHandlerRegistry,
+          functionRegistry: this.functionRegistry,
+          nodeRegistry: pendingOverlay.nodeRegistry,
+          metadataRegistry: pendingOverlay.metadataRegistry,
+        }
+
+        // Use topological sort to compute in dependency order (leaves → roots)
+        // This ensures children compute before parents, so parents see accurate isAsync values
+        const sortResult = pendingOverlay.dependencyGraph.topologicalSortPending()
+
+        sortResult.sort
+          .forEach(nodeId => {
+            const handler = pendingOverlay.thunkHandlerRegistry.get(nodeId)
+
+            if (handler) {
+              handler.computeIsAsync(metadataDeps)
+            }
+          })
       }
-
-      // Use topological sort to compute in dependency order (leaves → roots)
-      // This ensures children compute before parents, so parents see accurate isAsync values
-      const sortResult = pendingOverlay.dependencyGraph.topologicalSortPending()
-
-      sortResult.sort
-        .forEach(nodeId => {
-          const handler = pendingOverlay.thunkHandlerRegistry.get(nodeId)
-
-          if (handler) {
-            handler.computeIsAsync(metadataDeps)
-          }
-        })
 
       // Phase 9: Merge pending → main
       flush()
