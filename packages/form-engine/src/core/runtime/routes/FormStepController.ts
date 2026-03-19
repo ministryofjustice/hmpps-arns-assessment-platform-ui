@@ -1,42 +1,28 @@
 import createHttpError from 'http-errors'
 import { FormInstanceDependencies } from '@form-engine/core/types/engine.type'
 import { CompiledForm } from '@form-engine/core/compilation/FormCompilationFactory'
-import ThunkEvaluator, { EvaluationResult } from '@form-engine/core/compilation/thunks/ThunkEvaluator'
+import ThunkEvaluator from '@form-engine/core/compilation/thunks/ThunkEvaluator'
 import { ThunkInvocationAdapter } from '@form-engine/core/compilation/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import { SubmitTransitionASTNode } from '@form-engine/core/types/expressions.type'
-import RenderContextFactory from '@form-engine/core/runtime/rendering/RenderContextFactory'
 import { JourneyMetadata } from '@form-engine/core/runtime/rendering/types'
+import RenderContextFactory from '@form-engine/core/runtime/rendering/RenderContextFactory'
 import TransitionExecutor from '@form-engine/core/runtime/executors/TransitionExecutor'
 import ContextPreparer from '@form-engine/core/runtime/executors/ContextPreparer'
 import ValidationExecutor from '@form-engine/core/runtime/executors/ValidationExecutor'
 import AnswerPreparer from '@form-engine/core/runtime/executors/AnswerPreparer'
+import MetadataExecutor from '@form-engine/core/runtime/executors/MetadataExecutor'
+import RenderExecutor from '@form-engine/core/runtime/executors/RenderExecutor'
 import { StepController } from './types'
 
 /**
- * FormStepController - Handles the full request lifecycle for form steps
+ * Handles the full request lifecycle for form steps.
  *
- * Manages GET (access) and POST (submission) requests, including:
- * - Lifecycle transitions (onAccess, onAction, onSubmission)
- * - AST evaluation
- * - Response rendering or redirecting
+ * GET: access lifecycle → evaluate → render
+ * POST: access lifecycle → action transitions → validation → submit transitions → render/redirect
  *
- * ## GET Request Flow
- * For each ancestor (outer journey → inner journey → step):
- * 1. Run onAccess transitions (data loading, access control, analytics)
- * 2. If any transition halts with redirect → redirect
- * 3. If any transition halts with error → return HTTP error
- * After all ancestors pass:
- * 4. Evaluate AST
- * 5. Render response
- *
- * ## POST Request Flow
- * 1. Run full access lifecycle (same as GET)
- * 2. Run step's onAction transitions (in-page actions like postcode lookup)
- * 3. Run step's onSubmission transitions (validation, navigation, error handling)
- * 4. If submission has error → return HTTP error
- * 5. If submission has redirect → redirect
- * 6. Otherwise → evaluate AST and render (with validation errors if applicable)
+ * Access lifecycle runs onAccess transitions for each ancestor (outer → inner).
+ * Any transition can halt with a redirect or error.
  */
 export default class FormStepController<TRequest, TResponse> implements StepController<TRequest, TResponse> {
   private readonly contextPreparer: ContextPreparer
@@ -46,6 +32,10 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
   private readonly validationExecutor: ValidationExecutor
 
   private readonly answerPreparer: AnswerPreparer
+
+  private readonly metadataExecutor: MetadataExecutor
+
+  private readonly renderExecutor: RenderExecutor
 
   constructor(
     private readonly compiledForm: CompiledForm[number],
@@ -57,24 +47,18 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
     this.transitionExecutor = new TransitionExecutor(this.dependencies.logger)
     this.validationExecutor = new ValidationExecutor()
     this.answerPreparer = new AnswerPreparer()
+    this.metadataExecutor = new MetadataExecutor()
+    this.renderExecutor = new RenderExecutor()
   }
 
-  /** Handle GET request: run access lifecycle, evaluate AST, render response. */
   async get(req: TRequest, res: TResponse): Promise<void> {
-    const request = this.dependencies.frameworkAdapter.toStepRequest(req)
-    const response = this.dependencies.frameworkAdapter.toStepResponse(res)
+    const { evaluator, context } = this.prepareRequest(req, res)
+    const plan = this.compiledForm.runtimePlan
 
-    const evaluator = ThunkEvaluator.withRuntimeOverlay(this.compiledForm.artefact, this.dependencies)
-    const context = this.contextPreparer.prepare(this.compiledForm.runtimePlan, evaluator, request, response)
-
-    const accessResult = await this.transitionExecutor.executeAccessLifecycle(
-      this.compiledForm.runtimePlan,
-      evaluator,
-      context,
-    )
+    const accessResult = await this.transitionExecutor.executeAccessLifecycle(plan, evaluator, context)
 
     if (accessResult.outcome === 'redirect') {
-      return this.redirect(res, req, accessResult.redirect, context)
+      return this.redirect(res, req, accessResult.redirect)
     }
 
     if (accessResult.outcome === 'error') {
@@ -83,29 +67,19 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
 
     // TODO: Add 'reachability' check
 
-    await this.answerPreparer.prepare(this.compiledForm.runtimePlan, evaluator, context)
+    await this.answerPreparer.prepare(plan, evaluator, context)
 
-    const evaluationResult = await evaluator.evaluate(context)
-
-    return this.render(res, req, evaluationResult)
+    return this.render(res, req, evaluator, context)
   }
 
-  /** Handle POST request: run access lifecycle, action/submit transitions, render or redirect. */
   async post(req: TRequest, res: TResponse): Promise<void> {
-    const request = this.dependencies.frameworkAdapter.toStepRequest(req)
-    const response = this.dependencies.frameworkAdapter.toStepResponse(res)
+    const { evaluator, context } = this.prepareRequest(req, res)
+    const plan = this.compiledForm.runtimePlan
 
-    const evaluator = ThunkEvaluator.withRuntimeOverlay(this.compiledForm.artefact, this.dependencies)
-    const context = this.contextPreparer.prepare(this.compiledForm.runtimePlan, evaluator, request, response)
-
-    const accessResult = await this.transitionExecutor.executeAccessLifecycle(
-      this.compiledForm.runtimePlan,
-      evaluator,
-      context,
-    )
+    const accessResult = await this.transitionExecutor.executeAccessLifecycle(plan, evaluator, context)
 
     if (accessResult.outcome === 'redirect') {
-      return this.redirect(res, req, accessResult.redirect, context)
+      return this.redirect(res, req, accessResult.redirect)
     }
 
     if (accessResult.outcome === 'error') {
@@ -114,39 +88,37 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
 
     // TODO: Add 'reachability' check
 
-    await this.answerPreparer.prepare(this.compiledForm.runtimePlan, evaluator, context)
+    await this.answerPreparer.prepare(plan, evaluator, context)
+    await this.transitionExecutor.executeActionTransitions(plan, evaluator, context)
+    await this.evaluateValidationIfNeeded(evaluator, context)
 
-    await this.transitionExecutor.executeActionTransitions(this.compiledForm.runtimePlan, evaluator, context)
-
-    await this.evaluateValidationForSubmitTransitionsIfNeeded(evaluator, context)
-
-    const submitResult = await this.transitionExecutor.executeSubmitTransitions(
-      this.compiledForm.runtimePlan,
-      evaluator,
-      context,
-    )
+    const submitResult = await this.transitionExecutor.executeSubmitTransitions(plan, evaluator, context)
 
     if (submitResult.outcome === 'error') {
       throw createHttpError(submitResult.status!, submitResult.message || 'Submission error')
     }
 
     if (submitResult.outcome === 'redirect') {
-      return this.redirect(res, req, submitResult.redirect, context)
+      return this.redirect(res, req, submitResult.redirect)
     }
 
     if (submitResult.validated) {
-      const evaluationResult = await evaluator.evaluate(context)
-
-      return this.render(res, req, evaluationResult, { showValidationFailures: true })
+      return this.render(res, req, evaluator, context, { showValidationFailures: true })
     }
 
-    const evaluationResult = await evaluator.evaluate(context)
-
-    return this.render(res, req, evaluationResult)
+    return this.render(res, req, evaluator, context)
   }
 
-  /** Redirect to a URL, resolving relative paths against the current base URL. */
-  private redirect(res: TResponse, req: TRequest, redirect: string, _context: ThunkEvaluationContext): void {
+  private prepareRequest(req: TRequest, res: TResponse) {
+    const request = this.dependencies.frameworkAdapter.toStepRequest(req)
+    const response = this.dependencies.frameworkAdapter.toStepResponse(res)
+    const evaluator = ThunkEvaluator.withRuntimeOverlay(this.compiledForm.artefact, this.dependencies)
+    const context = this.contextPreparer.prepare(this.compiledForm.runtimePlan, evaluator, request, response)
+
+    return { evaluator, context }
+  }
+
+  private redirect(res: TResponse, req: TRequest, redirect: string): void {
     if (redirect.includes('://') || redirect.startsWith('/')) {
       return this.dependencies.frameworkAdapter.redirect(res, redirect)
     }
@@ -156,23 +128,50 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
     return this.dependencies.frameworkAdapter.redirect(res, `${baseUrl}/${redirect}`)
   }
 
-  /** Build render context from evaluation result and render the response. */
   private async render(
     res: TResponse,
     req: TRequest,
-    evaluationResult: EvaluationResult,
+    evaluator: ThunkEvaluator,
+    context: ThunkEvaluationContext,
     options: { showValidationFailures?: boolean } = {},
   ): Promise<void> {
-    const renderContext = RenderContextFactory.build(evaluationResult, this.compiledForm.runtimePlan.renderStepId, {
-      navigationMetadata: this.navigationMetadata,
-      currentStepPath: this.currentStepPath,
-      showValidationFailures: options.showValidationFailures,
-    })
+    const plan = this.compiledForm.runtimePlan
+
+    const [metadata, blocks] = await Promise.all([
+      this.metadataExecutor.execute(plan, evaluator, context),
+      this.renderExecutor.execute(plan, evaluator, context),
+    ])
+
+    const renderContext = RenderContextFactory.build(
+      {
+        step: metadata.step,
+        ancestors: metadata.ancestors,
+        blocks,
+        answers: context.global.answers,
+        data: context.global.data,
+        validationFailures: this.getStepValidationFailures(context),
+      },
+      {
+        navigationMetadata: this.navigationMetadata,
+        currentStepPath: this.currentStepPath,
+        showValidationFailures: options.showValidationFailures,
+      },
+    )
 
     return this.dependencies.frameworkAdapter.render(renderContext, req, res)
   }
 
-  private async evaluateValidationForSubmitTransitionsIfNeeded(
+  private getStepValidationFailures(context: ThunkEvaluationContext) {
+    const validation = context.global.validation
+
+    if (validation?.stepId === this.compiledForm.runtimePlan.stepId) {
+      return validation.failures
+    }
+
+    return []
+  }
+
+  private async evaluateValidationIfNeeded(
     invoker: ThunkInvocationAdapter,
     context: ThunkEvaluationContext,
   ): Promise<void> {
