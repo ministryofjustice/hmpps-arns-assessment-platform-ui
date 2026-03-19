@@ -90,6 +90,10 @@ export class SentencePlanBuilderInstance {
 
   private agreementStatus: AgreementStatus | PlanAgreementStatus | undefined
 
+  private backdateFrom?: Date
+
+  private backdateTo?: Date
+
   constructor(client: TestAapApiClient, assessmentBuilder: AssessmentBuilderInstance) {
     this.client = client
     this.assessmentBuilder = assessmentBuilder
@@ -116,10 +120,13 @@ export class SentencePlanBuilderInstance {
   }
 
   /**
-   * Backdates events and timeline items, distributing them evenly across the provided time period
+   * Backdates events and timeline items, distributing them evenly across the provided time period.
+   * Backdating is deferred until after all timeline events are emitted in save(),
+   * so that the aggregate table is still intact when lifecycle events are created.
    */
   withEventsBackdated(from: Date, to: Date): this {
-    this.assessmentBuilder.withEventsBackdated(from, to)
+    this.backdateFrom = from
+    this.backdateTo = to
 
     return this
   }
@@ -154,6 +161,10 @@ export class SentencePlanBuilderInstance {
 
   /**
    * Save the sentence plan to the backend.
+   *
+   * Order matters: timeline events must be emitted before backdating,
+   * because backdateEvents deletes the aggregate table which is needed
+   * for UpdateCollectionItemPropertiesCommand to succeed.
    */
   async save(): Promise<CreatedSentencePlan> {
     this.buildGoalsCollection()
@@ -163,6 +174,10 @@ export class SentencePlanBuilderInstance {
     const result = this.mapToCreatedSentencePlan(assessment)
 
     await this.emitGoalLifecycleTimelineEvents(assessment.uuid, result.goals)
+
+    if (this.backdateFrom && this.backdateTo) {
+      await this.client.backdateEvents(assessment.uuid, this.backdateFrom, this.backdateTo)
+    }
 
     return result
   }
