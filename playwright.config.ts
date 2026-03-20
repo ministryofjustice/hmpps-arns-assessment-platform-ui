@@ -90,7 +90,6 @@ export default defineConfig<PlaywrightExtendedConfig>({
 
   globalSetup: './integration_tests/specs/audit/globalSetup.ts',
 
-  /* Configure projects */
   projects: [
     {
       name: 'parallel',
@@ -99,7 +98,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
     {
       name: 'serial',
       grep: /@serial/,
-      dependencies: ['parallel'],
+      ...(!process.env.SHARD && { dependencies: ['parallel'] }),
       fullyParallel: false,
       workers: 1,
     },

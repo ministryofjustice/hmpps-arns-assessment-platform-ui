@@ -60,7 +60,19 @@ services:
       LOCALSTACK_URL: http://localstack:4566
       SHARD: ${SHARD:-}
     working_dir: /playwright
-    command: ["sh", "-c", "npx playwright test $${SHARD:+--shard=$$SHARD}"]
+    command:
+      - sh
+      - -c
+      - |
+        npx playwright test --project=parallel $${SHARD:+--shard=$$SHARD}
+        PARALLEL_EXIT=$$?
+        if [ -z "$$SHARD" ] || [ "$${SHARD%%/*}" = "1" ]; then
+          npx playwright test --project=serial
+          SERIAL_EXIT=$$?
+        else
+          SERIAL_EXIT=0
+        fi
+        [ $$PARALLEL_EXIT -eq 0 ] && [ $$SERIAL_EXIT -eq 0 ]
     volumes:
       - ../package.json:/playwright/package.json
       - ../package-lock.json:/playwright/package-lock.json
