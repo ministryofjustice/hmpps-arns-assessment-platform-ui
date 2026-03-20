@@ -38,7 +38,7 @@ jobs:
     needs: deploy_to_env
     steps:
       - name: Generate Token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         id: generate-token
         with:
           app-id: ${{ secrets.INTEGRATION_TESTS_TRIGGER_APP_ID }}
