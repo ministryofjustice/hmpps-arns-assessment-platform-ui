@@ -31,8 +31,8 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: ${{ inputs.node_version_file }}
-      - name: Install Playwright
-        run: npx playwright install
+      - name: Install Playwright (package only, no browsers)
+        run: PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install playwright
       - name: Download reports
         uses: actions/download-artifact@v7
         with:

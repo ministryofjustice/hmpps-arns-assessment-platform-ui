@@ -75,7 +75,7 @@ jobs:
         with:
           name: test_results-${{ inputs.shard }}
           path: |
-            test_results/playwright/
+            test_results/
 
       - name: Archive screenshots
         if: failure()
