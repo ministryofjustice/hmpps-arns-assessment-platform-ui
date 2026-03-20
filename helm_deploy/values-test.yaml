@@ -44,5 +44,6 @@ generic-service:
     accessibility-audit: 5.181.59.114/32
 
 generic-prometheus-alerts:
-  alertSeverity: hmpps-arns-alerts-nonprod
+  targetApplication: hmpps-arns-assessment-platform-ui
+  alertSeverity: hmpps-arns-assessment-platform-test
   businessHoursOnly: true
