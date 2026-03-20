@@ -58,8 +58,24 @@ services:
       CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-e2e
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
       LOCALSTACK_URL: http://localstack:4566
+      SHARD: ${SHARD:-}
     working_dir: /playwright
-    command: npx playwright test
+    command:
+      - sh
+      - -c
+      - |
+        npx playwright test --project=parallel $${SHARD:+--shard=$$SHARD}
+        PARALLEL_EXIT=$$?
+        if [ -z "$$SHARD" ] || [ "$${SHARD%%/*}" = "1" ]; then
+          cp -r test_results/blob-report test_results/blob-report-parallel 2>/dev/null || true
+          npx playwright test --project=serial
+          SERIAL_EXIT=$$?
+          cp test_results/blob-report-parallel/* test_results/blob-report/ 2>/dev/null || true
+          rm -rf test_results/blob-report-parallel
+        else
+          SERIAL_EXIT=0
+        fi
+        [ $$PARALLEL_EXIT -eq 0 ] && [ $$SERIAL_EXIT -eq 0 ]
     volumes:
       - ../package.json:/playwright/package.json
       - ../package-lock.json:/playwright/package-lock.json

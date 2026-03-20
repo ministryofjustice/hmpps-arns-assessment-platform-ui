@@ -36,16 +36,17 @@ export default defineConfig<PlaywrightExtendedConfig>({
   /* Maximum time test suite canm run for. (millis) */
   globalTimeout: 60 * 60 * 1000,
   fullyParallel: true,
-  workers: 6,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
+  workers: process.env.CI ? 3 : 6,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'test_results/playwright/report', open: process.env.CI ? 'never' : 'on-failure' }],
     ['junit', { outputFile: 'test_results/playwright/junit.xml' }],
+    ...(process.env.CI ? [['blob', { outputDir: 'test_results/blob-report' }] as const] : []),
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -89,7 +90,6 @@ export default defineConfig<PlaywrightExtendedConfig>({
 
   globalSetup: './integration_tests/specs/audit/globalSetup.ts',
 
-  /* Configure projects */
   projects: [
     {
       name: 'parallel',
@@ -98,7 +98,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
     {
       name: 'serial',
       grep: /@serial/,
-      dependencies: ['parallel'],
+      ...(!process.env.SHARD && { dependencies: ['parallel'] }),
       fullyParallel: false,
       workers: 1,
     },
