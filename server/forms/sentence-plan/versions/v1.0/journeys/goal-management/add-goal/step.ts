@@ -40,6 +40,7 @@ export const createGoalStep = step({
         SentencePlanEffects.setAreaDataFromUrlParam(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+        SentencePlanEffects.sendTelemetryEvent('CREATE_GOAL_START', true),
       ],
     }),
 
@@ -75,6 +76,7 @@ export const createGoalStep = step({
         effects: [
           SentencePlanEffects.createGoal(),
           SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+          SentencePlanEffects.sendTelemetryEvent('CREATE_GOAL_WITHOUT_STEPS_END', false),
           SentencePlanEffects.addNotification({
             type: 'success',
 
