@@ -12,10 +12,6 @@ on:
         required: false
         type: boolean
         default: false
-      shard:
-        description: 'Shard number (e.g. 1)'
-        required: true
-        type: number
       total_shards:
         description: 'Total number of shards (e.g. 4)'
         required: true
@@ -27,6 +23,10 @@ permissions:
 jobs:
   e2e_test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
     env:
       APP_VERSION: ${{ inputs.app_version }}
     steps:
@@ -65,15 +65,15 @@ jobs:
 
           wait
 
-      - name: Run Playwright tests (shard ${{ inputs.shard }}/${{ inputs.total_shards }})
+      - name: Run Playwright tests (shard ${{ matrix.shard }}/${{ inputs.total_shards }})
         run: |
-          make e2e-ci SHARD=${{ inputs.shard }}/${{ inputs.total_shards }}
+          make e2e-ci SHARD=${{ matrix.shard }}/${{ inputs.total_shards }}
 
       - name: Upload test results
         if: '!cancelled()'
         uses: actions/upload-artifact@v7
         with:
-          name: test_results-${{ inputs.shard }}
+          name: test_results-${{ matrix.shard }}
           path: |
             test_results/
 
@@ -81,7 +81,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: screenshots-${{ inputs.shard }}
+          name: screenshots-${{ matrix.shard }}
           path: |
             test_results/playwright/test-output/**/*
 
@@ -93,6 +93,6 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v6
         with:
-          name: e2e_docker_logs-${{ inputs.shard }}
+          name: e2e_docker_logs-${{ matrix.shard }}
           path: |
             ${{ runner.temp }}/docker-logs

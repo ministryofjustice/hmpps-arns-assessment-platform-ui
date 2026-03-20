@@ -25,6 +25,7 @@ on:
 
 permissions:
   contents: read
+  checks: write
 
 jobs:
   e2e_results:
@@ -50,6 +51,7 @@ jobs:
         run: npx playwright merge-reports --reporter=html ./all-shard-reports/blob-report
 
       - name: Generate test summary
+        id: summary
         run: |
           npx playwright merge-reports --reporter=json ./all-shard-reports/blob-report > results.json
           node <<'SCRIPT'
@@ -105,9 +107,22 @@ jobs:
           }
 
           const icon = results.failed.length > 0 ? '❌' : '✅';
-          const summary = `## ${icon} E2E Test Results\n\n\`\`\`\n${lines.join('\n')}\n\`\`\`\n\nDownload the **playwright-report** artifact for the full HTML report.\n`;
+          const plainText = lines.join('\n');
+          const summary = `## ${icon} E2E Test Results\n\n\`\`\`\n${plainText}\n\`\`\`\n\nDownload the **playwright-report** artifact for the full HTML report.\n`;
+
+          console.log(`\n${icon} E2E Test Results\n`);
+          console.log(plainText);
+          console.log();
 
           fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);
+
+          const output = process.env.GITHUB_OUTPUT;
+          fs.appendFileSync(output, `passed=${results.passed.length}\n`);
+          fs.appendFileSync(output, `failed=${results.failed.length}\n`);
+          fs.appendFileSync(output, `flaky=${results.flaky.length}\n`);
+          fs.appendFileSync(output, `skipped=${results.skipped.length}\n`);
+          fs.appendFileSync(output, `conclusion=${results.failed.length > 0 ? 'failure' : 'success'}\n`);
+          fs.appendFileSync(output, `check_summary<<EOF\n${plainText}\nEOF\n`);
           SCRIPT
 
       - name: Upload HTML report
@@ -117,6 +132,20 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: ${{ inputs.retention_days }}
+
+      - name: Publish check run
+        if: '!cancelled()'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/${{ github.repository }}/check-runs \
+            -X POST \
+            -f name="E2E Test Results" \
+            -f head_sha="${{ github.event.pull_request.head.sha || github.sha }}" \
+            -f status="completed" \
+            -f conclusion="${{ steps.summary.outputs.conclusion }}" \
+            -f "output[title]=${{ steps.summary.outputs.passed }} passed, ${{ steps.summary.outputs.failed }} failed, ${{ steps.summary.outputs.flaky }} flaky, ${{ steps.summary.outputs.skipped }} skipped" \
+            -f "output[summary]=${{ steps.summary.outputs.check_summary }}"
 
       - name: Fail if tests failed
         if: ${{ inputs.test_result != 'success' }}

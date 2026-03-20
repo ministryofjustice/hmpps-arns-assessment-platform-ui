@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
   packages: write
+  checks: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -51,15 +52,10 @@ jobs:
 
   e2e_test:
     needs: [ build_docker ]
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4]
     uses: ./.github/workflows/e2e_test.yml
     with:
       app_version: ${{ needs.build_docker.outputs.app_version }}
       docker_multiplatform: true
-      shard: ${{ matrix.shard }}
       total_shards: 4
 
   e2e_results:
