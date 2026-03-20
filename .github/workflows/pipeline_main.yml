@@ -51,6 +51,7 @@ jobs:
       upload_image_artifact: true
 
   e2e_test:
+    name: E2E tests
     needs: [ build_docker ]
     uses: ./.github/workflows/e2e_test.yml
     with:
@@ -58,21 +59,13 @@ jobs:
       docker_multiplatform: true
       total_shards: 4
 
-  e2e_results:
-    name: E2E test results
-    if: ${{ !cancelled() }}
-    needs: [e2e_test]
-    uses: ./.github/workflows/e2e_results.yml
-    with:
-      test_result: ${{ needs.e2e_test.result }}
-
   publish_docker:
     name: Publish docker image
     needs:
       - helm_lint
       - node_build
       - node_unit_tests
-      - e2e_results
+      - e2e_test
       - build_docker
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_push.yml@v2
     with:

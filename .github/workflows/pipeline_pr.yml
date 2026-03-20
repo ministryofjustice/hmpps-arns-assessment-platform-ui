@@ -50,18 +50,11 @@ jobs:
       image_artifact_retention_days: 1
 
   e2e_test:
+    name: E2E tests
     needs: [build_docker]
     uses: ./.github/workflows/e2e_test.yml
     with:
       app_version: ${{ needs.build_docker.outputs.app_version }}
       docker_multiplatform: false
       total_shards: 4
-
-  e2e_results:
-    name: E2E test results
-    if: ${{ !cancelled() }}
-    needs: [e2e_test]
-    uses: ./.github/workflows/e2e_results.yml
-    with:
-      test_result: ${{ needs.e2e_test.result }}
 
