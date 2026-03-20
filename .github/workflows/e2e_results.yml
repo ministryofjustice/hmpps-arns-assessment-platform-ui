@@ -1,0 +1,123 @@
+name: E2E test results
+
+on:
+  workflow_call:
+    inputs:
+      artifact_pattern:
+        description: 'Pattern to match test result artifacts'
+        required: false
+        type: string
+        default: 'test_results-*'
+      retention_days:
+        description: 'Number of days to retain the merged report'
+        required: false
+        type: number
+        default: 14
+      node_version_file:
+        description: "Passed to setup-node action to specify where to source the version of node from"
+        required: false
+        type: string
+        default: ".nvmrc"
+      test_result:
+        description: 'Result of the e2e test job (success, failure, cancelled, skipped)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  e2e_results:
+    name: Results
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: ${{ inputs.node_version_file }}
+
+      - name: Install Playwright (no browsers)
+        run: PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install playwright
+
+      - name: Download shard reports
+        uses: actions/download-artifact@v7
+        with:
+          pattern: ${{ inputs.artifact_pattern }}
+          path: all-shard-reports
+          merge-multiple: true
+
+      - name: Merge into HTML report
+        run: npx playwright merge-reports --reporter=html ./all-shard-reports/blob-report
+
+      - name: Generate test summary
+        run: |
+          npx playwright merge-reports --reporter=json ./all-shard-reports/blob-report > results.json
+          node <<'SCRIPT'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('results.json', 'utf8'));
+
+          const results = { passed: [], failed: [], flaky: [], skipped: [] };
+
+          function collect(suites, titlePath) {
+            for (const suite of suites) {
+              const path = suite.title ? [...titlePath, suite.title] : titlePath;
+              if (suite.suites) collect(suite.suites, path);
+              for (const spec of (suite.specs || [])) {
+                for (const test of spec.tests) {
+                  const location = `${spec.file}:${spec.line}:${spec.column}`;
+                  const title = [`[${test.projectName}]`, location, ...path, spec.title].join(' › ');
+                  const lastResult = test.results?.[test.results.length - 1];
+                  const duration = lastResult?.duration ?? 0;
+
+                  switch (test.status) {
+                    case 'expected': results.passed.push({ title, duration }); break;
+                    case 'unexpected': results.failed.push({ title, duration }); break;
+                    case 'flaky': results.flaky.push({ title, duration }); break;
+                    case 'skipped': results.skipped.push({ title, duration }); break;
+                  }
+                }
+              }
+            }
+          }
+
+          collect(data.suites, []);
+
+          function formatDuration(ms) {
+            return ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(1)}s`;
+          }
+
+          const lines = [];
+
+          if (results.passed.length) {
+            lines.push(`  ${results.passed.length} passed`);
+          }
+          if (results.flaky.length) {
+            lines.push(`  ${results.flaky.length} flaky`);
+            results.flaky.forEach(t => lines.push(`    ${t.title}`));
+          }
+          if (results.failed.length) {
+            lines.push(`  ${results.failed.length} failed`);
+            results.failed.forEach(t => lines.push(`    ${t.title} (${formatDuration(t.duration)})`));
+          }
+          if (results.skipped.length) {
+            lines.push(`  ${results.skipped.length} skipped`);
+            results.skipped.forEach(t => lines.push(`    ${t.title}`));
+          }
+
+          const icon = results.failed.length > 0 ? '❌' : '✅';
+          const summary = `## ${icon} E2E Test Results\n\n\`\`\`\n${lines.join('\n')}\n\`\`\`\n\nDownload the **playwright-report** artifact for the full HTML report.\n`;
+
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);
+          SCRIPT
+
+      - name: Upload HTML report
+        if: '!cancelled()'
+        uses: actions/upload-artifact@v6
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: ${{ inputs.retention_days }}
+
+      - name: Fail if tests failed
+        if: ${{ inputs.test_result != 'success' }}
+        run: exit 1
