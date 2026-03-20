@@ -67,8 +67,11 @@ services:
         npx playwright test --project=parallel $${SHARD:+--shard=$$SHARD}
         PARALLEL_EXIT=$$?
         if [ -z "$$SHARD" ] || [ "$${SHARD%%/*}" = "1" ]; then
+          cp -r test_results/blob-report test_results/blob-report-parallel 2>/dev/null || true
           npx playwright test --project=serial
           SERIAL_EXIT=$$?
+          cp test_results/blob-report-parallel/* test_results/blob-report/ 2>/dev/null || true
+          rm -rf test_results/blob-report-parallel
         else
           SERIAL_EXIT=0
         fi
