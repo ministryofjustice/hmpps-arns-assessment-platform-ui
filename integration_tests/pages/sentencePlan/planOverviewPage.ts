@@ -22,11 +22,17 @@ export default class PlanOverviewPage extends AbstractPage {
 
   readonly agreePlanButton: Locator
 
+  readonly updateAgreementLink: Locator
+
   readonly header: Locator
 
   readonly footer: Locator
 
   readonly banner: Locator
+
+  readonly notificationBanner: Locator
+
+  readonly notificationBannerText: Locator
 
   readonly primaryNavigation: Locator
 
@@ -40,11 +46,14 @@ export default class PlanOverviewPage extends AbstractPage {
     this.futureGoalsTab = page.getByRole('link', { name: /Future goals/i })
     this.removedGoalsTab = page.getByRole('link', { name: /Removed goals/i })
     this.noGoalsMessage = page.getByText(/does not have any goals/i)
+    this.updateAgreementLink = page.getByRole('link', { name: /update .+'s agreement/i })
     this.noFutureGoalsMessage = page.getByText(/does not have any future goals/i)
     this.agreePlanButton = page.getByRole('button', { name: /agree plan/i })
     this.header = page.getByTestId('plan-header')
     this.footer = page.locator('footer')
     this.banner = page.getByTestId('hmpps-header')
+    this.notificationBanner = page.locator('[data-module="moj-alert"]')
+    this.notificationBannerText = page.locator('.moj-alert__content')
     this.primaryNavigation = page.getByLabel('Primary navigation')
   }
 

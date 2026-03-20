@@ -2,9 +2,8 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { trace } from '@ministryofjustice/hmpps-azure-telemetry'
 import { ValidationResult } from '@form-engine/core/nodes/expressions/validation/ValidationHandler'
-import { formatDate, initialiseName } from './utils'
+import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
 import logger from '../../logger'
 
@@ -16,6 +15,11 @@ export default function nunjucksSetup(app?: express.Express) {
     app.locals.applicationName = 'Assess and plan'
     app.locals.environmentName = config.environmentName
     app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
+    app.locals.feedbackFormUrl = config.feedbackFormUrl
+    app.locals.serviceNowFormUrl = config.serviceNowFormUrl
+    app.locals.oasysUrl = config.oasysUrl
+    app.locals.mpopUrl = config.mpopUrl
+    app.locals.smartSurveyPopupCode = config.smartSurveyPopupCode
 
     // Session timeout modal configuration (in seconds)
     app.locals.sessionTimeoutConfig = {
@@ -63,18 +67,12 @@ export default function nunjucksSetup(app?: express.Express) {
     },
   )
 
+  njkEnv.addFilter('possessive', possessive)
+
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('json', (obj, spaces = 2) => JSON.stringify(obj, null, spaces))
   njkEnv.addFilter('formatSimpleDate', date => formatDate(date, 'simple'))
-
-  // Global function to get the current request's trace ID for support purposes
-  njkEnv.addGlobal('getRequestId', () => {
-    const span = trace.getActiveSpan()
-    const traceId = span?.spanContext().traceId
-
-    return traceId ?? 'unavailable'
-  })
 
   // Map navigation data structure (path → url) for nav-list-item macro
   interface NavItem {

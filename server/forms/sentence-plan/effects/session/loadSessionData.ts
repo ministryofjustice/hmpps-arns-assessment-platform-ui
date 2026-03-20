@@ -31,4 +31,9 @@ export const loadSessionData = () => (context: SentencePlanContext) => {
   if (session.accessDetails) {
     context.setData('accessDetails', session.accessDetails)
   }
+
+  // Expose oasysAssessmentPk for the report-a-problem support widget
+  if (session.handoverContext?.sentencePlanContext?.oasysAssessmentPk) {
+    context.setData('oasysAssessmentPk', session.handoverContext.sentencePlanContext.oasysAssessmentPk)
+  }
 }

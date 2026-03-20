@@ -10,8 +10,9 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, readdNoteSection, canStartNowSection, buttonGroup } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
 
 /**
  * Confirm re-add goal page
@@ -38,20 +39,14 @@ export const confirmAddGoalStep = step({
   onAccess: [
     // Load data first (no `when` = always runs)
     accessTransition({
-      effects: [SentencePlanEffects.setActiveGoalContext()],
+      effects: [
+        SentencePlanEffects.setActiveGoalContext(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_RE_ADD_GOAL),
+      ],
     }),
     // Only allow re-adding goals if plan is agreed
-    accessTransition({
-      when: Data('latestAgreementStatus').not.match(
-        Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
-      ),
-      next: [redirect({ goto: '../../plan/overview' })],
-    }),
-    // Redirect if goal not found
-    accessTransition({
-      when: Data('activeGoal').not.match(Condition.IsRequired()),
-      next: [redirect({ goto: '../../plan/overview' })],
-    }),
+    redirectIfNotPostAgreement('../../plan/overview'),
+    redirectIfGoalNotFound('../../plan/overview'),
     // Only allow re-adding REMOVED goals (not achieved)
     accessTransition({
       when: Data('activeGoal.status').not.match(Condition.Equals('REMOVED')),
@@ -72,6 +67,7 @@ export const confirmAddGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.readdGoalToPlan(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_RE_ADD_GOAL),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You added a goal back into %1 plan', CaseData.ForenamePossessive),

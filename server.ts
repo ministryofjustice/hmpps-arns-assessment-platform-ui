@@ -17,7 +17,7 @@ if (clusterEnabled && cluster.isPrimary) {
   })
 } else {
   // Single process mode, or we're a cluster worker
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, global-require
+  // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
   const app = require('./server/index').default
 
   app.listen(app.get('port'), () => {

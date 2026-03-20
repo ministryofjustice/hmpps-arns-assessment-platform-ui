@@ -58,6 +58,7 @@ test.describe('Change goal journey', () => {
     test('can update goal title and verify change on plan overview', async ({
       page,
       createSession,
+      makeAxeBuilder,
       sentencePlanBuilder,
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
@@ -71,12 +72,23 @@ test.describe('Change goal journey', () => {
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
+      // Accessibility
+      const accessibilityScanResults = await makeAxeBuilder()
+        .include('[data-qa="main-form"]')
+        // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
+        .disableRules(['aria-allowed-attr'])
+        .analyze()
+      expect(accessibilityScanResults.violations).toEqual([])
+
       // Update the goal title
       await changeGoalPage.setGoalTitle('Updated test goal title')
       await changeGoalPage.saveGoal()
 
       // Check user is redirected to plan overview with current goals
       await expect(page).toHaveURL(/plan\/overview.*type=current/)
+
+      // Verify success alert is shown on plan overview
+      await expect(page.locator('.moj-alert--success')).toContainText(/You changed a goal in .* plan/i)
 
       // Verify the updated title appears on plan overview
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)

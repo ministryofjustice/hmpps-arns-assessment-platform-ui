@@ -1,10 +1,12 @@
-import { Data, Format, Item, when } from '@form-engine/form/builders'
+import { Data, Format, Item, or, when } from '@form-engine/form/builders'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { CaseData } from '../../../../constants'
+
+const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
 export const subtitleText = HtmlBlock({
   content: '<p class="govuk-body">View all updates and changes made to this plan.</p>',
@@ -68,56 +70,112 @@ const agreementEntryContent = Format(
   when(Item().path('detailsNo').match(Condition.IsRequired()))
     .then(
       when(Item().path('notes').match(Condition.IsRequired()))
-        .then(Format('<p class="govuk-body">%1<br>%2</p>', Item().path('detailsNo'), Item().path('notes')))
-        .else(Format('<p class="govuk-body">%1</p>', Item().path('detailsNo'))),
+        .then(
+          Format(
+            '<p class="govuk-body">%1<br>%2</p>',
+            Item().path('detailsNo').pipe(Transformer.String.EscapeHtml()),
+            Item().path('notes').pipe(Transformer.String.EscapeHtml()),
+          ),
+        )
+        .else(Format('<p class="govuk-body">%1</p>', Item().path('detailsNo').pipe(Transformer.String.EscapeHtml()))),
     )
     .else(
       when(Item().path('detailsCouldNotAnswer').match(Condition.IsRequired()))
         .then(
           when(Item().path('notes').match(Condition.IsRequired()))
             .then(
-              Format('<p class="govuk-body">%1<br>%2</p>', Item().path('detailsCouldNotAnswer'), Item().path('notes')),
+              Format(
+                '<p class="govuk-body">%1<br>%2</p>',
+                Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
+                Item().path('notes').pipe(Transformer.String.EscapeHtml()),
+              ),
             )
-            .else(Format('<p class="govuk-body">%1</p>', Item().path('detailsCouldNotAnswer'))),
+            .else(
+              Format(
+                '<p class="govuk-body">%1</p>',
+                Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
+              ),
+            ),
         )
         .else(
           when(Item().path('notes').match(Condition.IsRequired()))
-            .then(Format('<p class="govuk-body">%1</p>', Item().path('notes')))
+            .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
             .else(''),
         ),
     ),
 )
 
 /**
+ * Renders a newly created goal history entry.
+ * Shows: heading (bold), goal title (bold).
+ * For READ_WRITE users, also shows a "View goal" link.
+ */
+const goalAddedEntryContent = Format(
+  `<div class="govuk-!-margin-bottom-6">
+    <p class="govuk-body"><strong>Goal created</strong> on %1 by %2</p>
+    <p class="govuk-body"><strong>%3</strong></p>
+    %4
+  </div>`,
+  // %1: Date
+  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+  // %2: created by
+  when(Item().path('createdBy').match(Condition.IsRequired()))
+    .then(Item().path('createdBy').pipe(Transformer.String.EscapeHtml()))
+    .else('Unknown'),
+  // %3: Goal title
+  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
+  // %4: View goal link (shown only in READ_WRITE mode)
+  when(isReadOnly)
+    .then('')
+    .else(
+      Format(
+        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View goal</a></p>',
+        Item().path('goalUuid'),
+      ),
+    ),
+)
+
+/**
  * Renders a goal achieved history entry.
- * Shows: heading (bold), goal title (bold), optional notes, and view goal link.
+ * Shows: heading (bold), goal title (bold), and optional notes.
+ * For READ_WRITE users, also shows a "View goal" link.
  */
 const goalAchievedEntryContent = Format(
   `<div class="govuk-!-margin-bottom-6">
     <p class="govuk-body"><strong>Goal marked as achieved</strong> on %1 by %2</p>
     <p class="govuk-body"><strong>%3</strong></p>
     %4
-    <p class="govuk-body"><a href="%5" class="govuk-link govuk-link--no-visited-state">View goal</a></p>
+    %5
   </div>`,
   // %1: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %2: Achieved by
-  when(Item().path('achievedBy').match(Condition.IsRequired())).then(Item().path('achievedBy')).else('Unknown'),
+  when(Item().path('achievedBy').match(Condition.IsRequired()))
+    .then(Item().path('achievedBy').pipe(Transformer.String.EscapeHtml()))
+    .else('Unknown'),
   // %3: Goal title
-  Item().path('goalTitle'),
+  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
   // %4: Optional notes
   when(Item().path('notes').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes')))
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
     .else(''),
-  // %5: View goal link (relative to /v1.0/plan/, so ../goal/ resolves to /v1.0/goal/)
-  Format('../goal/%1/view-inactive-goal', Item().path('goalUuid')),
+  // %5: View goal link (shown only in READ_WRITE mode)
+  when(isReadOnly)
+    .then('')
+    .else(
+      Format(
+        '<p class="govuk-body"><a href="../goal/%1/view-inactive-goal" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View goal</a></p>',
+        Item().path('goalUuid'),
+      ),
+    ),
 )
 
 /**
  * Renders a goal removed history entry.
- * Shows: heading (bold), goal title (bold), removal reason, and view link.
- * If the goal has been re-added (isCurrentlyActive), shows "View latest version".
- * Otherwise shows "View goal".
+ * Shows: heading (bold), goal title (bold), and removal reason.
+ * For READ_WRITE users, also shows:
+ * - "View latest version" when the goal is currently active
+ * - "View goal" otherwise
  */
 const goalRemovedEntryContent = Format(
   `<div class="govuk-!-margin-bottom-6">
@@ -129,57 +187,74 @@ const goalRemovedEntryContent = Format(
   // %1: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %2: Removed by
-  when(Item().path('removedBy').match(Condition.IsRequired())).then(Item().path('removedBy')).else('Unknown'),
+  when(Item().path('removedBy').match(Condition.IsRequired()))
+    .then(Item().path('removedBy').pipe(Transformer.String.EscapeHtml()))
+    .else('Unknown'),
   // %3: Goal title
-  Item().path('goalTitle'),
+  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
   // %4: Removal reason
   when(Item().path('reason').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('reason')))
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('reason').pipe(Transformer.String.EscapeHtml())))
     .else(''),
-  // %5: View link - different based on whether goal has been re-added
-  when(Item().path('isCurrentlyActive').match(Condition.Equals(true)))
-    .then(
-      Format(
-        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state">View latest version</a></p>',
-        Item().path('goalUuid'),
-      ),
-    )
+  // %5: View link (shown only in READ_WRITE mode)
+  when(isReadOnly)
+    .then('')
     .else(
-      Format(
-        '<p class="govuk-body"><a href="../goal/%1/view-inactive-goal" class="govuk-link govuk-link--no-visited-state">View goal</a></p>',
-        Item().path('goalUuid'),
-      ),
+      when(Item().path('isCurrentlyActive').match(Condition.Equals(true)))
+        .then(
+          Format(
+            '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View latest version</a></p>',
+            Item().path('goalUuid'),
+          ),
+        )
+        .else(
+          Format(
+            '<p class="govuk-body"><a href="../goal/%1/view-inactive-goal" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View goal</a></p>',
+            Item().path('goalUuid'),
+          ),
+        ),
     ),
 )
 
 /**
  * Renders a goal re-added history entry.
- * Shows: heading (bold), goal title (bold), reason for re-adding, and view latest version link.
+ * Shows: heading (bold), goal title (bold), and reason for re-adding.
+ * For READ_WRITE users, also shows a "View latest version" link.
  */
 const goalReaddedEntryContent = Format(
   `<div class="govuk-!-margin-bottom-6">
     <p class="govuk-body"><strong>Goal added back into plan</strong> on %1 by %2</p>
     <p class="govuk-body"><strong>%3</strong></p>
     %4
-    <p class="govuk-body"><a href="%5" class="govuk-link govuk-link--no-visited-state">View latest version</a></p>
+    %5
   </div>`,
   // %1: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %2: Re-added by
-  when(Item().path('readdedBy').match(Condition.IsRequired())).then(Item().path('readdedBy')).else('Unknown'),
+  when(Item().path('readdedBy').match(Condition.IsRequired()))
+    .then(Item().path('readdedBy').pipe(Transformer.String.EscapeHtml()))
+    .else('Unknown'),
   // %3: Goal title
-  Item().path('goalTitle'),
+  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
   // %4: Reason for re-adding
   when(Item().path('reason').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('reason')))
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('reason').pipe(Transformer.String.EscapeHtml())))
     .else(''),
-  // %5: View latest version link (goes to update-goal-steps page)
-  Format('../goal/%1/update-goal-steps', Item().path('goalUuid')),
+  // %5: View latest version link (shown only in READ_WRITE mode)
+  when(isReadOnly)
+    .then('')
+    .else(
+      Format(
+        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View latest version</a></p>',
+        Item().path('goalUuid'),
+      ),
+    ),
 )
 
 /**
  * Renders a goal updated history entry.
- * Shows: heading (bold), goal title (bold), optional notes, and view latest version link.
+ * Shows: heading (bold), goal title (bold), and optional notes.
+ * For READ_WRITE users, also shows a "View latest version" link.
  * Used for: Step status updates and progress note additions.
  */
 const goalUpdatedEntryContent = Format(
@@ -187,20 +262,29 @@ const goalUpdatedEntryContent = Format(
     <p class="govuk-body"><strong>Goal updated</strong> on %1 by %2</p>
     <p class="govuk-body"><strong>%3</strong></p>
     %4
-    <p class="govuk-body"><a href="%5" class="govuk-link govuk-link--no-visited-state">View latest version</a></p>
+    %5
   </div>`,
   // %1: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %2: Updated by
-  when(Item().path('updatedBy').match(Condition.IsRequired())).then(Item().path('updatedBy')).else('Unknown'),
+  when(Item().path('updatedBy').match(Condition.IsRequired()))
+    .then(Item().path('updatedBy').pipe(Transformer.String.EscapeHtml()))
+    .else('Unknown'),
   // %3: Goal title
-  Item().path('goalTitle'),
+  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
   // %4: Optional notes
   when(Item().path('notes').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes')))
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
     .else(''),
-  // %5: View latest version link (goes to update-goal-steps page)
-  Format('../goal/%1/update-goal-steps', Item().path('goalUuid')),
+  // %5: View latest version link (shown only in READ_WRITE mode)
+  when(isReadOnly)
+    .then('')
+    .else(
+      Format(
+        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View latest version</a></p>',
+        Item().path('goalUuid'),
+      ),
+    ),
 )
 
 /**
@@ -222,15 +306,19 @@ export const agreementHistory = CollectionBlock({
           when(Item().path('type').match(Condition.Equals('goal_achieved')))
             .then(goalAchievedEntryContent)
             .else(
-              when(Item().path('type').match(Condition.Equals('goal_removed')))
-                .then(goalRemovedEntryContent)
+              when(Item().path('type').match(Condition.Equals('goal_created')))
+                .then(goalAddedEntryContent)
                 .else(
-                  when(Item().path('type').match(Condition.Equals('goal_readded')))
-                    .then(goalReaddedEntryContent)
+                  when(Item().path('type').match(Condition.Equals('goal_removed')))
+                    .then(goalRemovedEntryContent)
                     .else(
-                      when(Item().path('type').match(Condition.Equals('goal_updated')))
-                        .then(goalUpdatedEntryContent)
-                        .else(agreementEntryContent),
+                      when(Item().path('type').match(Condition.Equals('goal_readded')))
+                        .then(goalReaddedEntryContent)
+                        .else(
+                          when(Item().path('type').match(Condition.Equals('goal_updated')))
+                            .then(goalUpdatedEntryContent)
+                            .else(agreementEntryContent),
+                        ),
                     ),
                 ),
             ),
@@ -244,13 +332,13 @@ export const agreementHistory = CollectionBlock({
  * Link to update the person's agreement - shown when latest status is COULD_NOT_ANSWER
  */
 export const updateAgreementLink = HtmlBlock({
-  hidden: Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER')),
+  hidden: or(isReadOnly, Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER'))),
   content: Format(
-    '<p class="govuk-body"><a href="#" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a></p>',
+    '<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">Update %1\'s agreement</a></p>',
     CaseData.Forename,
   ),
 })
 
 export const backToTopLink = HtmlBlock({
-  content: '<p class="govuk-body"><a href="#" class="govuk-link">↑ Back to top</a></p>',
+  content: '<p class="govuk-body"><a href="#" class="govuk-link govuk-!-display-none-print">↑ Back to top</a></p>',
 })

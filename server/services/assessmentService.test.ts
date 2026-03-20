@@ -98,6 +98,7 @@ describe('AssessmentService', () => {
         collections: [],
         collaborators: [mockUser],
         identifiers: {},
+        flags: [],
       }
 
       mockAssessmentPlatformApiClient.executeQueries.mockResolvedValue([expectedResult])

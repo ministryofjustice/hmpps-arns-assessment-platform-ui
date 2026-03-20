@@ -1,5 +1,11 @@
 {%- extends "partials/layout.njk" -%}
 {%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
+{%- from "govuk/components/details/macro.njk" import govukDetails -%}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+
+{% set isPrivateBetaUser = data.assessment.flags and 'SAN_BETA' in data.assessment.flags %}
+{% set showSmartSurveyForPrivateBeta = data.featureFlags.smartSurveyInPrivateBetaEnabled and isPrivateBetaUser %}
+{% set showSmartSurveyForNationalRollout = data.featureFlags.smartSurveyInNationalRolloutEnabled and not isPrivateBetaUser %}
 
 {# ancestor[0].title is root journey title, in this case it's 'Sentence Plan' #}
 {# step.title is current step(page) of the journey #}
@@ -21,9 +27,10 @@
   {% endblock %}
 {% endblock %}
 
-{% block header %}
+{% block govukHeader %}
   {{ super() }}
   {% include "sentence-plan/views/partials/sentence-plan-nav.njk" %}
+  {% include "sentence-plan/views/partials/phase-banner.njk" %}
   {% include "sentence-plan/views/partials/plan-header.njk" %}
 {% endblock %}
 
@@ -32,6 +39,22 @@
   {% block pageScripts %}
     <script src="{{ '/assets/js/forms/sentence-plan/assets/form.js' | assetMap }}"></script>
   {% endblock %}
+  {% if showSmartSurveyForPrivateBeta or showSmartSurveyForNationalRollout %}
+    {% if smartSurveyPopupCode and currentTab is defined %}
+      <script nonce="{{ cspNonce }}">
+        (function(d){
+          var s,ss;
+          ss=d.createElement("script");
+          ss.type="text/javascript";
+          ss.async=true;
+          ss.type="module";
+          ss.src="https://embed.smartsurvey.io/index.js?popupCode={{ smartSurveyPopupCode }}";
+          s=d.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(ss, s);
+        })(document);
+      </script>
+    {% endif %}
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -79,24 +102,42 @@
   </div>
 {% endblock %}
 
-{% block supportWidget %}
-  {% set helpContent %}
-    <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Get help</h3>
-    <p class="govuk-body-s govuk-!-margin-bottom-3">
-      If you are having problems with this page, you can report it using our <a href="#" class="govuk-link">ServiceNow form</a>.
-    </p>
-    <p class="govuk-body-s govuk-!-margin-bottom-0">
-      Please provide the request details shown here, along with a description of the issue you experienced.
-    </p>
-  {% endset %}
+{% block footer %}
+  {% block supportWidget %}
+    {% set reportProblemHtml %}
+      <p class="govuk-body">
+        Copy this information and paste it into the
+        <a href="{{ serviceNowFormUrl }}" class="govuk-link" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
+      </p>
+      <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
+      <div class="app-report-problem__info">
+        <pre class="app-report-problem__details" id="report-problem-details">CRN: {{ data.caseData.crn if data.caseData }}
+Request ID: {{ requestId or 'Unavailable' }}
+{% if traceId and traceId != requestId %}Trace ID: {{ traceId }}
+{% endif %}Assessment ID: {{ data.assessmentUuid }}
+OASys PK: {{ data.oasysAssessmentPk }}</pre>
+          <div class="app-report-problem__copy">
+            <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
+              Copy
+            </button>
+          </div>
+        </div>
+      {% endset %}
+      <div class="app-report-problem govuk-!-display-none-print" id="report-a-problem" data-qa="report-a-problem">
+        <div class="govuk-width-container">
+          {{ govukDetails({
+            summaryText: "Report a problem",
+            html: reportProblemHtml
+          }) }}
+        </div>
+      </div>
+  {% endblock %}
 
-  {{ supportWidget({
-    helpContent: helpContent,
-    supportItems: [
-      {
-        label: 'Assessment ID',
-        value: data.assessmentUuid
-      }
-    ] if data.assessmentUuid else []
-  }) }}
+  {% block govukFooter %}
+    {% if not hideFooter %}
+      {{ pdsFooter({
+        baseUrl: footerBaseUrl or "/platform"
+      }) }}
+    {% endif %}
+  {% endblock %}
 {% endblock %}

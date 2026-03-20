@@ -12,7 +12,12 @@ import {
 
 test.describe('Achieve goal journey', () => {
   test.describe('confirm goal as achieved', () => {
-    test('can confirm goal as achieved with optional note', async ({ page, createSession, sentencePlanBuilder }) => {
+    test('can confirm goal as achieved with optional note', async ({
+      page,
+      createSession,
+      makeAxeBuilder,
+      sentencePlanBuilder,
+    }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       const plan = await sentencePlanBuilder
         .extend(sentencePlanId)
@@ -31,6 +36,10 @@ test.describe('Achieve goal journey', () => {
 
       // Enter optional note about how the goal helped
       await achievePage.enterHowHelpedNote('This goal helped stabilise their housing situation')
+
+      // Accessibility
+      const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
+      expect(accessibilityScanResults.violations).toEqual([])
 
       // Click confirm
       await achievePage.clickConfirm()
@@ -211,6 +220,10 @@ test.describe('Achieve goal journey', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       const goalCount = await planOverviewPage.getGoalCount()
       expect(goalCount).toBe(1)
+
+      // ensure notification banner is visible
+      await expect(planOverviewPage.notificationBanner).toBeVisible()
+      await expect(planOverviewPage.notificationBannerText).toContainText('Congratulations on achieving a goal,')
 
       const goalTitle = await planOverviewPage.getGoalCardTitle(0)
       expect(goalTitle).toContain('Achieve Test Goal')

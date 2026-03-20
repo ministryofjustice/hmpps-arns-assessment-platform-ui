@@ -13,7 +13,7 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { sideNav, contentBlocks } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 
 /**
@@ -36,7 +36,12 @@ export const createGoalStep = step({
   blocks: [sideNav, ...contentBlocks],
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.setAreaDataFromUrlParam(), SentencePlanEffects.loadAreaAssessmentInfo()],
+      effects: [
+        SentencePlanEffects.setAreaDataFromUrlParam(),
+        SentencePlanEffects.loadAreaAssessmentInfo(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+        SentencePlanEffects.sendTelemetryEvent('CREATE_GOAL_START', true),
+      ],
     }),
 
     // If UUID param is literally ':uuid', redirect to use 'new' instead
@@ -56,7 +61,11 @@ export const createGoalStep = step({
       when: Post('action').match(Condition.Equals('addSteps')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.createGoal(), SentencePlanEffects.setNavigationReferrer('add-goal')],
+        effects: [
+          SentencePlanEffects.createGoal(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+          SentencePlanEffects.setNavigationReferrer('add-goal'),
+        ],
         next: [redirect({ goto: Format('../%1/add-steps', Data('activeGoalUuid')) })],
       },
     }),
@@ -66,18 +75,16 @@ export const createGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.createGoal(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+          SentencePlanEffects.sendTelemetryEvent('CREATE_GOAL_WITHOUT_STEPS_END', false),
           SentencePlanEffects.addNotification({
             type: 'success',
-            title: 'Goal added',
+
             message: Format('You added a goal to %1 plan', CaseData.ForenamePossessive),
             target: 'plan-overview',
           }),
         ],
         next: [
-          redirect({
-            when: Query('type').match(Condition.IsRequired()),
-            goto: Format('../../plan/overview?type=%1', Query('type')),
-          }),
           redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
             goto: '../../plan/overview?type=future',

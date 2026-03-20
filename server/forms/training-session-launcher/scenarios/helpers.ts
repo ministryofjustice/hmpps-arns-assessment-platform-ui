@@ -124,6 +124,13 @@ export function randomAccessMode(): AccessMode {
 }
 
 /**
+ * Random plan access mode
+ */
+export function randomPlanAccessMode(): AccessMode {
+  return faker.helpers.arrayElement<AccessMode>(['READ_ONLY', 'READ_WRITE'])
+}
+
+/**
  * Random practitioner identifier (TRAINING followed by 4 digits)
  */
 export function randomPractitionerIdentifier(): string {

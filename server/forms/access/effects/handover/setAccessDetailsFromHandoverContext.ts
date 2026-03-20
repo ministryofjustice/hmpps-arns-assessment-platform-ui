@@ -22,7 +22,7 @@ export const setAccessDetailsFromHandoverContext = () => (context: AccessContext
 
   session.accessDetails = {
     accessType: 'OASYS',
-    accessMode: principal.accessMode,
+    planAccessMode: principal.planAccessMode,
     oasysRedirectUrl: principal.returnUrl,
   }
 }

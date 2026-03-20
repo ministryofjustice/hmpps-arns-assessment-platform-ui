@@ -82,7 +82,7 @@ export const noSessionsMessage = HtmlBlock({
     <div class="govuk-inset-text">
       <p class="govuk-body">You don't have any active training sessions.</p>
       <p class="govuk-body">
-        <a href="../browse" class="govuk-link">Select a scenario</a> to create a new session.
+        <a href="browse" class="govuk-link">Select a scenario</a> to create a new session.
       </p>
     </div>
   `,

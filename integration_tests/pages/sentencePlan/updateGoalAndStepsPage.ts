@@ -59,9 +59,11 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
     this.progressNotesTextarea = page.locator('#progress_notes')
     this.progressNotesLabel = page.locator('label[for="progress_notes"]')
     this.progressNotesHint = page.locator('#progress_notes-hint')
-    this.viewAllNotesDetails = page.locator('details.govuk-details')
-    this.viewAllNotesSummary = page.locator('summary.govuk-details__summary')
-    this.noNotesMessage = page.locator('.govuk-details__text').getByText('There are no notes on this goal yet.')
+    this.viewAllNotesDetails = page.locator('[data-qa="main-form"] details.govuk-details')
+    this.viewAllNotesSummary = page.locator('[data-qa="main-form"] summary.govuk-details__summary')
+    this.noNotesMessage = page
+      .locator('[data-qa="main-form"] .govuk-details__text')
+      .getByText('There are no notes on this goal yet.')
     this.saveGoalAndStepsButton = page.getByRole('button', { name: 'Save goal and steps' })
     this.markAsAchievedButton = page.getByRole('button', { name: 'Mark as achieved' })
     this.removeGoalLink = page.getByRole('link', { name: 'Remove goal from plan' })
@@ -149,7 +151,7 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
   }
 
   async getNotesContent(): Promise<string> {
-    const content = this.page.locator('.govuk-details__text')
+    const content = this.page.locator('[data-qa="main-form"] .govuk-details__text')
     return (await content.textContent()) ?? ''
   }
 

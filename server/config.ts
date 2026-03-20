@@ -123,6 +123,7 @@ export default {
       agent: new AgentConfig(Number(get('COORDINATOR_API_TIMEOUT_RESPONSE', 10000))),
     },
   },
+  sanUrl: get('SAN_URL', 'http://localhost:3000', requiredInProduction),
   sqs: {
     audit: auditConfig(),
   },
@@ -138,7 +139,14 @@ export default {
     },
   },
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
+  logLevel: get('LOG_LEVEL', 'info'),
   environmentName: get('ENVIRONMENT_NAME', ''),
+  feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
+  serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#service-now-link', requiredInProduction),
+  oasysUrl: get('OASYS_URL', 'http://localhost:3000/training-session-launcher/sessions', requiredInProduction),
+  mpopUrl: get('MPOP_URL', 'http://localhost:3000/sign-in', requiredInProduction),
+  smartSurveyPopupCode: get('SMART_SURVEY_POPUP_CODE', ''),
+  featureFlagUrl: get('FEATURE_FLAG_URL', ''),
 
   // Target service OAuth client IDs for handover
   handoverTargets: {

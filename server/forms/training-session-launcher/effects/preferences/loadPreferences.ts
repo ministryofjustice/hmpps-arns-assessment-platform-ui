@@ -78,7 +78,7 @@ const NEEDS_CONFIG: NeedConfig[] = [
     strengthsKey: 'eteStrengths',
   },
   {
-    name: 'Drug Misuse',
+    name: 'Drug Use',
     scoreKey: 'drugOtherWeightedScore',
     thresholdKey: 'drugThreshold',
     harmKey: 'drugLinkedToHarm',
@@ -86,7 +86,7 @@ const NEEDS_CONFIG: NeedConfig[] = [
     strengthsKey: 'drugStrengths',
   },
   {
-    name: 'Alcohol Misuse',
+    name: 'Alcohol Use',
     scoreKey: 'alcoholOtherWeightedScore',
     thresholdKey: 'alcoholThreshold',
     harmKey: 'alcoholLinkedToHarm',
@@ -210,6 +210,7 @@ function resolveSavedScenario(saved: SavedScenario): DisplayScenario {
     oasysAssessmentPk: values.oasysAssessmentPk || '',
 
     displayNeeds: transformToDisplayNeeds(values),
+    isCustom: true,
     rawScenario: {
       id: saved.id,
       name: saved.name,

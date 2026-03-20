@@ -12,7 +12,7 @@ import { AuthSource } from '../../../interfaces/hmppsUser'
  */
 export interface AccessSessionDetails {
   accessType: AuthSource
-  accessMode: AccessMode
+  planAccessMode: AccessMode
   oasysRedirectUrl?: string
 }
 

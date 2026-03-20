@@ -1,7 +1,9 @@
-import { accessTransition, Data, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
+import { accessTransition, Data, redirect, Post, step, submitTransition, Format } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, allStepsCompletedField, hasAchievedGoal, saveAndContinueButton } from './fields'
-import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
+import { CaseData } from '../../../constants'
 
 /**
  * This page is only accessible after a plan has been agreed.
@@ -21,20 +23,14 @@ export const confirmIfAchievedStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.setActiveGoalContext()],
-      next: [
-        // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
-        redirect({
-          when: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
-          goto: '../../plan/overview',
-        }),
-        // Redirect if goal not found
-        redirect({
-          when: Data('activeGoal').not.match(Condition.IsRequired()),
-          goto: '../../plan/overview',
-        }),
+      effects: [
+        SentencePlanEffects.setActiveGoalContext(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_ACHIEVED),
       ],
     }),
+    // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
+    redirectIfNotPostAgreement('../../plan/overview'),
+    redirectIfGoalNotFound('../../plan/overview'),
   ],
 
   onSubmission: [
@@ -43,7 +39,15 @@ export const confirmIfAchievedStep = step({
       when: Post('has_achieved_goal').match(Condition.Equals('yes')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.markGoalAsAchieved()],
+        effects: [
+          SentencePlanEffects.markGoalAsAchieved(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL_ACHIEVED),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            message: Format('Congratulations on achieving a goal, %1', CaseData.Forename),
+            target: 'plan-overview',
+          }),
+        ],
         next: [redirect({ goto: '../../plan/overview?type=achieved' })],
       },
     }),

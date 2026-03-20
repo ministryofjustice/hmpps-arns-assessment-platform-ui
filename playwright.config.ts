@@ -9,12 +9,18 @@ export interface PlaywrightExtendedConfig {
     }
     aapApi: {
       url: string
+      dbConnectionString: string
     }
     handoverApi: {
       url: string
     }
     coordinatorApi: {
       url: string
+    }
+    localstack: {
+      url: string
+      queueUrl: string
+      region: string
     }
   }
 }
@@ -32,7 +38,8 @@ export default defineConfig<PlaywrightExtendedConfig>({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  retries: 0,
+  /* Retry on CI only */
+  retries: process.env.CI ? 1 : 0,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   workers: process.env.CI ? 3 : 6,
   reporter: [
@@ -65,6 +72,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
       },
       aapApi: {
         url: process.env.AAP_API_URL || 'http://localhost:8080',
+        dbConnectionString: process.env.AAP_DATABASE_CONNECTION_STRING || 'postgres://root:dev@localhost:5432/postgres',
       },
       handoverApi: {
         url: process.env.HANDOVER_API_URL || 'http://localhost:9091/handover',
@@ -72,8 +80,15 @@ export default defineConfig<PlaywrightExtendedConfig>({
       coordinatorApi: {
         url: process.env.COORDINATOR_API_URL || 'http://localhost:9091/coordinator-api',
       },
+      localstack: {
+        url: process.env.LOCALSTACK_URL || 'http://localhost:4566',
+        queueUrl: `${process.env.LOCALSTACK_URL || 'http://localhost:4566'}/000000000000/audit-queue`,
+        region: 'eu-west-2',
+      },
     },
   },
+
+  globalSetup: './integration_tests/specs/audit/globalSetup.ts',
 
   /* Configure projects */
   projects: [

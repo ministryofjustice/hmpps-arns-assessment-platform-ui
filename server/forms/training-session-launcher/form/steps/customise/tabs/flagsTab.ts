@@ -27,9 +27,14 @@ export const flagsTabContent = [
     defaultValue: Data('flags'),
     items: [
       {
-        value: 'SP_NATIONAL_ROLLOUT',
-        text: 'SP National Rollout',
-        hint: 'Enables Sentence Plan national rollout features',
+        value: 'SAN_PRIVATE_BETA',
+        text: 'SAN Private Beta',
+        hint: 'Enables Strengths and Needs private beta features and criminogenic needs',
+      },
+      {
+        value: 'NEW_PERIOD_OF_SUPERVISION',
+        text: 'New Period of Supervision',
+        hint: 'Simulates a new period of supervision. The session will be created with the plan in a reset state.',
       },
     ],
   }),

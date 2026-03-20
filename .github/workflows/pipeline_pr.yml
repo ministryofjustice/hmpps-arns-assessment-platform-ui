@@ -3,6 +3,12 @@ name: Build and test PR
 on:
   pull_request:
 
+permissions:
+  contents: read
+  packages: write
+  checks: write
+  pull-requests: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -12,7 +18,7 @@ jobs:
     name: Helm lint
     strategy:
       matrix:
-        environments: [ 'dev', 'preprod', 'prod' ]
+        environments: [ 'dev', 'test', 'preprod', 'prod' ]
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/test_helm_lint.yml@v2
     secrets: inherit
     with:
@@ -42,7 +48,7 @@ jobs:
       load: true
       docker_multiplatform: false
       upload_image_artifact: true
-      image_artifact_retention_days: 2
+      image_artifact_retention_days: 1
 
   e2e_test:
     needs: [build_docker]
@@ -53,6 +59,7 @@ jobs:
     uses: ./.github/workflows/e2e_test.yml
     with:
       app_version: ${{ needs.build_docker.outputs.app_version }}
+      docker_multiplatform: false
       shard: ${{ matrix.shard }}
       total_shards: 4
 
@@ -74,7 +81,7 @@ jobs:
 
     steps:
       - name: Download Unit Test Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: unit_test_artifacts
           pattern: npm_unit_test_artifacts
@@ -86,7 +93,7 @@ jobs:
           check_name: "Unit Test Results"
 
       - name: Download E2E Test Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: artifacts
           pattern: test_results-*

@@ -1,4 +1,5 @@
 import { SentencePlanContext } from '../types'
+import { resolveActiveGoalFromRequest, setActiveGoalData } from './goalUtils'
 
 /**
  * Set the active goal context for editing
@@ -10,24 +11,16 @@ import { SentencePlanContext } from '../types'
  * - activeGoalStepsOriginal: Original steps from API (baseline for change detection)
  */
 export const setActiveGoalContext = () => async (context: SentencePlanContext) => {
-  const goals = context.getData('goals')
-  const goalUuid = context.getRequestParam('uuid')
-
-  if (!goalUuid || goalUuid === ':uuid') {
+  const activeGoalResolution = resolveActiveGoalFromRequest(context)
+  if (!activeGoalResolution) {
     return
   }
+  const { activeGoal } = activeGoalResolution
 
-  const derivedGoal = goals?.find(g => g.uuid === goalUuid)
+  setActiveGoalData(context, activeGoalResolution)
 
-  if (!derivedGoal) {
-    return
-  }
-
-  context.setData('activeGoal', derivedGoal)
-  context.setData('activeGoalUuid', goalUuid)
-
-  if (derivedGoal.steps.length > 0) {
-    const stepsOriginal = derivedGoal.steps.map(step => ({
+  if (activeGoal.steps.length > 0) {
+    const stepsOriginal = activeGoal.steps.map(step => ({
       id: step.uuid,
       actor: step.actor,
       description: step.description,

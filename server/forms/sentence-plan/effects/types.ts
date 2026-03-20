@@ -3,7 +3,8 @@ import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/Ef
 import { User } from '../../../interfaces/user'
 import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
-import { AssessmentPlatformApiClient, CoordinatorApiClient } from '../../../data'
+import { AssessmentPlatformApiClient, CoordinatorApiClient, DeliusApiClient } from '../../../data'
+import AuditService from '../../../services/auditService'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { SessionDetails } from '../../../interfaces/sessionDetails'
 import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
@@ -13,6 +14,8 @@ import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryR
 import { CreateAssessmentCommandResult } from '../../../interfaces/aap-api/commandResult'
 import { AssessmentArea } from '../../../interfaces/coordinator-api/entityAssessment'
 import { AuthSource } from '../../../interfaces/hmppsUser'
+import { PreviousVersionsResponse } from '../../../interfaces/coordinator-api/previousVersions'
+import FeatureFlagService from '../../../services/featureFlagService'
 
 /**
  * Status of the assessment info loading operation.
@@ -27,7 +30,7 @@ export type AssessmentInfoStatus = 'success' | 'error'
 
 export interface AccessDetails {
   accessType: AuthSource
-  accessMode: AccessMode
+  planAccessMode: AccessMode
   oasysRedirectUrl?: string
 }
 
@@ -35,10 +38,22 @@ export type GoalStatus = 'ACTIVE' | 'FUTURE' | 'REMOVED' | 'ACHIEVED'
 export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
 
 // Plan agreement statuses - DRAFT is the initial status before any agreement action
-export type AgreementStatus = 'DRAFT' | 'AGREED' | 'DO_NOT_AGREE' | 'COULD_NOT_ANSWER'
+export type AgreementStatus =
+  | 'DRAFT'
+  | 'AGREED'
+  | 'DO_NOT_AGREE'
+  | 'COULD_NOT_ANSWER'
+  | 'UPDATED_AGREED'
+  | 'UPDATED_DO_NOT_AGREE'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
-export const POST_AGREEMENT_PROCESS_STATUSES: AgreementStatus[] = ['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER']
+export const POST_AGREEMENT_PROCESS_STATUSES: AgreementStatus[] = [
+  'AGREED',
+  'DO_NOT_AGREE',
+  'COULD_NOT_ANSWER',
+  'UPDATED_AGREED',
+  'UPDATED_DO_NOT_AGREE',
+]
 
 export interface RawCollection {
   name: string
@@ -122,6 +137,7 @@ export interface DerivedPlanAgreement {
  * Uses discriminated union pattern for type-safe rendering.
  */
 export type PlanHistoryEntry =
+  | GoalCreatedHistoryEntry
   | PlanAgreementHistoryEntry
   | GoalAchievedHistoryEntry
   | GoalRemovedHistoryEntry
@@ -137,6 +153,15 @@ export interface PlanAgreementHistoryEntry {
   detailsNo?: string
   detailsCouldNotAnswer?: string
   notes?: string
+}
+
+export interface GoalCreatedHistoryEntry {
+  type: 'goal_created'
+  uuid: string
+  date: Date
+  goalUuid: string
+  goalTitle: string
+  createdBy?: string
 }
 
 export interface GoalAchievedHistoryEntry {
@@ -221,6 +246,13 @@ export interface PlanAgreementProperties {
   status_date: string
 }
 
+export interface HistoricPlanData {
+  assessment: AssessmentVersionQueryResult
+  goals: DerivedGoal[]
+  latestAgreementStatus: AgreementStatus
+  latestAgreementDate: Date | undefined
+}
+
 /**
  * Alert variant types matching MOJ Alert component
  */
@@ -235,6 +267,21 @@ export interface PlanNotification {
   message: string | FormatExpr
   target: string
 }
+
+/**
+ * Navigation referrers used for dynamic backlink behaviour.
+ *
+ * Keep this as a constrained set so link logic cannot drift due to typos.
+ */
+export const NAVIGATION_REFERRERS = [
+  'plan-overview',
+  'plan-history',
+  'previous-versions',
+  'add-goal',
+  'update-goal-steps',
+  'about',
+] as const
+export type NavigationReferrer = (typeof NAVIGATION_REFERRERS)[number]
 
 /**
  * Step data structure stored in session during step editing
@@ -285,7 +332,7 @@ export interface SentencePlanData extends Record<string, unknown> {
   // Plan Agreements
   planAgreements: DerivedPlanAgreement[]
   planAgreementsCollectionUuid: string
-  latestAgreementStatus: AgreementStatus | undefined
+  latestAgreementStatus: AgreementStatus
   latestAgreementDate: Date | undefined
 
   // Plan Timeline (raw timeline events from API)
@@ -293,6 +340,11 @@ export interface SentencePlanData extends Record<string, unknown> {
 
   // Plan History (unified timeline of agreements + goal achievements)
   planHistoryEntries: PlanHistoryEntry[]
+
+  // Plan Previous Versions
+  previousVersions: PreviousVersionsResponse
+  showAssessmentColumn?: boolean
+  historic: HistoricPlanData
 
   // Areas of need
   areasOfNeed: AreaOfNeed[]
@@ -309,6 +361,20 @@ export interface SentencePlanData extends Record<string, unknown> {
   // Assessment area info for current area of need (from coordinator API)
   currentAreaAssessment: AssessmentArea | null
   currentAreaAssessmentStatus: AssessmentInfoStatus
+  navigationReferrer?: NavigationReferrer | null
+
+  // Feature flags
+  featureFlags?: Record<string, boolean>
+
+  // all assessment areas grouped by scoring category (for about page; from coordinator API)
+  allAssessmentAreas: AssessmentArea[]
+  highScoringAreas: AssessmentArea[]
+  lowScoringAreas: AssessmentArea[]
+  otherAreas: AssessmentArea[]
+  incompleteAreas: AssessmentArea[]
+  isAssessmentComplete: boolean
+  assessmentLastUpdated: string | null
+  allAreasAssessmentStatus: AssessmentInfoStatus
 }
 
 /**
@@ -333,7 +399,7 @@ export interface SentencePlanAnswers extends Record<string, unknown> {
  * Session data via context.getSession()
  */
 export interface SentencePlanSession {
-  navigationReferrer?: string
+  navigationReferrer?: NavigationReferrer
   returnTo?: string
   assessmentUuid?: string
   privacyAccepted?: boolean
@@ -344,6 +410,7 @@ export interface SentencePlanSession {
   sessionDetails?: SessionDetails
   practitionerDetails?: PractitionerDetails
   caseDetails?: CaseDetails
+  telemetryCorrelationId?: string
 }
 
 /**
@@ -351,6 +418,7 @@ export interface SentencePlanSession {
  */
 export interface SentencePlanState extends Record<string, unknown> {
   user: User & { authSource: string; token: string }
+  requestId: string
 }
 
 /**
@@ -361,7 +429,7 @@ export interface SentencePlanState extends Record<string, unknown> {
  * @example
  * const myEffect = (deps: Deps) => async (context: SentencePlanContext) => {
  *   context.getData('assessmentUuid')  // typed as string
- *   context.getSession().sessionDetails?.accessType  // typed as 'hmpps-auth' | 'handover' | undefined
+ *   context.getSession().sessionDetails?.accessType  // typed as AuthSource | undefined
  *   context.getState('user')           // typed as User
  * }
  */
@@ -374,9 +442,12 @@ export type SentencePlanContext = EffectFunctionContext<
 
 /**
  * Dependencies for sentence plan effects.
- * Access-related dependencies (deliusApi, handoverApi) are now in the access form.
+ * Note: delius api used to load sentence information for about page via handover context access.
  */
 export interface SentencePlanEffectsDeps {
   api: AssessmentPlatformApiClient
   coordinatorApi: CoordinatorApiClient
+  deliusApi: DeliusApiClient
+  auditService: AuditService
+  featureFlagService: FeatureFlagService
 }

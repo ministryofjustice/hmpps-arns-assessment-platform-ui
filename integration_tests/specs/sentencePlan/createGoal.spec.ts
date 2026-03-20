@@ -13,7 +13,7 @@ import {
 
 test.describe('Create Goal Journey', () => {
   test.describe('Create Goal with Steps', () => {
-    test('can create a goal and add steps - happy path', async ({ page, createSession }) => {
+    test('can create a goal and add steps - happy path', async ({ page, createSession, makeAxeBuilder }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
 
@@ -31,12 +31,24 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.selectCanStartNow(true)
       await createGoalPage.selectTargetDateOption('3_months')
 
+      // Create goal accessibility
+      const createGoalScanResults = await makeAxeBuilder()
+        .include('[data-qa="main-form"]')
+        // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
+        .disableRules(['aria-allowed-attr'])
+        .analyze()
+      expect(createGoalScanResults.violations).toEqual([])
+
       await createGoalPage.clickAddSteps()
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
       await expect(page).toHaveURL(/\/add-steps/)
 
       await addStepsPage.enterStep(0, 'probation_practitioner', "Contact housing services about 'emergency housing'")
+
+      // Add steps accessibility
+      const addStepsScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
+      expect(addStepsScanResults.violations).toEqual([])
 
       await addStepsPage.clickSaveAndContinue()
 
@@ -83,6 +95,74 @@ test.describe('Create Goal Journey', () => {
       await expect(goalCard).toContainText('Attend housing appointment')
     })
 
+    test('shows goal added notification after creating goal with steps', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.enterGoalTitle('Goal with steps notification test')
+      await createGoalPage.selectIsRelated(false)
+      await createGoalPage.selectCanStartNow(true)
+      await createGoalPage.selectTargetDateOption('3_months')
+      await createGoalPage.clickAddSteps()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      await addStepsPage.enterStep(0, 'probation_practitioner', 'Test step')
+      await addStepsPage.clickSaveAndContinue()
+
+      await expect(page).toHaveURL(/\/plan\/overview/)
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      await expect(planOverviewPage.notificationBanner).toBeVisible()
+      await expect(planOverviewPage.notificationBannerText).toContainText(/You added a goal with steps to .+'s plan/i)
+    })
+
+    test('future goal with steps redirects to future goals tab', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.enterGoalTitle('Future goal with steps')
+      await createGoalPage.selectIsRelated(false)
+      await createGoalPage.selectCanStartNow(false)
+      await createGoalPage.clickAddSteps()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      await addStepsPage.enterStep(0, 'probation_practitioner', 'Test step')
+      await addStepsPage.clickSaveAndContinue()
+
+      await expect(page).toHaveURL(/type=future/)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      const goalTitle = await planOverviewPage.getGoalCardTitle(0)
+      expect(goalTitle).toContain('Future goal with steps')
+    })
+
+    test('current goal with steps redirects to current goals tab', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.enterGoalTitle('Current goal with steps')
+      await createGoalPage.selectIsRelated(false)
+      await createGoalPage.selectCanStartNow(true)
+      await createGoalPage.selectTargetDateOption('3_months')
+      await createGoalPage.clickAddSteps()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      await addStepsPage.enterStep(0, 'probation_practitioner', 'Test step')
+      await addStepsPage.clickSaveAndContinue()
+
+      await expect(page).toHaveURL(/type=current/)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      const goalTitle = await planOverviewPage.getGoalCardTitle(0)
+      expect(goalTitle).toContain('Current goal with steps')
+    })
+
     test('can remove a step when multiple exist', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
@@ -109,7 +189,7 @@ test.describe('Create Goal Journey', () => {
   })
 
   test.describe('Create Goal without Steps', () => {
-    test('can save goal without adding steps', async ({ page, createSession }) => {
+    test('can save goal without adding steps and shows notification', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
 
@@ -124,6 +204,10 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.clickSaveWithoutSteps()
 
       await expect(page).toHaveURL(/\/plan\/overview/)
+
+      const updatedPlanOverview = await PlanOverviewPage.verifyOnPage(page)
+      await expect(updatedPlanOverview.notificationBanner).toBeVisible()
+      await expect(updatedPlanOverview.notificationBannerText).toContainText(/You added a goal to .+'s plan/i)
     })
 
     test('future goal redirects to future goals tab', async ({ page, createSession }) => {

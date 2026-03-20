@@ -7,6 +7,7 @@ import {
   determineGoalStatus,
   buildGoalProperties,
   buildGoalAnswers,
+  getPractitionerName,
 } from './goalUtils'
 
 /**
@@ -65,14 +66,27 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
     collectionUuid: goalsCollectionUuid,
     properties: wrapAll(properties),
     answers: wrapAll(answers),
-    timeline: {
-      type: 'GOAL_CREATED',
-      data: {},
-    },
     assessmentUuid,
     user,
   })
 
   // Store goal UUID for redirect to add-steps
   context.setData('activeGoalUuid', addResult.collectionItemUuid)
+
+  await deps.api.executeCommand({
+    type: 'UpdateCollectionItemPropertiesCommand',
+    collectionItemUuid: addResult.collectionItemUuid,
+    added: {},
+    removed: [],
+    timeline: {
+      type: 'GOAL_CREATED',
+      data: {
+        goalUuid: addResult.collectionItemUuid,
+        goalTitle,
+        createdBy: getPractitionerName(context, user),
+      },
+    },
+    assessmentUuid,
+    user,
+  })
 }

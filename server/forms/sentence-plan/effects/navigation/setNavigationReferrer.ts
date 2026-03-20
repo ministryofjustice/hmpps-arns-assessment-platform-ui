@@ -1,4 +1,4 @@
-import { SentencePlanContext } from '../types'
+import { NavigationReferrer, SentencePlanContext } from '../types'
 
 /**
  * Set navigation referrer in the session
@@ -10,7 +10,7 @@ import { SentencePlanContext } from '../types'
  *   SentencePlanEffects.setNavigationReferrer('plan-overview-current')
  *   SentencePlanEffects.setNavigationReferrer('update-goal-steps')
  */
-export const setNavigationReferrer = () => async (context: SentencePlanContext, referrer: string) => {
+export const setNavigationReferrer = () => async (context: SentencePlanContext, referrer: NavigationReferrer) => {
   const session = context.getSession()
   session.navigationReferrer = referrer
 }

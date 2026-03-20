@@ -1,18 +1,20 @@
-import { block, Data, Format, Self, validation } from '@form-engine/form/builders'
+import { block, Data, Format, not, Self, validation } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKTextInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
+import { Transformer } from '@form-engine/registry/transformers'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { AccessibleAutocomplete, AssessmentInfoDetails } from '../../../../../components'
 import { CaseData } from '../../../constants'
+import { isSanSpAssessment } from '../../../guards'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 
 const pageHeading = HtmlBlock({
   content: Format(
     `<span class="govuk-caption-l">%1</span>
     <h1 class="govuk-heading-l">Change goal with %2</h1>`,
-    Data('activeGoal.areaOfNeedLabel'),
+    Data('activeGoal.areaOfNeedLabel').pipe(Transformer.String.EscapeHtml()),
     CaseData.Forename,
   ),
 })
@@ -22,6 +24,7 @@ const assessmentInfoDetails = AssessmentInfoDetails({
   areaName: Data('currentAreaOfNeed').path('text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
+  hidden: not(isSanSpAssessment),
 })
 
 const goalTitle = block<AccessibleAutocomplete>({

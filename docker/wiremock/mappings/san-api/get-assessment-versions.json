@@ -1,0 +1,16 @@
+{
+  "name": "SAN API - Get Assessment Versions",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/san-api/assessment/[a-f0-9-]+/all"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [],
+    "transformers": ["response-template"]
+  },
+  "priority": 50
+}

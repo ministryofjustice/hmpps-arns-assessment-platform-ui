@@ -1,5 +1,5 @@
-import { AreaOfNeed, DerivedGoal, SentencePlanContext } from '../types'
-import { getMatchingTargetDateOption } from './goalUtils'
+import { AreaOfNeed, SentencePlanContext } from '../types'
+import { getMatchingTargetDateOption, resolveActiveGoalFromRequest, setActiveGoalData } from './goalUtils'
 
 /**
  * Load the active goal and pre-populate form fields for editing
@@ -15,50 +15,42 @@ import { getMatchingTargetDateOption } from './goalUtils'
  * - can_start_now: 'yes' for ACTIVE goals, 'no' for FUTURE goals
  */
 export const loadActiveGoalForEdit = () => async (context: SentencePlanContext) => {
-  const goals = context.getData('goals') as DerivedGoal[] | undefined
   const areasOfNeed = context.getData('areasOfNeed') as AreaOfNeed[] | undefined
-  const goalUuid = context.getRequestParam('uuid')
-
-  if (!goalUuid || goalUuid === ':uuid') {
+  const activeGoalResolution = resolveActiveGoalFromRequest(context)
+  if (!activeGoalResolution) {
     return
   }
-
-  const derivedGoal = goals?.find(goal => goal.uuid === goalUuid)
-
-  if (!derivedGoal) {
-    return
-  }
+  const { activeGoal } = activeGoalResolution
 
   // Set up area of need data based on the goal's area
-  const currentAreaOfNeed = areasOfNeed?.find(area => area.slug === derivedGoal.areaOfNeed)
+  const currentAreaOfNeed = areasOfNeed?.find(area => area.slug === activeGoal.areaOfNeed)
   const otherAreasOfNeed =
-    areasOfNeed?.filter(area => area.slug !== derivedGoal.areaOfNeed).sort((a, b) => a.text.localeCompare(b.text)) ?? []
+    areasOfNeed?.filter(area => area.slug !== activeGoal.areaOfNeed).sort((a, b) => a.text.localeCompare(b.text)) ?? []
 
   context.setData('currentAreaOfNeed', currentAreaOfNeed)
   context.setData('otherAreasOfNeed', otherAreasOfNeed)
 
   // Set context data for the active goal (full derived goal for display and editing)
-  context.setData('activeGoal', derivedGoal)
-  context.setData('activeGoalUuid', goalUuid)
+  setActiveGoalData(context, activeGoalResolution)
 
   // Pre-populate form fields with existing values
-  context.setAnswer('goal_title', derivedGoal.title)
+  context.setAnswer('goal_title', activeGoal.title)
 
   // Determine if goal has related areas
-  const hasRelatedAreas = derivedGoal.relatedAreasOfNeed && derivedGoal.relatedAreasOfNeed.length > 0
+  const hasRelatedAreas = activeGoal.relatedAreasOfNeed && activeGoal.relatedAreasOfNeed.length > 0
   context.setAnswer('is_related_to_other_areas', hasRelatedAreas ? 'yes' : 'no')
 
   if (hasRelatedAreas) {
-    context.setAnswer('related_areas_of_need', derivedGoal.relatedAreasOfNeed)
+    context.setAnswer('related_areas_of_need', activeGoal.relatedAreasOfNeed)
   }
 
   // Determine if goal can start now based on status
-  const canStartNow = derivedGoal.status === 'ACTIVE' ? 'yes' : 'no'
+  const canStartNow = activeGoal.status === 'ACTIVE' ? 'yes' : 'no'
   context.setAnswer('can_start_now', canStartNow)
 
   // If goal is active and has a target date, try to determine the option used
-  if (derivedGoal.status === 'ACTIVE' && derivedGoal.targetDate) {
-    const matchingOption = getMatchingTargetDateOption(derivedGoal.targetDate)
+  if (activeGoal.status === 'ACTIVE' && activeGoal.targetDate) {
+    const matchingOption = getMatchingTargetDateOption(activeGoal.targetDate)
 
     if (matchingOption) {
       context.setAnswer('target_date_option', matchingOption)
@@ -66,9 +58,9 @@ export const loadActiveGoalForEdit = () => async (context: SentencePlanContext) 
       context.setAnswer('target_date_option', 'set_another_date')
 
       // Convert date to DD/MM/YYYY format for the date picker
-      const day = derivedGoal.targetDate.getDate().toString().padStart(2, '0')
-      const month = (derivedGoal.targetDate.getMonth() + 1).toString().padStart(2, '0')
-      const year = derivedGoal.targetDate.getFullYear()
+      const day = activeGoal.targetDate.getDate().toString().padStart(2, '0')
+      const month = (activeGoal.targetDate.getMonth() + 1).toString().padStart(2, '0')
+      const year = activeGoal.targetDate.getFullYear()
       context.setAnswer('custom_target_date', `${day}/${month}/${year}`)
     }
   }

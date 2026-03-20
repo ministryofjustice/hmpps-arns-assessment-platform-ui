@@ -1,6 +1,7 @@
 import {
   accessTransition,
   actionTransition,
+  and,
   Data,
   Format,
   Post,
@@ -11,7 +12,9 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageLayout } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { CaseData } from '../../../constants'
+import { redirectIfGoalNotFound } from '../../../guards'
 
 /**
  * Add Steps page
@@ -58,15 +61,10 @@ export const addStepsStep = step({
         SentencePlanEffects.setAreaDataFromActiveGoal(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
         SentencePlanEffects.initializeStepEditSession(),
-      ],
-      next: [
-        // If goal not found, redirect to plan overview
-        redirect({
-          when: Data('activeGoal').not.match(Condition.IsRequired()),
-          goto: '../../plan/overview',
-        }),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ADD_STEPS),
       ],
     }),
+    redirectIfGoalNotFound('../../plan/overview'),
   ],
 
   onAction: [
@@ -84,11 +82,41 @@ export const addStepsStep = step({
   ],
 
   onSubmission: [
+    // Save steps after creating a new goal — show "goal added" notification
+    submitTransition({
+      when: and(
+        Post('action').match(Condition.Equals('saveAndContinue')),
+        Data('navigationReferrer').match(Condition.Equals('add-goal')),
+      ),
+      validate: true,
+      onValid: {
+        effects: [
+          SentencePlanEffects.saveStepEditSession(),
+          SentencePlanEffects.sendTelemetryEvent('CREATE_GOAL_WITH_STEPS_END', false),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.ADD_STEPS),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+
+            message: Format('You added a goal with steps to %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+          }),
+        ],
+        next: [
+          redirect({
+            when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
+            goto: '../../plan/overview?type=future',
+          }),
+          redirect({ goto: '../../plan/overview?type=current' }),
+        ],
+      },
+    }),
+
+    // Save steps for an existing goal — no notification
     submitTransition({
       when: Post('action').match(Condition.Equals('saveAndContinue')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.saveStepEditSession()],
+        effects: [SentencePlanEffects.saveStepEditSession(), SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEPS)],
         next: [
           redirect({
             when: Data('navigationReferrer').match(Condition.Equals('update-goal-steps')),

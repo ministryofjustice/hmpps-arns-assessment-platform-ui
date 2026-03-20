@@ -39,9 +39,8 @@ const DEFAULT_PREFERENCES: TrainingLauncherPreferences = {
  * Build HandoverSubjectDetails from session values
  */
 function buildSubjectDetails(values: ScenarioValues): HandoverSubjectDetails {
-  return {
+  const subjectDetails: HandoverSubjectDetails = {
     crn: values.crn,
-    pnc: values.pnc,
     givenName: values.givenName,
     familyName: values.familyName,
     gender: values.gender,
@@ -49,6 +48,10 @@ function buildSubjectDetails(values: ScenarioValues): HandoverSubjectDetails {
     location: values.location,
     sexuallyMotivatedOffenceHistory: values.sexuallyMotivatedOffenceHistory,
   }
+  if (values.pnc) {
+    subjectDetails.pnc = values.pnc
+  }
+  return subjectDetails
 }
 
 /**
@@ -89,7 +92,7 @@ function buildCriminogenicNeeds(values: ScenarioValues): CriminogenicNeedsData |
     }
   }
 
-  // Drug Misuse
+  // Drug Use
   if (values.drugLinkedToHarm || values.drugLinkedToReoffending || values.drugStrengths) {
     needs.drugMisuse = {
       drugLinkedToHarm: values.drugLinkedToHarm,
@@ -100,7 +103,7 @@ function buildCriminogenicNeeds(values: ScenarioValues): CriminogenicNeedsData |
     }
   }
 
-  // Alcohol Misuse
+  // Alcohol Use
   if (values.alcoholLinkedToHarm || values.alcoholLinkedToReoffending || values.alcoholStrengths) {
     needs.alcoholMisuse = {
       alcoholLinkedToHarm: values.alcoholLinkedToHarm,
@@ -172,6 +175,7 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
       identifier: values.practitionerIdentifier,
       displayName: values.practitionerDisplayName,
       accessMode: values.accessMode,
+      planAccessMode: values.planAccessMode,
       returnUrl: `${config.ingressUrl}/training-session-launcher/sessions`,
     },
     subjectDetails: buildSubjectDetails(values),
@@ -185,7 +189,7 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
   }
 
   if (targetApplication === 'sentence-plan' && session.sentencePlanVersion) {
-    request.planVersion = session.sentencePlanVersion
+    request.sentencePlanVersion = session.sentencePlanVersion
   }
 
   return request

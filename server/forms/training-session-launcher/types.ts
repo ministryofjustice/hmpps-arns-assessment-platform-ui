@@ -44,6 +44,7 @@ export interface DisplayScenario {
 
   // For display
   displayNeeds: DisplayNeed[]
+  isCustom: boolean
 
   // Raw scenario data for session creation
   rawScenario: ResolvedScenario

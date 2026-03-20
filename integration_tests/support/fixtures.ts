@@ -1,4 +1,4 @@
-import AxeBuilder from '@axe-core/playwright'
+import { AxeBuilder } from '@axe-core/playwright'
 import { test as base } from '@playwright/test'
 import { getTestApis } from './apis'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
@@ -14,6 +14,8 @@ import type { CoordinatorBuilderFactory } from '../builders/CoordinatorBuilder'
 import { HandoverBuilder } from '../builders/HandoverBuilder'
 import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
 import type { AccessMode, CriminogenicNeedsData } from '../../server/interfaces/handover-api/shared'
+import type { AssessmentType } from '../../server/interfaces/coordinator-api/oasysCreate'
+import { AuditQueueClient } from './AuditQueueClient'
 
 /**
  * Default criminogenic needs data for E2E tests.
@@ -67,6 +69,12 @@ const defaultCriminogenicNeedsData: CriminogenicNeedsData = {
     thinkStrengths: 'YES',
     thinkOtherWeightedScore: '8',
   },
+  lifestyleAndAssociates: {
+    lifestyleLinkedToHarm: 'YES',
+    lifestyleLinkedToReoffending: 'YES',
+    lifestyleStrengths: 'YES',
+    lifestyleOtherWeightedScore: '4',
+  },
 }
 
 export enum TargetService {
@@ -81,7 +89,8 @@ const TARGET_SERVICE_CLIENT_IDS: Record<TargetService, string> = {
 
 export interface CreateSessionOptions {
   targetService: TargetService
-  accessMode?: AccessMode
+  planAccessMode?: AccessMode
+  assessmentType?: AssessmentType
   pnc?: string
   /**
    * Criminogenic needs data from OASys (via handover).
@@ -90,6 +99,11 @@ export interface CreateSessionOptions {
    * Pass specific overrides or `null` to test missing data scenarios.
    */
   criminogenicNeedsData?: CriminogenicNeedsData | null
+  /**
+   * Plan version to include in the handover request.
+   * When set, indicates the user is accessing a previous version of the plan.
+   */
+  planVersion?: number
 }
 
 export interface SessionFixture {
@@ -115,6 +129,7 @@ type TestApiFixtures = {
   coordinatorBuilder: CoordinatorBuilderFactory
   handoverBuilder: HandoverBuilderFactory
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
+  auditQueue: AuditQueueClient
   makeAxeBuilder: () => AxeBuilder
 }
 
@@ -157,6 +172,7 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
   aapClient: async ({ apis }, use, testInfo) => {
     const { aapClient } = getTestApis({
       aapApiUrl: apis.aapApi.url,
+      aapDbConnectionString: apis.aapApi.dbConnectionString,
       handoverApiUrl: apis.handoverApi.url,
       coordinatorApiUrl: apis.coordinatorApi.url,
       hmppsAuthUrl: apis.hmppsAuth.url,
@@ -171,6 +187,7 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
   handoverClient: async ({ apis }, use, testInfo) => {
     const { handoverClient } = getTestApis({
       aapApiUrl: apis.aapApi.url,
+      aapDbConnectionString: apis.aapApi.dbConnectionString,
       handoverApiUrl: apis.handoverApi.url,
       coordinatorApiUrl: apis.coordinatorApi.url,
       hmppsAuthUrl: apis.hmppsAuth.url,
@@ -185,6 +202,7 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
   coordinatorClient: async ({ apis }, use, testInfo) => {
     const { coordinatorClient } = getTestApis({
       aapApiUrl: apis.aapApi.url,
+      aapDbConnectionString: apis.aapApi.dbConnectionString,
       handoverApiUrl: apis.handoverApi.url,
       coordinatorApiUrl: apis.coordinatorApi.url,
       hmppsAuthUrl: apis.hmppsAuth.url,
@@ -214,7 +232,13 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
 
   createSession: async ({ coordinatorBuilder, handoverBuilder }, use) => {
     const createSessionFn = async (options: CreateSessionOptions): Promise<SessionFixture> => {
-      const association = await coordinatorBuilder.create().save()
+      const builder = coordinatorBuilder.create()
+
+      if (options.assessmentType) {
+        builder.withAssessmentType(options.assessmentType)
+      }
+
+      const association = await builder.save()
 
       const sessionBuilder = handoverBuilder.forAssociation(association)
 
@@ -222,8 +246,8 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
         sessionBuilder.withSubjectPNC(options.pnc)
       }
 
-      if (options.accessMode) {
-        sessionBuilder.withAccessMode(options.accessMode)
+      if (options.planAccessMode) {
+        sessionBuilder.withPlanAccessMode(options.planAccessMode)
       }
 
       // Handle criminogenic needs data:
@@ -233,6 +257,10 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
       if (options.criminogenicNeedsData !== null) {
         const criminogenicNeeds = options.criminogenicNeedsData ?? defaultCriminogenicNeedsData
         sessionBuilder.withCriminogenicNeeds(criminogenicNeeds)
+      }
+
+      if (options.planVersion) {
+        sessionBuilder.withPlanVersion(options.planVersion)
       }
 
       const session = await sessionBuilder.save()
@@ -249,6 +277,15 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
 
     await use(createSessionFn)
   },
+  auditQueue: async ({ apis }, use) => {
+    const client = AuditQueueClient.getInstance({
+      queueUrl: apis.localstack.queueUrl,
+      region: apis.localstack.region,
+      endpoint: apis.localstack.url,
+    })
+    await use(client)
+  },
+
   makeAxeBuilder: async ({ page }, use) => {
     const makeAxeBuilder = () => new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
 

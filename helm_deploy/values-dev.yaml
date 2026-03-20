@@ -16,10 +16,17 @@ generic-service:
     COORDINATOR_API_URL: "https://arns-coordinator-api-dev.hmpps.service.justice.gov.uk"
     DELIUS_API_URL: "https://sentence-plan-and-delius-dev.hmpps.service.justice.gov.uk"
     ARNS_API_URL: "https://assess-risks-and-needs-dev.hmpps.service.justice.gov.uk"
+    SAN_URL: "https://strengths-based-needs-assessments-dev.hmpps.service.justice.gov.uk"
+    OASYS_URL: "https://arns-assessment-platform-dev.hmpps.service.justice.gov.uk/training-session-launcher/sessions"
+    MPOP_URL: "https://manage-people-on-probation-dev.hmpps.service.justice.gov.uk"
+    FEATURE_FLAG_URL: "https://feature-toggles-dev.hmpps.service.justice.gov.uk"
+    SERVICE_NOW_FORM_URL: "#service-now-link"
     ENVIRONMENT_NAME: DEV
-    AUDIT_ENABLED: "false"
+    AUDIT_ENABLED: "true"
     FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "true"
     TRAINING_SESSION_LAUNCHER_ENABLED: "true"
+    SMART_SURVEY_POPUP_CODE: "XF5PNV"
 
 generic-prometheus-alerts:
-  alertSeverity: hmpps-arns-non-prod
+  targetApplication: hmpps-arns-assessment-platform-ui
+  alertSeverity: hmpps-arns-assessment-platform-dev

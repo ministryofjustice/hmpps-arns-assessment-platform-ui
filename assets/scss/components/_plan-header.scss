@@ -1,7 +1,7 @@
 .plan-header {
 
   & {
-    box-shadow: inset 0 -1px 0 $govuk-border-colour;
+    box-shadow: inset 0 -1px 0 govuk-functional-colour(border);
     padding-top: govuk-spacing(5);
     padding-bottom: govuk-spacing(3);
   }
@@ -26,12 +26,12 @@
       }
 
       & > * {
-        color: $govuk-secondary-text-colour;
+        color: govuk-functional-colour(secondary-text);
         padding-right: govuk-spacing(2);
         margin-right: govuk-spacing(1);
 
         &:not(:last-child) {
-          box-shadow: inset -1px 0 0 $govuk-border-colour;
+          box-shadow: inset -1px 0 0 govuk-functional-colour(border);
         }
       }
     }

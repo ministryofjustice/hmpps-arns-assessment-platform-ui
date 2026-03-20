@@ -25,6 +25,8 @@ import DataReferenceHandler from '@form-engine/core/nodes/expressions/reference/
 import PostReferenceHandler from '@form-engine/core/nodes/expressions/reference/post/PostReferenceHandler'
 import QueryReferenceHandler from '@form-engine/core/nodes/expressions/reference/query/QueryReferenceHandler'
 import ParamsReferenceHandler from '@form-engine/core/nodes/expressions/reference/params/ParamsReferenceHandler'
+import RequestReferenceHandler from '@form-engine/core/nodes/expressions/reference/request/RequestReferenceHandler'
+import SessionReferenceHandler from '@form-engine/core/nodes/expressions/reference/session/SessionReferenceHandler'
 import BaseReferenceHandler from '@form-engine/core/nodes/expressions/reference/base/BaseReferenceHandler'
 import IterateHandler from '@form-engine/core/nodes/expressions/iterate/IterateHandler'
 import ConditionalHandler from '@form-engine/core/nodes/expressions/conditional/ConditionalHandler'
@@ -55,6 +57,8 @@ import PostHandler from '@form-engine/core/nodes/pseudo-nodes/post/PostHandler'
 import QueryHandler from '@form-engine/core/nodes/pseudo-nodes/query/QueryHandler'
 import ParamsHandler from '@form-engine/core/nodes/pseudo-nodes/params/ParamsHandler'
 import DataHandler from '@form-engine/core/nodes/pseudo-nodes/data/DataHandler'
+import RequestHandler from '@form-engine/core/nodes/pseudo-nodes/request/RequestHandler'
+import SessionHandler from '@form-engine/core/nodes/pseudo-nodes/session/SessionHandler'
 import AnswerLocalHandler from '@form-engine/core/nodes/pseudo-nodes/answer-local/AnswerLocalHandler'
 import AnswerRemoteHandler from '@form-engine/core/nodes/pseudo-nodes/answer-remote/AnswerRemoteHandler'
 import PipelineHandler from '@form-engine/core/nodes/expressions/pipeline/PipelineHandler'
@@ -62,6 +66,10 @@ import FormatHandler from '@form-engine/core/nodes/expressions/format/FormatHand
 import ValidationHandler from '@form-engine/core/nodes/expressions/validation/ValidationHandler'
 import RedirectOutcomeHandler from '@form-engine/core/nodes/outcomes/redirect/RedirectOutcomeHandler'
 import ThrowErrorOutcomeHandler from '@form-engine/core/nodes/outcomes/throw-error/ThrowErrorOutcomeHandler'
+
+export interface ThunkCompilationInstrumentation {
+  stageSync?: <T>(name: string, fn: () => T) => T
+}
 
 /**
  * Compiler that orchestrates the creation of thunk handlers for all nodes.
@@ -86,12 +94,28 @@ export default class ThunkCompilerFactory {
    * @param compilationDependencies - Contains nodeRegistry with all nodes to compile
    * @param functionRegistry - Registry of user-defined functions (for async metadata)
    */
-  compile(compilationDependencies: CompilationDependencies, functionRegistry: FunctionRegistry) {
-    // PASS 1: Create all handlers
-    compilationDependencies.nodeRegistry.getAllEntries().forEach((entry, nodeId) => {
-      const handler = this.compileASTNode(nodeId, entry.node)
+  compile(
+    compilationDependencies: CompilationDependencies,
+    functionRegistry: FunctionRegistry,
+    instrumentation?: ThunkCompilationInstrumentation,
+  ) {
+    const withStage = <T>(name: string, fn: () => T): T => {
+      if (instrumentation?.stageSync) {
+        return instrumentation.stageSync(name, fn)
+      }
 
-      compilationDependencies.thunkHandlerRegistry.register(nodeId, handler)
+      return fn()
+    }
+
+    const nodeEntries = compilationDependencies.nodeRegistry.getAllEntries()
+
+    // PASS 1: Create all handlers
+    withStage('pass1.createAndRegisterHandlers', () => {
+      nodeEntries.forEach((entry, nodeId) => {
+        const handler = this.compileASTNode(nodeId, entry.node)
+
+        compilationDependencies.thunkHandlerRegistry.register(nodeId, handler)
+      })
     })
 
     // PASS 2: Compute isAsync metadata for hybrid handlers
@@ -104,14 +128,18 @@ export default class ThunkCompilerFactory {
       metadataRegistry: compilationDependencies.metadataRegistry,
     }
 
-    const sortResult = compilationDependencies.dependencyGraph.topologicalSort()
+    const sortResult = withStage('pass2.topologicalSort', () =>
+      compilationDependencies.dependencyGraph.topologicalSort(),
+    )
 
-    sortResult.sort.forEach(nodeId => {
-      const handler = compilationDependencies.thunkHandlerRegistry.get(nodeId)
+    withStage('pass2.computeIsAsync', () => {
+      sortResult.sort.forEach(nodeId => {
+        const handler = compilationDependencies.thunkHandlerRegistry.get(nodeId)
 
-      if (handler) {
-        handler.computeIsAsync(metadataDeps)
-      }
+        if (handler) {
+          handler.computeIsAsync(metadataDeps)
+        }
+      })
     })
   }
 
@@ -120,7 +148,7 @@ export default class ThunkCompilerFactory {
    *
    * Creates appropriate handler based on node type using typeguards.
    * Handler selection order:
-   * 1. Pseudo nodes (AnswerLocal, AnswerRemote, Post, Query, Params, Data)
+   * 1. Pseudo nodes (AnswerLocal, AnswerRemote, Post, Query, Params, Data, Request, Session)
    * 2. Expression nodes (Reference, Iterate, Conditional, TestPredicate, AndPredicate, OrPredicate, XorPredicate, NotPredicate, Format, Pipeline, Function)
    * 3. Transition nodes (Access, Action, Submit)
    * 4. Structural nodes (Journey, Step, Block)
@@ -148,6 +176,12 @@ export default class ThunkCompilerFactory {
         case PseudoNodeType.DATA:
           return new DataHandler(nodeId, node)
 
+        case PseudoNodeType.REQUEST:
+          return new RequestHandler(nodeId, node)
+
+        case PseudoNodeType.SESSION:
+          return new SessionHandler(nodeId, node)
+
         case PseudoNodeType.ANSWER_LOCAL:
           return new AnswerLocalHandler(nodeId, node)
 
@@ -160,6 +194,8 @@ export default class ThunkCompilerFactory {
             PseudoNodeType.QUERY,
             PseudoNodeType.PARAMS,
             PseudoNodeType.DATA,
+            PseudoNodeType.REQUEST,
+            PseudoNodeType.SESSION,
             PseudoNodeType.ANSWER_LOCAL,
             PseudoNodeType.ANSWER_REMOTE,
           ])
@@ -195,6 +231,12 @@ export default class ThunkCompilerFactory {
         case 'params':
           return new ParamsReferenceHandler(nodeId, node)
 
+        case 'request':
+          return new RequestReferenceHandler(nodeId, node)
+
+        case 'session':
+          return new SessionReferenceHandler(nodeId, node)
+
         default:
           throw ThunkTypeMismatchError.invalidNodeType(nodeId, `REFERENCE:${namespace}`, [
             '@scope',
@@ -203,6 +245,8 @@ export default class ThunkCompilerFactory {
             'post',
             'query',
             'params',
+            'request',
+            'session',
           ])
       }
     }

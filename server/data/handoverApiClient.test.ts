@@ -33,6 +33,7 @@ describe('HandoverApiClient', () => {
     identifier: 'user-123',
     displayName: 'Test User',
     accessMode: 'READ_WRITE',
+    planAccessMode: 'READ_WRITE',
     returnUrl: 'http://localhost:3000',
   }
 
@@ -104,7 +105,7 @@ describe('HandoverApiClient', () => {
         subjectDetails: mockSubject,
         oasysAssessmentPk: '123456',
         assessmentVersion: 1,
-        planVersion: 2,
+        sentencePlanVersion: 2,
       }
 
       const expectedResponse: CreateHandoverLinkResponse = {

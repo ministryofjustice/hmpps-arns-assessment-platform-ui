@@ -11,7 +11,7 @@
     label: "Primary navigation",
     items: [
       {
-        text: personName + "'s plan",
+        text: (personName | possessive) + " plan",
         href: basePath + "/plan/overview",
         active: isOnPlanPage
       },
@@ -24,7 +24,7 @@
         text: "About " + personName,
         href: basePath + "/about-person",
         active: isOnAboutPage
-      }
+      } if showAboutTab
     ] | select | list
   }) }}
 {% endif %}

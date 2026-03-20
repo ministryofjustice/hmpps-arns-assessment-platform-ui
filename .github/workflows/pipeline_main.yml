@@ -19,7 +19,7 @@ jobs:
   helm_lint:
     strategy:
       matrix:
-        environments: [ 'dev', 'preprod', 'prod' ]
+        environments: [ 'dev', 'test', 'preprod', 'prod' ]
     name: helm lint
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/test_helm_lint.yml@v2
     secrets: inherit
@@ -48,7 +48,7 @@ jobs:
       tag_latest: false
       push: false
       load: true
-      docker_multiplatform: false
+      docker_multiplatform: true
       upload_image_artifact: true
 
   e2e_test:
@@ -60,6 +60,7 @@ jobs:
     uses: ./.github/workflows/e2e_test.yml
     with:
       app_version: ${{ needs.build_docker.outputs.app_version }}
+      docker_multiplatform: true
       shard: ${{ matrix.shard }}
       total_shards: 4
 
@@ -81,7 +82,7 @@ jobs:
 
     steps:
       - name: Download Unit Test Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: unit_test_artifacts
           pattern: npm_unit_test_artifacts
@@ -93,7 +94,7 @@ jobs:
           check_name: "Unit Test Results"
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: artifacts
           pattern: test_results-*
@@ -118,6 +119,7 @@ jobs:
       docker_registry: 'ghcr.io'
       registry_org: 'ministryofjustice'
       app_version: ${{ needs.build_docker.outputs.app_version }}
+      docker_multiplatform: true
       tag_latest: true
 
   deploy_dev:
@@ -129,4 +131,15 @@ jobs:
     secrets: inherit
     with:
       environment: 'dev'
+      app_version: '${{ needs.build_docker.outputs.app_version }}'
+
+  deploy_test:
+    name: Deploy to the development environment
+    needs:
+      - build_docker
+      - publish_docker
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2
+    secrets: inherit
+    with:
+      environment: 'test'
       app_version: '${{ needs.build_docker.outputs.app_version }}'

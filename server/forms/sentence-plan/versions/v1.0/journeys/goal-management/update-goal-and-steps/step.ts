@@ -17,7 +17,8 @@ import {
   viewAllNotesSection,
   actionButtons,
 } from './fields'
-import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
 
 /**
  * Update goal and steps
@@ -41,20 +42,13 @@ export const updateGoalAndStepsStep = step({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
         SentencePlanEffects.setNavigationReferrer('update-goal-steps'),
-      ],
-      next: [
-        // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
-        redirect({
-          when: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
-          goto: '../../plan/overview',
-        }),
-        // Redirect if goal not found
-        redirect({
-          when: Data('activeGoal').not.match(Condition.IsRequired()),
-          goto: '../../plan/overview',
-        }),
+        SentencePlanEffects.sendTelemetryEvent('UPDATE_GOAL_AND_STEPS_START', true),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_UPDATE_GOAL_AND_STEPS),
       ],
     }),
+    // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
+    redirectIfNotPostAgreement('../../plan/overview'),
+    redirectIfGoalNotFound('../../plan/overview'),
   ],
 
   onSubmission: [
@@ -70,7 +64,14 @@ export const updateGoalAndStepsStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: false,
       onAlways: {
-        effects: [SentencePlanEffects.updateGoalProgress()],
+        effects: [
+          SentencePlanEffects.updateGoalProgress(),
+          SentencePlanEffects.sendTelemetryEvent('UPDATE_GOAL_AND_STEPS_SAVE', false),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEP_PROGRESS, {
+            goalStatus: Data('activeGoal.status'),
+            action: 'save',
+          }),
+        ],
         next: [
           // If all steps completed, go to confirm-if-achieved page
           redirect({
@@ -90,7 +91,14 @@ export const updateGoalAndStepsStep = step({
       when: Post('action').match(Condition.Equals('mark-achieved')),
       validate: false,
       onAlways: {
-        effects: [SentencePlanEffects.updateGoalProgress()],
+        effects: [
+          SentencePlanEffects.updateGoalProgress(),
+          SentencePlanEffects.sendTelemetryEvent('UPDATE_GOAL_AND_STEPS_ACHIEVED', false),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEP_PROGRESS, {
+            goalStatus: Data('activeGoal.status'),
+            action: 'mark-achieved',
+          }),
+        ],
         next: [redirect({ goto: Format('../../goal/%1/confirm-achieved-goal', Data('activeGoal.uuid')) })],
       },
     }),

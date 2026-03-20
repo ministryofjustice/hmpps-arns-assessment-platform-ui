@@ -15,9 +15,9 @@ export interface PrivacyScreenConfig {
   loadEffects: EffectFunctionExpr[]
 
   /**
-   * Effect to run when form is submitted successfully (e.g., set privacy accepted flag)
+   * Effects to run when form is submitted successfully (e.g., set privacy accepted flag, send audit event)
    */
-  submitEffect: EffectFunctionExpr
+  submitEffects: EffectFunctionExpr[]
 
   /**
    * Path to redirect to after successful submission
@@ -85,7 +85,7 @@ export interface PrivacyScreenConfig {
 export function createPrivacyScreen(config: PrivacyScreenConfig) {
   const {
     loadEffects,
-    submitEffect,
+    submitEffects,
     submitRedirectPath,
     alreadyAcceptedRedirectPath,
     template,
@@ -102,6 +102,7 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
       locals: {
         basePath,
         hideNavigation: true,
+        hidePreviousVersions: true,
         hmppsHeaderServiceNameLink: headerServiceNameLink,
         backlink: when(Data('accessDetails.accessType').match(Condition.Equals('OASYS')))
           .then(Data('accessDetails.oasysRedirectUrl'))
@@ -125,7 +126,7 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
       submitTransition({
         validate: true,
         onValid: {
-          effects: [submitEffect],
+          effects: submitEffects,
           next: [redirect({ goto: submitRedirectPath })],
         },
       }),

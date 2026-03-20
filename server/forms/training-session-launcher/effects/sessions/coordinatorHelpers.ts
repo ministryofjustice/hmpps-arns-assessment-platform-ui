@@ -26,7 +26,7 @@ export function buildCoordinatorRequest(session: Session): OasysCreateRequest {
   const baseRequest: OasysCreateRequest = {
     oasysAssessmentPk: values.oasysAssessmentPk,
     planType: 'INITIAL',
-    assessmentType: 'SAN_SP',
+    assessmentType: 'SP',
     userDetails: {
       id: values.practitionerIdentifier,
       name: values.practitionerDisplayName,

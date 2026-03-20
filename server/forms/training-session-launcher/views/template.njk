@@ -1,5 +1,6 @@
 {%- extends "partials/layout.njk" -%}
 {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 
 {% block head %}
   {{ super() }}
@@ -8,7 +9,7 @@
   {% endblock %}
 {% endblock %}
 
-{% block header %}
+{% block govukHeader %}
   {{ super() }}
   {% set isOnBrowsePage = step.path == '/browse' %}
   {% set isOnCustomisePage = step.path == '/customise' %}
@@ -54,19 +55,31 @@
   </div>
 {% endblock %}
 
-{% block supportWidget %}
-  {% set helpContent %}
-    <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Get help</h3>
-    <p class="govuk-body-s govuk-!-margin-bottom-0">
-      Please provide the request details shown here, along with a description of the issue you experienced.
-    </p>
-  {% endset %}
+{% set launcherHelpContent %}
+  <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Get help</h3>
+  <p class="govuk-body-s govuk-!-margin-bottom-0">
+    Please provide the request details shown here, along with a description of the issue you experienced.
+  </p>
+{% endset %}
 
+{% block supportWidget %}
   {{ supportWidget({
-    helpContent: helpContent,
+    helpContent: launcherHelpContent,
     supportItems: [
       { label: 'Preferences ID', value: data.preferencesId }
     ] if data.preferencesId else []
   }) }}
 {% endblock %}
 
+{% block govukFooter %}
+  {{ supportWidget({
+    helpContent: launcherHelpContent,
+    supportItems: [
+      { label: 'Preferences ID', value: data.preferencesId }
+    ] if data.preferencesId else []
+  }) }}
+
+  {{ pdsFooter({
+    baseUrl: "/platform"
+  }) }}
+{% endblock %}

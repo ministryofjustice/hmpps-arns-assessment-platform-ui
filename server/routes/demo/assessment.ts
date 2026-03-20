@@ -1,8 +1,7 @@
 import { Router } from 'express'
 import type { Services } from '../../services'
-import { AuditEvent } from '../../services/auditService'
 
-export default function routes({ assessmentService, auditService }: Services): Router {
+export default function routes({ assessmentService }: Services): Router {
   const router = Router()
 
   router.get('/assessment', async (req, res, next) => {
@@ -29,18 +28,6 @@ export default function routes({ assessmentService, auditService }: Services): R
       const currentTime = new Date().toLocaleString('en-GB', {
         dateStyle: 'full',
         timeStyle: 'long',
-      })
-
-      await auditService.send(AuditEvent.CREATE_ASSESSMENT, {
-        username: user.id,
-        correlationId: req.id,
-        assessmentUuid,
-      })
-
-      await auditService.send(AuditEvent.VIEW_ASSESSMENT, {
-        username: user.id,
-        correlationId: req.id,
-        assessmentUuid,
       })
 
       return res.render('pages/assessment', {

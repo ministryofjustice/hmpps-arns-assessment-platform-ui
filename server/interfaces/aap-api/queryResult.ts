@@ -19,6 +19,7 @@ export interface AssessmentVersionQueryResult extends QueryResult {
   collections: Collection[]
   collaborators: User[]
   identifiers: Identifiers
+  flags: string[]
 }
 
 export interface TimelineQueryResult extends QueryResult {

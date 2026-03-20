@@ -1,6 +1,11 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
-import { currentGoals, futureGoals, mixedGoals } from '../../builders/sentencePlanFactories'
+import {
+  currentGoals,
+  currentGoalsWithCompletedSteps,
+  futureGoals,
+  mixedGoals,
+} from '../../builders/sentencePlanFactories'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import { buildPageTitle, navigateToSentencePlan, sentencePlanPageTitles } from './sentencePlanUtils'
@@ -31,6 +36,27 @@ test.describe('Plan Overview Page', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.createGoalLink).toBeVisible()
+    })
+
+    test('shows single line wording without about page link for SP users', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        assessmentType: 'SP',
+      })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      await expect(planOverviewPage.noGoalsMessage).toBeVisible()
+      await expect(planOverviewPage.noGoalsMessage).not.toContainText(/You can either/i)
+      await expect(planOverviewPage.noGoalsMessage).toContainText(/You can create a goal with/i)
+      await expect(page.getByRole('link', { name: /view information from.*assessment/i })).not.toBeVisible()
     })
 
     test('shows empty message when no future goals exist', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -246,7 +272,27 @@ test.describe('Plan Overview Page', () => {
       expect(hasChangeLink).toBe(true)
     })
 
-    test('shows Add or change steps link on goal cards', async ({ page, createSession, sentencePlanBuilder }) => {
+    test('shows Add or change steps link on goal cards only when goal has at least one step (draft plan)', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      const hasAddStepsLink = await planOverviewPage.goalCardHasAddStepsLink(0)
+      expect(hasAddStepsLink).toBe(true)
+    })
+
+    test(`doesn't show Add or change steps link on goal cards for a goal with no steps (draft plan)`, async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
@@ -255,7 +301,7 @@ test.describe('Plan Overview Page', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const hasAddStepsLink = await planOverviewPage.goalCardHasAddStepsLink(0)
-      expect(hasAddStepsLink).toBe(true)
+      expect(hasAddStepsLink).toBe(false)
     })
 
     test('shows Delete link on goal cards', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -276,7 +322,7 @@ test.describe('Plan Overview Page', () => {
       sentencePlanBuilder,
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
 
       await navigateToSentencePlan(page, handoverLink)
 
@@ -464,6 +510,20 @@ test.describe('Plan Overview Page', () => {
         const firstFutureHasMoveUp = await planOverviewPage.goalCardHasMoveUpButton(0)
         expect(firstFutureHasMoveUp).toBe(false)
       })
+    })
+  })
+
+  test.describe('Accessibility', () => {
+    test('should be accessible', async ({ page, createSession, makeAxeBuilder, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(3)).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      await PlanOverviewPage.verifyOnPage(page)
+
+      const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
+      expect(accessibilityScanResults.violations).toEqual([])
     })
   })
 })

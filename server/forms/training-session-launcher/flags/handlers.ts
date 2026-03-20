@@ -3,6 +3,7 @@ import { CreateHandoverLinkRequest } from '../../../interfaces/handover-api/requ
 import { OasysCreateRequest } from '../../../interfaces/coordinator-api/oasysCreate'
 import { TrainingScenarioFlag } from '../constants'
 import { ScenarioFieldKey, getFieldsByGroup } from '../scenarios'
+import { randomOasysAssessmentPk } from '../scenarios/helpers'
 import { TrainingSessionLauncherContext, TargetApplication } from '../types'
 import { TrainingSessionLauncherEffectsDeps } from '../effects/types'
 
@@ -39,9 +40,6 @@ export interface FlagHandoverConfig {
  * Each flag can configure behavior for session creation and handover link generation
  */
 export interface FlagHandler {
-  /** Fields to exclude from randomization (they remain undefined) */
-  excludeFields?: ScenarioFieldKey[]
-
   /** Session creation phase configuration */
   session?: FlagSessionConfig
 
@@ -53,16 +51,23 @@ export interface FlagHandler {
  * Registry mapping flags to their handlers
  */
 const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
-  SP_NATIONAL_ROLLOUT: {
-    excludeFields: getFieldsByGroup('criminogenicNeeds'),
+  SAN_PRIVATE_BETA: {
+    session: {
+      modifyRequest: request => ({ ...request, assessmentType: 'SAN_SP' }),
+    },
+    handover: {
+      availableServices: Object.keys(config.handoverTargets) as TargetApplication[],
+    },
+  },
+
+  NEW_PERIOD_OF_SUPERVISION: {
     session: {
       modifyRequest: request => ({
         ...request,
-        assessmentType: 'SP',
+        newPeriodOfSupervision: 'Y' as const,
+        previousOasysSpPk: request.oasysAssessmentPk,
+        oasysAssessmentPk: randomOasysAssessmentPk(),
       }),
-    },
-    handover: {
-      availableServices: ['sentence-plan'],
     },
   },
 }
@@ -77,10 +82,11 @@ export interface ResolvedHandoverConfig {
 }
 
 /**
- * Get the default list of available services from config
+ * Get the default list of available services.
+ * Defaults to Sentence Plan only; other services are revealed by flags.
  */
 function getDefaultAvailableServices(): TargetApplication[] {
-  return Object.keys(config.handoverTargets) as TargetApplication[]
+  return ['sentence-plan']
 }
 
 /**
@@ -115,21 +121,16 @@ export function resolveHandoverConfig(flags: TrainingScenarioFlag[]): ResolvedHa
 /**
  * Get all fields that should be excluded based on flags.
  * Excluded fields remain undefined (not fixed, not randomized).
+ *
+ * By default, criminogenic needs fields are excluded.
+ * The SAN_PRIVATE_BETA flag includes them.
  */
 export function getExcludedFields(flags: TrainingScenarioFlag[]): Set<ScenarioFieldKey> {
-  const excluded = new Set<ScenarioFieldKey>()
-
-  for (const flag of flags) {
-    const handler = flagHandlers[flag]
-
-    if (handler?.excludeFields) {
-      for (const field of handler.excludeFields) {
-        excluded.add(field)
-      }
-    }
+  if (flags.includes('SAN_PRIVATE_BETA')) {
+    return new Set<ScenarioFieldKey>()
   }
 
-  return excluded
+  return new Set<ScenarioFieldKey>(getFieldsByGroup('criminogenicNeeds'))
 }
 
 /**

@@ -1,8 +1,9 @@
-import { accessTransition, Data, Format, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
+import { accessTransition, Format, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, introText, goalCard, removalNoteSection, buttonGroup } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
 
 /**
  * Confirm remove goal page
@@ -24,23 +25,15 @@ export const removeGoalStep = step({
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.setActiveGoalContext()],
-      next: [
-        // Only allow removing goals if plan is agreed (soft-delete for agreed plans only)
-        // Draft plans should use "delete" instead
-        redirect({
-          when: Data('latestAgreementStatus').not.match(
-            Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
-          ),
-          goto: '../../plan/overview',
-        }),
-        // Redirect if goal not found
-        redirect({
-          when: Data('activeGoal').not.match(Condition.IsRequired()),
-          goto: '../../plan/overview',
-        }),
+      effects: [
+        SentencePlanEffects.setActiveGoalContext(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_REMOVED),
       ],
     }),
+    // Only allow removing goals if plan is agreed (soft-delete for agreed plans only)
+    // Draft plans should use "delete" instead
+    redirectIfNotPostAgreement('../../plan/overview'),
+    redirectIfGoalNotFound('../../plan/overview'),
   ],
 
   onSubmission: [
@@ -56,6 +49,7 @@ export const removeGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.markGoalAsRemoved(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL_REMOVED),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You removed a goal from %1 plan', CaseData.ForenamePossessive),

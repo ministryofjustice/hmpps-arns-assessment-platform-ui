@@ -27,6 +27,7 @@ export interface GoalAction {
   href: ConditionalString
   visuallyHiddenText?: ConditionalString
   classes?: ConditionalString
+  hidden?: ConditionalBoolean
 }
 
 /**
@@ -103,6 +104,9 @@ export interface GoalSummaryCardProps {
   /** Action links shown in the card header */
   actions?: ConditionalArray<GoalAction>
 
+  /** Whether the page is in read-only mode */
+  isReadOnly?: ConditionalBoolean
+
   /** Buttons shown at the bottom of the card */
   buttons?: ConditionalArray<GoalButton>
 
@@ -160,7 +164,7 @@ type GoalSummaryCardBlock = GoalSummaryCardAgreed | GoalSummaryCardDraft
 function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
   const steps = (block.steps ?? []) as GoalStep[]
   const notes = (block.notes ?? []) as GoalNote[]
-  const actions = (block.actions ?? []) as GoalAction[]
+  const actions = ((block.actions ?? []) as GoalAction[]).filter(action => !action.hidden)
   const buttons = (block.buttons ?? []) as GoalButton[]
   const relatedAreasOfNeed = (block.relatedAreasOfNeed ?? []) as string[]
 
@@ -192,6 +196,7 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
     notes,
     removedNote,
     actions,
+    isReadOnly: block.isReadOnly,
     buttons,
     errorMessage: block.errorMessage,
     index: block.index,
