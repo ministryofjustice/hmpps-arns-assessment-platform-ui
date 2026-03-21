@@ -6,7 +6,7 @@ import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPa
 import coordinatorApi from '../../../mockApis/coordinatorApi'
 
 test.describe('Previous Versions - Multiple previous versions, including Countersigned', () => {
-  test('it lists countersigned versions in a separate table', async ({ page, createSession }) => {
+  test('it lists countersigned versions in a separate table', async ({ page, createSession, makeAxeBuilder }) => {
     const { sentencePlanId, handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
     })
@@ -147,5 +147,9 @@ test.describe('Previous Versions - Multiple previous versions, including Counter
 
     const planLink = allVersionsColumns.nth(planColumnIndex).locator('a', { hasText: 'View' })
     await expect(planLink).toHaveAttribute('target', '_blank')
+
+    // Accessibility
+    const accessibilityScanResults = await makeAxeBuilder().include('#main-content').analyze()
+    expect(accessibilityScanResults.violations).toEqual([])
   })
 })

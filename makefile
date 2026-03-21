@@ -49,9 +49,12 @@ e2e: ## Run Playwright tests locally (dev environment must be running).
 e2e-ui: ## Run Playwright tests with UI mode (dev environment must be running).
 	npx playwright test --ui
 
+SHARD ?=
+export SHARD
+
 e2e-ci: ## Run Playwright tests in Docker container (for CI).
 	@make install-node-modules
-	docker compose $(CI_COMPOSE_FILES) up $(SERVICE_NAME) --wait && \
+	docker compose $(CI_COMPOSE_FILES) up $(SERVICE_NAME) --wait $(if $(filter local,$(APP_VERSION)),--build) && \
 	docker compose $(CI_COMPOSE_FILES) run --rm playwright
 
 lint: ## Runs the linter.
@@ -92,3 +95,8 @@ save-logs: ## Saves docker container logs in a directory defined by OUTPUT_LOGS_
 	docker system info
 	mkdir -p ${OUTPUT_LOGS_DIR}
 	docker logs ${PROJECT_NAME}-ui-1 > ${OUTPUT_LOGS_DIR}/ui.log
+	docker logs ${PROJECT_NAME}-arns-handover-1 > ${OUTPUT_LOGS_DIR}/arns-handover.log
+	docker logs ${PROJECT_NAME}-coordinator-api-1 > ${OUTPUT_LOGS_DIR}/coordinator-api.log
+	docker logs ${PROJECT_NAME}-api-1 > ${OUTPUT_LOGS_DIR}/aap-api.log
+	docker logs ${PROJECT_NAME}-hmpps-auth-1 > ${OUTPUT_LOGS_DIR}/hmpps-auth.log
+	docker logs ${PROJECT_NAME}-wiremock-1 > ${OUTPUT_LOGS_DIR}/wiremock.log

@@ -27,6 +27,7 @@ export interface GoalAction {
   href: ConditionalString
   visuallyHiddenText?: ConditionalString
   classes?: ConditionalString
+  hidden?: ConditionalBoolean
 }
 
 /**
@@ -163,7 +164,7 @@ type GoalSummaryCardBlock = GoalSummaryCardAgreed | GoalSummaryCardDraft
 function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
   const steps = (block.steps ?? []) as GoalStep[]
   const notes = (block.notes ?? []) as GoalNote[]
-  const actions = (block.actions ?? []) as GoalAction[]
+  const actions = ((block.actions ?? []) as GoalAction[]).filter(action => !action.hidden)
   const buttons = (block.buttons ?? []) as GoalButton[]
   const relatedAreasOfNeed = (block.relatedAreasOfNeed ?? []) as string[]
 

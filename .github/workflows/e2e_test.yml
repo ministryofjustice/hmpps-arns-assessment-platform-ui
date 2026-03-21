@@ -1,4 +1,4 @@
-name: Run end-to-end tests
+name: E2E tests
 
 on:
   workflow_call:
@@ -12,13 +12,22 @@ on:
         required: false
         type: boolean
         default: false
+      total_shards:
+        description: 'Total number of shards (e.g. 4)'
+        required: true
+        type: number
 
 permissions:
   contents: read
+  checks: write
 
 jobs:
   e2e_test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
     env:
       APP_VERSION: ${{ inputs.app_version }}
     steps:
@@ -57,23 +66,23 @@ jobs:
 
           wait
 
-      - name: Run Playwright tests
+      - name: Run Playwright tests (shard ${{ matrix.shard }}/${{ inputs.total_shards }})
         run: |
-          make e2e-ci
+          make e2e-ci SHARD=${{ matrix.shard }}/${{ inputs.total_shards }}
 
       - name: Upload test results
         if: '!cancelled()'
         uses: actions/upload-artifact@v7
         with:
-          name: test_results
+          name: test_results-${{ matrix.shard }}
           path: |
-            test_results/playwright/
+            test_results/
 
       - name: Archive screenshots
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: screenshots
+          name: screenshots-${{ matrix.shard }}
           path: |
             test_results/playwright/test-output/**/*
 
@@ -85,6 +94,131 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: e2e_docker_logs
+          name: e2e_docker_logs-${{ matrix.shard }}
           path: |
             ${{ runner.temp }}/docker-logs
+
+  results:
+    name: Results
+    if: ${{ !cancelled() }}
+    needs: [e2e_test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install Playwright (no browsers)
+        run: PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install playwright
+
+      - name: Download shard reports
+        uses: actions/download-artifact@v8
+        with:
+          pattern: test_results-*
+          path: all-shard-reports
+          merge-multiple: true
+
+      - name: Merge into HTML report
+        run: npx playwright merge-reports --reporter=html ./all-shard-reports/blob-report
+
+      - name: Generate test summary
+        id: summary
+        run: |
+          npx playwright merge-reports --reporter=json ./all-shard-reports/blob-report > results.json
+          node <<'SCRIPT'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('results.json', 'utf8'));
+
+          const results = { passed: [], failed: [], flaky: [], skipped: [] };
+
+          function collect(suites, titlePath) {
+            for (const suite of suites) {
+              const path = suite.title ? [...titlePath, suite.title] : titlePath;
+              if (suite.suites) collect(suite.suites, path);
+              for (const spec of (suite.specs || [])) {
+                for (const test of spec.tests) {
+                  const location = `${spec.file}:${spec.line}:${spec.column}`;
+                  const title = [`[${test.projectName}]`, location, ...path, spec.title].join(' › ');
+                  const lastResult = test.results?.[test.results.length - 1];
+                  const duration = lastResult?.duration ?? 0;
+
+                  switch (test.status) {
+                    case 'expected': results.passed.push({ title, duration }); break;
+                    case 'unexpected': results.failed.push({ title, duration }); break;
+                    case 'flaky': results.flaky.push({ title, duration }); break;
+                    case 'skipped': results.skipped.push({ title, duration }); break;
+                  }
+                }
+              }
+            }
+          }
+
+          collect(data.suites, []);
+
+          function formatDuration(ms) {
+            return ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(1)}s`;
+          }
+
+          const lines = [];
+
+          if (results.passed.length) {
+            lines.push(`  ${results.passed.length} passed`);
+          }
+          if (results.flaky.length) {
+            lines.push(`  ${results.flaky.length} flaky`);
+            results.flaky.forEach(t => lines.push(`    ${t.title}`));
+          }
+          if (results.failed.length) {
+            lines.push(`  ${results.failed.length} failed`);
+            results.failed.forEach(t => lines.push(`    ${t.title} (${formatDuration(t.duration)})`));
+          }
+          if (results.skipped.length) {
+            lines.push(`  ${results.skipped.length} skipped`);
+            results.skipped.forEach(t => lines.push(`    ${t.title}`));
+          }
+
+          const icon = results.failed.length > 0 ? '❌' : '✅';
+          const plainText = lines.join('\n');
+          const summary = `## ${icon} E2E Test Results\n\n\`\`\`\n${plainText}\n\`\`\`\n\nDownload the **playwright-report** artifact for the full HTML report.\n`;
+
+          console.log(`\n${icon} E2E Test Results\n`);
+          console.log(plainText);
+          console.log();
+
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);
+
+          const output = process.env.GITHUB_OUTPUT;
+          fs.appendFileSync(output, `passed=${results.passed.length}\n`);
+          fs.appendFileSync(output, `failed=${results.failed.length}\n`);
+          fs.appendFileSync(output, `flaky=${results.flaky.length}\n`);
+          fs.appendFileSync(output, `skipped=${results.skipped.length}\n`);
+          fs.appendFileSync(output, `conclusion=${results.failed.length > 0 ? 'failure' : 'success'}\n`);
+          fs.appendFileSync(output, `check_summary<<EOF\n${plainText}\nEOF\n`);
+          SCRIPT
+
+      - name: Upload HTML report
+        if: '!cancelled()'
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+      - name: Publish check run
+        if: '!cancelled()'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/${{ github.repository }}/check-runs \
+            -X POST \
+            -f name="E2E Test Results" \
+            -f head_sha="${{ github.sha }}" \
+            -f status="completed" \
+            -f conclusion="${{ steps.summary.outputs.conclusion }}" \
+            -f "output[title]=${{ steps.summary.outputs.passed }} passed, ${{ steps.summary.outputs.failed }} failed, ${{ steps.summary.outputs.flaky }} flaky, ${{ steps.summary.outputs.skipped }} skipped" \
+            -f "output[summary]=${{ steps.summary.outputs.check_summary }}"
+
+      - name: Fail if tests failed
+        if: ${{ needs.e2e_test.result != 'success' }}
+        run: exit 1

@@ -49,6 +49,20 @@ export const redirectIfNotPostAgreement = (goto: string) =>
     next: [redirect({ goto })],
   })
 
+// redirects users unless plan status is not in post-agreement states (draft plan):
+export const redirectIfPostAgreement = (goto: string) =>
+  accessTransition({
+    when: hasPostAgreementStatus,
+    next: [redirect({ goto })],
+  })
+
+// redirects users if goal is not found:
+export const redirectIfGoalNotFound = (goto: string) =>
+  accessTransition({
+    when: Data('activeGoal').not.match(Condition.IsRequired()),
+    next: [redirect({ goto })],
+  })
+
 /**
  * Redirect users unless latest status is COULD_NOT_ANSWER.
  */
