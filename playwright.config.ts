@@ -41,7 +41,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  workers: process.env.CI ? 3 : 4,
+  workers: process.env.CI ? 2 : 4,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'test_results/playwright/report', open: process.env.CI ? 'never' : 'on-failure' }],
