@@ -1,10 +1,9 @@
-{% from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions %}
-{% from "moj/components/alert/macro.njk" import mojAlert %}
+{% from "shared/views/partials/person-header.njk" import appPersonHeader %}
 
 {% if data.caseData %}
   {% set person = data.caseData %}
-  {% set fullName = person.name.forename + ' ' + person.name.surname if person.name else 'Unknown' %}
   {% set buttonItems = [] %}
+  {% set navigationLinks = [] %}
 
   {% if buttons.showReturnToOasysButton %}
     {% set buttonItems = buttonItems.concat([{
@@ -37,64 +36,22 @@
     }]) %}
   {% endif %}
 
+  {% if not hidePreviousVersions %}
+    {% set navigationLinks = navigationLinks.concat([{
+      text: 'View previous versions',
+      href: basePath + '/plan/previous-versions',
+      attributes: {
+        'data-previous-versions-link': true
+      }
+    }]) %}
+  {% endif %}
 
-  <div class="govuk-width-container">
-    <header class="plan-header" role="presentation" data-qa="plan-header">
-      <div class="govuk-grid-row">
-          <div class="govuk-grid-column-full plan-header__subject-details">
-            <p class="plan-header__subject-details__title">{{ fullName }}</p>
-            <dl class="plan-header__subject-details__identifiers">
-              <div>
-                <dt>CRN:</dt>
-                <dd>{{ person.crn }} </dd>
-              </div>
-              <div>
-                <dt>PNC:</dt>
-                <dd>{{ person.pnc | default('Unknown PNC', true)}}</dd>
-              </div>
-              <div>
-                <dt>Date of birth:</dt>
-                <dd>{{ person.dateOfBirth | formatSimpleDate }}</dd>
-              </div>
-            </dl>
-            {% if not hidePreviousVersions %}
-              <div class ="plan-header__subject-details__navigation-links" >
-                <a href="{{ basePath }}/plan/previous-versions"
-                   class="govuk-link--no-visited-state govuk-!-display-none-print"
-                   data-previous-versions-link>
-                  View previous versions
-                </a>
-              </div>
-            {% endif %}
-          </div>
-      </div>
-
-      {% if alert %}
-        <div class="plan-header__previous-version-date-banner">
-          <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-              {{ mojAlert({
-                variant: "information",
-                title: alert.title,
-                dismissible: false,
-                html: '<span class="moj-alert__heading">' ~ alert.message ~ '</span>'})
-              }}
-            </div>
-          </div>
-        </div>
-      {% endif %}
-
-      {% if headerPageHeading or buttonItems | length %}
-        <div class="plan-header__header-actions">
-          {{ mojPageHeaderActions({
-            heading: {
-              text: headerPageHeading,
-              classes: "govuk-heading-l govuk-!-margin-bottom-0"
-            },
-            items: buttonItems
-          }) }}
-        </div>
-      {% endif %}
-    </header>
-  </div>
+  {{ appPersonHeader({
+    person: person,
+    navigationLinks: navigationLinks,
+    buttonItems: buttonItems,
+    headerPageHeading: headerPageHeading,
+    alert: alert,
+    dataQa: 'plan-header'
+  }) }}
 {% endif %}

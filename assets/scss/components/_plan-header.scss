@@ -48,4 +48,9 @@
       margin-top: govuk-spacing(6);
     }
   }
+
+  &__actions-only {
+    margin-top: govuk-spacing(6);
+    text-align: right;
+  }
 }
