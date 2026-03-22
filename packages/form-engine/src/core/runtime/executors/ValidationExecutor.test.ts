@@ -56,6 +56,8 @@ function createRuntimePlan(stepId: NodeId, options: Partial<StepRuntimePlan> = {
     validationBlockIds: [],
     renderAncestorIds: [],
     renderStepId: stepId,
+    isRenderSync: false,
+    isAnswerPrepareSync: false,
     ...options,
   }
 }
