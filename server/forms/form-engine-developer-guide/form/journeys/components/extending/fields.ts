@@ -102,7 +102,7 @@ export interface PhoneNumberInput extends GovUKTextInput {
 }
 
 // Wrapper renderer
-async function phoneNumberInputRenderer(
+function phoneNumberInputRenderer(
   block: EvaluatedBlock<PhoneNumberInput>,
   nunjucksEnv: nunjucks.Environment,
 ): Promise<string> {
@@ -170,7 +170,7 @@ function isoToUkFormat(value: unknown): string | undefined {
   return value
 }
 
-async function smartDatePickerRenderer(
+function smartDatePickerRenderer(
   block: EvaluatedBlock<SmartDatePicker>,
   nunjucksEnv: nunjucks.Environment,
 ): Promise<string> {
@@ -212,7 +212,7 @@ export interface EnhancedTextInput extends GovUKTextInput {
   prefixIcon?: 'search' | 'email' | 'phone'
 }
 
-async function enhancedTextInputRenderer(
+function enhancedTextInputRenderer(
   block: EvaluatedBlock<EnhancedTextInput>,
   nunjucksEnv: nunjucks.Environment,
 ): Promise<string> {

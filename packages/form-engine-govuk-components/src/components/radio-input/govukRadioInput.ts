@@ -246,33 +246,30 @@ interface GovUKRadioInputDivider {
   divider: ConditionalString
 }
 
-export const govukRadioInput = buildNunjucksComponent<GovUKRadioInput>(
-  'govukRadioInput',
-  async (block, nunjucksEnv) => {
-    const items = block.items.map(option => makeOption(option, block.value as string))
+export const govukRadioInput = buildNunjucksComponent<GovUKRadioInput>('govukRadioInput', (block, nunjucksEnv) => {
+  const items = block.items.map(option => makeOption(option, block.value as string))
 
-    const params = {
-      fieldset: block.fieldset || {
-        legend: {
-          text: block.label,
-        },
+  const params = {
+    fieldset: block.fieldset || {
+      legend: {
+        text: block.label,
       },
-      idPrefix: block.idPrefix || block.code,
-      name: block.code,
-      value: block.value,
-      formGroup: block.formGroup,
-      hint: block.hint ? (typeof block.hint === 'object' ? block.hint : { text: block.hint }) : undefined,
-      items,
-      classes: block.classes,
-      attributes: block.attributes,
-      errorMessage: block.errors?.length && { text: block.errors[0].message },
-    }
+    },
+    idPrefix: block.idPrefix || block.code,
+    name: block.code,
+    value: block.value,
+    formGroup: block.formGroup,
+    hint: block.hint ? (typeof block.hint === 'object' ? block.hint : { text: block.hint }) : undefined,
+    items,
+    classes: block.classes,
+    attributes: block.attributes,
+    errorMessage: block.errors?.length && { text: block.errors[0].message },
+  }
 
-    return nunjucksEnv.render('govuk/components/radios/template.njk', {
-      params,
-    })
-  },
-)
+  return nunjucksEnv.render('govuk/components/radios/template.njk', {
+    params,
+  })
+})
 
 const makeOption = (option: EvaluatedBlock<GovUKRadioInputItem | GovUKRadioInputDivider>, checkedValue: string) => {
   if (isRadioDivider(option)) {
