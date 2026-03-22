@@ -5,7 +5,7 @@ import { TemplateWrapper } from '@form-engine/registry/components/templateWrappe
 import { Transformer } from '@form-engine/registry/transformers'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { Condition } from '@form-engine/registry/conditions'
-import { GoalSummaryCardAgreed, ButtonAsLink } from '../../../../../components'
+import { GoalSummaryCardAgreed } from '../../../../../components'
 import { CaseData } from '../../../constants'
 import { canStartNow } from '../sharedFields'
 
@@ -86,10 +86,8 @@ export const confirmButton = GovUKButton({
   preventDoubleClick: true,
 })
 
-export const cancelLink = ButtonAsLink({
-  text: 'Do not add goal back into plan',
-  name: 'action',
-  value: 'cancel',
+export const cancelLink = HtmlBlock({
+  content: '<a href="view-inactive-goal" class="govuk-link">Do not add goal back into plan</a>',
 })
 
 export const buttonGroup = TemplateWrapper({

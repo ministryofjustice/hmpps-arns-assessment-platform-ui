@@ -186,7 +186,6 @@ export const viewAllNotesSection = block<GovUKDetails>({
   ],
 })
 
-// TODO - wiring up of this button will be done in SP2-1741
 export const addToPlanButton = block<GovUKButton>({
   variant: 'govukButton',
   text: 'Add to plan',

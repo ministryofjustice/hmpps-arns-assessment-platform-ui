@@ -1,10 +1,11 @@
-import { Data, Format, Item } from '@form-engine/form/builders'
+import { Data, Format, Item, when } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
+import { Condition } from '@form-engine/registry/conditions'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { Transformer } from '@form-engine/registry/transformers'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { GoalSummaryCardDraft, ButtonAsLink } from '../../../../../components'
+import { GoalSummaryCardDraft } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
 export const pageHeading = HtmlBlock({
@@ -40,10 +41,13 @@ export const confirmButton = GovUKButton({
   value: 'confirm',
 })
 
-export const cancelLink = ButtonAsLink({
-  text: 'Do not delete goal',
-  name: 'action',
-  value: 'cancel',
+export const cancelLink = HtmlBlock({
+  content: Format(
+    '<a href="%1" class="govuk-link">Do not delete goal</a>',
+    when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
+      .then('../../plan/overview?type=future')
+      .else('../../plan/overview?type=current'),
+  ),
 })
 
 export const buttonGroup = TemplateWrapper({

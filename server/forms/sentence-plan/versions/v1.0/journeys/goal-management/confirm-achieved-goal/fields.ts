@@ -4,7 +4,7 @@ import { GovUKButton } from '@form-engine-govuk-components/components/button/gov
 import { GovUKTextareaInput } from '@form-engine-govuk-components/components'
 import { Transformer } from '@form-engine/registry/transformers'
 import { TemplateWrapper } from '@form-engine/registry/components'
-import { ButtonAsLink, GoalSummaryCardDraft } from '../../../../../components'
+import { GoalSummaryCardDraft } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
 export const pageHeading = block<HtmlBlock>({
@@ -45,10 +45,11 @@ export const confirmButton = block<GovUKButton>({
   value: 'confirm',
 })
 
-export const cancelLink = ButtonAsLink({
-  text: 'Do not mark as achieved',
-  name: 'action',
-  value: 'cancel',
+export const cancelLink = HtmlBlock({
+  content: Format(
+    '<a href="../../goal/%1/update-goal-steps" class="govuk-link">Do not mark as achieved</a>',
+    Data('activeGoal.uuid'),
+  ),
 })
 
 export const buttonGroup = TemplateWrapper({

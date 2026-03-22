@@ -62,10 +62,5 @@ export const viewInactiveGoalStep = step({
         next: [redirect({ goto: 'confirm-readd-goal' })],
       },
     }),
-    submitTransition({
-      onAlways: {
-        next: [redirect({ goto: '../../plan/overview' })],
-      },
-    }),
   ],
 })

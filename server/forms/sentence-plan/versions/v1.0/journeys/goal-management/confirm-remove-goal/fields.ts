@@ -6,7 +6,7 @@ import { GovUKTextareaInput } from '@form-engine-govuk-components/components'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { Transformer } from '@form-engine/registry/transformers'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { GoalSummaryCardAgreed, ButtonAsLink } from '../../../../../components'
+import { GoalSummaryCardAgreed } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
 export const pageHeading = HtmlBlock({
@@ -75,10 +75,8 @@ export const confirmButton = GovUKButton({
   value: 'confirm',
 })
 
-export const cancelLink = ButtonAsLink({
-  text: 'Do not remove goal',
-  name: 'action',
-  value: 'cancel',
+export const cancelLink = HtmlBlock({
+  content: '<a href="update-goal-steps" class="govuk-link">Do not remove goal</a>',
 })
 
 export const buttonGroup = TemplateWrapper({
