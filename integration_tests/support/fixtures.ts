@@ -1,5 +1,8 @@
 import { AxeBuilder } from '@axe-core/playwright'
 import { test as base } from '@playwright/test'
+import { promises as fs } from 'node:fs'
+import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
+import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
 import { getTestApis } from './apis'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
 import { TestAapApiClient } from './apis/TestAapApiClient'
@@ -13,9 +16,8 @@ import { CoordinatorBuilder } from '../builders/CoordinatorBuilder'
 import type { CoordinatorBuilderFactory } from '../builders/CoordinatorBuilder'
 import { HandoverBuilder } from '../builders/HandoverBuilder'
 import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
-import type { AccessMode, CriminogenicNeedsData } from '../../server/interfaces/handover-api/shared'
-import type { AssessmentType } from '../../server/interfaces/coordinator-api/oasysCreate'
 import { AuditQueueClient } from './AuditQueueClient'
+import { captureContainerLogs } from './DockerLogCapture'
 
 /**
  * Default criminogenic needs data for E2E tests.
@@ -133,6 +135,10 @@ type TestApiFixtures = {
   makeAxeBuilder: () => AxeBuilder
 }
 
+type InternalFixtures = {
+  captureDockerLogsOnFailure: void
+}
+
 /**
  * Extended Playwright test with AAP API fixtures.
  *
@@ -166,7 +172,7 @@ type TestApiFixtures = {
  *   await page.goto(`/assessment/${assessment.uuid}`)
  * })
  */
-export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
+export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig & InternalFixtures>({
   apis: [undefined as unknown as PlaywrightExtendedConfig['apis'], { option: true }],
 
   aapClient: async ({ apis }, use, testInfo) => {
@@ -291,6 +297,71 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
 
     await use(makeAxeBuilder)
   },
+
+  captureDockerLogsOnFailure: [
+    // eslint-disable-next-line no-empty-pattern
+    async ({}, use, testInfo) => {
+      const startedAt = new Date()
+
+      await use()
+
+      if (testInfo.status === testInfo.expectedStatus) {
+        return
+      }
+
+      try {
+        await testInfo.attach('ui-container-logs-hook-entered', {
+          body: JSON.stringify(
+            {
+              expectedStatus: testInfo.expectedStatus,
+              retry: testInfo.retry,
+              startedAt: startedAt.toISOString(),
+              status: testInfo.status,
+              title: testInfo.title,
+            },
+            null,
+            2,
+          ),
+          contentType: 'application/json',
+        })
+
+        const { debugInfo, logs } = await captureContainerLogs('ui', { since: startedAt })
+        const logsPath = testInfo.outputPath('ui-container-logs.txt')
+
+        await fs.writeFile(logsPath, logs, 'utf-8')
+
+        await testInfo.attach('ui-container-logs-debug', {
+          body: JSON.stringify(
+            {
+              ...debugInfo,
+              length: logs.length,
+              preview: logs.slice(0, 500),
+            },
+            null,
+            2,
+          ),
+          contentType: 'application/json',
+        })
+
+        await testInfo.attach('ui-container-logs', {
+          path: logsPath,
+          contentType: 'text/plain',
+        })
+      } catch (error) {
+        await testInfo.attach('ui-container-logs-hook-error', {
+          body: JSON.stringify(
+            {
+              error: error instanceof Error ? error.message : String(error),
+            },
+            null,
+            2,
+          ),
+          contentType: 'application/json',
+        })
+      }
+    },
+    { auto: true },
+  ],
 })
 
 export { expect } from '@playwright/test'
