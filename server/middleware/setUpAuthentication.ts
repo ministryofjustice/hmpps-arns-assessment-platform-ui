@@ -82,7 +82,7 @@ passport.use(
           config.apis.arnsHandover.clientSecret,
         ),
       },
-      scope: 'openid profile',
+      scope: 'profile',
     },
     (token, _refreshToken, _params, _profile, done) => {
       const { user_name: username } = jwtDecode(token) as { user_name?: string }

@@ -87,7 +87,8 @@ services:
       CLIENT_SECRET: clientsecret
 
   arns-handover:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:national-rollout
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:jwt-cache-test
+    pull_policy: never
     depends_on:
       - redis
       - localstack
@@ -177,7 +178,8 @@ services:
       FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
 
   api:
-    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
+    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:cache-aside
+    pull_policy: never
     networks:
       - hmpps
     depends_on:
@@ -197,6 +199,7 @@ services:
       - HMPPS_SQS_PROVIDER=localstack
       - HMPPS_SQS_LOCALSTACK_URL=http://localstack:4566
       - HMPPS_SQS_QUEUES_AUDIT_QUEUE_NAME=audit-queue
+      - SPRING_DATA_REDIS_HOST=redis
 
   wiremock:
     image: wiremock/wiremock:3.13.2
