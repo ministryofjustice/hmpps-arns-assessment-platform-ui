@@ -2,6 +2,133 @@ import { createMockContext } from '@form-engine/test-utils/thunkTestHelpers'
 import EffectFunctionContext from './EffectFunctionContext'
 
 describe('EffectFunctionContext', () => {
+  describe('getReachability()', () => {
+    it('should return the current journey reachability snapshot', () => {
+      // Arrange
+      const mockContext = createMockContext()
+      mockContext.global.reachability = {
+        reachableSteps: [{ path: '/step-one', code: 'step-one' }],
+        unreachableSteps: [{ path: '/step-two' }],
+      }
+      const effectContext = new EffectFunctionContext(mockContext, 'load')
+
+      // Act
+      const result = effectContext.getReachability()
+
+      // Assert
+      expect(result).toEqual({
+        reachableSteps: [{ path: '/step-one', code: 'step-one' }],
+        unreachableSteps: [{ path: '/step-two' }],
+      })
+      expect(result).not.toBe(mockContext.global.reachability)
+    })
+
+    it('should return undefined when no reachability snapshot exists', () => {
+      // Arrange
+      const mockContext = createMockContext()
+      const effectContext = new EffectFunctionContext(mockContext, 'load')
+
+      // Act
+      const result = effectContext.getReachability()
+
+      // Assert
+      expect(result).toBeUndefined()
+    })
+  })
+
+  describe('getReachableSteps()', () => {
+    it('should return the currently reachable steps', () => {
+      // Arrange
+      const mockContext = createMockContext()
+      mockContext.global.reachability = {
+        reachableSteps: [{ path: '/step-one', code: 'step-one' }],
+        unreachableSteps: [{ path: '/step-two' }],
+      }
+      const effectContext = new EffectFunctionContext(mockContext, 'load')
+
+      // Act
+      const result = effectContext.getReachableSteps()
+
+      // Assert
+      expect(result).toEqual([{ path: '/step-one', code: 'step-one' }])
+    })
+  })
+
+  describe('getUnreachableSteps()', () => {
+    it('should return the currently unreachable steps', () => {
+      // Arrange
+      const mockContext = createMockContext()
+      mockContext.global.reachability = {
+        reachableSteps: [{ path: '/step-one', code: 'step-one' }],
+        unreachableSteps: [{ path: '/step-two' }],
+      }
+      const effectContext = new EffectFunctionContext(mockContext, 'load')
+
+      // Act
+      const result = effectContext.getUnreachableSteps()
+
+      // Assert
+      expect(result).toEqual([{ path: '/step-two' }])
+    })
+  })
+
+  describe('getReachableStepPaths()', () => {
+    it('should return the currently reachable step paths', () => {
+      // Arrange
+      const mockContext = createMockContext()
+      mockContext.global.reachability = {
+        reachableSteps: [{ path: '/step-one', code: 'step-one' }],
+        unreachableSteps: [{ path: '/step-two' }],
+      }
+      const effectContext = new EffectFunctionContext(mockContext, 'load')
+
+      // Act
+      const result = effectContext.getReachableStepPaths()
+
+      // Assert
+      expect(result).toEqual(['/step-one'])
+    })
+  })
+
+  describe('getUnreachableStepPaths()', () => {
+    it('should return the currently unreachable step paths', () => {
+      // Arrange
+      const mockContext = createMockContext()
+      mockContext.global.reachability = {
+        reachableSteps: [{ path: '/step-one', code: 'step-one' }],
+        unreachableSteps: [{ path: '/step-two' }],
+      }
+      const effectContext = new EffectFunctionContext(mockContext, 'load')
+
+      // Act
+      const result = effectContext.getUnreachableStepPaths()
+
+      // Assert
+      expect(result).toEqual(['/step-two'])
+    })
+  })
+
+  describe('getCurrentStep()', () => {
+    it('should return the current step metadata', () => {
+      // Arrange
+      const mockContext = createMockContext()
+      mockContext.global.currentStep = {
+        path: '/drug-details',
+        code: '/drug-details',
+      }
+      const effectContext = new EffectFunctionContext(mockContext, 'load')
+
+      // Act
+      const result = effectContext.getCurrentStep()
+
+      // Assert
+      expect(result).toEqual({
+        path: '/drug-details',
+        code: '/drug-details',
+      })
+    })
+  })
+
   describe('getRequestHeader()', () => {
     it('should return a request header value', () => {
       // Arrange

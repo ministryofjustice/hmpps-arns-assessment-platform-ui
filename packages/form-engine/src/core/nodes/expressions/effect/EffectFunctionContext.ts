@@ -1,4 +1,7 @@
-import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
+import ThunkEvaluationContext, {
+  JourneyReachabilityState,
+  ReachabilityStep,
+} from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import { AnswerHistory, TransitionType } from '@form-engine/core/compilation/thunks/types'
 import { CookieMutation, CookieOptions } from '@form-engine/core/runtime/routes/types'
 
@@ -153,6 +156,67 @@ export default class EffectFunctionContext<
    */
   getAllData(): TData {
     return { ...this.context.global.data } as TData
+  }
+
+  /**
+   * Get the current journey reachability snapshot for this request.
+   *
+   * This is populated by the step controller after the navigation executor runs
+   * and is intended for submit effects that need to persist stale/active answer
+   * state based on which steps are currently reachable.
+   */
+  getReachability(): JourneyReachabilityState | undefined {
+    const reachability = this.context.global.reachability
+
+    if (!reachability) {
+      return undefined
+    }
+
+    return {
+      reachableSteps: reachability.reachableSteps.map(step => ({ ...step })),
+      unreachableSteps: reachability.unreachableSteps.map(step => ({ ...step })),
+    }
+  }
+
+  /**
+   * Get the currently reachable steps within the active journey.
+   */
+  getReachableSteps(): ReachabilityStep[] {
+    return this.context.global.reachability?.reachableSteps.map(step => ({ ...step })) ?? []
+  }
+
+  /**
+   * Get the currently unreachable steps within the active journey.
+   */
+  getUnreachableSteps(): ReachabilityStep[] {
+    return this.context.global.reachability?.unreachableSteps.map(step => ({ ...step })) ?? []
+  }
+
+  /**
+   * Get the canonical step paths currently reachable within the active journey.
+   */
+  getReachableStepPaths(): string[] {
+    return this.getReachableSteps().map(step => step.path)
+  }
+
+  /**
+   * Get the canonical step paths currently unreachable within the active journey.
+   */
+  getUnreachableStepPaths(): string[] {
+    return this.getUnreachableSteps().map(step => step.path)
+  }
+
+  /**
+   * Get the current step metadata for this request.
+   */
+  getCurrentStep(): ReachabilityStep | undefined {
+    const currentStep = this.context.global.currentStep
+
+    if (!currentStep) {
+      return undefined
+    }
+
+    return { ...currentStep }
   }
 
   /**
