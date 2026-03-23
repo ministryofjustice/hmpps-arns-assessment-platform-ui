@@ -1,6 +1,8 @@
 import { BadRequest } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
+import { Commands } from '../../../../interfaces/aap-api/command'
+import { AddCollectionItemCommandResult } from '../../../../interfaces/aap-api/commandResult'
 import {
   getRequiredEffectContext,
   calculateTargetDate,
@@ -46,22 +48,24 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
   // Get or create GOALS collection
   let goalsCollectionUuid = context.getData('goalsCollectionUuid')
 
+  const commands: Commands[] = []
+
   if (!goalsCollectionUuid) {
-    const createResult = await deps.api.executeCommand({
+    commands.push({
       type: 'CreateCollectionCommand',
       name: 'GOALS',
       assessmentUuid,
       user,
     })
 
-    goalsCollectionUuid = createResult.collectionUuid
+    goalsCollectionUuid = `@${commands.length - 1}`
   }
 
   const properties = buildGoalProperties(status)
   const answers = buildGoalAnswers(goalTitle, areaOfNeedSlug, relatedAreas, targetDate)
 
   // Create the goal
-  const addResult = await deps.api.executeCommand({
+  commands.push({
     type: 'AddCollectionItemCommand',
     collectionUuid: goalsCollectionUuid,
     properties: wrapAll(properties),
@@ -69,6 +73,9 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
     assessmentUuid,
     user,
   })
+
+  const results = await deps.api.executeCommands(...commands)
+  const addResult = results[commands.length - 1] as AddCollectionItemCommandResult
 
   // Store goal UUID for redirect to add-steps
   context.setData('activeGoalUuid', addResult.collectionItemUuid)

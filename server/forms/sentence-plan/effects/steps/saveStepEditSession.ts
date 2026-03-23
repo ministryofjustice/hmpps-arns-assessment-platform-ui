@@ -49,12 +49,14 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
     return current.actor !== original?.actor || current.description !== original?.description
   })
 
+  // Build batch of all step commands
+  const commands: Commands[] = []
+
   // Find or create STEPS collection if we have new steps to add
   let stepsCollectionUuid = collectionUuid
 
   if (newSteps.length > 0 && !stepsCollectionUuid) {
-    // Create the STEPS collection (goal doesn't have one yet)
-    const createResult = await deps.api.executeCommand({
+    commands.push({
       type: 'CreateCollectionCommand',
       name: 'STEPS',
       parentCollectionItemUuid: activeGoalUuid,
@@ -62,11 +64,8 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
       user,
     })
 
-    stepsCollectionUuid = createResult.collectionUuid
+    stepsCollectionUuid = `@${commands.length - 1}`
   }
-
-  // Build batch of all step commands
-  const commands: Commands[] = []
 
   // 1. DELETE commands
   toDelete.forEach(stepId => {

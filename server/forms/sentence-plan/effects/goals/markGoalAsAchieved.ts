@@ -3,7 +3,7 @@ import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
-import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
+import { getOrCreateNotesCollectionUuid, buildAddNoteCommand } from './noteUtils'
 
 /**
  * Mark a goal as achieved
@@ -55,7 +55,7 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
 
   // 2. Add achieved note if provided
   if (howHelped && typeof howHelped === 'string' && howHelped.trim().length > 0) {
-    const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
+    const collectionUuid = getOrCreateNotesCollectionUuid(commands, { activeGoal, assessmentUuid, user })
 
     commands.push(
       buildAddNoteCommand({

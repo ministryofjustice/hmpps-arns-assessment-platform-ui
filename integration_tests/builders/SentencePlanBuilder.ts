@@ -326,29 +326,35 @@ export class SentencePlanBuilderInstance {
   private async emitGoalLifecycleTimelineEvents(assessmentUuid: string, createdGoals: CreatedGoal[]): Promise<void> {
     // Generate unique user ID to avoid "duplicate key" errors in parallel tests
     const user = { id: generateUserId(), name: 'E2E_TEST', authSource: 'HMPPS_AUTH' as const }
+    const commands: Commands[] = []
 
-    for (let i = 0; i < this.goals.length; i++) {
-      const goalConfig = this.goals[i]
-      const createdGoal = createdGoals[i]
+    this.goals.forEach((goalConfig, index) => {
+      const createdGoal = createdGoals[index]
 
-      if (createdGoal) {
-        const timelineEvents = this.buildGoalTimelineEvents(goalConfig, createdGoal.uuid)
-
-        for (const timeline of timelineEvents) {
-          const command: Commands = {
-            type: 'UpdateCollectionItemPropertiesCommand',
-            collectionItemUuid: createdGoal.uuid,
-            added: {},
-            removed: [],
-            timeline,
-            assessmentUuid,
-            user,
-          }
-          // eslint-disable-next-line no-await-in-loop
-          await this.client.executeCommand(command)
-        }
+      if (!createdGoal) {
+        return
       }
+
+      const timelineEvents = this.buildGoalTimelineEvents(goalConfig, createdGoal.uuid)
+
+      timelineEvents.forEach(timeline => {
+        commands.push({
+          type: 'UpdateCollectionItemPropertiesCommand',
+          collectionItemUuid: createdGoal.uuid,
+          added: {},
+          removed: [],
+          timeline,
+          assessmentUuid,
+          user,
+        })
+      })
+    })
+
+    if (commands.length === 0) {
+      return
     }
+
+    await this.client.executeCommands(...commands)
   }
 
   private buildGoalTimelineEvents(
@@ -369,10 +375,13 @@ export class SentencePlanBuilderInstance {
 
     // Build timeline events from notes
     if (goalConfig.notes) {
-      for (const note of goalConfig.notes) {
+      goalConfig.notes.forEach(note => {
         const event = this.noteToTimelineEvent(note, goalConfig, goalUuid)
-        if (event) events.push(event)
-      }
+
+        if (event) {
+          events.push(event)
+        }
+      })
     }
 
     // If ACHIEVED status but no ACHIEVED note, still emit a GOAL_ACHIEVED event
