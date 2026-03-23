@@ -87,8 +87,7 @@ services:
       CLIENT_SECRET: clientsecret
 
   arns-handover:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:jwt-cache-test
-    pull_policy: never
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:national-rollout
     depends_on:
       - redis
       - localstack
@@ -178,8 +177,7 @@ services:
       FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
 
   api:
-    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:cache-aside
-    pull_policy: never
+    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
     networks:
       - hmpps
     depends_on:
