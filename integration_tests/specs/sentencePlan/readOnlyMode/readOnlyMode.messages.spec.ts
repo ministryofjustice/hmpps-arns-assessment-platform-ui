@@ -20,10 +20,10 @@ test.describe('READ_ONLY Access Mode', () => {
       await navigateToSentencePlan(page, handoverLink)
       await PlanOverviewPage.verifyOnPage(page)
 
-      const planCreatedMessage = page.getByText(/Plan created on/i)
-      await expect(planCreatedMessage).toBeVisible()
+      const agreedMessage = page.getByText(/agreed to their plan on/i)
+      await expect(agreedMessage).toBeVisible()
 
-      // The "View plan history" link should be present in the plan created message
+      // The "View plan history" link should be present in the agreed message
       const viewHistoryLink = page.getByRole('link', { name: /View plan history/i })
       await expect(viewHistoryLink).toBeVisible()
     })
