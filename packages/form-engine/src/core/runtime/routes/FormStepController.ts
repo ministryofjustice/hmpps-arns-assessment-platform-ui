@@ -1,11 +1,15 @@
 import createHttpError from 'http-errors'
+import { performance } from 'node:perf_hooks'
 import { FormInstanceDependencies } from '@form-engine/core/types/engine.type'
 import { CompiledForm } from '@form-engine/core/compilation/FormCompilationFactory'
 import ThunkEvaluator from '@form-engine/core/compilation/thunks/ThunkEvaluator'
 import { ThunkInvocationAdapter } from '@form-engine/core/compilation/thunks/types'
-import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
+import ThunkEvaluationContext, {
+  JourneyReachabilityState,
+  ReachabilityStep,
+} from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import { SubmitTransitionASTNode } from '@form-engine/core/types/expressions.type'
-import { BlockASTNode } from '@form-engine/core/types/structures.type'
+import { BlockASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
 import { Evaluated, JourneyMetadata } from '@form-engine/core/runtime/rendering/types'
 import RenderContextFactory from '@form-engine/core/runtime/rendering/RenderContextFactory'
 import TransitionExecutor from '@form-engine/core/runtime/executors/TransitionExecutor'
@@ -14,6 +18,10 @@ import ValidationExecutor from '@form-engine/core/runtime/executors/ValidationEx
 import AnswerPreparer from '@form-engine/core/runtime/executors/AnswerPreparer'
 import MetadataExecutor, { MetadataExecutionResult } from '@form-engine/core/runtime/executors/MetadataExecutor'
 import RenderExecutor from '@form-engine/core/runtime/executors/RenderExecutor'
+import ReachabilityExecutor, {
+  ReachabilityExecutionResult,
+} from '@form-engine/core/runtime/executors/ReachabilityExecutor'
+import { ReachabilityRuntimePlan } from '@form-engine/core/compilation/ReachabilityRuntimePlanBuilder'
 import { StepController } from './types'
 
 /**
@@ -38,11 +46,14 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
 
   private readonly renderExecutor: RenderExecutor
 
+  private readonly reachabilityExecutor: ReachabilityExecutor
+
   constructor(
     private readonly compiledForm: CompiledForm[number],
     private readonly dependencies: FormInstanceDependencies,
     private readonly navigationMetadata: JourneyMetadata[],
     private readonly currentStepPath: string,
+    private readonly reachabilityPlan?: ReachabilityRuntimePlan,
   ) {
     this.contextPreparer = new ContextPreparer()
     this.transitionExecutor = new TransitionExecutor(this.dependencies.logger)
@@ -50,6 +61,7 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
     this.answerPreparer = new AnswerPreparer()
     this.metadataExecutor = new MetadataExecutor()
     this.renderExecutor = new RenderExecutor()
+    this.reachabilityExecutor = new ReachabilityExecutor()
   }
 
   async get(req: TRequest, res: TResponse): Promise<void> {
@@ -66,12 +78,16 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
       throw createHttpError(accessResult.status, accessResult.message || 'Access denied')
     }
 
-    // TODO: Add 'reachability' check
-
     if (plan.isAnswerPrepareSync) {
       this.answerPreparer.prepareSync(plan, evaluator, context)
     } else {
       await this.answerPreparer.prepare(plan, evaluator, context)
+    }
+
+    const reachabilityRedirect = await this.checkReachability(evaluator, context)
+
+    if (reachabilityRedirect) {
+      return this.redirect(res, req, reachabilityRedirect)
     }
 
     if (plan.isRenderSync) {
@@ -95,12 +111,16 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
       throw createHttpError(accessResult.status, accessResult.message || 'Access denied')
     }
 
-    // TODO: Add 'reachability' check
-
     if (plan.isAnswerPrepareSync) {
       this.answerPreparer.prepareSync(plan, evaluator, context)
     } else {
       await this.answerPreparer.prepare(plan, evaluator, context)
+    }
+
+    const reachabilityRedirect = await this.checkReachability(evaluator, context)
+
+    if (reachabilityRedirect) {
+      return this.redirect(res, req, reachabilityRedirect)
     }
 
     await this.transitionExecutor.executeActionTransitions(plan, evaluator, context)
@@ -130,6 +150,8 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
     const response = this.dependencies.frameworkAdapter.toStepResponse(res)
     const evaluator = ThunkEvaluator.withRuntimeOverlay(this.compiledForm.artefact, this.dependencies)
     const context = this.contextPreparer.prepare(this.compiledForm.runtimePlan, evaluator, request, response)
+
+    context.global.currentStep = this.getCurrentStep()
 
     return { evaluator, context }
   }
@@ -238,5 +260,74 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
 
       return transition?.properties.validate === true
     })
+  }
+
+  /**
+   * Check if the current step is reachable via the navigation graph.
+   *
+   * Returns the redirect target if the page is unreachable, or undefined if the
+   * current step is reachable.
+   */
+  private async checkReachability(
+    invoker: ThunkInvocationAdapter,
+    context: ThunkEvaluationContext,
+  ): Promise<string | undefined> {
+    if (!this.reachabilityPlan) {
+      return undefined
+    }
+
+    const startTime = performance.now()
+
+    try {
+      const result = await this.reachabilityExecutor.execute(
+        this.reachabilityPlan,
+        invoker,
+        context,
+        this.compiledForm.runtimePlan.stepId,
+      )
+
+      context.global.reachability = this.createReachabilityState(result)
+
+      return this.reachabilityExecutor.resolveRedirectPath(result, this.compiledForm.runtimePlan.stepId)
+    } finally {
+      this.dependencies.logger.info(
+        {
+          durationMs: Number((performance.now() - startTime).toFixed(3)),
+          path: this.currentStepPath,
+          stepId: this.compiledForm.runtimePlan.stepId,
+        },
+        'Navigation reachability check completed',
+      )
+    }
+  }
+
+  private createReachabilityState(result: ReachabilityExecutionResult): JourneyReachabilityState {
+    const reachableSteps = result.steps.filter(step => step.isReachable)
+    const unreachableSteps = result.steps.filter(step => !step.isReachable)
+
+    return {
+      reachableSteps: reachableSteps.map(step => this.createReachabilityStep(step.path, step.code)),
+      unreachableSteps: unreachableSteps.map(step => this.createReachabilityStep(step.path, step.code)),
+    }
+  }
+
+  private createReachabilityStep(path: string, code?: string): ReachabilityStep {
+    if (code) {
+      return { path: `/${path}`, code }
+    }
+
+    return { path: `/${path}` }
+  }
+
+  private getCurrentStep(): ReachabilityStep {
+    const stepNode = this.compiledForm.artefact.nodeRegistry.get(this.compiledForm.runtimePlan.stepId) as
+      | StepASTNode
+      | undefined
+
+    if (stepNode?.properties.code) {
+      return { path: stepNode.properties.path, code: stepNode.properties.code }
+    }
+
+    return { path: stepNode?.properties.path ?? this.currentStepPath }
   }
 }

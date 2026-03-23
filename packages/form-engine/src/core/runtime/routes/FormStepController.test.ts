@@ -18,6 +18,7 @@ import ThunkEvaluator from '@form-engine/core/compilation/thunks/ThunkEvaluator'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import { PseudoNodeType } from '@form-engine/core/types/pseudoNodes.type'
 import { StepRuntimePlan } from '@form-engine/core/compilation/StepRuntimePlanBuilder'
+import { ReachabilityRuntimePlan } from '@form-engine/core/compilation/ReachabilityRuntimePlanBuilder'
 import MetadataExecutor from '@form-engine/core/runtime/executors/MetadataExecutor'
 import RenderExecutor from '@form-engine/core/runtime/executors/RenderExecutor'
 import ValidationExecutor from '@form-engine/core/runtime/executors/ValidationExecutor'
@@ -249,6 +250,7 @@ describe('FormStepController', () => {
   }
 
   function createStepWithTransitions(options: {
+    code?: string
     onAccess?: AccessTransitionASTNode[]
     onAction?: ActionTransitionASTNode[]
     onSubmission?: SubmitTransitionASTNode[]
@@ -258,6 +260,7 @@ describe('FormStepController', () => {
       id: ASTTestFactory.getId(),
       properties: {
         path: '/step-1',
+        code: options.code,
         title: 'Test Step',
         ...options,
       },
@@ -658,6 +661,76 @@ describe('FormStepController', () => {
         expect(invokedNodeIds).toContain(dynamicAnswerNode.id)
         expect(invokedNodeIds.indexOf(iterateNode.id)).toBeLessThan(invokedNodeIds.indexOf(dynamicAnswerNode.id))
       })
+
+      it('should expose journey reachability to submit transitions after answers are prepared', async () => {
+        // Arrange
+        const submitTransition = ASTTestFactory.transition(TransitionType.SUBMIT).build() as SubmitTransitionASTNode
+        const step = createStepWithTransitions({ code: 'test-step', onSubmission: [submitTransition] })
+        mockCompiledForm = createCompiledForm(step)
+
+        setupAncestorChain([step])
+
+        const reachabilityPlan: ReachabilityRuntimePlan = {
+          entries: [
+            {
+              stepId: step.id,
+              path: 'step-1',
+              code: 'test-step',
+              isEntryPoint: true,
+              stepRuntimePlan: mockCompiledForm.runtimePlan,
+              forwardOutcomeIds: [],
+              hasValidation: false,
+            },
+          ],
+        }
+
+        mockEvaluator.invoke.mockImplementation(async (nodeId: NodeId, context?: ThunkEvaluationContext) => {
+          if (nodeId === submitTransition.id) {
+            expect(context?.global.currentStep).toEqual({
+              path: '/step-1',
+              code: 'test-step',
+            })
+
+            expect(context?.global.reachability).toEqual({
+              reachableSteps: [{ path: '/step-1', code: 'test-step' }],
+              unreachableSteps: [],
+            })
+
+            const submitResult: SubmitTransitionResult = {
+              executed: true,
+              validated: false,
+              outcome: 'continue',
+            }
+
+            return {
+              value: submitResult,
+              metadata: { source: 'test', timestamp: Date.now() },
+            }
+          }
+
+          return {
+            value: { executed: false },
+            metadata: { source: 'test', timestamp: Date.now() },
+          }
+        })
+
+        const controller = new FormStepController(
+          mockCompiledForm,
+          mockDependencies,
+          mockNavigationMetadata,
+          mockCurrentStepPath,
+          reachabilityPlan,
+        )
+
+        // Act
+        await controller.post(mockReq, mockRes)
+
+        // Assert
+        expect(mockContext.global.reachability).toEqual({
+          reachableSteps: [{ path: '/step-1', code: 'test-step' }],
+          unreachableSteps: [],
+        })
+      })
     })
 
     describe('action transitions', () => {
@@ -781,7 +854,7 @@ describe('FormStepController', () => {
 
         await controller.post(mockReq, mockRes)
 
-        expect(ValidationExecutor).toHaveBeenCalledTimes(1)
+        expect(mockValidationExecutorExecute).toHaveBeenCalledTimes(1)
         expect(mockValidationExecutorExecute).toHaveBeenCalledWith(
           mockCompiledForm.runtimePlan,
           mockEvaluator,

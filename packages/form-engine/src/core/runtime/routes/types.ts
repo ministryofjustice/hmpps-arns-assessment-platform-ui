@@ -4,6 +4,7 @@ import { RenderContext } from '@form-engine/core/runtime/rendering/types'
 import ComponentRegistry from '@form-engine/registry/ComponentRegistry'
 import { NodeId } from '@form-engine/core/types/engine.type'
 import { CompilationArtefact, CompiledStep } from '@form-engine/core/compilation/FormCompilationFactory'
+import { ReachabilityRuntimePlan } from '@form-engine/core/compilation/ReachabilityRuntimePlanBuilder'
 import { StepASTNode } from '@form-engine/core/types/structures.type'
 
 export type StepResolver = () => Promise<CompiledStep>
@@ -18,6 +19,7 @@ export interface StepMountContext {
   stepNode: StepASTNode
   sharedArtefact: CompilationArtefact
   resolveCompiledStep: StepResolver
+  reachabilityPlan?: ReachabilityRuntimePlan
 }
 
 /**

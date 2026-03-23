@@ -1,7 +1,7 @@
-import { CompilationArtefact } from '@form-engine/core/compilation/FormCompilationFactory'
+import { CompilationArtefact, CompiledForm } from '@form-engine/core/compilation/FormCompilationFactory'
 import { FormInstanceDependencies, NodeId } from '@form-engine/core/types/engine.type'
 import { FormEngineOptions } from '@form-engine/core/FormEngine'
-import { JourneyASTNode } from '@form-engine/core/types/structures.type'
+import { JourneyASTNode, StepASTNode } from '@form-engine/core/types/structures.type'
 import { JourneyDefinition, StepDefinition } from '@form-engine/form/types/structures.type'
 import { JourneyMetadata, StepMetadata } from '@form-engine/core/runtime/rendering/types'
 import FormStepController from '@form-engine/core/runtime/routes/FormStepController'
@@ -10,6 +10,9 @@ import { isJourneyStructNode } from '@form-engine/core/typeguards/structure-node
 import DuplicateRouteError from '@form-engine/errors/DuplicateRouteError'
 import type FormInstance from '@form-engine/core/FormInstance'
 import { RouteMapEntry, StepMountContext } from '@form-engine/core/runtime/routes/types'
+import ReachabilityRuntimePlanBuilder, {
+  ReachabilityRuntimePlan,
+} from '@form-engine/core/compilation/ReachabilityRuntimePlanBuilder'
 
 /**
  * Unified routing and navigation service for the form engine.
@@ -78,7 +81,9 @@ export default class FormEngineRouter<TRouter> {
   mountForm(formInstance: FormInstance): void {
     const stepIndex = formInstance.getStepIndex()
     const sharedArtefact = formInstance.getSharedCompilationArtefact()
+    const compiledForm = formInstance.getCompiledForm()
     const config = formInstance.getConfiguration()
+    const reachabilityPlansByStepId = this.buildReachabilityPlans(formInstance, compiledForm)
 
     stepIndex.forEach((stepNode, stepId) => {
       this.mountStep(this.router, {
@@ -86,6 +91,7 @@ export default class FormEngineRouter<TRouter> {
         stepNode,
         sharedArtefact,
         resolveCompiledStep: () => formInstance.getCompiledStep(stepId),
+        reachabilityPlan: reachabilityPlansByStepId.get(stepId),
       })
     })
 
@@ -118,7 +124,7 @@ export default class FormEngineRouter<TRouter> {
    * Mount a single step as GET and POST routes
    */
   private mountStep(rootRouter: TRouter, stepMountContext: StepMountContext): void {
-    const { stepId, stepNode, sharedArtefact, resolveCompiledStep } = stepMountContext
+    const { stepId, stepNode, sharedArtefact, resolveCompiledStep, reachabilityPlan } = stepMountContext
     const journeyAncestry = this.getJourneyAncestry(stepId, sharedArtefact)
     const { router, basePath } = this.getOrCreateJourneyRouter(rootRouter, journeyAncestry)
 
@@ -133,7 +139,13 @@ export default class FormEngineRouter<TRouter> {
 
     this.dependencies.frameworkAdapter.get(router, stepPath, async (req, res) => {
       const compiledStep = await resolveCompiledStep()
-      const controller = new FormStepController(compiledStep, this.dependencies, this.navigationMetadata, fullPath)
+      const controller = new FormStepController(
+        compiledStep,
+        this.dependencies,
+        this.navigationMetadata,
+        fullPath,
+        reachabilityPlan,
+      )
 
       return controller.get(req, res)
     })
@@ -141,7 +153,13 @@ export default class FormEngineRouter<TRouter> {
 
     this.dependencies.frameworkAdapter.post(router, stepPath, async (req, res) => {
       const compiledStep = await resolveCompiledStep()
-      const controller = new FormStepController(compiledStep, this.dependencies, this.navigationMetadata, fullPath)
+      const controller = new FormStepController(
+        compiledStep,
+        this.dependencies,
+        this.navigationMetadata,
+        fullPath,
+        reachabilityPlan,
+      )
 
       return controller.post(req, res)
     })
@@ -262,5 +280,40 @@ export default class FormEngineRouter<TRouter> {
       path: parentPath + step.path,
       hiddenFromNavigation: step.view?.hiddenFromNavigation,
     }
+  }
+
+  private buildReachabilityPlans(
+    formInstance: FormInstance,
+    compiledForm: CompiledForm,
+  ): Map<NodeId, ReachabilityRuntimePlan> {
+    const artefact = formInstance.getSharedCompilationArtefact()
+    const stepIndex = formInstance.getStepIndex()
+    const journeyStepMap = new Map<NodeId, StepASTNode[]>()
+    const reachabilityPlansByStepId = new Map<NodeId, ReachabilityRuntimePlan>()
+    const runtimePlansByStepId = new Map(
+      compiledForm.map(compiled => [compiled.runtimePlan.stepId, compiled.runtimePlan]),
+    )
+
+    stepIndex.forEach((stepNode, stepId) => {
+      const ancestors = getAncestorChain(stepId, artefact.metadataRegistry)
+      const parentJourneyId = ancestors[ancestors.length - 2]
+
+      if (parentJourneyId) {
+        const existingJourneySteps = journeyStepMap.get(parentJourneyId) ?? []
+
+        existingJourneySteps.push(stepNode)
+        journeyStepMap.set(parentJourneyId, existingJourneySteps)
+      }
+    })
+
+    journeyStepMap.forEach(journeySteps => {
+      const reachabilityPlan = new ReachabilityRuntimePlanBuilder().build(journeySteps, runtimePlansByStepId)
+
+      journeySteps.forEach(stepNode => {
+        reachabilityPlansByStepId.set(stepNode.id, reachabilityPlan)
+      })
+    })
+
+    return reachabilityPlansByStepId
   }
 }

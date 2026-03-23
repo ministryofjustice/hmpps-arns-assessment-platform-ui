@@ -251,7 +251,7 @@ describe('FormEngineRouter', () => {
   })
 
   describe('mountForm()', () => {
-    it('should mount routes without eagerly resolving the full compiled form', () => {
+    it('should compile the full form at mount time to prebuild navigation plans', () => {
       // Arrange
       const journeyNode = createMockJourneyNode('compile_ast:1', '/journey', 'test-journey')
       const stepNode = createMockStepNode('compile_ast:2', '/step-one')
@@ -271,9 +271,10 @@ describe('FormEngineRouter', () => {
       router.mountForm(formInstance)
 
       // Assert
-      expect(formInstance.getStepIndex).toHaveBeenCalledTimes(1)
-      expect(formInstance.getSharedCompilationArtefact).toHaveBeenCalledTimes(1)
-      expect(formInstance.getCompiledForm).not.toHaveBeenCalled()
+      expect(formInstance.getStepIndex).toHaveBeenCalledTimes(2)
+      expect(formInstance.getSharedCompilationArtefact).toHaveBeenCalledTimes(2)
+      expect(formInstance.getCompiledForm).toHaveBeenCalledTimes(1)
+      expect(formInstance.getCompiledStep).not.toHaveBeenCalled()
     })
 
     it('should mount GET and POST routes for each step', () => {
@@ -300,7 +301,7 @@ describe('FormEngineRouter', () => {
       expect(mockFrameworkAdapter.post).toHaveBeenCalledWith(expect.anything(), '/step-one', expect.any(Function))
     })
 
-    it('should resolve compiled step at request time, not mount time', async () => {
+    it('should still resolve the compiled step at request time for the controller', async () => {
       // Arrange
       const journeyNode = createMockJourneyNode('compile_ast:1', '/journey', 'test-journey')
       const stepNode = createMockStepNode('compile_ast:2', '/step-one')
@@ -318,6 +319,7 @@ describe('FormEngineRouter', () => {
       router.mountForm(formInstance)
 
       // Assert mount-time behaviour
+      expect(formInstance.getCompiledForm).toHaveBeenCalledTimes(1)
       expect(formInstance.getCompiledStep).not.toHaveBeenCalled()
 
       const getHandler = mockFrameworkAdapter.get.mock.calls[0][2] as (req: unknown, res: unknown) => Promise<void>
@@ -325,6 +327,15 @@ describe('FormEngineRouter', () => {
       await getHandler({}, {})
       expect(formInstance.getCompiledStep).toHaveBeenCalledTimes(1)
       expect(formInstance.getCompiledStep).toHaveBeenCalledWith(stepNode.id)
+      expect(FormStepController).toHaveBeenCalledWith(
+        expect.anything(),
+        mockDependencies,
+        expect.any(Array),
+        '/journey/step-one',
+        expect.objectContaining({
+          entries: expect.any(Array),
+        }),
+      )
       expect(mockControllerGet).toHaveBeenCalledTimes(1)
     })
 
