@@ -5,6 +5,7 @@ import {
   EvaluatedBlock,
   FieldBlockDefinition,
   FieldBlockProps,
+  RenderedBlock,
 } from '@form-engine/form/types/structures.type'
 import { buildNunjucksComponent } from '@form-engine-govuk-components/internal/buildNunjucksComponent'
 import { field } from '@form-engine/form/builders'
@@ -230,7 +231,7 @@ interface GovUKRadioInputItem {
    * Useful for collecting additional information when specific options are selected.
    * @example someConditionalField // A field definition that appears when this radio is selected
    */
-  block?: BlockDefinition
+  block?: BlockDefinition | BlockDefinition[]
 }
 
 /**
@@ -271,6 +272,18 @@ export const govukRadioInput = buildNunjucksComponent<GovUKRadioInput>('govukRad
   })
 })
 
+const getConditionalContent = (block: RenderedBlock | RenderedBlock[] | undefined) => {
+  if (!block) {
+    return undefined
+  }
+
+  if (Array.isArray(block)) {
+    return { html: block.map(b => b.html).join('') }
+  }
+
+  return { html: block.html }
+}
+
 const makeOption = (option: EvaluatedBlock<GovUKRadioInputItem | GovUKRadioInputDivider>, checkedValue: string) => {
   if (isRadioDivider(option)) {
     return {
@@ -285,9 +298,7 @@ const makeOption = (option: EvaluatedBlock<GovUKRadioInputItem | GovUKRadioInput
     id: option.id,
     hint: typeof option.hint === 'object' ? option.hint : { text: option.hint },
     checked: checkedValue === option.value || (option.checked ?? false),
-    conditional: option.block && {
-      html: option.block.html,
-    },
+    conditional: getConditionalContent(option.block),
     disabled: option.disabled,
     attributes: option.attributes,
   }
