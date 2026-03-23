@@ -1,4 +1,4 @@
-import { Format, step, accessTransition, Query, redirect, Params } from '@form-engine/form/builders'
+import { Format, step, accessTransition, Query, redirect, Params, and, Data } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import {
@@ -25,7 +25,7 @@ export const viewHistoricStep = step({
       headerPageHeading: Format(`%1's plan`, CaseData.Forename),
       currentTab: Query('type'),
       buttons: {
-        showReturnToOasysButton: isOasysAccess,
+        showReturnToOasysButton: and(isOasysAccess, Data('navigationReferrer').not.match(Condition.IsRequired())),
         showCreateGoalButton: false,
         showAgreePlanButton: false,
       },
@@ -51,8 +51,8 @@ export const viewHistoricStep = step({
   onAccess: [
     accessTransition({
       effects: [
+        SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.loadHistoricPlan(),
-        SentencePlanEffects.setNavigationReferrer('previous-versions'),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_HISTORIC_PLAN, {
           planVersionTimestamp: Params('timestamp'),
         }),
