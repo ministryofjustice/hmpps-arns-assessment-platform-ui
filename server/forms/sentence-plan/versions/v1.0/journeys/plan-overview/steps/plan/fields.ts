@@ -127,7 +127,7 @@ export const planCreatedMessage = HtmlBlock({
     ),
   )
     .then(
-      when(Data('latestAgreementStatus').match(Condition.Equals('UPDATED_AGREED')))
+      when(Data('latestAgreementStatus').match(Condition.Array.IsIn(['UPDATED_AGREED', 'AGREED'])))
         .then(
           Format(
             '<p class="govuk-body">%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state">View plan history</a></p>',
