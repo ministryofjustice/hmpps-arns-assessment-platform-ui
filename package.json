@@ -69,6 +69,15 @@
     "superagent": "^10.2.3",
     "zod": "^4.1.5"
   },
+  "overrides": {
+    "mocha": {
+      "serialize-javascript": "^7.0.3",
+      "diff": "^8.0.3"
+    },
+    "@yikes2000/prettier-plugin-merge-extras": {
+      "diff": "5.2.2"
+    }
+  },
   "devDependencies": {
     "@axe-core/playwright": "4.11.0",
     "@jgoz/esbuild-plugin-typecheck": "^4.0.3",
