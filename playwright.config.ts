@@ -59,7 +59,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
         : [],
     },
     screenshot: 'only-on-failure',
-    trace: process.env.CI ? 'off' : 'on',
+    trace: process.env.CI ? 'retain-on-first-failure' : 'on',
     ...devices['Desktop Chrome'],
     testIdAttribute: 'data-qa',
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
