@@ -3,6 +3,8 @@ import { promises as fs } from 'node:fs'
 
 const DOCKER_SOCKET_PATH = '/var/run/docker.sock'
 const DOCKER_API_VERSION = 'v1.43'
+// eslint-disable-next-line no-control-regex
+const ANSI_ESCAPE_CODE_PATTERN = /\u001B\[[0-?]*[ -/]*[@-~]/g
 
 interface DockerResponse {
   statusCode: number
@@ -144,6 +146,10 @@ function parseDockerTimestamp(timestamp: string): number | undefined {
   return parsedTimestamp
 }
 
+function stripAnsiEscapeCodes(logs: string): string {
+  return logs.replace(ANSI_ESCAPE_CODE_PATTERN, '')
+}
+
 function filterLogsSince(logs: string, since: Date): string {
   const sinceTimestamp = since.getTime()
   const hasTrailingNewline = logs.endsWith('\n')
@@ -275,7 +281,8 @@ export async function captureContainerLogs(
 
     const { logs: rawLogs, parseMode } = parseDockerLogs(body)
     debugInfo.parseMode = parseMode
-    const logs = options.since ? filterLogsSince(rawLogs, options.since) : rawLogs
+    const scopedLogs = options.since ? filterLogsSince(rawLogs, options.since) : rawLogs
+    const logs = stripAnsiEscapeCodes(scopedLogs)
 
     if (logs.length === 0) {
       return {
