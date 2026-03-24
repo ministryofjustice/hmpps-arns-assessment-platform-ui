@@ -126,7 +126,7 @@ function dedentCode(text: string): string {
  */
 export const codeBlock = buildNunjucksComponent<CodeBlock>(
   'codeBlock',
-  async (block: EvaluatedBlock<CodeBlock>, nunjucksEnv: nunjucks.Environment) => {
+  (block: EvaluatedBlock<CodeBlock>, nunjucksEnv: nunjucks.Environment) => {
     const language = block.language || 'typescript'
     const shouldDedent = block.dedent !== false
     const classes = ['code-block', block.classes].filter(Boolean).join(' ')

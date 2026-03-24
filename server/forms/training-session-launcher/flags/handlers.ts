@@ -69,6 +69,12 @@ const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
         oasysAssessmentPk: randomOasysAssessmentPk(),
       }),
     },
+    handover: {
+      // New Period of Supervision resets the plan to a blank draft, the user must see the current editable state,
+      // not a historic read-only snapshot. Strip the version so the handover context has
+      // planVersion: null and the AAP UI skips the historic-view redirect.
+      modifyRequest: request => ({ ...request, sentencePlanVersion: undefined }),
+    },
   },
 }
 
