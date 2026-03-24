@@ -309,56 +309,15 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig & Int
         return
       }
 
-      try {
-        await testInfo.attach('ui-container-logs-hook-entered', {
-          body: JSON.stringify(
-            {
-              expectedStatus: testInfo.expectedStatus,
-              retry: testInfo.retry,
-              startedAt: startedAt.toISOString(),
-              status: testInfo.status,
-              title: testInfo.title,
-            },
-            null,
-            2,
-          ),
-          contentType: 'application/json',
-        })
+      const { logs } = await captureContainerLogs('ui', { since: startedAt })
+      const logsPath = testInfo.outputPath('ui-container-logs.txt')
 
-        const { debugInfo, logs } = await captureContainerLogs('ui', { since: startedAt })
-        const logsPath = testInfo.outputPath('ui-container-logs.txt')
+      await fs.writeFile(logsPath, logs, 'utf-8')
 
-        await fs.writeFile(logsPath, logs, 'utf-8')
-
-        await testInfo.attach('ui-container-logs-debug', {
-          body: JSON.stringify(
-            {
-              ...debugInfo,
-              length: logs.length,
-              preview: logs.slice(0, 500),
-            },
-            null,
-            2,
-          ),
-          contentType: 'application/json',
-        })
-
-        await testInfo.attach('ui-container-logs', {
-          path: logsPath,
-          contentType: 'text/plain',
-        })
-      } catch (error) {
-        await testInfo.attach('ui-container-logs-hook-error', {
-          body: JSON.stringify(
-            {
-              error: error instanceof Error ? error.message : String(error),
-            },
-            null,
-            2,
-          ),
-          contentType: 'application/json',
-        })
-      }
+      await testInfo.attach('ui-container-logs', {
+        path: logsPath,
+        contentType: 'text/plain',
+      })
     },
     { auto: true },
   ],
