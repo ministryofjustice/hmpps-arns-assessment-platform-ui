@@ -64,7 +64,7 @@ function buildParams(block: EvaluatedBlock<PreviousVersions>) {
 
 export const previousVersions = buildNunjucksComponent<PreviousVersions>(
   'previousVersions',
-  async (block: EvaluatedBlock<PreviousVersions>, nunjucksEnv: nunjucks.Environment): Promise<string> => {
+  (block: EvaluatedBlock<PreviousVersions>, nunjucksEnv: nunjucks.Environment): string => {
     const params = buildParams(block)
     return nunjucksEnv.render('sentence-plan/components/previous-versions/table.njk', { params })
   },

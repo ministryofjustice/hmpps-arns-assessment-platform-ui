@@ -62,39 +62,36 @@ function escapeHtml(str: string): string {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
-export const buttonAsLink = buildComponent<ButtonAsLink>(
-  'buttonAsLink',
-  async (block: EvaluatedBlock<ButtonAsLink>) => {
-    const classes = ['button-as-link', block.classes].filter(Boolean).join(' ')
-    const type = block.buttonType ?? 'submit'
+export const buttonAsLink = buildComponent<ButtonAsLink>('buttonAsLink', (block: EvaluatedBlock<ButtonAsLink>) => {
+  const classes = ['button-as-link', block.classes].filter(Boolean).join(' ')
+  const type = block.buttonType ?? 'submit'
 
-    const attrs: string[] = [`type="${type}"`, `class="${escapeHtml(classes)}"`]
+  const attrs: string[] = [`type="${type}"`, `class="${escapeHtml(classes)}"`]
 
-    if (block.id) {
-      attrs.push(`id="${escapeHtml(block.id)}"`)
-    }
+  if (block.id) {
+    attrs.push(`id="${escapeHtml(block.id)}"`)
+  }
 
-    if (block.name) {
-      attrs.push(`name="${escapeHtml(block.name)}"`)
-    }
+  if (block.name) {
+    attrs.push(`name="${escapeHtml(block.name)}"`)
+  }
 
-    if (block.value) {
-      attrs.push(`value="${escapeHtml(block.value)}"`)
-    }
+  if (block.value) {
+    attrs.push(`value="${escapeHtml(block.value)}"`)
+  }
 
-    if (block.disabled) {
-      attrs.push('disabled')
-    }
+  if (block.disabled) {
+    attrs.push('disabled')
+  }
 
-    if (block.attributes) {
-      Object.entries(block.attributes).forEach(([key, value]) => {
-        attrs.push(`${escapeHtml(key)}="${escapeHtml(value)}"`)
-      })
-    }
+  if (block.attributes) {
+    Object.entries(block.attributes).forEach(([key, value]) => {
+      attrs.push(`${escapeHtml(key)}="${escapeHtml(value)}"`)
+    })
+  }
 
-    return `<button ${attrs.join(' ')}>${escapeHtml(block.text)}</button>`
-  },
-)
+  return `<button ${attrs.join(' ')}>${escapeHtml(block.text)}</button>`
+})
 
 /**
  * Creates a button styled as a link.

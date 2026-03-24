@@ -169,10 +169,10 @@ export function buildParams(block: EvaluatedBlock<AssessmentInfoDetailsBlock>) {
   }
 }
 
-async function renderAssessmentInfoDetails(
+function renderAssessmentInfoDetails(
   block: EvaluatedBlock<AssessmentInfoDetailsBlock>,
   nunjucksEnv: nunjucks.Environment,
-): Promise<string> {
+): string {
   const params = buildParams(block)
   return nunjucksEnv.render('sentence-plan/components/assessment-info-details/assessmentInfoDetails.njk', { params })
 }
