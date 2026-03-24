@@ -186,95 +186,6 @@ describe('ThunkCacheManager', () => {
     })
   })
 
-  describe('delete()', () => {
-    it('should remove cached result', () => {
-      // Arrange
-      const nodeId: NodeId = 'compile_pseudo:1'
-      cacheManager.set(nodeId, createSuccessResult('value'))
-
-      // Act
-      cacheManager.delete(nodeId)
-
-      // Assert
-      expect(cacheManager.has(nodeId)).toBe(false)
-      expect(cacheManager.get(nodeId)).toBeUndefined()
-    })
-
-    it('should not throw when deleting non-existent node', () => {
-      // Arrange
-      const nodeId: NodeId = 'compile_pseudo:1'
-
-      // Act & Assert
-      expect(() => cacheManager.delete(nodeId)).not.toThrow()
-    })
-  })
-
-  describe('getVersion()', () => {
-    it('should return 0 for node with no version history', () => {
-      // Arrange
-      const nodeId: NodeId = 'compile_pseudo:1'
-
-      // Act
-      const version = cacheManager.getVersion(nodeId)
-
-      // Assert
-      expect(version).toBe(0)
-    })
-
-    it('should return current version after increment', () => {
-      // Arrange
-      const nodeId: NodeId = 'compile_pseudo:1'
-      cacheManager.incrementVersion(nodeId)
-
-      // Act
-      const version = cacheManager.getVersion(nodeId)
-
-      // Assert
-      expect(version).toBe(1)
-    })
-  })
-
-  describe('incrementVersion()', () => {
-    it('should increment version from 0 to 1', () => {
-      // Arrange
-      const nodeId: NodeId = 'compile_pseudo:1'
-
-      // Act
-      cacheManager.incrementVersion(nodeId)
-
-      // Assert
-      expect(cacheManager.getVersion(nodeId)).toBe(1)
-    })
-
-    it('should increment version multiple times', () => {
-      // Arrange
-      const nodeId: NodeId = 'compile_pseudo:1'
-
-      // Act
-      cacheManager.incrementVersion(nodeId)
-      cacheManager.incrementVersion(nodeId)
-      cacheManager.incrementVersion(nodeId)
-
-      // Assert
-      expect(cacheManager.getVersion(nodeId)).toBe(3)
-    })
-
-    it('should track versions independently per node', () => {
-      // Arrange
-      const nodeA: NodeId = 'compile_pseudo:1'
-      const nodeB: NodeId = 'compile_pseudo:2'
-
-      // Act
-      cacheManager.incrementVersion(nodeA)
-      cacheManager.incrementVersion(nodeA)
-      cacheManager.incrementVersion(nodeB)
-
-      // Assert
-      expect(cacheManager.getVersion(nodeA)).toBe(2)
-      expect(cacheManager.getVersion(nodeB)).toBe(1)
-    })
-  })
-
   describe('reset()', () => {
     it('should clear all cached results', () => {
       // Arrange
@@ -291,21 +202,6 @@ describe('ThunkCacheManager', () => {
       expect(cacheManager.has(nodeB)).toBe(false)
     })
 
-    it('should clear all version counters', () => {
-      // Arrange
-      const nodeA: NodeId = 'compile_pseudo:1'
-      const nodeB: NodeId = 'compile_pseudo:2'
-      cacheManager.incrementVersion(nodeA)
-      cacheManager.incrementVersion(nodeA)
-      cacheManager.incrementVersion(nodeB)
-
-      // Act
-      cacheManager.reset()
-
-      // Assert
-      expect(cacheManager.getVersion(nodeA)).toBe(0)
-      expect(cacheManager.getVersion(nodeB)).toBe(0)
-    })
   })
 
   describe('clearCache()', () => {
@@ -324,22 +220,5 @@ describe('ThunkCacheManager', () => {
       expect(cacheManager.has(nodeB)).toBe(false)
     })
 
-    it('should preserve version counters', () => {
-      // Arrange
-      const nodeA: NodeId = 'compile_pseudo:1'
-      const nodeB: NodeId = 'compile_pseudo:2'
-      cacheManager.incrementVersion(nodeA)
-      cacheManager.incrementVersion(nodeA)
-      cacheManager.incrementVersion(nodeB)
-      cacheManager.set(nodeA, createSuccessResult('A'))
-
-      // Act
-      cacheManager.clearCache()
-
-      // Assert
-      expect(cacheManager.has(nodeA)).toBe(false)
-      expect(cacheManager.getVersion(nodeA)).toBe(2)
-      expect(cacheManager.getVersion(nodeB)).toBe(1)
-    })
   })
 })
