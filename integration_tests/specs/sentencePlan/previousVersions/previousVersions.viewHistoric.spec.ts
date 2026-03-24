@@ -1,7 +1,17 @@
 import { expect, Page } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
-import { currentGoals, futureGoals, mixedGoals } from '../../../builders/sentencePlanFactories'
-import { buildPageTitle, navigateToSentencePlan, sentencePlanPageTitles } from '../sentencePlanUtils'
+import {
+  currentGoals,
+  currentGoalsWithCompletedSteps,
+  futureGoals,
+  mixedGoals,
+} from '../../../builders/sentencePlanFactories'
+import {
+  buildPageTitle,
+  handlePrivacyScreenIfPresent,
+  navigateToSentencePlan,
+  sentencePlanPageTitles,
+} from '../sentencePlanUtils'
 import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPage'
 import HistoricPlanPage from '../../../pages/sentencePlan/historicPlanPage'
 
@@ -29,6 +39,54 @@ test.describe('View Historic Plan', () => {
     await expect(historicPlanPage.alertHeading).toContainText('This version is from 1st January 2026')
     return { historicPlanPage, newPage }
   }
+
+  test.describe('Header', () => {
+    test('should not show Return to OASys button when navigating from within Sentence Plan', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withEventsBackdated(startOfDay, endOfDay).save()
+
+      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await expect(historicPlanPage.returnToOasysButton).toBeHidden()
+    })
+
+    test('should show Return to OASys button when accessing directly from OASys', async ({
+      page,
+      coordinatorBuilder,
+      sentencePlanBuilder,
+      handoverBuilder,
+    }) => {
+      const coordinator = coordinatorBuilder.create()
+      const association = await coordinator.save()
+
+      await sentencePlanBuilder
+        .extend(association.sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(2))
+        .withAgreementStatus('AGREED')
+        .save()
+
+      await coordinator.lock(association)
+      const signed = await coordinator.sign(association)
+
+      const session = await handoverBuilder
+        .forAssociation(association)
+        .withPlanVersion(signed.sentencePlanVersion)
+        .save()
+
+      const handoverUrl = new URL(session.handoverLink)
+      handoverUrl.searchParams.set('clientId', 'sentence-plan')
+
+      await page.goto(handoverUrl.toString())
+      await handlePrivacyScreenIfPresent(page)
+
+      const historicPlanPage = await HistoricPlanPage.verifyOnPage(page)
+      await expect(historicPlanPage.returnToOasysButton).toBeVisible()
+    })
+  })
 
   test.describe('Empty State', () => {
     test('shows empty message when no current goals exist', async ({ page, createSession, sentencePlanBuilder }) => {

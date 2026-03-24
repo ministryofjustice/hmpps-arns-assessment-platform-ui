@@ -233,10 +233,10 @@ test.describe('Agree plan journey', () => {
       // Verify we're on plan overview
       await PlanOverviewPage.verifyOnPage(page)
 
-      // Should show "Plan created on [date]" message for agreed plans
-      const planCreatedMessage = page.locator('.govuk-body', { hasText: 'Plan created on' })
-      await expect(planCreatedMessage).toBeVisible()
-      await expect(planCreatedMessage).toContainText('View plan history')
+      // Should show "{name} agreed to their plan on [date]" message for agreed plans
+      const agreedMessage = page.locator('.govuk-body', { hasText: 'agreed to their plan on' })
+      await expect(agreedMessage).toBeVisible()
+      await expect(agreedMessage).toContainText('View plan history')
     })
 
     test('can agree to plan with No option and details', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -263,7 +263,7 @@ test.describe('Agree plan journey', () => {
       // Verify we're on plan overview
       await PlanOverviewPage.verifyOnPage(page)
 
-      // Should show "Plan created on [date]" message (same as Yes - both are final agreements)
+      // Should show "Plan created on [date]" message for non-agreement plans
       const planCreatedMessage = page.locator('.govuk-body', { hasText: 'Plan created on' })
       await expect(planCreatedMessage).toBeVisible()
       await expect(planCreatedMessage).toContainText('View plan history')
