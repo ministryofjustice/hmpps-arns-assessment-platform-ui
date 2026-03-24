@@ -175,6 +175,7 @@ services:
       AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
       NODE_CLUSTER_ENABLED: true
       FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
+      CACHE_REDIS_HOST: redis
 
   api:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
@@ -197,6 +198,7 @@ services:
       - HMPPS_SQS_PROVIDER=localstack
       - HMPPS_SQS_LOCALSTACK_URL=http://localstack:4566
       - HMPPS_SQS_QUEUES_AUDIT_QUEUE_NAME=audit-queue
+      - SPRING_DATA_REDIS_HOST=redis
 
   wiremock:
     image: wiremock/wiremock:3.13.2

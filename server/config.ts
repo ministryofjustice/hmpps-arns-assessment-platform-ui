@@ -43,6 +43,12 @@ export default {
     password: process.env.REDIS_AUTH_TOKEN,
     tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
   },
+  cacheRedis: {
+    host: get('CACHE_REDIS_HOST', 'localhost'),
+    port: parseInt(process.env.CACHE_REDIS_PORT, 10) || 6379,
+    password: process.env.CACHE_REDIS_AUTH_TOKEN,
+    tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
+  },
   session: {
     secret: get('SESSION_SECRET', 'app-insecure-default-session', requiredInProduction),
     expiryMinutes: Number(get('WEB_SESSION_TIMEOUT_IN_MINUTES', 60)),
