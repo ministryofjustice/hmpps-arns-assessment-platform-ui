@@ -9,7 +9,7 @@ export default class AssessmentCacheStore {
   private connectionPromise: Promise<unknown> | undefined
 
   constructor(client?: RedisClient) {
-    this.client = client ?? createRedisClient()
+    this.client = client ?? createRedisClient(config.cacheRedis)
   }
 
   private ensureConnected(): Promise<unknown> {

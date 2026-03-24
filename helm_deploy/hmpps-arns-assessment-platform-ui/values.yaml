@@ -65,6 +65,9 @@ generic-service:
     sqs-hmpps-audit-secret:
       AUDIT_SQS_QUEUE_URL: 'sqs_queue_url'
       AUDIT_SQS_QUEUE_NAME: 'sqs_queue_name'
+    assessment-query-cache-elasticache-redis:
+      CACHE_REDIS_HOST: 'primary_endpoint_address'
+      CACHE_REDIS_AUTH_TOKEN: 'auth_token'
 
   allowlist:
     groups:

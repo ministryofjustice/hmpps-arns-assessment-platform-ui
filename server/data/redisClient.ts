@@ -5,15 +5,24 @@ import config from '../config'
 
 export type RedisClient = ReturnType<typeof createClient>
 
-const url =
-  config.redis.tls_enabled === 'true'
-    ? `rediss://${config.redis.host}:${config.redis.port}`
-    : `redis://${config.redis.host}:${config.redis.port}`
+interface RedisConfig {
+  host: string
+  port: number
+  password?: string
+  tls_enabled: string
+}
 
-export const createRedisClient = (): RedisClient => {
+const buildUrl = (redisConfig: RedisConfig): string =>
+  redisConfig.tls_enabled === 'true'
+    ? `rediss://${redisConfig.host}:${redisConfig.port}`
+    : `redis://${redisConfig.host}:${redisConfig.port}`
+
+export const createRedisClient = (redisConfig?: RedisConfig): RedisClient => {
+  const resolvedConfig = redisConfig ?? config.redis
+
   const client = createClient({
-    url,
-    password: config.redis.password,
+    url: buildUrl(resolvedConfig),
+    password: resolvedConfig.password,
     socket: {
       reconnectStrategy: (attempts: number) => {
         // Exponential back off: 20ms, 40ms, 80ms..., capped to retry every 30 seconds
