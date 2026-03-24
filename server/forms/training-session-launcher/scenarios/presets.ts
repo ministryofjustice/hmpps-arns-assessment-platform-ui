@@ -109,6 +109,24 @@ export const scenarioPresets: ScenarioPreset[] = [
       planAccessMode: 'READ_WRITE',
     },
   },
+  {
+    id: 'pom-module-8',
+    name: 'POM Module 8',
+    shortDescription: 'National rollout scenario',
+    description: 'Scenario configured for POM Module 8 in a prison setting.',
+    flags: [],
+    fixedValues: {
+      givenName: 'Phillip',
+      familyName: 'Jones',
+      dateOfBirth: '1985-10-27',
+      gender: '1',
+      pnc: '15/123457V',
+      location: 'PRISON',
+      sexuallyMotivatedOffenceHistory: 'NO',
+      accessMode: 'READ_WRITE',
+      planAccessMode: 'READ_WRITE',
+    },
+  },
 ]
 
 /**

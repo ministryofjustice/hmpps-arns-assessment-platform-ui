@@ -82,7 +82,7 @@ function transformNeedForTemplate(need: DisplayNeed): TemplateNeed {
  */
 export const criminogenicNeedsList = buildNunjucksComponent<CriminogenicNeedsList>(
   'criminogenicNeedsList',
-  async (block: EvaluatedBlock<CriminogenicNeedsList>, nunjucksEnv: nunjucks.Environment) => {
+  (block: EvaluatedBlock<CriminogenicNeedsList>, nunjucksEnv: nunjucks.Environment) => {
     const needs = (block.needs as DisplayNeed[]) ?? []
     const classes = ['criminogenic-needs-list', block.classes].filter(Boolean).join(' ')
 

@@ -212,7 +212,7 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
  * Creates a renderer function for the goal summary card variants.
  */
 function createRenderer(templatePath: string) {
-  return async (block: EvaluatedBlock<GoalSummaryCardBlock>, nunjucksEnv: nunjucks.Environment): Promise<string> => {
+  return (block: EvaluatedBlock<GoalSummaryCardBlock>, nunjucksEnv: nunjucks.Environment): string => {
     const params = buildParams(block)
     return nunjucksEnv.render(templatePath, { params })
   }
