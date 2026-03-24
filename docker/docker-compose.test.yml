@@ -77,6 +77,7 @@ services:
         fi
         [ $$PARALLEL_EXIT -eq 0 ] && [ $$SERIAL_EXIT -eq 0 ]
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - ../package.json:/playwright/package.json
       - ../package-lock.json:/playwright/package-lock.json
       - ../playwright.config.ts:/playwright/playwright.config.ts
