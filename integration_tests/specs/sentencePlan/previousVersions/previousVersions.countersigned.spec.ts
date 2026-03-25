@@ -5,8 +5,12 @@ import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
 import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPage'
 import coordinatorApi from '../../../mockApis/coordinatorApi'
 
-test.describe('Previous Versions - Multiple previous versions, including Countersigned', () => {
-  test('it lists countersigned versions in a separate table', async ({ page, createSession, makeAxeBuilder }) => {
+test.describe('Previous Versions - Countersigned', () => {
+  test('should show countersigned versions from previous days in a separate table', async ({
+    page,
+    createSession,
+    makeAxeBuilder,
+  }) => {
     const { sentencePlanId, handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
     })
@@ -21,7 +25,7 @@ test.describe('Previous Versions - Multiple previous versions, including Counter
         description: 'Assessment and plan updated',
         assessmentVersion: {
           uuid: crypto.randomUUID(),
-          version: 2,
+          version: 3,
           createdAt: today.toISOString(),
           updatedAt: today.toISOString(),
           status: 'COUNTERSIGNED',
@@ -33,6 +37,27 @@ test.describe('Previous Versions - Multiple previous versions, including Counter
           version: today.getTime(),
           createdAt: today.toISOString(),
           updatedAt: today.toISOString(),
+          status: 'COUNTERSIGNED',
+          planAgreementStatus: '',
+          entityType: 'AAP_PLAN',
+        },
+      },
+      [`${yesterday.toISOString().split('T')[0]}`]: {
+        description: 'Assessment and plan updated',
+        assessmentVersion: {
+          uuid: crypto.randomUUID(),
+          version: 2,
+          createdAt: yesterday.toISOString(),
+          updatedAt: yesterday.toISOString(),
+          status: 'COUNTERSIGNED',
+          planAgreementStatus: '',
+          entityType: 'ASSESSMENT',
+        },
+        planVersion: {
+          uuid: crypto.randomUUID(),
+          version: yesterday.getTime(),
+          createdAt: yesterday.toISOString(),
+          updatedAt: yesterday.toISOString(),
           status: 'COUNTERSIGNED',
           planAgreementStatus: '',
           entityType: 'AAP_PLAN',
@@ -102,14 +127,14 @@ test.describe('Previous Versions - Multiple previous versions, including Counter
       await expect(headers.nth(statusColumnIndex)).toContainText('Status')
     }
 
-    // Verify Countersigned table content
+    // Countersigned table: today's entry trimmed, only yesterday remains
     const countersignedRows = countersignedTable.locator('tbody tr')
     await expect(countersignedRows).toHaveCount(1)
     const countersignedColumns = countersignedRows.first().locator('td')
 
     await expect(countersignedColumns).toHaveCount(4)
 
-    const expectedCountersignedDate = today.toLocaleDateString('en-GB', {
+    const expectedCountersignedDate = yesterday.toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
@@ -125,28 +150,100 @@ test.describe('Previous Versions - Multiple previous versions, including Counter
       await expect(link).toHaveAttribute('target', '_blank')
     }
 
-    // Verify All Versions table content
+    // All Versions table: today's entry trimmed, only yesterday remains
     const allVersionsRows = allVersionsTable.locator('tbody tr')
     await expect(allVersionsRows).toHaveCount(1)
+
+    const allVersionsColumns = allVersionsRows.first().locator('td')
+    await expect(allVersionsColumns.nth(dateColumnIndex)).toContainText(expectedCountersignedDate)
+    await expect(allVersionsColumns.nth(dateColumnIndex)).toContainText('Assessment and plan updated')
+
+    const accessibilityScanResults = await makeAxeBuilder().include('#main-content').analyze()
+    expect(accessibilityScanResults.violations).toEqual([])
+  })
+
+  test('should not show countersigned table when only countersigned version is from today', async ({
+    page,
+    createSession,
+    makeAxeBuilder,
+  }) => {
+    const { sentencePlanId, handoverLink } = await createSession({
+      targetService: TargetService.SENTENCE_PLAN,
+    })
+
+    const today = new Date()
+    const yesterday = new Date()
+
+    yesterday.setDate(today.getDate() - 1)
+
+    const countersignedVersions: VersionsTable = {
+      [`${today.toISOString().split('T')[0]}`]: {
+        description: 'Assessment and plan updated',
+        assessmentVersion: {
+          uuid: crypto.randomUUID(),
+          version: 2,
+          createdAt: today.toISOString(),
+          updatedAt: today.toISOString(),
+          status: 'COUNTERSIGNED',
+          planAgreementStatus: '',
+          entityType: 'ASSESSMENT',
+        },
+        planVersion: {
+          uuid: crypto.randomUUID(),
+          version: today.getTime(),
+          createdAt: today.toISOString(),
+          updatedAt: today.toISOString(),
+          status: 'COUNTERSIGNED',
+          planAgreementStatus: '',
+          entityType: 'AAP_PLAN',
+        },
+      },
+    }
+
+    await coordinatorApi.stubGetEntityVersions(sentencePlanId, {
+      allVersions: {
+        [`${yesterday.toISOString().split('T')[0]}`]: {
+          description: 'Plan updated',
+          assessmentVersion: null,
+          planVersion: {
+            uuid: crypto.randomUUID(),
+            version: yesterday.getTime(),
+            createdAt: yesterday.toISOString(),
+            updatedAt: yesterday.toISOString(),
+            status: 'UNSIGNED',
+            planAgreementStatus: 'AGREED',
+            entityType: 'AAP_PLAN',
+          },
+        },
+        ...countersignedVersions,
+      },
+      countersignedVersions,
+    })
+
+    await page.goto(handoverLink)
+    await handlePrivacyScreenIfPresent(page)
+
+    await page.getByRole('link', { name: /View previous versions/i }).click()
+    const previousVersionsPage = await PreviousVersionsPage.verifyOnPage(page)
+
+    // Only All Versions table shown, no Countersigned table
+    await expect(previousVersionsPage.table).toHaveCount(1)
+    await expect(previousVersionsPage.tableCaption).toHaveCount(0)
+
+    const allVersionsTable = previousVersionsPage.table.first()
+    const allVersionsRows = allVersionsTable.locator('tbody tr')
+    await expect(allVersionsRows).toHaveCount(1)
+
     const allVersionsColumns = allVersionsRows.first().locator('td')
 
-    await expect(allVersionsColumns).toHaveCount(4)
-
-    const expectedAgreedDate = yesterday.toLocaleDateString('en-GB', {
+    const expectedDate = yesterday.toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
     })
 
-    await expect(allVersionsColumns.nth(dateColumnIndex)).toContainText(expectedAgreedDate)
-    await expect(allVersionsColumns.nth(dateColumnIndex)).toContainText('Plan updated')
-    await expect(allVersionsColumns.nth(statusColumnIndex)).toContainText('Plan agreed')
-
-    const assessmentLink = allVersionsColumns.nth(assessmentColumnIndex).locator('a', { hasText: 'View' })
-    await expect(assessmentLink).toHaveCount(0)
-
-    const planLink = allVersionsColumns.nth(planColumnIndex).locator('a', { hasText: 'View' })
-    await expect(planLink).toHaveAttribute('target', '_blank')
+    await expect(allVersionsColumns.first()).toContainText(expectedDate)
+    await expect(allVersionsColumns.first()).toContainText('Plan updated')
 
     // Accessibility
     const accessibilityScanResults = await makeAxeBuilder().include('#main-content').analyze()
