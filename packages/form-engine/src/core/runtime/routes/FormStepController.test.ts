@@ -226,6 +226,10 @@ describe('FormStepController', () => {
       renderStepId: stepNode.id,
       isRenderSync: false,
       isAnswerPrepareSync: false,
+      isValidationSync: false,
+      hasValidatingSubmitTransition: (stepNode.properties.onSubmission ?? []).some(
+        (t: SubmitTransitionASTNode) => t.properties.validate === true,
+      ),
     }
 
     return {
