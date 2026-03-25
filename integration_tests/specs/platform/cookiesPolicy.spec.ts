@@ -4,14 +4,14 @@ import { test } from '../../support/fixtures'
 const cookiesPolicyPageUrl = '/platform/cookies-policy'
 
 test.describe('Cookies policy page', () => {
-  test('loads with heading and placeholder content', async ({ page }) => {
+  test('loads with heading and content', async ({ page }) => {
     await page.goto(cookiesPolicyPageUrl)
 
     await expect(page).toHaveURL(cookiesPolicyPageUrl)
-    await expect(page.getByRole('heading', { name: 'Cookies policy' })).toBeVisible()
-    await expect(page.locator('[data-qa="cookies-policy-content"]')).toContainText(
-      'This is the Cookies policy page. Content for this page will be added soon.',
-    )
+    await expect(page.getByRole('heading', { level: 1, name: 'Cookies policy for Assess and plan' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 2, name: 'Session cookies' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 2, name: 'Survey cookies' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 2, name: 'Analytics cookies' })).toBeVisible()
   })
 
   test('shows shared page layout elements', async ({ page }) => {
