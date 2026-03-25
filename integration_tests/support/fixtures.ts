@@ -1,10 +1,11 @@
 import { AxeBuilder } from '@axe-core/playwright'
 import { test as base } from '@playwright/test'
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import { promises as fs } from 'node:fs'
 import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
 import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
-import { getTestApis } from './apis'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
+import { TestHmppsAuthClient } from './apis/TestHmppsAuthClient'
 import { TestAapApiClient } from './apis/TestAapApiClient'
 import { TestHandoverApiClient } from './apis/TestHandoverApiClient'
 import { TestCoordinatorApiClient } from './apis/TestCoordinatorApiClient'
@@ -120,6 +121,16 @@ export interface SessionFixture {
 }
 
 /**
+ * Worker-scoped fixtures shared across all tests in a worker.
+ * The auth client is worker-scoped so a single token is cached and reused
+ * instead of requesting a new one from HMPPS Auth for every test.
+ */
+type WorkerFixtures = {
+  apis: PlaywrightExtendedConfig['apis']
+  authClient: TestHmppsAuthClient
+}
+
+/**
  * Test fixtures provided to tests
  */
 type TestApiFixtures = {
@@ -172,52 +183,51 @@ type InternalFixtures = {
  *   await page.goto(`/assessment/${assessment.uuid}`)
  * })
  */
-export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig & InternalFixtures>({
-  apis: [undefined as unknown as PlaywrightExtendedConfig['apis'], { option: true }],
+export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtures>({
+  apis: [undefined as unknown as PlaywrightExtendedConfig['apis'], { option: true, scope: 'worker' }],
 
-  aapClient: async ({ apis }, use, testInfo) => {
-    const { aapClient } = getTestApis({
-      aapApiUrl: apis.aapApi.url,
-      aapDbConnectionString: apis.aapApi.dbConnectionString,
-      handoverApiUrl: apis.handoverApi.url,
-      coordinatorApiUrl: apis.coordinatorApi.url,
-      hmppsAuthUrl: apis.hmppsAuth.url,
-      hmppsAuthClientId: apis.hmppsAuth.systemClientId,
-      hmppsAuthClientSecret: apis.hmppsAuth.systemClientSecret,
+  authClient: [
+    async ({ apis }, use) => {
+      const authClient = new TestHmppsAuthClient({
+        url: apis.hmppsAuth.url,
+        systemClientId: apis.hmppsAuth.systemClientId,
+        systemClientSecret: apis.hmppsAuth.systemClientSecret,
+      })
+
+      await use(authClient)
+    },
+    { scope: 'worker' },
+  ],
+
+  aapClient: async ({ authClient, apis }, use, testInfo) => {
+    const client = new TestAapApiClient({
+      baseUrl: apis.aapApi.url,
+      dbConnectionString: apis.aapApi.dbConnectionString,
+      authenticationClient: authClient as unknown as AuthenticationClient,
       testInfo,
     })
 
-    await use(aapClient)
+    await use(client)
   },
 
-  handoverClient: async ({ apis }, use, testInfo) => {
-    const { handoverClient } = getTestApis({
-      aapApiUrl: apis.aapApi.url,
-      aapDbConnectionString: apis.aapApi.dbConnectionString,
-      handoverApiUrl: apis.handoverApi.url,
-      coordinatorApiUrl: apis.coordinatorApi.url,
-      hmppsAuthUrl: apis.hmppsAuth.url,
-      hmppsAuthClientId: apis.hmppsAuth.systemClientId,
-      hmppsAuthClientSecret: apis.hmppsAuth.systemClientSecret,
+  handoverClient: async ({ authClient, apis }, use, testInfo) => {
+    const client = new TestHandoverApiClient({
+      baseUrl: apis.handoverApi.url,
+      authenticationClient: authClient as unknown as AuthenticationClient,
       testInfo,
     })
 
-    await use(handoverClient)
+    await use(client)
   },
 
-  coordinatorClient: async ({ apis }, use, testInfo) => {
-    const { coordinatorClient } = getTestApis({
-      aapApiUrl: apis.aapApi.url,
-      aapDbConnectionString: apis.aapApi.dbConnectionString,
-      handoverApiUrl: apis.handoverApi.url,
-      coordinatorApiUrl: apis.coordinatorApi.url,
-      hmppsAuthUrl: apis.hmppsAuth.url,
-      hmppsAuthClientId: apis.hmppsAuth.systemClientId,
-      hmppsAuthClientSecret: apis.hmppsAuth.systemClientSecret,
+  coordinatorClient: async ({ authClient, apis }, use, testInfo) => {
+    const client = new TestCoordinatorApiClient({
+      baseUrl: apis.coordinatorApi.url,
+      authenticationClient: authClient as unknown as AuthenticationClient,
       testInfo,
     })
 
-    await use(coordinatorClient)
+    await use(client)
   },
 
   assessmentBuilder: async ({ aapClient }, use) => {
