@@ -11,16 +11,7 @@ import ThunkCompilerFactory from '@form-engine/core/compilation/thunks/ThunkComp
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import ThunkCacheManager from '@form-engine/core/compilation/thunks/ThunkCacheManager'
 import ThunkRuntimeHooksFactory from '@form-engine/core/compilation/thunks/ThunkRuntimeHooksFactory'
-import { ASTNodeType } from '@form-engine/core/types/enums'
 import { CompilationDependencies } from '@form-engine/core/compilation/CompilationDependencies'
-
-/**
- * Result of evaluating a form
- */
-export interface EvaluationResult {
-  context: ThunkEvaluationContext
-  journey: ThunkResult<unknown>
-}
 
 /**
  * Runtime evaluator that orchestrates lazy thunk handler execution.
@@ -180,39 +171,5 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
       request,
       response,
     )
-  }
-
-  /**
-   * Main entry point: evaluate form starting from Journey node
-   *
-   * Orchestrates lazy evaluation by:
-   * 1. Invoke the Journey node (root of AST)
-   * 2. Return context with all evaluated values
-   *
-   * The Journey node invokes its children (Steps), which invoke their children (Blocks),
-   * and so on, creating a natural lazy evaluation cascade. Memoization prevents redundant
-   * computation when nodes are referenced multiple times.
-   *
-   * Note: Lifecycle transitions (onLoad, onAccess, onSubmit) should be executed
-   * before calling evaluate(), using LifecycleCoordinator.handleRequest().
-   *
-   * @param context - Evaluation context created via createContext()
-   * @returns Promise resolving to evaluation result with context and journey
-   */
-  async evaluate(context: ThunkEvaluationContext): Promise<EvaluationResult> {
-    // Find and invoke the Journey node (root of the AST)
-    // The Journey handler will recursively invoke all necessary nodes
-    const journeyNodes = this.compilationDependencies.nodeRegistry.findByType(ASTNodeType.JOURNEY)
-
-    let journey: ThunkResult<unknown> = {
-      value: undefined,
-      metadata: { source: 'ThunkEvaluator.evaluate', timestamp: Date.now() },
-    }
-
-    if (journeyNodes.length > 0) {
-      journey = await this.invoke(journeyNodes[0].id, context)
-    }
-
-    return { context, journey }
   }
 }
