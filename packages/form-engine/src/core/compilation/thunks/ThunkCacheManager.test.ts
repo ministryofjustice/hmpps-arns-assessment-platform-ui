@@ -95,70 +95,6 @@ describe('ThunkCacheManager', () => {
     })
   })
 
-  describe('getWithCachedFlag()', () => {
-    it('should return undefined when node is not cached', () => {
-      // Arrange
-      const nodeId: NodeId = 'compile_pseudo:1'
-
-      // Act
-      const result = cacheManager.getWithCachedFlag(nodeId)
-
-      // Assert
-      expect(result).toBeUndefined()
-    })
-
-    it('should return value result with cached flag set to true', () => {
-      // Arrange
-      const nodeId: NodeId = 'compile_pseudo:1'
-      const cachedResult = createSuccessResult('cached value')
-      cacheManager.set(nodeId, cachedResult)
-
-      // Act
-      const result = cacheManager.getWithCachedFlag<string>(nodeId)
-
-      // Assert
-      expect(result).toBeDefined()
-      expect(result?.value).toBe('cached value')
-      expect(result?.metadata.cached).toBe(true)
-    })
-
-    it('should return error result with cached flag set to true', () => {
-      // Arrange
-      const nodeId: NodeId = 'compile_pseudo:1'
-      const errorResult = createErrorResult(nodeId, 'Cached error')
-      cacheManager.set(nodeId, errorResult)
-
-      // Act
-      const result = cacheManager.getWithCachedFlag(nodeId)
-
-      // Assert
-      expect(result).toBeDefined()
-      expect(result?.error?.message).toBe('Cached error')
-      expect(result?.metadata.cached).toBe(true)
-    })
-
-    it('should preserve existing metadata when adding cached flag', () => {
-      // Arrange
-      const nodeId: NodeId = 'compile_pseudo:1'
-      const cachedResult: ThunkResult<string> = {
-        value: 'test',
-        metadata: {
-          source: 'original-source',
-          timestamp: 12345,
-        },
-      }
-      cacheManager.set(nodeId, cachedResult)
-
-      // Act
-      const result = cacheManager.getWithCachedFlag<string>(nodeId)
-
-      // Assert
-      expect(result?.metadata.source).toBe('original-source')
-      expect(result?.metadata.timestamp).toBe(12345)
-      expect(result?.metadata.cached).toBe(true)
-    })
-  })
-
   describe('set()', () => {
     it('should store a value result', () => {
       // Arrange
@@ -201,7 +137,6 @@ describe('ThunkCacheManager', () => {
       expect(cacheManager.has(nodeA)).toBe(false)
       expect(cacheManager.has(nodeB)).toBe(false)
     })
-
   })
 
   describe('clearCache()', () => {
@@ -219,6 +154,5 @@ describe('ThunkCacheManager', () => {
       expect(cacheManager.has(nodeA)).toBe(false)
       expect(cacheManager.has(nodeB)).toBe(false)
     })
-
   })
 })

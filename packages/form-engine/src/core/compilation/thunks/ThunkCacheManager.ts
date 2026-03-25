@@ -29,41 +29,6 @@ export default class ThunkCacheManager {
   }
 
   /**
-   * Get cached result with cached flag added to metadata
-   *
-   * Returns undefined if not in cache, otherwise returns the result
-   * with metadata.cached set to true.
-   */
-  getWithCachedFlag<T>(nodeId: NodeId): ThunkResult<T> | undefined {
-    if (!this.cache.has(nodeId)) {
-      return undefined
-    }
-
-    const cached = this.cache.get(nodeId)!
-
-    // Properly handle the discriminated union based on which branch it is
-    if ('error' in cached && cached.error) {
-      // Error branch - return with cached flag
-      return {
-        error: cached.error,
-        metadata: {
-          ...cached.metadata,
-          cached: true,
-        },
-      } as ThunkResult<T>
-    }
-
-    // Value branch - return with cached flag
-    return {
-      value: cached.value,
-      metadata: {
-        ...cached.metadata,
-        cached: true,
-      },
-    } as ThunkResult<T>
-  }
-
-  /**
    * Store result in cache
    */
   set<T>(nodeId: NodeId, result: ThunkResult<T>): void {

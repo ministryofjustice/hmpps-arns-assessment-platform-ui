@@ -91,7 +91,7 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
   }
 
   async invoke<T = unknown>(nodeId: NodeId, context: ThunkEvaluationContext): Promise<ThunkResult<T>> {
-    const cachedResult = this.cacheManager.getWithCachedFlag<T>(nodeId)
+    const cachedResult = this.cacheManager.get<T>(nodeId)
 
     if (cachedResult) {
       return cachedResult
@@ -115,7 +115,7 @@ export default class ThunkEvaluator implements ThunkInvocationAdapter {
   }
 
   invokeSync<T = unknown>(nodeId: NodeId, context: ThunkEvaluationContext): ThunkResult<T> {
-    const cachedResult = this.cacheManager.getWithCachedFlag<T>(nodeId)
+    const cachedResult = this.cacheManager.get<T>(nodeId)
 
     if (cachedResult) {
       return cachedResult

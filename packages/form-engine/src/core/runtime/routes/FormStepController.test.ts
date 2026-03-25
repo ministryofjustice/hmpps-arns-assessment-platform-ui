@@ -209,7 +209,6 @@ describe('FormStepController', () => {
       createContext: jest.fn().mockReturnValue(mockContext),
       invoke: jest.fn(),
       invokeSync: jest.fn(),
-      logStats: jest.fn(),
     } as unknown as jest.Mocked<ThunkEvaluator>
     ;(ThunkEvaluator.withRuntimeOverlay as jest.Mock).mockReturnValue(mockEvaluator)
   })

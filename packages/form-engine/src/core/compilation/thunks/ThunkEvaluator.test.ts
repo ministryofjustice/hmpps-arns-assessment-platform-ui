@@ -198,7 +198,7 @@ describe('ThunkEvaluator', () => {
       mockContext = createMockContext() as ThunkEvaluationContext
     })
 
-    it('should return cached value result with cached flag when result is cached', async () => {
+    it('should return cached value result on second call', async () => {
       // Arrange - use pseudo node ID since only pseudo nodes are cached
       const pseudoNodeId: NodeId = 'compile_pseudo:1'
       const mockHandler = createMockHybridHandler(
@@ -216,7 +216,6 @@ describe('ThunkEvaluator', () => {
 
       // Assert
       expect(firstResult.value).toBe('test-value')
-      expect(firstResult.metadata?.cached).toBeUndefined()
       expect(mockHandler.evaluate).toHaveBeenCalledTimes(1)
 
       // Act - Second call should use cache
@@ -224,12 +223,11 @@ describe('ThunkEvaluator', () => {
 
       // Assert
       expect(secondResult.value).toBe('test-value')
-      expect(secondResult.metadata?.cached).toBe(true)
       expect(secondResult.metadata?.source).toBe('test')
       expect(mockHandler.evaluate).toHaveBeenCalledTimes(1)
     })
 
-    it('should return cached error result with cached flag when error result is cached', async () => {
+    it('should return cached error result on second call', async () => {
       // Arrange - use pseudo node ID since only pseudo nodes are cached
       const pseudoNodeId: NodeId = 'compile_pseudo:2'
       const mockHandler = createMockHybridHandler(
@@ -252,7 +250,6 @@ describe('ThunkEvaluator', () => {
       // Assert
       expect(firstResult.error).toBeDefined()
       expect(firstResult.error?.message).toBe('Test error')
-      expect(firstResult.metadata?.cached).toBeUndefined()
 
       // Act - Second call should use cached error
       const secondResult = await evaluator.invoke(pseudoNodeId, mockContext)
@@ -260,7 +257,6 @@ describe('ThunkEvaluator', () => {
       // Assert
       expect(secondResult.error).toBeDefined()
       expect(secondResult.error?.message).toBe('Test error')
-      expect(secondResult.metadata?.cached).toBe(true)
       expect(mockHandler.evaluate).toHaveBeenCalledTimes(1)
     })
 
