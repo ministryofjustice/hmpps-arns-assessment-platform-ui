@@ -87,7 +87,7 @@ jobs:
       app_version: '${{ needs.build_docker.outputs.app_version }}'
 
   deploy_test:
-    name: Deploy to the development environment
+    name: Deploy to the test environment
     needs:
       - build_docker
       - publish_docker
@@ -95,4 +95,26 @@ jobs:
     secrets: inherit
     with:
       environment: 'test'
+      app_version: '${{ needs.build_docker.outputs.app_version }}'
+
+  deploy_preprod:
+    name: Deploy to the pre-production environment
+    needs:
+      - build_docker
+      - deploy_test
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2
+    secrets: inherit
+    with:
+      environment: 'preprod'
+      app_version: '${{ needs.build_docker.outputs.app_version }}'
+
+  deploy_prod:
+    name: Deploy to the production environment
+    needs:
+      - build_docker
+      - deploy_preprod
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2
+    secrets: inherit
+    with:
+      environment: 'prod'
       app_version: '${{ needs.build_docker.outputs.app_version }}'

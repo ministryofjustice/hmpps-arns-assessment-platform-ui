@@ -41,7 +41,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  workers: process.env.CI ? 3 : 6,
+  workers: process.env.CI ? 3 : 4,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'test_results/playwright/report', open: process.env.CI ? 'never' : 'on-failure' }],
@@ -53,13 +53,13 @@ export default defineConfig<PlaywrightExtendedConfig>({
     actionTimeout: 30 /* seconds */ * 1000,
     timezoneId: 'Europe/London',
     launchOptions: {
-      slowMo: 150,
+      slowMo: 0,
       args: process.env.CI
         ? ['--unsafely-treat-insecure-origin-as-secure=http://hmpps-auth:9090,http://ui:3000,http://wiremock:8080']
         : [],
     },
     screenshot: 'only-on-failure',
-    trace: process.env.CI ? 'off' : 'on',
+    trace: process.env.CI ? 'retain-on-first-failure' : 'on',
     ...devices['Desktop Chrome'],
     testIdAttribute: 'data-qa',
     baseURL: process.env.BASE_URL || 'http://localhost:3000',

@@ -1,7 +1,11 @@
 import { AxeBuilder } from '@axe-core/playwright'
 import { test as base } from '@playwright/test'
-import { getTestApis } from './apis'
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import { promises as fs } from 'node:fs'
+import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
+import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
+import { TestHmppsAuthClient } from './apis/TestHmppsAuthClient'
 import { TestAapApiClient } from './apis/TestAapApiClient'
 import { TestHandoverApiClient } from './apis/TestHandoverApiClient'
 import { TestCoordinatorApiClient } from './apis/TestCoordinatorApiClient'
@@ -13,9 +17,8 @@ import { CoordinatorBuilder } from '../builders/CoordinatorBuilder'
 import type { CoordinatorBuilderFactory } from '../builders/CoordinatorBuilder'
 import { HandoverBuilder } from '../builders/HandoverBuilder'
 import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
-import type { AccessMode, CriminogenicNeedsData } from '../../server/interfaces/handover-api/shared'
-import type { AssessmentType } from '../../server/interfaces/coordinator-api/oasysCreate'
 import { AuditQueueClient } from './AuditQueueClient'
+import { captureContainerLogs } from './DockerLogCapture'
 
 /**
  * Default criminogenic needs data for E2E tests.
@@ -118,6 +121,16 @@ export interface SessionFixture {
 }
 
 /**
+ * Worker-scoped fixtures shared across all tests in a worker.
+ * The auth client is worker-scoped so a single token is cached and reused
+ * instead of requesting a new one from HMPPS Auth for every test.
+ */
+type WorkerFixtures = {
+  apis: PlaywrightExtendedConfig['apis']
+  authClient: TestHmppsAuthClient
+}
+
+/**
  * Test fixtures provided to tests
  */
 type TestApiFixtures = {
@@ -131,6 +144,10 @@ type TestApiFixtures = {
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
   auditQueue: AuditQueueClient
   makeAxeBuilder: () => AxeBuilder
+}
+
+type InternalFixtures = {
+  captureDockerLogsOnFailure: void
 }
 
 /**
@@ -166,52 +183,51 @@ type TestApiFixtures = {
  *   await page.goto(`/assessment/${assessment.uuid}`)
  * })
  */
-export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
-  apis: [undefined as unknown as PlaywrightExtendedConfig['apis'], { option: true }],
+export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtures>({
+  apis: [undefined as unknown as PlaywrightExtendedConfig['apis'], { option: true, scope: 'worker' }],
 
-  aapClient: async ({ apis }, use, testInfo) => {
-    const { aapClient } = getTestApis({
-      aapApiUrl: apis.aapApi.url,
-      aapDbConnectionString: apis.aapApi.dbConnectionString,
-      handoverApiUrl: apis.handoverApi.url,
-      coordinatorApiUrl: apis.coordinatorApi.url,
-      hmppsAuthUrl: apis.hmppsAuth.url,
-      hmppsAuthClientId: apis.hmppsAuth.systemClientId,
-      hmppsAuthClientSecret: apis.hmppsAuth.systemClientSecret,
+  authClient: [
+    async ({ apis }, use) => {
+      const authClient = new TestHmppsAuthClient({
+        url: apis.hmppsAuth.url,
+        systemClientId: apis.hmppsAuth.systemClientId,
+        systemClientSecret: apis.hmppsAuth.systemClientSecret,
+      })
+
+      await use(authClient)
+    },
+    { scope: 'worker' },
+  ],
+
+  aapClient: async ({ authClient, apis }, use, testInfo) => {
+    const client = new TestAapApiClient({
+      baseUrl: apis.aapApi.url,
+      dbConnectionString: apis.aapApi.dbConnectionString,
+      authenticationClient: authClient as unknown as AuthenticationClient,
       testInfo,
     })
 
-    await use(aapClient)
+    await use(client)
   },
 
-  handoverClient: async ({ apis }, use, testInfo) => {
-    const { handoverClient } = getTestApis({
-      aapApiUrl: apis.aapApi.url,
-      aapDbConnectionString: apis.aapApi.dbConnectionString,
-      handoverApiUrl: apis.handoverApi.url,
-      coordinatorApiUrl: apis.coordinatorApi.url,
-      hmppsAuthUrl: apis.hmppsAuth.url,
-      hmppsAuthClientId: apis.hmppsAuth.systemClientId,
-      hmppsAuthClientSecret: apis.hmppsAuth.systemClientSecret,
+  handoverClient: async ({ authClient, apis }, use, testInfo) => {
+    const client = new TestHandoverApiClient({
+      baseUrl: apis.handoverApi.url,
+      authenticationClient: authClient as unknown as AuthenticationClient,
       testInfo,
     })
 
-    await use(handoverClient)
+    await use(client)
   },
 
-  coordinatorClient: async ({ apis }, use, testInfo) => {
-    const { coordinatorClient } = getTestApis({
-      aapApiUrl: apis.aapApi.url,
-      aapDbConnectionString: apis.aapApi.dbConnectionString,
-      handoverApiUrl: apis.handoverApi.url,
-      coordinatorApiUrl: apis.coordinatorApi.url,
-      hmppsAuthUrl: apis.hmppsAuth.url,
-      hmppsAuthClientId: apis.hmppsAuth.systemClientId,
-      hmppsAuthClientSecret: apis.hmppsAuth.systemClientSecret,
+  coordinatorClient: async ({ authClient, apis }, use, testInfo) => {
+    const client = new TestCoordinatorApiClient({
+      baseUrl: apis.coordinatorApi.url,
+      authenticationClient: authClient as unknown as AuthenticationClient,
       testInfo,
     })
 
-    await use(coordinatorClient)
+    await use(client)
   },
 
   assessmentBuilder: async ({ aapClient }, use) => {
@@ -291,6 +307,30 @@ export const test = base.extend<TestApiFixtures & PlaywrightExtendedConfig>({
 
     await use(makeAxeBuilder)
   },
+
+  captureDockerLogsOnFailure: [
+    // eslint-disable-next-line no-empty-pattern
+    async ({}, use, testInfo) => {
+      const startedAt = new Date()
+
+      await use()
+
+      if (testInfo.status === testInfo.expectedStatus) {
+        return
+      }
+
+      const { logs } = await captureContainerLogs('ui', { since: startedAt })
+      const logsPath = testInfo.outputPath('ui-container-logs.txt')
+
+      await fs.writeFile(logsPath, logs, 'utf-8')
+
+      await testInfo.attach('ui-container-logs', {
+        path: logsPath,
+        contentType: 'text/plain',
+      })
+    },
+    { auto: true },
+  ],
 })
 
 export { expect } from '@playwright/test'

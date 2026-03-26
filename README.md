@@ -165,7 +165,6 @@ The application is deployed to Cloud Platform environments using GitHub Actions 
 - **Production** - Manual approval required
 
 ### Security Scanning
-- Trivy container scanning
 - Veracode static analysis
 - npm dependency auditing
 - Gitleaks secret detection
