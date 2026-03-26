@@ -199,7 +199,11 @@ export default class NodeRegistrationWalker {
   }
 
   /** Scan a template node for block-type descendants and mark the parent's property edge */
-  private scanTemplateForBlockTypes(value: { originalType: string; properties?: Record<string, unknown> }, parentNodeId: NodeId, propertyKey: string): void {
+  private scanTemplateForBlockTypes(
+    value: { originalType: string; properties?: Record<string, unknown> },
+    parentNodeId: NodeId,
+    propertyKey: string,
+  ): void {
     if (value.originalType === ASTNodeType.BLOCK) {
       this.astNodeTree.markPropertyContainsType(parentNodeId, propertyKey, ASTNodeType.BLOCK)
 
