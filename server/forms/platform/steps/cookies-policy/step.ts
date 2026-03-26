@@ -3,7 +3,7 @@ import { pageHeading, pageContent } from './fields'
 
 export const cookiesPolicyStep = step({
   path: '/cookies-policy',
-  title: 'Cookies policy',
+  title: 'Cookies policy for Assess and plan',
   view: {
     template: 'platform/views/platform-policy-step',
     locals: {
