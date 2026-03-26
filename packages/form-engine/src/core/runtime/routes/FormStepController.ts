@@ -5,6 +5,7 @@ import ThunkEvaluator from '@form-engine/core/compilation/thunks/ThunkEvaluator'
 import { ThunkInvocationAdapter } from '@form-engine/core/compilation/thunks/types'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import { BlockASTNode } from '@form-engine/core/types/structures.type'
+import { ASTNodeType } from '@form-engine/core/types/enums'
 import { Evaluated, JourneyMetadata } from '@form-engine/core/runtime/rendering/types'
 import RenderContextFactory from '@form-engine/core/runtime/rendering/RenderContextFactory'
 import TransitionExecutor from '@form-engine/core/runtime/executors/TransitionExecutor'
@@ -189,6 +190,8 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
     context: ThunkEvaluationContext,
     options: { showValidationFailures?: boolean } = {},
   ): void {
+    const { astNodeTree } = context
+
     const renderContext = RenderContextFactory.build(
       {
         step: metadata.step,
@@ -197,6 +200,13 @@ export default class FormStepController<TRequest, TResponse> implements StepCont
         answers: context.global.answers,
         data: context.global.data,
         validationFailures: this.getStepValidationFailures(context),
+        hasNestedBlocks: blockId => {
+          if (astNodeTree.getNodeType(blockId) === undefined) {
+            return true
+          }
+
+          return astNodeTree.hasDescendantOfType(blockId, ASTNodeType.BLOCK)
+        },
       },
       {
         navigationMetadata: this.navigationMetadata,
