@@ -1,4 +1,3 @@
-import { performance } from 'perf_hooks'
 import nunjucks from 'nunjucks'
 import { InternalServerError } from 'http-errors'
 import { RenderContext, Evaluated, HasNestedBlocksLookup } from '@form-engine/core/runtime/rendering/types'
@@ -9,36 +8,6 @@ import { BlockASTNode } from '@form-engine/core/types/structures.type'
 import { isBlockStructNode } from '@form-engine/core/typeguards/structure-nodes'
 import { ValidationResult } from '@form-engine/core/nodes/expressions/validation/ValidationHandler'
 import { FieldError, TemplateContext } from './types'
-
-class PhaseTimer {
-  private readonly totals = new Map<string, number>()
-
-  private requestCount = 0
-
-  private static readonly LOG_INTERVAL = 500
-
-  record(phase: string, ms: number): void {
-    this.totals.set(phase, (this.totals.get(phase) ?? 0) + ms)
-  }
-
-  endRequest(): void {
-    this.requestCount += 1
-
-    if (this.requestCount < PhaseTimer.LOG_INTERVAL) {
-      return
-    }
-
-    const averages = Array.from(this.totals.entries())
-      .map(([phase, total]) => `${phase}: ${(total / this.requestCount).toFixed(2)}ms`)
-      .join(', ')
-
-    // eslint-disable-next-line no-console
-    console.log(`[TemplateRenderer] avg over ${this.requestCount} requests — ${averages}`)
-
-    this.totals.clear()
-    this.requestCount = 0
-  }
-}
 
 export interface TemplateRendererOptions {
   nunjucksEnv: nunjucks.Environment
@@ -55,8 +24,6 @@ export default class TemplateRenderer {
   private readonly nunjucksEnv: nunjucks.Environment
 
   private readonly componentRegistry: ComponentRegistry
-
-  private static readonly timer = new PhaseTimer()
 
   private readonly defaultTemplate: string
 
@@ -105,9 +72,7 @@ export default class TemplateRenderer {
 
   /** Render a full page from RenderContext and return HTML string */
   render(context: RenderContext, locals: Record<string, unknown> = {}): string {
-    let t0 = performance.now()
     const renderedBlocks = this.renderBlocks(context.blocks, context.showValidationFailures, context.hasNestedBlocks)
-    TemplateRenderer.timer.record('blocks', performance.now() - t0)
 
     const mergedViewLocals = this.mergeViewLocals(context)
 
@@ -125,12 +90,7 @@ export default class TemplateRenderer {
 
     const template = this.resolveTemplate(context)
 
-    t0 = performance.now()
-    const html = this.renderTemplate(template, templateContext)
-    TemplateRenderer.timer.record('page', performance.now() - t0)
-    TemplateRenderer.timer.endRequest()
-
-    return html
+    return this.renderTemplate(template, templateContext)
   }
 
   /** Resolve template from step, ancestors, or default; appends .njk if needed */
@@ -175,7 +135,14 @@ export default class TemplateRenderer {
   /** Render a Nunjucks template with the given context */
   private renderTemplate(template: string, context: TemplateContext): string {
     try {
-      return this.nunjucksEnv.render(template, context)
+      let tmpl = this.templateCache.get(template)
+
+      if (!tmpl) {
+        tmpl = this.nunjucksEnv.getTemplate(template)
+        this.templateCache.set(template, tmpl)
+      }
+
+      return tmpl.render(context)
     } catch (err) {
       throw this.wrapError(err)
     }
