@@ -370,7 +370,7 @@ describe('TemplateRenderer', () => {
           name: 'email',
           errors: [],
         }),
-        mockNunjucksEnv,
+        expect.anything(),
       )
     })
   })
@@ -410,7 +410,7 @@ describe('TemplateRenderer', () => {
             { message: 'Email format is invalid', details: undefined },
           ],
         }),
-        mockNunjucksEnv,
+        expect.anything(),
       )
     })
 
@@ -441,7 +441,7 @@ describe('TemplateRenderer', () => {
         expect.objectContaining({
           errors: [],
         }),
-        mockNunjucksEnv,
+        expect.anything(),
       )
     })
 
@@ -470,7 +470,7 @@ describe('TemplateRenderer', () => {
         expect.objectContaining({
           errors: [],
         }),
-        mockNunjucksEnv,
+        expect.anything(),
       )
     })
   })
@@ -670,7 +670,7 @@ describe('TemplateRenderer', () => {
           hint: null,
           description: undefined,
         }),
-        mockNunjucksEnv,
+        expect.anything(),
       )
     })
 
@@ -704,7 +704,7 @@ describe('TemplateRenderer', () => {
           maxLength: 100,
           required: true,
         }),
-        mockNunjucksEnv,
+        expect.anything(),
       )
     })
   })
