@@ -43,6 +43,7 @@ export default function createApp(services: Services): express.Application {
   const nunjucksEnv = nunjucksSetup(app)
   const formEngine = new FormEngine({
     logger,
+    lazyStepCompilation: process.env.NODE_ENV === 'development',
     frameworkAdapter: ExpressFrameworkAdapter.configure({
       nunjucksEnv,
       defaultTemplate: 'partials/form-step',
