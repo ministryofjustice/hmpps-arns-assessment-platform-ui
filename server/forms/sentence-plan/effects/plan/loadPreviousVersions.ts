@@ -43,6 +43,7 @@ export const loadPreviousVersions = (deps: SentencePlanEffectsDeps) => async (co
   const trimmedVersions: PreviousVersionsResponse = {
     ...previousVersions,
     allVersions: trimTodayVersions(previousVersions.allVersions),
+    countersignedVersions: trimTodayVersions(previousVersions.countersignedVersions),
   }
   context.setData('previousVersions', trimmedVersions)
 }
