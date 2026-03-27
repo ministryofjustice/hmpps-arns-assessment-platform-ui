@@ -22,6 +22,8 @@ const navigateToPlanOverviewViaMpop = async (page: Page, crn: string): Promise<v
   await PlanOverviewPage.verifyOnPage(page)
 }
 
+test.describe.configure({ mode: 'serial' })
+
 test.describe('MPoP access flow', () => {
   test.beforeEach(async ({ page }) => {
     await login(page)
