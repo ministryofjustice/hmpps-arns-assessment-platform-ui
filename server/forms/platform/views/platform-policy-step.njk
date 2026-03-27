@@ -6,7 +6,7 @@
 {% set fullPageTitle = step.title + ' - ' + applicationName %}
 
 {% set pageTitle %}
-  {% if not validationErrors.length %}
+  {% if not fieldValidationErrors.length %}
     {{ fullPageTitle }}
   {% else %}
     {{ 'Error: ' + fullPageTitle }}

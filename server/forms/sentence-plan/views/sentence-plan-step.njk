@@ -12,8 +12,10 @@
 {% set fullPageTitle = (dynamicTitle or step.title) + ' - ' + ancestors[0].title %}
 {% set pageTitleWithError = 'Error: ' + fullPageTitle %}
 
+{% set allValidationErrors = fieldValidationErrors.concat(domainValidationErrors) %}
+
 {% set pageTitle %}
-  {% if not validationErrors.length and not hasPlanOverviewErrors%}
+  {% if not allValidationErrors.length %}
     {{ fullPageTitle }}
   {% else %}
     {{ pageTitleWithError }}
@@ -66,7 +68,7 @@
         <a href="{{ backlink }}" class="govuk-back-link">Back</a>
       {% endif %}
 
-      <form method="post" novalidate data-qa="main-form">
+      <form id="main-form" method="post" novalidate data-qa="main-form">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
         {% if twoColumnLayout %}
@@ -78,8 +80,8 @@
               <div class="govuk-grid-column-two-thirds">
                 {{ govukErrorSummary({
                   titleText: "There is a problem",
-                  errorList: validationErrors | toErrorSummary
-                }) if validationErrors.length }}
+                  errorList: allValidationErrors | toErrorSummary
+                }) if allValidationErrors.length }}
 
                 {% for block in blocks %}
                   {{ block | safe if loop.index0 != sidebarIndex }}
@@ -90,8 +92,8 @@
         {% else %}
           {{ govukErrorSummary({
             titleText: "There is a problem",
-            errorList: validationErrors | toErrorSummary
-          }) if validationErrors.length }}
+            errorList: allValidationErrors | toErrorSummary
+          }) if allValidationErrors.length }}
 
           {% for block in blocks %}
             {{ block | safe }}

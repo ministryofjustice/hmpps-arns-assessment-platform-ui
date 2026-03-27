@@ -1,5 +1,19 @@
-import { Format, step, accessTransition, Query, redirect, or, and } from '@form-engine/form/builders'
+import {
+  Format,
+  step,
+  accessTransition,
+  submitTransition,
+  validation,
+  Query,
+  redirect,
+  and,
+  Post,
+  Data,
+  Item,
+} from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
+import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
+import { Transformer } from '@form-engine/registry/transformers'
 import {
   blankPlanOverviewContent,
   blankPlanOverviewContentReadOnly,
@@ -7,11 +21,7 @@ import {
   goalsSection,
   planCreatedMessage,
   subNavigation,
-  noActiveGoalsErrorMessage,
-  noStepsErrorMessage,
   notificationBanners,
-  hasMissingActiveGoalError,
-  hasMissingStepsError,
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
@@ -30,13 +40,31 @@ export const planStep = step({
         // Only show "Agree plan" while still in draft and when the user has edit access.
         showAgreePlanButton: and(lacksPostAgreementStatus, isReadWriteAccess),
       },
-      hasPlanOverviewErrors: or(hasMissingActiveGoalError, hasMissingStepsError),
     },
   },
+  validate: [
+    validation({
+      when: Data('goals')
+        .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
+        .pipe(Transformer.Array.Length())
+        .match(Condition.Equals(0)),
+      message: 'To agree the plan, create a goal to work on now',
+      details: { href: '#blank-plan-content' },
+    }),
+    Data('goals')
+      .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
+      .each(
+        Iterator.Map(
+          validation({
+            when: Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
+            message: Format("Add steps to '%1'", Item().path('title')),
+            details: { href: Format('#goal-%1', Item().path('uuid')) },
+          }),
+        ),
+      ),
+  ],
   isEntryPoint: true,
   blocks: [
-    noActiveGoalsErrorMessage,
-    noStepsErrorMessage,
     planCreatedMessage,
     notificationBanners,
     subNavigation,
@@ -58,6 +86,15 @@ export const planStep = step({
           goto: 'overview?type=current',
         }),
       ],
+    }),
+  ],
+  onSubmission: [
+    submitTransition({
+      when: Post('action').match(Condition.Equals('agree-plan')),
+      validate: true,
+      onValid: {
+        next: [redirect({ goto: 'agree-plan' })],
+      },
     }),
   ],
 })
