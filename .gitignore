@@ -122,6 +122,7 @@ dist/
 test_results/
 integration_tests/videos/
 integration_tests/screenshots/
+.auth/
 */*.iml
 **/Chart.lock
 **/.DS_Store

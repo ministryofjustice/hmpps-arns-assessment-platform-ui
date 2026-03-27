@@ -1,4 +1,6 @@
 import { expect, type Page } from '@playwright/test'
+import { login } from 'testUtils'
+import fs from 'fs'
 import PlanHistoryPage from '../../pages/sentencePlan/planHistoryPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
@@ -13,83 +15,70 @@ const navigateToMpopPrivacyScreen = async (page: Page, crn: string): Promise<Pri
   return PrivacyScreenPage.verifyOnPage(page)
 }
 
-const navigateToPlanOverviewViaMpop = async (page: Page, crn: string): Promise<void> => {
-  const privacyScreenPage = await navigateToMpopPrivacyScreen(page, crn)
-  await privacyScreenPage.confirmAndContinue()
-
-  await expect(page).toHaveURL(/\/plan\/overview/)
-  await PlanOverviewPage.verifyOnPage(page)
-}
-
 test.describe('MPoP access flow', () => {
   test.describe('Privacy screen gating', () => {
+    test.use({ storageState: undefined })
+    test.beforeEach(async ({ page }) => {
+      await login(page)
+    })
     test('does not show OASys navigation links on privacy screen', async ({
-      mpopUser,
+      page,
       createSession,
       sentencePlanBuilder,
     }) => {
       const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
-      await navigateToMpopPrivacyScreen(mpopUser, crn)
+      await navigateToMpopPrivacyScreen(page, crn)
 
-      await expect(mpopUser.locator('.govuk-back-link')).toHaveCount(0)
-      await expect(mpopUser.getByRole('link', { name: 'Return to OASys' })).toHaveCount(0)
+      await expect(page.locator('.govuk-back-link')).toHaveCount(0)
+      await expect(page.getByRole('link', { name: 'Return to OASys' })).toHaveCount(0)
     })
 
     test('redirects back to privacy screen when navigating to plan overview before confirming privacy', async ({
-      mpopUser,
+      page,
       createSession,
       sentencePlanBuilder,
     }) => {
       const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
-      await navigateToMpopPrivacyScreen(mpopUser, crn)
-      await mpopUser.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
+      await navigateToMpopPrivacyScreen(page, crn)
+      await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
 
-      await expect(mpopUser).toHaveURL(/\/privacy/)
-      await PrivacyScreenPage.verifyOnPage(mpopUser)
+      await expect(page).toHaveURL(/\/privacy/)
+      await PrivacyScreenPage.verifyOnPage(page)
     })
   })
 
   test.describe('After confirming privacy', () => {
-    test('shows Sign out link on plan overview', async ({ mpopUser, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
+    test.describe.configure({ mode: 'serial' })
+    test.use({ storageState: fs.existsSync('.auth/mpop.json') ? '.auth/mpop.json' : undefined })
 
-      await navigateToPlanOverviewViaMpop(mpopUser, crn)
+    test('shows Sign out link on plan overview', async ({ mpopUser }) => {
+      await mpopUser.page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${mpopUser.crn}`)
+      await expect(mpopUser.page).toHaveURL(/\/plan\/overview/)
+      await PlanOverviewPage.verifyOnPage(mpopUser.page)
 
-      await mpopUser.locator('.arns-common-header__user-menu-toggle').click()
-      await expect(mpopUser.getByRole('link', { name: 'Sign out' })).toBeVisible()
+      await mpopUser.page.locator('.arns-common-header__user-menu-toggle').click()
+      await expect(mpopUser.page.getByRole('link', { name: 'Sign out' })).toBeVisible()
     })
 
-    test('does not show Return to OASys button on plan overview', async ({
-      mpopUser,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
+    test('does not show Return to OASys button', async ({ mpopUser }) => {
+      await test.step('on plan overview', async () => {
+        await mpopUser.page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${mpopUser.crn}`)
+        await expect(mpopUser.page).toHaveURL(/\/plan\/overview/)
+        await PlanOverviewPage.verifyOnPage(mpopUser.page)
 
-      await navigateToPlanOverviewViaMpop(mpopUser, crn)
+        await expect(returnToOasysButton(mpopUser.page)).toHaveCount(0)
+      })
 
-      await expect(returnToOasysButton(mpopUser)).toHaveCount(0)
-    })
+      await test.step('on plan history', async () => {
+        await mpopUser.page.goto(sentencePlanV1URLs.PLAN_HISTORY)
 
-    test('does not show Return to OASys button on plan history', async ({
-      mpopUser,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withAgreementStatus('AGREED').save()
-
-      await navigateToPlanOverviewViaMpop(mpopUser, crn)
-      await mpopUser.goto(sentencePlanV1URLs.PLAN_HISTORY)
-
-      await PlanHistoryPage.verifyOnPage(mpopUser)
-      await expect(returnToOasysButton(mpopUser)).toHaveCount(0)
+        await PlanHistoryPage.verifyOnPage(mpopUser.page)
+        await expect(returnToOasysButton(mpopUser.page)).toHaveCount(0)
+      })
     })
   })
 })
