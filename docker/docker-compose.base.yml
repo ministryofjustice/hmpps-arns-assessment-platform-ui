@@ -176,6 +176,9 @@ services:
       NODE_CLUSTER_ENABLED: true
       FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
       CACHE_REDIS_HOST: redis
+      SERVICE_NOW_FORM_URL: "#service-now-link"
+      OASYS_URL: "http://ui:3000/training-session-launcher/sessions"
+      MPOP_URL: "http://ui:3000/sign-in"
 
   api:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest

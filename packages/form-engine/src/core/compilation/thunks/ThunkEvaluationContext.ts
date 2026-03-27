@@ -9,11 +9,14 @@ export interface StepValidationFailure extends ValidationResult {
   blockId: NodeId
 }
 
+export type DomainValidationFailure = ValidationResult
+
 export interface StepValidationState {
   stepId: NodeId
   validated: boolean
   isValid: boolean
-  failures: StepValidationFailure[]
+  fieldFailures: StepValidationFailure[]
+  domainFailures: DomainValidationFailure[]
 }
 
 /**
@@ -85,6 +88,10 @@ export default class ThunkEvaluationContext {
 
   get metadataRegistry() {
     return this.compilationDependencies.metadataRegistry
+  }
+
+  get astNodeTree() {
+    return this.compilationDependencies.astNodeTree
   }
 
   /**

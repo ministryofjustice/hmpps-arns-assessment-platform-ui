@@ -93,7 +93,8 @@ const mockMetadataExecutorExecute = jest.fn().mockResolvedValue({
 const mockRenderExecutorExecute = jest.fn().mockResolvedValue([])
 const mockValidationExecutorExecute = jest.fn().mockResolvedValue({
   isValid: true,
-  failures: [],
+  fieldFailures: [],
+  domainFailures: [],
 })
 
 jest.mock('@form-engine/core/runtime/executors/MetadataExecutor', () => {
@@ -158,7 +159,8 @@ describe('FormStepController', () => {
     mockRenderExecutorExecute.mockResolvedValue([])
     mockValidationExecutorExecute.mockResolvedValue({
       isValid: true,
-      failures: [],
+      fieldFailures: [],
+      domainFailures: [],
     })
 
     mockCurrentStepPath = '/journey/step-1'
@@ -208,7 +210,7 @@ describe('FormStepController', () => {
     mockEvaluator = {
       createContext: jest.fn().mockReturnValue(mockContext),
       invoke: jest.fn(),
-      evaluate: jest.fn(),
+      invokeSync: jest.fn(),
     } as unknown as jest.Mocked<ThunkEvaluator>
     ;(ThunkEvaluator.withRuntimeOverlay as jest.Mock).mockReturnValue(mockEvaluator)
   })
@@ -222,10 +224,16 @@ describe('FormStepController', () => {
       fieldIteratorRootIds: [],
       validationIterateNodeIds: [],
       validationBlockIds: [],
+      domainValidationNodeIds: [],
       renderAncestorIds: [],
       renderStepId: stepNode.id,
       isRenderSync: false,
       isAnswerPrepareSync: false,
+      isValidationSync: false,
+      hasValidatingSubmitTransition: (stepNode.properties.onSubmission ?? []).some(
+        (t: SubmitTransitionASTNode) => t.properties.validate === true,
+      ),
+      hasDomainValidation: false,
     }
 
     return {
@@ -318,11 +326,6 @@ describe('FormStepController', () => {
           metadata: { source: 'test', timestamp: Date.now() },
         })
 
-        mockEvaluator.evaluate.mockResolvedValue({
-          context: mockContext,
-          journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
-        })
-
         const controller = new FormStepController(
           mockCompiledForm,
           mockDependencies,
@@ -412,12 +415,10 @@ describe('FormStepController', () => {
         mockEvaluator.invoke.mockImplementation(async (nodeId: NodeId) => {
           invocationOrder.push(nodeId)
 
-          return { value: { executed: true, outcome: 'continue' }, metadata: { source: 'test', timestamp: Date.now() } }
-        })
-
-        mockEvaluator.evaluate.mockResolvedValue({
-          context: mockContext,
-          journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
+          return {
+            value: { executed: true, outcome: 'continue' },
+            metadata: { source: 'test', timestamp: Date.now() },
+          }
         })
 
         const controller = new FormStepController(
@@ -458,7 +459,10 @@ describe('FormStepController', () => {
             }
           }
 
-          return { value: { executed: true, outcome: 'continue' }, metadata: { source: 'test', timestamp: Date.now() } }
+          return {
+            value: { executed: true, outcome: 'continue' },
+            metadata: { source: 'test', timestamp: Date.now() },
+          }
         })
 
         const controller = new FormStepController(
@@ -529,11 +533,6 @@ describe('FormStepController', () => {
         mockEvaluator.invoke.mockResolvedValue({
           value: { executed: true, outcome: 'continue' },
           metadata: { source: 'test', timestamp: Date.now() },
-        })
-
-        mockEvaluator.evaluate.mockResolvedValue({
-          context: mockContext,
-          journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
         })
 
         const controller = new FormStepController(
@@ -636,11 +635,6 @@ describe('FormStepController', () => {
           }
         })
 
-        mockEvaluator.evaluate.mockResolvedValue({
-          context: mockContext,
-          journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
-        })
-
         const controller = new FormStepController(
           mockCompiledForm,
           mockDependencies,
@@ -673,11 +667,6 @@ describe('FormStepController', () => {
         mockEvaluator.invoke.mockResolvedValue({
           value: actionResult,
           metadata: { source: 'test', timestamp: Date.now() },
-        })
-
-        mockEvaluator.evaluate.mockResolvedValue({
-          context: mockContext,
-          journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
         })
 
         const controller = new FormStepController(
@@ -714,11 +703,6 @@ describe('FormStepController', () => {
           return { value: { executed: false }, metadata: { source: 'test', timestamp: Date.now() } }
         })
 
-        mockEvaluator.evaluate.mockResolvedValue({
-          context: mockContext,
-          journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
-        })
-
         const controller = new FormStepController(
           mockCompiledForm,
           mockDependencies,
@@ -753,7 +737,7 @@ describe('FormStepController', () => {
         }
         mockValidationExecutorExecute.mockResolvedValue({
           isValid: false,
-          failures: [
+          fieldFailures: [
             {
               blockId: 'compile_ast:999',
               blockCode: 'email',
@@ -762,14 +746,11 @@ describe('FormStepController', () => {
               submissionOnly: true,
             },
           ],
+          domainFailures: [],
         })
         mockEvaluator.invoke.mockResolvedValue({
           value: submitResult,
           metadata: { source: 'test', timestamp: Date.now() },
-        })
-        mockEvaluator.evaluate.mockResolvedValue({
-          context: mockContext,
-          journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
         })
 
         const controller = new FormStepController(
@@ -791,7 +772,7 @@ describe('FormStepController', () => {
           stepId: mockCompiledForm.runtimePlan.stepId,
           validated: true,
           isValid: false,
-          failures: [
+          fieldFailures: [
             {
               blockId: 'compile_ast:999',
               blockCode: 'email',
@@ -800,6 +781,7 @@ describe('FormStepController', () => {
               submissionOnly: true,
             },
           ],
+          domainFailures: [],
         })
       })
 
@@ -815,11 +797,6 @@ describe('FormStepController', () => {
         mockEvaluator.invoke.mockResolvedValue({
           value: submitResult,
           metadata: { source: 'test', timestamp: Date.now() },
-        })
-
-        mockEvaluator.evaluate.mockResolvedValue({
-          context: mockContext,
-          journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
         })
 
         const controller = new FormStepController(
@@ -955,11 +932,6 @@ describe('FormStepController', () => {
           metadata: { source: 'test', timestamp: Date.now() },
         })
 
-        mockEvaluator.evaluate.mockResolvedValue({
-          context: mockContext,
-          journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
-        })
-
         const controller = new FormStepController(
           mockCompiledForm,
           mockDependencies,
@@ -987,11 +959,6 @@ describe('FormStepController', () => {
         mockEvaluator.invoke.mockResolvedValue({
           value: submitResult,
           metadata: { source: 'test', timestamp: Date.now() },
-        })
-
-        mockEvaluator.evaluate.mockResolvedValue({
-          context: mockContext,
-          journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
         })
 
         const controller = new FormStepController(
@@ -1114,11 +1081,6 @@ describe('FormStepController', () => {
 
       ;(mockDependencies.frameworkAdapter.toStepRequest as jest.Mock).mockReturnValue(customRequest)
 
-      mockEvaluator.evaluate.mockResolvedValue({
-        context: mockContext,
-        journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
-      })
-
       const controller = new FormStepController(
         mockCompiledForm,
         mockDependencies,
@@ -1156,11 +1118,6 @@ describe('FormStepController', () => {
         metadata: { source: 'test', timestamp: Date.now() },
       })
 
-      mockEvaluator.evaluate.mockResolvedValue({
-        context: mockContext,
-        journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
-      })
-
       const controller = new FormStepController(
         mockCompiledForm,
         mockDependencies,
@@ -1188,11 +1145,6 @@ describe('FormStepController', () => {
       mockEvaluator.invoke.mockResolvedValue({
         value: actionResult,
         metadata: { source: 'test', timestamp: Date.now() },
-      })
-
-      mockEvaluator.evaluate.mockResolvedValue({
-        context: mockContext,
-        journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
       })
       ;(mockDependencies.frameworkAdapter.toStepRequest as jest.Mock).mockReturnValue(
         createMockRequest({ method: 'POST' }),
@@ -1258,11 +1210,6 @@ describe('FormStepController', () => {
 
       setupAncestorChain([step])
 
-      mockEvaluator.evaluate.mockResolvedValue({
-        context: mockContext,
-        journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
-      })
-
       const controller = new FormStepController(
         mockCompiledForm,
         mockDependencies,
@@ -1289,11 +1236,6 @@ describe('FormStepController', () => {
       mockEvaluator.invoke.mockResolvedValue({
         value: { executed: true, outcome: 'continue' },
         metadata: { source: 'test', timestamp: Date.now() },
-      })
-
-      mockEvaluator.evaluate.mockResolvedValue({
-        context: mockContext,
-        journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
       })
 
       const controller = new FormStepController(
@@ -1329,11 +1271,6 @@ describe('FormStepController', () => {
       mockEvaluator.invoke.mockResolvedValue({
         value: { executed: true, outcome: 'continue' },
         metadata: { source: 'test', timestamp: Date.now() },
-      })
-
-      mockEvaluator.evaluate.mockResolvedValue({
-        context: mockContext,
-        journey: { value: {}, metadata: { source: 'test', timestamp: Date.now() } },
       })
 
       const controller = new FormStepController(
