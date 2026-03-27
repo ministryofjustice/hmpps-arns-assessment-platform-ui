@@ -1,4 +1,4 @@
-import { block, Data, Format, Item, field, when } from '@form-engine/form/builders'
+import { block, Data, Format, Item, field, match, when } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKSelectInput, GovUKTextareaInput, GovUKDetails } from '@form-engine-govuk-components/components'
@@ -216,23 +216,22 @@ export const viewAllNotesSection = block<GovUKDetails>({
                     typeLabel: [
                       block<HtmlBlock>({
                         variant: 'html',
-                        content: when(Item().path('type').match(Condition.Equals('READDED')))
-                          .then(
+                        content: match(Item().path('type'))
+                          .branch(
+                            Condition.Equals('READDED'),
                             Format(
                               '<p class="govuk-body">Goal added back into plan on %1.</p>',
                               Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
                             ),
                           )
-                          .else(
-                            when(Item().path('type').match(Condition.Equals('REMOVED')))
-                              .then(
-                                Format(
-                                  '<p class="govuk-body">Goal removed on %1.</p>',
-                                  Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
-                                ),
-                              )
-                              .else(''),
-                          ),
+                          .branch(
+                            Condition.Equals('REMOVED'),
+                            Format(
+                              '<p class="govuk-body">Goal removed on %1.</p>',
+                              Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
+                            ),
+                          )
+                          .otherwise(''),
                       }),
                     ],
                   },
