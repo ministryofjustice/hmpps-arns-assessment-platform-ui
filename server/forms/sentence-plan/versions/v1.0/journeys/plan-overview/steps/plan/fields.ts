@@ -1,4 +1,4 @@
-import { and, Data, Format, Item, not, or, Query, when } from '@form-engine/form/builders'
+import { and, Data, Format, Item, not, or, Post, Query, when } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { MOJAlert, MOJSubNavigation } from '@form-engine-moj-components/components'
@@ -36,66 +36,6 @@ function buildMoveButtonProps() {
     ),
   }
 }
-
-// Error visibility conditions - reused by both error blocks and hasErrors flag
-// Temporary solution until agree button can trigger validationErrors nodes to be available on Plan overview page
-export const hasMissingActiveGoalError = Query('error').match(Condition.Equals('no-active-goals'))
-export const hasMissingStepsError = Query('error').match(Condition.Equals('no-steps'))
-
-export const noActiveGoalsErrorMessage = HtmlBlock({
-  hidden: or(isReadOnly, not(hasMissingActiveGoalError)),
-  content: `<div class="govuk-error-summary" data-module="govuk-error-summary">
-      <div role="alert">
-        <h2 class="govuk-error-summary__title">
-          There is a problem
-        </h2>
-        <div class="govuk-error-summary__body">
-          <ul class="govuk-list govuk-error-summary__list">
-            <li>
-              <a href="#blank-plan-content">To agree the plan, create a goal to work on now</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>`,
-})
-
-export const noStepsErrorMessage = HtmlBlock({
-  hidden: or(isReadOnly, not(hasMissingStepsError)),
-  content: Format(
-    `<div class="govuk-error-summary" data-module="govuk-error-summary">
-      <div role="alert">
-        <h2 class="govuk-error-summary__title">
-          There is a problem
-        </h2>
-        <div class="govuk-error-summary__body">
-          <ul class="govuk-list govuk-error-summary__list">
-            %1
-          </ul>
-        </div>
-      </div>
-    </div>`,
-    Data('goals')
-      .each(
-        Iterator.Filter(
-          and(
-            Item().path('status').match(Condition.Equals('ACTIVE')),
-            Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
-          ),
-        ),
-      )
-      .each(
-        Iterator.Map(
-          Format(
-            '<li><a href="#goal-%1">Add steps to \'%2\'</a></li>',
-            Item().path('uuid'),
-            Item().path('title').pipe(Transformer.String.EscapeHtml()),
-          ),
-        ),
-      )
-      .pipe(Transformer.Array.Join('')),
-  ),
-})
 
 // Calculate goal counts for sub-navigation tabs
 // Achieved and removed tabs are conditionally shown only when count > 0
@@ -264,7 +204,8 @@ export const goalsSection = TemplateWrapper({
                   Item().path('uuid'),
                   when(
                     and(
-                      Query('error').match(Condition.Equals('no-steps')),
+                      Post('action').match(Condition.Equals('agree-plan')),
+                      Item().path('status').match(Condition.Equals('ACTIVE')),
                       Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
                     ),
                   )
@@ -272,7 +213,8 @@ export const goalsSection = TemplateWrapper({
                     .else(''),
                   when(
                     and(
-                      Query('error').match(Condition.Equals('no-steps')),
+                      Post('action').match(Condition.Equals('agree-plan')),
+                      Item().path('status').match(Condition.Equals('ACTIVE')),
                       Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
                     ),
                   )
@@ -435,17 +377,13 @@ export const blankPlanOverviewContentReadOnly = HtmlBlock({
 export const blankPlanOverviewContent = HtmlBlock({
   hidden: or(isReadOnly, hideBlankPlanOverviewContent),
   content: Format(
-    `<div id="blank-plan-content" class="govuk-form-group %2">
-      %3
-      %4
-    </div>`,
-    CaseData.Forename,
-    when(Query('error').match(Condition.Equals('no-active-goals')))
-      .then('govuk-form-group--error')
+    '<div id="blank-plan-content" class="%1">%2%3</div>',
+    when(Post('action').match(Condition.Equals('agree-plan')))
+      .then('govuk-form-group govuk-form-group--error')
       .else(''),
-    when(Query('error').match(Condition.Equals('no-active-goals')))
+    when(Post('action').match(Condition.Equals('agree-plan')))
       .then(
-        '<span class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span>To agree the plan, create a goal to work on now</span>',
+        '<p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> To agree the plan, create a goal to work on now</p>',
       )
       .else(''),
     when(isSanSpAssessment)
