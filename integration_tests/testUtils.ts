@@ -1,5 +1,4 @@
 import { Page } from '@playwright/test'
-import { promises as fs } from 'node:fs'
 
 const authSignIn = async (page: Page) => {
   await page.locator('#username').fill('AUTH_TEST')

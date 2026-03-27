@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from '@playwright/test'
+import { type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
 
 export default class MpopPage extends AbstractPage {

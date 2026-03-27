@@ -1,5 +1,5 @@
 import { AxeBuilder } from '@axe-core/playwright'
-import { test as base, Page } from '@playwright/test'
+import { test as base } from '@playwright/test'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import { promises as fs } from 'node:fs'
 import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
@@ -322,7 +322,7 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
       const heading = await page.$$(
         "text='Remember to close any other applications before starting an appointment with Buster'",
       )
-      console.log(`HEADING ${heading}`)
+
       if (heading.length > 0) {
         const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
         await privacyPage.confirmAndContinue()
