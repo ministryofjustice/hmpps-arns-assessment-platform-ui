@@ -1,4 +1,4 @@
-import { block, Data, Format, Item, when } from '@form-engine/form/builders'
+import { block, Data, Format, Item, match, when } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKDetails, GovUKButton } from '@form-engine-govuk-components/components'
 import { Transformer } from '@form-engine/registry/transformers'
@@ -90,25 +90,25 @@ const reviewStepsTable = TemplateWrapper({
                 statusField: [
                   block<HtmlBlock>({
                     variant: 'html',
-                    content: when(Item().path('status').match(Condition.Equals('NOT_STARTED')))
-                      .then('<strong class="govuk-tag govuk-tag--grey">Not started</strong>')
-                      .else(
-                        when(Item().path('status').match(Condition.Equals('IN_PROGRESS')))
-                          .then('<strong class="govuk-tag">In progress</strong>')
-                          .else(
-                            when(Item().path('status').match(Condition.Equals('COMPLETED')))
-                              .then('<strong class="govuk-tag govuk-tag--green">Completed</strong>')
-                              .else(
-                                when(Item().path('status').match(Condition.Equals('CANNOT_BE_DONE_YET')))
-                                  .then('<strong class="govuk-tag govuk-tag--purple">Cannot be done yet</strong>')
-                                  .else(
-                                    when(Item().path('status').match(Condition.Equals('NO_LONGER_NEEDED')))
-                                      .then('<strong class="govuk-tag govuk-tag--yellow">No longer needed</strong>')
-                                      .else('<strong class="govuk-tag govuk-tag--grey">Unknown</strong>'),
-                                  ),
-                              ),
-                          ),
-                      ),
+                    content: match(Item().path('status'))
+                      .branch(
+                        Condition.Equals('NOT_STARTED'),
+                        '<strong class="govuk-tag govuk-tag--grey">Not started</strong>',
+                      )
+                      .branch(Condition.Equals('IN_PROGRESS'), '<strong class="govuk-tag">In progress</strong>')
+                      .branch(
+                        Condition.Equals('COMPLETED'),
+                        '<strong class="govuk-tag govuk-tag--green">Completed</strong>',
+                      )
+                      .branch(
+                        Condition.Equals('CANNOT_BE_DONE_YET'),
+                        '<strong class="govuk-tag govuk-tag--purple">Cannot be done yet</strong>',
+                      )
+                      .branch(
+                        Condition.Equals('NO_LONGER_NEEDED'),
+                        '<strong class="govuk-tag govuk-tag--yellow">No longer needed</strong>',
+                      )
+                      .otherwise('<strong class="govuk-tag govuk-tag--grey">Unknown</strong>'),
                   }),
                 ],
               },
@@ -156,23 +156,22 @@ export const viewAllNotesSection = block<GovUKDetails>({
                     typeLabel: [
                       block<HtmlBlock>({
                         variant: 'html',
-                        content: when(Item().path('type').match(Condition.Equals('READDED')))
-                          .then(
+                        content: match(Item().path('type'))
+                          .branch(
+                            Condition.Equals('READDED'),
                             Format(
                               '<p class="govuk-body">Goal added back into plan on %1.</p>',
                               Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
                             ),
                           )
-                          .else(
-                            when(Item().path('type').match(Condition.Equals('REMOVED')))
-                              .then(
-                                Format(
-                                  '<p class="govuk-body">Goal removed on %1.</p>',
-                                  Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
-                                ),
-                              )
-                              .else(''),
-                          ),
+                          .branch(
+                            Condition.Equals('REMOVED'),
+                            Format(
+                              '<p class="govuk-body">Goal removed on %1.</p>',
+                              Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
+                            ),
+                          )
+                          .otherwise(''),
                       }),
                     ],
                   },

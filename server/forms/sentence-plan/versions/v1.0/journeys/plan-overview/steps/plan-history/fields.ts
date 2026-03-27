@@ -1,4 +1,4 @@
-import { Data, Format, Item, or, when } from '@form-engine/form/builders'
+import { Data, Format, Item, match, or, when } from '@form-engine/form/builders'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
@@ -27,17 +27,10 @@ const agreementEntryContent = Format(
     %6
   </div>`,
   // %1: Status heading
-  when(
-    Item()
-      .path('status')
-      .match(Condition.Array.IsIn(['UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE'])),
-  )
-    .then('Agreement updated')
-    .else(
-      when(Item().path('status').match(Condition.Equals('AGREED')))
-        .then('Plan agreed')
-        .else('Plan created'),
-    ),
+  match(Item().path('status'))
+    .branch(Condition.Array.IsIn(['UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']), 'Agreement updated')
+    .branch(Condition.Equals('AGREED'), 'Plan agreed')
+    .otherwise('Plan created'),
   // %2: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %3: Practitioner
@@ -51,21 +44,13 @@ const agreementEntryContent = Format(
     .then(Format(' and %1', CaseData.Forename))
     .else(''),
   // %5: Description
-  when(
-    Item()
-      .path('status')
-      .match(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED'])),
-  )
-    .then(Format('%1 agreed to this plan.', CaseData.Forename))
-    .else(
-      when(
-        Item()
-          .path('status')
-          .match(Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE'])),
-      )
-        .then(Format('%1 did not agree to this plan.', CaseData.Forename))
-        .else(Format('%1 could not agree to this plan.', CaseData.Forename)),
-    ),
+  match(Item().path('status'))
+    .branch(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED']), Format('%1 agreed to this plan.', CaseData.Forename))
+    .branch(
+      Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE']),
+      Format('%1 did not agree to this plan.', CaseData.Forename),
+    )
+    .otherwise(Format('%1 could not agree to this plan.', CaseData.Forename)),
   // %6: Reason details and optional notes combined in a single paragraph
   when(Item().path('detailsNo').match(Condition.IsRequired()))
     .then(
@@ -303,25 +288,13 @@ export const agreementHistory = CollectionBlock({
             .then('')
             .else('<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">'),
           // %2: Entry content based on type
-          when(Item().path('type').match(Condition.Equals('goal_achieved')))
-            .then(goalAchievedEntryContent)
-            .else(
-              when(Item().path('type').match(Condition.Equals('goal_created')))
-                .then(goalAddedEntryContent)
-                .else(
-                  when(Item().path('type').match(Condition.Equals('goal_removed')))
-                    .then(goalRemovedEntryContent)
-                    .else(
-                      when(Item().path('type').match(Condition.Equals('goal_readded')))
-                        .then(goalReaddedEntryContent)
-                        .else(
-                          when(Item().path('type').match(Condition.Equals('goal_updated')))
-                            .then(goalUpdatedEntryContent)
-                            .else(agreementEntryContent),
-                        ),
-                    ),
-                ),
-            ),
+          match(Item().path('type'))
+            .branch(Condition.Equals('goal_achieved'), goalAchievedEntryContent)
+            .branch(Condition.Equals('goal_created'), goalAddedEntryContent)
+            .branch(Condition.Equals('goal_removed'), goalRemovedEntryContent)
+            .branch(Condition.Equals('goal_readded'), goalReaddedEntryContent)
+            .branch(Condition.Equals('goal_updated'), goalUpdatedEntryContent)
+            .otherwise(agreementEntryContent),
         ),
       }),
     ),
