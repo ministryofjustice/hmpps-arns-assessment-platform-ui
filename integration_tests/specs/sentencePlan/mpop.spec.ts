@@ -9,7 +9,6 @@ import { sentencePlanV1URLs } from './sentencePlanUtils'
 const returnToOasysButton = (page: Page) => page.getByRole('button', { name: 'Return to OASys' })
 
 const navigateToMpopPrivacyScreen = async (page: Page, crn: string): Promise<PrivacyScreenPage> => {
-  await login(page)
   await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
   await expect(page).toHaveURL(/\/privacy/)
   return PrivacyScreenPage.verifyOnPage(page)
@@ -24,6 +23,9 @@ const navigateToPlanOverviewViaMpop = async (page: Page, crn: string): Promise<v
 }
 
 test.describe('MPoP access flow', () => {
+  test.beforeEach(async ({ page }) => {
+    await login(page)
+  })
   test.describe('Privacy screen gating', () => {
     test('does not show OASys navigation links on privacy screen', async ({
       page,
