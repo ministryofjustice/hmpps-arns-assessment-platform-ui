@@ -1,7 +1,11 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
-{% if data.caseData %}
+{% if hidePlanHeader %}
+  <div class="govuk-width-container">
+    <header class="plan-header" role="presentation" style="padding: 0; min-height: 1px;"></header>
+  </div>
+{% elif data.caseData %}
   {% set person = data.caseData %}
   {% set fullName = person.name.forename + ' ' + person.name.surname if person.name else 'Unknown' %}
 

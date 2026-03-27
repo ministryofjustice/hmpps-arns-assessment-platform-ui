@@ -94,7 +94,7 @@ export const isMpopAccess = Data('sessionDetails.accessType').match(Condition.Eq
 
 /**
  * True when the plan has been flagged as merged.
- * The backend sets assessment.properties.MERGED when an OASys offender record has been merged.
+ * The coordinator sets assessment.properties.MERGED when an OASys offender record has been merged.
  */
 export const isMergedPlan = Data('assessment.properties.MERGED').match(Condition.IsRequired())
 
