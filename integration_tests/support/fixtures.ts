@@ -1,9 +1,10 @@
 import { AxeBuilder } from '@axe-core/playwright'
-import { test as base } from '@playwright/test'
+import { test as base, Page } from '@playwright/test'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import { promises as fs } from 'node:fs'
 import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
 import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
+import { login } from 'testUtils'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
 import { TestHmppsAuthClient } from './apis/TestHmppsAuthClient'
 import { TestAapApiClient } from './apis/TestAapApiClient'
@@ -144,6 +145,7 @@ type TestApiFixtures = {
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
   auditQueue: AuditQueueClient
   makeAxeBuilder: () => AxeBuilder
+  mpopUser: Page
 }
 
 type InternalFixtures = {
@@ -308,6 +310,11 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
     await use(makeAxeBuilder)
   },
 
+  mpopUser: async ({ page }, use) => {
+    await login(page)
+    await use(page)
+  },
+
   captureDockerLogsOnFailure: [
     // eslint-disable-next-line no-empty-pattern
     async ({}, use, testInfo) => {
@@ -319,13 +326,23 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
         return
       }
 
-      const { logs } = await captureContainerLogs('ui', { since: startedAt })
+      const ui = await captureContainerLogs('ui', { since: startedAt })
       const logsPath = testInfo.outputPath('ui-container-logs.txt')
 
-      await fs.writeFile(logsPath, logs, 'utf-8')
+      await fs.writeFile(logsPath, ui.logs, 'utf-8')
 
       await testInfo.attach('ui-container-logs', {
         path: logsPath,
+        contentType: 'text/plain',
+      })
+
+      const auth = await captureContainerLogs('hmpps-auth', { since: startedAt })
+      const authLogsPath = testInfo.outputPath('ui-container-logs.txt')
+
+      await fs.writeFile(authLogsPath, auth.logs, 'utf-8')
+
+      await testInfo.attach('hmpps-auth-container-logs', {
+        path: authLogsPath,
         contentType: 'text/plain',
       })
     },
