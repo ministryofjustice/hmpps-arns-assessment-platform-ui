@@ -1,4 +1,4 @@
-import { accessTransition, Data, Format, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
+import { accessTransition, Format, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, goalCard, howHelpedField, buttonGroup } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
@@ -27,12 +27,6 @@ export const confirmAchievedGoalStep = step({
   ],
 
   onSubmission: [
-    submitTransition({
-      when: Post('action').match(Condition.Equals('cancel')),
-      onAlways: {
-        next: [redirect({ goto: Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')) })],
-      },
-    }),
     submitTransition({
       when: Post('action').match(Condition.Equals('confirm')),
       validate: true,
