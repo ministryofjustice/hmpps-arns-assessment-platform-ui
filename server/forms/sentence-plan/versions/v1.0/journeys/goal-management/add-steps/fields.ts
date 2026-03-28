@@ -1,24 +1,20 @@
 import { Data, Format, Item, Iterator, not, Self, validation, when } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { GovUKSelectInput, GovUKTextInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
+import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
+import { GovUKGridRow } from '@form-engine-govuk-components/wrappers/govukGridRow'
+import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
 import { AssessmentInfoDetails, ButtonAsLink } from '../../../../../components'
 import { actorLabelOptions, CaseData } from '../../../constants'
 import { isSanSpAssessment } from '../../../guards'
 
-/**
- * Goal title caption showing the goal being worked on
- */
-export const pageHeading = HtmlBlock({
-  content: Format(
-    `<p class="govuk-caption-l">%1</p>
-             <h1 class="govuk-heading-l">Add or change steps</h1>`,
-    Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()),
-  ),
+export const pageHeading = GovUKHeading({
+  caption: Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()),
+  text: 'Add or change steps',
 })
 
 /**
@@ -35,19 +31,27 @@ export const assessmentInfoDetails = AssessmentInfoDetails({
 /**
  * Column headers for the step rows
  */
-export const columnHeaders = HtmlBlock({
-  content: `
-    <div class="govuk-grid-row govuk-!-margin-bottom-2">
-      <div class="govuk-grid-column-one-quarter">
-        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">Who will do the step?</p>
-        <p class="govuk-hint govuk-!-margin-bottom-0">Add one person or agency.</p>
-      </div>
-      <div class="govuk-grid-column-two-thirds">
-        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">What should they do to achieve the goal?</p>
-        <p class="govuk-hint govuk-!-margin-bottom-0">Enter one step at a time.</p>
-      </div>
-    </div>
-  `,
+export const columnHeaders = GovUKGridRow({
+  classes: 'govuk-!-margin-bottom-2',
+  columns: [
+    {
+      width: 'one-quarter',
+      blocks: [
+        GovUKBody({ text: 'Who will do the step?', classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1' }),
+        GovUKBody({ text: 'Add one person or agency.', classes: 'govuk-hint govuk-!-margin-bottom-0' }),
+      ],
+    },
+    {
+      width: 'two-thirds',
+      blocks: [
+        GovUKBody({
+          text: 'What should they do to achieve the goal?',
+          classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1',
+        }),
+        GovUKBody({ text: 'Enter one step at a time.', classes: 'govuk-hint govuk-!-margin-bottom-0' }),
+      ],
+    },
+  ],
 })
 
 /**
@@ -56,73 +60,69 @@ export const columnHeaders = HtmlBlock({
  * Shows "Clear" when only 1 step (clears values but keeps row),
  * "Remove" when multiple steps (removes the row entirely).
  */
-export const stepRows = CollectionBlock({
+export const stepRows = HtmlBlock({
+  tag: 'div',
   classes: 'step-rows',
-  collection: Data('activeGoalStepsEdited').each(
+  content: Data('activeGoalStepsEdited').each(
     Iterator.Map(
-      TemplateWrapper({
-        template: `
-          <div class="govuk-grid-row step-row" data-qa="step-row">
-            <div class="govuk-grid-column-one-quarter">
-              {{slot:actorField}}
-            </div>
-            <div class="govuk-grid-column-two-thirds">
-              {{slot:descriptionField}}
-            </div>
-            <div class="govuk-grid-column-one-sixth">
-              {{slot:removeButton}}
-            </div>
-          </div>
-        `,
-        values: {
-          index: Item().index(),
-        },
-        slots: {
-          actorField: [
-            GovUKSelectInput({
-              code: Format('step_actor_%1', Item().index()),
-              label: {
-                text: 'Who will do the step?',
-                classes: 'govuk-visually-hidden',
-              },
-              items: actorLabelOptions,
-              defaultValue: Item().path('actor'),
-              validate: [
-                validation({
-                  when: Self().not.match(Condition.IsRequired()),
-                  message: 'Select who will do the step',
-                }),
-              ],
-            }),
-          ],
-          descriptionField: [
-            GovUKTextInput({
-              code: Format('step_description_%1', Item().index()),
-              label: {
-                text: 'What should they do to achieve the goal?',
-                classes: 'govuk-visually-hidden',
-              },
-              classes: 'govuk-!-width-full',
-              defaultValue: Item().path('description'),
-              validate: [
-                validation({
-                  when: Self().not.match(Condition.IsRequired()),
-                  message: 'Enter what they should do to achieve the goal',
-                }),
-              ],
-            }),
-          ],
-          removeButton: [
-            ButtonAsLink({
-              text: when(Data('activeGoalStepsEdited').pipe(Transformer.Array.Length()).match(Condition.Equals(1)))
-                .then('Clear')
-                .else('Remove'),
-              name: 'action',
-              value: Format('remove_%1', Item().index()),
-              classes: 'govuk-!-margin-bottom-0',
-            }),
-          ],
-        },
+      GovUKGridRow({
+        classes: 'step-row',
+        attributes: { 'data-qa': 'step-row' },
+        columns: [
+          {
+            width: 'one-quarter',
+            blocks: [
+              GovUKSelectInput({
+                code: Format('step_actor_%1', Item().index()),
+                label: {
+                  text: 'Who will do the step?',
+                  classes: 'govuk-visually-hidden',
+                },
+                items: actorLabelOptions,
+                defaultValue: Item().path('actor'),
+                validate: [
+                  validation({
+                    when: Self().not.match(Condition.IsRequired()),
+                    message: 'Select who will do the step',
+                  }),
+                ],
+              }),
+            ],
+          },
+          {
+            width: 'two-thirds',
+            blocks: [
+              GovUKTextInput({
+                code: Format('step_description_%1', Item().index()),
+                label: {
+                  text: 'What should they do to achieve the goal?',
+                  classes: 'govuk-visually-hidden',
+                },
+                classes: 'govuk-!-width-full',
+                defaultValue: Item().path('description'),
+                validate: [
+                  validation({
+                    when: Self().not.match(Condition.IsRequired()),
+                    message: 'Enter what they should do to achieve the goal',
+                  }),
+                ],
+              }),
+            ],
+          },
+          {
+            width: 'one-sixth',
+            blocks: [
+              ButtonAsLink({
+                text: when(Data('activeGoalStepsEdited').pipe(Transformer.Array.Length()).match(Condition.Equals(1)))
+                  .then('Clear')
+                  .else('Remove'),
+                name: 'action',
+                value: Format('remove_%1', Item().index()),
+                classes: 'govuk-!-margin-bottom-0',
+              }),
+            ],
+          },
+        ],
       }),
     ),
   ),
