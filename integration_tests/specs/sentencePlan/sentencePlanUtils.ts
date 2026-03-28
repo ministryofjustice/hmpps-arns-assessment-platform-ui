@@ -22,7 +22,6 @@ const planOverviewJourneyPath = '/plan'
 const planStepPath = '/overview'
 const agreePlanStepPath = '/agree-plan'
 const updateAgreePlanStepPath = '/update-agree-plan'
-const reorderGoalStepPath = '/reorder-goal'
 const goalManagementJourneyPath = '/goal'
 const planHistoryPath = '/plan-history'
 const previousVersionsStepPath = '/previous-versions'
@@ -35,7 +34,6 @@ export const sentencePlanV1URLs = {
   PLAN_OVERVIEW: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/overview'
   PLAN_AGREE: sentencePlanFormPath + v1Path + planOverviewJourneyPath + agreePlanStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/agree-plan'
   PLAN_UPDATE_AGREE: sentencePlanFormPath + v1Path + planOverviewJourneyPath + updateAgreePlanStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/update-agree-plan'
-  PLAN_REORDER_GOAL: sentencePlanFormPath + v1Path + planOverviewJourneyPath + reorderGoalStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/reorder-goal'
   PLAN_HISTORY: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planHistoryPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/plan-history'
   PREVIOUS_VERSIONS: sentencePlanFormPath + v1Path + planOverviewJourneyPath + previousVersionsStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/previous-versions'
   GOAL_MANAGEMENT_ROOT_PATH: sentencePlanFormPath + v1Path + goalManagementJourneyPath, // '/sentence-plan' + '/v1.0' + '/goal'
@@ -58,7 +56,7 @@ export const sentencePlanV1UrlBuilders = {
     `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/view-inactive-goal`,
   goalCreate: (areaOfNeed: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/new/add-goal/${areaOfNeed}`,
   planReorderGoal: (goalUuid: string, direction: 'up' | 'down', status: 'ACTIVE' | 'FUTURE' | 'ACHIEVED' | 'REMOVED') =>
-    `${sentencePlanV1URLs.PLAN_REORDER_GOAL}?goalUuid=${goalUuid}&direction=${direction}&status=${status}`,
+    `${sentencePlanV1URLs.PLAN_OVERVIEW}?goalUuid=${goalUuid}&direction=${direction}&status=${status}`,
 }
 
 // Page titles for sentence plan - matches step.title or dynamicTitle values

@@ -7,6 +7,7 @@ import { redirectToOverviewIfReadOnly } from '../../../../guards'
 export const agreePlanStep = step({
   path: '/agree-plan',
   title: 'Do they agree to this plan?',
+  isEntryPoint: true,
   blocks: [planAgreementQuestion, notesField, saveButton],
   view: {
     locals: {

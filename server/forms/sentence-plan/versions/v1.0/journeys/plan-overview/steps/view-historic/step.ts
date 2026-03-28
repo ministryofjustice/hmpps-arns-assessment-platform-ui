@@ -5,6 +5,7 @@ import {
   blankPlanOverviewContentReadOnly,
   futureGoalsContent,
   goalsSection,
+  planAgreedMessage,
   planCreatedMessage,
   subNavigation,
   notificationBanners,
@@ -41,6 +42,7 @@ export const viewHistoricStep = step({
   },
   isEntryPoint: true,
   blocks: [
+    planAgreedMessage,
     planCreatedMessage,
     notificationBanners,
     subNavigation,
