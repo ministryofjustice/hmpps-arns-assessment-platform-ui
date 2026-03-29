@@ -57,7 +57,7 @@ export async function createInCoordinatorAndUpdatePreferences(
   preferencesId: string,
 ) {
   // Run before hooks
-  await runBeforeCreateSessionHooks(session.flags, deps, context)
+  await runBeforeCreateSessionHooks(session.flags, deps, context, session)
 
   // Call coordinator API
   const coordinatorRequest = buildCoordinatorRequest(session)
@@ -90,7 +90,7 @@ export async function createInCoordinatorAndUpdatePreferences(
   }
 
   // Run after hooks
-  await runAfterCreateSessionHooks(session.flags, deps, context)
+  await runAfterCreateSessionHooks(session.flags, deps, context, session)
 
   // Update session in preferences with response IDs (only if we got a response)
   if (coordinatorResponse) {
