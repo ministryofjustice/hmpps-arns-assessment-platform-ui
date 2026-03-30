@@ -21,19 +21,6 @@ test.describe('MPoP access flow', () => {
     test.beforeEach(async ({ page }) => {
       await login(page)
     })
-    test('does not show OASys navigation links on privacy screen', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
-
-      await navigateToMpopPrivacyScreen(page, crn)
-
-      await expect(page.locator('.govuk-back-link')).toHaveCount(0)
-      await expect(page.getByRole('link', { name: 'Return to OASys' })).toHaveCount(0)
-    })
 
     test('redirects back to privacy screen when navigating to plan overview before confirming privacy', async ({
       page,
@@ -44,6 +31,9 @@ test.describe('MPoP access flow', () => {
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
       await navigateToMpopPrivacyScreen(page, crn)
+      await expect(page.locator('.govuk-back-link')).toHaveCount(0)
+      await expect(page.getByRole('link', { name: 'Return to OASys' })).toHaveCount(0)
+
       await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
 
       await expect(page).toHaveURL(/\/privacy/)
@@ -52,7 +42,6 @@ test.describe('MPoP access flow', () => {
   })
 
   test.describe('After confirming privacy', () => {
-    test.describe.configure({ mode: 'serial' })
     test.use({ storageState: fs.existsSync('.auth/mpop.json') ? '.auth/mpop.json' : undefined })
 
     test('shows Sign out link on plan overview', async ({ mpopUser }) => {

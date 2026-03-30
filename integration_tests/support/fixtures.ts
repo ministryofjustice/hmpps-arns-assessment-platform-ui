@@ -4,7 +4,7 @@ import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients
 import { promises as fs } from 'node:fs'
 import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
 import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
-import { login } from 'testUtils'
+import { clearMpopSession, login, logout, mpopSessionCached } from 'testUtils'
 import PrivacyScreenPage from 'pages/sentencePlan/privacyScreenPage'
 import { sentencePlanV1URLs } from 'specs/sentencePlan/sentencePlanUtils'
 import MpopPage from 'pages/sentencePlan/mpopPage'
@@ -316,26 +316,27 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
   mpopUser: async ({ page, createSession, sentencePlanBuilder }, use) => {
     const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
     await sentencePlanBuilder.extend(sentencePlanId).withAgreementStatus('AGREED').save()
-    try {
-      await fs.stat('.auth/mpop.json')
+
+    if (mpopSessionCached()) {
       await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
       const heading = await page.$$(
         "text='Remember to close any other applications before starting an appointment with Buster'",
       )
-
       if (heading.length > 0) {
         const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
         await privacyPage.confirmAndContinue()
       }
       const mpopPage = new MpopPage(page, crn)
       await use(mpopPage)
-    } catch {
+      clearMpopSession()
+    } else {
       await login(page)
       await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
       const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
       await privacyPage.confirmAndContinue()
       const mpopPage = new MpopPage(page, crn)
       await use(mpopPage)
+      await logout(mpopPage.page)
     }
   },
 
