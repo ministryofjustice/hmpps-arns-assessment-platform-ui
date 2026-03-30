@@ -2,40 +2,20 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import { navigateToSentencePlan } from '../../sentencePlan/sentencePlanUtils'
 import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPage'
-import coordinatorApi from '../../../mockApis/coordinatorApi'
 import { AuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Views previous version of Sentence Plan', () => {
-  test('viewing a historic plan version', async ({ page, createSession, auditQueue }) => {
+  test('viewing a historic plan version', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
     const { sentencePlanId, crn, handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
     })
 
-    // Use yesterday as the date key so it isn't filtered out by loadPreviousVersions (which removes today's entry),
-    // but use the current time as the version timestamp so the AssessmentVersionQuery finds data.
-    const yesterday = new Date()
-    yesterday.setDate(yesterday.getDate() - 1)
-    const yesterdayStr = yesterday.toISOString().split('T')[0]
-    const now = Date.now()
+    // Backdate events to a past date so the version appears in the previous versions table
+    // and the version timestamp is safely after the assessment's createdAt
+    const versionDate = new Date(2026, 0, 1, 9)
+    const versionDateEnd = new Date(2026, 0, 1, 17)
 
-    await coordinatorApi.stubGetEntityVersions(sentencePlanId, {
-      allVersions: {
-        [yesterdayStr]: {
-          description: 'Plan updated',
-          assessmentVersion: null,
-          planVersion: {
-            uuid: crypto.randomUUID(),
-            version: now,
-            createdAt: yesterday.toISOString(),
-            updatedAt: yesterday.toISOString(),
-            status: 'UNSIGNED',
-            planAgreementStatus: 'AGREED',
-            entityType: 'AAP_PLAN',
-          },
-        },
-      },
-      countersignedVersions: {},
-    })
+    await sentencePlanBuilder.extend(sentencePlanId).withEventsBackdated(versionDate, versionDateEnd).save()
 
     await navigateToSentencePlan(page, handoverLink)
 
@@ -44,7 +24,7 @@ test.describe('Views previous version of Sentence Plan', () => {
 
     const [newPage] = await Promise.all([
       page.waitForEvent('popup'),
-      previousVersionsPage.table.locator('a').first().click(),
+      previousVersionsPage.clickViewVersionOnDate('1 January 2026'),
     ])
     await newPage.waitForLoadState()
 

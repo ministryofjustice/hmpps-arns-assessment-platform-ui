@@ -65,6 +65,12 @@ export const createGoalStep = step({
           SentencePlanEffects.createGoal(),
           SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
           SentencePlanEffects.setNavigationReferrer('add-goal'),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+
+            message: Format('You added a goal to %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+          }),
         ],
         next: [redirect({ goto: Format('../%1/add-steps', Data('activeGoalUuid')) })],
       },
