@@ -1,4 +1,4 @@
-import { and, Data, Format, Item, match, not, or, Post, Query, when } from '@form-engine/form/builders'
+import { and, Data, Format, Item, not, or, Post, Query, when } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { MOJAlert, MOJSubNavigation } from '@form-engine-moj-components/components'
@@ -6,6 +6,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
+import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
@@ -22,18 +23,10 @@ const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals(
  */
 function buildMoveButtonProps() {
   return {
-    showMoveUp: when(or(isReadOnly, Item().path('isFirstInStatus').match(Condition.Equals(true))))
-      .then(false)
-      .else(true),
-    showMoveDown: when(or(isReadOnly, Item().path('isLastInStatus').match(Condition.Equals(true))))
-      .then(false)
-      .else(true),
-    moveUpHref: Format('reorder-goal?goalUuid=%1&direction=up&status=%2', Item().path('uuid'), Item().path('status')),
-    moveDownHref: Format(
-      'reorder-goal?goalUuid=%1&direction=down&status=%2',
-      Item().path('uuid'),
-      Item().path('status'),
-    ),
+    showMoveUp: when(not(or(isReadOnly, Item().path('isFirstInStatus').match(Condition.Equals(true))))),
+    showMoveDown: when(not(or(isReadOnly, Item().path('isLastInStatus').match(Condition.Equals(true))))),
+    moveUpHref: Format('overview?goalUuid=%1&direction=up&status=%2', Item().path('uuid'), Item().path('status')),
+    moveDownHref: Format('overview?goalUuid=%1&direction=down&status=%2', Item().path('uuid'), Item().path('status')),
   }
 }
 
@@ -55,66 +48,53 @@ const removedGoalsCount = Data('goals')
   .each(Iterator.Filter(Item().path('status').match(Condition.Equals('REMOVED'))))
   .pipe(Transformer.Array.Length())
 
-export const planCreatedMessage = HtmlBlock({
-  hidden: or(
-    Data('latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
-    // In READ_ONLY mode, hide this block for COULD_NOT_ANSWER so we do not show the "Update agreement" action link.
-    and(isReadOnly, Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))),
+export const planAgreedMessage = GovUKBody({
+  hidden: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(['UPDATED_AGREED', 'AGREED'])),
+  text: Format(
+    '%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
+    CaseData.Forename,
+    Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
   ),
-  content: match(Data('latestAgreementStatus'))
-    .branch(
-      Condition.Array.IsIn(['UPDATED_AGREED', 'AGREED']),
-      Format(
-        '<p class="govuk-body">%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a></p>',
-        CaseData.Forename,
-        Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
-      ),
-    )
-    .branch(
-      Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE']),
-      Format(
-        '<p class="govuk-body">Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a></p>',
-        Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
-      ),
-    )
-    .otherwise(
-      Format(
-        '<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a> when you\'ve shared the plan with them.</p>',
-        CaseData.Forename,
-      ),
-    ),
+})
+
+export const planCreatedMessage = GovUKBody({
+  hidden: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE'])),
+  text: Format(
+    'Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
+    Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
+  ),
+})
+
+export const updateAgreementMessage = GovUKBody({
+  hidden: or(isReadOnly, Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER'))),
+  text: Format(
+    '<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a> when you\'ve shared the plan with them.',
+    CaseData.Forename,
+  ),
 })
 
 const currentGoalsNavigationItem = {
   text: Format('Goals to work on now (%1)', activeGoalsCount),
   href: 'overview?type=current',
-  active: when(Query('type').match(Condition.Equals('current')))
-    .then(true)
-    .else(false),
+  active: when(Query('type').match(Condition.Equals('current'))),
 }
 
 const futureGoalsNavigationItem = {
   text: Format('Future goals (%1)', futureGoalsCount),
   href: 'overview?type=future',
-  active: when(Query('type').match(Condition.Equals('future')))
-    .then(true)
-    .else(false),
+  active: when(Query('type').match(Condition.Equals('future'))),
 }
 
 const achievedGoalsNavigationItem = {
   text: Format('Achieved goals (%1)', achievedGoalsCount),
   href: 'overview?type=achieved',
-  active: when(Query('type').match(Condition.Equals('achieved')))
-    .then(true)
-    .else(false),
+  active: when(Query('type').match(Condition.Equals('achieved'))),
 }
 
 const removedGoalsNavigationItem = {
   text: Format('Removed goals (%1)', removedGoalsCount),
   href: 'overview?type=removed',
-  active: when(Query('type').match(Condition.Equals('removed')))
-    .then(true)
-    .else(false),
+  active: when(Query('type').match(Condition.Equals('removed'))),
 }
 
 const hasAchievedGoals = achievedGoalsCount.match(Condition.Number.GreaterThan(0))
@@ -266,16 +246,14 @@ export const goalsSection = TemplateWrapper({
                                 href: Format('../goal/%1/add-steps', Item().path('uuid')),
                                 hidden: when(
                                   Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
-                                )
-                                  .then(true)
-                                  .else(false),
+                                ),
                               },
                               {
                                 text: 'Delete',
                                 href: Format('../goal/%1/confirm-delete-goal', Item().path('uuid')),
                               },
                             ],
-                            isReadOnly: when(isReadOnly).then(true).else(false),
+                            isReadOnly: when(isReadOnly),
                             index: Item().index(),
                             ...buildMoveButtonProps(),
                           }),
@@ -333,7 +311,7 @@ export const goalsSection = TemplateWrapper({
                                   .else(Format('../goal/%1/update-goal-steps', Item().path('uuid'))),
                               },
                             ],
-                            isReadOnly: when(isReadOnly).then(true).else(false),
+                            isReadOnly: when(isReadOnly),
                             index: Item().index(),
                             ...buildMoveButtonProps(),
                           }),
@@ -401,15 +379,13 @@ export const blankPlanOverviewContent = HtmlBlock({
   ),
 })
 
-export const futureGoalsContent = HtmlBlock({
+export const futureGoalsContent = GovUKBody({
   hidden: or(
     Query('type').not.match(Condition.Equals('future')),
     Data('goals')
       .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
       .match(Condition.IsRequired()),
   ),
-  content: Format(
-    `<p class="govuk-body govuk-!-display-none-print"> %1 does not have any future goals in their plan.</p>`,
-    CaseData.Forename,
-  ),
+  text: Format('%1 does not have any future goals in their plan.', CaseData.Forename),
+  classes: 'govuk-!-display-none-print',
 })

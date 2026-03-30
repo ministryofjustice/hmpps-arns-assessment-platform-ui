@@ -7,6 +7,7 @@ import {
   Query,
   redirect,
   and,
+  not,
   Post,
   Data,
   Item,
@@ -19,13 +20,15 @@ import {
   blankPlanOverviewContentReadOnly,
   futureGoalsContent,
   goalsSection,
+  planAgreedMessage,
   planCreatedMessage,
+  updateAgreementMessage,
   subNavigation,
   notificationBanners,
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
-import { isOasysAccess, isReadWriteAccess, lacksPostAgreementStatus } from '../../../../guards'
+import { isOasysAccess, isReadOnlyAccess, isReadWriteAccess, lacksPostAgreementStatus } from '../../../../guards'
 
 export const planStep = step({
   path: '/overview',
@@ -65,7 +68,9 @@ export const planStep = step({
   ],
   isEntryPoint: true,
   blocks: [
+    planAgreedMessage,
     planCreatedMessage,
+    updateAgreementMessage,
     notificationBanners,
     subNavigation,
     goalsSection,
@@ -74,6 +79,16 @@ export const planStep = step({
     futureGoalsContent,
   ],
   onAccess: [
+    accessTransition({
+      when: and(Query('goalUuid').match(Condition.IsRequired()), not(isReadOnlyAccess)),
+      effects: [SentencePlanEffects.reorderGoal()],
+      next: [
+        redirect({ when: Query('status').match(Condition.Equals('FUTURE')), goto: 'overview?type=future' }),
+        redirect({ when: Query('status').match(Condition.Equals('ACHIEVED')), goto: 'overview?type=achieved' }),
+        redirect({ when: Query('status').match(Condition.Equals('REMOVED')), goto: 'overview?type=removed' }),
+        redirect({ goto: 'overview?type=current' }),
+      ],
+    }),
     accessTransition({
       effects: [
         SentencePlanEffects.loadNotifications('plan-overview'),

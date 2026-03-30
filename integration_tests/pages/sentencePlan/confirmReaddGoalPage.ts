@@ -28,7 +28,7 @@ export default class ConfirmReaddGoalPage extends AbstractPage {
     this.header = page.locator('h1')
     this.readdNoteTextarea = page.locator('#readd_note')
     this.confirmButton = page.getByRole('button', { name: 'Confirm' })
-    this.cancelButton = page.getByRole('button', { name: 'Do not add goal back into plan' })
+    this.cancelButton = page.getByRole('link', { name: 'Do not add goal back into plan' })
     this.readdNoteError = page.locator('#readd_note-error')
     this.canStartNowError = page.locator('#can_start_now-error')
     this.goalCard = page.locator('[data-qa="goal-summary-card"]')

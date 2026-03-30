@@ -4,17 +4,15 @@ import { HtmlBlock } from '@form-engine/registry/components/html'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
+import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import { GovUKSectionBreak } from '@form-engine-govuk-components/wrappers/govukSectionBreak'
 import { CaseData } from '../../../../constants'
 
 const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
-export const subtitleText = HtmlBlock({
-  content: '<p class="govuk-body">View all updates and changes made to this plan.</p>',
-})
+export const subtitleText = GovUKBody({ text: 'View all updates and changes made to this plan.' })
 
-export const sectionBreak = HtmlBlock({
-  content: '<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">',
-})
+export const sectionBreak = GovUKSectionBreak({ size: 'm', visible: true })
 
 /**
  * Renders a plan agreement history entry.
@@ -304,14 +302,14 @@ export const agreementHistory = CollectionBlock({
 /**
  * Link to update the person's agreement - shown when latest status is COULD_NOT_ANSWER
  */
-export const updateAgreementLink = HtmlBlock({
+export const updateAgreementLink = GovUKBody({
   hidden: or(isReadOnly, Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER'))),
-  content: Format(
-    '<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">Update %1\'s agreement</a></p>',
+  text: Format(
+    '<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">Update %1\'s agreement</a>',
     CaseData.Forename,
   ),
 })
 
-export const backToTopLink = HtmlBlock({
-  content: '<p class="govuk-body"><a href="#" class="govuk-link govuk-!-display-none-print">↑ Back to top</a></p>',
+export const backToTopLink = GovUKBody({
+  text: '<a href="#" class="govuk-link govuk-!-display-none-print">↑ Back to top</a>',
 })

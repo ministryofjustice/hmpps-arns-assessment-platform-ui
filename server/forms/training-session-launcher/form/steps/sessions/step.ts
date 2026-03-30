@@ -22,6 +22,7 @@ import { TrainingSessionLauncherEffects } from '../../../effects'
 export const sessionsStep = step({
   path: '/sessions',
   title: 'Active Sessions',
+  isEntryPoint: true,
 
   blocks: [
     notificationBanners,

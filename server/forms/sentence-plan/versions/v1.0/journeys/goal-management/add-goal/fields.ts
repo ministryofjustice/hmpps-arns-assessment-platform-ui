@@ -1,11 +1,11 @@
 import { Data, Format, Item, Iterator, not, Params, Self, validation } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKTextInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { MOJSideNavigation } from '@form-engine-moj-components/components'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
+import { GovUKButtonGroup } from '@form-engine-govuk-components/wrappers/govukButtonGroup'
 import { CaseData } from '../../../constants'
 import { isSanSpAssessment } from '../../../guards'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
@@ -24,13 +24,9 @@ const sideNavigation = MOJSideNavigation({
   ),
 })
 
-const pageHeading = HtmlBlock({
-  content: Format(
-    `<span class="govuk-caption-l">%1</span>
-    <h1 class="govuk-heading-l">Create a goal with %2</h1>`,
-    Data('currentAreaOfNeed').path('text').pipe(Transformer.String.EscapeHtml()),
-    CaseData.Forename,
-  ),
+const pageHeading = GovUKHeading({
+  text: Format('Create a goal with %1', CaseData.Forename),
+  caption: Data('currentAreaOfNeed').path('text').pipe(Transformer.String.EscapeHtml()),
 })
 
 const assessmentInfoDetails = AssessmentInfoDetails({
@@ -75,18 +71,9 @@ const saveWithoutStepsButton = GovUKButton({
   preventDoubleClick: true,
 })
 
-const buttonGroup = TemplateWrapper({
-  template: `
-        <div class="govuk-button-group govuk-!-margin-top-4">
-            {{slot:addStepsButton}}
-            {{slot:saveWithoutStepsButton}}
-          </div>
-      </div>
-    `,
-  slots: {
-    addStepsButton: [addStepsButton],
-    saveWithoutStepsButton: [saveWithoutStepsButton],
-  },
+const buttonGroup = GovUKButtonGroup({
+  buttons: [addStepsButton, saveWithoutStepsButton],
+  classes: 'govuk-!-margin-top-4',
 })
 
 export const sideNav = sideNavigation

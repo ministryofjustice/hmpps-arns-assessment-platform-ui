@@ -22,7 +22,7 @@ export default class ConfirmRemoveGoalPage extends AbstractPage {
     this.header = page.locator('h1')
     this.removalNoteTextarea = page.locator('#removal_note')
     this.confirmButton = page.getByRole('button', { name: 'Confirm' })
-    this.cancelButton = page.getByRole('button', { name: 'Do not remove goal' })
+    this.cancelButton = page.getByRole('link', { name: 'Do not remove goal' })
     this.goalCard = page.locator('[data-qa="goal-summary-card"]')
     this.goalTitle = page.locator('[data-qa="goal-title"]')
     this.validation = new ValidationHelper(page)

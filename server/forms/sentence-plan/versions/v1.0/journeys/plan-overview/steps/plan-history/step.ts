@@ -6,6 +6,7 @@ import { isOasysAccess, redirectIfNotPostAgreement, redirectToPrivacyUnlessAccep
 export const planHistoryStep = step({
   path: '/plan-history',
   title: 'Plan history',
+  isEntryPoint: true,
   view: {
     locals: {
       headerPageHeading: 'Plan history',
