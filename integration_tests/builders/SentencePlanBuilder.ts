@@ -108,6 +108,15 @@ export class SentencePlanBuilderInstance {
     return this
   }
 
+  /**
+   * Set an assessment-level property (e.g., 'MERGED')
+   */
+  withProperty(key: string, value: string | string[]): this {
+    this.assessmentBuilder.withProperty(key, value)
+
+    return this
+  }
+
   private planAgreements: PlanAgreementConfig[] = []
 
   /**
