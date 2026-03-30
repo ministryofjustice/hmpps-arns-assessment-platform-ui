@@ -316,16 +316,14 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
   mpopUser: async ({ page, createSession, sentencePlanBuilder }, use) => {
     const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
     await sentencePlanBuilder.extend(sentencePlanId).withAgreementStatus('AGREED').save()
+    await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
+    const heading = await page.$$(
+      "text='Remember to close any other applications before starting an appointment with Buster'",
+    )
 
-    if (mpopSessionCached()) {
-      await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
-      const heading = await page.$$(
-        "text='Remember to close any other applications before starting an appointment with Buster'",
-      )
-      if (heading.length > 0) {
-        const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
-        await privacyPage.confirmAndContinue()
-      }
+    if (mpopSessionCached() && heading.length > 0) {
+      const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
+      await privacyPage.confirmAndContinue()
       const mpopPage = new MpopPage(page, crn)
       await use(mpopPage)
       clearMpopSession()
@@ -337,6 +335,7 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
       const mpopPage = new MpopPage(page, crn)
       await use(mpopPage)
       await logout(mpopPage.page)
+      clearMpopSession()
     }
   },
 
