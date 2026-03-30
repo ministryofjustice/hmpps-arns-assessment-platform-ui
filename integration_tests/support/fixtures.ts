@@ -4,6 +4,10 @@ import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients
 import { promises as fs } from 'node:fs'
 import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
 import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
+import { clearMpopSession, login, logout, mpopSessionCached } from 'testUtils'
+import PrivacyScreenPage from 'pages/sentencePlan/privacyScreenPage'
+import { sentencePlanV1URLs } from 'specs/sentencePlan/sentencePlanUtils'
+import MpopPage from 'pages/sentencePlan/mpopPage'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
 import { TestHmppsAuthClient } from './apis/TestHmppsAuthClient'
 import { TestAapApiClient } from './apis/TestAapApiClient'
@@ -144,6 +148,7 @@ type TestApiFixtures = {
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
   auditQueue: AuditQueueClient
   makeAxeBuilder: () => AxeBuilder
+  mpopUser: MpopPage
 }
 
 type InternalFixtures = {
@@ -308,6 +313,32 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
     await use(makeAxeBuilder)
   },
 
+  mpopUser: async ({ page, createSession, sentencePlanBuilder }, use) => {
+    const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+    await sentencePlanBuilder.extend(sentencePlanId).withAgreementStatus('AGREED').save()
+    await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
+    const heading = await page.$$(
+      "text='Remember to close any other applications before starting an appointment with Buster'",
+    )
+
+    if (mpopSessionCached() && heading.length > 0) {
+      const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
+      await privacyPage.confirmAndContinue()
+      const mpopPage = new MpopPage(page, crn)
+      await use(mpopPage)
+      clearMpopSession()
+    } else {
+      await login(page)
+      await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
+      const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
+      await privacyPage.confirmAndContinue()
+      const mpopPage = new MpopPage(page, crn)
+      await use(mpopPage)
+      await logout(mpopPage.page)
+      clearMpopSession()
+    }
+  },
+
   captureDockerLogsOnFailure: [
     // eslint-disable-next-line no-empty-pattern
     async ({}, use, testInfo) => {
@@ -319,13 +350,23 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
         return
       }
 
-      const { logs } = await captureContainerLogs('ui', { since: startedAt })
+      const ui = await captureContainerLogs('ui', { since: startedAt })
       const logsPath = testInfo.outputPath('ui-container-logs.txt')
 
-      await fs.writeFile(logsPath, logs, 'utf-8')
+      await fs.writeFile(logsPath, ui.logs, 'utf-8')
 
       await testInfo.attach('ui-container-logs', {
         path: logsPath,
+        contentType: 'text/plain',
+      })
+
+      const auth = await captureContainerLogs('hmpps-auth', { since: startedAt })
+      const authLogsPath = testInfo.outputPath('ui-container-logs.txt')
+
+      await fs.writeFile(authLogsPath, auth.logs, 'utf-8')
+
+      await testInfo.attach('hmpps-auth-container-logs', {
+        path: authLogsPath,
         contentType: 'text/plain',
       })
     },
