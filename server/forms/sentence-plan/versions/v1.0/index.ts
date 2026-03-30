@@ -5,7 +5,12 @@ import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
 import { actorLabels, areasOfNeed, formVersion } from './constants'
 import { SentencePlanEffects } from '../../effects'
-import { hasPostAgreementStatus, isSanSpAssessment, redirectToPrivacyUnlessAccepted } from './guards'
+import {
+  hasPostAgreementStatus,
+  isSanSpAssessment,
+  redirectIfMergedMpopPlan,
+  redirectToPrivacyUnlessAccepted,
+} from './guards'
 
 /**
  * Sentence Plan v1.0 Journey
@@ -56,6 +61,8 @@ export const sentencePlanV1Journey = journey({
         }),
       ],
     }),
+    // MPoP users with a merged plan are blocked from accessing any plan content.
+    redirectIfMergedMpopPlan(),
     // READ_ONLY users skip privacy and go straight to overview; edit users must accept privacy first.
     redirectToPrivacyUnlessAccepted(),
   ],

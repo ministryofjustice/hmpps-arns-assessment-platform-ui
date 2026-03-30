@@ -210,6 +210,16 @@ export class AssessmentBuilderInstance {
         })
       }
 
+      if (this.mode === 'extend' && Object.keys(this.definition.properties).length > 0) {
+        await this.client.executeCommand({
+          type: 'UpdateAssessmentPropertiesCommand',
+          assessmentUuid,
+          user: this.user,
+          added: this.definition.properties,
+          removed: [],
+        })
+      }
+
       const createdCollections: CreatedCollection[] = []
 
       for (const collectionDef of this.definition.collections) {

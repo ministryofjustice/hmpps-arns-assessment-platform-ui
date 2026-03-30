@@ -88,6 +88,27 @@ export const redirectUnlessSanSp = (goto: string) =>
   })
 
 /**
+ * True when the user entered via MPoP (CRN-based access).
+ */
+export const isMpopAccess = Data('sessionDetails.accessType').match(Condition.Equals('HMPPS_AUTH'))
+
+/**
+ * True when the plan has been flagged as merged.
+ * The coordinator sets assessment.properties.MERGED when an OASys offender record has been merged.
+ */
+export const isMergedPlan = Data('assessment.properties.MERGED').match(Condition.IsRequired())
+
+/**
+ * Redirect MPoP users with a merged plan to the warning page.
+ * This prevents access to any plan content when the underlying data may be inconsistent.
+ */
+export const redirectIfMergedMpopPlan = () =>
+  accessTransition({
+    when: and(isMpopAccess, isMergedPlan),
+    next: [redirect({ goto: '/sentence-plan/merged-plan-warning' })],
+  })
+
+/**
  * Redirect READ_WRITE users to privacy until they have accepted it.
  * READ_ONLY users are not sent through the privacy screen.
  */
