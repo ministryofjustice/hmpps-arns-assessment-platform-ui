@@ -1,5 +1,6 @@
 import { block, Data, Format, Item, Iterator, when } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
+import { Transformer } from '@form-engine/registry/transformers'
 import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { GovUKButton, GovUKDetails, GovUKLinkButton } from '@form-engine-govuk-components/components'
@@ -84,8 +85,8 @@ const scenarioPanelContent = [
     `,
     values: {
       csrfToken: Data('csrfToken'),
-      title: Item().path('name'),
-      description: Item().path('description'),
+      title: Item().path('name').pipe(Transformer.String.EscapeHtml()),
+      description: Item().path('description').pipe(Transformer.String.EscapeHtml()),
       scenarioId: Item().path('id'),
       seed: Item().path('rawScenario.seed'),
       deleteFormStyle: when(Item().path('isCustom').match(Condition.Equals(true)))
