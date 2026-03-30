@@ -1,15 +1,15 @@
-import { block, Data, field, Format, Item, Iterator } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
+import { Data, Format, Item, Iterator } from '@form-engine/form/builders'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKTextareaInput } from '@form-engine-govuk-components/components'
 import { Transformer } from '@form-engine/registry/transformers'
-import { TemplateWrapper } from '@form-engine/registry/components'
-import { ButtonAsLink, GoalSummaryCardDraft } from '../../../../../components'
+import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
+import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import { GovUKButtonGroup } from '@form-engine-govuk-components/wrappers/govukButtonGroup'
+import { GoalSummaryCardDraft } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
-export const pageHeading = block<HtmlBlock>({
-  variant: 'html',
-  content: Format('<h1 class="govuk-heading-l">Confirm %1 has achieved this goal</h1>', CaseData.Forename),
+export const pageHeading = GovUKHeading({
+  text: Format('Confirm %1 has achieved this goal', CaseData.Forename),
 })
 
 export const goalCard = GoalSummaryCardDraft({
@@ -27,8 +27,7 @@ export const goalCard = GoalSummaryCardDraft({
   ),
 })
 
-export const howHelpedField = field<GovUKTextareaInput>({
-  variant: 'govukTextarea',
+export const howHelpedField = GovUKTextareaInput({
   code: 'how_helped',
   label: {
     text: Format('How has achieving this goal helped %1? (optional)', CaseData.Forename),
@@ -38,22 +37,17 @@ export const howHelpedField = field<GovUKTextareaInput>({
   rows: '3',
 })
 
-export const confirmButton = block<GovUKButton>({
-  variant: 'govukButton',
+export const confirmButton = GovUKButton({
   text: 'Confirm',
   name: 'action',
   value: 'confirm',
 })
 
-export const cancelLink = ButtonAsLink({
-  text: 'Do not mark as achieved',
-  name: 'action',
-  value: 'cancel',
+export const cancelLink = GovUKBody({
+  text: Format(
+    '<a href="../../goal/%1/update-goal-steps" class="govuk-link">Do not mark as achieved</a>',
+    Data('activeGoal.uuid'),
+  ),
 })
 
-export const buttonGroup = TemplateWrapper({
-  template: `<div class="govuk-button-group">{{slot:buttons}}</div>`,
-  slots: {
-    buttons: [confirmButton, cancelLink],
-  },
-})
+export const buttonGroup = GovUKButtonGroup({ buttons: [confirmButton, cancelLink] })

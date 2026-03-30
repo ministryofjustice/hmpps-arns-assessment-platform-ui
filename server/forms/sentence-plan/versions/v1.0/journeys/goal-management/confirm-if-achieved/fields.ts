@@ -1,19 +1,20 @@
 import { Data, Format, Item, Self, validation } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKRadioInput, GovUKTextareaInput } from '@form-engine-govuk-components/components'
 import { Transformer } from '@form-engine/registry/transformers'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { Condition } from '@form-engine/registry/conditions'
+import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
+import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
 import { GoalSummaryCardDraft } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
-export const pageHeading = HtmlBlock({
-  content: Format('<h1 class="govuk-heading-l">Confirm if %1 has achieved this goal</h1>', CaseData.Forename),
+export const pageHeading = GovUKHeading({
+  text: Format('Confirm if %1 has achieved this goal', CaseData.Forename),
 })
 
-export const allStepsCompletedField = HtmlBlock({
-  content: '<p class="govuk-body">All steps have been completed. Check if this goal can now be marked as achieved.</p>',
+export const allStepsCompletedField = GovUKBody({
+  text: 'All steps have been completed. Check if this goal can now be marked as achieved.',
 })
 
 export const goalCard = GoalSummaryCardDraft({

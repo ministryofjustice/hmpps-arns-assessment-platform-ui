@@ -1,12 +1,11 @@
-import { block, field, Format, validation, Self, Answer } from '@form-engine/form/builders'
+import { Format, validation, Self, Answer } from '@form-engine/form/builders'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKRadioInput } from '@form-engine-govuk-components/components/radio-input/govukRadioInput'
 import { GovUKTextareaInput } from '@form-engine-govuk-components/components/textarea-input/govukTextareaInput'
 import { Condition } from '@form-engine/registry/conditions'
 import { CaseData } from '../../../../constants'
 
-const detailsForNoField = field<GovUKTextareaInput>({
-  variant: 'govukTextarea',
+const detailsForNoField = GovUKTextareaInput({
   code: 'plan_agreement_details_no',
   label: 'Enter details',
   dependent: Answer('plan_agreement_question').match(Condition.Equals('no')),
@@ -18,8 +17,7 @@ const detailsForNoField = field<GovUKTextareaInput>({
   ],
 })
 
-const detailsForCouldNotAnswerField = field<GovUKTextareaInput>({
-  variant: 'govukTextarea',
+const detailsForCouldNotAnswerField = GovUKTextareaInput({
   code: 'plan_agreement_details_could_not_answer',
   label: 'Enter details',
   dependent: Answer('plan_agreement_question').match(Condition.Equals('could_not_answer')),
@@ -31,8 +29,7 @@ const detailsForCouldNotAnswerField = field<GovUKTextareaInput>({
   ],
 })
 
-export const planAgreementQuestion = field<GovUKRadioInput>({
-  variant: 'govukRadioInput',
+export const planAgreementQuestion = GovUKRadioInput({
   code: 'plan_agreement_question',
   fieldset: {
     legend: {
@@ -60,8 +57,7 @@ export const planAgreementQuestion = field<GovUKRadioInput>({
   ],
 })
 
-export const notesField = field<GovUKTextareaInput>({
-  variant: 'govukTextarea',
+export const notesField = GovUKTextareaInput({
   code: 'plan_agreement_notes',
   label: {
     text: 'Add any notes (optional)',
@@ -69,8 +65,7 @@ export const notesField = field<GovUKTextareaInput>({
   },
 })
 
-export const saveButton = block<GovUKButton>({
-  variant: 'govukButton',
+export const saveButton = GovUKButton({
   text: 'Save',
   name: 'action',
   value: 'save',

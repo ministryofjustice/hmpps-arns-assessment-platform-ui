@@ -6,6 +6,7 @@ import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
+import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
@@ -37,66 +38,44 @@ const removedGoalsCount = Data('historic.goals')
   .each(Iterator.Filter(Item().path('status').match(Condition.Equals('REMOVED'))))
   .pipe(Transformer.Array.Length())
 
-export const planCreatedMessage = HtmlBlock({
-  hidden: or(
-    Data('historic.latestAgreementStatus').not.match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
-    // In READ_ONLY mode, hide this block for COULD_NOT_ANSWER so we do not show the "Update agreement" action link.
-    Data('historic.latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER')),
+export const planAgreedMessage = GovUKBody({
+  hidden: Data('historic.latestAgreementStatus').not.match(Condition.Equals('UPDATED_AGREED')),
+  text: Format(
+    '%1 agreed to their plan on %2.',
+    CaseData.Forename,
+    Data('historic.latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
   ),
-  content: when(
-    Data('historic.latestAgreementStatus').match(
-      Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE', 'UPDATED_AGREED']),
-    ),
-  )
-    .then(
-      when(Data('historic.latestAgreementStatus').match(Condition.Equals('UPDATED_AGREED')))
-        .then(
-          Format(
-            '<p class="govuk-body">%1 agreed to their plan on %2.</p>',
-            CaseData.Forename,
-            Data('historic.latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
-          ),
-        )
-        .else(
-          Format(
-            '<p class="govuk-body">Plan created on %1.</p>',
-            Data('historic.latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
-          ),
-        ),
-    )
-    .else(''),
+})
+
+export const planCreatedMessage = GovUKBody({
+  hidden: Data('historic.latestAgreementStatus').not.match(
+    Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE']),
+  ),
+  text: Format('Plan created on %1.', Data('historic.latestAgreementDate').pipe(Transformer.Date.ToUKLongDate())),
 })
 
 const currentGoalsNavigationItem = {
   text: Format('Goals to work on now (%1)', activeGoalsCount),
   href: Format('%1?type=current', Params('timestamp')),
-  active: when(Query('type').match(Condition.Equals('current')))
-    .then(true)
-    .else(false),
+  active: when(Query('type').match(Condition.Equals('current'))),
 }
 
 const futureGoalsNavigationItem = {
   text: Format('Future goals (%1)', futureGoalsCount),
   href: Format('%1?type=future', Params('timestamp')),
-  active: when(Query('type').match(Condition.Equals('future')))
-    .then(true)
-    .else(false),
+  active: when(Query('type').match(Condition.Equals('future'))),
 }
 
 const achievedGoalsNavigationItem = {
   text: Format('Achieved goals (%1)', achievedGoalsCount),
   href: Format('%1?type=achieved', Params('timestamp')),
-  active: when(Query('type').match(Condition.Equals('achieved')))
-    .then(true)
-    .else(false),
+  active: when(Query('type').match(Condition.Equals('achieved'))),
 }
 
 const removedGoalsNavigationItem = {
   text: Format('Removed goals (%1)', removedGoalsCount),
   href: Format('%1?type=removed', Params('timestamp')),
-  active: when(Query('type').match(Condition.Equals('removed')))
-    .then(true)
-    .else(false),
+  active: when(Query('type').match(Condition.Equals('removed'))),
 }
 
 const hasAchievedGoals = achievedGoalsCount.match(Condition.Number.GreaterThan(0))
@@ -297,15 +276,13 @@ export const blankPlanOverviewContentReadOnly = HtmlBlock({
   ),
 })
 
-export const futureGoalsContent = HtmlBlock({
+export const futureGoalsContent = GovUKBody({
   hidden: or(
     Query('type').not.match(Condition.Equals('future')),
     Data('historic.goals')
       .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
       .match(Condition.IsRequired()),
   ),
-  content: Format(
-    `<p class="govuk-body govuk-!-display-none-print"> %1 does not have any future goals in their plan.</p>`,
-    CaseData.Forename,
-  ),
+  text: Format('%1 does not have any future goals in their plan.', CaseData.Forename),
+  classes: 'govuk-!-display-none-print',
 })

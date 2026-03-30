@@ -1,23 +1,24 @@
-import { Data, Format, Item } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
+import { Data, Format, Item, when } from '@form-engine/form/builders'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
 import { Transformer } from '@form-engine/registry/transformers'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { GoalSummaryCardDraft, ButtonAsLink } from '../../../../../components'
+import { Condition } from '@form-engine/registry/conditions'
+import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
+import { GovUKButtonGroup } from '@form-engine-govuk-components/wrappers/govukButtonGroup'
+import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import { GoalSummaryCardDraft } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
-export const pageHeading = HtmlBlock({
-  content: '<h1 class="govuk-heading-l">Confirm you want to delete this goal</h1>',
-})
+export const pageHeading = GovUKHeading({ text: 'Confirm you want to delete this goal' })
 
-export const introText = HtmlBlock({
-  content: Format(
-    `<p class="govuk-body">Delete this goal if you've made a mistake. It will not be saved to %1's plan.</p>
-    <p class="govuk-body">Alternatively, you can <a href="change-goal" class="govuk-link">change the goal</a> instead.</p>`,
-    CaseData.Forename,
-  ),
-})
+export const introText = [
+  GovUKBody({
+    text: Format("Delete this goal if you've made a mistake. It will not be saved to %1's plan.", CaseData.Forename),
+  }),
+  GovUKBody({
+    text: 'Alternatively, you can <a href="change-goal" class="govuk-link">change the goal</a> instead.',
+  }),
+]
 
 export const goalCard = GoalSummaryCardDraft({
   goalTitle: Data('activeGoal.title'),
@@ -40,15 +41,13 @@ export const confirmButton = GovUKButton({
   value: 'confirm',
 })
 
-export const cancelLink = ButtonAsLink({
-  text: 'Do not delete goal',
-  name: 'action',
-  value: 'cancel',
+export const cancelLink = GovUKBody({
+  text: Format(
+    '<a href="%1" class="govuk-link">Do not delete goal</a>',
+    when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
+      .then('../../plan/overview?type=future')
+      .else('../../plan/overview?type=current'),
+  ),
 })
 
-export const buttonGroup = TemplateWrapper({
-  template: `<div class="govuk-button-group">{{slot:buttons}}</div>`,
-  slots: {
-    buttons: [confirmButton, cancelLink],
-  },
-})
+export const buttonGroup = GovUKButtonGroup({ buttons: [confirmButton, cancelLink] })
