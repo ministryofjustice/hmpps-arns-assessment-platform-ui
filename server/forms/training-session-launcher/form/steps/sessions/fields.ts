@@ -1,5 +1,6 @@
 import { Data, Item, Iterator, when } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
+import { Transformer } from '@form-engine/registry/transformers'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
@@ -122,11 +123,11 @@ export const sessionCardBlock = TemplateWrapper({
   values: {
     csrfToken: Data('csrfToken'),
     sessionId: Item().path('id'),
-    scenarioName: Item().path('scenarioName'),
-    givenName: Item().path('givenName'),
-    familyName: Item().path('familyName'),
-    crn: Item().path('crn'),
-    location: Item().path('location'),
+    scenarioName: Item().path('scenarioName').pipe(Transformer.String.EscapeHtml()),
+    givenName: Item().path('givenName').pipe(Transformer.String.EscapeHtml()),
+    familyName: Item().path('familyName').pipe(Transformer.String.EscapeHtml()),
+    crn: Item().path('crn').pipe(Transformer.String.EscapeHtml()),
+    location: Item().path('location').pipe(Transformer.String.EscapeHtml()),
     createdAt: Item().path('createdAt').pipe(TrainingSessionLauncherTransformers.RelativeTime()),
     openAttr: when(Item().index().match(Condition.Equals(0)))
       .then('open')

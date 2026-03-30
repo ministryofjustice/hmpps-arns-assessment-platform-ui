@@ -1,6 +1,7 @@
 import { Format, Item, Data, Iterator, when } from '@form-engine/form/builders'
 import { HtmlBlock, TemplateWrapper, CollectionBlock } from '@form-engine/registry/components'
 import { Condition } from '@form-engine/registry/conditions'
+import { Transformer } from '@form-engine/registry/transformers'
 import { GovUKButton, GovUKDetails, GovUKPagination } from '@form-engine-govuk-components/components'
 import { CodeBlock } from '../../../../../components'
 import { parseGovUKMarkdown } from '../../../../../helpers/markdown'
@@ -93,13 +94,13 @@ export const pageContent = TemplateWrapper({
                     </dl>
                   </div>
                 </div>`,
-                Item().path('name'),
-                Item().path('id'),
+                Item().path('name').pipe(Transformer.String.EscapeHtml()),
+                Item().path('id').pipe(Transformer.String.EscapeHtml()),
                 when(Item().path('description').match(Condition.IsRequired()))
-                  .then(Item().path('description'))
+                  .then(Item().path('description').pipe(Transformer.String.EscapeHtml()))
                   .else('<em class="govuk-hint">No description</em>'),
                 when(Item().path('category').match(Condition.IsRequired()))
-                  .then(Item().path('category'))
+                  .then(Item().path('category').pipe(Transformer.String.EscapeHtml()))
                   .else('<em class="govuk-hint">Uncategorized</em>'),
                 when(Item().path('priority').match(Condition.Equals('high')))
                   .then('<strong class="govuk-tag govuk-tag--red">High</strong>')
