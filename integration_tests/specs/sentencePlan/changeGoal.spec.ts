@@ -460,15 +460,18 @@ test.describe('Change goal journey', () => {
         await AddStepsPage.verifyOnPage(page)
       })
 
-      test('back button from change goal navigates to update goal and steps', async ({ page }) => {
+      test('back button from change goal navigates to plan overview and shows notification', async ({ page }) => {
         // confirm it brought us to change goal page
         const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
         // click back button on change goal page
         await changeGoalPage.clickBackLink()
 
-        // confirm we are on plan overview page
-        await PlanOverviewPage.verifyOnPage(page)
+        // confirm we are on plan overview page with the goal added notification
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+        await expect(planOverviewPage.notificationBanner).toBeVisible()
+        await expect(planOverviewPage.notificationBanner).toHaveCount(1)
+        await expect(planOverviewPage.notificationBannerText).toContainText(/You added a goal to .+'s plan/i)
       })
     })
 
