@@ -338,7 +338,7 @@ test.describe('Update goal and steps page', () => {
   })
 
   test.describe('view all notes', () => {
-    test('displays view and expand all notes details component and see noo notes message when goal has no notes ', async ({
+    test('displays view and expand all notes details component and see no notes message when goal has no notes', async ({
       page,
       createSession,
       sentencePlanBuilder,
