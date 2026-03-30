@@ -266,6 +266,7 @@ export interface PlanNotification {
   title?: string
   message: string | FormatExpr
   target: string
+  clearOtherNotifications?: boolean
 }
 
 /**
