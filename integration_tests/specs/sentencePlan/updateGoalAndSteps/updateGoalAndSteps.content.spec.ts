@@ -6,12 +6,10 @@ import {
   getDatePlusDaysAsISO,
   navigateToSentencePlan,
   stepStatusOptions,
-  sentencePlanV1URLs,
+  sentencePlanV1UrlBuilders,
   buildPageTitle,
   sentencePlanPageTitles,
 } from '../sentencePlanUtils'
-
-const updateGoalAndStepsPath = '/update-goal-steps'
 
 test.describe('Update goal and steps page', () => {
   test.describe('page content - ACTIVE goal', () => {
@@ -39,7 +37,7 @@ test.describe('Update goal and steps page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
@@ -93,7 +91,7 @@ test.describe('Update goal and steps page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
@@ -122,7 +120,7 @@ test.describe('Update goal and steps page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
@@ -163,7 +161,7 @@ test.describe('Update goal and steps page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
@@ -207,7 +205,7 @@ test.describe('Update goal and steps page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
@@ -240,7 +238,7 @@ test.describe('Update goal and steps page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
@@ -268,7 +266,7 @@ test.describe('Update goal and steps page', () => {
 
         await navigateToSentencePlan(page, handoverLink)
 
-        await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+        await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
         const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
@@ -296,7 +294,7 @@ test.describe('Update goal and steps page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
@@ -325,7 +323,7 @@ test.describe('Update goal and steps page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
@@ -353,7 +351,7 @@ test.describe('Update goal and steps page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
@@ -392,7 +390,7 @@ test.describe('Update goal and steps page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
@@ -419,7 +417,7 @@ test.describe('Update goal and steps page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 

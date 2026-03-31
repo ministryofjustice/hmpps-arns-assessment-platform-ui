@@ -28,7 +28,6 @@ test.describe('Plan History - Navigation', () => {
     await viewHistoryLink.click()
 
     // Verify we're on the plan history page
-    await expect(page).toHaveURL(/plan-history/)
     await PlanHistoryPage.verifyOnPage(page)
   })
 

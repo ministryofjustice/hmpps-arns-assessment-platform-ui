@@ -60,7 +60,6 @@ export const aboutPersonStep = step({
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ABOUT_PERSON),
         SentencePlanEffects.loadSentenceInformation(),
         SentencePlanEffects.loadAllAreasAssessmentInfo(),
-        SentencePlanEffects.setNavigationReferrer('about'),
       ],
     }),
   ],

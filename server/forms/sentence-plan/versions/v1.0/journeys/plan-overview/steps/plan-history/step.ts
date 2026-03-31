@@ -22,7 +22,6 @@ export const planHistoryStep = step({
       effects: [
         SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.derivePlanHistoryEntries(),
-        SentencePlanEffects.setNavigationReferrer('plan-history'),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_HISTORY),
       ],
     }),

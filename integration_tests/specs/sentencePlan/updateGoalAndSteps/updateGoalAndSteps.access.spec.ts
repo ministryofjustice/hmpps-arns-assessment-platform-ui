@@ -2,9 +2,7 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
-import { navigateToSentencePlan, postAgreementProcessStatuses, sentencePlanV1URLs } from '../sentencePlanUtils'
-
-const updateGoalAndStepsPath = '/update-goal-steps'
+import { navigateToSentencePlan, postAgreementProcessStatuses, sentencePlanV1UrlBuilders } from '../sentencePlanUtils'
 
 test.describe('Update goal and steps page - access control', () => {
   test('redirects to plan overview when plan is not agreed', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -16,7 +14,7 @@ test.describe('Update goal and steps page - access control', () => {
     await navigateToSentencePlan(page, handoverLink)
 
     // try to access update-goal-steps page directly
-    await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+    await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
     // should be redirected to plan overview
     await expect(page).toHaveURL(/\/plan\/overview/)
@@ -38,13 +36,11 @@ test.describe('Update goal and steps page - access control', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`)
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
       // should be on the update-goal-steps page
       await UpdateGoalAndStepsPage.verifyOnPage(page)
-      await expect(page).toHaveURL(
-        `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${updateGoalAndStepsPath}`,
-      )
+      await expect(page).toHaveURL(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
     })
   }
 
@@ -56,7 +52,7 @@ test.describe('Update goal and steps page - access control', () => {
 
     // try to access with a non-existent goal UUID
     const nonExistentUuid = '00000000-0000-0000-0000-000000000000'
-    await page.goto(`${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${nonExistentUuid}${updateGoalAndStepsPath}`)
+    await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(nonExistentUuid))
 
     // should be redirected to plan overview
     await expect(page).toHaveURL(/\/plan\/overview/)

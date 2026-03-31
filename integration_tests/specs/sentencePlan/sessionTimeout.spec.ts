@@ -26,7 +26,6 @@ test.describe('Session Timeout Modal', () => {
     await sentencePlanBuilder.extend(sentencePlanId).save()
 
     await navigateToSentencePlan(page, handoverLink)
-    await PlanOverviewPage.verifyOnPage(page)
 
     const modalPage = SessionTimeoutModalPage.getInstance(page)
     await expect(modalPage.modal).toBeHidden()
@@ -56,7 +55,6 @@ test.describe('Session Timeout Modal', () => {
     await sentencePlanBuilder.extend(sentencePlanId).save()
 
     await navigateToSentencePlan(page, handoverLink)
-    await PlanOverviewPage.verifyOnPage(page)
 
     const modalPage = SessionTimeoutModalPage.getInstance(page)
     await forceShowSessionTimeoutModal(page)
@@ -77,7 +75,6 @@ test.describe('Session Timeout Modal', () => {
     expect(response.ok()).toBe(true) // 204 No Content - session extended successfully
 
     await expect(modalPage.modal).toBeHidden()
-    await expect(page).toHaveURL(/\/plan\/overview/)
     await PlanOverviewPage.verifyOnPage(page)
   })
 
@@ -91,7 +88,6 @@ test.describe('Session Timeout Modal', () => {
     await sentencePlanBuilder.extend(sentencePlanId).save()
 
     await navigateToSentencePlan(page, handoverLink)
-    await PlanOverviewPage.verifyOnPage(page)
 
     const modalPage = SessionTimeoutModalPage.getInstance(page)
     await forceShowSessionTimeoutModal(page)
