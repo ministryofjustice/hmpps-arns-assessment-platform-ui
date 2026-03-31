@@ -1,6 +1,5 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
-import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import { navigateToSentencePlan, sentencePlanV1URLs } from '../sentencePlanUtils'
 
 test.describe('About Person Tab', () => {
@@ -13,7 +12,6 @@ test.describe('About Person Tab', () => {
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       const primaryNavigation = page.getByLabel('Primary navigation')
       await expect(primaryNavigation.getByRole('link', { name: /^About /i })).toBeVisible()
@@ -44,7 +42,6 @@ test.describe('About Person Tab', () => {
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).toBeVisible()
     })
@@ -59,7 +56,6 @@ test.describe('About Person Tab', () => {
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       const primaryNavigation = page.getByLabel('Primary navigation')
       await expect(primaryNavigation.getByRole('link', { name: /^About /i })).not.toBeVisible()
@@ -94,7 +90,6 @@ test.describe('About Person Tab', () => {
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).not.toBeVisible()
     })

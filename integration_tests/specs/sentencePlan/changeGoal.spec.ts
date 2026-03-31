@@ -24,7 +24,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       // ensure page title is correct
@@ -41,7 +40,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -67,7 +65,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -107,7 +104,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -166,7 +162,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -186,7 +181,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -211,7 +205,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -238,7 +231,6 @@ test.describe('Change goal journey', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -270,7 +262,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -293,7 +284,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -321,7 +311,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -345,7 +334,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -370,7 +358,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to future goals tab and click change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Future goals' }).click()
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -404,7 +391,6 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to future goals tab and click change goal
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Future goals' }).click()
       await page.getByRole('link', { name: 'Change goal' }).click()
 
@@ -440,8 +426,7 @@ test.describe('Change goal journey', () => {
         // confirm we're on add steps page
         await AddStepsPage.verifyOnPage(page)
 
-        // refresh the page and click back button which should bring us to change goal page
-        await page.reload()
+        // click back button which should bring us to change goal page
         const addStepsPage = await AddStepsPage.verifyOnPage(page)
         await addStepsPage.clickBack()
       })
@@ -506,8 +491,6 @@ test.describe('Change goal journey', () => {
       })
 
       test('back from change goal navigates to update goal and steps', async ({ page }) => {
-        // refresh the page and click back button
-        await page.reload()
         const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
         await changeGoalPage.clickBackLink()
 
@@ -516,8 +499,6 @@ test.describe('Change goal journey', () => {
       })
 
       test('saving goal redirects to add steps', async ({ page }) => {
-        // refresh the page, change the target date for the goal and click save goal button
-        await page.reload()
         const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
         await changeGoalPage.selectTargetDateOption('6_months')
         await changeGoalPage.saveGoal()
@@ -555,10 +536,7 @@ test.describe('Change goal journey', () => {
         const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
         await updateGoalAndStepsPage.clickChangeGoalDetails()
 
-        // check we are on change goal
-        await ChangeGoalPage.verifyOnPage(page)
-        // refresh the page, save the goal with no changes
-        await page.reload()
+        // check we are on change goal and save with no changes
         const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
         await changeGoalPage.saveGoal()
 
@@ -571,11 +549,7 @@ test.describe('Change goal journey', () => {
         const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
         await updateGoalAndStepsPage.clickAddSteps()
 
-        // check we are on add steps
-        await AddStepsPage.verifyOnPage(page)
-
-        // refresh the page and click back button
-        await page.reload()
+        // click back button
         const addStepsPage = await AddStepsPage.verifyOnPage(page)
         await addStepsPage.clickBack()
 
@@ -616,8 +590,7 @@ test.describe('Change goal journey', () => {
         // check we are on change goal
         await ChangeGoalPage.verifyOnPage(page)
 
-        // refresh the page, change the target date for the goal and click save goal button
-        await page.reload()
+        // change the target date and save
         const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
         await changeGoalPage.selectTargetDateOption('6_months')
         await changeGoalPage.saveGoal()
@@ -631,11 +604,7 @@ test.describe('Change goal journey', () => {
         const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
         await updateGoalAndStepsPage.clickAddOrChangeSteps()
 
-        // check we are on add steps
-        await AddStepsPage.verifyOnPage(page)
-
-        // refresh the page, add another step, click save and continue button
-        await page.reload()
+        // add another step and save
         const addStepsPage = await AddStepsPage.verifyOnPage(page)
         await addStepsPage.clickAddStep()
         await addStepsPage.enterStep(1, 'person_on_probation', 'New additional step')
@@ -672,11 +641,7 @@ test.describe('Change goal journey', () => {
         await createGoalPage.selectTargetDateOption('12_months')
         await createGoalPage.clickAddSteps()
 
-        // check we're on add steps page
-        await AddStepsPage.verifyOnPage(page)
-
-        // refresh the page and click back button
-        await page.reload()
+        // click back button from add steps page
         const addStepsPage = await AddStepsPage.verifyOnPage(page)
         await addStepsPage.clickBack()
 

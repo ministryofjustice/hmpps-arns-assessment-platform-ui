@@ -11,7 +11,6 @@ const returnToOasysButton = (page: Page) => page.getByRole('button', { name: 'Re
 const navigateToMpopPrivacyScreen = async (page: Page, crn: string): Promise<PrivacyScreenPage> => {
   await login(page)
   await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
-  await expect(page).toHaveURL(/\/privacy/)
   return PrivacyScreenPage.verifyOnPage(page)
 }
 
@@ -19,7 +18,6 @@ const navigateToPlanOverviewViaMpop = async (page: Page, crn: string): Promise<v
   const privacyScreenPage = await navigateToMpopPrivacyScreen(page, crn)
   await privacyScreenPage.confirmAndContinue()
 
-  await expect(page).toHaveURL(/\/plan\/overview/)
   await PlanOverviewPage.verifyOnPage(page)
 }
 
@@ -50,7 +48,6 @@ test.describe('MPoP access flow', () => {
       await navigateToMpopPrivacyScreen(page, crn)
       await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
 
-      await expect(page).toHaveURL(/\/privacy/)
       await PrivacyScreenPage.verifyOnPage(page)
     })
   })

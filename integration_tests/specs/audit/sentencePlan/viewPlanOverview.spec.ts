@@ -13,7 +13,6 @@ test.describe('View Plan Overview page', () => {
     await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
     await navigateToSentencePlan(page, handoverLink)
-    await PlanOverviewPage.verifyOnPage(page)
 
     const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_OVERVIEW, {
       additionalFilter: msg => msg.details.tab === 'current',

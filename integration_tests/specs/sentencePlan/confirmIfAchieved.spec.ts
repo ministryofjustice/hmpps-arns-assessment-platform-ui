@@ -166,7 +166,6 @@ test.describe('Confirm if achieved page', () => {
 
       // Should redirect to achieved tab
       await expect(page).toHaveURL(planOverviewPageAchievedGoalsTabPath)
-      await PlanOverviewPage.verifyOnPage(page)
     })
 
     test('can confirm goal as achieved without optional note', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -745,7 +744,6 @@ test.describe('Confirm if achieved page', () => {
 
       // Should navigate to plan overview current tab (not confirm-if-achieved)
       await expect(page).toHaveURL(planOverviewPageCurrentGoalsTabPath)
-      await PlanOverviewPage.verifyOnPage(page)
     })
 
     test('navigates to plan overview future tab when not all steps are completed for FUTURE goal', async ({

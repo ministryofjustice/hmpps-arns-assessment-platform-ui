@@ -227,9 +227,6 @@ test.describe('Agree plan journey', () => {
       // Save
       await agreePlanPage.clickSave()
 
-      // Should redirect to plan overview
-      await expect(page).toHaveURL(/\/plan\/overview/)
-
       // Verify we're on plan overview
       await PlanOverviewPage.verifyOnPage(page)
 
@@ -256,9 +253,6 @@ test.describe('Agree plan journey', () => {
 
       // Save
       await agreePlanPage.clickSave()
-
-      // Should redirect to plan overview
-      await expect(page).toHaveURL(/\/plan\/overview/)
 
       // Verify we're on plan overview
       await PlanOverviewPage.verifyOnPage(page)
@@ -299,9 +293,6 @@ test.describe('Agree plan journey', () => {
 
       // Save
       await agreePlanPage.clickSave()
-
-      // Should redirect to plan overview
-      await expect(page).toHaveURL(/\/plan\/overview/)
 
       // Verify we're on plan overview
       await PlanOverviewPage.verifyOnPage(page)

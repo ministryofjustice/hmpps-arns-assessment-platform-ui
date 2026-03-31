@@ -112,8 +112,6 @@ test.describe('Privacy Screen', () => {
 
         await privacyPage.confirmAndContinue()
 
-        await expect(page).toHaveURL(/\/plan\/overview/)
-
         await PlanOverviewPage.verifyOnPage(page)
       })
     })

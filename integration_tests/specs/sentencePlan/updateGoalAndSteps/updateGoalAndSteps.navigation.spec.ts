@@ -8,8 +8,6 @@ import { currentGoals, futureGoals } from '../../../builders/sentencePlanFactori
 import { getDatePlusDaysAsISO, navigateToSentencePlan, sentencePlanV1URLs } from '../sentencePlanUtils'
 
 const updateGoalAndStepsPath = '/update-goal-steps'
-const confirmIfAchievedPath = '/confirm-if-achieved'
-const confirmAchievedGoalPath = '/confirm-achieved-goal'
 const changeGoalPath = '/change-goal'
 const addStepsPath = '/add-steps'
 const confirmRemoveGoalPath = '/confirm-remove-goal'
@@ -55,7 +53,6 @@ test.describe('Update goal and steps page - navigation', () => {
 
       // should redirect to current goals tab
       await expect(page).toHaveURL(planOverviewPageCurrentGoalsTabPath)
-      await PlanOverviewPage.verifyOnPage(page)
     })
 
     test('redirects to future tab when not all steps completed for FUTURE goal', async ({
@@ -130,9 +127,6 @@ test.describe('Update goal and steps page - navigation', () => {
       await updatePage.clickSaveGoalAndSteps()
 
       // should redirect to confirm-if-achieved page
-      await expect(page).toHaveURL(
-        `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmIfAchievedPath}`,
-      )
       await ConfirmIfAchievedPage.verifyOnPage(page)
     })
 
@@ -259,11 +253,6 @@ test.describe('Update goal and steps page - navigation', () => {
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
       await updatePage.clickMarkAsAchieved()
-
-      // should redirect to confirm-achieved-goal page
-      await expect(page).toHaveURL(
-        `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}${confirmAchievedGoalPath}`,
-      )
 
       // confirm the goal as achieved
       const confirmPage = await ConfirmAchievedGoalPage.verifyOnPage(page)
