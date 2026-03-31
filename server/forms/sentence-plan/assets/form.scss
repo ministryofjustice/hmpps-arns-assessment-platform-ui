@@ -40,6 +40,17 @@
   }
 }
 
+// Side navigation - force vertical layout to prevent horizontal scrolling at high zoom
+.moj-side-navigation {
+  display: block;
+  overflow-x: visible;
+}
+
+.moj-side-navigation__list {
+  display: block;
+  white-space: normal;
+}
+
 // Plan overview sub-navigation - position "Removed goals" tab on the right
 .moj-sub-navigation__list > li:has(> a[href$="type=removed"]) {
   float: right;
