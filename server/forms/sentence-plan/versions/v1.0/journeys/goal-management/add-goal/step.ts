@@ -64,7 +64,6 @@ export const createGoalStep = step({
         effects: [
           SentencePlanEffects.createGoal(),
           SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
-          SentencePlanEffects.setNavigationReferrer('add-goal'),
           SentencePlanEffects.addNotification({
             type: 'success',
 
