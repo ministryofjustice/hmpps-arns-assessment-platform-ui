@@ -6,7 +6,7 @@
 </svg>
 {% endset %}
 
-<arns-common-header class="arns-common-header govuk-!-display-none-print" role="banner" data-qa="hmpps-header">
+<arns-common-header class="arns-common-header govuk-!-display-none-print" data-qa="hmpps-header">
   <div class="govuk-clearfix">
     <div class="govuk-width-container arns-common-header__title">
       {% if disableHeaderLink %}
@@ -32,9 +32,9 @@
     </div>
 
     {%- if user -%}
-    <nav aria-labelledby="arns-common-navigation-heading">
+    <div aria-labelledby="arns-common-navigation-heading">
       <h2 id="arns-common-navigation-heading" class="govuk-visually-hidden">
-        Navigation menu
+        Account menu
       </h2>
       <div class="govuk-width-container arns-common-header__button-width-container">
         <div class="arns-common-header__button-container">
@@ -90,7 +90,7 @@
           </div>
         </div>
       </div>
-    </nav>
+    </div>
     {%- endif -%}
   </div>
 </arns-common-header>
