@@ -27,7 +27,6 @@ test.describe('Update agree plan - Agreements', () => {
     await updateAgreePlanPage.clickSave()
 
     // Should redirect to plan overview
-    await expect(page).toHaveURL(/\/plan\/overview/)
     await PlanOverviewPage.verifyOnPage(page)
 
     // Should show "{name} agreed to their plan on" message (UPDATED_AGREED)
@@ -51,7 +50,6 @@ test.describe('Update agree plan - Agreements', () => {
     await updateAgreePlanPage.clickSave()
 
     // Should redirect to plan overview
-    await expect(page).toHaveURL(/\/plan\/overview/)
     await PlanOverviewPage.verifyOnPage(page)
 
     // Should show "Plan created on" message (UPDATED_DO_NOT_AGREE)

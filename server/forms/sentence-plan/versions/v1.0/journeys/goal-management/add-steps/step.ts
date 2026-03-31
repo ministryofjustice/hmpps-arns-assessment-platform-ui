@@ -57,7 +57,6 @@ export const addStepsStep = step({
   onAccess: [
     accessTransition({
       effects: [
-        SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.setAreaDataFromActiveGoal(),
         SentencePlanEffects.loadAreaAssessmentInfo(),

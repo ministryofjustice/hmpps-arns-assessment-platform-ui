@@ -46,6 +46,8 @@ export const sentencePlanV1UrlBuilders = {
   goalAddSteps: (goalUuid: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/add-steps`,
   goalConfirmDelete: (goalUuid: string) =>
     `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/confirm-delete-goal`,
+  goalConfirmIfAchieved: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/confirm-if-achieved`,
   goalConfirmAchieved: (goalUuid: string) =>
     `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/confirm-achieved-goal`,
   goalConfirmRemoved: (goalUuid: string) =>

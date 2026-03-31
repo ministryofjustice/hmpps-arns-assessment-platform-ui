@@ -53,7 +53,6 @@ export const viewInactiveGoalStep = step({
   onAccess: [
     accessTransition({
       effects: [
-        SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.loadActiveGoalForEdit(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_INACTIVE_GOAL, { goalStatus: Data('activeGoal.status') }),
       ],

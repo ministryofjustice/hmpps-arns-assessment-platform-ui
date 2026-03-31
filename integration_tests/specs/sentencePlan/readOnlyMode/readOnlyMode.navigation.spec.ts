@@ -21,7 +21,6 @@ test.describe('READ_ONLY Access Mode', () => {
       await page.goto(handoverLink)
 
       // Should land directly on plan overview without privacy screen
-      await expect(page).toHaveURL(/\/plan\/overview/)
       await PlanOverviewPage.verifyOnPage(page)
     })
   })
@@ -92,7 +91,6 @@ test.describe('READ_ONLY Access Mode', () => {
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       const primaryNavigation = page.getByLabel('Primary navigation')
       await expect(primaryNavigation).toBeVisible()

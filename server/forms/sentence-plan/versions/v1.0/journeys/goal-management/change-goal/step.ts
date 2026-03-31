@@ -52,7 +52,6 @@ export const changeGoalStep = step({
     accessTransition({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
-        SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CHANGE_GOAL),
       ],

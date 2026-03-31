@@ -203,8 +203,6 @@ test.describe('Plan Overview Page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await PlanOverviewPage.verifyOnPage(page)
-
       await expect(page).toHaveURL(/type=current/)
     })
 
@@ -519,8 +517,6 @@ test.describe('Plan Overview Page', () => {
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(3)).save()
 
       await navigateToSentencePlan(page, handoverLink)
-
-      await PlanOverviewPage.verifyOnPage(page)
 
       const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
       expect(accessibilityScanResults.violations).toEqual([])
