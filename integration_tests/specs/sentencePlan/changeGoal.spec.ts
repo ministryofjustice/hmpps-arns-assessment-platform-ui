@@ -426,6 +426,9 @@ test.describe('Change goal journey', () => {
         // confirm we're on add steps page
         await AddStepsPage.verifyOnPage(page)
 
+        // Reload to verify navigation context persists through a page refresh
+        await page.reload()
+
         // click back button which should bring us to change goal page
         const addStepsPage = await AddStepsPage.verifyOnPage(page)
         await addStepsPage.clickBack()
@@ -491,6 +494,8 @@ test.describe('Change goal journey', () => {
       })
 
       test('back from change goal navigates to update goal and steps', async ({ page }) => {
+        // Reload to verify navigation context persists through a page refresh
+        await page.reload()
         const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
         await changeGoalPage.clickBackLink()
 
@@ -499,6 +504,8 @@ test.describe('Change goal journey', () => {
       })
 
       test('saving goal redirects to add steps', async ({ page }) => {
+        // Reload to verify navigation context persists through a page refresh
+        await page.reload()
         const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
         await changeGoalPage.selectTargetDateOption('6_months')
         await changeGoalPage.saveGoal()
@@ -536,6 +543,9 @@ test.describe('Change goal journey', () => {
         const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
         await updateGoalAndStepsPage.clickChangeGoalDetails()
 
+        // Reload to verify navigation context persists through a page refresh
+        await page.reload()
+
         // check we are on change goal and save with no changes
         const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
         await changeGoalPage.saveGoal()
@@ -548,6 +558,9 @@ test.describe('Change goal journey', () => {
         // click add steps link
         const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
         await updateGoalAndStepsPage.clickAddSteps()
+
+        // Reload to verify navigation context persists through a page refresh
+        await page.reload()
 
         // click back button
         const addStepsPage = await AddStepsPage.verifyOnPage(page)
@@ -590,6 +603,9 @@ test.describe('Change goal journey', () => {
         // check we are on change goal
         await ChangeGoalPage.verifyOnPage(page)
 
+        // Reload to verify navigation context persists through a page refresh
+        await page.reload()
+
         // change the target date and save
         const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
         await changeGoalPage.selectTargetDateOption('6_months')
@@ -603,6 +619,9 @@ test.describe('Change goal journey', () => {
         // click add or change steps link
         const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
         await updateGoalAndStepsPage.clickAddOrChangeSteps()
+
+        // Reload to verify navigation context persists through a page refresh
+        await page.reload()
 
         // add another step and save
         const addStepsPage = await AddStepsPage.verifyOnPage(page)
@@ -640,6 +659,9 @@ test.describe('Change goal journey', () => {
         await createGoalPage.selectCanStartNow(true)
         await createGoalPage.selectTargetDateOption('12_months')
         await createGoalPage.clickAddSteps()
+
+        // Reload to verify navigation context persists through a page refresh
+        await page.reload()
 
         // click back button from add steps page
         const addStepsPage = await AddStepsPage.verifyOnPage(page)
