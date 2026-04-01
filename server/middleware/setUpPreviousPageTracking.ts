@@ -13,13 +13,31 @@ const excludedPathPrefixes = [
   '/session',
 ]
 
+/**
+ * Tracks page visits in the session using stack semantics.
+ *
+ * When the user visits a URL that's already in the history, everything above it
+ * is trimmed (back-navigation). Otherwise, the URL is pushed onto the top
+ * (forward navigation). This prevents loops where two pages' back buttons point
+ * to each other.
+ *
+ * Exposes `previousPageUrl` in `req.state` and `res.locals` for use in templates.
+ */
 export default function setUpPreviousPageTracking(): Router {
   const router = Router()
 
   router.use((req, res, next) => {
     const currentUrl = req.originalUrl
     const pageHistory = req.session.pageHistory ?? []
-    const previousPageUrl = pageHistory.findLast(url => url !== currentUrl)
+
+    // Stack semantics: if the URL is already in the history, the user is going
+    // "back" — the previous page is the entry before it. Otherwise they're
+    // going forward — the previous page is the top of the current stack.
+    const existingIdx = pageHistory.indexOf(currentUrl)
+    const previousPageUrl =
+      existingIdx !== -1
+        ? pageHistory[existingIdx - 1] // back-navigation: entry before the revisited page
+        : pageHistory.at(-1) // forward navigation: current top of stack
 
     req.state = {
       ...req.state,
@@ -40,8 +58,16 @@ export default function setUpPreviousPageTracking(): Router {
             (typeof contentType === 'string' && contentType.includes('text/html')) ||
             (Array.isArray(contentType) && contentType.some(value => value.includes('text/html')))
 
-          if (!isExcluded && isHtml && pageHistory.at(-1) !== currentUrl) {
-            req.session.pageHistory = [...pageHistory, currentUrl].slice(-maxPageHistoryEntries)
+          if (!isExcluded && isHtml) {
+            const idx = pageHistory.indexOf(currentUrl)
+
+            if (idx !== -1) {
+              // Back-navigation: trim everything after this page
+              req.session.pageHistory = pageHistory.slice(0, idx + 1)
+            } else if (pageHistory.at(-1) !== currentUrl) {
+              // Forward navigation: push onto the stack
+              req.session.pageHistory = [...pageHistory, currentUrl].slice(-maxPageHistoryEntries)
+            }
           }
         }
 
