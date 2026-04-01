@@ -120,6 +120,46 @@ describe('setUpPreviousPageTracking', () => {
     expect(response.body.pageHistory).toEqual(['/page/first'])
   })
 
+  it('should trim the history on back-navigation instead of appending', async () => {
+    const agent = request.agent(app)
+
+    // Arrange — visit three pages in sequence
+    await agent.get('/page/first')
+    await agent.get('/page/second')
+    await agent.get('/page/third')
+
+    // Act — navigate back to the second page
+    await agent.get('/page/second')
+    const response = await agent.get('/inspect')
+
+    // Assert — third page is trimmed, previous points to first
+    expect(response.body.pageHistory).toEqual(['/page/first', '/page/second'])
+    expect(response.body.previousPageUrlFromState).toBe('/page/second')
+  })
+
+  it('should not loop between two pages when navigating back and forth', async () => {
+    const agent = request.agent(app)
+
+    // Arrange — simulate the policy page loop: overview → cookies → accessibility
+    await agent.get('/page/overview')
+    await agent.get('/page/cookies')
+    await agent.get('/page/accessibility')
+
+    // Act — navigate back to cookies, then back to overview
+    await agent.get('/page/cookies')
+    const afterCookies = await agent.get('/inspect')
+
+    await agent.get('/page/overview')
+    const afterOverview = await agent.get('/inspect')
+
+    // Assert — each back-navigation trims correctly, no loop
+    expect(afterCookies.body.pageHistory).toEqual(['/page/overview', '/page/cookies'])
+    expect(afterCookies.body.previousPageUrlFromState).toBe('/page/cookies')
+
+    expect(afterOverview.body.pageHistory).toEqual(['/page/overview'])
+    expect(afterOverview.body.previousPageUrlFromState).toBe('/page/overview')
+  })
+
   it('should keep the most recent ten page visits when history exceeds the limit', async () => {
     const agent = request.agent(app)
 
