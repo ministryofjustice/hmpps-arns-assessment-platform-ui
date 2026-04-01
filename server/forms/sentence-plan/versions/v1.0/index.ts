@@ -5,6 +5,7 @@ import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
 import { actorLabels, areasOfNeed, formVersion } from './constants'
 import { SentencePlanEffects } from '../../effects'
+import { NAV_KEY_PATTERNS } from '../../effects/navigation'
 import {
   hasPostAgreementStatus,
   isSanSpAssessment,
@@ -48,6 +49,7 @@ export const sentencePlanV1Journey = journey({
         SentencePlanEffects.loadPlan(),
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
+        SentencePlanEffects.trackNavigation(NAV_KEY_PATTERNS),
       ],
     }),
     accessTransition({

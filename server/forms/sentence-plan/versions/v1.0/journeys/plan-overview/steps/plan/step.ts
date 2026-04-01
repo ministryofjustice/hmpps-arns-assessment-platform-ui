@@ -92,7 +92,6 @@ export const planStep = step({
     accessTransition({
       effects: [
         SentencePlanEffects.loadNotifications('plan-overview'),
-        SentencePlanEffects.setNavigationReferrer('plan-overview'),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('type') }),
       ],
       next: [

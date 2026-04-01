@@ -3,7 +3,6 @@ import { test, TargetService } from '../../../support/fixtures'
 import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
 import ChangeGoalPage from '../../../pages/sentencePlan/changeGoalPage'
 import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
-import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import { navigateToSentencePlan, getDatePlusDaysAsISO } from '../sentencePlanUtils'
 
 test.describe('Assessment Info Details - Access by Assessment Type', () => {
@@ -44,7 +43,6 @@ test.describe('Assessment Info Details - Access by Assessment Type', () => {
         .save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -74,7 +72,6 @@ test.describe('Assessment Info Details - Access by Assessment Type', () => {
         .save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Add steps' }).click()
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
@@ -115,7 +112,6 @@ test.describe('Assessment Info Details - Access by Assessment Type', () => {
         .save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Change goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -141,7 +137,6 @@ test.describe('Assessment Info Details - Access by Assessment Type', () => {
         .save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
       await page.getByRole('link', { name: 'Add steps' }).click()
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)

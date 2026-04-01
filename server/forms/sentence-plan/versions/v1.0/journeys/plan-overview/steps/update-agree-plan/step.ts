@@ -1,4 +1,4 @@
-import { accessTransition, Data, Post, redirect, step, submitTransition, when } from '@form-engine/form/builders'
+import { Data, Post, redirect, step, submitTransition, when } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { updatePlanAgreementQuestion, buttonGroup } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
@@ -9,13 +9,7 @@ export const updateAgreePlanStep = step({
   path: '/update-agree-plan',
   title: 'Do they agree to their plan?',
   blocks: [updatePlanAgreementQuestion, buttonGroup],
-  onAccess: [
-    accessTransition({
-      effects: [SentencePlanEffects.loadNavigationReferrer()],
-    }),
-    redirectToOverviewIfReadOnly(),
-    redirectUnlessCouldNotAnswer(sentencePlanOverviewPath),
-  ],
+  onAccess: [redirectToOverviewIfReadOnly(), redirectUnlessCouldNotAnswer(sentencePlanOverviewPath)],
   view: {
     locals: {
       backlink: when(Data('navigationReferrer').match(Condition.Equals('plan-history')))

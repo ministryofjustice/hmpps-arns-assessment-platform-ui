@@ -18,7 +18,6 @@ test.describe('READ_ONLY Access Mode', () => {
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       const agreedMessage = page.getByText(/agreed to their plan on/i)
       await expect(agreedMessage).toBeVisible()

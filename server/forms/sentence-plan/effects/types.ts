@@ -270,21 +270,6 @@ export interface PlanNotification {
 }
 
 /**
- * Navigation referrers used for dynamic backlink behaviour.
- *
- * Keep this as a constrained set so link logic cannot drift due to typos.
- */
-export const NAVIGATION_REFERRERS = [
-  'plan-overview',
-  'plan-history',
-  'previous-versions',
-  'add-goal',
-  'update-goal-steps',
-  'about',
-] as const
-export type NavigationReferrer = (typeof NAVIGATION_REFERRERS)[number]
-
-/**
  * Step data structure stored in session during step editing
  */
 export interface StepSession {
@@ -362,7 +347,9 @@ export interface SentencePlanData extends Record<string, unknown> {
   // Assessment area info for current area of need (from coordinator API)
   currentAreaAssessment: AssessmentArea | null
   currentAreaAssessmentStatus: AssessmentInfoStatus
-  navigationReferrer?: NavigationReferrer | null
+
+  // Navigation — set by shared trackNavigation effect, read by step backlink logic
+  navigationReferrer?: string | null
 
   // Feature flags
   featureFlags?: Record<string, boolean>
@@ -400,7 +387,6 @@ export interface SentencePlanAnswers extends Record<string, unknown> {
  * Session data via context.getSession()
  */
 export interface SentencePlanSession {
-  navigationReferrer?: NavigationReferrer
   returnTo?: string
   assessmentUuid?: string
   privacyAccepted?: boolean
