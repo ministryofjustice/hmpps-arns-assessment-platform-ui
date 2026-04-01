@@ -45,6 +45,24 @@
     {% if smartSurveyPopupCode and currentTab is defined %}
       <script nonce="{{ cspNonce }}">
         (function(d){
+          // add crossorigin to SmartSurvey images for COEP require-corp compliance
+          new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+              mutation.addedNodes.forEach(function(node) {
+                if (node.nodeType === 1) {
+                  if (node.nodeName === 'IMG' && node.src && node.src.includes('smartsurvey.io')) {
+                    node.crossOrigin = 'anonymous';
+                  }
+                  if (node.querySelectorAll) {
+                    node.querySelectorAll('img[src*="smartsurvey.io"]').forEach(function(img) {
+                      if (!img.crossOrigin) img.crossOrigin = 'anonymous';
+                    });
+                  }
+                }
+              });
+            });
+          }).observe(d.body, { childList: true, subtree: true });
+
           var s,ss;
           ss=d.createElement("script");
           ss.type="text/javascript";
