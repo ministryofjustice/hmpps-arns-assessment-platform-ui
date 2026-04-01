@@ -214,7 +214,8 @@ export class SentencePlanBuilderInstance {
 
       this.assessmentBuilder.withCollection('PLAN_AGREEMENTS', (collection: CollectionBuilder) => {
         this.planAgreements.forEach(agreement => {
-          const date = new Date(Date.now() + (agreement.dateOffset ?? 0)).toISOString()
+          // Add 10s so the agreement date is always after timeline events emitted during save()
+          const date = new Date(Date.now() + (agreement.dateOffset ?? 0) + 10_000).toISOString()
 
           collection.withItem((item: CollectionItemBuilder) => {
             item
@@ -250,7 +251,10 @@ export class SentencePlanBuilderInstance {
       return
     }
 
-    const now = new Date().toISOString()
+    // Offset the agreement date slightly into the future so that timeline events
+    // emitted during save() (which run at "now") appear to have happened before
+    // the agreement — matching the real app where goals are always created first.
+    const date = new Date(Date.now() + 10_000).toISOString()
     const questionMap: Record<string, string> = {
       AGREED: 'yes',
       DO_NOT_AGREE: 'no',
@@ -262,7 +266,7 @@ export class SentencePlanBuilderInstance {
         item
           .withAnswer('agreement_question', questionMap[this.agreementStatus!])
           .withProperty('status', this.agreementStatus!)
-          .withProperty('status_date', now),
+          .withProperty('status_date', date),
       ),
     )
   }
