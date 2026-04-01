@@ -10,5 +10,10 @@ document.querySelectorAll("[data-report-problem-link]").forEach((link) => {
       details.open = true;
     }
     target.scrollIntoView({ behavior: "smooth" });
+
+    const summary = target.querySelector("summary");
+    if (summary) {
+      summary.focus();
+    }
   });
 });

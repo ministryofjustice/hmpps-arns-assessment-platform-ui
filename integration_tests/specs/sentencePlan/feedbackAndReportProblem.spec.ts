@@ -171,5 +171,26 @@ test.describe('Feedback and Report a Problem', () => {
       await page.locator('#report-a-problem summary').click()
       await expect(details).not.toHaveAttribute('open', '')
     })
+
+    test('clicking report a problem in phase banner moves focus to the expander summary', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      // Click the report a problem link in the phase banner
+      await page
+        .locator('.govuk-phase-banner', { hasText: 'Beta' })
+        .getByRole('link', { name: /report a problem/i })
+        .click()
+
+      // Verify focus has moved to the summary element for keyboard/screen reader accessibility
+      const summary = page.locator('#report-a-problem summary')
+      await expect(summary).toBeFocused()
+    })
   })
 })
