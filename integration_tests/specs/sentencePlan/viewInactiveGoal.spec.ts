@@ -447,11 +447,13 @@ test.describe('View inactive goal page', () => {
 
       // Navigate via plan history
       await page.goto('/sentence-plan/v1.0/plan/plan-history')
-      const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
+      await PlanHistoryPage.verifyOnPage(page)
 
       // Click "View goal" link from plan history
-      const viewGoalLink = await planHistoryPage.getViewGoalLink(0)
-      await viewGoalLink.click()
+      await page
+        .getByRole('link', { name: /View goal/i })
+        .first()
+        .click()
 
       await ViewInactiveGoalPage.verifyOnPage(page)
 
