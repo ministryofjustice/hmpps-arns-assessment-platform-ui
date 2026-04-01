@@ -95,7 +95,7 @@ export const customiseFormWrapper = TemplateWrapper({
   values: {
     originalScenarioName: Data('originalScenarioName').pipe(Transformer.String.EscapeHtml()),
     csrfToken: Data('csrfToken'),
-    scenarioId: Query('scenario'),
+    scenarioId: Query('scenario').pipe(Transformer.String.EscapeHtml()),
   },
   slots: {
     scenarioNameInput: [scenarioNameInput],
