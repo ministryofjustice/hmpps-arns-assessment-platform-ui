@@ -1,4 +1,5 @@
 import type { Commands } from '@server/interfaces/aap-api/command'
+import { wrapAll } from '@server/data/aap-api/wrappers'
 import { AgreementStatus } from '@server/forms/sentence-plan/effects'
 import { AssessmentBuilder, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
 import type { AssessmentBuilderInstance } from './AssessmentBuilder'
@@ -171,9 +172,12 @@ export class SentencePlanBuilderInstance {
   /**
    * Save the sentence plan to the backend.
    *
-   * Order matters: timeline events must be emitted before backdating,
-   * because backdateEvents deletes the aggregate table which is needed
-   * for UpdateCollectionItemPropertiesCommand to succeed.
+   * Order matters:
+   * 1. Timeline events are emitted first (goal lifecycle)
+   * 2. Agreement dates are then refreshed so they're always AFTER timeline events,
+   *    matching the real app where goals are created before the plan is agreed
+   * 3. Backdating runs last (it deletes the aggregate table, so
+   *    UpdateCollectionItemPropertiesCommand must complete before it)
    */
   async save(): Promise<CreatedSentencePlan> {
     this.buildGoalsCollection()
@@ -183,6 +187,7 @@ export class SentencePlanBuilderInstance {
     const result = this.mapToCreatedSentencePlan(assessment)
 
     await this.emitGoalLifecycleTimelineEvents(assessment.uuid, result.goals)
+    await this.refreshAgreementDates(assessment)
 
     if (this.backdateFrom && this.backdateTo) {
       await this.client.backdateEvents(assessment.uuid, this.backdateFrom, this.backdateTo)
@@ -214,8 +219,7 @@ export class SentencePlanBuilderInstance {
 
       this.assessmentBuilder.withCollection('PLAN_AGREEMENTS', (collection: CollectionBuilder) => {
         this.planAgreements.forEach(agreement => {
-          // Add 10s so the agreement date is always after timeline events emitted during save()
-          const date = new Date(Date.now() + (agreement.dateOffset ?? 0) + 10_000).toISOString()
+          const date = new Date(Date.now() + (agreement.dateOffset ?? 0)).toISOString()
 
           collection.withItem((item: CollectionItemBuilder) => {
             item
@@ -251,10 +255,7 @@ export class SentencePlanBuilderInstance {
       return
     }
 
-    // Offset the agreement date slightly into the future so that timeline events
-    // emitted during save() (which run at "now") appear to have happened before
-    // the agreement — matching the real app where goals are always created first.
-    const date = new Date(Date.now() + 10_000).toISOString()
+    const now = new Date().toISOString()
     const questionMap: Record<string, string> = {
       AGREED: 'yes',
       DO_NOT_AGREE: 'no',
@@ -266,7 +267,7 @@ export class SentencePlanBuilderInstance {
         item
           .withAnswer('agreement_question', questionMap[this.agreementStatus!])
           .withProperty('status', this.agreementStatus!)
-          .withProperty('status_date', date),
+          .withProperty('status_date', now),
       ),
     )
   }
@@ -463,6 +464,43 @@ export class SentencePlanBuilderInstance {
         }
       default:
         return undefined
+    }
+  }
+
+  /**
+   * Re-stamp agreement status_date values after timeline events have been emitted.
+   * This ensures agreement dates are always after goal lifecycle events,
+   * matching the real app where goals are created before the plan is agreed.
+   */
+  private async refreshAgreementDates(assessment: CreatedAssessment): Promise<void> {
+    if (!this.agreementStatus && this.planAgreements.length === 0) {
+      return
+    }
+
+    const agreementsCollection = assessment.collections.find(c => c.name === 'PLAN_AGREEMENTS')
+
+    if (!agreementsCollection) {
+      return
+    }
+
+    const user = { id: generateUserId(), name: 'E2E_TEST', authSource: 'HMPPS_AUTH' as const }
+
+    for (let i = 0; i < agreementsCollection.items.length; i++) {
+      const item = agreementsCollection.items[i]
+      const dateOffset = this.planAgreements[i]?.dateOffset ?? 0
+      const date = new Date(Date.now() + dateOffset).toISOString()
+
+      const command: Commands = {
+        type: 'UpdateCollectionItemPropertiesCommand',
+        collectionItemUuid: item.uuid,
+        added: wrapAll({ status_date: date }),
+        removed: [],
+        assessmentUuid: assessment.uuid,
+        user,
+      }
+
+      // eslint-disable-next-line no-await-in-loop
+      await this.client.executeCommand(command)
     }
   }
 
