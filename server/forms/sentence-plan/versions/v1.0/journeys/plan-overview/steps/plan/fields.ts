@@ -48,8 +48,23 @@ const removedGoalsCount = Data('goals')
   .each(Iterator.Filter(Item().path('status').match(Condition.Equals('REMOVED'))))
   .pipe(Transformer.Array.Length())
 
+export const planLastUpdatedMessage = GovUKBody({
+  hidden: or(
+    Data('isUpdatedAfterAgreement').not.match(Condition.Equals(true)),
+    and(Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER')), not(isReadOnly)),
+  ),
+  text: Format(
+    'Last updated on %1 by %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
+    Data('lastUpdatedDate').pipe(Transformer.Date.ToUKLongDate()),
+    Data('lastUpdatedByName'),
+  ),
+})
+
 export const planAgreedMessage = GovUKBody({
-  hidden: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(['UPDATED_AGREED', 'AGREED'])),
+  hidden: or(
+    Data('latestAgreementStatus').not.match(Condition.Array.IsIn(['UPDATED_AGREED', 'AGREED'])),
+    Data('isUpdatedAfterAgreement').match(Condition.Equals(true)),
+  ),
   text: Format(
     '%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
     CaseData.Forename,
@@ -58,7 +73,10 @@ export const planAgreedMessage = GovUKBody({
 })
 
 export const planCreatedMessage = GovUKBody({
-  hidden: Data('latestAgreementStatus').not.match(Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE'])),
+  hidden: or(
+    Data('latestAgreementStatus').not.match(Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE'])),
+    Data('isUpdatedAfterAgreement').match(Condition.Equals(true)),
+  ),
   text: Format(
     'Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
     Data('latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),

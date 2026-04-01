@@ -20,6 +20,7 @@ import {
   blankPlanOverviewContentReadOnly,
   futureGoalsContent,
   goalsSection,
+  planLastUpdatedMessage,
   planAgreedMessage,
   planCreatedMessage,
   updateAgreementMessage,
@@ -68,6 +69,7 @@ export const planStep = step({
   ],
   isEntryPoint: true,
   blocks: [
+    planLastUpdatedMessage,
     planAgreedMessage,
     planCreatedMessage,
     updateAgreementMessage,
@@ -91,6 +93,8 @@ export const planStep = step({
     }),
     accessTransition({
       effects: [
+        SentencePlanEffects.loadPlanTimeline(),
+        SentencePlanEffects.derivePlanLastUpdated(),
         SentencePlanEffects.loadNotifications('plan-overview'),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('type') }),
       ],

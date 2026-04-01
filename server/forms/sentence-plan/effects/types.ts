@@ -251,6 +251,9 @@ export interface HistoricPlanData {
   goals: DerivedGoal[]
   latestAgreementStatus: AgreementStatus
   latestAgreementDate: Date | undefined
+  isUpdatedAfterAgreement?: boolean
+  lastUpdatedDate?: Date
+  lastUpdatedByName?: string
 }
 
 /**
@@ -320,6 +323,11 @@ export interface SentencePlanData extends Record<string, unknown> {
   planAgreementsCollectionUuid: string
   latestAgreementStatus: AgreementStatus
   latestAgreementDate: Date | undefined
+
+  // Plan last updated (derived from timeline vs agreement date)
+  isUpdatedAfterAgreement: boolean
+  lastUpdatedDate: Date | undefined
+  lastUpdatedByName: string | undefined
 
   // Plan Timeline (raw timeline events from API)
   planTimeline: TimelineItem[]

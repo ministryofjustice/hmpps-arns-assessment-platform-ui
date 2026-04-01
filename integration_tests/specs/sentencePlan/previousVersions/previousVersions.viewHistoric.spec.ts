@@ -240,6 +240,56 @@ test.describe('View Historic Plan', () => {
     })
   })
 
+  test.describe('Agreement Status Messages', () => {
+    test('shows "Last updated" when historic plan was modified after agreement', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withPlanAgreements([{ status: 'AGREED', dateOffset: -(365 * 24 * 60 * 60 * 1000), createdBy: 'Jane Smith' }])
+        .withGoals([
+          {
+            title: 'Find stable housing',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: '2025-06-01',
+            createdBy: 'Moses Hill',
+            steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
+          },
+        ])
+        .withEventsBackdated(startOfDay, endOfDay)
+        .save()
+
+      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await expect(historicPlanPage.planLastUpdatedMessage).toBeVisible()
+      await expect(historicPlanPage.planLastUpdatedMessage).toContainText('Moses Hill')
+      await expect(historicPlanPage.planAgreedMessage).not.toBeVisible()
+    })
+
+    test('shows "agreed to their plan" when historic plan has no post-agreement changes', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .withEventsBackdated(startOfDay, endOfDay)
+        .save()
+
+      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await expect(historicPlanPage.planAgreedMessage).toBeVisible()
+      await expect(historicPlanPage.planLastUpdatedMessage).not.toBeVisible()
+    })
+  })
+
   test.describe('Tab Navigation', () => {
     test('defaults to current goals tab', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })

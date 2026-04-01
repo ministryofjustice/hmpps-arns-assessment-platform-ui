@@ -30,6 +30,12 @@ export default class HistoricPlanPage extends AbstractPage {
 
   readonly returnToOasysButton: Locator
 
+  readonly planAgreedMessage: Locator
+
+  readonly planCreatedMessage: Locator
+
+  readonly planLastUpdatedMessage: Locator
+
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
@@ -46,6 +52,9 @@ export default class HistoricPlanPage extends AbstractPage {
     this.primaryNavigation = page.getByLabel('Primary navigation')
     this.headerServiceName = page.locator('span.arns-common-header__title__organisation-name')
     this.returnToOasysButton = page.getByRole('button', { name: /return to oasys/i })
+    this.planAgreedMessage = page.locator('.govuk-body', { hasText: 'agreed to their plan on' })
+    this.planCreatedMessage = page.locator('.govuk-body', { hasText: 'Plan created on' })
+    this.planLastUpdatedMessage = page.locator('.govuk-body', { hasText: 'Last updated on' })
   }
 
   static async verifyOnPage(page: Page): Promise<HistoricPlanPage> {

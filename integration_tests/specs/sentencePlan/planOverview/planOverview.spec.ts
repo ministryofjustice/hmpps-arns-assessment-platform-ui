@@ -1,14 +1,14 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../support/fixtures'
+import { test, TargetService } from '../../../support/fixtures'
 import {
   currentGoals,
   currentGoalsWithCompletedSteps,
   futureGoals,
   mixedGoals,
-} from '../../builders/sentencePlanFactories'
-import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
-import { buildPageTitle, navigateToSentencePlan, sentencePlanPageTitles } from './sentencePlanUtils'
+} from '../../../builders/sentencePlanFactories'
+import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
+import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
+import { buildPageTitle, navigateToSentencePlan, sentencePlanPageTitles } from '../sentencePlanUtils'
 
 test.describe('Plan Overview Page', () => {
   test.describe('Empty State', () => {

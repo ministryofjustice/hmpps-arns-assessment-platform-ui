@@ -12,6 +12,7 @@ import { deriveGoalsWithStepsFromAssessment } from './goals/deriveGoalsWithSteps
 import { derivePlanAgreementsFromAssessment } from './plan/derivePlanAgreementsFromAssessment'
 import { loadPlanTimeline } from './plan/loadPlanTimeline'
 import { derivePlanHistoryEntries } from './plan/derivePlanHistoryEntries'
+import { derivePlanLastUpdated, derivePlanLastUpdatedForHistoric } from './plan/derivePlanLastUpdated'
 import { updatePlanAgreementStatus } from './plan/updatePlanAgreementStatus'
 import { createGoal } from './goals/createGoal'
 import { setAreaDataFromUrlParam } from './goals/setAreaDataFromUrlParam'
@@ -97,6 +98,8 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     derivePlanAgreementsFromAssessment,
     loadPlanTimeline,
     derivePlanHistoryEntries,
+    derivePlanLastUpdated,
+    derivePlanLastUpdatedForHistoric,
     updatePlanAgreementStatus,
     updatePlanAgreement,
     loadPreviousVersions,
