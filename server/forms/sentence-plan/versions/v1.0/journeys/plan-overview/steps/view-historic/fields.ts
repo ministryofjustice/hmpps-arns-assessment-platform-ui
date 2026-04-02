@@ -38,8 +38,20 @@ const removedGoalsCount = Data('historic.goals')
   .each(Iterator.Filter(Item().path('status').match(Condition.Equals('REMOVED'))))
   .pipe(Transformer.Array.Length())
 
+export const planLastUpdatedMessage = GovUKBody({
+  hidden: Data('historic.isUpdatedAfterAgreement').not.match(Condition.Equals(true)),
+  text: Format(
+    'Last updated on %1 by %2.',
+    Data('historic.lastUpdatedDate').pipe(Transformer.Date.ToUKLongDate()),
+    Data('historic.lastUpdatedByName'),
+  ),
+})
+
 export const planAgreedMessage = GovUKBody({
-  hidden: Data('historic.latestAgreementStatus').not.match(Condition.Equals('UPDATED_AGREED')),
+  hidden: or(
+    Data('historic.latestAgreementStatus').not.match(Condition.Array.IsIn(['UPDATED_AGREED', 'AGREED'])),
+    Data('historic.isUpdatedAfterAgreement').match(Condition.Equals(true)),
+  ),
   text: Format(
     '%1 agreed to their plan on %2.',
     CaseData.Forename,
@@ -48,8 +60,9 @@ export const planAgreedMessage = GovUKBody({
 })
 
 export const planCreatedMessage = GovUKBody({
-  hidden: Data('historic.latestAgreementStatus').not.match(
-    Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE']),
+  hidden: or(
+    Data('historic.latestAgreementStatus').not.match(Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE'])),
+    Data('historic.isUpdatedAfterAgreement').match(Condition.Equals(true)),
   ),
   text: Format('Plan created on %1.', Data('historic.latestAgreementDate').pipe(Transformer.Date.ToUKLongDate())),
 })
