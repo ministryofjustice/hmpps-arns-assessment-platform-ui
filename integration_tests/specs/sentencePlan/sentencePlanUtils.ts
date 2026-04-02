@@ -1,6 +1,8 @@
 import { expect, Page } from '@playwright/test'
 import { AgreementStatus } from '@server/forms/sentence-plan/effects'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
+import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
+import { login } from '../../testUtils'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
 // Note: UPDATED_AGREED and UPDATED_DO_NOT_AGREE are only valid as follow-up statuses
@@ -142,6 +144,18 @@ export const getDatePlusMonthsAsString = (months: number) => {
 /** Returns an ISO date string for a date N days from now. Useful for goal target dates in tests. */
 export const getDatePlusDaysAsISO = (days: number): string => {
   return new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString()
+}
+
+/**
+ * Navigates to the plan overview via MPoP (CRN-based access).
+ * Logs in, navigates to the CRN entry point, confirms privacy, and lands on plan overview.
+ */
+export const navigateToPlanOverviewViaMpop = async (page: Page, crn: string): Promise<void> => {
+  await login(page)
+  await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
+  const privacyScreenPage = await PrivacyScreenPage.verifyOnPage(page)
+  await privacyScreenPage.confirmAndContinue()
+  await PlanOverviewPage.verifyOnPage(page)
 }
 
 // navigates to the About page via handover link, handling privacy screen and clicking the About nav link.

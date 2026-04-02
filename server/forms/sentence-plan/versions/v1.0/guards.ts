@@ -74,23 +74,30 @@ export const redirectUnlessCouldNotAnswer = (goto: string) =>
 
 /**
  * True when the plan has the SAN_BETA flag (private beta).
- * Used to conditionally show features only available to SAN/SP users (e.g. About tab).
  */
 export const isSanSpAssessment = Data('assessment.flags').match(Condition.Array.Contains('SAN_BETA'))
-
-/**
- * Redirect users unless the assessment type is SAN_SP.
- */
-export const redirectUnlessSanSp = (goto: string) =>
-  accessTransition({
-    when: not(isSanSpAssessment),
-    next: [redirect({ goto })],
-  })
 
 /**
  * True when the user entered via MPoP (CRN-based access).
  */
 export const isMpopAccess = Data('sessionDetails.accessType').match(Condition.Equals('HMPPS_AUTH'))
+
+/**
+ * True when the user can access SAN-specific content.
+ * Requires both a SAN_SP assessment AND non-MPoP access, because MPoP users
+ * cannot reach the SAN data APIs needed to populate this content.
+ */
+export const canAccessSanContent = and(isSanSpAssessment, not(isMpopAccess))
+
+/**
+ * Redirect users unless they can access SAN content.
+ * Blocks both non-SAN_SP assessments and MPoP users.
+ */
+export const redirectUnlessSanSp = (goto: string) =>
+  accessTransition({
+    when: not(canAccessSanContent),
+    next: [redirect({ goto })],
+  })
 
 /**
  * True when the plan has been flagged as merged.

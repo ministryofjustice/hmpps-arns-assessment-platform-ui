@@ -7,8 +7,8 @@ import { actorLabels, areasOfNeed, formVersion } from './constants'
 import { SentencePlanEffects } from '../../effects'
 import { NAV_KEY_PATTERNS } from '../../effects/navigation'
 import {
+  canAccessSanContent,
   hasPostAgreementStatus,
-  isSanSpAssessment,
   redirectIfMergedMpopPlan,
   redirectToPrivacyUnlessAccepted,
 } from './guards'
@@ -31,7 +31,7 @@ export const sentencePlanV1Journey = journey({
     locals: {
       basePath: '/sentence-plan/v1.0',
       hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
-      showAboutTab: isSanSpAssessment,
+      showAboutTab: canAccessSanContent,
       showPlanHistoryTab: hasPostAgreementStatus,
     },
   },

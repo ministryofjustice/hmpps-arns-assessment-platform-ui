@@ -10,7 +10,7 @@ import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
-import { hasPostAgreementStatus, isSanSpAssessment } from '../../../../guards'
+import { canAccessSanContent, hasPostAgreementStatus } from '../../../../guards'
 
 const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
@@ -377,7 +377,7 @@ export const blankPlanOverviewContent = HtmlBlock({
         '<p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> To agree the plan, create a goal to work on now</p>',
       )
       .else(''),
-    when(isSanSpAssessment)
+    when(canAccessSanContent)
       .then(
         Format(
           `<p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can either:</p>
