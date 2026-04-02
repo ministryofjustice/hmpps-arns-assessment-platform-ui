@@ -7,7 +7,7 @@ import { MOJSideNavigation } from '@form-engine-moj-components/components'
 import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
 import { GovUKButtonGroup } from '@form-engine-govuk-components/wrappers/govukButtonGroup'
 import { CaseData } from '../../../constants'
-import { isSanSpAssessment } from '../../../guards'
+import { canAccessSanContent } from '../../../guards'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 import { AccessibleAutocomplete, AssessmentInfoDetails } from '../../../../../components'
 
@@ -35,7 +35,7 @@ const assessmentInfoDetails = AssessmentInfoDetails({
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
   fullWidth: true,
-  hidden: not(isSanSpAssessment),
+  hidden: not(canAccessSanContent),
 })
 
 const goalTitle = AccessibleAutocomplete({

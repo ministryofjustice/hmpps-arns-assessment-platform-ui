@@ -7,7 +7,7 @@ import { TemplateWrapper } from '@form-engine/registry/components/templateWrappe
 import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
 import { AccessibleAutocomplete, AssessmentInfoDetails } from '../../../../../components'
 import { CaseData } from '../../../constants'
-import { isSanSpAssessment } from '../../../guards'
+import { canAccessSanContent } from '../../../guards'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 
 const pageHeading = GovUKHeading({
@@ -20,7 +20,7 @@ const assessmentInfoDetails = AssessmentInfoDetails({
   areaName: Data('currentAreaOfNeed').path('text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
-  hidden: not(isSanSpAssessment),
+  hidden: not(canAccessSanContent),
 })
 
 const goalTitle = AccessibleAutocomplete({

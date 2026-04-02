@@ -10,7 +10,7 @@ import { GovUKGridRow } from '@form-engine-govuk-components/wrappers/govukGridRo
 import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
 import { AssessmentInfoDetails, ButtonAsLink } from '../../../../../components'
 import { actorLabelOptions, CaseData } from '../../../constants'
-import { isSanSpAssessment } from '../../../guards'
+import { canAccessSanContent } from '../../../guards'
 
 export const pageHeading = GovUKHeading({
   caption: Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()),
@@ -25,7 +25,7 @@ export const assessmentInfoDetails = AssessmentInfoDetails({
   areaName: Data('currentAreaOfNeed').path('text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
-  hidden: not(isSanSpAssessment),
+  hidden: not(canAccessSanContent),
 })
 
 /**
