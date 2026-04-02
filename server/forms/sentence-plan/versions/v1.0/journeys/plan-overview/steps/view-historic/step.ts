@@ -5,6 +5,7 @@ import {
   blankPlanOverviewContentReadOnly,
   futureGoalsContent,
   goalsSection,
+  planLastUpdatedMessage,
   planAgreedMessage,
   planCreatedMessage,
   subNavigation,
@@ -42,6 +43,7 @@ export const viewHistoricStep = step({
   },
   isEntryPoint: true,
   blocks: [
+    planLastUpdatedMessage,
     planAgreedMessage,
     planCreatedMessage,
     notificationBanners,
@@ -53,7 +55,9 @@ export const viewHistoricStep = step({
   onAccess: [
     accessTransition({
       effects: [
+        SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.loadHistoricPlan(),
+        SentencePlanEffects.derivePlanLastUpdatedForHistoric(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_HISTORIC_PLAN, {
           planVersionTimestamp: Params('timestamp'),
         }),
