@@ -370,6 +370,72 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.errorSummary.getByRole('link').first().click()
       await expect(createGoalPage.targetDateOptions.first()).toBeFocused()
     })
+
+    test(`related areas of need checkboxes' inputs have individual aria-describedby attribute for inline errors`, async ({
+      page,
+      createSession,
+    }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.selectIsRelated(true)
+
+      // click add steps to trigger error:
+      await createGoalPage.clickAddSteps()
+
+      const checkboxAriaValues = await page
+        .locator('fieldset input[type="checkbox"]')
+        .evaluateAll(els => els.map(el => el.getAttribute('aria-describedby')))
+
+      expect(checkboxAriaValues.length).toBeGreaterThan(0)
+      checkboxAriaValues.forEach(value => {
+        expect(value).toBe('related_areas_of_need-error')
+      })
+    })
+
+    test(`related areas of need radio buttons' inputs have individual aria-describedby attribute for inline errors`, async ({
+      page,
+      createSession,
+    }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+
+      // click add steps to trigger error:
+      await createGoalPage.clickAddSteps()
+
+      const radioInputAriaDescribedByValues = await page
+        .locator('fieldset input[id="is_related_to_other_areas"]')
+        .evaluateAll(radioButtonInputElements =>
+          radioButtonInputElements.map(element => element.getAttribute('aria-describedby')),
+        )
+
+      expect(radioInputAriaDescribedByValues.length).toBeGreaterThan(0)
+      radioInputAriaDescribedByValues.forEach(value => {
+        expect(value).toBe('is_related_to_other_areas-error')
+      })
+    })
+
+    test(`inline error id is referenced in aria-describedby attribute for goal title input`, async ({
+      page,
+      createSession,
+    }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+
+      // click add steps to trigger error:
+      await createGoalPage.clickAddSteps()
+
+      const goalTitleInput = createGoalPage.goalTitleInput
+      await expect(goalTitleInput).toHaveAttribute('aria-describedby', /goal_title-error/)
+    })
   })
 
   test.describe('Different Areas of Need', () => {
