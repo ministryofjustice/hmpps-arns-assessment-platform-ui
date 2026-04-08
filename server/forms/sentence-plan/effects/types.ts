@@ -251,6 +251,9 @@ export interface HistoricPlanData {
   goals: DerivedGoal[]
   latestAgreementStatus: AgreementStatus
   latestAgreementDate: Date | undefined
+  isUpdatedAfterAgreement?: boolean
+  lastUpdatedDate?: Date
+  lastUpdatedByName?: string
 }
 
 /**
@@ -266,22 +269,8 @@ export interface PlanNotification {
   title?: string
   message: string | FormatExpr
   target: string
+  clearOtherNotifications?: boolean
 }
-
-/**
- * Navigation referrers used for dynamic backlink behaviour.
- *
- * Keep this as a constrained set so link logic cannot drift due to typos.
- */
-export const NAVIGATION_REFERRERS = [
-  'plan-overview',
-  'plan-history',
-  'previous-versions',
-  'add-goal',
-  'update-goal-steps',
-  'about',
-] as const
-export type NavigationReferrer = (typeof NAVIGATION_REFERRERS)[number]
 
 /**
  * Step data structure stored in session during step editing
@@ -335,6 +324,11 @@ export interface SentencePlanData extends Record<string, unknown> {
   latestAgreementStatus: AgreementStatus
   latestAgreementDate: Date | undefined
 
+  // Plan last updated (derived from timeline vs agreement date)
+  isUpdatedAfterAgreement: boolean
+  lastUpdatedDate: Date | undefined
+  lastUpdatedByName: string | undefined
+
   // Plan Timeline (raw timeline events from API)
   planTimeline: TimelineItem[]
 
@@ -361,7 +355,9 @@ export interface SentencePlanData extends Record<string, unknown> {
   // Assessment area info for current area of need (from coordinator API)
   currentAreaAssessment: AssessmentArea | null
   currentAreaAssessmentStatus: AssessmentInfoStatus
-  navigationReferrer?: NavigationReferrer | null
+
+  // Navigation — set by shared trackNavigation effect, read by step backlink logic
+  navigationReferrer?: string | null
 
   // Feature flags
   featureFlags?: Record<string, boolean>
@@ -399,7 +395,6 @@ export interface SentencePlanAnswers extends Record<string, unknown> {
  * Session data via context.getSession()
  */
 export interface SentencePlanSession {
-  navigationReferrer?: NavigationReferrer
   returnTo?: string
   assessmentUuid?: string
   privacyAccepted?: boolean

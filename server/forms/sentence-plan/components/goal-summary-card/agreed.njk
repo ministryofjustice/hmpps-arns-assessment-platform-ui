@@ -24,38 +24,8 @@
 #}
 
 {% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
-{% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-
-{#- Macro for rendering action links -#}
-{% macro _actionLink(action, cardTitle) %}
-  <a class="govuk-link{%- if action.classes %} {{ action.classes }}{% endif %}" href="{{ action.href }}">
-    {{- action.text -}}
-    {%- if action.visuallyHiddenText or cardTitle -%}
-      <span class="govuk-visually-hidden">
-        {%- if action.visuallyHiddenText %} {{ action.visuallyHiddenText }}{% endif -%}
-        {%- if cardTitle %} ({{ cardTitle }}){% endif -%}
-      </span>
-    {%- endif -%}
-  </a>
-{% endmacro %}
-
-{#- Macro for step status tag -#}
-{% macro _stepStatusTag(status) %}
-  {%- if status == 'NOT_STARTED' -%}
-    {{ govukTag({ text: "Not started", classes: "govuk-tag--grey" }) }}
-  {%- elif status == 'IN_PROGRESS' -%}
-    {{ govukTag({ text: "In progress" }) }}
-  {%- elif status == 'COMPLETED' -%}
-    {{ govukTag({ text: "Completed", classes: "govuk-tag--green" }) }}
-  {%- elif status == 'CANNOT_BE_DONE_YET' -%}
-    {{ govukTag({ text: "Cannot be done yet", classes: "govuk-tag--purple" }) }}
-  {%- elif status == 'NO_LONGER_NEEDED' -%}
-    {{ govukTag({ text: "No longer needed", classes: "govuk-tag--yellow" }) }}
-  {%- else -%}
-    {{ govukTag({ text: status, classes: "govuk-tag--grey" }) }}
-  {%- endif -%}
-{% endmacro %}
+{% import "sentence-plan/components/goal-summary-card/_macros.njk" as goalCard %}
 
 {#- Build card classes -#}
 {%- set cardClasses = "goal-summary-card" -%}
@@ -79,13 +49,13 @@
       {% if not params.isReadOnly and params.actions.length > 0 %}
         {% if params.actions.length == 1 %}
           <div class="govuk-summary-card__actions govuk-!-display-none-print">
-            {{ _actionLink(params.actions[0], params.goalTitle) | trim }}
+            {{ goalCard.actionLink(params.actions[0], params.goalTitle) | trim }}
           </div>
         {% else %}
           <ul class="govuk-summary-card__actions govuk-!-display-none-print">
             {% for action in params.actions %}
               <li class="govuk-summary-card__action">
-                {{ _actionLink(action, params.goalTitle) | trim }}
+                {{ goalCard.actionLink(action, params.goalTitle) | trim }}
               </li>
             {% endfor %}
           </ul>
@@ -138,7 +108,7 @@
                   <tr class="govuk-table__row">
                     <td class="govuk-table__cell">{{ step.actor | replace(" (include who in the step)", "") }}</td>
                     <td class="govuk-table__cell">{{ step.description }}</td>
-                    <td class="govuk-table__cell">{{ _stepStatusTag(step.status) }}</td>
+                    <td class="govuk-table__cell">{{ goalCard.stepStatusTag(step.status) }}</td>
                   </tr>
                 {% endfor %}
               </tbody>
@@ -150,7 +120,9 @@
         <div class="goal-summary-card__steps--empty">
           <strong>No steps added</strong>
           {% if not params.isReadOnly and params.actions.length > 0 and params.goalUuid %}
-            <a class="govuk-!-display-none-print" href="../goal/{{ params.goalUuid }}/add-steps">Add steps</a>
+            <a class="govuk-link govuk-!-display-none-print" href="../goal/{{ params.goalUuid }}/add-steps">
+              {{ goalCard.textWithGoalContext("Add steps", params.goalTitle) | trim }}
+            </a>
           {% endif %}
         </div>
       {% endif %}
@@ -168,7 +140,7 @@
         <div class="govuk-button-group govuk-!-display-none-print">
           {% if params.showMoveUp and params.moveUpHref %}
             {{ govukButton({
-              text: "Move goal up",
+              html: goalCard.textWithGoalContext("Move goal up", params.goalTitle) | trim,
               href: params.moveUpHref,
               classes: "govuk-button--secondary",
               attributes: { "data-qa": "move-goal-up" }
@@ -176,7 +148,7 @@
           {% endif %}
           {% if params.showMoveDown and params.moveDownHref %}
             {{ govukButton({
-              text: "Move goal down",
+              html: goalCard.textWithGoalContext("Move goal down", params.goalTitle) | trim,
               href: params.moveDownHref,
               classes: "govuk-button--secondary",
               attributes: { "data-qa": "move-goal-down" }

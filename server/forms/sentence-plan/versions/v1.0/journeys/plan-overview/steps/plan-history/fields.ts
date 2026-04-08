@@ -1,20 +1,18 @@
-import { Data, Format, Item, or, when } from '@form-engine/form/builders'
+import { Data, Format, Item, match, or, when } from '@form-engine/form/builders'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
+import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import { GovUKSectionBreak } from '@form-engine-govuk-components/wrappers/govukSectionBreak'
 import { CaseData } from '../../../../constants'
 
 const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
-export const subtitleText = HtmlBlock({
-  content: '<p class="govuk-body">View all updates and changes made to this plan.</p>',
-})
+export const subtitleText = GovUKBody({ text: 'View all updates and changes made to this plan.' })
 
-export const sectionBreak = HtmlBlock({
-  content: '<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">',
-})
+export const sectionBreak = GovUKSectionBreak({ size: 'm', visible: true })
 
 /**
  * Renders a plan agreement history entry.
@@ -27,17 +25,10 @@ const agreementEntryContent = Format(
     %6
   </div>`,
   // %1: Status heading
-  when(
-    Item()
-      .path('status')
-      .match(Condition.Array.IsIn(['UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE'])),
-  )
-    .then('Agreement updated')
-    .else(
-      when(Item().path('status').match(Condition.Equals('AGREED')))
-        .then('Plan agreed')
-        .else('Plan created'),
-    ),
+  match(Item().path('status'))
+    .branch(Condition.Array.IsIn(['UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']), 'Agreement updated')
+    .branch(Condition.Equals('AGREED'), 'Plan agreed')
+    .otherwise('Plan created'),
   // %2: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
   // %3: Practitioner
@@ -51,21 +42,13 @@ const agreementEntryContent = Format(
     .then(Format(' and %1', CaseData.Forename))
     .else(''),
   // %5: Description
-  when(
-    Item()
-      .path('status')
-      .match(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED'])),
-  )
-    .then(Format('%1 agreed to this plan.', CaseData.Forename))
-    .else(
-      when(
-        Item()
-          .path('status')
-          .match(Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE'])),
-      )
-        .then(Format('%1 did not agree to this plan.', CaseData.Forename))
-        .else(Format('%1 could not agree to this plan.', CaseData.Forename)),
-    ),
+  match(Item().path('status'))
+    .branch(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED']), Format('%1 agreed to this plan.', CaseData.Forename))
+    .branch(
+      Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE']),
+      Format('%1 did not agree to this plan.', CaseData.Forename),
+    )
+    .otherwise(Format('%1 could not agree to this plan.', CaseData.Forename)),
   // %6: Reason details and optional notes combined in a single paragraph
   when(Item().path('detailsNo').match(Condition.IsRequired()))
     .then(
@@ -303,25 +286,13 @@ export const agreementHistory = CollectionBlock({
             .then('')
             .else('<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">'),
           // %2: Entry content based on type
-          when(Item().path('type').match(Condition.Equals('goal_achieved')))
-            .then(goalAchievedEntryContent)
-            .else(
-              when(Item().path('type').match(Condition.Equals('goal_created')))
-                .then(goalAddedEntryContent)
-                .else(
-                  when(Item().path('type').match(Condition.Equals('goal_removed')))
-                    .then(goalRemovedEntryContent)
-                    .else(
-                      when(Item().path('type').match(Condition.Equals('goal_readded')))
-                        .then(goalReaddedEntryContent)
-                        .else(
-                          when(Item().path('type').match(Condition.Equals('goal_updated')))
-                            .then(goalUpdatedEntryContent)
-                            .else(agreementEntryContent),
-                        ),
-                    ),
-                ),
-            ),
+          match(Item().path('type'))
+            .branch(Condition.Equals('goal_achieved'), goalAchievedEntryContent)
+            .branch(Condition.Equals('goal_created'), goalAddedEntryContent)
+            .branch(Condition.Equals('goal_removed'), goalRemovedEntryContent)
+            .branch(Condition.Equals('goal_readded'), goalReaddedEntryContent)
+            .branch(Condition.Equals('goal_updated'), goalUpdatedEntryContent)
+            .otherwise(agreementEntryContent),
         ),
       }),
     ),
@@ -331,14 +302,14 @@ export const agreementHistory = CollectionBlock({
 /**
  * Link to update the person's agreement - shown when latest status is COULD_NOT_ANSWER
  */
-export const updateAgreementLink = HtmlBlock({
+export const updateAgreementLink = GovUKBody({
   hidden: or(isReadOnly, Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER'))),
-  content: Format(
-    '<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">Update %1\'s agreement</a></p>',
+  text: Format(
+    '<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">Update %1\'s agreement</a>',
     CaseData.Forename,
   ),
 })
 
-export const backToTopLink = HtmlBlock({
-  content: '<p class="govuk-body"><a href="#" class="govuk-link govuk-!-display-none-print">↑ Back to top</a></p>',
+export const backToTopLink = GovUKBody({
+  text: '<a href="#" class="govuk-link govuk-!-display-none-print">↑ Back to top</a>',
 })

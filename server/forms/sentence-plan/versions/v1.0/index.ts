@@ -5,7 +5,13 @@ import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
 import { actorLabels, areasOfNeed, formVersion } from './constants'
 import { SentencePlanEffects } from '../../effects'
-import { hasPostAgreementStatus, isSanSpAssessment, redirectToPrivacyUnlessAccepted } from './guards'
+import { NAV_KEY_PATTERNS } from '../../effects/navigation'
+import {
+  canAccessSanContent,
+  hasPostAgreementStatus,
+  redirectIfMergedMpopPlan,
+  redirectToPrivacyUnlessAccepted,
+} from './guards'
 
 /**
  * Sentence Plan v1.0 Journey
@@ -25,7 +31,7 @@ export const sentencePlanV1Journey = journey({
     locals: {
       basePath: '/sentence-plan/v1.0',
       hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
-      showAboutTab: isSanSpAssessment,
+      showAboutTab: canAccessSanContent,
       showPlanHistoryTab: hasPostAgreementStatus,
     },
   },
@@ -43,6 +49,7 @@ export const sentencePlanV1Journey = journey({
         SentencePlanEffects.loadPlan(),
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
+        SentencePlanEffects.trackNavigation(NAV_KEY_PATTERNS),
       ],
     }),
     accessTransition({
@@ -56,6 +63,8 @@ export const sentencePlanV1Journey = journey({
         }),
       ],
     }),
+    // MPoP users with a merged plan are blocked from accessing any plan content.
+    redirectIfMergedMpopPlan(),
     // READ_ONLY users skip privacy and go straight to overview; edit users must accept privacy first.
     redirectToPrivacyUnlessAccepted(),
   ],

@@ -36,6 +36,12 @@ export default class PlanOverviewPage extends AbstractPage {
 
   readonly primaryNavigation: Locator
 
+  readonly planAgreedMessage: Locator
+
+  readonly planCreatedMessage: Locator
+
+  readonly planLastUpdatedMessage: Locator
+
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
@@ -55,6 +61,9 @@ export default class PlanOverviewPage extends AbstractPage {
     this.notificationBanner = page.locator('[data-module="moj-alert"]')
     this.notificationBannerText = page.locator('.moj-alert__content')
     this.primaryNavigation = page.getByLabel('Primary navigation')
+    this.planAgreedMessage = page.locator('.govuk-body', { hasText: 'agreed to their plan on' })
+    this.planCreatedMessage = page.locator('.govuk-body', { hasText: 'Plan created on' })
+    this.planLastUpdatedMessage = page.locator('.govuk-body', { hasText: 'Last updated on' })
   }
 
   static async verifyOnPage(page: Page): Promise<PlanOverviewPage> {

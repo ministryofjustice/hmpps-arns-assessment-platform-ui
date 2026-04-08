@@ -4,6 +4,7 @@ import {
   and,
   Data,
   Format,
+  match,
   Post,
   redirect,
   step,
@@ -37,16 +38,16 @@ export const addStepsStep = step({
       // 1. If navigationReferrer='add-goal', navigate to change-goal and persist goal information
       // 2. If navigationReferrer='update-goal-steps', navigate back to update-goal-steps page
       // 3. Default: navigate back to plan overview on correct tab based on goal status (current/future)
-      backlink: when(Data('navigationReferrer').match(Condition.Equals('add-goal')))
-        .then(Format('../../goal/%1/change-goal', Data('activeGoal.uuid')))
-        .else(
-          when(Data('navigationReferrer').match(Condition.Equals('update-goal-steps')))
-            .then(Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')))
-            .else(
-              when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
-                .then('../../plan/overview?type=current')
-                .else('../../plan/overview?type=future'),
-            ),
+      backlink: match(Data('navigationReferrer'))
+        .branch(Condition.Equals('add-goal'), Format('../../goal/%1/change-goal', Data('activeGoal.uuid')))
+        .branch(
+          Condition.Equals('update-goal-steps'),
+          Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')),
+        )
+        .otherwise(
+          when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
+            .then('../../plan/overview?type=current')
+            .else('../../plan/overview?type=future'),
         ),
     },
   },
@@ -56,7 +57,6 @@ export const addStepsStep = step({
   onAccess: [
     accessTransition({
       effects: [
-        SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.setAreaDataFromActiveGoal(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
@@ -99,6 +99,7 @@ export const addStepsStep = step({
 
             message: Format('You added a goal with steps to %1 plan', CaseData.ForenamePossessive),
             target: 'plan-overview',
+            clearOtherNotifications: true,
           }),
         ],
         next: [

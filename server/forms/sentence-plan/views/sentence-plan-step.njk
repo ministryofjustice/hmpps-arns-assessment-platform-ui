@@ -12,8 +12,10 @@
 {% set fullPageTitle = (dynamicTitle or step.title) + ' - ' + ancestors[0].title %}
 {% set pageTitleWithError = 'Error: ' + fullPageTitle %}
 
+{% set allValidationErrors = fieldValidationErrors.concat(domainValidationErrors) %}
+
 {% set pageTitle %}
-  {% if not validationErrors.length and not hasPlanOverviewErrors%}
+  {% if not allValidationErrors.length %}
     {{ fullPageTitle }}
   {% else %}
     {{ pageTitleWithError }}
@@ -43,6 +45,24 @@
     {% if smartSurveyPopupCode and currentTab is defined %}
       <script nonce="{{ cspNonce }}">
         (function(d){
+          // add crossorigin to SmartSurvey images for COEP require-corp compliance
+          new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+              mutation.addedNodes.forEach(function(node) {
+                if (node.nodeType === 1) {
+                  if (node.nodeName === 'IMG' && node.src && node.src.includes('smartsurvey.io')) {
+                    node.crossOrigin = 'anonymous';
+                  }
+                  if (node.querySelectorAll) {
+                    node.querySelectorAll('img[src*="smartsurvey.io"]').forEach(function(img) {
+                      if (!img.crossOrigin) img.crossOrigin = 'anonymous';
+                    });
+                  }
+                }
+              });
+            });
+          }).observe(d.body, { childList: true, subtree: true });
+
           var s,ss;
           ss=d.createElement("script");
           ss.type="text/javascript";
@@ -66,7 +86,7 @@
         <a href="{{ backlink }}" class="govuk-back-link">Back</a>
       {% endif %}
 
-      <form method="post" novalidate data-qa="main-form">
+      <form id="main-form" method="post" novalidate data-qa="main-form">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
         {% if twoColumnLayout %}
@@ -78,8 +98,8 @@
               <div class="govuk-grid-column-two-thirds">
                 {{ govukErrorSummary({
                   titleText: "There is a problem",
-                  errorList: validationErrors | toErrorSummary
-                }) if validationErrors.length }}
+                  errorList: allValidationErrors | toErrorSummary
+                }) if allValidationErrors.length }}
 
                 {% for block in blocks %}
                   {{ block | safe if loop.index0 != sidebarIndex }}
@@ -90,8 +110,8 @@
         {% else %}
           {{ govukErrorSummary({
             titleText: "There is a problem",
-            errorList: validationErrors | toErrorSummary
-          }) if validationErrors.length }}
+            errorList: allValidationErrors | toErrorSummary
+          }) if allValidationErrors.length }}
 
           {% for block in blocks %}
             {{ block | safe }}

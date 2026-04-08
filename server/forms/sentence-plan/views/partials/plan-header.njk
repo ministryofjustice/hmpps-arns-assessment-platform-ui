@@ -1,45 +1,16 @@
-{% from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
-{% if data.caseData %}
+{% if hidePlanHeader %}
+  <div class="govuk-width-container">
+    <div class="plan-header" style="padding: 0; min-height: 1px;"></div>
+  </div>
+{% elif data.caseData %}
   {% set person = data.caseData %}
   {% set fullName = person.name.forename + ' ' + person.name.surname if person.name else 'Unknown' %}
-  {% set buttonItems = [] %}
-
-  {% if buttons.showReturnToOasysButton %}
-    {% set buttonItems = buttonItems.concat([{
-      text: 'Return to OASys',
-      href: data.sessionDetails.oasysRedirectUrl,
-      classes: "govuk-button--secondary govuk-!-display-none-print",
-      type: 'button'
-    }]) %}
-  {% endif %}
-
-  {% if buttons.showCreateGoalButton %}
-    {% set createGoalHref = basePath + '/goal/new/add-goal/accommodation' + ('?type=' + currentTab if currentTab else '') %}
-    {% set buttonItems = buttonItems.concat([{
-      text: 'Create goal',
-      href: createGoalHref,
-      classes: "govuk-button--secondary govuk-!-display-none-print",
-      type: 'button',
-      id: 'create-goal-button'
-    }]) %}
-  {% endif %}
-
-  {% if buttons.showAgreePlanButton %}
-    {% set agreePlanHref = basePath + '/plan/agree-plan' + ('?type=' + currentTab if currentTab else '') %}
-    {% set buttonItems = buttonItems.concat([{
-      text: 'Agree plan',
-      href: agreePlanHref,
-      classes: "govuk-!-display-none-print",
-      type: 'button',
-      id: 'agree-plan-button'
-    }]) %}
-  {% endif %}
-
 
   <div class="govuk-width-container">
-    <header class="plan-header" role="presentation" data-qa="plan-header">
+    <div class="plan-header" data-qa="plan-header">
       <div class="govuk-grid-row">
           <div class="govuk-grid-column-full plan-header__subject-details">
             <p class="plan-header__subject-details__title">{{ fullName }}</p>
@@ -84,17 +55,50 @@
         </div>
       {% endif %}
 
-      {% if headerPageHeading or buttonItems | length %}
+      {% set hasButtons = buttons.showReturnToOasysButton or buttons.showCreateGoalButton or buttons.showAgreePlanButton %}
+      {% if headerPageHeading or hasButtons %}
         <div class="plan-header__header-actions">
-          {{ mojPageHeaderActions({
-            heading: {
-              text: headerPageHeading,
-              classes: "govuk-heading-l govuk-!-margin-bottom-0"
-            },
-            items: buttonItems
-          }) }}
+          <div class="moj-page-header-actions">
+            <div class="moj-page-header-actions__title">
+              <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ headerPageHeading }}</h1>
+            </div>
+            {% if hasButtons %}
+              <div class="moj-page-header-actions__actions">
+                <div class="moj-button-group moj-button-group--inline">
+                  {% if buttons.showReturnToOasysButton %}
+                    {{ govukButton({
+                      text: 'Return to OASys',
+                      href: data.sessionDetails.oasysRedirectUrl,
+                      classes: "govuk-button--secondary govuk-!-display-none-print"
+                    }) }}
+                  {% endif %}
+                  {% if buttons.showCreateGoalButton %}
+                    {% set createGoalHref = basePath + '/goal/new/add-goal/accommodation' + ('?type=' + currentTab if currentTab else '') %}
+                    {{ govukButton({
+                      text: 'Create goal',
+                      href: createGoalHref,
+                      classes: "govuk-button--secondary govuk-!-display-none-print",
+                      id: 'create-goal-button'
+                    }) }}
+                  {% endif %}
+                  {% if buttons.showAgreePlanButton %}
+                    <button
+                      type="submit"
+                      form="main-form"
+                      name="action"
+                      value="agree-plan"
+                      class="govuk-button govuk-!-display-none-print"
+                      data-module="govuk-button"
+                      id="agree-plan-button">
+                      Agree plan
+                    </button>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+          </div>
         </div>
       {% endif %}
-    </header>
+    </div>
   </div>
 {% endif %}

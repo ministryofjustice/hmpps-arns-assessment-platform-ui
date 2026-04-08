@@ -21,6 +21,7 @@ import { TrainingSessionLauncherEffects } from '../../../effects'
 export const customiseStep = step({
   path: '/customise',
   title: 'Customise scenario',
+  isEntryPoint: true,
 
   blocks: [pageHeading, customiseFormWrapper],
 

@@ -32,7 +32,7 @@ export const confirmDeleteGoalStep = step({
     },
   },
 
-  blocks: [pageHeading, introText, goalCard, buttonGroup],
+  blocks: [pageHeading, ...introText, goalCard, buttonGroup],
 
   onAccess: [
     accessTransition({
@@ -47,18 +47,6 @@ export const confirmDeleteGoalStep = step({
   ],
 
   onSubmission: [
-    submitTransition({
-      when: Post('action').match(Condition.Equals('cancel')),
-      onAlways: {
-        next: [
-          redirect({
-            when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
-            goto: '../../plan/overview?type=future',
-          }),
-          redirect({ goto: '../../plan/overview?type=current' }),
-        ],
-      },
-    }),
     submitTransition({
       when: Post('action').match(Condition.Equals('confirm')),
       onAlways: {

@@ -21,7 +21,6 @@ export const previousVersionsStep = step({
     redirectToPrivacyUnlessAccepted(),
     accessTransition({
       effects: [
-        SentencePlanEffects.setNavigationReferrer('previous-versions'),
         SentencePlanEffects.loadPreviousVersions(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PREVIOUS_VERSIONS),
       ],

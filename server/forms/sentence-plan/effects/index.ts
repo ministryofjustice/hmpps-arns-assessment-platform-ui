@@ -2,8 +2,8 @@ import { defineEffectsWithDeps } from '@form-engine/registry/utils/createRegiste
 import { SentencePlanEffectsDeps } from './types'
 import { addNotification } from './notifications/addNotification'
 import { loadNotifications } from './notifications/loadNotifications'
-import { setNavigationReferrer } from './navigation/setNavigationReferrer'
-import { loadNavigationReferrer } from './navigation/loadNavigationReferrer'
+import { createNavigationEffects } from '../../shared/navigation/createNavigationEffects'
+import { Nav } from './navigation'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
 import { loadSentenceInformation } from './session/loadSentenceInformation'
@@ -12,6 +12,7 @@ import { deriveGoalsWithStepsFromAssessment } from './goals/deriveGoalsWithSteps
 import { derivePlanAgreementsFromAssessment } from './plan/derivePlanAgreementsFromAssessment'
 import { loadPlanTimeline } from './plan/loadPlanTimeline'
 import { derivePlanHistoryEntries } from './plan/derivePlanHistoryEntries'
+import { derivePlanLastUpdated, derivePlanLastUpdatedForHistoric } from './plan/derivePlanLastUpdated'
 import { updatePlanAgreementStatus } from './plan/updatePlanAgreementStatus'
 import { createGoal } from './goals/createGoal'
 import { setAreaDataFromUrlParam } from './goals/setAreaDataFromUrlParam'
@@ -39,8 +40,15 @@ import { sendAuditEvent } from './audit/sendAuditEvent'
 import { loadFeatureFlags } from './feature-flags/loadFeatureFlags'
 import { sendTelemetryEvent } from './telemetry/sendTelemetryEvent'
 
+const { trackNavigation, insertNavigationReferrer } = createNavigationEffects({
+  stackKey: 'sentence-plan',
+  clearKey: Nav.PLAN_OVERVIEW,
+})
+
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
+export { Nav } from './navigation'
+export type { NavigationReferrer } from './navigation'
 export { AuditEvent } from '../../../services/auditService'
 
 /**
@@ -81,8 +89,8 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     loadNotifications,
 
     // Navigation
-    setNavigationReferrer,
-    loadNavigationReferrer,
+    trackNavigation,
+    insertNavigationReferrer,
 
     // Plan
     loadPlan,
@@ -90,6 +98,8 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     derivePlanAgreementsFromAssessment,
     loadPlanTimeline,
     derivePlanHistoryEntries,
+    derivePlanLastUpdated,
+    derivePlanLastUpdatedForHistoric,
     updatePlanAgreementStatus,
     updatePlanAgreement,
     loadPreviousVersions,

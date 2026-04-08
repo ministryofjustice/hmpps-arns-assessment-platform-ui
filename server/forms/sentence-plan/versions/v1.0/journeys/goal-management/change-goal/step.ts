@@ -52,7 +52,6 @@ export const changeGoalStep = step({
     accessTransition({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
-        SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CHANGE_GOAL),
       ],
@@ -79,9 +78,14 @@ export const changeGoalStep = step({
           }),
         ],
         next: [
-          // if accessed through 'create a goal' page > 'add steps' and clicked 'back' then redirect to 'add-steps':
+          // Create-goal flow: add-goal → add-steps → back → change-goal.
+          // Clicking back from add-steps navigates to /change-goal. Because
+          // 'change-goal' is not already in the stack at that point, it's treated
+          // as forward navigation (pushed) rather than back-navigation (trimmed).
+          // This leaves 'add-steps' as the referrer, which we match on here to
+          // send the user back to finish adding steps after saving their changes.
           redirect({
-            when: Data('navigationReferrer').match(Condition.Equals('add-goal')),
+            when: Data('navigationReferrer').match(Condition.Equals('add-steps')),
             goto: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')),
           }),
           // if accessed through 'update goal and steps'(agreed plan):

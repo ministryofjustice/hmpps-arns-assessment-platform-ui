@@ -11,7 +11,9 @@ import {
 import { Condition } from '@form-engine/registry/conditions'
 import {
   pageHeading,
-  goalInfo,
+  goalSubheading,
+  goalInfoFuture,
+  goalInfoActive,
   reviewStepsSection,
   progressNotesSection,
   viewAllNotesSection,
@@ -35,13 +37,21 @@ export const updateGoalAndStepsStep = step({
         .else('../../plan/overview?type=future'),
     },
   },
-  blocks: [pageHeading, goalInfo, reviewStepsSection, progressNotesSection, viewAllNotesSection, actionButtons],
+  blocks: [
+    pageHeading,
+    goalSubheading,
+    goalInfoFuture,
+    goalInfoActive,
+    reviewStepsSection,
+    progressNotesSection,
+    viewAllNotesSection,
+    actionButtons,
+  ],
 
   onAccess: [
     accessTransition({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
-        SentencePlanEffects.setNavigationReferrer('update-goal-steps'),
         SentencePlanEffects.sendTelemetryEvent('UPDATE_GOAL_AND_STEPS_START', true),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_UPDATE_GOAL_AND_STEPS),
       ],
@@ -52,14 +62,6 @@ export const updateGoalAndStepsStep = step({
   ],
 
   onSubmission: [
-    // Navigate to add-steps page with referrer set (it's set in onAccess)
-    submitTransition({
-      when: Post('action').match(Condition.Equals('goToAddSteps')),
-      validate: false,
-      onAlways: {
-        next: [redirect({ goto: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')) })],
-      },
-    }),
     submitTransition({
       when: Post('action').match(Condition.Equals('save')),
       validate: false,

@@ -1,19 +1,5 @@
-import {
-  redirect,
-  step,
-  submitTransition,
-  Post,
-  accessTransition,
-  Data,
-  Item,
-  and,
-  when,
-  Query,
-  Format,
-} from '@form-engine/form/builders'
+import { redirect, step, submitTransition, Post, when, Query, Format } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { Transformer } from '@form-engine/registry/transformers'
 import { planAgreementQuestion, notesField, saveButton } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { redirectToOverviewIfReadOnly } from '../../../../guards'
@@ -21,6 +7,7 @@ import { redirectToOverviewIfReadOnly } from '../../../../guards'
 export const agreePlanStep = step({
   path: '/agree-plan',
   title: 'Do they agree to this plan?',
+  isEntryPoint: true,
   blocks: [planAgreementQuestion, notesField, saveButton],
   view: {
     locals: {
@@ -29,36 +16,7 @@ export const agreePlanStep = step({
         .else('overview?type=current'),
     },
   },
-  onAccess: [
-    redirectToOverviewIfReadOnly(),
-    accessTransition({
-      next: [
-        // Check if there are no active goals at all
-        redirect({
-          when: Data('goals')
-            .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
-            .pipe(Transformer.Array.Length())
-            .match(Condition.Equals(0)),
-          goto: 'overview?type=current&error=no-active-goals',
-        }),
-        // Check if there are any active goals without steps
-        redirect({
-          when: Data('goals')
-            .each(
-              Iterator.Filter(
-                and(
-                  Item().path('status').match(Condition.Equals('ACTIVE')),
-                  Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
-                ),
-              ),
-            )
-            .pipe(Transformer.Array.Length())
-            .match(Condition.Number.GreaterThan(0)),
-          goto: 'overview?type=current&error=no-steps',
-        }),
-      ],
-    }),
-  ],
+  onAccess: [redirectToOverviewIfReadOnly()],
   onSubmission: [
     submitTransition({
       when: Post('action').match(Condition.Equals('save')),

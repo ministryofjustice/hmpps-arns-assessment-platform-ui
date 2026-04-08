@@ -297,13 +297,10 @@ export const govukCheckboxInput = buildNunjucksComponent<GovUKCheckboxInput>(
     // At render time, items has been evaluated (Collection expressions resolved to arrays)
     const evaluatedItems = block.items as EvaluatedBlock<GovUKCheckboxInputItem | GovUKCheckboxInputDivider>[]
     const items = evaluatedItems.map(option => makeOption(option, block.value))
+    const fieldset = block.fieldset ?? (block.label ? { legend: { text: block.label } } : undefined)
 
     const params = {
-      fieldset: block.fieldset || {
-        legend: {
-          text: block.label,
-        },
-      },
+      fieldset,
       idPrefix: block.idPrefix || block.code,
       name: block.name || block.code,
       formGroup: block.formGroup,

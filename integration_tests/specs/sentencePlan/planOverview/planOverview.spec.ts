@@ -1,14 +1,14 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../support/fixtures'
+import { test, TargetService } from '../../../support/fixtures'
 import {
   currentGoals,
   currentGoalsWithCompletedSteps,
   futureGoals,
   mixedGoals,
-} from '../../builders/sentencePlanFactories'
-import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
-import { buildPageTitle, navigateToSentencePlan, sentencePlanPageTitles } from './sentencePlanUtils'
+} from '../../../builders/sentencePlanFactories'
+import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
+import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
+import { buildPageTitle, navigateToSentencePlan, sentencePlanPageTitles } from '../sentencePlanUtils'
 
 test.describe('Plan Overview Page', () => {
   test.describe('Empty State', () => {
@@ -203,8 +203,6 @@ test.describe('Plan Overview Page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await PlanOverviewPage.verifyOnPage(page)
-
       await expect(page).toHaveURL(/type=current/)
     })
 
@@ -302,6 +300,24 @@ test.describe('Plan Overview Page', () => {
 
       const hasAddStepsLink = await planOverviewPage.goalCardHasAddStepsLink(0)
       expect(hasAddStepsLink).toBe(false)
+    })
+
+    test('gives Add steps links a unique accessible name for each goal', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(2)).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      const firstGoalCard = await planOverviewPage.getGoalCardByIndex(0)
+      const secondGoalCard = await planOverviewPage.getGoalCardByIndex(1)
+
+      await expect(firstGoalCard.getByRole('link', { name: /^Add steps \(Current Goal 1\)$/i })).toBeVisible()
+      await expect(secondGoalCard.getByRole('link', { name: /^Add steps \(Current Goal 2\)$/i })).toBeVisible()
     })
 
     test('shows Delete link on goal cards', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -405,6 +421,28 @@ test.describe('Plan Overview Page', () => {
 
         expect(hasMoveUp).toBe(true)
         expect(hasMoveDown).toBe(true)
+      })
+
+      test('move buttons include the goal title in their accessible name', async ({
+        page,
+        createSession,
+        sentencePlanBuilder,
+      }) => {
+        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+        await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(2)).save()
+
+        await navigateToSentencePlan(page, handoverLink)
+
+        const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+        const firstGoalCard = await planOverviewPage.getGoalCardByIndex(0)
+        const secondGoalCard = await planOverviewPage.getGoalCardByIndex(1)
+
+        await expect(firstGoalCard.locator('[data-qa="move-goal-down"]')).toHaveAccessibleName(
+          'Move goal down (Current Goal 1)',
+        )
+        await expect(secondGoalCard.locator('[data-qa="move-goal-up"]')).toHaveAccessibleName(
+          'Move goal up (Current Goal 2)',
+        )
       })
     })
 
@@ -519,8 +557,6 @@ test.describe('Plan Overview Page', () => {
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(3)).save()
 
       await navigateToSentencePlan(page, handoverLink)
-
-      await PlanOverviewPage.verifyOnPage(page)
 
       const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
       expect(accessibilityScanResults.violations).toEqual([])

@@ -74,17 +74,45 @@ export const redirectUnlessCouldNotAnswer = (goto: string) =>
 
 /**
  * True when the plan has the SAN_BETA flag (private beta).
- * Used to conditionally show features only available to SAN/SP users (e.g. About tab).
  */
 export const isSanSpAssessment = Data('assessment.flags').match(Condition.Array.Contains('SAN_BETA'))
 
 /**
- * Redirect users unless the assessment type is SAN_SP.
+ * True when the user entered via MPoP (CRN-based access).
+ */
+export const isMpopAccess = Data('sessionDetails.accessType').match(Condition.Equals('HMPPS_AUTH'))
+
+/**
+ * True when the user can access SAN-specific content.
+ * Requires both a SAN_SP assessment AND non-MPoP access, because MPoP users
+ * cannot reach the SAN data APIs needed to populate this content.
+ */
+export const canAccessSanContent = and(isSanSpAssessment, not(isMpopAccess))
+
+/**
+ * Redirect users unless they can access SAN content.
+ * Blocks both non-SAN_SP assessments and MPoP users.
  */
 export const redirectUnlessSanSp = (goto: string) =>
   accessTransition({
-    when: not(isSanSpAssessment),
+    when: not(canAccessSanContent),
     next: [redirect({ goto })],
+  })
+
+/**
+ * True when the plan has been flagged as merged.
+ * The coordinator sets assessment.properties.MERGED when an OASys offender record has been merged.
+ */
+export const isMergedPlan = Data('assessment.properties.MERGED').match(Condition.IsRequired())
+
+/**
+ * Redirect MPoP users with a merged plan to the warning page.
+ * This prevents access to any plan content when the underlying data may be inconsistent.
+ */
+export const redirectIfMergedMpopPlan = () =>
+  accessTransition({
+    when: and(isMpopAccess, isMergedPlan),
+    next: [redirect({ goto: '/sentence-plan/merged-plan-warning' })],
   })
 
 /**

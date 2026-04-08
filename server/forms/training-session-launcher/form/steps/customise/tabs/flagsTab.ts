@@ -1,6 +1,6 @@
 import { Data } from '@form-engine/form/builders'
 import { HtmlBlock } from '@form-engine/registry/components'
-import { GovUKCheckboxInput } from '@form-engine-govuk-components/components'
+import { GovUKCheckboxInput, GovUKTextInput } from '@form-engine-govuk-components/components'
 
 /**
  * Scenario flags tab content
@@ -35,6 +35,17 @@ export const flagsTabContent = [
         value: 'NEW_PERIOD_OF_SUPERVISION',
         text: 'New Period of Supervision',
         hint: 'Simulates a new period of supervision. The session will be created with the plan in a reset state.',
+      },
+      {
+        value: 'MERGED',
+        text: 'Merged',
+        hint: 'Simulates an OASys merge. The plan will be created then merged to a new PK, setting the MERGED flag. Do not combine with New Period of Supervision.',
+        block: GovUKTextInput({
+          code: 'mergeOldPk',
+          label: 'Previous OASys Assessment PK',
+          hint: 'The OASys Assessment PK of the existing session to merge from.',
+          classes: 'govuk-input--width-10',
+        }),
       },
     ],
   }),

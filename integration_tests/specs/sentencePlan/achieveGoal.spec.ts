@@ -27,7 +27,6 @@ test.describe('Achieve goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -46,9 +45,6 @@ test.describe('Achieve goal journey', () => {
 
       // Should redirect to plan overview with achieved tab selected
       await expect(page).toHaveURL(/plan\/overview.*type=achieved/)
-
-      // Verify we're on the plan overview page
-      await PlanOverviewPage.verifyOnPage(page)
     })
 
     test('can confirm goal as achieved without optional note', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -61,7 +57,6 @@ test.describe('Achieve goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -70,7 +65,6 @@ test.describe('Achieve goal journey', () => {
 
       await achievePage.clickConfirm()
 
-      // Should redirect to plan overview with achieved tab selected
       await expect(page).toHaveURL(/plan\/overview.*type=achieved/)
     })
 
@@ -84,7 +78,6 @@ test.describe('Achieve goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -114,7 +107,6 @@ test.describe('Achieve goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -147,7 +139,6 @@ test.describe('Achieve goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -171,7 +162,6 @@ test.describe('Achieve goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -280,6 +270,24 @@ test.describe('Achieve goal journey', () => {
       // The remaining goal should be "Goal To Keep"
       const remainingGoalTitle = await planOverviewPage.getGoalCardTitle(0)
       expect(remainingGoalTitle).toContain('Goal To Keep')
+    })
+  })
+
+  test.describe('access control', () => {
+    test('redirects to plan overview when plan is not agreed (draft)', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
+      const goalUuid = plan.goals[0].uuid
+
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+
+      // Should redirect to plan overview since achieved is only for agreed plans
+      await PlanOverviewPage.verifyOnPage(page)
     })
   })
 })

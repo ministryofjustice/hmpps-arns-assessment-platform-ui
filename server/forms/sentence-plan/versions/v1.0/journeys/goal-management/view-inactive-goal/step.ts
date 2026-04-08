@@ -1,16 +1,15 @@
-import {
-  accessTransition,
-  Data,
-  Format,
-  redirect,
-  Post,
-  step,
-  submitTransition,
-  when,
-} from '@form-engine/form/builders'
+import { accessTransition, Data, Format, step, when } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
-import { pageHeading, goalInfo, reviewStepsSection, viewAllNotesSection, addToPlanButton } from './fields'
+import {
+  pageHeading,
+  goalSubheading,
+  goalAchievedInfo,
+  goalRemovedInfo,
+  reviewStepsSection,
+  viewAllNotesSection,
+  addToPlanButton,
+} from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalNotFound } from '../../../guards'
 
@@ -42,30 +41,22 @@ export const viewInactiveGoalStep = step({
       dynamicTitle: Format('View %1 goal', Data('activeGoal.status').pipe(Transformer.String.ToLowerCase())),
     },
   },
-  blocks: [pageHeading, goalInfo, reviewStepsSection, viewAllNotesSection, addToPlanButton],
-
+  blocks: [
+    pageHeading,
+    goalSubheading,
+    goalAchievedInfo,
+    goalRemovedInfo,
+    reviewStepsSection,
+    viewAllNotesSection,
+    addToPlanButton,
+  ],
   onAccess: [
     accessTransition({
       effects: [
-        SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.loadActiveGoalForEdit(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_INACTIVE_GOAL, { goalStatus: Data('activeGoal.status') }),
       ],
     }),
     redirectIfGoalNotFound('../../plan/overview'),
-  ],
-
-  onSubmission: [
-    submitTransition({
-      when: Post('action').match(Condition.Equals('re-add')),
-      onAlways: {
-        next: [redirect({ goto: 'confirm-readd-goal' })],
-      },
-    }),
-    submitTransition({
-      onAlways: {
-        next: [redirect({ goto: '../../plan/overview' })],
-      },
-    }),
   ],
 })

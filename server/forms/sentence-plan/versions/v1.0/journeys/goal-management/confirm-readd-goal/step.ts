@@ -56,12 +56,6 @@ export const confirmAddGoalStep = step({
 
   onSubmission: [
     submitTransition({
-      when: Post('action').match(Condition.Equals('cancel')),
-      onAlways: {
-        next: [redirect({ goto: 'view-inactive-goal' })],
-      },
-    }),
-    submitTransition({
       when: Post('action').match(Condition.Equals('confirm')),
       validate: true,
       onValid: {

@@ -2,8 +2,6 @@
 # Per environment values which override defaults in hmpps-arns-assessment-platform-ui/values.yaml
 
 generic-service:
-  replicaCount: 2
-
   ingress:
     host: arns-assessment-platform-dev.hmpps.service.justice.gov.uk
 

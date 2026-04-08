@@ -14,7 +14,8 @@ export const relatedAreasOfNeed = GovUKCheckboxInput({
   },
   fieldset: {
     legend: {
-      classes: 'govuk-fieldset__legend--m',
+      text: 'Which other areas of need is this goal related to?',
+      classes: 'govuk-fieldset__legend--m govuk-visually-hidden',
     },
   },
   items: Data('otherAreasOfNeed').each(

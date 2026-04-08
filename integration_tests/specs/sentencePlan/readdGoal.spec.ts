@@ -37,7 +37,6 @@ test.describe('Re-add goal journey', () => {
       await readdPage.clickConfirm()
 
       await expect(page).toHaveURL(/plan\/overview.*type=current/)
-      await PlanOverviewPage.verifyOnPage(page)
     })
 
     test('can confirm re-adding a goal as a future goal', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -58,7 +57,6 @@ test.describe('Re-add goal journey', () => {
       await readdPage.clickConfirm()
 
       await expect(page).toHaveURL(/plan\/overview.*type=future/)
-      await PlanOverviewPage.verifyOnPage(page)
     })
 
     test('shows validation error when re-add note is empty', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -233,7 +231,6 @@ test.describe('Re-add goal journey', () => {
       const viewPage = await ViewInactiveGoalPage.verifyOnPage(page)
       await viewPage.clickAddToPlan()
 
-      await expect(page).toHaveURL(/\/confirm-readd-goal/)
       await ConfirmReaddGoalPage.verifyOnPage(page)
     })
   })

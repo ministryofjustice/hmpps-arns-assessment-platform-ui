@@ -7,11 +7,13 @@ import {
   SubmitTransition,
   FormatExpr,
   ConditionalExpr,
+  MatchExpr,
   AccessTransition,
   ActionTransition,
 } from './expressions.type'
 import { PredicateTestExprBuilder } from '../builders/PredicateTestExprBuilder'
 import { ConditionalExprBuilder } from '../builders/ConditionalExprBuilder'
+import { MatchExprBuilder } from '../builders/MatchExprBuilder'
 import { ChainableExpr, ChainableIterable, ChainableRef } from '../builders/types'
 import { BlockType, StructureType, ExpressionType } from './enums'
 
@@ -286,6 +288,10 @@ export interface StepDefinition {
 
   /** Static data available to this step, merged with inherited journey data */
   data?: Record<string, unknown>
+
+  /** Step-level domain validations, evaluated on submission alongside field validations.
+   *  Accepts individual validation expressions or iterable expressions that yield validation arrays. */
+  validate?: (ValidationExpr | unknown)[]
 }
 
 export type ConditionalString =
@@ -294,7 +300,9 @@ export type ConditionalString =
   | FormatExpr
   | PipelineExpr
   | ConditionalExpr
+  | MatchExpr
   | ConditionalExprBuilder
+  | MatchExprBuilder
   | ChainableRef
   | ChainableExpr<any>
 
@@ -303,7 +311,9 @@ export type ConditionalBoolean =
   | ReferenceExpr
   | PipelineExpr
   | ConditionalExpr
+  | MatchExpr
   | ConditionalExprBuilder
+  | MatchExprBuilder
   | ChainableRef
   | ChainableExpr<any>
 
@@ -312,7 +322,9 @@ export type ConditionalNumber =
   | ReferenceExpr
   | PipelineExpr
   | ConditionalExpr
+  | MatchExpr
   | ConditionalExprBuilder
+  | MatchExprBuilder
   | ChainableRef
   | ChainableExpr<any>
 
@@ -321,7 +333,9 @@ export type ConditionalArray<T> =
   | ReferenceExpr
   | PipelineExpr
   | ConditionalExpr
+  | MatchExpr
   | ConditionalExprBuilder
+  | MatchExprBuilder
   | ChainableIterable
   | ChainableRef
   | ChainableExpr<any>

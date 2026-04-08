@@ -53,7 +53,6 @@ test.describe('Create Goal Journey', () => {
       await addStepsPage.clickSaveAndContinue()
 
       // Verify goal was created and we're back on plan overview
-      await expect(page).toHaveURL(/\/plan\/overview/)
       const updatedPlanOverview = await PlanOverviewPage.verifyOnPage(page)
 
       // Verify the goal and step display correctly with special characters
@@ -87,7 +86,6 @@ test.describe('Create Goal Journey', () => {
       await addStepsPage.clickSaveAndContinue()
 
       // Verify goal was created with steps
-      await expect(page).toHaveURL(/\/plan\/overview/)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const goalCard = await planOverviewPage.getGoalCardByIndex(0)
@@ -111,7 +109,6 @@ test.describe('Create Goal Journey', () => {
       await addStepsPage.enterStep(0, 'probation_practitioner', 'Test step')
       await addStepsPage.clickSaveAndContinue()
 
-      await expect(page).toHaveURL(/\/plan\/overview/)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.notificationBanner).toBeVisible()
@@ -203,8 +200,6 @@ test.describe('Create Goal Journey', () => {
 
       await createGoalPage.clickSaveWithoutSteps()
 
-      await expect(page).toHaveURL(/\/plan\/overview/)
-
       const updatedPlanOverview = await PlanOverviewPage.verifyOnPage(page)
       await expect(updatedPlanOverview.notificationBanner).toBeVisible()
       await expect(updatedPlanOverview.notificationBannerText).toContainText(/You added a goal to .+'s plan/i)
@@ -290,6 +285,24 @@ test.describe('Create Goal Journey', () => {
       const sortedLabels = [...checkboxLabels].sort((a, b) => a.localeCompare(b))
       expect(checkboxLabels).toEqual(sortedLabels)
     })
+
+    test('related areas of need checkbox group has a legend', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.selectIsRelated(true)
+
+      const relatedAreasFieldset = page
+        .locator('[name="related_areas_of_need"]')
+        .first()
+        .locator('xpath=ancestor::fieldset[1]')
+      const relatedAreasLegend = relatedAreasFieldset.locator('legend')
+
+      await expect(relatedAreasLegend).toContainText('Which other areas of need is this goal related to?')
+      await expect(relatedAreasLegend).toHaveClass(/govuk-visually-hidden/)
+    })
   })
 
   test.describe('Validation', () => {
@@ -368,7 +381,6 @@ test.describe('Create Goal Journey', () => {
         test(`can create goal for ${area} area`, async ({ page, createSession }) => {
           const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
           await navigateToSentencePlan(page, handoverLink)
-          await PlanOverviewPage.verifyOnPage(page)
           await page.goto(`/sentence-plan/v1.0/goal/new/add-goal/${area}`)
 
           const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -379,5 +391,14 @@ test.describe('Create Goal Journey', () => {
           await expect(page).toHaveURL(new RegExp(`/add-goal/${area}`))
         })
       })
+
+    test('invalid area of need slug redirects to accommodation', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/not-a-real-area')
+
+      await expect(page).toHaveURL(/\/add-goal\/accommodation/)
+    })
   })
 })

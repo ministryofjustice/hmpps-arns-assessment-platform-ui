@@ -1,4 +1,5 @@
 import { Item, Iterator } from '@form-engine/form/builders'
+import { Transformer } from '@form-engine/registry/transformers'
 import { CollectionBlock, HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKTag } from '@form-engine-govuk-components/components'
 import { CriminogenicNeedsList } from '../../components'
@@ -55,14 +56,14 @@ export const scenarioDetailsBlock = TemplateWrapper({
     </div>
   `,
   values: {
-    givenName: Item().path('givenName'),
-    familyName: Item().path('familyName'),
-    dateOfBirth: Item().path('dateOfBirth'),
-    location: Item().path('location'),
-    crn: Item().path('crn'),
-    pnc: Item().path('pnc'),
-    oasysAssessmentPk: Item().path('oasysAssessmentPk'),
-    sentencePlanVersion: Item().path('sentencePlanVersion'),
+    givenName: Item().path('givenName').pipe(Transformer.String.EscapeHtml()),
+    familyName: Item().path('familyName').pipe(Transformer.String.EscapeHtml()),
+    dateOfBirth: Item().path('dateOfBirth').pipe(Transformer.String.EscapeHtml()),
+    location: Item().path('location').pipe(Transformer.String.EscapeHtml()),
+    crn: Item().path('crn').pipe(Transformer.String.EscapeHtml()),
+    pnc: Item().path('pnc').pipe(Transformer.String.EscapeHtml()),
+    oasysAssessmentPk: Item().path('oasysAssessmentPk').pipe(Transformer.String.EscapeHtml()),
+    sentencePlanVersion: Item().path('sentencePlanVersion').pipe(Transformer.String.EscapeHtml()),
   },
   slots: {
     flags: [

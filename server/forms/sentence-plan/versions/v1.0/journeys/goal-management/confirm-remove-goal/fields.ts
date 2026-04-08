@@ -1,28 +1,33 @@
-import { Data, Format, Item, field, validation, Self } from '@form-engine/form/builders'
+import { Data, Format, Item, validation, Self } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import { GovUKTextareaInput } from '@form-engine-govuk-components/components'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { GovUKTextareaInput } from '@form-engine-govuk-components/components/textarea-input/govukTextareaInput'
 import { Transformer } from '@form-engine/registry/transformers'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { GoalSummaryCardAgreed, ButtonAsLink } from '../../../../../components'
+import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
+import { GovUKButtonGroup } from '@form-engine-govuk-components/wrappers/govukButtonGroup'
+import { GovUKGridRow } from '@form-engine-govuk-components/wrappers/govukGridRow'
+import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import { GoalSummaryCardAgreed } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
-export const pageHeading = HtmlBlock({
-  content: '<h1 class="govuk-heading-l">Confirm you want to remove this goal</h1>',
-})
+export const pageHeading = GovUKHeading({ text: 'Confirm you want to remove this goal' })
 
-export const introText = HtmlBlock({
-  content: Format(
-    `<div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <p class="govuk-body">Remove a goal if it is no longer relevant to %1.</p>
-        <p class="govuk-body">You will still be able to see it in 'Removed goals', but %1 will not be expected to achieve it.</p>
-      </div>
-    </div>`,
-    CaseData.Forename,
-  ),
+export const introText = GovUKGridRow({
+  columns: [
+    {
+      width: 'two-thirds',
+      blocks: [
+        GovUKBody({ text: Format('Remove a goal if it is no longer relevant to %1.', CaseData.Forename) }),
+        GovUKBody({
+          text: Format(
+            "You will still be able to see it in 'Removed goals', but %1 will not be expected to achieve it.",
+            CaseData.Forename,
+          ),
+        }),
+      ],
+    },
+  ],
 })
 
 export const goalCard = GoalSummaryCardAgreed({
@@ -40,8 +45,7 @@ export const goalCard = GoalSummaryCardAgreed({
   ),
 })
 
-const removalNoteField = field<GovUKTextareaInput>({
-  variant: 'govukTextarea',
+const removalNoteField = GovUKTextareaInput({
   code: 'removal_note',
   label: {
     text: 'Why do you want to remove this goal?',
@@ -56,17 +60,8 @@ const removalNoteField = field<GovUKTextareaInput>({
   ],
 })
 
-export const removalNoteSection = TemplateWrapper({
-  template: `
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        {{slot:field}}
-      </div>
-    </div>
-  `,
-  slots: {
-    field: [removalNoteField],
-  },
+export const removalNoteSection = GovUKGridRow({
+  columns: [{ width: 'two-thirds', blocks: [removalNoteField] }],
 })
 
 export const confirmButton = GovUKButton({
@@ -75,15 +70,8 @@ export const confirmButton = GovUKButton({
   value: 'confirm',
 })
 
-export const cancelLink = ButtonAsLink({
-  text: 'Do not remove goal',
-  name: 'action',
-  value: 'cancel',
+export const cancelLink = GovUKBody({
+  text: '<a href="update-goal-steps" class="govuk-link">Do not remove goal</a>',
 })
 
-export const buttonGroup = TemplateWrapper({
-  template: `<div class="govuk-button-group">{{slot:buttons}}</div>`,
-  slots: {
-    buttons: [confirmButton, cancelLink],
-  },
-})
+export const buttonGroup = GovUKButtonGroup({ buttons: [confirmButton, cancelLink] })

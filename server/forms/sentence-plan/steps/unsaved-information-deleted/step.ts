@@ -1,7 +1,7 @@
-import { block, step, Query, Conditional } from '@form-engine/form/builders'
+import { step, Query, Conditional } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { HtmlBlock } from '@form-engine/registry/components/html'
-import { GovUKLinkButton } from '@form-engine-govuk-components/components'
+import { GovUKLinkButton } from '@form-engine-govuk-components/components/button/govukButton'
 
 export const unsavedInformationDeletedStep = step({
   path: '/unsaved-information-deleted',
@@ -15,8 +15,7 @@ export const unsavedInformationDeletedStep = step({
     },
   },
   blocks: [
-    block<HtmlBlock>({
-      variant: 'html',
+    HtmlBlock({
       content: `
         <h1 class="govuk-heading-l">Your unsaved information has been deleted</h1>
         <div data-qa="unsaved-information-deleted-content">
@@ -25,8 +24,7 @@ export const unsavedInformationDeletedStep = step({
         </div>
       `,
     }),
-    block<GovUKLinkButton>({
-      variant: 'govukLinkButton',
+    GovUKLinkButton({
       text: 'Go to the plan',
       // If user came via OASys handover, redirect to handover sign-in to re-authenticate
       // Otherwise, go to plan overview (which will redirect to HMPPS Auth if session expired)
