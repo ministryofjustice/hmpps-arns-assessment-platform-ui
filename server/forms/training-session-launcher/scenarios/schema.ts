@@ -75,6 +75,11 @@ export const scenarioFieldSchema = {
     group: 'subject',
     randomize: randomOasysAssessmentPk,
   },
+  sentencePlanVersion: {
+    label: 'Sentence Plan Version',
+    group: 'subject',
+    randomize: () => null,
+  },
 
   // Practitioner details
   practitionerIdentifier: {

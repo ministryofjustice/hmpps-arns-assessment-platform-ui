@@ -142,4 +142,16 @@ export const subjectDetailsTabContent = [
       defaultValue: Data('scenario.oasysAssessmentPk'),
     }),
   }),
+
+  RandomizableField({
+    fieldKey: 'sentencePlanVersion',
+    randomize: Data('sentencePlanVersion_isRandomized'),
+    field: GovUKTextInput({
+      code: 'sentencePlanVersion',
+      label: 'Sentence Plan Version',
+      hint: 'Version number',
+      classes: 'govuk-input--width-10',
+      defaultValue: Data('scenario.sentencePlanVersion'),
+    }),
+  }),
 ]

@@ -41,6 +41,7 @@ export interface DisplayScenario {
   crn: string
   pnc: string
   oasysAssessmentPk: string
+  sentencePlanVersion: number
 
   // For display
   displayNeeds: DisplayNeed[]
@@ -154,6 +155,7 @@ export interface DisplaySession extends Session {
   crn: string
   pnc: string
   oasysAssessmentPk: string
+  sentencePlanVersion: number
   availableServices: ServiceOption[]
 }
 

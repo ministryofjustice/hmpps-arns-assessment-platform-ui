@@ -179,6 +179,7 @@ function transformToDisplaySession(session: Session): DisplaySession {
     crn: values.crn || '',
     pnc: values.pnc || '',
     oasysAssessmentPk: values.oasysAssessmentPk || '',
+    sentencePlanVersion: values.sentencePlanVersion || null,
     availableServices: computeAvailableServices(session),
   }
 }
@@ -208,6 +209,7 @@ function resolveSavedScenario(saved: SavedScenario): DisplayScenario {
     crn: values.crn || '',
     pnc: values.pnc || '',
     oasysAssessmentPk: values.oasysAssessmentPk || '',
+    sentencePlanVersion: values.sentencePlanVersion || null,
 
     displayNeeds: transformToDisplayNeeds(values),
     isCustom: true,
