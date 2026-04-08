@@ -13,8 +13,6 @@ export default class CreateGoalPage extends AbstractPage {
 
   readonly isRelatedNo: Locator
 
-  readonly relatedAreasGroup: Locator
-
   readonly addStepsButton: Locator
 
   readonly saveWithoutStepsButton: Locator
@@ -42,7 +40,6 @@ export default class CreateGoalPage extends AbstractPage {
     this.isRelatedNo = page
       .getByRole('group', { name: /related to any other area/i })
       .getByRole('radio', { name: 'No' })
-    this.relatedAreasGroup = page.getByRole('group', { name: /which other areas of need is this goal related to/i })
     this.addStepsButton = page.getByRole('button', { name: /add steps/i })
     this.saveWithoutStepsButton = page.getByRole('button', { name: /save without steps/i })
     this.goalTitles = page.getByTestId('autocomplete-data-goal_title')

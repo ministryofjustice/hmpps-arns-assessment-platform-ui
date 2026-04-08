@@ -294,8 +294,14 @@ test.describe('Create Goal Journey', () => {
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
       await createGoalPage.selectIsRelated(true)
 
-      await expect(createGoalPage.relatedAreasGroup).toBeVisible()
-      await expect(createGoalPage.relatedAreasGroup).toContainText('Accommodation')
+      const relatedAreasFieldset = page
+        .locator('[name="related_areas_of_need"]')
+        .first()
+        .locator('xpath=ancestor::fieldset[1]')
+      const relatedAreasLegend = relatedAreasFieldset.locator('legend')
+
+      await expect(relatedAreasLegend).toContainText('Which other areas of need is this goal related to?')
+      await expect(relatedAreasLegend).toHaveClass(/govuk-visually-hidden/)
     })
   })
 
