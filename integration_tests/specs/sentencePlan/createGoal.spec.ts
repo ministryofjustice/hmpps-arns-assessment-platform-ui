@@ -285,6 +285,24 @@ test.describe('Create Goal Journey', () => {
       const sortedLabels = [...checkboxLabels].sort((a, b) => a.localeCompare(b))
       expect(checkboxLabels).toEqual(sortedLabels)
     })
+
+    test('related areas of need checkbox group has a legend', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.selectIsRelated(true)
+
+      const relatedAreasFieldset = page
+        .locator('[name="related_areas_of_need"]')
+        .first()
+        .locator('xpath=ancestor::fieldset[1]')
+      const relatedAreasLegend = relatedAreasFieldset.locator('legend')
+
+      await expect(relatedAreasLegend).toContainText('Which other areas of need is this goal related to?')
+      await expect(relatedAreasLegend).toHaveClass(/govuk-visually-hidden/)
+    })
   })
 
   test.describe('Validation', () => {

@@ -55,6 +55,16 @@ test.describe('Privacy Screen', () => {
       await expect(checkboxLabel).toContainText("I confirm I'll do this before starting an appointment")
     })
 
+    test('does not wrap the privacy checkbox in a fieldset', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      await navigateToPrivacyScreen(page, handoverLink)
+
+      const checkboxFieldset = page.locator('fieldset').filter({ has: page.locator('#confirm_privacy') })
+      await expect(checkboxFieldset).toHaveCount(0)
+    })
+
     test.describe('Validation', () => {
       test('shows validation error when submitting without checking the checkbox', async ({
         page,
