@@ -4,7 +4,7 @@ import { createTrainingSessionLauncherEffectsRegistry } from './effects'
 import { trainingSessionLauncherComponents } from './components'
 import { TrainingSessionLauncherTransformersRegistry } from './transformers'
 import { TrainingSessionLauncherEffectsDeps } from './effects/types'
-import config from "../../config";
+import config from '../../config'
 
 /**
  * Training Session Launcher Form Package
