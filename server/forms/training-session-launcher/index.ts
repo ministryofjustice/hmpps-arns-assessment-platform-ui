@@ -4,6 +4,7 @@ import { createTrainingSessionLauncherEffectsRegistry } from './effects'
 import { trainingSessionLauncherComponents } from './components'
 import { TrainingSessionLauncherTransformersRegistry } from './transformers'
 import { TrainingSessionLauncherEffectsDeps } from './effects/types'
+import config from "../../config";
 
 /**
  * Training Session Launcher Form Package
@@ -12,7 +13,7 @@ import { TrainingSessionLauncherEffectsDeps } from './effects/types'
  * Replaces the OAStub functionality with a proper form-based interface.
  */
 export default createFormPackage({
-  enabled: true, // config.forms.trainingSessionLauncher?.enabled ?? false,
+  enabled: config.forms.trainingSessionLauncher.enabled ?? false,
   journey: trainingSessionLauncherJourney,
   components: trainingSessionLauncherComponents,
   createRegistries: (deps: TrainingSessionLauncherEffectsDeps) => ({

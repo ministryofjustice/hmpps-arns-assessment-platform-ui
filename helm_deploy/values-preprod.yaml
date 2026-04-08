@@ -24,6 +24,7 @@ generic-service:
     ENVIRONMENT_NAME: PRE-PRODUCTION
     AUDIT_ENABLED: "true"
     SERVICE_NOW_FORM_URL: "https://mojprod.service-now.com/moj_sp?id=sc_cat_item&sys_id=276572591bce4910a93242ead34bcb53"
+    FORM_TRAINING_SESSION_LAUNCHER_ENABLED: "true"
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui
