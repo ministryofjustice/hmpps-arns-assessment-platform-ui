@@ -248,7 +248,8 @@ interface GovUKRadioInputDivider {
 }
 
 export const govukRadioInput = buildNunjucksComponent<GovUKRadioInput>('govukRadioInput', (block, nunjucksEnv) => {
-  const items = block.items.map(option => makeOption(option, block.value as string))
+  const errorId = block.errors?.length ? `${block.idPrefix ?? block.code}-error` : undefined
+  const items = block.items.map(option => makeOption(option, block.value as string, errorId))
 
   const params = {
     fieldset: block.fieldset || {
@@ -284,12 +285,25 @@ const getConditionalContent = (block: RenderedBlock | RenderedBlock[] | undefine
   return { html: block.html }
 }
 
-const makeOption = (option: EvaluatedBlock<GovUKRadioInputItem | GovUKRadioInputDivider>, checkedValue: string) => {
+const makeOption = (
+  option: EvaluatedBlock<GovUKRadioInputItem | GovUKRadioInputDivider>,
+  checkedValue: string,
+  errorId?: string,
+) => {
   if (isRadioDivider(option)) {
     return {
       divider: option.divider,
     }
   }
+
+  const hasItemHint = Boolean(option.hint)
+  const attributes =
+    !hasItemHint && errorId
+      ? {
+          ...option.attributes,
+          'aria-describedby': [option.attributes?.['aria-describedby'], errorId].filter(Boolean).join(' '),
+        }
+      : option.attributes
 
   return {
     value: option.value,
@@ -300,7 +314,7 @@ const makeOption = (option: EvaluatedBlock<GovUKRadioInputItem | GovUKRadioInput
     checked: checkedValue === option.value || (option.checked ?? false),
     conditional: getConditionalContent(option.block),
     disabled: option.disabled,
-    attributes: option.attributes,
+    attributes,
   }
 }
 
