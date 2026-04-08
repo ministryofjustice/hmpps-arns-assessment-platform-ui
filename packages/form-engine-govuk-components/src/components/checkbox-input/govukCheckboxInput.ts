@@ -296,7 +296,8 @@ export const govukCheckboxInput = buildNunjucksComponent<GovUKCheckboxInput>(
   (block, nunjucksEnv) => {
     // At render time, items has been evaluated (Collection expressions resolved to arrays)
     const evaluatedItems = block.items as EvaluatedBlock<GovUKCheckboxInputItem | GovUKCheckboxInputDivider>[]
-    const items = evaluatedItems.map(option => makeOption(option, block.value))
+    const errorId = block.errors?.length ? `${block.idPrefix ?? block.code}-error` : undefined
+    const items = evaluatedItems.map(option => makeOption(option, block.value, errorId))
     const fieldset = block.fieldset ?? (block.label ? { legend: { text: block.label } } : undefined)
 
     const params = {
@@ -329,7 +330,11 @@ const getConditionalContent = (block: RenderedBlock | RenderedBlock[] | undefine
   return { html: block.html }
 }
 
-const makeOption = (option: EvaluatedBlock<GovUKCheckboxInputItem | GovUKCheckboxInputDivider>, blockValue?: any) => {
+const makeOption = (
+  option: EvaluatedBlock<GovUKCheckboxInputItem | GovUKCheckboxInputDivider>,
+  blockValue?: any,
+  errorId?: string,
+) => {
   if (isCheckboxDivider(option)) {
     return {
       divider: option.divider,
@@ -344,6 +349,15 @@ const makeOption = (option: EvaluatedBlock<GovUKCheckboxInputItem | GovUKCheckbo
     isChecked = blockValue.includes(option.value)
   }
 
+  const hasItemHint = Boolean(option.hint)
+  const attributes =
+    !hasItemHint && errorId
+      ? {
+          ...option.attributes,
+          'aria-describedby': [option.attributes?.['aria-describedby'], errorId].filter(Boolean).join(' '),
+        }
+      : option.attributes
+
   return {
     value: option.value,
     text: option.text,
@@ -354,7 +368,7 @@ const makeOption = (option: EvaluatedBlock<GovUKCheckboxInputItem | GovUKCheckbo
     conditional: getConditionalContent(option.block),
     disabled: option.disabled,
     behaviour: option.behaviour,
-    attributes: option.attributes,
+    attributes,
     label: option.label,
   }
 }
