@@ -1,9 +1,10 @@
 ---
 # Per environment values which override defaults in hmpps-arns-assessment-platform-ui/values.yaml
 
-generic-service:
-  replicaCount: 2
+autoscaling:
+  maxReplicas: 4
 
+generic-service:
   ingress:
     host: arns-assessment-platform-test.hmpps.service.justice.gov.uk
 
@@ -24,7 +25,7 @@ generic-service:
     ENVIRONMENT_NAME: TEST
     AUDIT_ENABLED: "true"
     FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "false"
-    TRAINING_SESSION_LAUNCHER_ENABLED: "true"
+    FORM_TRAINING_SESSION_LAUNCHER_ENABLED: "true"
     SMART_SURVEY_POPUP_CODE: "XF5PNV"
 
   allowlist:

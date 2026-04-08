@@ -21,6 +21,8 @@ generic-service:
     OASYS_URL: "https://arns-assessment-platform-dev.hmpps.service.justice.gov.uk/training-session-launcher/sessions"
     MPOP_URL: "https://manage-people-on-probation-dev.hmpps.service.justice.gov.uk"
     FEATURE_FLAG_URL: "https://feature-toggles-dev.hmpps.service.justice.gov.uk"
+    FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "false"
+    FORM_TRAINING_SESSION_LAUNCHER_ENABLED: "false"
     DEPLOYMENT_NAME: PR-$PR_NUMBER
     ENVIRONMENT_NAME: DEV
 
