@@ -1,9 +1,10 @@
 ---
 # Per environment values which override defaults in hmpps-arns-assessment-platform-ui/values.yaml
 
-generic-service:
-  replicaCount: 2
+autoscaling:
+  maxReplicas: 4
 
+generic-service:
   ingress:
     host: arns-assessment-platform-preprod.hmpps.service.justice.gov.uk
 
