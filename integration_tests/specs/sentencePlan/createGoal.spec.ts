@@ -285,6 +285,18 @@ test.describe('Create Goal Journey', () => {
       const sortedLabels = [...checkboxLabels].sort((a, b) => a.localeCompare(b))
       expect(checkboxLabels).toEqual(sortedLabels)
     })
+
+    test('related areas of need checkbox group has a legend', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.selectIsRelated(true)
+
+      await expect(createGoalPage.relatedAreasGroup).toBeVisible()
+      await expect(createGoalPage.relatedAreasGroup).toContainText('Accommodation')
+    })
   })
 
   test.describe('Validation', () => {
