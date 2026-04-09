@@ -8,7 +8,6 @@
   padding-bottom: 0;
 }
 
-
 .govuk-width-container--full-width {
   max-width: none;
 }
@@ -16,7 +15,7 @@
 .code-block {
   display: block;
   overflow: auto;
-  background-color: govuk-colour("black", $variant: "tint-95");
+  background-color: govuk-colour('black', $variant: 'tint-95');
   @include govuk-responsive-padding(4);
 }
 

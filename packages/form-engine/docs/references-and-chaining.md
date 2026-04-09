@@ -4,9 +4,10 @@ References are the foundation of the form-engine's data access layer. They provi
 
 ## What is a Reference?
 
-A reference is a pointer to data that gets resolved at runtime. Instead of hardcoding values, you describe *where* the value comes from, and the form-engine resolves it when needed.
+A reference is a pointer to data that gets resolved at runtime. Instead of hardcoding values, you describe _where_ the value comes from, and the form-engine resolves it when needed.
 
 This enables:
+
 - Dynamic content based on user input
 - Conditional visibility of fields and blocks
 - Validation rules that depend on other fields
@@ -18,24 +19,22 @@ This enables:
 
 The form-engine provides these reference types, each pointing to a different data source:
 
-| Reference | Data Source | Common Use |
-|-----------|-------------|------------|
-| `Answer('code')` | Field responses | Referencing user input from any field |
-| `Data('key')` | External data | API responses, database lookups, configuration |
-| `Request.*()` | Request metadata | URL, method, headers, cookies, and request state |
-| `Session('key')` | Server-side session | Persisted user/session data |
-| `Self()` | Current field | Validation rules, field-scoped logic |
-| `Item()` | Iterator item | Accessing current item in `.each()` iterations |
-| `Params('key')` | URL path params | Route parameters like `/users/:id` |
-| `Query('key')` | URL query string | Query params like `?search=term` |
-| `Post('key')` | Raw POST body | Accessing raw submission data |
+| Reference        | Data Source         | Common Use                                       |
+| ---------------- | ------------------- | ------------------------------------------------ |
+| `Answer('code')` | Field responses     | Referencing user input from any field            |
+| `Data('key')`    | External data       | API responses, database lookups, configuration   |
+| `Request.*()`    | Request metadata    | URL, method, headers, cookies, and request state |
+| `Session('key')` | Server-side session | Persisted user/session data                      |
+| `Self()`         | Current field       | Validation rules, field-scoped logic             |
+| `Item()`         | Iterator item       | Accessing current item in `.each()` iterations   |
+| `Params('key')`  | URL path params     | Route parameters like `/users/:id`               |
+| `Query('key')`   | URL query string    | Query params like `?search=term`                 |
+| `Post('key')`    | Raw POST body       | Accessing raw submission data                    |
 
 ### Import
 
 ```typescript
-import {
-  Answer, Data, Request, Session, Self, Item, Post, Params, Query, Iterator,
-} from '@form-engine/form/builders'
+import { Answer, Data, Request, Session, Self, Item, Post, Params, Query, Iterator } from '@form-engine/form/builders'
 ```
 
 ---
@@ -81,24 +80,23 @@ Answer('address.city')
 Answer('address.postcode')
 
 // Array access
-Answer('contacts.0.email')  // First contact's email
-Answer('items.1.quantity')  // Second item's quantity
+Answer('contacts.0.email') // First contact's email
+Answer('items.1.quantity') // Second item's quantity
 ```
 
 ### Common Use Cases
 
 **Dynamic content:**
+
 ```typescript
 block<HtmlBlock>({
   variant: 'html',
-  content: Format('Thank you, %1. We will contact you at %2.',
-    Answer('fullName'),
-    Answer('email')
-  ),
+  content: Format('Thank you, %1. We will contact you at %2.', Answer('fullName'), Answer('email')),
 })
 ```
 
 **Pre-populating fields:**
+
 ```typescript
 field<GovUKTextInput>({
   code: 'shippingStreet',
@@ -108,6 +106,7 @@ field<GovUKTextInput>({
 ```
 
 **Cross-field validation:**
+
 ```typescript
 field<GovUKDateInputFull>({
   code: 'endDate',
@@ -161,6 +160,7 @@ field<GovUKTextInput>({
 ```
 
 The `hidden` and `dependent` properties are typically opposites:
+
 - `hidden`: "Hide this field when the condition is true"
 - `dependent`: "Only validate this field when the condition is true"
 
@@ -184,14 +184,13 @@ Data must be loaded before you can reference it. This happens in `onAccess` tran
 
 ```typescript
 // In your effects file
-export const { effects: MyEffects, createRegistry } =
-  defineEffectsWithDeps<{ api: ApiService }>()({
-    loadUserProfile: deps => async (context: EffectFunctionContext) => {
-      const userId = context.getParams().id
-      const user = await deps.api.getUser(userId)
-      context.setData('user', user)
-    },
-  })
+export const { effects: MyEffects, createRegistry } = defineEffectsWithDeps<{ api: ApiService }>()({
+  loadUserProfile: deps => async (context: EffectFunctionContext) => {
+    const userId = context.getParams().id
+    const user = await deps.api.getUser(userId)
+    context.setData('user', user)
+  },
+})
 
 // In your step definition
 step({
@@ -201,7 +200,9 @@ step({
       effects: [MyEffects.loadUserProfile()],
     }),
   ],
-  blocks: [/* ... */],
+  blocks: [
+    /* ... */
+  ],
 })
 ```
 
@@ -230,9 +231,9 @@ Use `Request` when you need metadata from the current HTTP request without first
 ### Available Methods
 
 ```typescript
-Request.Url()              // Full request URL
-Request.Path()             // Pathname derived from the request URL
-Request.Method()           // HTTP method ('GET' | 'POST')
+Request.Url() // Full request URL
+Request.Path() // Pathname derived from the request URL
+Request.Method() // HTTP method ('GET' | 'POST')
 Request.Headers('referer') // Exact header key lookup
 Request.Cookies('session') // Exact cookie key lookup
 Request.State('user.name') // Request state with dot notation
@@ -303,6 +304,7 @@ HtmlBlock({
 ### Common Use Cases
 
 **Pre-populating fields:**
+
 ```typescript
 field<GovUKTextInput>({
   code: 'businessName',
@@ -312,15 +314,17 @@ field<GovUKTextInput>({
 ```
 
 **Dynamic dropdown options:**
+
 ```typescript
 field<GovUKRadioInput>({
   code: 'country',
   fieldset: { legend: { text: 'Country' } },
-  items: Data('countries'),  // Loaded in onAccess
+  items: Data('countries'), // Loaded in onAccess
 })
 ```
 
 **Conditional display:**
+
 ```typescript
 block<HtmlBlock>({
   variant: 'html',
@@ -331,12 +335,12 @@ block<HtmlBlock>({
 
 ### `Data()` vs `Answer()`
 
-| Aspect | Data() | Answer() |
-|--------|--------|----------|
-| Source | External (APIs, databases) | User input (form fields) |
-| When loaded | `onAccess` transitions | Form submission / defaults |
-| Typical use | Lookup data, configuration | Validation, dynamic display |
-| Mutability | Set once at load time | Changes with user interaction |
+| Aspect      | Data()                     | Answer()                      |
+| ----------- | -------------------------- | ----------------------------- |
+| Source      | External (APIs, databases) | User input (form fields)      |
+| When loaded | `onAccess` transitions     | Form submission / defaults    |
+| Typical use | Lookup data, configuration | Validation, dynamic display   |
+| Mutability  | Set once at load time      | Changes with user interaction |
 
 ---
 
@@ -419,12 +423,14 @@ field<GovUKTextInput>({
 `Self()` can only be used inside a field block. Using it elsewhere will throw a compilation error.
 
 **Valid locations:**
+
 - `validate` array
 - `hidden` condition
 - `dependent` condition
 - Any expression within the field definition
 
 **Invalid locations:**
+
 - Inside the field's own `code` property (would cause infinite recursion)
 - Outside any field block (no "self" to reference)
 - In step-level or journey-level configurations
@@ -442,6 +448,7 @@ Item(): ScopedReference
 ```
 
 Returns a scoped reference with methods to access the current item's data:
+
 - `Item().path('key')` - Access a property of the current item
 - `Item().value()` - Get the entire item value
 - `Item().index()` - Get the current iteration index (0-based)
@@ -460,10 +467,10 @@ Item().path('address.city')
 Item().value()
 
 // Get the current index
-Item().index()  // 0, 1, 2, ...
+Item().index() // 0, 1, 2, ...
 
 // Get the key (when iterating objects)
-Item().key()  // property name
+Item().key() // property name
 ```
 
 ### Transforming Arrays with Iterator.Map
@@ -476,7 +483,7 @@ field<GovUKRadioInput>({
     Iterator.Map({
       value: Item().path('code'),
       text: Item().path('name'),
-    })
+    }),
   ),
 })
 
@@ -485,7 +492,7 @@ items: Data('users').each(
   Iterator.Map({
     value: Item().path('id'),
     text: Format('%1 (%2)', Item().path('name'), Item().path('email')),
-  })
+  }),
 )
 ```
 
@@ -494,13 +501,17 @@ items: Data('users').each(
 ```typescript
 // Filter out the current selection
 items: Data('areas')
-  .each(Iterator.Filter(
-    Item().path('slug').not.match(Condition.Equals(Params('currentArea')))
-  ))
-  .each(Iterator.Map({
-    value: Item().path('value'),
-    text: Item().path('text'),
-  }))
+  .each(
+    Iterator.Filter(
+      Item().path('slug').not.match(Condition.Equals(Params('currentArea'))),
+    ),
+  )
+  .each(
+    Iterator.Map({
+      value: Item().path('value'),
+      text: Item().path('text'),
+    }),
+  )
 ```
 
 ### Finding Items
@@ -508,9 +519,11 @@ items: Data('areas')
 ```typescript
 // Find a specific item by ID
 label: Data('categories')
-  .each(Iterator.Find(
-    Item().path('id').match(Condition.Equals(Answer('selectedCategory')))
-  ))
+  .each(
+    Iterator.Find(
+      Item().path('id').match(Condition.Equals(Answer('selectedCategory'))),
+    ),
+  )
   .path('name')
 ```
 
@@ -527,18 +540,22 @@ When iterations are nested, `Item()` refers to the innermost iteration. Use `.pa
 
 // Flatten employees with their department names
 Data('departments')
-  .each(Iterator.Map(
-    Item().path('employees').each(Iterator.Map({
-      employeeName: Item().path('name'),
-      departmentName: Item().parent.path('name'),
-    }))
-  ))
+  .each(
+    Iterator.Map(
+      Item().path('employees').each(
+          Iterator.Map({
+            employeeName: Item().path('name'),
+            departmentName: Item().parent.path('name'),
+          }),
+        ),
+    ),
+  )
   .pipe(Transformer.Array.Flatten())
 
 // Scope levels:
-Item()                // Current (innermost) iteration item
-Item().parent         // Parent iteration item
-Item().parent.parent  // Grandparent iteration item
+Item() // Current (innermost) iteration item
+Item().parent // Parent iteration item
+Item().parent.parent // Grandparent iteration item
 ```
 
 ### Restrictions
@@ -567,14 +584,14 @@ Path parameters are defined in your route with a colon prefix:
 // Route: /applications/:applicationId/edit
 // URL:   /applications/abc123/edit
 
-Params('applicationId')  // Returns: 'abc123'
+Params('applicationId') // Returns: 'abc123'
 
 // Multiple parameters
 // Route: /users/:userId/orders/:orderId
 // URL:   /users/user_1/orders/order_42
 
-Params('userId')   // Returns: 'user_1'
-Params('orderId')  // Returns: 'order_42'
+Params('userId') // Returns: 'user_1'
+Params('orderId') // Returns: 'order_42'
 ```
 
 **Common use cases:**
@@ -610,9 +627,9 @@ Query parameters come after the `?` in the URL:
 ```typescript
 // URL: /search?term=widget&category=electronics&page=2
 
-Query('term')      // Returns: 'widget'
-Query('category')  // Returns: 'electronics'
-Query('page')      // Returns: '2' (always a string!)
+Query('term') // Returns: 'widget'
+Query('category') // Returns: 'electronics'
+Query('page') // Returns: '2' (always a string!)
 ```
 
 > **Note:** Query parameters are always strings. Use `Transformer.String.ToInt()` or `Transformer.String.ToFloat()` if you need a numeric value.
@@ -649,18 +666,18 @@ Post(key: string): ReferenceExpr
 // User submits form with:
 // email = "  TEST@Example.COM  "
 
-Post('email')    // Returns: "  TEST@Example.COM  " (raw input)
-Answer('email')  // Returns: "test@example.com" (after trim + lowercase formatters)
+Post('email') // Returns: "  TEST@Example.COM  " (raw input)
+Answer('email') // Returns: "test@example.com" (after trim + lowercase formatters)
 ```
 
 ### `Post()` vs `Answer()`
 
-| Aspect | Post() | Answer() |
-|--------|--------|----------|
-| Formatters applied? | No | Yes |
-| Default value fallback? | No | Yes |
-| When available | Only on form submission | Always (may be undefined) |
-| Typical use | Action transitions, debugging | Display, validation, logic |
+| Aspect                  | Post()                        | Answer()                   |
+| ----------------------- | ----------------------------- | -------------------------- |
+| Formatters applied?     | No                            | Yes                        |
+| Default value fallback? | No                            | Yes                        |
+| When available          | Only on form submission       | Always (may be undefined)  |
+| Typical use             | Action transitions, debugging | Display, validation, logic |
 
 **Common use cases:**
 
@@ -680,11 +697,11 @@ submitTransition({
 
 ### HTTP Reference Availability
 
-| Reference | Source | When Available |
-|-----------|--------|----------------|
+| Reference  | Source            | When Available                 |
+| ---------- | ----------------- | ------------------------------ |
 | `Params()` | URL path segments | Always (on routes with params) |
-| `Query()` | URL query string | Always (may be undefined) |
-| `Post()` | HTTP POST body | Only after form submission |
+| `Query()`  | URL query string  | Always (may be undefined)      |
+| `Post()`   | HTTP POST body    | Only after form submission     |
 
 ---
 
@@ -694,12 +711,12 @@ Every reference returns a chainable object that supports fluent method chaining 
 
 ### Chain Methods
 
-| Method | Purpose | Returns |
-|--------|---------|---------|
-| `.pipe(...transformers)` | Transform value through pipeline | Chainable expression |
-| `.path('key')` | Navigate to nested property | Chainable reference |
-| `.not` | Negate next `.match()` | Same type (negated) |
-| `.match(condition)` | Test value against condition | Boolean expression (terminal) |
+| Method                   | Purpose                          | Returns                       |
+| ------------------------ | -------------------------------- | ----------------------------- |
+| `.pipe(...transformers)` | Transform value through pipeline | Chainable expression          |
+| `.path('key')`           | Navigate to nested property      | Chainable reference           |
+| `.not`                   | Negate next `.match()`           | Same type (negated)           |
+| `.match(condition)`      | Test value against condition     | Boolean expression (terminal) |
 
 ### `.match()` - Condition Testing
 
@@ -750,10 +767,7 @@ Pass the reference value through one or more transformers:
 Answer('email').pipe(Transformer.String.ToLowerCase())
 
 // Multiple transformers (executed left to right)
-Answer('email').pipe(
-  Transformer.String.Trim(),
-  Transformer.String.ToLowerCase()
-)
+Answer('email').pipe(Transformer.String.Trim(), Transformer.String.ToLowerCase())
 
 // Chain with conditions
 Answer('quantity')
@@ -765,30 +779,19 @@ Answer('quantity')
 
 ```typescript
 // Clean string input
-Answer('postcode').pipe(
-  Transformer.String.Trim(),
-  Transformer.String.ToUpperCase()
-)
+Answer('postcode').pipe(Transformer.String.Trim(), Transformer.String.ToUpperCase())
 // "  sw1a 1aa  " -> "SW1A 1AA"
 
 // Parse and format numbers
-Answer('price').pipe(
-  Transformer.String.ToFloat(),
-  Transformer.Number.ToFixed(2)
-)
+Answer('price').pipe(Transformer.String.ToFloat(), Transformer.Number.ToFixed(2))
 // "99.999" -> "100.00"
 
 // Array length for validation
-Answer('selections').pipe(
-  Transformer.Array.Length()
-)
+Answer('selections').pipe(Transformer.Array.Length())
 // ["a", "b", "c"] -> 3
 
 // Calculate values
-Answer('quantity').pipe(
-  Transformer.String.ToInt(),
-  Transformer.Number.Multiply(10)
-)
+Answer('quantity').pipe(Transformer.String.ToInt(), Transformer.Number.Multiply(10))
 ```
 
 ### `.path()` - Nested Property Access

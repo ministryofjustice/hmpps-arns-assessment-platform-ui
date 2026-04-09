@@ -26,9 +26,9 @@
   max-width: 500px;
   margin: govuk-spacing(4);
   padding: govuk-spacing(6);
-  background-color: govuk-colour("white");
+  background-color: govuk-colour('white');
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  border-top: 5px solid govuk-colour("black");
+  border-top: 5px solid govuk-colour('black');
 
   @include govuk-media-query($from: tablet) {
     padding: govuk-spacing(8);
@@ -36,7 +36,7 @@
 }
 
 .moj-session-timeout-modal__countdown {
-  color: govuk-colour("black");
+  color: govuk-colour('black');
 }
 
 .moj-session-timeout-modal__actions {

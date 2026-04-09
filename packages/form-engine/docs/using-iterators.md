@@ -17,9 +17,7 @@ When iterating over objects, use `Item().key()` to access the property name and 
 
 ```typescript
 // Iterator: filter items one by one using Item()
-Data('users').each(
-  Iterator.Filter(Item().path('active').match(Condition.IsTrue()))
-)
+Data('users').each(Iterator.Filter(Item().path('active').match(Condition.IsTrue())))
 
 // Transformer: slice the entire array
 Data('users').pipe(Transformer.Array.Slice(0, 10))
@@ -45,10 +43,12 @@ Transforms each item in the collection to a new shape. The template can contain 
 ```typescript
 // Transform items to label/value pairs for a select input
 items: Data('countries')
-  .each(Iterator.Map({
-    value: Item().path('code'),
-    text: Item().path('name'),
-  }))
+  .each(
+    Iterator.Map({
+      value: Item().path('code'),
+      text: Item().path('name'),
+    }),
+  )
 
 // Extract a single property from each item
 Data('users').each(Iterator.Map(Item().path('email')))
@@ -60,21 +60,25 @@ Data('users').each(Iterator.Map(Item().path('email')))
 ```typescript
 // Transform with nested structures
 Data('orders')
-  .each(Iterator.Map({
-    id: Item().path('orderId'),
-    customer: {
-      name: Item().path('customerName'),
-      email: Item().path('customerEmail'),
-    },
-    total: Item().path('amount'),
-  }))
+  .each(
+    Iterator.Map({
+      id: Item().path('orderId'),
+      customer: {
+        name: Item().path('customerName'),
+        email: Item().path('customerEmail'),
+      },
+      total: Item().path('amount'),
+    }),
+  )
 
 // Transform with computed values using Format
 Data('users')
-  .each(Iterator.Map({
-    value: Item().path('id'),
-    text: Format('%1 (%2)', Item().path('name'), Item().path('email')),
-  }))
+  .each(
+    Iterator.Map({
+      value: Item().path('id'),
+      text: Format('%1 (%2)', Item().path('name'), Item().path('email')),
+    }),
+  )
 ```
 
 ## 2. Iterator.Filter - Keep Matching Items
@@ -86,15 +90,15 @@ Keeps only the items where the predicate evaluates to true. Returns an array of 
 ```typescript
 // Keep only active users
 Data('users')
-  .each(Iterator.Filter(
-    Item().path('active').match(Condition.IsTrue())
-  ))
+  .each(Iterator.Filter(Item().path('active').match(Condition.IsTrue())))
 
 // Exclude items matching a value
 Data('areas')
-  .each(Iterator.Filter(
-    Item().path('slug').not.match(Condition.Equals(Params('currentArea')))
-  ))
+  .each(
+    Iterator.Filter(
+      Item().path('slug').not.match(Condition.Equals(Params('currentArea'))),
+    ),
+  )
 ```
 
 ### Complex Predicates
@@ -102,21 +106,22 @@ Data('areas')
 ```typescript
 // Multiple conditions with and()
 Data('products')
-  .each(Iterator.Filter(
-    and(
-      Item().path('inStock').match(Condition.IsTrue()),
-      Item().path('price').match(Condition.LessThan(100))
-    )
-  ))
+  .each(
+    Iterator.Filter(
+      and(Item().path('inStock').match(Condition.IsTrue()), Item().path('price').match(Condition.LessThan(100))),
+    ),
+  )
 
 // Filter with or()
 Data('users')
-  .each(Iterator.Filter(
-    or(
-      Item().path('role').match(Condition.Equals('admin')),
-      Item().path('role').match(Condition.Equals('moderator'))
-    )
-  ))
+  .each(
+    Iterator.Filter(
+      or(
+        Item().path('role').match(Condition.Equals('admin')),
+        Item().path('role').match(Condition.Equals('moderator')),
+      ),
+    ),
+  )
 ```
 
 ## 3. Iterator.Find - Get First Match
@@ -128,15 +133,15 @@ Returns the first item where the predicate evaluates to true. Unlike Filter, thi
 ```typescript
 // Find user by ID
 Data('users')
-  .each(Iterator.Find(
-    Item().path('id').match(Condition.Equals(Params('userId')))
-  ))
+  .each(
+    Iterator.Find(
+      Item().path('id').match(Condition.Equals(Params('userId'))),
+    ),
+  )
 
 // Find first active item
 Data('items')
-  .each(Iterator.Find(
-    Item().path('status').match(Condition.Equals('active'))
-  ))
+  .each(Iterator.Find(Item().path('status').match(Condition.Equals('active'))))
 ```
 
 ### Using Find Results
@@ -144,18 +149,22 @@ Data('items')
 ```typescript
 // Find returns a single item, so you can access its properties
 label: Data('categories')
-  .each(Iterator.Find(
-    Item().path('id').match(Condition.Equals(Answer('selectedCategory')))
-  ))
+  .each(
+    Iterator.Find(
+      Item().path('id').match(Condition.Equals(Answer('selectedCategory'))),
+    ),
+  )
   .pipe(Transformer.Object.Get('name'))
 
 // Use in conditional logic
 dependent: when(
   Data('users')
-    .each(Iterator.Find(
-      Item().path('id').match(Condition.Equals(Params('userId')))
-    ))
-    .match(Condition.IsRequired())
+    .each(
+      Iterator.Find(
+        Item().path('id').match(Condition.Equals(Params('userId'))),
+      ),
+    )
+    .match(Condition.IsRequired()),
 )
 ```
 
@@ -168,13 +177,17 @@ Multiple iterators can be chained with successive `.each()` calls. Each iterator
 ```typescript
 // Filter to active items, then transform to select options
 items: Data('areas')
-  .each(Iterator.Filter(
-    Item().path('slug').not.match(Condition.Equals(Params('areaOfNeed')))
-  ))
-  .each(Iterator.Map({
-    value: Item().path('value'),
-    text: Item().path('text'),
-  }))
+  .each(
+    Iterator.Filter(
+      Item().path('slug').not.match(Condition.Equals(Params('areaOfNeed'))),
+    ),
+  )
+  .each(
+    Iterator.Map({
+      value: Item().path('value'),
+      text: Item().path('text'),
+    }),
+  )
 ```
 
 ### Multiple Filters
@@ -212,13 +225,17 @@ const areasOfNeed = [
 
 // Use Literal() to make static arrays iterable
 items: Literal(areasOfNeed)
-  .each(Iterator.Filter(
-    Item().path('slug').not.match(Condition.Equals(Params('currentArea')))
-  ))
-  .each(Iterator.Map({
-    value: Item().path('value'),
-    text: Item().path('text'),
-  }))
+  .each(
+    Iterator.Filter(
+      Item().path('slug').not.match(Condition.Equals(Params('currentArea'))),
+    ),
+  )
+  .each(
+    Iterator.Map({
+      value: Item().path('value'),
+      text: Item().path('text'),
+    }),
+  )
 ```
 
 ## 6. Item() References
@@ -228,11 +245,11 @@ Inside iterators, use `Item()` to reference the current element being processed.
 ### Property Access
 
 ```typescript
-Item().path('name')           // Access item.name
-Item().path('address.city')   // Access nested property
-Item().value()                // Access the entire item
-Item().index()                // Access the 0-based iteration index
-Item().key()                  // Access the key when iterating over objects
+Item().path('name') // Access item.name
+Item().path('address.city') // Access nested property
+Item().value() // Access the entire item
+Item().index() // Access the 0-based iteration index
+Item().key() // Access the key when iterating over objects
 ```
 
 ### Parent Scope (Nested Iterations)
@@ -240,8 +257,8 @@ Item().key()                  // Access the key when iterating over objects
 When iterating within an iteration, use `.parent` to access outer scope:
 
 ```typescript
-Item().parent.path('groupId')         // Parent item's groupId
-Item().parent.parent.path('orgId')    // Grandparent's orgId
+Item().parent.path('groupId') // Parent item's groupId
+Item().parent.parent.path('orgId') // Grandparent's orgId
 ```
 
 ### Using Index
@@ -249,10 +266,12 @@ Item().parent.parent.path('orgId')    // Grandparent's orgId
 ```typescript
 // Include index in transformed output
 Data('items')
-  .each(Iterator.Map({
-    position: Item().index(),
-    name: Item().path('name'),
-  }))
+  .each(
+    Iterator.Map({
+      position: Item().index(),
+      name: Item().path('name'),
+    }),
+  )
 
 // Use index in dynamic field codes
 field({
@@ -276,12 +295,16 @@ You can nest iterators to process hierarchical data structures. Use `Item().pare
 
 // Flatten employees with their department names
 Data('departments')
-  .each(Iterator.Map(
-    Item().path('employees').each(Iterator.Map({
-      employeeName: Item().path('name'),
-      departmentName: Item().parent.path('name'),
-    }))
-  ))
+  .each(
+    Iterator.Map(
+      Item().path('employees').each(
+          Iterator.Map({
+            employeeName: Item().path('name'),
+            departmentName: Item().parent.path('name'),
+          }),
+        ),
+    ),
+  )
   .pipe(Transformer.Array.Flatten())
 
 // Result: [
@@ -296,14 +319,14 @@ Data('departments')
 ```typescript
 // Get active employees from each department
 Data('departments')
-  .each(Iterator.Map({
-    department: Item().path('name'),
-    activeEmployees: Item().path('employees')
-      .each(Iterator.Filter(
-        Item().path('active').match(Condition.IsTrue())
-      ))
-      .each(Iterator.Map(Item().path('name'))),
-  }))
+  .each(
+    Iterator.Map({
+      department: Item().path('name'),
+      activeEmployees: Item().path('employees')
+        .each(Iterator.Filter(Item().path('active').match(Condition.IsTrue())))
+        .each(Iterator.Map(Item().path('name'))),
+    }),
+  )
 ```
 
 ### Multiple Parent Levels
@@ -311,15 +334,21 @@ Data('departments')
 ```typescript
 // Three levels deep: organisation → department → employee
 Data('organisations')
-  .each(Iterator.Map(
-    Item().path('departments').each(Iterator.Map(
-      Item().path('employees').each(Iterator.Map({
-        orgName: Item().parent.parent.path('name'),
-        deptName: Item().parent.path('name'),
-        empName: Item().path('name'),
-      }))
-    ))
-  ))
+  .each(
+    Iterator.Map(
+      Item().path('departments').each(
+          Iterator.Map(
+            Item().path('employees').each(
+                Iterator.Map({
+                  orgName: Item().parent.parent.path('name'),
+                  deptName: Item().parent.path('name'),
+                  empName: Item().path('name'),
+                }),
+              ),
+          ),
+        ),
+    ),
+  )
   .pipe(Transformer.Array.Flatten())
   .pipe(Transformer.Array.Flatten())
 ```
@@ -329,19 +358,19 @@ Data('organisations')
 ```typescript
 // Create unique field codes using parent context
 Data('sections')
-  .each(Iterator.Map(
-    Item().path('questions').each(Iterator.Map(
-      field({
-        variant: 'govukTextInput',
-        code: Format(
-          'section_%1_question_%2',
-          Item().parent.path('sectionId'),
-          Item().path('questionId')
+  .each(
+    Iterator.Map(
+      Item().path('questions').each(
+          Iterator.Map(
+            field({
+              variant: 'govukTextInput',
+              code: Format('section_%1_question_%2', Item().parent.path('sectionId'), Item().path('questionId')),
+              label: Item().path('label'),
+            }),
+          ),
         ),
-        label: Item().path('label'),
-      })
-    ))
-  ))
+    ),
+  )
 ```
 
 ## 8. Iterating Over Objects
@@ -360,11 +389,13 @@ Iterators work with both arrays and objects. When you iterate over an object, ea
 
 // Transform to array with key included
 Data('scores')
-  .each(Iterator.Map({
-    slug: Item().key(),           // 'accommodation', 'finances', 'health'
-    score: Item().path('score'),  // 5, 3, 4
-    label: Item().path('label'),  // 'Accommodation', 'Finances', 'Health'
-  }))
+  .each(
+    Iterator.Map({
+      slug: Item().key(), // 'accommodation', 'finances', 'health'
+      score: Item().path('score'), // 5, 3, 4
+      label: Item().path('label'), // 'Accommodation', 'Finances', 'Health'
+    }),
+  )
 
 // Result: [
 //   { slug: 'accommodation', score: 5, label: 'Accommodation' },
@@ -382,10 +413,12 @@ When object values are primitives (not objects), access them via `@value`:
 // scores: { accommodation: 5, finances: 3, health: 4 }
 
 Data('scores')
-  .each(Iterator.Map({
-    area: Item().key(),           // 'accommodation', 'finances', 'health'
-    score: Item().path('@value'), // 5, 3, 4
-  }))
+  .each(
+    Iterator.Map({
+      area: Item().key(), // 'accommodation', 'finances', 'health'
+      score: Item().path('@value'), // 5, 3, 4
+    }),
+  )
 
 // Result: [
 //   { area: 'accommodation', score: 5 },
@@ -399,13 +432,13 @@ Data('scores')
 ```typescript
 // Keep only entries where score > 3
 Data('scores')
-  .each(Iterator.Filter(
-    Item().path('score').match(Condition.Number.GreaterThan(3))
-  ))
-  .each(Iterator.Map({
-    area: Item().key(),
-    score: Item().path('score'),
-  }))
+  .each(Iterator.Filter(Item().path('score').match(Condition.Number.GreaterThan(3))))
+  .each(
+    Iterator.Map({
+      area: Item().key(),
+      score: Item().path('score'),
+    }),
+  )
 ```
 
 ### Finding an Object Entry
@@ -413,9 +446,7 @@ Data('scores')
 ```typescript
 // Find the entry with highest priority
 Data('areas')
-  .each(Iterator.Find(
-    Item().path('isPriority').match(Condition.IsTrue())
-  ))
+  .each(Iterator.Find(Item().path('isPriority').match(Condition.IsTrue())))
   .pipe(Transformer.Object.Get('label'))
 ```
 
@@ -429,11 +460,13 @@ field<GovUKCheckboxInput>({
   variant: 'govukCheckboxInput',
   code: 'selectedAreas',
   items: Data('areas')
-    .each(Iterator.Map({
-      value: Item().path('id'),
-      text: Item().path('name'),
-      hint: { text: Item().path('description') },
-    })),
+    .each(
+      Iterator.Map({
+        value: Item().path('id'),
+        text: Item().path('name'),
+        hint: { text: Item().path('description') },
+      }),
+    ),
 })
 ```
 
@@ -445,13 +478,17 @@ field<GovUKSelect>({
   variant: 'govukSelect',
   code: 'relatedArea',
   items: Data('areas')
-    .each(Iterator.Filter(
-      Item().path('id').not.match(Condition.Equals(Answer('primaryArea')))
-    ))
-    .each(Iterator.Map({
-      value: Item().path('id'),
-      text: Item().path('name'),
-    })),
+    .each(
+      Iterator.Filter(
+        Item().path('id').not.match(Condition.Equals(Answer('primaryArea'))),
+      ),
+    )
+    .each(
+      Iterator.Map({
+        value: Item().path('id'),
+        text: Item().path('name'),
+      }),
+    ),
 })
 ```
 
@@ -464,10 +501,12 @@ block<HtmlBlock>({
   content: Format(
     'Selected: %1',
     Data('categories')
-      .each(Iterator.Find(
-        Item().path('id').match(Condition.Equals(Answer('categoryId')))
-      ))
-      .pipe(Transformer.Object.Get('name'))
+      .each(
+        Iterator.Find(
+          Item().path('id').match(Condition.Equals(Answer('categoryId'))),
+        ),
+      )
+      .pipe(Transformer.Object.Get('name')),
   ),
 })
 ```

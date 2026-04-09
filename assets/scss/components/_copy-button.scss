@@ -12,15 +12,15 @@
   padding: 4px 10px 2px;
   border: 1px solid $copy-button-colour;
   color: $copy-button-colour;
-  background-color: govuk-colour("white");
-  box-shadow: 0 2px 0 0 govuk-colour("green");
+  background-color: govuk-colour('white');
+  box-shadow: 0 2px 0 0 govuk-colour('green');
   text-align: center;
   text-decoration: none;
   cursor: pointer;
   @include govuk-font(16);
 
   &:hover {
-    background-color: govuk-colour("green", $variant: "tint-95");
+    background-color: govuk-colour('green', $variant: 'tint-95');
   }
 
   &:focus:not(:hover) {
@@ -48,5 +48,5 @@
 app-copy-code {
   display: block;
   position: relative;
-  @include govuk-responsive-margin(4, "bottom");
+  @include govuk-responsive-margin(4, 'bottom');
 }

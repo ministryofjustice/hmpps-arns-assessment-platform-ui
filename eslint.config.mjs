@@ -1,4 +1,5 @@
 import hmppsConfig from '@ministryofjustice/eslint-config-hmpps'
+import prettierConfig from './prettier.config.mjs'
 
 export default [
   ...hmppsConfig({
@@ -74,19 +75,7 @@ export default [
   {
     name: 'prettier-overrides',
     rules: {
-      'prettier/prettier': [
-        'warn',
-        {
-          trailingComma: 'all',
-          singleQuote: true,
-          printWidth: 120,
-          semi: false,
-          arrowParens: 'avoid',
-          alignObjectProperties: 'none',
-          returnParentheses: false,
-          plugins: ['@yikes2000/prettier-plugin-merge-extras'],
-        },
-      ],
+      'prettier/prettier': ['warn', prettierConfig],
     },
   },
 ]

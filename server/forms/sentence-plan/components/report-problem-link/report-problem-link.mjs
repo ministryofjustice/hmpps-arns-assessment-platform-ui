@@ -1,19 +1,19 @@
 // Phase banner "report a problem" link: scroll to and open the expander
-document.querySelectorAll("[data-report-problem-link]").forEach((link) => {
-  link.addEventListener("click", (e) => {
-    const target = document.getElementById("report-a-problem");
-    if (!target) return;
+document.querySelectorAll('[data-report-problem-link]').forEach(link => {
+  link.addEventListener('click', e => {
+    const target = document.getElementById('report-a-problem')
+    if (!target) return
 
-    e.preventDefault();
-    const details = target.querySelector("details");
+    e.preventDefault()
+    const details = target.querySelector('details')
     if (details && !details.open) {
-      details.open = true;
+      details.open = true
     }
-    target.scrollIntoView({ behavior: "smooth" });
+    target.scrollIntoView({ behavior: 'smooth' })
 
-    const summary = target.querySelector("summary");
+    const summary = target.querySelector('summary')
     if (summary) {
-      summary.focus();
+      summary.focus()
     }
-  });
-});
+  })
+})

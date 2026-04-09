@@ -1,4 +1,4 @@
-@use "sass:map";
+@use 'sass:map';
 
 $high-needs-score-colour: #d4351c;
 $low-needs-score-colour: #28a197;
@@ -16,7 +16,7 @@ $white-needs-score-background-colour: #ffffff;
 
 .needs-score {
   width: map.get($govuk-grid-widths, 'full');
-  @include govuk-media-query($from: "desktop") {
+  @include govuk-media-query($from: 'desktop') {
     // We don't want this to resize when at desktop sizes
     width: 350px;
   }
@@ -45,8 +45,8 @@ $white-needs-score-background-colour: #ffffff;
 .needs-score-label__card {
   width: 76px;
   margin: 0;
-  background-color: govuk-colour("white");
-  border: 1px solid govuk-colour("black");
+  background-color: govuk-colour('white');
+  border: 1px solid govuk-colour('black');
 
   & h3,
   & p {
@@ -55,11 +55,11 @@ $white-needs-score-background-colour: #ffffff;
   }
 
   & h3 {
-    @include govuk-font(16, "bold");
+    @include govuk-font(16, 'bold');
   }
 
   & p {
-    @include govuk-font(16, "regular");
+    @include govuk-font(16, 'regular');
   }
 }
 
@@ -68,7 +68,7 @@ $white-needs-score-background-colour: #ffffff;
   height: 0;
   border-right: 16px solid transparent;
   border-left: 16px solid transparent;
-  border-top: 16px solid govuk-colour("black");
+  border-top: 16px solid govuk-colour('black');
   position: relative;
   top: 0;
   left: 23px;
@@ -76,7 +76,7 @@ $white-needs-score-background-colour: #ffffff;
 }
 
 .needs-score-label__card-pointer--white::after {
-  border-top: 15px solid govuk-colour("white") !important;
+  border-top: 15px solid govuk-colour('white') !important;
 }
 
 .needs-score-label__card-pointer::after {
@@ -84,27 +84,27 @@ $white-needs-score-background-colour: #ffffff;
   height: 0;
   border-right: 15px solid transparent;
   border-left: 15px solid transparent;
-  border-top: 15px solid govuk-colour("white");
+  border-top: 15px solid govuk-colour('white');
   position: absolute;
   top: -16px;
   left: -15px;
-  content: "";
+  content: '';
 }
 
 .needsScoreMain {
-  @include govuk-font($size: 19, $weight: "bold");
+  @include govuk-font($size: 19, $weight: 'bold');
   margin-bottom: 0;
 }
 
 .needsScoreSub {
-  margin-bottom: govuk-spacing(1)
+  margin-bottom: govuk-spacing(1);
 }
 
 @mixin needs-score-bar--small($highlightedNumber) {
   margin-bottom: 15px;
   & {
     &::after {
-      content: "" "";
+      content: '' '';
       display: block;
       visibility: hidden;
       clear: both;
@@ -118,21 +118,21 @@ $white-needs-score-background-colour: #ffffff;
     width: 10%;
     display: inline;
     float: left;
-    border-top: 1px solid govuk-colour("black");
-    border-bottom: 1px solid govuk-colour("black");
+    border-top: 1px solid govuk-colour('black');
+    border-bottom: 1px solid govuk-colour('black');
     box-sizing: border-box;
   }
 
   & > div.thresholdmarker-leftside {
-    border-right: 5px solid govuk-colour("black") !important;
+    border-right: 5px solid govuk-colour('black') !important;
   }
 
   & > div.thresholdmarker-rightside {
-    border-left: 5px solid govuk-colour("black") !important;
+    border-left: 5px solid govuk-colour('black') !important;
   }
 
   & > div:nth-child(1) {
-    border-left: 1px solid govuk-colour("black");
+    border-left: 1px solid govuk-colour('black');
   }
 
   & > .highscoring {
@@ -147,24 +147,24 @@ $white-needs-score-background-colour: #ffffff;
     &::before {
       position: relative;
       text-align: center;
-      color: govuk-colour("black");
+      color: govuk-colour('black');
       float: left;
-      content: "0";
+      content: '0';
       left: -5%;
       bottom: -35px;
-      @include govuk-font(16, "regular");
+      @include govuk-font(16, 'regular');
     }
 
     &::after {
       position: relative;
       text-align: center;
-      color: govuk-colour("black");
+      color: govuk-colour('black');
       margin-bottom: -20px;
       float: right;
-      content: "1";
+      content: '1';
       right: -5%;
       bottom: -35px;
-      @include govuk-font(16, "regular");
+      @include govuk-font(16, 'regular');
     }
   }
 
@@ -173,26 +173,26 @@ $white-needs-score-background-colour: #ffffff;
       &::before {
         position: relative;
         text-align: center;
-        color: govuk-colour("black");
+        color: govuk-colour('black');
         float: right;
-        content: "#{$i}";
+        content: '#{$i}';
         left: 5%;
         bottom: -35px;
-        @include govuk-font(16, "regular");
+        @include govuk-font(16, 'regular');
       }
     }
   }
 
   & > div:nth-child(#{$highlightedNumber}) {
     &::before {
-      @include govuk-font(16, "bold");
+      @include govuk-font(16, 'bold');
     }
   }
 }
 
 .needs-score-bar--small-tenths {
   & > div:last-child {
-    border-right: 1px solid govuk-colour("black");
+    border-right: 1px solid govuk-colour('black');
   }
 
   & > div {
@@ -201,7 +201,7 @@ $white-needs-score-background-colour: #ffffff;
 }
 
 .needs-score-bar--small-0 {
-  @include needs-score-bar--small(0)
+  @include needs-score-bar--small(0);
 }
 
 .needs-score-bar--small-1 {

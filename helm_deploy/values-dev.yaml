@@ -6,24 +6,24 @@ generic-service:
     host: arns-assessment-platform-dev.hmpps.service.justice.gov.uk
 
   env:
-    INGRESS_URL: "https://arns-assessment-platform-dev.hmpps.service.justice.gov.uk"
-    HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
-    HMPPS_ARNS_HANDOVER_URL: "https://arns-handover-service-dev.hmpps.service.justice.gov.uk"
-    TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
-    AAP_API_URL: "https://arns-assessment-platform-api-dev.hmpps.service.justice.gov.uk"
-    COORDINATOR_API_URL: "https://arns-coordinator-api-dev.hmpps.service.justice.gov.uk"
-    DELIUS_API_URL: "https://sentence-plan-and-delius-dev.hmpps.service.justice.gov.uk"
-    ARNS_API_URL: "https://assess-risks-and-needs-dev.hmpps.service.justice.gov.uk"
-    SAN_URL: "https://strengths-based-needs-assessments-dev.hmpps.service.justice.gov.uk"
-    OASYS_URL: "https://arns-assessment-platform-dev.hmpps.service.justice.gov.uk/training-session-launcher/sessions"
-    MPOP_URL: "https://manage-people-on-probation-dev.hmpps.service.justice.gov.uk"
-    FEATURE_FLAG_URL: "https://feature-toggles-dev.hmpps.service.justice.gov.uk"
-    SERVICE_NOW_FORM_URL: "#service-now-link"
+    INGRESS_URL: 'https://arns-assessment-platform-dev.hmpps.service.justice.gov.uk'
+    HMPPS_AUTH_URL: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth'
+    HMPPS_ARNS_HANDOVER_URL: 'https://arns-handover-service-dev.hmpps.service.justice.gov.uk'
+    TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-dev.prison.service.justice.gov.uk'
+    AAP_API_URL: 'https://arns-assessment-platform-api-dev.hmpps.service.justice.gov.uk'
+    COORDINATOR_API_URL: 'https://arns-coordinator-api-dev.hmpps.service.justice.gov.uk'
+    DELIUS_API_URL: 'https://sentence-plan-and-delius-dev.hmpps.service.justice.gov.uk'
+    ARNS_API_URL: 'https://assess-risks-and-needs-dev.hmpps.service.justice.gov.uk'
+    SAN_URL: 'https://strengths-based-needs-assessments-dev.hmpps.service.justice.gov.uk'
+    OASYS_URL: 'https://arns-assessment-platform-dev.hmpps.service.justice.gov.uk/training-session-launcher/sessions'
+    MPOP_URL: 'https://manage-people-on-probation-dev.hmpps.service.justice.gov.uk'
+    FEATURE_FLAG_URL: 'https://feature-toggles-dev.hmpps.service.justice.gov.uk'
+    SERVICE_NOW_FORM_URL: '#service-now-link'
     ENVIRONMENT_NAME: DEV
-    AUDIT_ENABLED: "true"
-    FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "true"
-    FORM_TRAINING_SESSION_LAUNCHER_ENABLED: "true"
-    SMART_SURVEY_POPUP_CODE: "XF5PNV"
+    AUDIT_ENABLED: 'true'
+    FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: 'true'
+    FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'true'
+    SMART_SURVEY_POPUP_CODE: 'XF5PNV'
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui

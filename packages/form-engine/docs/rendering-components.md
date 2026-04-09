@@ -1,6 +1,6 @@
 # Components
 
-Components are renderers that transform block/field definitions into HTML.  For using blocks and fields in forms,
+Components are renderers that transform block/field definitions into HTML. For using blocks and fields in forms,
 see [Blocks and Fields](./blocks-and-fields.md).
 
 ## What is a Component?
@@ -77,10 +77,7 @@ export interface MyCard extends BlockDefinition {
   href?: ConditionalString
 }
 
-async function cardRenderer(
-  block: EvaluatedBlock<MyCard>,
-  nunjucksEnv: nunjucks.Environment,
-): Promise<string> {
+async function cardRenderer(block: EvaluatedBlock<MyCard>, nunjucksEnv: nunjucks.Environment): Promise<string> {
   const params = {
     title: block.title,
     description: block.description,
@@ -112,12 +109,10 @@ async function starRatingRenderer(
   nunjucksEnv: nunjucks.Environment,
 ): Promise<string> {
   const params = {
-    name: block.code,           // Form field name
+    name: block.code, // Form field name
     id: block.code,
-    value: block.value,         // Current value from answers
-    errorMessage: block.errors?.length
-      ? { text: block.errors[0].message }
-      : undefined,
+    value: block.value, // Current value from answers
+    errorMessage: block.errors?.length ? { text: block.errors[0].message } : undefined,
     label: block.label,
     maxStars: block.maxStars ?? 5,
   }
@@ -137,7 +132,9 @@ import FormEngine from '@form-engine/core/FormEngine'
 import { myAlertBox } from './components/myAlertBox'
 import { myStarRating } from './components/myStarRating'
 
-const formEngine = new FormEngine({ /* ... */ })
+const formEngine = new FormEngine({
+  /* ... */
+})
   .registerComponents({
     ...myAlertBox,
     ...myStarRating,
@@ -156,7 +153,7 @@ Put complex logic in the renderer function, not the template:
 // DO: Transform data in the renderer
 async function renderer(block, nunjucksEnv) {
   const params = {
-    displayDate: formatDate(block.date),  // Transform here
+    displayDate: formatDate(block.date), // Transform here
     cssClass: block.type === 'urgent' ? 'alert--urgent' : 'alert--normal',
   }
   return nunjucksEnv.render('template.njk', { params })
@@ -218,11 +215,11 @@ block<HtmlBlock>({
 })
 ```
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `content` | `ConditionalString` | Yes | Raw HTML to render |
-| `classes` | `ConditionalString` | No | CSS classes for wrapper div |
-| `attributes` | `Record<string, any>` | No | HTML attributes for wrapper div |
+| Property     | Type                  | Required | Description                     |
+| ------------ | --------------------- | -------- | ------------------------------- |
+| `content`    | `ConditionalString`   | Yes      | Raw HTML to render              |
+| `classes`    | `ConditionalString`   | No       | CSS classes for wrapper div     |
+| `attributes` | `Record<string, any>` | No       | HTML attributes for wrapper div |
 
 ### TemplateWrapper
 
@@ -240,23 +237,24 @@ block<TemplateWrapper>({
     </section>
   `,
   values: {
-    title: 'My Title',           // Replaces {{title}}
+    title: 'My Title', // Replaces {{title}}
   },
   slots: {
-    content: [                    // Replaces {{slot:content}}
+    content: [
+      // Replaces {{slot:content}}
       block<HtmlBlock>({ variant: 'html', content: '...' }),
     ],
   },
 })
 ```
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `template` | `ConditionalString` | Yes | HTML template with `{{value}}` and `{{slot:name}}` markers |
-| `values` | `Record<string, ConditionalString>` | No | Values to inject at `{{name}}` markers |
-| `slots` | `Record<string, BlockDefinition[]>` | No | Blocks to render at `{{slot:name}}` markers |
-| `classes` | `ConditionalString` | No | CSS classes for wrapper div |
-| `attributes` | `Record<string, any>` | No | HTML attributes for wrapper div |
+| Property     | Type                                | Required | Description                                                |
+| ------------ | ----------------------------------- | -------- | ---------------------------------------------------------- |
+| `template`   | `ConditionalString`                 | Yes      | HTML template with `{{value}}` and `{{slot:name}}` markers |
+| `values`     | `Record<string, ConditionalString>` | No       | Values to inject at `{{name}}` markers                     |
+| `slots`      | `Record<string, BlockDefinition[]>` | No       | Blocks to render at `{{slot:name}}` markers                |
+| `classes`    | `ConditionalString`                 | No       | CSS classes for wrapper div                                |
+| `attributes` | `Record<string, any>`               | No       | HTML attributes for wrapper div                            |
 
 ### CodeBlock
 
@@ -273,12 +271,12 @@ block<CodeBlock>({
 })
 ```
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `code` | `ConditionalString` | Yes | The code to display |
-| `language` | `CodeLanguage` | No | Language for highlighting (default: `'typescript'`) |
-| `title` | `ConditionalString` | No | Title displayed above the code block |
-| `classes` | `ConditionalString` | No | Additional CSS classes |
+| Property   | Type                | Required | Description                                         |
+| ---------- | ------------------- | -------- | --------------------------------------------------- |
+| `code`     | `ConditionalString` | Yes      | The code to display                                 |
+| `language` | `CodeLanguage`      | No       | Language for highlighting (default: `'typescript'`) |
+| `title`    | `ConditionalString` | No       | Title displayed above the code block                |
+| `classes`  | `ConditionalString` | No       | Additional CSS classes                              |
 
 **Supported languages:** `typescript`, `javascript`, `html`, `css`, `scss`, `json`, `bash`, `shell`, `yaml`, `markdown`, `plaintext`
 
@@ -307,17 +305,21 @@ block<CollectionBlock>({
         description: Item().path('details'),
       }),
     ),
-  template: [ /* blocks using Item() */ ],
-  fallback: [ /* blocks when empty */ ],
+  template: [
+    /* blocks using Item() */
+  ],
+  fallback: [
+    /* blocks when empty */
+  ],
 })
 ```
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `collection` | `IteratorExpr` | Yes | Data source with optional Iterator filtering/mapping |
-| `template` | `BlockDefinition[]` | Yes | Blocks to render for each item (use `Item()` to access data) |
-| `fallback` | `BlockDefinition[]` | No | Blocks to render when collection is empty |
-| `classes` | `ConditionalString` | No | CSS classes for wrapper div |
-| `attributes` | `Record<string, any>` | No | HTML attributes for wrapper div |
+| Property     | Type                  | Required | Description                                                  |
+| ------------ | --------------------- | -------- | ------------------------------------------------------------ |
+| `collection` | `IteratorExpr`        | Yes      | Data source with optional Iterator filtering/mapping         |
+| `template`   | `BlockDefinition[]`   | Yes      | Blocks to render for each item (use `Item()` to access data) |
+| `fallback`   | `BlockDefinition[]`   | No       | Blocks to render when collection is empty                    |
+| `classes`    | `ConditionalString`   | No       | CSS classes for wrapper div                                  |
+| `attributes` | `Record<string, any>` | No       | HTML attributes for wrapper div                              |
 
 See [Using Iterators](./using-iterators.md) for details on `Iterator.Map`, `Iterator.Filter`, and `Item()`.

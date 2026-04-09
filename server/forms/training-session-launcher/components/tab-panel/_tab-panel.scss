@@ -1,7 +1,7 @@
 // Tab Panel Component
 // Generic two-column layout with selectable items and content panels
 
-@import "govuk-frontend/dist/govuk/base";
+@import 'govuk-frontend/dist/govuk/base';
 
 .tab-panel {
   margin-bottom: govuk-spacing(6);
@@ -10,7 +10,7 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: minmax(0, 1fr);
-    background: govuk-colour("white");
+    background: govuk-colour('white');
     border: 1px solid #d9dadb;
     min-height: 500px;
     max-height: 70vh;
@@ -23,7 +23,7 @@
 
   // Left sidebar
   &__sidebar {
-    background-color: govuk-colour("black", $variant: "tint-95");
+    background-color: govuk-colour('black', $variant: 'tint-95');
     padding: govuk-spacing(4);
     overflow-y: auto;
     min-height: 0;
@@ -59,41 +59,43 @@
       flex-direction: column;
       width: 100%;
       padding: govuk-spacing(3);
-      background-color: govuk-colour("white");
+      background-color: govuk-colour('white');
       border: 2px solid transparent;
       border-radius: 0;
       text-align: left;
       cursor: pointer;
-      transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+      transition:
+        border-color 0.15s ease-in-out,
+        background-color 0.15s ease-in-out;
 
       &:hover {
-        background-color: govuk-colour("black", $variant: "tint-95");
-        border-color: govuk-colour("black", $variant: "tint-25");
+        background-color: govuk-colour('black', $variant: 'tint-95');
+        border-color: govuk-colour('black', $variant: 'tint-25');
       }
 
       &:focus-visible {
-        outline: 3px solid govuk-colour("yellow");
+        outline: 3px solid govuk-colour('yellow');
         outline-offset: 0;
-        background-color: govuk-colour("yellow");
+        background-color: govuk-colour('yellow');
       }
 
       &--selected {
-        border-color: govuk-colour("black");
-        background-color: govuk-colour("white");
+        border-color: govuk-colour('black');
+        background-color: govuk-colour('white');
 
         &:hover {
-          background-color: govuk-colour("white");
+          background-color: govuk-colour('white');
         }
       }
     }
 
     &-label {
       @include govuk-font($size: 19, $weight: bold);
-      color: govuk-colour("black");
+      color: govuk-colour('black');
     }
 
     &-sublabel {
-      color: govuk-colour("black", $variant: "tint-25");
+      color: govuk-colour('black', $variant: 'tint-25');
       margin-top: govuk-spacing(1);
     }
   }
@@ -107,7 +109,7 @@
 
     // Firefox scrollbar styling
     scrollbar-width: auto;
-    scrollbar-color: govuk-functional-colour(border) govuk-colour("black", $variant: "tint-95");
+    scrollbar-color: govuk-functional-colour(border) govuk-colour('black', $variant: 'tint-95');
 
     // WebKit (Chrome, Safari, Edge) scrollbar styling
     &::-webkit-scrollbar {
@@ -116,17 +118,17 @@
     }
 
     &::-webkit-scrollbar-track {
-      background: govuk-colour("black", $variant: "tint-95");
+      background: govuk-colour('black', $variant: 'tint-95');
       border-radius: 5px;
     }
 
     &::-webkit-scrollbar-thumb {
       background-color: govuk-functional-colour(border);
       border-radius: 5px;
-      border: 2px solid govuk-colour("black", $variant: "tint-95");
+      border: 2px solid govuk-colour('black', $variant: 'tint-95');
 
       &:hover {
-        background-color: govuk-colour("black", $variant: "tint-25");
+        background-color: govuk-colour('black', $variant: 'tint-25');
       }
     }
 
@@ -143,5 +145,4 @@
       display: block;
     }
   }
-
 }

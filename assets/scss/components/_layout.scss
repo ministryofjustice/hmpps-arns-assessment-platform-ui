@@ -17,8 +17,8 @@ $app-layout-breakpoint: 800px;
 
 .app-layout__sidebar {
   z-index: 1;
-  background-color: govuk-colour("white");
-  @include govuk-responsive-padding(6, "bottom");
+  background-color: govuk-colour('white');
+  @include govuk-responsive-padding(6, 'bottom');
 
   @include govuk-media-query($from: $app-layout-breakpoint) {
     border-right: 1px solid govuk-functional-colour(border);
@@ -31,7 +31,7 @@ $app-layout-breakpoint: 800px;
   @include govuk-responsive-padding(6);
 
   @include govuk-media-query($from: $app-layout-breakpoint) {
-    @include govuk-responsive-padding(9, "left");
-    @include govuk-responsive-padding(9, "right");
+    @include govuk-responsive-padding(9, 'left');
+    @include govuk-responsive-padding(9, 'right');
   }
 }

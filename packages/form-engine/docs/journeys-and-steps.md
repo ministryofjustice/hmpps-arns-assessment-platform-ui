@@ -90,12 +90,7 @@ title: 'Register a Food Business'
 Array of step definitions that make up the journey:
 
 ```typescript
-steps: [
-  welcomeStep,
-  personalDetailsStep,
-  businessDetailsStep,
-  reviewStep,
-]
+steps: [welcomeStep, personalDetailsStep, businessDetailsStep, reviewStep]
 ```
 
 ### `children` (Optional)
@@ -108,7 +103,9 @@ children: [
     code: 'business-details',
     title: 'Business Details',
     path: '/business-details',
-    steps: [/* ... */],
+    steps: [
+      /* ... */
+    ],
   }),
 ]
 ```
@@ -122,6 +119,7 @@ entryPath: '/welcome'
 ```
 
 **Resolution priority:**
+
 1. `entryPath` on the journey (if specified)
 2. First step with `isEntryPoint: true`
 
@@ -354,12 +352,7 @@ export default journey({
     },
   },
 
-  steps: [
-    personalDetailsStep,
-    businessDetailsStep,
-    reviewStep,
-    confirmationStep,
-  ],
+  steps: [personalDetailsStep, businessDetailsStep, reviewStep, confirmationStep],
 })
 ```
 
@@ -379,8 +372,8 @@ export default journey({
   steps: [hubStep],
 
   children: [
-    personalSection,   // path: /registration/personal/...
-    businessSection,   // path: /registration/business/...
+    personalSection, // path: /registration/personal/...
+    businessSection, // path: /registration/business/...
   ],
 })
 ```

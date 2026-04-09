@@ -1,6 +1,6 @@
 # Validation System
 
-The form-engine uses a declarative validation system where you define conditions that trigger error messages. Validation rules specify *when* an error should appear and *what* message to display.
+The form-engine uses a declarative validation system where you define conditions that trigger error messages. Validation rules specify _when_ an error should appear and _what_ message to display.
 
 ## How Validation Works
 
@@ -9,17 +9,12 @@ Each field can have a `validate` array containing validation rules. Each rule sp
 - **when** - A predicate that, when `true`, triggers the error
 - **message** - The error message to display
 
-Think of it as: *"Show this error **when** this condition is true."*
+Think of it as: _"Show this error **when** this condition is true."_
 
 ### Import
 
 ```typescript
-import {
-  field, validation,
-  Self, Answer,
-  Condition,
-  and, or, not
-} from '@form-engine/form/builders'
+import { field, validation, Self, Answer, Condition, and, or, not } from '@form-engine/form/builders'
 ```
 
 ---
@@ -88,7 +83,7 @@ Metadata for error handling, particularly useful for composite fields like date 
 validation({
   when: Self().path('month').not.match(Condition.Number.Between(1, 12)),
   message: 'Month must be between 1 and 12',
-  details: { field: 'month' },  // Highlights the month input
+  details: { field: 'month' }, // Highlights the month input
 })
 ```
 
@@ -128,7 +123,7 @@ validate: [
 
 ## The "Negative Match" Pattern
 
-Validation uses negative matching: *"show error when value is NOT valid"*.
+Validation uses negative matching: _"show error when value is NOT valid"_.
 
 ```typescript
 // DO: Negative match - "show error when NOT valid"
@@ -436,17 +431,14 @@ field<GovUKTextInput>({
       when: and(
         or(
           Answer('contactMethod').match(Condition.Equals('phone')),
-          Answer('smsNotifications').match(Condition.Equals('yes'))
+          Answer('smsNotifications').match(Condition.Equals('yes')),
         ),
-        Self().not.match(Condition.IsRequired())
+        Self().not.match(Condition.IsRequired()),
       ),
       message: 'Enter a phone number',
     }),
     validation({
-      when: and(
-        Self().match(Condition.IsRequired()),
-        Self().not.match(Condition.Phone.IsValidPhoneNumber())
-      ),
+      when: and(Self().match(Condition.IsRequired()), Self().not.match(Condition.Phone.IsValidPhoneNumber())),
       message: 'Enter a valid phone number',
     }),
   ],
@@ -462,8 +454,8 @@ validation({
     or(
       Answer('email').match(Condition.IsRequired()),
       Answer('phone').match(Condition.IsRequired()),
-      Answer('address').match(Condition.IsRequired())
-    )
+      Answer('address').match(Condition.IsRequired()),
+    ),
   ),
   message: 'Provide at least one contact method',
 })
@@ -558,6 +550,7 @@ By default, validation runs when the current step is submitted. All validation r
 When `submissionOnly: true` is set, the validation **only** runs when the current step is submitted - it's skipped during other operations like journey traversal validation (checking if users can legitimately reach a step).
 
 Use `submissionOnly` for:
+
 - Expensive API calls (e.g., uniqueness checks)
 - Time-sensitive validations (e.g., "must be a future date" which changes over time)
 - Checks that shouldn't block navigation through previously completed steps
@@ -632,10 +625,7 @@ Trim whitespace so `"  "` isn't considered valid:
 field<GovUKTextInput>({
   code: 'email',
   label: 'Email address',
-  formatters: [
-    Transformer.String.Trim(),
-    Transformer.String.ToLowerCase(),
-  ],
+  formatters: [Transformer.String.Trim(), Transformer.String.ToLowerCase()],
   validate: [
     validation({
       when: Self().not.match(Condition.IsRequired()),
