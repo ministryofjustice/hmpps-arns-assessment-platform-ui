@@ -16,8 +16,8 @@
   &__suffix {
     display: flex;
     align-items: center;
-    background-color: govuk-colour("blue");
-    border: $govuk-border-width-form-element solid govuk-colour("blue");
+    background-color: govuk-colour('blue');
+    border: $govuk-border-width-form-element solid govuk-colour('blue');
     border-left: none;
     white-space: nowrap;
     flex-shrink: 0;
@@ -46,28 +46,28 @@
       .govuk-checkboxes__label {
         margin: 0;
         padding: 0;
-        color: govuk-colour("white");
+        color: govuk-colour('white');
       }
 
       // White checkbox
       .govuk-checkboxes__label::before {
-        border-color: govuk-colour("white");
+        border-color: govuk-colour('white');
         background-color: transparent;
       }
 
       .govuk-checkboxes__label::after {
-        border-color: govuk-colour("white");
+        border-color: govuk-colour('white');
       }
     }
   }
 
   // When randomized, style the input as disabled
-  &[data-randomized="true"][data-field-type="text"] {
+  &[data-randomized='true'][data-field-type='text'] {
     .randomizable-field__inline-group {
       .govuk-input,
       .govuk-select,
       .govuk-textarea {
-        background-color: govuk-colour("black", $variant: "tint-95");
+        background-color: govuk-colour('black', $variant: 'tint-95');
         color: govuk-functional-colour(secondary-text);
         cursor: not-allowed;
       }
@@ -77,12 +77,12 @@
   // Random option styling for radio/checkbox fields
   &__random-option {
     .govuk-radios__label {
-      color: govuk-colour("blue");
+      color: govuk-colour('blue');
     }
 
     // Blue radio circle to match the label
     .govuk-radios__input + .govuk-radios__label::before {
-      border-color: govuk-colour("blue");
+      border-color: govuk-colour('blue');
     }
   }
 }

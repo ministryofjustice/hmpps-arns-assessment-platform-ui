@@ -45,8 +45,7 @@ jobs:
           private-key: ${{ secrets.INTEGRATION_TESTS_TRIGGER_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
           permission-actions: write
-          repositories:
-            hmpps-arns-integrations-test-playwright
+          repositories: hmpps-arns-integrations-test-playwright
       - name: Run integration tests
         uses: actions/github-script@v8
         with:

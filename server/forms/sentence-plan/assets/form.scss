@@ -3,17 +3,16 @@
  *
  * These styles are loaded only on pages using this form's custom template.
  */
-@import "govuk-frontend/dist/govuk/base";
+@import 'govuk-frontend/dist/govuk/base';
 
 // Components
-@import "../components/button-as-link/buttonAsLink";
-@import "../components/goal-summary-card/goal-summary-card";
-@import "../components/goal-summary-card/goal-list";
-@import "../components/sentence-information-table/sentence-information-table";
-@import "../components/about-accordion/about-accordion";
-@import "../components/score-bar/needs-score";
-@import "../components/previous-versions/previous-versions";
-
+@import '../components/button-as-link/buttonAsLink';
+@import '../components/goal-summary-card/goal-summary-card';
+@import '../components/goal-summary-card/goal-list';
+@import '../components/sentence-information-table/sentence-information-table';
+@import '../components/about-accordion/about-accordion';
+@import '../components/score-bar/needs-score';
+@import '../components/previous-versions/previous-versions';
 
 // Step rows - align remove button with input fields
 .step-row {
@@ -52,7 +51,7 @@
 }
 
 // Plan overview sub-navigation - position "Removed goals" tab on the right
-.moj-sub-navigation__list > li:has(> a[href$="type=removed"]) {
+.moj-sub-navigation__list > li:has(> a[href$='type=removed']) {
   float: right;
 }
 
@@ -66,21 +65,21 @@
   .moj-sub-navigation__item {
     display: none !important;
 
-    &:has([aria-current="page"]) {
+    &:has([aria-current='page']) {
       display: list-item !important;
     }
   }
 
   // Style sub-navigation links to look like plain text, not links
   .moj-sub-navigation__link {
-    color: govuk-colour("black") !important;
+    color: govuk-colour('black') !important;
     text-decoration: none !important;
     font-weight: bold !important;
   }
 
   // Style links within main content to look like plain text when printing
   .govuk-main-wrapper .govuk-link {
-    color: govuk-colour("black") !important;
+    color: govuk-colour('black') !important;
     text-decoration: none !important;
   }
 
@@ -89,4 +88,3 @@
     display: none !important;
   }
 }
-

@@ -1,6 +1,6 @@
 .support-widget {
   display: block;
-  background-color: govuk-colour("black", $variant: "tint-95");
+  background-color: govuk-colour('black', $variant: 'tint-95');
   border-top: 1px solid govuk-functional-colour(border);
   padding: govuk-spacing(3) 0;
 }
@@ -20,14 +20,14 @@
   @include govuk-font($size: 16);
   display: inline-block;
   padding: govuk-spacing(2) govuk-spacing(3);
-  border: 1px solid govuk-colour("black");
-  box-shadow: 0 2px govuk-colour("black");
-  background-color: govuk-colour("white");
-  color: govuk-colour("black");
+  border: 1px solid govuk-colour('black');
+  box-shadow: 0 2px govuk-colour('black');
+  background-color: govuk-colour('white');
+  color: govuk-colour('black');
   cursor: pointer;
 
   &:hover {
-    background-color: govuk-colour("black", $variant: "tint-95");
+    background-color: govuk-colour('black', $variant: 'tint-95');
   }
 
   &:focus {
@@ -61,7 +61,7 @@
 
 .support-widget__panel--right {
   padding: govuk-spacing(3);
-  background-color: govuk-colour("white");
+  background-color: govuk-colour('white');
   border: 1px solid govuk-functional-colour(border);
 }
 
@@ -75,7 +75,7 @@
 .support-widget__data-row {
   dt {
     @include govuk-font($size: 16);
-    color: govuk-colour("black", $variant: "tint-25");
+    color: govuk-colour('black', $variant: 'tint-25');
     margin-bottom: govuk-spacing(1);
   }
 

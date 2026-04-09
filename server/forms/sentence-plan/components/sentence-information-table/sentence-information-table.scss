@@ -1,7 +1,7 @@
 // Sentence Information table for About page
 // displays sentence details with grey background
 .sentence-information-table {
-  background-color: govuk-colour("black", $variant: "tint-95");
+  background-color: govuk-colour('black', $variant: 'tint-95');
 
   // remove table borders
   &,

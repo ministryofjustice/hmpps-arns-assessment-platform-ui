@@ -5,7 +5,7 @@
 ///
 /// @link https://caniuse.com/extended-system-fonts
 /// @link https://www.w3.org/TR/css-fonts-4/#ui-monospace-def
-$app-code-font: ui-monospace, menlo, "Cascadia Mono", "Segoe UI Mono", consolas, "Liberation Mono", monospace;
+$app-code-font: ui-monospace, menlo, 'Cascadia Mono', 'Segoe UI Mono', consolas, 'Liberation Mono', monospace;
 
 pre,
 code,
@@ -22,7 +22,7 @@ code {
   display: inline-block;
   padding: 2px 8px 3px;
   border: 1px solid govuk-functional-colour(border);
-  background-color: govuk-colour("white");
+  background-color: govuk-colour('white');
   @include govuk-font-size($size: 19);
   line-height: 23px; // 25px minus 2px for border
 }
@@ -34,7 +34,7 @@ pre code {
   border: $govuk-focus-width solid transparent;
   outline: 1px solid govuk-functional-colour(border);
   color: govuk-functional-colour(text);
-  background-color: govuk-colour("white");
+  background-color: govuk-colour('white');
   @include govuk-responsive-padding(3);
 }
 

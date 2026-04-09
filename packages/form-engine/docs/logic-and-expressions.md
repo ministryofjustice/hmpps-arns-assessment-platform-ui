@@ -4,9 +4,10 @@ The form-engine uses a declarative expression system for dynamic content, condit
 
 ## What is an Expression?
 
-An expression is a declarative description of a value or condition that gets evaluated at runtime. Instead of hardcoding values, you describe *how* to compute them, and the form-engine evaluates them when needed.
+An expression is a declarative description of a value or condition that gets evaluated at runtime. Instead of hardcoding values, you describe _how_ to compute them, and the form-engine evaluates them when needed.
 
 This enables:
+
 - Dynamic content that changes based on user input
 - Conditional field visibility and validation
 - String interpolation with multiple data sources
@@ -15,16 +16,16 @@ This enables:
 
 ## Expression Types
 
-| Expression | Purpose | Example |
-|------------|---------|---------|
-| `Format()` | String interpolation | `Format('Hello, %1!', Answer('name'))` |
-| `Conditional()` | Conditional (object) | `Conditional({ when, then, else })` |
-| `when()` | Conditional (fluent) | `when(predicate).then('A').else('B')` |
-| `.pipe()` | Transform values | `Answer('email').pipe(Transformer.String.Trim())` |
-| `.match()` | Test a condition | `Answer('age').match(Condition.Number.GreaterThan(18))` |
-| `.not.match()` | Test negated condition | `Self().not.match(Condition.IsRequired())` |
-| `and()`, `or()`, `xor()`, `not()` | Combine predicates | `and(isAdmin, isVerified)` |
-| `.each()` | Iterate over arrays | `Data('items').each(Iterator.Map({ ... }))` |
+| Expression                        | Purpose                | Example                                                 |
+| --------------------------------- | ---------------------- | ------------------------------------------------------- |
+| `Format()`                        | String interpolation   | `Format('Hello, %1!', Answer('name'))`                  |
+| `Conditional()`                   | Conditional (object)   | `Conditional({ when, then, else })`                     |
+| `when()`                          | Conditional (fluent)   | `when(predicate).then('A').else('B')`                   |
+| `.pipe()`                         | Transform values       | `Answer('email').pipe(Transformer.String.Trim())`       |
+| `.match()`                        | Test a condition       | `Answer('age').match(Condition.Number.GreaterThan(18))` |
+| `.not.match()`                    | Test negated condition | `Self().not.match(Condition.IsRequired())`              |
+| `and()`, `or()`, `xor()`, `not()` | Combine predicates     | `and(isAdmin, isVerified)`                              |
+| `.each()`                         | Iterate over arrays    | `Data('items').each(Iterator.Map({ ... }))`             |
 
 ### Import
 
@@ -33,11 +34,16 @@ import {
   // Value expressions
   Format,
   // Conditional expressions
-  Conditional, when,
+  Conditional,
+  when,
   // Predicate combinators
-  and, or, xor, not,
+  and,
+  or,
+  xor,
+  not,
   // Iterators (used with .each())
-  Iterator, Item,
+  Iterator,
+  Item,
 } from '@form-engine/form/builders'
 ```
 
@@ -60,20 +66,15 @@ Format('%1 %2', Answer('firstName'), Answer('lastName'))
 // Use in HTML content
 block<HtmlBlock>({
   variant: 'html',
-  content: Format(
-    '<h1>Welcome, %1</h1><p>Your email: %2</p>',
-    Answer('name'),
-    Answer('email')
-  ),
+  content: Format('<h1>Welcome, %1</h1><p>Your email: %2</p>', Answer('name'), Answer('email')),
 })
 
 // Combine with transformers
-Format('Total: £%1',
-  Answer('price').pipe(Transformer.Number.ToFixed(2))
-)
+Format('Total: £%1', Answer('price').pipe(Transformer.Number.ToFixed(2)))
 ```
 
 **Placeholder rules:**
+
 - Numbered 1-based: `%1`, `%2`, `%3`, etc.
 - Can reuse placeholders: `Format('Hello %1, your username is %1', Answer('username'))`
 - Arguments resolved left-to-right
@@ -87,15 +88,10 @@ Transform values through sequential steps:
 Answer('email').pipe(Transformer.String.Trim())
 
 // Multiple transformers (left-to-right)
-Answer('email').pipe(
-  Transformer.String.Trim(),
-  Transformer.String.ToLowerCase()
-)
+Answer('email').pipe(Transformer.String.Trim(), Transformer.String.ToLowerCase())
 
 // Transform then use in Format
-Format('Total: £%1',
-  Answer('price').pipe(Transformer.Number.ToFixed(2))
-)
+Format('Total: £%1', Answer('price').pipe(Transformer.Number.ToFixed(2)))
 ```
 
 ---
@@ -146,17 +142,11 @@ import { and, or, xor, not, Answer, Condition } from '@form-engine/form/builders
 
 ```typescript
 // Both conditions must be satisfied
-and(
-  Answer('age').match(Condition.Number.GreaterThan(18)),
-  Answer('hasConsent').match(Condition.Equals(true))
-)
+and(Answer('age').match(Condition.Number.GreaterThan(18)), Answer('hasConsent').match(Condition.Equals(true)))
 
 // Validation: required only when another field has value
 validation({
-  when: and(
-    Answer('hasEmail').match(Condition.Equals('yes')),
-    Self().not.match(Condition.IsRequired())
-  ),
+  when: and(Answer('hasEmail').match(Condition.Equals('yes')), Self().not.match(Condition.IsRequired())),
   message: 'Enter your email address',
 })
 ```
@@ -165,15 +155,12 @@ validation({
 
 ```typescript
 // Either condition is sufficient
-or(
-  Answer('role').match(Condition.Equals('admin')),
-  Answer('role').match(Condition.Equals('manager'))
-)
+or(Answer('role').match(Condition.Equals('admin')), Answer('role').match(Condition.Equals('manager')))
 
 // Accept multiple valid formats
 or(
   Self().match(Condition.String.MatchesRegex('^[0-9]{5}$')),
-  Self().match(Condition.String.MatchesRegex('^[0-9]{5}-[0-9]{4}$'))
+  Self().match(Condition.String.MatchesRegex('^[0-9]{5}-[0-9]{4}$')),
 )
 ```
 
@@ -181,17 +168,11 @@ or(
 
 ```typescript
 // Mutually exclusive options
-xor(
-  Answer('pickup').match(Condition.Equals(true)),
-  Answer('delivery').match(Condition.Equals(true))
-)
+xor(Answer('pickup').match(Condition.Equals(true)), Answer('delivery').match(Condition.Equals(true)))
 
 // Validation: exactly one contact method
 validation({
-  when: xor(
-    Answer('email').match(Condition.IsRequired()),
-    Answer('phone').match(Condition.IsRequired())
-  ).not,
+  when: xor(Answer('email').match(Condition.IsRequired()), Answer('phone').match(Condition.IsRequired())).not,
   message: 'Provide either email or phone, but not both',
 })
 ```
@@ -203,20 +184,10 @@ validation({
 not(Answer('isBlocked').match(Condition.Equals(true)))
 
 // Negate compound predicates (can't use .not here)
-not(
-  and(
-    Answer('hasPermission').match(Condition.Equals(true)),
-    Answer('isVerified').match(Condition.Equals(true))
-  )
-)
+not(and(Answer('hasPermission').match(Condition.Equals(true)), Answer('isVerified').match(Condition.Equals(true))))
 
 // NOT (A OR B) = neither A nor B
-not(
-  or(
-    Answer('status').match(Condition.Equals('blocked')),
-    Answer('status').match(Condition.Equals('suspended'))
-  )
-)
+not(or(Answer('status').match(Condition.Equals('blocked')), Answer('status').match(Condition.Equals('suspended'))))
 ```
 
 ### Nesting Combinators
@@ -226,11 +197,8 @@ Nest combinators to create complex logic:
 ```typescript
 // (A AND B) OR C
 or(
-  and(
-    Answer('hasAccount').match(Condition.Equals(true)),
-    Answer('isVerified').match(Condition.Equals(true))
-  ),
-  Answer('guestCheckout').match(Condition.Equals(true))
+  and(Answer('hasAccount').match(Condition.Equals(true)), Answer('isVerified').match(Condition.Equals(true))),
+  Answer('guestCheckout').match(Condition.Equals(true)),
 )
 
 // A AND (B OR C)
@@ -238,8 +206,8 @@ and(
   Answer('termsAccepted').match(Condition.Equals(true)),
   or(
     Answer('paymentMethod').match(Condition.Equals('card')),
-    Answer('paymentMethod').match(Condition.Equals('paypal'))
-  )
+    Answer('paymentMethod').match(Condition.Equals('paypal')),
+  ),
 )
 ```
 
@@ -278,7 +246,7 @@ import { Conditional, Answer, Condition } from '@form-engine/form/builders'
 Conditional({
   when: predicate,
   then: valueIfTrue,
-  else: valueIfFalse,  // optional
+  else: valueIfFalse, // optional
 })
 
 // Example
@@ -291,12 +259,12 @@ Conditional({
 
 ### Choosing Between `when()` and `Conditional()`
 
-| Use Case | Recommended |
-|----------|-------------|
-| Simple conditionals | Either (personal preference) |
-| Inline in properties | `when()` (more concise) |
-| Deeply nested logic | `Conditional()` (clearer structure) |
-| Complex predicates | `Conditional()` (easier to read) |
+| Use Case             | Recommended                         |
+| -------------------- | ----------------------------------- |
+| Simple conditionals  | Either (personal preference)        |
+| Inline in properties | `when()` (more concise)             |
+| Deeply nested logic  | `Conditional()` (clearer structure) |
+| Complex predicates   | `Conditional()` (easier to read)    |
 
 ### Nested Conditionals
 
@@ -309,7 +277,7 @@ when(Answer('tier').match(Condition.Equals('premium')))
   .else(
     when(Answer('tier').match(Condition.Equals('standard')))
       .then('Standard Support (9-5)')
-      .else('Basic Support (email only)')
+      .else('Basic Support (email only)'),
   )
 
 // Using Conditional()
@@ -367,28 +335,31 @@ items: Data('countries').each(
   Iterator.Map({
     value: Item().path('code'),
     text: Item().path('name'),
-  })
+  }),
 )
 
 // Filter then transform
 items: Data('areas')
-  .each(Iterator.Filter(
-    Item().path('active').match(Condition.IsTrue())
-  ))
-  .each(Iterator.Map({
-    value: Item().path('id'),
-    text: Item().path('name'),
-  }))
+  .each(Iterator.Filter(Item().path('active').match(Condition.IsTrue())))
+  .each(
+    Iterator.Map({
+      value: Item().path('id'),
+      text: Item().path('name'),
+    }),
+  )
 
 // Find a specific item
 label: Data('categories')
-  .each(Iterator.Find(
-    Item().path('id').match(Condition.Equals(Answer('selectedCategory')))
-  ))
+  .each(
+    Iterator.Find(
+      Item().path('id').match(Condition.Equals(Answer('selectedCategory'))),
+    ),
+  )
   .pipe(Transformer.Object.Get('name'))
 ```
 
 **Available Iterators:**
+
 - `Iterator.Map` - Transform each item to a new shape
 - `Iterator.Filter` - Keep items matching a predicate
 - `Iterator.Find` - Return first item matching a predicate
@@ -401,15 +372,15 @@ See [Using Iterators](./using-iterators.md) for comprehensive documentation.
 
 Different expression types are valid in different contexts:
 
-| Property | Valid Expressions | Example |
-|----------|-------------------|---------|
-| `content` | Format, Conditional, references | `Format('<p>%1</p>', Answer('name'))` |
-| `label`, `hint` | Format, Conditional, references | `when(...).then('A').else('B')` |
-| `hidden` | Predicates | `Answer('type').not.match(Condition.Equals('other'))` |
-| `dependent` | Predicates | `Answer('type').match(Condition.Equals('other'))` |
-| `validate.when` | Predicates | `Self().not.match(Condition.IsRequired())` |
-| `defaultValue` | Conditional, references, Format | `Data('user.name')` |
-| `items` | Iterator expressions | `Data('options').each(Iterator.Map({ value: Item().path('id'), text: Item().path('name') }))` |
+| Property        | Valid Expressions               | Example                                                                                       |
+| --------------- | ------------------------------- | --------------------------------------------------------------------------------------------- |
+| `content`       | Format, Conditional, references | `Format('<p>%1</p>', Answer('name'))`                                                         |
+| `label`, `hint` | Format, Conditional, references | `when(...).then('A').else('B')`                                                               |
+| `hidden`        | Predicates                      | `Answer('type').not.match(Condition.Equals('other'))`                                         |
+| `dependent`     | Predicates                      | `Answer('type').match(Condition.Equals('other'))`                                             |
+| `validate.when` | Predicates                      | `Self().not.match(Condition.IsRequired())`                                                    |
+| `defaultValue`  | Conditional, references, Format | `Data('user.name')`                                                                           |
+| `items`         | Iterator expressions            | `Data('options').each(Iterator.Map({ value: Item().path('id'), text: Item().path('name') }))` |
 
 ---
 
@@ -432,20 +403,22 @@ when(
   and(
     Answer('accountType').match(Condition.Equals('business')),
     Answer('taxId').match(Condition.IsRequired()),
-    Data('user.verified').match(Condition.Equals(true))
-  )
-).then('/business-dashboard').else('/personal-dashboard')
+    Data('user.verified').match(Condition.Equals(true)),
+  ),
+)
+  .then('/business-dashboard')
+  .else('/personal-dashboard')
 ```
 
 ### Choose the Right Combinator
 
-| Situation | Use |
-|-----------|-----|
-| All conditions must be met | `and(a, b, c)` |
-| Any condition is sufficient | `or(a, b, c)` |
-| Exactly one must be true | `xor(a, b)` |
+| Situation                   | Use                               |
+| --------------------------- | --------------------------------- |
+| All conditions must be met  | `and(a, b, c)`                    |
+| Any condition is sufficient | `or(a, b, c)`                     |
+| Exactly one must be true    | `xor(a, b)`                       |
 | Invert a compound predicate | `not(and(...))` or `not(or(...))` |
-| Invert a single condition | `.not.match()` |
+| Invert a single condition   | `.not.match()`                    |
 
 ### Use `.not` for Validation Conditions
 
@@ -500,10 +473,7 @@ field<GovUKTextInput>({
 ```typescript
 // Required only when another field has specific value
 validation({
-  when: and(
-    Answer('contactPreference').match(Condition.Equals('email')),
-    Self().not.match(Condition.IsRequired())
-  ),
+  when: and(Answer('contactPreference').match(Condition.Equals('email')), Self().not.match(Condition.IsRequired())),
   message: 'Enter your email address',
 })
 ```
@@ -515,7 +485,7 @@ validation({
 validation({
   when: and(
     Answer('startDate').match(Condition.IsRequired()),
-    Self().not.match(Condition.Date.IsAfter(Answer('startDate')))
+    Self().not.match(Condition.Date.IsAfter(Answer('startDate'))),
   ),
   message: 'End date must be after start date',
 })
@@ -530,8 +500,8 @@ validation({
     or(
       Answer('email').match(Condition.IsRequired()),
       Answer('phone').match(Condition.IsRequired()),
-      Answer('address').match(Condition.IsRequired())
-    )
+      Answer('address').match(Condition.IsRequired()),
+    ),
   ),
   message: 'Provide at least one contact method',
 })

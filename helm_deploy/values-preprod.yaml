@@ -9,24 +9,24 @@ generic-service:
     host: arns-assessment-platform-preprod.hmpps.service.justice.gov.uk
 
   env:
-    INGRESS_URL: "https://arns-assessment-platform-preprod.hmpps.service.justice.gov.uk"
-    HMPPS_AUTH_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
-    HMPPS_ARNS_HANDOVER_URL: "https://arns-handover-service-preprod.hmpps.service.justice.gov.uk"
-    TOKEN_VERIFICATION_API_URL: "https://token-verification-api-preprod.prison.service.justice.gov.uk"
-    AAP_API_URL: "https://arns-assessment-platform-api-preprod.hmpps.service.justice.gov.uk"
-    COORDINATOR_API_URL: "https://arns-coordinator-api-preprod.hmpps.service.justice.gov.uk"
-    DELIUS_API_URL: "https://sentence-plan-and-delius-preprod.hmpps.service.justice.gov.uk"
-    ARNS_API_URL: "https://assess-risks-and-needs-preprod.hmpps.service.justice.gov.uk"
-    SAN_URL: "https://strengths-based-needs-assessments-preprod.hmpps.service.justice.gov.uk"
-    OASYS_URL: "https://pp.oasys.service.justice.gov.uk"
-    MPOP_URL: "https://manage-people-on-probation-preprod.hmpps.service.justice.gov.uk"
-    FEATURE_FLAG_URL: "https://feature-toggles-preprod.hmpps.service.justice.gov.uk"
+    INGRESS_URL: 'https://arns-assessment-platform-preprod.hmpps.service.justice.gov.uk'
+    HMPPS_AUTH_URL: 'https://sign-in-preprod.hmpps.service.justice.gov.uk/auth'
+    HMPPS_ARNS_HANDOVER_URL: 'https://arns-handover-service-preprod.hmpps.service.justice.gov.uk'
+    TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-preprod.prison.service.justice.gov.uk'
+    AAP_API_URL: 'https://arns-assessment-platform-api-preprod.hmpps.service.justice.gov.uk'
+    COORDINATOR_API_URL: 'https://arns-coordinator-api-preprod.hmpps.service.justice.gov.uk'
+    DELIUS_API_URL: 'https://sentence-plan-and-delius-preprod.hmpps.service.justice.gov.uk'
+    ARNS_API_URL: 'https://assess-risks-and-needs-preprod.hmpps.service.justice.gov.uk'
+    SAN_URL: 'https://strengths-based-needs-assessments-preprod.hmpps.service.justice.gov.uk'
+    OASYS_URL: 'https://pp.oasys.service.justice.gov.uk'
+    MPOP_URL: 'https://manage-people-on-probation-preprod.hmpps.service.justice.gov.uk'
+    FEATURE_FLAG_URL: 'https://feature-toggles-preprod.hmpps.service.justice.gov.uk'
     ENVIRONMENT_NAME: PRE-PRODUCTION
-    AUDIT_ENABLED: "true"
-    FEEDBACK_FORM_URL: "https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u"
-    SERVICE_NOW_FORM_URL: "https://mojprod.service-now.com/moj_sp?id=sc_cat_item&sys_id=276572591bce4910a93242ead34bcb53"
-    ARNS_MVP_COMMUNICATION_CHANNEL_URL: "https://teams.microsoft.com/l/channel/19%3AdcmbxY-GfV8szUrt79R_dA60x0t-onk58ezRn5AXxCw1%40thread.tacv2/ARNS%20MVP%20Communication%20Channel?groupId=481bb11a-6765-4b68-b683-ce53bd404ac3&tenantId=c6874728-71e6-41fe-a9e1-2e8c36776ad8"
-    FORM_TRAINING_SESSION_LAUNCHER_ENABLED: "true"
+    AUDIT_ENABLED: 'true'
+    FEEDBACK_FORM_URL: 'https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u'
+    SERVICE_NOW_FORM_URL: 'https://mojprod.service-now.com/moj_sp?id=sc_cat_item&sys_id=276572591bce4910a93242ead34bcb53'
+    ARNS_MVP_COMMUNICATION_CHANNEL_URL: 'https://teams.microsoft.com/l/channel/19%3AdcmbxY-GfV8szUrt79R_dA60x0t-onk58ezRn5AXxCw1%40thread.tacv2/ARNS%20MVP%20Communication%20Channel?groupId=481bb11a-6765-4b68-b683-ce53bd404ac3&tenantId=c6874728-71e6-41fe-a9e1-2e8c36776ad8'
+    FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'true'
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui
