@@ -1,17 +1,18 @@
 import { expect } from '@playwright/test'
 import { test } from '../../support/fixtures'
+import { checkHeaderVisibility } from '../../testUtils'
 
 const cookiesPolicyPageUrl = '/platform/cookies-policy'
 
 test.describe('Cookies policy page', () => {
   test('loads with heading and content', async ({ page }) => {
     await page.goto(cookiesPolicyPageUrl)
-
     await expect(page).toHaveURL(cookiesPolicyPageUrl)
-    await expect(page.getByRole('heading', { level: 1, name: 'Cookies policy for Assess and plan' })).toBeVisible()
-    await expect(page.getByRole('heading', { level: 2, name: 'Session cookies' })).toBeVisible()
-    await expect(page.getByRole('heading', { level: 2, name: 'Survey cookies' })).toBeVisible()
-    await expect(page.getByRole('heading', { level: 2, name: 'Analytics cookies' })).toBeVisible()
+
+    await checkHeaderVisibility(page, 1, 'Cookies policy for Assess and plan')
+    await checkHeaderVisibility(page, 2, 'Session cookies')
+    await checkHeaderVisibility(page, 2, 'Survey cookies')
+    await checkHeaderVisibility(page, 2, 'Analytics cookies')
   })
 
   test('shows shared page layout elements', async ({ page }) => {
