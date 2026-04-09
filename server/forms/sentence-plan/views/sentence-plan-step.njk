@@ -126,8 +126,13 @@
   {% block supportWidget %}
     {% set reportProblemHtml %}
       <p class="govuk-body">
-        Copy this information and paste it into the
-        <a href="{{ serviceNowFormUrl }}" class="govuk-link" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
+        {% if featureFlags and featureFlags.teamsReportProblemLinkEnabled %}
+          Copy this information and paste it into the
+          <a href="{{ arnsMvpCommunicationChannelUrl }}" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">ARNS MVP Communication Channel (opens in a new tab)</a>.
+        {% else %}
+          Copy this information and paste it into the
+          <a href="{{ serviceNowFormUrl }}" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
+        {% endif %}
       </p>
       <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
       <div class="app-report-problem__info">
