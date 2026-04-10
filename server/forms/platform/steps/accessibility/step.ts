@@ -3,7 +3,7 @@ import { pageHeading, pageContent } from './fields'
 
 export const accessibilityStep = step({
   path: '/accessibility',
-  title: 'Accessibility',
+  title: 'Accessibility statement for Assess and plan: Sentence plan',
   view: {
     template: 'platform/views/platform-policy-step',
     locals: {
