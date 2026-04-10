@@ -60,6 +60,15 @@ describe('govukTextInput', () => {
       expect(params.label).toEqual(labelObj)
     })
 
+    it('passes through describedBy', async () => {
+      const params = await helper.getParams({
+        code: 'test-input',
+        describedBy: 'shared-hint-id',
+      })
+
+      expect(params.describedBy).toBe('shared-hint-id')
+    })
+
     it('passes through label with HTML', async () => {
       const labelObj = {
         html: '<span>Name</span> <span class="govuk-caption-m">Required</span>',
