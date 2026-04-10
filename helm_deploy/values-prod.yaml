@@ -8,8 +8,6 @@ autoscaling:
 generic-service:
   ingress:
     host: arns-assessment-platform.hmpps.service.justice.gov.uk
-    enabled: false # Disable ingress until we are ready for users to access the service in production
-    #TODO: enable ingress once we are ready for users to access the service in production
 
   env:
     INGRESS_URL: 'https://arns-assessment-platform.hmpps.service.justice.gov.uk'
