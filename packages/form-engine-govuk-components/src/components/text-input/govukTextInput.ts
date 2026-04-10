@@ -13,6 +13,15 @@ import { field } from '@form-engine/form/builders'
  */
 export interface GovUKTextInputProps extends FieldBlockProps {
   /**
+   * One or more element IDs to add to the input's `aria-describedby` attribute.
+   * Useful when visible supporting text lives outside the input component markup.
+   *
+   * @example 'email-hint'
+   * @example 'email-hint email-error'
+   */
+  describedBy?: ConditionalString
+
+  /**
    * The ID of the input. Defaults to the value of `code` if not provided.
    * @example 'user-email'
    */
@@ -230,6 +239,7 @@ export interface GovUKTextInputProps extends FieldBlockProps {
 
 export const govukTextInput = buildNunjucksComponent<GovUKTextInput>('govukTextInput', (block, nunjucksEnv) => {
   const params = {
+    describedBy: block.describedBy,
     id: block.id ?? block.code,
     name: block.code,
     label: block.label ? (typeof block.label === 'object' ? block.label : { text: block.label }) : undefined,

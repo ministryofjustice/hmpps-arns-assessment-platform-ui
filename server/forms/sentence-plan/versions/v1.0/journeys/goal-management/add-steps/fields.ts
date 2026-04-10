@@ -12,6 +12,13 @@ import { AssessmentInfoDetails, ButtonAsLink } from '../../../../../components'
 import { actorLabelOptions, CaseData } from '../../../constants'
 import { canAccessSanContent } from '../../../guards'
 
+const stepActorLabelText = 'Who will do the step?'
+const stepActorHintText = 'Add one person or agency.'
+const stepDescriptionLabelText = 'What should they do to achieve the goal?'
+const stepDescriptionHintText = 'Enter one step at a time.'
+const stepActorHintId = 'step-actor-hint'
+const stepDescriptionHintId = 'step-description-hint'
+
 export const pageHeading = GovUKHeading({
   caption: Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()),
   text: 'Add or change steps',
@@ -37,18 +44,26 @@ export const columnHeaders = GovUKGridRow({
     {
       width: 'one-quarter',
       blocks: [
-        GovUKBody({ text: 'Who will do the step?', classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1' }),
-        GovUKBody({ text: 'Add one person or agency.', classes: 'govuk-hint govuk-!-margin-bottom-0' }),
+        GovUKBody({ text: stepActorLabelText, classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1' }),
+        GovUKBody({
+          text: stepActorHintText,
+          classes: 'govuk-hint govuk-!-margin-bottom-0',
+          attributes: { id: stepActorHintId },
+        }),
       ],
     },
     {
       width: 'two-thirds',
       blocks: [
         GovUKBody({
-          text: 'What should they do to achieve the goal?',
+          text: stepDescriptionLabelText,
           classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1',
         }),
-        GovUKBody({ text: 'Enter one step at a time.', classes: 'govuk-hint govuk-!-margin-bottom-0' }),
+        GovUKBody({
+          text: stepDescriptionHintText,
+          classes: 'govuk-hint govuk-!-margin-bottom-0',
+          attributes: { id: stepDescriptionHintId },
+        }),
       ],
     },
   ],
@@ -75,9 +90,10 @@ export const stepRows = HtmlBlock({
               GovUKSelectInput({
                 code: Format('step_actor_%1', Item().index()),
                 label: {
-                  text: 'Who will do the step?',
+                  text: stepActorLabelText,
                   classes: 'govuk-visually-hidden',
                 },
+                describedBy: stepActorHintId,
                 items: actorLabelOptions,
                 defaultValue: Item().path('actor'),
                 validate: [
@@ -95,9 +111,10 @@ export const stepRows = HtmlBlock({
               GovUKTextInput({
                 code: Format('step_description_%1', Item().index()),
                 label: {
-                  text: 'What should they do to achieve the goal?',
+                  text: stepDescriptionLabelText,
                   classes: 'govuk-visually-hidden',
                 },
+                describedBy: stepDescriptionHintId,
                 classes: 'govuk-!-width-full',
                 defaultValue: Item().path('description'),
                 validate: [
