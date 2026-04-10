@@ -44,6 +44,21 @@ test.describe('Create Goal Journey', () => {
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
       await expect(page).toHaveURL(/\/add-steps/)
 
+      const actorSelect = await addStepsPage.getStepActorSelect(0)
+      const descriptionInput = await addStepsPage.getStepDescriptionInput(0)
+
+      await expect(page.locator('#step-actor-hint')).toHaveText('Add one person or agency.')
+      await expect(page.locator('#step-description-hint')).toHaveText('Enter one step at a time.')
+      await expect(actorSelect).toHaveAttribute('aria-describedby', 'step-actor-hint')
+      await expect(descriptionInput).toHaveAttribute('aria-describedby', 'step-description-hint')
+
+      await addStepsPage.clickSaveAndContinue()
+
+      await expect(actorSelect).toHaveAttribute('aria-describedby', /step-actor-hint/)
+      await expect(actorSelect).toHaveAttribute('aria-describedby', /step_actor_0-error/)
+      await expect(descriptionInput).toHaveAttribute('aria-describedby', /step-description-hint/)
+      await expect(descriptionInput).toHaveAttribute('aria-describedby', /step_description_0-error/)
+
       await addStepsPage.enterStep(0, 'probation_practitioner', "Contact housing services about 'emergency housing'")
 
       // Add steps accessibility
@@ -436,6 +451,7 @@ test.describe('Create Goal Journey', () => {
       const goalTitleInput = createGoalPage.goalTitleInput
       await expect(goalTitleInput).toHaveAttribute('aria-describedby', /goal_title-error/)
     })
+
   })
 
   test.describe('Different Areas of Need', () => {
