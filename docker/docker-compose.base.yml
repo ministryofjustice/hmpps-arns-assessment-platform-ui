@@ -63,7 +63,7 @@ services:
       SPRING_FLYWAY_LOCATIONS: classpath:db/auth,db/auth_{vendor},db/dev/data/auth_{vendor},db/dev/data/auth,filesystem:/auth_db
 
   coordinator-api:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:national-rollout
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:latest
     depends_on:
       - postgres
     networks:
@@ -87,7 +87,7 @@ services:
       CLIENT_SECRET: clientsecret
 
   arns-handover:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:national-rollout
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:latest
     depends_on:
       - redis
       - localstack
@@ -119,7 +119,7 @@ services:
       CLIENT_SAN_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/callback
       CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in
 
-  ui:
+  aap-ui:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:${APP_VERSION:-local}
     networks:
       - hmpps
@@ -136,7 +136,7 @@ services:
         GIT_BRANCH: main
     command: npm run start
     ports:
-      - '3000:3000'
+      - '7072:3000'
       - '9229:9229'
     healthcheck:
       test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:3000/health']
@@ -178,18 +178,16 @@ services:
       FORM_TRAINING_SESSION_LAUNCHER_ENABLED: true
       CACHE_REDIS_HOST: redis
       SERVICE_NOW_FORM_URL: '#service-now-link'
-      OASYS_URL: 'http://ui:3000/training-session-launcher/sessions'
-      MPOP_URL: 'http://ui:3000/sign-in'
+      OASYS_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
+      MPOP_URL: 'http://aap-ui:3000/sign-in'
 
-  api:
+  aap-api:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
     networks:
       - hmpps
     depends_on:
       - postgres
       - localstack
-    ports:
-      - '8080:8080'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/health/ping']
       interval: 5s
@@ -209,7 +207,7 @@ services:
     networks:
       - hmpps
     depends_on:
-      api:
+      aap-api:
         condition: service_healthy
       coordinator-api:
         condition: service_healthy
@@ -218,13 +216,11 @@ services:
       hmpps-auth:
         condition: service_healthy
     restart: always
-    ports:
-      - '9091:8080'
     volumes:
       - ./wiremock/mappings:/home/wiremock/mappings
     environment:
       WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:9090
-      WIREMOCK_AAP_API_URL: http://api:8080
+      WIREMOCK_AAP_API_URL: http://aap-api:8080
       WIREMOCK_COORDINATOR_API_URL: http://coordinator-api:8080
       WIREMOCK_HANDOVER_URL: http://arns-handover:7070
       WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
