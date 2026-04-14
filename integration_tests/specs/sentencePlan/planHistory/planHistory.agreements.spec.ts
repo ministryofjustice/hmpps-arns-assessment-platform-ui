@@ -171,6 +171,61 @@ test.describe('Plan History - Agreements', () => {
     })
   })
 
+  test.describe('Update agreement link placement', () => {
+    test('should display update agreement link within the agreement section when status is COULD_NOT_ANSWER', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoal({
+          title: 'Find stable accommodation',
+          areaOfNeed: 'accommodation',
+          status: 'ACTIVE',
+          steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
+        })
+        .withPlanAgreements([
+          {
+            status: 'COULD_NOT_ANSWER',
+            createdBy: 'Test Practitioner',
+            detailsCouldNotAnswer: 'Person was not available to discuss the plan',
+            dateOffset: 0,
+          },
+        ])
+        .save()
+
+      await page.goto(handoverLink)
+      await handlePrivacyScreenIfPresent(page)
+      await page.getByRole('link', { name: /Plan history/i }).click()
+      const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
+      await expect(planHistoryPage.updateAgreementLink).toBeVisible()
+
+      await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+        - paragraph: View all updates and changes made to this plan.
+        - separator
+        - paragraph:
+          - strong: Plan created
+          - text: /Test Practitioner/
+        - paragraph: /could not agree/
+        - paragraph: Person was not available to discuss the plan
+        - paragraph:
+          - link /Update .+ agreement/
+        - separator
+        - paragraph:
+          - strong: Goal created
+          - text: /E2E Test/
+        - paragraph:
+          - strong: Find stable accommodation
+        - paragraph:
+          - link "View goal"
+        - paragraph:
+          - link /.+ Back to top/
+      `)
+    })
+  })
+
   test.describe('Read-only access', () => {
     test('hides update agreement link in read-only mode even when status is COULD_NOT_ANSWER', async ({
       page,
