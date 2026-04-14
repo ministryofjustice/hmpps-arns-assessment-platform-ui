@@ -46,7 +46,7 @@ export default function setUpWebSecurity(): Router {
           connectSrc: ["'self'", 'https://www.smartsurvey.co.uk'],
           imgSrc: ["'self'", 'https://embed.smartsurvey.io'],
           formAction: [
-            `'self' https://*.hmpps.service.justice.gov.uk ${config.apis.hmppsAuth.externalUrl} ${config.apis.arnsHandover.externalUrl}`,
+            `'self' https://*.hmpps.service.justice.gov.uk ${config.apis.hmppsAuth.externalUrl} ${config.apis.arnsHandover.externalUrl} ${config.sanUrl}`,
           ],
           ...(config.https ? {} : { upgradeInsecureRequests: null }),
         },

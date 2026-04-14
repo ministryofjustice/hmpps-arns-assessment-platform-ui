@@ -4,7 +4,7 @@ SHELL = '/bin/bash'
 PROJECT_NAME = hmpps-assess-risks-and-needs
 
 ## Must match name of container in Docker
-SERVICE_NAME = ui
+SERVICE_NAME = aap-ui
 
 APP_VERSION ?= local
 
@@ -22,15 +22,15 @@ help: ## The help text you're reading.
 	@grep --no-filename -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 prod-build: ## Builds a production image of the UI.
-	docker compose ${PROD_COMPOSE_FILES} build ui
+	docker compose ${PROD_COMPOSE_FILES} build aap-ui
 
 prod-up: ## Starts/restarts the UI in a production container.
-	docker compose ${PROD_COMPOSE_FILES} down ui
-	docker compose ${PROD_COMPOSE_FILES} up ui --wait --no-recreate
+	docker compose ${PROD_COMPOSE_FILES} down aap-ui
+	docker compose ${PROD_COMPOSE_FILES} up aap-ui --wait --no-recreate
 
 dev-build: ## Builds a development image of the UI and installs Node dependencies.
 	@make install-node-modules
-	docker compose ${DEV_COMPOSE_FILES} build ui
+	docker compose ${DEV_COMPOSE_FILES} build aap-ui
 
 dev-up: ## Starts/restarts a development container. A remote debugger can be attached on port 9229.
 	@make install-node-modules
@@ -94,9 +94,9 @@ update: ## Downloads the latest versions of container images.
 save-logs: ## Saves docker container logs in a directory defined by OUTPUT_LOGS_DIR=
 	docker system info
 	mkdir -p ${OUTPUT_LOGS_DIR}
-	docker logs ${PROJECT_NAME}-ui-1 > ${OUTPUT_LOGS_DIR}/ui.log
+	docker logs ${PROJECT_NAME}-aap-ui-1 > ${OUTPUT_LOGS_DIR}/aap-ui.log
 	docker logs ${PROJECT_NAME}-arns-handover-1 > ${OUTPUT_LOGS_DIR}/arns-handover.log
 	docker logs ${PROJECT_NAME}-coordinator-api-1 > ${OUTPUT_LOGS_DIR}/coordinator-api.log
-	docker logs ${PROJECT_NAME}-api-1 > ${OUTPUT_LOGS_DIR}/aap-api.log
+	docker logs ${PROJECT_NAME}-aap-api-1 > ${OUTPUT_LOGS_DIR}/aap-api.log
 	docker logs ${PROJECT_NAME}-hmpps-auth-1 > ${OUTPUT_LOGS_DIR}/hmpps-auth.log
 	docker logs ${PROJECT_NAME}-wiremock-1 > ${OUTPUT_LOGS_DIR}/wiremock.log
