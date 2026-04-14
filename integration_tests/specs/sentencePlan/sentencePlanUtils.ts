@@ -1,3 +1,4 @@
+import { AxeBuilder } from '@axe-core/playwright'
 import { expect, Page } from '@playwright/test'
 import { AgreementStatus } from '@server/forms/sentence-plan/effects'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
@@ -95,6 +96,11 @@ export const sentencePlanPageTitles = {
 
 export const sentencePlanServiceName = 'Sentence plan'
 
+type AccessibilityCheckOptions = {
+  include?: string
+  disableRules?: string[]
+}
+
 // constructs page title:
 export const buildPageTitle = (stepTitle: string, serviceName: string = sentencePlanServiceName): string =>
   `${stepTitle} - ${serviceName}`
@@ -102,6 +108,24 @@ export const buildPageTitle = (stepTitle: string, serviceName: string = sentence
 // constructs page error title:
 export const buildErrorPageTitle = (stepTitle: string, serviceName: string = sentencePlanServiceName): string =>
   `Error: ${buildPageTitle(stepTitle, serviceName)}`
+
+/**
+ * Runs the standard WCAG Axe scan for a sentence plan page and expects no violations.
+ * By default it scans the main form area, but pages can override the selector if needed.
+ */
+export const checkAccessibility = async (
+  page: Page,
+  { include = '[data-qa="main-form"]', disableRules = [] }: AccessibilityCheckOptions = {},
+): Promise<void> => {
+  let axeBuilder = new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).include(include)
+
+  if (disableRules.length > 0) {
+    axeBuilder = axeBuilder.disableRules(disableRules)
+  }
+
+  const accessibilityScanResults = await axeBuilder.analyze()
+  expect(accessibilityScanResults.violations).toEqual([])
+}
 
 /**
  * Handles the privacy screen if it appears, confirming and continuing.

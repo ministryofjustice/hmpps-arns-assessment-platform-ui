@@ -3,8 +3,6 @@ import AbstractPage from '../abstractPage'
 import { ValidationHelper } from '../helpers'
 
 export default class AgreePlanPage extends AbstractPage {
-  readonly header: Locator
-
   readonly agreementQuestionLegend: Locator
 
   readonly agreeYesRadio: Locator
@@ -25,7 +23,6 @@ export default class AgreePlanPage extends AbstractPage {
 
   private constructor(page: Page) {
     super(page)
-    this.header = page.locator('h1')
     this.agreementQuestionLegend = page.locator('legend')
     this.agreeYesRadio = page.locator('input[name="plan_agreement_question"][value="yes"]')
     this.agreeNoRadio = page.locator('input[name="plan_agreement_question"][value="no"]')

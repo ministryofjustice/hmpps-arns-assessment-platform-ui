@@ -8,7 +8,12 @@ import {
 } from '../../../builders/sentencePlanFactories'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
-import { buildPageTitle, navigateToSentencePlan, sentencePlanPageTitles } from '../sentencePlanUtils'
+import {
+  buildPageTitle,
+  checkAccessibility,
+  navigateToSentencePlan,
+  sentencePlanPageTitles,
+} from '../sentencePlanUtils'
 
 test.describe('Plan Overview Page', () => {
   test.describe('Empty State', () => {
@@ -552,14 +557,12 @@ test.describe('Plan Overview Page', () => {
   })
 
   test.describe('Accessibility', () => {
-    test('should be accessible', async ({ page, createSession, makeAxeBuilder, sentencePlanBuilder }) => {
+    test('should be accessible', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(3)).save()
 
       await navigateToSentencePlan(page, handoverLink)
-
-      const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
-      expect(accessibilityScanResults.violations).toEqual([])
+      await checkAccessibility(page)
     })
   })
 })

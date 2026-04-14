@@ -6,6 +6,7 @@ import { currentGoals, currentGoalsWithCompletedSteps } from '../../builders/sen
 import {
   buildErrorPageTitle,
   buildPageTitle,
+  checkAccessibility,
   navigateToSentencePlan,
   sentencePlanPageTitles,
   sentencePlanV1URLs,
@@ -266,7 +267,6 @@ test.describe('Agree plan journey', () => {
     test('can agree to plan with Could not answer option and details', async ({
       page,
       createSession,
-      makeAxeBuilder,
       sentencePlanBuilder,
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
@@ -284,12 +284,10 @@ test.describe('Agree plan journey', () => {
       await agreePlanPage.enterDetailsForCouldNotAnswer('Unable to contact - will discuss at next appointment.')
 
       // Accessibility
-      const accessibilityScanResults = await makeAxeBuilder()
-        .include('[data-qa="main-form"]')
+      await checkAccessibility(page, {
         // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
-        .disableRules(['aria-allowed-attr'])
-        .analyze()
-      expect(accessibilityScanResults.violations).toEqual([])
+        disableRules: ['aria-allowed-attr'],
+      })
 
       // Save
       await agreePlanPage.clickSave()

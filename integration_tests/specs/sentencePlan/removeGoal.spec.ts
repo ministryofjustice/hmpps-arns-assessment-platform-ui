@@ -6,6 +6,7 @@ import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFacto
 import {
   buildErrorPageTitle,
   buildPageTitle,
+  checkAccessibility,
   getDatePlusDaysAsISO,
   navigateToSentencePlan,
   sentencePlanPageTitles,
@@ -15,12 +16,7 @@ import UpdateGoalAndStepsPage from '../../pages/sentencePlan/updateGoalAndStepsP
 
 test.describe('Remove goal journey', () => {
   test.describe('confirm goal removal', () => {
-    test('can confirm goal removal with required note', async ({
-      page,
-      createSession,
-      makeAxeBuilder,
-      sentencePlanBuilder,
-    }) => {
+    test('can confirm goal removal with required note', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       const plan = await sentencePlanBuilder
         .extend(sentencePlanId)
@@ -43,8 +39,7 @@ test.describe('Remove goal journey', () => {
       await removePage.enterRemovalNote('Goal is no longer relevant to their current situation')
 
       // Accessibility
-      const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
-      expect(accessibilityScanResults.violations).toEqual([])
+      await checkAccessibility(page)
 
       // Click confirm
       await removePage.clickConfirm()
