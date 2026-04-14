@@ -3,13 +3,17 @@ import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
-import { handlePrivacyScreenIfPresent, navigateToSentencePlan, sentencePlanV1URLs } from '../sentencePlanUtils'
+import {
+  checkAccessibility,
+  handlePrivacyScreenIfPresent,
+  navigateToSentencePlan,
+  sentencePlanV1URLs,
+} from '../sentencePlanUtils'
 
 test.describe('Plan History - Updated Goals', () => {
   test('displays updated goal entry with title, updater name, and view link', async ({
     page,
     createSession,
-    makeAxeBuilder,
     sentencePlanBuilder,
   }) => {
     const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
@@ -56,8 +60,7 @@ test.describe('Plan History - Updated Goals', () => {
     `)
 
     // Accessibility
-    const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
-    expect(accessibilityScanResults.violations).toEqual([])
+    await checkAccessibility(page)
   })
 
   test('displays updated goal entry with notes when a progress note was added', async ({

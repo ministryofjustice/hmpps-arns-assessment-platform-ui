@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoals, futureGoals } from '../../builders/sentencePlanFactories'
-import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from './sentencePlanUtils'
+import { checkAccessibility, navigateToSentencePlan, sentencePlanV1UrlBuilders } from './sentencePlanUtils'
 
 test.describe('Delete goal journey', () => {
   test.describe('redirect after deletion', () => {
@@ -17,6 +17,8 @@ test.describe('Delete goal journey', () => {
 
       await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalConfirmDelete(goalUuid))
+
+      await checkAccessibility(page)
 
       await page.getByRole('button', { name: 'Confirm' }).click()
 

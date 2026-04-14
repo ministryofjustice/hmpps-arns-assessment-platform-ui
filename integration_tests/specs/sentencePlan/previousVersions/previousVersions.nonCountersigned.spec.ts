@@ -1,16 +1,11 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
-import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
+import { checkAccessibility, handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
 import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPage'
 import coordinatorApi from '../../../mockApis/coordinatorApi'
 
 test.describe('Previous Versions - Multiple non-countersigned previous versions', () => {
-  test('it lists multiple previous versions of the plan', async ({
-    page,
-    createSession,
-    makeAxeBuilder,
-    sentencePlanBuilder,
-  }) => {
+  test('it lists multiple previous versions of the plan', async ({ page, createSession, sentencePlanBuilder }) => {
     const { sentencePlanId, handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
     })
@@ -184,8 +179,6 @@ test.describe('Previous Versions - Multiple non-countersigned previous versions'
       }
     }
 
-    // Accessibility
-    const accessibilityScanResults = await makeAxeBuilder().include('#main-content').analyze()
-    expect(accessibilityScanResults.violations).toEqual([])
+    await checkAccessibility(page, { include: '#main-content' })
   })
 })

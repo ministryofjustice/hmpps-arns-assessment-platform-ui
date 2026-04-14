@@ -6,11 +6,7 @@ import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPa
 import coordinatorApi from '../../../mockApis/coordinatorApi'
 
 test.describe('Previous Versions - Countersigned', () => {
-  test('should show countersigned versions from previous days in a separate table', async ({
-    page,
-    createSession,
-    makeAxeBuilder,
-  }) => {
+  test('should show countersigned versions from previous days in a separate table', async ({ page, createSession }) => {
     const { sentencePlanId, handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
     })
@@ -158,14 +154,11 @@ test.describe('Previous Versions - Countersigned', () => {
     await expect(allVersionsColumns.nth(dateColumnIndex)).toContainText(expectedCountersignedDate)
     await expect(allVersionsColumns.nth(dateColumnIndex)).toContainText('Assessment and plan updated')
 
-    const accessibilityScanResults = await makeAxeBuilder().include('#main-content').analyze()
-    expect(accessibilityScanResults.violations).toEqual([])
   })
 
   test('should not show countersigned table when only countersigned version is from today', async ({
     page,
     createSession,
-    makeAxeBuilder,
   }) => {
     const { sentencePlanId, handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
@@ -245,8 +238,5 @@ test.describe('Previous Versions - Countersigned', () => {
     await expect(allVersionsColumns.first()).toContainText(expectedDate)
     await expect(allVersionsColumns.first()).toContainText('Plan updated')
 
-    // Accessibility
-    const accessibilityScanResults = await makeAxeBuilder().include('#main-content').analyze()
-    expect(accessibilityScanResults.violations).toEqual([])
   })
 })

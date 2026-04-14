@@ -14,6 +14,12 @@
 @import '../components/score-bar/needs-score';
 @import '../components/previous-versions/previous-versions';
 
+// The phase banner and plan header now render inside main content, so the
+// default main wrapper top padding creates an extra visual gap above them.
+.govuk-main-wrapper {
+  padding-top: 0;
+}
+
 // Step rows - align remove button with input fields
 .step-row {
   display: flex;
