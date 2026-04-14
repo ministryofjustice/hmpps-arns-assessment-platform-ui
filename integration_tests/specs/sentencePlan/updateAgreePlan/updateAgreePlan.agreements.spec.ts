@@ -3,7 +3,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import UpdateAgreePlanPage from '../../../pages/sentencePlan/updateAgreePlanPage'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
-import { navigateToSentencePlan } from '../sentencePlanUtils'
+import { checkAccessibility, navigateToSentencePlan } from '../sentencePlanUtils'
 
 test.describe('Update agree plan - Agreements', () => {
   test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
@@ -21,6 +21,11 @@ test.describe('Update agree plan - Agreements', () => {
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
     await planOverviewPage.updateAgreementLink.click()
     const updateAgreePlanPage = await UpdateAgreePlanPage.verifyOnPage(page)
+
+    await checkAccessibility(page, {
+      // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
+      disableRules: ['aria-allowed-attr'],
+    })
 
     // Select Yes and save
     await updateAgreePlanPage.selectAgreeYes()

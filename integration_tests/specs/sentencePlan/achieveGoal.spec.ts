@@ -5,6 +5,7 @@ import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
 import {
   buildPageTitle,
+  checkAccessibility,
   getDatePlusDaysAsISO,
   navigateToSentencePlan,
   sentencePlanPageTitles,
@@ -12,12 +13,7 @@ import {
 
 test.describe('Achieve goal journey', () => {
   test.describe('confirm goal as achieved', () => {
-    test('can confirm goal as achieved with optional note', async ({
-      page,
-      createSession,
-      makeAxeBuilder,
-      sentencePlanBuilder,
-    }) => {
+    test('can confirm goal as achieved with optional note', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       const plan = await sentencePlanBuilder
         .extend(sentencePlanId)
@@ -37,8 +33,7 @@ test.describe('Achieve goal journey', () => {
       await achievePage.enterHowHelpedNote('This goal helped stabilise their housing situation')
 
       // Accessibility
-      const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
-      expect(accessibilityScanResults.violations).toEqual([])
+      await checkAccessibility(page)
 
       // Click confirm
       await achievePage.clickConfirm()

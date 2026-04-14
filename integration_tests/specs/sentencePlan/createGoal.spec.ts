@@ -7,13 +7,14 @@ import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import {
   buildErrorPageTitle,
   buildPageTitle,
+  checkAccessibility,
   navigateToSentencePlan,
   sentencePlanPageTitles,
 } from './sentencePlanUtils'
 
 test.describe('Create Goal Journey', () => {
   test.describe('Create Goal with Steps', () => {
-    test('can create a goal and add steps - happy path', async ({ page, createSession, makeAxeBuilder }) => {
+    test('can create a goal and add steps - happy path', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
 
@@ -32,12 +33,10 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.selectTargetDateOption('3_months')
 
       // Create goal accessibility
-      const createGoalScanResults = await makeAxeBuilder()
-        .include('[data-qa="main-form"]')
+      await checkAccessibility(page, {
         // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
-        .disableRules(['aria-allowed-attr'])
-        .analyze()
-      expect(createGoalScanResults.violations).toEqual([])
+        disableRules: ['aria-allowed-attr'],
+      })
 
       await createGoalPage.clickAddSteps()
 
@@ -62,8 +61,7 @@ test.describe('Create Goal Journey', () => {
       await addStepsPage.enterStep(0, 'probation_practitioner', "Contact housing services about 'emergency housing'")
 
       // Add steps accessibility
-      const addStepsScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
-      expect(addStepsScanResults.violations).toEqual([])
+      await checkAccessibility(page)
 
       await addStepsPage.clickSaveAndContinue()
 

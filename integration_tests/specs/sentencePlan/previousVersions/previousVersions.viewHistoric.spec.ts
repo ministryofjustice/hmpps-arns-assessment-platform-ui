@@ -8,6 +8,7 @@ import {
 } from '../../../builders/sentencePlanFactories'
 import {
   buildPageTitle,
+  checkAccessibility,
   handlePrivacyScreenIfPresent,
   navigateToSentencePlan,
   sentencePlanPageTitles,
@@ -93,10 +94,11 @@ test.describe('View Historic Plan', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withEventsBackdated(startOfDay, endOfDay).save()
 
-      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+      const { historicPlanPage, newPage } = await navigateToHistoricPlan(page, handoverLink)
 
       await expect(historicPlanPage.noGoalsMessage).toBeVisible()
       await expect(historicPlanPage.noGoalsMessage).toContainText(/does not have any goals to work on now/i)
+      await checkAccessibility(newPage, { include: '#main-content' })
     })
 
     test('shows empty message when no future goals exist', async ({ page, createSession, sentencePlanBuilder }) => {

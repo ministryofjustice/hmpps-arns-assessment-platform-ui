@@ -32,8 +32,6 @@
 {% block govukHeader %}
   {{ super() }}
   {% include "sentence-plan/views/partials/sentence-plan-nav.njk" %}
-  {% include "sentence-plan/views/partials/phase-banner.njk" %}
-  {% include "sentence-plan/views/partials/plan-header.njk" %}
 {% endblock %}
 
 {% block bodyEnd %}
@@ -79,6 +77,9 @@
 
 {% block content %}
   {% set sidebarIndex = twoColumnLayout.sidebarBlockIndex if twoColumnLayout else -1 %}
+
+  {% include "sentence-plan/views/partials/phase-banner.njk" %}
+  {% include "sentence-plan/views/partials/plan-header.njk" %}
 
   <div class="govuk-grid-row" data-qa-assessment-uuid="{{ data.assessmentUuid }}">
     <div class="govuk-grid-column-full">

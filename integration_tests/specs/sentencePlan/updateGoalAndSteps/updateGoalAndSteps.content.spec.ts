@@ -8,6 +8,7 @@ import {
   stepStatusOptions,
   sentencePlanV1UrlBuilders,
   buildPageTitle,
+  checkAccessibility,
   sentencePlanPageTitles,
 } from '../sentencePlanUtils'
 
@@ -16,7 +17,6 @@ test.describe('Update goal and steps page', () => {
     test('displays page heading, target date message and change goal details link correctly', async ({
       page,
       createSession,
-      makeAxeBuilder,
       sentencePlanBuilder,
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
@@ -63,8 +63,7 @@ test.describe('Update goal and steps page', () => {
       await expect(updatePage.changeGoalDetailsLink).toBeVisible()
 
       // Accessibility
-      const accessibilityScanResults = await makeAxeBuilder().include('[data-qa="main-form"]').analyze()
-      expect(accessibilityScanResults.violations).toEqual([])
+      await checkAccessibility(page)
     })
 
     test('displays related areas of need in page heading when goal has related areas', async ({

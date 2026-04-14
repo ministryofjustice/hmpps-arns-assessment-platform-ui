@@ -35,6 +35,7 @@ export const planAgreementQuestion = GovUKRadioInput({
     legend: {
       text: Format('Does %1 agree to this plan?', CaseData.Forename),
       classes: 'govuk-fieldset__legend--l',
+      isPageHeading: true,
     },
   },
   hint: Format('%1 must answer this question, or you must record why %1 could not.', CaseData.Forename),
