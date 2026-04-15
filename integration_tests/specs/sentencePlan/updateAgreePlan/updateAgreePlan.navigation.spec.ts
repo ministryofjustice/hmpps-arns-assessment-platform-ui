@@ -17,12 +17,7 @@ test.describe('Update agree plan - Navigation', () => {
       await sentencePlanBuilder
         .extend(sentencePlanId)
         .withGoals(currentGoalsWithCompletedSteps(1))
-        .withPlanAgreements([
-          {
-            status: 'COULD_NOT_ANSWER',
-            detailsCouldNotAnswer: 'Person was not available to discuss the plan',
-          },
-        ])
+        .withAgreementStatus('AGREED')
         .save()
 
       await navigateToSentencePlan(page, handoverLink)
@@ -38,7 +33,12 @@ test.describe('Update agree plan - Navigation', () => {
       await sentencePlanBuilder
         .extend(sentencePlanId)
         .withGoals(currentGoalsWithCompletedSteps(1))
-        .withAgreementStatus('COULD_NOT_ANSWER')
+        .withPlanAgreements([
+          {
+            status: 'COULD_NOT_ANSWER',
+            detailsCouldNotAnswer: 'Person was not available to discuss the plan',
+          },
+        ])
         .save()
       await navigateToSentencePlan(page, handoverLink)
     })
