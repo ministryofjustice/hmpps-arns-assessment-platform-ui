@@ -2,6 +2,10 @@
 # to support a fully self-contained local development environment.
 
 services:
+  wiremock-proxy:
+    ports:
+      - '8080:8080'
+
   hmpps-arns-assessment-platform-ui:
     build:
       target: development

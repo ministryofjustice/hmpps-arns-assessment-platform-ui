@@ -11,6 +11,7 @@ APP_VERSION ?= local
 ## Compose files to stack on each other
 DEV_COMPOSE_FILES = -f docker/docker-compose.yml -f docker/docker-compose.dev.yml
 TEST_COMPOSE_FILES = -f docker/docker-compose.yml -f docker/docker-compose.test.yml
+SUBDOMAIN_COMPOSE_FILES = -f docker/docker-compose.yml -f docker/docker-compose.subdomains.yml
 PROD_COMPOSE_FILES = -f docker/docker-compose.yml
 
 export APP_VERSION
@@ -36,6 +37,24 @@ dev-up: ## Starts/restarts a development container. A remote debugger can be att
 	@make install-node-modules
 	docker compose down ${SERVICE_NAME}
 	docker compose ${DEV_COMPOSE_FILES} up ${SERVICE_NAME} --wait --no-recreate
+
+dev-build-subdomains: ## Builds a development image of the UI for subdomain mode.
+	@make install-node-modules
+	docker compose ${SUBDOMAIN_COMPOSE_FILES} build ${SERVICE_NAME}
+
+dev-up-subdomains: ## Starts the local stack with *.hmpps.test routing on port 80.
+	@make install-node-modules
+	docker compose ${SUBDOMAIN_COMPOSE_FILES} down
+	docker compose ${SUBDOMAIN_COMPOSE_FILES} up ${SERVICE_NAME} wiremock-proxy dnsmasq --wait --no-recreate
+
+dns-install-macos: ## Installs the macOS resolver for *.hmpps.test.
+	sudo mkdir -p /etc/resolver
+	echo 'nameserver 127.0.0.1\nport 53' | sudo tee /etc/resolver/hmpps.test >/dev/null
+	@echo "Installed macOS resolver for *.hmpps.test via 127.0.0.1:53"
+
+dns-remove-macos: ## Removes the macOS resolver for *.hmpps.test.
+	sudo rm -f /etc/resolver/hmpps.test
+	@echo "Removed macOS resolver for *.hmpps.test"
 
 down: ## Stops and removes all containers in the project.
 	docker compose down

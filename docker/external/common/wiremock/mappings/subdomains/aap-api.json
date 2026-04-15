@@ -1,0 +1,13 @@
+{
+  "name": "Subdomain proxy to AAP API",
+  "request": {
+    "host": {
+      "equalTo": "aap-api.hmpps.test"
+    },
+    "urlPattern": "/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "http://hmpps-arns-assessment-platform-api:8080"
+  },
+  "priority": 100
+}

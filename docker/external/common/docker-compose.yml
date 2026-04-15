@@ -65,17 +65,13 @@ services:
       SPRING_FLYWAY_LOCATIONS: classpath:db/auth,db/auth_{vendor},db/dev/data/auth_{vendor},db/dev/data/auth,filesystem:/auth_db
 
   wiremock-proxy:
-#    image: wiremock/wiremock:latest
-    build:
-      context: ./wiremock
+    image: wiremock/wiremock:3.13.2
     networks:
       - hmpps
-    ports:
-      - '8080:8080'
     restart: always
     volumes:
       - ./wiremock/mappings:/home/wiremock/mappings/proxy
-    command: --global-response-templating --extensions uk.gov.justice.hmpps.aap.wiremock.PrefixRedirectsTransformer
+    command: --global-response-templating
 
 networks:
   hmpps:

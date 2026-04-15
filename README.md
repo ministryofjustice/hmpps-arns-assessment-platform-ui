@@ -61,6 +61,33 @@ make clean                   # Clean up containers and volumes
 make update                  # Update container images
 ```
 
+### Local Subdomains
+
+There is an experimental subdomain-based local stack available for UI-friendly
+hostname routing via `*.hmpps.test`.
+
+On macOS:
+
+```bash
+make dns-install-macos
+make dev-build-subdomains
+make dev-up-subdomains
+```
+
+This will make local hostnames such as:
+
+- `http://aap-ui.hmpps.test:8080`
+- `http://hmpps-auth.hmpps.test:8080/auth`
+- `http://handover.hmpps.test:8080`
+
+resolve through a Dockerised `dnsmasq` container plus an nginx edge proxy.
+
+When you are done, you can remove the macOS resolver with:
+
+```bash
+make dns-remove-macos
+```
+
 ## Project Structure
 
 ```

@@ -1,0 +1,13 @@
+{
+  "name": "Subdomain proxy to ARNS Handover",
+  "request": {
+    "host": {
+      "equalTo": "handover.hmpps.test"
+    },
+    "urlPattern": "/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "http://hmpps-assess-risks-and-needs-handover-service:8080"
+  },
+  "priority": 100
+}

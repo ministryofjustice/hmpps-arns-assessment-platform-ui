@@ -23,9 +23,9 @@ services:
       SERVER_PORT: 8080
       REDIS_HOST: redis
       SPRING_PROFILES_ACTIVE: local
-      HMPPS_HANDOVER_BASE_URL: http://wiremock-proxy:8080/hmpps-assess-risks-and-needs-handover-service
+      HMPPS_HANDOVER_BASE_URL: http://hmpps-assess-risks-and-needs-handover-service:8080
       HMPPS_HANDOVER_EXTERNAL_URL: http://localhost:8080/hmpps-assess-risks-and-needs-handover-service
-      HMPPS_AUTH_BASE_URL: http://wiremock-proxy:8080/hmpps-auth
+      HMPPS_AUTH_BASE_URL: http://hmpps-auth:9090
       OASYS_BASE_URL: http://localhost:8080/hmpps-arns-assessment-platform-ui
       OASYS_RETURN_URLS: http://localhost:8080/hmpps-arns-assessment-platform-ui
       COORDINATOR_API_BASE_URL: http://wiremock-proxy:8080/hmpps-assess-risks-and-needs-coordinator-api

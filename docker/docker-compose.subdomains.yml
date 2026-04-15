@@ -1,0 +1,51 @@
+# `docker-compose.subdomains.yml` adds a local DNS server plus host-based
+# routing so browser traffic can use subdomains instead of path prefixes.
+
+services:
+  wiremock-proxy:
+    ports:
+      - '80:8080'
+
+  dnsmasq:
+    image: alpine:3.22
+    command: sh -c 'apk add --no-cache dnsmasq >/dev/null 2>&1 && dnsmasq --keep-in-foreground --no-resolv --no-hosts --listen-address=0.0.0.0 --bind-interfaces --address=/hmpps.test/127.0.0.1'
+    networks:
+      - hmpps
+    ports:
+      - '127.0.0.1:53:53/tcp'
+      - '127.0.0.1:53:53/udp'
+    restart: always
+
+  hmpps-arns-assessment-platform-ui:
+    build:
+      target: development
+    command: npm run start:dev
+    volumes:
+      - ../:/app:cached
+      - node_modules:/app/node_modules
+    environment:
+      NODE_ENV: development
+      NODE_CLUSTER_ENABLED: false
+      ENVIRONMENT_NAME: dev
+      FEATURE_FLAG_URL: https://feature-toggles-dev.hmpps.service.justice.gov.uk
+      INGRESS_URL: http://aap-ui.hmpps.test
+      HMPPS_AUTH_EXTERNAL_URL: http://hmpps-auth.hmpps.test/auth
+      HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://handover.hmpps.test
+      SAN_URL: http://san-ui.hmpps.test
+      OASYS_URL: http://aap-ui.hmpps.test/training-session-launcher/sessions
+      MPOP_URL: http://aap-ui.hmpps.test/sign-in
+
+  hmpps-assess-risks-and-needs-handover-service:
+    environment:
+      HMPPS_HANDOVER_EXTERNAL_URL: http://handover.hmpps.test
+      OASYS_BASE_URL: http://aap-ui.hmpps.test
+      OASYS_RETURN_URLS: http://aap-ui.hmpps.test
+      CLIENT_SP_OAUTH_REDIRECT_URI: http://aap-ui.hmpps.test/sign-in/handover/callback
+      CLIENT_SP_HANDOVER_REDIRECT_URI: http://aap-ui.hmpps.test/sign-in/handover?service=sentence-plan
+      CLIENT_SAN_OAUTH_REDIRECT_URI: http://san-ui.hmpps.test/sign-in/callback
+      CLIENT_SAN_HANDOVER_REDIRECT_URI: http://san-ui.hmpps.test/sign-in
+
+volumes:
+  node_modules:
+    external: true
+    name: ${COMPOSE_PROJECT_NAME}_node_modules
