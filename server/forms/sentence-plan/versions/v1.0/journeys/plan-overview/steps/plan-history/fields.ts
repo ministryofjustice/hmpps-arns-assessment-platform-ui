@@ -1,4 +1,4 @@
-import { Data, Format, Item, match, or, when } from '@form-engine/form/builders'
+import { and, Data, Format, Item, match, when } from '@form-engine/form/builders'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
@@ -9,6 +9,14 @@ import { GovUKSectionBreak } from '@form-engine-govuk-components/wrappers/govukS
 import { CaseData } from '../../../../constants'
 
 const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
+const isEditModeAccess = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_WRITE'))
+
+const updateAgreementLink = Format(
+  '<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">Update %1 agreement</a></p>',
+  CaseData.ForenamePossessive,
+)
+
+const isCouldNotAnswerAgreementStatus = Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))
 
 export const subtitleText = GovUKBody({ text: 'View all updates and changes made to this plan.' })
 
@@ -49,7 +57,7 @@ const agreementEntryContent = Format(
       Format('%1 did not agree to this plan.', CaseData.Forename),
     )
     .otherwise(Format('%1 could not agree to this plan.', CaseData.Forename)),
-  // %6: Reason details and optional notes combined in a single paragraph
+  // %6: Reason details and optional notes combined in a single paragraph (link to update the agreement is in a separate <p>)
   when(Item().path('detailsNo').match(Condition.IsRequired()))
     .then(
       when(Item().path('notes').match(Condition.IsRequired()))
@@ -68,15 +76,27 @@ const agreementEntryContent = Format(
           when(Item().path('notes').match(Condition.IsRequired()))
             .then(
               Format(
-                '<p class="govuk-body">%1<br>%2</p>',
+                `<div class="govuk-!-margin-bottom-6">
+                <p class="govuk-body">%1<br>%2</p>
+                %3
+                </div>`,
                 Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
                 Item().path('notes').pipe(Transformer.String.EscapeHtml()),
+                when(and(isEditModeAccess, isCouldNotAnswerAgreementStatus))
+                  .then(updateAgreementLink)
+                  .else(''),
               ),
             )
             .else(
               Format(
-                '<p class="govuk-body">%1</p>',
+                `<div class="govuk-!-margin-bottom-6">
+                <p class="govuk-body">%1</p>
+                %2
+                </div>`,
                 Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
+                when(and(isEditModeAccess, isCouldNotAnswerAgreementStatus))
+                  .then(updateAgreementLink)
+                  .else(''),
               ),
             ),
         )
@@ -296,17 +316,6 @@ export const agreementHistory = CollectionBlock({
         ),
       }),
     ),
-  ),
-})
-
-/**
- * Link to update the person's agreement - shown when latest status is COULD_NOT_ANSWER
- */
-export const updateAgreementLink = GovUKBody({
-  hidden: or(isReadOnly, Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER'))),
-  text: Format(
-    '<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">Update %1\'s agreement</a>',
-    CaseData.Forename,
   ),
 })
 
