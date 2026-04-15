@@ -1,0 +1,31 @@
+# `docker-compose.base.yml` defines common configuration shared across all deployment states.
+# Other compose files (local, test) extend or override these settings as needed.
+
+include:
+  - ../common/docker-compose.yml
+
+services:
+  hmpps-arns-assessment-platform-api:
+    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-api:latest
+    networks:
+      - hmpps
+    depends_on:
+      - postgres
+      - localstack
+      - hmpps-auth
+    healthcheck:
+      test: [ 'CMD', 'curl', '-f', 'http://hmpps-arns-assessment-platform-api:8080/health/ping' ]
+      interval: 5s
+      retries: 20
+    environment:
+      SERVER_PORT: 8080
+      HMPPS_AUTH_URL: http://wiremock-proxy:8080/hmpps-auth/auth
+      SPRING_PROFILES_ACTIVE: dev,postgres
+      DATABASE_ENDPOINT: postgres:5432
+      HMPPS_SQS_PROVIDER: localstack
+      HMPPS_SQS_LOCALSTACK_URL: http://localstack:4566
+      HMPPS_SQS_QUEUES_AUDIT_QUEUE_NAME: audit-queue
+      SPRING_DATA_REDIS_HOST: redis
+
+networks:
+  hmpps:

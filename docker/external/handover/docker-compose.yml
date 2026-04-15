@@ -1,0 +1,43 @@
+# `docker-compose.base.yml` defines common configuration shared across all deployment states.
+# Other compose files (local, test) extend or override these settings as needed.
+
+include:
+  - ../common/docker-compose.yml
+  - ../coordinator/docker-compose.yml
+
+services:
+  hmpps-assess-risks-and-needs-handover-service:
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:latest
+    depends_on:
+      - redis
+      - localstack
+      - hmpps-auth
+      - hmpps-assess-risks-and-needs-coordinator-api
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://hmpps-assess-risks-and-needs-handover-service:8080/health/ping']
+      interval: 5s
+      retries: 20
+    networks:
+      - hmpps
+    environment:
+      SERVER_PORT: 8080
+      REDIS_HOST: redis
+      SPRING_PROFILES_ACTIVE: local
+      HMPPS_HANDOVER_BASE_URL: http://wiremock-proxy:8080/hmpps-assess-risks-and-needs-handover-service
+      HMPPS_HANDOVER_EXTERNAL_URL: http://localhost:8080/hmpps-assess-risks-and-needs-handover-service
+      HMPPS_AUTH_BASE_URL: http://wiremock-proxy:8080/hmpps-auth
+      OASYS_BASE_URL: http://localhost:8080/hmpps-arns-assessment-platform-ui
+      OASYS_RETURN_URLS: http://localhost:8080/hmpps-arns-assessment-platform-ui
+      COORDINATOR_API_BASE_URL: http://wiremock-proxy:8080/hmpps-assess-risks-and-needs-coordinator-api
+      SERVER_ERROR_WHITELABEL_ENABLED: true
+      CLIENT_ID: hmpps-assess-risks-and-needs-oastub-ui
+      CLIENT_SECRET: clientsecret
+      CLIENT_SP_SECRET: sp-secret
+      CLIENT_SP_OAUTH_REDIRECT_URI: http://localhost:8080/hmpps-arns-assessment-platform-ui/sign-in/handover/callback
+      CLIENT_SP_HANDOVER_REDIRECT_URI: http://localhost:8080/hmpps-arns-assessment-platform-ui/sign-in/handover?service=sentence-plan
+      CLIENT_SAN_SECRET: san-secret
+      CLIENT_SAN_OAUTH_REDIRECT_URI: http://localhost:8080/hmpps-strengths-based-needs-assessments-ui/sign-in/callback
+      CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:8080/hmpps-strengths-based-needs-assessments-ui/sign-in
+
+networks:
+  hmpps:

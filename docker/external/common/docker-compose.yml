@@ -1,0 +1,81 @@
+# `docker-compose.base.yml` defines common configuration shared across all deployment states.
+# Other compose files (local, test) extend or override these settings as needed.
+
+services:
+  redis:
+    image: redis:8.6
+    networks:
+      - hmpps
+    ports:
+      - '6379:6379'
+    environment:
+      ALLOW_EMPTY_PASSWORD: yes
+
+  postgres:
+    image: postgres:18
+    networks:
+      - hmpps
+    ports:
+      - '5432:5432'
+    tmpfs:
+      - /var/lib/postgresql
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: dev
+
+  localstack:
+    image: localstack/localstack:4
+    networks:
+      - hmpps
+    ports:
+      - '4566:4566'
+    healthcheck:
+      test: ['CMD', 'bash', '/scripts/wait/healthcheck.sh']
+      interval: 5s
+      timeout: 10s
+      retries: 50
+    volumes:
+      - '${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack'
+      - './scripts/localstack/init:/etc/localstack/init/ready.d'
+      - './scripts/localstack/wait:/scripts/wait'
+    environment:
+      SERVICES: sqs
+      LOCALSTACK_HOST: localstack:4566
+      DEBUG: 1
+      DEFAULT_REGION: eu-west-2
+      AWS_DEFAULT_REGION: eu-west-2
+      USE_SSL: false
+
+  hmpps-auth:
+    image: ghcr.io/ministryofjustice/hmpps-auth:2026-01-19.282.b6537e8
+    networks:
+      - hmpps
+    ports:
+      - '9090:9090'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9090/auth/health']
+      interval: 5s
+      retries: 20
+    volumes:
+      - ./auth_db:/auth_db
+    environment:
+      SERVER_PORT: 9090
+      SPRING_PROFILES_ACTIVE: dev
+      APPLICATION_AUTHENTICATION_UI_ALLOWLIST: 0.0.0.0/0
+      SPRING_FLYWAY_LOCATIONS: classpath:db/auth,db/auth_{vendor},db/dev/data/auth_{vendor},db/dev/data/auth,filesystem:/auth_db
+
+  wiremock-proxy:
+#    image: wiremock/wiremock:latest
+    build:
+      context: ./wiremock
+    networks:
+      - hmpps
+    ports:
+      - '8080:8080'
+    restart: always
+    volumes:
+      - ./wiremock/mappings:/home/wiremock/mappings/proxy
+    command: --global-response-templating
+
+networks:
+  hmpps:

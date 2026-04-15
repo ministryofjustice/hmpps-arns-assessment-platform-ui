@@ -1,0 +1,80 @@
+# `docker-compose.base.yml` defines common configuration shared across all deployment states.
+# Other compose files (local, test) extend or override these settings as needed.
+
+include:
+  - ./external/common/docker-compose.yml
+  - ./external/coordinator/docker-compose.yml
+  - ./external/handover/docker-compose.yml
+  - ./external/aap-api/docker-compose.yml
+
+services:
+  wiremock-proxy:
+    volumes:
+      - ./wiremock/mappings:/home/wiremock/mappings/custom
+
+  hmpps-arns-assessment-platform-ui:
+    image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:latest
+    networks:
+      - hmpps
+    depends_on:
+      - redis
+      - localstack
+      - hmpps-arns-assessment-platform-api
+      - hmpps-assess-risks-and-needs-handover-service
+      - hmpps-assess-risks-and-needs-coordinator-api
+      - hmpps-auth
+      - wiremock-proxy
+    build:
+      context: ../
+      target: production
+      args:
+        BUILD_NUMBER: '1.0.0'
+        GIT_REF: 'a1b2c3'
+        GIT_BRANCH: main
+    command: npm run start
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '--spider', 'http://hmpps-arns-assessment-platform-ui:8080/health']
+      interval: 5s
+      retries: 20
+    environment:
+      PORT: 8080
+      PRODUCT_ID: 'UNASSIGNED'
+      REDIS_ENABLED: true
+      REDIS_HOST: redis
+      SESSION_SECRET: somesecretvalue
+      INGRESS_URL: http://localhost:8080/hmpps-arns-assessment-platform-ui
+      NO_HTTPS: true
+      AUTH_CODE_CLIENT_ID: hmpps-arns-assessment-platform-ui
+      AUTH_CODE_CLIENT_SECRET: clientsecret
+      CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-system
+      CLIENT_CREDS_CLIENT_SECRET: clientsecret
+      TOKEN_VERIFICATION_ENABLED: false
+      TOKEN_VERIFICATION_API_URL: http://localhost:8080/hmpps-auth/verification
+      HMPPS_AUTH_URL: http://wiremock-proxy:8080/hmpps-auth/auth
+      HMPPS_AUTH_EXTERNAL_URL: http://localhost:8080/hmpps-auth/auth
+      AAP_API_URL: http://wiremock-proxy:8080/hmpps-arns-assessment-platform-api
+      COORDINATOR_API_URL: http://wiremock-proxy:8080/hmpps-assess-risks-and-needs-coordinator-api
+      DELIUS_API_URL: http://wiremock-proxy:8080/delius
+      ARNS_API_URL: http://wiremock-proxy:8080/hmpps-assess-risks-and-needs
+      SAN_URL: http://localhost:8080/hmpps-strengths-based-needs-assessments-ui
+      HMPPS_ARNS_HANDOVER_URL: http://wiremock-proxy:8080/hmpps-assess-risks-and-needs-handover-service
+      HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:8080/hmpps-assess-risks-and-needs-handover-service
+      HMPPS_ARNS_HANDOVER_CLIENT_ID: sentence-plan
+      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: sp-secret
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AUDIT_ENABLED: true
+      AUDIT_SQS_QUEUE_URL: http://localstack:4566/000000000000/audit-queue
+      AUDIT_SQS_REGION: eu-west-2
+      AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
+      NODE_CLUSTER_ENABLED: true
+      FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
+      FORM_TRAINING_SESSION_LAUNCHER_ENABLED: true
+      CACHE_REDIS_HOST: redis
+      SERVICE_NOW_FORM_URL: '#service-now-link'
+      OASYS_URL: 'http://localhost:8080/hmpps-arns-assessment-platform-ui/training-session-launcher/sessions'
+      MPOP_URL: 'http://localhost:8080/hmpps-arns-assessment-platform-ui/sign-in'
+
+networks:
+  hmpps:

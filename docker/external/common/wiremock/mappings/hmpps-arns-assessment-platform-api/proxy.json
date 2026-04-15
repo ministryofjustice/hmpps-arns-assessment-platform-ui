@@ -1,0 +1,11 @@
+{
+  "name": "Proxy to AAP API",
+  "request": {
+    "urlPattern": "/hmpps-arns-assessment-platform-api/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "http://hmpps-arns-assessment-platform-api:8080",
+    "proxyUrlPrefixToRemove": "/hmpps-arns-assessment-platform-api"
+  },
+  "priority": 100
+}

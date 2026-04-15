@@ -1,0 +1,11 @@
+{
+  "name": "Proxy to SAN UI",
+  "request": {
+    "urlPattern": "/hmpps-strengths-based-needs-assessments-ui/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "http://hmpps-strengths-based-needs-assessments-ui:8080",
+    "proxyUrlPrefixToRemove": "/hmpps-strengths-based-needs-assessments-ui"
+  },
+  "priority": 100
+}

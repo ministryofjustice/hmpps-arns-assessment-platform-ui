@@ -1,0 +1,34 @@
+# `docker-compose.base.yml` defines common configuration shared across all deployment states.
+# Other compose files (local, test) extend or override these settings as needed.
+
+include:
+  - ../common/docker-compose.yml
+
+services:
+  hmpps-assess-risks-and-needs-coordinator-api:
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:latest
+    depends_on:
+      - postgres
+      - hmpps-auth
+    networks:
+      - hmpps
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://hmpps-assess-risks-and-needs-coordinator-api:8080/health/ping']
+      interval: 5s
+      retries: 20
+    environment:
+      SERVER_PORT: 8080
+      SPRING_PROFILES_ACTIVE: postgres
+      APP_DB_ENDPOINT: postgres:5432
+      APP_DB_NAME: postgres
+      APP_DB_USERNAME: root
+      APP_DB_PASSWORD: dev
+      HMPPS_AUTH_BASE_URL: http://wiremock-proxy:8080/hmpps-auth/auth
+      SAN_API_BASE_URL: http://wiremock-proxy:8080/hmpps-strengths-based-needs-assessments-api
+      AAP_API_BASE_URL: http://wiremock-proxy:8080/hmpps-arns-assessment-platform-api
+      APP_STRATEGIES_PLAN: false
+      CLIENT_ID: hmpps-assess-risks-and-needs-oastub-ui
+      CLIENT_SECRET: clientsecret
+
+networks:
+  hmpps:

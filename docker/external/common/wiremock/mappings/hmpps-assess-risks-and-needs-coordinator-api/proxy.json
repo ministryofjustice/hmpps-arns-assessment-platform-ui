@@ -1,0 +1,11 @@
+{
+  "name": "Proxy to Coordinator API",
+  "request": {
+    "urlPattern": "/hmpps-assess-risks-and-needs-coordinator-api/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "http://hmpps-assess-risks-and-needs-coordinator-api:8080",
+    "proxyUrlPrefixToRemove": "/hmpps-assess-risks-and-needs-coordinator-api"
+  },
+  "priority": 100
+}

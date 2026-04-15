@@ -1,0 +1,11 @@
+{
+  "name": "Proxy to HMPPS Auth",
+  "request": {
+    "urlPattern": "/hmpps-auth/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "http://hmpps-auth:9090",
+    "proxyUrlPrefixToRemove": "/hmpps-auth"
+  },
+  "priority": 100
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Proxy to ARNS API",
+  "request": {
+    "urlPattern": "/hmpps-assess-risks-and-needs/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "http://hmpps-assess-risks-and-needs:8080",
+    "proxyUrlPrefixToRemove": "/hmpps-assess-risks-and-needs"
+  },
+  "priority": 100
+}

@@ -1,0 +1,18 @@
+{
+  "name": "Proxy to AAP UI",
+  "request": {
+    "urlPattern": "/hmpps-arns-assessment-platform-ui(/.*)?"
+  },
+  "response": {
+    "proxyBaseUrl": "http://hmpps-arns-assessment-platform-ui:8080",
+    "proxyUrlPrefixToRemove": "/hmpps-arns-assessment-platform-ui",
+    "transformers": [
+      "prefix-redirects"
+    ],
+    "transformerParameters": {
+      "prefixToAdd": "/hmpps-arns-assessment-platform-ui",
+      "proxyBaseUrl": "http://hmpps-arns-assessment-platform-ui:8080"
+    }
+  },
+  "priority": 100
+}

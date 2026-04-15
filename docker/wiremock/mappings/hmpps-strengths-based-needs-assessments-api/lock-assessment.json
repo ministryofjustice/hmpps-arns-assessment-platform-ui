@@ -1,0 +1,29 @@
+{
+  "name": "SAN API - Lock Assessment",
+  "request": {
+    "method": "POST",
+    "urlPathPattern": "/hmpps-strengths-based-needs-assessments-api/assessment/[a-f0-9-]+/lock"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "metaData": {
+        "uuid": "{{request.pathSegments.[2]}}",
+        "createdAt": "{{now}}",
+        "versionUuid": "{{randomValue type='UUID'}}",
+        "versionNumber": 0,
+        "versionCreatedAt": "{{now}}",
+        "versionUpdatedAt": "{{now}}",
+        "versionTag": "LOCKED_INCOMPLETE",
+        "formVersion": "1.0"
+      },
+      "assessment": {},
+      "oasysEquivalent": {}
+    },
+    "transformers": ["response-template"]
+  },
+  "priority": 50
+}

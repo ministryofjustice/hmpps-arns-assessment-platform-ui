@@ -4,14 +4,14 @@ SHELL = '/bin/bash'
 PROJECT_NAME = hmpps-assess-risks-and-needs
 
 ## Must match name of container in Docker
-SERVICE_NAME = aap-ui
+SERVICE_NAME = hmpps-arns-assessment-platform-ui
 
 APP_VERSION ?= local
 
 ## Compose files to stack on each other
-DEV_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.local.yml
-CI_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml
-PROD_COMPOSE_FILES = -f docker/docker-compose.base.yml
+DEV_COMPOSE_FILES = -f docker/docker-compose.yml -f docker/docker-compose.dev.yml
+TEST_COMPOSE_FILES = -f docker/docker-compose.yml -f docker/docker-compose.test.yml
+PROD_COMPOSE_FILES = -f docker/docker-compose.yml
 
 export APP_VERSION
 export COMPOSE_PROJECT_NAME=${PROJECT_NAME}
@@ -22,15 +22,15 @@ help: ## The help text you're reading.
 	@grep --no-filename -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 prod-build: ## Builds a production image of the UI.
-	docker compose ${PROD_COMPOSE_FILES} build aap-ui
+	docker compose ${PROD_COMPOSE_FILES} build ${SERVICE_NAME}
 
 prod-up: ## Starts/restarts the UI in a production container.
-	docker compose ${PROD_COMPOSE_FILES} down aap-ui
-	docker compose ${PROD_COMPOSE_FILES} up aap-ui --wait --no-recreate
+	docker compose ${PROD_COMPOSE_FILES} down ${SERVICE_NAME}
+	docker compose ${PROD_COMPOSE_FILES} up ${SERVICE_NAME} --wait --no-recreate
 
 dev-build: ## Builds a development image of the UI and installs Node dependencies.
 	@make install-node-modules
-	docker compose ${DEV_COMPOSE_FILES} build aap-ui
+	docker compose ${DEV_COMPOSE_FILES} build ${SERVICE_NAME}
 
 dev-up: ## Starts/restarts a development container. A remote debugger can be attached on port 9229.
 	@make install-node-modules
@@ -54,8 +54,8 @@ export SHARD
 
 e2e-ci: ## Run Playwright tests in Docker container (for CI).
 	@make install-node-modules
-	docker compose $(CI_COMPOSE_FILES) up $(SERVICE_NAME) --wait $(if $(filter local,$(APP_VERSION)),--build) && \
-	docker compose $(CI_COMPOSE_FILES) run --rm playwright
+	docker compose $(TEST_COMPOSE_FILES) up $(SERVICE_NAME) --wait $(if $(filter local,$(APP_VERSION)),--build) && \
+	docker compose $(TEST_COMPOSE_FILES) run --rm playwright
 
 lint: ## Runs the linter.
 	docker compose exec ${SERVICE_NAME} npm run lint
@@ -94,9 +94,8 @@ update: ## Downloads the latest versions of container images.
 save-logs: ## Saves docker container logs in a directory defined by OUTPUT_LOGS_DIR=
 	docker system info
 	mkdir -p ${OUTPUT_LOGS_DIR}
-	docker logs ${PROJECT_NAME}-aap-ui-1 > ${OUTPUT_LOGS_DIR}/aap-ui.log
-	docker logs ${PROJECT_NAME}-arns-handover-1 > ${OUTPUT_LOGS_DIR}/arns-handover.log
-	docker logs ${PROJECT_NAME}-coordinator-api-1 > ${OUTPUT_LOGS_DIR}/coordinator-api.log
-	docker logs ${PROJECT_NAME}-aap-api-1 > ${OUTPUT_LOGS_DIR}/aap-api.log
-	docker logs ${PROJECT_NAME}-hmpps-auth-1 > ${OUTPUT_LOGS_DIR}/hmpps-auth.log
-	docker logs ${PROJECT_NAME}-wiremock-1 > ${OUTPUT_LOGS_DIR}/wiremock.log
+	@for container in $$(docker ps -a --filter "label=com.docker.compose.project=${PROJECT_NAME}" --format '{{.Names}}'); do \
+		log_name=$$(echo "$$container" | sed 's/^${PROJECT_NAME}-//; s/-[0-9]*$$//'); \
+		echo "Saving logs for $$container -> ${OUTPUT_LOGS_DIR}/$$log_name.log"; \
+		docker logs "$$container" > "${OUTPUT_LOGS_DIR}/$$log_name.log" 2>&1; \
+	done

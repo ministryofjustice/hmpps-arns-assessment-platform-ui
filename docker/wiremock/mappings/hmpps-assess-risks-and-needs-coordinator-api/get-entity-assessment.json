@@ -1,0 +1,102 @@
+{
+  "name": "Coordinator API - Get Entity (ASSESSMENT)",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/hmpps-assess-risks-and-needs-coordinator-api/entity/[a-f0-9-]+/ASSESSMENT"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "sanAssessmentId": "{{request.pathSegments.[2]}}",
+      "sanAssessmentVersion": 1,
+      "sanAssessmentData": {
+        "accommodation_section_complete": { "value": "YES" },
+        "accommodation_practitioner_analysis_risk_of_serious_harm": { "value": "YES" },
+        "accommodation_practitioner_analysis_risk_of_serious_harm_yes_details": {
+          "value": "Risk of serious harm related to accommodation instability. The individual has a history of rough sleeping and staying in insecure accommodation, which increases vulnerability."
+        },
+        "accommodation_practitioner_analysis_risk_of_reoffending": { "value": "YES" },
+        "accommodation_practitioner_analysis_risk_of_reoffending_yes_details": {
+          "value": "Accommodation instability is linked to reoffending. Previous offences occurred during periods of homelessness."
+        },
+        "accommodation_practitioner_analysis_strengths_or_protective_factors": { "value": "YES" },
+        "accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details": {
+          "value": "Has maintained tenancy previously for 2 years. Eligible for housing support through local authority."
+        },
+        "accommodation_changes": { "value": "WANT_TO_MAKE_CHANGES" },
+
+        "thinking_behaviours_attitudes_section_complete": { "value": "NO" },
+        "thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm": { "value": "YES" },
+        "thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details": {
+          "value": "Impulsive decision-making and poor anger management have led to violent incidents."
+        },
+        "thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending": { "value": "YES" },
+        "thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details": {
+          "value": "Pattern of acting impulsively without considering consequences."
+        },
+        "thinking_behaviours_attitudes_changes": { "value": "THINKING_ABOUT_MAKING_CHANGES" },
+
+        "alcohol_use_section_complete": { "value": "YES" },
+        "alcohol_use_practitioner_analysis_risk_of_serious_harm": { "value": "YES" },
+        "alcohol_use_practitioner_analysis_risk_of_serious_harm_yes_details": {
+          "value": "All index offences occurred while under the influence of alcohol. Significant risk to intimate partners when intoxicated."
+        },
+        "alcohol_use_practitioner_analysis_risk_of_reoffending": { "value": "YES" },
+        "alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details": {
+          "value": "Strong correlation between alcohol use and offending. Binge drinking pattern is a key trigger."
+        },
+        "alcohol_use_practitioner_analysis_strengths_or_protective_factors": { "value": "YES" },
+        "alcohol_use_practitioner_analysis_strengths_or_protective_factors_yes_details": {
+          "value": "Periods of abstinence in the past. Family support for recovery."
+        },
+        "alcohol_use_changes": { "value": "MADE_CHANGES" },
+
+        "drug_use_section_complete": { "value": "NO" },
+        "drug_use_practitioner_analysis_risk_of_serious_harm": { "value": "NO" },
+        "drug_use_practitioner_analysis_risk_of_reoffending": { "value": "YES" },
+        "drug_use_practitioner_analysis_risk_of_reoffending_yes_details": {
+          "value": "Cannabis use linked to peer group who are also involved in offending."
+        },
+        "drug_use_practitioner_analysis_strengths_or_protective_factors": { "value": "NO" },
+        "drug_use_changes": { "value": "NEEDS_HELP_TO_MAKE_CHANGES" },
+
+        "personal_relationships_community_section_complete": { "value": "YES" },
+        "personal_relationships_community_practitioner_analysis_risk_of_serious_harm": { "value": "YES" },
+        "personal_relationships_community_practitioner_analysis_risk_of_serious_harm_yes_details": {
+          "value": "History of domestic abuse towards intimate partners."
+        },
+        "personal_relationships_community_practitioner_analysis_risk_of_reoffending": { "value": "YES" },
+        "personal_relationships_community_practitioner_analysis_risk_of_reoffending_yes_details": {
+          "value": "Negative peer associations continue to influence behaviour."
+        },
+        "personal_relationships_community_practitioner_analysis_strengths_or_protective_factors": { "value": "YES" },
+        "personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_yes_details": {
+          "value": "Strong family support from parents. Positive relationship with children."
+        },
+        "personal_relationships_community_changes": { "value": "MAKING_CHANGES" },
+
+        "finance_section_complete": { "value": "NO" },
+        "finance_practitioner_analysis_risk_of_reoffending": { "value": "YES" },
+        "finance_practitioner_analysis_risk_of_reoffending_yes_details": {
+          "value": "Financial pressures and debt have been a driver for acquisitive offending."
+        },
+        "finance_practitioner_analysis_strengths_or_protective_factors": { "value": "YES" },
+        "finance_practitioner_analysis_strengths_or_protective_factors_yes_details": {
+          "value": "Has managed finances responsibly when employed."
+        }
+      },
+      "sanOasysEquivalent": {},
+      "lastUpdatedTimestampSAN": "{{now}}",
+      "sentencePlanId": "{{randomValue type='UUID'}}",
+      "sentencePlanVersion": 1,
+      "planComplete": "INCOMPLETE",
+      "planType": "INITIAL",
+      "lastUpdatedTimestampSP": "{{now}}"
+    },
+    "transformers": ["response-template"]
+  },
+  "priority": 50
+}

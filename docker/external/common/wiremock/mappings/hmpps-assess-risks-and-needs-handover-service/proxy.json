@@ -1,0 +1,11 @@
+{
+  "name": "Proxy to ARNS Handover",
+  "request": {
+    "urlPattern": "/hmpps-assess-risks-and-needs-handover-service/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "http://hmpps-assess-risks-and-needs-handover-service:8080",
+    "proxyUrlPrefixToRemove": "/hmpps-assess-risks-and-needs-handover-service"
+  },
+  "priority": 100
+}
