@@ -75,7 +75,7 @@ services:
     restart: always
     volumes:
       - ./wiremock/mappings:/home/wiremock/mappings/proxy
-    command: --global-response-templating
+    command: --global-response-templating --extensions uk.gov.justice.hmpps.aap.wiremock.PrefixRedirectsTransformer
 
 networks:
   hmpps:
