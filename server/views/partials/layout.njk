@@ -9,6 +9,14 @@
 {% endif %}
 
 {%- block head -%}
+  <meta name="ai-connection-string" content="{{ appInsightsConnectionString }}">
+  <meta name="ai-request-id" content="{{ requestId }}">
+  {% if user and user.authSource %}
+    <meta name="ai-entry-point" content="{{ user.authSource }}">
+  {% endif %}
+  {% if data and data.assessment and data.assessment.flags %}
+    <meta name="ai-user-type" content="{{ 'PRIVATE_BETA' if 'SAN_BETA' in data.assessment.flags else 'NATIONAL_ROLLOUT' }}">
+  {% endif %}
   <link href="{{ '/assets/css/index.css' | assetMap }}" rel="stylesheet"/>
 {%- endblock -%}
 

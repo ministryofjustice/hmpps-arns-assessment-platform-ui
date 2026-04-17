@@ -43,7 +43,12 @@ export default function setUpWebSecurity(): Router {
           styleSrcElem: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
           styleSrcAttr: ["'unsafe-inline'"],
           fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-          connectSrc: ["'self'", 'https://www.smartsurvey.co.uk'],
+          connectSrc: [
+            "'self'",
+            'https://www.smartsurvey.co.uk',
+            'https://*.applicationinsights.azure.com',
+            'https://dc.services.visualstudio.com',
+          ],
           imgSrc: ["'self'", 'https://embed.smartsurvey.io'],
           formAction: [
             `'self' https://*.hmpps.service.justice.gov.uk ${config.apis.hmppsAuth.externalUrl} ${config.apis.arnsHandover.externalUrl} ${config.sanUrl}`,
