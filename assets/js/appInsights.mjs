@@ -47,4 +47,6 @@ if (connectionString) {
   })
 
   appInsights.trackPageView()
+
+  window.appInsights = appInsights
 }

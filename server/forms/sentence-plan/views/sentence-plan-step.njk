@@ -151,10 +151,14 @@ OASys PK: {{ data.oasysAssessmentPk }}</pre>
       {% endset %}
       <div class="app-report-problem govuk-!-display-none-print" id="report-a-problem" role="complementary" aria-label="Report a problem" data-qa="report-a-problem">
         <div class="govuk-width-container">
-          {{ govukDetails({
-            summaryHtml: '<span data-ai-id="report-a-problem-footer">Report a problem</span>',
-            html: reportProblemHtml
-          }) }}
+          <details class="govuk-details">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text" data-ai-id="report-a-problem-footer">Report a problem</span>
+            </summary>
+            <div class="govuk-details__text">
+              {{ reportProblemHtml | safe }}
+            </div>
+          </details>
         </div>
       </div>
   {% endblock %}
