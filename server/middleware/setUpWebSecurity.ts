@@ -48,6 +48,7 @@ export default function setUpWebSecurity(): Router {
             'https://www.smartsurvey.co.uk',
             'https://*.applicationinsights.azure.com',
             'https://dc.services.visualstudio.com',
+            'https://js.monitor.azure.com',
           ],
           imgSrc: ["'self'", 'https://embed.smartsurvey.io'],
           formAction: [
