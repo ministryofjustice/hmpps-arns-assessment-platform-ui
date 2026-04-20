@@ -34,11 +34,7 @@ export const trainingSessionLauncherJourney = journey({
 
   onAccess: [
     accessTransition({
-      effects: [
-        TrainingSessionLauncherEffects.setTargetService('sentence-plan'),
-        TrainingSessionLauncherEffects.storeCsrf(),
-        TrainingSessionLauncherEffects.loadPreferences(),
-      ],
+      effects: [TrainingSessionLauncherEffects.storeCsrf(), TrainingSessionLauncherEffects.loadPreferences()],
     }),
   ],
 

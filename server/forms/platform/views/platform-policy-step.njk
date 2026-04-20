@@ -1,5 +1,4 @@
 {%- extends "partials/layout.njk" -%}
-{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
 
 {% set backlink = previousPageUrl %}
@@ -66,12 +65,6 @@
   {% endblock %}
 
   {% block govukFooter %}
-    {% if targetService == "sentence-plan" %}
-      {% include "sentence-plan/components/custom-sentence-plan-footer/customSentencePlanFooter.njk" %}
-    {% else %}
-      {{ pdsFooter({
-        baseUrl: footerBaseUrl or "/platform"
-      }) }}
-    {% endif %}
+    {% include "partials/footer.njk" %}
   {% endblock %}
 {% endblock %}

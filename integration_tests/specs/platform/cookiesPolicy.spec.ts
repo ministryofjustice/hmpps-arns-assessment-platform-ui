@@ -23,11 +23,11 @@ test.describe('Cookies policy page', () => {
   })
 
   test('shows a Back link to the previous page when there is server-side history', async ({ page }) => {
-    await page.goto('/platform/privacy-policy')
+    await page.goto('/platform/accessibility')
     await page.goto(cookiesPolicyPageUrl)
 
     const backLink = page.locator('.govuk-back-link')
 
-    await expect(backLink).toHaveAttribute('href', '/platform/privacy-policy')
+    await expect(backLink).toHaveAttribute('href', '/platform/accessibility')
   })
 })

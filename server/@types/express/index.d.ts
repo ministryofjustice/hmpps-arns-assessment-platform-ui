@@ -58,7 +58,6 @@ declare global {
       requestId?: string
       traceId?: string
       cspNonce?: string
-      targetService?: string
       csrfToken?: string
       message?: string
       status?: number

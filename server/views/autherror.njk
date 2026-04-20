@@ -1,5 +1,4 @@
 {% extends "./partials/layout.njk" %}
-{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
 
 {% block govukHeader %}
@@ -55,7 +54,5 @@
     </div>
   </div>
 
-  {{ pdsFooter({
-    baseUrl: "/platform"
-  }) }}
+  {% include "partials/footer.njk" %}
 {% endblock %}

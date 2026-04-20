@@ -1,5 +1,4 @@
 {% extends "../partials/layout.njk" %}
-{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
 
 {% if status === 401 %}
@@ -100,7 +99,6 @@
     </div>
   </div>
 
-  {{ pdsFooter({
-    baseUrl: "/sentence-plan"
-  }) }}
+  {% set footerBaseUrl = "/sentence-plan" %}
+  {% include "partials/footer.njk" %}
 {% endblock %}

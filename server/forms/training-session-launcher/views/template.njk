@@ -1,6 +1,5 @@
 {%- extends "partials/layout.njk" -%}
 {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
-{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 
 {% block head %}
   {{ super() }}
@@ -79,12 +78,6 @@
     ] if data.preferencesId else []
   }) }}
 
-  {% if targetService == "sentence-plan" %}
-    {% include "sentence-plan/components/custom-sentence-plan-footer/customSentencePlanFooter.njk" %}
-  {% else %}
-    {{ pdsFooter({
-      baseUrl: footerBaseUrl or "/platform"
-    }) }}
-  {% endif %}
+  {% include "partials/footer.njk" %}
 
 {% endblock %}
