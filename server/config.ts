@@ -154,6 +154,7 @@ export default {
   mpopUrl: get('MPOP_URL', 'http://localhost:3000/sign-in', requiredInProduction),
   smartSurveyPopupCode: get('SMART_SURVEY_POPUP_CODE', ''),
   featureFlagUrl: get('FEATURE_FLAG_URL', ''),
+  appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', ''),
 
   // Target service OAuth client IDs for handover
   handoverTargets: {
