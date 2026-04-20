@@ -79,7 +79,12 @@
     ] if data.preferencesId else []
   }) }}
 
-  {{ pdsFooter({
-    baseUrl: "/platform"
-  }) }}
+  {% if targetService == "sentence-plan" %}
+    {% include "sentence-plan/components/custom-sentence-plan-footer/customSentencePlanFooter.njk" %}
+  {% else %}
+    {{ pdsFooter({
+      baseUrl: footerBaseUrl or "/platform"
+    }) }}
+  {% endif %}
+
 {% endblock %}

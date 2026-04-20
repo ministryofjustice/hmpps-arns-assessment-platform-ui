@@ -1,7 +1,6 @@
 {%- extends "partials/layout.njk" -%}
 {%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
-{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 
 {% set isPrivateBetaUser = data.assessment.flags and 'SAN_BETA' in data.assessment.flags %}
 {% set showSmartSurveyForPrivateBeta = data.featureFlags.smartSurveyInPrivateBetaEnabled and isPrivateBetaUser %}
@@ -161,9 +160,7 @@ OASys PK: {{ data.oasysAssessmentPk }}</pre>
 
   {% block govukFooter %}
     {% if not hideFooter %}
-      {{ pdsFooter({
-        baseUrl: footerBaseUrl or "/platform"
-      }) }}
+      {% include "sentence-plan/components/custom-sentence-plan-footer/customSentencePlanFooter.njk" %}
     {% endif %}
   {% endblock %}
 {% endblock %}

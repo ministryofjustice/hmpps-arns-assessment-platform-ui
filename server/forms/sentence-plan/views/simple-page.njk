@@ -1,5 +1,4 @@
 {%- extends "partials/layout.njk" -%}
-{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
 
 {% block content %}
@@ -47,8 +46,6 @@
   {% endblock %}
 
   {% block govukFooter %}
-    {{ pdsFooter({
-      baseUrl: footerBaseUrl or "/platform"
-    }) }}
+    {% include "sentence-plan/components/custom-sentence-plan-footer/customSentencePlanFooter.njk" %}
   {% endblock %}
 {% endblock %}

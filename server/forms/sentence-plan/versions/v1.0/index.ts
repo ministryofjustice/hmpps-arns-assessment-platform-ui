@@ -29,6 +29,7 @@ export const sentencePlanV1Journey = journey({
   view: {
     template: 'sentence-plan/views/sentence-plan-step',
     locals: {
+      footerBaseUrl: '/platform',
       basePath: '/sentence-plan/v1.0',
       hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
       showAboutTab: canAccessSanContent,
