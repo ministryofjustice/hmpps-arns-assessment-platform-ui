@@ -9,6 +9,7 @@ if (connectionString) {
   const clickAnalyticsConfig = {
     autoCapture: true,
     dropInvalidEvents: true,
+    trackElementTypes: 'A,BUTTON,AREA,INPUT,SUMMARY',
     dataTags: {
       customDataPrefix: 'data-ai-',
       useDefaultContentNameOrId: false,
@@ -47,6 +48,4 @@ if (connectionString) {
   })
 
   appInsights.trackPageView()
-
-  window.appInsights = appInsights
 }
