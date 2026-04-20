@@ -28,9 +28,6 @@ test.describe('Footer', () => {
       'href',
       '/platform/cookies-policy',
     )
-    await expect(planOverviewPage.footer.getByRole('link', { name: 'Privacy policy' })).toHaveAttribute(
-      'href',
-      '/platform/privacy-policy',
-    )
+    await expect(planOverviewPage.footer.getByRole('link', { name: 'Privacy policy' })).toBeHidden()
   })
 })
