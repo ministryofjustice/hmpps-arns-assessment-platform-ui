@@ -1,3 +1,4 @@
+import './appInsights.mjs'
 import * as govukFrontend from 'govuk-frontend'
 import * as mojFrontend from '@ministryofjustice/frontend'
 import { CollapsibleNav } from './collapsible-nav.mjs'
