@@ -4,7 +4,6 @@
 
 {% set backlink = previousPageUrl %}
 {% set fullPageTitle = step.title + ' - ' + applicationName %}
-
 {% set pageTitle %}
   {% if not fieldValidationErrors.length %}
     {{ fullPageTitle }}
@@ -67,8 +66,12 @@
   {% endblock %}
 
   {% block govukFooter %}
-    {{ pdsFooter({
-      baseUrl: footerBaseUrl or "/platform"
-    }) }}
+    {% if targetService == "sentence-plan" %}
+      {% include "sentence-plan/components/custom-sentence-plan-footer/customSentencePlanFooter.njk" %}
+    {% else %}
+      {{ pdsFooter({
+        baseUrl: footerBaseUrl or "/platform"
+      }) }}
+    {% endif %}
   {% endblock %}
 {% endblock %}
