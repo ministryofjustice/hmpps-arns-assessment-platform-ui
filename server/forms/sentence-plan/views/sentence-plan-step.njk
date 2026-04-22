@@ -1,7 +1,6 @@
 {%- extends "partials/layout.njk" -%}
 {%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
-{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 
 {% set isPrivateBetaUser = data.assessment.flags and 'SAN_BETA' in data.assessment.flags %}
 {% set showSmartSurveyForPrivateBeta = data.featureFlags.smartSurveyInPrivateBetaEnabled and isPrivateBetaUser %}
@@ -151,19 +150,21 @@ OASys PK: {{ data.oasysAssessmentPk }}</pre>
       {% endset %}
       <div class="app-report-problem govuk-!-display-none-print" id="report-a-problem" role="complementary" aria-label="Report a problem" data-qa="report-a-problem">
         <div class="govuk-width-container">
-          {{ govukDetails({
-            summaryText: "Report a problem",
-            html: reportProblemHtml
-          }) }}
+          <details class="govuk-details">
+            <summary class="govuk-details__summary" data-ai-id="report-a-problem-footer">
+              <span class="govuk-details__summary-text">Report a problem</span>
+            </summary>
+            <div class="govuk-details__text">
+              {{ reportProblemHtml | safe }}
+            </div>
+          </details>
         </div>
       </div>
   {% endblock %}
 
   {% block govukFooter %}
     {% if not hideFooter %}
-      {{ pdsFooter({
-        baseUrl: footerBaseUrl or "/platform"
-      }) }}
+      {% include "sentence-plan/components/custom-sentence-plan-footer/customSentencePlanFooter.njk" %}
     {% endif %}
   {% endblock %}
 {% endblock %}

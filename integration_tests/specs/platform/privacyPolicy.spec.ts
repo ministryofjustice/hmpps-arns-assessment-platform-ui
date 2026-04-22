@@ -5,23 +5,14 @@ import { checkHeaderVisibility } from '../../testUtils'
 const privacyPolicyPageUrl = '/platform/privacy-policy'
 
 test.describe('Privacy policy page', () => {
-  test('loads with heading and content', async ({ page }) => {
+  test('loads with heading and placeholder content', async ({ page }) => {
     await page.goto(privacyPolicyPageUrl)
     await expect(page).toHaveURL(privacyPolicyPageUrl)
 
-    await checkHeaderVisibility(page, 1, 'Privacy policy for Assess and plan – sentence plan')
-    await checkHeaderVisibility(page, 2, 'About personal information')
-    await checkHeaderVisibility(page, 2, 'What data we collect')
-    await checkHeaderVisibility(page, 2, 'Why we need your data')
-    await checkHeaderVisibility(page, 2, 'Our legal basis for processing your data')
-    await checkHeaderVisibility(page, 2, 'What we do with your data')
-    await checkHeaderVisibility(page, 2, 'Comments and feedback')
-    await checkHeaderVisibility(page, 2, 'How long we keep your data')
-    await checkHeaderVisibility(page, 2, 'Where your data is processed and stored')
-    await checkHeaderVisibility(page, 2, 'How we protect your data and keep it secure')
-    await checkHeaderVisibility(page, 2, 'Further information')
-    await checkHeaderVisibility(page, 2, 'Your rights')
-    await checkHeaderVisibility(page, 2, 'Changes to this policy')
+    await checkHeaderVisibility(page, 1, 'Privacy policy')
+    await expect(page.locator('[data-qa="privacy-policy-content"]')).toContainText(
+      'This is the Privacy policy page. Content for this page will be added soon.',
+    )
   })
 
   test('shows shared page layout elements', async ({ page }) => {

@@ -3,7 +3,7 @@ import { pageHeading, pageContent } from './fields'
 
 export const privacyPolicyStep = step({
   path: '/privacy-policy',
-  title: 'Privacy policy for Assess and plan – sentence plan',
+  title: 'Privacy policy',
   view: {
     template: 'platform/views/platform-policy-step',
     locals: {
