@@ -21,6 +21,7 @@ export default function nunjucksSetup(app?: express.Express) {
     app.locals.oasysUrl = config.oasysUrl
     app.locals.mpopUrl = config.mpopUrl
     app.locals.smartSurveyPopupCode = config.smartSurveyPopupCode
+    app.locals.hmppsHeaderServiceNameLink = '/sentence-plan/v1.0/plan/overview'
     app.locals.appInsightsConnectionString = config.appInsightsConnectionString
 
     // Session timeout modal configuration (in seconds)
