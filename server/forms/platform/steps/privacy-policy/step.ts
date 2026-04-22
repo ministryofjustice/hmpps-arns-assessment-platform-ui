@@ -9,7 +9,6 @@ export const privacyPolicyStep = step({
     locals: {
       footerBaseUrl: '/platform',
       hideSessionTimeoutModal: true,
-      hmppsHeaderServiceNameLink: '/',
     },
   },
   blocks: [pageHeading, pageContent],
