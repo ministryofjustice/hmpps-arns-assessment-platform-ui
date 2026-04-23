@@ -179,6 +179,24 @@ The application is deployed to Cloud Platform environments using GitHub Actions 
 - npm dependency auditing
 - Gitleaks secret detection
 
+## Telemetry
+
+**Click events**
+
+| Event                     | Trigger                              |
+| ------------------------- | ------------------------------------ |
+| `give-feedback-header`    | "Give feedback" link in phase banner |
+| `report-a-problem-header` | "Report a problem" link in banner    |
+| `report-a-problem-footer` | "Report a problem" footer expander   |
+
+**Server events**
+
+| Event                                                          | Trigger                                                |
+| -------------------------------------------------------------- | ------------------------------------------------------ |
+| `CREATE_GOAL_START` / `_WITHOUT_STEPS_END` / `_WITH_STEPS_END` | Create-goal flow (paired via `telemetryCorrelationId`) |
+| `UPDATE_GOAL_AND_STEPS_START` / `_SAVE` / `_ACHIEVED`          | Update-goal flow (paired via `telemetryCorrelationId`) |
+| `GOAL_REORDER_SESSION`                                         | Goal reorder — fires once per assessment per session   |
+
 ## Contributing
 
 ### Pre-commit Hooks
