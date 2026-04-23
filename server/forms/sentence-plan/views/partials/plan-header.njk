@@ -69,7 +69,10 @@
                     {{ govukButton({
                       text: 'Return to OASys',
                       href: data.sessionDetails.oasysRedirectUrl,
-                      classes: "govuk-button--secondary govuk-!-display-none-print"
+                      classes: "govuk-button--secondary govuk-!-display-none-print",
+                      attributes: {
+                        "data-ai-id": "return-to-oasys-button"
+                      }
                     }) }}
                   {% endif %}
                   {% if buttons.showCreateGoalButton %}
