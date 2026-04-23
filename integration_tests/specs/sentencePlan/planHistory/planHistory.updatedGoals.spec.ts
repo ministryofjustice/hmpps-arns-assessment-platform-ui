@@ -3,6 +3,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
+import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
 import {
   checkAccessibility,
   handlePrivacyScreenIfPresent,
@@ -216,6 +217,52 @@ test.describe('Plan History - Updated Goals', () => {
       - paragraph:
         - strong: Reduce alcohol use
       - paragraph: Good progress being made with support group attendance.
+      - paragraph:
+        - link "View latest version":
+          - /url: /goal/
+    `)
+  })
+
+  test('shows goal updated entry after changing step details', async ({ page, createSession, sentencePlanBuilder }) => {
+    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+    await sentencePlanBuilder
+      .extend(sentencePlanId)
+      .withGoal({
+        title: 'Find stable accommodation',
+        areaOfNeed: 'accommodation',
+        status: 'ACTIVE',
+        steps: [{ actor: 'probation_practitioner', description: 'Contact housing services', status: 'NOT_STARTED' }],
+      })
+      .withPlanAgreements([
+        {
+          status: 'AGREED',
+          createdBy: 'Test Practitioner',
+          dateOffset: -86400000,
+        },
+      ])
+      .save()
+
+    await navigateToSentencePlan(page, handoverLink)
+    const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+    await planOverviewPage.clickUpdateGoal(0)
+    const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+
+    await updatePage.clickAddOrChangeSteps()
+    const addStepsPage = await AddStepsPage.verifyOnPage(page)
+    await addStepsPage.enterStep(0, 'person_on_probation', 'Contact the housing officer')
+    await addStepsPage.clickSaveAndContinue()
+
+    await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
+    const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
+
+    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+      - paragraph: View all updates and changes made to this plan.
+      - separator
+      - paragraph:
+        - strong: Goal updated
+      - paragraph:
+        - strong: Find stable accommodation
       - paragraph:
         - link "View latest version":
           - /url: /goal/
