@@ -7,6 +7,7 @@ import ChangeGoalPage from '../../../pages/sentencePlan/changeGoalPage'
 import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
 import {
   checkAccessibility,
+  getDatePlusDaysAsISO,
   handlePrivacyScreenIfPresent,
   navigateToSentencePlan,
   sentencePlanV1URLs,
@@ -282,6 +283,7 @@ test.describe('Plan History - Updated Goals', () => {
         title: 'Find stable accommodation',
         areaOfNeed: 'accommodation',
         status: 'ACTIVE',
+        targetDate: getDatePlusDaysAsISO(90),
         steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
       })
       .withPlanAgreements([
