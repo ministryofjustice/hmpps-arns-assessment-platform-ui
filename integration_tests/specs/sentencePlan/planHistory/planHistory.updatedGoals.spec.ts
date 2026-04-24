@@ -3,9 +3,11 @@ import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
+import ChangeGoalPage from '../../../pages/sentencePlan/changeGoalPage'
 import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
 import {
   checkAccessibility,
+  getDatePlusDaysAsISO,
   handlePrivacyScreenIfPresent,
   navigateToSentencePlan,
   sentencePlanV1URLs,
@@ -252,6 +254,108 @@ test.describe('Plan History - Updated Goals', () => {
     const addStepsPage = await AddStepsPage.verifyOnPage(page)
     await addStepsPage.enterStep(0, 'person_on_probation', 'Contact the housing officer')
     await addStepsPage.clickSaveAndContinue()
+
+    await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
+    const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
+
+    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+      - paragraph: View all updates and changes made to this plan.
+      - separator
+      - paragraph:
+        - strong: Goal updated
+      - paragraph:
+        - strong: Find stable accommodation
+      - paragraph:
+        - link "View latest version":
+          - /url: /goal/
+    `)
+  })
+
+  test('shows goal updated entry after changing goal title via Change goal page', async ({
+    page,
+    createSession,
+    sentencePlanBuilder,
+  }) => {
+    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+    await sentencePlanBuilder
+      .extend(sentencePlanId)
+      .withGoal({
+        title: 'Find stable accommodation',
+        areaOfNeed: 'accommodation',
+        status: 'ACTIVE',
+        targetDate: getDatePlusDaysAsISO(90),
+        steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
+      })
+      .withPlanAgreements([
+        {
+          status: 'AGREED',
+          createdBy: 'Test Practitioner',
+          dateOffset: -86400000,
+        },
+      ])
+      .save()
+
+    await navigateToSentencePlan(page, handoverLink)
+    const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+    // On an agreed plan the Change goal page is reached via Update > "Change goal details"
+    await planOverviewPage.clickUpdateGoal(0)
+    const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+    await updatePage.clickChangeGoalDetails()
+
+    const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+    await changeGoalPage.setGoalTitle('Updated goal title')
+    await changeGoalPage.saveGoal()
+
+    await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
+    const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
+
+    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
+      - paragraph: View all updates and changes made to this plan.
+      - separator
+      - paragraph:
+        - strong: Goal updated
+      - paragraph:
+        - strong: Updated goal title
+      - paragraph:
+        - link "View latest version":
+          - /url: /goal/
+    `)
+  })
+
+  test('shows goal updated entry after changing an active goal to a future goal via Change goal page', async ({
+    page,
+    createSession,
+    sentencePlanBuilder,
+  }) => {
+    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+    await sentencePlanBuilder
+      .extend(sentencePlanId)
+      .withGoal({
+        title: 'Find stable accommodation',
+        areaOfNeed: 'accommodation',
+        status: 'ACTIVE',
+        steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
+      })
+      .withPlanAgreements([
+        {
+          status: 'AGREED',
+          createdBy: 'Test Practitioner',
+          dateOffset: -86400000,
+        },
+      ])
+      .save()
+
+    await navigateToSentencePlan(page, handoverLink)
+    const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+    await planOverviewPage.clickUpdateGoal(0)
+    const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+    await updatePage.clickChangeGoalDetails()
+
+    const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+    await changeGoalPage.selectCanStartNow(false)
+    await changeGoalPage.saveGoal()
 
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
