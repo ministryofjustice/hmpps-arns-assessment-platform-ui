@@ -201,7 +201,7 @@ The application is deployed to Cloud Platform environments using GitHub Actions 
 
 ## Contributing
 
-### Pre-commit Hooks
+### Pre-commit Hooks boo
 
 The project uses Husky for pre-commit hooks that run:
 
