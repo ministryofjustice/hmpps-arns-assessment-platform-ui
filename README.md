@@ -183,11 +183,13 @@ The application is deployed to Cloud Platform environments using GitHub Actions 
 
 **Click events**
 
-| Event                     | Trigger                              |
-| ------------------------- | ------------------------------------ |
-| `give-feedback-header`    | "Give feedback" link in phase banner |
-| `report-a-problem-header` | "Report a problem" link in banner    |
-| `report-a-problem-footer` | "Report a problem" footer expander   |
+| Event                         | Trigger                                                        |
+| ----------------------------- | -------------------------------------------------------------- |
+| `about-page-primary-nav-link` | "About" link in primary navigation                             |
+| `about-page-blank-plan-link`  | "View information from assessment" link on blank plan overview |
+| `give-feedback-header`        | "Give feedback" link in phase banner                           |
+| `report-a-problem-header`     | "Report a problem" link in banner                              |
+| `report-a-problem-footer`     | "Report a problem" footer expander                             |
 
 **Server events**
 
