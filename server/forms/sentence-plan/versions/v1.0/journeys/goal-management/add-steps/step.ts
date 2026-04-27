@@ -1,6 +1,5 @@
 import {
-  accessTransition,
-  actionTransition,
+  access,
   and,
   Data,
   Format,
@@ -8,10 +7,10 @@ import {
   Post,
   redirect,
   step,
-  submitTransition,
+  submit,
   when,
-} from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+  Condition,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageLayout } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
@@ -31,7 +30,7 @@ import { redirectIfGoalNotFound } from '../../../guards'
 export const addStepsStep = step({
   path: '/add-steps',
   title: 'Add or change steps',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   view: {
     locals: {
       // Backlink logic (priority order):
@@ -55,7 +54,7 @@ export const addStepsStep = step({
   blocks: [pageLayout],
 
   onAccess: [
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.setAreaDataFromActiveGoal(),
@@ -67,23 +66,27 @@ export const addStepsStep = step({
     redirectIfGoalNotFound('../../plan/overview'),
   ],
 
-  onAction: [
+  onSubmission: [
     // Handle "Add another step" button
-    actionTransition({
+    submit({
       when: Post('action').match(Condition.Equals('addStep')),
-      effects: [SentencePlanEffects.addStepToStepEditSession()],
+      validate: false,
+      onAlways: {
+        effects: [SentencePlanEffects.addStepToStepEditSession()],
+      },
     }),
 
     // Handle "Remove" button (pattern: remove_0, remove_1, etc.)
-    actionTransition({
+    submit({
       when: Post('action').match(Condition.String.StartsWith('remove_')),
-      effects: [SentencePlanEffects.removeStepFromStepEditSession()],
+      validate: false,
+      onAlways: {
+        effects: [SentencePlanEffects.removeStepFromStepEditSession()],
+      },
     }),
-  ],
 
-  onSubmission: [
     // Save steps after creating a new goal — show "goal added" notification
-    submitTransition({
+    submit({
       when: and(
         Post('action').match(Condition.Equals('saveAndContinue')),
         Data('navigationReferrer').match(Condition.Equals('add-goal')),
@@ -113,7 +116,7 @@ export const addStepsStep = step({
     }),
 
     // Save steps for an existing goal — no notification
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('saveAndContinue')),
       validate: true,
       onValid: {
