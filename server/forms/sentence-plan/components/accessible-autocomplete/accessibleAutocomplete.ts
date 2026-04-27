@@ -1,4 +1,4 @@
-import { block as blockBuilder } from '@form-engine/form/builders'
+import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   BlockDefinition,
   ConditionalArray,
@@ -7,8 +7,8 @@ import {
   ConditionalString,
   EvaluatedBlock,
   FieldBlockDefinition,
-} from '@form-engine/form/types/structures.type'
-import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
+} from '@ministryofjustice/hmpps-forge/core/components'
+import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 
 /**
  * Props for the AccessibleAutocomplete component.

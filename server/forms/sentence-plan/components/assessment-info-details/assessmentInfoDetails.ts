@@ -1,13 +1,12 @@
 import type nunjucks from 'nunjucks'
-import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
+import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import {
   BasicBlockProps,
   BlockDefinition,
   ConditionalString,
   EvaluatedBlock,
-} from '@form-engine/form/types/structures.type'
-import { ChainableRef, ChainableScopedRef } from '@form-engine/form/builders/types'
-import { block as blockBuilder } from '@form-engine/form/builders'
+} from '@ministryofjustice/hmpps-forge/core/components'
+import { ChainableRef, ChainableScopedRef, block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   AssessmentArea,
   LinkedIndicator,

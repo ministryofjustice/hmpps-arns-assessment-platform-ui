@@ -1,11 +1,11 @@
-import { block as blockBuilder, ChainableRef } from '@form-engine/form/builders'
+import { block as blockBuilder, ChainableRef } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   BlockDefinition,
   ConditionalBoolean,
   ConditionalString,
   EvaluatedBlock,
-} from '@form-engine/form/types/structures.type'
-import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
+} from '@ministryofjustice/hmpps-forge/core/components'
+import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import type nunjucks from 'nunjucks'
 import { PreviousVersionsResponse } from '../../../../interfaces/coordinator-api/previousVersions'
 import config from '../../../../config'

@@ -1,11 +1,11 @@
-import { block as blockBuilder } from '@form-engine/form/builders'
-import { buildComponent } from '@form-engine/registry/utils/buildComponent'
+import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
+  buildComponent,
   BlockDefinition,
   ConditionalBoolean,
   ConditionalString,
   EvaluatedBlock,
-} from '@form-engine/form/types/structures.type'
+} from '@ministryofjustice/hmpps-forge/core/components'
 
 /**
  * Props for the ButtonAsLink component
@@ -86,7 +86,7 @@ export const buttonAsLink = buildComponent<ButtonAsLink>('buttonAsLink', (block:
 
   if (block.attributes) {
     Object.entries(block.attributes).forEach(([key, value]) => {
-      attrs.push(`${escapeHtml(key)}="${escapeHtml(value)}"`)
+      attrs.push(`${escapeHtml(key)}="${escapeHtml(String(value))}"`)
     })
   }
 

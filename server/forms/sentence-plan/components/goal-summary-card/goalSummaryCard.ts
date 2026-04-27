@@ -1,5 +1,5 @@
 import type nunjucks from 'nunjucks'
-import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
+import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import {
   BlockDefinition,
   ConditionalArray,
@@ -7,8 +7,8 @@ import {
   ConditionalNumber,
   ConditionalString,
   EvaluatedBlock,
-} from '@form-engine/form/types/structures.type'
-import { block as blockBuilder } from '@form-engine/form/builders'
+} from '@ministryofjustice/hmpps-forge/core/components'
+import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 /**
  * A step within a goal.
