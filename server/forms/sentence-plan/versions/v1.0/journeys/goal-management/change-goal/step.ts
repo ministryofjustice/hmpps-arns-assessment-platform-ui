@@ -1,5 +1,5 @@
 import {
-  accessTransition,
+  access,
   and,
   Answer,
   Data,
@@ -7,10 +7,10 @@ import {
   Post,
   redirect,
   step,
-  submitTransition,
+  submit,
   when,
-} from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+  Condition,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageLayout } from './fields'
 import { AuditEvent, POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
@@ -27,7 +27,7 @@ import { hasPostAgreementStatus, redirectIfGoalNotFound } from '../../../guards'
 export const changeGoalStep = step({
   path: '/change-goal',
   title: 'Change goal',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   view: {
     locals: {
       // Backlink logic:
@@ -49,7 +49,7 @@ export const changeGoalStep = step({
   blocks: [pageLayout],
 
   onAccess: [
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
@@ -60,7 +60,7 @@ export const changeGoalStep = step({
   ],
 
   onSubmission: [
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('saveGoal')),
       validate: true,
       onValid: {
