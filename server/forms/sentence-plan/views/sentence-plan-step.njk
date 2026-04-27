@@ -83,7 +83,7 @@
   <div class="govuk-grid-row" data-qa-assessment-uuid="{{ data.assessmentUuid }}">
     <div class="govuk-grid-column-full">
       {% if backlink %}
-        <a href="{{ backlink }}" class="govuk-back-link">Back</a>
+        <a href="{{ backlink }}" class="govuk-back-link"{% if backlinkAiId %} data-ai-id="{{ backlinkAiId }}"{% endif %}>Back</a>
       {% endif %}
 
       <form id="main-form" method="post" novalidate data-qa="main-form">
