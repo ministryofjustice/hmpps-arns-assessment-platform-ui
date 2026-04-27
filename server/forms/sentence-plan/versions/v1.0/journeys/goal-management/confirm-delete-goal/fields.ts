@@ -1,12 +1,7 @@
-import { Data, Format, Item, when } from '@form-engine/form/builders'
-import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import { Transformer } from '@form-engine/registry/transformers'
-import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { Condition } from '@form-engine/registry/conditions'
-import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
-import { GovUKButtonGroup } from '@form-engine-govuk-components/wrappers/govukButtonGroup'
-import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import { Data, Format, Item, when, Iterator, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKButton, GovUKHeading, GovUKButtonGroup, GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { GoalSummaryCardDraft } from '../../../../../components'
+import { SentencePlanTransformers } from '../../../../../transformers'
 import { CaseData } from '../../../constants'
 
 export const pageHeading = GovUKHeading({ text: 'Confirm you want to delete this goal' })
@@ -23,7 +18,7 @@ export const introText = [
 export const goalCard = GoalSummaryCardDraft({
   goalTitle: Data('activeGoal.title'),
   goalStatus: Data('activeGoal.status'),
-  targetDate: Data('activeGoal.targetDate').pipe(Transformer.Date.ToUKLongDate()),
+  targetDate: Data('activeGoal.targetDate').pipe(SentencePlanTransformers.String.FormatDate({ dateStyle: 'long' })),
   areaOfNeed: Data('activeGoal.areaOfNeedLabel'),
   relatedAreasOfNeed: Data('activeGoal.relatedAreasOfNeedLabels'),
   steps: Data('activeGoal.steps').each(
