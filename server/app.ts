@@ -28,7 +28,6 @@ import type { Services } from './services'
 import logger from '../logger'
 
 // Form packages
-import formEngineDeveloperGuide from './forms/form-engine-developer-guide'
 import accessFormPackage from './forms/access'
 import platformPoliciesFormPackage from './forms/platform'
 import sentencePlanFormPackage from './forms/sentence-plan'
@@ -82,7 +81,6 @@ export default function createApp(services: Services): express.Application {
   app.use(
     setUpAuthentication({
       bypassPaths: [
-        '/form-engine-developer-guide',
         '/training-session-launcher',
         '/platform',
         // Allow access to session timeout page even with expired session

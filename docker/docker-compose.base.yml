@@ -106,7 +106,7 @@ services:
       HMPPS_HANDOVER_BASE_URL: http://arns-handover:7070
       HMPPS_HANDOVER_EXTERNAL_URL: http://localhost:7070
       HMPPS_AUTH_BASE_URL: http://hmpps-auth:9090
-      OASYS_BASE_URL: http://localhost:7072
+      OASYS_BASE_URL: http://localhost:3000
       OASYS_RETURN_URLS: http://localhost:3000
       COORDINATOR_API_BASE_URL: http://coordinator-api:8080
       SERVER_ERROR_WHITELABEL_ENABLED: true
@@ -136,7 +136,7 @@ services:
         GIT_BRANCH: main
     command: npm run start
     ports:
-      - '7072:3000'
+      - '3000:3000'
       - '9229:9229'
     healthcheck:
       test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:3000/health']
@@ -174,7 +174,6 @@ services:
       AUDIT_SQS_REGION: eu-west-2
       AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
       NODE_CLUSTER_ENABLED: true
-      FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
       FORM_TRAINING_SESSION_LAUNCHER_ENABLED: true
       CACHE_REDIS_HOST: redis
       SERVICE_NOW_FORM_URL: '#service-now-link'
