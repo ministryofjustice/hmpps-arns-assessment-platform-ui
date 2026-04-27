@@ -62,7 +62,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
     trace: process.env.CI ? 'retain-on-first-failure' : 'on',
     ...devices['Desktop Chrome'],
     testIdAttribute: 'data-qa',
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || 'http://localhost:7072',
 
     apis: {
       hmppsAuth: {
@@ -71,7 +71,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
         systemClientSecret: process.env.CLIENT_CREDS_CLIENT_SECRET || 'clientsecret',
       },
       aapApi: {
-        url: process.env.AAP_API_URL || 'http://localhost:8080',
+        url: process.env.AAP_API_URL || 'http://localhost:9091/aap-api',
         dbConnectionString: process.env.AAP_DATABASE_CONNECTION_STRING || 'postgres://root:dev@localhost:5432/postgres',
       },
       handoverApi: {
