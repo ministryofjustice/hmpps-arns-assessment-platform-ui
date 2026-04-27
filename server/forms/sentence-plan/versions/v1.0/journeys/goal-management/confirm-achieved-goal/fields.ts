@@ -1,10 +1,11 @@
-import { Data, Format, Item, Iterator } from '@form-engine/form/builders'
-import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import { GovUKTextareaInput } from '@form-engine-govuk-components/components'
-import { Transformer } from '@form-engine/registry/transformers'
-import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
-import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
-import { GovUKButtonGroup } from '@form-engine-govuk-components/wrappers/govukButtonGroup'
+import { Data, Format, Item, Iterator, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  GovUKButton,
+  GovUKTextareaInput,
+  GovUKHeading,
+  GovUKBody,
+  GovUKButtonGroup,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
 import { GoalSummaryCardDraft } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
@@ -15,7 +16,7 @@ export const pageHeading = GovUKHeading({
 export const goalCard = GoalSummaryCardDraft({
   goalTitle: Data('activeGoal.title'),
   goalStatus: Data('activeGoal.status'),
-  targetDate: Data('activeGoal.targetDate').pipe(Transformer.Date.ToUKLongDate()),
+  targetDate: Data('activeGoal.targetDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   areaOfNeed: Data('activeGoal.areaOfNeedLabel'),
   relatedAreasOfNeed: Data('activeGoal.relatedAreasOfNeedLabels'),
   steps: Data('activeGoal.steps').each(
