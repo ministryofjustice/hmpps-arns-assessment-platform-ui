@@ -2,10 +2,10 @@ import express from 'express'
 
 import createError from 'http-errors'
 
-import FormEngine from '@form-engine/core/FormEngine'
-import { ExpressFrameworkAdapter } from '@form-engine-express-nunjucks/index'
-import { govukComponents } from '@form-engine-govuk-components/index'
-import { mojComponents } from '@form-engine-moj-components/index'
+import { Forge } from '@ministryofjustice/hmpps-forge/core'
+import { ExpressFrameworkAdapter } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { govukComponents } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { mojComponents } from '@ministryofjustice/hmpps-forge/moj-components'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './routes/error/errorHandler'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
@@ -41,7 +41,7 @@ export default function createApp(services: Services): express.Application {
   app.set('port', process.env.PORT || 3000)
 
   const nunjucksEnv = nunjucksSetup(app)
-  const formEngine = new FormEngine({
+  const formEngine = new Forge({
     logger,
     lazyStepCompilation: process.env.NODE_ENV === 'development',
     frameworkAdapter: ExpressFrameworkAdapter.configure({
@@ -49,20 +49,19 @@ export default function createApp(services: Services): express.Application {
       defaultTemplate: 'partials/form-step',
     }),
   })
-    .registerComponents(govukComponents)
-    .registerComponents(mojComponents)
-    .registerFormPackage(formEngineDeveloperGuide)
-    .registerFormPackage(trainingSessionLauncher, {
+    .registerGlobalComponents(govukComponents)
+    .registerGlobalComponents(mojComponents)
+    .registerPackage(trainingSessionLauncher, {
       coordinatorApiClient: services.coordinatorApiClient,
       handoverApiClient: services.handoverApiClient,
       preferencesStore: services.preferencesStore,
     })
-    .registerFormPackage(platformPoliciesFormPackage)
-    .registerFormPackage(accessFormPackage, {
+    .registerPackage(platformPoliciesFormPackage)
+    .registerPackage(accessFormPackage, {
       deliusApi: services.deliusApiClient,
       handoverApi: services.handoverApiClient,
     })
-    .registerFormPackage(sentencePlanFormPackage, {
+    .registerPackage(sentencePlanFormPackage, {
       api: services.assessmentPlatformApiClient,
       coordinatorApi: services.coordinatorApiClient,
       deliusApi: services.deliusApiClient,
