@@ -76,7 +76,7 @@ export class HandoverBuilderInstance {
     displayName: 'Test User',
     accessMode: 'READ_WRITE',
     planAccessMode: 'READ_WRITE',
-    returnUrl: 'http://localhost:7072',
+    returnUrl: process.env.BASE_URL || 'http://localhost:7072',
   }
 
   constructor(client: TestHandoverApiClient, association: CoordinatorAssociation) {
