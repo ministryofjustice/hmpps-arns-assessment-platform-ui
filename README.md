@@ -190,6 +190,8 @@ The application is deployed to Cloud Platform environments using GitHub Actions 
 | `give-feedback-header`        | "Give feedback" link in phase banner                           |
 | `report-a-problem-header`     | "Report a problem" link in banner                              |
 | `report-a-problem-footer`     | "Report a problem" footer expander                             |
+| `return-to-oasys-button`      | "Return to OASys" button                                       |
+| `view-previous-versions-link` | "View previous versions" link in plan header                   |
 
 **Server events**
 
