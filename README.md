@@ -194,7 +194,6 @@ The application is deployed to Cloud Platform environments using GitHub Actions 
 | `report-a-problem-footer`           | "Report a problem" footer expander                             |
 | `return-to-oasys-button`            | "Return to OASys" button                                       |
 | `view-previous-versions-link`       | "View previous versions" link in plan header                   |
-| `view-previous-versions-link`       | "View previous versions" link in plan header                   |
 | `previous-version-sp-view-link`     | "View previous version" link in sentence plan overview         |
 
 **Server events**
