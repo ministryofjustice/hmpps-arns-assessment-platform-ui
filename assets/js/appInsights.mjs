@@ -49,4 +49,13 @@ if (connectionString) {
   })
 
   appInsights.trackPageView()
+
+  // flush pending telemetry (including PageVisitTime) when the page becomes hidden:
+  // in an MPA, the JS context is destroyed on navigation, so without this the SDK
+  // may not deliver PageVisitTime before the page unloads
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      appInsights.flush()
+    }
+  })
 }
