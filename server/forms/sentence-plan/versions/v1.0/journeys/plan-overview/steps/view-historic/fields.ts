@@ -1,12 +1,21 @@
-import { and, Data, Format, Item, or, Params, Query, when } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { MOJAlert, MOJSubNavigation } from '@form-engine-moj-components/components'
-import { Condition } from '@form-engine/registry/conditions'
-import { Transformer } from '@form-engine/registry/transformers'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
-import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import {
+  and,
+  Data,
+  Format,
+  Item,
+  Loop,
+  not,
+  or,
+  Params,
+  Query,
+  when,
+  Condition,
+  Transformer,
+  Iterator,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock, TemplateWrapper, CollectionBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { MOJAlert, MOJSubNavigation } from '@ministryofjustice/hmpps-forge/moj-components'
+import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
@@ -39,32 +48,39 @@ const removedGoalsCount = Data('historic.goals')
   .pipe(Transformer.Array.Length())
 
 export const planLastUpdatedMessage = GovUKBody({
-  hidden: Data('historic.isUpdatedAfterAgreement').not.match(Condition.Equals(true)),
+  visibleWhen: Data('historic.isUpdatedAfterAgreement').match(Condition.Equals(true)),
   text: Format(
     'Last updated on %1 by %2.',
-    Data('historic.lastUpdatedDate').pipe(Transformer.Date.ToUKLongDate()),
+    Data('historic.lastUpdatedDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
     Data('historic.lastUpdatedByName'),
   ),
 })
 
 export const planAgreedMessage = GovUKBody({
-  hidden: or(
-    Data('historic.latestAgreementStatus').not.match(Condition.Array.IsIn(['UPDATED_AGREED', 'AGREED'])),
-    Data('historic.isUpdatedAfterAgreement').match(Condition.Equals(true)),
+  visibleWhen: not(
+    or(
+      Data('historic.latestAgreementStatus').not.match(Condition.Array.IsIn(['UPDATED_AGREED', 'AGREED'])),
+      Data('historic.isUpdatedAfterAgreement').match(Condition.Equals(true)),
+    ),
   ),
   text: Format(
     '%1 agreed to their plan on %2.',
     CaseData.Forename,
-    Data('historic.latestAgreementDate').pipe(Transformer.Date.ToUKLongDate()),
+    Data('historic.latestAgreementDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   ),
 })
 
 export const planCreatedMessage = GovUKBody({
-  hidden: or(
-    Data('historic.latestAgreementStatus').not.match(Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE'])),
-    Data('historic.isUpdatedAfterAgreement').match(Condition.Equals(true)),
+  visibleWhen: not(
+    or(
+      Data('historic.latestAgreementStatus').not.match(Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE'])),
+      Data('historic.isUpdatedAfterAgreement').match(Condition.Equals(true)),
+    ),
   ),
-  text: Format('Plan created on %1.', Data('historic.latestAgreementDate').pipe(Transformer.Date.ToUKLongDate())),
+  text: Format(
+    'Plan created on %1.',
+    Data('historic.latestAgreementDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+  ),
 })
 
 const currentGoalsNavigationItem = {
@@ -136,7 +152,7 @@ export const notificationBanners = CollectionBlock({
  * Wrapped in an ordered list for numbered display
  */
 export const goalsSection = TemplateWrapper({
-  hidden: Data('historic.goals').not.match(Condition.IsRequired()),
+  visibleWhen: Data('historic.goals').match(Condition.IsRequired()),
   template: '<ol class="goal-list govuk-list govuk-list--number">{{slot:items}}</ol>',
   slots: {
     items: [
@@ -196,7 +212,7 @@ export const goalsSection = TemplateWrapper({
                   card: [
                     TemplateWrapper({
                       // Before any agreement status exists, render the draft card variant.
-                      hidden: Data('historic.latestAgreementStatus').match(
+                      visibleWhen: Data('historic.latestAgreementStatus').not.match(
                         Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
                       ),
                       template: '{{slot:draftCard}}',
@@ -206,8 +222,12 @@ export const goalsSection = TemplateWrapper({
                             goalTitle: Item().path('title'),
                             goalStatus: Item().path('status'),
                             goalUuid: Item().path('uuid'),
-                            targetDate: Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()),
-                            statusDate: Item().path('statusDate').pipe(Transformer.Date.ToUKLongDate()),
+                            targetDate: Item()
+                              .path('targetDate')
+                              .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+                            statusDate: Item()
+                              .path('statusDate')
+                              .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
                             areaOfNeed: Item().path('areaOfNeedLabel'),
                             relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
                             steps: Item()
@@ -221,7 +241,7 @@ export const goalsSection = TemplateWrapper({
                               ),
                             actions: [],
                             isReadOnly: true,
-                            index: Item().index(),
+                            index: Loop.Index0(),
                             ...buildMoveButtonProps(),
                           }),
                         ],
@@ -229,7 +249,7 @@ export const goalsSection = TemplateWrapper({
                     }),
                     TemplateWrapper({
                       // Once an agreement status exists (including "could not answer"), use the agreed variant.
-                      hidden: Data('historic.latestAgreementStatus').not.match(
+                      visibleWhen: Data('historic.latestAgreementStatus').match(
                         Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
                       ),
                       template: '{{slot:agreedCard}}',
@@ -239,8 +259,12 @@ export const goalsSection = TemplateWrapper({
                             goalTitle: Item().path('title'),
                             goalStatus: Item().path('status'),
                             goalUuid: Item().path('uuid'),
-                            targetDate: Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()),
-                            statusDate: Item().path('statusDate').pipe(Transformer.Date.ToUKLongDate()),
+                            targetDate: Item()
+                              .path('targetDate')
+                              .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+                            statusDate: Item()
+                              .path('statusDate')
+                              .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
                             areaOfNeed: Item().path('areaOfNeedLabel'),
                             relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
                             steps: Item()
@@ -254,7 +278,7 @@ export const goalsSection = TemplateWrapper({
                               ),
                             actions: [],
                             isReadOnly: true,
-                            index: Item().index(),
+                            index: Loop.Index0(),
                             ...buildMoveButtonProps(),
                           }),
                         ],
@@ -280,7 +304,7 @@ const hideBlankPlanOverviewContent = or(
 )
 
 export const blankPlanOverviewContentReadOnly = HtmlBlock({
-  hidden: hideBlankPlanOverviewContent,
+  visibleWhen: not(hideBlankPlanOverviewContent),
   content: Format(
     `<div id="blank-plan-content">
       <p class="govuk-body">%1 does not have any goals to work on now.</p>
@@ -290,11 +314,13 @@ export const blankPlanOverviewContentReadOnly = HtmlBlock({
 })
 
 export const futureGoalsContent = GovUKBody({
-  hidden: or(
-    Query('type').not.match(Condition.Equals('future')),
-    Data('historic.goals')
-      .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
-      .match(Condition.IsRequired()),
+  visibleWhen: not(
+    or(
+      Query('type').not.match(Condition.Equals('future')),
+      Data('historic.goals')
+        .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
+        .match(Condition.IsRequired()),
+    ),
   ),
   text: Format('%1 does not have any future goals in their plan.', CaseData.Forename),
   classes: 'govuk-!-display-none-print',
