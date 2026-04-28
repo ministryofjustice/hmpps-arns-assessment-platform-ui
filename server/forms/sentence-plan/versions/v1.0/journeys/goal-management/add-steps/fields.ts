@@ -104,7 +104,7 @@ export const stepRows = HtmlBlock({
                   text: stepActorLabelText,
                   classes: 'govuk-visually-hidden',
                 },
-                attributes: { 'aria-describedby': stepActorHintId },
+                describedBy: stepActorHintId,
                 items: actorLabelOptions,
                 defaultValue: Item().path('actor'),
                 validWhen: [
@@ -125,7 +125,7 @@ export const stepRows = HtmlBlock({
                   text: stepDescriptionLabelText,
                   classes: 'govuk-visually-hidden',
                 },
-                attributes: { 'aria-describedby': stepDescriptionHintId },
+                describedBy: stepDescriptionHintId,
                 classes: 'govuk-!-width-full',
                 defaultValue: Item().path('description'),
                 validWhen: [

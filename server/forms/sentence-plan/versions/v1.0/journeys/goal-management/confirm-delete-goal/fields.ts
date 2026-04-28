@@ -1,7 +1,14 @@
-import { Data, Format, Item, when, Iterator, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Data,
+  Format,
+  Item,
+  when,
+  Iterator,
+  Condition,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton, GovUKHeading, GovUKButtonGroup, GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { GoalSummaryCardDraft } from '../../../../../components'
-import { SentencePlanTransformers } from '../../../../../transformers'
 import { CaseData } from '../../../constants'
 
 export const pageHeading = GovUKHeading({ text: 'Confirm you want to delete this goal' })
@@ -18,7 +25,7 @@ export const introText = [
 export const goalCard = GoalSummaryCardDraft({
   goalTitle: Data('activeGoal.title'),
   goalStatus: Data('activeGoal.status'),
-  targetDate: Data('activeGoal.targetDate').pipe(SentencePlanTransformers.String.FormatDate({ dateStyle: 'long' })),
+  targetDate: Data('activeGoal.targetDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   areaOfNeed: Data('activeGoal.areaOfNeedLabel'),
   relatedAreasOfNeed: Data('activeGoal.relatedAreasOfNeedLabels'),
   steps: Data('activeGoal.steps').each(
