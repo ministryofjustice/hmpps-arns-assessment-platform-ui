@@ -198,8 +198,8 @@ The application is deployed to Cloud Platform environments using GitHub Actions 
 
 **Page visit time & count**
 
-Page visit durations are tracked by the App Insights JS SDK (configured in assets/js/appInsights.mjs). The SDK starts a timer on page load and records the visit duration when the user
-navigates away or closes the tab. The duration is stored in the duration field of the pageViews table.
+Page visit durations are tracked automatically by the App Insights JS SDK via `autoTrackPageVisitTime: true` (configured in `assets/js/appInsights.mjs`). The SDK measures time between page navigations and sends a `PageVisitTime` custom metric to the `customMetrics` table.
+Pages currently tracked in App Insights dashboard:
 
 Pages currently tracked in App Insights dashboard:
 
