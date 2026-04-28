@@ -20,6 +20,7 @@ if (connectionString) {
     config: {
       connectionString,
       disableXhr: true,
+      isBeaconApiDisabled: false,
       blkCdnCfg: true,
       autoTrackPageVisitTime: false,
       extensions: [clickAnalyticsPlugin],
