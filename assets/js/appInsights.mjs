@@ -22,7 +22,7 @@ if (connectionString) {
       disableXhr: true,
       isBeaconApiDisabled: false,
       blkCdnCfg: true,
-      autoTrackPageVisitTime: true,
+      autoTrackPageVisitTime: false,
       extensions: [clickAnalyticsPlugin],
       extensionConfig: {
         [clickAnalyticsPlugin.identifier]: clickAnalyticsConfig,
@@ -49,12 +49,13 @@ if (connectionString) {
     }
   })
 
-  appInsights.trackPageView()
+  appInsights.startTrackPage()
 
-  // flush pending telemetry (including PageVisitTime) before the page unloads:
-  // in an MPA, the JS context is destroyed on navigation, so without this the SDK
-  // may not deliver PageVisitTime before the page unloads
+  // stop the page visit timer and flush telemetry before the page unloads:
+  // in an MPA, the JS context is destroyed on navigation, so without this
+  // the last page of a session would never have its visit duration recorded
   window.addEventListener('pagehide', () => {
+    appInsights.stopTrackPage()
     appInsights.flush()
   })
 }
