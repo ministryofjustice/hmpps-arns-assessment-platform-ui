@@ -1,9 +1,6 @@
-import { block, field, Format, validation, Self, Data } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { TemplateWrapper } from '@form-engine/registry/components'
-import { GovUKCheckboxInput, GovUKButton } from '@form-engine-govuk-components/components'
-import { Condition } from '@form-engine/registry/conditions'
-import { ConditionalString } from '@form-engine/form/types/structures.type'
+import { block, field, Format, validation, Self, Data, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock, TemplateWrapper, ConditionalString } from '@ministryofjustice/hmpps-forge/core/components'
+import { GovUKCheckboxInput, GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 const createPrivacyContent = (personForename: ConditionalString) =>
   block<HtmlBlock>({
@@ -28,9 +25,9 @@ const privacyCheckbox = field<GovUKCheckboxInput>({
       text: "I confirm I'll do this before starting an appointment",
     },
   ],
-  validate: [
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.Array.Contains('confirmed')),
+      condition: Self().match(Condition.Array.Contains('confirmed')),
       message: 'Confirm you will do this before starting an appointment',
     }),
   ],
@@ -46,7 +43,7 @@ const confirmButton = block<GovUKButton>({
 
 const returnToOasysLink = block<HtmlBlock>({
   variant: 'html',
-  hidden: Data('accessDetails.accessType').not.match(Condition.Equals('OASYS')),
+  visibleWhen: Data('accessDetails.accessType').match(Condition.Equals('OASYS')),
   content: Format(
     '<a href="%1" class="govuk-link govuk-link--no-visited-state" data-ai-id="privacy-page-return-to-oasys-link">Return to OASys</a>',
     Data('accessDetails.oasysRedirectUrl'),
