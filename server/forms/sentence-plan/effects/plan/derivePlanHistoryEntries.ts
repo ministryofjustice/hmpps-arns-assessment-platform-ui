@@ -31,7 +31,7 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
   // Map timeline items to goal lifecycle entries
   for (const item of planTimeline) {
     const customData = item.customData ?? {}
-    const date = new Date(item.timestamp)
+    const date = item.timestamp
 
     switch (item.customType) {
       case 'GOAL_CREATED':
@@ -119,7 +119,7 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
   }
 
   // Sort by date, newest first
-  entries.sort((a, b) => b.date.getTime() - a.date.getTime())
+  entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
   context.setData('planHistoryEntries', entries)
 }

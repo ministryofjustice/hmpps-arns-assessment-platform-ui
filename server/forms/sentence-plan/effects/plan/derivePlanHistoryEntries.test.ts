@@ -42,7 +42,7 @@ const createGoal = (overrides: Partial<DerivedGoal> = {}): DerivedGoal => ({
 const createAgreement = (overrides: Partial<DerivedPlanAgreement> = {}): DerivedPlanAgreement => ({
   uuid: 'agreement-uuid-1',
   status: 'AGREED',
-  statusDate: new Date('2024-06-10T12:00:00Z'),
+  statusDate: '2024-06-10T12:00:00Z',
   agreementQuestion: 'Do you agree?',
   ...overrides,
 })
@@ -70,7 +70,7 @@ describe('derivePlanHistoryEntries', () => {
       expect(entries[0]).toEqual({
         type: 'goal_created',
         uuid: 'created-tl-1-2024-06-15T10:00:00Z',
-        date: new Date('2024-06-15T10:00:00Z'),
+        date: '2024-06-15T10:00:00Z',
         goalUuid: 'g-1',
         goalTitle: 'Find housing',
         createdBy: 'Jane Smith',
@@ -105,7 +105,7 @@ describe('derivePlanHistoryEntries', () => {
       expect(entries[0]).toEqual({
         type: 'goal_achieved',
         uuid: 'achieved-g-2-2024-07-20T14:30:00Z',
-        date: new Date('2024-07-20T14:30:00Z'),
+        date: '2024-07-20T14:30:00Z',
         goalUuid: 'g-2',
         goalTitle: 'Get a job',
         achievedBy: 'John Doe',
@@ -255,7 +255,7 @@ describe('derivePlanHistoryEntries', () => {
       expect(entries[0]).toEqual({
         type: 'goal_readded',
         uuid: 'readded-g-4-2024-09-01T11:00:00Z',
-        date: new Date('2024-09-01T11:00:00Z'),
+        date: '2024-09-01T11:00:00Z',
         goalUuid: 'g-4',
         goalTitle: 'Re-added goal',
         readdedBy: 'Manager',
@@ -291,7 +291,7 @@ describe('derivePlanHistoryEntries', () => {
       expect(entries[0]).toEqual({
         type: 'goal_updated',
         uuid: 'updated-g-5-2024-10-05T16:00:00Z',
-        date: new Date('2024-10-05T16:00:00Z'),
+        date: '2024-10-05T16:00:00Z',
         goalUuid: 'g-5',
         goalTitle: 'Updated goal',
         updatedBy: 'Practitioner',
@@ -331,9 +331,9 @@ describe('derivePlanHistoryEntries', () => {
       // Assert
       const entries = (context.setData as jest.Mock).mock.calls[0][1] as PlanHistoryEntry[]
       expect(entries).toHaveLength(3)
-      expect(entries[0].date).toEqual(new Date('2024-12-01T00:00:00Z'))
-      expect(entries[1].date).toEqual(new Date('2024-06-01T00:00:00Z'))
-      expect(entries[2].date).toEqual(new Date('2024-01-01T00:00:00Z'))
+      expect(entries[0].date).toBe('2024-12-01T00:00:00Z')
+      expect(entries[1].date).toBe('2024-06-01T00:00:00Z')
+      expect(entries[2].date).toBe('2024-01-01T00:00:00Z')
     })
   })
 
@@ -352,7 +352,7 @@ describe('derivePlanHistoryEntries', () => {
         createAgreement({
           uuid: 'agr-1',
           status: 'AGREED',
-          statusDate: new Date('2024-06-20T12:00:00Z'),
+          statusDate: '2024-06-20T12:00:00Z',
           createdBy: 'Practitioner',
           notes: 'Plan agreed',
         }),
@@ -375,7 +375,7 @@ describe('derivePlanHistoryEntries', () => {
         createAgreement({
           uuid: 'agr-2',
           status: 'DO_NOT_AGREE',
-          statusDate: new Date('2024-07-01T08:00:00Z'),
+          statusDate: '2024-07-01T08:00:00Z',
           detailsNo: 'Disagree with step 2',
           detailsCouldNotAnswer: undefined,
         }),
@@ -412,7 +412,7 @@ describe('derivePlanHistoryEntries', () => {
           customData: { goalUuid: 'g-1', goalTitle: 'Early goal' },
         }),
       ]
-      const agreements: DerivedPlanAgreement[] = [createAgreement({ statusDate: new Date('2024-07-01T00:00:00Z') })]
+      const agreements: DerivedPlanAgreement[] = [createAgreement({ statusDate: '2024-07-01T00:00:00Z' })]
       const context = createMockContext({ planTimeline: timeline, planAgreements: agreements, goals: [] })
 
       // Act
