@@ -1,12 +1,20 @@
-import { Data, Format, Item, when } from '@form-engine/form/builders'
-import { GovUKDetails, GovUKTag, GovUKLinkButton } from '@form-engine-govuk-components/components'
-import { Transformer } from '@form-engine/registry/transformers'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
-import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { Condition } from '@form-engine/registry/conditions'
-import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
-import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import {
+  Data,
+  Format,
+  Item,
+  when,
+  Transformer,
+  Iterator,
+  Condition,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  GovUKDetails,
+  GovUKTag,
+  GovUKLinkButton,
+  GovUKHeading,
+  GovUKBody,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
+import { TemplateWrapper, CollectionBlock } from '@ministryofjustice/hmpps-forge/core/components'
 
 /**
  * Shared fields for viewing inactive goals (achieved or removed)
@@ -16,6 +24,8 @@ const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
   Transformer.Array.Join(', '),
   Transformer.String.ToLowerCase(),
 )
+
+const hasSteps = Data('activeGoal.steps.length').match(Condition.Number.GreaterThan(0))
 
 export const pageHeading = GovUKHeading({
   caption: when(Data('activeGoal.relatedAreasOfNeedLabels').match(Condition.IsRequired()))
@@ -38,16 +48,23 @@ export const goalSubheading = GovUKHeading({
 })
 
 export const goalAchievedInfo = GovUKBody({
-  hidden: Data('activeGoal.status').not.match(Condition.Equals('ACHIEVED')),
-  text: Format('Marked as achieved on %1.', Data('activeGoal.statusDate').pipe(Transformer.Date.ToUKLongDate())),
+  visibleWhen: Data('activeGoal.status').match(Condition.Equals('ACHIEVED')),
+  text: Format(
+    'Marked as achieved on %1.',
+    Data('activeGoal.statusDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+  ),
 })
 
 export const goalRemovedInfo = GovUKBody({
-  hidden: Data('activeGoal.status').not.match(Condition.Equals('REMOVED')),
-  text: Format('Removed on %1.', Data('activeGoal.statusDate').pipe(Transformer.Date.ToUKLongDate())),
+  visibleWhen: Data('activeGoal.status').match(Condition.Equals('REMOVED')),
+  text: Format(
+    'Removed on %1.',
+    Data('activeGoal.statusDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+  ),
 })
 
-const reviewStepsTable = TemplateWrapper({
+export const reviewStepsTable = TemplateWrapper({
+  visibleWhen: hasSteps,
   template: `
     <table class="govuk-table goal-summary-card__steps">
       <thead class="govuk-table__head">
@@ -68,40 +85,40 @@ const reviewStepsTable = TemplateWrapper({
         collection: Data('activeGoal.steps').each(
           Iterator.Map(
             TemplateWrapper({
-              template: Format(
-                `<tr class="govuk-table__row">
-                  <td class="govuk-table__cell">%1</td>
-                  <td class="govuk-table__cell">%2</td>
+              template: `<tr class="govuk-table__row">
+                  <td class="govuk-table__cell">{{actorLabel}}</td>
+                  <td class="govuk-table__cell">{{description}}</td>
                   <td class="govuk-table__cell">{{slot:statusField}}</td>
                 </tr>`,
-                Item().path('actorLabel').pipe(Transformer.String.EscapeHtml()),
-                Item().path('description').pipe(Transformer.String.EscapeHtml()),
-              ),
+              values: {
+                actorLabel: Item().path('actorLabel').pipe(Transformer.String.EscapeHtml()),
+                description: Item().path('description').pipe(Transformer.String.EscapeHtml()),
+              },
               slots: {
                 statusField: [
                   GovUKTag({
                     text: 'Not started',
                     classes: 'govuk-tag--grey',
-                    hidden: Item().path('status').not.match(Condition.Equals('NOT_STARTED')),
+                    visibleWhen: Item().path('status').match(Condition.Equals('NOT_STARTED')),
                   }),
                   GovUKTag({
                     text: 'In progress',
-                    hidden: Item().path('status').not.match(Condition.Equals('IN_PROGRESS')),
+                    visibleWhen: Item().path('status').match(Condition.Equals('IN_PROGRESS')),
                   }),
                   GovUKTag({
                     text: 'Completed',
                     classes: 'govuk-tag--green',
-                    hidden: Item().path('status').not.match(Condition.Equals('COMPLETED')),
+                    visibleWhen: Item().path('status').match(Condition.Equals('COMPLETED')),
                   }),
                   GovUKTag({
                     text: 'Cannot be done yet',
                     classes: 'govuk-tag--purple',
-                    hidden: Item().path('status').not.match(Condition.Equals('CANNOT_BE_DONE_YET')),
+                    visibleWhen: Item().path('status').match(Condition.Equals('CANNOT_BE_DONE_YET')),
                   }),
                   GovUKTag({
                     text: 'No longer needed',
                     classes: 'govuk-tag--yellow',
-                    hidden: Item().path('status').not.match(Condition.Equals('NO_LONGER_NEEDED')),
+                    visibleWhen: Item().path('status').match(Condition.Equals('NO_LONGER_NEEDED')),
                   }),
                 ],
               },
@@ -113,69 +130,54 @@ const reviewStepsTable = TemplateWrapper({
   },
 })
 
-const noStepsMessage = GovUKBody({ text: 'No steps were added to this goal.' })
-
-export const reviewStepsSection = TemplateWrapper({
-  template: when(Data('activeGoal.steps.length').match(Condition.Number.GreaterThan(0)))
-    .then(
-      `<div>
-      {{slot:table}}
-    </div>`,
-    )
-    .else(
-      `<div>
-      {{slot:noStepsMessage}}
-    </div>`,
-    ),
-  slots: {
-    table: [reviewStepsTable],
-    noStepsMessage: [noStepsMessage],
-  },
+export const noStepsMessage = GovUKBody({
+  visibleWhen: Data('activeGoal.steps.length').not.match(Condition.Number.GreaterThan(0)),
+  text: 'No steps were added to this goal.',
 })
 
 export const viewAllNotesSection = GovUKDetails({
   summaryText: 'View all notes',
   content: [
-    TemplateWrapper({
-      template: when(Data('activeGoal.notes').not.match(Condition.IsRequired()))
-        .then('<p class="govuk-body">There are no notes on this goal yet.</p>')
-        .else('{{slot:notesList}}'),
-      slots: {
-        notesList: [
-          CollectionBlock({
-            collection: Data('activeGoal.notes').each(
-              Iterator.Map(
-                TemplateWrapper({
-                  template: Format(
-                    `<label class="govuk-heading-s">%1 by %2</label>{{slot:typeLabel}}<p class="goal-note">%3</p>`,
-                    Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
-                    Item().path('createdBy'),
-                    Item().path('note').pipe(Transformer.String.EscapeHtml()),
+    CollectionBlock({
+      collection: Data('activeGoal.notes').each(
+        Iterator.Map(
+          TemplateWrapper({
+            template: `<label class="govuk-heading-s">{{createdAt}} by {{createdBy}}</label>
+                       {{slot:typeLabel}}
+                       <p class="goal-note">{{note}}</p>`,
+            values: {
+              createdAt: Item()
+                .path('createdAt')
+                .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+              createdBy: Item().path('createdBy'),
+              note: Item().path('note'),
+            },
+            slots: {
+              typeLabel: [
+                GovUKBody({
+                  visibleWhen: Item().path('type').match(Condition.Equals('READDED')),
+                  text: Format(
+                    'Goal added back into plan on %1.',
+                    Item()
+                      .path('createdAt')
+                      .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
                   ),
-                  slots: {
-                    typeLabel: [
-                      GovUKBody({
-                        hidden: Item().path('type').not.match(Condition.Equals('READDED')),
-                        text: Format(
-                          'Goal added back into plan on %1.',
-                          Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
-                        ),
-                      }),
-                      GovUKBody({
-                        hidden: Item().path('type').not.match(Condition.Equals('REMOVED')),
-                        text: Format(
-                          'Goal removed on %1.',
-                          Item().path('createdAt').pipe(Transformer.Date.ToUKLongDate()),
-                        ),
-                      }),
-                    ],
-                  },
                 }),
-              ),
-            ),
+                GovUKBody({
+                  visibleWhen: Item().path('type').match(Condition.Equals('REMOVED')),
+                  text: Format(
+                    'Goal removed on %1.',
+                    Item()
+                      .path('createdAt')
+                      .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+                  ),
+                }),
+              ],
+            },
           }),
-        ],
-      },
+        ),
+      ),
+      fallback: [GovUKBody({ text: 'There are no notes on this goal yet.' })],
     }),
   ],
 })
@@ -184,5 +186,5 @@ export const addToPlanButton = GovUKLinkButton({
   text: 'Add to plan',
   href: 'confirm-readd-goal',
   classes: 'govuk-button--secondary',
-  hidden: Data('activeGoal.status').not.match(Condition.Equals('REMOVED')),
+  visibleWhen: Data('activeGoal.status').match(Condition.Equals('REMOVED')),
 })
