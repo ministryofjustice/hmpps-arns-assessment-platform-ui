@@ -29,35 +29,37 @@ import { setTargetService } from '../../shared/setTargetService'
  * TrainingSessionLauncherEffects.loadNotifications('target')
  * ```
  */
-export const { effects: TrainingSessionLauncherEffects, createRegistry: createTrainingSessionLauncherEffectsRegistry } =
-  defineNamespacedEffectsWithDeps<TrainingSessionLauncherEffectsDeps>('trainingLauncher')({
-    // Scenarios
-    loadScenarios,
+export const {
+  effects: TrainingSessionLauncherEffects,
+  implementations: trainingSessionLauncherEffectImplementations,
+} = defineNamespacedEffectsWithDeps<TrainingSessionLauncherEffectsDeps>('trainingLauncher')({
+  // Scenarios
+  loadScenarios,
 
-    // Preferences
-    loadPreferences,
-    saveScenario,
-    deleteScenario,
-    saveSession,
-    deleteSession,
-    deleteAllSessions,
+  // Preferences
+  loadPreferences,
+  saveScenario,
+  deleteScenario,
+  saveSession,
+  deleteSession,
+  deleteAllSessions,
 
-    // Sessions
-    createSessionFromPreset,
-    createSessionFromCustomize,
-    generateHandoverLink,
+  // Sessions
+  createSessionFromPreset,
+  createSessionFromCustomize,
+  generateHandoverLink,
 
-    // Customise
-    loadScenarioForCustomise,
-    saveCustomPreset,
+  // Customise
+  loadScenarioForCustomise,
+  saveCustomPreset,
 
-    // Notifications
-    addNotification,
-    loadNotifications,
+  // Notifications
+  addNotification,
+  loadNotifications,
 
-    // Context
-    setTargetService,
+  // Context
+  setTargetService,
 
-    // Utilities
-    storeCsrf,
-  })
+  // Utilities
+  storeCsrf,
+})

@@ -4,10 +4,9 @@ import {
   ConditionalString,
   EvaluatedBlock,
   RenderedBlock,
-} from '@form-engine/form/types/structures.type'
-import { ValueExpr } from '@form-engine/form/types/expressions.type'
-import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
-import { block } from '@form-engine/form/builders'
+} from '@ministryofjustice/hmpps-forge/core/components'
+import { ChainableExpr, ChainableIterable, ChainableRef, block } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 
 /**
  * A single item in the TabPanel sidebar
@@ -40,7 +39,7 @@ export interface TabPanelProps {
    * Array of selectable items.
    * Can be a static array or a Data reference with Iterator.Map
    */
-  items: TabPanelItem[] | ValueExpr
+  items: TabPanelItem[] | ChainableRef | ChainableExpr<TabPanelItem[]> | ChainableIterable
 
   /** ID of the initially selected item (defaults to first item) */
   defaultSelected?: ConditionalString

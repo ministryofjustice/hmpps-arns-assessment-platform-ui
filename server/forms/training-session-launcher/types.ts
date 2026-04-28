@@ -1,4 +1,4 @@
-import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
+import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
 import { YesNoNullOrNA } from '../../interfaces/handover-api/shared'
 import { TrainingScenarioFlag } from './constants'
 import { TrainingLauncherNotification } from './effects/types'
