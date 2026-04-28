@@ -196,6 +196,39 @@ The application is deployed to Cloud Platform environments using GitHub Actions 
 | `view-previous-versions-link`       | "View previous versions" link in plan header                   |
 | `previous-version-sp-view-link`     | "View previous version" link in sentence plan overview         |
 
+**Page visit time & count**
+
+Page visit durations are tracked automatically by the App Insights JS SDK via `autoTrackPageVisitTime: true` (configured in `assets/js/appInsights.mjs`). The SDK measures time between page navigations and sends a `PageVisitTime` custom metric to the `customMetrics` table.
+
+Pages currently tracked in App Insights dashboard:
+
+| Page         | `customDimensions` filter      |
+| ------------ | ------------------------------ |
+| Plan history | `Plan history - Sentence plan` |
+
+To query visit time for a specific page (e.g. Plan history):
+
+Detailed log of each individual visit (timestamp, duration, user):
+
+```kql
+customMetrics
+| where name == "PageVisitTime"
+| where customDimensions contains "Plan history - Sentence plan"
+| project timestamp, duration_ms = value, user_Id
+| order by timestamp desc
+```
+
+Summary of total visits and average time spent:
+
+```kql
+customMetrics
+| where name == "PageVisitTime"
+| where customDimensions contains "Plan history - Sentence plan"
+| summarize visit_count = count(), avg_duration_seconds = avg(value) / 1000
+```
+
+The `value` field is the visit duration in milliseconds. Page names match the `<title>` element, which follows the pattern `"Step title - Journey title"`.
+
 **Server events**
 
 | Event                                                          | Trigger                                                |
