@@ -196,6 +196,21 @@ The application is deployed to Cloud Platform environments using GitHub Actions 
 | `view-previous-versions-link`       | "View previous versions" link in plan header                   |
 | `previous-version-sp-view-link`     | "View previous version" link in sentence plan overview         |
 
+**Page visit time & count**
+
+Page visit durations are tracked automatically by the App Insights JS SDK via `autoTrackPageVisitTime: true` (configured in `assets/js/appInsights.mjs`). The SDK measures time between page navigations and sends a `PageVisitTime` custom metric to the `customMetrics` table.
+Pages currently tracked in App Insights dashboard:
+
+| Page                  | `customDimensions` filter                      |
+| --------------------- | ---------------------------------------------- |
+| Plan history          | `Plan history - Sentence plan`                 |
+| Privacy               | `Close other applications - Sentence plan`     |
+| Create a goal         | `Create a goal - Sentence plan`                |
+| Add or change steps   | `Add or change steps - Sentence plan`          |
+| Update goal and steps | `Update goal and steps - Sentence plan`        |
+| Agree plan            | `Do they agree to this plan? - Sentence plan`  |
+| Update agreement      | `Do they agree to their plan? - Sentence plan` |
+
 **Server events**
 
 | Event                                                          | Trigger                                                |
