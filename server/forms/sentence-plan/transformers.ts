@@ -2,33 +2,18 @@ import { DateTime } from 'luxon'
 import { defineTransformerFunctions } from '@ministryofjustice/hmpps-forge/core/authoring'
 import type { SentencePlanEffectsDeps } from './effects/types'
 
-interface FormatDateOptions extends Intl.DateTimeFormatOptions {
-  readonly locale?: string
-}
-
 function assertString(value: unknown, functionName: string): asserts value is string {
   if (typeof value !== 'string') {
     throw new TypeError(`${functionName} expected a string`)
   }
 }
 
-function assertFormatDateOptions(value: unknown, functionName: string): asserts value is FormatDateOptions {
-  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-    throw new TypeError(`${functionName} expected date format options`)
-  }
-
-  if ('locale' in value && typeof value.locale !== 'string') {
-    throw new TypeError(`${functionName} expected locale to be a string`)
-  }
-}
-
 const pluralise = (count: number, unit: string): string => (count === 1 ? `${count} ${unit}` : `${count} ${unit}s`)
 
-const { transformers: sentencePlanTransformerFunctions, implementations: sentencePlanTransformerImplementations } =
+export const { transformers: SentencePlanTransformers, implementations: sentencePlanTransformerImplementations } =
   defineTransformerFunctions<
     {
       ToSentenceLength: (value: unknown, endDate: unknown) => string
-      FormatDate: (value: unknown, options: FormatDateOptions) => string
     },
     SentencePlanEffectsDeps
   >({
@@ -69,26 +54,4 @@ const { transformers: sentencePlanTransformerFunctions, implementations: sentenc
 
       return `(${parts[0]}, ${parts[1]} and ${parts[2]})`
     },
-    FormatDate: () => (value: unknown, options: FormatDateOptions) => {
-      assertString(value, 'SentencePlanTransformers.String.FormatDate')
-      assertFormatDateOptions(options, 'SentencePlanTransformers.String.FormatDate')
-
-      const date = new Date(value)
-      if (Number.isNaN(date.getTime())) {
-        throw new Error(`SentencePlanTransformers.String.FormatDate: "${value}" is not a valid date`)
-      }
-
-      const { locale, ...dateTimeFormatOptions } = options
-
-      return new Intl.DateTimeFormat(locale ?? 'en-GB', dateTimeFormatOptions).format(date)
-    },
   })
-
-export const SentencePlanTransformers = {
-  ToSentenceLength: sentencePlanTransformerFunctions.ToSentenceLength,
-  String: {
-    FormatDate: sentencePlanTransformerFunctions.FormatDate,
-  },
-} as const
-
-export { sentencePlanTransformerImplementations }
