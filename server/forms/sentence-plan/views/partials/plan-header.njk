@@ -82,7 +82,10 @@
                       text: 'Create goal',
                       href: createGoalHref,
                       classes: "govuk-button--secondary govuk-!-display-none-print",
-                      id: 'create-goal-button'
+                      id: 'create-goal-button',
+                      attributes: {
+                        "data-ai-id": "create-goal-start-button"
+                      }
                     }) }}
                   {% endif %}
                   {% if buttons.showAgreePlanButton %}

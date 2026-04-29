@@ -1,6 +1,5 @@
 import { DerivedGoal, SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { getRequiredEffectContext } from './goalUtils'
-import { sendTelemetryEvent } from '../telemetry/sendTelemetryEvent'
 
 /**
  * Reorder a goal within its status group.
@@ -63,12 +62,4 @@ export const reorderGoal = (deps: SentencePlanEffectsDeps) => async (context: Se
     assessmentUuid,
     user,
   })
-
-  // Fire GOAL_REORDER_SESSION at most once per assessment per session
-  const session = context.getSession()
-  const alreadyFiredFor = session.goalReorderEventFiredFor ?? []
-  if (!alreadyFiredFor.includes(assessmentUuid)) {
-    session.goalReorderEventFiredFor = [...alreadyFiredFor, assessmentUuid]
-    sendTelemetryEvent(deps)(context, 'GOAL_REORDER_SESSION')
-  }
 }

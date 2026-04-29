@@ -229,6 +229,9 @@ const saveButton = GovUKButton({
   name: 'action',
   value: 'save',
   preventDoubleClick: true,
+  attributes: {
+    'data-ai-id': 'update-goal-and-steps-save-button',
+  },
 })
 
 const markAsAchievedButton = GovUKButton({
@@ -237,6 +240,9 @@ const markAsAchievedButton = GovUKButton({
   value: 'mark-achieved',
   classes: 'govuk-button--secondary',
   preventDoubleClick: true,
+  attributes: {
+    'data-ai-id': 'update-goal-and-steps-mark-achieved-button',
+  },
 })
 
 const removeGoalLink = GovUKBody({
