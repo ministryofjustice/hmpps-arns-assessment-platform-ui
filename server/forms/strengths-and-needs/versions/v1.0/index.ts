@@ -1,5 +1,6 @@
 import { accessTransition, journey } from '@form-engine/form/builders'
 import { accommodationJourney } from './journeys/accommodation'
+import { employmentJourney } from './journeys/employment-and-education'
 import { drugUseJourney } from './journeys/drug-use'
 import { formVersion, sectionNavItems } from './constants'
 import { StrengthsAndNeedsEffects } from '../../effects'
@@ -33,5 +34,5 @@ export const strengthsAndNeedsV1Journey = journey({
       ],
     }),
   ],
-  children: [accommodationJourney, drugUseJourney],
+  children: [accommodationJourney, employmentJourney, drugUseJourney],
 })

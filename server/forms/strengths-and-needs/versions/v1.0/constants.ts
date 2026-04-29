@@ -34,7 +34,7 @@ export const sectionNavItems = [
   {
     code: 'employment-and-education',
     text: 'Employment and education',
-    href: `${basePath}/employment-and-education/employment-status`,
+    href: `${basePath}/employment-and-education/current-employment`,
   },
   {
     code: 'finances',
