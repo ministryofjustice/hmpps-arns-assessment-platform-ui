@@ -157,7 +157,7 @@ export interface GovUKRadioInputProps extends FieldBlockProps {
  * Individual radio option within a radio group.
  * Represents a single selectable choice with optional conditional reveals.
  */
-interface GovUKRadioInputItem {
+export interface GovUKRadioInputItem {
   /**
    * Value for the radio input. This is submitted with the form data when selected.
    * @example 'email'
