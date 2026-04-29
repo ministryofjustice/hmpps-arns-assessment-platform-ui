@@ -58,7 +58,6 @@ export const updateGoalAndStepsStep = step({
     access({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
-        SentencePlanEffects.sendTelemetryEvent('UPDATE_GOAL_AND_STEPS_START', true),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_UPDATE_GOAL_AND_STEPS),
       ],
     }),
@@ -74,7 +73,6 @@ export const updateGoalAndStepsStep = step({
       onAlways: {
         effects: [
           SentencePlanEffects.updateGoalProgress(),
-          SentencePlanEffects.sendTelemetryEvent('UPDATE_GOAL_AND_STEPS_SAVE', false),
           SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEP_PROGRESS, {
             goalStatus: Data('activeGoal.status'),
             action: 'save',
@@ -101,7 +99,6 @@ export const updateGoalAndStepsStep = step({
       onAlways: {
         effects: [
           SentencePlanEffects.updateGoalProgress(),
-          SentencePlanEffects.sendTelemetryEvent('UPDATE_GOAL_AND_STEPS_ACHIEVED', false),
           SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEP_PROGRESS, {
             goalStatus: Data('activeGoal.status'),
             action: 'mark-achieved',

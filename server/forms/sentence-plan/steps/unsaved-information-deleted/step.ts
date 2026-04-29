@@ -33,6 +33,9 @@ export const unsavedInformationDeletedStep = step({
         then: '/sign-in/handover?service=sentence-plan',
         else: '/sentence-plan/v1.0/plan/overview',
       }),
+      attributes: {
+        'data-ai-id': 'unsaved-information-deleted-go-to-plan-button',
+      },
     }),
   ],
 })

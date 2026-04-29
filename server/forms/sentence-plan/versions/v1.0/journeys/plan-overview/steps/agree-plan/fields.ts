@@ -67,4 +67,7 @@ export const saveButton = GovUKButton({
   text: 'Save',
   name: 'action',
   value: 'save',
+  attributes: {
+    'data-ai-id': 'agree-plan-save-button',
+  },
 })

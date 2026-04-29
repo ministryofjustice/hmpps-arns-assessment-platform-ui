@@ -87,24 +87,28 @@ const currentGoalsNavigationItem = {
   text: Format('Goals to work on now (%1)', activeGoalsCount),
   href: Format('%1?type=current', Params('timestamp')),
   active: when(Query('type').match(Condition.Equals('current'))),
+  attributes: { 'data-ai-id': 'view-historic-current-goals-tab' },
 }
 
 const futureGoalsNavigationItem = {
   text: Format('Future goals (%1)', futureGoalsCount),
   href: Format('%1?type=future', Params('timestamp')),
   active: when(Query('type').match(Condition.Equals('future'))),
+  attributes: { 'data-ai-id': 'view-historic-future-goals-tab' },
 }
 
 const achievedGoalsNavigationItem = {
   text: Format('Achieved goals (%1)', achievedGoalsCount),
   href: Format('%1?type=achieved', Params('timestamp')),
   active: when(Query('type').match(Condition.Equals('achieved'))),
+  attributes: { 'data-ai-id': 'view-historic-achieved-goals-tab' },
 }
 
 const removedGoalsNavigationItem = {
   text: Format('Removed goals (%1)', removedGoalsCount),
   href: Format('%1?type=removed', Params('timestamp')),
   active: when(Query('type').match(Condition.Equals('removed'))),
+  attributes: { 'data-ai-id': 'view-historic-removed-goals-tab' },
 }
 
 const hasAchievedGoals = achievedGoalsCount.match(Condition.Number.GreaterThan(0))

@@ -187,4 +187,7 @@ export const addToPlanButton = GovUKLinkButton({
   href: 'confirm-readd-goal',
   classes: 'govuk-button--secondary',
   visibleWhen: Data('activeGoal.status').match(Condition.Equals('REMOVED')),
+  attributes: {
+    'data-ai-id': 'view-inactive-goal-add-to-plan-button',
+  },
 })

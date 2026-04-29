@@ -124,5 +124,21 @@ export default function nunjucksSetup(app?: express.Express) {
     })),
   )
 
+  njkEnv.addFilter('countGoalsByStatus', (goals: Array<{ status?: string }> | undefined, status: string): number => {
+    if (!Array.isArray(goals)) {
+      return 0
+    }
+
+    return goals.filter(g => g?.status === status).length
+  })
+
+  njkEnv.addFilter('countTotalSteps', (goals: Array<{ steps?: unknown[] }> | undefined): number => {
+    if (!Array.isArray(goals)) {
+      return 0
+    }
+
+    return goals.reduce((sum, g) => sum + (Array.isArray(g?.steps) ? g.steps.length : 0), 0)
+  })
+
   return njkEnv
 }

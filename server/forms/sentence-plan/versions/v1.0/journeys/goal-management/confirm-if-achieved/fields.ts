@@ -73,4 +73,7 @@ export const saveAndContinueButton = GovUKButton({
   name: 'action',
   value: 'saveAndContinue',
   preventDoubleClick: true,
+  attributes: {
+    'data-ai-id': 'confirm-if-achieved-save-and-continue-button',
+  },
 })

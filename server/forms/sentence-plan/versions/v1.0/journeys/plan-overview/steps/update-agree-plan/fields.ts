@@ -46,6 +46,9 @@ const saveButton = GovUKButton({
   text: 'Save',
   name: 'action',
   value: 'save',
+  attributes: {
+    'data-ai-id': 'update-agree-plan-save-button',
+  },
 })
 
 const goBackLink = HtmlBlock({

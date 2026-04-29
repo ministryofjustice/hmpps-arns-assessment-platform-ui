@@ -71,6 +71,9 @@ const addStepsButton = GovUKButton({
   name: 'action',
   value: 'addSteps',
   preventDoubleClick: true,
+  attributes: {
+    'data-ai-id': 'create-goal-add-steps-button',
+  },
 })
 
 const saveWithoutStepsButton = GovUKButton({
@@ -79,6 +82,9 @@ const saveWithoutStepsButton = GovUKButton({
   name: 'action',
   value: 'saveWithoutSteps',
   preventDoubleClick: true,
+  attributes: {
+    'data-ai-id': 'create-goal-save-without-steps-button',
+  },
 })
 
 const buttonGroup = GovUKButtonGroup({

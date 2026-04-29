@@ -76,10 +76,13 @@ export const confirmButton = GovUKButton({
   text: 'Confirm',
   name: 'action',
   value: 'confirm',
+  attributes: {
+    'data-ai-id': 'confirm-remove-goal-confirm-button',
+  },
 })
 
 export const cancelLink = GovUKBody({
-  text: '<a href="update-goal-steps" class="govuk-link">Do not remove goal</a>',
+  text: '<a href="update-goal-steps" class="govuk-link" data-ai-id="confirm-remove-goal-cancel-link">Do not remove goal</a>',
 })
 
 export const buttonGroup = GovUKButtonGroup({ buttons: [confirmButton, cancelLink] })

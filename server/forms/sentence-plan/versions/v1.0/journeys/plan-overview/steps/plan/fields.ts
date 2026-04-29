@@ -123,23 +123,27 @@ export const subNavigation = MOJSubNavigation({
       text: Format('Goals to work on now (%1)', activeGoalsCount),
       href: 'overview?type=current',
       active: when(Query('type').match(Condition.Equals('current'))),
+      attributes: { 'data-ai-id': 'plan-overview-current-goals-tab' },
     },
     {
       text: Format('Future goals (%1)', futureGoalsCount),
       href: 'overview?type=future',
       active: when(Query('type').match(Condition.Equals('future'))),
+      attributes: { 'data-ai-id': 'plan-overview-future-goals-tab' },
     },
     {
       text: Format('Achieved goals (%1)', achievedGoalsCount),
       href: 'overview?type=achieved',
       active: when(Query('type').match(Condition.Equals('achieved'))),
       visibleWhen: hasAchievedGoals,
+      attributes: { 'data-ai-id': 'plan-overview-achieved-goals-tab' },
     },
     {
       text: Format('Removed goals (%1)', removedGoalsCount),
       href: 'overview?type=removed',
       active: when(Query('type').match(Condition.Equals('removed'))),
       visibleWhen: showRemovedGoalsTab,
+      attributes: { 'data-ai-id': 'plan-overview-removed-goals-tab' },
     },
   ],
 })
