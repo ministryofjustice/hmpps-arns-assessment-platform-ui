@@ -3,7 +3,7 @@ import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-n
 import {
   BasicBlockProps,
   BlockDefinition,
-  ConditionalString,
+  ResolvableString,
   EvaluatedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
 import { ChainableRef, ChainableScopedRef, block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
@@ -14,11 +14,11 @@ import {
 } from '../../../../interfaces/coordinator-api/entityAssessment'
 
 export interface AssessmentInfoDetailsProps extends BasicBlockProps {
-  personName: ConditionalString
-  areaName: ConditionalString
+  personName: ResolvableString
+  areaName: ResolvableString
   // assessment data: can be static, a Data() reference, or an Item() scoped reference
   assessmentData: AssessmentArea | null | ChainableRef | ChainableScopedRef
-  status: ConditionalString
+  status: ResolvableString
   fullWidth?: boolean
   // when true (default), wraps content in a govuk details component.
   // - can be set to false so that content rendered directly without the collapsible wrapper

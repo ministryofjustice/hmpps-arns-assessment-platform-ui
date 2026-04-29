@@ -1,7 +1,7 @@
 import type nunjucks from 'nunjucks'
 import {
   BlockDefinition,
-  ConditionalString,
+  ResolvableString,
   EvaluatedBlock,
   RenderedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
@@ -13,13 +13,13 @@ import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-n
  */
 export interface TabPanelItem {
   /** Identifier for this item (used for panel switching) */
-  id: ConditionalString
+  id: ResolvableString
 
   /** Primary label shown in the sidebar */
-  label: ConditionalString
+  label: ResolvableString
 
   /** Optional secondary label (e.g., location, category) */
-  sublabel?: ConditionalString
+  sublabel?: ResolvableString
 
   /** Blocks to render in the panel when this item is selected */
   panel: BlockDefinition[]
@@ -30,10 +30,10 @@ export interface TabPanelItem {
  */
 export interface TabPanelProps {
   /** Unique ID for the component */
-  id?: ConditionalString
+  id?: ResolvableString
 
   /** Title shown above the sidebar list */
-  sidebarTitle?: ConditionalString
+  sidebarTitle?: ResolvableString
 
   /**
    * Array of selectable items.
@@ -42,13 +42,13 @@ export interface TabPanelProps {
   items: TabPanelItem[] | ChainableRef | ChainableExpr<TabPanelItem[]> | ChainableIterable
 
   /** ID of the initially selected item (defaults to first item) */
-  defaultSelected?: ConditionalString
+  defaultSelected?: ResolvableString
 
   /** Optional blocks to render in the sidebar footer */
   sidebarFooter?: BlockDefinition[]
 
   /** Additional CSS classes */
-  classes?: ConditionalString
+  classes?: ResolvableString
 
   /**
    * Query parameter name for syncing selected tab with URL.
@@ -56,7 +56,7 @@ export interface TabPanelProps {
    * - Read the initial selection from the URL query param
    * - Update the URL when tabs are selected (without page reload)
    */
-  queryParam?: ConditionalString
+  queryParam?: ResolvableString
 }
 
 /**

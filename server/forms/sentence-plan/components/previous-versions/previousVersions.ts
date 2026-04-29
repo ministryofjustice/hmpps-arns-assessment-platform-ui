@@ -1,8 +1,8 @@
 import { block as blockBuilder, ChainableRef } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   BlockDefinition,
-  ConditionalBoolean,
-  ConditionalString,
+  ResolvableBoolean,
+  ResolvableString,
   EvaluatedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
 import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
@@ -14,9 +14,9 @@ import config from '../../../../config'
  * Props for the PreviousVersions component
  */
 export interface PreviousVersionsProps {
-  personName: ConditionalString
+  personName: ResolvableString
   previousVersions: PreviousVersionsResponse | ChainableRef
-  showAssessmentColumn?: ConditionalBoolean
+  showAssessmentColumn?: ResolvableBoolean
 }
 
 /**

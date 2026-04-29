@@ -2,8 +2,8 @@ import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/autho
 import {
   buildComponent,
   BlockDefinition,
-  ConditionalBoolean,
-  ConditionalString,
+  ResolvableBoolean,
+  ResolvableString,
   EvaluatedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
 
@@ -12,25 +12,25 @@ import {
  */
 export interface ButtonAsLinkProps {
   /** Text content for the button */
-  text: ConditionalString
+  text: ResolvableString
 
   /** Name attribute for form submission */
-  name?: ConditionalString
+  name?: ResolvableString
 
   /** Value attribute for form submission */
-  value?: ConditionalString
+  value?: ResolvableString
 
   /** Type attribute - defaults to 'submit' */
   buttonType?: 'button' | 'submit' | 'reset'
 
   /** Whether the button is disabled */
-  disabled?: ConditionalBoolean
+  disabled?: ResolvableBoolean
 
   /** Additional CSS classes (appended to button-as-link) */
-  classes?: ConditionalString
+  classes?: ResolvableString
 
   /** Button ID */
-  id?: ConditionalString
+  id?: ResolvableString
 
   /** Custom HTML attributes */
   attributes?: Record<string, string>

@@ -8,7 +8,7 @@ import {
   Condition,
   EffectFunctionExpr,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { ConditionalString } from '@ministryofjustice/hmpps-forge/core/components'
+import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { createFormContent } from './fields'
 
 /**
@@ -60,7 +60,7 @@ export interface PrivacyScreenConfig {
    * Expression to resolve the person's forename for display in the privacy screen content
    * (e.g., Data('caseData.name.forename'))
    */
-  personForename: ConditionalString
+  personForename: ResolvableString
 }
 
 /**

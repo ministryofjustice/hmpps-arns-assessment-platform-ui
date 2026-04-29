@@ -1,8 +1,8 @@
 import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   BlockDefinition,
-  ConditionalBoolean,
-  ConditionalString,
+  ResolvableBoolean,
+  ResolvableString,
   EvaluatedBlock,
   FieldBlockDefinition,
 } from '@ministryofjustice/hmpps-forge/core/components'
@@ -23,20 +23,20 @@ export interface RandomizableFieldProps {
    * The field key from the scenario schema.
    * Used to generate the randomize checkbox name.
    */
-  fieldKey: ConditionalString
+  fieldKey: ResolvableString
 
   /**
    * Whether randomization is currently enabled for this field.
    * When true, the field input will be disabled.
    * @default false
    */
-  randomize?: ConditionalBoolean
+  randomize?: ResolvableBoolean
 
   /**
    * Label text for the randomize checkbox/option.
    * @default 'Random'
    */
-  randomizeLabel?: ConditionalString
+  randomizeLabel?: ResolvableString
 }
 
 /**

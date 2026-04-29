@@ -1,8 +1,8 @@
 import { block, field, Format, validation, Self, Data, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { HtmlBlock, TemplateWrapper, ConditionalString } from '@ministryofjustice/hmpps-forge/core/components'
+import { HtmlBlock, TemplateWrapper, ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKCheckboxInput, GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 
-const createPrivacyContent = (personForename: ConditionalString) =>
+const createPrivacyContent = (personForename: ResolvableString) =>
   block<HtmlBlock>({
     variant: 'html',
     content: Format(
@@ -63,7 +63,7 @@ const buttonGroup = block<TemplateWrapper>({
  *
  * @param personForename - Expression to resolve the person's forename (e.g., Data('caseData.name.forename'))
  */
-export const createFormContent = (personForename: ConditionalString) =>
+export const createFormContent = (personForename: ResolvableString) =>
   block<TemplateWrapper>({
     variant: 'templateWrapper',
     template: `

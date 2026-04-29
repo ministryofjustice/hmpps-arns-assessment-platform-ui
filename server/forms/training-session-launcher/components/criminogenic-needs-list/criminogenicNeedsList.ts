@@ -3,8 +3,8 @@ import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/autho
 import {
   BasicBlockProps,
   BlockDefinition,
-  ConditionalArray,
-  ConditionalString,
+  ResolvableArray,
+  ResolvableString,
   EvaluatedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
 import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
@@ -15,10 +15,10 @@ import { DisplayNeed } from '../../types'
  */
 export interface CriminogenicNeedsListProps extends BasicBlockProps {
   /** Array of display-friendly needs to render */
-  needs: ConditionalArray<DisplayNeed>
+  needs: ResolvableArray<DisplayNeed>
 
   /** Additional CSS classes */
-  classes?: ConditionalString
+  classes?: ResolvableString
 }
 
 /**
