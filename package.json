@@ -83,7 +83,7 @@
       "brace-expansion": "1.1.13"
     },
     "@aws-sdk/xml-builder": {
-      "fast-xml-parser": "5.5.11"
+      "fast-xml-parser": "5.7.0"
     }
   },
   "devDependencies": {
