@@ -74,10 +74,10 @@
   "overrides": {
     "mocha": {
       "serialize-javascript": "^7.0.3",
-      "diff": "^8.0.3"
+      "diff": "^9.0.0"
     },
     "@yikes2000/prettier-plugin-merge-extras": {
-      "diff": "5.2.2"
+      "diff": "9.0.0"
     },
     "minimatch@3.1.5": {
       "brace-expansion": "1.1.13"
