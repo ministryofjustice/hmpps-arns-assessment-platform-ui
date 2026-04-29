@@ -107,7 +107,7 @@
         <div class="goal-summary-card__steps--empty">
           <strong>No steps added</strong>
           {% if not params.isReadOnly and params.actions.length > 0 and params.goalUuid %}
-            <a class="govuk-link govuk-!-display-none-print" href="../goal/{{ params.goalUuid }}/add-steps">
+            <a class="govuk-link govuk-!-display-none-print" href="../goal/{{ params.goalUuid }}/add-steps" data-ai-id="goal-summary-card-add-steps-link">
               {{ goalCard.textWithGoalContext("Add steps", params.goalTitle) | trim }}
             </a>
           {% endif %}
@@ -130,7 +130,7 @@
               html: goalCard.textWithGoalContext("Move goal up", params.goalTitle) | trim,
               href: params.moveUpHref,
               classes: "govuk-button--secondary",
-              attributes: { "data-qa": "move-goal-up" }
+              attributes: { "data-qa": "move-goal-up", "data-ai-id": "goal-reorder-up-button" }
             }) }}
           {% endif %}
           {% if params.showMoveDown and params.moveDownHref %}
@@ -138,7 +138,7 @@
               html: goalCard.textWithGoalContext("Move goal down", params.goalTitle) | trim,
               href: params.moveDownHref,
               classes: "govuk-button--secondary",
-              attributes: { "data-qa": "move-goal-down" }
+              attributes: { "data-qa": "move-goal-down", "data-ai-id": "goal-reorder-down-button" }
             }) }}
           {% endif %}
         </div>

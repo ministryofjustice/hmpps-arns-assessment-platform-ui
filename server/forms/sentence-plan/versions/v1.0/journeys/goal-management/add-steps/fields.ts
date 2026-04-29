@@ -161,6 +161,9 @@ export const addStepButton = GovUKButton({
   name: 'action',
   value: 'addStep',
   classes: 'govuk-button--secondary',
+  attributes: {
+    'data-ai-id': 'add-steps-add-another-step-button',
+  },
 })
 
 /**
@@ -171,6 +174,9 @@ export const saveAndContinueButton = GovUKButton({
   name: 'action',
   value: 'saveAndContinue',
   preventDoubleClick: true,
+  attributes: {
+    'data-ai-id': 'add-steps-save-and-continue-button',
+  },
 })
 
 /**

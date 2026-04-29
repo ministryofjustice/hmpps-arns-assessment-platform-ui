@@ -64,10 +64,13 @@ export const confirmButton = GovUKButton({
   name: 'action',
   value: 'confirm',
   preventDoubleClick: true,
+  attributes: {
+    'data-ai-id': 'confirm-readd-goal-confirm-button',
+  },
 })
 
 export const cancelLink = GovUKBody({
-  text: '<a href="view-inactive-goal" class="govuk-link">Do not add goal back into plan</a>',
+  text: '<a href="view-inactive-goal" class="govuk-link" data-ai-id="confirm-readd-goal-cancel-link">Do not add goal back into plan</a>',
 })
 
 export const buttonGroup = GovUKButtonGroup({ buttons: [confirmButton, cancelLink] })

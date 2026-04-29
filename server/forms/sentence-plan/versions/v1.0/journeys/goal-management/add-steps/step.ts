@@ -92,7 +92,6 @@ export const addStepsStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.saveStepEditSession(),
-          SentencePlanEffects.sendTelemetryEvent('CREATE_GOAL_WITH_STEPS_END', false),
           SentencePlanEffects.sendAuditEvent(AuditEvent.ADD_STEPS),
           SentencePlanEffects.addNotification({
             type: 'success',
