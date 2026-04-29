@@ -12,6 +12,7 @@
   {% if appInsightsConnectionString %}
     <meta name="ai-connection-string" content="{{ appInsightsConnectionString }}">
     <meta name="ai-request-id" content="{{ requestId }}">
+    <meta name="ai-telemetry-id" content="{{ telemetryId }}">
     {% if user and user.authSource %}
       <meta name="ai-entry-point" content="{{ user.authSource }}">
     {% endif %}

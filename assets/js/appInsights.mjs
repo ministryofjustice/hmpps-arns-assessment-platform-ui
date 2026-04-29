@@ -35,6 +35,7 @@ if (connectionString) {
   appInsights.addTelemetryInitializer(envelope => {
     const assessmentUuid = document.querySelector('[data-qa-assessment-uuid]')?.getAttribute('data-qa-assessment-uuid')
     const requestId = document.querySelector('meta[name="ai-request-id"]')?.content
+    const telemetryId = document.querySelector('meta[name="ai-telemetry-id"]')?.content
     const entryPoint = document.querySelector('meta[name="ai-entry-point"]')?.content
     const userType = document.querySelector('meta[name="ai-user-type"]')?.content
 
@@ -44,6 +45,7 @@ if (connectionString) {
       ...envelope.data,
       assessmentUuid: assessmentUuid || undefined,
       requestId: requestId || undefined,
+      telemetryId: telemetryId || undefined,
       entryPoint: entryPoint || undefined,
       userType: userType || undefined,
     }
