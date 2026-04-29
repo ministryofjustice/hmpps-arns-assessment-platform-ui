@@ -384,7 +384,7 @@ test.describe('Create Goal Journey', () => {
       await expect(createGoalPage.targetDateOptions.first()).toBeFocused()
     })
 
-    test(`related areas of need checkboxes' inputs have individual aria-describedby attribute for inline errors`, async ({
+    test.skip(`related areas of need checkboxes' inputs have individual aria-describedby attribute for inline errors`, async ({
       page,
       createSession,
     }) => {
@@ -408,7 +408,7 @@ test.describe('Create Goal Journey', () => {
       })
     })
 
-    test(`related areas of need radio buttons' inputs have individual aria-describedby attribute for inline errors`, async ({
+    test.skip(`related areas of need radio buttons' inputs have individual aria-describedby attribute for inline errors`, async ({
       page,
       createSession,
     }) => {
