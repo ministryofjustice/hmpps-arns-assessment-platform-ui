@@ -39,11 +39,14 @@ export const confirmButton = GovUKButton({
   text: 'Confirm',
   name: 'action',
   value: 'confirm',
+  attributes: {
+    'data-ai-id': 'confirm-delete-goal-confirm-button',
+  },
 })
 
 export const cancelLink = GovUKBody({
   text: Format(
-    '<a href="%1" class="govuk-link">Do not delete goal</a>',
+    '<a href="%1" class="govuk-link" data-ai-id="confirm-delete-goal-cancel-link">Do not delete goal</a>',
     when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
       .then('../../plan/overview?type=future')
       .else('../../plan/overview?type=current'),

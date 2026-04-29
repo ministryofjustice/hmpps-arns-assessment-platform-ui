@@ -161,6 +161,9 @@ export const addStepButton = GovUKButton({
   name: 'action',
   value: 'addStep',
   classes: 'govuk-button--secondary',
+  attributes: {
+    'data-ai-id': 'add-steps-add-another-step-button',
+  },
 })
 
 /**

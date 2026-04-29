@@ -247,7 +247,7 @@ const markAsAchievedButton = GovUKButton({
 
 const removeGoalLink = GovUKBody({
   text: Format(
-    '<a href="../../goal/%1/confirm-remove-goal" class="govuk-link">Remove goal from plan</a>',
+    '<a href="../../goal/%1/confirm-remove-goal" class="govuk-link" data-ai-id="update-goal-and-steps-remove-goal-link">Remove goal from plan</a>',
     Data('activeGoal.uuid'),
   ),
 })

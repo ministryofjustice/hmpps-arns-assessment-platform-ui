@@ -183,18 +183,32 @@ The application is deployed to Cloud Platform environments using GitHub Actions 
 
 **Click events**
 
-| Event                               | Trigger                                                        |
-| ----------------------------------- | -------------------------------------------------------------- |
-| `about-page-primary-nav-link`       | "About" link in primary navigation                             |
-| `about-page-blank-plan-link`        | "View information from assessment" link on blank plan overview |
-| `give-feedback-header`              | "Give feedback" link in phase banner                           |
-| `privacy-page-back-link`            | "Back" link on privacy page                                    |
-| `privacy-page-return-to-oasys-link` | "Return to OASys" link on privacy page                         |
-| `report-a-problem-header`           | "Report a problem" link in banner                              |
-| `report-a-problem-footer`           | "Report a problem" footer expander                             |
-| `return-to-oasys-button`            | "Return to OASys" button                                       |
-| `view-previous-versions-link`       | "View previous versions" link in plan header                   |
-| `previous-version-sp-view-link`     | "View previous version" link in sentence plan overview         |
+Buttons and links throughout the app are tagged with `data-ai-id` attributes. The App Insights `ClickAnalyticsPlugin` (configured in [appInsights.mjs](assets/js/appInsights.mjs)) records a click event in `customEvents` for each tagged element, using the `data-ai-id` value as the event `name`. Search the codebase for `data-ai-id` to find what's currently tracked.
+
+**Custom dimensions**
+
+Every telemetry envelope carries these custom dimensions:
+
+| Dimension        | Notes                                                       |
+| ---------------- | ----------------------------------------------------------- |
+| `assessmentUuid` | Assessment in context                                       |
+| `telemetryId`    | Per-Express-session UUID, resets on sign-out + sign-in      |
+| `requestId`      | Per-HTTP-request ID (also shown in Report a Problem widget) |
+| `entryPoint`     | Auth source (`OASYS`, `hmpps-auth`)                         |
+| `userType`       | `PRIVATE_BETA` or `NATIONAL_ROLLOUT`                        |
+
+Pages that load goal data (most of the sentence plan journey) also emit goal-count snapshots:
+
+| Dimension       | Notes                                  |
+| --------------- | -------------------------------------- |
+| `goalsActive`   | Number of goals with `ACTIVE` status   |
+| `goalsFuture`   | Number of goals with `FUTURE` status   |
+| `goalsAchieved` | Number of goals with `ACHIEVED` status |
+| `goalsRemoved`  | Number of goals with `REMOVED` status  |
+| `goalsTotal`    | Total goals on the assessment          |
+| `stepsTotal`    | Total steps across all goals           |
+
+Use `customDimensions.telemetryId` to dedupe events to one-per-login-session in KQL queries. For per-assessment metrics (totals, averages), use `arg_max(timestamp, ...)` to take the latest snapshot per `assessmentUuid` before aggregating.
 
 **Page visit time & count**
 
@@ -212,14 +226,6 @@ Pages currently tracked in App Insights dashboard:
 | Update goal and steps | `Update goal and steps - Sentence plan`        |
 | Agree plan            | `Do they agree to this plan? - Sentence plan`  |
 | Update agreement      | `Do they agree to their plan? - Sentence plan` |
-
-**Server events**
-
-| Event                                                          | Trigger                                                |
-| -------------------------------------------------------------- | ------------------------------------------------------ |
-| `CREATE_GOAL_START` / `_WITHOUT_STEPS_END` / `_WITH_STEPS_END` | Create-goal flow (paired via `telemetryCorrelationId`) |
-| `UPDATE_GOAL_AND_STEPS_START` / `_SAVE` / `_ACHIEVED`          | Update-goal flow (paired via `telemetryCorrelationId`) |
-| `GOAL_REORDER_SESSION`                                         | Goal reorder — fires once per assessment per session   |
 
 ## Contributing
 
