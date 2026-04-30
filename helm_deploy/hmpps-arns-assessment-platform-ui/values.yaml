@@ -73,6 +73,7 @@ generic-service:
     groups:
       - internal
       - prisons
+      - private_prisons
 
 autoscaling:
   enabled: true
