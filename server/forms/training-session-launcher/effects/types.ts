@@ -1,6 +1,10 @@
-import { CoordinatorApiClient, HandoverApiClient, PreferencesStore } from '../../../data'
+import AssessmentPlatformApiClient from '../../../data/assessmentPlatformApiClient'
+import CoordinatorApiClient from '../../../data/coordinatorApiClient'
+import HandoverApiClient from '../../../data/handoverApiClient'
+import PreferencesStore from '../../../data/preferencesStore'
 
 export interface TrainingSessionLauncherEffectsDeps {
+  assessmentPlatformApiClient: AssessmentPlatformApiClient
   handoverApiClient: HandoverApiClient
   coordinatorApiClient: CoordinatorApiClient
   preferencesStore: PreferencesStore

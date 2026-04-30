@@ -31,6 +31,7 @@ import logger from '../logger'
 import accessFormPackage from './forms/access'
 import platformPoliciesFormPackage from './forms/platform'
 import sentencePlanFormPackage from './forms/sentence-plan'
+import strengthsAndNeedsFormPackage from './forms/strengths-and-needs'
 import trainingSessionLauncher from './forms/training-session-launcher'
 
 export default function createApp(services: Services): express.Application {
@@ -52,6 +53,7 @@ export default function createApp(services: Services): express.Application {
     .registerGlobalComponents(govukComponents)
     .registerGlobalComponents(mojComponents)
     .registerPackage(trainingSessionLauncher, {
+      assessmentPlatformApiClient: services.assessmentPlatformApiClient,
       coordinatorApiClient: services.coordinatorApiClient,
       handoverApiClient: services.handoverApiClient,
       preferencesStore: services.preferencesStore,
@@ -60,6 +62,9 @@ export default function createApp(services: Services): express.Application {
     .registerPackage(accessFormPackage, {
       deliusApi: services.deliusApiClient,
       handoverApi: services.handoverApiClient,
+    })
+    .registerPackage(strengthsAndNeedsFormPackage, {
+      api: services.assessmentPlatformApiClient,
     })
     .registerPackage(sentencePlanFormPackage, {
       api: services.assessmentPlatformApiClient,

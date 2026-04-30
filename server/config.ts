@@ -137,12 +137,15 @@ export default {
     sentencePlan: {
       enabled: get('FORM_SENTENCE_PLAN_ENABLED', 'true') === 'true',
     },
+    strengthsAndNeeds: {
+      enabled: get('FORM_STRENGTHS_AND_NEEDS_ENABLED', 'true') === 'true',
+    },
     trainingSessionLauncher: {
       enabled: get('FORM_TRAINING_SESSION_LAUNCHER_ENABLED', 'false') === 'true',
     },
   },
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
-  logLevel: get('LOG_LEVEL', 'info'),
+  logLevel: get('LOG_LEVEL', 'debug'),
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
   serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#service-now-link', requiredInProduction),

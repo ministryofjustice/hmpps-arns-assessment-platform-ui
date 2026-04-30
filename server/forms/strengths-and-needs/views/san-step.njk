@@ -1,0 +1,93 @@
+{%- extends "partials/layout.njk" -%}
+{%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+{%- from "moj/components/side-navigation/macro.njk" import mojSideNavigation -%}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+
+{% set fullPageTitle = (dynamicTitle or step.title) + ' - Strengths and needs' %}
+{% set pageTitleWithError = 'Error: ' + fullPageTitle %}
+
+{% set allValidationErrors = toErrorList(fieldValidationErrors, domainValidationErrors) %}
+
+{% set pageTitle %}
+  {% if not allValidationErrors.length %}
+    {{ fullPageTitle }}
+  {% else %}
+    {{ pageTitleWithError }}
+  {% endif %}
+{% endset %}
+
+{% block head %}
+  {{ super() }}
+{% endblock %}
+
+{% block govukHeader %}
+  {{ super() }}
+  {% include "strengths-and-needs/views/partials/person-header.njk" %}
+{% endblock %}
+
+{% block content %}
+  {% set currentSectionCode = ancestors[ancestors.length - 1].code if ancestors.length else '' %}
+  {% set activeSectionNavItems = [] %}
+
+  {% for item in sectionNavItems %}
+    {% set activeSectionNavItems = activeSectionNavItems.concat([{
+      text: item.text,
+      href: item.href,
+      active: item.code == currentSectionCode
+    }]) %}
+  {% endfor %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <div class="govuk-grid-row">
+        {# Left sidebar: Section navigation #}
+        <div class="govuk-grid-column-one-quarter">
+          {{ mojSideNavigation({
+            label: "Assessment sections",
+            items: activeSectionNavItems
+          }) }}
+        </div>
+
+        {# Right content: Form #}
+        <div class="govuk-grid-column-two-thirds">
+          {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: allValidationErrors
+          }) if allValidationErrors.length }}
+
+          {% if sectionTitle %}
+            <div class="govuk-grid-row">
+              <div class="govuk-grid-column-three-quarters">
+                <span class="govuk-caption-l">{{ sectionTitle }}</span>
+              </div>
+              {% if sectionStatus %}
+                <div class="govuk-grid-column-one-quarter govuk-!-text-align-right">
+                  {% if sectionStatus == 'COMPLETE' %}
+                    {{ govukTag({ text: "Complete", classes: "" }) }}
+                  {% else %}
+                    {{ govukTag({ text: "Incomplete", classes: "govuk-tag--grey" }) }}
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          <form method="post" novalidate data-qa="main-form">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+            {% for block in blocks %}
+              {{ block | safe }}
+            {% endfor %}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block govukFooter %}
+  {{ pdsFooter({
+    baseUrl: footerBaseUrl or "/platform"
+  }) }}
+{% endblock %}

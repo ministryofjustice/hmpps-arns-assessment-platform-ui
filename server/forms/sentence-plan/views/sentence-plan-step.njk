@@ -11,7 +11,7 @@
 {% set fullPageTitle = (dynamicTitle or step.title) + ' - ' + ancestors[0].title %}
 {% set pageTitleWithError = 'Error: ' + fullPageTitle %}
 
-{% set allValidationErrors = fieldValidationErrors.concat(domainValidationErrors) %}
+{% set allValidationErrors = toErrorList(fieldValidationErrors, domainValidationErrors) %}
 
 {% set pageTitle %}
   {% if not allValidationErrors.length %}
@@ -98,7 +98,7 @@
               <div class="govuk-grid-column-two-thirds">
                 {{ govukErrorSummary({
                   titleText: "There is a problem",
-                  errorList: allValidationErrors | toErrorSummary
+                  errorList: allValidationErrors
                 }) if allValidationErrors.length }}
 
                 {% for block in blocks %}
@@ -110,7 +110,7 @@
         {% else %}
           {{ govukErrorSummary({
             titleText: "There is a problem",
-            errorList: allValidationErrors | toErrorSummary
+            errorList: allValidationErrors
           }) if allValidationErrors.length }}
 
           {% for block in blocks %}

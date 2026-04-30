@@ -2,7 +2,6 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { ValidationResult } from '@ministryofjustice/hmpps-forge/core/framework'
 import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -117,12 +116,27 @@ export default function nunjucksSetup(app?: express.Express) {
 
   njkEnv.addFilter('isDeepestActive', isDeepestActive)
 
-  njkEnv.addFilter('toErrorSummary', (errors: ValidationResult[]) =>
-    errors.map(error => ({
-      text: error.message,
-      href: (error.details?.href as string | undefined) ?? (error.blockCode ? `#${error.blockCode}` : ''),
-    })),
-  )
+  interface ValidationError {
+    message: string
+    blockCode?: string
+  }
+
+  njkEnv.addGlobal('toErrorList', (fieldErrors?: ValidationError[], domainErrors?: ValidationError[]) => {
+    const allErrors = [...(domainErrors ?? []), ...(fieldErrors ?? [])]
+    const seen = new Set<string>()
+
+    return allErrors.flatMap((error): { text: string; href?: string }[] => {
+      const key = error.blockCode ?? error.message
+
+      if (seen.has(key)) {
+        return []
+      }
+
+      seen.add(key)
+
+      return [error.blockCode ? { text: error.message, href: `#${error.blockCode}` } : { text: error.message }]
+    })
+  })
 
   njkEnv.addFilter('countGoalsByStatus', (goals: Array<{ status?: string }> | undefined, status: string): number => {
     if (!Array.isArray(goals)) {
