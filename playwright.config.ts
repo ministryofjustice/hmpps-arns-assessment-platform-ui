@@ -62,7 +62,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
     trace: process.env.CI ? 'retain-on-first-failure' : 'on',
     ...devices['Desktop Chrome'],
     testIdAttribute: 'data-qa',
-    baseURL: process.env.BASE_URL || 'http://localhost:7072',
+    baseURL: process.env.BASE_URL || 'http://localhost:3000',
 
     apis: {
       hmppsAuth: {
