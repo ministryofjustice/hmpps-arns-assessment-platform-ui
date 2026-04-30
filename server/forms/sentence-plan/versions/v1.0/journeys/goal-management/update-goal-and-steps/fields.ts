@@ -26,7 +26,7 @@ const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
   Transformer.String.ToLowerCase(),
 )
 
-const hasSteps = Data('activeGoal.steps.length').match(Condition.Number.GreaterThan(0))
+const hasSteps = Data('activeGoal.steps').match(Condition.IsRequired())
 
 const stepStatusOptions = [
   { text: 'Not started', value: 'NOT_STARTED' },
@@ -37,7 +37,7 @@ const stepStatusOptions = [
 ]
 
 export const pageHeading = GovUKHeading({
-  caption: when(Data('activeGoal.relatedAreasOfNeedLabels.length').match(Condition.Number.GreaterThan(0)))
+  caption: when(Data('activeGoal.relatedAreasOfNeedLabels').match(Condition.IsRequired()))
     .then(
       Format(
         '%1 (and %2)',
@@ -82,7 +82,7 @@ export const addOrChangeStepsLink = GovUKBody({
 })
 
 export const noStepsMessage = HtmlBlock({
-  visibleWhen: Data('activeGoal.steps.length').not.match(Condition.Number.GreaterThan(0)),
+  visibleWhen: Data('activeGoal.steps').not.match(Condition.IsRequired()),
   classes: 'goal-summary-card__steps--empty-no-shadow',
   content: [
     GovUKBody({

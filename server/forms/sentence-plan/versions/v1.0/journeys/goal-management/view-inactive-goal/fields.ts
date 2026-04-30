@@ -25,7 +25,7 @@ const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
   Transformer.String.ToLowerCase(),
 )
 
-const hasSteps = Data('activeGoal.steps.length').match(Condition.Number.GreaterThan(0))
+const hasSteps = Data('activeGoal.steps').match(Condition.IsRequired())
 
 export const pageHeading = GovUKHeading({
   caption: when(Data('activeGoal.relatedAreasOfNeedLabels').match(Condition.IsRequired()))
@@ -131,7 +131,7 @@ export const reviewStepsTable = TemplateWrapper({
 })
 
 export const noStepsMessage = GovUKBody({
-  visibleWhen: Data('activeGoal.steps.length').not.match(Condition.Number.GreaterThan(0)),
+  visibleWhen: Data('activeGoal.steps').not.match(Condition.IsRequired()),
   text: 'No steps were added to this goal.',
 })
 

@@ -96,7 +96,7 @@ export const changeGoalStep = step({
             goto: when(
               and(
                 Answer('can_start_now').match(Condition.Equals('yes')),
-                Data('activeGoal.steps.length').match(Condition.Number.LessThan(1)),
+                Data('activeGoal.steps').not.match(Condition.IsRequired()),
               ),
             )
               .then(Format('../../goal/%1/add-steps', Data('activeGoal.uuid')))
