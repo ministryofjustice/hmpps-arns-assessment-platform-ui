@@ -47,6 +47,9 @@ const saveGoalButton = GovUKButton({
   name: 'action',
   value: 'saveGoal',
   preventDoubleClick: true,
+  attributes: {
+    'data-ai-id': 'change-goal-save-button',
+  },
 })
 
 export const pageLayout = TemplateWrapper({

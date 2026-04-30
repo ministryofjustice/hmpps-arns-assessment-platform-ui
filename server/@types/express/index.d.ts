@@ -16,6 +16,7 @@ export declare module 'express-session' {
     }
     targetService?: string
     csrfToken?: string
+    telemetryId?: string
   }
 }
 
@@ -57,7 +58,9 @@ declare global {
       previousPageUrl?: string
       requestId?: string
       traceId?: string
+      telemetryId?: string
       cspNonce?: string
+      targetService?: string
       csrfToken?: string
       message?: string
       status?: number

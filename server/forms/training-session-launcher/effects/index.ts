@@ -12,6 +12,7 @@ import { generateHandoverLink } from './sessions/generateHandoverLink'
 import { addNotification } from './notifications/addNotification'
 import { loadNotifications } from './notifications/loadNotifications'
 import { defineNamespacedEffectsWithDeps } from '../../shared/defineNamespacedEffectsWithDeps'
+import { setTargetService } from '../../shared/setTargetService'
 
 /**
  * Training Session Launcher Effects
@@ -53,6 +54,9 @@ export const { effects: TrainingSessionLauncherEffects, createRegistry: createTr
     // Notifications
     addNotification,
     loadNotifications,
+
+    // Context
+    setTargetService,
 
     // Utilities
     storeCsrf,

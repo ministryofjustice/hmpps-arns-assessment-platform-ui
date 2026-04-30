@@ -107,6 +107,7 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
         backlink: when(Data('accessDetails.accessType').match(Condition.Equals('OASYS')))
           .then(Data('accessDetails.oasysRedirectUrl'))
           .else(null),
+        backlinkAiId: 'privacy-page-back-link',
       },
     },
     blocks: [createFormContent(personForename)],

@@ -32,6 +32,7 @@
               <div class ="plan-header__subject-details__navigation-links" >
                 <a href="{{ basePath }}/plan/previous-versions"
                    class="govuk-link--no-visited-state govuk-!-display-none-print"
+                   data-ai-id="view-previous-versions-link"
                    data-previous-versions-link>
                   View previous versions
                 </a>
@@ -69,7 +70,10 @@
                     {{ govukButton({
                       text: 'Return to OASys',
                       href: data.sessionDetails.oasysRedirectUrl,
-                      classes: "govuk-button--secondary govuk-!-display-none-print"
+                      classes: "govuk-button--secondary govuk-!-display-none-print",
+                      attributes: {
+                        "data-ai-id": "return-to-oasys-button"
+                      }
                     }) }}
                   {% endif %}
                   {% if buttons.showCreateGoalButton %}
@@ -78,7 +82,10 @@
                       text: 'Create goal',
                       href: createGoalHref,
                       classes: "govuk-button--secondary govuk-!-display-none-print",
-                      id: 'create-goal-button'
+                      id: 'create-goal-button',
+                      attributes: {
+                        "data-ai-id": "create-goal-start-button"
+                      }
                     }) }}
                   {% endif %}
                   {% if buttons.showAgreePlanButton %}
@@ -89,7 +96,8 @@
                       value="agree-plan"
                       class="govuk-button govuk-!-display-none-print"
                       data-module="govuk-button"
-                      id="agree-plan-button">
+                      id="agree-plan-button"
+                      data-ai-id="agree-plan-button">
                       Agree plan
                     </button>
                   {% endif %}

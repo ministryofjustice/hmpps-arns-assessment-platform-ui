@@ -97,6 +97,17 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpFeatureFlags(services.featureFlagService))
   app.use(setUpPreviousPageTracking())
 
+  // lazy getter so templates read the session value at render time,
+  // after form engine onAccess effects have had a chance to set it:
+  app.use((req, res, next) => {
+    Object.defineProperty(res.locals, 'targetService', {
+      get: () => req.session.targetService,
+      enumerable: true,
+      configurable: true,
+    })
+    next()
+  })
+
   // Mount routes
   app.use(routes(services))
   app.use(formEngine.getRouter() as express.Router)

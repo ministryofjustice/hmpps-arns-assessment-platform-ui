@@ -9,6 +9,25 @@
 {% endif %}
 
 {%- block head -%}
+  {% if appInsightsConnectionString %}
+    <meta name="ai-connection-string" content="{{ appInsightsConnectionString }}">
+    <meta name="ai-request-id" content="{{ requestId }}">
+    <meta name="ai-telemetry-id" content="{{ telemetryId }}">
+    {% if user and user.authSource %}
+      <meta name="ai-entry-point" content="{{ user.authSource }}">
+    {% endif %}
+    {% if data and data.assessment and data.assessment.flags %}
+      <meta name="ai-user-type" content="{{ 'PRIVATE_BETA' if 'SAN_BETA' in data.assessment.flags else 'NATIONAL_ROLLOUT' }}">
+    {% endif %}
+    {% if data and data.goals %}
+      <meta name="ai-goals-active" content="{{ data.goals | countGoalsByStatus('ACTIVE') }}">
+      <meta name="ai-goals-future" content="{{ data.goals | countGoalsByStatus('FUTURE') }}">
+      <meta name="ai-goals-achieved" content="{{ data.goals | countGoalsByStatus('ACHIEVED') }}">
+      <meta name="ai-goals-removed" content="{{ data.goals | countGoalsByStatus('REMOVED') }}">
+      <meta name="ai-goals-total" content="{{ data.goals | length }}">
+      <meta name="ai-steps-total" content="{{ data.goals | countTotalSteps }}">
+    {% endif %}
+  {% endif %}
   <link href="{{ '/assets/css/index.css' | assetMap }}" rel="stylesheet"/>
 {%- endblock -%}
 

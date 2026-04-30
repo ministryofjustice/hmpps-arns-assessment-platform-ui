@@ -21,6 +21,8 @@ export default function nunjucksSetup(app?: express.Express) {
     app.locals.oasysUrl = config.oasysUrl
     app.locals.mpopUrl = config.mpopUrl
     app.locals.smartSurveyPopupCode = config.smartSurveyPopupCode
+    app.locals.hmppsHeaderServiceNameLink = '/sentence-plan/v1.0/plan/overview'
+    app.locals.appInsightsConnectionString = config.appInsightsConnectionString
 
     // Session timeout modal configuration (in seconds)
     app.locals.sessionTimeoutConfig = {
@@ -123,6 +125,22 @@ export default function nunjucksSetup(app?: express.Express) {
       href: (error.details?.href as string | undefined) ?? (error.blockCode ? `#${error.blockCode}` : ''),
     })),
   )
+
+  njkEnv.addFilter('countGoalsByStatus', (goals: Array<{ status?: string }> | undefined, status: string): number => {
+    if (!Array.isArray(goals)) {
+      return 0
+    }
+
+    return goals.filter(g => g?.status === status).length
+  })
+
+  njkEnv.addFilter('countTotalSteps', (goals: Array<{ steps?: unknown[] }> | undefined): number => {
+    if (!Array.isArray(goals)) {
+      return 0
+    }
+
+    return goals.reduce((sum, g) => sum + (Array.isArray(g?.steps) ? g.steps.length : 0), 0)
+  })
 
   return njkEnv
 }

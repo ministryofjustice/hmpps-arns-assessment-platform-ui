@@ -23,7 +23,8 @@
       {
         text: "About " + personName,
         href: basePath + "/about-person",
-        active: isOnAboutPage
+        active: isOnAboutPage,
+        attributes: { "data-ai-id": "about-page-primary-nav-link" } if not isOnAboutPage
       } if showAboutTab
     ] | select | list
   }) }}

@@ -405,7 +405,6 @@ export interface SentencePlanSession {
   sessionDetails?: SessionDetails
   practitionerDetails?: PractitionerDetails
   caseDetails?: CaseDetails
-  telemetryCorrelationId?: string
 }
 
 /**
