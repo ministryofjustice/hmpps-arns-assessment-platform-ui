@@ -13,11 +13,17 @@ const isSameDay = (a: Date, b: Date): boolean => {
 }
 
 // Determine which target date option matches a given target date (if any):
-export const getMatchingTargetDateOption = (targetDate: Date): string | null => {
+export const getMatchingTargetDateOption = (targetDate: string): string | null => {
+  const parsedTargetDate = new Date(targetDate)
+  if (Number.isNaN(parsedTargetDate.getTime())) {
+    return null
+  }
+
   const match = Object.entries(MONTHS_BY_OPTION).find(([, months]) => {
     const optionDate = new Date()
     optionDate.setMonth(optionDate.getMonth() + months)
-    return isSameDay(targetDate, optionDate)
+
+    return isSameDay(parsedTargetDate, optionDate)
   })
 
   return match ? match[0] : null

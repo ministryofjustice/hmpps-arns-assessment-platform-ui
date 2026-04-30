@@ -1,6 +1,15 @@
-import { Format, step, accessTransition, Query, redirect, Params, and, Data } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
-import { Transformer } from '@form-engine/registry/transformers'
+import {
+  Format,
+  step,
+  access,
+  Query,
+  redirect,
+  Params,
+  and,
+  Data,
+  Condition,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   blankPlanOverviewContentReadOnly,
   futureGoalsContent,
@@ -41,7 +50,7 @@ export const viewHistoricStep = step({
       },
     },
   },
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   blocks: [
     planLastUpdatedMessage,
     planAgreedMessage,
@@ -53,7 +62,7 @@ export const viewHistoricStep = step({
     futureGoalsContent,
   ],
   onAccess: [
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.loadHistoricPlan(),

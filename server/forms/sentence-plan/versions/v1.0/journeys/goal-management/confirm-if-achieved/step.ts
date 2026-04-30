@@ -1,5 +1,13 @@
-import { accessTransition, Data, redirect, Post, step, submitTransition, Format } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import {
+  access,
+  Data,
+  redirect,
+  Post,
+  step,
+  submit,
+  Format,
+  Condition,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, goalCard, allStepsCompletedField, hasAchievedGoal, saveAndContinueButton } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
@@ -13,7 +21,7 @@ import { CaseData } from '../../../constants'
 export const confirmIfAchievedStep = step({
   path: '/confirm-if-achieved',
   title: 'Confirm if they have achieved this goal',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   view: {
     locals: {
       backlink: 'update-goal-steps',
@@ -22,7 +30,7 @@ export const confirmIfAchievedStep = step({
   blocks: [pageHeading, allStepsCompletedField, goalCard, hasAchievedGoal, saveAndContinueButton],
 
   onAccess: [
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_ACHIEVED),
@@ -35,7 +43,7 @@ export const confirmIfAchievedStep = step({
 
   onSubmission: [
     // when 'yes' is selected: mark as achieved and go to achieved tab
-    submitTransition({
+    submit({
       when: Post('has_achieved_goal').match(Condition.Equals('yes')),
       validate: true,
       onValid: {
@@ -52,7 +60,7 @@ export const confirmIfAchievedStep = step({
       },
     }),
     // when 'no' is selected: don't mark as achieved, go back to plan overview and land on current/future tab based on goal status
-    submitTransition({
+    submit({
       when: Post('has_achieved_goal').match(Condition.Equals('no')),
       validate: true,
       onValid: {
@@ -66,7 +74,7 @@ export const confirmIfAchievedStep = step({
       },
     }),
     // default: when no option is selected, validate to show error
-    submitTransition({
+    submit({
       validate: true,
     }),
   ],

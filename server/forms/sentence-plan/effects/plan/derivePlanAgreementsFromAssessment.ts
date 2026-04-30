@@ -12,7 +12,7 @@ interface PlanAgreementsData {
   planAgreements: DerivedPlanAgreement[]
   planAgreementsCollectionUuid: string | undefined
   latestAgreementStatus: AgreementStatus
-  latestAgreementDate: Date | undefined
+  latestAgreementDate: string | undefined
 }
 
 interface AssessmentData {
@@ -65,7 +65,7 @@ export const derivePlanAgreementsData = (assessment: AssessmentData): PlanAgreem
     return {
       uuid: item.uuid,
       status: properties.status,
-      statusDate: new Date(properties.status_date),
+      statusDate: properties.status_date,
       agreementQuestion: answers.agreement_question,
       detailsNo: answers.details_no,
       detailsCouldNotAnswer: answers.details_could_not_answer,
@@ -75,7 +75,7 @@ export const derivePlanAgreementsData = (assessment: AssessmentData): PlanAgreem
   })
 
   // Sort by status date, newest first
-  agreements.sort((a, b) => b.statusDate.getTime() - a.statusDate.getTime())
+  agreements.sort((a, b) => new Date(b.statusDate).getTime() - new Date(a.statusDate).getTime())
 
   return {
     planAgreements: agreements,

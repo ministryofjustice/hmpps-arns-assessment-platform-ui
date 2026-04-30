@@ -1,9 +1,18 @@
-import { and, Answer, Data, Format, Item, Iterator, Self, validation } from '@form-engine/form/builders'
-import { GovUKRadioInput, GovUKCheckboxInput } from '@form-engine-govuk-components/components'
-import { Condition } from '@form-engine/registry/conditions'
-import { MOJDatePicker } from '@form-engine-moj-components/components'
-import { Transformer } from '@form-engine/registry/transformers'
-import { Generator } from '@form-engine/registry/generators'
+import {
+  or,
+  Answer,
+  Data,
+  Format,
+  Item,
+  Iterator,
+  Self,
+  validation,
+  Condition,
+  Transformer,
+  Generator,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKRadioInput, GovUKCheckboxInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { MOJDatePicker } from '@ministryofjustice/hmpps-forge/moj-components'
 import { CaseData } from '../../constants'
 
 export const relatedAreasOfNeed = GovUKCheckboxInput({
@@ -24,13 +33,13 @@ export const relatedAreasOfNeed = GovUKCheckboxInput({
       text: Item().path('text'),
     }),
   ),
-  validate: [
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select all related areas',
     }),
   ],
-  dependent: Answer('is_related_to_other_areas').match(Condition.Equals('yes')),
+  dependentWhen: Answer('is_related_to_other_areas').match(Condition.Equals('yes')),
 })
 
 export const isRelatedToOtherAreas = GovUKRadioInput({
@@ -45,9 +54,9 @@ export const isRelatedToOtherAreas = GovUKRadioInput({
     { value: 'yes', text: 'Yes', block: relatedAreasOfNeed },
     { value: 'no', text: 'No' },
   ],
-  validate: [
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select yes if this goal is related to any other area of need',
     }),
   ],
@@ -65,21 +74,21 @@ export const customTargetDate = MOJDatePicker({
   // Set a minimum date of today in the DD/MM/YYYY format
   minDate: Generator.Date.Today().pipe(Transformer.Date.Format('DD/MM/YYYY')),
   formatters: [Transformer.String.ToISODate()],
-  validate: [
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Please enter a date',
     }),
     validation({
-      when: Self().not.match(Condition.Date.IsValid()),
+      condition: Self().match(Condition.Date.IsValid()),
       message: 'Please enter a valid date',
     }),
     validation({
-      when: and(Self().not.match(Condition.Date.IsToday()), Self().not.match(Condition.Date.IsFutureDate())),
+      condition: or(Self().match(Condition.Date.IsToday()), Self().match(Condition.Date.IsFutureDate())),
       message: 'Date must be today or in the future',
     }),
   ],
-  dependent: Answer('target_date_option').match(Condition.Equals('set_another_date')),
+  dependentWhen: Answer('target_date_option').match(Condition.Equals('set_another_date')),
 })
 
 export const targetDateOption = GovUKRadioInput({
@@ -115,13 +124,13 @@ export const targetDateOption = GovUKRadioInput({
     { divider: 'or' },
     { value: 'set_another_date', text: 'Set another date', block: customTargetDate },
   ],
-  validate: [
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select when they should aim to achieve this goal',
     }),
   ],
-  dependent: Answer('can_start_now').match(Condition.Equals('yes')),
+  dependentWhen: Answer('can_start_now').match(Condition.Equals('yes')),
 })
 
 export const canStartNow = GovUKRadioInput({
@@ -136,9 +145,9 @@ export const canStartNow = GovUKRadioInput({
     { value: 'yes', text: 'Yes', block: targetDateOption },
     { value: 'no', text: 'No, it is a future goal' },
   ],
-  validate: [
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select yes if they can start working on this goal now',
     }),
   ],

@@ -1,13 +1,19 @@
-import { defineTransformers } from '@form-engine/registry/utils/createRegisterableFunction'
-import { assertNumber } from '@form-engine/registry/utils/asserts'
+import { defineTransformerFunctions } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { assertNumber } from '../shared/asserts'
+import type { TrainingSessionLauncherEffectsDeps } from './effects/types'
 
 /**
  * Training Session Launcher transformers
  */
 export const {
   transformers: TrainingSessionLauncherTransformers,
-  registry: TrainingSessionLauncherTransformersRegistry,
-} = defineTransformers({
+  implementations: TrainingSessionLauncherTransformerImplementations,
+} = defineTransformerFunctions<
+  {
+    RelativeTime: (value: unknown) => string
+  },
+  TrainingSessionLauncherEffectsDeps
+>({
   /**
    * Transform a Unix timestamp (from Date.now()) into a human-readable relative time string
    * Returns strings like:
@@ -21,7 +27,7 @@ export const {
    * Item().path('createdAt').pipe(TrainingSessionLauncherTransformers.RelativeTime())
    * // -> "Created 5 mins ago"
    */
-  RelativeTime: (value: unknown) => {
+  RelativeTime: () => (value: unknown) => {
     assertNumber(value, 'TrainingSessionLauncherTransformers.RelativeTime')
 
     const now = Date.now()

@@ -1,4 +1,4 @@
-import { journey } from '@form-engine/form/builders'
+import { journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { createGoalStep } from './add-goal/step'
 import { addStepsStep } from './add-steps/step'
 import { changeGoalStep } from './change-goal/step'

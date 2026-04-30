@@ -1,4 +1,4 @@
-import { EvaluatedBlock } from '@form-engine/form/types/structures.type'
+import { EvaluatedBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { AssessmentArea, MotivationLevel } from '../interfaces/coordinator-api/entityAssessment'
 import {
   getLinkedText,

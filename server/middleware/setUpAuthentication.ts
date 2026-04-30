@@ -13,6 +13,12 @@ interface AuthenticationOptions {
   bypassPaths?: (string | RegExp)[]
 }
 
+function isPathUnderPrefix(path: string, prefix: string): boolean {
+  const normalizedPrefix = prefix.replace(/\/+$/, '') || '/'
+
+  return path === normalizedPrefix || path.startsWith(`${normalizedPrefix}/`)
+}
+
 function shouldBypassAuth(req: Request, bypassPaths?: (string | RegExp)[]): boolean {
   if (!bypassPaths || bypassPaths.length === 0) {
     return false
@@ -20,7 +26,7 @@ function shouldBypassAuth(req: Request, bypassPaths?: (string | RegExp)[]): bool
 
   return bypassPaths.some(pattern => {
     if (typeof pattern === 'string') {
-      return req.path.startsWith(pattern)
+      return isPathUnderPrefix(req.path, pattern)
     }
 
     return pattern.test(req.path)

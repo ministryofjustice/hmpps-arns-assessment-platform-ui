@@ -1,5 +1,4 @@
-import { step, submitTransition, accessTransition, redirect, Post, Data } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import { step, submit, access, redirect, Post, Data, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   notificationBanners,
   errorBanner,
@@ -22,7 +21,7 @@ import { TrainingSessionLauncherEffects } from '../../../effects'
 export const sessionsStep = step({
   path: '/sessions',
   title: 'Active Sessions',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
 
   blocks: [
     notificationBanners,
@@ -37,13 +36,13 @@ export const sessionsStep = step({
   ],
 
   onAccess: [
-    accessTransition({
+    access({
       effects: [TrainingSessionLauncherEffects.loadNotifications('sessions')],
     }),
   ],
 
   onSubmission: [
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('generateLink')),
       onAlways: {
         effects: [TrainingSessionLauncherEffects.generateHandoverLink()],
@@ -51,7 +50,7 @@ export const sessionsStep = step({
       },
     }),
 
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('deleteSession')),
       onAlways: {
         effects: [TrainingSessionLauncherEffects.deleteSession()],
@@ -59,7 +58,7 @@ export const sessionsStep = step({
       },
     }),
 
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('resetAllSessions')),
       onAlways: {
         effects: [TrainingSessionLauncherEffects.deleteAllSessions()],

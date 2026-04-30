@@ -1,8 +1,9 @@
-import { createFormPackage, journey } from '@form-engine/form/builders'
+import { createForgePackage, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { sentencePlanV1Journey } from './versions/v1.0'
+import { AuditEvent, SentencePlanEffects, SentencePlanEffectImplementations } from './effects'
 import { SentencePlanEffectsDeps } from './effects/types'
-import { AuditEvent, SentencePlanEffects, SentencePlanEffectsRegistry } from './effects'
 import { sentencePlanComponents } from './components'
+import { sentencePlanTransformerImplementations } from './transformers'
 import { createPrivacyScreen } from '../shared'
 import { CaseData } from './versions/v1.0/constants'
 import { unsavedInformationDeletedStep } from './steps/unsaved-information-deleted/step'
@@ -52,7 +53,6 @@ const sentencePlanRootJourney = journey({
   code: 'sentence-plan',
   title: 'Sentence plan',
   path: '/sentence-plan',
-  entryPath: '/v1.0/plan/overview',
   children: [sentencePlanV1Journey],
   steps: [mergedPlanWarningStep, privacyScreenStep, unsavedInformationDeletedStep],
 })
@@ -60,11 +60,12 @@ const sentencePlanRootJourney = journey({
 /**
  * Root Sentence Plan Form Package
  */
-export default createFormPackage({
+export default createForgePackage<SentencePlanEffectsDeps>({
   enabled: config.forms.sentencePlan.enabled,
   journey: sentencePlanRootJourney,
   components: sentencePlanComponents,
-  createRegistries: (deps: SentencePlanEffectsDeps) => ({
-    ...SentencePlanEffectsRegistry(deps),
-  }),
+  functions: {
+    ...SentencePlanEffectImplementations,
+    ...sentencePlanTransformerImplementations,
+  },
 })

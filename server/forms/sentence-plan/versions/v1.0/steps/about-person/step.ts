@@ -1,4 +1,4 @@
-import { Format, step, accessTransition, when } from '@form-engine/form/builders'
+import { Format, step, access, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { isOasysAccess, isReadWriteAccess, redirectToPrivacyUnlessAccepted, redirectUnlessSanSp } from '../../guards'
 import {
   assessmentDataLoadFailureWarning,
@@ -55,7 +55,7 @@ export const aboutPersonStep = step({
   onAccess: [
     redirectToPrivacyUnlessAccepted(),
     redirectUnlessSanSp(sentencePlanOverviewPath),
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ABOUT_PERSON),
         SentencePlanEffects.loadSentenceInformation(),

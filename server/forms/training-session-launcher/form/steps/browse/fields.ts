@@ -1,10 +1,16 @@
-import { block, Data, Format, Item, Iterator, when } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
-import { Transformer } from '@form-engine/registry/transformers'
-import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
-import { GovUKButton, GovUKDetails, GovUKLinkButton } from '@form-engine-govuk-components/components'
-import { MOJAlert } from '@form-engine-moj-components/components'
+import {
+  block,
+  Data,
+  Format,
+  Item,
+  Iterator,
+  when,
+  Condition,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock, TemplateWrapper, CollectionBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { GovUKButton, GovUKDetails, GovUKLinkButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { MOJAlert } from '@ministryofjustice/hmpps-forge/moj-components'
 import { TabPanel } from '../../../components'
 import { scenarioDetailsBlock } from '../../blocks/scenarioDetailsBlock'
 

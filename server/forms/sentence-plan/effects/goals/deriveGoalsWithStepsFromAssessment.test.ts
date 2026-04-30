@@ -192,8 +192,8 @@ describe('deriveGoalsWithSteps', () => {
       expect(goal.title).toBe('Improve accommodation')
       expect(goal.status).toBe('ACTIVE')
       expect(goal.areaOfNeed).toBe('accommodation')
-      expect(goal.targetDate).toEqual(new Date('2025-06-01'))
-      expect(goal.statusDate).toEqual(new Date('2025-01-15'))
+      expect(goal.targetDate).toBe('2025-06-01')
+      expect(goal.statusDate).toBe('2025-01-15')
       expect(goal.collectionIndex).toBe(0)
     })
 

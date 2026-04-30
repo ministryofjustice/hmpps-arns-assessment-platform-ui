@@ -1,14 +1,14 @@
 import {
-  accessTransition,
+  access,
   Answer,
   Data,
   Format,
   redirect,
   Post,
   step,
-  submitTransition,
-} from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+  submit,
+  Condition,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, goalCard, readdNoteSection, canStartNowSection, buttonGroup } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
@@ -28,7 +28,7 @@ import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../gua
 export const confirmAddGoalStep = step({
   path: '/confirm-readd-goal',
   title: 'Confirm you want to add this goal back into the plan',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   view: {
     locals: {
       backlink: 'view-inactive-goal',
@@ -38,7 +38,7 @@ export const confirmAddGoalStep = step({
 
   onAccess: [
     // Load data first (no `when` = always runs)
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_RE_ADD_GOAL),
@@ -48,14 +48,14 @@ export const confirmAddGoalStep = step({
     redirectIfNotPostAgreement('../../plan/overview'),
     redirectIfGoalNotFound('../../plan/overview'),
     // Only allow re-adding REMOVED goals (not achieved)
-    accessTransition({
+    access({
       when: Data('activeGoal.status').not.match(Condition.Equals('REMOVED')),
       next: [redirect({ goto: '../../plan/overview' })],
     }),
   ],
 
   onSubmission: [
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('confirm')),
       validate: true,
       onValid: {

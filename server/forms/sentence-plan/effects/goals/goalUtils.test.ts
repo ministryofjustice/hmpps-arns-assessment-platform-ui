@@ -35,8 +35,8 @@ const createMockGoal = (overrides: Partial<DerivedGoal> = {}): DerivedGoal => ({
   uuid: 'goal-uuid-1',
   title: 'Test goal',
   status: 'ACTIVE',
-  targetDate: new Date('2025-06-01'),
-  statusDate: new Date('2025-01-01'),
+  targetDate: '2025-06-01T00:00:00.000Z',
+  statusDate: '2025-01-01T00:00:00.000Z',
   areaOfNeed: 'accommodation',
   areaOfNeedLabel: 'Accommodation',
   relatedAreasOfNeed: [],
@@ -191,7 +191,7 @@ describe('goalUtils', () => {
       targetDate.setMonth(targetDate.getMonth() + 3)
 
       // Act
-      const result = getMatchingTargetDateOption(targetDate)
+      const result = getMatchingTargetDateOption(targetDate.toISOString())
 
       // Assert
       expect(result).toBe('date_in_3_months')
@@ -203,7 +203,7 @@ describe('goalUtils', () => {
       targetDate.setMonth(targetDate.getMonth() + 6)
 
       // Act
-      const result = getMatchingTargetDateOption(targetDate)
+      const result = getMatchingTargetDateOption(targetDate.toISOString())
 
       // Assert
       expect(result).toBe('date_in_6_months')
@@ -215,7 +215,7 @@ describe('goalUtils', () => {
       targetDate.setMonth(targetDate.getMonth() + 12)
 
       // Act
-      const result = getMatchingTargetDateOption(targetDate)
+      const result = getMatchingTargetDateOption(targetDate.toISOString())
 
       // Assert
       expect(result).toBe('date_in_12_months')
@@ -226,7 +226,7 @@ describe('goalUtils', () => {
       const targetDate = new Date('2027-07-20')
 
       // Act
-      const result = getMatchingTargetDateOption(targetDate)
+      const result = getMatchingTargetDateOption(targetDate.toISOString())
 
       // Assert
       expect(result).toBeNull()
@@ -239,7 +239,7 @@ describe('goalUtils', () => {
       targetDate.setDate(targetDate.getDate() + 1)
 
       // Act
-      const result = getMatchingTargetDateOption(targetDate)
+      const result = getMatchingTargetDateOption(targetDate.toISOString())
 
       // Assert
       expect(result).toBeNull()
