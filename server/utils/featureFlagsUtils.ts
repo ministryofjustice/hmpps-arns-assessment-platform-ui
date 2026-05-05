@@ -12,11 +12,6 @@ export const BooleanFeatureFlags = {
     nunjucksKey: 'smartSurveyInNationalRolloutEnabled',
     fallbackState: false,
   },
-  ENABLE_TEAMS_REPORT_PROBLEM_LINK: {
-    fliptKey: 'sp-enable-teams-report-problem-link',
-    nunjucksKey: 'teamsReportProblemLinkEnabled',
-    fallbackState: false,
-  },
 }
 
 export interface FeatureFlagConfig {

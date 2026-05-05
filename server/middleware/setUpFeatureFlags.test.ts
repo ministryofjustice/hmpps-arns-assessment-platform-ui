@@ -24,7 +24,7 @@ describe('setUpFeatureFlags', () => {
   it('should evaluate the configured boolean feature flags for the current user and store them in locals', async () => {
     const evaluateBooleanFlags = jest.fn().mockResolvedValue({
       booleanFeatureFlags: {
-        teamsReportProblemLinkEnabled: true,
+        smartSurveyInNationalRolloutEnabled: true,
       },
     })
     const featureFlagService = { evaluateBooleanFlags }
@@ -37,7 +37,7 @@ describe('setUpFeatureFlags', () => {
 
     expect(evaluateBooleanFlags).toHaveBeenCalledWith(BooleanFeatureFlags, 'user-123')
     expect(res.locals.featureFlags).toEqual({
-      teamsReportProblemLinkEnabled: true,
+      smartSurveyInNationalRolloutEnabled: true,
     })
     expect(next).toHaveBeenCalled()
   })
@@ -45,7 +45,7 @@ describe('setUpFeatureFlags', () => {
   it('should pass an undefined user ID when there is no current user', async () => {
     const evaluateBooleanFlags = jest.fn().mockResolvedValue({
       booleanFeatureFlags: {
-        teamsReportProblemLinkEnabled: false,
+        smartSurveyInNationalRolloutEnabled: false,
       },
     })
     const featureFlagService = { evaluateBooleanFlags }
@@ -58,7 +58,7 @@ describe('setUpFeatureFlags', () => {
 
     expect(evaluateBooleanFlags).toHaveBeenCalledWith(BooleanFeatureFlags, undefined)
     expect(res.locals.featureFlags).toEqual({
-      teamsReportProblemLinkEnabled: false,
+      smartSurveyInNationalRolloutEnabled: false,
     })
     expect(next).toHaveBeenCalled()
   })

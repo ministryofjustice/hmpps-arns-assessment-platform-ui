@@ -149,7 +149,6 @@ export default {
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
   serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#service-now-link', requiredInProduction),
-  arnsMvpCommunicationChannelUrl: get('ARNS_MVP_COMMUNICATION_CHANNEL_URL', '#arns-mvp-communication-channel'),
   oasysUrl: get('OASYS_URL', 'http://localhost:3000/training-session-launcher/sessions', requiredInProduction),
   mpopUrl: get('MPOP_URL', 'http://localhost:3000/sign-in', requiredInProduction),
   smartSurveyPopupCode: get('SMART_SURVEY_POPUP_CODE', ''),
