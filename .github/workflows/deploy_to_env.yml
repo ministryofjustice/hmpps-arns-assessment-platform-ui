@@ -47,7 +47,7 @@ jobs:
           permission-actions: write
           repositories: hmpps-arns-integrations-test-playwright
       - name: Run integration tests
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ steps.generate-token.outputs.token }}
           script: |
