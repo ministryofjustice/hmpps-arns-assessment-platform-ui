@@ -26,6 +26,7 @@
       <meta name="ai-goals-removed" content="{{ data.goals | countGoalsByStatus('REMOVED') }}">
       <meta name="ai-goals-total" content="{{ data.goals | length }}">
       <meta name="ai-steps-total" content="{{ data.goals | countTotalSteps }}">
+      <meta name="ai-goals-with-multiple-steps" content="{{ data.goals | countGoalsWithMultipleSteps }}">
     {% endif %}
   {% endif %}
   <link href="{{ '/assets/css/index.css' | assetMap }}" rel="stylesheet"/>
