@@ -142,5 +142,13 @@ export default function nunjucksSetup(app?: express.Express) {
     return goals.reduce((sum, g) => sum + (Array.isArray(g?.steps) ? g.steps.length : 0), 0)
   })
 
+  njkEnv.addFilter('countGoalsWithMultipleSteps', (goals: Array<{ steps?: unknown[] }> | undefined): number => {
+    if (!Array.isArray(goals)) {
+      return 0
+    }
+
+    return goals.filter(g => Array.isArray(g?.steps) && g.steps.length > 1).length
+  })
+
   return njkEnv
 }
