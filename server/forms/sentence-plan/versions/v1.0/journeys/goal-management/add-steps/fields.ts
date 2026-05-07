@@ -114,6 +114,7 @@ export const stepRows = HtmlBlock({
                   text: stepDescriptionLabelText,
                   classes: 'govuk-visually-hidden',
                 },
+                autocomplete: 'off',
                 describedBy: stepDescriptionHintId,
                 classes: 'govuk-!-width-full',
                 defaultValue: Item().path('description'),
