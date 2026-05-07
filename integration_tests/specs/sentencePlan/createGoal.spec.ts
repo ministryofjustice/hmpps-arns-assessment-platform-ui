@@ -270,6 +270,7 @@ test.describe('Create Goal Journey', () => {
         .extend(sentencePlanId)
         .withGoals(currentGoalsWithCompletedSteps(1))
         .withAgreementStatus('AGREED')
+        .save()
       await navigateToSentencePlan(page, handoverLink)
 
       await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
