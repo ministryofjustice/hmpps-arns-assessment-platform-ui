@@ -40,7 +40,7 @@ export default class CreateGoalPage extends AbstractPage {
     this.isRelatedNo = page
       .getByRole('group', { name: /related to any other area/i })
       .getByRole('radio', { name: 'No' })
-    this.addStepsButton = page.getByRole('button', { name: /add steps/i })
+    this.addStepsButton = page.getByRole('button', { name: /add steps|save and continue/i })
     this.saveWithoutStepsButton = page.getByRole('button', { name: /save without steps/i })
     this.goalTitles = page.getByTestId('autocomplete-data-goal_title')
     this.findAccomodationGoal = page.getByRole('option', { name: 'I will find accommodation' })

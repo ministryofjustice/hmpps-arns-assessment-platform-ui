@@ -1,4 +1,4 @@
-import { Data, Format, Item, Iterator, not, Params, Self, validation } from '@form-engine/form/builders'
+import { Data, Format, Item, Iterator, not, Params, Self, validation, when } from '@form-engine/form/builders'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKTextInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
@@ -7,7 +7,7 @@ import { MOJSideNavigation } from '@form-engine-moj-components/components'
 import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
 import { GovUKButtonGroup } from '@form-engine-govuk-components/wrappers/govukButtonGroup'
 import { CaseData } from '../../../constants'
-import { canAccessSanContent } from '../../../guards'
+import { canAccessSanContent, hasPostAgreementStatus } from '../../../guards'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 import { AccessibleAutocomplete, AssessmentInfoDetails } from '../../../../../components'
 
@@ -57,7 +57,7 @@ const goalTitle = AccessibleAutocomplete({
 })
 
 const addStepsButton = GovUKButton({
-  text: 'Add Steps',
+  text: when(hasPostAgreementStatus).then('Save and continue').else('Add Steps'),
   name: 'action',
   value: 'addSteps',
   preventDoubleClick: true,
@@ -72,6 +72,7 @@ const saveWithoutStepsButton = GovUKButton({
   name: 'action',
   value: 'saveWithoutSteps',
   preventDoubleClick: true,
+  hidden: hasPostAgreementStatus,
   attributes: {
     'data-ai-id': 'create-goal-save-without-steps-button',
   },

@@ -4,6 +4,7 @@ import { test, TargetService } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
+import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
 import {
   buildErrorPageTitle,
   buildPageTitle,
@@ -255,6 +256,28 @@ test.describe('Create Goal Journey', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       const goalTitle = await planOverviewPage.getGoalCardTitle(0)
       expect(goalTitle).toContain('Current goal')
+    })
+  })
+
+  test.describe('Post-agreement button changes', () => {
+    test('after plan is agreed, save without steps is hidden and add steps becomes save and continue', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+      await navigateToSentencePlan(page, handoverLink)
+
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+
+      await expect(createGoalPage.saveWithoutStepsButton).not.toBeVisible()
+      await expect(createGoalPage.addStepsButton).toBeVisible()
+      await expect(createGoalPage.addStepsButton).toHaveText('Save and continue')
     })
   })
 
