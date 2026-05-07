@@ -18,7 +18,7 @@ const updateAgreementLink = Format(
 
 const isCouldNotAnswerAgreementStatus = Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))
 
-export const subtitleText = GovUKBody({ text: 'View all updates and changes made to this plan.' })
+export const subtitleText = GovUKBody({ text: 'View all updates to this plan.' })
 
 export const sectionBreak = GovUKSectionBreak({ size: 'm', visible: true })
 

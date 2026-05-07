@@ -40,7 +40,7 @@ test.describe('Plan History - Re-added Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
+      - paragraph: View all updates to this plan.
       - separator
       - paragraph:
         - strong: Goal added back into plan
