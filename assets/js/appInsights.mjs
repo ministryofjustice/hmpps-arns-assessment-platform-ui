@@ -44,6 +44,7 @@ if (connectionString) {
     const goalsRemoved = document.querySelector('meta[name="ai-goals-removed"]')?.content
     const goalsTotal = document.querySelector('meta[name="ai-goals-total"]')?.content
     const stepsTotal = document.querySelector('meta[name="ai-steps-total"]')?.content
+    const goalsWithMultipleSteps = document.querySelector('meta[name="ai-goals-with-multiple-steps"]')?.content
 
     envelope.tags['ai.cloud.role'] = 'hmpps-arns-assessment-platform-ui'
 
@@ -60,6 +61,7 @@ if (connectionString) {
       goalsRemoved: goalsRemoved || undefined,
       goalsTotal: goalsTotal || undefined,
       stepsTotal: stepsTotal || undefined,
+      goalsWithMultipleSteps: goalsWithMultipleSteps || undefined,
     }
   })
 
