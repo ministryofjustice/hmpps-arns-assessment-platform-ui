@@ -50,7 +50,7 @@ test.describe('Plan History - Updated Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
+      - paragraph: View all updates to this plan.
       - separator
       - paragraph:
         - strong: Goal updated
@@ -155,7 +155,7 @@ test.describe('Plan History - Updated Goals', () => {
 
     // Verify the goal updated entry appears
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
+      - paragraph: View all updates to this plan.
       - separator
       - paragraph:
         - strong: Goal updated
@@ -212,7 +212,7 @@ test.describe('Plan History - Updated Goals', () => {
 
     // Verify the goal updated entry appears with the progress note
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
+      - paragraph: View all updates to this plan.
       - separator
       - paragraph:
         - strong: Goal updated
@@ -259,7 +259,7 @@ test.describe('Plan History - Updated Goals', () => {
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
+      - paragraph: View all updates to this plan.
       - separator
       - paragraph:
         - strong: Goal updated
@@ -311,7 +311,7 @@ test.describe('Plan History - Updated Goals', () => {
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
+      - paragraph: View all updates to this plan.
       - separator
       - paragraph:
         - strong: Goal updated
@@ -361,7 +361,7 @@ test.describe('Plan History - Updated Goals', () => {
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
+      - paragraph: View all updates to this plan.
       - separator
       - paragraph:
         - strong: Goal updated

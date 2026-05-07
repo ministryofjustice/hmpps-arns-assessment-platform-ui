@@ -47,7 +47,7 @@ test.describe('Plan History - Agreements', () => {
       // Verify we're on the plan history page
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
       await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-        - paragraph: View all updates and changes made to this plan.
+        - paragraph: View all updates to this plan.
         - separator
         - paragraph:
           - strong: Agreement updated
@@ -161,7 +161,7 @@ test.describe('Plan History - Agreements', () => {
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
       await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-        - paragraph: View all updates and changes made to this plan.
+        - paragraph: View all updates to this plan.
         - separator
         - paragraph:
           - strong: Plan created
@@ -203,7 +203,7 @@ test.describe('Plan History - Agreements', () => {
       await expect(planHistoryPage.updateAgreementLink).toBeVisible()
 
       await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-        - paragraph: View all updates and changes made to this plan.
+        - paragraph: View all updates to this plan.
         - separator
         - paragraph:
           - strong: Plan created

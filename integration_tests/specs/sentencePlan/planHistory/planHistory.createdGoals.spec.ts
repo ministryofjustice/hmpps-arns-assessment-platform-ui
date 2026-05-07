@@ -34,7 +34,7 @@ test.describe('Plan History - Created Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
+      - paragraph: View all updates to this plan.
       - separator
       - paragraph:
         - strong: Goal created
