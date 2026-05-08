@@ -34,12 +34,10 @@ test.describe('Plan History - Created Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - text: View all updates to this plan.
-      - button /Show all sections/
-      - heading /Goal created.*Jane Smith/
-      - text: /Find stable accommodation/
-      - heading /Plan agreed.*Test Practitioner/
-      - text: /Test agreed to this plan/
+      - paragraph: View all updates to this plan.
+      - button "Show all sections"
+      - heading /Goal created.*Jane Smith.*Find stable accommodation/
+      - heading /Plan agreed.*Test Practitioner.*Test agreed to this plan/
     `)
   })
 

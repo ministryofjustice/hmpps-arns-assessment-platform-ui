@@ -39,11 +39,9 @@ test.describe('Plan History - Removed Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - text: View all updates to this plan.
-      - button /Show all sections/
-      - heading /Goal removed.*Jane Smith/
-      - text: /Reduce alcohol use/
-      - text: /Goal no longer relevant due to change in circumstances/
+      - paragraph: View all updates to this plan.
+      - button "Show all sections"
+      - heading /Goal removed.*Jane Smith.*Reduce alcohol use.*Goal no longer relevant due to change in circumstances/
     `)
   })
 

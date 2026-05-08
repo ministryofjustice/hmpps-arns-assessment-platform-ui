@@ -40,11 +40,9 @@ test.describe('Plan History - Re-added Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - text: View all updates to this plan.
-      - button /Show all sections/
-      - heading /Goal added back into plan.*Jane Smith/
-      - text: /Find stable accommodation/
-      - text: /Circumstances have changed, goal is now relevant again/
+      - paragraph: View all updates to this plan.
+      - button "Show all sections"
+      - heading /Goal added back into plan.*Jane Smith.*Find stable accommodation.*Circumstances have changed, goal is now relevant again/
     `)
   })
 
@@ -84,8 +82,7 @@ test.describe('Plan History - Re-added Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - heading /Goal added back into plan.*John Doe/
-      - text: /Build positive relationships/
+      - heading /Goal added back into plan.*John Doe.*Build positive relationships/
     `)
   })
 
@@ -178,10 +175,8 @@ test.describe('Plan History - Re-added Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - heading /Goal added back into plan.*Re-add Practitioner/
-      - text: /Circumstances changed, goal is relevant again/
-      - heading /Goal removed.*Removal Practitioner/
-      - text: /Goal no longer relevant at this time/
+      - heading /Goal added back into plan.*Re-add Practitioner.*Goal with full history.*Circumstances changed, goal is relevant again/
+      - heading /Goal removed.*Removal Practitioner.*Goal with full history.*Goal no longer relevant at this time/
     `)
   })
 })

@@ -50,10 +50,9 @@ test.describe('Plan History - Updated Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - text: View all updates to this plan.
-      - button /Show all sections/
-      - heading /Goal updated.*Jane Smith/
-      - text: /I will maintain my current accommodation/
+      - paragraph: View all updates to this plan.
+      - button "Show all sections"
+      - heading /Goal updated.*Jane Smith.*I will maintain my current accommodation/
     `)
 
     await checkAccessibility(page)
@@ -95,9 +94,7 @@ test.describe('Plan History - Updated Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - heading /Goal updated.*Jane Smith/
-      - text: /I will maintain my current accommodation/
-      - text: /Buster has taken steps to maintain his accommodation/
+      - heading /Goal updated.*Jane Smith.*I will maintain my current accommodation.*Buster has taken steps to maintain his accommodation/
     `)
   })
 

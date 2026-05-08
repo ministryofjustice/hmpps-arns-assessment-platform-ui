@@ -46,11 +46,9 @@ test.describe('Plan History - Achieved Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - text: View all updates to this plan.
-      - button /Show all sections/
-      - heading /Goal marked as achieved.*Jane Smith/
-      - text: /Reduce alcohol use/
-      - text: /goal was achieved through dedicated effort and support/
+      - paragraph: View all updates to this plan.
+      - button "Show all sections"
+      - heading /Goal marked as achieved.*Jane Smith.*Reduce alcohol use.*goal was achieved through dedicated effort/
       - heading /Plan agreed/
     `)
   })
@@ -85,8 +83,7 @@ test.describe('Plan History - Achieved Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - heading /Goal marked as achieved.*John Doe/
-      - text: /Build positive relationships/
+      - heading /Goal marked as achieved.*John Doe.*Build positive relationships/
     `)
   })
 
