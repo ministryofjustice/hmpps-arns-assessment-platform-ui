@@ -8,6 +8,7 @@ generic-service:
   ingress:
     host: arns-assessment-platform-test.hmpps.service.justice.gov.uk
     modsecurity_enabled: true
+    modsecurity_audit_enabled: true
     modsecurity_snippet: |
       SecRuleEngine DetectionOnly
       # Team here grants access to the OpenSearch logs to delve into the cause of the blockage
