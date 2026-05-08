@@ -135,8 +135,9 @@ test.describe('Plan History - Updated Goals', () => {
     await page.getByRole('link', { name: /View plan history/i }).click()
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
-    await expect(planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated/ })).toBeVisible()
-    await expect(planHistoryPage.mainContent.getByText('Find stable accommodation')).toBeVisible()
+    await expect(
+      planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated.*Find stable accommodation/ }),
+    ).toBeVisible()
   })
 
   test('shows goal updated entry with notes after changing step status and adding a progress note', async ({
@@ -177,10 +178,10 @@ test.describe('Plan History - Updated Goals', () => {
     await page.getByRole('link', { name: /View plan history/i }).click()
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
-    await expect(planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated/ })).toBeVisible()
-    await expect(planHistoryPage.mainContent.getByText('Reduce alcohol use')).toBeVisible()
     await expect(
-      planHistoryPage.mainContent.getByText('Good progress being made with support group attendance.'),
+      planHistoryPage.mainContent.getByRole('heading', {
+        name: /Goal updated.*Reduce alcohol use.*Good progress being made with support group attendance/,
+      }),
     ).toBeVisible()
   })
 
@@ -217,8 +218,9 @@ test.describe('Plan History - Updated Goals', () => {
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
-    await expect(planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated/ })).toBeVisible()
-    await expect(planHistoryPage.mainContent.getByText('Find stable accommodation')).toBeVisible()
+    await expect(
+      planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated.*Find stable accommodation/ }),
+    ).toBeVisible()
   })
 
   test('shows goal updated entry after changing goal title via Change goal page', async ({
@@ -259,8 +261,9 @@ test.describe('Plan History - Updated Goals', () => {
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
-    await expect(planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated/ })).toBeVisible()
-    await expect(planHistoryPage.mainContent.getByText('Updated goal title')).toBeVisible()
+    await expect(
+      planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated.*Updated goal title/ }),
+    ).toBeVisible()
   })
 
   test('shows goal updated entry after changing an active goal to a future goal via Change goal page', async ({
@@ -300,7 +303,8 @@ test.describe('Plan History - Updated Goals', () => {
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
-    await expect(planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated/ })).toBeVisible()
-    await expect(planHistoryPage.mainContent.getByText('Find stable accommodation')).toBeVisible()
+    await expect(
+      planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated.*Find stable accommodation/ }),
+    ).toBeVisible()
   })
 })
