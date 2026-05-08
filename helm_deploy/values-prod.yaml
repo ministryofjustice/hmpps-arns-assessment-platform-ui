@@ -1,10 +1,6 @@
 ---
 # Per environment values which override defaults in hmpps-arns-assessment-platform-ui/values.yaml
 
-autoscaling:
-  minReplicas: 4
-  maxReplicas: 8
-
 generic-service:
   ingress:
     host: arns-assessment-platform.hmpps.service.justice.gov.uk
@@ -26,6 +22,10 @@ generic-service:
     SMART_SURVEY_POPUP_CODE: '1U32TA'
     FEEDBACK_FORM_URL: 'https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u'
     SERVICE_NOW_FORM_URL: 'https://mojprod.service-now.com/moj_sp?id=sc_cat_item&sys_id=276572591bce4910a93242ead34bcb53'
+
+  autoscaling:
+    minReplicas: 4
+    maxReplicas: 8
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui
