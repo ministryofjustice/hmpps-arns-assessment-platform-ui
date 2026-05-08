@@ -9,7 +9,7 @@ generic-service:
       SecRuleEngine DetectionOnly
       # Team here grants access to the OpenSearch logs to delve into the cause of the blockage
       SecDefaultAction "phase:2,pass,log,tag:github_team=hmpps-assessments,tag:namespace={{ .Release.Namespace }}"
-      # Disables request body scanning so free-text form fields (goal titles, step descriptions) don't trigger false positive
+      # Disables request body scanning so free-text form fields (goal titles, step descriptions) do not trigger false positives
       SecRuleUpdateTargetById 920272 "!REQUEST_BODY"
       # Change default denial to be a 406 so that we can tell easily that it is modsecurity doing the blocking
       SecRuleUpdateActionById 949110 "deny,status:406,logdata:%{SERVER_NAME}"
