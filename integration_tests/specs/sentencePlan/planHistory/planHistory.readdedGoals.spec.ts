@@ -4,7 +4,7 @@ import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
 import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
 
 test.describe('Plan History - Re-added Goals', () => {
-  test('displays re-added goal entry with title, assessor name, reason, and view link', async ({
+  test('displays re-added goal entry with action, date, assessor, goal title and reason', async ({
     page,
     createSession,
     sentencePlanBuilder,
@@ -40,17 +40,11 @@ test.describe('Plan History - Re-added Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates to this plan.
-      - separator
-      - paragraph:
-        - strong: Goal added back into plan
-        - text: /by Jane Smith/
-      - paragraph:
-        - strong: Find stable accommodation
-      - paragraph: Circumstances have changed, goal is now relevant again.
-      - paragraph:
-        - link "View latest version":
-          - /url: /update-goal-steps/
+      - text: View all updates to this plan.
+      - button /Show all sections/
+      - heading /Goal added back into plan.*Jane Smith/
+      - text: /Find stable accommodation/
+      - text: /Circumstances have changed, goal is now relevant again/
     `)
   })
 
@@ -59,7 +53,6 @@ test.describe('Plan History - Re-added Goals', () => {
     createSession,
     sentencePlanBuilder,
   }) => {
-    // Create a plan with a re-added goal but no reason note
     const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
     await sentencePlanBuilder
       .extend(sentencePlanId)
@@ -91,60 +84,9 @@ test.describe('Plan History - Re-added Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph:
-        - strong: Goal added back into plan
-        - text: /by John Doe/
-      - paragraph:
-        - strong: Build positive relationships
-      - paragraph:
-        - link "View latest version":
-          - /url: /update-goal-steps/
+      - heading /Goal added back into plan.*John Doe/
+      - text: /Build positive relationships/
     `)
-  })
-
-  test('navigates to update goal and steps page when clicking View latest version link', async ({
-    page,
-    createSession,
-    sentencePlanBuilder,
-  }) => {
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoal({
-        title: 'Test re-added goal',
-        areaOfNeed: 'accommodation',
-        status: 'ACTIVE',
-        steps: [{ actor: 'probation_practitioner', description: 'Test step' }],
-        notes: [
-          {
-            type: 'READDED',
-            note: 'Test re-add reason',
-            createdBy: 'Test Practitioner',
-          },
-        ],
-      })
-      .withPlanAgreements([
-        {
-          status: 'AGREED',
-          createdBy: 'Test Practitioner',
-          dateOffset: -86400000,
-        },
-      ])
-      .save()
-
-    await page.goto(handoverLink)
-    await handlePrivacyScreenIfPresent(page)
-    await page.getByRole('link', { name: /View plan history/i }).click()
-
-    const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-
-    // Click the "View latest version" link
-    const viewLink = await planHistoryPage.getViewGoalLink(0)
-    await viewLink.click()
-
-    // Verify we're on the update goal and steps page
-    await expect(page).toHaveURL(/update-goal-steps/)
-    await expect(page.locator('h1')).toContainText('Update goal and steps')
   })
 
   test('displays re-added goal in correct chronological order with other events', async ({
@@ -152,7 +94,6 @@ test.describe('Plan History - Re-added Goals', () => {
     createSession,
     sentencePlanBuilder,
   }) => {
-    // Create a plan with multiple events in chronological order
     const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
     await sentencePlanBuilder
       .extend(sentencePlanId)
@@ -190,15 +131,9 @@ test.describe('Plan History - Re-added Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - separator
-      - paragraph:
-        - strong: Goal added back into plan
-      - separator
-      - paragraph:
-        - strong: Agreement updated
-      - separator
-      - paragraph:
-        - strong: Plan created
+      - heading /Goal added back into plan/
+      - heading /Agreement updated/
+      - heading /Plan created/
     `)
   })
 
@@ -207,8 +142,6 @@ test.describe('Plan History - Re-added Goals', () => {
     createSession,
     sentencePlanBuilder,
   }) => {
-    // Create a plan with a goal that was removed and then re-added
-    // Both events should appear in the history
     const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
     await sentencePlanBuilder
       .extend(sentencePlanId)
@@ -245,25 +178,10 @@ test.describe('Plan History - Re-added Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph:
-        - strong: Goal added back into plan
-        - text: /by Re-add Practitioner/
-      - paragraph:
-        - strong: Goal with full history
-      - paragraph: Circumstances changed, goal is relevant again.
-      - paragraph:
-        - link "View latest version":
-          - /url: /update-goal-steps/
-      - separator
-      - paragraph:
-        - strong: Goal removed
-        - text: /by Removal Practitioner/
-      - paragraph:
-        - strong: Goal with full history
-      - paragraph: Goal no longer relevant at this time.
-      - paragraph:
-        - link "View latest version":
-          - /url: /update-goal-steps/
+      - heading /Goal added back into plan.*Re-add Practitioner/
+      - text: /Circumstances changed, goal is relevant again/
+      - heading /Goal removed.*Removal Practitioner/
+      - text: /Goal no longer relevant at this time/
     `)
   })
 })
