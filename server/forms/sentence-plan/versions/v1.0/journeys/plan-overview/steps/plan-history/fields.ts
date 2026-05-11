@@ -26,7 +26,8 @@ const agreementHeadingHtml = Format(
     .else(''),
 )
 
-// Plan agreement event summary: the agreement status statement, always visible without expanding.
+// Plan agreement event summary: status statement plus reason, always visible without expanding.
+// Free-text notes are in the expandable content
 const agreementStatusStatement = match(Item().path('status'))
   .branch(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED']), Format('%1 agreed to this plan.', CaseData.Forename))
   .branch(
@@ -35,11 +36,26 @@ const agreementStatusStatement = match(Item().path('status'))
   )
   .otherwise(Format('%1 could not agree to this plan.', CaseData.Forename))
 
-const agreementSummaryHtml = Format('<p class="govuk-body">%1</p>', agreementStatusStatement)
+const agreementSummaryHtml = Format(
+  '<p class="govuk-body">%1</p>%2',
+  agreementStatusStatement,
+  when(Item().path('detailsNo').match(Condition.IsRequired()))
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('detailsNo').pipe(Transformer.String.EscapeHtml())))
+    .else(
+      when(Item().path('detailsCouldNotAnswer').match(Condition.IsRequired()))
+        .then(
+          Format(
+            '<p class="govuk-body">%1</p>',
+            Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
+          ),
+        )
+        .else(''),
+    ),
+)
 
 // Plan agreement event content: shown when the accordion section is expanded.
-// AGREED/UPDATED_AGREED show notes if present, otherwise "No additional notes".
-// Other statuses show their reason field if present, nothing if not.
+// Only AGREED/UPDATED_AGREED have notes — show them if present, otherwise "No additional notes".
+// Other statuses have no notes field so content is empty.
 const agreementContentHtml = match(Item().path('status'))
   .branch(
     Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED']),
@@ -47,22 +63,7 @@ const agreementContentHtml = match(Item().path('status'))
       .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
       .else('<p class="govuk-body">No additional notes</p>'),
   )
-  .branch(
-    Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE']),
-    when(Item().path('detailsNo').match(Condition.IsRequired()))
-      .then(Format('<p class="govuk-body">%1</p>', Item().path('detailsNo').pipe(Transformer.String.EscapeHtml())))
-      .else(''),
-  )
-  .otherwise(
-    when(Item().path('detailsCouldNotAnswer').match(Condition.IsRequired()))
-      .then(
-        Format(
-          '<p class="govuk-body">%1</p>',
-          Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
-        ),
-      )
-      .else(''),
-  )
+  .otherwise('')
 
 // Factory: builds a goal-event heading "<strong>{action}</strong> on {date} by {actorField}".
 // The actor field name varies per event (achievedBy, removedBy, readdedBy, etc.) — passed in.
