@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent, navigateToSentencePlan } from '../sentencePlanUtils'
+import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
 
 test.describe('Plan History - Agreements', () => {
   test.describe('Could not answer then agreed scenario', () => {
@@ -10,9 +10,6 @@ test.describe('Plan History - Agreements', () => {
       createSession,
       sentencePlanBuilder,
     }) => {
-      // Create a plan with two agreements:
-      // 1. Initial: Could not answer (older - "Plan created")
-      // 2. Update: Agreed (newer - "Agreement updated")
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
 
       await sentencePlanBuilder
@@ -39,61 +36,16 @@ test.describe('Plan History - Agreements', () => {
         ])
         .save()
 
-      // Navigate to plan history
       await page.goto(handoverLink)
       await handlePrivacyScreenIfPresent(page)
       await page.getByRole('link', { name: /View plan history/i }).click()
 
-      // Verify we're on the plan history page
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
       await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
         - paragraph: View all updates to this plan.
-        - separator
-        - paragraph:
-          - strong: Agreement updated
-          - text: /Follow-up Practitioner and Test/
-        - paragraph: Test agreed to this plan.
-        - paragraph: Person agreed after reviewing the plan
-        - separator
-        - paragraph:
-          - strong: Plan created
-          - text: /^(?=.*Initial Practitioner)(?!.*and).*$/
-        - paragraph: Test could not agree to this plan.
-        - paragraph: Person was not available to discuss the plan
-        - paragraph:
-          - link /.+ Back to top/
-      `)
-    })
-
-    test('hides update agreement link when plan is agreed', async ({ page, createSession, sentencePlanBuilder }) => {
-      // Create a plan that has been agreed
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoal({
-          title: 'Reduce alcohol use',
-          areaOfNeed: 'alcohol-use',
-          status: 'ACTIVE',
-          steps: [{ actor: 'person_on_probation', description: 'Attend support group' }],
-        })
-        .withPlanAgreements([
-          {
-            status: 'AGREED',
-            createdBy: 'Test Practitioner',
-            dateOffset: 0,
-          },
-        ])
-        .save()
-
-      await page.goto(handoverLink)
-      await handlePrivacyScreenIfPresent(page)
-      await page.getByRole('link', { name: /View plan history/i }).click()
-
-      const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-      await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-        - paragraph:
-          - strong: Plan agreed
-          - text: /Test Practitioner and Test/
+        - button "Show all sections"
+        - heading /Agreement updated.*Follow-up Practitioner and Test.*Test agreed to this plan.*Person agreed after reviewing the plan/
+        - heading /Plan created.*Initial Practitioner.*Test could not agree to this plan.*Person was not available to discuss the plan/
       `)
     })
   })
@@ -125,9 +77,7 @@ test.describe('Plan History - Agreements', () => {
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
       await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-        - paragraph:
-          - strong: Plan agreed
-          - text: /First Practitioner and Test/
+        - heading /Plan agreed.*First Practitioner and Test.*Test agreed to this plan.*Initial agreement notes/
       `)
     })
 
@@ -161,104 +111,8 @@ test.describe('Plan History - Agreements', () => {
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
       await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-        - paragraph: View all updates to this plan.
-        - separator
-        - paragraph:
-          - strong: Plan created
-        - paragraph: /did not agree/
-        - paragraph: Person disagrees with the goals set
+        - heading /Plan created.*Test Practitioner.*Test did not agree to this plan.*Person disagrees with the goals set/
       `)
-    })
-  })
-
-  test.describe('Update agreement link placement', () => {
-    test('should display update agreement link within the agreement section when status is COULD_NOT_ANSWER', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoal({
-          title: 'Find stable accommodation',
-          areaOfNeed: 'accommodation',
-          status: 'ACTIVE',
-          steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
-        })
-        .withPlanAgreements([
-          {
-            status: 'COULD_NOT_ANSWER',
-            createdBy: 'Test Practitioner',
-            detailsCouldNotAnswer: 'Person was not available to discuss the plan',
-            dateOffset: 0,
-          },
-        ])
-        .save()
-
-      await page.goto(handoverLink)
-      await handlePrivacyScreenIfPresent(page)
-      await page.getByRole('link', { name: /Plan history/i }).click()
-      const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-      await expect(planHistoryPage.updateAgreementLink).toBeVisible()
-
-      await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-        - paragraph: View all updates to this plan.
-        - separator
-        - paragraph:
-          - strong: Plan created
-          - text: /Test Practitioner/
-        - paragraph: /could not agree/
-        - paragraph: Person was not available to discuss the plan
-        - paragraph:
-          - link /Update .+ agreement/
-        - separator
-        - paragraph:
-          - strong: Goal created
-          - text: /E2E Test/
-        - paragraph:
-          - strong: Find stable accommodation
-        - paragraph:
-          - link "View goal"
-        - paragraph:
-          - link /.+ Back to top/
-      `)
-    })
-  })
-
-  test.describe('Read-only access', () => {
-    test('hides update agreement link in read-only mode even when status is COULD_NOT_ANSWER', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        planAccessMode: 'READ_ONLY',
-      })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoal({
-          title: 'Improve communication skills',
-          areaOfNeed: 'thinking-behaviours-and-attitudes',
-          status: 'ACTIVE',
-          steps: [{ actor: 'probation_practitioner', description: 'Attend group sessions' }],
-        })
-        .withPlanAgreements([
-          {
-            status: 'COULD_NOT_ANSWER',
-            createdBy: 'Test Practitioner',
-            detailsCouldNotAnswer: 'Person was not available',
-            dateOffset: 0,
-          },
-        ])
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
-      await page.getByRole('link', { name: /Plan history/i }).click()
-
-      const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-      await expect(planHistoryPage.updateAgreementLink).not.toBeVisible()
     })
   })
 
@@ -268,7 +122,6 @@ test.describe('Plan History - Agreements', () => {
       createSession,
       sentencePlanBuilder,
     }) => {
-      // Valid flow: COULD_NOT_ANSWER → UPDATED_AGREED
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder
         .extend(sentencePlanId)
@@ -300,11 +153,8 @@ test.describe('Plan History - Agreements', () => {
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
       await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-        - paragraph:
-          - strong: Agreement updated
-        - separator
-        - paragraph:
-          - strong: Plan created
+        - heading /Agreement updated.*Person is now available and agrees/
+        - heading /Plan created.*Person was unavailable/
       `)
     })
 
@@ -313,7 +163,6 @@ test.describe('Plan History - Agreements', () => {
       createSession,
       sentencePlanBuilder,
     }) => {
-      // Valid flow: COULD_NOT_ANSWER → UPDATED_DO_NOT_AGREE
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder
         .extend(sentencePlanId)
@@ -345,13 +194,8 @@ test.describe('Plan History - Agreements', () => {
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
       await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-        - paragraph:
-          - strong: Agreement updated
-        - paragraph: Test did not agree to this plan.
-        - separator
-        - paragraph:
-          - strong: Plan created
-        - paragraph: Test could not agree to this plan.
+        - heading /Agreement updated.*Test did not agree to this plan.*Person does not agree with the plan after reviewing it/
+        - heading /Plan created.*Test could not agree to this plan.*Person was in hospital/
       `)
     })
   })

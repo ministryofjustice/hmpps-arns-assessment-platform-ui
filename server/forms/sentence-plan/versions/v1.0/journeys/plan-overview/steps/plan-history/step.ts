@@ -1,5 +1,5 @@
 import { accessTransition, step } from '@form-engine/form/builders'
-import { subtitleText, sectionBreak, agreementHistory, backToTopLink } from './fields'
+import { subtitleText, agreementHistory, backToTopLink } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { isOasysAccess, redirectIfNotPostAgreement, redirectToPrivacyUnlessAccepted } from '../../../../guards'
 
@@ -15,7 +15,7 @@ export const planHistoryStep = step({
       },
     },
   },
-  blocks: [subtitleText, sectionBreak, agreementHistory, backToTopLink],
+  blocks: [subtitleText, agreementHistory, backToTopLink],
   onAccess: [
     redirectToPrivacyUnlessAccepted(),
     accessTransition({

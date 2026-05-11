@@ -31,6 +31,16 @@
   }
 }
 
+// Plan history accordion - only the action label (e.g., "Goal created") is bold via <strong>.
+// GOV.UK's default applies bold to the whole section heading; we override to normal so the
+// trailing "on [date] by [person]" renders at regular weight.
+#plan-history-accordion {
+  .govuk-accordion__section-heading,
+  .govuk-accordion__section-button {
+    font-weight: normal;
+  }
+}
+
 // warning text without icon - hides icon and removes left padding
 .govuk-warning-text--no-icon {
   padding-top: 0;
