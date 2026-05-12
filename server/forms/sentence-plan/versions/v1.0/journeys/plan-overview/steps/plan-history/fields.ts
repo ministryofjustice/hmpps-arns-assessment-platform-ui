@@ -26,9 +26,8 @@ const agreementHeadingHtml = Format(
     .else(''),
 )
 
-// Plan agreement event summary: status statement, plus an optional reason
-// (detailsNo for DO_NOT_AGREE, detailsCouldNotAnswer for COULD_NOT_ANSWER) and
-// optional free-text notes. Visible to all users — same access level as before.
+// Plan agreement event summary: status statement plus reason, always visible without expanding.
+// Free-text notes are in the expandable content
 const agreementStatusStatement = match(Item().path('status'))
   .branch(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED']), Format('%1 agreed to this plan.', CaseData.Forename))
   .branch(
@@ -38,7 +37,7 @@ const agreementStatusStatement = match(Item().path('status'))
   .otherwise(Format('%1 could not agree to this plan.', CaseData.Forename))
 
 const agreementSummaryHtml = Format(
-  '<p class="govuk-body">%1</p>%2%3',
+  '<p class="govuk-body">%1</p>%2',
   agreementStatusStatement,
   when(Item().path('detailsNo').match(Condition.IsRequired()))
     .then(Format('<p class="govuk-body">%1</p>', Item().path('detailsNo').pipe(Transformer.String.EscapeHtml())))
@@ -52,10 +51,19 @@ const agreementSummaryHtml = Format(
         )
         .else(''),
     ),
-  when(Item().path('notes').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
-    .else(''),
 )
+
+// Plan agreement event content: shown when the accordion section is expanded.
+// Only AGREED/UPDATED_AGREED have notes — show them if present, otherwise "No additional notes".
+// Other statuses have no notes field so content is empty.
+const agreementContentHtml = match(Item().path('status'))
+  .branch(
+    Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED']),
+    when(Item().path('notes').match(Condition.IsRequired()))
+      .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
+      .else('<p class="govuk-body">No additional notes</p>'),
+  )
+  .otherwise('')
 
 // Factory: builds a goal-event heading "<strong>{action}</strong> on {date} by {actorField}".
 // The actor field name varies per event (achievedBy, removedBy, readdedBy, etc.) — passed in.
@@ -100,8 +108,6 @@ const goalReaddedSummaryHtml = goalSummaryWithNotes('reason')
 const goalUpdatedHeadingHtml = goalHeading('Goal updated', 'updatedBy')
 const goalUpdatedSummaryHtml = goalSummaryWithNotes('notes')
 
-// Each entry becomes one accordion section. Heading + summary stay visible always;
-// content is empty for now and will hold expandable detail in a future iteration.
 export const agreementHistory = GovUKAccordion({
   id: 'plan-history-accordion',
   rememberExpanded: false,
@@ -125,7 +131,15 @@ export const agreementHistory = GovUKAccordion({
           .branch(Condition.Equals('goal_updated'), goalUpdatedSummaryHtml)
           .otherwise(agreementSummaryHtml),
       },
-      content: { html: '' },
+      content: {
+        html: match(Item().path('type'))
+          .branch(Condition.Equals('goal_achieved'), '')
+          .branch(Condition.Equals('goal_created'), '')
+          .branch(Condition.Equals('goal_removed'), '')
+          .branch(Condition.Equals('goal_readded'), '')
+          .branch(Condition.Equals('goal_updated'), '')
+          .otherwise(agreementContentHtml),
+      },
     }),
   ),
 })
