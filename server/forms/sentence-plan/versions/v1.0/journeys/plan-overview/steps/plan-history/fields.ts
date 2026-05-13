@@ -4,7 +4,12 @@ import { GovUKAccordion } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import { HtmlBlock } from '@form-engine/registry/components/html'
+import { GoalSummaryCardHistory } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
+
+const GOAL_EVENT_TYPES = ['goal_created', 'goal_achieved', 'goal_removed', 'goal_readded', 'goal_updated']
+const INACTIVE_GOAL_STATUSES = ['ACHIEVED', 'REMOVED']
 
 export const subtitleText = GovUKBody({ text: 'View all updates to this plan.' })
 
@@ -61,7 +66,7 @@ const agreementContentHtml = match(Item().path('status'))
     Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED']),
     when(Item().path('notes').match(Condition.IsRequired()))
       .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
-      .else('<p class="govuk-body">No additional notes</p>'),
+      .else('<p class="govuk-body">No additional notes.</p>'),
   )
   .otherwise('')
 
@@ -108,6 +113,40 @@ const goalReaddedSummaryHtml = goalSummaryWithNotes('reason')
 const goalUpdatedHeadingHtml = goalHeading('Goal updated', 'updatedBy')
 const goalUpdatedSummaryHtml = goalSummaryWithNotes('notes')
 
+// `Item()` here resolves against the `Iterator.Map` over `planHistoryEntries`
+// below. Each block is scoped to a matching event type via `hidden`; the
+// form-engine filters hidden nested blocks out before joining their HTML.
+const goalSummaryCardForHistory = GoalSummaryCardHistory({
+  hidden: Item().path('type').not.match(Condition.Array.IsIn(GOAL_EVENT_TYPES)),
+  goalTitle: Item().path('goalTitle'),
+  goalStatus: Item().path('goalStatus'),
+  goalUuid: Item().path('goalUuid'),
+  targetDate: when(Item().path('targetDate').match(Condition.IsRequired()))
+    .then(Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()))
+    .else(''),
+  statusDate: when(Item().path('statusDate').match(Condition.IsRequired()))
+    .then(Item().path('statusDate').pipe(Transformer.Date.ToUKLongDate()))
+    .else(''),
+  areaOfNeed: Item().path('areaOfNeedLabel'),
+  relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
+  steps: Item().path('steps'),
+  actions: [
+    {
+      text: 'View goal',
+      // Use `currentGoalStatus`, not the snapshot status — routing must follow
+      // the goal as it exists today, not its state at the time of this event.
+      href: when(Item().path('currentGoalStatus').match(Condition.Array.IsIn(INACTIVE_GOAL_STATUSES)))
+        .then(Format('../goal/%1/view-inactive-goal', Item().path('goalUuid')))
+        .else(Format('../goal/%1/update-goal-steps', Item().path('goalUuid'))),
+    },
+  ],
+})
+
+const agreementContentBlock = HtmlBlock({
+  hidden: Item().path('type').not.match(Condition.Equals('agreement')),
+  content: agreementContentHtml,
+})
+
 export const agreementHistory = GovUKAccordion({
   id: 'plan-history-accordion',
   rememberExpanded: false,
@@ -132,13 +171,7 @@ export const agreementHistory = GovUKAccordion({
           .otherwise(agreementSummaryHtml),
       },
       content: {
-        html: match(Item().path('type'))
-          .branch(Condition.Equals('goal_achieved'), '')
-          .branch(Condition.Equals('goal_created'), '')
-          .branch(Condition.Equals('goal_removed'), '')
-          .branch(Condition.Equals('goal_readded'), '')
-          .branch(Condition.Equals('goal_updated'), '')
-          .otherwise(agreementContentHtml),
+        blocks: [goalSummaryCardForHistory, agreementContentBlock],
       },
     }),
   ),
