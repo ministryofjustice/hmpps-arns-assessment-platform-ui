@@ -25,6 +25,9 @@ generic-service:
     DEPLOYMENT_NAME: PR-$PR_NUMBER
     ENVIRONMENT_NAME: DEV
 
+  autoscaling:
+    enabled: false
+
 generic-prometheus-alerts:
   targetApplication: $RELEASE_NAME
   alertSeverity: hmpps-arns-non-prod

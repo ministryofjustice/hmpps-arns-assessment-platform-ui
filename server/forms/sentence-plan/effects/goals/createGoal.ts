@@ -1,4 +1,5 @@
 import { BadRequest } from 'http-errors'
+import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import {
@@ -88,5 +89,14 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
     },
     assessmentUuid,
     user,
+  })
+
+  telemetry.trackEvent('CREATE_GOAL_PAGE_SUBMITTED', {
+    assessmentUuid,
+    goalUuid: addResult.collectionItemUuid,
+    areaOfNeed: areaOfNeedSlug,
+    isRelatedToOtherAreas: relatedAreas.length > 0 ? 'yes' : 'no',
+    relatedAreasOfNeed: relatedAreas.join(','),
+    relatedAreasCount: String(relatedAreas.length),
   })
 }
