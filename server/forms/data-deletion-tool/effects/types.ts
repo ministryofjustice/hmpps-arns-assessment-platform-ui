@@ -1,12 +1,9 @@
 import { AssessmentPlatformApiClient } from '../../../data'
-import AuditService from '../../../services/auditService'
-import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext';
 import { DataDeletionDataResponse } from '../../../interfaces/aap-api/dataDeletion';
-import config from '../../../config';
+import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core';
 
 export interface DataDeletionToolEffectsDeps {
   api: AssessmentPlatformApiClient
-  auditService: AuditService
 }
 
 // -----------------------------------------------------------------------------
@@ -25,7 +22,7 @@ export interface DataDeletionToolData extends Record<string, unknown> {
  * Form answers via context.setAnswer() / context.getAnswer()
  */
 export interface DataDeletionToolAnswers extends Record<string, unknown> {
-  dataEnvironment: string
+  environment: string
   clientId: string
   clientSecret: string
   assessmentUuid: string
@@ -35,6 +32,10 @@ export interface DataDeletionToolAnswers extends Record<string, unknown> {
  * Session data via context.getSession()
  */
 export interface DataDeletionToolSession {
+  environment: string
+  clientId: string
+  clientSecret: string
+  assessmentUuid: string
 }
 
 /**

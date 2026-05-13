@@ -14,20 +14,20 @@ const isValidEnvironment = (value: string): value is Environment => {
 }
 
 export const createApiClient = (context: DataDeletionToolContext) => {
-  const env = context.getAnswer('environment') as string
+  const session = context.getSession()
 
-  if (!env || !isValidEnvironment(env)) {
+  if (!session.environment || !isValidEnvironment(session.environment)) {
     throw new InternalServerError(`A valid environment is required`)
   }
 
-  const environment = environments[env]
+  const environment = environments[session.environment]
 
   const hmppsAuthClient = new AuthenticationClient(
     {
       ...config.apis.hmppsAuth,
       url: environment.authUrl,
-      systemClientId: context.getAnswer('clientId') as string,
-      systemClientSecret: context.getAnswer('clientSecret') as string,
+      systemClientId: session.clientId,
+      systemClientSecret: session.clientSecret,
     },
     logger,
     new InMemoryTokenStore(),

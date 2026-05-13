@@ -32,6 +32,7 @@ import accessFormPackage from './forms/access'
 import platformPoliciesFormPackage from './forms/platform'
 import sentencePlanFormPackage from './forms/sentence-plan'
 import trainingSessionLauncher from './forms/training-session-launcher'
+import dataDeletionTool from './forms/data-deletion-tool';
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -55,6 +56,9 @@ export default function createApp(services: Services): express.Application {
       coordinatorApiClient: services.coordinatorApiClient,
       handoverApiClient: services.handoverApiClient,
       preferencesStore: services.preferencesStore,
+    })
+    .registerPackage(dataDeletionTool, {
+      api: services.assessmentPlatformApiClient,
     })
     .registerPackage(platformPoliciesFormPackage)
     .registerPackage(accessFormPackage, {
@@ -81,6 +85,7 @@ export default function createApp(services: Services): express.Application {
     setUpAuthentication({
       bypassPaths: [
         '/training-session-launcher',
+        '/data-deletion-tool',
         '/platform',
         // Allow access to session timeout page even with expired session
         // so we can show the "information deleted" message and re-auth link

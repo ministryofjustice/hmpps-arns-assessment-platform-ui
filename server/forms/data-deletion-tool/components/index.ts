@@ -1,3 +1,3 @@
-import { ComponentRegistryEntry } from '@form-engine/registry/types/components.type';
+import { edit } from './edit/edit'
 
-export const dataDeletionToolComponents: ComponentRegistryEntry<any>[] = []
+export const dataDeletionToolComponents = [edit]

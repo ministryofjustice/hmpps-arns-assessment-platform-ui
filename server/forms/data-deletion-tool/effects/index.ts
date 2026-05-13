@@ -1,13 +1,17 @@
-import { defineEffectsWithDeps } from '@form-engine/registry/utils/createRegisterableFunction'
 import { DataDeletionToolEffectsDeps } from './types'
+import { defineNamespacedEffectsWithDeps } from '../../shared/defineNamespacedEffectsWithDeps'
+import { resetSession } from './resetSession'
 import { loadData } from './loadData'
-import { initializeSession } from './initializeSession';
+import { saveConfiguration } from './saveConfiguration';
 
-export const { effects: DataDeletionToolEffects, createRegistry: createDataDeletionToolEffectsRegistry } =
-  defineEffectsWithDeps<DataDeletionToolEffectsDeps>()({
-    // Session
-    initializeSession,
+export const {
+  effects: DataDeletionToolEffects,
+  implementations: DataDeletionToolEffectImplementations
+} = defineNamespacedEffectsWithDeps<DataDeletionToolEffectsDeps>('dataDeletionTool')({
+  // Session
+  resetSession,
+  saveConfiguration,
 
-    // Data
-    loadData,
-  })
+  // Data
+  loadData,
+})

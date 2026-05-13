@@ -6,7 +6,7 @@ import { createApiClient } from './createApiClient';
  * Load assessment data using the provided identifier
  */
 export const loadData = (deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
-  const assessmentUuid = context.getData('assessmentUuid')
+  const assessmentUuid = context.getSession().assessmentUuid
 
   if (!assessmentUuid) {
     throw new InternalServerError('Assessment identifier is required')

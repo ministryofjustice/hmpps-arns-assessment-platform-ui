@@ -143,6 +143,10 @@ export default {
     dataDeletionTool: {
       enabled: get('FORM_DATA_DELETION_TOOL_ENABLED', 'false') === 'true',
       environments: {
+        local: {
+          authUrl: 'http:///hmpps-auth:9090/auth',
+          apiUrl: 'http://aap-api:8080',
+        },
         dev: {
           authUrl: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth',
           apiUrl: 'https://arns-assessment-platform-api-dev.hmpps.service.justice.gov.uk',
