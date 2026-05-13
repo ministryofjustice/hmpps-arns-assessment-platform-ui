@@ -4,6 +4,7 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
+import { snapshotFromGoal } from './goalSnapshot'
 
 /**
  * Mark a goal as achieved
@@ -28,6 +29,9 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
   // Read form answers before building commands (needed for timeline data)
   const howHelped = context.getAnswer('how_helped')
 
+  const statusDate = new Date().toISOString()
+  const goalSnapshot = snapshotFromGoal(activeGoal, { status: 'ACHIEVED', statusDate })
+
   const commands: Commands[] = []
 
   // 1. Update goal status to ACHIEVED
@@ -36,7 +40,7 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
     collectionItemUuid: activeGoal.uuid,
     added: wrapAll({
       status: 'ACHIEVED',
-      status_date: new Date().toISOString(),
+      status_date: statusDate,
       achieved_by: practitionerName,
     }),
     removed: [],
@@ -47,6 +51,7 @@ export const markGoalAsAchieved = (deps: SentencePlanEffectsDeps) => async (cont
         goalTitle: activeGoal.title,
         achievedBy: practitionerName,
         notes: (typeof howHelped === 'string' && howHelped.trim()) || undefined,
+        goalSnapshot,
       },
     },
     assessmentUuid,
