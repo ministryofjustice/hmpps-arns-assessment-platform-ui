@@ -1,4 +1,4 @@
-import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
+import { RestClient, asSystem, ApiConfig } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import logger from '../../logger'
@@ -11,12 +11,21 @@ import { QueryResultFor, QueryResultsFor } from '../interfaces/aap-api/queryResu
 import { CommandError } from '../errors/aap-api/CommandError'
 import { QueryError } from '../errors/aap-api/QueryError'
 import AssessmentCacheStore from './assessmentCacheStore'
+import { DataDeletionDataResponse } from '../interfaces/aap-api/dataDeletion';
 
 export default class AssessmentPlatformApiClient extends RestClient {
   private assessmentCache?: AssessmentCacheStore
 
-  constructor(authenticationClient: AuthenticationClient, assessmentCache?: AssessmentCacheStore) {
-    super('Assessment Platform API', config.apis.aapApi, logger, authenticationClient)
+  constructor(authenticationClient: AuthenticationClient, assessmentCache?: AssessmentCacheStore, configOverride?: Partial<ApiConfig>) {
+    super(
+      'Assessment Platform API',
+      {
+        ...config.apis.aapApi,
+        ...configOverride,
+      },
+      logger,
+      authenticationClient
+    )
     this.assessmentCache = assessmentCache
   }
 
@@ -103,5 +112,10 @@ export default class AssessmentPlatformApiClient extends RestClient {
 
   private async executeQueriesRaw(request: QueriesRequest): Promise<QueriesResponse> {
     return this.post({ path: '/query', data: request as unknown as Record<string, unknown> }, asSystem())
+  }
+
+  // Data deletion endpoints
+  async getDataDeletionData(assessmentUuid: string): Promise<DataDeletionDataResponse> {
+    return this.get({ path: `/data-deletion/${assessmentUuid}` }, asSystem())
   }
 }

@@ -55,3 +55,10 @@ export interface TimelineItem {
     name: string
   }
 }
+
+export interface EventDTO {
+  uuid: string,
+  createdAt: string,
+  position: number,
+  data: Record<string, any>,
+}
