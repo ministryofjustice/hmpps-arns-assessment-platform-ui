@@ -90,10 +90,10 @@ export interface GoalSummaryCardProps extends BasicBlockProps {
   /** Date the goal status changed (for achieved/removed goals) */
   statusDate?: ConditionalString
 
-  /** Main area of need for the goal */
+  /** Main area of need label for the goal */
   areaOfNeed: ConditionalString
 
-  /** Related areas of need (displayed as semicolon-separated list) */
+  /** Related area of need labels (displayed as semicolon-separated list) */
   relatedAreasOfNeed?: ConditionalArray<string>
 
   /** Steps associated with this goal */
@@ -190,9 +190,7 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
     removedNote = removedNoteObj?.note as string | undefined
   }
 
-  // Build related areas text
-  const relatedAreasText =
-    relatedAreasOfNeed.length > 0 ? [...relatedAreasOfNeed].sort().join('; ').toLowerCase() : undefined
+  const relatedAreasText = relatedAreasOfNeed.length > 0 ? [...relatedAreasOfNeed].sort().join('; ') : undefined
 
   return {
     goalTitle: block.goalTitle,
@@ -200,7 +198,7 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
     goalUuid: block.goalUuid,
     targetDate: block.targetDate,
     statusDate: block.statusDate,
-    areaOfNeed: block.areaOfNeed?.toLowerCase(),
+    areaOfNeed: block.areaOfNeed,
     relatedAreasText,
     steps,
     stepsCount: steps.length,

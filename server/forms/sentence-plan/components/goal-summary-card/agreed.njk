@@ -10,8 +10,8 @@
     goalUuid         - UUID for generating links
     targetDate       - Target date (formatted string)
     statusDate       - Date status changed (for achieved/removed)
-    areaOfNeed       - Main area of need (lowercase)
-    relatedAreasText - Related areas (semicolon-separated, lowercase)
+    areaOfNeed       - Main area of need label
+    relatedAreasText - Related area labels (semicolon-separated)
     steps            - Array of { actor, description, status }
     stepsCount       - Number of steps
     completedCount   - Number of completed steps
@@ -84,11 +84,7 @@
       {#- Steps section (agreed - with counter and collapsible) -#}
       {% if params.stepsCount > 0 %}
         <p class="step-counter">
-          {% if params.stepsCount == 1 %}
-            {{ params.completedCount }} of {{ params.stepsCount }} step completed
-          {% else %}
-            {{ params.completedCount }} of {{ params.stepsCount }} steps completed
-          {% endif %}
+          {{ params.completedCount }} out of {{ params.stepsCount }} steps completed.
         </p>
         <details class="govuk-details">
           <summary class="govuk-details__summary">
