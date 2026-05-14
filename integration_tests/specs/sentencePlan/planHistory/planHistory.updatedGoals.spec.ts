@@ -14,7 +14,7 @@ import {
 } from '../sentencePlanUtils'
 
 test.describe('Plan History - Updated Goals', () => {
-  test('displays updated goal entry with action, date, updater and goal title', async ({
+  test('displays updated goal entry with action, date, updater, goal title and view goal link', async ({
     page,
     createSession,
     sentencePlanBuilder,
@@ -56,6 +56,10 @@ test.describe('Plan History - Updated Goals', () => {
     `)
 
     await checkAccessibility(page)
+
+    await planHistoryPage.clickShowAllSectionsButton()
+    await planHistoryPage.clickViewGoalLink()
+    await UpdateGoalAndStepsPage.verifyOnPage(page)
   })
 
   test('displays updated goal entry with notes when a progress note was added', async ({

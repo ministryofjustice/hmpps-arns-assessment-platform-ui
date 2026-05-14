@@ -2,9 +2,10 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
 import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
+import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 
 test.describe('Plan History - Created Goals', () => {
-  test('displays created goal entry with action, date, creator and goal title', async ({
+  test('displays created goal entry with action, date, creator, goal title and view goal link', async ({
     page,
     createSession,
     sentencePlanBuilder,
@@ -39,6 +40,10 @@ test.describe('Plan History - Created Goals', () => {
       - heading /Goal created.*Jane Smith.*Find stable accommodation/
       - heading /Plan agreed.*Test Practitioner.*Test agreed to this plan/
     `)
+
+    await planHistoryPage.clickShowAllSectionsButton()
+    await planHistoryPage.clickViewGoalLink()
+    await UpdateGoalAndStepsPage.verifyOnPage(page)
   })
 
   test('displays created goal in correct chronological order with other events', async ({

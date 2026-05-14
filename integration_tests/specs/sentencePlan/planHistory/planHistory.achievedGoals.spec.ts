@@ -2,9 +2,10 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
 import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
+import ViewInactiveGoalPage from '../../../pages/sentencePlan/viewInactiveGoalPage'
 
 test.describe('Plan History - Achieved Goals', () => {
-  test('displays achieved goal entry with action, date, achiever, goal title and notes', async ({
+  test('displays achieved goal entry with action, date, achiever, goal title, notes and view goal link', async ({
     page,
     createSession,
     sentencePlanBuilder,
@@ -51,6 +52,10 @@ test.describe('Plan History - Achieved Goals', () => {
       - heading /Goal marked as achieved.*Jane Smith.*Reduce alcohol use.*goal was achieved through dedicated effort/
       - heading /Plan agreed/
     `)
+
+    await planHistoryPage.clickShowAllSectionsButton()
+    await planHistoryPage.clickViewGoalLink()
+    await ViewInactiveGoalPage.verifyOnPage(page)
   })
 
   test('displays achieved goal without notes when none were provided', async ({

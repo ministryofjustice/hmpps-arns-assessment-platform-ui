@@ -2,9 +2,10 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
 import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
+import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 
 test.describe('Plan History - Re-added Goals', () => {
-  test('displays re-added goal entry with action, date, assessor, goal title and reason', async ({
+  test('displays re-added goal entry with action, date, assessor, goal title, reason and view goal link', async ({
     page,
     createSession,
     sentencePlanBuilder,
@@ -44,6 +45,10 @@ test.describe('Plan History - Re-added Goals', () => {
       - button "Show all sections"
       - heading /Goal added back into plan.*Jane Smith.*Find stable accommodation.*Circumstances have changed, goal is now relevant again/
     `)
+
+    await planHistoryPage.clickShowAllSectionsButton()
+    await planHistoryPage.clickViewGoalLink()
+    await UpdateGoalAndStepsPage.verifyOnPage(page)
   })
 
   test('displays re-added goal without reason when none was provided', async ({
