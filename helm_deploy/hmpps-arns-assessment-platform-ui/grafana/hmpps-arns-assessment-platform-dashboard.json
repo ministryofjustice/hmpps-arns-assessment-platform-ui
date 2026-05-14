@@ -21,7 +21,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 424,
   "links": [],
   "panels": [
     {
@@ -1577,8 +1576,9 @@
       {
         "allValue": "^$",
         "current": {
-          "text": ["cloud-platform-e0ec2de2ed949cab", "cloud-platform-a172584ee173cc66"],
-          "value": ["cloud-platform-e0ec2de2ed949cab", "cloud-platform-a172584ee173cc66"]
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
         },
         "definition": "label_values(aws_rds_database_connections_average{dbinstance_identifier!=''}, dbinstance_identifier)",
         "includeAll": true,
