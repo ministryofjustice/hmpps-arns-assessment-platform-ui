@@ -2,6 +2,7 @@ import { Data, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { currentEmploymentStep } from './steps/current-employment/step'
 import { employedEmploymentStep } from './steps/employed-employment/step'
 import { employmentEducationSummaryStep } from './steps/employment-education-summary/step'
+import {employmentEducationAnalysisStep} from "./steps/employment-education-analysis/step";
 
 /**
  * Employment Journey
@@ -21,5 +22,5 @@ export const employmentJourney = journey({
       sectionStatus: Data('sectionStatus.employment-and-education'),
     },
   },
-  steps: [currentEmploymentStep, employedEmploymentStep, employmentEducationSummaryStep],
+  steps: [currentEmploymentStep, employedEmploymentStep, employmentEducationSummaryStep, employmentEducationAnalysisStep],
 })

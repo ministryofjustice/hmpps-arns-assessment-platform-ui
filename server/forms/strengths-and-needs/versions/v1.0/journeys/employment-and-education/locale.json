@@ -1,0 +1,107 @@
+{
+  "optional_details": "Give details (optional)",
+  "options": {
+    "EMPLOYED": "Employed",
+    "SELF_EMPLOYED": "Self-employed",
+    "RETIRED": "Retired",
+    "CURRENTLY_UNAVAILABLE_FOR_WORK": "Currently unavailable for work",
+    "UNEMPLOYED_ACTIVELY_LOOKING": "Unemployed - actively looking for work",
+    "UNEMPLOYED_NOT_ACTIVELY_LOOKING": "Unemployed - not actively looking for work",
+    "CONTINUOUS_EMPLOYMENT": "Continuous employment history",
+    "CHANGES_JOBS_OFTEN": "Generally in employment but changes jobs often",
+    "UNSTABLE_EMPLOYMENT": "Unstable employment history with regular periods of unemployment",
+    "ENTRY_LEVEL": "Entry level",
+    "FULL_TIME": "Full-time",
+    "PART_TIME": "Part-time",
+    "TEMPORARY_OR_CASUAL": "Temporary or casual",
+    "APPRENTICESHIP": "Apprenticeship",
+    "YES_HAS_BEEN_EMPLOYED_BEFORE": "Yes, has been employed before",
+    "NO_HAS_NEVER_BEEN_EMPLOYED": "No, has never been employed",
+    "CARING": "Caring responsibilities",
+    "CHILDREN": "Child Responsibilities",
+    "STUDYING": "Studying",
+    "VOLUNTEERING": "Volunteering",
+    "LEVEL_1": "Level 1",
+    "LEVEL_2": "Level 2",
+    "LEVEL_3": "Level 3",
+    "LEVEL_4": "Level 4",
+    "LEVEL_5": "Level 5",
+    "LEVEL_6": "Level 6",
+    "LEVEL_7": "Level 7",
+    "LEVEL_8": "Level 8",
+    "HAS_MADE_CHANGES": "I have already made positive changes and want to maintain them",
+    "IS_MAKING_CHANGES": "I am actively making changes",
+    "WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO": "I want to make changes and know how to",
+    "WANTS_TO_MAKE_CHANGES_NEEDS_HELP": "I want to make changes but need help",
+    "THINKING_ABOUT_MAKING_CHANGES": "I am thinking about making changes",
+    "DOES_NOT_WANT_TO_MAKE_CHANGES": "I do not want to make changes",
+    "DOES_NOT_WANT_TO_ANSWER": "I do not want to answer",
+    "NOT_PRESENT": "%1 is not present",
+    "NOT_APPLICABLE": "Not applicable",
+    "SIGNIFICANT": "Significant difficulties",
+    "POSITIVE": "Positive",
+    "MOSTLY_POSITIVE": "Mostly positive",
+    "POSITIVE_AND_NEGATIVE": "Positive and negative",
+    "MOSTLY_NEGATIVE": "Mostly negative",
+    "NEGATIVE": "Negative",
+    "SOME": "Some difficulties",
+    "SOME_SKILLS": "Some skills",
+    "YES": "Yes",
+    "YES_READING": "Yes, with reading",
+    "YES_WRITING": "Yes, with writing",
+    "YES_NUMERACY": "Yes, with numeracy",
+    "NO": "No",
+    "NO_DIFFICULTIES": "No difficulties",
+    "NON_OF_THESE": "None of these",
+    "OTHER": "Other",
+    "UNKNOWN": "Unknown",
+    "NONE": "None"
+  },
+  "current_employment": {
+    "text": "What is %1 current employment status?"
+  },
+  "employed_employment": {
+    "employment_sector": {
+      "text": "What job sector does %1 work in? (optional)"
+    },
+    "employment_history": {
+      "text": "What is  %1 employment history?"
+    },
+    "day_to_day_commitments": {
+      "text": "Does %1 have any day-to-day commitments?"
+    },
+    "academic_qualification": {
+      "text": "Select the highest level of academic qualification %1 has completed"
+    },
+    "professional_qualifications": {
+      "text": "Does %1 have any professional or vocational qualifications?"
+    },
+    "previous_employment_history_hint": "Include what type of work they've done before.",
+    "job_skills": {
+      "text": "Does %1 have any skills that could help them in a job or to get a job?"
+    },
+    "difficulties_reading_writing_numeracy": {
+      "text": "Does %1 have difficulties with reading, writing or numeracy?"
+    },
+    "employment_experience": {
+      "text": "What is %1 overall experience of employment?"
+    },
+    "education_experience": {
+      "text": "What is %1 experience of education?"
+    },
+    "employment_and_education_changes": {
+      "text": "Does %1 want to make changes to their employment and education?"
+    }
+  },
+  "practitioner_analysis": {
+    "strengths_protective_factors": {
+      "text": "Are there any strengths or protective factors related to %1 employment and education?"
+    },
+    "employment_education_linked_to_serious_harm": {
+      "text": "Is %1 employment and education linked to risk of serious harm?"
+    },
+    "employment_education_linked_to_reoffending": {
+      "text": "Is %1 employment and education linked to risk of reoffending?"
+    }
+  }
+}

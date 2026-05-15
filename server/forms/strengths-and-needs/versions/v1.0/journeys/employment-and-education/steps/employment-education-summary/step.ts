@@ -5,14 +5,14 @@ import { employmentStatusSummaryTab } from './fields'
 
 const saveButton = block<GovUKButton>({
   variant: 'govukButton',
-  text: 'Save and continue',
+  text: 'Mark as complete',
   name: 'action',
   value: 'save',
 })
 
 export const employmentEducationSummaryStep = step({
   path: '/employment-education-summary',
-  title: 'Employment and Education',
+  title: 'Employment and Education Summary',
   blocks: [employmentStatusSummaryTab, saveButton],
   onSubmission: [
     submit({
@@ -20,7 +20,7 @@ export const employmentEducationSummaryStep = step({
       validate: true,
       onValid: {
         effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
-        next: [redirect({ goto: 'current_employment' })],
+        next: [redirect({ goto: 'employment-education-analysis' })],
       },
     }),
   ],

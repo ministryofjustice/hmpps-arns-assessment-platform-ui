@@ -1,12 +1,5 @@
-import {Answer, block, Condition, Format, not, Self, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {
-  GovUKBody, GovUKButton,
-  GovUKCharacterCount,
-  GovUKLinkButton,
-  GovUKRadioInput,
-  GovUKSummaryList,
-  GovUKTabs,
-} from '@ministryofjustice/hmpps-forge/govuk-components'
+import {Answer, Condition, Format} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {GovUKBody, GovUKLinkButton, GovUKSummaryList, GovUKTabs,} from '@ministryofjustice/hmpps-forge/govuk-components'
 import {CaseData} from '../../../../constants'
 import {SANGenerators} from "../../../../../../generators/customGenerator";
 import {currentEmployment, typeOfEmployment} from "../current-employment/fields";
@@ -25,6 +18,11 @@ import {
   readingDifficultyLevel,
   writingDifficultyLevel
 } from "../employed-employment/fields";
+import {
+  employmentOrEducationLinkedReoffending,
+  employmentOrEducationLinkedToSeriousHarm,
+  strenthsProtectiveFactors
+} from "../employment-education-summary/fields";
 
 // --- Employment and Education Summary Group ---
 
@@ -215,147 +213,73 @@ const employmentStatusSummary = GovUKSummaryList({
 
 // --- Practitioner Analysis Button Group ---
 
-const goToPractitionerAnalysis = GovUKLinkButton({
+const goToPractitionerAnalysisButton = GovUKLinkButton({
   text: 'Go to practitioner analysis',
-  href:'employment-education-summary#practitioner-analysis',
+  href:'employment-education-analysis#practitioner_analysis',
   classes: 'govuk-button--secondary'
 })
 
-// --- Practitioner Analysis Group ---
+// --- Practitioner Analysis Summary Group ---
 
-// --- Strengths or Protective factors Group ---
-
-const strenthsProtectiveFactorsDetails = GovUKCharacterCount({
-  code: 'strengths_protective_factors_details',
-  label: locale.optional_details,
-  maxLength: 2000,
-  dependentWhen: Answer('strengths_protective_factors').match(Condition.Equals('YES')),
-})
-
-const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
-  code: 'no_strengths_protective_factors_details',
-  label: locale.optional_details,
-  maxLength: 2000,
-  dependentWhen: Answer('strengths_protective_factors').match(Condition.Equals('NO')),
-})
-
-export const strenthsProtectiveFactors = GovUKRadioInput({
-  code: 'strengths_protective_factors',
-  fieldset: {
-    legend: {
-      text: Format(locale.practitioner_analysis.strengths_protective_factors.text, CaseData.ForenamePossessive),
-      classes: 'govuk-fieldset__legend--m',
-    },
-  },
-  hint:'Include any strategies, people or support networks that helped.',
-  items: [
-    { value: 'YES', text: locale.options['YES'], block: strenthsProtectiveFactorsDetails },
-    { value: 'NO', text: locale.options['NO'], block: noStrengthsProtectiveFactorsDetails },
-  ],
-  validWhen: [
-    validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select if there are any strengths or protective factors',
-    }),
-  ],
-})
-
-// --- Employment and Education Linked to Risk of Serious Harm Group ---
-
-const seriousHarmDetails = GovUKCharacterCount({
-  code: 'serious_harm_details',
-  label: locale.optional_details,
-  maxLength: 2000,
-  dependentWhen: Answer('employment_education_linked_to_serious_harm').match(Condition.Equals('YES')),
-})
-
-const noSeriousHarmDetails = GovUKCharacterCount({
-  code: 'no_serious_harm_details',
-  label: locale.optional_details,
-  maxLength: 2000,
-  dependentWhen: Answer('employment_education_linked_to_serious_harm').match(Condition.Equals('NO')),
-})
-
-export const employmentOrEducationLinkedToSeriousHarm = GovUKRadioInput({
-  code: 'employment_education_linked_to_serious_harm',
-  fieldset: {
-    legend: {
-      text: Format(locale.practitioner_analysis.employment_education_linked_to_serious_harm.text, CaseData.ForenamePossessive),
-      classes: 'govuk-fieldset__legend--m',
-    },
-  },
-  items: [
-    { value: 'YES', text: locale.options['YES'], block: seriousHarmDetails },
-    { value: 'NO', text: locale.options['NO'], block: noSeriousHarmDetails },
-  ],
-  validWhen: [
-    validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select if linked to risk of serious harm',
-    }),
-  ],
-})
-
-// --- Employment and Education Linked to Risk of Reoffending Group ---
-
-const riskOfReoffendingDetails = GovUKCharacterCount({
-  code: 'risk_of_reoffending_details',
-  label: locale.optional_details,
-  maxLength: 2000,
-  dependentWhen: Answer('employment_education_linked_to_reoffending').match(Condition.Equals('YES')),
-})
-
-const noRiskOfReoffendingDetails = GovUKCharacterCount({
-  code: 'no_risk_of_reoffending_details',
-  label: locale.optional_details,
-  maxLength: 2000,
-  dependentWhen: Answer('employment_education_linked_to_reoffending').match(Condition.Equals('NO')),
-})
-
-export const employmentOrEducationLinkedReoffending = GovUKRadioInput({
-  code: 'employment_education_linked_to_reoffending',
-  fieldset: {
-    legend: {
-      text: Format(locale.practitioner_analysis.employment_education_linked_to_reoffending.text, CaseData.ForenamePossessive),
-      classes: 'govuk-fieldset__legend--m',
-    },
-  },
-  items: [
-    { value: 'YES', text: locale.options['YES'], block: riskOfReoffendingDetails },
-    { value: 'NO', text: locale.options['NO'], block: noRiskOfReoffendingDetails },
-  ],
-  validWhen: [
-    validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select if linked to risk of reoffending',
-    }),
-  ],
-})
-
-// --- Mark As Complete Button Group ---
-
-const markAsCompleteButton = block<GovUKButton>({
-  variant: 'govukButton',
-  text: 'Mark as complete',
-  name: 'action',
-  value: 'save',
-})
-
-
-export const employmentStatusSummaryTab = GovUKTabs({
-  id: 'summaries',
-  items: [
+const practitionerAnalysisSummary = GovUKSummaryList({
+  rows: [
     {
-      id: 'summary',
-      label: 'Summary',
-      panel: { blocks: [employmentStatusSummary, goToPractitionerAnalysis] },
-    },
-    {
-      id: 'practitioner-analysis',
-      label: 'Practitioner analysis',
-      panel: {
-        blocks: [strenthsProtectiveFactors, employmentOrEducationLinkedToSeriousHarm, employmentOrEducationLinkedReoffending, markAsCompleteButton]
+      key: {text: Format(locale.practitioner_analysis.strengths_protective_factors.text, CaseData.ForenamePossessive)},
+      value: {
+        blocks:
+          [
+            GovUKBody({text: SANGenerators.getTextFromListDefinition(strenthsProtectiveFactors.items, Answer('strengths_protective_factors'))}),
+            GovUKBody({ text: Answer('strengths_protective_factors_details'), size: "s" }),
+            GovUKBody({ text: Answer('no_strengths_protective_factors_details'), size: "s" }),
+          ]
       },
+      actions: {
+        items: [{href: 'current-employment', text: 'Change', visuallyHiddenText: 'name'}],
+      },
+    },
+    {
+      key: {text: Format(locale.practitioner_analysis.employment_education_linked_to_serious_harm.text, CaseData.ForenamePossessive)},
+      value: {
+        blocks:
+          [
+            GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentOrEducationLinkedToSeriousHarm.items, Answer('employment_education_linked_to_serious_harm'))}),
+            GovUKBody({ text: Answer('serious_harm_details'), size: "s" }),
+            GovUKBody({ text: Answer('no_serious_harm_details'), size: "s" }),
+          ]
+      },
+      actions: {
+        items: [{href: 'current-employment', text: 'Change', visuallyHiddenText: 'name'}],
+      },
+    },
+    {
+      key: {text: Format(locale.practitioner_analysis.employment_education_linked_to_reoffending.text, CaseData.ForenamePossessive)},
+      value: {
+        blocks:
+          [
+            GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentOrEducationLinkedReoffending.items, Answer('employment_education_linked_to_reoffending'))}),
+            GovUKBody({ text: Answer('risk_of_reoffending_details'), size: "s" }),
+            GovUKBody({ text: Answer('no_risk_of_reoffending_details'), size: "s" }),
+          ]
+      },
+      actions: {
+        items: [{href: 'current-employment', text: 'Change', visuallyHiddenText: 'name'}],
+      },
+    },
+  ]
+})
+
+export const employmentStatusAnalysisSummaryTab = GovUKTabs({
+  id: 'cases-analysis',
+  items: [
+    {
+      id: 'summary-analysis',
+      label: 'Summary',
+      panel: {blocks: [employmentStatusSummary, goToPractitionerAnalysisButton]},
+    },
+    {
+      id: 'practitioner-analysis-summary',
+      label: 'Practitioner analysis',
+      panel: {blocks: [practitionerAnalysisSummary]},
     },
   ],
 })

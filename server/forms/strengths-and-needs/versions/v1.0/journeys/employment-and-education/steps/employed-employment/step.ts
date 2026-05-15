@@ -11,7 +11,7 @@ import {
   difficultiesReadingWritingNumeracy,
   employmentExperience,
   educationExperience,
-  employmentAndEducationChanges,
+  employmentAndEducationChanges, backButton,
 } from './fields'
 
 const saveButton = block<GovUKButton>({
@@ -25,6 +25,7 @@ export const employedEmploymentStep = step({
   path: '/employed',
   title: 'Employed',
   blocks: [
+    backButton,
     employmentSector,
     employmentHistory,
     dayToDayCommitments,

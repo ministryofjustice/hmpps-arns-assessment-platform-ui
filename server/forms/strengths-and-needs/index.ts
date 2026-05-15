@@ -3,6 +3,7 @@ import { strengthsAndNeedsV1Journey } from './versions/v1.0'
 import { StrengthsAndNeedsEffectImplementations } from './effects'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import config from '../../config'
+import {myGeneratorImplementations, SANGenerators} from "./generators/customGenerator";
 
 export const latestVersion = 'v1.0'
 
@@ -34,5 +35,8 @@ const strengthsAndNeedsRootJourney = journey({
 export default createForgePackage<StrengthsAndNeedsEffectsDeps>({
   enabled: config.forms.strengthsAndNeeds.enabled,
   journey: strengthsAndNeedsRootJourney,
-  functions: StrengthsAndNeedsEffectImplementations,
+  functions: {
+    ...StrengthsAndNeedsEffectImplementations,
+    ...myGeneratorImplementations
+  },
 })
