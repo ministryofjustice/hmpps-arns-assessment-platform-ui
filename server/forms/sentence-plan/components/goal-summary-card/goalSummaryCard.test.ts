@@ -89,7 +89,7 @@ describe('goal summary card', () => {
     expect(html).toContain('1 out of 2 steps completed.')
   })
 
-  it('uses "steps completed" wording when there is one step on agreed cards', async () => {
+  it('uses "step completed" wording when there is one step on agreed cards', async () => {
     const html = await goalSummaryCardAgreed.render(
       {
         ...baseBlock,
@@ -99,10 +99,10 @@ describe('goal summary card', () => {
       nunjucksEnv,
     )
 
-    expect(html).toContain('1 out of 1 steps completed.')
+    expect(html).toContain('1 out of 1 step completed.')
   })
 
-  it('uses "steps completed" wording when there is one step on history cards', async () => {
+  it('uses "step completed" wording when there is one step on history cards', async () => {
     const html = await goalSummaryCardHistory.render(
       {
         ...baseBlock,
@@ -112,6 +112,6 @@ describe('goal summary card', () => {
       nunjucksEnv,
     )
 
-    expect(html).toContain('1 out of 1 steps completed.')
+    expect(html).toContain('1 out of 1 step completed.')
   })
 })

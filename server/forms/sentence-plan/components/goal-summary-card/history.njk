@@ -65,7 +65,7 @@
 
       {% if params.stepsCount > 0 %}
         <p class="step-counter">
-          {{ params.completedCount }} out of {{ params.stepsCount }} steps completed.
+          {{ params.completedCount }} out of {{ params.stepsCount }} step{% if params.stepsCount != 1 %}s{% endif %} completed.
         </p>
         <table class="govuk-table goal-summary-card__steps">
           <thead class="govuk-table__head">
