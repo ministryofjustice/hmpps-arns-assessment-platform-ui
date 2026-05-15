@@ -103,4 +103,22 @@
   .govuk-footer {
     display: none !important;
   }
+
+  #plan-history-accordion {
+    //Hide the "Show all sections" / "Hide all sections" control
+    .govuk-accordion__controls {
+      display: none !important;
+    }
+
+    //Hide the "Show" / "Hide" toggle text and chevron
+    .govuk-accordion__section-toggle {
+      display: none !important;
+    }
+
+    //Make the heading button read as plain text, not an interactive link
+    .govuk-accordion__section-button {
+      cursor: text !important;
+      pointer-events: none !important;
+    }
+  }
 }
