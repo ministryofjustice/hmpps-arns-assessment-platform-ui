@@ -35,6 +35,12 @@ const resolveActorLabel = (
   return actorLabels[actor] ?? actor
 }
 
+const getTimelineGoalUuid = (item: TimelineItem): string | undefined => {
+  const goalUuid = item.customData?.goalUuid ?? item.data?.goalUuid
+
+  return typeof goalUuid === 'string' && goalUuid.length > 0 ? goalUuid : undefined
+}
+
 /**
  * Prefer the snapshot stored in customData; fall back to the current goal
  * for legacy events emitted before snapshotting was introduced.
@@ -122,16 +128,29 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
     }
   }
 
-  const displayableTimeline = planTimeline.filter(
-    item => !(item.customType === 'GOAL_UPDATED' && item.customData?.isInitialStepAdd),
+  const deletedGoalUuids = new Set(
+    planTimeline
+      .filter(item => item.customType === 'GOAL_DELETED')
+      .map(getTimelineGoalUuid)
+      .filter((goalUuid): goalUuid is string => Boolean(goalUuid)),
   )
+
+  const displayableTimeline = planTimeline.filter(item => {
+    const goalUuid = getTimelineGoalUuid(item)
+    const isDeletedGoal = goalUuid ? deletedGoalUuids.has(goalUuid) : false
+
+    return !(item.customType === 'GOAL_UPDATED' && item.customData?.isInitialStepAdd) &&
+      item.customType !== 'GOAL_DELETED' &&
+      !((item.customType === 'GOAL_CREATED' || item.customType === 'GOAL_UPDATED') && isDeletedGoal)
+  })
 
   const entries: PlanHistoryEntry[] = []
 
   for (const item of displayableTimeline) {
     const customData = item.customData ?? {}
     const date = new Date(item.timestamp)
-    const currentGoal = goals.find(g => g.uuid === customData.goalUuid)
+    const goalUuid = getTimelineGoalUuid(item)
+    const currentGoal = goals.find(g => g.uuid === goalUuid)
     let snapshot = customData.goalSnapshot as GoalSnapshotData | undefined
 
     if (item.customType === 'GOAL_CREATED' && snapshot) {

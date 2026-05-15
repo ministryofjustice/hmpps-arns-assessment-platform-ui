@@ -338,6 +338,105 @@ describe('derivePlanHistoryEntries', () => {
   })
 
   describe('plan agreement merging', () => {
+    it('should hide create and update entries for a deleted goal', () => {
+      // Arrange
+      const timeline: TimelineItem[] = [
+        createTimelineItem({
+          uuid: 'tl-create',
+          customType: 'GOAL_CREATED',
+          timestamp: '2024-06-01T09:00:00Z',
+          customData: { goalUuid: 'g-draft-deleted', goalTitle: 'Draft goal', createdBy: 'Jane Smith' },
+        }),
+        createTimelineItem({
+          uuid: 'tl-update',
+          customType: 'GOAL_UPDATED',
+          timestamp: '2024-06-02T09:00:00Z',
+          customData: { goalUuid: 'g-draft-deleted', goalTitle: 'Draft goal', updatedBy: 'Jane Smith' },
+        }),
+        createTimelineItem({
+          uuid: 'tl-delete',
+          customType: 'GOAL_DELETED',
+          timestamp: '2024-06-03T09:00:00Z',
+          customData: { goalUuid: 'g-draft-deleted' },
+        }),
+      ]
+      const context = createMockContext({ planTimeline: timeline, planAgreements: [], goals: [] })
+
+      // Act
+      derivePlanHistoryEntries()(context)
+
+      // Assert
+      const entries = (context.setData as jest.Mock).mock.calls[0][1] as PlanHistoryEntry[]
+      expect(entries).toEqual([])
+    })
+
+    it('should hide create and update entries when the deleted goal UUID is in timeline data', () => {
+      // Arrange
+      const timeline: TimelineItem[] = [
+        createTimelineItem({
+          uuid: 'tl-create',
+          customType: 'GOAL_CREATED',
+          timestamp: '2024-06-01T09:00:00Z',
+          customData: { goalUuid: 'g-data-deleted', goalTitle: 'Draft goal', createdBy: 'Jane Smith' },
+        }),
+        createTimelineItem({
+          uuid: 'tl-delete',
+          customType: 'GOAL_DELETED',
+          timestamp: '2024-06-03T09:00:00Z',
+          data: { goalUuid: 'g-data-deleted' },
+        }),
+      ]
+      const context = createMockContext({ planTimeline: timeline, planAgreements: [], goals: [] })
+
+      // Act
+      derivePlanHistoryEntries()(context)
+
+      // Assert
+      const entries = (context.setData as jest.Mock).mock.calls[0][1] as PlanHistoryEntry[]
+      expect(entries).toEqual([])
+    })
+
+    it('should keep goal history entries when a goal is removed after the first agreement', () => {
+      // Arrange
+      const timeline: TimelineItem[] = [
+        createTimelineItem({
+          uuid: 'tl-create',
+          customType: 'GOAL_CREATED',
+          timestamp: '2024-06-01T09:00:00Z',
+          customData: { goalUuid: 'g-agreed-removed', goalTitle: 'Agreed goal', createdBy: 'Jane Smith' },
+        }),
+        createTimelineItem({
+          uuid: 'tl-remove',
+          customType: 'GOAL_REMOVED',
+          timestamp: '2024-06-15T09:00:00Z',
+          customData: {
+            goalUuid: 'g-agreed-removed',
+            goalTitle: 'Agreed goal',
+            removedBy: 'Jane Smith',
+            reason: 'No longer needed',
+          },
+        }),
+      ]
+      const agreements: DerivedPlanAgreement[] = [
+        createAgreement({
+          uuid: 'agr-1',
+          status: 'AGREED',
+          statusDate: new Date('2024-06-10T12:00:00Z'),
+        }),
+      ]
+      const context = createMockContext({ planTimeline: timeline, planAgreements: agreements, goals: [] })
+
+      // Act
+      derivePlanHistoryEntries()(context)
+
+      // Assert
+      const entries = (context.setData as jest.Mock).mock.calls[0][1] as PlanHistoryEntry[]
+      expect(entries).toHaveLength(3)
+      expect(entries[0]).toEqual(expect.objectContaining({ type: 'goal_removed', goalUuid: 'g-agreed-removed' }))
+      expect(entries[1]).toEqual(expect.objectContaining({ type: 'agreement', uuid: 'agr-1' }))
+      expect(entries[2]).toEqual(expect.objectContaining({ type: 'goal_created', goalUuid: 'g-agreed-removed' }))
+    })
+
     it('should merge plan agreement entries with timeline entries', () => {
       // Arrange
       const timeline: TimelineItem[] = [
