@@ -7,6 +7,7 @@ import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GoalSummaryCardHistory } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
+import { isCouldNotAnswerStatus, isReadOnlyAccess } from '../../../../guards'
 
 const GOAL_EVENT_TYPES = ['goal_created', 'goal_achieved', 'goal_removed', 'goal_readded', 'goal_updated']
 const INACTIVE_GOAL_STATUSES = ['ACHIEVED', 'REMOVED']
@@ -41,34 +42,53 @@ const agreementStatusStatement = match(Item().path('status'))
   )
   .otherwise(Format('%1 could not agree to this plan.', CaseData.Forename))
 
-const agreementSummaryHtml = Format(
-  '<p class="govuk-body">%1</p>%2',
-  agreementStatusStatement,
-  when(Item().path('detailsNo').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('detailsNo').pipe(Transformer.String.EscapeHtml())))
-    .else(
-      when(Item().path('detailsCouldNotAnswer').match(Condition.IsRequired()))
-        .then(
-          Format(
-            '<p class="govuk-body">%1</p>',
-            Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
-          ),
-        )
-        .else(''),
-    ),
-)
+const agreementSummaryHtml = Format('<p class="govuk-body">%1</p>', agreementStatusStatement)
 
 // Plan agreement event content: shown when the accordion section is expanded.
-// Only AGREED/UPDATED_AGREED have notes — show them if present, otherwise "No additional notes".
-// Other statuses have no notes field so content is empty.
-const agreementContentHtml = match(Item().path('status'))
-  .branch(
-    Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED']),
-    when(Item().path('notes').match(Condition.IsRequired()))
-      .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
-      .else('<p class="govuk-body">No additional notes.</p>'),
+const agreementContentHtml = Format(
+  `
+   <p class="govuk-body">%1</p>
+   <p class="govuk-body">%2</p>
+   <p class="govuk-body">%3</p>
+  `,
+  // mandatory details for DO_NOT_AGREE/UPDATED_DO_NOT_AGREE/COULD_NOT_ANSWER events:
+  when(Item().path('detailsNo').match(Condition.IsRequired()))
+    .then(Format('%1', Item().path('detailsNo').pipe(Transformer.String.EscapeHtml())))
+    .else(
+      when(Item().path('detailsCouldNotAnswer').match(Condition.IsRequired()))
+        .then(Format('%1', Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml())))
+        .else(''),
+    ),
+
+  // optional notes for AGREED/DO_NOT_AGREE/COULD_NOT_ANSWER events - show if present, otherwise `No additional notes.`
+  // UPDATED_DO_NOT_AGREE/UPDATED_AGREED have no optional notes text box,
+  // however because UPDATED_AGREED has no details field to show in expander `No additional notes.` is shown instead
+  when(
+    Item()
+      .path('status')
+      .match(Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER', 'UPDATED_AGREED'])),
   )
-  .otherwise('')
+    .then(
+      when(Item().path('notes').match(Condition.IsRequired()))
+        .then(Format('%1', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
+        .else('No additional notes.'),
+    )
+    .else(''),
+
+  // update agreement link for COULD_NOT_ANSWER events (hidden in read-only):
+  when(isCouldNotAnswerStatus)
+    .then(
+      when(isReadOnlyAccess)
+        .then('')
+        .else(
+          Format(
+            `<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state" data-qa="plan-history-update-agreement-link">Update %1 agreement</a>`,
+            CaseData.ForenamePossessive,
+          ),
+        ),
+    )
+    .else(''),
+)
 
 // Factory: builds a goal-event heading "<strong>{action}</strong> on {date} by {actorField}".
 // The actor field name varies per event (achievedBy, removedBy, readdedBy, etc.) — passed in.
@@ -138,6 +158,7 @@ const goalSummaryCardForHistory = GoalSummaryCardHistory({
       href: when(Item().path('currentGoalStatus').match(Condition.Array.IsIn(INACTIVE_GOAL_STATUSES)))
         .then(Format('../goal/%1/view-inactive-goal', Item().path('goalUuid')))
         .else(Format('../goal/%1/update-goal-steps', Item().path('goalUuid'))),
+      hidden: when(isReadOnlyAccess),
     },
   ],
 })
