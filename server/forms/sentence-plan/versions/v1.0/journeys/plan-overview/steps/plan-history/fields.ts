@@ -46,17 +46,18 @@ const agreementSummaryHtml = Format('<p class="govuk-body">%1</p>', agreementSta
 
 // Plan agreement event content: shown when the accordion section is expanded.
 const agreementContentHtml = Format(
-  `
-   <p class="govuk-body">%1</p>
-   <p class="govuk-body">%2</p>
-   <p class="govuk-body">%3</p>
-  `,
+  '%1 %2 %3',
   // mandatory details for DO_NOT_AGREE/UPDATED_DO_NOT_AGREE/COULD_NOT_ANSWER events:
   when(Item().path('detailsNo').match(Condition.IsRequired()))
-    .then(Format('%1', Item().path('detailsNo').pipe(Transformer.String.EscapeHtml())))
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('detailsNo').pipe(Transformer.String.EscapeHtml())))
     .else(
       when(Item().path('detailsCouldNotAnswer').match(Condition.IsRequired()))
-        .then(Format('%1', Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml())))
+        .then(
+          Format(
+            '<p class="govuk-body">%1</p>',
+            Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
+          ),
+        )
         .else(''),
     ),
 
@@ -70,8 +71,8 @@ const agreementContentHtml = Format(
   )
     .then(
       when(Item().path('notes').match(Condition.IsRequired()))
-        .then(Format('%1', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
-        .else('No additional notes.'),
+        .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
+        .else('<p class="govuk-body">No additional notes.</p>'),
     )
     .else(''),
 
@@ -82,7 +83,7 @@ const agreementContentHtml = Format(
         .then('')
         .else(
           Format(
-            `<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state" data-qa="plan-history-update-agreement-link">Update %1 agreement</a>`,
+            `<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state" data-qa="plan-history-update-agreement-link">Update %1 agreement</a></p>`,
             CaseData.ForenamePossessive,
           ),
         ),
