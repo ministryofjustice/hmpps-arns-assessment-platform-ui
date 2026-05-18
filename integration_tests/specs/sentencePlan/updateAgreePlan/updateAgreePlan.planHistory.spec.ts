@@ -53,9 +53,12 @@ test.describe('Update agree plan - Plan history', () => {
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
+    await planHistoryPage.clickShowAllSectionsButton()
+
     // Verify updated agreement entry with disagreement details
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - heading /Agreement updated.*did not agree.*They disagree with the current goals/
+      - heading /Agreement updated.*did not agree.*/
+      - paragraph: They disagree with the current goals.
       - heading /Plan created/
     `)
   })
