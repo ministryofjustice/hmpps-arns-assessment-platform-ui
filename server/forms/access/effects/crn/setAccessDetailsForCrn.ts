@@ -11,6 +11,6 @@ export const setAccessDetailsForCrn = () => (context: AccessContext) => {
 
   session.accessDetails = {
     accessType: 'HMPPS_AUTH',
-    accessMode: 'READ_WRITE',
+    planAccessMode: 'READ_WRITE',
   }
 }

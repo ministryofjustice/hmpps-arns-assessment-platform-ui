@@ -20,6 +20,10 @@ class AccessibleAutocomplete extends HTMLElement {
     const defaultValue = this.dataset.autocompleteDefaultValue ?? input.value
     const inputId = input.id
     const inputName = input.name
+    const errorId = `${inputId}-error`
+    const originalDescribedByErrorIds = (input.getAttribute('aria-describedby') ?? '')
+      .split(' ')
+      .filter(id => id === errorId)
 
     input.remove()
 
@@ -42,6 +46,34 @@ class AccessibleAutocomplete extends HTMLElement {
         ? JSON.parse(this.dataset.autocompleteMenuAttributes)
         : {},
     })
+    this.preserveDescribedBy(originalDescribedByErrorIds)
+  }
+
+  preserveDescribedBy(originalIds) {
+    if (originalIds.length === 0) {
+      return
+    }
+
+    const input = this.querySelector('input')
+
+    if (!input) {
+      return
+    }
+
+    const merge = () => {
+      const current = (input.getAttribute('aria-describedby') ?? '').split(' ').filter(Boolean)
+      const merged = [...new Set([...current, ...originalIds])].join(' ')
+
+      if (merged !== input.getAttribute('aria-describedby')) {
+        observer.disconnect()
+        input.setAttribute('aria-describedby', merged)
+        observer.observe(input, { attributes: true, attributeFilter: ['aria-describedby'] })
+      }
+    }
+
+    const observer = new MutationObserver(merge)
+    observer.observe(input, { attributes: true, attributeFilter: ['aria-describedby'] })
+    merge()
   }
 
   getSource() {

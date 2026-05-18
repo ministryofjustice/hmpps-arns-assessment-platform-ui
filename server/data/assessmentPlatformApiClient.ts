@@ -10,10 +10,14 @@ import { CommandResultFor, CommandResultsFor } from '../interfaces/aap-api/comma
 import { QueryResultFor, QueryResultsFor } from '../interfaces/aap-api/queryResult'
 import { CommandError } from '../errors/aap-api/CommandError'
 import { QueryError } from '../errors/aap-api/QueryError'
+import AssessmentCacheStore from './assessmentCacheStore'
 
 export default class AssessmentPlatformApiClient extends RestClient {
-  constructor(authenticationClient: AuthenticationClient) {
+  private assessmentCache?: AssessmentCacheStore
+
+  constructor(authenticationClient: AuthenticationClient, assessmentCache?: AssessmentCacheStore) {
     super('Assessment Platform API', config.apis.aapApi, logger, authenticationClient)
+    this.assessmentCache = assessmentCache
   }
 
   /**
@@ -50,10 +54,23 @@ export default class AssessmentPlatformApiClient extends RestClient {
 
   /**
    * Execute a single query and return the typed result.
+   * For AssessmentVersionQuery with a UUID identifier and no timestamp,
+   * checks Redis cache before calling the API.
    * Throws if the query fails (no result returned).
    */
   async executeQuery<T extends Queries>(query: T): Promise<QueryResultFor<T>> {
+    if (query.type === 'AssessmentVersionQuery' && query.assessmentIdentifier.type === 'UUID' && !query.timestamp) {
+      const cached = await this.assessmentCache?.get(query.assessmentIdentifier.uuid)
+
+      if (cached) {
+        logger.debug({ assessmentUuid: query.assessmentIdentifier.uuid }, 'Assessment cache hit')
+
+        return cached as QueryResultFor<T>
+      }
+    }
+
     const [result] = await this.executeQueries(query)
+
     return result
   }
 

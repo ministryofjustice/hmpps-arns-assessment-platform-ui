@@ -10,6 +10,7 @@ import {
   isIterateExprNode,
   isValidationExprNode,
   isConditionalExprNode,
+  isMatchExprNode,
 } from '@form-engine/core/typeguards/expression-nodes'
 import {
   isAccessTransitionNode,
@@ -25,9 +26,12 @@ import DataReferenceHandler from '@form-engine/core/nodes/expressions/reference/
 import PostReferenceHandler from '@form-engine/core/nodes/expressions/reference/post/PostReferenceHandler'
 import QueryReferenceHandler from '@form-engine/core/nodes/expressions/reference/query/QueryReferenceHandler'
 import ParamsReferenceHandler from '@form-engine/core/nodes/expressions/reference/params/ParamsReferenceHandler'
+import RequestReferenceHandler from '@form-engine/core/nodes/expressions/reference/request/RequestReferenceHandler'
+import SessionReferenceHandler from '@form-engine/core/nodes/expressions/reference/session/SessionReferenceHandler'
 import BaseReferenceHandler from '@form-engine/core/nodes/expressions/reference/base/BaseReferenceHandler'
 import IterateHandler from '@form-engine/core/nodes/expressions/iterate/IterateHandler'
 import ConditionalHandler from '@form-engine/core/nodes/expressions/conditional/ConditionalHandler'
+import MatchHandler from '@form-engine/core/nodes/expressions/match/MatchHandler'
 import AndHandler from '@form-engine/core/nodes/predicates/and/AndHandler'
 import OrHandler from '@form-engine/core/nodes/predicates/or/OrHandler'
 import XorHandler from '@form-engine/core/nodes/predicates/xor/XorHandler'
@@ -55,6 +59,8 @@ import PostHandler from '@form-engine/core/nodes/pseudo-nodes/post/PostHandler'
 import QueryHandler from '@form-engine/core/nodes/pseudo-nodes/query/QueryHandler'
 import ParamsHandler from '@form-engine/core/nodes/pseudo-nodes/params/ParamsHandler'
 import DataHandler from '@form-engine/core/nodes/pseudo-nodes/data/DataHandler'
+import RequestHandler from '@form-engine/core/nodes/pseudo-nodes/request/RequestHandler'
+import SessionHandler from '@form-engine/core/nodes/pseudo-nodes/session/SessionHandler'
 import AnswerLocalHandler from '@form-engine/core/nodes/pseudo-nodes/answer-local/AnswerLocalHandler'
 import AnswerRemoteHandler from '@form-engine/core/nodes/pseudo-nodes/answer-remote/AnswerRemoteHandler'
 import PipelineHandler from '@form-engine/core/nodes/expressions/pipeline/PipelineHandler'
@@ -82,31 +88,38 @@ export default class ThunkCompilerFactory {
    *
    * This two-pass approach allows handlers to check their dependencies'
    * async metadata during the second pass, enabling sync optimization.
-   *
-   * @param compilationDependencies - Contains nodeRegistry with all nodes to compile
-   * @param functionRegistry - Registry of user-defined functions (for async metadata)
    */
   compile(compilationDependencies: CompilationDependencies, functionRegistry: FunctionRegistry) {
+    const nodeEntries = compilationDependencies.nodeRegistry.getAllEntries()
+
     // PASS 1: Create all handlers
-    compilationDependencies.nodeRegistry.getAllEntries().forEach((entry, nodeId) => {
+    nodeEntries.forEach((entry, nodeId) => {
       const handler = this.compileASTNode(nodeId, entry.node)
 
       compilationDependencies.thunkHandlerRegistry.register(nodeId, handler)
     })
 
     // PASS 2: Compute isAsync metadata for hybrid handlers
-    // Use topological sort to compute in dependency order (leaves → roots)
+    // Use post-order traversal to compute in dependency order (leaves → roots)
     // This ensures children compute before parents, so parents see accurate isAsync values
     const metadataDeps: MetadataComputationDependencies = {
       thunkHandlerRegistry: compilationDependencies.thunkHandlerRegistry,
       functionRegistry,
       nodeRegistry: compilationDependencies.nodeRegistry,
       metadataRegistry: compilationDependencies.metadataRegistry,
+      astNodeTree: compilationDependencies.astNodeTree,
     }
 
-    const sortResult = compilationDependencies.dependencyGraph.topologicalSort()
+    const postOrderIds = compilationDependencies.astNodeTree.postOrder()
 
-    sortResult.sort.forEach(nodeId => {
+    // Pseudo nodes aren't in the tree — collect and process first
+    const treeNodeSet = new Set(postOrderIds)
+    const pseudoNodeIds = compilationDependencies.nodeRegistry.getIds()
+      .filter(id => !treeNodeSet.has(id))
+
+    const computeOrder = [...pseudoNodeIds, ...postOrderIds]
+
+    computeOrder.forEach(nodeId => {
       const handler = compilationDependencies.thunkHandlerRegistry.get(nodeId)
 
       if (handler) {
@@ -120,7 +133,7 @@ export default class ThunkCompilerFactory {
    *
    * Creates appropriate handler based on node type using typeguards.
    * Handler selection order:
-   * 1. Pseudo nodes (AnswerLocal, AnswerRemote, Post, Query, Params, Data)
+   * 1. Pseudo nodes (AnswerLocal, AnswerRemote, Post, Query, Params, Data, Request, Session)
    * 2. Expression nodes (Reference, Iterate, Conditional, TestPredicate, AndPredicate, OrPredicate, XorPredicate, NotPredicate, Format, Pipeline, Function)
    * 3. Transition nodes (Access, Action, Submit)
    * 4. Structural nodes (Journey, Step, Block)
@@ -148,6 +161,12 @@ export default class ThunkCompilerFactory {
         case PseudoNodeType.DATA:
           return new DataHandler(nodeId, node)
 
+        case PseudoNodeType.REQUEST:
+          return new RequestHandler(nodeId, node)
+
+        case PseudoNodeType.SESSION:
+          return new SessionHandler(nodeId, node)
+
         case PseudoNodeType.ANSWER_LOCAL:
           return new AnswerLocalHandler(nodeId, node)
 
@@ -160,6 +179,8 @@ export default class ThunkCompilerFactory {
             PseudoNodeType.QUERY,
             PseudoNodeType.PARAMS,
             PseudoNodeType.DATA,
+            PseudoNodeType.REQUEST,
+            PseudoNodeType.SESSION,
             PseudoNodeType.ANSWER_LOCAL,
             PseudoNodeType.ANSWER_REMOTE,
           ])
@@ -195,6 +216,12 @@ export default class ThunkCompilerFactory {
         case 'params':
           return new ParamsReferenceHandler(nodeId, node)
 
+        case 'request':
+          return new RequestReferenceHandler(nodeId, node)
+
+        case 'session':
+          return new SessionReferenceHandler(nodeId, node)
+
         default:
           throw ThunkTypeMismatchError.invalidNodeType(nodeId, `REFERENCE:${namespace}`, [
             '@scope',
@@ -203,6 +230,8 @@ export default class ThunkCompilerFactory {
             'post',
             'query',
             'params',
+            'request',
+            'session',
           ])
       }
     }
@@ -225,6 +254,11 @@ export default class ThunkCompilerFactory {
     // Conditional expressions
     if (isConditionalExprNode(node)) {
       return new ConditionalHandler(nodeId, node)
+    }
+
+    // Match expressions
+    if (isMatchExprNode(node)) {
+      return new MatchHandler(nodeId, node)
     }
 
     // TEST Predicate expressions
@@ -308,6 +342,7 @@ export default class ThunkCompilerFactory {
       'PIPELINE',
       'ITERATE',
       'CONDITIONAL',
+      'MATCH',
       'TEST',
       'AND',
       'OR',

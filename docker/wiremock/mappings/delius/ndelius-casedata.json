@@ -87,7 +87,7 @@
             "middleName": "",
             "surname": "Sanford"
           },
-          "crn": "XYZ12345",
+          "crn": "{{request.pathSegments.[2]}}",
           "tier": "",
           "dateOfBirth": "2002-01-15",
           "nomisId": "",

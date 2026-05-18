@@ -3,12 +3,22 @@
  *
  * These styles are loaded only on pages using this form's custom template.
  */
-@import "govuk-frontend/dist/govuk/base";
+@import 'govuk-frontend/dist/govuk/base';
 
 // Components
-@import "../components/button-as-link/buttonAsLink";
-@import "../components/goal-summary-card/goal-summary-card";
-@import "../components/goal-summary-card/goal-list";
+@import '../components/button-as-link/buttonAsLink';
+@import '../components/goal-summary-card/goal-summary-card';
+@import '../components/goal-summary-card/goal-list';
+@import '../components/sentence-information-table/sentence-information-table';
+@import '../components/about-accordion/about-accordion';
+@import '../components/score-bar/needs-score';
+@import '../components/previous-versions/previous-versions';
+
+// The phase banner and plan header now render inside main content, so the
+// default main wrapper top padding creates an extra visual gap above them.
+.govuk-main-wrapper {
+  padding-top: 0;
+}
 
 // Step rows - align remove button with input fields
 .step-row {
@@ -21,8 +31,33 @@
   }
 }
 
+// warning text without icon - hides icon and removes left padding
+.govuk-warning-text--no-icon {
+  padding-top: 0;
+  margin-bottom: govuk-spacing(2);
+
+  .govuk-warning-text__text {
+    padding-left: 0;
+  }
+
+  .govuk-warning-text__icon {
+    display: none;
+  }
+}
+
+// Side navigation - force vertical layout to prevent horizontal scrolling at high zoom
+.moj-side-navigation {
+  display: block;
+  overflow-x: visible;
+}
+
+.moj-side-navigation__list {
+  display: block;
+  white-space: normal;
+}
+
 // Plan overview sub-navigation - position "Removed goals" tab on the right
-.moj-sub-navigation__list > li:has(> a[href$="type=removed"]) {
+.moj-sub-navigation__list > li:has(> a[href$='type=removed']) {
   float: right;
 }
 
@@ -36,21 +71,21 @@
   .moj-sub-navigation__item {
     display: none !important;
 
-    &:has([aria-current="page"]) {
+    &:has([aria-current='page']) {
       display: list-item !important;
     }
   }
 
   // Style sub-navigation links to look like plain text, not links
   .moj-sub-navigation__link {
-    color: govuk-colour("black") !important;
+    color: govuk-colour('black') !important;
     text-decoration: none !important;
     font-weight: bold !important;
   }
 
   // Style links within main content to look like plain text when printing
   .govuk-main-wrapper .govuk-link {
-    color: govuk-colour("black") !important;
+    color: govuk-colour('black') !important;
     text-decoration: none !important;
   }
 
@@ -59,4 +94,3 @@
     display: none !important;
   }
 }
-

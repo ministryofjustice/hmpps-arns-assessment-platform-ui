@@ -12,22 +12,24 @@ export default class AbstractPage {
   /** link to sign out */
   readonly signoutLink: Locator
 
-  /** link to manage user details */
-  readonly manageUserDetails: Locator
+  /** account type text shown under username in header */
+  readonly accountType: Locator
 
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
     this.usersName = page.getByTestId('header-user-name')
     this.signoutLink = page.getByText('Sign out')
-    this.manageUserDetails = page.getByTestId('manageDetails')
+    this.accountType = page.locator('.arns-common-header__menu-toggle-label, .arns-common-header__oasys-account-label')
   }
 
   async signOut() {
-    await this.signoutLink.first().click()
-  }
+    const menuToggle = this.page.locator('.arns-common-header__user-menu-toggle')
 
-  async clickManageUserDetails() {
-    await this.manageUserDetails.first().click()
+    if (await menuToggle.isVisible()) {
+      await menuToggle.click()
+    }
+
+    await this.signoutLink.first().click()
   }
 }

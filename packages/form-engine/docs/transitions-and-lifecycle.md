@@ -3,6 +3,7 @@
 The form-engine uses a lifecycle system to control access control, data loading, in-page actions, and form submission. Transitions define what happens at each stage of the request lifecycle.
 
 This enables:
+
 - Controlling access to steps based on conditions
 - Loading data from APIs before rendering
 - Handling in-page actions like address lookups
@@ -11,11 +12,11 @@ This enables:
 
 ## Transition Types
 
-| Transition | Builder | Where Used | Purpose |
-|------------|---------|------------|---------|
+| Transition | Builder              | Where Used    | Purpose                                         |
+| ---------- | -------------------- | ------------- | ----------------------------------------------- |
 | **Access** | `accessTransition()` | journey, step | Load data, check permissions, redirect or error |
-| **Action** | `actionTransition()` | step only | Handle in-page actions (lookups, fetches) |
-| **Submit** | `submitTransition()` | step only | Validate, save, and navigate |
+| **Action** | `actionTransition()` | step only     | Handle in-page actions (lookups, fetches)       |
+| **Submit** | `submitTransition()` | step only     | Validate, save, and navigate                    |
 
 ### Import
 
@@ -29,7 +30,9 @@ import {
   redirect,
   throwError,
   // HTTP references (for conditions)
-  Post, Params, Query,
+  Post,
+  Params,
+  Query,
 } from '@form-engine/form/builders'
 ```
 
@@ -58,11 +61,11 @@ Step.onSubmission  → Validate and navigate
 
 Different lifecycle hooks execute differently:
 
-| Hook | Execution | Reason |
-|------|-----------|--------|
-| `onAccess[]` | **Sequential** | Execute effects, first redirect/status stops |
-| `onAction[]` | **First match** | One action handles each button |
-| `onSubmission[]` | **First match** | One handler per submission |
+| Hook             | Execution       | Reason                                       |
+| ---------------- | --------------- | -------------------------------------------- |
+| `onAccess[]`     | **Sequential**  | Execute effects, first redirect/status stops |
+| `onAction[]`     | **First match** | One action handles each button               |
+| `onSubmission[]` | **First match** | One handler per submission                   |
 
 ---
 
@@ -159,11 +162,11 @@ onAccess: [
 
 ### When to Use Each Outcome
 
-| Use Effects-Only When | Use `redirect()` When | Use `throwError()` When |
-|-----------------------|-----------------------|-------------------------|
+| Use Effects-Only When      | Use `redirect()` When                 | Use `throwError()` When      |
+| -------------------------- | ------------------------------------- | ---------------------------- |
 | Loading data for rendering | User needs to complete a prerequisite | Resource doesn't exist (404) |
-| Pre-populating form fields | User needs to log in | User lacks permission (403) |
-| Initializing shared state | Workflow requires a different path | Server-side error (500) |
+| Pre-populating form fields | User needs to log in                  | User lacks permission (403)  |
+| Initializing shared state  | Workflow requires a different path    | Server-side error (500)      |
 
 ---
 
@@ -300,14 +303,15 @@ submitTransition({
 
 Validation always runs internally. The `validate` property controls whether errors are **shown** and which paths are **available**:
 
-| `validate` | Error Messages | Available Paths |
-|------------|----------------|-----------------|
-| `true` | Visible to user | `onValid`, `onInvalid`, `onAlways` |
-| `false` | Hidden | `onAlways` only |
+| `validate` | Error Messages  | Available Paths                    |
+| ---------- | --------------- | ---------------------------------- |
+| `true`     | Visible to user | `onValid`, `onInvalid`, `onAlways` |
+| `false`    | Hidden          | `onAlways` only                    |
 
 ### Basic Patterns
 
 **Validate and continue:**
+
 ```typescript
 submitTransition({
   validate: true,
@@ -319,6 +323,7 @@ submitTransition({
 ```
 
 **Save draft without validation:**
+
 ```typescript
 submitTransition({
   when: Post('action').match(Condition.Equals('saveDraft')),
@@ -331,6 +336,7 @@ submitTransition({
 ```
 
 **Stay on step when invalid:**
+
 ```typescript
 submitTransition({
   validate: true,
@@ -402,8 +408,8 @@ redirect({
 ### Static Navigation
 
 ```typescript
-redirect({ goto: 'next-step' })           // Relative path
-redirect({ goto: '/absolute/path' })      // Absolute path
+redirect({ goto: 'next-step' }) // Relative path
+redirect({ goto: '/absolute/path' }) // Absolute path
 ```
 
 ### Dynamic Navigation
@@ -474,13 +480,13 @@ throwError({
 
 ### Common Status Codes
 
-| Code | Meaning | Use When |
-|------|---------|----------|
-| 400 | Bad Request | Invalid input that can't be processed |
-| 403 | Forbidden | User lacks permission |
-| 404 | Not Found | Resource doesn't exist |
-| 409 | Conflict | Business rule violation (e.g., duplicate) |
-| 500 | Server Error | Unexpected server-side failure |
+| Code | Meaning      | Use When                                  |
+| ---- | ------------ | ----------------------------------------- |
+| 400  | Bad Request  | Invalid input that can't be processed     |
+| 403  | Forbidden    | User lacks permission                     |
+| 404  | Not Found    | Resource doesn't exist                    |
+| 409  | Conflict     | Business rule violation (e.g., duplicate) |
+| 500  | Server Error | Unexpected server-side failure            |
 
 ### Examples
 
@@ -555,18 +561,20 @@ journey({
     }),
   ],
 
-  steps: [/* ... */],
+  steps: [
+    /* ... */
+  ],
 })
 ```
 
 ### When to Use Journey vs Step Level
 
-| Scope | Use Journey-Level | Use Step-Level |
-|-------|-------------------|----------------|
-| Data loading | Shared data needed by all steps | Step-specific data |
+| Scope          | Use Journey-Level                  | Use Step-Level            |
+| -------------- | ---------------------------------- | ------------------------- |
+| Data loading   | Shared data needed by all steps    | Step-specific data        |
 | Access control | Authentication, global permissions | Step-specific permissions |
-| Actions | N/A (not available) | All in-page actions |
-| Submission | N/A (not available) | All form submissions |
+| Actions        | N/A (not available)                | All in-page actions       |
+| Submission     | N/A (not available)                | All form submissions      |
 
 ---
 
@@ -674,7 +682,9 @@ step({
     }),
   ],
 
-  blocks: [/* ... */],
+  blocks: [
+    /* ... */
+  ],
 
   onSubmission: [
     submitTransition({
@@ -816,7 +826,7 @@ onAccess: [
 // DON'T: Try to check data that hasn't been loaded yet
 onAccess: [
   accessTransition({
-    when: Data('itemNotFound').match(Condition.Equals(true)),  // Data doesn't exist yet!
+    when: Data('itemNotFound').match(Condition.Equals(true)), // Data doesn't exist yet!
     next: [throwError({ status: 404, message: 'Item not found' })],
   }),
 ]

@@ -12,7 +12,9 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageLayout } from './fields'
-import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
+import { CaseData } from '../../../constants'
+import { hasPostAgreementStatus, redirectIfGoalNotFound } from '../../../guards'
 
 /**
  * Change Goal page
@@ -50,17 +52,11 @@ export const changeGoalStep = step({
     accessTransition({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
-        SentencePlanEffects.loadNavigationReferrer(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
-      ],
-      next: [
-        // If goal not found, redirect to plan overview
-        redirect({
-          when: Data('activeGoal').not.match(Condition.IsRequired()),
-          goto: '../../plan/overview',
-        }),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CHANGE_GOAL),
       ],
     }),
+    redirectIfGoalNotFound('../../plan/overview'),
   ],
 
   onSubmission: [
@@ -68,18 +64,35 @@ export const changeGoalStep = step({
       when: Post('action').match(Condition.Equals('saveGoal')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.updateActiveGoal()],
+        effects: [
+          SentencePlanEffects.updateActiveGoal(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL, {
+            planStatus: when(Data('latestAgreementStatus').match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)))
+              .then('POST_AGREE')
+              .else('PRE_AGREE'),
+          }),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            message: Format('You changed a goal in %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+          }),
+        ],
         next: [
-          // if accessed through 'create a goal' page > 'add steps' and clicked 'back' then redirect to 'add-steps':
+          // Create-goal flow: add-goal → add-steps → back → change-goal.
+          // Clicking back from add-steps navigates to /change-goal. Because
+          // 'change-goal' is not already in the stack at that point, it's treated
+          // as forward navigation (pushed) rather than back-navigation (trimmed).
+          // This leaves 'add-steps' as the referrer, which we match on here to
+          // send the user back to finish adding steps after saving their changes.
           redirect({
-            when: Data('navigationReferrer').match(Condition.Equals('add-goal')),
+            when: Data('navigationReferrer').match(Condition.Equals('add-steps')),
             goto: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')),
           }),
           // if accessed through 'update goal and steps'(agreed plan):
           // - current goal with no steps > go to 'add-steps'
           // - current goal with steps OR future goal > go back to 'update-goal-steps'
           redirect({
-            when: Data('latestAgreementStatus').match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)),
+            when: hasPostAgreementStatus,
             goto: when(
               and(
                 Answer('can_start_now').match(Condition.Equals('yes')),

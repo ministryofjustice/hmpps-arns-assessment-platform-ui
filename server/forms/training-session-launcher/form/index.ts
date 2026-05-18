@@ -27,11 +27,18 @@ export const trainingSessionLauncherJourney = journey({
 
   view: {
     template: 'training-session-launcher/views/template',
+    locals: {
+      footerBaseUrl: '/platform',
+    },
   },
 
   onAccess: [
     accessTransition({
-      effects: [TrainingSessionLauncherEffects.storeCsrf(), TrainingSessionLauncherEffects.loadPreferences()],
+      effects: [
+        TrainingSessionLauncherEffects.setTargetService('sentence-plan'),
+        TrainingSessionLauncherEffects.storeCsrf(),
+        TrainingSessionLauncherEffects.loadPreferences(),
+      ],
     }),
   ],
 

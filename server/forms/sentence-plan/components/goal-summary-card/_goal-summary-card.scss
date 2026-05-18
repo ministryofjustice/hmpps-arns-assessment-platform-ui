@@ -7,15 +7,15 @@
 
   // Prevent links from turning purple when visited
   a:visited {
-    color: $govuk-link-colour;
+    color: govuk-functional-colour(link);
   }
 
   // Prevent button-as-link from turning blue when visited
   a.govuk-button:visited {
-    color: govuk-colour("white");
+    color: govuk-colour('white');
 
     &.govuk-button--secondary {
-      color: govuk-colour("black");
+      color: govuk-colour('black');
     }
   }
 
@@ -58,7 +58,7 @@
 
     &--empty,
     &--empty-no-shadow {
-      @include govuk-font($size: 19, $weight: "normal");
+      @include govuk-font($size: 19, $weight: 'normal');
       display: flex;
       justify-content: space-between;
       margin-bottom: govuk-spacing(2);
@@ -66,18 +66,18 @@
     }
 
     &--empty {
-      box-shadow: inset 0 -1px $govuk-border-colour;
+      box-shadow: inset 0 -1px govuk-functional-colour(border);
     }
   }
 
   &__areas-of-need {
     margin-bottom: 0;
-    @include govuk-font($size: 16, $weight: "normal");
-    color: $govuk-secondary-text-colour;
+    @include govuk-font($size: 16, $weight: 'normal');
+    color: govuk-functional-colour(secondary-text);
 
     &:not(:last-child) {
       padding-bottom: govuk-spacing(2);
-      box-shadow: inset 0 -1px $govuk-border-colour;
+      box-shadow: inset 0 -1px govuk-functional-colour(border);
     }
 
     &--agreed {
@@ -87,7 +87,7 @@
 
   &--error {
     padding-left: govuk-spacing(3);
-    border-left: $govuk-border-width-form-group-error solid $govuk-error-colour;
+    border-left: $govuk-border-width-form-group-error solid govuk-functional-colour(error);
   }
 
   .govuk-details {

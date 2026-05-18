@@ -1,6 +1,5 @@
 import type Logger from 'bunyan'
 import { JourneyDefinition } from '@form-engine/form/types/structures.type'
-import { formatBox } from '@form-engine/logging/formatBox'
 import FormInstance from '@form-engine/core/FormInstance'
 import { FormInstanceDependencies, FormPackage } from '@form-engine/core/types/engine.type'
 import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
@@ -19,6 +18,20 @@ export interface FormEngineOptions {
 
   /** Enable debug logging for form compilation and evaluation. Default: false */
   debug?: boolean
+
+  /**
+   * Defer per-step compilation (thunk handlers, linked closures, runtime plans)
+   * until the step is first accessed.
+   *
+   * When `true` (default), each step compiles on first request — faster startup,
+   * but the first user to hit a step pays the compilation cost.
+   *
+   * When `false`, all steps compile at form registration time — slower startup,
+   * but zero compilation overhead on any request.
+   *
+   * @default true
+   */
+  lazyStepCompilation?: boolean
 
   /** Logger instance for form engine output */
   logger?: Logger | Console
@@ -99,6 +112,7 @@ export default class FormEngine {
       disableBuiltInFunctions: false,
       disableBuiltInComponents: false,
       debug: false,
+      lazyStepCompilation: true,
       logger: console,
       ...constructorOptions,
     }
@@ -150,11 +164,22 @@ export default class FormEngine {
     try {
       const instance = FormInstance.createFromConfiguration(formConfiguration, this.dependencies)
 
+      const routesBefore = this.formEngineRouter.getRegisteredRoutes().length
+
+      if (!this.options.lazyStepCompilation) {
+        instance.compileAllSteps()
+      }
+
       this.formEngineRouter.mountForm(instance)
 
       this.forms.set(instance.getFormCode(), instance)
 
-      this.logFormRegistration(instance)
+      const routeCount = this.formEngineRouter.getRegisteredRoutes().length - routesBefore
+
+      this.dependencies.logger.info(
+        { form: instance.getFormCode(), routes: routeCount },
+        `FormEngine: Registered form '${instance.getFormTitle()}' with ${routeCount} routes`,
+      )
     } catch (e) {
       this.logRegistrationError(e)
     }
@@ -203,25 +228,6 @@ export default class FormEngine {
     this.registerForm(pkg.journey)
 
     return this
-  }
-
-  private logFormRegistration(instance: FormInstance) {
-    const getRoutes = this.formEngineRouter
-      .getRegisteredRoutes()
-      .filter(route => route.method === 'GET')
-      .map(route => route.path)
-
-    const message = [
-      { label: 'Form', value: instance.getFormTitle() },
-      { label: 'Code', value: instance.getFormCode() },
-      { label: 'Routes', value: `${getRoutes.length} registered` },
-    ]
-
-    if (getRoutes.length > 0) {
-      message.push({ label: 'GET Paths', value: getRoutes.join('\n') })
-    }
-
-    this.dependencies.logger.info(formatBox(message, { title: 'FormEngine' }))
   }
 
   private logRegistrationError(e: unknown) {

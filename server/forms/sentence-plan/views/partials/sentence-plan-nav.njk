@@ -11,7 +11,7 @@
     label: "Primary navigation",
     items: [
       {
-        text: personName + "'s plan",
+        text: (personName | possessive) + " plan",
         href: basePath + "/plan/overview",
         active: isOnPlanPage
       },
@@ -23,8 +23,9 @@
       {
         text: "About " + personName,
         href: basePath + "/about-person",
-        active: isOnAboutPage
-      }
+        active: isOnAboutPage,
+        attributes: { "data-ai-id": "about-page-primary-nav-link" } if not isOnAboutPage
+      } if showAboutTab
     ] | select | list
   }) }}
 {% endif %}

@@ -1,8 +1,23 @@
-import { FormInstanceDependencies } from '@form-engine/core/types/engine.type'
+import { FormInstanceDependencies, NodeId } from '@form-engine/core/types/engine.type'
 import { CompilationDependencies } from '@form-engine/core/compilation/CompilationDependencies'
 import { AnswerHistory } from '@form-engine/core/compilation/thunks/types'
 import ThunkCacheManager from '@form-engine/core/compilation/thunks/ThunkCacheManager'
 import { StepResponse, StepRequest } from '@form-engine/core/runtime/routes/types'
+import { ValidationResult } from '@form-engine/core/nodes/expressions/validation/ValidationHandler'
+
+export interface StepValidationFailure extends ValidationResult {
+  blockId: NodeId
+}
+
+export type DomainValidationFailure = ValidationResult
+
+export interface StepValidationState {
+  stepId: NodeId
+  validated: boolean
+  isValid: boolean
+  fieldFailures: StepValidationFailure[]
+  domainFailures: DomainValidationFailure[]
+}
 
 /**
  * Global mutable state that persists across thunk evaluations
@@ -10,6 +25,7 @@ import { StepResponse, StepRequest } from '@form-engine/core/runtime/routes/type
 export interface ThunkEvaluationGlobalState {
   data: Record<string, unknown>
   answers: Record<string, AnswerHistory>
+  validation?: StepValidationState
 }
 
 /**
@@ -74,8 +90,8 @@ export default class ThunkEvaluationContext {
     return this.compilationDependencies.metadataRegistry
   }
 
-  get dependencyGraph() {
-    return this.compilationDependencies.dependencyGraph
+  get astNodeTree() {
+    return this.compilationDependencies.astNodeTree
   }
 
   /**

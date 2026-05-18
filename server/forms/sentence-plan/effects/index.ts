@@ -2,20 +2,23 @@ import { defineEffectsWithDeps } from '@form-engine/registry/utils/createRegiste
 import { SentencePlanEffectsDeps } from './types'
 import { addNotification } from './notifications/addNotification'
 import { loadNotifications } from './notifications/loadNotifications'
-import { setNavigationReferrer } from './navigation/setNavigationReferrer'
-import { loadNavigationReferrer } from './navigation/loadNavigationReferrer'
+import { createNavigationEffects } from '../../shared/navigation/createNavigationEffects'
+import { Nav } from './navigation'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
+import { loadSentenceInformation } from './session/loadSentenceInformation'
 import { loadPlan } from './plan/loadPlan'
 import { deriveGoalsWithStepsFromAssessment } from './goals/deriveGoalsWithStepsFromAssessment'
 import { derivePlanAgreementsFromAssessment } from './plan/derivePlanAgreementsFromAssessment'
 import { loadPlanTimeline } from './plan/loadPlanTimeline'
 import { derivePlanHistoryEntries } from './plan/derivePlanHistoryEntries'
+import { derivePlanLastUpdated, derivePlanLastUpdatedForHistoric } from './plan/derivePlanLastUpdated'
 import { updatePlanAgreementStatus } from './plan/updatePlanAgreementStatus'
 import { createGoal } from './goals/createGoal'
 import { setAreaDataFromUrlParam } from './goals/setAreaDataFromUrlParam'
 import { setAreaDataFromActiveGoal } from './goals/setAreaDataFromActiveGoal'
 import { loadAreaAssessmentInfo } from './goals/loadAreaAssessmentInfo'
+import { loadAllAreasAssessmentInfo } from './goals/loadAllAreasAssessmentInfo'
 import { setActiveGoalContext } from './goals/setActiveGoalContext'
 import { loadActiveGoalForEdit } from './goals/loadActiveGoalForEdit'
 import { updateActiveGoal } from './goals/updateActiveGoal'
@@ -30,9 +33,23 @@ import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
 import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
 import { saveStepEditSession } from './steps/saveStepEditSession'
 import { setPrivacyAccepted } from './access/setPrivacyAccepted'
+import { updatePlanAgreement } from './plan/updatePlanAgreement'
+import { loadPreviousVersions } from './plan/loadPreviousVersions'
+import { loadHistoricPlan } from './plan/loadHistoricPlan'
+import { sendAuditEvent } from './audit/sendAuditEvent'
+import { loadFeatureFlags } from './feature-flags/loadFeatureFlags'
+import { sendTelemetryEvent } from './telemetry/sendTelemetryEvent'
+
+const { trackNavigation, insertNavigationReferrer } = createNavigationEffects({
+  stackKey: 'sentence-plan',
+  clearKey: Nav.PLAN_OVERVIEW,
+})
 
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
+export { Nav } from './navigation'
+export type { NavigationReferrer } from './navigation'
+export { AuditEvent } from '../../../services/auditService'
 
 /**
  * Sentence Plan Effects
@@ -62,6 +79,7 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     // Session
     initializeSessionFromAccess,
     loadSessionData,
+    loadSentenceInformation,
 
     // Access
     setPrivacyAccepted,
@@ -71,8 +89,8 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     loadNotifications,
 
     // Navigation
-    setNavigationReferrer,
-    loadNavigationReferrer,
+    trackNavigation,
+    insertNavigationReferrer,
 
     // Plan
     loadPlan,
@@ -80,13 +98,19 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     derivePlanAgreementsFromAssessment,
     loadPlanTimeline,
     derivePlanHistoryEntries,
+    derivePlanLastUpdated,
+    derivePlanLastUpdatedForHistoric,
     updatePlanAgreementStatus,
+    updatePlanAgreement,
+    loadPreviousVersions,
+    loadHistoricPlan,
 
     // Goals
     createGoal,
     setAreaDataFromUrlParam,
     setAreaDataFromActiveGoal,
     loadAreaAssessmentInfo,
+    loadAllAreasAssessmentInfo,
     setActiveGoalContext,
     loadActiveGoalForEdit,
     updateActiveGoal,
@@ -102,4 +126,13 @@ export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffects
     addStepToStepEditSession,
     removeStepFromStepEditSession,
     saveStepEditSession,
+
+    // Audit
+    sendAuditEvent,
+
+    // Telemetry
+    sendTelemetryEvent,
+
+    // FeatureFlags
+    loadFeatureFlags,
   })

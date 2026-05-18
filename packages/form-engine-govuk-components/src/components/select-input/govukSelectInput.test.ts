@@ -12,13 +12,11 @@ describe('govukSelectInput', () => {
   describe('Data transformation', () => {
     it('sets default values correctly', async () => {
       // Arrange
-      const block = {
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         items: [{ value: 'option1', text: 'Option 1' }],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.id).toBe('test-select')
@@ -29,49 +27,56 @@ describe('govukSelectInput', () => {
 
     it('uses custom ID over code', async () => {
       // Arrange
-      const block = {
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         id: 'custom-id',
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.id).toBe('custom-id')
       expect(params.name).toBe('test-select')
     })
 
+    it('passes through describedBy', async () => {
+      // Arrange
+      // Act
+      const params = await helper.getParams({
+        code: 'test-select',
+        describedBy: 'shared-hint-id',
+        items: [] as { value: string; text: string }[],
+      })
+
+      // Assert
+      expect(params.describedBy).toBe('shared-hint-id')
+    })
+
     it('passes through value', async () => {
       // Arrange
-      const block = {
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         value: 'selected-value',
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.value).toBe('selected-value')
     })
 
     it('passes through items array', async () => {
-      // Arrange
       const items = [
         { value: '', text: 'Choose an option' },
         { value: 'uk', text: 'United Kingdom' },
         { value: 'fr', text: 'France', disabled: true },
       ]
-      const block = {
+      // Arrange
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         items,
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.items).toEqual(items)
@@ -81,14 +86,12 @@ describe('govukSelectInput', () => {
   describe('Label transformation', () => {
     it('converts string label to object format', async () => {
       // Arrange
-      const block = {
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         label: 'Select your country',
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.label).toEqual({
@@ -103,14 +106,13 @@ describe('govukSelectInput', () => {
         classes: 'govuk-label--l',
         isPageHeading: true,
       }
-      const block = {
+
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         label: labelObj,
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.label).toEqual(labelObj)
@@ -121,14 +123,13 @@ describe('govukSelectInput', () => {
       const labelObj = {
         html: '<span>Country</span> <span class="govuk-caption-m">Required</span>',
       }
-      const block = {
+
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         label: labelObj,
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.label).toEqual(labelObj)
@@ -138,14 +139,12 @@ describe('govukSelectInput', () => {
   describe('Hint transformation', () => {
     it('converts string hint to object format', async () => {
       // Arrange
-      const block = {
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         hint: 'Select the country where you currently live',
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.hint).toEqual({
@@ -160,14 +159,13 @@ describe('govukSelectInput', () => {
         classes: 'custom-hint',
         id: 'country-hint',
       }
-      const block = {
+
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         hint: hintObj,
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.hint).toEqual(hintObj)
@@ -175,14 +173,12 @@ describe('govukSelectInput', () => {
 
     it('passes undefined hint when not provided', async () => {
       // Arrange
-      const block = {
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         hint: undefined as undefined,
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.hint).toBeUndefined()
@@ -192,14 +188,12 @@ describe('govukSelectInput', () => {
   describe('Select attributes', () => {
     it('passes through disabled state', async () => {
       // Arrange
-      const block = {
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         disabled: true,
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.disabled).toBe(true)
@@ -207,14 +201,12 @@ describe('govukSelectInput', () => {
 
     it('passes through classes', async () => {
       // Arrange
-      const block = {
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         classes: 'govuk-!-width-one-half',
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.classes).toBe('govuk-!-width-one-half')
@@ -222,17 +214,15 @@ describe('govukSelectInput', () => {
 
     it('passes through attributes', async () => {
       // Arrange
-      const block = {
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         attributes: {
           'data-module': 'accessible-autocomplete',
           'aria-describedby': 'help-text',
         },
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.attributes).toEqual({
@@ -249,14 +239,13 @@ describe('govukSelectInput', () => {
         beforeInput: { text: 'Before text' },
         afterInput: { html: '<span>After HTML</span>' },
       }
-      const block = {
+
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         formGroup,
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.formGroup).toEqual(formGroup)
@@ -266,14 +255,12 @@ describe('govukSelectInput', () => {
   describe('Error message transformation', () => {
     it('transforms error array to error message object', async () => {
       // Arrange
-      const block = {
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         errors: [{ message: 'Select an option' }],
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.errorMessage).toEqual({
@@ -283,14 +270,12 @@ describe('govukSelectInput', () => {
 
     it('uses first error when multiple provided', async () => {
       // Arrange
-      const block = {
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         errors: [{ message: 'First error' }, { message: 'Second error' }],
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.errorMessage).toEqual({
@@ -300,13 +285,11 @@ describe('govukSelectInput', () => {
 
     it('sets errorMessage to undefined when no errors', async () => {
       // Arrange
-      const block = {
+      // Act
+      const params = await helper.getParams({
         code: 'test-select',
         items: [] as { value: string; text: string }[],
-      }
-
-      // Act
-      const params = await helper.getParams(block)
+      })
 
       // Assert
       expect(params.errorMessage).toBeUndefined()

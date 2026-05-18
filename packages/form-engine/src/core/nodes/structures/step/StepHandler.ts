@@ -9,7 +9,6 @@ import {
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
 import { evaluatePropertyValue } from '@form-engine/core/utils/thunkEvaluatorsAsync'
 import { evaluatePropertyValueSync } from '@form-engine/core/utils/thunkEvaluatorsSync'
-import { isASTNode } from '@form-engine/core/typeguards/nodes'
 
 /**
  * Handler for Step structure nodes
@@ -20,7 +19,7 @@ import { isASTNode } from '@form-engine/core/typeguards/nodes'
  * - All properties except transitions (handled by FormStepController)
  *
  * For OTHER STEPS:
- * - Only navigation/validation properties: path, title, description, isEntryPoint, blocks, metadata
+ * - Only navigation/validation properties: path, code, title, description, isEntryPoint, blocks, metadata
  * - Rendering properties are skipped
  *
  * This runtime filtering replaces compile-time filtering in findRelevantNodes,
@@ -30,13 +29,27 @@ import { isASTNode } from '@form-engine/core/typeguards/nodes'
  * Asynchronous when any nested AST node is async.
  */
 export default class StepHandler implements ThunkHandler {
-  isAsync = true
+  isAsync = false
+
+  private propertiesWithNodes: ReadonlySet<string> | undefined
 
   // Transition properties are handled separately by FormStepController
   private static readonly TRANSITION_PROPS = ['onLoad', 'onAccess', 'onAction', 'onSubmission']
 
+  private static readonly TRANSITION_PROPS_SET = new Set(StepHandler.TRANSITION_PROPS)
+
   // Properties needed for navigation/validation on non-current steps
-  private static readonly NAVIGATION_PROPS = ['path', 'title', 'isEntryPoint', 'description', 'blocks', 'metadata']
+  private static readonly NAVIGATION_PROPS = [
+    'path',
+    'code',
+    'title',
+    'isEntryPoint',
+    'description',
+    'blocks',
+    'metadata',
+  ]
+
+  private static readonly NAVIGATION_PROPS_SET = new Set(StepHandler.NAVIGATION_PROPS)
 
   constructor(
     public readonly nodeId: NodeId,
@@ -46,49 +59,45 @@ export default class StepHandler implements ThunkHandler {
   computeIsAsync(deps: MetadataComputationDependencies): void {
     const isCurrentStep = deps.metadataRegistry.get(this.nodeId, 'isCurrentStep', false)
     const isAncestorOfStep = deps.metadataRegistry.get(this.nodeId, 'isAncestorOfStep', false)
+    const isCurrentOrAncestor = isCurrentStep || isAncestorOfStep
+    const propertiesWithNodes = new Set<string>()
+    let hasAsync = false
 
-    // Determine which properties to check based on step context
-    const propertiesToCheck =
-      isCurrentStep || isAncestorOfStep
-        ? Object.entries(this.node.properties).filter(([key]) => !StepHandler.TRANSITION_PROPS.includes(key))
-        : Object.entries(this.node.properties).filter(([key]) => StepHandler.NAVIGATION_PROPS.includes(key))
+    deps.astNodeTree.getChildren(this.nodeId).forEach(childId => {
+      const property = deps.metadataRegistry.get<string>(childId, 'attachedToParentProperty')
 
-    const asyncProperties: string[] = []
+      if (!property) {
+        return
+      }
 
-    propertiesToCheck.forEach(([key, value]) => {
-      if (this.containsAsyncNodes(value, deps)) {
-        asyncProperties.push(key)
+      propertiesWithNodes.add(property)
+
+      if (hasAsync) {
+        return
+      }
+
+      const isRelevant = isCurrentOrAncestor
+        ? !StepHandler.TRANSITION_PROPS_SET.has(property)
+        : StepHandler.NAVIGATION_PROPS_SET.has(property)
+
+      if (!isRelevant) {
+        return
+      }
+
+      const handler = deps.thunkHandlerRegistry.get(childId)
+
+      if (handler?.isAsync ?? true) {
+        hasAsync = true
       }
     })
 
-    this.isAsync = asyncProperties.length > 0
-  }
-
-  private containsAsyncNodes(value: unknown, deps: MetadataComputationDependencies): boolean {
-    if (value === null || value === undefined) {
-      return false
-    }
-
-    if (isASTNode(value)) {
-      const handler = deps.thunkHandlerRegistry.get(value.id)
-
-      return handler?.isAsync ?? true
-    }
-
-    if (Array.isArray(value)) {
-      return value.some(item => this.containsAsyncNodes(item, deps))
-    }
-
-    if (typeof value === 'object') {
-      return Object.values(value).some(prop => this.containsAsyncNodes(prop, deps))
-    }
-
-    return false
+    this.isAsync = hasAsync
+    this.propertiesWithNodes = propertiesWithNodes
   }
 
   evaluateSync(context: ThunkEvaluationContext, invoker: ThunkInvocationAdapter): HandlerResult {
     const propertiesToEvaluate = this.getPropertiesToEvaluate(context)
-    const evaluatedProperties = evaluatePropertyValueSync(propertiesToEvaluate, context, invoker)
+    const evaluatedProperties = this.evaluatePropertiesSync(propertiesToEvaluate, context, invoker)
 
     return {
       value: {
@@ -101,7 +110,7 @@ export default class StepHandler implements ThunkHandler {
 
   async evaluate(context: ThunkEvaluationContext, invoker: ThunkInvocationAdapter): Promise<HandlerResult> {
     const propertiesToEvaluate = this.getPropertiesToEvaluate(context)
-    const evaluatedProperties = await evaluatePropertyValue(propertiesToEvaluate, context, invoker)
+    const evaluatedProperties = await this.evaluateProperties(propertiesToEvaluate, context, invoker)
 
     return {
       value: {
@@ -110,6 +119,46 @@ export default class StepHandler implements ThunkHandler {
         properties: evaluatedProperties,
       },
     }
+  }
+
+  private evaluatePropertiesSync(
+    properties: Record<string, unknown>,
+    context: ThunkEvaluationContext,
+    invoker: ThunkInvocationAdapter,
+  ): Record<string, unknown> {
+    const result: Record<string, unknown> = {}
+
+    Object.entries(properties).forEach(([key, value]) => {
+      if (this.propertiesWithNodes && !this.propertiesWithNodes.has(key)) {
+        result[key] = value
+        return
+      }
+
+      result[key] = evaluatePropertyValueSync(value, context, invoker)
+    })
+
+    return result
+  }
+
+  private async evaluateProperties(
+    properties: Record<string, unknown>,
+    context: ThunkEvaluationContext,
+    invoker: ThunkInvocationAdapter,
+  ): Promise<Record<string, unknown>> {
+    const result: Record<string, unknown> = {}
+
+    await Promise.all(
+      Object.entries(properties).map(async ([key, value]) => {
+        if (this.propertiesWithNodes && !this.propertiesWithNodes.has(key)) {
+          result[key] = value
+          return
+        }
+
+        result[key] = await evaluatePropertyValue(value, context, invoker)
+      }),
+    )
+
+    return result
   }
 
   /**

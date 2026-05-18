@@ -78,7 +78,7 @@ const NEEDS_CONFIG: NeedConfig[] = [
     strengthsKey: 'eteStrengths',
   },
   {
-    name: 'Drug Misuse',
+    name: 'Drug Use',
     scoreKey: 'drugOtherWeightedScore',
     thresholdKey: 'drugThreshold',
     harmKey: 'drugLinkedToHarm',
@@ -86,7 +86,7 @@ const NEEDS_CONFIG: NeedConfig[] = [
     strengthsKey: 'drugStrengths',
   },
   {
-    name: 'Alcohol Misuse',
+    name: 'Alcohol Use',
     scoreKey: 'alcoholOtherWeightedScore',
     thresholdKey: 'alcoholThreshold',
     harmKey: 'alcoholLinkedToHarm',
@@ -179,6 +179,7 @@ function transformToDisplaySession(session: Session): DisplaySession {
     crn: values.crn || '',
     pnc: values.pnc || '',
     oasysAssessmentPk: values.oasysAssessmentPk || '',
+    sentencePlanVersion: values.sentencePlanVersion || null,
     availableServices: computeAvailableServices(session),
   }
 }
@@ -208,8 +209,10 @@ function resolveSavedScenario(saved: SavedScenario): DisplayScenario {
     crn: values.crn || '',
     pnc: values.pnc || '',
     oasysAssessmentPk: values.oasysAssessmentPk || '',
+    sentencePlanVersion: values.sentencePlanVersion || null,
 
     displayNeeds: transformToDisplayNeeds(values),
+    isCustom: true,
     rawScenario: {
       id: saved.id,
       name: saved.name,

@@ -1,11 +1,17 @@
-import { accessTransition, Data, journey, redirect } from '@form-engine/form/builders'
+import { accessTransition, and, Data, Format, journey, redirect, Request } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import { planHistoryJourney } from './journeys/plan-history'
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
-import { actorLabels, areasOfNeed } from './constants'
+import { actorLabels, areasOfNeed, formVersion } from './constants'
 import { SentencePlanEffects } from '../../effects'
+import { NAV_KEY_PATTERNS } from '../../effects/navigation'
+import {
+  canAccessSanContent,
+  hasPostAgreementStatus,
+  redirectIfMergedMpopPlan,
+  redirectToPrivacyUnlessAccepted,
+} from './guards'
 
 /**
  * Sentence Plan v1.0 Journey
@@ -23,35 +29,46 @@ export const sentencePlanV1Journey = journey({
   view: {
     template: 'sentence-plan/views/sentence-plan-step',
     locals: {
+      footerBaseUrl: '/platform',
       basePath: '/sentence-plan/v1.0',
       hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
-      showPlanHistoryTab: Data('latestAgreementStatus').match(
-        Condition.Array.IsIn(['AGREED', 'COULD_NOT_ANSWER', 'DO_NOT_AGREE']),
-      ),
+      showAboutTab: canAccessSanContent,
+      showPlanHistoryTab: hasPostAgreementStatus,
     },
   },
   data: {
     areasOfNeed,
     actorLabels,
+    formVersion,
   },
   onAccess: [
     accessTransition({
       effects: [
-        SentencePlanEffects.loadSessionData(),
+        SentencePlanEffects.loadFeatureFlags(),
         SentencePlanEffects.initializeSessionFromAccess(),
+        SentencePlanEffects.loadSessionData(),
         SentencePlanEffects.loadPlan(),
         SentencePlanEffects.deriveGoalsWithStepsFromAssessment(),
         SentencePlanEffects.derivePlanAgreementsFromAssessment(),
+        SentencePlanEffects.trackNavigation(NAV_KEY_PATTERNS),
       ],
+    }),
+    accessTransition({
+      when: and(
+        Data('sessionDetails.planVersion').match(Condition.IsRequired()),
+        Request.Path().not.match(Condition.String.MatchesRegex('view-historic')),
+      ),
       next: [
-        // Redirect to privacy screen if privacy not yet accepted this session
         redirect({
-          when: Data('session.privacyAccepted').not.match(Condition.Equals(true)),
-          goto: '../../privacy',
+          goto: Format('/sentence-plan/v1.0/plan/view-historic/%1?type=current', Data('sessionDetails.planVersion')),
         }),
       ],
     }),
+    // MPoP users with a merged plan are blocked from accessing any plan content.
+    redirectIfMergedMpopPlan(),
+    // READ_ONLY users skip privacy and go straight to overview; edit users must accept privacy first.
+    redirectToPrivacyUnlessAccepted(),
   ],
   steps: [aboutPersonStep],
-  children: [planOverviewJourney, goalManagementJourney, planHistoryJourney],
+  children: [planOverviewJourney, goalManagementJourney],
 })

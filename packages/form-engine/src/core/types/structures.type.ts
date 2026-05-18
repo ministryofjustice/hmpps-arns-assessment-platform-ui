@@ -37,6 +37,7 @@ export interface StepASTNode extends ASTNode {
   type: ASTNodeType.STEP
   properties: {
     path: string
+    code?: string
     onAccess?: AccessTransitionASTNode[]
     onAction?: ActionTransitionASTNode[]
     onSubmission?: SubmitTransitionASTNode[]
@@ -48,6 +49,7 @@ export interface StepASTNode extends ASTNode {
     backlink?: string
     metadata?: Record<string, any>
     data?: Record<string, unknown>
+    validate?: ASTNode[]
   }
 }
 

@@ -15,6 +15,13 @@ export default function setUpWebSecurity(): Router {
     req.state = { ...req.state, cspNonce }
     next()
   })
+  router.use((req: Request, res: Response, next: NextFunction) => {
+    res.setHeader(
+      'Permissions-Policy',
+      'geolocation=(), camera=(), microphone=(), payment=(), usb=(), fullscreen=(self)',
+    )
+    next()
+  })
   router.use(
     helmet({
       contentSecurityPolicy: {
@@ -26,18 +33,28 @@ export default function setUpWebSecurity(): Router {
           // <link href="http://example.com/" rel="stylesheet" nonce="{{ cspNonce }}">
           // This ensures only scripts we trust are loaded, and not anything injected into the
           // page by an attacker.
-          scriptSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
+          scriptSrc: [
+            "'self'",
+            (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`,
+            'https://embed.smartsurvey.io',
+          ],
           styleSrc: ["'self'", (_req: Request, res: Response) => `'nonce-${res.locals.cspNonce}'`],
-          fontSrc: ["'self'"],
-          connectSrc: ["'self'"],
-          imgSrc: ["'self'"],
+          // SmartSurvey injects <style> elements and inline style attributes without nonces
+          styleSrcElem: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+          styleSrcAttr: ["'unsafe-inline'"],
+          fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+          connectSrc: ["'self'", 'https://www.smartsurvey.co.uk', 'https://*.applicationinsights.azure.com'],
+          imgSrc: ["'self'", 'https://embed.smartsurvey.io'],
           formAction: [
-            `'self' https://*.hmpps.service.justice.gov.uk http://localhost:* ${config.apis.hmppsAuth.externalUrl} ${config.apis.arnsHandover.externalUrl}`,
+            `'self' https://*.hmpps.service.justice.gov.uk ${config.apis.hmppsAuth.externalUrl} ${config.apis.arnsHandover.externalUrl} ${config.sanUrl}`,
           ],
           ...(config.https ? {} : { upgradeInsecureRequests: null }),
         },
       },
-      crossOriginEmbedderPolicy: false,
+      // You can bypass it for specific resources by adding the crossorigin attribute:
+      // <img src="https://thirdparty.com/img.png" crossorigin>
+      crossOriginEmbedderPolicy: { policy: 'require-corp' },
+      xXssProtection: false,
     }),
   )
   return router

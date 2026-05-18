@@ -47,6 +47,22 @@ function resolveAreaOfNeedLabel(slug: string | undefined, areasOfNeed: AreaOfNee
   return area?.text ?? slug
 }
 
+interface AssessmentData {
+  collections?: RawCollection[]
+}
+
+interface DataToDeriveFrom {
+  assessment: AssessmentData | undefined
+  caseData: { name?: { forename?: string } } | undefined
+  actorLabels: Record<string, string> | undefined
+  areasOfNeed: AreaOfNeed[] | undefined
+}
+
+interface DerivedGoals {
+  goals: DerivedGoal[]
+  goalsCollectionUuid: string | undefined
+}
+
 /**
  * Derive goals with steps from the loaded assessment
  *
@@ -58,26 +74,29 @@ function resolveAreaOfNeedLabel(slug: string | undefined, areasOfNeed: AreaOfNee
  * - Data('goalsCollectionUuid'): UUID of the GOALS collection (for adding new goals)
  */
 export const deriveGoalsWithStepsFromAssessment = () => async (context: SentencePlanContext) => {
-  const assessment = context.getData('assessment') as { collections?: RawCollection[] } | undefined
+  const derivedGoals = deriveGoalsWithSteps({
+    assessment: context.getData('assessment') as AssessmentData | undefined,
+    caseData: context.getData('caseData'),
+    actorLabels: context.getData('actorLabels'),
+    areasOfNeed: context.getData('areasOfNeed'),
+  })
 
-  if (!assessment?.collections) {
-    context.setData('goals', [])
-    return
+  context.setData('goals', derivedGoals.goals)
+  context.setData('goalsCollectionUuid', derivedGoals.goalsCollectionUuid)
+}
+
+export const deriveGoalsWithSteps = (data: DataToDeriveFrom): DerivedGoals => {
+  if (!data.assessment?.collections) {
+    return { goals: [], goalsCollectionUuid: undefined }
   }
 
-  const goalsCollection = assessment.collections.find(c => c.name === 'GOALS')
+  const goalsCollection = data.assessment.collections.find(c => c.name === 'GOALS')
 
   if (!goalsCollection) {
-    context.setData('goals', [])
-    return
+    return { goals: [], goalsCollectionUuid: undefined }
   }
 
-  context.setData('goalsCollectionUuid', goalsCollection.uuid)
-
-  const caseData = context.getData('caseData') as { name?: { forename?: string } } | undefined
-  const personName = caseData?.name?.forename ?? 'Person on probation'
-  const actorLabels = context.getData('actorLabels')
-  const areasOfNeed = context.getData('areasOfNeed')
+  const personName = data.caseData?.name?.forename ?? 'Person on probation'
 
   const goals: DerivedGoal[] = goalsCollection.items.map((item, collectionIndex) => {
     const answers = unwrapAll<GoalAnswers>(item.answers)
@@ -92,7 +111,7 @@ export const deriveGoalsWithStepsFromAssessment = () => async (context: Sentence
       return {
         uuid: stepItem.uuid,
         actor: stepAnswers.actor,
-        actorLabel: resolveActorLabel(stepAnswers.actor, actorLabels, personName),
+        actorLabel: resolveActorLabel(stepAnswers.actor, data.actorLabels, personName),
         status: stepAnswers.status,
         description: stepAnswers.description,
         statusDate: stepProperties.status_date,
@@ -125,9 +144,9 @@ export const deriveGoalsWithStepsFromAssessment = () => async (context: Sentence
       targetDate: new Date(answers.target_date),
       statusDate: new Date(properties.status_date),
       areaOfNeed: answers.area_of_need,
-      areaOfNeedLabel: resolveAreaOfNeedLabel(answers.area_of_need, areasOfNeed),
+      areaOfNeedLabel: resolveAreaOfNeedLabel(answers.area_of_need, data.areasOfNeed),
       relatedAreasOfNeed,
-      relatedAreasOfNeedLabels: relatedAreasOfNeed.map(slug => resolveAreaOfNeedLabel(slug, areasOfNeed)),
+      relatedAreasOfNeedLabels: relatedAreasOfNeed.map(slug => resolveAreaOfNeedLabel(slug, data.areasOfNeed)),
       stepsCollectionUuid: stepsCollections[0]?.uuid,
       steps,
       notesCollectionUuid: notesCollections[0]?.uuid,
@@ -156,5 +175,5 @@ export const deriveGoalsWithStepsFromAssessment = () => async (context: Sentence
     }
   })
 
-  context.setData('goals', goals)
+  return { goals, goalsCollectionUuid: goalsCollection.uuid }
 }

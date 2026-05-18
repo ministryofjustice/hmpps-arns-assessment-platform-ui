@@ -1,6 +1,6 @@
 import { InternalServerError } from 'http-errors'
 import { User } from '../../../../interfaces/user'
-import { AreaOfNeed, GoalAnswers, GoalProperties, GoalStatus, SentencePlanContext } from '../types'
+import { AreaOfNeed, DerivedGoal, GoalAnswers, GoalProperties, GoalStatus, SentencePlanContext } from '../types'
 
 export const MONTHS_BY_OPTION: Record<string, number> = {
   date_in_3_months: 3,
@@ -110,6 +110,54 @@ export const getRequiredEffectContext = (context: SentencePlanContext, effectNam
 export const getPractitionerName = (context: SentencePlanContext, user: User): string => {
   const session = context.getSession()
   return session.practitionerDetails?.displayName || user.name
+}
+
+// ============================================================================
+// Active Goal Helpers
+// ============================================================================
+
+/**
+ * Active goal lookup result from request params + derived goals.
+ */
+export interface ActiveGoalResolution {
+  goalUuid: string
+  activeGoal: DerivedGoal
+}
+
+/**
+ * Resolve the active goal from route param `:uuid`.
+ *
+ * Returns null when:
+ * - route has no UUID
+ * - UUID is the literal ':uuid' placeholder
+ * - no matching goal exists in Data('goals')
+ */
+export const resolveActiveGoalFromRequest = (context: SentencePlanContext): ActiveGoalResolution | null => {
+  const goalUuid = context.getRequestParam('uuid')
+
+  if (!goalUuid || goalUuid === ':uuid') {
+    return null
+  }
+
+  const goals = context.getData('goals') as DerivedGoal[] | undefined
+  const activeGoal = goals?.find(goal => goal.uuid === goalUuid)
+
+  if (!activeGoal) {
+    return null
+  }
+
+  return { goalUuid, activeGoal }
+}
+
+/**
+ * Store active goal identifiers in context for downstream effects and step logic.
+ */
+export const setActiveGoalData = (
+  context: SentencePlanContext,
+  { goalUuid, activeGoal }: ActiveGoalResolution,
+): void => {
+  context.setData('activeGoal', activeGoal)
+  context.setData('activeGoalUuid', goalUuid)
 }
 
 // ============================================================================

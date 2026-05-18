@@ -26,7 +26,7 @@ export function buildCoordinatorRequest(session: Session): OasysCreateRequest {
   const baseRequest: OasysCreateRequest = {
     oasysAssessmentPk: values.oasysAssessmentPk,
     planType: 'INITIAL',
-    assessmentType: 'SAN_SP',
+    assessmentType: 'SP',
     userDetails: {
       id: values.practitionerIdentifier,
       name: values.practitionerDisplayName,
@@ -57,7 +57,7 @@ export async function createInCoordinatorAndUpdatePreferences(
   preferencesId: string,
 ) {
   // Run before hooks
-  await runBeforeCreateSessionHooks(session.flags, deps, context)
+  await runBeforeCreateSessionHooks(session.flags, deps, context, session)
 
   // Call coordinator API
   const coordinatorRequest = buildCoordinatorRequest(session)
@@ -90,7 +90,7 @@ export async function createInCoordinatorAndUpdatePreferences(
   }
 
   // Run after hooks
-  await runAfterCreateSessionHooks(session.flags, deps, context)
+  await runAfterCreateSessionHooks(session.flags, deps, context, session)
 
   // Update session in preferences with response IDs (only if we got a response)
   if (coordinatorResponse) {
@@ -104,7 +104,8 @@ export async function createInCoordinatorAndUpdatePreferences(
             sanAssessmentId: coordinatorResponse.sanAssessmentId,
             sanAssessmentVersion: coordinatorResponse.sanAssessmentVersion,
             sentencePlanId: coordinatorResponse.sentencePlanId,
-            sentencePlanVersion: coordinatorResponse.sentencePlanVersion,
+            sentencePlanVersion:
+              s.sentencePlanVersion !== null ? s.sentencePlanVersion : coordinatorResponse.sentencePlanVersion,
           }
         }
 

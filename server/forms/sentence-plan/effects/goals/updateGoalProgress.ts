@@ -11,7 +11,8 @@ import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
  * This effect:
  * 1. Updates the status of each step based on form fields (step_status_0, step_status_1, etc.)
  * 2. Adds a progress note if the user entered one
- * 3. Sets 'allStepsCompleted' boolean in context (used by confirm-if-achieved journey)
+ * 3. Emits a GOAL_UPDATED timeline event if any changes were made
+ * 4. Sets 'allStepsCompleted' boolean in context (used by confirm-if-achieved journey)
  *
  * Form fields used:
  * - step_status_{index}: Status for each step
@@ -26,9 +27,14 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
   }
 
   const practitionerName = getPractitionerName(context, user)
+  const progressNotes = context.getAnswer('progress_notes')
+  const hasProgressNotes = progressNotes && typeof progressNotes === 'string' && progressNotes.trim().length > 0
 
   const steps: DerivedStep[] = activeGoal.steps ?? []
   const commands: Commands[] = []
+
+  // Track if any step statuses changed
+  let hasStepStatusChanges = false
 
   // 1. Update step statuses
   steps.forEach((step, index) => {
@@ -36,6 +42,7 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
 
     // Only update if status has changed
     if (newStatus && newStatus !== step.status) {
+      hasStepStatusChanges = true
       commands.push({
         type: 'UpdateCollectionItemAnswersCommand',
         collectionItemUuid: step.uuid,
@@ -43,10 +50,6 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
           status: newStatus,
         }),
         removed: [],
-        timeline: {
-          type: 'STEP_UPDATED',
-          data: {},
-        },
         assessmentUuid,
         user,
       })
@@ -66,8 +69,7 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
   })
 
   // 2. Add progress note if provided
-  const progressNotes = context.getAnswer('progress_notes')
-  if (progressNotes && typeof progressNotes === 'string' && progressNotes.trim().length > 0) {
+  if (hasProgressNotes) {
     const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
 
     commands.push(
@@ -80,6 +82,27 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
         user,
       }),
     )
+  }
+
+  // 3. Emit GOAL_UPDATED timeline event if any changes were made
+  if (hasStepStatusChanges || hasProgressNotes) {
+    commands.push({
+      type: 'UpdateCollectionItemPropertiesCommand',
+      collectionItemUuid: activeGoal.uuid,
+      added: {},
+      removed: [],
+      timeline: {
+        type: 'GOAL_UPDATED',
+        data: {
+          goalUuid: activeGoal.uuid,
+          goalTitle: activeGoal.title,
+          updatedBy: practitionerName,
+          notes: hasProgressNotes ? (progressNotes as string).trim() : undefined,
+        },
+      },
+      assessmentUuid,
+      user,
+    })
   }
 
   // Execute all commands in a single batch

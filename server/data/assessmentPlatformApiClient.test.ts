@@ -220,6 +220,7 @@ describe('AssessmentPlatformApiClient', () => {
         collections: [],
         collaborators: [mockUser],
         identifiers: {},
+        flags: [],
       }
 
       const response: QueriesResponse = {
@@ -278,6 +279,7 @@ describe('AssessmentPlatformApiClient', () => {
         collections: [],
         collaborators: [mockUser],
         identifiers: {},
+        flags: [],
       }
 
       const result2: TimelineQueryResult = {
@@ -318,6 +320,7 @@ describe('AssessmentPlatformApiClient', () => {
         collections: [],
         collaborators: [mockUser],
         identifiers: {},
+        flags: [],
       }
 
       const response: QueriesResponse = {

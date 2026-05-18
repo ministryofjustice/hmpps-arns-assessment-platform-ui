@@ -55,7 +55,7 @@ export default class PreferencesStore {
 
       return JSON.parse(data.toString()) as T
     } catch (error) {
-      logger.error('Failed to get preferences data', error)
+      logger.error({ err: error, preferencesId }, 'Failed to get preferences data')
 
       return null
     }
@@ -75,7 +75,7 @@ export default class PreferencesStore {
         EX: DEFAULT_TTL_SECONDS,
       })
     } catch (error) {
-      logger.error('Failed to set preferences data', error)
+      logger.error({ err: error, preferencesId }, 'Failed to set preferences data')
     }
   }
 
@@ -89,7 +89,7 @@ export default class PreferencesStore {
 
       await this.client.del(this.getKey(preferencesId))
     } catch (error) {
-      logger.error('Failed to delete preferences data', error)
+      logger.error({ err: error, preferencesId }, 'Failed to delete preferences data')
     }
   }
 

@@ -106,7 +106,7 @@ export interface MyAlertBox extends BlockDefinition {
 }
 
 // 2. Create the renderer function
-async function alertBoxRenderer(
+function alertBoxRenderer(
   block: EvaluatedBlock<MyAlertBox>,
   nunjucksEnv: nunjucks.Environment,
 ): Promise<string> {
@@ -177,7 +177,7 @@ export interface MyStarRating extends FieldBlockDefinition {
   hint?: ConditionalString
 }
 
-async function starRatingRenderer(
+function starRatingRenderer(
   block: EvaluatedBlock<MyStarRating>,
   nunjucksEnv: nunjucks.Environment,
 ): Promise<string> {
@@ -205,7 +205,7 @@ export const myStarRating = buildNunjucksComponent<MyStarRating>('myStarRating',
     transformExample: [
       CodeBlock({
         language: 'typescript',
-        code: `async function myDatePickerRenderer(
+        code: `function myDatePickerRenderer(
   block: EvaluatedBlock<MyDatePicker>,
   nunjucksEnv: nunjucks.Environment,
 ): Promise<string> {

@@ -19,7 +19,7 @@ export default class ConfirmAchievedGoalPage extends AbstractPage {
     this.header = page.locator('h1')
     this.howHelpedTextarea = page.locator('#how_helped')
     this.confirmButton = page.getByRole('button', { name: 'Confirm' })
-    this.cancelButton = page.getByRole('button', { name: 'Do not mark as achieved' })
+    this.cancelButton = page.getByRole('link', { name: 'Do not mark as achieved' })
     this.goalCard = page.locator('[data-qa="goal-summary-card"]')
     this.goalTitle = page.locator('[data-qa="goal-title"]')
   }

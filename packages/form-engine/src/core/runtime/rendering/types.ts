@@ -1,4 +1,4 @@
-import { ASTNode } from '@form-engine/core/types/engine.type'
+import { ASTNode, NodeId } from '@form-engine/core/types/engine.type'
 import { ASTNodeType } from '@form-engine/core/types/enums'
 import { ValidationResult } from '@form-engine/core/nodes/expressions/validation/ValidationHandler'
 import { BlockASTNode } from '@form-engine/core/types/structures.type'
@@ -105,11 +105,19 @@ export interface RenderContext {
   showValidationFailures: boolean
 
   /** Failed validation results from field blocks (only populated when showValidationFailures is true) */
-  validationErrors: ValidationResult[]
+  fieldValidationErrors: ValidationResult[]
+
+  /** Failed domain validation results from step-level validations (only populated when showValidationFailures is true) */
+  domainValidationErrors: ValidationResult[]
 
   /** Current answers state */
   answers: Record<string, unknown>
 
   /** Current data state */
   data: Record<string, unknown>
+
+  /** Lookup to check if a block has nested blocks in its properties (used to skip unnecessary property walks) */
+  hasNestedBlocks?: HasNestedBlocksLookup
 }
+
+export type HasNestedBlocksLookup = (blockId: NodeId) => boolean

@@ -1,20 +1,18 @@
-import { block, Data, Format, Self, validation } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
+import { Data, Format, not, Self, validation } from '@form-engine/form/builders'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { GovUKTextInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
+import { Transformer } from '@form-engine/registry/transformers'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
+import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
 import { AccessibleAutocomplete, AssessmentInfoDetails } from '../../../../../components'
 import { CaseData } from '../../../constants'
+import { canAccessSanContent } from '../../../guards'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 
-const pageHeading = HtmlBlock({
-  content: Format(
-    `<span class="govuk-caption-l">%1</span>
-    <h1 class="govuk-heading-l">Change goal with %2</h1>`,
-    Data('activeGoal.areaOfNeedLabel'),
-    CaseData.Forename,
-  ),
+const pageHeading = GovUKHeading({
+  caption: Data('activeGoal.areaOfNeedLabel').pipe(Transformer.String.EscapeHtml()),
+  text: Format('Change goal with %1', CaseData.Forename),
 })
 
 const assessmentInfoDetails = AssessmentInfoDetails({
@@ -22,10 +20,10 @@ const assessmentInfoDetails = AssessmentInfoDetails({
   areaName: Data('currentAreaOfNeed').path('text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
+  hidden: not(canAccessSanContent),
 })
 
-const goalTitle = block<AccessibleAutocomplete>({
-  variant: 'accessibleAutocomplete',
+const goalTitle = AccessibleAutocomplete({
   data: Data('currentAreaOfNeed').path('goals'),
   inputClasses: 'govuk-!-width-two-thirds',
   field: GovUKTextInput({
@@ -49,6 +47,9 @@ const saveGoalButton = GovUKButton({
   name: 'action',
   value: 'saveGoal',
   preventDoubleClick: true,
+  attributes: {
+    'data-ai-id': 'change-goal-save-button',
+  },
 })
 
 export const pageLayout = TemplateWrapper({

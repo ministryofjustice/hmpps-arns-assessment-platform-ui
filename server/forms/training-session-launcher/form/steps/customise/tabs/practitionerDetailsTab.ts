@@ -50,9 +50,24 @@ export const practitionerDetailsTabContent = [
     randomize: Data('accessMode_isRandomized'),
     field: GovUKRadioInput({
       code: 'accessMode',
-      label: 'Access mode',
-      hint: 'Controls whether the practitioner can edit or only view',
+      label: 'Access mode (general)',
+      hint: 'Controls overall access mode for the practitioner',
       defaultValue: Data('scenario.accessMode'),
+      items: [
+        { value: 'READ_WRITE', text: 'Read and Write' },
+        { value: 'READ_ONLY', text: 'Read Only' },
+      ],
+    }),
+  }),
+
+  RandomizableField({
+    fieldKey: 'planAccessMode',
+    randomize: Data('planAccessMode_isRandomized'),
+    field: GovUKRadioInput({
+      code: 'planAccessMode',
+      label: 'Plan access mode',
+      hint: 'Controls whether the practitioner can edit or only view the plan',
+      defaultValue: Data('scenario.planAccessMode'),
       items: [
         { value: 'READ_WRITE', text: 'Read and Write' },
         { value: 'READ_ONLY', text: 'Read Only' },

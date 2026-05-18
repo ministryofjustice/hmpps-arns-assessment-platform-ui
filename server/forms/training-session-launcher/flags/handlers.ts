@@ -3,7 +3,8 @@ import { CreateHandoverLinkRequest } from '../../../interfaces/handover-api/requ
 import { OasysCreateRequest } from '../../../interfaces/coordinator-api/oasysCreate'
 import { TrainingScenarioFlag } from '../constants'
 import { ScenarioFieldKey, getFieldsByGroup } from '../scenarios'
-import { TrainingSessionLauncherContext, TargetApplication } from '../types'
+import { randomOasysAssessmentPk } from '../scenarios/helpers'
+import { TrainingSessionLauncherContext, Session, TargetApplication } from '../types'
 import { TrainingSessionLauncherEffectsDeps } from '../effects/types'
 
 /**
@@ -14,10 +15,18 @@ export interface FlagSessionConfig {
   modifyRequest?: (request: OasysCreateRequest) => OasysCreateRequest
 
   /** Run additional logic before session is created */
-  beforeCreate?: (deps: TrainingSessionLauncherEffectsDeps, context: TrainingSessionLauncherContext) => Promise<void>
+  beforeCreate?: (
+    deps: TrainingSessionLauncherEffectsDeps,
+    context: TrainingSessionLauncherContext,
+    session: Session,
+  ) => Promise<void>
 
   /** Run additional logic after session is created */
-  afterCreate?: (deps: TrainingSessionLauncherEffectsDeps, context: TrainingSessionLauncherContext) => Promise<void>
+  afterCreate?: (
+    deps: TrainingSessionLauncherEffectsDeps,
+    context: TrainingSessionLauncherContext,
+    session: Session,
+  ) => Promise<void>
 }
 
 /**
@@ -39,9 +48,6 @@ export interface FlagHandoverConfig {
  * Each flag can configure behavior for session creation and handover link generation
  */
 export interface FlagHandler {
-  /** Fields to exclude from randomization (they remain undefined) */
-  excludeFields?: ScenarioFieldKey[]
-
   /** Session creation phase configuration */
   session?: FlagSessionConfig
 
@@ -53,16 +59,53 @@ export interface FlagHandler {
  * Registry mapping flags to their handlers
  */
 const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
-  SP_NATIONAL_ROLLOUT: {
-    excludeFields: getFieldsByGroup('criminogenicNeeds'),
+  SAN_PRIVATE_BETA: {
+    session: {
+      modifyRequest: request => ({ ...request, assessmentType: 'SAN_SP' }),
+    },
+    handover: {
+      availableServices: Object.keys(config.handoverTargets) as TargetApplication[],
+    },
+  },
+
+  NEW_PERIOD_OF_SUPERVISION: {
     session: {
       modifyRequest: request => ({
         ...request,
-        assessmentType: 'SP',
+        newPeriodOfSupervision: 'Y' as const,
+        previousOasysSpPk: request.oasysAssessmentPk,
+        oasysAssessmentPk: randomOasysAssessmentPk(),
       }),
     },
     handover: {
-      availableServices: ['sentence-plan'],
+      // New Period of Supervision resets the plan to a blank draft, the user must see the current editable state,
+      // not a historic read-only snapshot. Strip the version so the handover context has
+      // planVersion: null and the AAP UI skips the historic-view redirect.
+      modifyRequest: request => ({ ...request, sentencePlanVersion: undefined }),
+    },
+  },
+
+  MERGED: {
+    session: {
+      beforeCreate: async (deps, context, session) => {
+        const oldPk = context.getAnswer('mergeOldPk') as string | undefined
+        const newPk = session.values.oasysAssessmentPk
+        const userId = session.values.practitionerIdentifier
+        const userName = session.values.practitionerDisplayName
+
+        if (!oldPk) {
+          throw new Error('Cannot merge: "Previous OASys Assessment PK" is required when using the Merged flag')
+        }
+
+        await deps.coordinatorApiClient.mergeOasysAssociation({
+          merge: [{ oldOasysAssessmentPK: oldPk, newOasysAssessmentPK: newPk }],
+          userDetails: { id: userId, name: userName },
+        })
+      },
+    },
+    handover: {
+      // After merge the plan version may have changed, strip it so the UI fetches the current state
+      modifyRequest: request => ({ ...request, sentencePlanVersion: undefined }),
     },
   },
 }
@@ -77,10 +120,11 @@ export interface ResolvedHandoverConfig {
 }
 
 /**
- * Get the default list of available services from config
+ * Get the default list of available services.
+ * Defaults to Sentence Plan only; other services are revealed by flags.
  */
 function getDefaultAvailableServices(): TargetApplication[] {
-  return Object.keys(config.handoverTargets) as TargetApplication[]
+  return ['sentence-plan']
 }
 
 /**
@@ -115,21 +159,16 @@ export function resolveHandoverConfig(flags: TrainingScenarioFlag[]): ResolvedHa
 /**
  * Get all fields that should be excluded based on flags.
  * Excluded fields remain undefined (not fixed, not randomized).
+ *
+ * By default, criminogenic needs fields are excluded.
+ * The SAN_PRIVATE_BETA flag includes them.
  */
 export function getExcludedFields(flags: TrainingScenarioFlag[]): Set<ScenarioFieldKey> {
-  const excluded = new Set<ScenarioFieldKey>()
-
-  for (const flag of flags) {
-    const handler = flagHandlers[flag]
-
-    if (handler?.excludeFields) {
-      for (const field of handler.excludeFields) {
-        excluded.add(field)
-      }
-    }
+  if (flags.includes('SAN_PRIVATE_BETA')) {
+    return new Set<ScenarioFieldKey>()
   }
 
-  return excluded
+  return new Set<ScenarioFieldKey>(getFieldsByGroup('criminogenicNeeds'))
 }
 
 /**
@@ -154,13 +193,14 @@ export async function runBeforeCreateSessionHooks(
   flags: TrainingScenarioFlag[],
   deps: TrainingSessionLauncherEffectsDeps,
   context: TrainingSessionLauncherContext,
+  session: Session,
 ): Promise<void> {
   for (const flag of flags) {
     const handler = flagHandlers[flag]
 
     if (handler?.session?.beforeCreate) {
       // eslint-disable-next-line no-await-in-loop -- Hooks must run sequentially
-      await handler.session.beforeCreate(deps, context)
+      await handler.session.beforeCreate(deps, context, session)
     }
   }
 }
@@ -172,13 +212,14 @@ export async function runAfterCreateSessionHooks(
   flags: TrainingScenarioFlag[],
   deps: TrainingSessionLauncherEffectsDeps,
   context: TrainingSessionLauncherContext,
+  session: Session,
 ): Promise<void> {
   for (const flag of flags) {
     const handler = flagHandlers[flag]
 
     if (handler?.session?.afterCreate) {
       // eslint-disable-next-line no-await-in-loop -- Hooks must run sequentially
-      await handler.session.afterCreate(deps, context)
+      await handler.session.afterCreate(deps, context, session)
     }
   }
 }

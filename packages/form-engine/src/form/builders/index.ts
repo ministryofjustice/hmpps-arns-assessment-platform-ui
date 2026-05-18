@@ -42,6 +42,9 @@ export { and, or, xor, not } from './PredicateTestExprBuilder'
 // Re-export conditional builders
 export { when, Conditional } from './ConditionalExprBuilder'
 
+// Re-export match builder
+export { match } from './MatchExprBuilder'
+
 export function block<D extends BlockDefinition>(definition: Omit<D, 'type' | 'blockType'>): D {
   return finaliseBuilders({
     ...definition,
@@ -221,10 +224,46 @@ export function Query(key: string): ChainableRef {
 }
 
 /**
+ * References request metadata from the current request context.
+ */
+export const Request = {
+  Url(): ChainableRef {
+    return ReferenceBuilder.create(['request', 'url'])
+  },
+
+  Path(): ChainableRef {
+    return ReferenceBuilder.create(['request', 'path'])
+  },
+
+  Method(): ChainableRef {
+    return ReferenceBuilder.create(['request', 'method'])
+  },
+
+  Headers(name: string): ChainableRef {
+    return ReferenceBuilder.create(['request', 'headers', name])
+  },
+
+  Cookies(name: string): ChainableRef {
+    return ReferenceBuilder.create(['request', 'cookies', name])
+  },
+
+  State(key: string): ChainableRef {
+    return ReferenceBuilder.create(['request', 'state', ...splitKey(key)])
+  },
+}
+
+/**
  * References data defined for the step.
  */
 export function Data(key: string): ChainableRef {
   return ReferenceBuilder.create(['data', ...splitKey(key)])
+}
+
+/**
+ * References server-side session data from the current request context.
+ */
+export function Session(key: string): ChainableRef {
+  return ReferenceBuilder.create(['session', ...splitKey(key)])
 }
 
 /**

@@ -10,7 +10,7 @@ export default function setUpWebSession(): Router {
   let store: Store
   if (config.redis.enabled) {
     const client = createRedisClient()
-    client.connect().catch((err: Error) => logger.error(`Error connecting to Redis`, err))
+    client.connect().catch((err: Error) => logger.error({ err }, 'Error connecting to Redis'))
     store = new RedisStore({ client })
   } else {
     store = new MemoryStore()
@@ -43,6 +43,7 @@ export default function setUpWebSession(): Router {
 
     res.set(headerName, id)
     req.id = id
+    req.state = { ...req.state, requestId: id }
 
     next()
   })

@@ -12,7 +12,7 @@ import { SentencePlanContext, PlanNotification } from '../types'
 export const addNotification = () => async (context: SentencePlanContext, notification: PlanNotification) => {
   const session = context.getSession()
 
-  session.notifications = session.notifications || []
+  session.notifications = notification.clearOtherNotifications ? [] : session.notifications || []
 
   // Normalize: if no title provided, promote message to title
   const normalized: PlanNotification = notification.title

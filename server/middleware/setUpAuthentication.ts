@@ -82,7 +82,7 @@ passport.use(
           config.apis.arnsHandover.clientSecret,
         ),
       },
-      scope: 'openid profile',
+      scope: 'profile',
     },
     (token, _refreshToken, _params, _profile, done) => {
       const { user_name: username } = jwtDecode(token) as { user_name?: string }
@@ -217,6 +217,38 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
 
   router.use(authPaths.accountDetails, (_req, res) => {
     res.redirect(`${authUrl}${authPaths.accountDetails}?${authParameters}`)
+  })
+
+  router.use('/access/:service/crn', (req, res, next) => {
+    if (req.isAuthenticated() && req.user.authSource === 'OASYS') {
+      const returnTo = req.originalUrl
+
+      return req.logout(err => {
+        if (err) {
+          return next(err)
+        }
+
+        return req.session.destroy(() => res.redirect(returnTo))
+      })
+    }
+
+    return next()
+  })
+
+  router.use('/access/:service/oasys', (req, res, next) => {
+    if (req.isAuthenticated() && req.user.authSource === 'HMPPS_AUTH') {
+      const service = req.params.service
+
+      return req.logout(err => {
+        if (err) {
+          return next(err)
+        }
+
+        return req.session.destroy(() => res.redirect(`${authPaths.handover}?service=${service}`))
+      })
+    }
+
+    return next()
   })
 
   router.use(async (req, res, next) => {

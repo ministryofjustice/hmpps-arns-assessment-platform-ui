@@ -2,26 +2,45 @@
 # Per environment values which override defaults in hmpps-arns-assessment-platform-ui/values.yaml
 
 generic-service:
-  replicaCount: 2
-
   ingress:
     host: arns-assessment-platform-test.hmpps.service.justice.gov.uk
+    modsecurity_enabled: true
+    modsecurity_audit_enabled: true
+    modsecurity_snippet: |
+      SecRuleEngine DetectionOnly
+      # Team here grants access to the OpenSearch logs to delve into the cause of the blockage
+      SecDefaultAction "phase:2,pass,log,tag:github_team=hmpps-assessments,tag:namespace={{ .Release.Namespace }}"
+      # Disables request body scanning so free-text form fields (goal titles, step descriptions) do not trigger false positives
+      SecRuleUpdateTargetById 920272 "!REQUEST_BODY"
+      # Change default denial to be a 406 so that we can tell easily that it is modsecurity doing the blocking
+      SecRuleUpdateActionById 949110 "deny,status:406,logdata:%{SERVER_NAME}"
+      SecRuleUpdateActionById 959100 "deny,status:406,logdata:%{SERVER_NAME}"
+      SecAction "id:900000,phase:1,nolog,pass,t:none,setvar:tx.paranoia_level=2"
 
   env:
-    INGRESS_URL: "https://arns-assessment-platform-test.hmpps.service.justice.gov.uk"
-    HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
-    HMPPS_ARNS_HANDOVER_URL: "https://arns-handover-service-test.hmpps.service.justice.gov.uk"
-    TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
-    AAP_API_URL: "https://arns-assessment-platform-api-test.hmpps.service.justice.gov.uk"
-    COORDINATOR_API_URL: "https://arns-coordinator-api-test.hmpps.service.justice.gov.uk"
-    DELIUS_API_URL: "https://sentence-plan-and-delius-dev.hmpps.service.justice.gov.uk"
-    ARNS_API_URL: "https://assess-risks-and-needs-test.hmpps.service.justice.gov.uk"
-    ENVIRONMENT_NAME: DEV
-    AUDIT_ENABLED: "false"
-    FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: "false"
-    TRAINING_SESSION_LAUNCHER_ENABLED: "true"
+    INGRESS_URL: 'https://arns-assessment-platform-test.hmpps.service.justice.gov.uk'
+    HMPPS_AUTH_URL: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth'
+    HMPPS_ARNS_HANDOVER_URL: 'https://arns-handover-service-test.hmpps.service.justice.gov.uk'
+    TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-dev.prison.service.justice.gov.uk'
+    AAP_API_URL: 'https://arns-assessment-platform-api-test.hmpps.service.justice.gov.uk'
+    COORDINATOR_API_URL: 'https://arns-coordinator-api-test.hmpps.service.justice.gov.uk'
+    DELIUS_API_URL: 'https://sentence-plan-and-delius-dev.hmpps.service.justice.gov.uk'
+    ARNS_API_URL: 'https://assess-risks-and-needs-test.hmpps.service.justice.gov.uk'
+    SAN_URL: 'https://strengths-based-needs-assessments-test.hmpps.service.justice.gov.uk'
+    OASYS_URL: 'https://arns-assessment-platform-test.hmpps.service.justice.gov.uk/training-session-launcher/sessions'
+    MPOP_URL: 'https://manage-people-on-probation-test.hmpps.service.justice.gov.uk'
+    FEATURE_FLAG_URL: 'https://feature-toggles-dev.hmpps.service.justice.gov.uk'
+    SERVICE_NOW_FORM_URL: '#service-now-link'
+    ENVIRONMENT_NAME: TEST
+    AUDIT_ENABLED: 'true'
+    FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: 'false'
+    FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'true'
+    SMART_SURVEY_POPUP_CODE: 'XF5PNV'
 
   allowlist:
+    mp-nat-egress-one: 13.43.9.198/32
+    mp-nat-egress-two: 13.42.163.245/32
+    mp-nat-egress-three: 18.132.208.127/32
     capita-dev: 51.104.16.30/31
     captia-further: 172.167.141.40/32
     capita-developers-vms-one: 85.115.52.180/32
@@ -30,6 +49,11 @@ generic-service:
     capita-developers-vms-four: 85.115.53.200/29
     capita-developers-vms-five: 85.115.54.180/32
     capita-developers-vms-six: 85.115.54.200/29
+    kpmg-pentest: 195.68.59.74/32
+    t1-jump2022-1: 10.26.8.12/32
+    accessibility-audit: 5.181.59.114/32
 
 generic-prometheus-alerts:
-  alertSeverity: hmpps-arns-non-prod
+  targetApplication: hmpps-arns-assessment-platform-ui
+  alertSeverity: hmpps-arns-assessment-platform-test
+  businessHoursOnly: true

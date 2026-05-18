@@ -41,9 +41,11 @@ export interface DisplayScenario {
   crn: string
   pnc: string
   oasysAssessmentPk: string
+  sentencePlanVersion: number
 
   // For display
   displayNeeds: DisplayNeed[]
+  isCustom: boolean
 
   // Raw scenario data for session creation
   rawScenario: ResolvedScenario
@@ -153,6 +155,7 @@ export interface DisplaySession extends Session {
   crn: string
   pnc: string
   oasysAssessmentPk: string
+  sentencePlanVersion: number
   availableServices: ServiceOption[]
 }
 

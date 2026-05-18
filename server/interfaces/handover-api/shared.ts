@@ -13,6 +13,7 @@ export interface HandoverPrincipalDetails {
   identifier: string
   displayName: string
   accessMode: AccessMode
+  planAccessMode: AccessMode
   returnUrl?: string
 }
 

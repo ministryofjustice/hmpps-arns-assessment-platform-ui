@@ -7,6 +7,7 @@ Some values can't be hardcoded - a date picker's minimum date should be "today",
 A generator is a function that produces a value from nothing (or from its arguments). Unlike conditions (which test existing values) or transformers (which modify existing values), generators create new values at runtime.
 
 This enables:
+
 - Dynamic defaults that change over time (e.g., today's date)
 - Computed constraints for date pickers and validators
 - Value pipelines that generate then transform values
@@ -33,7 +34,7 @@ field<MOJDatePicker>({
   variant: 'mojDatePicker',
   code: 'appointmentDate',
   label: { text: 'Select appointment date' },
-  minDate: Generator.Date.Now(),  // Can't select dates in the past
+  minDate: Generator.Date.Now(), // Can't select dates in the past
 })
 ```
 
@@ -46,7 +47,7 @@ field<MOJDatePicker>({
   variant: 'mojDatePicker',
   code: 'startDate',
   label: { text: 'Start date' },
-  minDate: Generator.Date.Today(),  // Today or later
+  minDate: Generator.Date.Today(), // Today or later
 })
 ```
 
@@ -56,11 +57,11 @@ field<MOJDatePicker>({
 
 Generators return chainable objects that support the same fluent API as references:
 
-| Method | Purpose | Returns |
-|--------|---------|---------|
+| Method                   | Purpose                   | Returns              |
+| ------------------------ | ------------------------- | -------------------- |
 | `.pipe(...transformers)` | Transform generated value | Chainable expression |
-| `.match(condition)` | Test generated value | Boolean expression |
-| `.not` | Negate next `.match()` | Same type (negated) |
+| `.match(condition)`      | Test generated value      | Boolean expression   |
+| `.not`                   | Negate next `.match()`    | Same type (negated)  |
 
 ### `.pipe()` - Transform Generated Values
 
@@ -71,20 +72,13 @@ import { Generator } from '@form-engine/registry/generators'
 import { Transformer } from '@form-engine/registry/transformers'
 
 // Generate today, add 7 days
-const nextWeek = Generator.Date.Now().pipe(
-  Transformer.Date.AddDays(7)
-)
+const nextWeek = Generator.Date.Now().pipe(Transformer.Date.AddDays(7))
 
 // Generate today, format as ISO string
-const todayISO = Generator.Date.Today().pipe(
-  Transformer.Date.ToISOString()
-)
+const todayISO = Generator.Date.Today().pipe(Transformer.Date.ToISOString())
 
 // Multiple transformers
-const deadline = Generator.Date.Now().pipe(
-  Transformer.Date.AddDays(30),
-  Transformer.Date.ToISOString()
-)
+const deadline = Generator.Date.Now().pipe(Transformer.Date.AddDays(30), Transformer.Date.ToISOString())
 ```
 
 ### `.match()` - Test Generated Values
@@ -149,9 +143,7 @@ field<GovUKTextInput>({
   variant: 'govukTextInput',
   code: 'submittedAt',
   label: 'Submitted at',
-  defaultValue: Generator.Date.Now().pipe(
-    Transformer.Date.ToISOString()
-  ),
+  defaultValue: Generator.Date.Now().pipe(Transformer.Date.ToISOString()),
   // Hidden from user, captured automatically
   hidden: true,
 })
@@ -244,8 +236,8 @@ export const MyGeneratorsRegistry = {
 
 // Mixed (some with deps, some without)
 export const createMyGeneratorsRegistry = (deps: ApiDeps) => ({
-  ...DateGeneratorsRegistry,              // No deps
-  ...createApiGeneratorsRegistry(deps),   // Needs deps
+  ...DateGeneratorsRegistry, // No deps
+  ...createApiGeneratorsRegistry(deps), // Needs deps
 })
 ```
 
@@ -263,8 +255,8 @@ maxDate: Generator.Date.Today().pipe(Transformer.Date.AddDays(30))
 defaultId: Generator.UUID().pipe(Transformer.String.ToUpperCase())
 
 // DON'T: Create separate generators for every variation
-maxDate: Generator.Date.ThirtyDaysFromNow()  // Unnecessary proliferation
-defaultId: Generator.UppercaseUUID()         // Just pipe the existing one
+maxDate: Generator.Date.ThirtyDaysFromNow() // Unnecessary proliferation
+defaultId: Generator.UppercaseUUID() // Just pipe the existing one
 ```
 
 ### Use Generators for Dynamic Values Only
@@ -273,10 +265,10 @@ If a value is truly static, don't use a generator:
 
 ```typescript
 // DO: Use generator for dynamic values
-minDate: Generator.Date.Today()  // Changes each day
+minDate: Generator.Date.Today() // Changes each day
 
 // DON'T: Use generator for static values
-minDate: Generator.Date.FixedDate('2024-01-01')  // Just use a string
+minDate: Generator.Date.FixedDate('2024-01-01') // Just use a string
 ```
 
 ### Keep Generators Pure
@@ -289,8 +281,8 @@ UUID: () => crypto.randomUUID()
 
 // DON'T: Cause side effects in generators
 UUID: () => {
-  console.log('Generating UUID')  // Side effect
-  db.logGeneration()              // Side effect
+  console.log('Generating UUID') // Side effect
+  db.logGeneration() // Side effect
   return crypto.randomUUID()
 }
 ```
@@ -305,10 +297,10 @@ Use effects for side effects instead.
 
 Namespace: `Generator.Date.*`
 
-| Generator | Parameters | Returns | Description |
-|-----------|------------|---------|-------------|
-| `Now()` | none | `Date` | Current date and time with full timestamp |
-| `Today()` | none | `Date` | Today's date at midnight (00:00:00.000) |
+| Generator | Parameters | Returns | Description                               |
+| --------- | ---------- | ------- | ----------------------------------------- |
+| `Now()`   | none       | `Date`  | Current date and time with full timestamp |
+| `Today()` | none       | `Date`  | Today's date at midnight (00:00:00.000)   |
 
 #### `Generator.Date.Now()`
 
@@ -320,6 +312,7 @@ Generator.Date.Now()
 ```
 
 **Use cases:**
+
 - Timestamps for submissions
 - "Last updated" fields
 - Time-sensitive constraints
@@ -334,6 +327,7 @@ Generator.Date.Today()
 ```
 
 **Use cases:**
+
 - Date comparisons (ignoring time)
 - Default values for date fields
 - Date range boundaries

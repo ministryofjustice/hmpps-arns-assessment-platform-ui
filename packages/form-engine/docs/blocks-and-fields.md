@@ -18,12 +18,12 @@ import { block, field } from '@form-engine/form/builders'
 
 ## Blocks vs Fields
 
-| Aspect | Block | Field |
-|--------|-------|-------|
-| Purpose | Display content | Collect input |
-| Builder | `block()` | `field()` |
-| Has `code` | No | Yes (required) |
-| Validation | No | Yes |
+| Aspect     | Block           | Field          |
+| ---------- | --------------- | -------------- |
+| Purpose    | Display content | Collect input  |
+| Builder    | `block()`       | `field()`      |
+| Has `code` | No              | Yes (required) |
+| Validation | No              | Yes            |
 
 ---
 
@@ -181,10 +181,7 @@ validate: [
 Transformers applied after submission, before validation:
 
 ```typescript
-formatters: [
-  Transformer.String.Trim(),
-  Transformer.String.ToLowerCase(),
-]
+formatters: [Transformer.String.Trim(), Transformer.String.ToLowerCase()]
 ```
 
 ### `hidden` (Optional)

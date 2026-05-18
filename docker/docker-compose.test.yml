@@ -6,40 +6,22 @@ services:
   arns-handover:
     environment:
       HMPPS_HANDOVER_EXTERNAL_URL: http://arns-handover:7070
-      CLIENT_SP_OAUTH_REDIRECT_URI: http://ui:3000/sign-in/handover/callback
-      CLIENT_SP_HANDOVER_REDIRECT_URI: http://ui:3000/sign-in/handover?service=sentence-plan
+      CLIENT_SP_OAUTH_REDIRECT_URI: http://aap-ui:3000/sign-in/handover/callback
+      CLIENT_SP_HANDOVER_REDIRECT_URI: http://aap-ui:3000/sign-in/handover?service=sentence-plan
 
   wiremock:
-    image: wiremock/wiremock:3.13.2
-    networks:
-      - hmpps
-    depends_on:
-      hmpps-auth:
-        condition: service_healthy
-      api:
-        condition: service_healthy
-    restart: always
-    ports:
-      - "9091:8080"
-    volumes:
-      - ./wiremock/mappings:/home/wiremock/mappings
     environment:
       WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:9090
-      WIREMOCK_AAP_API_URL: http://api:8080
+      WIREMOCK_AAP_API_URL: http://aap-api:8080
       WIREMOCK_COORDINATOR_API_URL: http://coordinator-api:8080
       WIREMOCK_HANDOVER_URL: http://arns-handover:7070
       WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
       WIREMOCK_DELIUS_URL: http://delius-api:8080
     command: --global-response-templating
 
-  ui:
+  aap-ui:
     build:
       target: production
-    networks:
-      - hmpps
-    depends_on:
-      - wiremock
-      - hmpps-auth
     command: npm run start
     environment:
       NODE_ENV: production
@@ -52,28 +34,50 @@ services:
       TOKEN_VERIFICATION_API_URL: http://wiremock:8080/verification
       TOKEN_VERIFICATION_ENABLED: true
       DELIUS_API_URL: http://wiremock:8080/delius
-      INGRESS_URL: http://ui:3000
+      INGRESS_URL: http://aap-ui:3000
+      SERVICE_NOW_FORM_URL: '#service-now-link'
+      OASYS_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
+      MPOP_URL: 'http://aap-ui:3000/sign-in'
 
   playwright:
     image: mcr.microsoft.com/playwright:v1.58.0-noble # Must match version in package-lock
     networks:
       - hmpps
     depends_on:
-      - ui
+      - aap-ui
       - wiremock
     environment:
       CI: true
-      BASE_URL: http://ui:3000
+      BASE_URL: http://aap-ui:3000
       WIREMOCK_URL: http://wiremock:8080/__admin
-      AAP_API_URL: http://api:8080
+      AAP_API_URL: http://aap-api:8080
+      AAP_DATABASE_CONNECTION_STRING: postgres://root:dev@postgres:5432/postgres
       HANDOVER_API_URL: http://arns-handover:7070
       COORDINATOR_API_URL: http://coordinator-api:8080
       HMPPS_AUTH_URL: http://hmpps-auth:9090/auth
       CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-e2e
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
+      LOCALSTACK_URL: http://localstack:4566
+      SHARD: ${SHARD:-}
     working_dir: /playwright
-    command: npx playwright test
+    command:
+      - sh
+      - -c
+      - |
+        npx playwright test --project=parallel $${SHARD:+--shard=$$SHARD}
+        PARALLEL_EXIT=$$?
+        if [ -z "$$SHARD" ] || [ "$${SHARD%%/*}" = "1" ]; then
+          cp -r test_results/blob-report test_results/blob-report-parallel 2>/dev/null || true
+          npx playwright test --project=serial
+          SERIAL_EXIT=$$?
+          cp test_results/blob-report-parallel/* test_results/blob-report/ 2>/dev/null || true
+          rm -rf test_results/blob-report-parallel
+        else
+          SERIAL_EXIT=0
+        fi
+        [ $$PARALLEL_EXIT -eq 0 ] && [ $$SERIAL_EXIT -eq 0 ]
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - ../package.json:/playwright/package.json
       - ../package-lock.json:/playwright/package-lock.json
       - ../playwright.config.ts:/playwright/playwright.config.ts

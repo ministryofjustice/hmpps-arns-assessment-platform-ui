@@ -1,6 +1,9 @@
+import { AxeBuilder } from '@axe-core/playwright'
 import { expect, Page } from '@playwright/test'
+import { AgreementStatus } from '@server/forms/sentence-plan/effects'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
-import { AgreementStatus } from '../../../server/forms/sentence-plan/effects'
+import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
+import { login } from '../../testUtils'
 
 // Statuses that indicate a plan has been through the agreement process (not draft)
 // Note: UPDATED_AGREED and UPDATED_DO_NOT_AGREE are only valid as follow-up statuses
@@ -17,18 +20,48 @@ const v1Path = '/v1.0'
 const oasysAccessStepPath = '/oasys'
 const crnAccessStepPath = '/crn'
 const privacyStepPath = '/privacy'
+const aboutPersonStepPath = '/about-person'
 const planOverviewJourneyPath = '/plan'
 const planStepPath = '/overview'
+const agreePlanStepPath = '/agree-plan'
+const updateAgreePlanStepPath = '/update-agree-plan'
 const goalManagementJourneyPath = '/goal'
 const planHistoryPath = '/plan-history'
+const previousVersionsStepPath = '/previous-versions'
 
 export const sentencePlanV1URLs = {
   OASYS_ENTRY_POINT: `${accessFormPath}/sentence-plan${oasysAccessStepPath}`, // '/access/sentence-plan/oasys'
   CRN_ENTRY_POINT: `${accessFormPath}/sentence-plan${crnAccessStepPath}`, // '/access/sentence-plan/crn/:crn'
-  PRIVACY_SCREEN: `${sentencePlanFormPath}/${privacyStepPath}`, // '/sentence-plan/privacy'
+  PRIVACY_SCREEN: `${sentencePlanFormPath}${privacyStepPath}`, // '/sentence-plan/privacy'
+  ABOUT_PERSON: sentencePlanFormPath + v1Path + aboutPersonStepPath, // '/sentence-plan' + '/v1.0' + '/about-person'
   PLAN_OVERVIEW: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/overview'
+  PLAN_AGREE: sentencePlanFormPath + v1Path + planOverviewJourneyPath + agreePlanStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/agree-plan'
+  PLAN_UPDATE_AGREE: sentencePlanFormPath + v1Path + planOverviewJourneyPath + updateAgreePlanStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/update-agree-plan'
   PLAN_HISTORY: sentencePlanFormPath + v1Path + planOverviewJourneyPath + planHistoryPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/plan-history'
+  PREVIOUS_VERSIONS: sentencePlanFormPath + v1Path + planOverviewJourneyPath + previousVersionsStepPath, // '/sentence-plan' + '/v1.0' + '/plan' + '/previous-versions'
   GOAL_MANAGEMENT_ROOT_PATH: sentencePlanFormPath + v1Path + goalManagementJourneyPath, // '/sentence-plan' + '/v1.0' + '/goal'
+}
+
+export const sentencePlanV1UrlBuilders = {
+  goalChange: (goalUuid: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/change-goal`,
+  goalUpdateSteps: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/update-goal-steps`,
+  goalAddSteps: (goalUuid: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/add-steps`,
+  goalConfirmDelete: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/confirm-delete-goal`,
+  goalConfirmIfAchieved: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/confirm-if-achieved`,
+  goalConfirmAchieved: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/confirm-achieved-goal`,
+  goalConfirmRemoved: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/confirm-remove-goal`,
+  goalConfirmReAdd: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/confirm-readd-goal`,
+  goalViewInactive: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/view-inactive-goal`,
+  goalCreate: (areaOfNeed: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/new/add-goal/${areaOfNeed}`,
+  planReorderGoal: (goalUuid: string, direction: 'up' | 'down', status: 'ACTIVE' | 'FUTURE' | 'ACHIEVED' | 'REMOVED') =>
+    `${sentencePlanV1URLs.PLAN_OVERVIEW}?goalUuid=${goalUuid}&direction=${direction}&status=${status}`,
 }
 
 // Page titles for sentence plan - matches step.title or dynamicTitle values
@@ -49,7 +82,7 @@ export const sentencePlanPageTitles = {
   // Plan overview & agree plan
   planOverview: 'Plan',
   agreePlan: 'Do they agree to this plan?',
-  updateAgreePlan: 'Do they agree?', // need confirmation on title (currently it's same as old Sentence Plan)
+  updateAgreePlan: 'Do they agree to their plan?',
 
   // Plan history
   planHistory: 'Plan history',
@@ -58,9 +91,15 @@ export const sentencePlanPageTitles = {
   privacy: 'Close other applications',
   aboutPerson: 'About',
   previousVersions: 'Previous versions',
+  historicPlan: 'View historic version',
 }
 
 export const sentencePlanServiceName = 'Sentence plan'
+
+type AccessibilityCheckOptions = {
+  include?: string
+  disableRules?: string[]
+}
 
 // constructs page title:
 export const buildPageTitle = (stepTitle: string, serviceName: string = sentencePlanServiceName): string =>
@@ -69,6 +108,24 @@ export const buildPageTitle = (stepTitle: string, serviceName: string = sentence
 // constructs page error title:
 export const buildErrorPageTitle = (stepTitle: string, serviceName: string = sentencePlanServiceName): string =>
   `Error: ${buildPageTitle(stepTitle, serviceName)}`
+
+/**
+ * Runs the standard WCAG Axe scan for a sentence plan page and expects no violations.
+ * By default it scans the main form area, but pages can override the selector if needed.
+ */
+export const checkAccessibility = async (
+  page: Page,
+  { include = '[data-qa="main-form"]', disableRules = [] }: AccessibilityCheckOptions = {},
+): Promise<void> => {
+  let axeBuilder = new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).include(include)
+
+  if (disableRules.length > 0) {
+    axeBuilder = axeBuilder.disableRules(disableRules)
+  }
+
+  const accessibilityScanResults = await axeBuilder.analyze()
+  expect(accessibilityScanResults.violations).toEqual([])
+}
 
 /**
  * Handles the privacy screen if it appears, confirming and continuing.
@@ -111,4 +168,25 @@ export const getDatePlusMonthsAsString = (months: number) => {
 /** Returns an ISO date string for a date N days from now. Useful for goal target dates in tests. */
 export const getDatePlusDaysAsISO = (days: number): string => {
   return new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString()
+}
+
+/**
+ * Navigates to the plan overview via MPoP (CRN-based access).
+ * Logs in, navigates to the CRN entry point, confirms privacy, and lands on plan overview.
+ */
+export const navigateToPlanOverviewViaMpop = async (page: Page, crn: string): Promise<void> => {
+  await login(page)
+  await page.goto(`${sentencePlanV1URLs.CRN_ENTRY_POINT}/${crn}`)
+  const privacyScreenPage = await PrivacyScreenPage.verifyOnPage(page)
+  await privacyScreenPage.confirmAndContinue()
+  await PlanOverviewPage.verifyOnPage(page)
+}
+
+// navigates to the About page via handover link, handling privacy screen and clicking the About nav link.
+export const navigateToAboutPage = async (page: Page, handoverLink: string): Promise<void> => {
+  await navigateToSentencePlan(page, handoverLink)
+  await page
+    .getByLabel('Primary navigation')
+    .getByRole('link', { name: /^About /i })
+    .click()
 }

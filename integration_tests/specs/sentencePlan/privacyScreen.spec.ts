@@ -4,23 +4,19 @@ import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import {
   buildErrorPageTitle,
   buildPageTitle,
+  checkAccessibility,
   navigateToPrivacyScreen,
   sentencePlanPageTitles,
 } from './sentencePlanUtils'
 
 test.describe('Privacy Screen', () => {
   test.describe('Display and content', () => {
-    test('should be accessible', async ({ page, createSession, makeAxeBuilder, sentencePlanBuilder }) => {
+    test('should be accessible', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
       await navigateToPrivacyScreen(page, handoverLink)
-
-      const accessibilityScanResults = await makeAxeBuilder()
-        .include('#main-content')
-        .analyze()
-
-      expect(accessibilityScanResults.violations).toEqual([])
+      await checkAccessibility(page, { include: '#main-content' })
     })
 
     test('displays privacy screen with correct content', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -55,6 +51,16 @@ test.describe('Privacy Screen', () => {
 
       const checkboxLabel = page.locator('label[for="confirm_privacy"]')
       await expect(checkboxLabel).toContainText("I confirm I'll do this before starting an appointment")
+    })
+
+    test('does not wrap the privacy checkbox in a fieldset', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      await navigateToPrivacyScreen(page, handoverLink)
+
+      const checkboxFieldset = page.locator('fieldset').filter({ has: page.locator('#confirm_privacy') })
+      await expect(checkboxFieldset).toHaveCount(0)
     })
 
     test.describe('Validation', () => {
@@ -113,8 +119,6 @@ test.describe('Privacy Screen', () => {
         const privacyPage = await navigateToPrivacyScreen(page, handoverLink)
 
         await privacyPage.confirmAndContinue()
-
-        await expect(page).toHaveURL(/\/plan\/overview/)
 
         await PlanOverviewPage.verifyOnPage(page)
       })

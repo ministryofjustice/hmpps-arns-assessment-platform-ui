@@ -22,7 +22,7 @@
 .moj-card__link {
   // Make the link span the entire card for clickable variant
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     right: 0;
@@ -55,7 +55,9 @@
     outline: 3px solid transparent;
     color: #0b0c0c;
     background-color: #fd0;
-    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+    box-shadow:
+      0 -2px #fd0,
+      0 4px #0b0c0c;
     text-decoration: none;
   }
 }

@@ -39,9 +39,11 @@ export interface ExpressFrameworkAdapterFullOptions extends ExpressFrameworkAdap
  * Handles routing (Express-specific concerns) and delegates
  * block/template rendering to TemplateRenderer.
  */
-export default class ExpressFrameworkAdapter
-  implements FrameworkAdapter<express.Router, express.Request, express.Response>
-{
+export default class ExpressFrameworkAdapter implements FrameworkAdapter<
+  express.Router,
+  express.Request,
+  express.Response
+> {
   private readonly logger: Logger | Console
 
   private readonly templateRenderer: TemplateRenderer
@@ -272,13 +274,13 @@ export default class ExpressFrameworkAdapter
   }
 
   /** Render a full page from RenderContext and send the HTML response */
-  async render(context: RenderContext, req: express.Request, res: express.Response): Promise<void> {
+  render(context: RenderContext, req: express.Request, res: express.Response): void {
     const locals = {
       ...req.app.locals,
       ...res.locals,
     }
 
-    const html = await this.templateRenderer.render(context, locals)
+    const html = this.templateRenderer.render(context, locals)
 
     res.type('html').send(html)
   }

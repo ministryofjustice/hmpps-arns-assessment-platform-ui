@@ -124,7 +124,7 @@ export interface AccessibleAutocomplete extends BlockDefinition, AccessibleAutoc
  */
 export const accessibleAutocomplete = buildNunjucksComponent<AccessibleAutocomplete>(
   'accessibleAutocomplete',
-  async (block: EvaluatedBlock<AccessibleAutocomplete>): Promise<string> => {
+  (block: EvaluatedBlock<AccessibleAutocomplete>): string => {
     const fieldBlock = block.field.block as FieldBlockDefinition & { value?: unknown; defaultValue?: unknown }
     const fieldCode = fieldBlock.code ?? 'autocomplete-field'
     const dataId = `autocomplete-data-${fieldCode}`

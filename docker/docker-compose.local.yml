@@ -3,34 +3,21 @@
 
 services:
   wiremock:
-    image: wiremock/wiremock:3.13.2
-    networks:
-      - hmpps
-    depends_on:
-      api:
-        condition: service_healthy
-    restart: always
     ports:
-      - "9091:8080"
-    volumes:
-      - ./wiremock/mappings:/home/wiremock/mappings
+      - '9091:8080'
     environment:
       WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:9090
-      WIREMOCK_AAP_API_URL: http://api:8080
+      WIREMOCK_AAP_API_URL: http://aap-api:8080
       WIREMOCK_COORDINATOR_API_URL: http://coordinator-api:8080
       WIREMOCK_HANDOVER_URL: http://arns-handover:7070
       WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
       WIREMOCK_DELIUS_URL: http://delius-api:8080
     command: --global-response-templating
 
-  ui:
+  aap-ui:
     build:
       target: development
     command: npm run start:dev
-    depends_on:
-      - wiremock
-      - redis
-      - hmpps-auth
     volumes:
       - ../:/app:cached
       - node_modules:/app/node_modules
@@ -48,6 +35,22 @@ services:
       TOKEN_VERIFICATION_ENABLED: true
       DELIUS_API_URL: http://wiremock:8080/delius
       INGRESS_URL: http://localhost:3000
+      FEATURE_FLAG_URL: https://feature-toggles-dev.hmpps.service.justice.gov.uk
+      OASYS_URL: http://localhost:3000/training-session-launcher/sessions
+      MPOP_URL: http://localhost:3000/sign-in
+      SAN_URL: http://localhost:3000
+
+  arns-handover:
+    environment:
+      OASYS_RETURN_URLS: http://localhost:3000
+      CLIENT_SP_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/handover/callback
+      CLIENT_SP_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in/handover?service=sentence-plan
+      CLIENT_SAN_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/callback
+      CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in
+
+  postgres:
+    ports:
+      - '5432:5432'
 
 volumes:
   node_modules:

@@ -20,6 +20,7 @@ export const crnAccessStep = step({
   onAccess: [
     accessTransition({
       effects: [
+        AccessEffects.clearAccessSession(),
         AccessEffects.setTargetServiceAndRedirect(),
         AccessEffects.setCaseDetailsFromCrn(),
         AccessEffects.setPractitionerDetailsFromAuth(),

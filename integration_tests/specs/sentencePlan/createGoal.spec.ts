@@ -7,6 +7,7 @@ import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import {
   buildErrorPageTitle,
   buildPageTitle,
+  checkAccessibility,
   navigateToSentencePlan,
   sentencePlanPageTitles,
 } from './sentencePlanUtils'
@@ -31,17 +32,40 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.selectCanStartNow(true)
       await createGoalPage.selectTargetDateOption('3_months')
 
+      // Create goal accessibility
+      await checkAccessibility(page, {
+        // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
+        disableRules: ['aria-allowed-attr'],
+      })
+
       await createGoalPage.clickAddSteps()
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
       await expect(page).toHaveURL(/\/add-steps/)
 
+      const actorSelect = await addStepsPage.getStepActorSelect(0)
+      const descriptionInput = await addStepsPage.getStepDescriptionInput(0)
+
+      await expect(page.locator('#step-actor-hint')).toHaveText('Add one person or agency.')
+      await expect(page.locator('#step-description-hint')).toHaveText('Enter one step at a time.')
+      await expect(actorSelect).toHaveAttribute('aria-describedby', 'step-actor-hint')
+      await expect(descriptionInput).toHaveAttribute('aria-describedby', 'step-description-hint')
+
+      await addStepsPage.clickSaveAndContinue()
+
+      await expect(actorSelect).toHaveAttribute('aria-describedby', /step-actor-hint/)
+      await expect(actorSelect).toHaveAttribute('aria-describedby', /step_actor_0-error/)
+      await expect(descriptionInput).toHaveAttribute('aria-describedby', /step-description-hint/)
+      await expect(descriptionInput).toHaveAttribute('aria-describedby', /step_description_0-error/)
+
       await addStepsPage.enterStep(0, 'probation_practitioner', "Contact housing services about 'emergency housing'")
+
+      // Add steps accessibility
+      await checkAccessibility(page)
 
       await addStepsPage.clickSaveAndContinue()
 
       // Verify goal was created and we're back on plan overview
-      await expect(page).toHaveURL(/\/plan\/overview/)
       const updatedPlanOverview = await PlanOverviewPage.verifyOnPage(page)
 
       // Verify the goal and step display correctly with special characters
@@ -75,12 +99,78 @@ test.describe('Create Goal Journey', () => {
       await addStepsPage.clickSaveAndContinue()
 
       // Verify goal was created with steps
-      await expect(page).toHaveURL(/\/plan\/overview/)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const goalCard = await planOverviewPage.getGoalCardByIndex(0)
       await expect(goalCard).toContainText('Contact housing services')
       await expect(goalCard).toContainText('Attend housing appointment')
+    })
+
+    test('shows goal added notification after creating goal with steps', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.enterGoalTitle('Goal with steps notification test')
+      await createGoalPage.selectIsRelated(false)
+      await createGoalPage.selectCanStartNow(true)
+      await createGoalPage.selectTargetDateOption('3_months')
+      await createGoalPage.clickAddSteps()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      await addStepsPage.enterStep(0, 'probation_practitioner', 'Test step')
+      await addStepsPage.clickSaveAndContinue()
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      await expect(planOverviewPage.notificationBanner).toBeVisible()
+      await expect(planOverviewPage.notificationBannerText).toContainText(/You added a goal with steps to .+'s plan/i)
+    })
+
+    test('future goal with steps redirects to future goals tab', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.enterGoalTitle('Future goal with steps')
+      await createGoalPage.selectIsRelated(false)
+      await createGoalPage.selectCanStartNow(false)
+      await createGoalPage.clickAddSteps()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      await addStepsPage.enterStep(0, 'probation_practitioner', 'Test step')
+      await addStepsPage.clickSaveAndContinue()
+
+      await expect(page).toHaveURL(/type=future/)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      const goalTitle = await planOverviewPage.getGoalCardTitle(0)
+      expect(goalTitle).toContain('Future goal with steps')
+    })
+
+    test('current goal with steps redirects to current goals tab', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.enterGoalTitle('Current goal with steps')
+      await createGoalPage.selectIsRelated(false)
+      await createGoalPage.selectCanStartNow(true)
+      await createGoalPage.selectTargetDateOption('3_months')
+      await createGoalPage.clickAddSteps()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      await addStepsPage.enterStep(0, 'probation_practitioner', 'Test step')
+      await addStepsPage.clickSaveAndContinue()
+
+      await expect(page).toHaveURL(/type=current/)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      const goalTitle = await planOverviewPage.getGoalCardTitle(0)
+      expect(goalTitle).toContain('Current goal with steps')
     })
 
     test('can remove a step when multiple exist', async ({ page, createSession }) => {
@@ -109,7 +199,7 @@ test.describe('Create Goal Journey', () => {
   })
 
   test.describe('Create Goal without Steps', () => {
-    test('can save goal without adding steps', async ({ page, createSession }) => {
+    test('can save goal without adding steps and shows notification', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
 
@@ -123,7 +213,9 @@ test.describe('Create Goal Journey', () => {
 
       await createGoalPage.clickSaveWithoutSteps()
 
-      await expect(page).toHaveURL(/\/plan\/overview/)
+      const updatedPlanOverview = await PlanOverviewPage.verifyOnPage(page)
+      await expect(updatedPlanOverview.notificationBanner).toBeVisible()
+      await expect(updatedPlanOverview.notificationBannerText).toContainText(/You added a goal to .+'s plan/i)
     })
 
     test('future goal redirects to future goals tab', async ({ page, createSession }) => {
@@ -206,6 +298,24 @@ test.describe('Create Goal Journey', () => {
       const sortedLabels = [...checkboxLabels].sort((a, b) => a.localeCompare(b))
       expect(checkboxLabels).toEqual(sortedLabels)
     })
+
+    test('related areas of need checkbox group has a legend', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.selectIsRelated(true)
+
+      const relatedAreasFieldset = page
+        .locator('[name="related_areas_of_need"]')
+        .first()
+        .locator('xpath=ancestor::fieldset[1]')
+      const relatedAreasLegend = relatedAreasFieldset.locator('legend')
+
+      await expect(relatedAreasLegend).toContainText('Which other areas of need is this goal related to?')
+      await expect(relatedAreasLegend).toHaveClass(/govuk-visually-hidden/)
+    })
   })
 
   test.describe('Validation', () => {
@@ -273,6 +383,73 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.errorSummary.getByRole('link').first().click()
       await expect(createGoalPage.targetDateOptions.first()).toBeFocused()
     })
+
+    test(`related areas of need checkboxes' inputs have individual aria-describedby attribute for inline errors`, async ({
+      page,
+      createSession,
+    }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.selectIsRelated(true)
+
+      // click add steps to trigger error:
+      await createGoalPage.clickAddSteps()
+
+      const checkboxAriaValues = await page
+        .locator('fieldset input[type="checkbox"]')
+        .evaluateAll(els => els.map(el => el.getAttribute('aria-describedby')))
+
+      expect(checkboxAriaValues.length).toBeGreaterThan(0)
+      checkboxAriaValues.forEach(value => {
+        expect(value).toBe('related_areas_of_need-error')
+      })
+    })
+
+    test(`related areas of need radio buttons' inputs have individual aria-describedby attribute for inline errors`, async ({
+      page,
+      createSession,
+    }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+
+      // click add steps to trigger error:
+      await createGoalPage.clickAddSteps()
+
+      const radioInputAriaDescribedByValues = await page
+        .locator('fieldset input[id="is_related_to_other_areas"]')
+        .evaluateAll(radioButtonInputElements =>
+          radioButtonInputElements.map(element => element.getAttribute('aria-describedby')),
+        )
+
+      expect(radioInputAriaDescribedByValues.length).toBeGreaterThan(0)
+      radioInputAriaDescribedByValues.forEach(value => {
+        expect(value).toBe('is_related_to_other_areas-error')
+      })
+    })
+
+    test(`inline error id is referenced in aria-describedby attribute for goal title input`, async ({
+      page,
+      createSession,
+    }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+
+      // click add steps to trigger error:
+      await createGoalPage.clickAddSteps()
+
+      const goalTitleInput = createGoalPage.goalTitleInput
+      await expect(goalTitleInput).toHaveAttribute('aria-describedby', /goal_title-error/)
+    })
+
   })
 
   test.describe('Different Areas of Need', () => {
@@ -284,7 +461,6 @@ test.describe('Create Goal Journey', () => {
         test(`can create goal for ${area} area`, async ({ page, createSession }) => {
           const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
           await navigateToSentencePlan(page, handoverLink)
-          await PlanOverviewPage.verifyOnPage(page)
           await page.goto(`/sentence-plan/v1.0/goal/new/add-goal/${area}`)
 
           const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -295,5 +471,14 @@ test.describe('Create Goal Journey', () => {
           await expect(page).toHaveURL(new RegExp(`/add-goal/${area}`))
         })
       })
+
+    test('invalid area of need slug redirects to accommodation', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/not-a-real-area')
+
+      await expect(page).toHaveURL(/\/add-goal\/accommodation/)
+    })
   })
 })

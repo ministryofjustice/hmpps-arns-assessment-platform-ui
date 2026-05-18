@@ -5,6 +5,7 @@ import {
   EvaluatedBlock,
   FieldBlockDefinition,
   FieldBlockProps,
+  RenderedBlock,
 } from '@form-engine/form/types/structures.type'
 import { ChainableExpr, field } from '@form-engine/form/builders'
 import { buildNunjucksComponent } from '@form-engine-govuk-components/internal/buildNunjucksComponent'
@@ -275,7 +276,7 @@ interface GovUKCheckboxInputItem {
    *
    * @example someConditionalField // A field definition that appears when this checkbox is selected
    */
-  block?: BlockDefinition
+  block?: BlockDefinition | BlockDefinition[]
 }
 
 /**
@@ -292,17 +293,15 @@ interface GovUKCheckboxInputDivider {
 
 export const govukCheckboxInput = buildNunjucksComponent<GovUKCheckboxInput>(
   'govukCheckboxInput',
-  async (block, nunjucksEnv) => {
+  (block, nunjucksEnv) => {
     // At render time, items has been evaluated (Collection expressions resolved to arrays)
     const evaluatedItems = block.items as EvaluatedBlock<GovUKCheckboxInputItem | GovUKCheckboxInputDivider>[]
-    const items = evaluatedItems.map(option => makeOption(option, block.value))
+    const errorId = block.errors?.length ? `${block.idPrefix ?? block.code}-error` : undefined
+    const items = evaluatedItems.map(option => makeOption(option, block.value, errorId))
+    const fieldset = block.fieldset ?? (block.label ? { legend: { text: block.label } } : undefined)
 
     const params = {
-      fieldset: block.fieldset || {
-        legend: {
-          text: block.label,
-        },
-      },
+      fieldset,
       idPrefix: block.idPrefix || block.code,
       name: block.name || block.code,
       formGroup: block.formGroup,
@@ -319,7 +318,23 @@ export const govukCheckboxInput = buildNunjucksComponent<GovUKCheckboxInput>(
   },
 )
 
-const makeOption = (option: EvaluatedBlock<GovUKCheckboxInputItem | GovUKCheckboxInputDivider>, blockValue?: any) => {
+const getConditionalContent = (block: RenderedBlock | RenderedBlock[] | undefined) => {
+  if (!block) {
+    return undefined
+  }
+
+  if (Array.isArray(block)) {
+    return { html: block.map(b => b.html).join('') }
+  }
+
+  return { html: block.html }
+}
+
+const makeOption = (
+  option: EvaluatedBlock<GovUKCheckboxInputItem | GovUKCheckboxInputDivider>,
+  blockValue?: any,
+  errorId?: string,
+) => {
   if (isCheckboxDivider(option)) {
     return {
       divider: option.divider,
@@ -334,6 +349,15 @@ const makeOption = (option: EvaluatedBlock<GovUKCheckboxInputItem | GovUKCheckbo
     isChecked = blockValue.includes(option.value)
   }
 
+  const hasItemHint = Boolean(option.hint)
+  const attributes =
+    !hasItemHint && errorId
+      ? {
+          ...option.attributes,
+          'aria-describedby': [option.attributes?.['aria-describedby'], errorId].filter(Boolean).join(' '),
+        }
+      : option.attributes
+
   return {
     value: option.value,
     text: option.text,
@@ -341,10 +365,10 @@ const makeOption = (option: EvaluatedBlock<GovUKCheckboxInputItem | GovUKCheckbo
     id: option.id,
     hint: typeof option.hint === 'object' ? option.hint : { text: option.hint },
     checked: isChecked,
-    conditional: option.block,
+    conditional: getConditionalContent(option.block),
     disabled: option.disabled,
     behaviour: option.behaviour,
-    attributes: option.attributes,
+    attributes,
     label: option.label,
   }
 }

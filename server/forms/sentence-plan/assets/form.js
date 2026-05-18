@@ -5,5 +5,5 @@
  * Add any form-specific interactivity here.
  */
 
-// Add form-specific JS as needed
 import '../components/accessible-autocomplete/accessible-autocomplete.mjs'
+import '../components/copy-button/copy-button.mjs'

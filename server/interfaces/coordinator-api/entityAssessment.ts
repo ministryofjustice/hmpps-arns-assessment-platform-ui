@@ -84,6 +84,8 @@ export interface AssessmentArea {
   threshold: number | null
   isHighScoring: boolean
   isLowScoring: boolean
+  subArea?: SubAreaData
+  effectiveScoreToThresholdDistance: number | null
 }
 
 export interface CriminogenicNeedArea {
@@ -102,4 +104,14 @@ export interface CriminogenicNeedsData {
   healthAndWellbeing: CriminogenicNeedArea
   personalRelationshipsAndCommunity: CriminogenicNeedArea
   thinkingBehaviourAndAttitudes: CriminogenicNeedArea
+  lifestyleAndAssociates?: CriminogenicNeedArea
+}
+
+// sub-area data for areas with nested scoring
+// (for example, Lifestyle and associates within Thinking, behaviours and attitudes)
+export interface SubAreaData {
+  title: string
+  score: number | null
+  upperBound: number
+  threshold: number
 }

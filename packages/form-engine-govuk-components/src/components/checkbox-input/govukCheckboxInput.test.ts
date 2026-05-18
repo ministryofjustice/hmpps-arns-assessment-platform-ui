@@ -71,6 +71,15 @@ describe('govukCheckboxInput', () => {
       })
       expect(params.fieldset).toEqual(fieldsetConfig)
     })
+
+    it('does not create a fieldset when neither fieldset nor label is provided', async () => {
+      const params = await helper.getParams({
+        code: 'test-checkbox',
+        items: [],
+      })
+
+      expect(params.fieldset).toBeUndefined()
+    })
   })
 
   describe('Hint transformation', () => {

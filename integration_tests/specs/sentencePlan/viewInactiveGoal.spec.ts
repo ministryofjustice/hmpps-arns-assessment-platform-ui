@@ -3,7 +3,7 @@ import { test, TargetService } from '../../support/fixtures'
 import ViewInactiveGoalPage from '../../pages/sentencePlan/viewInactiveGoalPage'
 import ConfirmAchievedGoalPage from '../../pages/sentencePlan/confirmAchievedGoalPage'
 import ConfirmRemoveGoalPage from '../../pages/sentencePlan/confirmRemoveGoalPage'
-import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
+import PlanHistoryPage from '../../pages/sentencePlan/planHistoryPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
 import {
   buildPageTitle,
@@ -119,7 +119,6 @@ test.describe('View inactive goal page', () => {
 
       // Should navigate to achieved goals tab
       await expect(page).toHaveURL(/type=achieved/)
-      await PlanOverviewPage.verifyOnPage(page)
     })
   })
 
@@ -228,7 +227,6 @@ test.describe('View inactive goal page', () => {
 
       // Should navigate to removed goals tab
       await expect(page).toHaveURL(/type=removed/)
-      await PlanOverviewPage.verifyOnPage(page)
     })
   })
 
@@ -421,6 +419,47 @@ test.describe('View inactive goal page', () => {
       // Verify caption does not include "(and ...)"
       const captionText = await viewPage.getCaptionText()
       expect(captionText.toLowerCase()).not.toContain('and')
+    })
+  })
+
+  test.describe('back link from plan history', () => {
+    test('back link navigates to plan history when accessed from plan history', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
+          {
+            title: 'Removed Goal For History',
+            areaOfNeed: 'accommodation',
+            status: 'REMOVED',
+            steps: [{ actor: 'probation_practitioner', description: 'Test step', status: 'COMPLETED' }],
+            notes: [{ type: 'REMOVED', note: 'No longer relevant' }],
+          },
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      // Navigate via plan history
+      await page.goto('/sentence-plan/v1.0/plan/plan-history')
+      await PlanHistoryPage.verifyOnPage(page)
+
+      // Click "View goal" link from plan history
+      await page
+        .getByRole('link', { name: /View goal/i })
+        .first()
+        .click()
+
+      await ViewInactiveGoalPage.verifyOnPage(page)
+
+      // Backlink should point to plan-history (not plan overview)
+      const backlink = page.locator('.govuk-back-link')
+      await expect(backlink).toHaveAttribute('href', /plan-history/)
     })
   })
 

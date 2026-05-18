@@ -1,19 +1,19 @@
-$app-vertical-nav-button-menu-color: govuk-colour("blue") !default;
-$app-vertical-nav-button-menu-hover-color: govuk-shade($app-vertical-nav-button-menu-color, 20%) !default;
+$app-vertical-nav-button-menu-color: govuk-colour('blue') !default;
+$app-vertical-nav-button-menu-hover-color: govuk-colour('blue', $variant: 'shade-25') !default;
 
 .app-vertical-nav {
   position: relative;
-  @include govuk-responsive-padding(4, "bottom");
-  @include govuk-responsive-margin(6, "bottom");
+  @include govuk-responsive-padding(4, 'bottom');
+  @include govuk-responsive-margin(6, 'bottom');
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     right: govuk-spacing(4);
     bottom: 0;
     left: govuk-spacing(4);
     height: 1px;
-    background-color: $govuk-border-colour;
+    background-color: govuk-functional-colour(border);
   }
 }
 
@@ -22,7 +22,7 @@ $app-vertical-nav-button-menu-hover-color: govuk-shade($app-vertical-nav-button-
   margin-bottom: govuk-spacing(2);
   padding-right: govuk-spacing(4);
   padding-left: govuk-spacing(4);
-  color: $govuk-text-colour;
+  color: govuk-functional-colour(text);
   @include govuk-font($size: 19);
 }
 
@@ -59,16 +59,16 @@ $app-vertical-nav-button-menu-hover-color: govuk-shade($app-vertical-nav-button-
   padding-bottom: 8px;
   padding-left: govuk-spacing(4) - 4px;
   border-left: 4px solid transparent;
-  color: $govuk-link-colour;
+  color: govuk-functional-colour(link);
   text-decoration: none;
   box-shadow: none;
 
   &:visited {
-    color: $govuk-link-colour;
+    color: govuk-functional-colour(link);
   }
 
   &:hover {
-    color: govuk-colour("white");
+    color: govuk-colour('white');
     background-color: $app-vertical-nav-button-menu-hover-color;
   }
 
@@ -77,14 +77,14 @@ $app-vertical-nav-button-menu-hover-color: govuk-shade($app-vertical-nav-button-
   }
 
   &:focus-visible {
-    border-color: $govuk-text-colour;
+    border-color: govuk-functional-colour(text);
     outline: none;
-    color: $govuk-text-colour;
-    background-color: $govuk-focus-colour;
+    color: govuk-functional-colour(text);
+    background-color: govuk-functional-colour(focus);
   }
 
   &:focus-visible:hover {
-    color: govuk-colour("white");
+    color: govuk-colour('white');
     background-color: $app-vertical-nav-button-menu-hover-color;
   }
 }
@@ -98,23 +98,23 @@ $app-vertical-nav-button-menu-hover-color: govuk-shade($app-vertical-nav-button-
   padding-left: govuk-spacing(4) - 4px;
   border: none;
   border-left: 4px solid transparent;
-  color: $govuk-link-colour;
+  color: govuk-functional-colour(link);
   background-color: transparent;
   text-align: left;
   text-decoration: none;
   font: inherit;
 
   &:visited {
-    color: $govuk-link-colour;
+    color: govuk-functional-colour(link);
   }
 
   &:hover {
-    color: govuk-colour("white");
+    color: govuk-colour('white');
     background-color: $app-vertical-nav-button-menu-hover-color;
   }
 
   &:active {
-    color: govuk-colour("white");
+    color: govuk-colour('white');
   }
 
   &:focus:not(:focus-visible) {
@@ -123,14 +123,14 @@ $app-vertical-nav-button-menu-hover-color: govuk-shade($app-vertical-nav-button-
   }
 
   &:focus-visible {
-    border-color: $govuk-text-colour;
+    border-color: govuk-functional-colour(text);
     outline: none;
-    color: $govuk-text-colour;
-    background-color: $govuk-focus-colour;
+    color: govuk-functional-colour(text);
+    background-color: govuk-functional-colour(focus);
   }
 
   &:focus-visible:hover {
-    color: govuk-colour("white");
+    color: govuk-colour('white');
     background-color: $app-vertical-nav-button-menu-hover-color;
   }
 }
@@ -142,11 +142,11 @@ $app-vertical-nav-button-menu-hover-color: govuk-shade($app-vertical-nav-button-
 
 .app-vertical-nav__item--active > .app-vertical-nav__link,
 .app-vertical-nav__item--active > .app-vertical-nav__toggle {
-  color: govuk-colour("white");
-  background-color: $govuk-link-colour;
+  color: govuk-colour('white');
+  background-color: govuk-functional-colour(link);
 
   &:hover {
-    color: govuk-colour("white");
+    color: govuk-colour('white');
     background-color: $app-vertical-nav-button-menu-color;
   }
 
@@ -156,10 +156,10 @@ $app-vertical-nav-button-menu-hover-color: govuk-shade($app-vertical-nav-button-
   }
 
   &:focus-visible {
-    border-color: $govuk-text-colour;
+    border-color: govuk-functional-colour(text);
     outline: none;
-    color: $govuk-text-colour;
-    background-color: $govuk-focus-colour;
+    color: govuk-functional-colour(text);
+    background-color: govuk-functional-colour(focus);
   }
 
   &:focus-visible:hover {

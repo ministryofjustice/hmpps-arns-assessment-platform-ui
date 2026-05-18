@@ -7,6 +7,7 @@ import { setAccessDetailsFromHandoverContext } from './handover/setAccessDetails
 import { setCaseDetailsFromCrn } from './crn/setCaseDetailsFromCrn'
 import { setPractitionerDetailsFromAuth } from './crn/setPractitionerDetailsFromAuth'
 import { setAccessDetailsForCrn } from './crn/setAccessDetailsForCrn'
+import { clearAccessSession } from './common/clearAccessSession'
 import { setTargetServiceAndRedirect } from './common/setTargetServiceAndRedirect'
 
 /**
@@ -17,6 +18,7 @@ import { setTargetServiceAndRedirect } from './common/setTargetServiceAndRedirec
 export const { effects: AccessEffects, createRegistry: AccessEffectsRegistry } =
   defineEffectsWithDeps<AccessEffectsDeps>()({
     // Common effects
+    clearAccessSession,
     setTargetServiceAndRedirect,
 
     // Handover flow effects

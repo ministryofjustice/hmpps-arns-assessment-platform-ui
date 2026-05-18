@@ -2,10 +2,10 @@
  * Training Session Launcher - Form styles entry point
  */
 
-@import "govuk-frontend/dist/govuk/base";
-@import "../components/tab-panel/tab-panel";
-@import "../components/criminogenic-needs-list/criminogenic-needs-list";
-@import "../components/randomizable-field/randomizable-field";
+@import 'govuk-frontend/dist/govuk/base';
+@import '../components/tab-panel/tab-panel';
+@import '../components/criminogenic-needs-list/criminogenic-needs-list';
+@import '../components/randomizable-field/randomizable-field';
 
 // Scenario panel content styles
 // Used within TabPanel panels for scenario display
@@ -16,7 +16,7 @@
     &-header {
       margin-bottom: govuk-spacing(5);
       padding-bottom: govuk-spacing(4);
-      border-bottom: 1px solid govuk-colour("mid-grey");
+      border-bottom: 1px solid govuk-functional-colour(border);
     }
 
     &-title {
@@ -66,10 +66,10 @@
 
     dt {
       @include govuk-font($size: 16);
-      color: govuk-colour("dark-grey");
+      color: govuk-colour('black', $variant: 'tint-25');
 
       &::after {
-        content: ":";
+        content: ':';
       }
     }
 
@@ -113,12 +113,12 @@
   margin-bottom: govuk-spacing(4);
 
   &__details {
-    border: 1px solid govuk-colour("mid-grey");
-    background-color: govuk-colour("white");
+    border: 1px solid govuk-functional-colour(border);
+    background-color: govuk-colour('white');
 
     &[open] {
       .session-card__summary {
-        border-bottom: 1px solid govuk-colour("mid-grey");
+        border-bottom: 1px solid govuk-functional-colour(border);
       }
     }
   }
@@ -141,7 +141,7 @@
     }
 
     &:hover {
-      background-color: govuk-colour("light-grey");
+      background-color: govuk-colour('black', $variant: 'tint-95');
     }
 
     &:focus-visible {
@@ -151,20 +151,20 @@
 
   &__title {
     @include govuk-font($size: 19, $weight: bold);
-    color: govuk-colour("blue");
+    color: govuk-colour('blue');
   }
 
   &__subtitle {
     @include govuk-font($size: 16);
-    color: govuk-colour("dark-grey");
+    color: govuk-colour('black', $variant: 'tint-25');
   }
 
   &__meta {
     position: absolute;
     top: govuk-spacing(3);
     right: govuk-spacing(4);
-    @include govuk-font($size: 14);
-    color: govuk-colour("dark-grey");
+    @include govuk-font($size: 16);
+    color: govuk-colour('black', $variant: 'tint-25');
   }
 
   &__content {
@@ -231,9 +231,9 @@
 }
 
 .govuk-button--alternative-blue {
-  $blue-button-colour: govuk-colour("blue");
-  $blue-button-hover-colour: govuk-shade($blue-button-colour, 20%);
-  $blue-button-shadow-colour: govuk-shade($blue-button-colour, 60%);
+  $blue-button-colour: govuk-colour('blue');
+  $blue-button-hover-colour: govuk-colour('blue', $variant: 'shade-25');
+  $blue-button-shadow-colour: govuk-colour('blue', $variant: 'shade-50');
 
   background-color: $blue-button-colour;
   box-shadow: 0 2px 0 $blue-button-shadow-colour;
@@ -243,7 +243,7 @@
   &:visited,
   &:active,
   &:hover {
-    color: govuk-colour("white");
+    color: govuk-colour('white');
   }
 
   &:hover {

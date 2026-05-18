@@ -1,11 +1,12 @@
 import { createFormPackage, journey } from '@form-engine/form/builders'
 import { sentencePlanV1Journey } from './versions/v1.0'
 import { SentencePlanEffectsDeps } from './effects/types'
-import { SentencePlanEffects, SentencePlanEffectsRegistry } from './effects'
+import { AuditEvent, SentencePlanEffects, SentencePlanEffectsRegistry } from './effects'
 import { sentencePlanComponents } from './components'
 import { createPrivacyScreen } from '../shared'
 import { CaseData } from './versions/v1.0/constants'
 import { unsavedInformationDeletedStep } from './steps/unsaved-information-deleted/step'
+import { mergedPlanWarningStep } from './steps/merged-plan-warning/step'
 import config from '../../config'
 
 /**
@@ -15,7 +16,10 @@ import config from '../../config'
  */
 const privacyScreenStep = createPrivacyScreen({
   loadEffects: [SentencePlanEffects.loadSessionData()],
-  submitEffect: SentencePlanEffects.setPrivacyAccepted(),
+  submitEffects: [
+    SentencePlanEffects.setPrivacyAccepted(),
+    SentencePlanEffects.sendAuditEvent(AuditEvent.CONFIRM_PRIVACY_SCREEN),
+  ],
   submitRedirectPath: 'v1.0/plan/overview',
   alreadyAcceptedRedirectPath: 'v1.0/plan/overview',
   template: 'sentence-plan/views/sentence-plan-step',
@@ -50,7 +54,7 @@ const sentencePlanRootJourney = journey({
   path: '/sentence-plan',
   entryPath: '/v1.0/plan/overview',
   children: [sentencePlanV1Journey],
-  steps: [privacyScreenStep, unsavedInformationDeletedStep],
+  steps: [mergedPlanWarningStep, privacyScreenStep, unsavedInformationDeletedStep],
 })
 
 /**

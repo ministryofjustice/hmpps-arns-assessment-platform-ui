@@ -146,7 +146,7 @@ export interface TaskListItem {
  *       hint: { text: 'Include email and phone number' },
  *       href: '/contact-details',
  *       status: {
- *         tag: { text: 'In progress', classes: 'govuk-tag--light-blue' },
+ *         tag: { text: 'In progress', classes: 'govuk-tag--blue' },
  *       },
  *     },
  *     {
@@ -191,10 +191,7 @@ export interface GovUKTaskList extends BlockDefinition, GovUKTaskListProps {
 /**
  * Renders the GOV.UK Task List component using the official Nunjucks template.
  */
-async function taskListRenderer(
-  block: EvaluatedBlock<GovUKTaskList>,
-  nunjucksEnv: nunjucks.Environment,
-): Promise<string> {
+function taskListRenderer(block: EvaluatedBlock<GovUKTaskList>, nunjucksEnv: nunjucks.Environment): string {
   const params: Record<string, any> = {
     items: block.items,
     classes: block.classes,
@@ -229,7 +226,7 @@ export const govukTaskList = buildNunjucksComponent<GovUKTaskList>('govukTaskLis
  *       hint: { text: 'Include email and phone number' },
  *       href: '/contact-details',
  *       status: {
- *         tag: { text: 'In progress', classes: 'govuk-tag--light-blue' },
+ *         tag: { text: 'In progress', classes: 'govuk-tag--blue' },
  *       },
  *     },
  *     {

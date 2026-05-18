@@ -83,7 +83,7 @@ interface EvaluatedTabPanelItem {
  */
 export const tabPanel = buildNunjucksComponent<TabPanel>(
   'tabPanel',
-  async (evaluated: EvaluatedBlock<TabPanel>, nunjucksEnv: nunjucks.Environment) => {
+  (evaluated: EvaluatedBlock<TabPanel>, nunjucksEnv: nunjucks.Environment) => {
     const id = evaluated.id || 'tab-panel'
     const classes = ['tab-panel', evaluated.classes].filter(Boolean).join(' ')
 

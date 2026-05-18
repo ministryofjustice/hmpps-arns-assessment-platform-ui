@@ -34,6 +34,7 @@ const getFormAssetsConfig = buildConfig => {
     plugins: [
       sassPlugin({
         quietDeps: true,
+        silenceDeprecations: ['import'],
         loadPaths: [process.cwd(), path.join(process.cwd(), 'node_modules')],
       }),
       manifestPlugin({

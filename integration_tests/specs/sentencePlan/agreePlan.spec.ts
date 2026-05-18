@@ -6,8 +6,10 @@ import { currentGoals, currentGoalsWithCompletedSteps } from '../../builders/sen
 import {
   buildErrorPageTitle,
   buildPageTitle,
+  checkAccessibility,
   navigateToSentencePlan,
   sentencePlanPageTitles,
+  sentencePlanV1URLs,
 } from './sentencePlanUtils'
 
 test.describe('Agree plan journey', () => {
@@ -23,8 +25,8 @@ test.describe('Agree plan journey', () => {
       // Click the Agree plan button
       await planOverviewPage.agreePlanButton.click()
 
-      // Should redirect back to overview with error param
-      await expect(page).toHaveURL(/type=current.*error=no-active-goals|error=no-active-goals.*type=current/)
+      // Should stay on overview with validation errors (no redirect)
+      await expect(page).toHaveURL(/\/overview/)
 
       // ensure error page title is correct:
       await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.planOverview))
@@ -54,8 +56,8 @@ test.describe('Agree plan journey', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       await planOverviewPage.agreePlanButton.click()
 
-      // Should redirect back to overview with error param
-      await expect(page).toHaveURL(/error=no-steps/)
+      // Should stay on overview with validation errors (no redirect)
+      await expect(page).toHaveURL(/\/overview/)
 
       // ensure error page title is correct:
       await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.planOverview))
@@ -85,8 +87,8 @@ test.describe('Agree plan journey', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       await planOverviewPage.agreePlanButton.click()
 
-      // Should redirect back to overview with error param
-      await expect(page).toHaveURL(/error=no-steps/)
+      // Should stay on overview with validation errors (no redirect)
+      await expect(page).toHaveURL(/\/overview/)
 
       // ensure error page title is correct:
       await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.planOverview))
@@ -129,7 +131,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
 
       // Click save without selecting an option
@@ -157,7 +159,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
 
       // Select No option
@@ -188,7 +190,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
 
       // Select Could not answer option
@@ -217,7 +219,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
 
       await agreePlanPage.selectAgreeYes()
@@ -226,16 +228,13 @@ test.describe('Agree plan journey', () => {
       // Save
       await agreePlanPage.clickSave()
 
-      // Should redirect to plan overview
-      await expect(page).toHaveURL(/\/plan\/overview/)
-
       // Verify we're on plan overview
       await PlanOverviewPage.verifyOnPage(page)
 
-      // Should show "Plan created on [date]" message for agreed plans
-      const planCreatedMessage = page.locator('.govuk-body', { hasText: 'Plan created on' })
-      await expect(planCreatedMessage).toBeVisible()
-      await expect(planCreatedMessage).toContainText('View plan history')
+      // Should show "{name} agreed to their plan on [date]" message for agreed plans
+      const agreedMessage = page.locator('.govuk-body', { hasText: 'agreed to their plan on' })
+      await expect(agreedMessage).toBeVisible()
+      await expect(agreedMessage).toContainText('View plan history')
     })
 
     test('can agree to plan with No option and details', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -244,7 +243,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
 
       // Select No
@@ -256,13 +255,10 @@ test.describe('Agree plan journey', () => {
       // Save
       await agreePlanPage.clickSave()
 
-      // Should redirect to plan overview
-      await expect(page).toHaveURL(/\/plan\/overview/)
-
       // Verify we're on plan overview
       await PlanOverviewPage.verifyOnPage(page)
 
-      // Should show "Plan created on [date]" message (same as Yes - both are final agreements)
+      // Should show "Plan created on [date]" message for non-agreement plans
       const planCreatedMessage = page.locator('.govuk-body', { hasText: 'Plan created on' })
       await expect(planCreatedMessage).toBeVisible()
       await expect(planCreatedMessage).toContainText('View plan history')
@@ -278,7 +274,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan page
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
 
       // Select Could not answer
@@ -287,11 +283,14 @@ test.describe('Agree plan journey', () => {
       // Enter required details
       await agreePlanPage.enterDetailsForCouldNotAnswer('Unable to contact - will discuss at next appointment.')
 
+      // Accessibility
+      await checkAccessibility(page, {
+        // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
+        disableRules: ['aria-allowed-attr'],
+      })
+
       // Save
       await agreePlanPage.clickSave()
-
-      // Should redirect to plan overview
-      await expect(page).toHaveURL(/\/plan\/overview/)
 
       // Verify we're on plan overview
       await PlanOverviewPage.verifyOnPage(page)
@@ -321,7 +320,7 @@ test.describe('Agree plan journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to agree plan and agree
-      await page.goto('/sentence-plan/v1.0/plan/agree-plan')
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
       await agreePlanPage.selectAgreeYes()
       await agreePlanPage.clickSave()

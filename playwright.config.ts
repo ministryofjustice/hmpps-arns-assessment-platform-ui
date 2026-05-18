@@ -9,12 +9,18 @@ export interface PlaywrightExtendedConfig {
     }
     aapApi: {
       url: string
+      dbConnectionString: string
     }
     handoverApi: {
       url: string
     }
     coordinatorApi: {
       url: string
+    }
+    localstack: {
+      url: string
+      queueUrl: string
+      region: string
     }
   }
 }
@@ -30,28 +36,30 @@ export default defineConfig<PlaywrightExtendedConfig>({
   /* Maximum time test suite canm run for. (millis) */
   globalTimeout: 60 * 60 * 1000,
   fullyParallel: true,
-  workers: 6,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  retries: 0,
+  /* Retry on CI only */
+  retries: process.env.CI ? 1 : 0,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
+  workers: process.env.CI ? 3 : 4,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'test_results/playwright/report', open: process.env.CI ? 'never' : 'on-failure' }],
     ['junit', { outputFile: 'test_results/playwright/junit.xml' }],
+    ...(process.env.CI ? [['blob', { outputDir: 'test_results/blob-report' }] as const] : []),
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     actionTimeout: 30 /* seconds */ * 1000,
     timezoneId: 'Europe/London',
     launchOptions: {
-      slowMo: 150,
+      slowMo: 0,
       args: process.env.CI
         ? ['--unsafely-treat-insecure-origin-as-secure=http://hmpps-auth:9090,http://ui:3000,http://wiremock:8080']
         : [],
     },
     screenshot: 'only-on-failure',
-    trace: process.env.CI ? 'off' : 'on',
+    trace: process.env.CI ? 'retain-on-first-failure' : 'on',
     ...devices['Desktop Chrome'],
     testIdAttribute: 'data-qa',
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
@@ -63,7 +71,8 @@ export default defineConfig<PlaywrightExtendedConfig>({
         systemClientSecret: process.env.CLIENT_CREDS_CLIENT_SECRET || 'clientsecret',
       },
       aapApi: {
-        url: process.env.AAP_API_URL || 'http://localhost:8080',
+        url: process.env.AAP_API_URL || 'http://localhost:9091/aap-api',
+        dbConnectionString: process.env.AAP_DATABASE_CONNECTION_STRING || 'postgres://root:dev@localhost:5432/postgres',
       },
       handoverApi: {
         url: process.env.HANDOVER_API_URL || 'http://localhost:9091/handover',
@@ -71,10 +80,16 @@ export default defineConfig<PlaywrightExtendedConfig>({
       coordinatorApi: {
         url: process.env.COORDINATOR_API_URL || 'http://localhost:9091/coordinator-api',
       },
+      localstack: {
+        url: process.env.LOCALSTACK_URL || 'http://localhost:4566',
+        queueUrl: `${process.env.LOCALSTACK_URL || 'http://localhost:4566'}/000000000000/audit-queue`,
+        region: 'eu-west-2',
+      },
     },
   },
 
-  /* Configure projects */
+  globalSetup: './integration_tests/specs/audit/globalSetup.ts',
+
   projects: [
     {
       name: 'parallel',
@@ -83,7 +98,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
     {
       name: 'serial',
       grep: /@serial/,
-      dependencies: ['parallel'],
+      ...(!process.env.SHARD && { dependencies: ['parallel'] }),
       fullyParallel: false,
       workers: 1,
     },

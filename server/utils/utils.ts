@@ -22,6 +22,14 @@ export const initialiseName = (fullName?: string): string | null => {
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
 
+export const possessive = (name: string): string => {
+  if (!name) {
+    return name
+  }
+
+  return name.toLowerCase().endsWith('s') ? `${name}'` : `${name}'s`
+}
+
 export const formatDate = (date: string, format: 'iso' | 'simple') => {
   if (!date) {
     return ''

@@ -43,6 +43,12 @@ export default {
     password: process.env.REDIS_AUTH_TOKEN,
     tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
   },
+  cacheRedis: {
+    host: get('CACHE_REDIS_HOST', 'localhost'),
+    port: parseInt(process.env.CACHE_REDIS_PORT, 10) || 6379,
+    password: process.env.CACHE_REDIS_AUTH_TOKEN,
+    tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
+  },
   session: {
     secret: get('SESSION_SECRET', 'app-insecure-default-session', requiredInProduction),
     expiryMinutes: Number(get('WEB_SESSION_TIMEOUT_IN_MINUTES', 60)),
@@ -123,6 +129,7 @@ export default {
       agent: new AgentConfig(Number(get('COORDINATOR_API_TIMEOUT_RESPONSE', 10000))),
     },
   },
+  sanUrl: get('SAN_URL', 'http://localhost:3000', requiredInProduction),
   sqs: {
     audit: auditConfig(),
   },
@@ -131,14 +138,22 @@ export default {
       enabled: get('FORM_ENGINE_DEVELOPER_GUIDE_ENABLED', 'false') === 'true',
     },
     sentencePlan: {
-      enabled: get('SENTENCE_PLAN_ENABLED', 'true') === 'true',
+      enabled: get('FORM_SENTENCE_PLAN_ENABLED', 'true') === 'true',
     },
     trainingSessionLauncher: {
-      enabled: get('TRAINING_SESSION_LAUNCHER_ENABLED', 'false') === 'true',
+      enabled: get('FORM_TRAINING_SESSION_LAUNCHER_ENABLED', 'false') === 'true',
     },
   },
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
+  logLevel: get('LOG_LEVEL', 'info'),
   environmentName: get('ENVIRONMENT_NAME', ''),
+  feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
+  serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#service-now-link', requiredInProduction),
+  oasysUrl: get('OASYS_URL', 'http://localhost:3000/training-session-launcher/sessions', requiredInProduction),
+  mpopUrl: get('MPOP_URL', 'http://localhost:3000/sign-in', requiredInProduction),
+  smartSurveyPopupCode: get('SMART_SURVEY_POPUP_CODE', ''),
+  featureFlagUrl: get('FEATURE_FLAG_URL', ''),
+  appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', ''),
 
   // Target service OAuth client IDs for handover
   handoverTargets: {

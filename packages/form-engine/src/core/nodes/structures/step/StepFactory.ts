@@ -51,6 +51,10 @@ export default class StepFactory {
       properties.onAccess = this.nodeFactory.transformValue(dataProperties.onAccess)
     }
 
+    if (dataProperties.code !== undefined) {
+      properties.code = dataProperties.code
+    }
+
     if (dataProperties.onAction !== undefined) {
       properties.onAction = this.nodeFactory.transformValue(dataProperties.onAction)
     }
@@ -81,6 +85,10 @@ export default class StepFactory {
 
     if (dataProperties.data !== undefined) {
       properties.data = dataProperties.data
+    }
+
+    if (dataProperties.validate !== undefined) {
+      properties.validate = this.nodeFactory.transformValue(dataProperties.validate)
     }
 
     return {

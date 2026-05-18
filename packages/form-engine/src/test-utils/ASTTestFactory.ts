@@ -27,6 +27,8 @@ import {
   QueryPseudoNode,
   ParamsPseudoNode,
   DataPseudoNode,
+  RequestPseudoNode,
+  SessionPseudoNode,
   AnswerLocalPseudoNode,
   AnswerRemotePseudoNode,
 } from '@form-engine/core/types/pseudoNodes.type'
@@ -227,6 +229,32 @@ export class ASTTestFactory {
   }
 
   /**
+   * Create a REQUEST pseudo node
+   */
+  static requestPseudoNode(requestPath: string): RequestPseudoNode {
+    return {
+      id: ASTTestFactory.getPseudoId(),
+      type: PseudoNodeType.REQUEST,
+      properties: {
+        requestPath,
+      },
+    }
+  }
+
+  /**
+   * Create a SESSION pseudo node
+   */
+  static sessionPseudoNode(baseSessionKey: string): SessionPseudoNode {
+    return {
+      id: ASTTestFactory.getPseudoId(),
+      type: PseudoNodeType.SESSION,
+      properties: {
+        baseSessionKey,
+      },
+    }
+  }
+
+  /**
    * Create an ANSWER_LOCAL pseudo node
    */
   static answerLocalPseudoNode(baseFieldCode: string, fieldNodeId?: NodeId): AnswerLocalPseudoNode {
@@ -369,6 +397,11 @@ export class StepBuilder {
 
   withPath(path: string): this {
     this.properties.path = path
+    return this
+  }
+
+  withCode(code: string): this {
+    this.properties.code = code
     return this
   }
 

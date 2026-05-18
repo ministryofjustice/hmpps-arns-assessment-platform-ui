@@ -36,12 +36,14 @@ This enables:
 
 ## Reference Types
 
-The form-engine provides six reference types, each pointing to a different data source:
+The form-engine provides these reference types, each pointing to a different data source:
 
 | Reference | Data Source | Common Use |
 |-----------|-------------|------------|
 | \`Answer('field')\` | Field responses | Referencing user input from any field |
 | \`Data('key')\` | External data | API responses, database lookups |
+| \`Request.*()\` | Request metadata | URL, method, headers, cookies, request state |
+| \`Session('key')\` | Server-side session | Persisted context for the current user/request |
 | \`Self()\` | Current field | Validation rules, field-scoped logic |
 | \`Item()\` | Collection item | Iterating over arrays, dynamic fields |
 | \`Params('id')\` | URL path params | Route parameters like \`/users/:id\` |
@@ -90,7 +92,7 @@ The following pages cover each reference type in detail:
 - **Data()** — Referencing external data
 - **Self()** — Referencing the current field
 - **Item()** — Referencing collection items
-- **Params, Query & Post** — HTTP request references
+- **Params, Query, Post, Request & Session** — Request and session references
 - **Chaining** — Combining references with pipes and conditions
 
 ---
@@ -102,7 +104,7 @@ The following pages cover each reference type in detail:
       CodeBlock({
         language: 'typescript',
         code: `
-          import { block, Answer, Data, Self, Condition, validation } from '@form-engine/form/builders'
+          import { block, Answer, Data, Request, Session, Self, Condition, validation } from '@form-engine/form/builders'
 
           // Using Answer() to show a greeting based on user input
           HtmlBlock({
@@ -127,6 +129,16 @@ The following pages cover each reference type in detail:
               }),
             ],
           })
+
+          // Using Request() to access request metadata directly
+          HtmlBlock({
+            content: Format('Current path: %1', Request.Path()),
+          })
+
+          // Using Session() to access persisted session context
+          HtmlBlock({
+            content: Format('Signed in as %1', Session('user.name')),
+          })
         `,
       }),
     ],
@@ -139,6 +151,12 @@ The following pages cover each reference type in detail:
 
           // Accessing nested answer values
           Answer('primaryContact.email')
+
+          // Accessing nested request state values
+          Request.State('user.profile.name')
+
+          // Accessing nested session values
+          Session('permissions.casework.edit')
 
           // Deep nesting works to any level
           Data('api.response.data.results.0.id')

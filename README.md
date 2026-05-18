@@ -13,7 +13,7 @@ The AAP emerges from the need to modernise the ARNS practices within the justice
 - **A declarative form engine**: Enable rapid assessment development through configuration rather than code
 - **A unified frontend interface**: Ensure consistent user experience across all assessment types
 - **A unified backend with versioned datastore**: Provide a single consistent access point for downstream services
-with advanced data versioning
+  with advanced data versioning
 
 ## Key Technologies
 
@@ -86,6 +86,7 @@ hmpps-arns-assessment-platform-ui/
 The form engine operates in two distinct phases:
 
 ### Compilation Phase (Build Time)
+
 1. **Validation** - Verify form configurations match expected interfaces
 2. **Transformation** - Parse JSON into typed Abstract Syntax Tree
 3. **Registration** - Assign unique IDs and create O(1) lookup registry
@@ -93,19 +94,21 @@ The form engine operates in two distinct phases:
 5. **Optimisation** - Generate pre-compiled lambda functions
 
 ### Runtime Phase (Request Time)
+
 - Leverages pre-compiled AST for efficient evaluation of multi-level dependencies
 - Provides Express routing for Form elements.
-
 
 ## Testing
 
 ### Prerequisites
+
 ```bash
 npm i
 npx playwright install
 ```
 
 ### Running Tests
+
 ```bash
 make test                   # Run unit tests
 make e2e-ci                 # Run Playwright tests in Docker container against application in Docker
@@ -115,19 +118,23 @@ make dev-up && make e2e-ui  # Run Playwright tests locally against application i
 ### Testing Types
 
 #### Integration Tests
+
 Playwright [assertion tests](https://playwright.dev/docs/writing-tests#first-test) to check behaviour in the browser.
 
 Key Scenarios:
+
 - Navigation
 - Validation
 - Functional behaviour
 
-*Example:* [createGoal.spec.ts](integration_tests/specs/sentencePlan/createGoal.spec.ts)
+_Example:_ [createGoal.spec.ts](integration_tests/specs/sentencePlan/createGoal.spec.ts)
 
 #### Snapshot Tests
+
 Playwright [snapshot tests](https://playwright.dev/docs/aria-snapshots) you can assert the accessibility tree of a page.
 
 Key Scenarios:
+
 - Structural checks for complex UI components
 - Page content displayed on load
 
@@ -139,47 +146,100 @@ await expect('#main-content').toMatchAriaSnapshot(`
 `)
 ```
 
-*Full Example:* [planHistory.agreements.spec.ts](integration_tests/specs/sentencePlan/planHistory.achievedGoals.spec.ts)
+_Full Example:_ [planHistory.agreements.spec.ts](integration_tests/specs/sentencePlan/planHistory.achievedGoals.spec.ts)
 
 #### Accessibility Tests
+
 Axe is an accessibility testing engine for websites. [axe-core](https://www.npmjs.com/package/@axe-core/playwright) has been added to playwright fixture, to run a scan, see example below.
 
 ```js
-test('should be accessible', async ({ page, makeAxeBuilder}) => {
-    const accessibilityScanResults = await makeAxeBuilder()
+test('should be accessible', async ({ page, makeAxeBuilder }) => {
+  const accessibilityScanResults = await makeAxeBuilder()
     .include('#main-content')
     .analyze()
-    expect(accessibilityScanResults.violations).toEqual([])
+  expect(accessibilityScanResults.violations).toEqual([])
 })
 ```
 
-*Full Example:* [accessible-autocomplete.spec.ts](integration_tests/specs/sentencePlan/components/accessible-autocomplete.spec.ts)
+_Full Example:_ [accessible-autocomplete.spec.ts](integration_tests/specs/sentencePlan/components/accessible-autocomplete.spec.ts)
 
 ## Deployment
 
 The application is deployed to Cloud Platform environments using GitHub Actions and Helm charts.
 
 ### Environments
+
 - **Development** - Continuous deployment from `main` branch
 - **Preprod** - Deployed on successful dev testing
 - **Production** - Manual approval required
 
 ### Security Scanning
-- Trivy container scanning
+
 - Veracode static analysis
 - npm dependency auditing
 - Gitleaks secret detection
 
+## Telemetry
+
+**Click events**
+
+Buttons and links throughout the app are tagged with `data-ai-id` attributes. The App Insights `ClickAnalyticsPlugin` (configured in [appInsights.mjs](assets/js/appInsights.mjs)) records a click event in `customEvents` for each tagged element, using the `data-ai-id` value as the event `name`. Search the codebase for `data-ai-id` to find what's currently tracked.
+
+**Custom dimensions**
+
+Every telemetry envelope carries these custom dimensions:
+
+| Dimension        | Notes                                                       |
+| ---------------- | ----------------------------------------------------------- |
+| `assessmentUuid` | Assessment in context                                       |
+| `telemetryId`    | Per-Express-session UUID, resets on sign-out + sign-in      |
+| `requestId`      | Per-HTTP-request ID (also shown in Report a Problem widget) |
+| `entryPoint`     | Auth source (`OASYS`, `hmpps-auth`)                         |
+| `userType`       | `PRIVATE_BETA` or `NATIONAL_ROLLOUT`                        |
+
+Pages that load goal data (most of the sentence plan journey) also emit goal-count snapshots:
+
+| Dimension       | Notes                                  |
+| --------------- | -------------------------------------- |
+| `goalsActive`   | Number of goals with `ACTIVE` status   |
+| `goalsFuture`   | Number of goals with `FUTURE` status   |
+| `goalsAchieved` | Number of goals with `ACHIEVED` status |
+| `goalsRemoved`  | Number of goals with `REMOVED` status  |
+| `goalsTotal`    | Total goals on the assessment          |
+| `stepsTotal`    | Total steps across all goals           |
+
+Use `customDimensions.telemetryId` to dedupe events to one-per-login-session in KQL queries. For per-assessment metrics (totals, averages), use `arg_max(timestamp, ...)` to take the latest snapshot per `assessmentUuid` before aggregating.
+
+**Page visit time & count**
+
+Page visit durations are tracked by the App Insights JS SDK (configured in assets/js/appInsights.mjs). The SDK starts a timer on page load and records the visit duration when the user
+navigates away or closes the tab. The duration is stored in the duration field of the pageViews table.
+
+Pages currently tracked in App Insights dashboard:
+
+| Page                  | `customDimensions` filter                      |
+| --------------------- | ---------------------------------------------- |
+| Plan history          | `Plan history - Sentence plan`                 |
+| Privacy               | `Close other applications - Sentence plan`     |
+| Create a goal         | `Create a goal - Sentence plan`                |
+| Add or change steps   | `Add or change steps - Sentence plan`          |
+| Update goal and steps | `Update goal and steps - Sentence plan`        |
+| Agree plan            | `Do they agree to this plan? - Sentence plan`  |
+| Update agreement      | `Do they agree to their plan? - Sentence plan` |
+
 ## Contributing
 
 ### Pre-commit Hooks
+
 The project uses Husky for pre-commit hooks that run:
+
 - Gitleaks secret detection
 - Linting (via lint-staged)
 - Type checking
 - Unit tests
 
 ### Code Style
+
 - ESLint with HMPPS configuration
 - Prettier for code formatting
 - TypeScript strict mode enabled

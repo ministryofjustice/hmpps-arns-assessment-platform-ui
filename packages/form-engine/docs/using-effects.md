@@ -9,6 +9,7 @@ values), conditions (which test values) or transformers (which modify values), e
 systems - APIs, databases, sessions, and services.
 
 This enables:
+
 - Loading data from APIs to populate forms
 - Saving answers to databases or external services
 - Pre-populating fields from loaded data
@@ -42,10 +43,7 @@ step({
   // Access effects run when the step is accessed
   onAccess: [
     accessTransition({
-      effects: [
-        MyEffects.loadUserProfile(),
-        MyEffects.loadReferenceData(),
-      ],
+      effects: [MyEffects.loadUserProfile(), MyEffects.loadReferenceData()],
     }),
   ],
 
@@ -60,7 +58,9 @@ step({
     }),
   ],
 
-  blocks: [/* ... */],
+  blocks: [
+    /* ... */
+  ],
 })
 ```
 
@@ -92,22 +92,22 @@ Every effect receives an `EffectFunctionContext` as its first parameter. This pr
 
 ```typescript
 // Answers (form field values)
-context.getAnswer('fieldCode')     // Get single answer
-context.getAllAnswers()               // Get all answers
-context.hasAnswer('fieldCode')     // Check if answer exists
+context.getAnswer('fieldCode') // Get single answer
+context.getAllAnswers() // Get all answers
+context.hasAnswer('fieldCode') // Check if answer exists
 
 // Supplementary data
-context.getData('key')             // Get specific data
-context.getData()                  // Get all data
+context.getData('key') // Get specific data
+context.getData() // Get all data
 
 // Request information
-context.getRequestParam('id')      // URL route parameter
-context.getQueryParam('page')      // Query string parameter
-context.getPostData('action')      // POST body value
+context.getRequestParam('id') // URL route parameter
+context.getQueryParam('page') // Query string parameter
+context.getPostData('action') // POST body value
 
 // Session and state
-context.getSession()               // Session object (mutable)
-context.getState('user')           // Request-level state (e.g., user, csrfToken)
+context.getSession() // Session object (mutable)
+context.getState('user') // Request-level state (e.g., user, csrfToken)
 ```
 
 ### Writing Data
@@ -136,10 +136,10 @@ session.stepsCompleted.push('personal-details')
 
 ### `setAnswer()` vs `setData()`
 
-| Method | Use For | Access In Forms Via |
-|--------|---------|---------------------|
-| `setAnswer()` | Pre-populating form fields, loading saved drafts | `Answer('code')` |
-| `setData()` | API responses, reference data, dropdown options | `Data('key')` |
+| Method        | Use For                                          | Access In Forms Via |
+| ------------- | ------------------------------------------------ | ------------------- |
+| `setAnswer()` | Pre-populating form fields, loading saved drafts | `Answer('code')`    |
+| `setData()`   | API responses, reference data, dropdown options  | `Data('key')`       |
 
 ```typescript
 // Loading saved answers into form fields
@@ -164,11 +164,11 @@ field<GovUKRadioInput>({
 
 Effects are used in different transition types depending on when you need them to run:
 
-| Transition | When Effects Run | Common Uses |
-|------------|-----------------|-------------|
-| `accessTransition` | Before evaluating conditions and redirects | Load data from APIs, populate dropdowns |
-| `actionTransition` | During POST, before render | Postcode lookup, address fetch |
-| `submitTransition` | After validation (onValid/onInvalid/onAlways) | Save answers, send notifications |
+| Transition         | When Effects Run                              | Common Uses                             |
+| ------------------ | --------------------------------------------- | --------------------------------------- |
+| `accessTransition` | Before evaluating conditions and redirects    | Load data from APIs, populate dropdowns |
+| `actionTransition` | During POST, before render                    | Postcode lookup, address fetch          |
+| `submitTransition` | After validation (onValid/onInvalid/onAlways) | Save answers, send notifications        |
 
 ---
 
@@ -183,10 +183,7 @@ step({
 
   onAccess: [
     accessTransition({
-      effects: [
-        MyEffects.loadUserProfile(Params('userId')),
-        MyEffects.loadTitleOptions(),
-      ],
+      effects: [MyEffects.loadUserProfile(Params('userId')), MyEffects.loadTitleOptions()],
     }),
   ],
 
@@ -194,10 +191,7 @@ step({
     submitTransition({
       validate: true,
       onValid: {
-        effects: [
-          MyEffects.savePersonalDetails(),
-          MyEffects.trackStepComplete('personal-details'),
-        ],
+        effects: [MyEffects.savePersonalDetails(), MyEffects.trackStepComplete('personal-details')],
         next: [redirect({ goto: 'contact-details' })],
       },
       onInvalid: {
@@ -207,7 +201,9 @@ step({
     }),
   ],
 
-  blocks: [/* ... */],
+  blocks: [
+    /* ... */
+  ],
 })
 ```
 
@@ -331,44 +327,43 @@ interface MyEffectsDeps {
   logger: Logger
 }
 
-export const { effects: MyEffects, createRegistry: createMyEffectsRegistry } =
-  defineEffectsWithDeps<MyEffectsDeps>()({
-    LoadAssessment: deps => async (context: EffectFunctionContext, assessmentId: string) => {
-      deps.logger.info(`Loading assessment: ${assessmentId}`)
-      const assessment = await deps.api.getAssessment(assessmentId)
-      context.setData('assessment', assessment)
+export const { effects: MyEffects, createRegistry: createMyEffectsRegistry } = defineEffectsWithDeps<MyEffectsDeps>()({
+  LoadAssessment: deps => async (context: EffectFunctionContext, assessmentId: string) => {
+    deps.logger.info(`Loading assessment: ${assessmentId}`)
+    const assessment = await deps.api.getAssessment(assessmentId)
+    context.setData('assessment', assessment)
 
-      Object.entries(assessment.answers || {}).forEach(([code, value]) => {
-        context.setAnswer(code, value)
-      })
-    },
+    Object.entries(assessment.answers || {}).forEach(([code, value]) => {
+      context.setAnswer(code, value)
+    })
+  },
 
-    SaveAnswers: deps => async (context: EffectFunctionContext) => {
-      const assessmentId = context.getData('assessment').id
-      const answers = context.getAllAnswers()
+  SaveAnswers: deps => async (context: EffectFunctionContext) => {
+    const assessmentId = context.getData('assessment').id
+    const answers = context.getAllAnswers()
 
-      await deps.api.saveAnswers(assessmentId, answers)
-      deps.logger.info(`Answers saved for: ${assessmentId}`)
-    },
+    await deps.api.saveAnswers(assessmentId, answers)
+    deps.logger.info(`Answers saved for: ${assessmentId}`)
+  },
 
-    LookupPostcode: deps => async (context: EffectFunctionContext, postcode: string) => {
-      if (!postcode?.trim()) return
+  LookupPostcode: deps => async (context: EffectFunctionContext, postcode: string) => {
+    if (!postcode?.trim()) return
 
-      try {
-        const address = await deps.api.lookupPostcode(postcode)
-        if (address) {
-          context.setAnswer('addressLine1', address.line1)
-          context.setAnswer('town', address.town)
-          context.setAnswer('county', address.county)
-        } else {
-          context.setData('postcodeError', 'Address not found')
-        }
-      } catch (error) {
-        deps.logger.warn(`Postcode lookup failed: ${error.message}`)
-        context.setData('postcodeError', 'Lookup service unavailable')
+    try {
+      const address = await deps.api.lookupPostcode(postcode)
+      if (address) {
+        context.setAnswer('addressLine1', address.line1)
+        context.setAnswer('town', address.town)
+        context.setAnswer('county', address.county)
+      } else {
+        context.setData('postcodeError', 'Address not found')
       }
-    },
-  })
+    } catch (error) {
+      deps.logger.warn(`Postcode lookup failed: ${error.message}`)
+      context.setData('postcodeError', 'Lookup service unavailable')
+    }
+  },
+})
 
 // Registration - create registry with real deps at runtime
 const registry = createMyEffectsRegistry({
@@ -389,8 +384,8 @@ export const MyEffectsRegistry = {
 
 // Mixed (some with deps, some without)
 export const createMyEffectsRegistry = (deps: ApiDeps) => ({
-  ...SessionEffectsRegistry,           // No deps
-  ...createApiEffectsRegistry(deps),   // Needs deps
+  ...SessionEffectsRegistry, // No deps
+  ...createApiEffectsRegistry(deps), // Needs deps
 })
 ```
 
@@ -403,7 +398,7 @@ Effects should handle errors appropriately based on criticality:
 ```typescript
 export const { effects, createRegistry } = defineEffectsWithDeps<MyDeps>()({
   // Critical: let errors propagate (stops form progression)
-  SaveAnswers: deps => async (context) => {
+  SaveAnswers: deps => async context => {
     await deps.api.save(context.getAllAnswers())
   },
 
@@ -419,7 +414,7 @@ export const { effects, createRegistry } = defineEffectsWithDeps<MyDeps>()({
   },
 
   // With retry logic
-  SaveWithRetry: deps => async (context) => {
+  SaveWithRetry: deps => async context => {
     const maxRetries = 3
     let lastError: Error | null = null
 
@@ -450,7 +445,7 @@ Prefer `defineEffectsWithDeps` for effects that need external services. This mak
 ```typescript
 // DO: Inject dependencies
 defineEffectsWithDeps<{ api: ApiClient }>()({
-  LoadData: deps => async (context) => {
+  LoadData: deps => async context => {
     const data = await deps.api.getData()
     context.setData('data', data)
   },
@@ -458,8 +453,8 @@ defineEffectsWithDeps<{ api: ApiClient }>()({
 
 // DON'T: Import dependencies directly
 defineEffects({
-  LoadData: async (context) => {
-    const data = await apiClient.getData()  // Hard to test
+  LoadData: async context => {
+    const data = await apiClient.getData() // Hard to test
     context.setData('data', data)
   },
 })
@@ -507,7 +502,7 @@ Where possible, make effects safe to run multiple times:
 
 ```typescript
 // DO: Check before modifying
-InitializeSession: (context) => {
+InitializeSession: context => {
   const session = context.getSession()
   if (!session.initialized) {
     session.initialized = true
@@ -516,9 +511,8 @@ InitializeSession: (context) => {
 }
 
 // DON'T: Always modify
-InitializeSession: (context) => {
+InitializeSession: context => {
   const session = context.getSession()
-  session.startedAt = new Date().toISOString()  // Overwrites on every request
+  session.startedAt = new Date().toISOString() // Overwrites on every request
 }
 ```
-

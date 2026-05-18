@@ -168,11 +168,11 @@ export const pageContent = TemplateWrapper({
                 </div>
               `,
               values: {
-                color: Item().path('color'),
-                name: Item().path('name'),
+                color: Item().path('color').pipe(Transformer.String.EscapeHtml()),
+                name: Item().path('name').pipe(Transformer.String.EscapeHtml()),
                 tasks: Item()
                   .path('tasks')
-                  .each(Iterator.Map(Format('<li>%1</li>', Item().path('name')))),
+                  .each(Iterator.Map(Format('<li>%1</li>', Item().path('name').pipe(Transformer.String.EscapeHtml())))),
               },
             }),
           ),

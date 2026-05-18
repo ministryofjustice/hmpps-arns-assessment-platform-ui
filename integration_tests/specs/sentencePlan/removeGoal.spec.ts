@@ -6,10 +6,13 @@ import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFacto
 import {
   buildErrorPageTitle,
   buildPageTitle,
+  checkAccessibility,
   getDatePlusDaysAsISO,
   navigateToSentencePlan,
   sentencePlanPageTitles,
 } from './sentencePlanUtils'
+import UpdateAgreePlanPage from '../../pages/sentencePlan/updateAgreePlanPage'
+import UpdateGoalAndStepsPage from '../../pages/sentencePlan/updateGoalAndStepsPage'
 
 test.describe('Remove goal journey', () => {
   test.describe('confirm goal removal', () => {
@@ -23,7 +26,6 @@ test.describe('Remove goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -36,14 +38,49 @@ test.describe('Remove goal journey', () => {
       // Enter required removal note
       await removePage.enterRemovalNote('Goal is no longer relevant to their current situation')
 
+      // Accessibility
+      await checkAccessibility(page)
+
       // Click confirm
       await removePage.clickConfirm()
 
       // Should redirect to plan overview with removed tab selected
       await expect(page).toHaveURL(/plan\/overview.*type=removed/)
+    })
 
-      // Verify we're on the plan overview page
+    test('can access confirm remove goal page when plan has updated agreement status (UPDATED_AGREED/UPDATED_DO_NOT_AGREE))', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('COULD_NOT_ANSWER')
+        .save()
+      await navigateToSentencePlan(page, handoverLink)
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      // update agreement to 'Yes, I agree'
+      await planOverviewPage.updateAgreementLink.click()
+      const updateAgreePlanPage = await UpdateAgreePlanPage.verifyOnPage(page)
+      await updateAgreePlanPage.selectAgreeYes()
+      await updateAgreePlanPage.clickSave()
+
+      // should redirect to plan overview
       await PlanOverviewPage.verifyOnPage(page)
+
+      // click update on goal for first goal
+      await planOverviewPage.clickUpdateGoal(0)
+      const updateGoalAndStepsPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+
+      // click 'remove goal from plan' > navigates to confirm-remove-goal
+      await updateGoalAndStepsPage.clickRemoveGoal()
+      await ConfirmRemoveGoalPage.verifyOnPage(page)
+
+      // ensure page title is correct
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.confirmRemoveGoal))
     })
 
     test('shows validation error when removal note is empty', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -56,7 +93,6 @@ test.describe('Remove goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -87,7 +123,6 @@ test.describe('Remove goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -113,7 +148,6 @@ test.describe('Remove goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -145,7 +179,6 @@ test.describe('Remove goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)
@@ -169,7 +202,6 @@ test.describe('Remove goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-remove-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-remove-goal`)

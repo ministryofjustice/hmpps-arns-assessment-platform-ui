@@ -4,6 +4,7 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import {
   getRequiredEffectContext,
+  getPractitionerName,
   calculateTargetDate,
   determineGoalStatus,
   buildGoalProperties,
@@ -60,10 +61,6 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
       collectionItemUuid: activeGoal.uuid,
       added: wrapAll(answers),
       removed: answersToRemove,
-      timeline: {
-        type: 'GOAL_UPDATED',
-        data: {},
-      },
       assessmentUuid,
       user,
     },
@@ -72,6 +69,14 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
       collectionItemUuid: activeGoal.uuid,
       added: wrapAll(properties),
       removed: [],
+      timeline: {
+        type: 'GOAL_UPDATED',
+        data: {
+          goalUuid: activeGoal.uuid,
+          goalTitle: goalTitle as string,
+          updatedBy: getPractitionerName(context, user),
+        },
+      },
       assessmentUuid,
       user,
     },

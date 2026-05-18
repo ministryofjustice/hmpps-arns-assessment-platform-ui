@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hmpps-arns-assessment-platform-dashboard
+  labels:
+    grafana_dashboard: "hmpps-arns-assessment-platform-dashboard"
+data:
+{{ (.Files.Glob "grafana/hmpps-arns-assessment-platform-dashboard.json").AsConfig | indent 2 }}

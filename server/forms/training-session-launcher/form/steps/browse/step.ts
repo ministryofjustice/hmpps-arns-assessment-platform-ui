@@ -1,4 +1,4 @@
-import { step, submitTransition, accessTransition, redirect, Query } from '@form-engine/form/builders'
+import { step, submitTransition, accessTransition, redirect, Query, Post } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { notificationBanners, pageHeading, pageHelpText, scenarioPickerPanel } from './fields'
 import { TrainingSessionLauncherEffects } from '../../../effects'
@@ -25,6 +25,14 @@ export const browseStep = step({
   ],
 
   onSubmission: [
+    submitTransition({
+      when: Post('action').match(Condition.Equals('deleteScenario')),
+      onAlways: {
+        effects: [TrainingSessionLauncherEffects.deleteScenario()],
+        next: [redirect({ goto: 'browse' })],
+      },
+    }),
+
     submitTransition({
       onAlways: {
         effects: [TrainingSessionLauncherEffects.createSessionFromPreset()],

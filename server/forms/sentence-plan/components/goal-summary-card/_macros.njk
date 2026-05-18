@@ -1,0 +1,39 @@
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{#- Appends hidden goal context for standalone links or buttons that do not receive a full action object -#}
+{% macro textWithGoalContext(text, cardTitle) %}
+  {{- text -}}
+  {%- if cardTitle -%}
+    <span class="govuk-visually-hidden"> ({{ cardTitle }})</span>
+  {%- endif -%}
+{% endmacro %}
+
+{#- Renders a card action link with optional hidden context -#}
+{% macro actionLink(action, cardTitle) %}
+  <a class="govuk-link{%- if action.classes %} {{ action.classes }}{% endif %}" href="{{ action.href }}">
+    {{- action.text -}}
+    {%- if action.visuallyHiddenText or cardTitle -%}
+      <span class="govuk-visually-hidden">
+        {%- if action.visuallyHiddenText %} {{ action.visuallyHiddenText }}{% endif -%}
+        {%- if cardTitle %} ({{ cardTitle }}){% endif -%}
+      </span>
+    {%- endif -%}
+  </a>
+{% endmacro %}
+
+{#- Maps internal step status values to GOV.UK tags -#}
+{% macro stepStatusTag(status) %}
+  {%- if status == 'NOT_STARTED' -%}
+    {{ govukTag({ text: "Not started", classes: "govuk-tag--grey" }) }}
+  {%- elif status == 'IN_PROGRESS' -%}
+    {{ govukTag({ text: "In progress" }) }}
+  {%- elif status == 'COMPLETED' -%}
+    {{ govukTag({ text: "Completed", classes: "govuk-tag--green" }) }}
+  {%- elif status == 'CANNOT_BE_DONE_YET' -%}
+    {{ govukTag({ text: "Cannot be done yet", classes: "govuk-tag--purple" }) }}
+  {%- elif status == 'NO_LONGER_NEEDED' -%}
+    {{ govukTag({ text: "No longer needed", classes: "govuk-tag--yellow" }) }}
+  {%- else -%}
+    {{ govukTag({ text: status, classes: "govuk-tag--grey" }) }}
+  {%- endif -%}
+{% endmacro %}

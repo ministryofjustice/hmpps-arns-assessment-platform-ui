@@ -3,7 +3,9 @@ import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients
 import config from '../config'
 import logger from '../../logger'
 import { OasysCreateRequest, OasysCreateResponse } from '../interfaces/coordinator-api/oasysCreate'
+import { OasysMergeRequest, OasysMergeResponse } from '../interfaces/coordinator-api/oasysMerge'
 import { EntityAssessmentResponse } from '../interfaces/coordinator-api/entityAssessment'
+import { PreviousVersionsResponse } from '../interfaces/coordinator-api/previousVersions'
 
 export default class CoordinatorApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {
@@ -29,6 +31,21 @@ export default class CoordinatorApiClient extends RestClient {
   }
 
   /**
+   * Merge OASys associations (training launcher only)
+   * Used by the training launcher to simulate an OASys merge. In production, merges are
+   * triggered by OASys directly — the UI never calls this endpoint.
+   */
+  async mergeOasysAssociation(request: OasysMergeRequest): Promise<OasysMergeResponse> {
+    return this.post(
+      {
+        path: '/oasys/merge',
+        data: { ...request },
+      },
+      asSystem(),
+    )
+  }
+
+  /**
    * Get assessment data for an entity
    * Retrieves the latest version of the assessment associated with the provided entity UUID
    *
@@ -38,5 +55,12 @@ export default class CoordinatorApiClient extends RestClient {
    */
   async getEntityAssessment(entityUuid: string): Promise<EntityAssessmentResponse> {
     return this.get({ path: `/entity/${entityUuid}/ASSESSMENT` }, asSystem())
+  }
+
+  /**
+   * Get previous versions for an entity.
+   */
+  async getVersionsByEntityId(entityUuid: string): Promise<PreviousVersionsResponse> {
+    return this.get({ path: `/entity/versions/${entityUuid}` }, asSystem())
   }
 }

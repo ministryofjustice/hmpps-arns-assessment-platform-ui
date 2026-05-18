@@ -5,6 +5,7 @@ import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
 import {
   buildPageTitle,
+  checkAccessibility,
   getDatePlusDaysAsISO,
   navigateToSentencePlan,
   sentencePlanPageTitles,
@@ -22,7 +23,6 @@ test.describe('Achieve goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -32,14 +32,14 @@ test.describe('Achieve goal journey', () => {
       // Enter optional note about how the goal helped
       await achievePage.enterHowHelpedNote('This goal helped stabilise their housing situation')
 
+      // Accessibility
+      await checkAccessibility(page)
+
       // Click confirm
       await achievePage.clickConfirm()
 
       // Should redirect to plan overview with achieved tab selected
       await expect(page).toHaveURL(/plan\/overview.*type=achieved/)
-
-      // Verify we're on the plan overview page
-      await PlanOverviewPage.verifyOnPage(page)
     })
 
     test('can confirm goal as achieved without optional note', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -52,7 +52,6 @@ test.describe('Achieve goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -61,7 +60,6 @@ test.describe('Achieve goal journey', () => {
 
       await achievePage.clickConfirm()
 
-      // Should redirect to plan overview with achieved tab selected
       await expect(page).toHaveURL(/plan\/overview.*type=achieved/)
     })
 
@@ -75,7 +73,6 @@ test.describe('Achieve goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -105,7 +102,6 @@ test.describe('Achieve goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -138,7 +134,6 @@ test.describe('Achieve goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -162,7 +157,6 @@ test.describe('Achieve goal journey', () => {
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
-      await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -211,6 +205,10 @@ test.describe('Achieve goal journey', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       const goalCount = await planOverviewPage.getGoalCount()
       expect(goalCount).toBe(1)
+
+      // ensure notification banner is visible
+      await expect(planOverviewPage.notificationBanner).toBeVisible()
+      await expect(planOverviewPage.notificationBannerText).toContainText('Congratulations on achieving a goal,')
 
       const goalTitle = await planOverviewPage.getGoalCardTitle(0)
       expect(goalTitle).toContain('Achieve Test Goal')
@@ -267,6 +265,24 @@ test.describe('Achieve goal journey', () => {
       // The remaining goal should be "Goal To Keep"
       const remainingGoalTitle = await planOverviewPage.getGoalCardTitle(0)
       expect(remainingGoalTitle).toContain('Goal To Keep')
+    })
+  })
+
+  test.describe('access control', () => {
+    test('redirects to plan overview when plan is not agreed (draft)', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
+      const goalUuid = plan.goals[0].uuid
+
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
+
+      // Should redirect to plan overview since achieved is only for agreed plans
+      await PlanOverviewPage.verifyOnPage(page)
     })
   })
 })

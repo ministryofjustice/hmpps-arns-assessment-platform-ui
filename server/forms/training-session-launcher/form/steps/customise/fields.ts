@@ -1,4 +1,5 @@
 import { block, Data, Format, Query } from '@form-engine/form/builders'
+import { Transformer } from '@form-engine/registry/transformers'
 import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { GovUKButton, GovUKTextInput } from '@form-engine-govuk-components/components'
 import { TabPanel } from '../../../components'
@@ -92,9 +93,9 @@ export const customiseFormWrapper = TemplateWrapper({
     </form>
   `,
   values: {
-    originalScenarioName: Data('originalScenarioName'),
+    originalScenarioName: Data('originalScenarioName').pipe(Transformer.String.EscapeHtml()),
     csrfToken: Data('csrfToken'),
-    scenarioId: Query('scenario'),
+    scenarioId: Query('scenario').pipe(Transformer.String.EscapeHtml()),
   },
   slots: {
     scenarioNameInput: [scenarioNameInput],
@@ -111,7 +112,7 @@ export const customiseFormWrapper = TemplateWrapper({
         classes: 'govuk-button--secondary',
       }),
       HtmlBlock({
-        content: '<a href="../browse" class="govuk-link">Cancel</a>',
+        content: '<a href="browse" class="govuk-link">Cancel</a>',
       }),
     ],
     tabPanel: [customiseTabPanel],

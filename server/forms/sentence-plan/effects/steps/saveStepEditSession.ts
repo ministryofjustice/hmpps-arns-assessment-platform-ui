@@ -1,7 +1,7 @@
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { SentencePlanContext, SentencePlanEffectsDeps, StepAnswers, StepChangesStorage, StepProperties } from '../types'
 import { Commands } from '../../../../interfaces/aap-api/command'
-import { getRequiredEffectContext } from '../goals/goalUtils'
+import { getPractitionerName, getRequiredEffectContext } from '../goals/goalUtils'
 
 /**
  * Save the step edit session to the API
@@ -10,6 +10,7 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
   const { user, assessmentUuid } = getRequiredEffectContext(context, 'saveStepEditSession')
   const session = context.getSession()
   const activeGoalUuid = context.getData('activeGoalUuid')
+  const activeGoal = context.getData('activeGoal')
 
   const storage: StepChangesStorage = session?.stepChanges ?? {}
   const { steps, toCreate, toDelete, collectionUuid } = storage[activeGoalUuid] ?? {
@@ -48,6 +49,9 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
 
     return current.actor !== original?.actor || current.description !== original?.description
   })
+
+  const hasStepChanges = newSteps.length > 0 || modifiedSteps.length > 0 || toDelete.length > 0
+  const isCreatingGoal = context.getData('navigationReferrer') === 'add-goal'
 
   // Find or create STEPS collection if we have new steps to add
   let stepsCollectionUuid = collectionUuid
@@ -121,6 +125,27 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
       user,
     })
   })
+
+  // The plan history page reads GOAL_UPDATED events. Step-level events are useful
+  // internally, but this goal-level event is what makes the change visible there.
+  if (hasStepChanges && !isCreatingGoal && activeGoal?.uuid) {
+    commands.push({
+      type: 'UpdateCollectionItemPropertiesCommand',
+      collectionItemUuid: activeGoal.uuid,
+      added: {},
+      removed: [],
+      timeline: {
+        type: 'GOAL_UPDATED',
+        data: {
+          goalUuid: activeGoal.uuid,
+          goalTitle: activeGoal.title,
+          updatedBy: getPractitionerName(context, user),
+        },
+      },
+      assessmentUuid,
+      user,
+    })
+  }
 
   // 4. REORDER commands
   existingSteps.forEach(({ id, index }) => {

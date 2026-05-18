@@ -1,4 +1,6 @@
-import { block, Data, Format, Item, Iterator } from '@form-engine/form/builders'
+import { block, Data, Format, Item, Iterator, when } from '@form-engine/form/builders'
+import { Condition } from '@form-engine/registry/conditions'
+import { Transformer } from '@form-engine/registry/transformers'
 import { HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
 import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
 import { GovUKButton, GovUKDetails, GovUKLinkButton } from '@form-engine-govuk-components/components'
@@ -73,21 +75,38 @@ const scenarioPanelContent = [
             {{slot:formControls}}
           </form>
           {{slot:linkButtons}}
+          <form method="post" novalidate style="{{deleteFormStyle}}">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+            <input type="hidden" name="scenarioId" value="{{scenarioId}}">
+            {{slot:deleteButton}}
+          </form>
         </div>
       </header>
     `,
     values: {
       csrfToken: Data('csrfToken'),
-      title: Item().path('name'),
-      description: Item().path('description'),
+      title: Item().path('name').pipe(Transformer.String.EscapeHtml()),
+      description: Item().path('description').pipe(Transformer.String.EscapeHtml()),
       scenarioId: Item().path('id'),
       seed: Item().path('rawScenario.seed'),
+      deleteFormStyle: when(Item().path('isCustom').match(Condition.Equals(true)))
+        .then('')
+        .else('display:none'),
     },
     slots: {
       formControls: [
         GovUKButton({
           text: 'Start session',
           id: Format('start-session-%1', Item().path('id')),
+        }),
+      ],
+      deleteButton: [
+        GovUKButton({
+          text: 'Delete scenario',
+          name: 'action',
+          value: 'deleteScenario',
+          classes: 'govuk-button--warning',
+          id: Format('delete-scenario-%1', Item().path('id')),
         }),
       ],
       linkButtons: [

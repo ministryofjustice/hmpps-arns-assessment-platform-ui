@@ -19,6 +19,7 @@ export const oasysAccessStep = step({
   onAccess: [
     accessTransition({
       effects: [
+        AccessEffects.clearAccessSession(),
         AccessEffects.setTargetServiceAndRedirect(),
         AccessEffects.loadHandoverContext(),
         AccessEffects.setCaseDetailsFromHandoverContext(),

@@ -73,7 +73,7 @@ const NEEDS_CONFIG: NeedConfig[] = [
     strengthsKey: 'financeStrengths',
   },
   {
-    name: 'Drug Misuse',
+    name: 'Drug Use',
     scoreKey: 'drugOtherWeightedScore',
     thresholdKey: 'drugThreshold',
     harmKey: 'drugLinkedToHarm',
@@ -81,7 +81,7 @@ const NEEDS_CONFIG: NeedConfig[] = [
     strengthsKey: 'drugStrengths',
   },
   {
-    name: 'Alcohol Misuse',
+    name: 'Alcohol Use',
     scoreKey: 'alcoholOtherWeightedScore',
     thresholdKey: 'alcoholThreshold',
     harmKey: 'alcoholLinkedToHarm',
@@ -173,7 +173,7 @@ function transformToDisplayNeeds(values: ScenarioValues): DisplayNeed[] {
 /**
  * Transform a resolved scenario to display format
  */
-function transformToDisplayScenario(scenario: ResolvedScenario): DisplayScenario {
+function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolean): DisplayScenario {
   const { values } = scenario
 
   return {
@@ -193,8 +193,10 @@ function transformToDisplayScenario(scenario: ResolvedScenario): DisplayScenario
     crn: values.crn || '',
     pnc: values.pnc || '',
     oasysAssessmentPk: values.oasysAssessmentPk || '',
+    sentencePlanVersion: values.sentencePlanVersion || null,
 
     displayNeeds: transformToDisplayNeeds(values),
+    isCustom,
     rawScenario: scenario,
   }
 }
@@ -229,7 +231,7 @@ export const loadScenarios =
   (deps: TrainingSessionLauncherEffectsDeps) => async (context: TrainingSessionLauncherContext) => {
     // Load built-in presets
     const builtInScenarios = resolveAllPresets(getExcludedFields)
-    const builtInDisplay = builtInScenarios.map(transformToDisplayScenario)
+    const builtInDisplay = builtInScenarios.map(scenario => transformToDisplayScenario(scenario, false))
 
     // Load saved scenarios from preferences
     const preferencesId = context.getState('preferencesId')
@@ -244,7 +246,7 @@ export const loadScenarios =
 
     const savedScenarios = allPreferences?.trainingLauncher?.savedScenarios ?? []
     const resolvedSaved = savedScenarios.map(resolveSavedScenario)
-    const savedDisplay = resolvedSaved.map(transformToDisplayScenario)
+    const savedDisplay = resolvedSaved.map(scenario => transformToDisplayScenario(scenario, true))
 
     // Merge: built-in first, then saved scenarios
     const allScenarios = [...builtInDisplay, ...savedDisplay]

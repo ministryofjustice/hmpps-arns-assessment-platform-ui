@@ -2,6 +2,23 @@ import type Logger from 'bunyan'
 import { HttpMethod } from '@form-engine/core/compilation/thunks/types'
 import { RenderContext } from '@form-engine/core/runtime/rendering/types'
 import ComponentRegistry from '@form-engine/registry/ComponentRegistry'
+import { NodeId } from '@form-engine/core/types/engine.type'
+import { CompilationArtefact, CompiledStep } from '@form-engine/core/compilation/FormCompilationFactory'
+import { StepASTNode } from '@form-engine/core/types/structures.type'
+
+export type StepResolver = () => Promise<CompiledStep>
+
+export interface RouteMapEntry {
+  stepId: NodeId
+  resolveCompiledStep: StepResolver
+}
+
+export interface StepMountContext {
+  stepId: NodeId
+  stepNode: StepASTNode
+  sharedArtefact: CompilationArtefact
+  resolveCompiledStep: StepResolver
+}
 
 /**
  * Options for setting a cookie
@@ -242,5 +259,5 @@ export interface FrameworkAdapter<TRouter, TRequest, TResponse> {
    * @param req - Native framework request (for accessing app.locals, etc.)
    * @param res - Native framework response (for accessing res.locals and sending response)
    */
-  render(context: RenderContext, req: TRequest, res: TResponse): Promise<void>
+  render(context: RenderContext, req: TRequest, res: TResponse): void
 }

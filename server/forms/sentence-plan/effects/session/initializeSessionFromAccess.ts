@@ -52,8 +52,11 @@ export const initializeSessionFromAccess = () => (context: SentencePlanContext) 
   // Convert accessDetails to sessionDetails with planIdentifier
   session.sessionDetails = {
     accessType: accessDetails.accessType,
-    accessMode: accessDetails.accessMode,
+    planAccessMode: accessDetails.planAccessMode,
     oasysRedirectUrl: accessDetails.oasysRedirectUrl,
     planIdentifier,
+    planVersion: handoverContext?.sentencePlanContext?.planVersion,
   }
+
+  context.setData('sessionDetails', session.sessionDetails)
 }

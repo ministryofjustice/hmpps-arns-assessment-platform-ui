@@ -10,8 +10,9 @@ import {
 } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
 import { pageHeading, introText, goalCard, buttonGroup } from './fields'
-import { SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
+import { redirectIfGoalNotFound, redirectIfPostAgreement } from '../../../guards'
 
 /**
  * Confirm delete goal page
@@ -31,48 +32,30 @@ export const confirmDeleteGoalStep = step({
     },
   },
 
-  blocks: [pageHeading, introText, goalCard, buttonGroup],
+  blocks: [pageHeading, ...introText, goalCard, buttonGroup],
 
   onAccess: [
     accessTransition({
-      effects: [SentencePlanEffects.setActiveGoalContext()],
-      next: [
-        // Redirect if plan is no longer in draft (delete is only for draft plans)
-        redirect({
-          when: Data('latestAgreementStatus').not.match(Condition.Equals('DRAFT')),
-          goto: '../../plan/overview',
-        }),
-        // Redirect if goal not found
-        redirect({
-          when: Data('activeGoal').not.match(Condition.IsRequired()),
-          goto: '../../plan/overview',
-        }),
+      effects: [
+        SentencePlanEffects.setActiveGoalContext(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_DELETE_GOAL),
       ],
     }),
+    // Redirect if plan is no longer in draft (delete is only for draft plans)
+    redirectIfPostAgreement('../../plan/overview'),
+    redirectIfGoalNotFound('../../plan/overview'),
   ],
 
   onSubmission: [
-    submitTransition({
-      when: Post('action').match(Condition.Equals('cancel')),
-      onAlways: {
-        next: [
-          redirect({
-            when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
-            goto: '../../plan/overview?type=future',
-          }),
-          redirect({ goto: '../../plan/overview?type=current' }),
-        ],
-      },
-    }),
     submitTransition({
       when: Post('action').match(Condition.Equals('confirm')),
       onAlways: {
         effects: [
           SentencePlanEffects.deleteActiveGoal(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.DELETE_GOAL),
           SentencePlanEffects.addNotification({
             type: 'success',
-            title: 'Goal deleted',
-            message: Format('You deleted a goal to %1 plan', CaseData.ForenamePossessive),
+            message: Format('You deleted a goal from %1 plan', CaseData.ForenamePossessive),
             target: 'plan-overview',
           }),
         ],

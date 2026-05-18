@@ -26,8 +26,14 @@
           <dl class="support-widget__data">
             <div class="support-widget__data-row">
               <dt>Request ID</dt>
-              <dd>{{ getRequestId() }}</dd>
+              <dd>{{ requestId or 'Unavailable' }}</dd>
             </div>
+            {% if traceId and traceId != requestId %}
+              <div class="support-widget__data-row">
+                <dt>Trace ID</dt>
+                <dd>{{ traceId }}</dd>
+              </div>
+            {% endif %}
             {% for item in params.supportItems %}
               <div class="support-widget__data-row">
                 <dt>{{ item.label }}</dt>

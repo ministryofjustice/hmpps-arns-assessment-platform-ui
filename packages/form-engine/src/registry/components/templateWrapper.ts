@@ -49,6 +49,9 @@ export interface TemplateWrapperProps extends BasicBlockProps {
   /**
    * String values to inject into the template at {{name}} markers.
    *
+   * **WARNING: Not sanitized.** Values are injected directly into the HTML template.
+   * Escape any untrusted data with `Transformer.String.EscapeHtml()`.
+   *
    * @example { title: 'Section Title', footer: 'Footer text' }
    */
   values?: Record<string, ConditionalString>
@@ -110,7 +113,7 @@ const extractStringValue = (value: unknown): string => {
  * Renders the template wrapper by replacing slot markers with rendered block HTML
  * and value markers with their corresponding values.
  */
-const renderTemplateWrapper = async (block: EvaluatedBlock<TemplateWrapper>): Promise<string> => {
+const renderTemplateWrapper = (block: EvaluatedBlock<TemplateWrapper>): string => {
   let content = block.template
 
   // Replace value markers: {{valueName}}

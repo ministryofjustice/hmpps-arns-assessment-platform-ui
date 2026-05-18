@@ -68,7 +68,7 @@ function getFieldLabel(fieldKey: string): string {
 
 export const randomizableField = buildNunjucksComponent<RandomizableField>(
   'randomizableField',
-  async (block: EvaluatedBlock<RandomizableField>): Promise<string> => {
+  (block: EvaluatedBlock<RandomizableField>): string => {
     const fieldBlock = block.field.block as FieldBlockDefinition
     const fieldVariant = String(fieldBlock.variant ?? '')
     const fieldCode = String(fieldBlock.code ?? 'field')

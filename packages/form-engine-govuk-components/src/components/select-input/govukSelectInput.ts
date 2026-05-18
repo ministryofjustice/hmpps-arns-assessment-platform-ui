@@ -42,6 +42,15 @@ export interface SelectItem {
  */
 export interface GovUKSelectInputProps extends FieldBlockProps {
   /**
+   * One or more element IDs to add to the select's `aria-describedby` attribute.
+   * Useful when visible supporting text lives outside the select component markup.
+   *
+   * @example 'country-hint'
+   * @example 'country-hint country-error'
+   */
+  describedBy?: ConditionalString
+
+  /**
    * The ID of the select. Defaults to the value of `code` if not provided.
    * @example 'country-select'
    */
@@ -144,28 +153,26 @@ export interface GovUKSelectInputProps extends FieldBlockProps {
   attributes?: Record<string, any>
 }
 
-export const govukSelectInput = buildNunjucksComponent<GovUKSelectInput>(
-  'govukSelectInput',
-  async (block, nunjucksEnv) => {
-    const params = {
-      id: block.id ?? block.code,
-      name: block.code,
-      items: block.items,
-      label: block.label ? (typeof block.label === 'object' ? block.label : { text: block.label }) : undefined,
-      hint: block.hint ? (typeof block.hint === 'object' ? block.hint : { text: block.hint }) : undefined,
-      value: block.value,
-      disabled: block.disabled,
-      formGroup: block.formGroup,
-      classes: block.classes,
-      attributes: block.attributes,
-      errorMessage: block.errors?.length && { text: block.errors[0].message },
-    }
+export const govukSelectInput = buildNunjucksComponent<GovUKSelectInput>('govukSelectInput', (block, nunjucksEnv) => {
+  const params = {
+    describedBy: block.describedBy,
+    id: block.id ?? block.code,
+    name: block.code,
+    items: block.items,
+    label: block.label ? (typeof block.label === 'object' ? block.label : { text: block.label }) : undefined,
+    hint: block.hint ? (typeof block.hint === 'object' ? block.hint : { text: block.hint }) : undefined,
+    value: block.value,
+    disabled: block.disabled,
+    formGroup: block.formGroup,
+    classes: block.classes,
+    attributes: block.attributes,
+    errorMessage: block.errors?.length && { text: block.errors[0].message },
+  }
 
-    return nunjucksEnv.render('govuk/components/select/template.njk', {
-      params,
-    })
-  },
-)
+  return nunjucksEnv.render('govuk/components/select/template.njk', {
+    params,
+  })
+})
 
 /**
  * GOV.UK Select Input Component

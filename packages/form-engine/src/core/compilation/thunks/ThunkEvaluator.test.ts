@@ -1,14 +1,12 @@
 import { when } from 'jest-when'
-import { ASTNode, NodeId, PseudoNodeId, FormInstanceDependencies } from '@form-engine/core/types/engine.type'
+import { ASTNode, NodeId, FormInstanceDependencies } from '@form-engine/core/types/engine.type'
 import ThunkEvaluator from '@form-engine/core/compilation/thunks/ThunkEvaluator'
 import ThunkHandlerRegistry from '@form-engine/core/compilation/registries/ThunkHandlerRegistry'
-import DependencyGraph from '@form-engine/core/compilation/dependency-graph/DependencyGraph'
 import NodeRegistry from '@form-engine/core/compilation/registries/NodeRegistry'
 import FunctionRegistry from '@form-engine/registry/FunctionRegistry'
 import ComponentRegistry from '@form-engine/registry/ComponentRegistry'
 import { ThunkHandler, RuntimeOverlayBuilder } from '@form-engine/core/compilation/thunks/types'
 import { StepRequest, StepResponse, CookieMutation, CookieOptions } from '@form-engine/core/runtime/routes/types'
-import { ASTNodeType } from '@form-engine/core/types/enums'
 import { CompilationDependencies } from '@form-engine/core/compilation/CompilationDependencies'
 import MetadataRegistry from '@form-engine/core/compilation/registries/MetadataRegistry'
 import ThunkEvaluationContext from '@form-engine/core/compilation/thunks/ThunkEvaluationContext'
@@ -102,7 +100,6 @@ describe('ThunkEvaluator', () => {
   let mockCompilationDependencies: jest.Mocked<CompilationDependencies>
   let mockFormInstanceDependencies: jest.Mocked<FormInstanceDependencies>
   let mockHandlerRegistry: jest.Mocked<ThunkHandlerRegistry>
-  let mockDependencyGraph: jest.Mocked<DependencyGraph>
   let mockNodeRegistry: jest.Mocked<NodeRegistry>
   let mockMetadataRegistry: jest.Mocked<MetadataRegistry>
   let mockFunctionRegistry: jest.Mocked<FunctionRegistry>
@@ -117,7 +114,6 @@ describe('ThunkEvaluator', () => {
       nodeRegistry: {} as NodeRegistry,
       handlerRegistry: {} as ThunkHandlerRegistry,
       metadataRegistry: {} as MetadataRegistry,
-      dependencyGraph: {} as DependencyGraph,
       nodeFactory: { createNode: jest.fn() } as any,
       runtimeNodes: new Map(),
     }
@@ -128,12 +124,6 @@ describe('ThunkEvaluator', () => {
       size: jest.fn().mockReturnValue(0),
       getIds: jest.fn().mockReturnValue([]),
     } as unknown as jest.Mocked<ThunkHandlerRegistry>
-
-    mockDependencyGraph = {
-      topologicalSort: jest.fn().mockReturnValue({ sort: [], cycles: [], hasCycles: false }),
-      addNode: jest.fn(),
-      addEdge: jest.fn(),
-    } as unknown as jest.Mocked<DependencyGraph>
 
     mockNodeRegistry = {
       get: jest.fn(),
@@ -153,7 +143,6 @@ describe('ThunkEvaluator', () => {
 
     mockCompilationDependencies = {
       thunkHandlerRegistry: mockHandlerRegistry,
-      dependencyGraph: mockDependencyGraph,
       nodeRegistry: mockNodeRegistry,
       metadataRegistry: mockMetadataRegistry,
       createPendingView: jest.fn().mockImplementation(() => {
@@ -173,7 +162,6 @@ describe('ThunkEvaluator', () => {
           deps: {
             nodeRegistry: pendingNodeRegistry,
             metadataRegistry: mockMetadataRegistry,
-            dependencyGraph: mockDependencyGraph,
             thunkHandlerRegistry: mockHandlerRegistry,
           },
           flush: jest.fn(),
@@ -210,7 +198,7 @@ describe('ThunkEvaluator', () => {
       mockContext = createMockContext() as ThunkEvaluationContext
     })
 
-    it('should return cached value result with cached flag when result is cached', async () => {
+    it('should return cached value result on second call', async () => {
       // Arrange - use pseudo node ID since only pseudo nodes are cached
       const pseudoNodeId: NodeId = 'compile_pseudo:1'
       const mockHandler = createMockHybridHandler(
@@ -228,7 +216,6 @@ describe('ThunkEvaluator', () => {
 
       // Assert
       expect(firstResult.value).toBe('test-value')
-      expect(firstResult.metadata?.cached).toBeUndefined()
       expect(mockHandler.evaluate).toHaveBeenCalledTimes(1)
 
       // Act - Second call should use cache
@@ -236,12 +223,11 @@ describe('ThunkEvaluator', () => {
 
       // Assert
       expect(secondResult.value).toBe('test-value')
-      expect(secondResult.metadata?.cached).toBe(true)
       expect(secondResult.metadata?.source).toBe('test')
       expect(mockHandler.evaluate).toHaveBeenCalledTimes(1)
     })
 
-    it('should return cached error result with cached flag when error result is cached', async () => {
+    it('should return cached error result on second call', async () => {
       // Arrange - use pseudo node ID since only pseudo nodes are cached
       const pseudoNodeId: NodeId = 'compile_pseudo:2'
       const mockHandler = createMockHybridHandler(
@@ -264,7 +250,6 @@ describe('ThunkEvaluator', () => {
       // Assert
       expect(firstResult.error).toBeDefined()
       expect(firstResult.error?.message).toBe('Test error')
-      expect(firstResult.metadata?.cached).toBeUndefined()
 
       // Act - Second call should use cached error
       const secondResult = await evaluator.invoke(pseudoNodeId, mockContext)
@@ -272,7 +257,6 @@ describe('ThunkEvaluator', () => {
       // Assert
       expect(secondResult.error).toBeDefined()
       expect(secondResult.error?.message).toBe('Test error')
-      expect(secondResult.metadata?.cached).toBe(true)
       expect(mockHandler.evaluate).toHaveBeenCalledTimes(1)
     })
 
@@ -333,43 +317,6 @@ describe('ThunkEvaluator', () => {
       // Act & Assert
       await expect(evaluator.invoke(nodeId, mockContext)).rejects.toBe('String error')
     })
-
-    it('should dedupe concurrent invocations of the same node', async () => {
-      // Arrange
-      let resolveEvaluation: (value: unknown) => void
-      const evaluationPromise = new Promise(resolve => {
-        resolveEvaluation = resolve
-      })
-
-      const mockHandler = createMockHybridHandler(
-        nodeId,
-        jest.fn().mockImplementation(async () => {
-          await evaluationPromise
-
-          return {
-            value: 'shared-result',
-            metadata: { source: 'OMGWTFBBQ', timestamp: 123456 },
-          }
-        }),
-      )
-
-      when(mockHandlerRegistry.get).calledWith(nodeId).mockReturnValue(mockHandler)
-
-      // Act
-      const promise1 = evaluator.invoke(nodeId, mockContext)
-      const promise2 = evaluator.invoke(nodeId, mockContext)
-      const promise3 = evaluator.invoke(nodeId, mockContext)
-
-      resolveEvaluation!(undefined)
-
-      const [result1, result2, result3] = await Promise.all([promise1, promise2, promise3])
-
-      // Assert
-      expect(mockHandler.evaluate).toHaveBeenCalledTimes(1)
-      expect(result1.value).toBe('shared-result')
-      expect(result2.value).toBe('shared-result')
-      expect(result3.value).toBe('shared-result')
-    })
   })
 
   describe('createContext()', () => {
@@ -393,177 +340,6 @@ describe('ThunkEvaluator', () => {
       expect(context.global.answers).toEqual({})
       expect(context.functionRegistry).toBe(mockFunctionRegistry)
       expect(context.logger).toBe(mockLogger)
-    })
-  })
-
-  describe('evaluate()', () => {
-
-    it('should invoke Journey node which invokes its children via lazy evaluation', async () => {
-      // Arrange
-      const journeyNodeId: NodeId = 'compile_ast:100'
-      const childNode1: NodeId = 'compile_ast:101'
-      const childNode2: NodeId = 'compile_ast:102'
-
-      const request = createTestRequest()
-      const response = createTestResponse()
-
-      const journeyNode = ASTTestFactory.journey().withId(journeyNodeId).build()
-
-      // Mock findByType to return the Journey node
-      when(mockNodeRegistry.findByType).calledWith(ASTNodeType.JOURNEY).mockReturnValue([journeyNode])
-
-      const evaluationOrder: NodeId[] = []
-
-      const createHandler = (id: NodeId, childIds: NodeId[] = []): jest.Mocked<ThunkHandler> => {
-        return {
-          nodeId: id,
-          isAsync: true,
-          computeIsAsync: jest.fn(),
-          evaluateSync: jest.fn(),
-          evaluate: jest.fn().mockImplementation(async (ctx, invoker, hooks) => {
-            evaluationOrder.push(id)
-
-            // Simulate handler invoking its children sequentially
-
-            for (const childId of childIds) {
-              // eslint-disable-next-line no-await-in-loop
-              await invoker.invoke(childId, ctx, hooks)
-            }
-
-            return {
-              value: `result-${id}`,
-              metadata: {},
-            }
-          }),
-        }
-      }
-
-      const journeyHandler = createHandler(journeyNodeId, [childNode1, childNode2])
-      const childHandler1 = createHandler(childNode1)
-      const childHandler2 = createHandler(childNode2)
-
-      when(mockHandlerRegistry.get).calledWith(journeyNodeId).mockReturnValue(journeyHandler)
-      when(mockHandlerRegistry.get).calledWith(childNode1).mockReturnValue(childHandler1)
-      when(mockHandlerRegistry.get).calledWith(childNode2).mockReturnValue(childHandler2)
-
-      // Act
-      const context = evaluator.createContext(request, response)
-      await evaluator.evaluate(context)
-
-      // Assert - Journey should be evaluated first, then its children
-      expect(evaluationOrder).toEqual([journeyNodeId, childNode1, childNode2])
-      expect(journeyHandler.evaluate).toHaveBeenCalledTimes(1)
-      expect(childHandler1.evaluate).toHaveBeenCalledTimes(1)
-      expect(childHandler2.evaluate).toHaveBeenCalledTimes(1)
-    })
-
-    it('should not share cache between evaluator instances', async () => {
-      // Arrange
-      const journeyNodeId: NodeId = 'compile_ast:200'
-      const childNodeId: NodeId = 'compile_ast:201'
-      const request = createTestRequest()
-
-      const journeyNode = ASTTestFactory.journey().withId(journeyNodeId).build()
-
-      when(mockNodeRegistry.findByType).calledWith(ASTNodeType.JOURNEY).mockReturnValue([journeyNode])
-
-      let callCount = 0
-
-      const journeyHandler = createMockHybridHandler(
-        journeyNodeId,
-        jest.fn().mockImplementation(async (ctx, invoker) => {
-          await invoker.invoke(childNodeId, ctx)
-
-          return { value: 'journey', metadata: {} }
-        }),
-      )
-
-      const childHandler = createMockHybridHandler(
-        childNodeId,
-        jest.fn().mockImplementation(async () => {
-          callCount += 1
-
-          return { value: `value-${callCount}`, metadata: {} }
-        }),
-      )
-
-      when(mockHandlerRegistry.get).calledWith(journeyNodeId).mockReturnValue(journeyHandler)
-      when(mockHandlerRegistry.get).calledWith(childNodeId).mockReturnValue(childHandler)
-
-      // Act - First evaluator instance
-      const evaluator1 = new ThunkEvaluator(
-        mockCompilationDependencies,
-        mockFormInstanceDependencies,
-        mockRuntimeOverlayBuilder,
-      )
-      await evaluator1.evaluate(evaluator1.createContext(request, createTestResponse()))
-
-      // Assert - First evaluation
-      expect(callCount).toBe(1)
-
-      // Act - Second evaluator instance (simulating new request)
-      const evaluator2 = new ThunkEvaluator(
-        mockCompilationDependencies,
-        mockFormInstanceDependencies,
-        mockRuntimeOverlayBuilder,
-      )
-      await evaluator2.evaluate(evaluator2.createContext(request, createTestResponse()))
-
-      // Assert - Handler should be called again (not using evaluator1's cache)
-      expect(callCount).toBe(2)
-    })
-
-    it('should populate answers map during evaluation', async () => {
-      // Arrange
-      const journeyNodeId: NodeId = 'compile_ast:300'
-      const answerNodeId: PseudoNodeId = 'compile_pseudo:301'
-      const request = createTestRequest()
-      const response = createTestResponse()
-
-      const journeyNode = ASTTestFactory.journey().withId(journeyNodeId).build()
-
-      when(mockNodeRegistry.findByType).calledWith(ASTNodeType.JOURNEY).mockReturnValue([journeyNode])
-
-      const journeyHandler = createMockHybridHandler(
-        journeyNodeId,
-        jest.fn().mockImplementation(async (ctx, invoker) => {
-          await invoker.invoke(answerNodeId, ctx)
-
-          return {
-            value: 'journey',
-            metadata: {},
-          }
-        }),
-      )
-
-      const answerHandler = createMockHybridHandler(
-        answerNodeId,
-        jest.fn().mockImplementation(async (ctx: ThunkEvaluationContext) => {
-          // Simulate handler populating answers
-          ctx.global.answers.email = {
-            current: 'test@example.com',
-            mutations: [{ value: 'test@example.com', source: 'post' }],
-          }
-
-          return {
-            value: 'test@example.com',
-            metadata: {},
-          }
-        }),
-      )
-
-      when(mockHandlerRegistry.get).calledWith(journeyNodeId).mockReturnValue(journeyHandler)
-      when(mockHandlerRegistry.get).calledWith(answerNodeId).mockReturnValue(answerHandler)
-
-      // Act
-      const context = evaluator.createContext(request, response)
-      await evaluator.evaluate(context)
-
-      // Assert
-      expect(context.global.answers.email).toEqual({
-        current: 'test@example.com',
-        mutations: [{ value: 'test@example.com', source: 'post' }],
-      })
     })
   })
 })

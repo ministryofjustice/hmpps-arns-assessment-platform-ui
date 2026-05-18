@@ -221,10 +221,10 @@ Literal(simpleListItems)
                 </div>
               `,
               values: {
-                title: Item().path('name'),
+                title: Item().path('name').pipe(Transformer.String.EscapeHtml()),
                 tasks: Item()
                   .path('tasks')
-                  .each(Iterator.Map(Format('<li>%1</li>', Item().path('name')))),
+                  .each(Iterator.Map(Format('<li>%1</li>', Item().path('name').pipe(Transformer.String.EscapeHtml())))),
               },
             }),
           ),
