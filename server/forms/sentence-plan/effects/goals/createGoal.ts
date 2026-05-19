@@ -99,5 +99,7 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
     isRelatedToOtherAreas: relatedAreas.length > 0 ? 'yes' : 'no',
     relatedAreasOfNeed: relatedAreas.join(','),
     relatedAreasCount: String(relatedAreas.length),
+    targetDateOption: targetDateOption ?? '',
+    targetDate: targetDate ?? '',
   })
 }
