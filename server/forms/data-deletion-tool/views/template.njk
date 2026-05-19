@@ -16,6 +16,43 @@
   {% endblock %}
 {% endblock %}
 
+{% block govukHeader %}
+  {{ super() }}
+  {% set isOnConfigurationPage = step.path == '/configuration' %}
+  {% set isOnEventsPage = step.path == '/events' %}
+  {% set isOnTimelinePage = step.path == '/timeline' %}
+  {% set isOnSummaryPage = step.path == '/summary' %}
+
+  {{ govukServiceNavigation({
+    navigation: [
+      {
+        href: "/data-deletion-tool/configuration",
+        text: "Configuration",
+        current: isOnConfigurationPage
+      },
+      {
+        href: "/data-deletion-tool/events",
+        text: "Events",
+        current: isOnEventsPage
+      },
+      {
+        href: "/data-deletion-tool/timeline",
+        text: "Timeline",
+        current: isOnTimelinePage
+      },
+      {
+        href: "/data-deletion-tool/summary",
+        text: "Summary",
+        current: isOnSummaryPage
+      },
+      {
+        href: "/data-deletion-tool/clear",
+        text: "Clear session"
+      }
+    ]
+  }) }}
+{% endblock %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">

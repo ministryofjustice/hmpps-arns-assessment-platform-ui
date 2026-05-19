@@ -1,9 +1,9 @@
 import { InternalServerError } from 'http-errors'
-import { DataDeletionToolContext } from './types';
-import AssessmentPlatformApiClient from '../../../data/assessmentPlatformApiClient';
-import { AuthenticationClient, InMemoryTokenStore } from '@ministryofjustice/hmpps-auth-clients';
-import config from '../../../config';
-import logger from '../../../../logger';
+import { DataDeletionToolContext } from '../types'
+import AssessmentPlatformApiClient from '../../../../data/assessmentPlatformApiClient'
+import { AuthenticationClient, InMemoryTokenStore } from '@ministryofjustice/hmpps-auth-clients'
+import config from '../../../../config'
+import logger from '../../../../../logger'
 
 const environments = config.forms.dataDeletionTool.environments
 
@@ -14,20 +14,20 @@ const isValidEnvironment = (value: string): value is Environment => {
 }
 
 export const createApiClient = (context: DataDeletionToolContext) => {
-  const session = context.getSession()
+  const answers = context.getSession().answers
 
-  if (!session.environment || !isValidEnvironment(session.environment)) {
+  if (!answers.environment || !isValidEnvironment(answers.environment)) {
     throw new InternalServerError(`A valid environment is required`)
   }
 
-  const environment = environments[session.environment]
+  const environment = environments[answers.environment]
 
   const hmppsAuthClient = new AuthenticationClient(
     {
       ...config.apis.hmppsAuth,
       url: environment.authUrl,
-      systemClientId: session.clientId,
-      systemClientSecret: session.clientSecret,
+      systemClientId: answers.clientId,
+      systemClientSecret: answers.clientSecret,
     },
     logger,
     new InMemoryTokenStore(),

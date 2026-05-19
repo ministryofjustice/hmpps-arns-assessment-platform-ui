@@ -8,7 +8,6 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKButton,
-  GovUKHeading,
   GovUKPasswordInput,
   GovUKSelectInput,
   GovUKTextInput
@@ -24,15 +23,15 @@ export const configurationStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [DataDeletionToolEffects.saveConfiguration()],
-        next: [redirect({ goto: 'edit' })],
+        effects: [
+          DataDeletionToolEffects.saveAnswers(),
+          DataDeletionToolEffects.loadAssessmentData(),
+        ],
+        next: [redirect({ goto: 'events' })],
       },
     })
   ],
   blocks: [
-    GovUKHeading({
-      text: 'Configuration',
-    }),
     GovUKSelectInput({
       code: 'environment',
       label: 'Environment',
@@ -82,7 +81,8 @@ export const configurationStep = step({
     GovUKButton({
       text: 'Next',
       name: 'action',
-      value: 'save',
+      value: 'next',
+      preventDoubleClick: true,
     }),
   ],
 })

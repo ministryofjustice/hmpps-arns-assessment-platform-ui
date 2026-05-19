@@ -1,0 +1,49 @@
+.events-table {
+  font-size: 18px;
+
+  .govuk-label, .govuk-fieldset__legend {
+    font-size: 18px;
+    margin-bottom: 0;
+  }
+
+  .govuk-input, .govuk-textarea {
+    font-family: ui-monospace, menlo, "Cascadia Mono", "Segoe UI Mono", consolas, "Liberation Mono", monospace;
+    font-size: 16px;
+  }
+
+  tr td {
+    padding-bottom: 20px;
+  }
+
+  .event-row {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    border-bottom: 0;
+  }
+
+  .event-data {
+    position: relative;
+
+    .govuk-tag {
+      position: absolute;
+      right: 0;
+      top: 2px;
+      font-size: 16px;
+    }
+  }
+
+  .govuk-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+
+    &__conditional {
+      flex-basis: 100%;
+    }
+  }
+
+  pre {
+    background-color: #eeeeee;
+    padding: 20px;
+    font-size: 16px;
+  }
+}

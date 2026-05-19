@@ -1,0 +1,149 @@
+{%- from "govuk/components/checkboxes/macro.njk" import govukCheckboxes -%}
+{%- from "govuk/components/table/macro.njk" import govukTable -%}
+{%- from "govuk/components/textarea/macro.njk" import govukTextarea -%}
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+{%- from "govuk/components/input/macro.njk" import govukInput -%}
+
+{% set rows = [] %}
+
+{% for timelineItem in params.timeline %}
+
+  {% set editTimelineItem %}
+    {% if timelineItem.event %}
+      {{ govukInput({
+        id: "timeline-event-" + timelineItem.uuid,
+        name: "timeline-event-" + timelineItem.uuid,
+        value: params.postData['timeline-event-' + timelineItem.uuid] or timelineItem.event,
+        label: {
+          text: "Event",
+          classes: "govuk-label--s"
+        }
+      }) }}
+    {% endif %}
+
+    {% if timelineItem.data %}
+      {{ govukTextarea({
+        name: "timeline-data-" + timelineItem.uuid,
+        id: "timeline-data-" + timelineItem.uuid,
+        value: params.postData['timeline-data-' + timelineItem.uuid] or (timelineItem.data | dump(2)),
+        label: {
+          text: "Data",
+          classes: "govuk-label--s"
+        },
+        rows: 8
+      }) }}
+    {% endif %}
+
+    {% if timelineItem.customType %}
+      {{ govukInput({
+        id: "timeline-custom-type-" + timelineItem.uuid,
+        name: "timeline-custom-type-" + timelineItem.uuid,
+        value: params.postData['timeline-custom-type-' + timelineItem.uuid] or timelineItem.customType,
+        label: {
+          text: "Custom type",
+          classes: "govuk-label--s"
+        }
+      }) }}
+    {% endif %}
+
+    {% if timelineItem.customData %}
+      {{ govukTextarea({
+        name: "timeline-custom-data-" + timelineItem.uuid,
+        id: "timeline-custom-data-" + timelineItem.uuid,
+        value: params.postData['timeline-custom-data-' + timelineItem.uuid] or (timelineItem.customData | dump(2)),
+        label: {
+          text: "Custom data",
+          classes: "govuk-label--s"
+        },
+        rows: 8
+      }) }}
+    {% endif %}
+  {% endset -%}
+
+  {% set timelineItemDetails %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-half">
+        {% if timelineItem.data %}
+          <div class="timeline-item-data">
+            {{ govukTag({
+              text: "Data",
+              classes: "govuk-tag--grey"
+            }) }}
+            <pre>{{ timelineItem.data | dump(2) }}</pre>
+          </div>
+        {% endif %}
+        {% if timelineItem.customData %}
+          <div class="timeline-item-data">
+            {{ govukTag({
+              text: "Custom data",
+              classes: "govuk-tag--teal"
+            }) }}
+            <pre>{{ timelineItem.customData | dump(2) }}</pre>
+          </div>
+        {% endif %}
+      </div>
+      <div class="govuk-grid-column-one-half">
+        {{ govukCheckboxes({
+          name: "timeline-action-" + timelineItem.uuid,
+          classes: "govuk-checkboxes--small",
+          formGroup: {
+            classes: "govuk-!-static-margin-0"
+          },
+          fieldset: {
+            legend: {
+              text: "Actions",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "DELETE",
+              text: "Delete",
+              behaviour: "exclusive",
+              checked: params.postData['timeline-action-' + timelineItem.uuid] == 'DELETE'
+            },
+            {
+              value: "UPDATE",
+              text: "Edit",
+              behaviour: "exclusive",
+              conditional: {
+                html: editTimelineItem
+              },
+              checked: params.postData['timeline-action-' + timelineItem.uuid] == 'UPDATE'
+            }
+          ]
+        }) }}
+      </div>
+    </div>
+
+  {% endset -%}
+
+  {% set timelineType %}
+    <strong>{{ timelineItem.event | default("n/a", true) }} | {{ timelineItem.customType | default("n/a", true) }}</strong>
+  {% endset -%}
+
+  {% set rows = (rows.push([
+    { html: timelineType, classes: "timeline-item-row" },
+    { text: timelineItem.timestamp, classes: "timeline-item-row" },
+    { text: timelineItem.uuid, classes: "timeline-item-row" }
+  ]), rows) %}
+
+  {% set rows = (rows.push([
+    {
+      html: timelineItemDetails,
+      colspan: 3
+    }
+  ]), rows) %}
+
+{% endfor %}
+
+{{ govukTable({
+  classes: "timeline-table",
+  head: [
+    { text: "Event | Custom type" },
+    { text: "Created at" },
+    { text: "UUID" }
+  ],
+  rows: rows
+}) }}

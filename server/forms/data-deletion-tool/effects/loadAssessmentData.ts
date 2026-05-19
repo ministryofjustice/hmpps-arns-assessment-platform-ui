@@ -1,12 +1,13 @@
 import { InternalServerError, NotFound } from 'http-errors'
-import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from './types';
-import { createApiClient } from './createApiClient';
+import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from './types'
+import { createApiClient } from './shared/createApiClient'
 
 /**
  * Load assessment data using the provided identifier
  */
-export const loadData = (deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
-  const assessmentUuid = context.getSession().assessmentUuid
+export const loadAssessmentData = (deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
+  const session = context.getSession()
+  const assessmentUuid = session.answers.assessmentUuid
 
   if (!assessmentUuid) {
     throw new InternalServerError('Assessment identifier is required')
@@ -20,5 +21,5 @@ export const loadData = (deps: DataDeletionToolEffectsDeps) => async (context: D
     throw new NotFound('Data deletion data not found')
   }
 
-  context.setData('currentData', data)
+  session.currentData = data
 }

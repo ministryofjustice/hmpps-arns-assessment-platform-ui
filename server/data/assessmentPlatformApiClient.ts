@@ -11,7 +11,11 @@ import { QueryResultFor, QueryResultsFor } from '../interfaces/aap-api/queryResu
 import { CommandError } from '../errors/aap-api/CommandError'
 import { QueryError } from '../errors/aap-api/QueryError'
 import AssessmentCacheStore from './assessmentCacheStore'
-import { DataDeletionDataResponse } from '../interfaces/aap-api/dataDeletion';
+import {
+  DataDeletionDataResponse,
+  DataDeletionRequest,
+  DataDeletionResponse
+} from '../interfaces/aap-api/dataDeletion';
 
 export default class AssessmentPlatformApiClient extends RestClient {
   private assessmentCache?: AssessmentCacheStore
@@ -117,5 +121,9 @@ export default class AssessmentPlatformApiClient extends RestClient {
   // Data deletion endpoints
   async getDataDeletionData(assessmentUuid: string): Promise<DataDeletionDataResponse> {
     return this.get({ path: `/data-deletion/${assessmentUuid}` }, asSystem())
+  }
+
+  async postDataDeletionRequest(assessmentUuid: string, request: DataDeletionRequest): Promise<DataDeletionResponse> {
+    return this.post({ path: `/data-deletion/${assessmentUuid}`, data: request as unknown as Record<string, unknown> }, asSystem())
   }
 }

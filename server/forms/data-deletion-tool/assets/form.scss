@@ -1,0 +1,17 @@
+/**
+ * Data Deletion Tool - Form-specific styles
+ *
+ * These styles are loaded only on pages using this form's custom template.
+ */
+@import 'govuk-frontend/dist/govuk/base';
+
+// Components
+@import '../components/events/events';
+@import '../components/timeline/timeline';
+
+.govuk-service-navigation__item:last-child {
+  margin-left: auto;
+  a {
+    color: 	#ca3535 !important;
+  }
+}
