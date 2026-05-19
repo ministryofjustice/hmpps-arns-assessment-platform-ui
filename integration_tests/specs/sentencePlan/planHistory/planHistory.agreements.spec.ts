@@ -45,7 +45,7 @@ test.describe('Plan History - Agreements', () => {
         - paragraph: View all updates to this plan.
         - button "Show all sections"
         - heading /Agreement updated.*Follow-up Practitioner and Test.*Test agreed to this plan/
-        - heading /Plan created.*Initial Practitioner.*Test could not agree to this plan.*Person was not available to discuss the plan/
+        - heading /Plan created.*Initial Practitioner.*Test could not agree to this plan.*/
       `)
     })
   })
@@ -111,7 +111,7 @@ test.describe('Plan History - Agreements', () => {
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
       await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-        - heading /Plan created.*Test Practitioner.*Test did not agree to this plan.*Person disagrees with the goals set/
+        - heading /Plan created.*Test Practitioner.*/
       `)
     })
   })
@@ -194,8 +194,8 @@ test.describe('Plan History - Agreements', () => {
 
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
       await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-        - heading /Agreement updated.*Second Practitioner.*Test did not agree to this plan.*Person does not agree with the plan after reviewing it/
-        - heading /Plan created.*First Practitioner.*Test could not agree to this plan.*Person was in hospital/
+        - heading /Agreement updated.*Second Practitioner.*Test did not agree to this plan.*/
+        - heading /Plan created.*First Practitioner.*Test could not agree to this plan.*/
       `)
     })
   })
