@@ -105,9 +105,12 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
   telemetry.trackEvent('CREATE_GOAL_PAGE_SUBMITTED', {
     assessmentUuid,
     goalUuid: addResult.collectionItemUuid,
+    goalStatus: status,
     areaOfNeed: areaOfNeedSlug,
     isRelatedToOtherAreas: relatedAreas.length > 0 ? 'yes' : 'no',
     relatedAreasOfNeed: relatedAreas.join(','),
     relatedAreasCount: String(relatedAreas.length),
+    targetDateOption: targetDateOption ?? '',
+    targetDate: targetDate ?? '',
   })
 }
