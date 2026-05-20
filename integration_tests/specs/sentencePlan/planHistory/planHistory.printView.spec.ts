@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
+import { handlePrivacyScreenIfPresent, navigateToSentencePlan, sentencePlanV1URLs } from '../sentencePlanUtils'
 
 test.describe(`Plan History - Print view`, () => {
   test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
@@ -62,9 +62,8 @@ test.describe(`Plan History - Print view`, () => {
       ])
       .save()
 
-    await page.goto(handoverLink)
-    await handlePrivacyScreenIfPresent(page)
-    await page.getByRole('link', { name: /View plan history/i }).click()
+    await navigateToSentencePlan(page, handoverLink)
+    await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await planHistoryPage.clickShowAllSectionsButton()
 
