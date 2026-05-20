@@ -45,6 +45,13 @@ if (connectionString) {
     const goalsTotal = document.querySelector('meta[name="ai-goals-total"]')?.content
     const stepsTotal = document.querySelector('meta[name="ai-steps-total"]')?.content
     const goalsWithMultipleSteps = document.querySelector('meta[name="ai-goals-with-multiple-steps"]')?.content
+    const stepsPersonOnProbation = document.querySelector('meta[name="ai-steps-person-on-probation"]')?.content
+    const stepsProbationPractitioner = document.querySelector('meta[name="ai-steps-probation-practitioner"]')?.content
+    const stepsPrisonOffenderManager = document.querySelector('meta[name="ai-steps-prison-offender-manager"]')?.content
+    const stepsProgrammeStaff = document.querySelector('meta[name="ai-steps-programme-staff"]')?.content
+    const stepsPartnershipAgency = document.querySelector('meta[name="ai-steps-partnership-agency"]')?.content
+    const stepsCrsProvider = document.querySelector('meta[name="ai-steps-crs-provider"]')?.content
+    const stepsSomeoneElse = document.querySelector('meta[name="ai-steps-someone-else"]')?.content
 
     envelope.tags['ai.cloud.role'] = 'hmpps-arns-assessment-platform-ui'
 
@@ -62,6 +69,13 @@ if (connectionString) {
       goalsTotal: goalsTotal || undefined,
       stepsTotal: stepsTotal || undefined,
       goalsWithMultipleSteps: goalsWithMultipleSteps || undefined,
+      stepsPersonOnProbation: stepsPersonOnProbation || undefined,
+      stepsProbationPractitioner: stepsProbationPractitioner || undefined,
+      stepsPrisonOffenderManager: stepsPrisonOffenderManager || undefined,
+      stepsProgrammeStaff: stepsProgrammeStaff || undefined,
+      stepsPartnershipAgency: stepsPartnershipAgency || undefined,
+      stepsCrsProvider: stepsCrsProvider || undefined,
+      stepsSomeoneElse: stepsSomeoneElse || undefined,
     }
   })
 
