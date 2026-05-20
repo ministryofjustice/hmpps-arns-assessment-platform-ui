@@ -1,11 +1,20 @@
-import { Data, Format, Item, Self, validation } from '@form-engine/form/builders'
-import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import { GovUKRadioInput, GovUKTextareaInput } from '@form-engine-govuk-components/components'
-import { Transformer } from '@form-engine/registry/transformers'
-import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { Condition } from '@form-engine/registry/conditions'
-import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
-import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import {
+  Data,
+  Format,
+  Item,
+  Self,
+  validation,
+  Iterator,
+  Condition,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  GovUKButton,
+  GovUKRadioInput,
+  GovUKTextareaInput,
+  GovUKHeading,
+  GovUKBody,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
 import { GoalSummaryCardDraft } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
@@ -20,7 +29,7 @@ export const allStepsCompletedField = GovUKBody({
 export const goalCard = GoalSummaryCardDraft({
   goalTitle: Data('activeGoal.title'),
   goalStatus: Data('activeGoal.status'),
-  targetDate: Data('activeGoal.targetDate').pipe(Transformer.Date.ToUKLongDate()),
+  targetDate: Data('activeGoal.targetDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   areaOfNeed: Data('activeGoal.areaOfNeedLabel'),
   relatedAreasOfNeed: Data('activeGoal.relatedAreasOfNeedLabels'),
   steps: Data('activeGoal.steps').each(
@@ -51,9 +60,9 @@ export const hasAchievedGoal = GovUKRadioInput({
     { value: 'yes', text: 'Yes, mark it as achieved', block: howAchievingGoalHelpedInput },
     { value: 'no', text: Format("No, go to %1's plan", CaseData.Forename) },
   ],
-  validate: [
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select if they have achieved this goal',
     }),
   ],

@@ -1,5 +1,4 @@
-import { accessTransition, and, Data, not, redirect } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import { access, and, Data, not, redirect, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
 import { sentencePlanOverviewPath } from './constants'
 
@@ -35,7 +34,7 @@ export const lacksCouldNotAnswerStatus = Data('latestAgreementStatus').not.match
  * Redirect users with READ_ONLY access to plan overview.
  */
 export const redirectToOverviewIfReadOnly = () =>
-  accessTransition({
+  access({
     when: isReadOnlyAccess,
     next: [redirect({ goto: sentencePlanOverviewPath })],
   })
@@ -44,21 +43,21 @@ export const redirectToOverviewIfReadOnly = () =>
  * Redirect users unless plan status is in post-agreement states.
  */
 export const redirectIfNotPostAgreement = (goto: string) =>
-  accessTransition({
+  access({
     when: lacksPostAgreementStatus,
     next: [redirect({ goto })],
   })
 
 // redirects users unless plan status is not in post-agreement states (draft plan):
 export const redirectIfPostAgreement = (goto: string) =>
-  accessTransition({
+  access({
     when: hasPostAgreementStatus,
     next: [redirect({ goto })],
   })
 
 // redirects users if goal is not found:
 export const redirectIfGoalNotFound = (goto: string) =>
-  accessTransition({
+  access({
     when: Data('activeGoal').not.match(Condition.IsRequired()),
     next: [redirect({ goto })],
   })
@@ -67,7 +66,7 @@ export const redirectIfGoalNotFound = (goto: string) =>
  * Redirect users unless latest status is COULD_NOT_ANSWER.
  */
 export const redirectUnlessCouldNotAnswer = (goto: string) =>
-  accessTransition({
+  access({
     when: lacksCouldNotAnswerStatus,
     next: [redirect({ goto })],
   })
@@ -94,7 +93,7 @@ export const canAccessSanContent = and(isSanSpAssessment, not(isMpopAccess))
  * Blocks both non-SAN_SP assessments and MPoP users.
  */
 export const redirectUnlessSanSp = (goto: string) =>
-  accessTransition({
+  access({
     when: not(canAccessSanContent),
     next: [redirect({ goto })],
   })
@@ -110,7 +109,7 @@ export const isMergedPlan = Data('assessment.properties.MERGED').match(Condition
  * This prevents access to any plan content when the underlying data may be inconsistent.
  */
 export const redirectIfMergedMpopPlan = () =>
-  accessTransition({
+  access({
     when: and(isMpopAccess, isMergedPlan),
     next: [redirect({ goto: '/sentence-plan/merged-plan-warning' })],
   })
@@ -120,7 +119,7 @@ export const redirectIfMergedMpopPlan = () =>
  * READ_ONLY users are not sent through the privacy screen.
  */
 export const redirectToPrivacyUnlessAccepted = () =>
-  accessTransition({
-    when: and(Data('session.privacyAccepted').not.match(Condition.Equals(true)), isReadWriteAccess),
+  access({
+    when: and(Data('privacyAccepted').not.match(Condition.Equals(true)), isReadWriteAccess),
     next: [redirect({ goto: '/sentence-plan/privacy' })],
   })

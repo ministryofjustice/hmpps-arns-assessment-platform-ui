@@ -1,14 +1,14 @@
-import { block as blockBuilder } from '@form-engine/form/builders'
+import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   BlockDefinition,
-  ConditionalArray,
-  ConditionalBoolean,
-  ConditionalNumber,
-  ConditionalString,
+  ResolvableArray,
+  ResolvableBoolean,
+  ResolvableNumber,
+  ResolvableString,
   EvaluatedBlock,
   FieldBlockDefinition,
-} from '@form-engine/form/types/structures.type'
-import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
+} from '@ministryofjustice/hmpps-forge/core/components'
+import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 
 /**
  * Props for the AccessibleAutocomplete component.
@@ -32,7 +32,7 @@ export interface AccessibleAutocompleteProps {
    * When using a keyed object, use `dataKeyFrom` to specify which element's
    * value determines the current key.
    */
-  data: ConditionalArray<string> | Record<string, ConditionalArray<string>>
+  data: ResolvableArray<string> | Record<string, ResolvableArray<string>>
 
   /**
    * CSS selector for an element whose value determines the data key.
@@ -40,71 +40,71 @@ export interface AccessibleAutocompleteProps {
    *
    * @example '#area-of-need-input' - Gets value from element with this ID
    */
-  dataKeyFrom?: ConditionalString
+  dataKeyFrom?: ResolvableString
 
   /**
    * Minimum number of characters before showing suggestions.
    * @default 2
    */
-  minLength?: ConditionalNumber
+  minLength?: ResolvableNumber
 
   /**
    * Whether to show a "no results found" message when no options match.
    * @default false
    */
-  showNoOptionsFound?: ConditionalBoolean
+  showNoOptionsFound?: ResolvableBoolean
 
   /**
    * Custom CSS classes to add to the dropdown menu (ul element).
    * @default null
    */
-  menuClasses?: ConditionalString
+  menuClasses?: ResolvableString
 
   /**
    * Custom CSS classes to add to the input element.
    * @default null
    */
-  inputClasses?: ConditionalString
+  inputClasses?: ResolvableString
 
   /**
    * Custom CSS classes for the hint element (appears when autoselect is true).
    * Defaults to inputClasses if not specified.
    * @default null
    */
-  hintClasses?: ConditionalString
+  hintClasses?: ResolvableString
 
   /**
    * Highlight the first option when the user types and receives results.
    * Pressing enter will select it.
    * @default false
    */
-  autoselect?: ConditionalBoolean
+  autoselect?: ResolvableBoolean
 
   /**
    * Confirm the selected option when the user clicks outside the component.
    * @default true
    */
-  confirmOnBlur?: ConditionalBoolean
+  confirmOnBlur?: ResolvableBoolean
 
   /**
    * How the menu should appear - inline or as an overlay.
    * @default 'inline'
    */
-  displayMenu?: ConditionalString
+  displayMenu?: ResolvableString
 
   /**
    * Show all values when the user clicks the input (like a dropdown).
    * Renders with a dropdown arrow to convey this behaviour.
    * @default false
    */
-  showAllValues?: ConditionalBoolean
+  showAllValues?: ResolvableBoolean
 
   /**
    * HTML attributes to set on the menu element.
    * Useful for accessibility, e.g. { 'aria-labelledby': 'my-label-id' }
    * Note: id, role and onMouseLeave cannot be overridden.
    */
-  menuAttributes?: Record<string, ConditionalString>
+  menuAttributes?: Record<string, ResolvableString>
 }
 
 /**

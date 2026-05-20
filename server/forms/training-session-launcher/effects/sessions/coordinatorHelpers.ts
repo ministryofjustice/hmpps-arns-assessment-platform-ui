@@ -104,8 +104,7 @@ export async function createInCoordinatorAndUpdatePreferences(
             sanAssessmentId: coordinatorResponse.sanAssessmentId,
             sanAssessmentVersion: coordinatorResponse.sanAssessmentVersion,
             sentencePlanId: coordinatorResponse.sentencePlanId,
-            sentencePlanVersion:
-              s.sentencePlanVersion !== null ? s.sentencePlanVersion : coordinatorResponse.sentencePlanVersion,
+            sentencePlanVersion: s.sentencePlanVersion ?? coordinatorResponse.sentencePlanVersion,
           }
         }
 

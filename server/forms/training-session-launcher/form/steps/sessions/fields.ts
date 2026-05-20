@@ -1,11 +1,12 @@
-import { Data, Item, Iterator, when } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
-import { Transformer } from '@form-engine/registry/transformers'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { GovUKButton, GovUKDetails, GovUKLinkButton, GovUKSelectInput } from '@form-engine-govuk-components/components'
-import { MOJAlert } from '@form-engine-moj-components/components'
+import { Data, Item, Loop, Iterator, when, Condition, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock, CollectionBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
+import {
+  GovUKButton,
+  GovUKDetails,
+  GovUKLinkButton,
+  GovUKSelectInput,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
+import { MOJAlert } from '@ministryofjustice/hmpps-forge/moj-components'
 import { scenarioDetailsBlock } from '../../blocks/scenarioDetailsBlock'
 import { TrainingSessionLauncherTransformers } from '../../../transformers'
 
@@ -29,7 +30,7 @@ export const notificationBanners = CollectionBlock({
  * API failure error banner
  */
 export const errorBanner = HtmlBlock({
-  hidden: Data('handoverApiFailure').not.match(Condition.Equals(true)),
+  visibleWhen: Data('handoverApiFailure').match(Condition.Equals(true)),
   content: `
     <div class="govuk-error-summary" data-module="govuk-error-summary">
       <div role="alert">
@@ -78,7 +79,7 @@ export const pageHelpText = GovUKDetails({
  * No sessions message
  */
 export const noSessionsMessage = HtmlBlock({
-  hidden: Data('sessions').match(Condition.IsRequired()),
+  visibleWhen: Data('sessions').not.match(Condition.IsRequired()),
   content: `
     <div class="govuk-inset-text">
       <p class="govuk-body">You don't have any active training sessions.</p>
@@ -129,7 +130,7 @@ export const sessionCardBlock = TemplateWrapper({
     crn: Item().path('crn').pipe(Transformer.String.EscapeHtml()),
     location: Item().path('location').pipe(Transformer.String.EscapeHtml()),
     createdAt: Item().path('createdAt').pipe(TrainingSessionLauncherTransformers.RelativeTime()),
-    openAttr: when(Item().index().match(Condition.Equals(0)))
+    openAttr: when(Loop.Index0().match(Condition.Equals(0)))
       .then('open')
       .else(''),
   },
@@ -167,7 +168,7 @@ export const sessionCardBlock = TemplateWrapper({
  * Sessions list using CollectionBlock
  */
 export const sessionsList = CollectionBlock({
-  hidden: Data('sessions').not.match(Condition.IsRequired()),
+  visibleWhen: Data('sessions').match(Condition.IsRequired()),
   collection: Data('sessions').each(Iterator.Map(sessionCardBlock)),
   fallback: [noSessionsFallback],
 })
@@ -192,7 +193,7 @@ export const newSessionButton = GovUKLinkButton({
  * Reset all sessions form
  */
 export const resetAllSessionsForm = TemplateWrapper({
-  hidden: Data('sessions').not.match(Condition.IsRequired()),
+  visibleWhen: Data('sessions').match(Condition.IsRequired()),
   template: `
     <form method="post" novalidate>
       <input type="hidden" name="_csrf" value="{{csrfToken}}">
