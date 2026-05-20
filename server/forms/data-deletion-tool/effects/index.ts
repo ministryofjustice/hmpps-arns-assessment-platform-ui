@@ -1,13 +1,11 @@
 import { DataDeletionToolEffectsDeps } from './types'
 import { defineNamespacedEffectsWithDeps } from '../../shared/defineNamespacedEffectsWithDeps'
-import { clearSession } from './clearSession'
-import { loadAssessmentData } from './loadAssessmentData'
-import { saveAnswers } from './saveAnswers';
-import { loadAnswers } from './loadAnswers';
-import { deletionDryRun } from './deletionDryRun';
-import { deletionPersist } from './deletionPersist';
-import { saveEvents } from './saveEvents';
-import { saveTimeline } from './saveTimeline';
+import { loadAssessmentData } from './api/loadAssessmentData'
+import { deletionDryRun } from './api/deletionDryRun'
+import { deletionPersist } from './api/deletionPersist'
+import { clearSession } from './session/clearSession'
+import { saveAnswers } from './session/saveAnswers'
+import { loadAnswers } from './session/loadAnswers'
 
 export const {
   effects: DataDeletionToolEffects,
@@ -17,8 +15,6 @@ export const {
   clearSession,
   loadAnswers,
   saveAnswers,
-  saveEvents,
-  saveTimeline,
 
   // Assessment Data
   loadAssessmentData,

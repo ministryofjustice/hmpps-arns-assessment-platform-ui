@@ -1,6 +1,6 @@
 import { InternalServerError, NotFound } from 'http-errors'
-import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from './types'
-import { createApiClient } from './shared/createApiClient'
+import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from '../types'
+import { createApiClient } from './createApiClient'
 
 /**
  * Load assessment data using the provided identifier

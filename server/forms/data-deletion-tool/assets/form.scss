@@ -6,12 +6,6 @@
 @import 'govuk-frontend/dist/govuk/base';
 
 // Components
-@import '../components/events/events';
-@import '../components/timeline/timeline';
-
-.govuk-service-navigation__item:last-child {
-  margin-left: auto;
-  a {
-    color: 	#ca3535 !important;
-  }
-}
+@import 'styles/events';
+@import 'styles/timeline';
+@import 'styles/navigation';

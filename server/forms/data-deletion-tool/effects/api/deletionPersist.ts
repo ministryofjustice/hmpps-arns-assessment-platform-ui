@@ -1,6 +1,7 @@
 import { InternalServerError } from 'http-errors'
-import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from './types'
-import { createApiClient } from './shared/createApiClient'
+import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from '../types'
+import { createApiClient } from './createApiClient'
+import { createDataDeletionRequest } from './createDeletionRequest'
 
 export const deletionPersist = (deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
   const session = context.getSession()
@@ -10,9 +11,12 @@ export const deletionPersist = (deps: DataDeletionToolEffectsDeps) => async (con
     throw new InternalServerError('Assessment identifier is required')
   }
 
-  session.deletionRequest.dryRun = true
-
   const api = createApiClient(context)
+  const request = createDataDeletionRequest(context)
 
-  // TODO: submit and handle deletion request
+  request.dryRun = false
+
+  const response = await api.postDataDeletionRequest(assessmentUuid, request)
+
+  // TODO: handle response
 }

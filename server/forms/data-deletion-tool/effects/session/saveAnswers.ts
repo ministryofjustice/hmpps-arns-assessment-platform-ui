@@ -1,4 +1,4 @@
-import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from './types'
+import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from '../types'
 
 /**
  * Save answers to session

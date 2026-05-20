@@ -33,9 +33,6 @@ export interface DataDeletionToolAnswers extends Record<string, unknown> {
 export interface DataDeletionToolSession {
   answers: DataDeletionToolAnswers
   currentData: DataDeletionDataResponse
-  deletionRequest: DataDeletionRequest
-  eventsPostData: Record<string, string>
-  timelinePostData: Record<string, string>
 }
 
 /**

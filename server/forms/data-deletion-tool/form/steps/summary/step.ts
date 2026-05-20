@@ -2,7 +2,6 @@ import { redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/auth
 import {
   GovUKButton,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { summaryComponent } from './fields'
 import { DataDeletionToolEffects } from '../../../effects'
 
 export const summaryStep = step({
@@ -13,7 +12,6 @@ export const summaryStep = step({
       validate: true,
       onValid: {
         effects: [
-          DataDeletionToolEffects.saveAnswers(),
           DataDeletionToolEffects.deletionPersist(),
         ],
         next: [redirect({ goto: 'summary?success=true' })],
@@ -21,7 +19,12 @@ export const summaryStep = step({
     })
   ],
   blocks: [
-    summaryComponent,
+    GovUKButton({
+      text: 'Dry run',
+      name: 'action',
+      value: 'dry-run',
+      preventDoubleClick: true,
+    }),
     GovUKButton({
       text: 'Persist',
       name: 'action',

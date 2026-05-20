@@ -2,8 +2,8 @@ import { createForgePackage } from '@ministryofjustice/hmpps-forge/core/authorin
 import { DataDeletionToolEffectsDeps } from './effects/types'
 import config from '../../config'
 import { DataDeletionToolEffectImplementations } from './effects'
-import { dataDeletionToolComponents } from './components'
 import { dataDeletionToolJourney } from './form'
+import { DataDeletionToolTransformerImplementations } from './transformers'
 
 /**
  * Root Data Deletion Tool Form Package
@@ -11,8 +11,8 @@ import { dataDeletionToolJourney } from './form'
 export default createForgePackage<DataDeletionToolEffectsDeps>({
   enabled: config.forms.dataDeletionTool.enabled ?? false,
   journey: dataDeletionToolJourney,
-  components: dataDeletionToolComponents,
   functions: {
     ...DataDeletionToolEffectImplementations,
+    ...DataDeletionToolTransformerImplementations,
   },
 })

@@ -1,4 +1,4 @@
-.timeline-table {
+.events-table {
   font-size: 18px;
 
   .govuk-label, .govuk-fieldset__legend {
@@ -15,13 +15,17 @@
     padding-bottom: 20px;
   }
 
-  .timeline-item-row {
+  .event-row {
     padding-top: 20px;
     padding-bottom: 10px;
     border-bottom: 0;
+
+    &:first-child {
+      font-weight: bold;
+    }
   }
 
-  .timeline-item-data {
+  .event-data {
     position: relative;
 
     .govuk-tag {
@@ -29,10 +33,6 @@
       right: 0;
       top: 2px;
       font-size: 16px;
-    }
-
-    + .timeline-item-data {
-      margin-top: 20px;
     }
   }
 
