@@ -74,7 +74,7 @@
   "overrides": {
     "mocha": {
       "serialize-javascript": "^7.0.3",
-      "diff": "^8.0.3"
+      "diff": "^8.0.4"
     },
     "@yikes2000/prettier-plugin-merge-extras": {
       "diff": "5.2.2"
