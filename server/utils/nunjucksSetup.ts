@@ -149,5 +149,19 @@ export default function nunjucksSetup(app?: express.Express) {
     return goals.filter(g => Array.isArray(g?.steps) && g.steps.length > 1).length
   })
 
+  njkEnv.addFilter(
+    'countStepsByActor',
+    (goals: Array<{ steps?: Array<{ actor?: string }> }> | undefined, actor: string): number => {
+      if (!Array.isArray(goals)) {
+        return 0
+      }
+
+      return goals.reduce(
+        (sum, goal) => sum + (Array.isArray(goal?.steps) ? goal.steps.filter(s => s?.actor === actor).length : 0),
+        0,
+      )
+    },
+  )
+
   return njkEnv
 }
