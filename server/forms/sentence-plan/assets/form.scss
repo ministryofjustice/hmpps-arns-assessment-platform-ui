@@ -120,5 +120,10 @@
       cursor: text !important;
       pointer-events: none !important;
     }
+
+    //Hide the "Update {name}'s agreement" link
+    [data-qa='plan-history-update-agreement-link'] {
+      display: none !important;
+    }
   }
 }

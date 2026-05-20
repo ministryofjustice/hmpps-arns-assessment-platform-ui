@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
+import { handlePrivacyScreenIfPresent, navigateToSentencePlan, sentencePlanV1URLs } from '../sentencePlanUtils'
 
 test.describe(`Plan History - Print view`, () => {
   test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
@@ -44,6 +44,35 @@ test.describe(`Plan History - Print view`, () => {
   test('should still display plan history section headings when printed', async ({ page }) => {
     await page.emulateMedia({ media: 'print' })
     await expect(page.locator('#plan-history-accordion .govuk-accordion__section-heading-text').first()).toBeVisible()
+  })
+
+  test('should hide the "Update agreement" link when printed', async ({ page, createSession, sentencePlanBuilder }) => {
+    // Arrange: a plan with a COULD_NOT_ANSWER agreement so the update-agreement link renders
+    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+    await sentencePlanBuilder
+      .extend(sentencePlanId)
+      .withGoal({ title: 'Find stable accommodation', areaOfNeed: 'accommodation', status: 'ACTIVE' })
+      .withPlanAgreements([
+        {
+          status: 'COULD_NOT_ANSWER',
+          createdBy: 'Test Practitioner',
+          detailsCouldNotAnswer: `Person wasn't present`,
+          dateOffset: 0,
+        },
+      ])
+      .save()
+
+    await navigateToSentencePlan(page, handoverLink)
+    await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
+    const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
+    await planHistoryPage.clickShowAllSectionsButton()
+
+    await page.emulateMedia({ media: 'print' })
+
+    await expect(page.locator('#plan-history-accordion [data-qa="plan-history-update-agreement-link"]')).toHaveCSS(
+      'display',
+      'none',
+    )
   })
 
 })
