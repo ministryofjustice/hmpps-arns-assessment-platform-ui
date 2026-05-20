@@ -1,0 +1,103 @@
+{#
+  Goal Summary Card (History) Component
+
+  Variant used inside the Plan History accordion. Differs from agreed/draft:
+  - Steps table is rendered inline (no <details> wrapper, no "View steps" toggle)
+  - Step counter wording is "X out of Y steps completed"
+  - Shows "This is a future goal" copy when goalStatus is FUTURE
+
+  Params:
+    goalTitle        - Goal title text
+    goalStatus       - 'ACTIVE' | 'FUTURE' | 'ACHIEVED' | 'REMOVED'
+    targetDate       - Target date (formatted string)
+    statusDate       - Date status changed (for achieved/removed)
+    areaOfNeed       - Main area of need label
+    relatedAreasText - Related area labels (semicolon-separated)
+    steps            - Array of { actor, description, status }
+    stepsCount       - Number of steps
+    completedCount   - Number of completed steps
+    actions          - Array of { text, href, visuallyHiddenText?, classes? }
+    classes          - Additional CSS classes
+#}
+
+{% import "sentence-plan/components/goal-summary-card/_macros.njk" as goalCard %}
+
+{%- set cardClasses = "goal-summary-card" -%}
+{%- if params.classes %}{% set cardClasses = cardClasses + " " + params.classes %}{% endif -%}
+
+<div class="{{ cardClasses }}" data-qa="goal-summary-card-history">
+  <div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+      <h2 class="govuk-summary-card__title" data-qa="goal-title">{{ params.goalTitle }}</h2>
+
+      {% if params.actions.length > 0 %}
+        {% if params.actions.length == 1 %}
+          <div class="govuk-summary-card__actions govuk-!-display-none-print">
+            {{ goalCard.actionLink(params.actions[0], params.goalTitle) | trim }}
+          </div>
+        {% else %}
+          <ul class="govuk-summary-card__actions govuk-!-display-none-print">
+            {% for action in params.actions %}
+              <li class="govuk-summary-card__action">
+                {{ goalCard.actionLink(action, params.goalTitle) | trim }}
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <div class="govuk-summary-card__content">
+
+      <div class="goal-summary-card__info">
+        <div class="goal-date-and-notes">
+          {% if params.goalStatus == 'FUTURE' %}
+            <p>This is a future goal.</p>
+          {% elif params.goalStatus == 'ACHIEVED' and params.statusDate %}
+            <p>Marked as achieved on {{ params.statusDate }}.</p>
+          {% elif params.goalStatus == 'REMOVED' and params.statusDate %}
+            <p>Removed on {{ params.statusDate }}.</p>
+          {% elif params.targetDate %}
+            <p>Aim to achieve this by {{ params.targetDate }}.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if params.stepsCount > 0 %}
+        <p class="step-counter">
+          {{ params.completedCount }} out of {{ params.stepsCount }} step{% if params.stepsCount != 1 %}s{% endif %} completed.
+        </p>
+        <table class="govuk-table goal-summary-card__steps">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Who will do this</th>
+              <th scope="col" class="govuk-table__header">Steps</th>
+              <th scope="col" class="govuk-table__header">Status</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% for step in params.steps %}
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ step.actor | replace(" (include who in the step)", "") }}</td>
+                <td class="govuk-table__cell">{{ step.description }}</td>
+                <td class="govuk-table__cell">{{ goalCard.stepStatusTag(step.status) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="goal-summary-card__steps--empty">
+          <strong>No steps added</strong>
+        </div>
+      {% endif %}
+
+      <p class="goal-summary-card__areas-of-need goal-summary-card__areas-of-need--agreed" data-qa="goal-area-of-need">
+        Area of need: {{ params.areaOfNeed }}
+        {% if params.relatedAreasText %}
+          <br>Also relates to: {{ params.relatedAreasText }}
+        {% endif %}
+      </p>
+
+    </div>
+  </div>
+</div>

@@ -1,321 +1,201 @@
-import { and, Data, Format, Item, match, when } from '@form-engine/form/builders'
+import { Data, Format, Item, match, when } from '@form-engine/form/builders'
 import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
+import { GovUKAccordion } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
-import { GovUKSectionBreak } from '@form-engine-govuk-components/wrappers/govukSectionBreak'
+import { HtmlBlock } from '@form-engine/registry/components/html'
+import { GoalSummaryCardHistory } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
+import { isCouldNotAnswerStatus, isReadOnlyAccess } from '../../../../guards'
 
-const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
-const isEditModeAccess = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_WRITE'))
+const GOAL_EVENT_TYPES = ['goal_created', 'goal_achieved', 'goal_removed', 'goal_readded', 'goal_updated']
+const INACTIVE_GOAL_STATUSES = ['ACHIEVED', 'REMOVED']
 
-const updateAgreementLink = Format(
-  '<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">Update %1 agreement</a></p>',
-  CaseData.ForenamePossessive,
-)
+export const subtitleText = GovUKBody({ text: 'View all updates to this plan.' })
 
-const isCouldNotAnswerAgreementStatus = Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))
-
-export const subtitleText = GovUKBody({ text: 'View all updates and changes made to this plan.' })
-
-export const sectionBreak = GovUKSectionBreak({ size: 'm', visible: true })
-
-/**
- * Renders a plan agreement history entry.
- * Used for: Plan agreed, Plan created, Agreement updated events.
- */
-const agreementEntryContent = Format(
-  `<div class="govuk-!-margin-bottom-6">
-    <p class="govuk-body"><strong>%1</strong> on %2 by %3%4</p>
-    <p class="govuk-body">%5</p>
-    %6
-  </div>`,
-  // %1: Status heading
+// Plan agreement event heading: "<strong>{action}</strong> on {date} by {practitioner}[ and {forename}]"
+// The trailing forename is appended only when the practitioner agreed (or updated to agreed) on behalf of the person.
+// Note: createdBy and CaseData.Forename are NOT html-escaped here, matching the prior behaviour for agreement events.
+const agreementHeadingHtml = Format(
+  '<strong>%1</strong> on %2 by %3%4',
   match(Item().path('status'))
     .branch(Condition.Array.IsIn(['UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']), 'Agreement updated')
     .branch(Condition.Equals('AGREED'), 'Plan agreed')
     .otherwise('Plan created'),
-  // %2: Date
   Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
-  // %3: Practitioner
   when(Item().path('createdBy').match(Condition.IsRequired())).then(Item().path('createdBy')).else('Unknown'),
-  // %4: Person (only shown for AGREED or UPDATED_AGREED status)
   when(
-    Item()
-      .path('status')
-      .match(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED'])),
+    Item().path('status').match(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED'])),
   )
     .then(Format(' and %1', CaseData.Forename))
     .else(''),
-  // %5: Description
-  match(Item().path('status'))
-    .branch(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED']), Format('%1 agreed to this plan.', CaseData.Forename))
-    .branch(
-      Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE']),
-      Format('%1 did not agree to this plan.', CaseData.Forename),
-    )
-    .otherwise(Format('%1 could not agree to this plan.', CaseData.Forename)),
-  // %6: Reason details and optional notes combined in a single paragraph (link to update the agreement is in a separate <p>)
+)
+
+// Plan agreement event summary: status statement plus reason, always visible without expanding.
+// Free-text notes are in the expandable content
+const agreementStatusStatement = match(Item().path('status'))
+  .branch(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED']), Format('%1 agreed to this plan.', CaseData.Forename))
+  .branch(
+    Condition.Array.IsIn(['DO_NOT_AGREE', 'UPDATED_DO_NOT_AGREE']),
+    Format('%1 did not agree to this plan.', CaseData.Forename),
+  )
+  .otherwise(Format('%1 could not agree to this plan.', CaseData.Forename))
+
+const agreementSummaryHtml = Format('<p class="govuk-body">%1</p>', agreementStatusStatement)
+
+// Plan agreement event content: shown when the accordion section is expanded.
+const agreementContentHtml = Format(
+  '%1 %2 %3',
+  // mandatory details for DO_NOT_AGREE/UPDATED_DO_NOT_AGREE/COULD_NOT_ANSWER events:
   when(Item().path('detailsNo').match(Condition.IsRequired()))
-    .then(
-      when(Item().path('notes').match(Condition.IsRequired()))
-        .then(
-          Format(
-            '<p class="govuk-body">%1<br>%2</p>',
-            Item().path('detailsNo').pipe(Transformer.String.EscapeHtml()),
-            Item().path('notes').pipe(Transformer.String.EscapeHtml()),
-          ),
-        )
-        .else(Format('<p class="govuk-body">%1</p>', Item().path('detailsNo').pipe(Transformer.String.EscapeHtml()))),
-    )
+    .then(Format('<p class="govuk-body">%1</p>', Item().path('detailsNo').pipe(Transformer.String.EscapeHtml())))
     .else(
       when(Item().path('detailsCouldNotAnswer').match(Condition.IsRequired()))
         .then(
-          when(Item().path('notes').match(Condition.IsRequired()))
-            .then(
-              Format(
-                `<div class="govuk-!-margin-bottom-6">
-                <p class="govuk-body">%1<br>%2</p>
-                %3
-                </div>`,
-                Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
-                Item().path('notes').pipe(Transformer.String.EscapeHtml()),
-                when(and(isEditModeAccess, isCouldNotAnswerAgreementStatus))
-                  .then(updateAgreementLink)
-                  .else(''),
-              ),
-            )
-            .else(
-              Format(
-                `<div class="govuk-!-margin-bottom-6">
-                <p class="govuk-body">%1</p>
-                %2
-                </div>`,
-                Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
-                when(and(isEditModeAccess, isCouldNotAnswerAgreementStatus))
-                  .then(updateAgreementLink)
-                  .else(''),
-              ),
-            ),
-        )
-        .else(
-          when(Item().path('notes').match(Condition.IsRequired()))
-            .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
-            .else(''),
-        ),
-    ),
-)
-
-/**
- * Renders a newly created goal history entry.
- * Shows: heading (bold), goal title (bold).
- * For READ_WRITE users, also shows a "View goal" link.
- */
-const goalAddedEntryContent = Format(
-  `<div class="govuk-!-margin-bottom-6">
-    <p class="govuk-body"><strong>Goal created</strong> on %1 by %2</p>
-    <p class="govuk-body"><strong>%3</strong></p>
-    %4
-  </div>`,
-  // %1: Date
-  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
-  // %2: created by
-  when(Item().path('createdBy').match(Condition.IsRequired()))
-    .then(Item().path('createdBy').pipe(Transformer.String.EscapeHtml()))
-    .else('Unknown'),
-  // %3: Goal title
-  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
-  // %4: View goal link (shown only in READ_WRITE mode)
-  when(isReadOnly)
-    .then('')
-    .else(
-      Format(
-        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View goal</a></p>',
-        Item().path('goalUuid'),
-      ),
-    ),
-)
-
-/**
- * Renders a goal achieved history entry.
- * Shows: heading (bold), goal title (bold), and optional notes.
- * For READ_WRITE users, also shows a "View goal" link.
- */
-const goalAchievedEntryContent = Format(
-  `<div class="govuk-!-margin-bottom-6">
-    <p class="govuk-body"><strong>Goal marked as achieved</strong> on %1 by %2</p>
-    <p class="govuk-body"><strong>%3</strong></p>
-    %4
-    %5
-  </div>`,
-  // %1: Date
-  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
-  // %2: Achieved by
-  when(Item().path('achievedBy').match(Condition.IsRequired()))
-    .then(Item().path('achievedBy').pipe(Transformer.String.EscapeHtml()))
-    .else('Unknown'),
-  // %3: Goal title
-  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
-  // %4: Optional notes
-  when(Item().path('notes').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
-    .else(''),
-  // %5: View goal link (shown only in READ_WRITE mode)
-  when(isReadOnly)
-    .then('')
-    .else(
-      Format(
-        '<p class="govuk-body"><a href="../goal/%1/view-inactive-goal" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View goal</a></p>',
-        Item().path('goalUuid'),
-      ),
-    ),
-)
-
-/**
- * Renders a goal removed history entry.
- * Shows: heading (bold), goal title (bold), and removal reason.
- * For READ_WRITE users, also shows:
- * - "View latest version" when the goal is currently active
- * - "View goal" otherwise
- */
-const goalRemovedEntryContent = Format(
-  `<div class="govuk-!-margin-bottom-6">
-    <p class="govuk-body"><strong>Goal removed</strong> on %1 by %2</p>
-    <p class="govuk-body"><strong>%3</strong></p>
-    %4
-    %5
-  </div>`,
-  // %1: Date
-  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
-  // %2: Removed by
-  when(Item().path('removedBy').match(Condition.IsRequired()))
-    .then(Item().path('removedBy').pipe(Transformer.String.EscapeHtml()))
-    .else('Unknown'),
-  // %3: Goal title
-  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
-  // %4: Removal reason
-  when(Item().path('reason').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('reason').pipe(Transformer.String.EscapeHtml())))
-    .else(''),
-  // %5: View link (shown only in READ_WRITE mode)
-  when(isReadOnly)
-    .then('')
-    .else(
-      when(Item().path('isCurrentlyActive').match(Condition.Equals(true)))
-        .then(
           Format(
-            '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View latest version</a></p>',
-            Item().path('goalUuid'),
+            '<p class="govuk-body">%1</p>',
+            Item().path('detailsCouldNotAnswer').pipe(Transformer.String.EscapeHtml()),
           ),
         )
+        .else(''),
+    ),
+
+  // optional notes for AGREED/DO_NOT_AGREE/COULD_NOT_ANSWER events - show if present, otherwise `No additional notes.`
+  // UPDATED_DO_NOT_AGREE/UPDATED_AGREED have no optional notes text box,
+  // however because UPDATED_AGREED has no details field to show in expander `No additional notes.` is shown instead
+  when(
+    Item()
+      .path('status')
+      .match(Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER', 'UPDATED_AGREED'])),
+  )
+    .then(
+      when(Item().path('notes').match(Condition.IsRequired()))
+        .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
+        .else('<p class="govuk-body">No additional notes.</p>'),
+    )
+    .else(''),
+
+  // update agreement link for COULD_NOT_ANSWER events (hidden in read-only):
+  when(isCouldNotAnswerStatus)
+    .then(
+      when(isReadOnlyAccess)
+        .then('')
         .else(
           Format(
-            '<p class="govuk-body"><a href="../goal/%1/view-inactive-goal" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View goal</a></p>',
-            Item().path('goalUuid'),
+            `<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state" data-qa="plan-history-update-agreement-link">Update %1 agreement</a></p>`,
+            CaseData.ForenamePossessive,
           ),
         ),
-    ),
-)
-
-/**
- * Renders a goal re-added history entry.
- * Shows: heading (bold), goal title (bold), and reason for re-adding.
- * For READ_WRITE users, also shows a "View latest version" link.
- */
-const goalReaddedEntryContent = Format(
-  `<div class="govuk-!-margin-bottom-6">
-    <p class="govuk-body"><strong>Goal added back into plan</strong> on %1 by %2</p>
-    <p class="govuk-body"><strong>%3</strong></p>
-    %4
-    %5
-  </div>`,
-  // %1: Date
-  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
-  // %2: Re-added by
-  when(Item().path('readdedBy').match(Condition.IsRequired()))
-    .then(Item().path('readdedBy').pipe(Transformer.String.EscapeHtml()))
-    .else('Unknown'),
-  // %3: Goal title
-  Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
-  // %4: Reason for re-adding
-  when(Item().path('reason').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('reason').pipe(Transformer.String.EscapeHtml())))
+    )
     .else(''),
-  // %5: View latest version link (shown only in READ_WRITE mode)
-  when(isReadOnly)
-    .then('')
-    .else(
-      Format(
-        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View latest version</a></p>',
-        Item().path('goalUuid'),
-      ),
-    ),
 )
 
-/**
- * Renders a goal updated history entry.
- * Shows: heading (bold), goal title (bold), and optional notes.
- * For READ_WRITE users, also shows a "View latest version" link.
- * Used for: Step status updates and progress note additions.
- */
-const goalUpdatedEntryContent = Format(
-  `<div class="govuk-!-margin-bottom-6">
-    <p class="govuk-body"><strong>Goal updated</strong> on %1 by %2</p>
-    <p class="govuk-body"><strong>%3</strong></p>
-    %4
-    %5
-  </div>`,
-  // %1: Date
-  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
-  // %2: Updated by
-  when(Item().path('updatedBy').match(Condition.IsRequired()))
-    .then(Item().path('updatedBy').pipe(Transformer.String.EscapeHtml()))
-    .else('Unknown'),
-  // %3: Goal title
+// Factory: builds a goal-event heading "<strong>{action}</strong> on {date} by {actorField}".
+// The actor field name varies per event (achievedBy, removedBy, readdedBy, etc.) — passed in.
+// The actor IS html-escaped, matching the prior behaviour for goal events.
+const goalHeading = (action: string, actorField: string) =>
+  Format(
+    '<strong>%1</strong> on %2 by %3',
+    action,
+    Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+    when(Item().path(actorField).match(Condition.IsRequired()))
+      .then(Item().path(actorField).pipe(Transformer.String.EscapeHtml()))
+      .else('Unknown'),
+  )
+
+// Factory: builds a goal-event summary with the goal title (bold) followed by an optional notes/reason paragraph.
+// The notes field name varies (notes for achieved/updated, reason for removed/readded) — passed in.
+const goalSummaryWithNotes = (notesField: string) =>
+  Format(
+    '<p class="govuk-body"><strong>%1</strong></p>%2',
+    Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
+    when(Item().path(notesField).match(Condition.IsRequired()))
+      .then(Format('<p class="govuk-body">%1</p>', Item().path(notesField).pipe(Transformer.String.EscapeHtml())))
+      .else(''),
+  )
+
+const goalAchievedHeadingHtml = goalHeading('Goal marked as achieved', 'achievedBy')
+const goalAchievedSummaryHtml = goalSummaryWithNotes('notes')
+
+const goalAddedHeadingHtml = goalHeading('Goal created', 'createdBy')
+// goal_created has no notes/reason, so it doesn't fit the factory shape.
+const goalAddedSummaryHtml = Format(
+  '<p class="govuk-body"><strong>%1</strong></p>',
   Item().path('goalTitle').pipe(Transformer.String.EscapeHtml()),
-  // %4: Optional notes
-  when(Item().path('notes').match(Condition.IsRequired()))
-    .then(Format('<p class="govuk-body">%1</p>', Item().path('notes').pipe(Transformer.String.EscapeHtml())))
-    .else(''),
-  // %5: View latest version link (shown only in READ_WRITE mode)
-  when(isReadOnly)
-    .then('')
-    .else(
-      Format(
-        '<p class="govuk-body"><a href="../goal/%1/update-goal-steps" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View latest version</a></p>',
-        Item().path('goalUuid'),
-      ),
-    ),
 )
 
-/**
- * Displays the unified plan history as a list of entries.
- * Combines plan agreement events, goal achieved events, goal removed events, goal re-added and goal-updated events
- * in chronological order.
- */
-export const agreementHistory = CollectionBlock({
-  collection: Data('planHistoryEntries').each(
-    Iterator.Map(
-      HtmlBlock({
-        content: Format(
-          '%1%2',
-          // %1: Section break (shown between entries, not before the first)
-          when(Item().index().match(Condition.Equals(0)))
-            .then('')
-            .else('<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">'),
-          // %2: Entry content based on type
-          match(Item().path('type'))
-            .branch(Condition.Equals('goal_achieved'), goalAchievedEntryContent)
-            .branch(Condition.Equals('goal_created'), goalAddedEntryContent)
-            .branch(Condition.Equals('goal_removed'), goalRemovedEntryContent)
-            .branch(Condition.Equals('goal_readded'), goalReaddedEntryContent)
-            .branch(Condition.Equals('goal_updated'), goalUpdatedEntryContent)
-            .otherwise(agreementEntryContent),
-        ),
-      }),
-    ),
+const goalRemovedHeadingHtml = goalHeading('Goal removed', 'removedBy')
+const goalRemovedSummaryHtml = goalSummaryWithNotes('reason')
+
+const goalReaddedHeadingHtml = goalHeading('Goal added back into plan', 'readdedBy')
+const goalReaddedSummaryHtml = goalSummaryWithNotes('reason')
+
+const goalUpdatedHeadingHtml = goalHeading('Goal updated', 'updatedBy')
+const goalUpdatedSummaryHtml = goalSummaryWithNotes('notes')
+
+// `Item()` here resolves against the `Iterator.Map` over `planHistoryEntries`
+// below. Each block is scoped to a matching event type via `hidden`; the
+// form-engine filters hidden nested blocks out before joining their HTML.
+const goalSummaryCardForHistory = GoalSummaryCardHistory({
+  hidden: Item().path('type').not.match(Condition.Array.IsIn(GOAL_EVENT_TYPES)),
+  goalTitle: Item().path('goalTitle'),
+  goalStatus: Item().path('goalStatus'),
+  goalUuid: Item().path('goalUuid'),
+  targetDate: when(Item().path('targetDate').match(Condition.IsRequired()))
+    .then(Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()))
+    .else(''),
+  statusDate: when(Item().path('statusDate').match(Condition.IsRequired()))
+    .then(Item().path('statusDate').pipe(Transformer.Date.ToUKLongDate()))
+    .else(''),
+  areaOfNeed: Item().path('areaOfNeedLabel'),
+  relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
+  steps: Item().path('steps'),
+  actions: [
+    {
+      text: 'View goal',
+      // Use `currentGoalStatus`, not the snapshot status — routing must follow
+      // the goal as it exists today, not its state at the time of this event.
+      href: when(Item().path('currentGoalStatus').match(Condition.Array.IsIn(INACTIVE_GOAL_STATUSES)))
+        .then(Format('../goal/%1/view-inactive-goal', Item().path('goalUuid')))
+        .else(Format('../goal/%1/update-goal-steps', Item().path('goalUuid'))),
+      hidden: when(isReadOnlyAccess),
+    },
+  ],
+})
+
+const agreementContentBlock = HtmlBlock({
+  hidden: Item().path('type').not.match(Condition.Equals('agreement')),
+  content: agreementContentHtml,
+})
+
+export const agreementHistory = GovUKAccordion({
+  id: 'plan-history-accordion',
+  rememberExpanded: false,
+  items: Data('planHistoryEntries').each(
+    Iterator.Map({
+      heading: {
+        html: match(Item().path('type'))
+          .branch(Condition.Equals('goal_achieved'), goalAchievedHeadingHtml)
+          .branch(Condition.Equals('goal_created'), goalAddedHeadingHtml)
+          .branch(Condition.Equals('goal_removed'), goalRemovedHeadingHtml)
+          .branch(Condition.Equals('goal_readded'), goalReaddedHeadingHtml)
+          .branch(Condition.Equals('goal_updated'), goalUpdatedHeadingHtml)
+          .otherwise(agreementHeadingHtml),
+      },
+      summary: {
+        html: match(Item().path('type'))
+          .branch(Condition.Equals('goal_achieved'), goalAchievedSummaryHtml)
+          .branch(Condition.Equals('goal_created'), goalAddedSummaryHtml)
+          .branch(Condition.Equals('goal_removed'), goalRemovedSummaryHtml)
+          .branch(Condition.Equals('goal_readded'), goalReaddedSummaryHtml)
+          .branch(Condition.Equals('goal_updated'), goalUpdatedSummaryHtml)
+          .otherwise(agreementSummaryHtml),
+      },
+      content: {
+        blocks: [goalSummaryCardForHistory, agreementContentBlock],
+      },
+    }),
   ),
 })
 

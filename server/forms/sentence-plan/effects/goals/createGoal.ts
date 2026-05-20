@@ -10,6 +10,7 @@ import {
   buildGoalAnswers,
   getPractitionerName,
 } from './goalUtils'
+import { GoalSnapshotData } from './goalSnapshot'
 
 /**
  * Create a new goal
@@ -74,6 +75,15 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
   // Store goal UUID for redirect to add-steps
   context.setData('activeGoalUuid', addResult.collectionItemUuid)
 
+  const goalSnapshot: GoalSnapshotData = {
+    status,
+    targetDate: targetDate ?? undefined,
+    statusDate: properties.status_date,
+    areaOfNeed: areaOfNeedSlug,
+    relatedAreasOfNeed: relatedAreas,
+    steps: [],
+  }
+
   await deps.api.executeCommand({
     type: 'UpdateCollectionItemPropertiesCommand',
     collectionItemUuid: addResult.collectionItemUuid,
@@ -85,6 +95,7 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
         goalUuid: addResult.collectionItemUuid,
         goalTitle,
         createdBy: getPractitionerName(context, user),
+        goalSnapshot,
       },
     },
     assessmentUuid,

@@ -33,11 +33,8 @@ test.describe('Update agree plan - Plan history', () => {
 
     // Verify updated agreement entry
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph:
-        - strong: Agreement updated
-      - separator
-      - paragraph:
-        - strong: Plan created
+      - heading /Agreement updated/
+      - heading /Plan created/
     `)
   })
 
@@ -56,15 +53,13 @@ test.describe('Update agree plan - Plan history', () => {
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
+    await planHistoryPage.clickShowAllSectionsButton()
+
     // Verify updated agreement entry with disagreement details
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph:
-        - strong: Agreement updated
-      - paragraph: /did not agree/
+      - heading /Agreement updated.*did not agree.*/
       - paragraph: They disagree with the current goals.
-      - separator
-      - paragraph:
-        - strong: Plan created
+      - heading /Plan created/
     `)
   })
 })

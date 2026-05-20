@@ -1,6 +1,7 @@
 import type nunjucks from 'nunjucks'
 import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
 import {
+  BasicBlockProps,
   BlockDefinition,
   ConditionalArray,
   ConditionalBoolean,
@@ -73,7 +74,7 @@ export interface GoalNote {
  * })
  * ```
  */
-export interface GoalSummaryCardProps {
+export interface GoalSummaryCardProps extends BasicBlockProps {
   /** The goal title displayed in the card header */
   goalTitle: ConditionalString
 
@@ -89,10 +90,10 @@ export interface GoalSummaryCardProps {
   /** Date the goal status changed (for achieved/removed goals) */
   statusDate?: ConditionalString
 
-  /** Main area of need for the goal */
+  /** Main area of need label for the goal */
   areaOfNeed: ConditionalString
 
-  /** Related areas of need (displayed as semicolon-separated list) */
+  /** Related area of need labels (displayed as semicolon-separated list) */
   relatedAreasOfNeed?: ConditionalArray<string>
 
   /** Steps associated with this goal */
@@ -156,7 +157,18 @@ export interface GoalSummaryCardDraft extends BlockDefinition, GoalSummaryCardPr
   variant: 'goalSummaryCardDraft'
 }
 
-type GoalSummaryCardBlock = GoalSummaryCardAgreed | GoalSummaryCardDraft
+/**
+ * Goal Summary Card (History) component interface.
+ *
+ * Read-only variant used inside the Plan History accordion. Steps are shown
+ * inline (no collapsible wrapper), the step counter uses "X out of Y" wording,
+ * and FUTURE-status goals display a "This is a future goal" line.
+ */
+export interface GoalSummaryCardHistory extends BlockDefinition, GoalSummaryCardProps {
+  variant: 'goalSummaryCardHistory'
+}
+
+type GoalSummaryCardBlock = GoalSummaryCardAgreed | GoalSummaryCardDraft | GoalSummaryCardHistory
 
 /**
  * Builds the template parameters for goal summary card rendering.
@@ -178,9 +190,7 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
     removedNote = removedNoteObj?.note as string | undefined
   }
 
-  // Build related areas text
-  const relatedAreasText =
-    relatedAreasOfNeed.length > 0 ? [...relatedAreasOfNeed].sort().join('; ').toLowerCase() : undefined
+  const relatedAreasText = relatedAreasOfNeed.length > 0 ? [...relatedAreasOfNeed].sort().join('; ') : undefined
 
   return {
     goalTitle: block.goalTitle,
@@ -188,7 +198,7 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
     goalUuid: block.goalUuid,
     targetDate: block.targetDate,
     statusDate: block.statusDate,
-    areaOfNeed: block.areaOfNeed?.toLowerCase(),
+    areaOfNeed: block.areaOfNeed,
     relatedAreasText,
     steps,
     stepsCount: steps.length,
@@ -234,6 +244,15 @@ export const goalSummaryCardAgreed = buildNunjucksComponent<GoalSummaryCardAgree
 export const goalSummaryCardDraft = buildNunjucksComponent<GoalSummaryCardDraft>(
   'goalSummaryCardDraft',
   createRenderer('sentence-plan/components/goal-summary-card/draft.njk'),
+)
+
+/**
+ * Goal Summary Card (History) component.
+ * Read-only variant for the Plan History accordion: inline steps and "X out of Y" counter.
+ */
+export const goalSummaryCardHistory = buildNunjucksComponent<GoalSummaryCardHistory>(
+  'goalSummaryCardHistory',
+  createRenderer('sentence-plan/components/goal-summary-card/history.njk'),
 )
 
 /**
@@ -286,4 +305,14 @@ export function GoalSummaryCardAgreed(props: GoalSummaryCardProps): GoalSummaryC
  */
 export function GoalSummaryCardDraft(props: GoalSummaryCardProps): GoalSummaryCardDraft {
   return blockBuilder<GoalSummaryCardDraft>({ ...props, variant: 'goalSummaryCardDraft' })
+}
+
+/**
+ * Creates a Goal Summary Card for the Plan History accordion.
+ *
+ * Steps are shown inline and the counter reads "X out of Y steps completed".
+ * For FUTURE-status goals the card includes a "This is a future goal" line.
+ */
+export function GoalSummaryCardHistory(props: GoalSummaryCardProps): GoalSummaryCardHistory {
+  return blockBuilder<GoalSummaryCardHistory>({ ...props, variant: 'goalSummaryCardHistory' })
 }

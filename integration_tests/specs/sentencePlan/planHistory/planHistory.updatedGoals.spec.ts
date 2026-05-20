@@ -14,7 +14,7 @@ import {
 } from '../sentencePlanUtils'
 
 test.describe('Plan History - Updated Goals', () => {
-  test('displays updated goal entry with title, updater name, and view link', async ({
+  test('displays updated goal entry with action, date, updater, goal title and view goal link', async ({
     page,
     createSession,
     sentencePlanBuilder,
@@ -50,20 +50,16 @@ test.describe('Plan History - Updated Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
-      - separator
-      - paragraph:
-        - strong: Goal updated
-        - text: /Jane Smith/
-      - paragraph:
-        - strong: I will maintain my current accommodation
-      - paragraph:
-        - link "View latest version":
-          - /url: /goal/
+      - paragraph: View all updates to this plan.
+      - button "Show all sections"
+      - heading /Goal updated.*Jane Smith.*I will maintain my current accommodation/
     `)
 
-    // Accessibility
     await checkAccessibility(page)
+
+    await planHistoryPage.clickShowAllSectionsButton()
+    await planHistoryPage.clickViewGoalLink()
+    await UpdateGoalAndStepsPage.verifyOnPage(page)
   })
 
   test('displays updated goal entry with notes when a progress note was added', async ({
@@ -102,12 +98,7 @@ test.describe('Plan History - Updated Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph:
-        - strong: I will maintain my current accommodation
-      - paragraph: Buster has taken steps to maintain his accommodation.
-      - paragraph:
-        - link "View latest version":
-          - /url: /goal/
+      - heading /Goal updated.*Jane Smith.*I will maintain my current accommodation.*Buster has taken steps to maintain his accommodation/
     `)
   })
 
@@ -134,37 +125,23 @@ test.describe('Plan History - Updated Goals', () => {
       ])
       .save()
 
-    // Navigate to plan overview
     await navigateToSentencePlan(page, handoverLink)
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
-    // Click Update on the goal card
     await planOverviewPage.clickUpdateGoal(0)
     const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
-    // Change step status from NOT_STARTED to IN_PROGRESS
     await updatePage.setStepStatusByIndex(0, 'IN_PROGRESS')
     await updatePage.clickSaveGoalAndSteps()
 
-    // Should redirect to plan overview
     await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
 
-    // Navigate to plan history
     await page.getByRole('link', { name: /View plan history/i }).click()
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
-    // Verify the goal updated entry appears
-    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
-      - separator
-      - paragraph:
-        - strong: Goal updated
-      - paragraph:
-        - strong: Find stable accommodation
-      - paragraph:
-        - link "View latest version":
-          - /url: /goal/
-    `)
+    await expect(
+      planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated.*Find stable accommodation/ }),
+    ).toBeVisible()
   })
 
   test('shows goal updated entry with notes after changing step status and adding a progress note', async ({
@@ -190,39 +167,26 @@ test.describe('Plan History - Updated Goals', () => {
       ])
       .save()
 
-    // Navigate to plan overview
     await navigateToSentencePlan(page, handoverLink)
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
-    // Click Update on the goal card
     await planOverviewPage.clickUpdateGoal(0)
     const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
-    // Change step status and add a progress note
     await updatePage.setStepStatusByIndex(0, 'IN_PROGRESS')
     await updatePage.enterProgressNotes('Good progress being made with support group attendance.')
     await updatePage.clickSaveGoalAndSteps()
 
-    // Should redirect to plan overview
     await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
 
-    // Navigate to plan history
     await page.getByRole('link', { name: /View plan history/i }).click()
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
-    // Verify the goal updated entry appears with the progress note
-    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
-      - separator
-      - paragraph:
-        - strong: Goal updated
-      - paragraph:
-        - strong: Reduce alcohol use
-      - paragraph: Good progress being made with support group attendance.
-      - paragraph:
-        - link "View latest version":
-          - /url: /goal/
-    `)
+    await expect(
+      planHistoryPage.mainContent.getByRole('heading', {
+        name: /Goal updated.*Reduce alcohol use.*Good progress being made with support group attendance/,
+      }),
+    ).toBeVisible()
   })
 
   test('shows goal updated entry after changing step details', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -258,17 +222,9 @@ test.describe('Plan History - Updated Goals', () => {
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
-    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
-      - separator
-      - paragraph:
-        - strong: Goal updated
-      - paragraph:
-        - strong: Find stable accommodation
-      - paragraph:
-        - link "View latest version":
-          - /url: /goal/
-    `)
+    await expect(
+      planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated.*Find stable accommodation/ }),
+    ).toBeVisible()
   })
 
   test('shows goal updated entry after changing goal title via Change goal page', async ({
@@ -298,7 +254,6 @@ test.describe('Plan History - Updated Goals', () => {
     await navigateToSentencePlan(page, handoverLink)
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
-    // On an agreed plan the Change goal page is reached via Update > "Change goal details"
     await planOverviewPage.clickUpdateGoal(0)
     const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
     await updatePage.clickChangeGoalDetails()
@@ -310,17 +265,9 @@ test.describe('Plan History - Updated Goals', () => {
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
-    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
-      - separator
-      - paragraph:
-        - strong: Goal updated
-      - paragraph:
-        - strong: Updated goal title
-      - paragraph:
-        - link "View latest version":
-          - /url: /goal/
-    `)
+    await expect(
+      planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated.*Updated goal title/ }),
+    ).toBeVisible()
   })
 
   test('shows goal updated entry after changing an active goal to a future goal via Change goal page', async ({
@@ -360,16 +307,8 @@ test.describe('Plan History - Updated Goals', () => {
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
 
-    await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
-      - separator
-      - paragraph:
-        - strong: Goal updated
-      - paragraph:
-        - strong: Find stable accommodation
-      - paragraph:
-        - link "View latest version":
-          - /url: /goal/
-    `)
+    await expect(
+      planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated.*Find stable accommodation/ }),
+    ).toBeVisible()
   })
 })
