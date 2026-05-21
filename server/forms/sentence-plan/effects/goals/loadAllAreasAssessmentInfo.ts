@@ -4,7 +4,7 @@ import { transformAssessmentData } from '../../../../utils/assessmentUtils'
 import { mapHandoverToCriminogenicNeeds } from '../../../../utils/handoverApiMapper'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { AssessmentArea } from '../../../../interfaces/coordinator-api/entityAssessment'
-import { canAccessSanContent } from '../helpers'
+import { canAccessSanInfo } from '../helpers'
 
 // Loads assessment information for ALL areas of need and groups them by scoring category.
 
@@ -18,7 +18,7 @@ import { canAccessSanContent } from '../helpers'
 // - lowScoringAreas: complete and score < threshold
 // - otherAreas: Finance, Health & wellbeing once completed (no scoring)
 export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  if (!canAccessSanContent(context)) {
+  if (!canAccessSanInfo(context)) {
     setUnavailableState(context)
     return
   }

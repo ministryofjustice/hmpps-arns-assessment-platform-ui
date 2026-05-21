@@ -2,10 +2,10 @@ import logger from '../../../../../logger'
 import { transformAssessmentData } from '../../../../utils/assessmentUtils'
 import { mapHandoverToCriminogenicNeeds } from '../../../../utils/handoverApiMapper'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
-import { canAccessSanContent } from '../helpers'
+import { canAccessSanInfo } from '../helpers'
 
 export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
-  if (!canAccessSanContent(context)) {
+  if (!canAccessSanInfo(context)) {
     context.setData('currentAreaAssessment', null)
     context.setData('currentAreaAssessmentStatus', 'unavailable')
     return

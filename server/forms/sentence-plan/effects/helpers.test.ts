@@ -1,5 +1,5 @@
 import { SentencePlanContext } from './types'
-import { canAccessSanContent } from './helpers'
+import { canAccessSanInfo } from './helpers'
 
 const createMockContext = (
   overrides: {
@@ -13,14 +13,14 @@ const createMockContext = (
     getSession: jest.fn(() => overrides.session ?? {}),
   }) as unknown as SentencePlanContext
 
-describe('canAccessSanContent()', () => {
+describe('canAccessSanInfo()', () => {
   it('should return true when assessment has SAN_BETA flag and access is not MPoP', () => {
     const context = createMockContext({
       data: { assessment: { flags: ['SAN_BETA'] } },
       session: { sessionDetails: { accessType: 'OASYS' } },
     })
 
-    expect(canAccessSanContent(context)).toBe(true)
+    expect(canAccessSanInfo(context)).toBe(true)
   })
 
   it('should return false when assessment has no SAN_BETA flag', () => {
@@ -29,7 +29,7 @@ describe('canAccessSanContent()', () => {
       session: { sessionDetails: { accessType: 'OASYS' } },
     })
 
-    expect(canAccessSanContent(context)).toBe(false)
+    expect(canAccessSanInfo(context)).toBe(false)
   })
 
   it('should return false when access type is HMPPS_AUTH (MPoP)', () => {
@@ -38,7 +38,7 @@ describe('canAccessSanContent()', () => {
       session: { sessionDetails: { accessType: 'HMPPS_AUTH' } },
     })
 
-    expect(canAccessSanContent(context)).toBe(false)
+    expect(canAccessSanInfo(context)).toBe(false)
   })
 
   it('should return false when assessment has no flags property', () => {
@@ -47,7 +47,7 @@ describe('canAccessSanContent()', () => {
       session: { sessionDetails: { accessType: 'OASYS' } },
     })
 
-    expect(canAccessSanContent(context)).toBe(false)
+    expect(canAccessSanInfo(context)).toBe(false)
   })
 
   it('should return false when assessment is undefined', () => {
@@ -55,7 +55,7 @@ describe('canAccessSanContent()', () => {
       session: { sessionDetails: { accessType: 'OASYS' } },
     })
 
-    expect(canAccessSanContent(context)).toBe(false)
+    expect(canAccessSanInfo(context)).toBe(false)
   })
 
   it('should return true when sessionDetails is undefined', () => {
@@ -63,7 +63,7 @@ describe('canAccessSanContent()', () => {
       data: { assessment: { flags: ['SAN_BETA'] } },
     })
 
-    expect(canAccessSanContent(context)).toBe(true)
+    expect(canAccessSanInfo(context)).toBe(true)
   })
 
   it('should return false when both SAN_BETA is missing and access is MPoP', () => {
@@ -72,6 +72,6 @@ describe('canAccessSanContent()', () => {
       session: { sessionDetails: { accessType: 'HMPPS_AUTH' } },
     })
 
-    expect(canAccessSanContent(context)).toBe(false)
+    expect(canAccessSanInfo(context)).toBe(false)
   })
 })
