@@ -4,6 +4,7 @@ import { transformAssessmentData } from '../../../../utils/assessmentUtils'
 import { mapHandoverToCriminogenicNeeds } from '../../../../utils/handoverApiMapper'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { AssessmentArea } from '../../../../interfaces/coordinator-api/entityAssessment'
+import { canAccessSanContent } from '../helpers'
 
 // Loads assessment information for ALL areas of need and groups them by scoring category.
 
@@ -17,6 +18,11 @@ import { AssessmentArea } from '../../../../interfaces/coordinator-api/entityAss
 // - lowScoringAreas: complete and score < threshold
 // - otherAreas: Finance, Health & wellbeing once completed (no scoring)
 export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
+  if (!canAccessSanContent(context)) {
+    setUnavailableState(context)
+    return
+  }
+
   const assessmentUuid = context.getData('assessmentUuid')
   const session = context.getSession()
   const handoverCriminogenicNeeds = session.handoverContext?.criminogenicNeedsData
@@ -77,6 +83,18 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
     logger.error({ err: error, assessmentUuid, crn }, 'Failed to load all areas assessment info')
     setErrorState(context)
   }
+}
+
+const setUnavailableState = (context: SentencePlanContext): void => {
+  context.setData('allAssessmentAreas', [])
+  context.setData('highScoringAreas', [])
+  context.setData('lowScoringAreas', [])
+  context.setData('otherAreas', [])
+  context.setData('incompleteAreas', [])
+  context.setData('isAssessmentComplete', false)
+  context.setData('assessmentLastUpdated', null)
+  context.setData('allAreasAssessmentStatus', 'unavailable')
+  context.setData('areasByGoalRoute', {})
 }
 
 const setErrorState = (context: SentencePlanContext): void => {
