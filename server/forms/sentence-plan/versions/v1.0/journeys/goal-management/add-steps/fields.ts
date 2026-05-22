@@ -16,8 +16,20 @@ const stepActorLabelText = 'Who will do the step?'
 const stepActorHintText = 'Add one person or agency.'
 const stepDescriptionLabelText = 'What should they do to achieve the goal?'
 const stepDescriptionHintText = 'Enter one step at a time.'
+const stepStatusLabelText = 'What is the status?'
+const stepStatusHintText = 'For example, not started.'
 const stepActorHintId = 'step-actor-hint'
 const stepDescriptionHintId = 'step-description-hint'
+const stepStatusHintId = 'step-status-hint'
+
+const stepStatusOptions = [
+  { value: '', text: 'Choose status' },
+  { value: 'NOT_STARTED', text: 'Not started' },
+  { value: 'IN_PROGRESS', text: 'In progress' },
+  { value: 'COMPLETED', text: 'Completed' },
+  { value: 'CANNOT_BE_DONE_YET', text: 'Cannot be done yet' },
+  { value: 'NO_LONGER_NEEDED', text: 'No longer needed' },
+]
 
 export const pageHeading = GovUKHeading({
   caption: Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()),
@@ -39,10 +51,10 @@ export const assessmentInfoDetails = AssessmentInfoDetails({
  * Column headers for the step rows
  */
 export const columnHeaders = GovUKGridRow({
-  classes: 'govuk-!-margin-bottom-2',
+  classes: 'govuk-!-margin-bottom-2 step-row-headers',
   columns: [
     {
-      width: 'one-quarter',
+      width: 'one-sixth',
       blocks: [
         GovUKBody({ text: stepActorLabelText, classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1' }),
         GovUKBody({
@@ -53,7 +65,7 @@ export const columnHeaders = GovUKGridRow({
       ],
     },
     {
-      width: 'two-thirds',
+      width: 'one-half',
       blocks: [
         GovUKBody({
           text: stepDescriptionLabelText,
@@ -63,6 +75,20 @@ export const columnHeaders = GovUKGridRow({
           text: stepDescriptionHintText,
           classes: 'govuk-hint govuk-!-margin-bottom-0',
           attributes: { id: stepDescriptionHintId },
+        }),
+      ],
+    },
+    {
+      width: 'one-sixth',
+      blocks: [
+        GovUKBody({
+          text: stepStatusLabelText,
+          classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1',
+        }),
+        GovUKBody({
+          text: stepStatusHintText,
+          classes: 'govuk-hint govuk-!-margin-bottom-0',
+          attributes: { id: stepStatusHintId },
         }),
       ],
     },
@@ -85,7 +111,7 @@ export const stepRows = HtmlBlock({
         attributes: { 'data-qa': 'step-row' },
         columns: [
           {
-            width: 'one-quarter',
+            width: 'one-sixth',
             blocks: [
               GovUKSelectInput({
                 code: Format('step_actor_%1', Item().index()),
@@ -106,7 +132,7 @@ export const stepRows = HtmlBlock({
             ],
           },
           {
-            width: 'two-thirds',
+            width: 'one-half',
             blocks: [
               GovUKTextInput({
                 code: Format('step_description_%1', Item().index()),
@@ -122,6 +148,27 @@ export const stepRows = HtmlBlock({
                   validation({
                     when: Self().not.match(Condition.IsRequired()),
                     message: 'Enter what they should do to achieve the goal',
+                  }),
+                ],
+              }),
+            ],
+          },
+          {
+            width: 'one-sixth',
+            blocks: [
+              GovUKSelectInput({
+                code: Format('step_status_%1', Item().index()),
+                label: {
+                  text: stepStatusLabelText,
+                  classes: 'govuk-visually-hidden',
+                },
+                describedBy: stepStatusHintId,
+                items: stepStatusOptions,
+                defaultValue: Item().path('status'),
+                validate: [
+                  validation({
+                    when: Self().not.match(Condition.IsRequired()),
+                    message: 'Select the status',
                   }),
                 ],
               }),

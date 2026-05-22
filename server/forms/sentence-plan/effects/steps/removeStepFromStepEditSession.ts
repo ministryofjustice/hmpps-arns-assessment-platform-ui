@@ -40,6 +40,7 @@ export const removeStepFromStepEditSession = () => async (context: SentencePlanC
   changes.steps.forEach((step, i) => {
     step.actor = context.getAnswer(`step_actor_${i}`) ?? step.actor
     step.description = context.getAnswer(`step_description_${i}`) ?? step.description
+    step.status = context.getAnswer(`step_status_${i}`) ?? step.status
   })
 
   // If only 1 step, clear it instead of removing
@@ -57,6 +58,7 @@ export const removeStepFromStepEditSession = () => async (context: SentencePlanC
       id: newStepId,
       actor: '',
       description: '',
+      status: '',
     }
 
     changes.toCreate.push(newStepId)
@@ -78,5 +80,6 @@ export const removeStepFromStepEditSession = () => async (context: SentencePlanC
   changes.steps.forEach((step, i) => {
     context.setAnswer(`step_actor_${i}`, step.actor)
     context.setAnswer(`step_description_${i}`, step.description)
+    context.setAnswer(`step_status_${i}`, step.status)
   })
 }
