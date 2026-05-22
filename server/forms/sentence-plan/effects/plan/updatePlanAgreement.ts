@@ -70,7 +70,7 @@ export const updatePlanAgreement = (deps: SentencePlanEffectsDeps) => async (con
   answers.created_by = practitionerName
 
   // Add notes if present
-  const notes = context.getAnswer('plan_agreement_notes') as string | undefined
+  const notes = context.getAnswer('update_plan_agreement_notes') as string | undefined
   if (notes) {
     answers.notes = notes
   }
