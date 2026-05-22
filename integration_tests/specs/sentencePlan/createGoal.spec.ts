@@ -45,11 +45,14 @@ test.describe('Create Goal Journey', () => {
 
       const actorSelect = await addStepsPage.getStepActorSelect(0)
       const descriptionInput = await addStepsPage.getStepDescriptionInput(0)
+      const statusSelect = await addStepsPage.getStepStatusSelect(0)
 
       await expect(page.locator('#step-actor-hint')).toHaveText('Add one person or agency.')
       await expect(page.locator('#step-description-hint')).toHaveText('Enter one step at a time.')
+      await expect(page.locator('#step-status-hint')).toHaveText('For example, not started.')
       await expect(actorSelect).toHaveAttribute('aria-describedby', 'step-actor-hint')
       await expect(descriptionInput).toHaveAttribute('aria-describedby', 'step-description-hint')
+      await expect(statusSelect).toHaveAttribute('aria-describedby', 'step-status-hint')
 
       await addStepsPage.clickSaveAndContinue()
 
@@ -57,6 +60,8 @@ test.describe('Create Goal Journey', () => {
       await expect(actorSelect).toHaveAttribute('aria-describedby', /step_actor_0-error/)
       await expect(descriptionInput).toHaveAttribute('aria-describedby', /step-description-hint/)
       await expect(descriptionInput).toHaveAttribute('aria-describedby', /step_description_0-error/)
+      await expect(statusSelect).toHaveAttribute('aria-describedby', /step-status-hint/)
+      await expect(statusSelect).toHaveAttribute('aria-describedby', /step_status_0-error/)
 
       await addStepsPage.enterStep(0, 'probation_practitioner', "Contact housing services about 'emergency housing'")
 

@@ -44,16 +44,22 @@ export default class AddStepsPage extends AbstractPage {
     return this.page.locator(`#step_description_${index}`)
   }
 
+  async getStepStatusSelect(index: number): Promise<Locator> {
+    return this.page.locator(`#step_status_${index}`)
+  }
+
   async getRemoveStepButton(index: number): Promise<Locator> {
     return this.page.locator(`button[name="action"][value="remove_${index}"]`)
   }
 
-  async enterStep(index: number, actor: string, description: string): Promise<void> {
+  async enterStep(index: number, actor: string, description: string, status: string = 'NOT_STARTED'): Promise<void> {
     const actorSelect = await this.getStepActorSelect(index)
     const descriptionInput = await this.getStepDescriptionInput(index)
+    const statusSelect = await this.getStepStatusSelect(index)
 
     await actorSelect.selectOption(actor)
     await descriptionInput.fill(description)
+    await statusSelect.selectOption(status)
   }
 
   async clickAddStep(): Promise<void> {
