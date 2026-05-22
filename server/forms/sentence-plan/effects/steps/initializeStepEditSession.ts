@@ -37,7 +37,7 @@ export const initializeStepEditSession = () => async (context: SentencePlanConte
     } else {
       // Start with one empty step for new goals
       storage[activeGoalUuid] = {
-        steps: [{ id: 'step_0', actor: '', description: '' }],
+        steps: [{ id: 'step_0', actor: '', description: '', status: '' }],
         toCreate: ['step_0'],
         toUpdate: [],
         toDelete: [],
@@ -53,5 +53,6 @@ export const initializeStepEditSession = () => async (context: SentencePlanConte
   steps.forEach((step, index) => {
     context.setAnswer(`step_actor_${index}`, step.actor)
     context.setAnswer(`step_description_${index}`, step.description)
+    context.setAnswer(`step_status_${index}`, step.status)
   })
 }
