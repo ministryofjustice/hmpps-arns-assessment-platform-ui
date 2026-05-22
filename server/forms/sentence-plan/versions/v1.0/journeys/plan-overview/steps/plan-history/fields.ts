@@ -61,13 +61,20 @@ const agreementContentHtml = Format(
         .else(''),
     ),
 
-  // optional notes for AGREED/DO_NOT_AGREE/COULD_NOT_ANSWER events - show if present, otherwise `No additional notes.`
-  // UPDATED_DO_NOT_AGREE/UPDATED_AGREED have no optional notes text box,
-  // however because UPDATED_AGREED has no details field to show in expander `No additional notes.` is shown instead
+  // Optional notes for AGREED/DO_NOT_AGREE/COULD_NOT_ANSWER/UPDATED_DO_NOT_AGREE/UPDATED_AGREED events - show if present, otherwise `No additional notes.`
   when(
     Item()
       .path('status')
-      .match(Condition.Array.IsIn(['AGREED', 'DO_NOT_AGREE', 'COULD_NOT_ANSWER', 'UPDATED_AGREED'])),
+      .match(
+        Condition.Array.IsIn([
+          'AGREED',
+          'DO_NOT_AGREE',
+          'COULD_NOT_ANSWER',
+          'UPDATED_AGREED',
+          'UPDATED_DO_NOT_AGREE',
+          'UPDATED_AGREED',
+        ]),
+      ),
   )
     .then(
       when(Item().path('notes').match(Condition.IsRequired()))

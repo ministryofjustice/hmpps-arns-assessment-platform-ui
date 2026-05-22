@@ -1,6 +1,6 @@
 import { Data, Post, redirect, step, submitTransition, when } from '@form-engine/form/builders'
 import { Condition } from '@form-engine/registry/conditions'
-import { updatePlanAgreementQuestion, buttonGroup } from './fields'
+import { updatePlanAgreementQuestion, buttonGroup, notesField } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { sentencePlanOverviewPath } from '../../../../constants'
 import { redirectUnlessCouldNotAnswer, redirectToOverviewIfReadOnly } from '../../../../guards'
@@ -8,7 +8,7 @@ import { redirectUnlessCouldNotAnswer, redirectToOverviewIfReadOnly } from '../.
 export const updateAgreePlanStep = step({
   path: '/update-agree-plan',
   title: 'Do they agree to their plan?',
-  blocks: [updatePlanAgreementQuestion, buttonGroup],
+  blocks: [updatePlanAgreementQuestion, notesField, buttonGroup],
   onAccess: [redirectToOverviewIfReadOnly(), redirectUnlessCouldNotAnswer(sentencePlanOverviewPath)],
   view: {
     locals: {

@@ -66,8 +66,14 @@ export const updatePlanAgreement = (deps: SentencePlanEffectsDeps) => async (con
     answers.details_no = detailsNo
   }
 
-  // Add created_by from practitioner details (same pattern as notes)
+  // Add created_by from practitioner details
   answers.created_by = practitionerName
+
+  // Add notes if present
+  const notes = context.getAnswer('plan_agreement_notes') as string | undefined
+  if (notes) {
+    answers.notes = notes
+  }
 
   // Add the agreement record to the collection
   await deps.api.executeCommand({
