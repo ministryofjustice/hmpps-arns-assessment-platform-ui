@@ -19,6 +19,14 @@ const detailsForNoField = GovUKTextareaInput({
   ],
 })
 
+export const notesField = GovUKTextareaInput({
+  code: 'update_plan_agreement_notes',
+  label: {
+    text: 'Add any notes (optional)',
+    classes: 'govuk-label--m',
+  },
+})
+
 export const updatePlanAgreementQuestion = GovUKRadioInput({
   code: 'update_plan_agreement_question',
   fieldset: {
