@@ -68,7 +68,7 @@ test.describe('Update agree plan - Agreements', () => {
     `)
   })
 
-  test('can update agreement with Yes and no notes then redirects to plan overview', async ({ page }) => {
+  test('can update agreement with Yes and no notes and redirects to plan overview', async ({ page }) => {
     // Navigate to update agree plan
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
     await planOverviewPage.updateAgreementLink.click()
