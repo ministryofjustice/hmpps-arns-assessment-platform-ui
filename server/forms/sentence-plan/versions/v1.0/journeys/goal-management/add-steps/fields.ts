@@ -2,7 +2,7 @@ import { Data, Format, Item, Iterator, not, Self, validation, when } from '@form
 import { HtmlBlock } from '@form-engine/registry/components/html'
 import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
 import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { GovUKSelectInput, GovUKTextInput } from '@form-engine-govuk-components/components'
+import { GovUKSelectInput, GovUKTextareaInput } from '@form-engine-govuk-components/components'
 import { Condition } from '@form-engine/registry/conditions'
 import { Transformer } from '@form-engine/registry/transformers'
 import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
@@ -134,7 +134,7 @@ export const stepRows = HtmlBlock({
           {
             width: 'one-half',
             blocks: [
-              GovUKTextInput({
+              GovUKTextareaInput({
                 code: Format('step_description_%1', Item().index()),
                 label: {
                   text: stepDescriptionLabelText,
@@ -142,7 +142,11 @@ export const stepRows = HtmlBlock({
                 },
                 autocomplete: 'off',
                 describedBy: stepDescriptionHintId,
-                classes: 'govuk-!-width-full',
+                rows: '1',
+                classes: 'govuk-!-width-full app-autosize-textarea',
+                attributes: {
+                  'data-autosize': 'true',
+                },
                 defaultValue: Item().path('description'),
                 validate: [
                   validation({

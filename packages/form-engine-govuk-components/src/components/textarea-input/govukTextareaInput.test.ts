@@ -143,6 +143,15 @@ describe('govukTextareaInput', () => {
         maxlength: '500',
       })
     })
+
+    it('passes through describedBy for aria-describedby associations', async () => {
+      const params = await helper.getParams({
+        code: 'test-textarea',
+        describedBy: 'external-hint external-error',
+      })
+
+      expect(params.describedBy).toBe('external-hint external-error')
+    })
   })
 
   describe('Error message transformation', () => {
