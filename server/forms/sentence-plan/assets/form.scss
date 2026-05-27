@@ -56,8 +56,8 @@
 }
 
 .step-row {
-  align-items: end;
-  padding-bottom: govuk-spacing(2);
+  align-items: start;
+  padding-bottom: govuk-spacing(1);
   margin-bottom: govuk-spacing(3);
   border-bottom: 1px solid $govuk-border-colour;
 
@@ -69,6 +69,12 @@
     min-width: 0;
     width: 100%;
   }
+}
+
+.app-autosize-textarea {
+  margin-bottom: 0;
+  overflow-y: hidden;
+  resize: none;
 }
 
 // warning text without icon - hides icon and removes left padding

@@ -22,6 +22,12 @@ import { field } from '@form-engine/form/builders'
  */
 export interface GovUKTextareaInputProps extends FieldBlockProps {
   /**
+   * One or more element IDs to add to the textarea's `aria-describedby` attribute.
+   * This links external hint or help text to the textarea for screen reader users.
+   */
+  describedBy?: ConditionalString
+
+  /**
    * The ID of the textarea. Defaults to the value of `code` if not provided.
    *
    * @example 'user-feedback'
@@ -153,6 +159,7 @@ export const govukTextareaInput = buildNunjucksComponent<GovUKTextareaInput>('go
   const params = {
     id: block.id ?? block.code,
     name: block.code,
+    describedBy: block.describedBy,
     spellcheck: block.spellcheck,
     rows: block.rows || '5',
     value: block.value,
