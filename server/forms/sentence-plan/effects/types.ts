@@ -24,8 +24,9 @@ import FeatureFlagService from '../../../services/featureFlagService'
  *
  * - 'success': Data loaded successfully (data may or may not be present depending on assessment state)
  * - 'error': Failed to load data from one or both sources
+ * - 'unavailable': Assessment data is not applicable (such as SP-only assessment without SAN data)
  */
-export type AssessmentInfoStatus = 'success' | 'error'
+export type AssessmentInfoStatus = 'success' | 'error' | 'unavailable'
 
 export interface AccessDetails {
   accessType: AuthSource

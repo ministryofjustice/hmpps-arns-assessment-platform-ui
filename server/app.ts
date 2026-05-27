@@ -106,7 +106,7 @@ export default function createApp(services: Services): express.Application {
   })
 
   // Mount routes
-  app.use(routes(services))
+  app.use(routes())
   app.use(formEngine.getRouter() as express.Router)
 
   app.use((req, _res, next) => {

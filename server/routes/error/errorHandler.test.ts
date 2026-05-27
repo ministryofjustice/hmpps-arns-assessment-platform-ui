@@ -28,7 +28,7 @@ describe('Error pages', () => {
 
   it('should render 500 content without stack in production mode', () => {
     return request(appWithAllRoutes({ production: true }))
-      .get('/assessment')
+      .get('/test-error')
       .expect(500)
       .expect('Content-Type', /html/)
       .expect(res => {
