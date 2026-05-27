@@ -14,7 +14,7 @@ import { HtmlBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/
 import {
   GovUKButton,
   GovUKSelectInput,
-  GovUKTextInput,
+  GovUKTextareaInput,
   GovUKHeading,
   GovUKGridRow,
   GovUKBody,
@@ -133,7 +133,7 @@ export const stepRows = HtmlBlock({
                 describedBy: stepActorHintId,
                 items: actorLabelOptions,
                 defaultValue: Item().path('actor'),
-                validWhen: [
+                validate: [
                   validation({
                     condition: Self().match(Condition.IsRequired()),
                     message: 'Select who will do the step',
@@ -145,7 +145,7 @@ export const stepRows = HtmlBlock({
           {
             width: 'one-half',
             blocks: [
-              GovUKTextInput({
+              GovUKTextareaInput({
                 code: Format('step_description_%1', Loop.Index0()),
                 label: {
                   text: stepDescriptionLabelText,
@@ -153,7 +153,11 @@ export const stepRows = HtmlBlock({
                 },
                 autocomplete: 'off',
                 describedBy: stepDescriptionHintId,
-                classes: 'govuk-!-width-full',
+                rows: '1',
+                classes: 'govuk-!-width-full app-autosize-textarea',
+                attributes: {
+                  'data-autosize': 'true',
+                },
                 defaultValue: Item().path('description'),
                 validWhen: [
                   validation({

@@ -111,6 +111,63 @@ test.describe('Create Goal Journey', () => {
       await expect(goalCard).toContainText('Attend housing appointment')
     })
 
+    test('step description wraps and expands vertically while typing', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.enterGoalTitle('Find stable accommodation')
+      await createGoalPage.selectIsRelated(false)
+      await createGoalPage.selectCanStartNow(true)
+      await createGoalPage.selectTargetDateOption('6_months')
+      await createGoalPage.clickAddSteps()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      const firstStepRow = page.getByTestId('step-row').first()
+      const actorSelect = await addStepsPage.getStepActorSelect(0)
+      const descriptionInput = await addStepsPage.getStepDescriptionInput(0)
+      const statusSelect = page.locator('#step_status_0')
+
+      await expect(descriptionInput).toHaveJSProperty('tagName', 'TEXTAREA')
+
+      const [actorBox, descriptionBox, statusBox] = await Promise.all([
+        actorSelect.boundingBox(),
+        descriptionInput.boundingBox(),
+        statusSelect.boundingBox(),
+      ])
+
+      expect(descriptionBox?.y).toBeCloseTo(actorBox?.y ?? 0, 0)
+      expect(descriptionBox?.y).toBeCloseTo(statusBox?.y ?? 0, 0)
+
+      const initialHeight = await descriptionInput.evaluate(element => element.getBoundingClientRect().height)
+
+      await descriptionInput.fill(
+        'Contact housing services, gather supporting documents, book the appointment, confirm travel arrangements, and record the outcome. '.repeat(
+          8,
+        ),
+      )
+
+      await expect
+        .poll(async () => descriptionInput.evaluate(element => element.getBoundingClientRect().height), {
+          timeout: 1000,
+        })
+        .toBeGreaterThan(initialHeight)
+
+      const [expandedDescriptionBox, rowBox] = await Promise.all([
+        descriptionInput.boundingBox(),
+        firstStepRow.boundingBox(),
+      ])
+
+      const descriptionBottomGap =
+        (rowBox?.y ?? 0) +
+        (rowBox?.height ?? 0) -
+        ((expandedDescriptionBox?.y ?? 0) + (expandedDescriptionBox?.height ?? 0))
+
+      expect(descriptionBottomGap).toBeLessThanOrEqual(6)
+    })
+
     test('shows goal added notification after creating goal with steps', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
