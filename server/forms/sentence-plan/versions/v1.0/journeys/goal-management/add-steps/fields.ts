@@ -19,7 +19,7 @@ import {
   GovUKGridRow,
   GovUKBody,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { AssessmentInfoDetails, ButtonAsLink } from '../../../../../components'
+import { AssessmentInfoDetails, ButtonAsLink, WrappingSelect } from '../../../../../components'
 import { actorLabelOptions, CaseData } from '../../../constants'
 import { canAccessSanContent } from '../../../guards'
 
@@ -124,21 +124,23 @@ export const stepRows = HtmlBlock({
           {
             width: 'one-sixth',
             blocks: [
-              GovUKSelectInput({
-                code: Format('step_actor_%1', Loop.Index0()),
-                label: {
-                  text: stepActorLabelText,
-                  classes: 'govuk-visually-hidden',
-                },
-                describedBy: stepActorHintId,
-                items: actorLabelOptions,
-                defaultValue: Item().path('actor'),
-                validWhen: [
-                  validation({
-                    condition: Self().match(Condition.IsRequired()),
-                    message: 'Select who will do the step',
-                  }),
-                ],
+              WrappingSelect({
+                field: GovUKSelectInput({
+                  code: Format('step_actor_%1', Loop.Index0()),
+                  label: {
+                    text: stepActorLabelText,
+                    classes: 'govuk-visually-hidden',
+                  },
+                  describedBy: stepActorHintId,
+                  items: actorLabelOptions,
+                  defaultValue: Item().path('actor'),
+                  validWhen: [
+                    validation({
+                      condition: Self().match(Condition.IsRequired()),
+                      message: 'Select who will do the step',
+                    }),
+                  ],
+                }),
               }),
             ],
           },

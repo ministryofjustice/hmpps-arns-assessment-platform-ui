@@ -57,7 +57,9 @@ export default class AddStepsPage extends AbstractPage {
     const descriptionInput = await this.getStepDescriptionInput(index)
     const statusSelect = await this.getStepStatusSelect(index)
 
-    await actorSelect.selectOption(actor)
+    // The WrappingSelect combobox visually hides the underlying <select> on init.
+    // Tests can still set its value with force: true; form submission reads the select.
+    await actorSelect.selectOption(actor, { force: true })
     await descriptionInput.fill(description)
     await statusSelect.selectOption(status)
   }
