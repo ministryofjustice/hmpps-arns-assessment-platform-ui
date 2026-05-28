@@ -1,4 +1,3 @@
-import { FormatExpr } from '@form-engine/form/types/expressions.type'
 import { CoordinatorApiClient, HandoverApiClient, PreferencesStore } from '../../../data'
 
 export interface TrainingSessionLauncherEffectsDeps {
@@ -18,6 +17,6 @@ export type NotificationType = 'information' | 'success' | 'warning' | 'error'
 export interface TrainingLauncherNotification {
   type: NotificationType
   title?: string
-  message: string | FormatExpr
+  message: unknown
   target: string
 }

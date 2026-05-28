@@ -1,8 +1,8 @@
-import { createFormPackage } from '@form-engine/form/builders'
+import { createForgePackage } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { trainingSessionLauncherJourney } from './form'
-import { createTrainingSessionLauncherEffectsRegistry } from './effects'
+import { trainingSessionLauncherEffectImplementations } from './effects'
 import { trainingSessionLauncherComponents } from './components'
-import { TrainingSessionLauncherTransformersRegistry } from './transformers'
+import { TrainingSessionLauncherTransformerImplementations } from './transformers'
 import { TrainingSessionLauncherEffectsDeps } from './effects/types'
 import config from '../../config'
 
@@ -12,12 +12,12 @@ import config from '../../config'
  * Provides a UI for launching training sessions into ARNS applications.
  * Replaces the OAStub functionality with a proper form-based interface.
  */
-export default createFormPackage({
+export default createForgePackage<TrainingSessionLauncherEffectsDeps>({
   enabled: config.forms.trainingSessionLauncher.enabled ?? false,
   journey: trainingSessionLauncherJourney,
   components: trainingSessionLauncherComponents,
-  createRegistries: (deps: TrainingSessionLauncherEffectsDeps) => ({
-    ...createTrainingSessionLauncherEffectsRegistry(deps),
-    ...TrainingSessionLauncherTransformersRegistry,
-  }),
+  functions: {
+    ...trainingSessionLauncherEffectImplementations,
+    ...TrainingSessionLauncherTransformerImplementations,
+  },
 })

@@ -1,4 +1,4 @@
-import { accessTransition, Data, redirect, step } from '@form-engine/form/builders'
+import { access, Data, redirect, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { AccessEffects } from '../../effects'
 
 /**
@@ -16,9 +16,9 @@ import { AccessEffects } from '../../effects'
 export const crnAccessStep = step({
   path: '/:service/crn/:crn',
   title: 'CRN Access',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   onAccess: [
-    accessTransition({
+    access({
       effects: [
         AccessEffects.clearAccessSession(),
         AccessEffects.setTargetServiceAndRedirect(),

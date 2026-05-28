@@ -1,5 +1,4 @@
-import { accessTransition, Format, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import { access, Format, redirect, Post, step, submit, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, introText, goalCard, removalNoteSection, buttonGroup } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
@@ -15,7 +14,7 @@ import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../gua
 export const removeGoalStep = step({
   path: '/confirm-remove-goal',
   title: 'Confirm you want to remove this goal',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   view: {
     locals: {
       backlink: 'update-goal-steps',
@@ -24,7 +23,7 @@ export const removeGoalStep = step({
   blocks: [pageHeading, introText, goalCard, removalNoteSection, buttonGroup],
 
   onAccess: [
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_REMOVED),
@@ -37,7 +36,7 @@ export const removeGoalStep = step({
   ],
 
   onSubmission: [
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('confirm')),
       validate: true,
       onValid: {

@@ -47,18 +47,6 @@ export default [
     },
   },
   {
-    files: ['packages/form-engine-moj-components/**/*.ts'],
-    rules: {
-      'no-nested-ternary': 'off',
-    },
-  },
-  {
-    files: ['packages/form-engine-govuk-components/**/*.ts'],
-    rules: {
-      'no-nested-ternary': 'off',
-    },
-  },
-  {
     files: ['**/*.mjs'],
     languageOptions: {
       ecmaVersion: 2020,
