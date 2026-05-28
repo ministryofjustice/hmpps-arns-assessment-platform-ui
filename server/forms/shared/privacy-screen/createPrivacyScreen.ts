@@ -1,7 +1,14 @@
-import { step, submitTransition, redirect, Data, accessTransition, when } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
-import { EffectFunctionExpr } from '@form-engine/form/types/expressions.type'
-import { ConditionalString } from '@form-engine/form/types/structures.type'
+import {
+  step,
+  submit,
+  redirect,
+  Data,
+  access,
+  when,
+  Condition,
+  EffectFunctionExpr,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { createFormContent } from './fields'
 
 /**
@@ -53,7 +60,7 @@ export interface PrivacyScreenConfig {
    * Expression to resolve the person's forename for display in the privacy screen content
    * (e.g., Data('caseData.name.forename'))
    */
-  personForename: ConditionalString
+  personForename: ResolvableString
 }
 
 /**
@@ -97,6 +104,7 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
   return step({
     path: '/privacy',
     title: 'Close other applications',
+    reachability: { entryWhen: true },
     view: {
       template,
       locals: {
@@ -112,19 +120,19 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
     },
     blocks: [createFormContent(personForename)],
     onAccess: [
-      accessTransition({
+      access({
         effects: loadEffects,
         next: [
           // If already accepted privacy this session, skip to the destination
           redirect({
-            when: Data('session.privacyAccepted').match(Condition.Equals(true)),
+            when: Data('privacyAccepted').match(Condition.Equals(true)),
             goto: alreadyAcceptedRedirectPath,
           }),
         ],
       }),
     ],
     onSubmission: [
-      submitTransition({
+      submit({
         validate: true,
         onValid: {
           effects: submitEffects,

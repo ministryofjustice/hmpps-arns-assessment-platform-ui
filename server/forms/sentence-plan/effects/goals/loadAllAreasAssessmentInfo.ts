@@ -1,4 +1,4 @@
-import { TransformersRegistry } from '@form-engine/registry/transformers'
+import { TransformersRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import logger from '../../../../../logger'
 import { transformAssessmentData } from '../../../../utils/assessmentUtils'
 import { mapHandoverToCriminogenicNeeds } from '../../../../utils/handoverApiMapper'

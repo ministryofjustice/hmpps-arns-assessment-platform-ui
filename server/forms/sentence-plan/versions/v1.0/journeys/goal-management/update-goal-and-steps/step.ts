@@ -1,20 +1,23 @@
 import {
-  accessTransition,
+  access,
   Data,
   Format,
   redirect,
   Post,
   step,
-  submitTransition,
+  submit,
   when,
-} from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+  Condition,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   pageHeading,
   goalSubheading,
   goalInfoFuture,
   goalInfoActive,
-  reviewStepsSection,
+  reviewStepsHeading,
+  reviewStepsTable,
+  addOrChangeStepsLink,
+  noStepsMessage,
   progressNotesSection,
   viewAllNotesSection,
   actionButtons,
@@ -29,7 +32,7 @@ import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../gua
 export const updateGoalAndStepsStep = step({
   path: '/update-goal-steps',
   title: 'Update goal and steps',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   view: {
     locals: {
       backlink: when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
@@ -42,14 +45,17 @@ export const updateGoalAndStepsStep = step({
     goalSubheading,
     goalInfoFuture,
     goalInfoActive,
-    reviewStepsSection,
+    reviewStepsHeading,
+    reviewStepsTable,
+    addOrChangeStepsLink,
+    noStepsMessage,
     progressNotesSection,
     viewAllNotesSection,
     actionButtons,
   ],
 
   onAccess: [
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_UPDATE_GOAL_AND_STEPS),
@@ -61,7 +67,7 @@ export const updateGoalAndStepsStep = step({
   ],
 
   onSubmission: [
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: false,
       onAlways: {
@@ -87,7 +93,7 @@ export const updateGoalAndStepsStep = step({
         ],
       },
     }),
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('mark-achieved')),
       validate: false,
       onAlways: {

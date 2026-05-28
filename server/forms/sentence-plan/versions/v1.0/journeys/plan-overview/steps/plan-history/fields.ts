@@ -1,11 +1,17 @@
-import { and, Data, Format, Item, match, when } from '@form-engine/form/builders'
-import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { CollectionBlock } from '@form-engine/registry/components/collectionBlock'
-import { Condition } from '@form-engine/registry/conditions'
-import { Transformer } from '@form-engine/registry/transformers'
-import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
-import { GovUKSectionBreak } from '@form-engine-govuk-components/wrappers/govukSectionBreak'
+import {
+  and,
+  Data,
+  Format,
+  Item,
+  Loop,
+  match,
+  when,
+  Iterator,
+  Condition,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock, CollectionBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { GovUKBody, GovUKSectionBreak } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CaseData } from '../../../../constants'
 
 const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
@@ -38,7 +44,7 @@ const agreementEntryContent = Format(
     .branch(Condition.Equals('AGREED'), 'Plan agreed')
     .otherwise('Plan created'),
   // %2: Date
-  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+  Item().path('date').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   // %3: Practitioner
   when(Item().path('createdBy').match(Condition.IsRequired())).then(Item().path('createdBy')).else('Unknown'),
   // %4: Person (only shown for AGREED or UPDATED_AGREED status)
@@ -120,7 +126,9 @@ const goalAddedEntryContent = Format(
     %4
   </div>`,
   // %1: Date
-  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+  Item()
+    .path('date')
+    .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   // %2: created by
   when(Item().path('createdBy').match(Condition.IsRequired()))
     .then(Item().path('createdBy').pipe(Transformer.String.EscapeHtml()))
@@ -151,7 +159,9 @@ const goalAchievedEntryContent = Format(
     %5
   </div>`,
   // %1: Date
-  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+  Item()
+    .path('date')
+    .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   // %2: Achieved by
   when(Item().path('achievedBy').match(Condition.IsRequired()))
     .then(Item().path('achievedBy').pipe(Transformer.String.EscapeHtml()))
@@ -188,7 +198,9 @@ const goalRemovedEntryContent = Format(
     %5
   </div>`,
   // %1: Date
-  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+  Item()
+    .path('date')
+    .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   // %2: Removed by
   when(Item().path('removedBy').match(Condition.IsRequired()))
     .then(Item().path('removedBy').pipe(Transformer.String.EscapeHtml()))
@@ -232,7 +244,9 @@ const goalReaddedEntryContent = Format(
     %5
   </div>`,
   // %1: Date
-  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+  Item()
+    .path('date')
+    .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   // %2: Re-added by
   when(Item().path('readdedBy').match(Condition.IsRequired()))
     .then(Item().path('readdedBy').pipe(Transformer.String.EscapeHtml()))
@@ -268,7 +282,9 @@ const goalUpdatedEntryContent = Format(
     %5
   </div>`,
   // %1: Date
-  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+  Item()
+    .path('date')
+    .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   // %2: Updated by
   when(Item().path('updatedBy').match(Condition.IsRequired()))
     .then(Item().path('updatedBy').pipe(Transformer.String.EscapeHtml()))
@@ -302,7 +318,7 @@ export const agreementHistory = CollectionBlock({
         content: Format(
           '%1%2',
           // %1: Section break (shown between entries, not before the first)
-          when(Item().index().match(Condition.Equals(0)))
+          when(Loop.Index0().match(Condition.Equals(0)))
             .then('')
             .else('<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">'),
           // %2: Entry content based on type

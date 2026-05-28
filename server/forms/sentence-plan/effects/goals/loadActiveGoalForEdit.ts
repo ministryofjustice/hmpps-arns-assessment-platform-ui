@@ -50,6 +50,11 @@ export const loadActiveGoalForEdit = () => async (context: SentencePlanContext) 
 
   // If goal is active and has a target date, try to determine the option used
   if (activeGoal.status === 'ACTIVE' && activeGoal.targetDate) {
+    const targetDate = new Date(activeGoal.targetDate)
+    if (Number.isNaN(targetDate.getTime())) {
+      return
+    }
+
     const matchingOption = getMatchingTargetDateOption(activeGoal.targetDate)
 
     if (matchingOption) {
@@ -58,9 +63,9 @@ export const loadActiveGoalForEdit = () => async (context: SentencePlanContext) 
       context.setAnswer('target_date_option', 'set_another_date')
 
       // Convert date to DD/MM/YYYY format for the date picker
-      const day = activeGoal.targetDate.getDate().toString().padStart(2, '0')
-      const month = (activeGoal.targetDate.getMonth() + 1).toString().padStart(2, '0')
-      const year = activeGoal.targetDate.getFullYear()
+      const day = targetDate.getDate().toString().padStart(2, '0')
+      const month = (targetDate.getMonth() + 1).toString().padStart(2, '0')
+      const year = targetDate.getFullYear()
       context.setAnswer('custom_target_date', `${day}/${month}/${year}`)
     }
   }

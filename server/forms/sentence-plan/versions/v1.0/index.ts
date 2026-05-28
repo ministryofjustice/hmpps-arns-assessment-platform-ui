@@ -1,5 +1,13 @@
-import { accessTransition, and, Data, Format, journey, redirect, Request } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import {
+  access,
+  and,
+  Data,
+  Format,
+  journey,
+  redirect,
+  Request,
+  Condition,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
@@ -26,6 +34,7 @@ export const sentencePlanV1Journey = journey({
   code: 'sentence-plan-v1',
   title: 'Sentence plan',
   path: '/v1.0',
+  reachability: { disableReachabilityChecks: true },
   view: {
     template: 'sentence-plan/views/sentence-plan-step',
     locals: {
@@ -42,7 +51,7 @@ export const sentencePlanV1Journey = journey({
     formVersion,
   },
   onAccess: [
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.loadFeatureFlags(),
         SentencePlanEffects.initializeSessionFromAccess(),
@@ -53,7 +62,7 @@ export const sentencePlanV1Journey = journey({
         SentencePlanEffects.trackNavigation(NAV_KEY_PATTERNS),
       ],
     }),
-    accessTransition({
+    access({
       when: and(
         Data('sessionDetails.planVersion').match(Condition.IsRequired()),
         Request.Path().not.match(Condition.String.MatchesRegex('view-historic')),

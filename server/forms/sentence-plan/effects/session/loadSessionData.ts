@@ -5,7 +5,7 @@ import { SentencePlanContext } from '../types'
  *
  * This exposes session values to Data() references so they can be used
  * in conditionals and templates:
- * - session: Full session object (for privacyAccepted, accessDetails, etc.)
+ * - privacyAccepted: Whether the privacy screen was accepted this session
  * - caseData: Case details from session (for CaseData.Forename, etc.)
  * - sessionDetails: Session details (for accessType checks, etc.)
  *
@@ -15,7 +15,7 @@ import { SentencePlanContext } from '../types'
  */
 export const loadSessionData = () => (context: SentencePlanContext) => {
   const session = context.getSession()
-  context.setData('session', session)
+  context.setData('privacyAccepted', session.privacyAccepted ?? false)
 
   // Expose caseData for CaseData.Forename and other references
   if (session.caseDetails) {

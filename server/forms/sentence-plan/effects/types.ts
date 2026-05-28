@@ -1,5 +1,4 @@
-import { FormatExpr } from '@form-engine/form/types/expressions.type'
-import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
+import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
 import { User } from '../../../interfaces/user'
 import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
@@ -83,15 +82,15 @@ export interface DerivedNote {
   type: string
   note: string
   createdBy: string
-  createdAt: Date
+  createdAt: string
 }
 
 export interface DerivedGoal {
   uuid: string
   title: string
   status: string
-  targetDate: Date
-  statusDate: Date
+  targetDate?: string
+  statusDate: string
   areaOfNeed: string
   areaOfNeedLabel: string
   relatedAreasOfNeed: string[]
@@ -125,7 +124,7 @@ export interface DerivedGoal {
 export interface DerivedPlanAgreement {
   uuid: string
   status: AgreementStatus
-  statusDate: Date
+  statusDate: string
   agreementQuestion: string
   detailsNo?: string
   detailsCouldNotAnswer?: string
@@ -148,7 +147,7 @@ export type PlanHistoryEntry =
 export interface PlanAgreementHistoryEntry {
   type: 'agreement'
   uuid: string
-  date: Date
+  date: string
   status: AgreementStatus
   createdBy?: string
   detailsNo?: string
@@ -159,7 +158,7 @@ export interface PlanAgreementHistoryEntry {
 export interface GoalCreatedHistoryEntry {
   type: 'goal_created'
   uuid: string
-  date: Date
+  date: string
   goalUuid: string
   goalTitle: string
   createdBy?: string
@@ -168,7 +167,7 @@ export interface GoalCreatedHistoryEntry {
 export interface GoalAchievedHistoryEntry {
   type: 'goal_achieved'
   uuid: string
-  date: Date
+  date: string
   goalUuid: string
   goalTitle: string
   achievedBy?: string
@@ -178,7 +177,7 @@ export interface GoalAchievedHistoryEntry {
 export interface GoalRemovedHistoryEntry {
   type: 'goal_removed'
   uuid: string
-  date: Date
+  date: string
   goalUuid: string
   goalTitle: string
   removedBy?: string
@@ -190,7 +189,7 @@ export interface GoalRemovedHistoryEntry {
 export interface GoalReaddedHistoryEntry {
   type: 'goal_readded'
   uuid: string
-  date: Date
+  date: string
   goalUuid: string
   goalTitle: string
   readdedBy?: string
@@ -200,7 +199,7 @@ export interface GoalReaddedHistoryEntry {
 export interface GoalUpdatedHistoryEntry {
   type: 'goal_updated'
   uuid: string
-  date: Date
+  date: string
   goalUuid: string
   goalTitle: string
   updatedBy?: string
@@ -251,9 +250,9 @@ export interface HistoricPlanData {
   assessment: AssessmentVersionQueryResult
   goals: DerivedGoal[]
   latestAgreementStatus: AgreementStatus
-  latestAgreementDate: Date | undefined
+  latestAgreementDate: string | undefined
   isUpdatedAfterAgreement?: boolean
-  lastUpdatedDate?: Date
+  lastUpdatedDate?: string
   lastUpdatedByName?: string
 }
 
@@ -268,7 +267,7 @@ export type NotificationType = 'information' | 'success' | 'warning' | 'error'
 export interface PlanNotification {
   type: NotificationType
   title?: string
-  message: string | FormatExpr
+  message: unknown
   target: string
   clearOtherNotifications?: boolean
 }
@@ -323,11 +322,11 @@ export interface SentencePlanData extends Record<string, unknown> {
   planAgreements: DerivedPlanAgreement[]
   planAgreementsCollectionUuid: string
   latestAgreementStatus: AgreementStatus
-  latestAgreementDate: Date | undefined
+  latestAgreementDate: string | undefined
 
   // Plan last updated (derived from timeline vs agreement date)
   isUpdatedAfterAgreement: boolean
-  lastUpdatedDate: Date | undefined
+  lastUpdatedDate: string | undefined
   lastUpdatedByName: string | undefined
 
   // Plan Timeline (raw timeline events from API)
@@ -362,6 +361,9 @@ export interface SentencePlanData extends Record<string, unknown> {
 
   // Feature flags
   featureFlags?: Record<string, boolean>
+
+  // Privacy screen state copied from the Express session
+  privacyAccepted?: boolean
 
   // all assessment areas grouped by scoring category (for about page; from coordinator API)
   allAssessmentAreas: AssessmentArea[]

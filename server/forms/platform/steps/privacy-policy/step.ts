@@ -1,4 +1,4 @@
-import { step } from '@form-engine/form/builders'
+import { step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, pageContent } from './fields'
 
 export const privacyPolicyStep = step({

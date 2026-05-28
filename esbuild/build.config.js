@@ -15,16 +15,11 @@ const getBuildConfig = () => {
 
     app: {
       outDir: path.join(cwd, 'dist'),
-      entryPoints: [path.join(cwd, 'server.ts'), 'server/**/*.njk', 'packages/**/*.njk'],
+      entryPoints: [path.join(cwd, 'server.ts'), 'server/**/*.njk'],
       copy: [
         {
           from: path.join(cwd, 'server/**/*.njk'),
           to: path.join(cwd, 'dist/server'),
-          watch: isWatchMode,
-        },
-        {
-          from: path.join(cwd, 'packages/**/*.njk'),
-          to: path.join(cwd, 'dist/packages'),
           watch: isWatchMode,
         },
       ],
