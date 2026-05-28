@@ -1,36 +1,36 @@
-import { block as blockBuilder } from '@form-engine/form/builders'
-import { buildComponent } from '@form-engine/registry/utils/buildComponent'
+import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
+  buildComponent,
   BlockDefinition,
-  ConditionalBoolean,
-  ConditionalString,
+  ResolvableBoolean,
+  ResolvableString,
   EvaluatedBlock,
-} from '@form-engine/form/types/structures.type'
+} from '@ministryofjustice/hmpps-forge/core/components'
 
 /**
  * Props for the ButtonAsLink component
  */
 export interface ButtonAsLinkProps {
   /** Text content for the button */
-  text: ConditionalString
+  text: ResolvableString
 
   /** Name attribute for form submission */
-  name?: ConditionalString
+  name?: ResolvableString
 
   /** Value attribute for form submission */
-  value?: ConditionalString
+  value?: ResolvableString
 
   /** Type attribute - defaults to 'submit' */
   buttonType?: 'button' | 'submit' | 'reset'
 
   /** Whether the button is disabled */
-  disabled?: ConditionalBoolean
+  disabled?: ResolvableBoolean
 
   /** Additional CSS classes (appended to button-as-link) */
-  classes?: ConditionalString
+  classes?: ResolvableString
 
   /** Button ID */
-  id?: ConditionalString
+  id?: ResolvableString
 
   /** Custom HTML attributes */
   attributes?: Record<string, string>
@@ -86,7 +86,7 @@ export const buttonAsLink = buildComponent<ButtonAsLink>('buttonAsLink', (block:
 
   if (block.attributes) {
     Object.entries(block.attributes).forEach(([key, value]) => {
-      attrs.push(`${escapeHtml(key)}="${escapeHtml(value)}"`)
+      attrs.push(`${escapeHtml(key)}="${escapeHtml(String(value))}"`)
     })
   }
 

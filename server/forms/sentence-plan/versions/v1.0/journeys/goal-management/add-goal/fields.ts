@@ -1,11 +1,21 @@
-import { Data, Format, Item, Iterator, not, Params, Self, validation } from '@form-engine/form/builders'
-import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import { GovUKTextInput } from '@form-engine-govuk-components/components'
-import { Condition } from '@form-engine/registry/conditions'
-import { Transformer } from '@form-engine/registry/transformers'
-import { MOJSideNavigation } from '@form-engine-moj-components/components'
-import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
-import { GovUKButtonGroup } from '@form-engine-govuk-components/wrappers/govukButtonGroup'
+import {
+  Data,
+  Format,
+  Item,
+  Iterator,
+  Params,
+  Self,
+  validation,
+  Condition,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  GovUKButton,
+  GovUKTextInput,
+  GovUKHeading,
+  GovUKButtonGroup,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
+import { MOJSideNavigation } from '@ministryofjustice/hmpps-forge/moj-components'
 import { CaseData } from '../../../constants'
 import { canAccessSanContent } from '../../../guards'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
@@ -35,7 +45,7 @@ const assessmentInfoDetails = AssessmentInfoDetails({
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
   fullWidth: true,
-  hidden: not(canAccessSanContent),
+  visibleWhen: canAccessSanContent,
 })
 
 const goalTitle = AccessibleAutocomplete({
@@ -47,9 +57,9 @@ const goalTitle = AccessibleAutocomplete({
       classes: 'govuk-label--m',
     },
     hint: 'Search for a suggested goal or enter your own. Add one goal at a time.',
-    validate: [
+    validWhen: [
       validation({
-        when: Self().not.match(Condition.IsRequired()),
+        condition: Self().match(Condition.IsRequired()),
         message: 'Select or enter what goal they should try to achieve',
       }),
     ],

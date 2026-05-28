@@ -3,7 +3,7 @@ import { AgreementStatus, HistoricPlanData, SentencePlanContext } from '../types
 
 export interface LastUpdatedData {
   isUpdatedAfterAgreement: boolean
-  lastUpdatedDate?: Date
+  lastUpdatedDate?: string
   lastUpdatedByName?: string
 }
 
@@ -27,7 +27,7 @@ export interface LastUpdatedData {
 export const derivePlanLastUpdated = () => (context: SentencePlanContext) => {
   const result = derivePlanLastUpdatedData(
     context.getData('planTimeline') as TimelineItem[] | undefined,
-    context.getData('latestAgreementDate') as Date | undefined,
+    context.getData('latestAgreementDate') as string | undefined,
     context.getData('latestAgreementStatus') as AgreementStatus,
   )
 
@@ -85,7 +85,7 @@ export const derivePlanLastUpdatedForHistoric = () => (context: SentencePlanCont
  */
 export const derivePlanLastUpdatedData = (
   planTimeline: TimelineItem[] | undefined,
-  latestAgreementDate: Date | undefined,
+  latestAgreementDate: string | undefined,
   latestAgreementStatus: AgreementStatus,
   beforeDate?: Date,
 ): LastUpdatedData => {
@@ -119,7 +119,7 @@ export const derivePlanLastUpdatedData = (
 
   const eventDate = new Date(mostRecentEvent.timestamp)
 
-  if (eventDate.getTime() <= latestAgreementDate.getTime()) {
+  if (eventDate.getTime() <= new Date(latestAgreementDate).getTime()) {
     return noUpdate
   }
 
@@ -136,7 +136,7 @@ export const derivePlanLastUpdatedData = (
 
   return {
     isUpdatedAfterAgreement: true,
-    lastUpdatedDate: eventDate,
+    lastUpdatedDate: eventDate.toISOString(),
     lastUpdatedByName: updatedByName,
   }
 }
