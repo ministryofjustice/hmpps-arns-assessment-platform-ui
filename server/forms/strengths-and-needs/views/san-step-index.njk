@@ -56,14 +56,10 @@
             errorList: allValidationErrors
           }) if allValidationErrors.length }}
 
-          {% if backlink %}
-            <a href="{{ backlink }}" class="govuk-back-link">Back</a>
-          {% endif %}
-
           {% if sectionTitle %}
             <div class="govuk-grid-row">
               <div class="govuk-grid-column-three-quarters">
-                <span class="govuk-heading-l">{{ sectionTitle }}</span>
+                <span class="govuk-body-l">{{ sectionTitle }}</span>
               </div>
               {% if sectionStatus %}
                 <div class="govuk-grid-column-one-quarter govuk-!-text-align-right">

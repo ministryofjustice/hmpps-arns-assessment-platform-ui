@@ -6,6 +6,7 @@ const SAN_ASSESSMENT_TYPE = 'SAN_SP'
 
 export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsContext) => {
   const session = context.getSession()
+  console.log('MGEO session:', session)
 
   if (!session.accessDetails) {
     throw new InternalServerError('Access details not found - ensure access ran first')
@@ -15,9 +16,11 @@ export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsCont
     throw new InternalServerError('Case details not found - ensure access ran first')
   }
 
-  const { accessDetails, caseDetails, handoverContext } = session
+  const { accessDetails, caseDetails, handoverContext, assessmentProgress = {} } = session
+  console.log('MGEO handover:', handoverContext)
   const assessmentId = handoverContext?.assessmentContext?.assessmentId
 
+  console.log('MGEO assessmentId: ', assessmentId)
   let assessmentIdentifier
 
   if (accessDetails.accessType === 'OASYS' && assessmentId) {
@@ -36,6 +39,11 @@ export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsCont
     throw new InternalServerError('Cannot determine assessment identifier - no assessmentId or CRN available')
   }
 
+  session.assessmentProgress = {
+    employmentEducationComplete: assessmentProgress?.employmentEducationComplete || false
+  }
+
+
   session.sessionDetails = {
     accessType: accessDetails.accessType,
     planAccessMode: accessDetails.planAccessMode,
@@ -44,5 +52,5 @@ export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsCont
     assessmentVersion: handoverContext?.assessmentContext?.assessmentVersion,
   }
 
-  context.setData('sessionDetails', session.sessionDetails)
+  context.setData('employment_education_section_complete', assessmentProgress.employmentEducationComplete === true ? 'COMPLETE' : 'INCOMPLETE')
 }

@@ -13,7 +13,7 @@ export const typeOfEmployment = GovUKRadioInput({
       classes: 'govuk-visually-hidden',
     },
   },
-  dependentWhen: Answer('current_employment').match(Condition.Equals('EMPLOYED')),
+  dependentWhen: Answer('current_employment_status').match(Condition.Equals('EMPLOYED')),
   items: [
     { value: "FULL_TIME", text: locale.options['FULL_TIME'] },
     { value: "PART_TIME", text: locale.options['PART_TIME'] },
@@ -22,7 +22,7 @@ export const typeOfEmployment = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select the type of employment',
     }),
   ],
@@ -32,11 +32,10 @@ export const hadPreviousEmploymentUnavailableForWork = GovUKRadioInput({
   code: 'had_previous_employment_unavailable_for_work',
   fieldset: {
     legend: {
-      text: 'Have they been employed before?',
-      classes: 'govuk-visually-hidden',
+      text: 'Have they been employed before?'
     },
   },
-  dependentWhen: Answer('current_employment').match(Condition.Equals('CURRENTLY_UNAVAILABLE_FOR_WORK')),
+  dependentWhen: Answer('current_employment_status').match(Condition.Equals('CURRENTLY_UNAVAILABLE_FOR_WORK')),
   items: [
     { value: "YES_HAS_BEEN_EMPLOYED_BEFORE", text: locale.options['YES_HAS_BEEN_EMPLOYED_BEFORE'] },
     { value: "NO_HAS_NEVER_BEEN_EMPLOYED", text: locale.options['NO_HAS_NEVER_BEEN_EMPLOYED'] },
@@ -54,10 +53,9 @@ export const hadPreviousEmploymentActivelyLookingForWork = GovUKRadioInput({
   fieldset: {
     legend: {
       text: 'Have they been employed before?',
-      classes: 'govuk-visually-hidden',
     },
   },
-  dependentWhen: Answer('current_employment').match(Condition.Equals('UNEMPLOYED_ACTIVELY_LOOKING')),
+  dependentWhen: Answer('current_employment_status').match(Condition.Equals('UNEMPLOYED_ACTIVELY_LOOKING')),
   items: [
     { value: "YES_HAS_BEEN_EMPLOYED_BEFORE", text: locale.options['YES_HAS_BEEN_EMPLOYED_BEFORE'] },
     { value: "NO_HAS_NEVER_BEEN_EMPLOYED", text: locale.options['NO_HAS_NEVER_BEEN_EMPLOYED'] },
@@ -75,10 +73,9 @@ export const hadPreviousEmploymentNotLookingForWork = GovUKRadioInput({
   fieldset: {
     legend: {
       text: 'Have they been employed before?',
-      classes: 'govuk-visually-hidden',
     },
   },
-  dependentWhen: Answer('current_employment').match(Condition.Equals('UNEMPLOYED_NOT_ACTIVELY_LOOKING')),
+  dependentWhen: Answer('current_employment_status').match(Condition.Equals('UNEMPLOYED_NOT_ACTIVELY_LOOKING')),
   items: [
     { value: "YES_HAS_BEEN_EMPLOYED_BEFORE", text: locale.options['YES_HAS_BEEN_EMPLOYED_BEFORE'] },
     { value: "NO_HAS_NEVER_BEEN_EMPLOYED", text: locale.options['NO_HAS_NEVER_BEEN_EMPLOYED'] },
@@ -91,8 +88,8 @@ export const hadPreviousEmploymentNotLookingForWork = GovUKRadioInput({
   ],
 })
 
-export const currentEmployment = GovUKRadioInput({
-  code: 'current_employment',
+export const currentEmploymentStatus = GovUKRadioInput({
+  code: 'current_employment_status',
   fieldset: {
     legend: {
       text: Format(locale.current_employment.text, CaseData.ForenamePossessive),

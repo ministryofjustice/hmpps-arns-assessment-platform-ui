@@ -16,7 +16,7 @@ export const strengthsAndNeedsV1Journey = journey({
   title: 'Strengths and needs',
   path: '/v1.0',
   view: {
-    template: 'strengths-and-needs/views/san-step',
+    template: 'strengths-and-needs/views/san-step-index',
     locals: {
       basePath: '/strengths-and-needs/v1.0',
       sectionNavItems,

@@ -2,12 +2,10 @@ import {validation, Self, Answer, Format, and, Condition, not, or} from '@minist
 import {
   GovUKRadioInput,
   GovUKCheckboxInput,
-  GovUKCharacterCount, GovUKBackLink,
+  GovUKCharacterCount,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CaseData } from '../../../../constants'
 import locale from '../../locale.json'
-
-export const backButton = GovUKBackLink({ href: '/strengths-and-needs/v1.0/employment-and-education/current-employment' })
 
 // --- Employment Sector Group ---
 
@@ -18,8 +16,10 @@ export const employmentSector = GovUKCharacterCount({
     classes: 'govuk-fieldset__legend--m',
   },
   maxLength: 2000,
-  visibleWhen: or(Answer('current_employment').match(Condition.Equals('EMPLOYED')),
-    Answer('current_employment').match(Condition.Equals('SELF_EMPLOYED'))),
+  visibleWhen: or(Answer('current_employment_status').match(Condition.Equals('EMPLOYED')),
+    Answer('current_employment_status').match(Condition.Equals('SELF_EMPLOYED'))),
+  dependentWhen: or(Answer('current_employment_status').match(Condition.Equals('EMPLOYED')),
+    Answer('current_employment_status').match(Condition.Equals('SELF_EMPLOYED'))),
 })
 
 // --- Employment History Group ---
@@ -88,9 +88,15 @@ export const employmentHistory = GovUKRadioInput({
   },
   hint: 'Include their current employment.',
   items: employmentHistoryOptions,
+  visibleWhen:  not(or(Answer('had_previous_employment_unavailable_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+    Answer('had_previous_employment_actively_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+    Answer('had_previous_employment_not_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')))),
+  dependentWhen:  not(or(Answer('had_previous_employment_unavailable_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+    Answer('had_previous_employment_actively_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+    Answer('had_previous_employment_not_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')))),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select their employment history',
     }),
   ],
@@ -396,11 +402,18 @@ export const employmentExperience = GovUKRadioInput({
     { value: 'NEGATIVE', text: locale.options['NEGATIVE'], block: negativeEmploymentExperienceDetails },
     { value: 'UNKNOWN', text: locale.options['UNKNOWN']},
   ],
+  visibleWhen:
+    not(or(Answer('had_previous_employment_unavailable_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+        Answer('had_previous_employment_actively_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+        Answer('had_previous_employment_not_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')))),
+  dependentWhen:
+    not(or(Answer('had_previous_employment_unavailable_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+      Answer('had_previous_employment_actively_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+      Answer('had_previous_employment_not_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')))),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select their ' +
-        'overall experience of employment',
+      message: 'Select their overall experience of employment',
     }),
   ],
 })

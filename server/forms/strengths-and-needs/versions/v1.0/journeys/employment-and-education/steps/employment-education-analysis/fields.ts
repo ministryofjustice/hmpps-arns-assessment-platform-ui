@@ -1,8 +1,8 @@
-import {Answer, Condition, Format} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {Answer, Condition, Format, not, or} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {GovUKBody, GovUKLinkButton, GovUKSummaryList, GovUKTabs,} from '@ministryofjustice/hmpps-forge/govuk-components'
 import {CaseData} from '../../../../constants'
 import {SANGenerators} from "../../../../../../generators/customGenerator";
-import {currentEmployment, typeOfEmployment} from "../current-employment/fields";
+import {currentEmploymentStatus, typeOfEmployment} from "../current-employment/fields";
 import locale from '../../locale.json'
 import {
   academicQualification,
@@ -21,7 +21,7 @@ import {
 import {
   employmentOrEducationLinkedReoffending,
   employmentOrEducationLinkedToSeriousHarm,
-  strenthsProtectiveFactors
+  strenthsProtectiveFactors, summaryCurrentEmploymentStatus
 } from "../employment-education-summary/fields";
 
 // --- Employment and Education Summary Group ---
@@ -31,14 +31,13 @@ const employmentStatusSummary = GovUKSummaryList({
     {
       key: {text: Format(locale.current_employment.text, CaseData.ForenamePossessive)},
       value: {
-        blocks:
-          [
-            GovUKBody({text: SANGenerators.getTextFromListDefinition(currentEmployment.items, Answer('current_employment'))}),
-            GovUKBody({text: SANGenerators.getTextFromListDefinition(typeOfEmployment.items, Answer('type_of_employment')), size: "s"}),
-          ]
+        blocks: [
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(summaryCurrentEmploymentStatus, Answer('current_employment_status'))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(typeOfEmployment.items, Answer('type_of_employment')), size: "s"}),
+        ]
       },
       actions: {
-        items: [{href: 'current-employment', text: 'Change', visuallyHiddenText: 'name'}],
+        items: [{href: 'current-employment', text: 'Change', visuallyHiddenText: 'date of birth'}],
       },
     },
     {
@@ -51,7 +50,8 @@ const employmentStatusSummary = GovUKSummaryList({
       actions: {
         items: [{href: 'employed', text: 'Change', visuallyHiddenText: 'date of birth'}],
       },
-      visibleWhen: Answer('employment_sector').match(Condition.String.HasMinLength(1)),
+      visibleWhen: or(Answer('current_employment_status').match(Condition.Equals('EMPLOYED')),
+        Answer('current_employment_status').match(Condition.Equals('SELF_EMPLOYED'))),
     },
     {
       key: {text: Format(locale.employed_employment.employment_history.text, CaseData.ForenamePossessive)},
@@ -64,6 +64,9 @@ const employmentStatusSummary = GovUKSummaryList({
       actions: {
         items: [{href: 'employed', text: 'Change', visuallyHiddenText: 'date of birth'}],
       },
+      visibleWhen:  not(or(Answer('had_previous_employment_unavailable_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+        Answer('had_previous_employment_actively_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+        Answer('had_previous_employment_not_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')))),
     },
     {
       key: {text: Format(locale.employed_employment.day_to_day_commitments.text, CaseData.ForenamePossessive)},
@@ -174,6 +177,10 @@ const employmentStatusSummary = GovUKSummaryList({
       actions: {
         items: [{href: 'employed', text: 'Change', visuallyHiddenText: 'date of birth'}],
       },
+      visibleWhen:
+        not(or(Answer('had_previous_employment_unavailable_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+          Answer('had_previous_employment_actively_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+          Answer('had_previous_employment_not_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')))),
     },
     {
       key: {text: Format(locale.employed_employment.education_experience.text, CaseData.ForenamePossessive)},
@@ -215,7 +222,7 @@ const employmentStatusSummary = GovUKSummaryList({
 
 const goToPractitionerAnalysisButton = GovUKLinkButton({
   text: 'Go to practitioner analysis',
-  href:'employment-education-analysis#practitioner_analysis',
+  href:'employment-education-analysis#practitioner-analysis-summary',
   classes: 'govuk-button--secondary'
 })
 
@@ -234,7 +241,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
           ]
       },
       actions: {
-        items: [{href: 'current-employment', text: 'Change', visuallyHiddenText: 'name'}],
+        items: [{href: 'employment-education-summary#practitioner-analysis', text: 'Change', visuallyHiddenText: 'name'}],
       },
     },
     {
@@ -248,7 +255,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
           ]
       },
       actions: {
-        items: [{href: 'current-employment', text: 'Change', visuallyHiddenText: 'name'}],
+        items: [{href: 'employment-education-summary#practitioner-analysis', text: 'Change', visuallyHiddenText: 'name'}],
       },
     },
     {
@@ -262,14 +269,14 @@ const practitionerAnalysisSummary = GovUKSummaryList({
           ]
       },
       actions: {
-        items: [{href: 'current-employment', text: 'Change', visuallyHiddenText: 'name'}],
+        items: [{href: 'employment-education-summary#practitioner-analysis', text: 'Change', visuallyHiddenText: 'name'}],
       },
     },
   ]
 })
 
 export const employmentStatusAnalysisSummaryTab = GovUKTabs({
-  id: 'cases-analysis',
+  id: 'final-employment-education-analysis',
   items: [
     {
       id: 'summary-analysis',

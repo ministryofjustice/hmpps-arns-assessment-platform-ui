@@ -33,7 +33,7 @@ export const sectionNavItems = [
   {
     code: 'employment-and-education',
     text: 'Employment and education',
-    href: `${basePath}/employment-and-education/current-employment`,
+    href: `${basePath}/employment-and-education/current-employment?resume=true`,
   },
   {
     code: 'finances',

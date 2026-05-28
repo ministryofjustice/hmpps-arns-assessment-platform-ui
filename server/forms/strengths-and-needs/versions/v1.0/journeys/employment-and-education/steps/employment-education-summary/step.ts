@@ -1,25 +1,32 @@
-import { step, submit, redirect, block, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { employmentStatusSummaryTab } from './fields'
-
-const saveButton = block<GovUKButton>({
-  variant: 'govukButton',
-  text: 'Mark as complete',
-  name: 'action',
-  value: 'save',
-})
+import {
+  Condition,
+  Post,
+  redirect,
+  Session,
+  step,
+  submit,
+  tieBreaker
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {StrengthsAndNeedsEffects} from '../../../../../../effects'
+import {employmentStatusSummaryTab} from './fields'
 
 export const employmentEducationSummaryStep = step({
   path: '/employment-education-summary',
   title: 'Employment and Education Summary',
-  blocks: [employmentStatusSummaryTab, saveButton],
+  view: {
+    template: 'strengths-and-needs/views/san-step',
+  },
+  blocks: [employmentStatusSummaryTab],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+
       onValid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.markJourneyAsComplete()
+        ],
         next: [redirect({ goto: 'employment-education-analysis' })],
       },
     }),

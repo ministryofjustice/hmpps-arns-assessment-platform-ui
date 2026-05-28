@@ -14,6 +14,10 @@ export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentVersion?: number
 }
 
+export interface AssessmentProgress {
+  employmentEducationComplete?: boolean
+}
+
 /**
  * Session data available to SAN effects.
  * Populated by the access form before the SAN form loads.
@@ -23,6 +27,7 @@ export interface StrengthsAndNeedsSession {
   accessDetails?: AccessSessionDetails
   sessionDetails?: StrengthsAndNeedsSessionDetails
   handoverContext?: HandoverContext
+  assessmentProgress?: AssessmentProgress
 }
 
 /**

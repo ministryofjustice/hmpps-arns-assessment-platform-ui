@@ -11,8 +11,9 @@ import {
   difficultiesReadingWritingNumeracy,
   employmentExperience,
   educationExperience,
-  employmentAndEducationChanges, backButton,
+  employmentAndEducationChanges,
 } from './fields'
+import {sectionNavItems} from "../../../../constants";
 
 const saveButton = block<GovUKButton>({
   variant: 'govukButton',
@@ -24,8 +25,13 @@ const saveButton = block<GovUKButton>({
 export const employedEmploymentStep = step({
   path: '/employed',
   title: 'Employed',
+  view: {
+    template: 'strengths-and-needs/views/san-step',
+    locals: {
+      backlink: '/strengths-and-needs/v1.0/employment-and-education/'
+    },
+  },
   blocks: [
-    backButton,
     employmentSector,
     employmentHistory,
     dayToDayCommitments,

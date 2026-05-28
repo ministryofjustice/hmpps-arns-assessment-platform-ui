@@ -55,43 +55,34 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
     const formVersion = context.getData('formVersion')
 
     // TODO: Move SAN assessment creation into coordinator/handover so access arrives with an assessment ID.
-    const createResult = await deps.api.executeCommand({
-      type: 'CreateAssessmentCommand',
-      assessmentType: SAN_ASSESSMENT_TYPE,
-      formVersion: typeof formVersion === 'string' ? formVersion : 'v1.0',
-      identifiers: {
-        [IdentifierType.CRN]: caseDetails.crn,
-      },
-      user,
-    })
-
-    const assessmentIdentifier = {
-      type: 'UUID' as const,
-      uuid: createResult.assessmentUuid,
-    }
-
-    session.sessionDetails = {
-      ...sessionDetails,
-      assessmentIdentifier,
-      assessmentVersion: undefined,
-    }
-
-    if (session.handoverContext) {
-      session.handoverContext = {
-        ...session.handoverContext,
-        assessmentContext: {
-          ...session.handoverContext.assessmentContext,
-          assessmentId: createResult.assessmentUuid,
-          assessmentVersion: undefined,
-        },
-      }
-    }
+    // const createResult = await deps.api.executeCommand({
+    //   type: 'CreateAssessmentCommand',
+    //   assessmentType: SAN_ASSESSMENT_TYPE,
+    //   formVersion: typeof formVersion === 'string' ? formVersion : 'v1.0',
+    //   identifiers: {
+    //     [IdentifierType.CRN]: caseDetails.crn,
+    //   },
+    //   user,
+    // })
+    console.log('MGEO: ', session.sessionDetails.assessmentIdentifier)
 
     assessment = await deps.api.executeQuery({
       type: 'AssessmentVersionQuery',
       user,
       assessmentIdentifier: session.sessionDetails.assessmentIdentifier,
     })
+
+    if (session.handoverContext) {
+      session.handoverContext = {
+        ...session.handoverContext,
+        assessmentContext: {
+          ...session.handoverContext.assessmentContext,
+          assessmentId: assessment.assessmentUuid,
+          assessmentVersion: undefined,
+        },
+      }
+    }
+
   }
 
   context.setData('assessment', assessment)

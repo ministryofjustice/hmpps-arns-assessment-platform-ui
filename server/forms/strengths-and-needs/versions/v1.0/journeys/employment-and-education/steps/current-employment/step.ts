@@ -1,7 +1,16 @@
-import {Answer, block, Condition, Post, redirect, step, submit,} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKButton} from '@ministryofjustice/hmpps-forge/govuk-components'
+import {
+  Answer,
+  block,
+  Condition,
+  Data,
+  Post,
+  redirect,
+  step,
+  submit
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {GovUKButton, GovUKTag} from '@ministryofjustice/hmpps-forge/govuk-components'
 import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {currentEmployment, employmentProgressStatus} from './fields'
+import {currentEmploymentStatus } from './fields'
 
 const saveButton = block<GovUKButton>({
   variant: 'govukButton',
@@ -14,7 +23,7 @@ export const currentEmploymentStep = step({
   path: '/current-employment',
   title: 'Current Employment',
   reachability: { entryWhen: true },
-  blocks: [currentEmployment, saveButton],
+  blocks: [currentEmploymentStatus, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -23,14 +32,6 @@ export const currentEmploymentStep = step({
         effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
         next: [
           redirect({
-            goto: 'employed',
-          }),
-          redirect({
-            when: Answer('current_employment').match(Condition.Equals('SELF_EMPLOYED')),
-            goto: 'employed',
-          }),
-          redirect({
-            when: Answer('current_employment').match(Condition.Equals('RETIRED')),
             goto: 'employed',
           }),
         ],

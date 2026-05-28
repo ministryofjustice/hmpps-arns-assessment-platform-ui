@@ -6,6 +6,7 @@ import { saveCurrentStepAnswers } from './assessment/saveCurrentStepAnswers'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
 import { StrengthsAndNeedsEffectsDeps } from './types'
+import {markJourneyAsComplete} from "./assessment/markJourneyAsComplete";
 
 type EffectShapesFromFactories<TFactories> = {
   [K in keyof TFactories]: TFactories[K] extends (deps: infer _Deps) => infer Evaluator
@@ -21,6 +22,7 @@ const strengthsAndNeedsEffectFactories = {
   loadAssessment,
   saveCurrentStepAnswers,
   deriveDrugCategories,
+  markJourneyAsComplete
 }
 
 // TODO: Implement additional effects for:

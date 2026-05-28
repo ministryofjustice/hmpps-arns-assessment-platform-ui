@@ -28,26 +28,4 @@ export const { generators: SANGenerators, implementations: myGeneratorImplementa
       }
       return selectedItem.text
     },
-
-    getTextsFromListDefinitions: (deps) => (items: any[], values: string[]): Array<BlockDefinition> => {
-
-      const blocks: BlockDefinition[] = []
-      console.log('MGEO block: ', items)
-      console.log('MGEO value: ', values)
-
-      values.forEach((selection: any) => {
-        const selectedItem
-          = items.find(item=> 'value' in item && item.value === selection && !item.divider)
-
-        console.log('MGEO item', selectedItem)
-        if (!selectedItem || !('text' in selectedItem)) {
-          return ''
-        }
-        console.log('MGEO item text', selectedItem.text)
-        blocks.push(GovUKBody({text: selectedItem.text}))
-      })
-
-      console.log('MGEO return blocks: ', blocks)
-      return blocks
-    },
   })

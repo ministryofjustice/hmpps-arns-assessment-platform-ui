@@ -63,7 +63,7 @@ services:
       SPRING_FLYWAY_LOCATIONS: classpath:db/auth,db/auth_{vendor},db/dev/data/auth_{vendor},db/dev/data/auth,filesystem:/auth_db
 
   coordinator-api:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:latest
+    image: aap-san:latest
     depends_on:
       - postgres
     networks:
@@ -83,6 +83,7 @@ services:
       SAN_API_BASE_URL: http://wiremock:8080/san-api
       AAP_API_BASE_URL: http://wiremock:8080/aap-api
       APP_STRATEGIES_PLAN: false
+      APP_STRATEGIES_ASSESSMENT: false
       CLIENT_ID: hmpps-assess-risks-and-needs-oastub-ui
       CLIENT_SECRET: clientsecret
 
