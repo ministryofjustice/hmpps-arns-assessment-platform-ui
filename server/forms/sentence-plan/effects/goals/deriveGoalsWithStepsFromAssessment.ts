@@ -130,10 +130,10 @@ export const deriveGoalsWithSteps = (data: DataToDeriveFrom): DerivedGoals => {
           type: noteProperties.type,
           note: noteAnswers.note,
           createdBy: noteAnswers.created_by,
-          createdAt: new Date(noteProperties.created_at),
+          createdAt: noteProperties.created_at,
         }
       })
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()) // Sort newest first
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) // Sort newest first
 
     const relatedAreasOfNeed = answers.related_areas_of_need ?? []
 
@@ -141,8 +141,8 @@ export const deriveGoalsWithSteps = (data: DataToDeriveFrom): DerivedGoals => {
       uuid: item.uuid,
       title: answers.title,
       status: properties.status,
-      targetDate: new Date(answers.target_date),
-      statusDate: new Date(properties.status_date),
+      targetDate: answers.target_date,
+      statusDate: properties.status_date,
       areaOfNeed: answers.area_of_need,
       areaOfNeedLabel: resolveAreaOfNeedLabel(answers.area_of_need, data.areasOfNeed),
       relatedAreasOfNeed,

@@ -1,6 +1,6 @@
 import nunjucks from 'nunjucks'
-import { StructureType } from '@form-engine/form/types/enums'
-import { EvaluatedBlock } from '@form-engine/form/types/structures.type'
+import { StructureType } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { EvaluatedBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import {
   GoalSummaryCardAgreed,
   GoalSummaryCardDraft,

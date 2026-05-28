@@ -21,23 +21,11 @@ export interface GoalSnapshotData {
  * emitting effect is about to change (status + statusDate for status changes,
  * steps for step edits, etc.).
  */
-// `DerivedGoal.targetDate` is typed `Date` but is constructed via
-// `new Date(answers.target_date)`. For FUTURE goals (and removed-then-readded
-// goals) `target_date` is undefined, so the Date is an Invalid Date — truthy
-// but `.toISOString()` on it throws.
-const toIsoOrUndefined = (date: Date | undefined): string | undefined => {
-  if (!date || Number.isNaN(date.getTime())) {
-    return undefined
-  }
-
-  return date.toISOString()
-}
-
 export function snapshotFromGoal(goal: DerivedGoal, overrides: Partial<GoalSnapshotData> = {}): GoalSnapshotData {
   return {
     status: goal.status as GoalStatus,
-    targetDate: toIsoOrUndefined(goal.targetDate),
-    statusDate: toIsoOrUndefined(goal.statusDate) ?? new Date().toISOString(),
+    targetDate: goal.targetDate,
+    statusDate: goal.statusDate ?? new Date().toISOString(),
     areaOfNeed: goal.areaOfNeed,
     relatedAreasOfNeed: goal.relatedAreasOfNeed ?? [],
     steps: (goal.steps ?? []).map(step => ({

@@ -5,8 +5,8 @@ const makeGoal = (overrides: Partial<DerivedGoal> = {}): DerivedGoal => ({
   uuid: 'g-1',
   title: 'Test goal',
   status: 'ACTIVE',
-  targetDate: new Date('2025-01-01'),
-  statusDate: new Date('2024-06-01'),
+  targetDate: '2025-01-01T00:00:00.000Z',
+  statusDate: '2024-06-01T00:00:00.000Z',
   areaOfNeed: 'accommodation',
   areaOfNeedLabel: 'Accommodation',
   relatedAreasOfNeed: [],
@@ -20,11 +20,9 @@ const makeGoal = (overrides: Partial<DerivedGoal> = {}): DerivedGoal => ({
 })
 
 describe('snapshotFromGoal', () => {
-  it('should return undefined for targetDate when the Date is invalid (e.g. FUTURE goal with no target_date)', () => {
-    // Arrange — `new Date(undefined)` produces an Invalid Date, which is
-    // truthy but throws on `.toISOString()`. This is the shape of activeGoal
-    // for a FUTURE goal where `answers.target_date` is absent.
-    const goal = makeGoal({ targetDate: new Date(undefined as unknown as string) })
+  it('should return undefined for targetDate when goal has no target date', () => {
+    // Arrange
+    const goal = makeGoal({ targetDate: undefined })
 
     // Act
     const snapshot = snapshotFromGoal(goal)
@@ -33,11 +31,11 @@ describe('snapshotFromGoal', () => {
     expect(snapshot.targetDate).toBeUndefined()
   })
 
-  it('should serialise valid dates to ISO strings', () => {
+  it('should pass date strings through unchanged', () => {
     // Arrange
     const goal = makeGoal({
-      targetDate: new Date('2025-07-26T00:00:00Z'),
-      statusDate: new Date('2024-08-01T00:00:00Z'),
+      targetDate: '2025-07-26T00:00:00.000Z',
+      statusDate: '2024-08-01T00:00:00.000Z',
     })
 
     // Act
@@ -50,7 +48,7 @@ describe('snapshotFromGoal', () => {
 
   it('should let overrides win over the snapshotted values', () => {
     // Arrange
-    const goal = makeGoal({ status: 'ACTIVE', targetDate: new Date('2025-01-01') })
+    const goal = makeGoal({ status: 'ACTIVE', targetDate: '2025-01-01T00:00:00.000Z' })
 
     // Act
     const snapshot = snapshotFromGoal(goal, { status: 'REMOVED', targetDate: undefined })

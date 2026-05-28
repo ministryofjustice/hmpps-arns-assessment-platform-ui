@@ -1,5 +1,5 @@
-import { defineEffectsWithDeps } from '@form-engine/registry/utils/createRegisterableFunction'
-import { SentencePlanEffectsDeps } from './types'
+import { defineEffectFunctions } from '@ministryofjustice/hmpps-forge/core/authoring'
+import type { FunctionEvaluator } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { addNotification } from './notifications/addNotification'
 import { loadNotifications } from './notifications/loadNotifications'
 import { createNavigationEffects } from '../../shared/navigation/createNavigationEffects'
@@ -39,11 +39,63 @@ import { loadHistoricPlan } from './plan/loadHistoricPlan'
 import { sendAuditEvent } from './audit/sendAuditEvent'
 import { loadFeatureFlags } from './feature-flags/loadFeatureFlags'
 import { sendTelemetryEvent } from './telemetry/sendTelemetryEvent'
+import { SentencePlanEffectsDeps } from './types'
+
+type EffectShapesFromFactories<TFactories> = {
+  [K in keyof TFactories]: TFactories[K] extends (deps: infer _Deps) => infer Evaluator
+    ? Evaluator extends FunctionEvaluator<unknown>
+      ? Evaluator
+      : never
+    : never
+}
 
 const { trackNavigation, insertNavigationReferrer } = createNavigationEffects({
   stackKey: 'sentence-plan',
   clearKey: Nav.PLAN_OVERVIEW,
 })
+
+const sentencePlanEffectFactories = {
+  initializeSessionFromAccess,
+  loadSessionData,
+  loadSentenceInformation,
+  setPrivacyAccepted,
+  addNotification,
+  loadNotifications,
+  trackNavigation,
+  insertNavigationReferrer,
+  loadPlan,
+  deriveGoalsWithStepsFromAssessment,
+  derivePlanAgreementsFromAssessment,
+  loadPlanTimeline,
+  derivePlanHistoryEntries,
+  derivePlanLastUpdated,
+  derivePlanLastUpdatedForHistoric,
+  updatePlanAgreementStatus,
+  updatePlanAgreement,
+  loadPreviousVersions,
+  loadHistoricPlan,
+  createGoal,
+  setAreaDataFromUrlParam,
+  setAreaDataFromActiveGoal,
+  loadAreaAssessmentInfo,
+  loadAllAreasAssessmentInfo,
+  setActiveGoalContext,
+  loadActiveGoalForEdit,
+  updateActiveGoal,
+  updateGoalProgress,
+  markGoalAsAchieved,
+  markGoalAsRemoved,
+  readdGoalToPlan,
+  deleteActiveGoal,
+  reorderGoal,
+  initializeStepEditSession,
+  addStepToStepEditSession,
+  removeStepFromStepEditSession,
+  saveStepEditSession,
+  sendAuditEvent,
+  sendTelemetryEvent,
+  loadFeatureFlags,
+}
 
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
@@ -74,65 +126,7 @@ export { AuditEvent } from '../../../services/auditService'
  * SentencePlanEffects.createGoal()
  * ```
  */
-export const { effects: SentencePlanEffects, createRegistry: SentencePlanEffectsRegistry } =
-  defineEffectsWithDeps<SentencePlanEffectsDeps>()({
-    // Session
-    initializeSessionFromAccess,
-    loadSessionData,
-    loadSentenceInformation,
-
-    // Access
-    setPrivacyAccepted,
-
-    // Notifications
-    addNotification,
-    loadNotifications,
-
-    // Navigation
-    trackNavigation,
-    insertNavigationReferrer,
-
-    // Plan
-    loadPlan,
-    deriveGoalsWithStepsFromAssessment,
-    derivePlanAgreementsFromAssessment,
-    loadPlanTimeline,
-    derivePlanHistoryEntries,
-    derivePlanLastUpdated,
-    derivePlanLastUpdatedForHistoric,
-    updatePlanAgreementStatus,
-    updatePlanAgreement,
-    loadPreviousVersions,
-    loadHistoricPlan,
-
-    // Goals
-    createGoal,
-    setAreaDataFromUrlParam,
-    setAreaDataFromActiveGoal,
-    loadAreaAssessmentInfo,
-    loadAllAreasAssessmentInfo,
-    setActiveGoalContext,
-    loadActiveGoalForEdit,
-    updateActiveGoal,
-    updateGoalProgress,
-    markGoalAsAchieved,
-    markGoalAsRemoved,
-    readdGoalToPlan,
-    deleteActiveGoal,
-    reorderGoal,
-
-    // Steps
-    initializeStepEditSession,
-    addStepToStepEditSession,
-    removeStepFromStepEditSession,
-    saveStepEditSession,
-
-    // Audit
-    sendAuditEvent,
-
-    // Telemetry
-    sendTelemetryEvent,
-
-    // FeatureFlags
-    loadFeatureFlags,
-  })
+export const { effects: SentencePlanEffects, implementations: SentencePlanEffectImplementations } =
+  defineEffectFunctions<EffectShapesFromFactories<typeof sentencePlanEffectFactories>, SentencePlanEffectsDeps>(
+    sentencePlanEffectFactories,
+  )

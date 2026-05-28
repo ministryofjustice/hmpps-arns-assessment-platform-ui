@@ -1,10 +1,15 @@
-import { Data, Format, Item, match, when } from '@form-engine/form/builders'
-import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { GovUKAccordion } from '@form-engine-govuk-components/components'
-import { Condition } from '@form-engine/registry/conditions'
-import { Transformer } from '@form-engine/registry/transformers'
-import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
-import { HtmlBlock } from '@form-engine/registry/components/html'
+import {
+  Data,
+  Format,
+  Item,
+  match,
+  when,
+  Iterator,
+  Condition,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { GovUKAccordion, GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { GoalSummaryCardHistory } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
 import { isCouldNotAnswerStatus, isReadOnlyAccess } from '../../../../guards'
@@ -23,7 +28,7 @@ const agreementHeadingHtml = Format(
     .branch(Condition.Array.IsIn(['UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']), 'Agreement updated')
     .branch(Condition.Equals('AGREED'), 'Plan agreed')
     .otherwise('Plan created'),
-  Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+  Item().path('date').pipe(Transformer.String.FormatDate()),
   when(Item().path('createdBy').match(Condition.IsRequired())).then(Item().path('createdBy')).else('Unknown'),
   when(
     Item().path('status').match(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED'])),
@@ -105,7 +110,7 @@ const goalHeading = (action: string, actorField: string) =>
   Format(
     '<strong>%1</strong> on %2 by %3',
     action,
-    Item().path('date').pipe(Transformer.Date.ToUKLongDate()),
+    Item().path('date').pipe(Transformer.String.FormatDate()),
     when(Item().path(actorField).match(Condition.IsRequired()))
       .then(Item().path(actorField).pipe(Transformer.String.EscapeHtml()))
       .else('Unknown'),
@@ -141,19 +146,16 @@ const goalReaddedSummaryHtml = goalSummaryWithNotes('reason')
 const goalUpdatedHeadingHtml = goalHeading('Goal updated', 'updatedBy')
 const goalUpdatedSummaryHtml = goalSummaryWithNotes('notes')
 
-// `Item()` here resolves against the `Iterator.Map` over `planHistoryEntries`
-// below. Each block is scoped to a matching event type via `hidden`; the
-// form-engine filters hidden nested blocks out before joining their HTML.
 const goalSummaryCardForHistory = GoalSummaryCardHistory({
-  hidden: Item().path('type').not.match(Condition.Array.IsIn(GOAL_EVENT_TYPES)),
+  visibleWhen: Item().path('type').match(Condition.Array.IsIn(GOAL_EVENT_TYPES)),
   goalTitle: Item().path('goalTitle'),
   goalStatus: Item().path('goalStatus'),
   goalUuid: Item().path('goalUuid'),
   targetDate: when(Item().path('targetDate').match(Condition.IsRequired()))
-    .then(Item().path('targetDate').pipe(Transformer.Date.ToUKLongDate()))
+    .then(Item().path('targetDate').pipe(Transformer.String.FormatDate()))
     .else(''),
   statusDate: when(Item().path('statusDate').match(Condition.IsRequired()))
-    .then(Item().path('statusDate').pipe(Transformer.Date.ToUKLongDate()))
+    .then(Item().path('statusDate').pipe(Transformer.String.FormatDate()))
     .else(''),
   areaOfNeed: Item().path('areaOfNeedLabel'),
   relatedAreasOfNeed: Item().path('relatedAreasOfNeedLabels'),
@@ -161,8 +163,6 @@ const goalSummaryCardForHistory = GoalSummaryCardHistory({
   actions: [
     {
       text: 'View goal',
-      // Use `currentGoalStatus`, not the snapshot status — routing must follow
-      // the goal as it exists today, not its state at the time of this event.
       href: when(Item().path('currentGoalStatus').match(Condition.Array.IsIn(INACTIVE_GOAL_STATUSES)))
         .then(Format('../goal/%1/view-inactive-goal', Item().path('goalUuid')))
         .else(Format('../goal/%1/update-goal-steps', Item().path('goalUuid'))),
@@ -172,7 +172,7 @@ const goalSummaryCardForHistory = GoalSummaryCardHistory({
 })
 
 const agreementContentBlock = HtmlBlock({
-  hidden: Item().path('type').not.match(Condition.Equals('agreement')),
+  visibleWhen: Item().path('type').match(Condition.Equals('agreement')),
   content: agreementContentHtml,
 })
 

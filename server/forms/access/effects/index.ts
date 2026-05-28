@@ -1,5 +1,5 @@
-import { defineEffectsWithDeps } from '@form-engine/registry/utils/createRegisterableFunction'
-import { AccessEffectsDeps } from './types'
+import { defineEffectFunctions } from '@ministryofjustice/hmpps-forge/core/authoring'
+import type { FunctionEvaluator } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { loadHandoverContext } from './handover/loadHandoverContext'
 import { setCaseDetailsFromHandoverContext } from './handover/setCaseDetailsFromHandoverContext'
 import { setPractitionerDetailsFromHandoverContext } from './handover/setPractitionerDetailsFromHandoverContext'
@@ -9,26 +9,34 @@ import { setPractitionerDetailsFromAuth } from './crn/setPractitionerDetailsFrom
 import { setAccessDetailsForCrn } from './crn/setAccessDetailsForCrn'
 import { clearAccessSession } from './common/clearAccessSession'
 import { setTargetServiceAndRedirect } from './common/setTargetServiceAndRedirect'
+import { AccessEffectsDeps } from './types'
+
+type EffectShapesFromFactories<TFactories> = {
+  [K in keyof TFactories]: TFactories[K] extends (deps: infer _Deps) => infer Evaluator
+    ? Evaluator extends FunctionEvaluator<unknown>
+      ? Evaluator
+      : never
+    : never
+}
+
+const accessEffectFactories = {
+  clearAccessSession,
+  setTargetServiceAndRedirect,
+  loadHandoverContext,
+  setCaseDetailsFromHandoverContext,
+  setPractitionerDetailsFromHandoverContext,
+  setAccessDetailsFromHandoverContext,
+  setCaseDetailsFromCrn,
+  setPractitionerDetailsFromAuth,
+  setAccessDetailsForCrn,
+}
 
 /**
  * Access form effects for handling OASys/CRN authentication flows.
  * These effects populate session with case details, practitioner details,
  * and access configuration that target forms can use.
  */
-export const { effects: AccessEffects, createRegistry: AccessEffectsRegistry } =
-  defineEffectsWithDeps<AccessEffectsDeps>()({
-    // Common effects
-    clearAccessSession,
-    setTargetServiceAndRedirect,
-
-    // Handover flow effects
-    loadHandoverContext,
-    setCaseDetailsFromHandoverContext,
-    setPractitionerDetailsFromHandoverContext,
-    setAccessDetailsFromHandoverContext,
-
-    // CRN flow effects
-    setCaseDetailsFromCrn,
-    setPractitionerDetailsFromAuth,
-    setAccessDetailsForCrn,
-  })
+export const { effects: AccessEffects, implementations: AccessEffectImplementations } = defineEffectFunctions<
+  EffectShapesFromFactories<typeof accessEffectFactories>,
+  AccessEffectsDeps
+>(accessEffectFactories)

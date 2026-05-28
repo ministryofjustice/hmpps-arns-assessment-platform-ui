@@ -55,8 +55,8 @@ const buildGoalContext = (
   if (snapshot) {
     return {
       goalStatus: snapshot.status,
-      targetDate: snapshot.targetDate ? new Date(snapshot.targetDate) : undefined,
-      statusDate: snapshot.statusDate ? new Date(snapshot.statusDate) : undefined,
+      targetDate: snapshot.targetDate,
+      statusDate: snapshot.statusDate,
       areaOfNeedLabel: resolveAreaLabel(snapshot.areaOfNeed, areasOfNeed),
       relatedAreasOfNeedLabels: snapshot.relatedAreasOfNeed
         .map(slug => resolveAreaLabel(slug, areasOfNeed))
@@ -148,7 +148,7 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
 
   for (const item of displayableTimeline) {
     const customData = item.customData ?? {}
-    const date = new Date(item.timestamp)
+    const date = item.timestamp
     const goalUuid = getTimelineGoalUuid(item)
     const currentGoal = goals.find(g => g.uuid === goalUuid)
     let snapshot = customData.goalSnapshot as GoalSnapshotData | undefined
@@ -162,7 +162,6 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
 
     const goalContext: GoalEventContext = {
       ...buildGoalContext(snapshot, currentGoal, areasOfNeed, actorLabels, personName),
-      // Always live, not snapshotted — drives routing decisions like "View goal".
       currentGoalStatus: currentGoal ? (currentGoal.status as GoalStatus) : undefined,
     }
 
@@ -255,7 +254,7 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
   }
 
   // Sort by date, newest first
-  entries.sort((a, b) => b.date.getTime() - a.date.getTime())
+  entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
   context.setData('planHistoryEntries', entries)
 }

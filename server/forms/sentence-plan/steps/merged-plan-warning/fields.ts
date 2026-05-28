@@ -1,5 +1,5 @@
-import { block } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
+import { block } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import config from '../../../../config'
 
 export const warningContent = block<HtmlBlock>({
