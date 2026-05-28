@@ -1,14 +1,14 @@
 import {
-  accessTransition,
+  access,
   Data,
   Format,
   redirect,
   Post,
   step,
-  submitTransition,
+  submit,
   when,
-} from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+  Condition,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, introText, goalCard, buttonGroup } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
@@ -23,7 +23,7 @@ import { redirectIfGoalNotFound, redirectIfPostAgreement } from '../../../guards
 export const confirmDeleteGoalStep = step({
   path: '/confirm-delete-goal',
   title: 'Confirm you want to delete this goal',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   view: {
     locals: {
       backlink: when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
@@ -35,7 +35,7 @@ export const confirmDeleteGoalStep = step({
   blocks: [pageHeading, ...introText, goalCard, buttonGroup],
 
   onAccess: [
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_DELETE_GOAL),
@@ -47,7 +47,7 @@ export const confirmDeleteGoalStep = step({
   ],
 
   onSubmission: [
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('confirm')),
       onAlways: {
         effects: [

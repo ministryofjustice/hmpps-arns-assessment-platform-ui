@@ -1,19 +1,20 @@
-import { Answer, Format, Self, validation } from '@form-engine/form/builders'
-import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import { GovUKRadioInput } from '@form-engine-govuk-components/components/radio-input/govukRadioInput'
-import { GovUKTextareaInput } from '@form-engine-govuk-components/components/textarea-input/govukTextareaInput'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { Condition } from '@form-engine/registry/conditions'
-import { GovUKButtonGroup } from '@form-engine-govuk-components/wrappers/govukButtonGroup'
+import { Answer, Format, Self, validation, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  GovUKButton,
+  GovUKRadioInput,
+  GovUKTextareaInput,
+  GovUKButtonGroup,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { CaseData } from '../../../../constants'
 
 const detailsForNoField = GovUKTextareaInput({
   code: 'update_plan_agreement_details_no',
   label: 'Enter details',
-  dependent: Answer('update_plan_agreement_question').match(Condition.Equals('no')),
-  validate: [
+  dependentWhen: Answer('update_plan_agreement_question').match(Condition.Equals('no')),
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Enter details about why they do not agree',
     }),
   ],
@@ -33,9 +34,9 @@ export const updatePlanAgreementQuestion = GovUKRadioInput({
     { value: 'yes', text: 'Yes, I agree' },
     { value: 'no', text: 'No, I do not agree', block: detailsForNoField },
   ],
-  validate: [
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select if they agree to the plan',
     }),
   ],

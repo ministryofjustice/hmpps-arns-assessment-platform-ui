@@ -1,5 +1,5 @@
-import { Data } from '@form-engine/form/builders'
-import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { PreviousVersions } from '../../../../../../components/previous-versions/previousVersions'
 import { CaseData } from '../../../../constants'
 

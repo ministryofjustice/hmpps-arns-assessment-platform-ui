@@ -1,13 +1,24 @@
-import { Data, Format, Item, Iterator, not, Self, validation, when } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import { TemplateWrapper } from '@form-engine/registry/components/templateWrapper'
-import { GovUKSelectInput, GovUKTextareaInput } from '@form-engine-govuk-components/components'
-import { Condition } from '@form-engine/registry/conditions'
-import { Transformer } from '@form-engine/registry/transformers'
-import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
-import { GovUKGridRow } from '@form-engine-govuk-components/wrappers/govukGridRow'
-import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import {
+  Data,
+  Format,
+  Item,
+  Loop,
+  Iterator,
+  Self,
+  validation,
+  when,
+  Condition,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
+import {
+  GovUKButton,
+  GovUKSelectInput,
+  GovUKTextareaInput,
+  GovUKHeading,
+  GovUKGridRow,
+  GovUKBody,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
 import { AssessmentInfoDetails, ButtonAsLink } from '../../../../../components'
 import { actorLabelOptions, CaseData } from '../../../constants'
 import { canAccessSanContent } from '../../../guards'
@@ -44,7 +55,7 @@ export const assessmentInfoDetails = AssessmentInfoDetails({
   areaName: Data('currentAreaOfNeed').path('text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
-  hidden: not(canAccessSanContent),
+  visibleWhen: canAccessSanContent,
 })
 
 /**
@@ -114,7 +125,7 @@ export const stepRows = HtmlBlock({
             width: 'one-sixth',
             blocks: [
               GovUKSelectInput({
-                code: Format('step_actor_%1', Item().index()),
+                code: Format('step_actor_%1', Loop.Index0()),
                 label: {
                   text: stepActorLabelText,
                   classes: 'govuk-visually-hidden',
@@ -122,9 +133,9 @@ export const stepRows = HtmlBlock({
                 describedBy: stepActorHintId,
                 items: actorLabelOptions,
                 defaultValue: Item().path('actor'),
-                validate: [
+                validWhen: [
                   validation({
-                    when: Self().not.match(Condition.IsRequired()),
+                    condition: Self().match(Condition.IsRequired()),
                     message: 'Select who will do the step',
                   }),
                 ],
@@ -135,7 +146,7 @@ export const stepRows = HtmlBlock({
             width: 'one-half',
             blocks: [
               GovUKTextareaInput({
-                code: Format('step_description_%1', Item().index()),
+                code: Format('step_description_%1', Loop.Index0()),
                 label: {
                   text: stepDescriptionLabelText,
                   classes: 'govuk-visually-hidden',
@@ -148,9 +159,9 @@ export const stepRows = HtmlBlock({
                   'data-autosize': 'true',
                 },
                 defaultValue: Item().path('description'),
-                validate: [
+                validWhen: [
                   validation({
-                    when: Self().not.match(Condition.IsRequired()),
+                    condition: Self().match(Condition.IsRequired()),
                     message: 'Enter what they should do to achieve the goal',
                   }),
                 ],
@@ -161,7 +172,7 @@ export const stepRows = HtmlBlock({
             width: 'one-sixth',
             blocks: [
               GovUKSelectInput({
-                code: Format('step_status_%1', Item().index()),
+                code: Format('step_status_%1', Loop.Index0()),
                 label: {
                   text: stepStatusLabelText,
                   classes: 'govuk-visually-hidden',
@@ -169,9 +180,9 @@ export const stepRows = HtmlBlock({
                 describedBy: stepStatusHintId,
                 items: stepStatusOptions,
                 defaultValue: Item().path('status'),
-                validate: [
+                validWhen: [
                   validation({
-                    when: Self().not.match(Condition.IsRequired()),
+                    condition: Self().match(Condition.IsRequired()),
                     message: 'Select the status',
                   }),
                 ],
@@ -186,7 +197,7 @@ export const stepRows = HtmlBlock({
                   .then('Clear')
                   .else('Remove'),
                 name: 'action',
-                value: Format('remove_%1', Item().index()),
+                value: Format('remove_%1', Loop.Index0()),
                 classes: 'govuk-!-margin-bottom-0',
               }),
             ],

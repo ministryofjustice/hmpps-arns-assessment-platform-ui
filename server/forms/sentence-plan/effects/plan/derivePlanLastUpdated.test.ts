@@ -36,7 +36,7 @@ describe('derivePlanLastUpdated', () => {
       const timeline = [createTimelineItem()]
 
       // Act
-      const result = derivePlanLastUpdatedData(timeline, new Date('2024-06-01'), 'DRAFT')
+      const result = derivePlanLastUpdatedData(timeline, '2024-06-01', 'DRAFT')
 
       // Assert
       expect(result.isUpdatedAfterAgreement).toBe(false)
@@ -55,7 +55,7 @@ describe('derivePlanLastUpdated', () => {
 
     it('should return false when there are no timeline events', () => {
       // Act
-      const result = derivePlanLastUpdatedData([], new Date('2024-06-10T12:00:00Z'), 'AGREED')
+      const result = derivePlanLastUpdatedData([], '2024-06-10T12:00:00Z', 'AGREED')
 
       // Assert
       expect(result.isUpdatedAfterAgreement).toBe(false)
@@ -63,7 +63,7 @@ describe('derivePlanLastUpdated', () => {
 
     it('should return false when timeline is undefined', () => {
       // Act
-      const result = derivePlanLastUpdatedData(undefined, new Date('2024-06-10T12:00:00Z'), 'AGREED')
+      const result = derivePlanLastUpdatedData(undefined, '2024-06-10T12:00:00Z', 'AGREED')
 
       // Assert
       expect(result.isUpdatedAfterAgreement).toBe(false)
@@ -78,7 +78,7 @@ describe('derivePlanLastUpdated', () => {
       ]
 
       // Act
-      const result = derivePlanLastUpdatedData(timeline, agreementDate, 'AGREED')
+      const result = derivePlanLastUpdatedData(timeline, agreementDate.toISOString(), 'AGREED')
 
       // Assert
       expect(result.isUpdatedAfterAgreement).toBe(false)
@@ -95,11 +95,11 @@ describe('derivePlanLastUpdated', () => {
       ]
 
       // Act
-      const result = derivePlanLastUpdatedData(timeline, agreementDate, 'AGREED')
+      const result = derivePlanLastUpdatedData(timeline, agreementDate.toISOString(), 'AGREED')
 
       // Assert
       expect(result.isUpdatedAfterAgreement).toBe(true)
-      expect(result.lastUpdatedDate).toEqual(new Date('2024-06-16T09:00:00Z'))
+      expect(result.lastUpdatedDate).toBe(new Date('2024-06-16T09:00:00Z').toISOString())
       expect(result.lastUpdatedByName).toBe('Moses Hill')
     })
 
@@ -122,11 +122,11 @@ describe('derivePlanLastUpdated', () => {
       ]
 
       // Act
-      const result = derivePlanLastUpdatedData(timeline, agreementDate, 'AGREED')
+      const result = derivePlanLastUpdatedData(timeline, agreementDate.toISOString(), 'AGREED')
 
       // Assert
       expect(result.isUpdatedAfterAgreement).toBe(true)
-      expect(result.lastUpdatedDate).toEqual(new Date('2024-06-17T14:00:00Z'))
+      expect(result.lastUpdatedDate).toBe(new Date('2024-06-17T14:00:00Z').toISOString())
       expect(result.lastUpdatedByName).toBe('Moses Hill')
     })
 
@@ -141,7 +141,7 @@ describe('derivePlanLastUpdated', () => {
       ]
 
       // Act
-      const result = derivePlanLastUpdatedData(timeline, agreementDate, 'AGREED')
+      const result = derivePlanLastUpdatedData(timeline, agreementDate.toISOString(), 'AGREED')
 
       // Assert
       expect(result.lastUpdatedByName).toBe('Unknown')
@@ -160,7 +160,7 @@ describe('derivePlanLastUpdated', () => {
         ]
 
         // Act
-        const result = derivePlanLastUpdatedData(timeline, agreementDate, status)
+        const result = derivePlanLastUpdatedData(timeline, agreementDate.toISOString(), status)
 
         // Assert
         expect(result.isUpdatedAfterAgreement).toBe(true)
@@ -183,12 +183,12 @@ describe('derivePlanLastUpdated', () => {
       ]
 
       // Act
-      const result = derivePlanLastUpdatedData(timeline, agreementDate, 'AGREED', beforeDate)
+      const result = derivePlanLastUpdatedData(timeline, agreementDate.toISOString(), 'AGREED', beforeDate)
 
       // Assert
       expect(result.isUpdatedAfterAgreement).toBe(true)
       expect(result.lastUpdatedByName).toBe('Early User')
-      expect(result.lastUpdatedDate).toEqual(new Date('2024-06-17T10:00:00Z'))
+      expect(result.lastUpdatedDate).toBe(new Date('2024-06-17T10:00:00Z').toISOString())
     })
 
     it('should return false when all events are after beforeDate', () => {
@@ -203,7 +203,7 @@ describe('derivePlanLastUpdated', () => {
       ]
 
       // Act
-      const result = derivePlanLastUpdatedData(timeline, agreementDate, 'AGREED', beforeDate)
+      const result = derivePlanLastUpdatedData(timeline, agreementDate.toISOString(), 'AGREED', beforeDate)
 
       // Assert
       expect(result.isUpdatedAfterAgreement).toBe(false)
@@ -220,7 +220,7 @@ describe('derivePlanLastUpdated', () => {
             customData: { updatedBy: 'Moses Hill' },
           }),
         ],
-        latestAgreementDate: new Date('2024-06-15T12:00:00Z'),
+        latestAgreementDate: '2024-06-15T12:00:00Z',
         latestAgreementStatus: 'AGREED',
       })
 
@@ -229,7 +229,7 @@ describe('derivePlanLastUpdated', () => {
 
       // Assert
       expect(context.setData).toHaveBeenCalledWith('isUpdatedAfterAgreement', true)
-      expect(context.setData).toHaveBeenCalledWith('lastUpdatedDate', new Date('2024-06-20T10:00:00Z'))
+      expect(context.setData).toHaveBeenCalledWith('lastUpdatedDate', new Date('2024-06-20T10:00:00Z').toISOString())
       expect(context.setData).toHaveBeenCalledWith('lastUpdatedByName', 'Moses Hill')
     })
 
@@ -237,7 +237,7 @@ describe('derivePlanLastUpdated', () => {
       // Arrange
       const context = createMockContext({
         planTimeline: [],
-        latestAgreementDate: new Date('2024-06-15T12:00:00Z'),
+        latestAgreementDate: '2024-06-15T12:00:00Z',
         latestAgreementStatus: 'AGREED',
       })
 
@@ -256,7 +256,7 @@ describe('derivePlanLastUpdated', () => {
       assessment: {} as HistoricPlanData['assessment'],
       goals: [],
       latestAgreementStatus: 'AGREED',
-      latestAgreementDate: new Date('2024-06-15T12:00:00Z'),
+      latestAgreementDate: '2024-06-15T12:00:00Z',
     }
 
     it('should merge last-updated data into historic object', () => {
@@ -283,7 +283,7 @@ describe('derivePlanLastUpdated', () => {
         'historic',
         expect.objectContaining({
           isUpdatedAfterAgreement: true,
-          lastUpdatedDate: new Date('2024-06-20T10:00:00Z'),
+          lastUpdatedDate: new Date('2024-06-20T10:00:00Z').toISOString(),
           lastUpdatedByName: 'Moses Hill',
         }),
       )

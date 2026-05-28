@@ -1,8 +1,8 @@
 import {
   Format,
   step,
-  accessTransition,
-  submitTransition,
+  access,
+  submit,
   validation,
   Query,
   redirect,
@@ -11,10 +11,10 @@ import {
   Post,
   Data,
   Item,
-} from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
-import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { Transformer } from '@form-engine/registry/transformers'
+  Condition,
+  Iterator,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   blankPlanOverviewContent,
   blankPlanOverviewContentReadOnly,
@@ -46,12 +46,12 @@ export const planStep = step({
       },
     },
   },
-  validate: [
+  validWhen: [
     validation({
-      when: Data('goals')
+      condition: Data('goals')
         .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
         .pipe(Transformer.Array.Length())
-        .match(Condition.Equals(0)),
+        .match(Condition.Number.GreaterThan(0)),
       message: 'To agree the plan, create a goal to work on now',
       details: { href: '#blank-plan-content' },
     }),
@@ -60,14 +60,14 @@ export const planStep = step({
       .each(
         Iterator.Map(
           validation({
-            when: Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
+            condition: Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Number.GreaterThan(0)),
             message: Format("Add steps to '%1'", Item().path('title')),
             details: { href: Format('#goal-%1', Item().path('uuid')) },
           }),
         ),
       ),
   ],
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   blocks: [
     planLastUpdatedMessage,
     planAgreedMessage,
@@ -81,7 +81,7 @@ export const planStep = step({
     futureGoalsContent,
   ],
   onAccess: [
-    accessTransition({
+    access({
       when: and(Query('goalUuid').match(Condition.IsRequired()), not(isReadOnlyAccess)),
       effects: [SentencePlanEffects.reorderGoal()],
       next: [
@@ -91,7 +91,7 @@ export const planStep = step({
         redirect({ goto: 'overview?type=current' }),
       ],
     }),
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.derivePlanLastUpdated(),
@@ -107,7 +107,7 @@ export const planStep = step({
     }),
   ],
   onSubmission: [
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('agree-plan')),
       validate: true,
       onValid: {

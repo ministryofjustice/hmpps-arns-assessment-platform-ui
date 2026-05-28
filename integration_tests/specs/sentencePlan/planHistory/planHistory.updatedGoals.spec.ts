@@ -335,6 +335,7 @@ test.describe('Plan History - Updated Goals', () => {
         title: 'Find stable accommodation',
         areaOfNeed: 'accommodation',
         status: 'ACTIVE',
+        targetDate: getDatePlusDaysAsISO(90),
         steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
       })
       .withPlanAgreements([

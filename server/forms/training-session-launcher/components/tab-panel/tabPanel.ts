@@ -1,26 +1,25 @@
 import type nunjucks from 'nunjucks'
 import {
   BlockDefinition,
-  ConditionalString,
+  ResolvableString,
   EvaluatedBlock,
   RenderedBlock,
-} from '@form-engine/form/types/structures.type'
-import { ValueExpr } from '@form-engine/form/types/expressions.type'
-import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
-import { block } from '@form-engine/form/builders'
+} from '@ministryofjustice/hmpps-forge/core/components'
+import { ChainableExpr, ChainableIterable, ChainableRef, block } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 
 /**
  * A single item in the TabPanel sidebar
  */
 export interface TabPanelItem {
   /** Identifier for this item (used for panel switching) */
-  id: ConditionalString
+  id: ResolvableString
 
   /** Primary label shown in the sidebar */
-  label: ConditionalString
+  label: ResolvableString
 
   /** Optional secondary label (e.g., location, category) */
-  sublabel?: ConditionalString
+  sublabel?: ResolvableString
 
   /** Blocks to render in the panel when this item is selected */
   panel: BlockDefinition[]
@@ -31,25 +30,25 @@ export interface TabPanelItem {
  */
 export interface TabPanelProps {
   /** Unique ID for the component */
-  id?: ConditionalString
+  id?: ResolvableString
 
   /** Title shown above the sidebar list */
-  sidebarTitle?: ConditionalString
+  sidebarTitle?: ResolvableString
 
   /**
    * Array of selectable items.
    * Can be a static array or a Data reference with Iterator.Map
    */
-  items: TabPanelItem[] | ValueExpr
+  items: TabPanelItem[] | ChainableRef | ChainableExpr<TabPanelItem[]> | ChainableIterable
 
   /** ID of the initially selected item (defaults to first item) */
-  defaultSelected?: ConditionalString
+  defaultSelected?: ResolvableString
 
   /** Optional blocks to render in the sidebar footer */
   sidebarFooter?: BlockDefinition[]
 
   /** Additional CSS classes */
-  classes?: ConditionalString
+  classes?: ResolvableString
 
   /**
    * Query parameter name for syncing selected tab with URL.
@@ -57,7 +56,7 @@ export interface TabPanelProps {
    * - Read the initial selection from the URL query param
    * - Update the URL when tabs are selected (without page reload)
    */
-  queryParam?: ConditionalString
+  queryParam?: ResolvableString
 }
 
 /**
