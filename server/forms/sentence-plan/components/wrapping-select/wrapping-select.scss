@@ -5,9 +5,8 @@
   position: relative;
   display: block;
 
-  // Once enhanced by JS, the native select is taken out of the visual flow
-  // (kept in the DOM for form submission). Without JS, the wrapper has no
-  // enhancement class and the select renders normally.
+  // When JavaScript is available, the native select is hidden and replaced
+  // with the custom dropdown. Without JavaScript, the native select shows as normal.
   &--enhanced {
     .govuk-select {
       position: absolute;
@@ -28,8 +27,6 @@
   @include govuk-font($size: 19);
   box-sizing: border-box;
   width: 100%;
-  // govuk-input/govuk-select set height: 2.5rem; use min-height so the toggle
-  // matches them at single-line and grows when the selected label wraps.
   min-height: 2.5rem;
   padding: 5px;
   background: govuk-colour('white');

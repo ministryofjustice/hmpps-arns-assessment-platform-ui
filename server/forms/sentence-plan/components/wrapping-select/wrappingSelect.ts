@@ -15,9 +15,9 @@ import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-n
  */
 export interface WrappingSelectProps {
   /**
-   * The select field to enhance. Must be a GovUKSelectInput. The rendered
-   * <select> stays in the DOM (visually hidden when JS enhances) and is what
-   * the form submits.
+   * The select field to wrap. Must be a GovUKSelectInput. The original dropdown
+   * stays on the page (hidden when JavaScript is available) so the form still
+   * submits the selected value in the normal way.
    */
   field: FieldBlockDefinition
 }
