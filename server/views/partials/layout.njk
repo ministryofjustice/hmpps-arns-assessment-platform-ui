@@ -26,6 +26,14 @@
       <meta name="ai-goals-removed" content="{{ data.goals | countGoalsByStatus('REMOVED') }}">
       <meta name="ai-goals-total" content="{{ data.goals | length }}">
       <meta name="ai-steps-total" content="{{ data.goals | countTotalSteps }}">
+      <meta name="ai-goals-with-multiple-steps" content="{{ data.goals | countGoalsWithMultipleSteps }}">
+      <meta name="ai-steps-person-on-probation" content="{{ data.goals | countStepsByActor('person_on_probation') }}">
+      <meta name="ai-steps-probation-practitioner" content="{{ data.goals | countStepsByActor('probation_practitioner') }}">
+      <meta name="ai-steps-prison-offender-manager" content="{{ data.goals | countStepsByActor('prison_offender_manager') }}">
+      <meta name="ai-steps-programme-staff" content="{{ data.goals | countStepsByActor('programme_staff') }}">
+      <meta name="ai-steps-partnership-agency" content="{{ data.goals | countStepsByActor('partnership_agency') }}">
+      <meta name="ai-steps-crs-provider" content="{{ data.goals | countStepsByActor('crs_provider') }}">
+      <meta name="ai-steps-someone-else" content="{{ data.goals | countStepsByActor('someone_else') }}">
     {% endif %}
   {% endif %}
   <link href="{{ '/assets/css/index.css' | assetMap }}" rel="stylesheet"/>

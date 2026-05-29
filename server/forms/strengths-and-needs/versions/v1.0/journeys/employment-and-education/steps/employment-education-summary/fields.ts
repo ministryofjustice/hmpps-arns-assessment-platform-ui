@@ -89,7 +89,7 @@ const employmentStatusSummary = GovUKSummaryList({
       actions: {
         items: [{href: 'employed', text: 'Change', visuallyHiddenText: 'date of birth'}],
       },
-      visibleWhen:  not(or(Answer('had_previous_employment_unavailable_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
+      visibleWhen: not(or(Answer('had_previous_employment_unavailable_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
         Answer('had_previous_employment_actively_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
         Answer('had_previous_employment_not_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')))),
     },

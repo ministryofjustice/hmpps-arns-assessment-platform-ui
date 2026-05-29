@@ -7,7 +7,7 @@
 {% set fullPageTitle = (dynamicTitle or step.title) + ' - Strengths and needs' %}
 {% set pageTitleWithError = 'Error: ' + fullPageTitle %}
 
-{% set allValidationErrors = toErrorList(fieldValidationErrors, domainValidationErrors) %}
+{% set allValidationErrors = fieldValidationErrors.concat(domainValidationErrors) %}
 
 {% set pageTitle %}
   {% if not allValidationErrors.length %}
@@ -53,7 +53,7 @@
         <div class="govuk-grid-column-two-thirds">
           {{ govukErrorSummary({
             titleText: "There is a problem",
-            errorList: allValidationErrors
+            errorList: allValidationErrors | toErrorSummary
           }) if allValidationErrors.length }}
 
           {% if backlink %}

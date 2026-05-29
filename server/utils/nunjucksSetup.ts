@@ -2,6 +2,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
+import { ValidationResult } from '@ministryofjustice/hmpps-forge/core/framework'
 import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -16,7 +17,6 @@ export default function nunjucksSetup(app?: express.Express) {
     app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
     app.locals.feedbackFormUrl = config.feedbackFormUrl
     app.locals.serviceNowFormUrl = config.serviceNowFormUrl
-    app.locals.arnsMvpCommunicationChannelUrl = config.arnsMvpCommunicationChannelUrl
     app.locals.oasysUrl = config.oasysUrl
     app.locals.mpopUrl = config.mpopUrl
     app.locals.smartSurveyPopupCode = config.smartSurveyPopupCode
@@ -116,27 +116,12 @@ export default function nunjucksSetup(app?: express.Express) {
 
   njkEnv.addFilter('isDeepestActive', isDeepestActive)
 
-  interface ValidationError {
-    message: string
-    blockCode?: string
-  }
-
-  njkEnv.addGlobal('toErrorList', (fieldErrors?: ValidationError[], domainErrors?: ValidationError[]) => {
-    const allErrors = [...(domainErrors ?? []), ...(fieldErrors ?? [])]
-    const seen = new Set<string>()
-
-    return allErrors.flatMap((error): { text: string; href?: string }[] => {
-      const key = error.blockCode ?? error.message
-
-      if (seen.has(key)) {
-        return []
-      }
-
-      seen.add(key)
-
-      return [error.blockCode ? { text: error.message, href: `#${error.blockCode}` } : { text: error.message }]
-    })
-  })
+  njkEnv.addFilter('toErrorSummary', (errors: ValidationResult[]) =>
+    errors.map(error => ({
+      text: error.message,
+      href: (error.details?.href as string | undefined) ?? (error.blockCode ? `#${error.blockCode}` : ''),
+    })),
+  )
 
   njkEnv.addFilter('countGoalsByStatus', (goals: Array<{ status?: string }> | undefined, status: string): number => {
     if (!Array.isArray(goals)) {
@@ -153,6 +138,28 @@ export default function nunjucksSetup(app?: express.Express) {
 
     return goals.reduce((sum, g) => sum + (Array.isArray(g?.steps) ? g.steps.length : 0), 0)
   })
+
+  njkEnv.addFilter('countGoalsWithMultipleSteps', (goals: Array<{ steps?: unknown[] }> | undefined): number => {
+    if (!Array.isArray(goals)) {
+      return 0
+    }
+
+    return goals.filter(g => Array.isArray(g?.steps) && g.steps.length > 1).length
+  })
+
+  njkEnv.addFilter(
+    'countStepsByActor',
+    (goals: Array<{ steps?: Array<{ actor?: string }> }> | undefined, actor: string): number => {
+      if (!Array.isArray(goals)) {
+        return 0
+      }
+
+      return goals.reduce(
+        (sum, goal) => sum + (Array.isArray(goal?.steps) ? goal.steps.filter(s => s?.actor === actor).length : 0),
+        0,
+      )
+    },
+  )
 
   return njkEnv
 }

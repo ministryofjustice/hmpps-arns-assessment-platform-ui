@@ -83,6 +83,11 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
       }
     }
 
+    assessment = await deps.api.executeQuery({
+      type: 'AssessmentVersionQuery',
+      user,
+      assessmentIdentifier: session.sessionDetails.assessmentIdentifier,
+    })
   }
 
   context.setData('assessment', assessment)

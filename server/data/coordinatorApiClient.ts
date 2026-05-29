@@ -21,6 +21,7 @@ export default class CoordinatorApiClient extends RestClient {
    * @throws 409 if association already exists for the OASys Assessment PK
    */
   async createOasysAssociation(request: OasysCreateRequest): Promise<OasysCreateResponse> {
+    console.log('MGEO request:', request)
     return this.post(
       {
         path: '/oasys/create',

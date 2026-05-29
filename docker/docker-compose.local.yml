@@ -38,7 +38,7 @@ services:
       FEATURE_FLAG_URL: https://feature-toggles-dev.hmpps.service.justice.gov.uk
       OASYS_URL: http://localhost:3000/training-session-launcher/sessions
       MPOP_URL: http://localhost:3000/sign-in
-      SAN_URL: http://localhost:7072
+      SAN_URL: http://localhost:3000
 
   arns-handover:
     environment:

@@ -1,7 +1,5 @@
 import AssessmentPlatformApiClient from '../../../data/assessmentPlatformApiClient'
-import CoordinatorApiClient from '../../../data/coordinatorApiClient'
-import HandoverApiClient from '../../../data/handoverApiClient'
-import PreferencesStore from '../../../data/preferencesStore'
+import { CoordinatorApiClient, HandoverApiClient, PreferencesStore } from '../../../data'
 
 export interface TrainingSessionLauncherEffectsDeps {
   assessmentPlatformApiClient: AssessmentPlatformApiClient
