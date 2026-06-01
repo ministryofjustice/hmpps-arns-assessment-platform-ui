@@ -148,7 +148,7 @@ export const stepRows = HtmlBlock({
             width: 'one-half',
             blocks: [
               GovUKTextareaInput({
-                code: Format('step_description_%1', Item().index()),
+                code: Format('step_description_%1', Loop.Index0()),
                 label: {
                   text: stepDescriptionLabelText,
                   classes: 'govuk-visually-hidden',
@@ -165,27 +165,6 @@ export const stepRows = HtmlBlock({
                   validation({
                     condition: Self().match(Condition.IsRequired()),
                     message: 'Enter what they should do to achieve the goal',
-                  }),
-                ],
-              }),
-            ],
-          },
-          {
-            width: 'one-sixth',
-            blocks: [
-              GovUKSelectInput({
-                code: Format('step_status_%1', Loop.Index0()),
-                label: {
-                  text: stepStatusLabelText,
-                  classes: 'govuk-visually-hidden',
-                },
-                describedBy: stepStatusHintId,
-                items: stepStatusOptions,
-                defaultValue: Item().path('status'),
-                validWhen: [
-                  validation({
-                    condition: Self().match(Condition.IsRequired()),
-                    message: 'Select the status',
                   }),
                 ],
               }),
