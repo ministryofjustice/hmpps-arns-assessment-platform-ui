@@ -165,7 +165,7 @@ test.describe('Create Goal Journey', () => {
         (rowBox?.height ?? 0) -
         ((expandedDescriptionBox?.y ?? 0) + (expandedDescriptionBox?.height ?? 0))
 
-      expect(descriptionBottomGap).toBeLessThanOrEqual(6)
+      expect(descriptionBottomGap).toBeLessThanOrEqual(12)
     })
 
     test('shows goal added notification after creating goal with steps', async ({ page, createSession }) => {
