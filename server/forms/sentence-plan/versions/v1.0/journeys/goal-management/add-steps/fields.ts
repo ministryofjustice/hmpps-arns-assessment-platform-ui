@@ -133,7 +133,7 @@ export const stepRows = HtmlBlock({
                 describedBy: stepActorHintId,
                 items: actorLabelOptions,
                 defaultValue: Item().path('actor'),
-                validate: [
+                validWhen: [
                   validation({
                     condition: Self().match(Condition.IsRequired()),
                     message: 'Select who will do the step',
@@ -172,7 +172,7 @@ export const stepRows = HtmlBlock({
             width: 'one-sixth',
             blocks: [
               GovUKSelectInput({
-                code: Format('step_status_%1', Item().index()),
+                code: Format('step_status_%1', Loop.Index0()),
                 label: {
                   text: stepStatusLabelText,
                   classes: 'govuk-visually-hidden',
@@ -180,9 +180,9 @@ export const stepRows = HtmlBlock({
                 describedBy: stepStatusHintId,
                 items: stepStatusOptions,
                 defaultValue: Item().path('status'),
-                validate: [
+                validWhen: [
                   validation({
-                    when: Self().not.match(Condition.IsRequired()),
+                    condition: Self().match(Condition.IsRequired()),
                     message: 'Select the status',
                   }),
                 ],
