@@ -173,21 +173,23 @@ export const stepRows = HtmlBlock({
           {
             width: 'one-sixth',
             blocks: [
-              GovUKSelectInput({
-                code: Format('step_status_%1', Loop.Index0()),
-                label: {
-                  text: stepStatusLabelText,
-                  classes: 'govuk-visually-hidden',
-                },
-                describedBy: stepStatusHintId,
-                items: stepStatusOptions,
-                defaultValue: Item().path('status'),
-                validWhen: [
-                  validation({
-                    condition: Self().match(Condition.IsRequired()),
-                    message: 'Select the status',
-                  }),
-                ],
+              WrappingSelect({
+                field: GovUKSelectInput({
+                  code: Format('step_status_%1', Loop.Index0()),
+                  label: {
+                    text: stepStatusLabelText,
+                    classes: 'govuk-visually-hidden',
+                  },
+                  describedBy: stepStatusHintId,
+                  items: stepStatusOptions,
+                  defaultValue: Item().path('status'),
+                  validWhen: [
+                    validation({
+                      condition: Self().match(Condition.IsRequired()),
+                      message: 'Select the status',
+                    }),
+                  ],
+                }),
               }),
             ],
           },

@@ -34,7 +34,7 @@
   text-align: left;
   cursor: pointer;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: govuk-spacing(2);
   color: $govuk-text-colour;
   line-height: 1.25;
@@ -58,7 +58,6 @@
   flex: 0 0 auto;
   width: 5px;
   height: 5px;
-  margin-top: 8px;
   margin-right: 4px;
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
