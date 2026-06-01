@@ -56,7 +56,7 @@ jobs:
       - name: Load image and pull dependencies
         run: |
           docker compose -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml pull --ignore-buildable &
-          docker pull node:22-alpine &
+          docker pull node:24-alpine &
 
           if [[ "${{ inputs.docker_multiplatform }}" == "true" ]]; then
             docker load --input ${{ runner.temp }}/image-linux-amd64/image.tar
@@ -110,7 +110,9 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Install Playwright (no browsers)
-        run: PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install playwright
+        run: |
+          PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['node_modules/@playwright/test'].version)")
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --no-save playwright@$PLAYWRIGHT_VERSION
 
       - name: Download shard reports
         uses: actions/download-artifact@v8
@@ -124,10 +126,13 @@ jobs:
 
       - name: Generate test summary
         id: summary
+        env:
+          E2E_TEST_RESULT: ${{ needs.e2e_test.result }}
         run: |
           npx playwright merge-reports --reporter=json ./all-shard-reports/blob-report > results.json
           node <<'SCRIPT'
           const fs = require('fs');
+
           const data = JSON.parse(fs.readFileSync('results.json', 'utf8'));
 
           const results = { passed: [], failed: [], flaky: [], skipped: [] };
@@ -178,9 +183,12 @@ jobs:
             results.skipped.forEach(t => lines.push(`    ${t.title}`));
           }
 
-          const icon = results.failed.length > 0 ? '❌' : '✅';
+          const e2eTestsFailed = process.env.E2E_TEST_RESULT !== 'success';
+          const conclusion = results.failed.length > 0 || e2eTestsFailed ? 'failure' : 'success';
+          const icon = conclusion === 'failure' ? '❌' : '✅';
           const plainText = lines.join('\n');
           const summary = `## ${icon} E2E Test Results\n\n\`\`\`\n${plainText}\n\`\`\`\n\nDownload the **playwright-report** artifact for the full HTML report.\n`;
+          const title = `${results.passed.length} passed, ${results.failed.length} failed, ${results.flaky.length} flaky, ${results.skipped.length} skipped`;
 
           console.log(`\n${icon} E2E Test Results\n`);
           console.log(plainText);
@@ -193,7 +201,8 @@ jobs:
           fs.appendFileSync(output, `failed=${results.failed.length}\n`);
           fs.appendFileSync(output, `flaky=${results.flaky.length}\n`);
           fs.appendFileSync(output, `skipped=${results.skipped.length}\n`);
-          fs.appendFileSync(output, `conclusion=${results.failed.length > 0 ? 'failure' : 'success'}\n`);
+          fs.appendFileSync(output, `conclusion=${conclusion}\n`);
+          fs.appendFileSync(output, `check_title=${title}\n`);
           fs.appendFileSync(output, `check_summary<<EOF\n${plainText}\nEOF\n`);
           SCRIPT
 
@@ -210,14 +219,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECK_SUMMARY: ${{ steps.summary.outputs.check_summary }}
+          CHECK_TITLE: ${{ steps.summary.outputs.check_title }}
         run: |
+          CONCLUSION="${{ steps.summary.outputs.conclusion }}"
+          CONCLUSION="${CONCLUSION:-failure}"
+          CHECK_TITLE="${CHECK_TITLE:-E2E test result unavailable}"
+
           gh api repos/${{ github.repository }}/check-runs \
             -X POST \
             -f name="E2E Test Results" \
             -f head_sha="${{ github.sha }}" \
             -f status="completed" \
-            -f conclusion="${{ steps.summary.outputs.conclusion }}" \
-            -f "output[title]=${{ steps.summary.outputs.passed }} passed, ${{ steps.summary.outputs.failed }} failed, ${{ steps.summary.outputs.flaky }} flaky, ${{ steps.summary.outputs.skipped }} skipped" \
+            -f conclusion="${CONCLUSION}" \
+            -f "output[title]=${CHECK_TITLE}" \
             -f "output[summary]=${CHECK_SUMMARY}"
 
       - name: Fail if tests failed
