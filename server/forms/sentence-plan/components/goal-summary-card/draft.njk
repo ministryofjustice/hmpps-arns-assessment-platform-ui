@@ -116,9 +116,9 @@
 
       {#- Areas of need -#}
       <p class="goal-summary-card__areas-of-need" data-qa="goal-area-of-need">
-        Area of need: {{ params.areaOfNeed }}
+        Area of need: {{ params.areaOfNeed | lower }}
         {% if params.relatedAreasText %}
-          <br>Also linked to: {{ params.relatedAreasText }}
+          <br>Also linked to: {{ params.relatedAreasText | lower}}
         {% endif %}
       </p>
 
