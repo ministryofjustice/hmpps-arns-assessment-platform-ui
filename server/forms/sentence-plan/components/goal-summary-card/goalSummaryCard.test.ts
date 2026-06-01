@@ -28,8 +28,8 @@ describe('goal summary card', () => {
     type: StructureType.BLOCK,
     goalTitle: 'My goal',
     goalStatus: 'ACTIVE',
-    areaOfNeed: 'Accommodation',
-    relatedAreasOfNeed: ['Employment and education', 'Finances'],
+    areaOfNeed: 'accommodation',
+    relatedAreasOfNeed: ['employment and education', 'finances'],
     steps: [] as GoalStep[],
     actions: [] as GoalAction[],
   }
@@ -43,8 +43,8 @@ describe('goal summary card', () => {
       nunjucksEnv,
     )
 
-    expect(html).toContain('Area of need: Accommodation')
-    expect(html).toContain('Also linked to: Employment and education; Finances')
+    expect(html).toContain('Area of need: accommodation')
+    expect(html).toContain('Also linked to: employment and education; finances')
   })
 
   it('renders capitalised area of need labels on draft cards', async () => {
@@ -56,8 +56,8 @@ describe('goal summary card', () => {
       nunjucksEnv,
     )
 
-    expect(html).toContain('Area of need: Accommodation')
-    expect(html).toContain('Also linked to: Employment and education; Finances')
+    expect(html).toContain('Area of need: accommodation')
+    expect(html).toContain('Also linked to: employment and education; finances')
   })
 
   it('renders capitalised area of need labels on history cards', async () => {
@@ -69,8 +69,8 @@ describe('goal summary card', () => {
       nunjucksEnv,
     )
 
-    expect(html).toContain('Area of need: Accommodation')
-    expect(html).toContain('Also relates to: Employment and education; Finances')
+    expect(html).toContain('Area of need: accommodation')
+    expect(html).toContain('Also relates to: employment and education; finances')
   })
 
   it('uses "out of" wording for agreed card step counters', async () => {
