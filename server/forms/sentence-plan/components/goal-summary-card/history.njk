@@ -3,7 +3,7 @@
 
   Variant used inside the Plan History accordion. Differs from agreed/draft:
   - Steps table is rendered inline (no <details> wrapper, no "View steps" toggle)
-  - Step counter wording is "X out of Y steps completed"
+  - Step counter wording is "X of Y steps completed"
   - Shows "This is a future goal" copy when goalStatus is FUTURE
 
   Params:
@@ -65,7 +65,7 @@
 
       {% if params.stepsCount > 0 %}
         <p class="step-counter">
-          {{ params.completedCount }} out of {{ params.stepsCount }} step{% if params.stepsCount != 1 %}s{% endif %} completed.
+          {{ params.completedCount }} of {{ params.stepsCount }} step{% if params.stepsCount != 1 %}s{% endif %} completed
         </p>
         <table class="govuk-table goal-summary-card__steps">
           <thead class="govuk-table__head">
