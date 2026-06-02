@@ -161,7 +161,7 @@ export interface GoalSummaryCardDraft extends BlockDefinition, GoalSummaryCardPr
  * Goal Summary Card (History) component interface.
  *
  * Read-only variant used inside the Plan History accordion. Steps are shown
- * inline (no collapsible wrapper), the step counter uses "X out of Y" wording,
+ * inline (no collapsible wrapper), the step counter uses "X of Y" wording,
  * and FUTURE-status goals display a "This is a future goal" line.
  */
 export interface GoalSummaryCardHistory extends BlockDefinition, GoalSummaryCardProps {
@@ -248,7 +248,7 @@ export const goalSummaryCardDraft = buildNunjucksComponent<GoalSummaryCardDraft>
 
 /**
  * Goal Summary Card (History) component.
- * Read-only variant for the Plan History accordion: inline steps and "X out of Y" counter.
+ * Read-only variant for the Plan History accordion: inline steps and "X of Y" counter.
  */
 export const goalSummaryCardHistory = buildNunjucksComponent<GoalSummaryCardHistory>(
   'goalSummaryCardHistory',
@@ -310,7 +310,7 @@ export function GoalSummaryCardDraft(props: GoalSummaryCardProps): GoalSummaryCa
 /**
  * Creates a Goal Summary Card for the Plan History accordion.
  *
- * Steps are shown inline and the counter reads "X out of Y steps completed".
+ * Steps are shown inline and the counter reads "X of Y steps completed".
  * For FUTURE-status goals the card includes a "This is a future goal" line.
  */
 export function GoalSummaryCardHistory(props: GoalSummaryCardProps): GoalSummaryCardHistory {

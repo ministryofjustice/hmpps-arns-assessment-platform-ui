@@ -73,7 +73,7 @@ describe('goal summary card', () => {
     expect(html).toContain('Also relates to: employment and education; finances')
   })
 
-  it('uses "out of" wording for agreed card step counters', async () => {
+  it('uses "X of Y" wording for agreed card step counters', async () => {
     const html = await goalSummaryCardAgreed.render(
       {
         ...baseBlock,
@@ -86,7 +86,7 @@ describe('goal summary card', () => {
       nunjucksEnv,
     )
 
-    expect(html).toContain('1 out of 2 steps completed.')
+    expect(html).toContain('1 of 2 steps completed')
   })
 
   it('uses "step completed" wording when there is one step on agreed cards', async () => {
@@ -99,7 +99,7 @@ describe('goal summary card', () => {
       nunjucksEnv,
     )
 
-    expect(html).toContain('1 out of 1 step completed.')
+    expect(html).toContain('1 of 1 step completed')
   })
 
   it('uses "step completed" wording when there is one step on history cards', async () => {
@@ -112,6 +112,6 @@ describe('goal summary card', () => {
       nunjucksEnv,
     )
 
-    expect(html).toContain('1 out of 1 step completed.')
+    expect(html).toContain('1 of 1 step completed')
   })
 })
