@@ -20,8 +20,8 @@ import {
 } from "../employed-employment/fields";
 import {
   employmentOrEducationLinkedReoffending,
-  employmentOrEducationLinkedToSeriousHarm,
-  strenthsProtectiveFactors, summaryCurrentEmploymentStatus
+  employmentOrEducationLinkedToSeriousHarm, myCoolFunction,
+  strenthsProtectiveFactors,
 } from "../employment-education-summary/fields";
 
 // --- Employment and Education Summary Group ---
@@ -32,8 +32,8 @@ const employmentStatusSummary = GovUKSummaryList({
       key: {text: Format(locale.current_employment.text, CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(summaryCurrentEmploymentStatus, Answer('current_employment_status'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(typeOfEmployment.items, Answer('type_of_employment')), size: "s"}),
+          GovUKBody({text: myCoolFunction(currentEmploymentStatus.items, Answer('current_employment_status'))}),
+          GovUKBody({text: myCoolFunction(typeOfEmployment.items, Answer('type_of_employment')), size: "s"}),
         ]
       },
       actions: {
@@ -57,7 +57,7 @@ const employmentStatusSummary = GovUKSummaryList({
       key: {text: Format(locale.employed_employment.employment_history.text, CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentHistory.items, Answer('employment_history'))}),
+          GovUKBody({text: myCoolFunction(employmentHistory.items, Answer('employment_history'))}),
           GovUKBody({text: Answer('employment_history_details'), size: "s"})
         ]
       },
@@ -72,29 +72,29 @@ const employmentStatusSummary = GovUKSummaryList({
       key: {text: Format(locale.employed_employment.day_to_day_commitments.text, CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'CARING'),
+          GovUKBody({text: myCoolFunction(dayToDayCommitments.items, 'CARING'),
             visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('CARING'))}),
           GovUKBody({text: Answer('day_to_day_caring_responsibilities_details'), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'CHILDREN'),
+          GovUKBody({text: myCoolFunction(dayToDayCommitments.items, 'CHILDREN'),
             visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('CHILDREN'))}),
           GovUKBody({text: Answer('day_to_day_child_responsibilities_details'), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'STUDYING'),
+          GovUKBody({text: myCoolFunction(dayToDayCommitments.items, 'STUDYING'),
             visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('STUDYING'))}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'VOLUNTEERING'),
+          GovUKBody({text: myCoolFunction(dayToDayCommitments.items, 'VOLUNTEERING'),
             visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('VOLUNTEERING'))}),
           GovUKBody({text: Answer('day_to_day_volunteering_responsibilities_details'), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'OTHER'),
+          GovUKBody({text: myCoolFunction(dayToDayCommitments.items, 'OTHER'),
             visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('OTHER'))}),
           GovUKBody({text: Answer('day_to_day_other_commitments_details'), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'UNKNOWN'),
+          GovUKBody({text: myCoolFunction(dayToDayCommitments.items, 'UNKNOWN'),
             visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('UNKNOWN'))}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'NONE'),
+          GovUKBody({text: myCoolFunction(dayToDayCommitments.items, 'NONE'),
             visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('NONE'))}),
         ]
       },
@@ -106,7 +106,7 @@ const employmentStatusSummary = GovUKSummaryList({
       key: {text: Format(locale.employed_employment.academic_qualification.text, CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(academicQualification.items, Answer('academic_qualification')) }),
+          GovUKBody({text: myCoolFunction(academicQualification.items, Answer('academic_qualification')) }),
         ]
       },
       actions: {
@@ -117,7 +117,7 @@ const employmentStatusSummary = GovUKSummaryList({
       key: {text: Format(locale.employed_employment.professional_qualifications.text, CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(professionalQualifications.items, Answer('professional_qualification')) }),
+          GovUKBody({text: myCoolFunction(professionalQualifications.items, Answer('professional_qualification')) }),
         ]
       },
       actions: {
@@ -128,7 +128,7 @@ const employmentStatusSummary = GovUKSummaryList({
       key: {text: Format(locale.employed_employment.job_skills.text, CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(jobSkills.items, Answer('job_skills')) }),
+          GovUKBody({text: myCoolFunction(jobSkills.items, Answer('job_skills')) }),
           GovUKBody({text: Answer('has_job_skills_details')}),
           GovUKBody({text: Answer('some_job_skills_details')}),
         ]
@@ -141,19 +141,19 @@ const employmentStatusSummary = GovUKSummaryList({
       key: {text: Format(locale.employed_employment.difficulties_reading_writing_numeracy.text, CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(difficultiesReadingWritingNumeracy.items, 'YES_READING'),
+          GovUKBody({text: myCoolFunction(difficultiesReadingWritingNumeracy.items, 'YES_READING'),
             visibleWhen: Answer('difficulties_reading_writing_numeracy').match(Condition.Array.Contains('YES_READING'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(readingDifficultyLevel.items, Answer('reading_difficulty_level')), size: "s"}),
+          GovUKBody({text: myCoolFunction(readingDifficultyLevel.items, Answer('reading_difficulty_level')), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(difficultiesReadingWritingNumeracy.items, 'YES_WRITING'),
+          GovUKBody({text: myCoolFunction(difficultiesReadingWritingNumeracy.items, 'YES_WRITING'),
             visibleWhen: Answer('difficulties_reading_writing_numeracy').match(Condition.Array.Contains('YES_WRITING'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(writingDifficultyLevel.items, Answer('writing_difficulty_level')), size: "s"}),
+          GovUKBody({text: myCoolFunction(writingDifficultyLevel.items, Answer('writing_difficulty_level')), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(difficultiesReadingWritingNumeracy.items, 'YES_NUMERACY'),
+          GovUKBody({text: myCoolFunction(difficultiesReadingWritingNumeracy.items, 'YES_NUMERACY'),
             visibleWhen: Answer('difficulties_reading_writing_numeracy').match(Condition.Array.Contains('YES_NUMERACY'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(numeracyDifficultyLevel.items, Answer('numeracy_difficulty_level')), size: "s"}),
+          GovUKBody({text: myCoolFunction(numeracyDifficultyLevel.items, Answer('numeracy_difficulty_level')), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(difficultiesReadingWritingNumeracy.items, 'NO_DIFFICULTIES'),
+          GovUKBody({text: myCoolFunction(difficultiesReadingWritingNumeracy.items, 'NO_DIFFICULTIES'),
             visibleWhen: Answer('difficulties_reading_writing_numeracy').match(Condition.Array.Contains('NO_DIFFICULTIES'))}),
         ]
       },
@@ -165,8 +165,7 @@ const employmentStatusSummary = GovUKSummaryList({
       key: {text: Format(locale.employed_employment.employment_experience.text, CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentExperience.items, ) }),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentExperience.items, Answer('employment_experience')) }),
+          GovUKBody({text: myCoolFunction(employmentExperience.items, Answer('employment_experience')) }),
           GovUKBody({text: Answer('positive_employment_experience_details')}),
           GovUKBody({text: Answer('mostly_positive_employment_experience_details')}),
           GovUKBody({text: Answer('positive_and_negative_employment_experience_details')}),
@@ -186,7 +185,7 @@ const employmentStatusSummary = GovUKSummaryList({
       key: {text: Format(locale.employed_employment.education_experience.text, CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(educationExperience.items, Answer('education_experience')) }),
+          GovUKBody({text: myCoolFunction(educationExperience.items, Answer('education_experience')) }),
           GovUKBody({text: Answer('positive_education_experience_details')}),
           GovUKBody({text: Answer('mostly_positive_education_experience_details')}),
           GovUKBody({text: Answer('positive_and_negative_education_experience_details')}),
@@ -202,7 +201,7 @@ const employmentStatusSummary = GovUKSummaryList({
       key: {text: Format(locale.employed_employment.employment_and_education_changes.text, CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentAndEducationChanges.items, Answer('employment_and_education_changes')) }),
+          GovUKBody({text: myCoolFunction(employmentAndEducationChanges.items, Answer('employment_and_education_changes')) }),
           GovUKBody({text: Answer('has_made_positive_changes_details')}),
           GovUKBody({text: Answer('actively_making_changes_details')}),
           GovUKBody({text: Answer('wants_to_make_changes_needs_help_details')}),
@@ -235,7 +234,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       value: {
         blocks:
           [
-            GovUKBody({text: SANGenerators.getTextFromListDefinition(strenthsProtectiveFactors.items, Answer('strengths_protective_factors'))}),
+            GovUKBody({text: myCoolFunction(strenthsProtectiveFactors.items, Answer('strengths_protective_factors'))}),
             GovUKBody({ text: Answer('strengths_protective_factors_details'), size: "s" }),
             GovUKBody({ text: Answer('no_strengths_protective_factors_details'), size: "s" }),
           ]
@@ -249,7 +248,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       value: {
         blocks:
           [
-            GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentOrEducationLinkedToSeriousHarm.items, Answer('employment_education_linked_to_serious_harm'))}),
+            GovUKBody({text: myCoolFunction(employmentOrEducationLinkedToSeriousHarm.items, Answer('employment_education_linked_to_serious_harm'))}),
             GovUKBody({ text: Answer('serious_harm_details'), size: "s" }),
             GovUKBody({ text: Answer('no_serious_harm_details'), size: "s" }),
           ]
@@ -263,7 +262,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       value: {
         blocks:
           [
-            GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentOrEducationLinkedReoffending.items, Answer('employment_education_linked_to_reoffending'))}),
+            GovUKBody({text: myCoolFunction(employmentOrEducationLinkedReoffending.items, Answer('employment_education_linked_to_reoffending'))}),
             GovUKBody({ text: Answer('risk_of_reoffending_details'), size: "s" }),
             GovUKBody({ text: Answer('no_risk_of_reoffending_details'), size: "s" }),
           ]

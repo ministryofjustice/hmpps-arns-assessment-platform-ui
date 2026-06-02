@@ -293,7 +293,13 @@ export const readingDifficultyLevel = GovUKRadioInput({
     { value: 'SIGNIFICANT', text: locale.options['SIGNIFICANT'] },
     { value: 'SOME', text: locale.options['SOME'] },
   ],
-  dependentWhen: Answer('difficulties_reading_writing_numeracy').match(Condition.Array.Contains('YES_READING'))
+  dependentWhen: Answer('difficulties_reading_writing_numeracy').match(Condition.Array.Contains('YES_READING')),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: 'Select one option',
+    }),
+  ],
 })
 
 export const writingDifficultyLevel = GovUKRadioInput({
