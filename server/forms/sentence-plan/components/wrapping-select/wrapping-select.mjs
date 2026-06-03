@@ -116,7 +116,7 @@ class WrappingSelect extends HTMLElement {
 
     // Append into the surrounding .govuk-form-group when present so the red
     // error border (which only paints around form-group contents) extends down
-    // alongside the visible toggle, not just the label/error message.
+    // alongside the visible toggle, not just the error message.
     const formGroup = this.selectEl.closest('.govuk-form-group')
     const host = formGroup ?? this
     host.appendChild(toggle)
