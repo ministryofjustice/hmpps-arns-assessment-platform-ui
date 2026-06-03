@@ -38,6 +38,16 @@ class WrappingSelect extends HTMLElement {
     const labelledBy = this.selectEl.getAttribute('aria-labelledby')
     const describedBy = this.selectEl.getAttribute('aria-describedby')
     const labelEl = selectId ? document.querySelector(`label[for="${selectId}"]`) : null
+
+    // Hand the original id to the toggle so error summary links (which point at
+    // selectId) focus the visible control. The native select keeps a suffixed id
+    // for form submission and as the no-JS fallback.
+    if (selectId) {
+      this.selectEl.id = `${selectId}-native`
+      if (labelEl) {
+        labelEl.setAttribute('for', selectId)
+      }
+    }
     const associatedLabelId = labelEl?.id ?? null
 
     // Move the native select out of the tab order; keep it for form submission
@@ -51,7 +61,7 @@ class WrappingSelect extends HTMLElement {
 
     const toggle = document.createElement('button')
     toggle.type = 'button'
-    toggle.id = `${selectId}-toggle`
+    toggle.id = selectId || `${this.selectEl.name}-toggle`
     toggle.className = 'wrapping-select__toggle'
     toggle.setAttribute('aria-haspopup', 'listbox')
     toggle.setAttribute('aria-expanded', 'false')
@@ -103,8 +113,14 @@ class WrappingSelect extends HTMLElement {
     this.toggle = toggle
     this.toggleLabel = toggleLabel
     this.menu = menu
-    this.appendChild(toggle)
-    this.appendChild(menu)
+
+    // Append into the surrounding .govuk-form-group when present so the red
+    // error border (which only paints around form-group contents) extends down
+    // alongside the visible toggle, not just the error message.
+    const formGroup = this.selectEl.closest('.govuk-form-group')
+    const host = formGroup ?? this
+    host.appendChild(toggle)
+    host.appendChild(menu)
   }
 
   attachEvents() {

@@ -126,16 +126,16 @@ test.describe('Create Goal Journey', () => {
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
       const firstStepRow = page.getByTestId('step-row').first()
-      const actorSelect = await addStepsPage.getStepActorSelect(0)
+      const actorToggle = page.locator('#step_actor_0')
       const descriptionInput = await addStepsPage.getStepDescriptionInput(0)
-      const statusSelect = page.locator('#step_status_0')
+      const statusToggle = page.locator('#step_status_0')
 
       await expect(descriptionInput).toHaveJSProperty('tagName', 'TEXTAREA')
 
       const [actorBox, descriptionBox, statusBox] = await Promise.all([
-        actorSelect.boundingBox(),
+        actorToggle.boundingBox(),
         descriptionInput.boundingBox(),
-        statusSelect.boundingBox(),
+        statusToggle.boundingBox(),
       ])
 
       expect(descriptionBox?.y).toBeCloseTo(actorBox?.y ?? 0, 0)
