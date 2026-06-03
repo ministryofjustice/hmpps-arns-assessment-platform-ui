@@ -6,6 +6,7 @@ import { deletionPersist } from './api/deletionPersist'
 import { clearSession } from './session/clearSession'
 import { saveAnswers } from './session/saveAnswers'
 import { loadAnswers } from './session/loadAnswers'
+import { createDeletionRequest } from './session/createDeletionRequest';
 
 export const {
   effects: DataDeletionToolEffects,
@@ -15,8 +16,9 @@ export const {
   clearSession,
   loadAnswers,
   saveAnswers,
+  createDeletionRequest,
 
-  // Assessment Data
+  // API
   loadAssessmentData,
   deletionDryRun,
   deletionPersist,

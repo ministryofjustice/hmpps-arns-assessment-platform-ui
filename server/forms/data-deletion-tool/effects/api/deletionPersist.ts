@@ -1,7 +1,6 @@
 import { InternalServerError } from 'http-errors'
 import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from '../types'
 import { createApiClient } from './createApiClient'
-import { createDataDeletionRequest } from './createDeletionRequest'
 
 export const deletionPersist = (deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
   const session = context.getSession()
@@ -12,7 +11,7 @@ export const deletionPersist = (deps: DataDeletionToolEffectsDeps) => async (con
   }
 
   const api = createApiClient(context)
-  const request = createDataDeletionRequest(context)
+  const request = session.deletionRequest
 
   request.dryRun = false
 

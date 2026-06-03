@@ -8,16 +8,16 @@ import {
   redirect,
   Session,
   step,
-  submit,
-  Transformer, when
+  submit, validation,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
-  GovUKButton, GovUKCheckboxInput, GovUKGridRow, GovUKTable, GovUKTag,
+  GovUKButton, GovUKCheckboxInput, GovUKSummaryList,
   GovUKTextareaInput, GovUKTextInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { DataDeletionToolEffects } from '../../../effects'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { DataDeletionToolTransformers } from '../../../transformers'
+import { Outdent } from '../../../components/outdent/outdent'
 
 export const timelineStep = step({
   path: '/timeline',
@@ -25,94 +25,89 @@ export const timelineStep = step({
   onSubmission: [
     submit({
       validate: true,
-      onValid: {
+      onAlways: {
         effects: [
           DataDeletionToolEffects.saveAnswers(),
+          DataDeletionToolEffects.createDeletionRequest(),
           DataDeletionToolEffects.deletionDryRun(),
         ],
+      },
+      onValid: {
         next: [redirect({ goto: 'summary' })],
       },
     })
   ],
+  validWhen: [
+    validation({
+      condition: Session('deletionResponse').path('success').match(Condition.Equals(true)),
+      message: 'Data deletion exception',
+    }),
+  ],
   blocks: [
-    GovUKTable({
-      classes: 'timeline-table',
-      head: [
-        { text: 'Event | Custom type' },
-        { text: 'Created at' },
-        { text: 'UUID' },
-      ],
-      rows: Session('currentData.timeline').each(
-        Iterator.Map([
-          [
-            {
-              text: Format(
-                '%1 | %2',
-                when(Item().value().match(Condition.Object.PropertyHasValue('event')))
-                  .then(Item().path('event'))
-                  .else('n/a'),
-                when(Item().value().match(Condition.Object.PropertyHasValue('customType')))
-                  .then(Item().path('customType'))
-                  .else('n/a'),
-              ),
-              classes: 'timeline-item-row',
-            },
-            { text: Item().path('timestamp'), classes: 'timeline-item-row' },
-            { text: Item().path('uuid'), classes: 'timeline-item-row' },
-          ],
-          [
-            {
-              html: GovUKGridRow({
-                columns: [
-                  {
-                    width: 'one-half',
-                    blocks: [
-                      HtmlBlock({
-                        classes: 'timeline-item-data',
-                        visibleWhen: Item().value().match(Condition.Object.PropertyHasValue('data')),
-                        content: [
-                          GovUKTag({
-                            text: 'Data',
-                            classes: 'govuk-tag--grey',
-                          }),
-                          HtmlBlock({
-                            tag: 'pre',
-                            content: Item().path('data').pipe(DataDeletionToolTransformers.JSONStringify())
-                          })
-                        ],
-                      }),
-                      HtmlBlock({
-                        classes: 'timeline-item-data',
-                        visibleWhen: Item().value().match(Condition.Object.PropertyHasValue('customData')),
-                        content: [
-                          GovUKTag({
-                            text: 'Custom data',
-                            classes: 'govuk-tag--grey',
-                          }),
-                          HtmlBlock({
-                            tag: 'pre',
-                            content: Item().path('customData').pipe(DataDeletionToolTransformers.JSONStringify())
-                          }),
-                        ],
-                      })
-                    ],
-                  },
-                  {
-                    width: 'one-half',
+    HtmlBlock({
+      visibleWhen: Session('deletionResponse').path('exception').match(Condition.Object.IsObject()),
+      content: Format(
+        `
+        <div class="govuk-error-summary" data-module="govuk-error-summary">
+          <div role="alert">
+            <h2 class="govuk-error-summary__title">
+              There is a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+              <ul class="govuk-list govuk-error-summary__list">
+                <li>
+                  <a href="#">%1</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        `,
+        Session('deletionResponse').path('exception.cause.developerMessage'),
+      ),
+    }),
+    HtmlBlock({
+      classes: 'data-list',
+      content: Session('currentData.timeline').each(
+        Iterator.Map(
+          Outdent({
+            outdentBy: 10,
+            block: GovUKSummaryList({
+              card: {
+                title: { text: Item().path('event') },
+              },
+              rows: [
+                {
+                  key: {text: 'Position'},
+                  value: {text: Item().path('position')},
+                },
+                {
+                  key: {text: 'Created'},
+                  value: {text: Item().path('timestamp')},
+                },
+                {
+                  key: {text: 'UUID'},
+                  value: {text: Item().path('uuid')},
+                },
+                {
+                  key: {text: 'Data'},
+                  value: {html: Format("<pre>\n%1</pre>", Item().path('data').pipe(DataDeletionToolTransformers.JSONStringify()))},
+                },
+                {
+                  key: {text: 'Custom type'},
+                  value: {text: Item().path('customType')},
+                },
+                {
+                  key: {text: 'Custom data'},
+                  value: {html: Format("<pre>\n%1</pre>", Item().path('customData').pipe(DataDeletionToolTransformers.JSONStringify()))},
+                },
+                {
+                  key: {text: 'Actions'},
+                  value: {
                     blocks: [
                       GovUKCheckboxInput({
                         code: Format('timeline-action-%1', Item().path('uuid')),
                         classes: 'govuk-checkboxes--small',
-                        formGroup: {
-                          classes: 'govuk-!-static-margin-0',
-                        },
-                        fieldset: {
-                          legend: {
-                            text: 'Actions',
-                            isPageHeading: false,
-                            classes: 'govuk-fieldset__legend--s',
-                          }
-                        },
                         items: [
                           {
                             value: 'DELETE',
@@ -143,7 +138,7 @@ export const timelineStep = step({
                                   text: 'Data',
                                   classes: 'govuk-label--s',
                                 },
-                                rows: 8,
+                                rows: 12,
                                 defaultValue: Item().path('data').pipe(DataDeletionToolTransformers.JSONStringify()),
                                 dependentWhen: and(
                                   Item().value().match(Condition.Object.PropertyHasValue('data')),
@@ -170,7 +165,7 @@ export const timelineStep = step({
                                   text: 'Custom data',
                                   classes: 'govuk-label--s',
                                 },
-                                rows: 8,
+                                rows: 12,
                                 defaultValue: Item().path('customData').pipe(DataDeletionToolTransformers.JSONStringify()),
                                 dependentWhen: and(
                                   Item().value().match(Condition.Object.PropertyHasValue('customData')),
@@ -184,13 +179,12 @@ export const timelineStep = step({
                       })
                     ],
                   },
-                ]
-              }),
-              colspan: 3,
-            }
-          ],
-        ]),
-      ).pipe(Transformer.Array.Flatten()),
+                },
+              ],
+            })
+          })
+        )
+      ),
     }),
     GovUKButton({
       text: 'Next',

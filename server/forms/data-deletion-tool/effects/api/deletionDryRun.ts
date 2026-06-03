@@ -1,7 +1,6 @@
 import { InternalServerError } from 'http-errors'
 import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from '../types'
 import { createApiClient } from './createApiClient'
-import { createDataDeletionRequest } from './createDeletionRequest'
 
 export const deletionDryRun = (deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
   const session = context.getSession()
@@ -12,11 +11,23 @@ export const deletionDryRun = (deps: DataDeletionToolEffectsDeps) => async (cont
   }
 
   const api = createApiClient(context)
-  const request = createDataDeletionRequest(context)
+  const request = session.deletionRequest
 
   request.dryRun = true
 
-  const response = await api.postDataDeletionRequest(assessmentUuid, request)
-
-  // TODO: handle response
+  try {
+    session.deletionResponse = await api.postDataDeletionRequest(assessmentUuid, request)
+  } catch (error) {
+    session.deletionResponse = {
+      success: false,
+      dryRun: true,
+      state: null,
+      exception: {
+        eventUuid: null,
+        eventName: null,
+        handlerName: null,
+        cause: error.data,
+      },
+    }
+  }
 }

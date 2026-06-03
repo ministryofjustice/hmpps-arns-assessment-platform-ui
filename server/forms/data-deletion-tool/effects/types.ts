@@ -1,5 +1,9 @@
 import { AssessmentPlatformApiClient } from '../../../data'
-import { DataDeletionDataResponse, DataDeletionRequest } from '../../../interfaces/aap-api/dataDeletion';
+import {
+  DataDeletionDataResponse,
+  DataDeletionRequest,
+  DataDeletionResponse
+} from '../../../interfaces/aap-api/dataDeletion';
 import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core';
 
 export interface DataDeletionToolEffectsDeps {
@@ -33,6 +37,8 @@ export interface DataDeletionToolAnswers extends Record<string, unknown> {
 export interface DataDeletionToolSession {
   answers: DataDeletionToolAnswers
   currentData: DataDeletionDataResponse
+  deletionRequest: DataDeletionRequest
+  deletionResponse: DataDeletionResponse
 }
 
 /**

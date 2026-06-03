@@ -3,7 +3,7 @@ import {
   redirect,
   Self,
   step,
-  submit,
+  submit, tieBreaker,
   validation
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
@@ -13,12 +13,15 @@ import {
   GovUKTextInput
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import config from '../../../../../config'
-import { DataDeletionToolEffects } from '../../../effects';
+import { DataDeletionToolEffects } from '../../../effects'
 
 export const configurationStep = step({
   path: '/configuration',
   title: 'Configuration',
-  reachability: { entryWhen: true },
+  reachability: {
+    entryWhen: true,
+    tieBreakers: [tieBreaker({ priority: 10 })],
+  },
   onSubmission: [
     submit({
       validate: true,
@@ -79,7 +82,7 @@ export const configurationStep = step({
       ],
     }),
     GovUKButton({
-      text: 'Next',
+      text: 'Load data',
       name: 'action',
       value: 'next',
       preventDoubleClick: true,

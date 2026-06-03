@@ -45,6 +45,7 @@ export interface Collection {
 
 export interface TimelineItem {
   uuid: string
+  position: number
   event: string
   timestamp: string
   data: Record<string, any>

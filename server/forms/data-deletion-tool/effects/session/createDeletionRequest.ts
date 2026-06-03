@@ -1,28 +1,29 @@
-import { DataDeletionToolContext } from '../types'
-import { DataDeletionOperation, DataDeletionRequest } from '../../../../interfaces/aap-api/dataDeletion'
+import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from '../types'
+import { DataDeletionOperation } from '../../../../interfaces/aap-api/dataDeletion'
 
-export const createDataDeletionRequest = (context: DataDeletionToolContext): DataDeletionRequest => {
+export const createDeletionRequest = (deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
   const answers = context.getAllAnswers()
   const session = context.getSession()
 
-  return {
+  session.deletionRequest = {
+    dryRun: true,
     events: Object.entries(answers)
-      .filter(([key]) => key.startsWith("event-action-"))
+      .filter(([key, value]) => key.startsWith("event-action-") && (value as string[]).length > 0)
       .map(([key, value]) => {
         const uuid = key.slice('event-action-'.length)
-        const operation = value as DataDeletionOperation
+        const operation = (value as DataDeletionOperation[])[0]
         const currentEvent = session.currentData.events.find(it => it.uuid == uuid)
         const eventData = answers[`event-data-${uuid}`] as string
 
         return {
           uuid: uuid,
           operation: operation,
-          event: operation == DataDeletionOperation.UPDATE ? JSON.parse(eventData) : currentEvent,
+          event: operation == DataDeletionOperation.UPDATE ? JSON.parse(eventData) : currentEvent.data,
         }
       }),
-
     timeline: Object.entries(answers)
-      .filter(([key]) => key.startsWith("timeline-action-"))
+      .filter(([key, value]) => key.startsWith("timeline-action-")
+        && Object.values(DataDeletionOperation).includes(value as DataDeletionOperation))
       .map(([key, value]) => {
         const uuid = key.slice('timeline-action-'.length)
         const operation = value as DataDeletionOperation
@@ -37,6 +38,7 @@ export const createDataDeletionRequest = (context: DataDeletionToolContext): Dat
           operation: operation,
           timeline: {
             uuid: uuid,
+            position: currentTimelineItem.position,
             event: operation == DataDeletionOperation.UPDATE
               ? event ?? currentTimelineItem.event
               : currentTimelineItem.event,

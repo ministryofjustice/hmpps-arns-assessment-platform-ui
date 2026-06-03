@@ -1,14 +1,17 @@
 import {
   access,
   redirect,
-  step,
+  step, tieBreaker,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { DataDeletionToolEffects } from '../../../effects'
 
 export const clearStep = step({
   path: '/clear',
   title: 'Clear session',
-  reachability: { entryWhen: true },
+  reachability: {
+    entryWhen: true,
+    tieBreakers: [tieBreaker({ priority: 0 })],
+  },
   onAccess: [
     access({
       effects: [

@@ -6,6 +6,11 @@
 @import 'govuk-frontend/dist/govuk/base';
 
 // Components
-@import 'styles/events';
-@import 'styles/timeline';
+@import 'styles/data-list';
 @import 'styles/navigation';
+
+pre {
+  background-color: #eeeeee;
+  padding: 20px;
+  font-size: 16px !important;
+}

@@ -8,4 +8,6 @@ export const clearSession = (deps: DataDeletionToolEffectsDeps) => async (contex
 
   session.answers = null
   session.currentData = null
+  session.deletionRequest = null
+  session.deletionResponse = null
 }
