@@ -1518,7 +1518,7 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 6,
+        "w": 8,
         "x": 0,
         "y": 69
       },
@@ -1575,8 +1575,8 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 6,
-        "x": 6,
+        "w": 8,
+        "x": 8,
         "y": 69
       },
       "id": 25,
@@ -1643,8 +1643,8 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 6,
-        "x": 12,
+        "w": 8,
+        "x": 16,
         "y": 69
       },
       "id": 26,
@@ -1684,63 +1684,6 @@
         }
       ],
       "title": "Database Read/Write IOPS",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 18,
-        "y": 69
-      },
-      "id": 27,
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "max by (dbinstance_identifier) (max_over_time(aws_rds_oldest_replication_slot_lag_average{dbinstance_identifier=~'$db_instance',dbinstance_identifier!=''}[5m]))",
-          "legendFormat": "{{dbinstance_identifier}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Database Replication Slot Lag",
       "type": "timeseries"
     }
   ],
