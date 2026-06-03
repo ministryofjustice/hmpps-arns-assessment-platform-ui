@@ -37,7 +37,7 @@ export default class AddStepsPage extends AbstractPage {
   }
 
   async getStepActorSelect(index: number): Promise<Locator> {
-    return this.page.locator(`#step_actor_${index}`)
+    return this.page.locator(`#step_actor_${index}-native`)
   }
 
   async getStepDescriptionInput(index: number): Promise<Locator> {
@@ -45,7 +45,7 @@ export default class AddStepsPage extends AbstractPage {
   }
 
   async getStepStatusSelect(index: number): Promise<Locator> {
-    return this.page.locator(`#step_status_${index}`)
+    return this.page.locator(`#step_status_${index}-native`)
   }
 
   async getRemoveStepButton(index: number): Promise<Locator> {
@@ -57,11 +57,11 @@ export default class AddStepsPage extends AbstractPage {
     const descriptionInput = await this.getStepDescriptionInput(index)
     const statusSelect = await this.getStepStatusSelect(index)
 
-    // The WrappingSelect combobox visually hides the underlying <select> on init.
-    // Tests can still set its value with force: true; form submission reads the select.
+    // WrappingSelect hides the native <select> visually (id suffixed with -native).
+    // Use force: true so Playwright can interact with the clipped element.
     await actorSelect.selectOption(actor, { force: true })
     await descriptionInput.fill(description)
-    await statusSelect.selectOption(status)
+    await statusSelect.selectOption(status, { force: true })
   }
 
   async clickAddStep(): Promise<void> {
