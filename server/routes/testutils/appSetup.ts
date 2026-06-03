@@ -56,7 +56,10 @@ function appSetup(services: Services, production: boolean, userSupplier: () => H
 
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
-  app.use(routes(services))
+  app.use(routes())
+  app.get('/test-error', () => {
+    throw new Error('Deliberate test error')
+  })
   app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(production))
 

@@ -44,7 +44,6 @@ export default function createApp(services: Services): express.Application {
   const nunjucksEnv = nunjucksSetup(app)
   const formEngine = new Forge({
     logger,
-    lazyStepCompilation: process.env.NODE_ENV === 'development',
     frameworkAdapter: ExpressFrameworkAdapter.configure({
       nunjucksEnv,
       defaultTemplate: 'partials/form-step',
@@ -111,7 +110,7 @@ export default function createApp(services: Services): express.Application {
   })
 
   // Mount routes
-  app.use(routes(services))
+  app.use(routes())
   app.use(formEngine.getRouter() as express.Router)
 
   app.use((req, _res, next) => {
