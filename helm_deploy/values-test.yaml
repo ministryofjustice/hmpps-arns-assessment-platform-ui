@@ -12,6 +12,11 @@ generic-service:
       SecDefaultAction "phase:2,pass,log,tag:github_team=hmpps-assessments,tag:namespace={{ .Release.Namespace }}"
       # Disables request body scanning so free-text form fields (goal titles, step descriptions) do not trigger false positives
       SecRuleUpdateTargetById 920272 "!REQUEST_BODY"
+      # Excludes POST body from RCE and SQLi rules that produce false positives on legitimate practitioner free-text input
+      SecRuleUpdateTargetById 932230 "!REQUEST_BODY"
+      SecRuleUpdateTargetById 932235 "!REQUEST_BODY"
+      SecRuleUpdateTargetById 932250 "!REQUEST_BODY"
+      SecRuleUpdateTargetById 942360 "!REQUEST_BODY"
       # Change default denial to be a 406 so that we can tell easily that it is modsecurity doing the blocking
       SecRuleUpdateActionById 949110 "deny,status:406,logdata:%{SERVER_NAME}"
       SecRuleUpdateActionById 959100 "deny,status:406,logdata:%{SERVER_NAME}"
