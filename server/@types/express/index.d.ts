@@ -35,6 +35,7 @@ declare global {
         name: string
         authSource: string
         token: string
+        userRoles: string[]
       }
     }
 

@@ -290,6 +290,7 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
         name: hmppsUser.displayName ?? hmppsUser.username,
         authSource: hmppsUser.authSource,
         token: hmppsUser.token,
+        userRoles: hmppsUser.userRoles,
       },
     }
 

@@ -10,6 +10,7 @@ import {
   buildGoalAnswers,
   getPractitionerName,
 } from './goalUtils'
+import { getUserContext } from '../telemetry/getUserContext'
 
 /**
  * Create a new goal
@@ -101,5 +102,7 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
     relatedAreasCount: String(relatedAreas.length),
     targetDateOption: targetDateOption ?? '',
     targetDate: targetDate ?? '',
+    authSource: context.getState('user').authSource,
+    userContext: getUserContext(context),
   })
 }
