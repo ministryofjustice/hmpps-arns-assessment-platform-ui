@@ -4,6 +4,7 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
+import { snapshotFromGoal } from './goalSnapshot'
 
 /**
  * Update goal progress - update step statuses and add progress note
@@ -86,6 +87,17 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
 
   // 3. Emit GOAL_UPDATED timeline event if any changes were made
   if (hasStepStatusChanges || hasProgressNotes) {
+    const postUpdateSteps = steps.map((step, index) => {
+      const newStatus = context.getAnswer(`step_status_${index}`)
+      return {
+        actor: step.actor,
+        description: step.description,
+        status: typeof newStatus === 'string' && newStatus ? newStatus : step.status,
+      }
+    })
+
+    const goalSnapshot = snapshotFromGoal(activeGoal, { steps: postUpdateSteps })
+
     commands.push({
       type: 'UpdateCollectionItemPropertiesCommand',
       collectionItemUuid: activeGoal.uuid,
@@ -98,6 +110,7 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
           goalTitle: activeGoal.title,
           updatedBy: practitionerName,
           notes: hasProgressNotes ? (progressNotes as string).trim() : undefined,
+          goalSnapshot,
         },
       },
       assessmentUuid,

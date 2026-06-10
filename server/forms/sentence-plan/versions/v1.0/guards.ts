@@ -29,6 +29,7 @@ export const lacksPostAgreementStatus = Data('latestAgreementStatus').not.match(
 export const hasCouldNotAnswerStatus = Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))
 
 export const lacksCouldNotAnswerStatus = Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER'))
+export const isCouldNotAnswerStatus = Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))
 
 /**
  * Redirect users with READ_ONLY access to plan overview.
