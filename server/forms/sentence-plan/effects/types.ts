@@ -432,7 +432,7 @@ export interface SentencePlanSession {
  * Request state via context.getState()
  */
 export interface SentencePlanState extends Record<string, unknown> {
-  user: User & { authSource: string; token: string }
+  user: User & { authSource: string; token: string; userRoles: string[] }
   requestId: string
 }
 
