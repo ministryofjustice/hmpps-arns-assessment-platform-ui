@@ -37,6 +37,7 @@ if (connectionString) {
     const requestId = document.querySelector('meta[name="ai-request-id"]')?.content
     const telemetryId = document.querySelector('meta[name="ai-telemetry-id"]')?.content
     const entryPoint = document.querySelector('meta[name="ai-entry-point"]')?.content
+    const userContext = document.querySelector('meta[name="ai-user-context"]')?.content
     const userType = document.querySelector('meta[name="ai-user-type"]')?.content
     const goalsActive = document.querySelector('meta[name="ai-goals-active"]')?.content
     const goalsFuture = document.querySelector('meta[name="ai-goals-future"]')?.content
@@ -61,6 +62,7 @@ if (connectionString) {
       requestId: requestId || undefined,
       telemetryId: telemetryId || undefined,
       entryPoint: entryPoint || undefined,
+      userContext: userContext || undefined,
       userType: userType || undefined,
       goalsActive: goalsActive || undefined,
       goalsFuture: goalsFuture || undefined,
