@@ -63,7 +63,7 @@ services:
       SPRING_FLYWAY_LOCATIONS: classpath:db/auth,db/auth_{vendor},db/dev/data/auth_{vendor},db/dev/data/auth,filesystem:/auth_db
 
   coordinator-api:
-    image: aap-san:latest
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:aap-san
     depends_on:
       - postgres
     networks:
