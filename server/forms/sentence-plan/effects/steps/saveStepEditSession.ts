@@ -2,6 +2,7 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { SentencePlanContext, SentencePlanEffectsDeps, StepChangesStorage, StepProperties } from '../types'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getPractitionerName, getRequiredEffectContext } from '../goals/goalUtils'
+import { snapshotFromGoal } from '../goals/goalSnapshot'
 
 /**
  * Save the step edit session to the API
@@ -145,9 +146,27 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
     })
   })
 
-  // The plan history page reads GOAL_UPDATED events. Step-level events are useful
-  // internally, but this goal-level event is what makes the change visible there.
-  if (hasStepChanges && !isCreatingGoal && activeGoal?.uuid) {
+  // When saving inside the goal-create journey, flag the GOAL_UPDATED with
+  // `isInitialStepAdd: true` so plan-history folds it into GOAL_CREATED rather
+  // than rendering a separate "Goal updated" entry.
+  if (hasStepChanges && activeGoal?.uuid) {
+    // Existing steps keep their status (status edits live in updateGoalProgress);
+    // new steps default to NOT_STARTED.
+    const stepStatusByUuid = new Map<string, string>()
+    for (const original of activeGoal.steps ?? []) {
+      stepStatusByUuid.set(original.uuid, original.status)
+    }
+    const postEditSteps = steps.map((step, index) => {
+      const values = getFormValues(index)
+      return {
+        actor: values.actor,
+        description: values.description,
+        status: stepStatusByUuid.get(step.id) ?? 'NOT_STARTED',
+      }
+    })
+
+    const goalSnapshot = snapshotFromGoal(activeGoal, { steps: postEditSteps })
+
     commands.push({
       type: 'UpdateCollectionItemPropertiesCommand',
       collectionItemUuid: activeGoal.uuid,
@@ -159,6 +178,8 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
           goalUuid: activeGoal.uuid,
           goalTitle: activeGoal.title,
           updatedBy: getPractitionerName(context, user),
+          goalSnapshot,
+          ...(isCreatingGoal ? { isInitialStepAdd: true } : {}),
         },
       },
       assessmentUuid,

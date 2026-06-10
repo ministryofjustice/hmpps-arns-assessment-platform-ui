@@ -155,7 +155,25 @@ export interface PlanAgreementHistoryEntry {
   notes?: string
 }
 
-export interface GoalCreatedHistoryEntry {
+/**
+ * Per-event goal context on a plan-history entry.
+ *
+ * Snapshot fields are the goal as it was at the time of the event (from
+ * `customData.goalSnapshot`). `currentGoalStatus` is the goal as it is now
+ * (from `Data('goals')`) and drives routing decisions like the "View goal"
+ * link target. Fields are optional because the goal may have been deleted.
+ */
+export interface GoalEventContext {
+  goalStatus?: GoalStatus
+  targetDate?: string
+  statusDate?: string
+  areaOfNeedLabel?: string
+  relatedAreasOfNeedLabels?: string[]
+  steps?: Array<{ actor: string; description: string; status: string }>
+  currentGoalStatus?: GoalStatus
+}
+
+export interface GoalCreatedHistoryEntry extends GoalEventContext {
   type: 'goal_created'
   uuid: string
   date: string
@@ -164,7 +182,7 @@ export interface GoalCreatedHistoryEntry {
   createdBy?: string
 }
 
-export interface GoalAchievedHistoryEntry {
+export interface GoalAchievedHistoryEntry extends GoalEventContext {
   type: 'goal_achieved'
   uuid: string
   date: string
@@ -174,7 +192,7 @@ export interface GoalAchievedHistoryEntry {
   notes?: string
 }
 
-export interface GoalRemovedHistoryEntry {
+export interface GoalRemovedHistoryEntry extends GoalEventContext {
   type: 'goal_removed'
   uuid: string
   date: string
@@ -186,7 +204,7 @@ export interface GoalRemovedHistoryEntry {
   isCurrentlyActive: boolean
 }
 
-export interface GoalReaddedHistoryEntry {
+export interface GoalReaddedHistoryEntry extends GoalEventContext {
   type: 'goal_readded'
   uuid: string
   date: string
@@ -196,7 +214,7 @@ export interface GoalReaddedHistoryEntry {
   reason?: string
 }
 
-export interface GoalUpdatedHistoryEntry {
+export interface GoalUpdatedHistoryEntry extends GoalEventContext {
   type: 'goal_updated'
   uuid: string
   date: string

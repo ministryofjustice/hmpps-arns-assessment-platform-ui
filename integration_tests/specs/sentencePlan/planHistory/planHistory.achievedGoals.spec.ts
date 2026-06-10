@@ -2,14 +2,14 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
 import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
+import ViewInactiveGoalPage from '../../../pages/sentencePlan/viewInactiveGoalPage'
 
 test.describe('Plan History - Achieved Goals', () => {
-  test('displays achieved goal entry with title, achiever name, and view link', async ({
+  test('displays achieved goal entry with action, date, achiever, goal title, notes and view goal link', async ({
     page,
     createSession,
     sentencePlanBuilder,
   }) => {
-    // Create a plan with an achieved goal
     const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
     await sentencePlanBuilder
       .extend(sentencePlanId)
@@ -47,23 +47,15 @@ test.describe('Plan History - Achieved Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph: View all updates and changes made to this plan.
-      - separator
-      - paragraph:
-        - strong: Goal marked as achieved
-        - text: /Jane Smith/
-      - paragraph:
-        - strong: Reduce alcohol use
-      - paragraph: The goal was achieved through dedicated effort and support.
-      - paragraph:
-        - link "View goal":
-          - /url: /goal/
-      - separator
-      - paragraph:
-        - strong: Plan agreed
-        - text: /Test Practitioner and Test/
-      - paragraph: Test agreed to this plan.
+      - paragraph: View all updates to this plan.
+      - button "Show all sections"
+      - heading /Goal marked as achieved.*Jane Smith.*Reduce alcohol use.*goal was achieved through dedicated effort/
+      - heading /Plan agreed/
     `)
+
+    await planHistoryPage.clickShowAllSectionsButton()
+    await planHistoryPage.clickViewGoalLink()
+    await ViewInactiveGoalPage.verifyOnPage(page)
   })
 
   test('displays achieved goal without notes when none were provided', async ({
@@ -71,7 +63,6 @@ test.describe('Plan History - Achieved Goals', () => {
     createSession,
     sentencePlanBuilder,
   }) => {
-    // Create a plan with an achieved goal but no notes
     const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
     await sentencePlanBuilder
       .extend(sentencePlanId)
@@ -97,19 +88,11 @@ test.describe('Plan History - Achieved Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph:
-        - strong: Goal marked as achieved
-        - text: /John Doe/
-      - paragraph:
-        - strong: Build positive relationships
-      - paragraph:
-        - link "View goal":
-          - /url: /goal/
+      - heading /Goal marked as achieved.*John Doe.*Build positive relationships/
     `)
   })
 
   test('displays entries sorted by date with newest first', async ({ page, createSession, sentencePlanBuilder }) => {
-    // Create a plan with multiple events in chronological order
     const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
     await sentencePlanBuilder
       .extend(sentencePlanId)
@@ -146,14 +129,9 @@ test.describe('Plan History - Achieved Goals', () => {
 
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
     await expect(planHistoryPage.mainContent).toMatchAriaSnapshot(`
-      - paragraph:
-        - strong: Goal marked as achieved
-      - separator
-      - paragraph:
-        - strong: Agreement updated
-      - separator
-      - paragraph:
-        - strong: Plan created
+      - heading /Goal marked as achieved/
+      - heading /Agreement updated/
+      - heading /Plan created/
     `)
   })
 })
