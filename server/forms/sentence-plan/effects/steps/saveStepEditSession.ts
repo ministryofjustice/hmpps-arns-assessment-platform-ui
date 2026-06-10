@@ -150,18 +150,12 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
   // `isInitialStepAdd: true` so plan-history folds it into GOAL_CREATED rather
   // than rendering a separate "Goal updated" entry.
   if (hasStepChanges && activeGoal?.uuid) {
-    // Existing steps keep their status (status edits live in updateGoalProgress);
-    // new steps default to NOT_STARTED.
-    const stepStatusByUuid = new Map<string, string>()
-    for (const original of activeGoal.steps ?? []) {
-      stepStatusByUuid.set(original.uuid, original.status)
-    }
     const postEditSteps = steps.map((step, index) => {
       const values = getFormValues(index)
       return {
         actor: values.actor,
         description: values.description,
-        status: stepStatusByUuid.get(step.id) ?? 'NOT_STARTED',
+        status: values.status,
       }
     })
 
