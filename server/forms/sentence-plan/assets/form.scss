@@ -29,7 +29,7 @@
   .step-row,
   .step-row-headers {
     display: grid;
-    grid-template-columns: 236px minmax(0, 1fr) 170px 55px;
+    grid-template-columns: 290px minmax(0, 1fr) 205px 74px;
     column-gap: govuk-spacing(3);
     margin-right: 0;
     margin-left: 0;
@@ -57,7 +57,7 @@
 
 .step-row {
   align-items: start;
-  padding-bottom: govuk-spacing(1);
+  padding-bottom: govuk-spacing(2);
   margin-bottom: govuk-spacing(3);
   border-bottom: 1px solid $govuk-border-colour;
 

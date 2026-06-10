@@ -18,6 +18,7 @@ import {
   GovUKHeading,
   GovUKBody,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { WrappingSelect } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
 const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
@@ -127,18 +128,20 @@ export const reviewStepsTable = TemplateWrapper({
               },
               slots: {
                 statusField: [
-                  GovUKSelectInput({
-                    code: Format('step_status_%1', Loop.Index0()),
-                    label: {
-                      text: 'Status',
-                      classes: 'govuk-visually-hidden',
-                    },
-                    classes: 'govuk-select--auto-width',
-                    formGroup: {
-                      classes: 'govuk-!-margin-bottom-0',
-                    },
-                    items: stepStatusOptions,
-                    defaultValue: Item().path('status'),
+                  WrappingSelect({
+                    field: GovUKSelectInput({
+                      code: Format('step_status_%1', Loop.Index0()),
+                      label: {
+                        text: 'Status',
+                        classes: 'govuk-visually-hidden',
+                      },
+                      classes: 'govuk-select--auto-width',
+                      formGroup: {
+                        classes: 'govuk-!-margin-bottom-0',
+                      },
+                      items: stepStatusOptions,
+                      defaultValue: Item().path('status'),
+                    }),
                   }),
                 ],
               },
