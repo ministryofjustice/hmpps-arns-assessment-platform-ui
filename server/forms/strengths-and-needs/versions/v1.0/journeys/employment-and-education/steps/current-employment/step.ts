@@ -1,14 +1,12 @@
 import {
-  Answer,
   block,
   Condition,
-  Data,
   Post,
   redirect,
   step,
   submit
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKButton, GovUKTag} from '@ministryofjustice/hmpps-forge/govuk-components'
+import {GovUKButton} from '@ministryofjustice/hmpps-forge/govuk-components'
 import {StrengthsAndNeedsEffects} from '../../../../../../effects'
 import {currentEmploymentStatus } from './fields'
 
@@ -29,7 +27,10 @@ export const currentEmploymentStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress('employment_section_status','INCOMPLETE')
+        ],
         next: [
           redirect({
             goto: 'employed',

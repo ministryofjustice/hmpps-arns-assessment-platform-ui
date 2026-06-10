@@ -23,6 +23,7 @@
 
 {% block govukHeader %}
   {{ super() }}
+  {% include "sentence-plan/views/partials/phase-banner.njk" %}
   {% include "strengths-and-needs/views/partials/person-header.njk" %}
 {% endblock %}
 
@@ -34,7 +35,8 @@
     {% set activeSectionNavItems = activeSectionNavItems.concat([{
       text: item.text,
       href: item.href,
-      active: item.code == currentSectionCode
+      active: item.code == currentSectionCode,
+      attributes: {complete: item.status}
     }]) %}
   {% endfor %}
 

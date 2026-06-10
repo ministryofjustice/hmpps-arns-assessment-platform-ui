@@ -6,7 +6,6 @@ import {StrengthsAndNeedsContext} from "../types";
 export const getRequiredEffectContext = (context: StrengthsAndNeedsContext, effectName: string): EffectContext => {
   const user = context.getState('user')
   const assessmentUuid = context.getData('assessmentUuid')
-  console.log('MGEO UUID:', assessmentUuid)
 
   if (!user) {
     throw new InternalServerError(`User is required for ${effectName}`)

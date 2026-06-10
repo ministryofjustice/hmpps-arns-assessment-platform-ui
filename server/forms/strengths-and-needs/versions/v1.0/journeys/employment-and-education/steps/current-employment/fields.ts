@@ -3,8 +3,6 @@ import {GovUKRadioInput, GovUKTag, GovUKUtilityClasses} from '@ministryofjustice
 import { CaseData } from '../../../../constants'
 import locale from '../../locale.json'
 
-export const employmentProgressStatus = GovUKTag({ text: 'Incomplete', classes: GovUKUtilityClasses.Tag.Blue })
-
 export const typeOfEmployment = GovUKRadioInput({
   code: 'type_of_employment',
   fieldset: {
@@ -42,7 +40,7 @@ export const hadPreviousEmploymentUnavailableForWork = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select one option',
     }),
   ],
@@ -62,7 +60,7 @@ export const hadPreviousEmploymentActivelyLookingForWork = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select one option',
     }),
   ],
@@ -82,7 +80,7 @@ export const hadPreviousEmploymentNotLookingForWork = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select one option',
     }),
   ],
@@ -106,7 +104,7 @@ export const currentEmploymentStatus = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select the type of employment they currently have',
     }),
   ],

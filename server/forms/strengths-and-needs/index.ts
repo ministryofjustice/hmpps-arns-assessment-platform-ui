@@ -3,7 +3,7 @@ import { strengthsAndNeedsV1Journey } from './versions/v1.0'
 import { StrengthsAndNeedsEffectImplementations } from './effects'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import config from '../../config'
-import {myGeneratorImplementations, SANGenerators} from "./generators/customGenerator";
+import {myGeneratorImplementations} from "./generators/customGenerator";
 
 export const latestVersion = 'v1.0'
 

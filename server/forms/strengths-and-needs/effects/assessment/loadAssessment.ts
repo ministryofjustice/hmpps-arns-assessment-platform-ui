@@ -4,7 +4,13 @@ import { unwrapAll } from '../../../../data/aap-api/wrappers'
 import { AssessmentVersionQuery } from '../../../../interfaces/aap-api/query'
 import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
 import { QueryError } from '../../../../errors/aap-api/QueryError'
-import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import {
+  AssessmentProgress,
+  assessmentProgressFieldCodes,
+  assessmentProgressKeys,
+  StrengthsAndNeedsContext,
+  StrengthsAndNeedsEffectsDeps
+} from '../types'
 
 const SAN_ASSESSMENT_TYPE = 'SAN_SP'
 
@@ -52,20 +58,6 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
       throw new InternalServerError('CRN is required to create a strengths and needs assessment')
     }
 
-    const formVersion = context.getData('formVersion')
-
-    // TODO: Move SAN assessment creation into coordinator/handover so access arrives with an assessment ID.
-    // const createResult = await deps.api.executeCommand({
-    //   type: 'CreateAssessmentCommand',
-    //   assessmentType: SAN_ASSESSMENT_TYPE,
-    //   formVersion: typeof formVersion === 'string' ? formVersion : 'v1.0',
-    //   identifiers: {
-    //     [IdentifierType.CRN]: caseDetails.crn,
-    //   },
-    //   user,
-    // })
-    console.log('MGEO: ', session.sessionDetails.assessmentIdentifier)
-
     assessment = await deps.api.executeQuery({
       type: 'AssessmentVersionQuery',
       user,
@@ -82,12 +74,6 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
         },
       }
     }
-
-    assessment = await deps.api.executeQuery({
-      type: 'AssessmentVersionQuery',
-      user,
-      assessmentIdentifier: session.sessionDetails.assessmentIdentifier,
-    })
   }
 
   context.setData('assessment', assessment)
@@ -95,8 +81,13 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
   context.setData('sessionDetails', session.sessionDetails)
 
   const answers = unwrapAll<Record<string, unknown>>(assessment.answers)
+  const properties = unwrapAll<Record<string, unknown>>(assessment.properties)
 
   Object.entries(answers).forEach(([code, value]) => {
     context.setAnswer(code, value)
+  })
+
+  Object.entries(properties).forEach(([code, value]) => {
+    context.setData(code, value)
   })
 }

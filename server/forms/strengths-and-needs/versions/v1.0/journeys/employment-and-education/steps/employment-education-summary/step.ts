@@ -2,10 +2,8 @@ import {
   Condition,
   Post,
   redirect,
-  Session,
   step,
   submit,
-  tieBreaker
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {StrengthsAndNeedsEffects} from '../../../../../../effects'
 import {employmentStatusSummaryTab} from './fields'
@@ -21,11 +19,10 @@ export const employmentEducationSummaryStep = step({
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
-
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.markJourneyAsComplete()
+          StrengthsAndNeedsEffects.setSectionProgress('employment_section_status', 'COMPLETE')
         ],
         next: [redirect({ goto: 'employment-education-analysis' })],
       },

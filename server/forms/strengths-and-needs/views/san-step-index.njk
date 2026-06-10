@@ -19,14 +19,19 @@
 
 {% block head %}
   {{ super() }}
+  {% block pageStylesheets %}
+    <link rel="stylesheet" href="{{ '/assets/css/forms/strengths-and-needs/assets/form.css' | assetMap }}">
+  {% endblock %}
 {% endblock %}
 
 {% block govukHeader %}
   {{ super() }}
+  {% include "sentence-plan/views/partials/phase-banner.njk" %}
   {% include "strengths-and-needs/views/partials/person-header.njk" %}
 {% endblock %}
 
 {% block content %}
+
   {% set currentSectionCode = ancestors[ancestors.length - 1].code if ancestors.length else '' %}
   {% set activeSectionNavItems = [] %}
 
@@ -34,7 +39,8 @@
     {% set activeSectionNavItems = activeSectionNavItems.concat([{
       text: item.text,
       href: item.href,
-      active: item.code == currentSectionCode
+      active: item.code == currentSectionCode,
+      attributes: {"data-status": item.status}
     }]) %}
   {% endfor %}
 

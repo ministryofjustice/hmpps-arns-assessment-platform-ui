@@ -1,5 +1,6 @@
 {
   "optional_details": "Give details (optional)",
+  "required_details": "Give details",
   "options": {
     "EMPLOYED": "Employed",
     "SELF_EMPLOYED": "Self-employed",

@@ -13,7 +13,6 @@ import {
   educationExperience,
   employmentAndEducationChanges,
 } from './fields'
-import {sectionNavItems} from "../../../../constants";
 
 const saveButton = block<GovUKButton>({
   variant: 'govukButton',
@@ -49,7 +48,10 @@ export const employedEmploymentStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress('employment_section_status','INCOMPLETE')
+        ],
         next: [redirect({ goto: 'employment-education-summary' })],
       },
     }),

@@ -5,27 +5,25 @@ import {GovUKBody} from "@ministryofjustice/hmpps-forge/govuk-components";
 
 export const { generators: SANGenerators, implementations: myGeneratorImplementations } =
   defineGeneratorFunctions<any, any>({
-    /**
-     * Generates the current date and time.
-     *
-     * @returns Current Date object with full timestamp
-     *
-     * @example
-     * // In form definition
-     * minDate: Generator.Date.Now()
-     *
-     * @example
-     * // With pipeline
-     * deadline: Generator.Date.Now().pipe(Transformer.Date.AddDays(7))
-     */
-    getTextFromListDefinition: (deps) => (items: any[], value: string): ResolvableString | undefined => {
+    getTextFromListDefinition: {
+      // Strips out everything but the `value` and `text` from the generators arguments
+      prepare: (items: any[], value: string): [any[], string] => {
+        const filteredItems = items
+          .filter(x => !x.divider)
+          .map(x => ({ value: x.value, text: x.text }))
 
-      const selectedItem
-        = items.find(item=> 'value' in item && item.value === value)
+        return [filteredItems, value]
+      },
 
-      if (!selectedItem || !('text' in selectedItem)) {
-        return ''
-      }
-      return selectedItem.text
+      // Returns the relevant selected item for the given value
+      factory: (deps) => (items: any[], value: string): ResolvableString | undefined => {
+        const selectedItem = items.find(item => 'value' in item && item.value === value)
+
+        if (!selectedItem || !('text' in selectedItem)) {
+          return ''
+        }
+
+        return selectedItem.text
+      },
     },
   })

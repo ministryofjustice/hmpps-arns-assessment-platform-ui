@@ -1,4 +1,4 @@
-import { access, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {access, Data, journey} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 import { drugUseJourney } from './journeys/drug-use'
@@ -19,7 +19,10 @@ export const strengthsAndNeedsV1Journey = journey({
     template: 'strengths-and-needs/views/san-step-index',
     locals: {
       basePath: '/strengths-and-needs/v1.0',
-      sectionNavItems,
+      sectionNavItems: sectionNavItems.map((section) => ({
+        ...section,
+        status: Data(section.statusKey),
+      })),
     },
   },
   data: {

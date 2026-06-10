@@ -1,7 +1,11 @@
 import type { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
 import { User } from '../../../interfaces/user'
 import { CommandResult, CreateAssessmentCommandResult } from '../../../interfaces/aap-api/commandResult'
-import { CreateAssessmentCommand, UpdateAssessmentAnswersCommand } from '../../../interfaces/aap-api/command'
+import {
+  CreateAssessmentCommand,
+  UpdateAssessmentAnswersCommand,
+  UpdateAssessmentPropertiesCommand
+} from '../../../interfaces/aap-api/command'
 import { AssessmentVersionQuery } from '../../../interfaces/aap-api/query'
 import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryResult'
 import { AssessmentIdentifiers } from '../../../interfaces/aap-api/identifier'
@@ -14,9 +18,24 @@ export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentVersion?: number
 }
 
-export interface AssessmentProgress {
-  employmentEducationComplete?: boolean
-}
+
+export type SectionProgressStatus = 'INCOMPLETE' | 'COMPLETE'
+
+export const assessmentProgressFieldCodes = {
+  accommodationComplete: 'accommodation_section_status',
+  alcoholUseComplete: 'alcohol_section_status',
+  drugsComplete: 'drugs_section_status',
+  employmentEducationComplete: 'employment_section_status',
+  financesComplete: 'finances_section_status',
+  healthWellbeingComplete: 'health_section_status',
+  offencesComplete: 'offences_section_status',
+  relationshipsComplete: 'relationship_section_status',
+  thinkingBehaviourComplete: 'thinking_behaviour_section_status',
+};
+
+export type AssessmentProgress = typeof assessmentProgressFieldCodes
+
+export const assessmentProgressKeys = Object.values(assessmentProgressFieldCodes) as (keyof AssessmentProgress)[]
 
 /**
  * Session data available to SAN effects.
@@ -27,7 +46,6 @@ export interface StrengthsAndNeedsSession {
   accessDetails?: AccessSessionDetails
   sessionDetails?: StrengthsAndNeedsSessionDetails
   handoverContext?: HandoverContext
-  assessmentProgress?: AssessmentProgress
 }
 
 /**
@@ -64,6 +82,7 @@ export interface StrengthsAndNeedsAssessmentApi {
   executeQuery(query: AssessmentVersionQuery): Promise<AssessmentVersionQueryResult>
   executeCommand(command: CreateAssessmentCommand): Promise<CreateAssessmentCommandResult>
   executeCommand(command: UpdateAssessmentAnswersCommand): Promise<CommandResult>
+  executeCommand(command: UpdateAssessmentPropertiesCommand): Promise<CommandResult>
 }
 
 export interface StrengthsAndNeedsEffectsDeps {
