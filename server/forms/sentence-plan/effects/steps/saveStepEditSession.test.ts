@@ -373,4 +373,48 @@ describe('saveStepEditSession', () => {
       }),
     )
   })
+
+  it('should snapshot the submitted step status when saving steps for a newly-created goal', async () => {
+    // Plan-history folds this snapshot's steps into the "Goal created" entry,
+    // so a step created as IN_PROGRESS must not be snapshotted as NOT_STARTED.
+    // Arrange
+    const deps = createDeps()
+    const newStep = createStep({ id: 'step-new', actor: '', description: '', status: '' })
+    const session: SentencePlanSession = {
+      stepChanges: {
+        [activeGoal.uuid]: createStepChanges({
+          steps: [newStep],
+          toCreate: [newStep.id],
+        }),
+      },
+    }
+    const context = createMockContext({
+      session,
+      data: { navigationReferrer: 'add-goal' },
+      answers: {
+        step_actor_0: 'probation_practitioner',
+        step_description_0: 'Book an appointment',
+        step_status_0: 'IN_PROGRESS',
+      },
+    })
+
+    // Act
+    await saveStepEditSession(deps)(context)
+
+    // Assert
+    const commands = getExecutedCommands(deps)
+    expect(commands).toContainEqual(
+      expect.objectContaining({
+        timeline: expect.objectContaining({
+          type: 'GOAL_UPDATED',
+          data: expect.objectContaining({
+            isInitialStepAdd: true,
+            goalSnapshot: expect.objectContaining({
+              steps: [{ actor: 'probation_practitioner', description: 'Book an appointment', status: 'IN_PROGRESS' }],
+            }),
+          }),
+        }),
+      }),
+    )
+  })
 })
