@@ -10,6 +10,7 @@ import HandoverApiClient from './handoverApiClient'
 import CoordinatorApiClient from './coordinatorApiClient'
 import AssessmentCacheStore from './assessmentCacheStore'
 import PreferencesStore from './preferencesStore'
+import RiskActuarialApiClient from './riskActuarialApiClient'
 
 const applicationInfo = applicationInfoSupplier()
 
@@ -31,6 +32,7 @@ export const dataAccess = () => {
     coordinatorApiClient: new CoordinatorApiClient(hmppsAuthClient),
     assessmentCacheStore,
     preferencesStore: new PreferencesStore(),
+    riskActuarialApiClient: new RiskActuarialApiClient(hmppsAuthClient),
   }
 }
 

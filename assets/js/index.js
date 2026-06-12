@@ -1,6 +1,7 @@
 import './appInsights.mjs'
 import * as govukFrontend from 'govuk-frontend'
 import * as mojFrontend from '@ministryofjustice/frontend'
+import * as arnsFrontend from "@ministryofjustice/hmpps-arns-frontend-components-lib/dist/js/all"
 import { CollapsibleNav } from './collapsible-nav.mjs'
 import { SupportWidget } from './support-widget.mjs'
 import { initScrollRestore } from './scroll-restore.mjs'
@@ -12,6 +13,7 @@ import '../../server/forms/sentence-plan/components/report-problem-link/report-p
 
 govukFrontend.initAll()
 mojFrontend.initAll()
+arnsFrontend.initAll()
 initScrollRestore()
 
 customElements.define('app-copy-code', CopyCode)
