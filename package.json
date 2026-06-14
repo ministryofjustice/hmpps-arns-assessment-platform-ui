@@ -118,7 +118,7 @@
     "@yikes2000/prettier-plugin-merge-extras": "^0.7.3-extras.2",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
-    "esbuild": "^0.25.8",
+    "esbuild": "^0.28.0",
     "esbuild-plugin-clean": "^1.0.1",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-manifest": "^1.0.5",
