@@ -205,7 +205,3 @@ export const agreementHistory = GovUKAccordion({
     }),
   ),
 })
-
-export const backToTopLink = GovUKBody({
-  text: '<a href="#" class="govuk-link govuk-!-display-none-print">↑ Back to top</a>',
-})
