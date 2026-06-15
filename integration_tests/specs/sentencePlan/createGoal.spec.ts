@@ -4,6 +4,7 @@ import { test, TargetService } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
+import SelectAreaOfNeedPage from '../../pages/sentencePlan/selectAreaOfNeedPage'
 import {
   buildErrorPageTitle,
   buildPageTitle,
@@ -21,6 +22,9 @@ test.describe('Create Goal Journey', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.clickCreateGoal()
+      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+      await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
+
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
 
       // ensure page title is correct
@@ -206,6 +210,9 @@ test.describe('Create Goal Journey', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       await planOverviewPage.clickCreateGoal()
 
+      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+      await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
+
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
       await createGoalPage.enterGoalTitle('Future accommodation goal')
       await createGoalPage.selectIsRelated(false)
@@ -283,6 +290,9 @@ test.describe('Create Goal Journey', () => {
       await navigateToSentencePlan(page, handoverLink)
       await page.getByRole('button', { name: 'Create goal' }).click()
 
+      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+      await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
+
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
       await createGoalPage.selectIsRelated(true)
 
@@ -303,6 +313,9 @@ test.describe('Create Goal Journey', () => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
       await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+      await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
 
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
       await createGoalPage.selectIsRelated(true)
@@ -394,6 +407,9 @@ test.describe('Create Goal Journey', () => {
       await navigateToSentencePlan(page, handoverLink)
       await page.getByRole('button', { name: 'Create goal' }).click()
 
+      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+      await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
+
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
       await createGoalPage.selectIsRelated(true)
 
@@ -420,6 +436,9 @@ test.describe('Create Goal Journey', () => {
       await navigateToSentencePlan(page, handoverLink)
       await page.getByRole('button', { name: 'Create goal' }).click()
 
+      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+      await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
+
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
 
       // click add steps to trigger error:
@@ -444,6 +463,9 @@ test.describe('Create Goal Journey', () => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
       await page.getByRole('button', { name: 'Create goal' }).click()
+
+      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+      await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
 
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
 
@@ -476,13 +498,13 @@ test.describe('Create Goal Journey', () => {
         })
       })
 
-    test('invalid area of need slug redirects to accommodation', async ({ page, createSession }) => {
+    test('invalid area of need slug redirects to select area of need', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
 
       await page.goto('/sentence-plan/v1.0/goal/new/add-goal/not-a-real-area')
 
-      await expect(page).toHaveURL(/\/add-goal\/accommodation/)
+      await expect(page).toHaveURL(/\/goal\/new\/select-area-of-need/)
     })
   })
 })

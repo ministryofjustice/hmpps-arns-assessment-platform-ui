@@ -11,6 +11,7 @@ import {
   type AreaOverrides,
 } from '../../../builders/AssessmentDataFactories'
 import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
+import SelectAreaOfNeedPage from '../../../pages/sentencePlan/selectAreaOfNeedPage'
 
 const setupAboutPage = async (
   page: Page,
@@ -146,6 +147,12 @@ test.describe('About Page: complete assessment state', () => {
           await expect(createGoalLink).toHaveText(/Create .+ goal/i)
 
           await aboutPage.clickCreateGoalInSection(aboutPage.highScoringAreasAccordion, 0)
+
+          // Create goal links now route through the area selection page, pre-selecting that area.
+          const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+          await expect(selectAreaOfNeedPage.areaRadio('drug-use')).toBeChecked()
+          await selectAreaOfNeedPage.clickContinue()
+
           await CreateGoalPage.verifyOnPage(page)
           await expect(page.locator('.govuk-caption-l')).toContainText('Drug use')
         }
