@@ -23,6 +23,8 @@ export default class CreateGoalPage extends AbstractPage {
 
   readonly errorSummary: Locator
 
+  readonly backLink: Locator
+
   private assessmentInfo: AssessmentInfoHelper
 
   private canStartNow: CanStartNowHelper
@@ -45,6 +47,7 @@ export default class CreateGoalPage extends AbstractPage {
     this.goalTitles = page.getByTestId('autocomplete-data-goal_title')
     this.findAccomodationGoal = page.getByRole('option', { name: 'I will find accommodation' })
     this.errorSummary = page.locator('[data-module="govuk-error-summary"]')
+    this.backLink = page.locator('.govuk-back-link')
     this.assessmentInfo = new AssessmentInfoHelper(page)
     this.canStartNow = new CanStartNowHelper(page)
     this.targetDate = new TargetDateHelper(page)

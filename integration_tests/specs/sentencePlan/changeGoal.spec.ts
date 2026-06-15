@@ -3,6 +3,7 @@ import { test, TargetService } from '../../support/fixtures'
 import ChangeGoalPage from '../../pages/sentencePlan/changeGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
+import SelectAreaOfNeedPage from '../../pages/sentencePlan/selectAreaOfNeedPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import UpdateGoalAndStepsPage from '../../pages/sentencePlan/updateGoalAndStepsPage'
 import { currentGoals, futureGoals } from '../../builders/sentencePlanFactories'
@@ -412,6 +413,10 @@ test.describe('Change goal journey', () => {
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
         await planOverviewPage.clickCreateGoal()
 
+        // select an area of need to reach the create goal page
+        const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+        await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
+
         // on create goal page:
         // tick 1 related area of need
         //  set can start working now to yes with 12 months
@@ -648,6 +653,10 @@ test.describe('Change goal journey', () => {
         // click create goal on plan overview
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
         await planOverviewPage.clickCreateGoal()
+
+        // select an area of need to reach the create goal page
+        const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+        await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
 
         // on create goal page:
         // tick 1 related area of need

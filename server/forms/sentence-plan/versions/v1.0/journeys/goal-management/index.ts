@@ -1,4 +1,5 @@
 import { journey } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { selectAreaOfNeedStep } from './select-area-of-need/step'
 import { createGoalStep } from './add-goal/step'
 import { addStepsStep } from './add-steps/step'
 import { changeGoalStep } from './change-goal/step'
@@ -17,6 +18,7 @@ export const goalManagementJourney = journey({
   path: '/goal/:uuid',
   onAccess: [redirectToOverviewIfReadOnly()],
   steps: [
+    selectAreaOfNeedStep,
     createGoalStep,
     addStepsStep,
     changeGoalStep,

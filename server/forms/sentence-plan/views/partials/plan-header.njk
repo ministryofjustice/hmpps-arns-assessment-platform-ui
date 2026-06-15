@@ -77,7 +77,7 @@
                     }) }}
                   {% endif %}
                   {% if buttons.showCreateGoalButton %}
-                    {% set createGoalHref = basePath + '/goal/new/add-goal/accommodation' + ('?type=' + currentTab if currentTab else '') %}
+                    {% set createGoalHref = basePath + '/goal/new/select-area-of-need' + ('?type=' + currentTab if currentTab and currentTab != 'current' else '') %}
                     {{ govukButton({
                       text: 'Create goal',
                       href: createGoalHref,

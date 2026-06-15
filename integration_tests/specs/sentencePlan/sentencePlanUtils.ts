@@ -60,6 +60,7 @@ export const sentencePlanV1UrlBuilders = {
   goalViewInactive: (goalUuid: string) =>
     `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/view-inactive-goal`,
   goalCreate: (areaOfNeed: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/new/add-goal/${areaOfNeed}`,
+  goalSelectAreaOfNeed: () => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/new/select-area-of-need`,
   planReorderGoal: (goalUuid: string, direction: 'up' | 'down', status: 'ACTIVE' | 'FUTURE' | 'ACHIEVED' | 'REMOVED') =>
     `${sentencePlanV1URLs.PLAN_OVERVIEW}?goalUuid=${goalUuid}&direction=${direction}&status=${status}`,
 }
@@ -67,6 +68,7 @@ export const sentencePlanV1UrlBuilders = {
 // Page titles for sentence plan - matches step.title or dynamicTitle values
 export const sentencePlanPageTitles = {
   // Goal management
+  selectAreaOfNeed: 'Create a goal',
   createGoal: 'Create a goal',
   addSteps: 'Add or change steps',
   updateGoalAndSteps: 'Update goal and steps',
