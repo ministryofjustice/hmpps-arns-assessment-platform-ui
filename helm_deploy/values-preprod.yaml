@@ -19,9 +19,9 @@ generic-service:
       SecRule REQUEST_URI "@beginsWith /sign-in/" "id:10020,phase:1,pass,nolog,ctl:ruleRemoveTargetByTag=attack-sqli;ARGS,ctl:ruleRemoveTargetByTag=attack-rce;ARGS"
       SecRule REQUEST_URI "@beginsWith /oauth2/" "id:10021,phase:1,pass,nolog,ctl:ruleRemoveTargetByTag=attack-sqli;ARGS,ctl:ruleRemoveTargetByTag=attack-rce;ARGS"
       # Random cookie values (analytics ai_*, login session) can false-block a user on every page; skip these cookies only.
-      SecRuleUpdateTargetByTag "attack-rce" "!REQUEST_COOKIES:/^(ai_(user|session)|hmpps-arns-assessment-platform-ui\.session)$/"
-      SecRuleUpdateTargetByTag "attack-sqli" "!REQUEST_COOKIES:/^(ai_(user|session)|hmpps-arns-assessment-platform-ui\.session)$/"
-      SecRuleUpdateTargetByTag "attack-lfi" "!REQUEST_COOKIES:/^(ai_(user|session)|hmpps-arns-assessment-platform-ui\.session)$/"
+      SecRuleUpdateTargetByTag "attack-rce" "!REQUEST_COOKIES:ai_user|!REQUEST_COOKIES:ai_session|!REQUEST_COOKIES:hmpps-arns-assessment-platform-ui.session"
+      SecRuleUpdateTargetByTag "attack-sqli" "!REQUEST_COOKIES:ai_user|!REQUEST_COOKIES:ai_session|!REQUEST_COOKIES:hmpps-arns-assessment-platform-ui.session"
+      SecRuleUpdateTargetByTag "attack-lfi" "!REQUEST_COOKIES:ai_user|!REQUEST_COOKIES:ai_session|!REQUEST_COOKIES:hmpps-arns-assessment-platform-ui.session"
       # Change default denial to be a 406 so that we can tell easily that it is modsecurity doing the blocking
       SecRuleUpdateActionById 949110 "deny,status:406,logdata:%{SERVER_NAME}"
       SecRuleUpdateActionById 959100 "deny,status:406,logdata:%{SERVER_NAME}"
