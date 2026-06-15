@@ -74,7 +74,6 @@ export default function createApp(services: Services): express.Application {
       deliusApi: services.deliusApiClient,
       auditService: services.auditService,
       featureFlagService: services.featureFlagService,
-      formDataStore: services.formDataStore,
       riskActuarialApi: services.riskActuarialApiClient,
     })
 

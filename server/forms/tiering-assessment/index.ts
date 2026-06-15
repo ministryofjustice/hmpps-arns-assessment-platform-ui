@@ -21,10 +21,44 @@ import { TieringAssessmentEffectsDeps } from './effects/types'
 import { TieringAssessmentEffects, TieringAssessmentEffectsImplementations } from './effects/effects'
 import { TieringAssessmentFunctions } from './effects/functions'
 
+const introStep = step({
+  path: '/intro',
+  title: 'Intro',
+  reachability: { entryWhen: true },
+  blocks: [
+    GovUKBody({
+      text: `This demo creates a new assessment in the AAP API database, asks the static tiering assessment questions,
+       and calculates risk scores. On each page save an aggregate is stored in the database.`,
+    }),
+    GovUKTextInput({
+      code: 'assessment-uuid',
+      label: 'Assessment UUID',
+      hint: 'Enter an assessment UUID to load, or leave blank to create a new assessment',
+      classes: "govuk-input--width-20",
+    }),
+    GovUKButton({ text: 'Continue' }),
+  ],
+  onSubmission: [
+    submit({
+      validate: false,
+      onAlways: {
+        effects: [
+          TieringAssessmentEffects.InitialiseAssessment(),
+        ],
+        next: [redirect({ goto: 'static-questions' })],
+      },
+    }),
+  ],
+})
+
 const staticQuestionsStep = step({
   path: '/static-questions',
   title: 'Static questions',
-  reachability: { entryWhen: true },
+  onAccess: [
+    access({
+      effects: [TieringAssessmentEffects.LoadAssessmentData()],
+    }),
+  ],
   blocks: [
     GovUKRadioInput({
       code: 'gender',
@@ -138,8 +172,8 @@ const staticQuestionsStep = step({
       validate: true,
       onValid: {
         effects: [
-          TieringAssessmentEffects.calculateRiskActuarialScores(),
-          TieringAssessmentEffects.SaveDraftAnswers('tiering-assessment'),
+          TieringAssessmentEffects.CalculateRiskActuarialScores(),
+          TieringAssessmentEffects.SaveAssessmentData(),
         ],
         next: [redirect({ goto: 'summary' })],
       },
@@ -223,13 +257,10 @@ const summaryStep = step({
       validate: false,
       onAlways: {
         effects: [
-          TieringAssessmentEffects.SaveAnswers('tiering-assessment'),
-          TieringAssessmentEffects.SaveSubmitStateToSession('tiering-assessment', true),
-          TieringAssessmentEffects.ClearDraftAnswers('tiering-assessment'),
+          TieringAssessmentEffects.SetAssessmentComplete()
         ],
         next: [
           redirect({
-            when: Session('patternSubmitted.tiering-assessment').match(Condition.Equals(true)),
             goto: 'confirmation',
           }),
         ],
@@ -251,7 +282,7 @@ const confirmationStep = step({
       titleText: 'Answers saved',
     }),
     GovUKBody({
-      text: 'Your answers have been saved.',
+      text: 'Your answers have been saved with UUID {UUID}.',
     }),
     GovUKButton({
       text: 'Restart',
@@ -264,12 +295,7 @@ const confirmationStep = step({
     submit({
       validate: false,
       onAlways: {
-        effects: [
-          TieringAssessmentEffects.ClearAnswers('tiering-assessment'),
-          TieringAssessmentEffects.ClearDraftAnswers('tiering-assessment'),
-          TieringAssessmentEffects.SaveSubmitStateToSession('tiering-assessment', false),
-        ],
-        next: [redirect({ goto: 'static-questions' })],
+        next: [redirect({ goto: 'intro' })],
       },
     }),
   ],
@@ -279,12 +305,7 @@ const tieringAssessmentJourney = journey({
   code: 'tiering-assessment',
   title: 'Tiering Assessment',
   path: '/tiering-assessment',
-  steps: [staticQuestionsStep, summaryStep, confirmationStep],
-  onAccess: [
-    access({
-      effects: [TieringAssessmentEffects.LoadDraftAnswers('tiering-assessment')],
-    }),
-  ],
+  steps: [introStep, staticQuestionsStep, summaryStep, confirmationStep],
 })
 
 export default createForgePackage<TieringAssessmentEffectsDeps>({

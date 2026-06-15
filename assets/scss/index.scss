@@ -9,7 +9,6 @@ $govuk-page-width: $moj-page-width;
 @import 'accessible-autocomplete/dist/accessible-autocomplete.min.css';
 @import '../../server/forms/sentence-plan/components/accessible-autocomplete/accessible-autocomplete';
 @import '@ministryofjustice/hmpps-forge/dist/moj-components/all';
-@import '@ministryofjustice/hmpps-arns-frontend-components-lib/dist/all';
 
 // Highlight.js theme for syntax highlighting
 @import 'highlight.js/styles/github';

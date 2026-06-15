@@ -3,7 +3,6 @@ import { Session } from 'express-session'
 import { AssessmentPlatformApiClient, CoordinatorApiClient, DeliusApiClient } from '../../../data'
 import AuditService from '../../../services/auditService'
 import FeatureFlagService from '../../../services/featureFlagService'
-import FormDataStore from '../data/formDataStore'
 import RiskActuarialApiClient from '../../../data/riskActuarialApiClient'
 
 /**
@@ -16,7 +15,6 @@ export interface TieringAssessmentEffectsDeps {
   deliusApi: DeliusApiClient
   auditService: AuditService
   featureFlagService: FeatureFlagService
-  formDataStore: FormDataStore
   riskActuarialApi: RiskActuarialApiClient
 }
 

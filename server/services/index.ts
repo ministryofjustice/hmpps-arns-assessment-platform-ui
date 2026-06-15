@@ -2,7 +2,6 @@ import { dataAccess } from '../data'
 import AuditService from './auditService'
 import AssessmentService from './assessmentService'
 import FeatureFlagService from './featureFlagService'
-import FormDataStore from '../forms/tiering-assessment/data/formDataStore'
 
 export const services = () => {
   const {
@@ -25,7 +24,6 @@ export const services = () => {
     auditService: new AuditService(applicationInfo.applicationName),
     assessmentService: new AssessmentService(assessmentPlatformApiClient),
     featureFlagService: new FeatureFlagService(),
-    formDataStore: new FormDataStore(),
     riskActuarialApiClient,
   }
 }
