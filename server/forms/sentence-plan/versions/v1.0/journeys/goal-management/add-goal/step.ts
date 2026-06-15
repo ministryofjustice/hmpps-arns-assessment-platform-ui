@@ -12,7 +12,7 @@ import {
   when,
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { sideNav, contentBlocks } from './fields'
+import { contentBlocks } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 
@@ -25,15 +25,14 @@ export const createGoalStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
+      // Back returns to area selection with the current area pre-selected, preserving the
+      // originating plan tab so the user can keep backing out to where they started.
       backlink: when(Query('type').match(Condition.IsRequired()))
-        .then(Format('../../../plan/overview?type=%1', Query('type')))
-        .else('../../../plan/overview?type=current'),
-      twoColumnLayout: {
-        sidebarBlockIndex: 0,
-      },
+        .then(Format('../select-area-of-need?area=%1&type=%2', Params('areaOfNeed'), Query('type')))
+        .else(Format('../select-area-of-need?area=%1', Params('areaOfNeed'))),
     },
   },
-  blocks: [sideNav, ...contentBlocks],
+  blocks: contentBlocks,
   onAccess: [
     access({
       effects: [
@@ -49,10 +48,17 @@ export const createGoalStep = step({
       next: [redirect({ goto: Format('../new/add-goal/%1', Params('areaOfNeed')) })],
     }),
 
-    // If area of need is not a valid slug, redirect them to `accommodation` by default.
+    // If the area of need is not a valid slug, send them back to pick one rather than
+    // silently defaulting to a single area.
     access({
       when: Params('areaOfNeed').not.match(Condition.Array.IsIn(Data('areaOfNeedSlugs'))),
-      next: [redirect({ goto: 'add-goal/accommodation' })],
+      next: [
+        redirect({
+          when: Query('type').match(Condition.IsRequired()),
+          goto: Format('../select-area-of-need?type=%1', Query('type')),
+        }),
+        redirect({ goto: '../select-area-of-need' }),
+      ],
     }),
   ],
   onSubmission: [
