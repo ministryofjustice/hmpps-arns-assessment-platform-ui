@@ -4,7 +4,8 @@ import {
   GovUKCheckboxInput,
   GovUKCharacterCount,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { CaseData } from '../../../../constants'
+
+import { CaseData } from '../../../../constants/formVersion';
 
 // --- Living With Group ---
 

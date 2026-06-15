@@ -1,33 +1,30 @@
-import { step, submit, redirect, block, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
-  employmentSector,
-  dayToDayCommitments,
   academicQualification,
-  employmentHistory,
-  professionalQualifications,
-  jobSkills,
+  dayToDayCommitments,
   difficultiesReadingWritingNumeracy,
-  employmentExperience,
   educationExperience,
   employmentAndEducationChanges,
+  employmentExperience,
+  employmentHistory,
+  employmentSector,
+  jobSkills,
+  professionalQualifications,
 } from './fields'
-
-const saveButton = block<GovUKButton>({
-  variant: 'govukButton',
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { Section, SectionStatus } from '../../../../constants/section';
+import { saveButton } from '../../../../constants/buttons';
+import { Step } from '../../constants/step';
+import { locale } from '../../constants/locale';
+import { sectionPath } from '../../../../constants/path';
 
 export const employedEmploymentStep = step({
-  path: '/employed',
-  title: 'Employed',
+  path: '/' + Step.employed.path,
+  title: locale.step[Step.employed.code],
   view: {
     template: 'strengths-and-needs/views/san-step',
     locals: {
-      backlink: '/strengths-and-needs/v1.0/employment-and-education/'
+      backlink: sectionPath(Section.employment_and_education)
     },
   },
   blocks: [
@@ -50,9 +47,9 @@ export const employedEmploymentStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress('employment_section_status','INCOMPLETE')
+          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education.statusKey, SectionStatus.incomplete)
         ],
-        next: [redirect({ goto: 'employment-education-summary' })],
+        next: [redirect({ goto: Step.employment_education_summary.path })],
       },
     }),
   ],

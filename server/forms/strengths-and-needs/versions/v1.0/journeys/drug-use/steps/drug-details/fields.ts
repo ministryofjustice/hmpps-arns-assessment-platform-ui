@@ -20,7 +20,8 @@ import {
   GovUKInsetText,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CollectionBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
-import { CaseData } from '../../../../constants'
+
+import { CaseData } from '../../../../constants/formVersion';
 
 // --- Conditions ---
 

@@ -14,8 +14,8 @@ import {
   GovUKCheckboxInput,
   GovUKCharacterCount,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { CaseData } from '../../../../constants'
 import { drugsList, fieldCode } from '../../constants'
+import { CaseData } from '../../../../constants/formVersion';
 
 const lastSixMonthConditions = drugsList.map(drug =>
   Answer(fieldCode('drug_last_used', drug.value)).match(Condition.Equals('LAST_SIX')),

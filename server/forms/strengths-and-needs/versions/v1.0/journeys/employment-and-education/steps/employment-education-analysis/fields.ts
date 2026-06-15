@@ -1,9 +1,8 @@
 import {and, Answer, Condition, Format, not, or} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKBody, GovUKLinkButton, GovUKSummaryList, GovUKTabs,} from '@ministryofjustice/hmpps-forge/govuk-components'
-import {CaseData} from '../../../../constants'
+import {GovUKBody, GovUKSummaryList, GovUKTabs,} from '@ministryofjustice/hmpps-forge/govuk-components'
 import {SANGenerators} from "../../../../../../generators/customGenerator";
 import {currentEmploymentStatus, typeOfEmployment} from "../current-employment/fields";
-import locale from '../../locale.json'
+import { locale } from '../../constants/locale'
 import {
   academicQualification,
   dayToDayCommitments,
@@ -21,215 +20,213 @@ import {
 import {
   employmentOrEducationLinkedReoffending,
   employmentOrEducationLinkedToSeriousHarm,
-  strenthsProtectiveFactors,
+  strengthsProtectiveFactors,
 } from "../employment-education-summary/fields";
+import { CaseData } from '../../../../constants/formVersion';
+import { Question } from '../../constants/question';
+import { Step } from '../../constants/step';
+import { commonLocale } from '../../../../constants/locale';
+import { goToPractitionerAnalysisButton } from '../../../../constants/buttons';
+import { Option } from '../../constants/option';
 
 // --- Employment and Education Summary Group ---
 
 const employmentStatusSummary = GovUKSummaryList({
   rows: [
     {
-      key: {text: Format(locale.current_employment.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.current_employment_status], CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(currentEmploymentStatus.items, Answer('current_employment_status'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(typeOfEmployment.items, Answer('type_of_employment')), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(currentEmploymentStatus.items, Answer(Question.current_employment_status))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(typeOfEmployment.items, Answer(Question.type_of_employment)), size: "s"}),
         ]
       },
       actions: {
-        items: [{href: 'current-employment', text: 'Change'}],
+        items: [{href: Step.current_employment.path, text: commonLocale.change}],
       },
     },
     {
-      key: {text: Format(locale.employed_employment.employment_sector.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.employment_sector], CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: Answer('employment_sector')}),
+          GovUKBody({text: Answer(Question.employment_sector)}),
         ]
       },
       actions: {
-        items: [{href: 'employed', text: 'Change'}],
+        items: [{href: Step.employed.path, text: commonLocale.change}],
       },
       visibleWhen: and(
         or(
-          Answer('current_employment_status').match(Condition.Equals('EMPLOYED')),
-          Answer('current_employment_status').match(Condition.Equals('SELF_EMPLOYED'))),
-        Answer('employment_sector').match(Condition.String.HasMinLength(1)),),
+          Answer(Question.current_employment_status).match(Condition.Equals(Option.employed)),
+          Answer(Question.current_employment_status).match(Condition.Equals(Option.self_employed))),
+        Answer(Question.employment_sector).match(Condition.String.HasMinLength(1)),),
     },
     {
-      key: {text: Format(locale.employed_employment.employment_history.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.employment_history], CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentHistory.items, Answer('employment_history'))}),
-          GovUKBody({text: Answer('continuous_employment_history_employment_details'), size: "s"}),
-          GovUKBody({text: Answer('changes_often_employment_history_employment_details'), size: "s"}),
-          GovUKBody({text: Answer('unstable_employment_history_employment_details'), size: "s"}),
-          GovUKBody({text: Answer('unknown_employment_history_employment_details'), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentHistory.items, Answer(Question.employment_history))}),
+          GovUKBody({text: Answer(Question.continuous_employment_history_employment_details), size: "s"}),
+          GovUKBody({text: Answer(Question.changes_often_employment_history_employment_details), size: "s"}),
+          GovUKBody({text: Answer(Question.unstable_employment_history_employment_details), size: "s"}),
+          GovUKBody({text: Answer(Question.unknown_employment_history_employment_details), size: "s"}),
         ]
       },
       actions: {
-        items: [{href: 'employed', text: 'Change'}],
+        items: [{href: Step.employed.path, text: commonLocale.change}],
       },
-      visibleWhen: not(or(Answer('had_previous_employment_unavailable_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
-        Answer('had_previous_employment_actively_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
-        Answer('had_previous_employment_not_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')))),
+      visibleWhen: not(or(Answer(Question.had_previous_employment_unavailable_for_work).match(Condition.Equals(Option.no_has_never_been_employed)),
+        Answer(Question.had_previous_employment_actively_looking_for_work).match(Condition.Equals(Option.no_has_never_been_employed)),
+        Answer(Question.had_previous_employment_not_looking_for_work).match(Condition.Equals(Option.no_has_never_been_employed)))),
     },
     {
-      key: {text: Format(locale.employed_employment.day_to_day_commitments.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.day_to_day_commitments], CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'CARING'),
-            visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('CARING'))}),
-          GovUKBody({text: Answer('day_to_day_caring_responsibilities_details'), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, Option.caring),
+            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.caring))}),
+          GovUKBody({text: Answer(Question.day_to_day_caring_responsibilities_details), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'CHILDREN'),
-            visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('CHILDREN'))}),
-          GovUKBody({text: Answer('day_to_day_child_responsibilities_details'), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, Option.children),
+            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.children))}),
+          GovUKBody({text: Answer(Question.day_to_day_child_responsibilities_details), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'STUDYING'),
-            visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('STUDYING'))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, Option.studying),
+            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.studying))}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'VOLUNTEERING'),
-            visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('VOLUNTEERING'))}),
-          GovUKBody({text: Answer('day_to_day_volunteering_responsibilities_details'), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, Option.volunteering),
+            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.volunteering))}),
+          GovUKBody({text: Answer(Question.day_to_day_volunteering_responsibilities_details), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'OTHER'),
-            visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('OTHER'))}),
-          GovUKBody({text: Answer('day_to_day_other_commitments_details'), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, Option.other),
+            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.other))}),
+          GovUKBody({text: Answer(Question.day_to_day_other_commitments_details), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'UNKNOWN'),
-            visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('UNKNOWN'))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, Option.unknown),
+            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.unknown))}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, 'NONE'),
-            visibleWhen: Answer('day_to_day_commitments').match(Condition.Array.Contains('NONE'))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(dayToDayCommitments.items, Option.none),
+            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.none))}),
         ]
       },
       actions: {
-        items: [{href: 'employed', text: 'Change'}],
+        items: [{href: Step.employed.path, text: commonLocale.change}],
       },
     },
     {
-      key: {text: Format(locale.employed_employment.academic_qualification.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.academic_qualification], CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(academicQualification.items, Answer('academic_qualification')) }),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(academicQualification.items, Answer(Question.academic_qualification)) }),
         ]
       },
       actions: {
-        items: [{href: 'employed', text: 'Change'}],
+        items: [{href: Step.employed.path, text: commonLocale.change}],
       },
     },
     {
-      key: {text: Format(locale.employed_employment.professional_qualifications.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.professional_qualification], CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(professionalQualifications.items, Answer('professional_qualification')) }),
-          GovUKBody({text: Answer('professional_qualification_details'), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(professionalQualifications.items, Answer(Question.professional_qualification)) }),
+          GovUKBody({text: Answer(Question.professional_qualification_details), size: "s"}),
         ]
       },
       actions: {
-        items: [{href: 'employed', text: 'Change'}],
+        items: [{href: Step.employed.path, text: commonLocale.change}],
       },
     },
     {
-      key: {text: Format(locale.employed_employment.job_skills.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.job_skills], CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(jobSkills.items, Answer('job_skills')) }),
-          GovUKBody({text: Answer('has_job_skills_details'), size: "s"}),
-          GovUKBody({text: Answer('some_job_skills_details'), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(jobSkills.items, Answer(Question.job_skills)) }),
+          GovUKBody({text: Answer(Question.has_job_skills_details), size: "s"}),
+          GovUKBody({text: Answer(Question.some_job_skills_details), size: "s"}),
         ]
       },
       actions: {
-        items: [{href: 'employed', text: 'Change'}],
+        items: [{href: Step.employed.path, text: commonLocale.change}],
       },
     },
     {
-      key: {text: Format(locale.employed_employment.difficulties_reading_writing_numeracy.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.difficulties_reading_writing_numeracy], CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(difficultiesReadingWritingNumeracy.items, 'YES_READING'),
-            visibleWhen: Answer('difficulties_reading_writing_numeracy').match(Condition.Array.Contains('YES_READING'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(readingDifficultyLevel.items, Answer('reading_difficulty_level')), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(difficultiesReadingWritingNumeracy.items, Option.yes_reading),
+            visibleWhen: Answer(Question.difficulties_reading_writing_numeracy).match(Condition.Array.Contains(Option.yes_reading))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(readingDifficultyLevel.items, Answer(Question.reading_difficulty_level)), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(difficultiesReadingWritingNumeracy.items, 'YES_WRITING'),
-            visibleWhen: Answer('difficulties_reading_writing_numeracy').match(Condition.Array.Contains('YES_WRITING'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(writingDifficultyLevel.items, Answer('writing_difficulty_level')), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(difficultiesReadingWritingNumeracy.items, Option.yes_writing),
+            visibleWhen: Answer(Question.difficulties_reading_writing_numeracy).match(Condition.Array.Contains(Option.yes_writing))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(writingDifficultyLevel.items, Answer(Question.writing_difficulty_level)), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(difficultiesReadingWritingNumeracy.items, 'YES_NUMERACY'),
-            visibleWhen: Answer('difficulties_reading_writing_numeracy').match(Condition.Array.Contains('YES_NUMERACY'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(numeracyDifficultyLevel.items, Answer('numeracy_difficulty_level')), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(difficultiesReadingWritingNumeracy.items, Option.yes_numeracy),
+            visibleWhen: Answer(Question.difficulties_reading_writing_numeracy).match(Condition.Array.Contains(Option.yes_numeracy))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(numeracyDifficultyLevel.items, Answer(Question.numeracy_difficulty_level)), size: "s"}),
 
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(difficultiesReadingWritingNumeracy.items, 'NO_DIFFICULTIES'),
-            visibleWhen: Answer('difficulties_reading_writing_numeracy').match(Condition.Array.Contains('NO_DIFFICULTIES'))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(difficultiesReadingWritingNumeracy.items, Option.no_difficulties),
+            visibleWhen: Answer(Question.difficulties_reading_writing_numeracy).match(Condition.Array.Contains(Option.no_difficulties))}),
         ]
       },
       actions: {
-        items: [{href: 'employed', text: 'Change'}],
+        items: [{href: Step.employed.path, text: commonLocale.change}],
       },
     },
     {
-      key: {text: Format(locale.employed_employment.employment_experience.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.employment_experience], CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentExperience.items, Answer('employment_experience')) }),
-          GovUKBody({text: Answer('positive_employment_experience_details'), size: "s"}),
-          GovUKBody({text: Answer('mostly_positive_employment_experience_details'), size: "s"}),
-          GovUKBody({text: Answer('positive_and_negative_employment_experience_details'), size: "s"}),
-          GovUKBody({text: Answer('mostly_negative_employment_experience_details'), size: "s"}),
-          GovUKBody({text: Answer('negative_employment_experience_details'), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentExperience.items, Answer(Question.employment_experience)) }),
+          GovUKBody({text: Answer(Question.positive_employment_experience_details), size: "s"}),
+          GovUKBody({text: Answer(Question.mostly_positive_employment_experience_details), size: "s"}),
+          GovUKBody({text: Answer(Question.positive_and_negative_employment_experience_details), size: "s"}),
+          GovUKBody({text: Answer(Question.mostly_negative_employment_experience_details), size: "s"}),
+          GovUKBody({text: Answer(Question.negative_employment_experience_details), size: "s"}),
         ]
       },
       actions: {
-        items: [{href: 'employed', text: 'Change'}],
+        items: [{href: Step.employed.path, text: commonLocale.change}],
       },
       visibleWhen:
-        not(or(Answer('had_previous_employment_unavailable_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
-          Answer('had_previous_employment_actively_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')),
-          Answer('had_previous_employment_not_looking_for_work').match(Condition.Equals('NO_HAS_NEVER_BEEN_EMPLOYED')))),
+        not(or(Answer(Question.had_previous_employment_unavailable_for_work).match(Condition.Equals(Option.no_has_never_been_employed)),
+          Answer(Question.had_previous_employment_actively_looking_for_work).match(Condition.Equals(Option.no_has_never_been_employed)),
+          Answer(Question.had_previous_employment_not_looking_for_work).match(Condition.Equals(Option.no_has_never_been_employed)))),
     },
     {
-      key: {text: Format(locale.employed_employment.education_experience.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.education_experience], CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(educationExperience.items, Answer('education_experience')) }),
-          GovUKBody({text: Answer('positive_education_experience_details'), size: "s"}),
-          GovUKBody({text: Answer('mostly_positive_education_experience_details'), size: "s"}),
-          GovUKBody({text: Answer('positive_and_negative_education_experience_details'), size: "s"}),
-          GovUKBody({text: Answer('mostly_negative_education_experience_details'), size: "s"}),
-          GovUKBody({text: Answer('negative_education_experience_details'), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(educationExperience.items, Answer(Question.education_experience)) }),
+          GovUKBody({text: Answer(Question.positive_education_experience_details), size: "s"}),
+          GovUKBody({text: Answer(Question.mostly_positive_education_experience_details), size: "s"}),
+          GovUKBody({text: Answer(Question.positive_and_negative_education_experience_details), size: "s"}),
+          GovUKBody({text: Answer(Question.mostly_negative_education_experience_details), size: "s"}),
+          GovUKBody({text: Answer(Question.negative_education_experience_details), size: "s"}),
         ]
       },
       actions: {
-        items: [{href: 'employed', text: 'Change'}],
+        items: [{href: Step.employed.path, text: commonLocale.change}],
       },
     },
     {
-      key: {text: Format(locale.employed_employment.employment_and_education_changes.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.employment_and_education_changes], CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentAndEducationChanges.items, Answer('employment_and_education_changes')) }),
-          GovUKBody({text: Answer('has_made_positive_changes_details'), size: "s"}),
-          GovUKBody({text: Answer('actively_making_changes_details'), size: "s"}),
-          GovUKBody({text: Answer('wants_to_make_changes_needs_help_details'), size: "s"}),
-          GovUKBody({text: Answer('thinkging_about_making_changes_details'), size: "s"}),
-          GovUKBody({text: Answer('does_not_want_to_make_changes_details'), size: "s"}),
-          GovUKBody({text: Answer('does_not_want_to_answer_details'), size: "s"}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentAndEducationChanges.items, Answer(Question.employment_and_education_changes)) }),
+          GovUKBody({text: Answer(Question.has_made_positive_changes_details), size: "s"}),
+          GovUKBody({text: Answer(Question.actively_making_changes_details), size: "s"}),
+          GovUKBody({text: Answer(Question.wants_to_make_changes_needs_help_details), size: "s"}),
+          GovUKBody({text: Answer(Question.thinking_about_making_changes_details), size: "s"}),
+          GovUKBody({text: Answer(Question.does_not_want_to_make_changes_details), size: "s"}),
+          GovUKBody({text: Answer(Question.does_not_want_to_answer_details), size: "s"}),
         ]
       },
       actions: {
-        items: [{href: 'employed', text: 'Change'}],
+        items: [{href: Step.employed.path, text: commonLocale.change}],
       },
     },
   ],
-})
-
-// --- Practitioner Analysis Button Group ---
-
-const goToPractitionerAnalysisButton = GovUKLinkButton({
-  text: 'Go to practitioner analysis',
-  href:'employment-education-analysis#practitioner-analysis-summary',
-  classes: 'govuk-button--secondary'
 })
 
 // --- Practitioner Analysis Summary Group ---
@@ -237,45 +234,45 @@ const goToPractitionerAnalysisButton = GovUKLinkButton({
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
     {
-      key: {text: Format(locale.practitioner_analysis.strengths_protective_factors.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.employment_education_strengths_protective_factors], CaseData.ForenamePossessive)},
       value: {
         blocks:
           [
-            GovUKBody({text: SANGenerators.getTextFromListDefinition(strenthsProtectiveFactors.items, Answer('strengths_protective_factors'))}),
-            GovUKBody({ text: Answer('strengths_protective_factors_details'), size: "s" }),
-            GovUKBody({ text: Answer('no_strengths_protective_factors_details'), size: "s" }),
+            GovUKBody({text: SANGenerators.getTextFromListDefinition(strengthsProtectiveFactors.items, Answer(Question.employment_education_strengths_protective_factors))}),
+            GovUKBody({ text: Answer(Question.employment_education_strengths_protective_factors_details), size: "s" }),
+            GovUKBody({ text: Answer(Question.employment_education_no_strengths_protective_factors_details), size: "s" }),
           ]
       },
       actions: {
-        items: [{href: 'employment-education-summary#practitioner-analysis', text: 'Change', visuallyHiddenText: 'name'}],
+        items: [{href: `${Step.employment_education_summary.path}#practitioner-analysis`, text: commonLocale.change, visuallyHiddenText: 'name'}],
       },
     },
     {
-      key: {text: Format(locale.practitioner_analysis.employment_education_linked_to_serious_harm.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.employment_education_linked_to_serious_harm], CaseData.ForenamePossessive)},
       value: {
         blocks:
           [
-            GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentOrEducationLinkedToSeriousHarm.items, Answer('employment_education_linked_to_serious_harm'))}),
-            GovUKBody({ text: Answer('serious_harm_details'), size: "s" }),
-            GovUKBody({ text: Answer('no_serious_harm_details'), size: "s" }),
+            GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentOrEducationLinkedToSeriousHarm.items, Answer(Question.employment_education_linked_to_serious_harm))}),
+            GovUKBody({ text: Answer(Question.employment_education_serious_harm_details), size: "s" }),
+            GovUKBody({ text: Answer(Question.employment_education_no_serious_harm_details), size: "s" }),
           ]
       },
       actions: {
-        items: [{href: 'employment-education-summary#practitioner-analysis', text: 'Change', visuallyHiddenText: 'name'}],
+        items: [{href: `${Step.employment_education_summary.path}#practitioner-analysis`, text: commonLocale.change, visuallyHiddenText: 'name'}],
       },
     },
     {
-      key: {text: Format(locale.practitioner_analysis.employment_education_linked_to_reoffending.text, CaseData.ForenamePossessive)},
+      key: {text: Format(locale.question[Question.employment_education_linked_to_reoffending], CaseData.ForenamePossessive)},
       value: {
         blocks:
           [
-            GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentOrEducationLinkedReoffending.items, Answer('employment_education_linked_to_reoffending'))}),
-            GovUKBody({ text: Answer('risk_of_reoffending_details'), size: "s" }),
-            GovUKBody({ text: Answer('no_risk_of_reoffending_details'), size: "s" }),
+            GovUKBody({text: SANGenerators.getTextFromListDefinition(employmentOrEducationLinkedReoffending.items, Answer(Question.employment_education_linked_to_reoffending))}),
+            GovUKBody({ text: Answer(Question.employment_education_risk_of_reoffending_details), size: "s" }),
+            GovUKBody({ text: Answer(Question.employment_education_no_risk_of_reoffending_details), size: "s" }),
           ]
       },
       actions: {
-        items: [{href: 'employment-education-summary#practitioner-analysis', text: 'Change', visuallyHiddenText: 'name'}],
+        items: [{href: `${Step.employment_education_summary.path}#practitioner-analysis`, text: commonLocale.change, visuallyHiddenText: 'name'}],
       },
     },
   ]
@@ -286,12 +283,12 @@ export const employmentStatusAnalysisSummaryTab = GovUKTabs({
   items: [
     {
       id: 'summary-analysis',
-      label: 'Summary',
-      panel: {blocks: [employmentStatusSummary, goToPractitionerAnalysisButton]},
+      label: commonLocale.summary,
+      panel: {blocks: [employmentStatusSummary, goToPractitionerAnalysisButton(Step.employment_education_summary.path)]},
     },
     {
       id: 'practitioner-analysis-summary',
-      label: 'Practitioner analysis',
+      label: commonLocale.practitioner_analysis,
       panel: {blocks: [practitionerAnalysisSummary]},
     },
   ],

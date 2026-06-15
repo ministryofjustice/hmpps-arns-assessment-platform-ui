@@ -1,5 +1,8 @@
-import {SectionProgressStatus, StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps} from '../types'
-import {wrapAll} from "../../../../data/aap-api/wrappers";
+import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { wrapAll } from "../../../../data/aap-api/wrappers";
+import { SectionStatus } from '../../versions/v1.0/constants/section';
+
+type SectionProgressStatus = (typeof SectionStatus)[keyof typeof SectionStatus]
 
 export const setSectionProgress =
   (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext, code: string, status: SectionProgressStatus) => {

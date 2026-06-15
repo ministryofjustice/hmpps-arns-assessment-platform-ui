@@ -1,11 +1,7 @@
 import { InternalServerError } from 'http-errors'
 import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
-import {
-  AssessmentProgress,
-  assessmentProgressFieldCodes,
-  assessmentProgressKeys,
-  StrengthsAndNeedsContext
-} from '../types'
+import { StrengthsAndNeedsContext } from '../types'
+import { Section, SectionStatus } from '../../versions/v1.0/constants/section'
 
 const SAN_ASSESSMENT_TYPE = 'SAN_SP'
 
@@ -41,13 +37,13 @@ export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsCont
     throw new InternalServerError('Cannot determine assessment identifier - no assessmentId or CRN available')
   }
 
-  for (const key of assessmentProgressKeys) {
-    const status = context.getData(key) ?? 'INCOMPLETE'
+  Object.values(Section).forEach(section => {
+    const status = context.getData(section.statusKey) ?? SectionStatus.incomplete
 
-    if (status === 'INCOMPLETE') {
-      context.setData(key, status)
+    if (status === SectionStatus.incomplete) {
+      context.setData(section.statusKey, status)
     }
-  }
+  })
 
   session.sessionDetails = {
     accessType: accessDetails.accessType,
@@ -56,6 +52,4 @@ export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsCont
     assessmentIdentifier,
     assessmentVersion: handoverContext?.assessmentContext?.assessmentVersion,
   }
-
-
 }

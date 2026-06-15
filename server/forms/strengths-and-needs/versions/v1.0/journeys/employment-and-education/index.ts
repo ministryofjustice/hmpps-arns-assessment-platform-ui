@@ -3,6 +3,8 @@ import {currentEmploymentStep} from './steps/current-employment/step'
 import {employedEmploymentStep} from './steps/employed-employment/step'
 import {employmentEducationSummaryStep} from './steps/employment-education-summary/step'
 import {employmentEducationAnalysisStep} from "./steps/employment-education-analysis/step";
+import { Section } from '../../constants/section'
+import { commonLocale } from '../../constants/locale'
 
 /**
  * Employment Journey
@@ -15,14 +17,14 @@ import {employmentEducationAnalysisStep} from "./steps/employment-education-anal
  *   ├── employment-education-analysis    → employment-education-analysis
  */
 export const employmentJourney = journey({
-  code: 'employment-and-education',
-  title: 'Employment and education',
-  path: '/employment-and-education',
+  code: Section.employment_and_education.code,
+  title: commonLocale.sectionTitle[Section.employment_and_education.code],
+  path: Section.employment_and_education.path,
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {
     locals: {
-      sectionTitle: 'Employment and education',
-      sectionStatus: Data('employment_section_status'),
+      sectionTitle: commonLocale.sectionTitle[Section.employment_and_education.code],
+      sectionStatus: Data(Section.employment_and_education.statusKey),
     },
   },
   steps: [currentEmploymentStep, employedEmploymentStep, employmentEducationSummaryStep, employmentEducationAnalysisStep],

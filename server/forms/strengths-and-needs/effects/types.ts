@@ -18,25 +18,6 @@ export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentVersion?: number
 }
 
-
-export type SectionProgressStatus = 'INCOMPLETE' | 'COMPLETE'
-
-export const assessmentProgressFieldCodes = {
-  accommodationComplete: 'accommodation_section_status',
-  alcoholUseComplete: 'alcohol_section_status',
-  drugsComplete: 'drugs_section_status',
-  employmentEducationComplete: 'employment_section_status',
-  financesComplete: 'finances_section_status',
-  healthWellbeingComplete: 'health_section_status',
-  offencesComplete: 'offences_section_status',
-  relationshipsComplete: 'relationship_section_status',
-  thinkingBehaviourComplete: 'thinking_behaviour_section_status',
-};
-
-export type AssessmentProgress = typeof assessmentProgressFieldCodes
-
-export const assessmentProgressKeys = Object.values(assessmentProgressFieldCodes) as (keyof AssessmentProgress)[]
-
 /**
  * Session data available to SAN effects.
  * Populated by the access form before the SAN form loads.

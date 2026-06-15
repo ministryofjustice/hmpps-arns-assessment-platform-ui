@@ -1,25 +1,20 @@
 import {
-  block,
   Condition,
   Post,
   redirect,
   step,
   submit
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKButton} from '@ministryofjustice/hmpps-forge/govuk-components'
 import {StrengthsAndNeedsEffects} from '../../../../../../effects'
 import {currentEmploymentStatus } from './fields'
-
-const saveButton = block<GovUKButton>({
-  variant: 'govukButton',
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { Section, SectionStatus } from '../../../../constants/section';
+import { saveButton } from '../../../../constants/buttons';
+import { Step } from '../../constants/step';
+import { locale } from '../../constants/locale';
 
 export const currentEmploymentStep = step({
-  path: '/current-employment',
-  title: 'Current Employment',
+  path: '/' + Step.current_employment.path,
+  title: locale.step[Step.current_employment.code],
   reachability: { entryWhen: true },
   blocks: [currentEmploymentStatus, saveButton],
   onSubmission: [
@@ -29,11 +24,11 @@ export const currentEmploymentStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress('employment_section_status','INCOMPLETE')
+          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education.statusKey, SectionStatus.incomplete)
         ],
         next: [
           redirect({
-            goto: 'employed',
+            goto: Step.employed.path,
           }),
         ],
       },

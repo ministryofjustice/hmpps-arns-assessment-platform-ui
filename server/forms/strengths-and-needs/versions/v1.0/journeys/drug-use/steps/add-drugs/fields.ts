@@ -1,7 +1,7 @@
 import { validation, Self, Answer, Format, and, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKCheckboxInput, GovUKRadioInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { CaseData } from '../../../../constants'
 import { Drug, drugsList, fieldCode, otherDrugOption } from '../../constants'
+import { CaseData } from '../../../../constants/formVersion';
 
 const drugLastUsedField = (drug: Drug) =>
   GovUKRadioInput({
