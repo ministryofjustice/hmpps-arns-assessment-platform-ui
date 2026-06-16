@@ -4,17 +4,17 @@ import { StrengthsAndNeedsEffectImplementations } from './effects'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import config from '../../config'
 import { StrengthsAndNeedsGeneratorImplementations } from './generators'
-
-export const latestVersion = 'v1.0'
+import { Section } from './versions/v1.0/constants/section';
+import { commonLocale } from './versions/v1.0/constants/locale';
 
 const versionRedirectStep = step({
   path: '/',
-  title: 'Strengths and needs',
+  title: commonLocale.strengths_and_needs,
   onAccess: [
     access({
       next: [
         redirect({
-          goto: `/strengths-and-needs/${latestVersion}/accommodation/current-accommodation`,
+          goto: Section.accommodation.sideNavHref,
         }),
       ],
     }),
@@ -23,7 +23,7 @@ const versionRedirectStep = step({
 
 const strengthsAndNeedsRootJourney = journey({
   code: 'strengths-and-needs',
-  title: 'Strengths and needs',
+  title: commonLocale.strengths_and_needs,
   path: '/strengths-and-needs',
   steps: [versionRedirectStep],
   children: [strengthsAndNeedsV1Journey],
