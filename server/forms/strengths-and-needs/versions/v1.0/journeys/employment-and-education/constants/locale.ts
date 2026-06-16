@@ -68,6 +68,7 @@ export const locale = {
     [Question.reading_difficulty_level]: 'Select level of difficulty',
     [Question.job_skills]: 'Select if they have any skills that could help them in a job or to get a job',
     [Question.professional_qualification]: 'Select if they have any professional or vocational qualifications',
+    [Question.academic_qualification]: 'Select the highest level of academic qualification completed',
     [Question.professional_qualification_details]: 'Enter details',
     [Question.day_to_day_commitments]: `Select if they have any additional day-to-day commitments, or select 'None'`,
     [Question.employment_education_linked_to_reoffending]: 'Select if linked to risk of reoffending',

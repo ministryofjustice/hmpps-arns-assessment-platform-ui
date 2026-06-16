@@ -193,7 +193,7 @@ export const academicQualification = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Select the highest level of academic qualification completed',
+      message: locale.validation[Question.academic_qualification],
     }),
   ],
 })
