@@ -6,7 +6,7 @@ import { saveCurrentStepAnswers } from './assessment/saveCurrentStepAnswers'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
 import { StrengthsAndNeedsEffectsDeps } from './types'
-import {setSectionProgress} from "./assessment/setSectionProgress";
+import { setSectionProgress } from './assessment/setSectionProgress'
 
 type EffectShapesFromFactories<TFactories> = {
   [K in keyof TFactories]: TFactories[K] extends (deps: infer _Deps) => infer Evaluator

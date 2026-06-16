@@ -4,7 +4,7 @@ import { CommandResult, CreateAssessmentCommandResult } from '../../../interface
 import {
   CreateAssessmentCommand,
   UpdateAssessmentAnswersCommand,
-  UpdateAssessmentPropertiesCommand
+  UpdateAssessmentPropertiesCommand,
 } from '../../../interfaces/aap-api/command'
 import { AssessmentVersionQuery } from '../../../interfaces/aap-api/query'
 import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryResult'

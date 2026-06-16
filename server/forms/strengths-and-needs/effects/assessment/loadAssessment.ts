@@ -3,10 +3,7 @@ import { InternalServerError } from 'http-errors'
 import { unwrapAll } from '../../../../data/aap-api/wrappers'
 import { AssessmentVersionQuery } from '../../../../interfaces/aap-api/query'
 import { QueryError } from '../../../../errors/aap-api/QueryError'
-import {
-  StrengthsAndNeedsContext,
-  StrengthsAndNeedsEffectsDeps
-} from '../types'
+import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 
 const isMissingAssessmentQueryError = (error: unknown): boolean =>
   error instanceof QueryError && error.queryType === 'AssessmentVersionQuery' && error.result === undefined

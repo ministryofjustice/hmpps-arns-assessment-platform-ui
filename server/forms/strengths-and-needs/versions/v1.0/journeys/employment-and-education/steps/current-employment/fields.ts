@@ -4,7 +4,7 @@ import { locale } from '../../constants/locale'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { CaseData } from '../../../../constants/formVersion'
-import { commonLocale } from '../../../../constants/locale';
+import { commonLocale } from '../../../../constants/locale'
 
 export const typeOfEmployment = GovUKRadioInput({
   code: Question.type_of_employment,
@@ -33,10 +33,12 @@ export const hadPreviousEmploymentUnavailableForWork = GovUKRadioInput({
   code: Question.had_previous_employment_unavailable_for_work,
   fieldset: {
     legend: {
-      text: locale.question[Question.had_previous_employment_unavailable_for_work]
+      text: locale.question[Question.had_previous_employment_unavailable_for_work],
     },
   },
-  dependentWhen: Answer(Question.current_employment_status).match(Condition.Equals(Option.currently_unavailable_for_work)),
+  dependentWhen: Answer(Question.current_employment_status).match(
+    Condition.Equals(Option.currently_unavailable_for_work),
+  ),
   items: [
     { value: Option.yes_has_been_employed_before, text: locale.option[Option.yes_has_been_employed_before] },
     { value: Option.no_has_never_been_employed, text: locale.option[Option.no_has_never_been_employed] },
@@ -73,10 +75,12 @@ export const hadPreviousEmploymentNotLookingForWork = GovUKRadioInput({
   code: Question.had_previous_employment_not_looking_for_work,
   fieldset: {
     legend: {
-      text: locale.question[Question.had_previous_employment_not_looking_for_work]
+      text: locale.question[Question.had_previous_employment_not_looking_for_work],
     },
   },
-  dependentWhen: Answer(Question.current_employment_status).match(Condition.Equals(Option.unemployed_not_actively_looking)),
+  dependentWhen: Answer(Question.current_employment_status).match(
+    Condition.Equals(Option.unemployed_not_actively_looking),
+  ),
   items: [
     { value: Option.yes_has_been_employed_before, text: locale.option[Option.yes_has_been_employed_before] },
     { value: Option.no_has_never_been_employed, text: locale.option[Option.no_has_never_been_employed] },
@@ -101,9 +105,21 @@ export const currentEmploymentStatus = GovUKRadioInput({
     { value: Option.employed, text: locale.option[Option.employed], block: typeOfEmployment },
     { value: Option.self_employed, text: locale.option[Option.self_employed] },
     { value: Option.retired, text: locale.option[Option.retired] },
-    { value: Option.currently_unavailable_for_work, text: locale.option[Option.currently_unavailable_for_work], block: hadPreviousEmploymentUnavailableForWork },
-    { value: Option.unemployed_actively_looking, text: locale.option[Option.unemployed_actively_looking], block: hadPreviousEmploymentActivelyLookingForWork },
-    { value: Option.unemployed_not_actively_looking, text: locale.option[Option.unemployed_not_actively_looking], block: hadPreviousEmploymentNotLookingForWork },
+    {
+      value: Option.currently_unavailable_for_work,
+      text: locale.option[Option.currently_unavailable_for_work],
+      block: hadPreviousEmploymentUnavailableForWork,
+    },
+    {
+      value: Option.unemployed_actively_looking,
+      text: locale.option[Option.unemployed_actively_looking],
+      block: hadPreviousEmploymentActivelyLookingForWork,
+    },
+    {
+      value: Option.unemployed_not_actively_looking,
+      text: locale.option[Option.unemployed_not_actively_looking],
+      block: hadPreviousEmploymentNotLookingForWork,
+    },
   ],
   validWhen: [
     validation({

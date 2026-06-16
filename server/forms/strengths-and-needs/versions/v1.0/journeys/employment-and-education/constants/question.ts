@@ -52,6 +52,8 @@ export const Question = {
   employment_education_no_risk_of_reoffending_details: 'employment_education_no_risk_of_reoffending_details',
   employment_education_no_serious_harm_details: 'employment_education_no_serious_harm_details',
   employment_education_serious_harm_details: 'employment_education_serious_harm_details',
-  employment_education_strengths_protective_factors_details: 'employment_education_strengths_protective_factors_details',
-  employment_education_no_strengths_protective_factors_details: 'employment_education_no_strengths_protective_factors_details',
+  employment_education_strengths_protective_factors_details:
+    'employment_education_strengths_protective_factors_details',
+  employment_education_no_strengths_protective_factors_details:
+    'employment_education_no_strengths_protective_factors_details',
 }

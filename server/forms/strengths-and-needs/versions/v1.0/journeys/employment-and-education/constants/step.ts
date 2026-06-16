@@ -14,5 +14,5 @@ export const Step = {
   employment_education_analysis: {
     code: 'employment_education_analysis',
     path: 'employment-education-analysis',
-  }
+  },
 }

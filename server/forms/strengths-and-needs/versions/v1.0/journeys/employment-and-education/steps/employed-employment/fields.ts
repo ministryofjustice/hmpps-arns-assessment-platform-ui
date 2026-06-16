@@ -1,4 +1,13 @@
-import {validation, Self, Answer, Format, and, Condition, not, or} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  validation,
+  Self,
+  Answer,
+  Format,
+  and,
+  Condition,
+  not,
+  or,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKRadioInput,
   GovUKCheckboxInput,
@@ -19,10 +28,14 @@ export const employmentSector = GovUKCharacterCount({
     classes: 'govuk-fieldset__legend--m',
   },
   maxLength: 2000,
-  visibleWhen: or(Answer(Question.current_employment_status).match(Condition.Equals(Option.employed)),
-    Answer(Question.current_employment_status).match(Condition.Equals(Option.self_employed))),
-  dependentWhen: or(Answer(Question.current_employment_status).match(Condition.Equals(Option.employed)),
-    Answer(Question.current_employment_status).match(Condition.Equals(Option.self_employed))),
+  visibleWhen: or(
+    Answer(Question.current_employment_status).match(Condition.Equals(Option.employed)),
+    Answer(Question.current_employment_status).match(Condition.Equals(Option.self_employed)),
+  ),
+  dependentWhen: or(
+    Answer(Question.current_employment_status).match(Condition.Equals(Option.employed)),
+    Answer(Question.current_employment_status).match(Condition.Equals(Option.self_employed)),
+  ),
 })
 
 // --- Employment History Group ---
@@ -72,7 +85,7 @@ export const employmentHistory = GovUKRadioInput({
     {
       value: Option.continuous_employment,
       text: locale.option[Option.continuous_employment],
-      hint: locale.hint[Question.employment_history + '_' + Option.continuous_employment],
+      hint: locale.hint[`${Question.employment_history}_${Option.continuous_employment}`],
       block: continuousEmploymentHistoryEmploymentDetails,
     },
     {
@@ -91,12 +104,32 @@ export const employmentHistory = GovUKRadioInput({
       block: unknownEmploymentHistoryDetails,
     },
   ],
-  visibleWhen:  not(or(Answer(Question.had_previous_employment_unavailable_for_work).match(Condition.Equals(Option.no_has_never_been_employed)),
-    Answer(Question.had_previous_employment_actively_looking_for_work).match(Condition.Equals(Option.no_has_never_been_employed)),
-    Answer(Question.had_previous_employment_not_looking_for_work).match(Condition.Equals(Option.no_has_never_been_employed)))),
-  dependentWhen:  not(or(Answer(Question.had_previous_employment_unavailable_for_work).match(Condition.Equals(Option.no_has_never_been_employed)),
-    Answer(Question.had_previous_employment_actively_looking_for_work).match(Condition.Equals(Option.no_has_never_been_employed)),
-    Answer(Question.had_previous_employment_not_looking_for_work).match(Condition.Equals(Option.no_has_never_been_employed)))),
+  visibleWhen: not(
+    or(
+      Answer(Question.had_previous_employment_unavailable_for_work).match(
+        Condition.Equals(Option.no_has_never_been_employed),
+      ),
+      Answer(Question.had_previous_employment_actively_looking_for_work).match(
+        Condition.Equals(Option.no_has_never_been_employed),
+      ),
+      Answer(Question.had_previous_employment_not_looking_for_work).match(
+        Condition.Equals(Option.no_has_never_been_employed),
+      ),
+    ),
+  ),
+  dependentWhen: not(
+    or(
+      Answer(Question.had_previous_employment_unavailable_for_work).match(
+        Condition.Equals(Option.no_has_never_been_employed),
+      ),
+      Answer(Question.had_previous_employment_actively_looking_for_work).match(
+        Condition.Equals(Option.no_has_never_been_employed),
+      ),
+      Answer(Question.had_previous_employment_not_looking_for_work).match(
+        Condition.Equals(Option.no_has_never_been_employed),
+      ),
+    ),
+  ),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
@@ -111,31 +144,28 @@ const dayToDayCaringResponsibilitiesDetails = GovUKCharacterCount({
   code: Question.day_to_day_caring_responsibilities_details,
   label: commonLocale.optional_details,
   maxLength: 2000,
-  dependentWhen:
-    Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.caring))
+  dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.caring)),
 })
 
 const dayToDayVolunteeringDetails = GovUKCharacterCount({
   code: Question.day_to_day_volunteering_responsibilities_details,
   label: commonLocale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.volunteering))
+  dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.volunteering)),
 })
 
 const dayToDayChildResponsibilitiesDetails = GovUKCharacterCount({
   code: Question.day_to_day_child_responsibilities_details,
   label: commonLocale.optional_details,
   maxLength: 2000,
-  dependentWhen:
-    Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.children))
+  dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.children)),
 })
 
 const dayToDayOtherCommitmentsDetails = GovUKCharacterCount({
   code: Question.day_to_day_other_commitments_details,
   label: commonLocale.optional_details,
   maxLength: 2000,
-  dependentWhen:
-    Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.other))
+  dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.other)),
 })
 
 export const dayToDayCommitments = GovUKCheckboxInput({
@@ -177,15 +207,51 @@ export const academicQualification = GovUKRadioInput({
     },
   },
   items: [
-    { value: Option.entry_level, text: locale.option[Option.entry_level], hint: locale.hint[Question.academic_qualification + '_' + Option.entry_level] },
-    { value: Option.level_1, text: locale.option[Option.level_1], hint: locale.hint[Question.academic_qualification + '_' + Option.level_1] },
-    { value: Option.level_2, text: locale.option[Option.level_2], hint: locale.hint[Question.academic_qualification + '_' + Option.level_2] },
-    { value: Option.level_3, text: locale.option[Option.level_3], hint: locale.hint[Question.academic_qualification + '_' + Option.level_3] },
-    { value: Option.level_4, text: locale.option[Option.level_4], hint: locale.hint[Question.academic_qualification + '_' + Option.level_4] },
-    { value: Option.level_5, text: locale.option[Option.level_5], hint: locale.hint[Question.academic_qualification + '_' + Option.level_5] },
-    { value: Option.level_6, text: locale.option[Option.level_6], hint: locale.hint[Question.academic_qualification + '_' + Option.level_6] },
-    { value: Option.level_7, text: locale.option[Option.level_7], hint: locale.hint[Question.academic_qualification + '_' + Option.level_7] },
-    { value: Option.level_8, text: locale.option[Option.level_8], hint: locale.hint[Question.academic_qualification + '_' + Option.level_8] },
+    {
+      value: Option.entry_level,
+      text: locale.option[Option.entry_level],
+      hint: locale.hint[`${Question.academic_qualification}_${Option.entry_level}`],
+    },
+    {
+      value: Option.level_1,
+      text: locale.option[Option.level_1],
+      hint: locale.hint[`${Question.academic_qualification}_${Option.level_1}`],
+    },
+    {
+      value: Option.level_2,
+      text: locale.option[Option.level_2],
+      hint: locale.hint[`${Question.academic_qualification}_${Option.level_2}`],
+    },
+    {
+      value: Option.level_3,
+      text: locale.option[Option.level_3],
+      hint: locale.hint[`${Question.academic_qualification}_${Option.level_3}`],
+    },
+    {
+      value: Option.level_4,
+      text: locale.option[Option.level_4],
+      hint: locale.hint[`${Question.academic_qualification}_${Option.level_4}`],
+    },
+    {
+      value: Option.level_5,
+      text: locale.option[Option.level_5],
+      hint: locale.hint[`${Question.academic_qualification}_${Option.level_5}`],
+    },
+    {
+      value: Option.level_6,
+      text: locale.option[Option.level_6],
+      hint: locale.hint[`${Question.academic_qualification}_${Option.level_6}`],
+    },
+    {
+      value: Option.level_7,
+      text: locale.option[Option.level_7],
+      hint: locale.hint[`${Question.academic_qualification}_${Option.level_7}`],
+    },
+    {
+      value: Option.level_8,
+      text: locale.option[Option.level_8],
+      hint: locale.hint[`${Question.academic_qualification}_${Option.level_8}`],
+    },
     { divider: commonLocale.or },
     { value: Option.non_of_these, text: locale.option[Option.non_of_these] },
     { value: Option.unknown, text: locale.option[Option.unknown] },
@@ -206,7 +272,7 @@ const professionalQualificationDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: and(
     Answer(Question.professional_qualification).match(Condition.IsRequired()),
-    Answer(Question.professional_qualification).match(Condition.Equals(Option.yes))
+    Answer(Question.professional_qualification).match(Condition.Equals(Option.yes)),
   ),
   validWhen: [
     validation({
@@ -266,19 +332,19 @@ export const jobSkills = GovUKRadioInput({
     {
       value: Option.yes,
       text: locale.option[Option.yes],
-      hint: locale.hint[Question.job_skills + '_' + Option.yes],
+      hint: locale.hint[`${Question.job_skills}_${Option.yes}`],
       block: hasJobSkillsDetails,
     },
     {
       value: Option.some_skills,
       text: locale.option[Option.some_skills],
-      hint: locale.hint[Question.job_skills + '_' + Option.some_skills],
+      hint: locale.hint[`${Question.job_skills}_${Option.some_skills}`],
       block: someJobSkillsDetails,
     },
     {
       value: Option.no,
       text: locale.option[Option.no],
-      hint: locale.hint[Question.job_skills + '_' + Option.no],
+      hint: locale.hint[`${Question.job_skills}_${Option.no}`],
     },
   ],
   validWhen: [
@@ -304,7 +370,7 @@ export const readingDifficultyLevel = GovUKRadioInput({
   ],
   dependentWhen: and(
     Answer(Question.difficulties_reading_writing_numeracy).match(Condition.IsRequired()),
-    Answer(Question.difficulties_reading_writing_numeracy).match(Condition.Array.Contains(Option.yes_reading))
+    Answer(Question.difficulties_reading_writing_numeracy).match(Condition.Array.Contains(Option.yes_reading)),
   ),
   validWhen: [
     validation({
@@ -327,7 +393,7 @@ export const writingDifficultyLevel = GovUKRadioInput({
   ],
   dependentWhen: and(
     Answer(Question.difficulties_reading_writing_numeracy).match(Condition.IsRequired()),
-    Answer(Question.difficulties_reading_writing_numeracy).match(Condition.Array.Contains(Option.yes_writing))
+    Answer(Question.difficulties_reading_writing_numeracy).match(Condition.Array.Contains(Option.yes_writing)),
   ),
   validWhen: [
     validation({
@@ -350,7 +416,7 @@ export const numeracyDifficultyLevel = GovUKRadioInput({
   ],
   dependentWhen: and(
     Answer(Question.difficulties_reading_writing_numeracy).match(Condition.IsRequired()),
-    Answer(Question.difficulties_reading_writing_numeracy).match(Condition.Array.Contains(Option.yes_numeracy))
+    Answer(Question.difficulties_reading_writing_numeracy).match(Condition.Array.Contains(Option.yes_numeracy)),
   ),
   validWhen: [
     validation({
@@ -432,20 +498,50 @@ export const employmentExperience = GovUKRadioInput({
   },
   items: [
     { value: Option.positive, text: locale.option[Option.positive], block: positiveEmploymentExperienceDetails },
-    { value: Option.mostly_positive, text: locale.option[Option.mostly_positive], block: mostlyPositiveEmploymentExperienceDetails },
-    { value: Option.positive_and_negative, text: locale.option[Option.positive_and_negative], block: positiveAndNegativeEmploymentExperienceDetails },
-    { value: Option.mostly_negative, text: locale.option[Option.mostly_negative], block: mostlyNegativeEmploymentExperienceDetails },
+    {
+      value: Option.mostly_positive,
+      text: locale.option[Option.mostly_positive],
+      block: mostlyPositiveEmploymentExperienceDetails,
+    },
+    {
+      value: Option.positive_and_negative,
+      text: locale.option[Option.positive_and_negative],
+      block: positiveAndNegativeEmploymentExperienceDetails,
+    },
+    {
+      value: Option.mostly_negative,
+      text: locale.option[Option.mostly_negative],
+      block: mostlyNegativeEmploymentExperienceDetails,
+    },
     { value: Option.negative, text: locale.option[Option.negative], block: negativeEmploymentExperienceDetails },
     { value: Option.unknown, text: locale.option[Option.unknown] },
   ],
-  visibleWhen:
-    not(or(Answer(Question.had_previous_employment_unavailable_for_work).match(Condition.Equals(Option.no_has_never_been_employed)),
-        Answer(Question.had_previous_employment_actively_looking_for_work).match(Condition.Equals(Option.no_has_never_been_employed)),
-        Answer(Question.had_previous_employment_not_looking_for_work).match(Condition.Equals(Option.no_has_never_been_employed)))),
-  dependentWhen:
-    not(or(Answer(Question.had_previous_employment_unavailable_for_work).match(Condition.Equals(Option.no_has_never_been_employed)),
-      Answer(Question.had_previous_employment_actively_looking_for_work).match(Condition.Equals(Option.no_has_never_been_employed)),
-      Answer(Question.had_previous_employment_not_looking_for_work).match(Condition.Equals(Option.no_has_never_been_employed)))),
+  visibleWhen: not(
+    or(
+      Answer(Question.had_previous_employment_unavailable_for_work).match(
+        Condition.Equals(Option.no_has_never_been_employed),
+      ),
+      Answer(Question.had_previous_employment_actively_looking_for_work).match(
+        Condition.Equals(Option.no_has_never_been_employed),
+      ),
+      Answer(Question.had_previous_employment_not_looking_for_work).match(
+        Condition.Equals(Option.no_has_never_been_employed),
+      ),
+    ),
+  ),
+  dependentWhen: not(
+    or(
+      Answer(Question.had_previous_employment_unavailable_for_work).match(
+        Condition.Equals(Option.no_has_never_been_employed),
+      ),
+      Answer(Question.had_previous_employment_actively_looking_for_work).match(
+        Condition.Equals(Option.no_has_never_been_employed),
+      ),
+      Answer(Question.had_previous_employment_not_looking_for_work).match(
+        Condition.Equals(Option.no_has_never_been_employed),
+      ),
+    ),
+  ),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
@@ -501,9 +597,21 @@ export const educationExperience = GovUKRadioInput({
   },
   items: [
     { value: Option.positive, text: locale.option[Option.positive], block: positiveEducationExperienceDetails },
-    { value: Option.mostly_positive, text: locale.option[Option.mostly_positive], block: mostlyPositiveEducationExperienceDetails },
-    { value: Option.positive_and_negative, text: locale.option[Option.positive_and_negative], block: positiveAndNegativeEducationExperienceDetails },
-    { value: Option.mostly_negative, text: locale.option[Option.mostly_negative], block: mostlyNegativeEducationExperienceDetails },
+    {
+      value: Option.mostly_positive,
+      text: locale.option[Option.mostly_positive],
+      block: mostlyPositiveEducationExperienceDetails,
+    },
+    {
+      value: Option.positive_and_negative,
+      text: locale.option[Option.positive_and_negative],
+      block: positiveAndNegativeEducationExperienceDetails,
+    },
+    {
+      value: Option.mostly_negative,
+      text: locale.option[Option.mostly_negative],
+      block: mostlyNegativeEducationExperienceDetails,
+    },
     { value: Option.negative, text: locale.option[Option.negative], block: negativeEducationExperienceDetails },
     { value: Option.unknown, text: locale.option[Option.unknown] },
   ],
@@ -535,35 +643,45 @@ const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
   code: Question.wants_to_make_changes_knows_how_to_details,
   label: commonLocale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(Option.wants_to_make_changes_knows_how_to)),
+  dependentWhen: Answer(Question.employment_and_education_changes).match(
+    Condition.Equals(Option.wants_to_make_changes_knows_how_to),
+  ),
 })
 
 const wantsToMakeChangesNeedsHelpDetails = GovUKCharacterCount({
   code: Question.wants_to_make_changes_needs_help_details,
   label: commonLocale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(Option.wants_to_make_changes_needs_help)),
+  dependentWhen: Answer(Question.employment_and_education_changes).match(
+    Condition.Equals(Option.wants_to_make_changes_needs_help),
+  ),
 })
 
 const thinkingAboutMakingChangesDetails = GovUKCharacterCount({
   code: Question.thinking_about_making_changes_details,
   label: commonLocale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(Option.thinking_about_making_changes)),
+  dependentWhen: Answer(Question.employment_and_education_changes).match(
+    Condition.Equals(Option.thinking_about_making_changes),
+  ),
 })
 
 const doesNotWantToMakeChangesDetails = GovUKCharacterCount({
   code: Question.does_not_want_to_make_changes_details,
   label: commonLocale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(Option.does_not_want_to_make_changes)),
+  dependentWhen: Answer(Question.employment_and_education_changes).match(
+    Condition.Equals(Option.does_not_want_to_make_changes),
+  ),
 })
 
 const doesNotWantToAnswerChangesDetails = GovUKCharacterCount({
   code: Question.does_not_want_to_answer_details,
   label: commonLocale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(Option.does_not_want_to_answer)),
+  dependentWhen: Answer(Question.employment_and_education_changes).match(
+    Condition.Equals(Option.does_not_want_to_answer),
+  ),
 })
 
 export const employmentAndEducationChanges = GovUKRadioInput({
@@ -575,13 +693,41 @@ export const employmentAndEducationChanges = GovUKRadioInput({
     },
   },
   items: [
-    { value: Option.has_made_changes, text: locale.option[Option.has_made_changes], block: hasMadePositiveChangesDetails },
-    { value: Option.is_making_changes, text: locale.option[Option.is_making_changes], block: isActivelyMakingChangesDetails },
-    { value: Option.wants_to_make_changes_knows_how_to, text: locale.option[Option.wants_to_make_changes_knows_how_to], block: wantsToMakeChangesKnowsHowDetails },
-    { value: Option.wants_to_make_changes_needs_help, text: locale.option[Option.wants_to_make_changes_needs_help], block: wantsToMakeChangesNeedsHelpDetails },
-    { value: Option.thinking_about_making_changes, text: locale.option[Option.thinking_about_making_changes], block: thinkingAboutMakingChangesDetails },
-    { value: Option.does_not_want_to_make_changes, text: locale.option[Option.does_not_want_to_make_changes], block: doesNotWantToMakeChangesDetails },
-    { value: Option.does_not_want_to_answer, text: locale.option[Option.does_not_want_to_answer], block: doesNotWantToAnswerChangesDetails },
+    {
+      value: Option.has_made_changes,
+      text: locale.option[Option.has_made_changes],
+      block: hasMadePositiveChangesDetails,
+    },
+    {
+      value: Option.is_making_changes,
+      text: locale.option[Option.is_making_changes],
+      block: isActivelyMakingChangesDetails,
+    },
+    {
+      value: Option.wants_to_make_changes_knows_how_to,
+      text: locale.option[Option.wants_to_make_changes_knows_how_to],
+      block: wantsToMakeChangesKnowsHowDetails,
+    },
+    {
+      value: Option.wants_to_make_changes_needs_help,
+      text: locale.option[Option.wants_to_make_changes_needs_help],
+      block: wantsToMakeChangesNeedsHelpDetails,
+    },
+    {
+      value: Option.thinking_about_making_changes,
+      text: locale.option[Option.thinking_about_making_changes],
+      block: thinkingAboutMakingChangesDetails,
+    },
+    {
+      value: Option.does_not_want_to_make_changes,
+      text: locale.option[Option.does_not_want_to_make_changes],
+      block: doesNotWantToMakeChangesDetails,
+    },
+    {
+      value: Option.does_not_want_to_answer,
+      text: locale.option[Option.does_not_want_to_answer],
+      block: doesNotWantToAnswerChangesDetails,
+    },
     { divider: commonLocale.or },
     { value: Option.not_present, text: Format(locale.option[Option.not_present], CaseData.Forename) },
     { value: Option.not_applicable, text: locale.option[Option.not_applicable] },

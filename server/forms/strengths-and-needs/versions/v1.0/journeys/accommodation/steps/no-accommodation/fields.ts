@@ -1,7 +1,7 @@
 import { validation, Self, Answer, Format, and, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKCheckboxInput, GovUKCharacterCount } from '@ministryofjustice/hmpps-forge/govuk-components'
 
-import { CaseData } from '../../../../constants/formVersion';
+import { CaseData } from '../../../../constants/formVersion'
 
 // --- No Accommodation Reason Group ---
 

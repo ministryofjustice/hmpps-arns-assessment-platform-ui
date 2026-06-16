@@ -1,4 +1,4 @@
-import { Section } from './section';
+import { Section } from './section'
 
 export const commonLocale = {
   strengths_and_needs: 'Strengths and needs',
@@ -22,5 +22,5 @@ export const commonLocale = {
     [Section.employment_and_education.code]: 'Employment and education',
     [Section.finances.code]: 'Finances',
     [Section.health_and_wellbeing.code]: 'Health and wellbeing',
-  }
+  },
 }

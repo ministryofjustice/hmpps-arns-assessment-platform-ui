@@ -1,8 +1,8 @@
-import {Condition, Data, journey, Query} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {currentEmploymentStep} from './steps/current-employment/step'
-import {employedEmploymentStep} from './steps/employed-employment/step'
-import {employmentEducationSummaryStep} from './steps/employment-education-summary/step'
-import {employmentEducationAnalysisStep} from "./steps/employment-education-analysis/step";
+import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { currentEmploymentStep } from './steps/current-employment/step'
+import { employedEmploymentStep } from './steps/employed-employment/step'
+import { employmentEducationSummaryStep } from './steps/employment-education-summary/step'
+import { employmentEducationAnalysisStep } from './steps/employment-education-analysis/step'
 import { Section } from '../../constants/section'
 import { commonLocale } from '../../constants/locale'
 
@@ -27,5 +27,10 @@ export const employmentJourney = journey({
       sectionStatus: Data(Section.employment_and_education.statusKey),
     },
   },
-  steps: [currentEmploymentStep, employedEmploymentStep, employmentEducationSummaryStep, employmentEducationAnalysisStep],
+  steps: [
+    currentEmploymentStep,
+    employedEmploymentStep,
+    employmentEducationSummaryStep,
+    employmentEducationAnalysisStep,
+  ],
 })

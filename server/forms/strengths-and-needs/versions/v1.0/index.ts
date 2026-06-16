@@ -1,11 +1,11 @@
-import {access, Data, journey} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, Data, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 import { drugUseJourney } from './journeys/drug-use'
 import { StrengthsAndNeedsEffects } from '../../effects'
-import { Section } from './constants/section';
-import { basePath, formVersion } from './constants/formVersion';
-import { commonLocale } from './constants/locale';
+import { Section } from './constants/section'
+import { basePath, formVersion } from './constants/formVersion'
+import { commonLocale } from './constants/locale'
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -21,7 +21,7 @@ export const strengthsAndNeedsV1Journey = journey({
     template: 'strengths-and-needs/views/san-step-index',
     locals: {
       basePath,
-      sectionNavItems: Object.values(Section).map((section) => ({
+      sectionNavItems: Object.values(Section).map(section => ({
         ...section,
         status: Data(section.statusKey),
         text: commonLocale.sectionTitle[section.code],

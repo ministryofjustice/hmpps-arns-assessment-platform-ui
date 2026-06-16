@@ -12,19 +12,19 @@ import {
   jobSkills,
   professionalQualifications,
 } from './fields'
-import { Section, SectionStatus } from '../../../../constants/section';
-import { saveButton } from '../../../../constants/buttons';
-import { Step } from '../../constants/step';
-import { locale } from '../../constants/locale';
-import { sectionPath } from '../../../../constants/path';
+import { Section, SectionStatus } from '../../../../constants/section'
+import { saveButton } from '../../../../constants/buttons'
+import { Step } from '../../constants/step'
+import { locale } from '../../constants/locale'
+import { sectionPath } from '../../../../constants/path'
 
 export const employedEmploymentStep = step({
-  path: '/' + Step.employed.path,
+  path: `/${Step.employed.path}`,
   title: locale.step[Step.employed.code],
   view: {
     template: 'strengths-and-needs/views/san-step',
     locals: {
-      backlink: sectionPath(Section.employment_and_education)
+      backlink: sectionPath(Section.employment_and_education),
     },
   },
   blocks: [
@@ -47,7 +47,10 @@ export const employedEmploymentStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education.statusKey, SectionStatus.incomplete)
+          StrengthsAndNeedsEffects.setSectionProgress(
+            Section.employment_and_education.statusKey,
+            SectionStatus.incomplete,
+          ),
         ],
         next: [redirect({ goto: Step.employment_education_summary.path })],
       },

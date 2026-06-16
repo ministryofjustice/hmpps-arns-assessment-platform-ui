@@ -1,4 +1,4 @@
-import { Data, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring';
+import { Data, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 export const formVersion = 'v1.0'
 /**

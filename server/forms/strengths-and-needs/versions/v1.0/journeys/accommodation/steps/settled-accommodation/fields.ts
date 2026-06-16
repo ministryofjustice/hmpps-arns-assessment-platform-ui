@@ -5,7 +5,7 @@ import {
   GovUKCharacterCount,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 
-import { CaseData } from '../../../../constants/formVersion';
+import { CaseData } from '../../../../constants/formVersion'
 
 // --- Living With Group ---
 

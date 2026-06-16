@@ -1,7 +1,7 @@
 import { validation, Self, Format, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 
-import { CaseData } from '../../../../constants/formVersion';
+import { CaseData } from '../../../../constants/formVersion'
 
 export const drugUse = GovUKRadioInput({
   code: 'drug_use',

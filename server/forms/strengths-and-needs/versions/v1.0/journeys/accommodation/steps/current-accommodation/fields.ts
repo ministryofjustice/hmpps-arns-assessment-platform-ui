@@ -11,7 +11,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKRadioInput, GovUKDateInputFull } from '@ministryofjustice/hmpps-forge/govuk-components'
 
-import { CaseData } from '../../../../constants/formVersion';
+import { CaseData } from '../../../../constants/formVersion'
 
 const hasAnyDatePart = () => {
   return and(

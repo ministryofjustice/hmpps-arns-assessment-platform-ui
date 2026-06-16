@@ -1,18 +1,12 @@
-import {
-  Condition,
-  Post,
-  redirect,
-  step,
-  submit,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {employmentStatusSummaryTab} from './fields'
-import { Section, SectionStatus } from '../../../../constants/section';
-import { locale } from '../../constants/locale';
-import { Step } from '../../constants/step';
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { employmentStatusSummaryTab } from './fields'
+import { Section, SectionStatus } from '../../../../constants/section'
+import { locale } from '../../constants/locale'
+import { Step } from '../../constants/step'
 
 export const employmentEducationSummaryStep = step({
-  path: '/' + Step.employment_education_summary.path,
+  path: `/${Step.employment_education_summary.path}`,
   title: locale.step[Step.employment_education_summary.code],
   view: {
     template: 'strengths-and-needs/views/san-step',
@@ -25,7 +19,10 @@ export const employmentEducationSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education.statusKey, SectionStatus.complete)
+          StrengthsAndNeedsEffects.setSectionProgress(
+            Section.employment_and_education.statusKey,
+            SectionStatus.complete,
+          ),
         ],
         next: [redirect({ goto: Step.employment_education_analysis.path })],
       },
