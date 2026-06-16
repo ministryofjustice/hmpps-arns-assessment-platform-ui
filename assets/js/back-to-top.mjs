@@ -26,6 +26,19 @@ export function initBackToTop() {
 
   update()
 
+  // Activating the link scrolls to the top; also move keyboard focus there so a
+  // keyboard or screen-reader user continues from the top rather than from the
+  // link they just left (a plain href="#" only scrolls, it does not move focus).
+  links.forEach(link => {
+    const anchor = link.querySelector('a')
+
+    anchor?.addEventListener('click', event => {
+      event.preventDefault()
+      window.scrollTo({ top: 0 })
+      moveFocusToTop()
+    })
+  })
+
   window.addEventListener('resize', update)
 
   // Content height can change after load (fonts, images, expanding sections),
@@ -33,4 +46,18 @@ export function initBackToTop() {
   if ('ResizeObserver' in window) {
     new ResizeObserver(update).observe(document.body)
   }
+}
+
+/**
+ * Move keyboard focus to the top of the page without scrolling away from it.
+ * Targets the main landmark (the skip-link destination), falling back to the
+ * page heading or body. `preventScroll` keeps the viewport at the top, and the
+ * temporary tabindex is removed on blur so it does not become a lingering tab stop.
+ */
+function moveFocusToTop() {
+  const target = document.getElementById('main-content') ?? document.querySelector('h1') ?? document.body
+
+  target.setAttribute('tabindex', '-1')
+  target.focus({ preventScroll: true })
+  target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true })
 }

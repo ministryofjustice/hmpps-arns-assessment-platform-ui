@@ -34,8 +34,9 @@ test.describe('Back to top link', () => {
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
     await page.locator(backToTopLink).click()
 
-    // Assert
+    // Assert - scrolled to the top and keyboard focus moved there too
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+    await expect(page.locator('#main-content')).toBeFocused()
   })
 
   test('is not rendered on the privacy screen', async ({ page, createSession }) => {
