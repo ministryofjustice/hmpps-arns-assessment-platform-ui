@@ -51,8 +51,8 @@ export const createGoalStep = step({
       when: Params('areaOfNeed').not.match(Condition.Array.IsIn(Data('areaOfNeedSlugs'))),
       next: [
         redirect({
-          when: Query('type').match(Condition.IsRequired()),
-          goto: Format('../select-area-of-need?type=%1', Query('type')),
+          when: Query('goalStatusTab').match(Condition.IsRequired()),
+          goto: Format('../select-area-of-need?goalStatusTab=%1', Query('goalStatusTab')),
         }),
         redirect({ goto: '../select-area-of-need' }),
       ],
@@ -92,9 +92,9 @@ export const createGoalStep = step({
         next: [
           redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
-            goto: '../../../plan/overview?type=future',
+            goto: '../../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../../plan/overview?type=current' }),
+          redirect({ goto: '../../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),

@@ -121,27 +121,27 @@ export const subNavigation = MOJSubNavigation({
   items: [
     {
       text: Format('Goals to work on now (%1)', activeGoalsCount),
-      href: 'overview?type=current',
-      active: when(Query('type').match(Condition.Equals('current'))),
+      href: 'overview?goalStatusTab=current',
+      active: when(Query('goalStatusTab').match(Condition.Equals('current'))),
       attributes: { 'data-ai-id': 'plan-overview-current-goals-tab' },
     },
     {
       text: Format('Future goals (%1)', futureGoalsCount),
-      href: 'overview?type=future',
-      active: when(Query('type').match(Condition.Equals('future'))),
+      href: 'overview?goalStatusTab=future',
+      active: when(Query('goalStatusTab').match(Condition.Equals('future'))),
       attributes: { 'data-ai-id': 'plan-overview-future-goals-tab' },
     },
     {
       text: Format('Achieved goals (%1)', achievedGoalsCount),
-      href: 'overview?type=achieved',
-      active: when(Query('type').match(Condition.Equals('achieved'))),
+      href: 'overview?goalStatusTab=achieved',
+      active: when(Query('goalStatusTab').match(Condition.Equals('achieved'))),
       visibleWhen: hasAchievedGoals,
       attributes: { 'data-ai-id': 'plan-overview-achieved-goals-tab' },
     },
     {
       text: Format('Removed goals (%1)', removedGoalsCount),
-      href: 'overview?type=removed',
-      active: when(Query('type').match(Condition.Equals('removed'))),
+      href: 'overview?goalStatusTab=removed',
+      active: when(Query('goalStatusTab').match(Condition.Equals('removed'))),
       visibleWhen: showRemovedGoalsTab,
       attributes: { 'data-ai-id': 'plan-overview-removed-goals-tab' },
     },
@@ -166,7 +166,7 @@ export const notificationBanners = CollectionBlock({
 
 /**
  * Goals section - renders goal summary cards for each goal in the plan
- * Filters goals based on query param: ?type=current shows ACTIVE, ?type=future shows FUTURE
+ * Filters goals based on query param: ?goalStatusTab=current shows ACTIVE, ?goalStatusTab=future shows FUTURE
  * Wrapped in an ordered list for numbered display
  */
 export const goalsSection = TemplateWrapper({
@@ -180,19 +180,19 @@ export const goalsSection = TemplateWrapper({
             Iterator.Filter(
               or(
                 and(
-                  Query('type').match(Condition.Equals('current')),
+                  Query('goalStatusTab').match(Condition.Equals('current')),
                   Item().path('status').match(Condition.Equals('ACTIVE')),
                 ),
                 and(
-                  Query('type').match(Condition.Equals('future')),
+                  Query('goalStatusTab').match(Condition.Equals('future')),
                   Item().path('status').match(Condition.Equals('FUTURE')),
                 ),
                 and(
-                  Query('type').match(Condition.Equals('achieved')),
+                  Query('goalStatusTab').match(Condition.Equals('achieved')),
                   Item().path('status').match(Condition.Equals('ACHIEVED')),
                 ),
                 and(
-                  Query('type').match(Condition.Equals('removed')),
+                  Query('goalStatusTab').match(Condition.Equals('removed')),
                   Item().path('status').match(Condition.Equals('REMOVED')),
                 ),
               ),
@@ -342,9 +342,9 @@ export const goalsSection = TemplateWrapper({
 })
 
 const hideBlankPlanOverviewContent = or(
-  Query('type').match(Condition.Equals('future')),
-  Query('type').match(Condition.Equals('achieved')),
-  Query('type').match(Condition.Equals('removed')),
+  Query('goalStatusTab').match(Condition.Equals('future')),
+  Query('goalStatusTab').match(Condition.Equals('achieved')),
+  Query('goalStatusTab').match(Condition.Equals('removed')),
   Data('goals')
     .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
     .match(Condition.IsRequired()),
@@ -395,7 +395,7 @@ export const blankPlanOverviewContent = HtmlBlock({
 export const futureGoalsContent = GovUKBody({
   visibleWhen: not(
     or(
-      Query('type').not.match(Condition.Equals('future')),
+      Query('goalStatusTab').not.match(Condition.Equals('future')),
       Data('goals')
         .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
         .match(Condition.IsRequired()),

@@ -29,13 +29,13 @@ export const selectAreaOfNeedStep = step({
        */
       backlink: when(Query('change').match(Condition.IsRequired()))
         .then(
-          when(Query('type').match(Condition.IsRequired()))
-            .then(Format('add-goal/%1?type=%2', Query('area'), Query('type')))
+          when(Query('goalStatusTab').match(Condition.IsRequired()))
+            .then(Format('add-goal/%1?goalStatusTab=%2', Query('area'), Query('goalStatusTab')))
             .else(Format('add-goal/%1', Query('area'))),
         )
         .else(
-          when(Query('type').match(Condition.IsRequired()))
-            .then(Format('../../plan/overview?type=%1', Query('type')))
+          when(Query('goalStatusTab').match(Condition.IsRequired()))
+            .then(Format('../../plan/overview?goalStatusTab=%1', Query('goalStatusTab')))
             .else('../../plan/overview'),
         ),
     },
@@ -53,8 +53,8 @@ export const selectAreaOfNeedStep = step({
         next: [
           // Carry the originating plan tab through to add-goal so its back link can return there.
           redirect({
-            when: Query('type').match(Condition.IsRequired()),
-            goto: Format('add-goal/%1?type=%2', Answer('area_of_need'), Query('type')),
+            when: Query('goalStatusTab').match(Condition.IsRequired()),
+            goto: Format('add-goal/%1?goalStatusTab=%2', Answer('area_of_need'), Query('goalStatusTab')),
           }),
           redirect({ goto: Format('add-goal/%1', Answer('area_of_need')) }),
         ],

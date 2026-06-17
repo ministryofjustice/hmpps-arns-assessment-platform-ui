@@ -61,7 +61,7 @@ const saveButton = GovUKButton({
 
 const goBackLink = HtmlBlock({
   content: Format(
-    '<a href="overview?type=current" class="govuk-link govuk-link--no-visited-state">Go back to %1\'s plan</a>',
+    '<a href="overview?goalStatusTab=current" class="govuk-link govuk-link--no-visited-state">Go back to %1\'s plan</a>',
     CaseData.Forename,
   ),
 })

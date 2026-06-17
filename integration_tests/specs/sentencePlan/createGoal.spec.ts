@@ -147,7 +147,7 @@ test.describe('Create Goal Journey', () => {
       await addStepsPage.enterStep(0, 'probation_practitioner', 'Test step')
       await addStepsPage.clickSaveAndContinue()
 
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       const goalTitle = await planOverviewPage.getGoalCardTitle(0)
@@ -170,7 +170,7 @@ test.describe('Create Goal Journey', () => {
       await addStepsPage.enterStep(0, 'probation_practitioner', 'Test step')
       await addStepsPage.clickSaveAndContinue()
 
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       const goalTitle = await planOverviewPage.getGoalCardTitle(0)
@@ -236,7 +236,7 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.selectCanStartNow(false)
       await createGoalPage.clickSaveWithoutSteps()
 
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       // Verify goal appears in future goals tab
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -256,7 +256,7 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.selectTargetDateOption('3_months')
       await createGoalPage.clickSaveWithoutSteps()
 
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       // Verify goal appears in current goals tab
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)

@@ -65,16 +65,18 @@ const goalTitle = AccessibleAutocomplete({
  * The page's back link. Goes to area selection with the current area pre-selected
  * and the plan tab kept, so the user doesn't lose their place.
  */
-export const backLinkHref = when(Query('type').match(Condition.IsRequired()))
-  .then(Format('../select-area-of-need?area=%1&type=%2', Params('areaOfNeed'), Query('type')))
+export const backLinkHref = when(Query('goalStatusTab').match(Condition.IsRequired()))
+  .then(Format('../select-area-of-need?area=%1&goalStatusTab=%2', Params('areaOfNeed'), Query('goalStatusTab')))
   .else(Format('../select-area-of-need?area=%1', Params('areaOfNeed')))
 
 /*
  * The "Change area of need" link. Same as the back link, but change=true tells the area
  * selection page to send the user back here afterwards instead of to the plan overview.
  */
-const changeAreaOfNeedHref = when(Query('type').match(Condition.IsRequired()))
-  .then(Format('../select-area-of-need?area=%1&type=%2&change=true', Params('areaOfNeed'), Query('type')))
+const changeAreaOfNeedHref = when(Query('goalStatusTab').match(Condition.IsRequired()))
+  .then(
+    Format('../select-area-of-need?area=%1&goalStatusTab=%2&change=true', Params('areaOfNeed'), Query('goalStatusTab')),
+  )
   .else(Format('../select-area-of-need?area=%1&change=true', Params('areaOfNeed')))
 
 const areaOfNeedInset = GovUKInsetText({
