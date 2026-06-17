@@ -246,11 +246,11 @@ export const goalsSection = TemplateWrapper({
                               ),
                             actions: [
                               {
-                                text: 'Change goal',
+                                text: 'Update goal',
                                 href: Format('../goal/%1/change-goal', Item().path('uuid')),
                               },
                               {
-                                text: 'Add or change steps',
+                                text: 'Add or update steps',
                                 href: Format('../goal/%1/add-steps', Item().path('uuid')),
                                 hidden: Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
                               },

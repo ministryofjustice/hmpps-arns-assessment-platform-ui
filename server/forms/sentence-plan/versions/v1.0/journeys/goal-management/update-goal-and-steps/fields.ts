@@ -78,7 +78,7 @@ export const reviewStepsHeading = GovUKHeading({
 
 export const addOrChangeStepsLink = GovUKBody({
   visibleWhen: hasSteps,
-  text: Format('<a href="../../goal/%1/add-steps" class="govuk-link">Add or change steps</a>', Data('activeGoal.uuid')),
+  text: Format('<a href="../../goal/%1/add-steps" class="govuk-link">Add or update steps</a>', Data('activeGoal.uuid')),
 })
 
 export const noStepsMessage = HtmlBlock({
