@@ -111,7 +111,7 @@ export default class PlanOverviewPage extends AbstractPage {
 
   async goalCardHasAddStepsLink(index: number): Promise<boolean> {
     const card = await this.getGoalCardByIndex(index)
-    const addStepsLink = card.getByRole('link', { name: /add or change steps/i })
+    const addStepsLink = card.getByRole('link', { name: /add or update steps/i })
     return (await addStepsLink.count()) > 0
   }
 
@@ -169,9 +169,9 @@ export default class PlanOverviewPage extends AbstractPage {
     return (await targetDateText.count()) > 0
   }
 
-  async clickAddOrChangeSteps(index: number): Promise<void> {
+  async clickAddOrUpdateSteps(index: number): Promise<void> {
     const card = await this.getGoalCardByIndex(index)
-    const addStepsLink = card.getByRole('link', { name: /add or change steps/i })
+    const addStepsLink = card.getByRole('link', { name: /add or update steps/i })
     await addStepsLink.click()
   }
 

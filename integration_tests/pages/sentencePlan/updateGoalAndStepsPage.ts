@@ -20,7 +20,7 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
 
   readonly addStepsLink: Locator
 
-  readonly addOrChangeStepsLink: Locator
+  readonly addOrUpdateStepsLink: Locator
 
   readonly progressNotesTextarea: Locator
 
@@ -55,7 +55,7 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
     this.addStepsLink = page
       .locator('.goal-summary-card__steps--empty-no-shadow')
       .getByRole('link', { name: 'Add steps' })
-    this.addOrChangeStepsLink = page.getByRole('link', { name: 'Add or change steps' })
+    this.addOrUpdateStepsLink = page.getByRole('link', { name: 'Add or update steps' })
     this.progressNotesTextarea = page.locator('#progress_notes')
     this.progressNotesLabel = page.locator('label[for="progress_notes"]')
     this.progressNotesHint = page.locator('#progress_notes-hint')
@@ -101,7 +101,7 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
   }
 
   async clickAddOrChangeSteps(): Promise<void> {
-    await this.addOrChangeStepsLink.click()
+    await this.addOrUpdateStepsLink.click()
   }
 
   async getStepCount(): Promise<number> {

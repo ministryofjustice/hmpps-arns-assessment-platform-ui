@@ -275,7 +275,7 @@ test.describe('Plan Overview Page', () => {
       expect(hasChangeLink).toBe(true)
     })
 
-    test('shows Add or change steps link on goal cards only when goal has at least one step (draft plan)', async ({
+    test('shows Add or update steps link on goal cards only when goal has at least one step (draft plan)', async ({
       page,
       createSession,
       sentencePlanBuilder,
@@ -291,7 +291,7 @@ test.describe('Plan Overview Page', () => {
       expect(hasAddStepsLink).toBe(true)
     })
 
-    test(`doesn't show Add or change steps link on goal cards for a goal with no steps (draft plan)`, async ({
+    test(`doesn't show Add or update steps link on goal cards for a goal with no steps (draft plan)`, async ({
       page,
       createSession,
       sentencePlanBuilder,
@@ -337,7 +337,7 @@ test.describe('Plan Overview Page', () => {
       expect(hasDeleteLink).toBe(true)
     })
 
-    test('clicking Add or change steps navigates to add steps page and back returns to plan overview', async ({
+    test('clicking Add or update steps navigates to add steps page and back returns to plan overview', async ({
       page,
       createSession,
       sentencePlanBuilder,
@@ -350,8 +350,8 @@ test.describe('Plan Overview Page', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       await expect(page).toHaveURL(/type=current/)
 
-      // Click "Add or change steps" on the first goal
-      await planOverviewPage.clickAddOrChangeSteps(0)
+      // Click "Add or update steps" on the first goal
+      await planOverviewPage.clickAddOrUpdateSteps(0)
 
       // Verify we're on the add steps page
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
