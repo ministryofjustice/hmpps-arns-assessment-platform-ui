@@ -452,7 +452,7 @@ test.describe('Create Goal Journey', () => {
       await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.createGoal))
 
       const fieldError = page.locator('#target_date_option-error')
-      await expect(fieldError).toContainText('Select when they aim to achieve this goal')
+      await expect(fieldError).toContainText('Select when they should aim to achieve this goal')
 
       await createGoalPage.errorSummary.getByRole('link').first().click()
       await expect(createGoalPage.targetDateOptions.first()).toBeFocused()
@@ -471,7 +471,7 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.clickSaveWithoutSteps()
 
       const fieldError = page.locator('#related_areas_of_need-error')
-      await expect(fieldError).toContainText('Select one or more related areas of need')
+      await expect(fieldError).toContainText('Select all related areas')
     })
 
     test('shows error when set another date is selected but left empty', async ({ page, createSession }) => {
