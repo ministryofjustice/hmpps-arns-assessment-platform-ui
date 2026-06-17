@@ -9,10 +9,9 @@ import {
   redirect,
   step,
   submit,
-  when,
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { contentBlocks } from './fields'
+import { contentBlocks, backLinkHref } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 
@@ -21,15 +20,13 @@ import { CaseData } from '../../../constants'
  */
 export const createGoalStep = step({
   path: '/add-goal/:areaOfNeed',
-  title: 'Create a goal',
+  title: 'Add goal details',
   reachability: { entryWhen: true },
   view: {
     locals: {
       // Back returns to area selection with the current area pre-selected, preserving the
       // originating plan tab so the user can keep backing out to where they started.
-      backlink: when(Query('type').match(Condition.IsRequired()))
-        .then(Format('../select-area-of-need?area=%1&type=%2', Params('areaOfNeed'), Query('type')))
-        .else(Format('../select-area-of-need?area=%1', Params('areaOfNeed'))),
+      backlink: backLinkHref,
     },
   },
   blocks: contentBlocks,
@@ -54,8 +51,8 @@ export const createGoalStep = step({
       when: Params('areaOfNeed').not.match(Condition.Array.IsIn(Data('areaOfNeedSlugs'))),
       next: [
         redirect({
-          when: Query('type').match(Condition.IsRequired()),
-          goto: Format('../select-area-of-need?type=%1', Query('type')),
+          when: Query('goalStatusTab').match(Condition.IsRequired()),
+          goto: Format('../select-area-of-need?goalStatusTab=%1', Query('goalStatusTab')),
         }),
         redirect({ goto: '../select-area-of-need' }),
       ],
@@ -95,9 +92,9 @@ export const createGoalStep = step({
         next: [
           redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
-            goto: '../../../plan/overview?type=future',
+            goto: '../../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../../plan/overview?type=current' }),
+          redirect({ goto: '../../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),

@@ -139,7 +139,7 @@ test.describe('New period of supervision', () => {
 
       // Navigate to removed goals tab
       await planOverviewPage.removedGoalsTab.click()
-      await expect(page).toHaveURL(/type=removed/)
+      await expect(page).toHaveURL(/goalStatusTab=removed/)
 
       // Verify auto-removed goals are displayed
       const goalCount = await planOverviewPage.getGoalCount()
@@ -175,7 +175,7 @@ test.describe('New period of supervision', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.removedGoalsTab.click()
-      await expect(page).toHaveURL(/type=removed/)
+      await expect(page).toHaveURL(/goalStatusTab=removed/)
 
       // Removed goals should show "View details" not "Update"
       const hasViewDetails = await planOverviewPage.goalCardHasViewDetailsLink(0)

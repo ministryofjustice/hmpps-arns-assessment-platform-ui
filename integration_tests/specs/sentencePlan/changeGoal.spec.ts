@@ -83,7 +83,7 @@ test.describe('Change goal journey', () => {
       await changeGoalPage.saveGoal()
 
       // Check user is redirected to plan overview with current goals
-      await expect(page).toHaveURL(/plan\/overview.*type=current/)
+      await expect(page).toHaveURL(/plan\/overview.*goalStatusTab=current/)
 
       // Verify success alert is shown on plan overview
       await expect(page.locator('.moj-alert--success')).toContainText(/You changed a goal in .* plan/i)
@@ -114,7 +114,7 @@ test.describe('Change goal journey', () => {
       await changeGoalPage.saveGoal()
 
       // Check user is redirected to the future goals tab
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       // Verify the goal now appears in future goals
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -149,7 +149,7 @@ test.describe('Change goal journey', () => {
       await changeGoalPage.saveGoal()
 
       // Verify redirected to future goals tab
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       // Verify the goal card does NOT show "Aim to achieve this by" text
       planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -273,7 +273,7 @@ test.describe('Change goal journey', () => {
       await changeGoalPage.saveGoal()
 
       // Verify we're redirected to current goals tab
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
     })
   })
 
@@ -374,7 +374,7 @@ test.describe('Change goal journey', () => {
       await changeGoalPage.saveGoal()
 
       // Check we're redirected to current goals tab
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       // Verify the goal now appears in current goals
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)

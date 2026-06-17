@@ -23,11 +23,21 @@ export const selectAreaOfNeedStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
-      // Preserve the originating plan tab so backing out returns there. Current is the
-      // default tab, so it is never threaded as a query param.
-      backlink: when(Query('type').match(Condition.IsRequired()))
-        .then(Format('../../plan/overview?type=%1', Query('type')))
-        .else('../../plan/overview'),
+      /*
+       * Back link. If the user came from "Change area of need" (change=true), go back to that
+       * goal-details page. Otherwise go to the plan overview, keeping the plan tab.
+       */
+      backlink: when(Query('change').match(Condition.IsRequired()))
+        .then(
+          when(Query('goalStatusTab').match(Condition.IsRequired()))
+            .then(Format('add-goal/%1?goalStatusTab=%2', Query('area'), Query('goalStatusTab')))
+            .else(Format('add-goal/%1', Query('area'))),
+        )
+        .else(
+          when(Query('goalStatusTab').match(Condition.IsRequired()))
+            .then(Format('../../plan/overview?goalStatusTab=%1', Query('goalStatusTab')))
+            .else('../../plan/overview'),
+        ),
     },
   },
   blocks: [pageHeading, areaOfNeedField, continueButton],
@@ -43,8 +53,8 @@ export const selectAreaOfNeedStep = step({
         next: [
           // Carry the originating plan tab through to add-goal so its back link can return there.
           redirect({
-            when: Query('type').match(Condition.IsRequired()),
-            goto: Format('add-goal/%1?type=%2', Answer('area_of_need'), Query('type')),
+            when: Query('goalStatusTab').match(Condition.IsRequired()),
+            goto: Format('add-goal/%1?goalStatusTab=%2', Answer('area_of_need'), Query('goalStatusTab')),
           }),
           redirect({ goto: Format('add-goal/%1', Answer('area_of_need')) }),
         ],

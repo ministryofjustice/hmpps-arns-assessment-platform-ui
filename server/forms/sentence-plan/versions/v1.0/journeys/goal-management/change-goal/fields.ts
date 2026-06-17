@@ -13,14 +13,14 @@ const pageHeading = GovUKHeading({
 
 const assessmentInfoDetails = AssessmentInfoDetails({
   personName: CaseData.Forename,
-  areaName: Data('currentAreaOfNeed').path('text'),
+  areaName: Data('currentAreaOfNeed.text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
   visibleWhen: canAccessSanContent,
 })
 
 const goalTitle = AccessibleAutocomplete({
-  data: Data('currentAreaOfNeed').path('goals'),
+  data: Data('currentAreaOfNeed.goals'),
   inputClasses: 'govuk-!-width-two-thirds',
   field: GovUKTextInput({
     code: 'goal_title',

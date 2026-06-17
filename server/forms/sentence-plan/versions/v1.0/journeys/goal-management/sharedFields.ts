@@ -19,7 +19,8 @@ export const relatedAreasOfNeed = GovUKCheckboxInput({
   code: 'related_areas_of_need',
   multiple: true,
   hint: {
-    text: 'Select all that apply.',
+    text: 'Select all that apply',
+    classes: 'app-label--body-text',
   },
   fieldset: {
     legend: {
@@ -46,7 +47,7 @@ export const isRelatedToOtherAreas = GovUKRadioInput({
   code: 'is_related_to_other_areas',
   fieldset: {
     legend: {
-      text: 'Is this goal related to any other area of need?',
+      text: 'Does this goal relate to any other areas of need?',
       classes: 'govuk-fieldset__legend--m',
     },
   },
@@ -68,7 +69,6 @@ export const customTargetDate = MOJDatePicker({
   code: 'custom_target_date',
   label: {
     text: 'Select a date',
-    classes: 'govuk-fieldset__legend--s',
   },
   hint: 'For example, 31/3/2023.',
   // Set a minimum date of today in the DD/MM/YYYY format
@@ -77,14 +77,21 @@ export const customTargetDate = MOJDatePicker({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Please enter a date',
+      message: 'Select a date',
     }),
     validation({
-      condition: Self().match(Condition.Date.IsValid()),
-      message: 'Please enter a valid date',
+      // Skip when empty so the IsRequired rule above is the only error shown for a blank field.
+      condition: or(Self().not.match(Condition.IsRequired()), Self().match(Condition.Date.IsValid())),
+      message: 'Select a valid date',
     }),
     validation({
-      condition: or(Self().match(Condition.Date.IsToday()), Self().match(Condition.Date.IsFutureDate())),
+      // Only range-check once we have a valid date — IsToday/IsFutureDate throw on an empty or
+      // invalid value, so defer those cases to the IsRequired/IsValid rules above.
+      condition: or(
+        Self().not.match(Condition.Date.IsValid()),
+        Self().match(Condition.Date.IsToday()),
+        Self().match(Condition.Date.IsFutureDate()),
+      ),
       message: 'Date must be today or in the future',
     }),
   ],
@@ -95,8 +102,7 @@ export const targetDateOption = GovUKRadioInput({
   code: 'target_date_option',
   fieldset: {
     legend: {
-      text: Format('When should %1 aim to achieve this goal?', CaseData.Forename),
-      classes: 'govuk-fieldset__legend--m',
+      text: Format('When does %1 aim to achieve this goal?', CaseData.Forename),
     },
   },
   items: [
