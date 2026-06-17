@@ -79,7 +79,7 @@ export const randomizableField = buildNunjucksComponent<RandomizableField>(
 
     // Get accessible label from schema for aria-label
     const fieldLabel = getFieldLabel(fieldKey)
-    const ariaLabel = `Randomize ${fieldLabel.toLowerCase()}`
+    const ariaLabel = `Randomise ${fieldLabel.toLowerCase()}`
 
     const isRadioType = RADIO_VARIANTS.includes(fieldVariant)
 

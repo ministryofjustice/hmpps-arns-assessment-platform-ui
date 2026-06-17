@@ -67,29 +67,29 @@ test.describe('Select Area of Need', () => {
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       await planOverviewPage.clickFutureGoalsTab()
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       await planOverviewPage.clickCreateGoal()
 
       const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
-      await expect(page).toHaveURL(/\/select-area-of-need\?type=future/)
+      await expect(page).toHaveURL(/\/select-area-of-need\?goalStatusTab=future/)
 
       await selectAreaOfNeedPage.selectAreaAndContinue('drug-use')
       await CreateGoalPage.verifyOnPage(page)
-      await expect(page).toHaveURL(/\/add-goal\/drug-use\?type=future/)
+      await expect(page).toHaveURL(/\/add-goal\/drug-use\?goalStatusTab=future/)
 
       // Back to area selection: area pre-selected and tab still carried.
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
       await createGoalPage.backLink.click()
 
       const returnedToSelectArea = await SelectAreaOfNeedPage.verifyOnPage(page)
-      await expect(page).toHaveURL(/\/select-area-of-need\?area=drug-use&type=future/)
+      await expect(page).toHaveURL(/\/select-area-of-need\?area=drug-use&goalStatusTab=future/)
       await expect(returnedToSelectArea.areaRadio('drug-use')).toBeChecked()
 
       // Back again returns to the future goals tab.
       await returnedToSelectArea.backLink.click()
       await PlanOverviewPage.verifyOnPage(page)
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
     })
   })
 

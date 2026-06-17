@@ -147,7 +147,7 @@ test.describe('Create Goal Journey', () => {
       await addStepsPage.enterStep(0, 'probation_practitioner', 'Test step')
       await addStepsPage.clickSaveAndContinue()
 
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       const goalTitle = await planOverviewPage.getGoalCardTitle(0)
@@ -170,7 +170,7 @@ test.describe('Create Goal Journey', () => {
       await addStepsPage.enterStep(0, 'probation_practitioner', 'Test step')
       await addStepsPage.clickSaveAndContinue()
 
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       const goalTitle = await planOverviewPage.getGoalCardTitle(0)
@@ -236,7 +236,7 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.selectCanStartNow(false)
       await createGoalPage.clickSaveWithoutSteps()
 
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       // Verify goal appears in future goals tab
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -256,7 +256,7 @@ test.describe('Create Goal Journey', () => {
       await createGoalPage.selectTargetDateOption('3_months')
       await createGoalPage.clickSaveWithoutSteps()
 
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       // Verify goal appears in current goals tab
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -331,6 +331,67 @@ test.describe('Create Goal Journey', () => {
     })
   })
 
+  test.describe('Area of need', () => {
+    test('displays the selected area of need in an inset in lower case', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+
+      await expect(createGoalPage.areaOfNeedInset).toContainText('Area of need: accommodation')
+      await expect(createGoalPage.areaOfNeedInset.locator('strong')).toHaveText('accommodation')
+    })
+
+    test('excludes the selected area of need from the related areas checkboxes', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.selectIsRelated(true)
+
+      await expect(page.locator('[name="related_areas_of_need"][value="accommodation"]')).toHaveCount(0)
+    })
+
+    test('change area of need link returns to area selection with the area pre-selected', async ({
+      page,
+      createSession,
+    }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.changeAreaOfNeedLink.click()
+
+      // AC3: navigates back to the "Create a goal with [Name]" (select area of need) page
+      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+      await expect(page).toHaveURL(/\/select-area-of-need/)
+
+      // AC5: the existing area of need is pre-selected
+      await expect(selectAreaOfNeedPage.areaRadio('accommodation')).toBeChecked()
+    })
+
+    test('back from area selection after change area of need returns to the goal details page', async ({
+      page,
+      createSession,
+    }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.changeAreaOfNeedLink.click()
+
+      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+      await selectAreaOfNeedPage.backLink.click()
+
+      await CreateGoalPage.verifyOnPage(page)
+      await expect(page).toHaveURL(/\/add-goal\/accommodation/)
+    })
+  })
+
   test.describe('Validation', () => {
     test('shows error when goal title is empty', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
@@ -348,7 +409,7 @@ test.describe('Create Goal Journey', () => {
       await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.createGoal))
 
       const fieldError = page.locator('#goal_title-error')
-      await expect(fieldError).toContainText('Select or enter what goal they should try to achieve')
+      await expect(fieldError).toContainText('Select or enter a goal')
 
       await createGoalPage.errorSummary.getByRole('link').first().click()
       await expect(createGoalPage.goalTitleInput).toBeFocused()
@@ -391,10 +452,43 @@ test.describe('Create Goal Journey', () => {
       await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.createGoal))
 
       const fieldError = page.locator('#target_date_option-error')
-      await expect(fieldError).toBeVisible()
+      await expect(fieldError).toContainText('Select when they should aim to achieve this goal')
 
       await createGoalPage.errorSummary.getByRole('link').first().click()
       await expect(createGoalPage.targetDateOptions.first()).toBeFocused()
+    })
+
+    test('shows error when related areas yes selected but none chosen', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.enterGoalTitle('Test goal')
+      await createGoalPage.selectIsRelated(true)
+      await createGoalPage.selectCanStartNow(false)
+
+      await createGoalPage.clickSaveWithoutSteps()
+
+      const fieldError = page.locator('#related_areas_of_need-error')
+      await expect(fieldError).toContainText('Select all related areas')
+    })
+
+    test('shows error when set another date is selected but left empty', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.enterGoalTitle('Test goal')
+      await createGoalPage.selectIsRelated(false)
+      await createGoalPage.selectCanStartNow(true)
+      await createGoalPage.selectTargetDateOption('custom')
+
+      await createGoalPage.clickSaveWithoutSteps()
+
+      const fieldError = page.locator('#custom_target_date-error')
+      await expect(fieldError).toContainText('Select a date')
     })
 
     // TODO: Skipping this test because the official GOVUK components doesn't natively support

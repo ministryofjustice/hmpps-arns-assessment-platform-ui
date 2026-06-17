@@ -58,7 +58,7 @@ test.describe('Update agree plan - Navigation', () => {
       await UpdateAgreePlanPage.verifyOnPage(page)
 
       const backlink = page.locator('.govuk-back-link')
-      await expect(backlink).toHaveAttribute('href', /overview\?type=current/)
+      await expect(backlink).toHaveAttribute('href', /overview\?goalStatusTab=current/)
     })
   })
 })

@@ -153,8 +153,8 @@ test.describe('About Page: complete assessment state', () => {
           await expect(selectAreaOfNeedPage.areaRadio('drug-use')).toBeChecked()
           await selectAreaOfNeedPage.clickContinue()
 
-          await CreateGoalPage.verifyOnPage(page)
-          await expect(page.locator('.govuk-caption-l')).toContainText('Drug use')
+          const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+          await expect(createGoalPage.areaOfNeedInset).toContainText('Area of need: drug use')
         }
       })
 
