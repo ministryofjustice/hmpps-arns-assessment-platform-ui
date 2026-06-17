@@ -20,6 +20,12 @@
   padding-top: 0;
 }
 
+// Render a field hint in standard body text colour rather than the muted grey hint
+// colour (design decision SP2-2263: goal-detail field labels match body text).
+.govuk-hint.app-label--body-text {
+  @include govuk-text-colour;
+}
+
 // Step rows - align remove button with input fields
 .step-row {
   display: flex;

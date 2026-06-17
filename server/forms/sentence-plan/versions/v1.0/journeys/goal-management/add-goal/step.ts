@@ -9,10 +9,9 @@ import {
   redirect,
   step,
   submit,
-  when,
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { contentBlocks } from './fields'
+import { contentBlocks, backLinkHref } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 
@@ -21,15 +20,13 @@ import { CaseData } from '../../../constants'
  */
 export const createGoalStep = step({
   path: '/add-goal/:areaOfNeed',
-  title: 'Create a goal',
+  title: 'Add goal details',
   reachability: { entryWhen: true },
   view: {
     locals: {
       // Back returns to area selection with the current area pre-selected, preserving the
       // originating plan tab so the user can keep backing out to where they started.
-      backlink: when(Query('type').match(Condition.IsRequired()))
-        .then(Format('../select-area-of-need?area=%1&type=%2', Params('areaOfNeed'), Query('type')))
-        .else(Format('../select-area-of-need?area=%1', Params('areaOfNeed'))),
+      backlink: backLinkHref,
     },
   },
   blocks: contentBlocks,

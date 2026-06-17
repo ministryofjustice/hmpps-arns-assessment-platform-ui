@@ -40,7 +40,7 @@ export const pageHeading = GovUKHeading({
  */
 export const assessmentInfoDetails = AssessmentInfoDetails({
   personName: CaseData.Forename,
-  areaName: Data('currentAreaOfNeed').path('text'),
+  areaName: Data('currentAreaOfNeed.text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
   visibleWhen: canAccessSanContent,
