@@ -2,7 +2,7 @@ import {
   access,
   Answer,
   Condition,
-  createForgePackage,
+  createForgePackage, Data, Format,
   journey,
   redirect, Self,
   Session,
@@ -20,6 +20,7 @@ import {
 import { TieringAssessmentEffectsDeps } from './effects/types'
 import { TieringAssessmentEffects, TieringAssessmentEffectsImplementations } from './effects/effects'
 import { TieringAssessmentFunctions } from './effects/functions'
+import { CaseData } from '../sentence-plan/versions/v1.0/constants'
 
 const introStep = step({
   path: '/intro',
@@ -35,13 +36,19 @@ const introStep = step({
       label: 'Assessment UUID',
       hint: 'Enter an assessment UUID to load, or leave blank to create a new assessment',
       classes: "govuk-input--width-20",
+      validWhen: [
+        validation({
+          condition: Self().match(Condition.IsRequired()),
+          message: 'UUID is a required field',
+        }),
+      ],
     }),
     GovUKButton({ text: 'Continue' }),
   ],
   onSubmission: [
     submit({
-      validate: false,
-      onAlways: {
+      validate: true,
+      onValid: {
         effects: [
           TieringAssessmentEffects.InitialiseAssessment(),
         ],
@@ -60,6 +67,9 @@ const staticQuestionsStep = step({
     }),
   ],
   blocks: [
+    GovUKBody({
+      text: Format('Assessment UUID: %1', Answer('assessment-uuid')),
+    }),
     GovUKRadioInput({
       code: 'gender',
       label: 'Gender',
@@ -170,6 +180,7 @@ const staticQuestionsStep = step({
   onSubmission: [
     submit({
       validate: true,
+      //validate: false,
       onValid: {
         effects: [
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
@@ -250,12 +261,22 @@ const summaryStep = step({
         },
       ],
     }),
+    GovUKTextInput({
+      code: 'field',
+      label: 'This is a field',
+      validWhen: [
+        validation({
+          condition: Self().match(Condition.IsRequired()),
+          message: 'This is a required field',
+        }),
+      ]
+    }),
     GovUKButton({ text: 'Confirm' }),
   ],
   onSubmission: [
     submit({
-      validate: false,
-      onAlways: {
+      validate: true,
+      onValid: {
         effects: [
           TieringAssessmentEffects.SetAssessmentComplete()
         ],
@@ -273,10 +294,6 @@ const confirmationStep = step({
   code: 'confirmation',
   path: '/confirmation',
   title: 'Answers saved',
-  reachability: {
-    entryWhen: Session('patternSubmitted.tiering-assessment').match(Condition.Equals(true)),
-    tieBreakers: [tieBreaker({ priority: 200 })],
-  },
   blocks: [
     GovUKPanel({
       titleText: 'Answers saved',
@@ -284,21 +301,21 @@ const confirmationStep = step({
     GovUKBody({
       text: 'Your answers have been saved with UUID {UUID}.',
     }),
-    GovUKButton({
-      text: 'Restart',
-      name: 'action',
-      value: 'restart',
-      classes: 'govuk-button--secondary',
-    }),
+    // GovUKButton({
+    //   text: 'Restart',
+    //   name: 'action',
+    //   value: 'restart',
+    //   classes: 'govuk-button--secondary',
+    // }),
   ],
-  onSubmission: [
-    submit({
-      validate: false,
-      onAlways: {
-        next: [redirect({ goto: 'intro' })],
-      },
-    }),
-  ],
+  // onSubmission: [
+  //   submit({
+  //     validate: false,
+  //     onAlways: {
+  //       next: [redirect({ goto: 'intro' })],
+  //     },
+  //   }),
+  // ],
 })
 
 const tieringAssessmentJourney = journey({

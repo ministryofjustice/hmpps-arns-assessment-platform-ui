@@ -8,6 +8,7 @@ export interface TieringAssessmentEffectShape {
   LoadAssessmentData: () => EffectFunctionExpr
   SaveAssessmentData: () => EffectFunctionExpr
   SetAssessmentComplete: () => EffectFunctionExpr
+  LogSomething: () => EffectFunctionExpr
 }
 
 export const { effects: TieringAssessmentEffects, implementations: TieringAssessmentEffectsImplementations } =
@@ -27,10 +28,20 @@ export const { effects: TieringAssessmentEffects, implementations: TieringAssess
       context.setAnswer('risk-scores-ogrs3-errors', JSON.stringify(riskScores.actuarialPredictors.allPredictor.validationErrors))
     },
     InitialiseAssessment: (deps: TieringAssessmentEffectsDeps)=> async (context: TieringAssessmentEffectContext) => {
-      // TODO
+      const assessmentUuid = context.getAnswer('assessment-uuid') as string || (await deps.api.executeCommand({
+        type: 'CreateAssessmentCommand',
+        assessmentType: 'TIERING_ASSESSMENT',
+        formVersion: '0',
+        user: context.getState('user'),
+      })).assessmentUuid
+      const session = context.getSession()
+      session.assessmentUuid = assessmentUuid
     },
     LoadAssessmentData: (deps: TieringAssessmentEffectsDeps)=> async (context: TieringAssessmentEffectContext) => {
-      // TODO
+      const session = context.getSession()
+      const assessmentUuid = session.assessmentUuid
+      context.setAnswer('assessment-uuid', assessmentUuid)
+      console.log(`Current assessment UUID: ${assessmentUuid}`)
     },
     SaveAssessmentData: (deps: TieringAssessmentEffectsDeps)=> async (context: TieringAssessmentEffectContext) => {
       // TODO
@@ -38,4 +49,7 @@ export const { effects: TieringAssessmentEffects, implementations: TieringAssess
     SetAssessmentComplete: (deps: TieringAssessmentEffectsDeps)=> async (context: TieringAssessmentEffectContext) => {
       // TODO
     },
+    LogSomething: (deps: TieringAssessmentEffectsDeps)=> async (context: TieringAssessmentEffectContext) => {
+      console.log('This is in the invalid block')
+    }
   })

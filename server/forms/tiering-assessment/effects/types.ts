@@ -4,6 +4,7 @@ import { AssessmentPlatformApiClient, CoordinatorApiClient, DeliusApiClient } fr
 import AuditService from '../../../services/auditService'
 import FeatureFlagService from '../../../services/featureFlagService'
 import RiskActuarialApiClient from '../../../data/riskActuarialApiClient'
+import { User } from '../../../interfaces/user'
 
 /**
  * Dependencies for sentence plan effects.
@@ -18,14 +19,21 @@ export interface TieringAssessmentEffectsDeps {
   riskActuarialApi: RiskActuarialApiClient
 }
 
-export type TieringAssessmentSession = Session & {
-  patternDrafts?: Record<string, Record<string, unknown>>
-  patternSubmitted?: Record<string, boolean>
-  demoUser?: { name: string; role: string }
+export type TieringAssessmentSession = {
+  assessmentUuid: string,
+} & Session
+
+export interface SentencePlanState extends Record<string, unknown> {
+  user: User & { authSource: string; token: string }
+  requestId: string
 }
+
+export interface TieringAssessmentData extends Record<string, unknown> {}
+
 
 export type TieringAssessmentEffectContext = EffectFunctionContext<
   Record<string, unknown>,
-  Record<string, unknown>,
-  TieringAssessmentSession
+  TieringAssessmentData,
+  TieringAssessmentSession,
+  SentencePlanState
 >
