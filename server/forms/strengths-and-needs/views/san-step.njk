@@ -19,6 +19,9 @@
 
 {% block head %}
   {{ super() }}
+  {% block pageStylesheets %}
+    <link rel="stylesheet" href="{{ '/assets/css/forms/strengths-and-needs/assets/form.css' | assetMap }}">
+  {% endblock %}
 {% endblock %}
 
 {% block govukHeader %}
@@ -28,15 +31,16 @@
 {% endblock %}
 
 {% block content %}
+
   {% set currentSectionCode = ancestors[ancestors.length - 1].code if ancestors.length else '' %}
   {% set activeSectionNavItems = [] %}
 
   {% for item in sectionNavItems %}
     {% set activeSectionNavItems = activeSectionNavItems.concat([{
       text: item.text,
-      href: item.href,
+      href: item.sideNavHref,
       active: item.code == currentSectionCode,
-      attributes: {complete: item.status}
+      attributes: {"data-status": item.status}
     }]) %}
   {% endfor %}
 
@@ -65,7 +69,7 @@
           {% if sectionTitle %}
             <div class="govuk-grid-row">
               <div class="govuk-grid-column-three-quarters">
-                <span class="govuk-heading-l">{{ sectionTitle }}</span>
+                <span class="{{ sectionTitleClass | default("govuk-heading-l") }}">{{ sectionTitle }}</span>
               </div>
               {% if sectionStatus %}
                 <div class="govuk-grid-column-one-quarter govuk-!-text-align-right">

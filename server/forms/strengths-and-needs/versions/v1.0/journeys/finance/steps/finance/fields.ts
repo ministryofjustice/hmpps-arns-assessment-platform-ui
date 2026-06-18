@@ -5,7 +5,8 @@ import {
   Format,
   Condition,
   and,
-  Request, or,
+  Request,
+  or,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKCheckboxInput,

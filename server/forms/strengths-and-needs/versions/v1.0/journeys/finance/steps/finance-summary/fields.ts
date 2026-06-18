@@ -371,12 +371,7 @@ export const summaryTab = GovUKTabs({
       id: 'practitioner-analysis',
       label: 'Practitioner analysis',
       panel: {
-        blocks: [
-          strengthsOrProtectiveFactors,
-          linkedToSeriousHarm,
-          linkedToReoffending,
-          markAsCompleteButton,
-        ],
+        blocks: [strengthsOrProtectiveFactors, linkedToSeriousHarm, linkedToReoffending, markAsCompleteButton],
       },
     },
   ],

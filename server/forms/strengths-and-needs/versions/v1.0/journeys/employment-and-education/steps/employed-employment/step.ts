@@ -22,7 +22,6 @@ export const employedEmploymentStep = step({
   path: `/${Step.employed.path}`,
   title: locale.step[Step.employed.code],
   view: {
-    template: 'strengths-and-needs/views/san-step',
     locals: {
       backlink: sectionPath(Section.employment_and_education),
     },

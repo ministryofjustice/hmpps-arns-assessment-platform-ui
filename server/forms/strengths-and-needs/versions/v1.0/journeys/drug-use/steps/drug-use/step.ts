@@ -13,6 +13,11 @@ export const drugUseStep = step({
   path: '/drug-use',
   title: 'Drug use',
   reachability: { entryWhen: true },
+  view: {
+    locals: {
+      sectionTitleClass: 'govuk-body-l',
+    },
+  },
   blocks: [drugUse, saveButton],
   onSubmission: [
     submit({

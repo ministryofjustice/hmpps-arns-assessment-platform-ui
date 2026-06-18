@@ -8,9 +8,6 @@ import { Step } from '../../constants/step'
 export const employmentEducationSummaryStep = step({
   path: `/${Step.employment_education_summary.path}`,
   title: locale.step[Step.employment_education_summary.code],
-  view: {
-    template: 'strengths-and-needs/views/san-step',
-  },
   blocks: [employmentStatusSummaryTab],
   onSubmission: [
     submit({
