@@ -1,4 +1,4 @@
-import { Answer, Format, Request } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer, Request } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
   GovUKLinkButton,

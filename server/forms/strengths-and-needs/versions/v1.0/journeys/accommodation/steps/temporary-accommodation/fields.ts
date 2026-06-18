@@ -1,103 +1,115 @@
 import { validation, Self, Answer, Format, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKRadioInput, GovUKCharacterCount } from '@ministryofjustice/hmpps-forge/govuk-components'
-
 import { CaseData } from '../../../../constants/formVersion'
+import { Question } from '../../constants/question'
+import { commonLocale } from '../../../../constants/locale'
+import { Option } from '../../constants/option'
+import { locale } from '../../constants/locale'
 
 // --- Suitable Housing Planned Group ---
 
 const futureAccommodationAwaitingAssessmentDetails = GovUKCharacterCount({
-  code: 'future_accommodation_type_awaiting_assessment_details',
-  label: 'Give details',
+  code: Question.future_accommodation_type_awaiting_assessment_details,
+  label: commonLocale.required_details,
   maxLength: 2000,
-  dependentWhen: Answer('future_accommodation_type').match(Condition.Equals('AWAITING_ASSESSMENT')),
+  dependentWhen: Answer(Question.future_accommodation_type).match(Condition.Equals(Option.awaiting_assessment)),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Enter details',
+      message: commonLocale.validation.enter_details,
     }),
   ],
 })
 
 const futureAccommodationAwaitingPlacementDetails = GovUKCharacterCount({
-  code: 'future_accommodation_type_awaiting_placement_details',
-  label: 'Give details',
+  code: Question.future_accommodation_type_awaiting_placement_details,
+  label: commonLocale.required_details,
   maxLength: 2000,
-  dependentWhen: Answer('future_accommodation_type').match(Condition.Equals('AWAITING_PLACEMENT')),
+  dependentWhen: Answer(Question.future_accommodation_type).match(Condition.Equals(Option.awaiting_placement)),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Enter details',
+      message: commonLocale.validation.enter_details,
     }),
   ],
 })
 
 const futureAccommodationOtherDetails = GovUKCharacterCount({
-  code: 'future_accommodation_type_other_details',
-  label: 'Give details',
-  hint: 'Include where and who with.',
+  code: Question.future_accommodation_type_other_details,
+  label: commonLocale.required_details,
+  hint: locale.hint[Question.future_accommodation_type_other_details],
   maxLength: 2000,
-  dependentWhen: Answer('future_accommodation_type').match(Condition.Equals('OTHER')),
+  dependentWhen: Answer(Question.future_accommodation_type).match(Condition.Equals(Option.other)),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Enter details',
+      message: commonLocale.validation.enter_details,
     }),
   ],
 })
 
 export const futureAccommodationType = GovUKRadioInput({
-  code: 'future_accommodation_type',
+  code: Question.future_accommodation_type,
   fieldset: {
     legend: {
-      text: 'What is the type of future accommodation?',
+      text: locale.question[Question.future_accommodation_type],
       classes: 'govuk-visually-hidden',
     },
   },
-  dependentWhen: Answer('suitable_housing_planned').match(Condition.Equals('YES')),
+  dependentWhen: Answer(Question.suitable_housing_planned).match(Condition.Equals(Option.yes)),
   items: [
     {
-      value: 'AWAITING_ASSESSMENT',
-      text: 'Awaiting assessment',
+      value: Option.awaiting_assessment,
+      text: locale.option[Question.future_accommodation_type + Option.awaiting_assessment],
       block: futureAccommodationAwaitingAssessmentDetails,
     },
     {
-      value: 'AWAITING_PLACEMENT',
-      text: 'Awaiting placement',
+      value: Option.awaiting_placement,
+      text: locale.option[Question.future_accommodation_type + Option.awaiting_placement],
       block: futureAccommodationAwaitingPlacementDetails,
     },
-    { value: 'BUYING_HOUSE', text: 'Buy a house' },
-    { value: 'LIVING_WITH_FRIENDS_OR_FAMILY', text: 'Living with friends or family' },
-    { value: 'RENT_PRIVATELY', text: 'Rent privately' },
-    { value: 'RENT_SOCIAL', text: 'Rent from social, local authority or other' },
-    { value: 'RESIDENTIAL_HEALTHCARE', text: 'Residential healthcare' },
-    { value: 'SUPPORTED_ACCOMMODATION', text: 'Supported accommodation' },
-    { value: 'OTHER', text: 'Other', block: futureAccommodationOtherDetails },
+    { value: Option.buying_house, text: locale.option[Question.future_accommodation_type + Option.buying_house] },
+    {
+      value: Option.living_with_friends_or_family,
+      text: locale.option[Question.future_accommodation_type + Option.living_with_friends_or_family],
+    },
+    { value: Option.rent_privately, text: locale.option[Question.future_accommodation_type + Option.rent_privately] },
+    { value: Option.rent_social, text: locale.option[Question.future_accommodation_type + Option.rent_social] },
+    {
+      value: Option.residential_healthcare,
+      text: locale.option[Question.future_accommodation_type + Option.residential_healthcare],
+    },
+    {
+      value: Option.supported_accommodation,
+      text: locale.option[Question.future_accommodation_type + Option.supported_accommodation],
+    },
+    { value: Option.other, text: locale.option[Option.other], block: futureAccommodationOtherDetails },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select the type of future accommodation',
+      message: locale.validation[Question.future_accommodation_type],
     }),
   ],
 })
 
 export const suitableHousingPlanned = GovUKRadioInput({
-  code: 'suitable_housing_planned',
+  code: Question.suitable_housing_planned,
   fieldset: {
     legend: {
-      text: Format('Does %1 have future accommodation planned?', CaseData.Forename),
+      text: Format(locale.question[Question.suitable_housing_planned], CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
-    { value: 'YES', text: 'Yes', block: futureAccommodationType },
-    { value: 'NO', text: 'No' },
-    { value: 'UNKNOWN', text: 'Unknown' },
+    { value: Option.yes, text: locale.option[Option.yes], block: futureAccommodationType },
+    { value: Option.no, text: locale.option[Option.no] },
+    { value: Option.unknown, text: locale.option[Option.unknown] },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select if they have future accommodation planned',
+      message: locale.validation[Question.suitable_housing_planned],
     }),
   ],
 })

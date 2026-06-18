@@ -10,6 +10,11 @@ export const currentEmploymentStep = step({
   path: `/${Step.current_employment.path}`,
   title: locale.step[Step.current_employment.code],
   reachability: { entryWhen: true },
+  view: {
+    locals: {
+      sectionTitleClass: 'govuk-body-l',
+    },
+  },
   blocks: [currentEmploymentStatus, saveButton],
   onSubmission: [
     submit({

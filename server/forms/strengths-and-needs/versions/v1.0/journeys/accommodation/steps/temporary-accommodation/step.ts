@@ -1,5 +1,4 @@
-import { step, submit, redirect, block, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { step, submit, redirect, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
   livingWith,
@@ -8,17 +7,14 @@ import {
   accommodationChanges,
 } from '../settled-accommodation/fields'
 import { suitableHousingPlanned } from './fields'
-
-const saveButton = block<GovUKButton>({
-  variant: 'govukButton',
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { Step } from '../../constants/step'
+import { locale } from '../../constants/locale'
+import { saveButton } from '../../../../constants/buttons'
+import { Section, SectionStatus } from '../../../../constants/section'
 
 export const temporaryAccommodationStep = step({
-  path: '/temporary-accommodation',
-  title: 'Temporary accommodation',
+  path: `/${Step.temporary_accommodation.path}`,
+  title: locale.step[Step.temporary_accommodation.code],
   blocks: [
     livingWith,
     suitableHousingLocation,
@@ -32,8 +28,11 @@ export const temporaryAccommodationStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
-        next: [redirect({ goto: 'accommodation-summary' })],
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation.statusKey, SectionStatus.incomplete),
+        ],
+        next: [redirect({ goto: Step.accommodation_summary.path })],
       },
     }),
   ],
