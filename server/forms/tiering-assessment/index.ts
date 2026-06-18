@@ -36,19 +36,13 @@ const introStep = step({
       label: 'Assessment UUID',
       hint: 'Enter an assessment UUID to load, or leave blank to create a new assessment',
       classes: "govuk-input--width-20",
-      validWhen: [
-        validation({
-          condition: Self().match(Condition.IsRequired()),
-          message: 'UUID is a required field',
-        }),
-      ],
     }),
     GovUKButton({ text: 'Continue' }),
   ],
   onSubmission: [
     submit({
-      validate: true,
-      onValid: {
+      validate: false,
+      onAlways: {
         effects: [
           TieringAssessmentEffects.InitialiseAssessment(),
         ],
@@ -67,9 +61,6 @@ const staticQuestionsStep = step({
     }),
   ],
   blocks: [
-    GovUKBody({
-      text: Format('Assessment UUID: %1', Answer('assessment-uuid')),
-    }),
     GovUKRadioInput({
       code: 'gender',
       label: 'Gender',
@@ -101,7 +92,7 @@ const staticQuestionsStep = step({
     }),
     GovUKTextInput({
       code: 'date-of-current-conviction',
-      label: 'Date current conviction',
+      label: 'Date of current conviction',
       classes: "govuk-input--width-10",
       validWhen: [
         validation({
@@ -180,7 +171,6 @@ const staticQuestionsStep = step({
   onSubmission: [
     submit({
       validate: true,
-      //validate: false,
       onValid: {
         effects: [
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
@@ -195,6 +185,11 @@ const staticQuestionsStep = step({
 const summaryStep = step({
   path: '/summary',
   title: 'Summary',
+  onAccess: [
+    access({
+      effects: [TieringAssessmentEffects.LoadAssessmentData()],
+    }),
+  ],
   blocks: [
     GovUKSummaryList({
       card: {
@@ -249,27 +244,17 @@ const summaryStep = step({
       rows: [
         {
           key: { text: 'OGRS3 score' },
-          value: { text: Answer('risk-scores-ogrs3.twoYearScore') },
+          value: { text: Answer('risk-scores-ogrs3-score') },
         },
         {
           key: { text: 'OGRS3 band' },
-          value: { text: Answer('risk-scores-ogrs3.band') },
+          value: { text: Answer('risk-scores-ogrs3-band') },
         },
         {
           key: { text: 'Validation errors' },
           value: { text: Answer('risk-scores-ogrs3-errors') },
         },
       ],
-    }),
-    GovUKTextInput({
-      code: 'field',
-      label: 'This is a field',
-      validWhen: [
-        validation({
-          condition: Self().match(Condition.IsRequired()),
-          message: 'This is a required field',
-        }),
-      ]
     }),
     GovUKButton({ text: 'Confirm' }),
   ],
@@ -294,34 +279,38 @@ const confirmationStep = step({
   code: 'confirmation',
   path: '/confirmation',
   title: 'Answers saved',
+  onAccess: [
+    access({
+      effects: [TieringAssessmentEffects.SetupUUIDInData()],
+    }),
+  ],
   blocks: [
     GovUKPanel({
       titleText: 'Answers saved',
     }),
     GovUKBody({
-      text: 'Your answers have been saved with UUID {UUID}.',
+      text: Format('Your answers have been saved with UUID %1', Data('assessment-uuid')),
     }),
-    // GovUKButton({
-    //   text: 'Restart',
-    //   name: 'action',
-    //   value: 'restart',
-    //   classes: 'govuk-button--secondary',
-    // }),
+    GovUKButton({
+      text: 'Restart',
+      classes: 'govuk-button--secondary',
+    }),
   ],
-  // onSubmission: [
-  //   submit({
-  //     validate: false,
-  //     onAlways: {
-  //       next: [redirect({ goto: 'intro' })],
-  //     },
-  //   }),
-  // ],
+  onSubmission: [
+    submit({
+      validate: false,
+      onAlways: {
+        next: [redirect({ goto: 'intro' })],
+      },
+    }),
+  ],
 })
 
 const tieringAssessmentJourney = journey({
   code: 'tiering-assessment',
   title: 'Tiering Assessment',
   path: '/tiering-assessment',
+  reachability: { disableReachabilityChecks: true },
   steps: [introStep, staticQuestionsStep, summaryStep, confirmationStep],
 })
 
