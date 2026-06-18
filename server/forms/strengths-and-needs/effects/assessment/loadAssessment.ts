@@ -2,17 +2,8 @@ import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import { InternalServerError } from 'http-errors'
 import { unwrapAll } from '../../../../data/aap-api/wrappers'
 import { AssessmentVersionQuery } from '../../../../interfaces/aap-api/query'
-import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
 import { QueryError } from '../../../../errors/aap-api/QueryError'
-import {
-  AssessmentProgress,
-  assessmentProgressFieldCodes,
-  assessmentProgressKeys,
-  StrengthsAndNeedsContext,
-  StrengthsAndNeedsEffectsDeps
-} from '../types'
-
-const SAN_ASSESSMENT_TYPE = 'SAN_SP'
+import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 
 const isMissingAssessmentQueryError = (error: unknown): boolean =>
   error instanceof QueryError && error.queryType === 'AssessmentVersionQuery' && error.result === undefined

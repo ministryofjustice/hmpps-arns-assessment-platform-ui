@@ -1,10 +1,13 @@
-import {access, Data, journey} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, Data, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 import { drugUseJourney } from './journeys/drug-use'
-import { formVersion, sectionNavItems } from './constants'
-import { StrengthsAndNeedsEffects } from '../../effects'
+import { financeJourney } from './journeys/finance'
 import {healthWellbeingJourney} from "./journeys/health-wellbeing";
+import { StrengthsAndNeedsEffects } from '../../effects'
+import { Section } from './constants/section'
+import { basePath, formVersion } from './constants/formVersion'
+import { commonLocale } from './constants/locale'
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -14,15 +17,16 @@ import {healthWellbeingJourney} from "./journeys/health-wellbeing";
  */
 export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
-  title: 'Strengths and needs',
-  path: '/v1.0',
+  title: commonLocale.strengths_and_needs,
+  path: `/${formVersion}`,
   view: {
-    template: 'strengths-and-needs/views/san-step-index',
+    template: 'strengths-and-needs/views/san-step',
     locals: {
-      basePath: '/strengths-and-needs/v1.0',
-      sectionNavItems: sectionNavItems.map((section) => ({
+      basePath,
+      sectionNavItems: Object.values(Section).map(section => ({
         ...section,
         status: Data(section.statusKey),
+        text: commonLocale.sectionTitle[section.code],
       })),
     },
   },
@@ -38,5 +42,5 @@ export const strengthsAndNeedsV1Journey = journey({
       ],
     }),
   ],
-  children: [accommodationJourney, employmentJourney, healthWellbeingJourney, drugUseJourney],
+  children: [accommodationJourney, employmentJourney, drugUseJourney, healthWellbeingJourney, financeJourney],
 })

@@ -4,7 +4,7 @@ import { CommandResult, CreateAssessmentCommandResult } from '../../../interface
 import {
   CreateAssessmentCommand,
   UpdateAssessmentAnswersCommand,
-  UpdateAssessmentPropertiesCommand
+  UpdateAssessmentPropertiesCommand,
 } from '../../../interfaces/aap-api/command'
 import { AssessmentVersionQuery } from '../../../interfaces/aap-api/query'
 import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryResult'
@@ -17,25 +17,6 @@ export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers
   assessmentVersion?: number
 }
-
-
-export type SectionProgressStatus = 'INCOMPLETE' | 'COMPLETE'
-
-export const assessmentProgressFieldCodes = {
-  accommodationComplete: 'accommodation_section_status',
-  alcoholUseComplete: 'alcohol_section_status',
-  drugsComplete: 'drugs_section_status',
-  employmentEducationComplete: 'employment_section_status',
-  financesComplete: 'finances_section_status',
-  healthWellbeingComplete: 'health_section_status',
-  offencesComplete: 'offences_section_status',
-  relationshipsComplete: 'relationship_section_status',
-  thinkingBehaviourComplete: 'thinking_behaviour_section_status',
-};
-
-export type AssessmentProgress = typeof assessmentProgressFieldCodes
-
-export const assessmentProgressKeys = Object.values(assessmentProgressFieldCodes) as (keyof AssessmentProgress)[]
 
 /**
  * Session data available to SAN effects.

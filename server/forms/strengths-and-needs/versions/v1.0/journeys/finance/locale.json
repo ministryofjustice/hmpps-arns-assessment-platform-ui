@@ -1,0 +1,30 @@
+{
+  "en-gb": {
+    "optional_details": "Give details (optional)",
+    "required_details": "Give details",
+    "options": {
+      "YES": "Yes",
+      "NO": "No",
+      "HAS_MADE_CHANGES": "I have already made positive changes and want to maintain them",
+      "IS_MAKING_CHANGES": "I am actively making changes",
+      "WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO": "I want to make changes and know how to",
+      "WANTS_TO_MAKE_CHANGES_NEEDS_HELP": "I want to make changes but need help",
+      "THINKING_ABOUT_MAKING_CHANGES": "I am thinking about making changes",
+      "DOES_NOT_WANT_TO_MAKE_CHANGES": "I do not want to make changes",
+      "DOES_NOT_WANT_TO_ANSWER": "I do not want to answer",
+      "NOT_PRESENT": "%1 is not present",
+      "NOT_APPLICABLE": "Not applicable"
+    },
+    "practitioner_analysis": {
+      "strengths_protective_factors": {
+        "text": "Are there any strengths or protective factors related to %1 finance?"
+      },
+      "finance_linked_to_serious_harm": {
+        "text": "Is %1 finance linked to risk of serious harm?"
+      },
+      "finance_linked_to_reoffending": {
+        "text": "Is %1 finance linked to risk of reoffending?"
+      }
+    }
+  }
+}

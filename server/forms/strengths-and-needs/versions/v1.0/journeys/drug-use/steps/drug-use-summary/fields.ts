@@ -1,6 +1,7 @@
 import { validation, Self, Answer, Format, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKRadioInput, GovUKCharacterCount } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { CaseData } from '../../../../constants'
+
+import { CaseData } from '../../../../constants/formVersion'
 
 // --- Motivated to stop (drug-use specific) ---
 
