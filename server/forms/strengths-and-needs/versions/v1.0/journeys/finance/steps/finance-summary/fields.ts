@@ -21,10 +21,9 @@ import {
   GovUKTabs,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
-import { CaseData } from '../../../../constants'
 import locale from '../../locale.json'
 import { StrengthsAndNeedsTransformers } from '../../../../../../transformers'
-import { SANGenerators } from '../../../../../../generators/customGenerator'
+import { SANGenerators } from '../../../../../../generators'
 import {
   financeBankAccount,
   financeChanges,
@@ -35,6 +34,7 @@ import {
   yesTypeOfDebt,
 } from '../finance/fields'
 import { StrengthsAndNeedsConditions } from '../../../../../../conditions'
+import { CaseData } from '../../../../constants/formVersion'
 
 const PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT = 1425
 

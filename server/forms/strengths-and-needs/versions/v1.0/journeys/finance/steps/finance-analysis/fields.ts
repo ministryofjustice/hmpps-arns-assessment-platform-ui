@@ -5,8 +5,7 @@ import {
   GovUKSummaryList,
   GovUKTabs,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { CaseData } from '../../../../constants'
-import { SANGenerators } from '../../../../../../generators/customGenerator'
+import { SANGenerators } from '../../../../../../generators'
 import locale from '../../locale.json'
 import {
   financeSummary,
@@ -15,6 +14,7 @@ import {
   strengthsOrProtectiveFactors,
 } from '../finance-summary/fields'
 import { StrengthsAndNeedsTransformers } from '../../../../../../transformers'
+import { CaseData } from '../../../../constants/formVersion'
 
 const contentWith =
   (content: Record<string, any>) =>

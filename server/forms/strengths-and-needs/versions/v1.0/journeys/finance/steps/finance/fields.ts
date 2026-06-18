@@ -14,9 +14,9 @@ import {
 
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import locale from '../../locale.json'
-import { CaseData } from '../../../../constants'
 import { StrengthsAndNeedsTransformers } from '../../../../../../transformers'
 import { StrengthsAndNeedsConditions } from '../../../../../../conditions'
+import { CaseData } from '../../../../constants/formVersion'
 
 const DEFAULT_CHARACTER_COUNT = 2000
 
