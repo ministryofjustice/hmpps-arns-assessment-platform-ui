@@ -89,13 +89,17 @@ export const headInjuries = GovUKRadioInput({
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: {html:'This includes:<br>' +
-      '<ul>' +
+  hint: {
+    html:
+      '<div class="govuk-grid-width-full">' +
+      '<p class="govuk-hint">This includes:</p>' +
+      '<ul class="govuk-hint govuk-list govuk-list--bullet">' +
       '<li>traumatic brain injury</li>' +
       '<li>acquired brain injury</li>' +
-      '<li>having fits</li>' +
+      '<li>having fits</li>'+
       '<li>significant episodes of unconsciousness as a result of a head injury</li>'+
-      '</ul>',
+      '</ul>'+
+      '</div>'
   },
   items: [
     { value: 'YES', text: locale.options.YES },
