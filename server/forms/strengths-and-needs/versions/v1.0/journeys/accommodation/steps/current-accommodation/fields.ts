@@ -12,10 +12,10 @@ import {
 import { GovUKRadioInput, GovUKDateInputFull } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 import { CaseData } from '../../../../constants/formVersion'
-import { commonLocale } from '../../../../constants/locale';
-import { Question } from '../../constants/question';
-import { Option } from '../../constants/option';
-import { locale } from '../../constants/locale';
+import { commonLocale } from '../../../../constants/locale'
+import { Question } from '../../constants/question'
+import { Option } from '../../constants/option'
+import { locale } from '../../constants/locale'
 
 const hasAnyDatePart = () => {
   return and(
@@ -183,14 +183,14 @@ export const typeOfTemporaryAccommodation = GovUKRadioInput({
       value: Option.immigration,
       text: locale.option[Option.immigration],
       hint: {
-        text: locale.hint[Question.type_of_temporary_accommodation + '_' + Option.immigration],
+        text: locale.hint[`${Question.type_of_temporary_accommodation}_${Option.immigration}`],
       },
       block: immigrationEndDate,
     },
     {
       value: Option.short_term,
       text: locale.option[Option.short_term],
-      hint: { text: locale.hint[Question.type_of_temporary_accommodation + '_' + Option.short_term], },
+      hint: { text: locale.hint[`${Question.type_of_temporary_accommodation}_${Option.short_term}`] },
       block: shortTermEndDate,
     },
     { value: Option.unknown, text: locale.option[Option.unknown] },

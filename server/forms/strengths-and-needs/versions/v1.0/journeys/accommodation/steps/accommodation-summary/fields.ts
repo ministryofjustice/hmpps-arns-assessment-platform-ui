@@ -26,8 +26,9 @@ import { Step } from '../../constants/step'
 import {
   currentAccommodation,
   typeOfNoAccommodation,
-  typeOfSettledAccommodation, typeOfTemporaryAccommodation
-} from '../current-accommodation/fields';
+  typeOfSettledAccommodation,
+  typeOfTemporaryAccommodation,
+} from '../current-accommodation/fields'
 
 // --- Accommodation Summary Group ---
 
@@ -414,10 +415,7 @@ export const accommodationStrengthsProtectiveFactors = GovUKRadioInput({
   code: Question.accommodation_strengths_protective_factors,
   fieldset: {
     legend: {
-      text: Format(
-        locale.question[Question.accommodation_strengths_protective_factors],
-        CaseData.ForenamePossessive,
-      ),
+      text: Format(locale.question[Question.accommodation_strengths_protective_factors], CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },

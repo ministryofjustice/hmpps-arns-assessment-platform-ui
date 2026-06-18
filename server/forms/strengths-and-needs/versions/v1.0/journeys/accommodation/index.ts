@@ -6,8 +6,8 @@ import { temporaryAccommodationCasApStep } from './steps/temporary-accommodation
 import { noAccommodationStep } from './steps/no-accommodation/step'
 import { accommodationSummaryStep } from './steps/accommodation-summary/step'
 import { accommodationAnalysisStep } from './steps/accommodation-analysis/step'
-import { Section } from '../../constants/section';
-import { commonLocale } from '../../constants/locale';
+import { Section } from '../../constants/section'
+import { commonLocale } from '../../constants/locale'
 
 /**
  * Accommodation Journey

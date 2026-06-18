@@ -33,13 +33,15 @@ export const locale = {
     [Question.future_accommodation_type]: 'What is the type of future accommodation?',
     [Question.no_accommodation_reason]: 'Why does %1 have no accommodation?',
     [Question.past_accommodation_details]: `What's helped %1 stay in accommodation in the past? (optional)`,
-    [Question.accommodation_strengths_protective_factors]: 'Are there any strengths or protective factors related to %1 accommodation?',
+    [Question.accommodation_strengths_protective_factors]:
+      'Are there any strengths or protective factors related to %1 accommodation?',
     [Question.accommodation_linked_to_serious_harm]: 'Is %1 accommodation linked to risk of serious harm?',
     [Question.accommodation_linked_to_reoffending]: 'Is %1 accommodation linked to risk of reoffending?',
   },
   hint: {
-    [Question.type_of_temporary_accommodation + '_' + Option.immigration]: 'Includes accommodation provided under Schedule 10 of the Immigration and Asylum Act 1999 or under section 4 of the same Act.',
-    [Question.type_of_temporary_accommodation + '_' + Option.short_term]: 'Includes living with friends or family.',
+    [`${Question.type_of_temporary_accommodation}_${Option.immigration}`]:
+      'Includes accommodation provided under Schedule 10 of the Immigration and Asylum Act 1999 or under section 4 of the same Act.',
+    [`${Question.type_of_temporary_accommodation}_${Option.short_term}`]: 'Includes living with friends or family.',
     [Question.living_with_partner_details]: 'Include name, age and gender.',
     [Question.suitable_housing]: 'This includes things like safety or having appropriate amenities.',
     [Question.future_accommodation_type_other_details]: 'Include where and who with.',
@@ -63,8 +65,7 @@ export const locale = {
     [Question.accommodation_risk_of_reoffending_details]: 'Give details on the risk of reoffending',
     [Question.accommodation_linked_to_serious_harm]: 'Select if linked to risk of serious harm',
     [Question.accommodation_serious_harm_details]: 'Give details on the risk of serious harm',
-    [Question.accommodation_strengths_protective_factors]:
-      'Select if there are any strengths or protective factors',
+    [Question.accommodation_strengths_protective_factors]: 'Select if there are any strengths or protective factors',
     [Question.accommodation_strengths_protective_factors_details]:
       'Give details on strengths or protective factors related to their accommodation',
   },
@@ -112,9 +113,11 @@ export const locale = {
     [Option.does_not_want_to_answer]: 'I do not want to answer',
     [Option.not_present]: '%1 is not present',
     [Option.not_applicable]: 'Not applicable',
-    [Question.suitable_housing_concerns + Option.facilities]: 'Issues with the property - for example, poor kitchen or bathroom facilities',
+    [Question.suitable_housing_concerns + Option.facilities]:
+      'Issues with the property - for example, poor kitchen or bathroom facilities',
     [Question.suitable_housing_concerns + Option.overcrowding]: 'Overcrowding',
-    [Question.suitable_housing_concerns + Option.exploitation]: 'Risk of their accommodation being exploited by others - for example, cuckooing',
+    [Question.suitable_housing_concerns + Option.exploitation]:
+      'Risk of their accommodation being exploited by others - for example, cuckooing',
     [Question.suitable_housing_concerns + Option.safety]: 'Safety of accommodation',
     [Question.suitable_housing_concerns + Option.lives_with_victim]: 'Victim lives with them',
     [Question.suitable_housing_concerns + Option.victimisation]: 'Victimised by someone living with them',

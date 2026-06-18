@@ -3,10 +3,10 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { Step } from '../../constants/step'
 import { locale } from '../../constants/locale'
-import { accommodationSummaryTab } from './fields';
+import { accommodationSummaryTab } from './fields'
 
 export const accommodationSummaryStep = step({
-  path: '/' + Step.accommodation_summary.path,
+  path: `/${Step.accommodation_summary.path}`,
   title: locale.step[Step.accommodation_summary.code],
   blocks: [accommodationSummaryTab],
   onSubmission: [
@@ -16,10 +16,7 @@ export const accommodationSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(
-            Section.accommodation.statusKey,
-            SectionStatus.complete,
-          ),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation.statusKey, SectionStatus.complete),
         ],
         next: [redirect({ goto: Step.accommodation_analysis.path })],
       },

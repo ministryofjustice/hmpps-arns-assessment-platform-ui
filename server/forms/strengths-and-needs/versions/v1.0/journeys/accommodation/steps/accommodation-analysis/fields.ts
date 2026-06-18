@@ -10,7 +10,8 @@ import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
 import {
   accommodationLinkedReoffending,
   accommodationLinkedToSeriousHarm,
-  accommodationStrengthsProtectiveFactors, accommodationSummary
+  accommodationStrengthsProtectiveFactors,
+  accommodationSummary,
 } from '../accommodation-summary/fields'
 
 // --- Practitioner Analysis Summary Group ---
@@ -19,10 +20,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
     {
       key: {
-        text: Format(
-          locale.question[Question.accommodation_strengths_protective_factors],
-          CaseData.ForenamePossessive,
-        ),
+        text: Format(locale.question[Question.accommodation_strengths_protective_factors], CaseData.ForenamePossessive),
       },
       value: {
         blocks: [
@@ -48,10 +46,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: Format(
-          locale.question[Question.accommodation_linked_to_serious_harm],
-          CaseData.ForenamePossessive,
-        ),
+        text: Format(locale.question[Question.accommodation_linked_to_serious_harm], CaseData.ForenamePossessive),
       },
       value: {
         blocks: [

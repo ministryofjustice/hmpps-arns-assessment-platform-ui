@@ -1,24 +1,15 @@
-import {
-  step,
-  submit,
-  redirect,
-  Post,
-  Answer,
-  and,
-  or,
-  Condition,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { step, submit, redirect, Post, Answer, and, or, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { currentAccommodation } from './fields'
-import { saveButton } from '../../../../constants/buttons';
-import { locale } from '../../constants/locale';
-import { Step } from '../../constants/step';
-import { Section, SectionStatus } from '../../../../constants/section';
-import { Question } from '../../constants/question';
-import { Option } from '../../constants/option';
+import { saveButton } from '../../../../constants/buttons'
+import { locale } from '../../constants/locale'
+import { Step } from '../../constants/step'
+import { Section, SectionStatus } from '../../../../constants/section'
+import { Question } from '../../constants/question'
+import { Option } from '../../constants/option'
 
 export const currentAccommodationStep = step({
-  path: '/' + Step.current_accommodation.path,
+  path: `/${Step.current_accommodation.path}`,
   title: locale.step[Step.current_accommodation.code],
   reachability: { entryWhen: true },
   view: {
@@ -34,10 +25,7 @@ export const currentAccommodationStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(
-            Section.accommodation.statusKey,
-            SectionStatus.incomplete,
-          ),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation.statusKey, SectionStatus.incomplete),
         ],
         next: [
           redirect({

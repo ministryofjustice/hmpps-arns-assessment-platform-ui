@@ -37,7 +37,10 @@ export const noAccommodationReason = GovUKCheckboxInput({
   items: [
     { value: Option.alcohol_problems, text: locale.option[Question.no_accommodation_reason + Option.alcohol_problems] },
     { value: Option.drug_problems, text: locale.option[Question.no_accommodation_reason + Option.drug_problems] },
-    { value: Option.financial_difficulties, text: locale.option[Question.no_accommodation_reason + Option.financial_difficulties] },
+    {
+      value: Option.financial_difficulties,
+      text: locale.option[Question.no_accommodation_reason + Option.financial_difficulties],
+    },
     {
       value: Option.risk_to_others,
       text: locale.option[Question.no_accommodation_reason + Option.risk_to_others],

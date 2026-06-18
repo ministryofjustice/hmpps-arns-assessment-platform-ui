@@ -4,8 +4,8 @@ import { StrengthsAndNeedsEffectImplementations } from './effects'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import config from '../../config'
 import { StrengthsAndNeedsGeneratorImplementations } from './generators'
-import { Section } from './versions/v1.0/constants/section';
-import { commonLocale } from './versions/v1.0/constants/locale';
+import { Section } from './versions/v1.0/constants/section'
+import { commonLocale } from './versions/v1.0/constants/locale'
 
 const versionRedirectStep = step({
   path: '/',

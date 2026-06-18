@@ -10,10 +10,10 @@ import { suitableHousingPlanned } from './fields'
 import { Step } from '../../constants/step'
 import { locale } from '../../constants/locale'
 import { saveButton } from '../../../../constants/buttons'
-import { Section, SectionStatus } from '../../../../constants/section';
+import { Section, SectionStatus } from '../../../../constants/section'
 
 export const temporaryAccommodationStep = step({
-  path: '/' + Step.temporary_accommodation.path,
+  path: `/${Step.temporary_accommodation.path}`,
   title: locale.step[Step.temporary_accommodation.code],
   blocks: [
     livingWith,
@@ -30,10 +30,7 @@ export const temporaryAccommodationStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(
-            Section.accommodation.statusKey,
-            SectionStatus.incomplete,
-          ),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation.statusKey, SectionStatus.incomplete),
         ],
         next: [redirect({ goto: Step.accommodation_summary.path })],
       },

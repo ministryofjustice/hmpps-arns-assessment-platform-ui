@@ -69,11 +69,20 @@ export const futureAccommodationType = GovUKRadioInput({
       block: futureAccommodationAwaitingPlacementDetails,
     },
     { value: Option.buying_house, text: locale.option[Question.future_accommodation_type + Option.buying_house] },
-    { value: Option.living_with_friends_or_family, text: locale.option[Question.future_accommodation_type + Option.living_with_friends_or_family] },
+    {
+      value: Option.living_with_friends_or_family,
+      text: locale.option[Question.future_accommodation_type + Option.living_with_friends_or_family],
+    },
     { value: Option.rent_privately, text: locale.option[Question.future_accommodation_type + Option.rent_privately] },
     { value: Option.rent_social, text: locale.option[Question.future_accommodation_type + Option.rent_social] },
-    { value: Option.residential_healthcare, text: locale.option[Question.future_accommodation_type + Option.residential_healthcare] },
-    { value: Option.supported_accommodation, text: locale.option[Question.future_accommodation_type + Option.supported_accommodation] },
+    {
+      value: Option.residential_healthcare,
+      text: locale.option[Question.future_accommodation_type + Option.residential_healthcare],
+    },
+    {
+      value: Option.supported_accommodation,
+      text: locale.option[Question.future_accommodation_type + Option.supported_accommodation],
+    },
     { value: Option.other, text: locale.option[Option.other], block: futureAccommodationOtherDetails },
   ],
   validWhen: [

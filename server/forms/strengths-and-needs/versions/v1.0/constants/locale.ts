@@ -31,6 +31,6 @@ export const commonLocale = {
     valid_date_month: 'Date must include a month',
     valid_date_year: 'Date must include a year',
     future_date: 'The date must be in the future',
-    enter_details: 'Enter details'
+    enter_details: 'Enter details',
   },
 }

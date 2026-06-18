@@ -7,8 +7,8 @@ import {
 import { CaseData } from '../../../../constants/formVersion'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
-import { commonLocale } from '../../../../constants/locale';
-import { locale } from '../../constants/locale';
+import { commonLocale } from '../../../../constants/locale'
+import { locale } from '../../constants/locale'
 
 // --- Living With Group ---
 
@@ -133,7 +133,10 @@ const suitableHousingConcernsOptions = [
     text: locale.option[Question.suitable_housing_concerns + Option.exploitation],
   },
   { value: Option.safety, text: locale.option[Question.suitable_housing_concerns + Option.safety] },
-  { value: Option.lives_with_victim, text: locale.option[Question.suitable_housing_concerns + Option.lives_with_victim] },
+  {
+    value: Option.lives_with_victim,
+    text: locale.option[Question.suitable_housing_concerns + Option.lives_with_victim],
+  },
   { value: Option.victimisation, text: locale.option[Question.suitable_housing_concerns + Option.victimisation] },
 ]
 
@@ -164,7 +167,10 @@ export const suitableHousingConcerns = GovUKCheckboxInput({
   },
   hint: commonLocale.select_all_that_apply_optional,
   dependentWhen: Answer(Question.suitable_housing).match(Condition.Equals(Option.yes_with_concerns)),
-  items: [...suitableHousingConcernsOptions, { value: Option.other, text: locale.option[Option.other], block: suitableHousingConcernsDetails }],
+  items: [
+    ...suitableHousingConcernsOptions,
+    { value: Option.other, text: locale.option[Option.other], block: suitableHousingConcernsDetails },
+  ],
 })
 
 const unsuitableHousingConcernsDetails = GovUKCharacterCount({
@@ -211,8 +217,8 @@ export const suitableHousing = GovUKRadioInput({
   hint: locale.hint[Question.suitable_housing],
   items: [
     { value: Option.yes, text: locale.option[Option.yes] },
-    { value: Option.yes_with_concerns, text:  locale.option[Option.yes_with_concerns], block: suitableHousingConcerns },
-    { value: Option.no, text:  locale.option[Option.no], block: unsuitableHousingConcerns },
+    { value: Option.yes_with_concerns, text: locale.option[Option.yes_with_concerns], block: suitableHousingConcerns },
+    { value: Option.no, text: locale.option[Option.no], block: unsuitableHousingConcerns },
   ],
   validWhen: [
     validation({
