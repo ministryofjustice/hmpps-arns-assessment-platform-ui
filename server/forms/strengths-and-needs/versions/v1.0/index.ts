@@ -18,7 +18,7 @@ export const strengthsAndNeedsV1Journey = journey({
   title: commonLocale.strengths_and_needs,
   path: `/${formVersion}`,
   view: {
-    template: 'strengths-and-needs/views/san-step-index',
+    template: 'strengths-and-needs/views/san-step',
     locals: {
       basePath,
       sectionNavItems: Object.values(Section).map(section => ({

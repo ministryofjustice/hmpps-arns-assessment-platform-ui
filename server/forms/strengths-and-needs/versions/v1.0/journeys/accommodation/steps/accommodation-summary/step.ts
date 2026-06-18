@@ -1,26 +1,27 @@
-import { step, submit, redirect, block, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { step, submit, redirect, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { strengthsOrProtectiveFactors, riskOfSeriousHarm, riskOfReoffending } from './fields'
-
-const saveButton = block<GovUKButton>({
-  variant: 'govukButton',
-  text: 'Save',
-  name: 'action',
-  value: 'save',
-})
+import { Section, SectionStatus } from '../../../../constants/section'
+import { Step } from '../../constants/step'
+import { locale } from '../../constants/locale'
+import { accommodationSummaryTab } from './fields';
 
 export const accommodationSummaryStep = step({
-  path: '/accommodation-summary',
-  title: 'Accommodation analysis',
-  blocks: [strengthsOrProtectiveFactors, riskOfSeriousHarm, riskOfReoffending, saveButton],
+  path: '/' + Step.accommodation_summary.path,
+  title: locale.step[Step.accommodation_summary.code],
+  blocks: [accommodationSummaryTab],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
-        next: [redirect({ goto: 'accommodation-analysis#practitioner-analysis' })],
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress(
+            Section.accommodation.statusKey,
+            SectionStatus.complete,
+          ),
+        ],
+        next: [redirect({ goto: Step.accommodation_analysis.path })],
       },
     }),
   ],

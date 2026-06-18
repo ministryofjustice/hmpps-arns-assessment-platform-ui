@@ -12,6 +12,10 @@ import {
 import { GovUKRadioInput, GovUKDateInputFull } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 import { CaseData } from '../../../../constants/formVersion'
+import { commonLocale } from '../../../../constants/locale';
+import { Question } from '../../constants/question';
+import { Option } from '../../constants/option';
+import { locale } from '../../constants/locale';
 
 const hasAnyDatePart = () => {
   return and(
@@ -37,22 +41,22 @@ const optionalFutureDateValidations = () => {
   return [
     validation({
       condition: not(and(hasAnyDatePart(), Self().not.match(Condition.Object.PropertyHasValue('day')))),
-      message: 'Date must include a day',
+      message: commonLocale.validation.valid_date_day,
       details: { field: 'day' },
     }),
     validation({
       condition: not(and(hasAnyDatePart(), Self().not.match(Condition.Object.PropertyHasValue('month')))),
-      message: 'Date must include a month',
+      message: commonLocale.validation.valid_date_month,
       details: { field: 'month' },
     }),
     validation({
       condition: not(and(hasAnyDatePart(), Self().not.match(Condition.Object.PropertyHasValue('year')))),
-      message: 'Date must include a year',
+      message: commonLocale.validation.valid_date_year,
       details: { field: 'year' },
     }),
     validation({
       condition: not(hasAllDateParts()),
-      message: 'Enter a valid date',
+      message: commonLocale.validation.valid_date,
     }),
     validation({
       condition: not(
@@ -62,7 +66,7 @@ const optionalFutureDateValidations = () => {
           Self().not.match(Condition.Date.IsValid()),
         ),
       ),
-      message: 'Enter a valid date',
+      message: commonLocale.validation.valid_date,
     }),
     validation({
       condition: not(
@@ -73,179 +77,174 @@ const optionalFutureDateValidations = () => {
           Self().not.match(Condition.Date.IsFutureDate()),
         ),
       ),
-      message: 'The date must be in the future',
+      message: commonLocale.validation.future_date,
     }),
   ]
 }
 
 const shortTermEndDate = GovUKDateInputFull({
-  code: 'short_term_accommodation_end_date',
+  code: Question.short_term_accommodation_end_date,
   fieldset: {
-    legend: { text: 'Enter expected end date (optional)' },
+    legend: { text: locale.question[Question.short_term_accommodation_end_date] },
   },
-  hint: 'For example, 27 3 2025',
-  dependentWhen: Answer('type_of_temporary_accommodation').match(Condition.Equals('SHORT_TERM')),
+  dependentWhen: Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.short_term)),
   formatters: [Transformer.Object.ToISO({ year: 'year', month: 'month', day: 'day' })],
   validWhen: optionalFutureDateValidations(),
 })
 
 const approvedPremisesEndDate = GovUKDateInputFull({
-  code: 'approved_premises_end_date',
+  code: Question.approved_premises_end_date,
   fieldset: {
-    legend: { text: 'Enter expected end date (optional)' },
+    legend: { text: locale.question[Question.approved_premises_end_date] },
   },
-  hint: 'For example, 27 3 2025',
-  dependentWhen: Answer('type_of_temporary_accommodation').match(Condition.Equals('APPROVED_PREMISES')),
+  dependentWhen: Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.approved_premises)),
   formatters: [Transformer.Object.ToISO({ year: 'year', month: 'month', day: 'day' })],
   validWhen: optionalFutureDateValidations(),
 })
 
 const cas2EndDate = GovUKDateInputFull({
-  code: 'cas2_end_date',
+  code: Question.cas2_end_date,
   fieldset: {
-    legend: { text: 'Enter expected end date (optional)' },
+    legend: { text: locale.question[Question.cas2_end_date] },
   },
-  hint: 'For example, 27 3 2025',
-  dependentWhen: Answer('type_of_temporary_accommodation').match(Condition.Equals('CAS2')),
+  dependentWhen: Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.cas2)),
   formatters: [Transformer.Object.ToISO({ year: 'year', month: 'month', day: 'day' })],
   validWhen: optionalFutureDateValidations(),
 })
 
 const cas3EndDate = GovUKDateInputFull({
-  code: 'cas3_end_date',
+  code: Question.cas3_end_date,
   fieldset: {
-    legend: { text: 'Enter expected end date (optional)' },
+    legend: { text: locale.question[Question.cas3_end_date] },
   },
-  hint: 'For example, 27 3 2025',
-  dependentWhen: Answer('type_of_temporary_accommodation').match(Condition.Equals('CAS3')),
+  dependentWhen: Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.cas3)),
   formatters: [Transformer.Object.ToISO({ year: 'year', month: 'month', day: 'day' })],
   validWhen: optionalFutureDateValidations(),
 })
 
 const immigrationEndDate = GovUKDateInputFull({
-  code: 'immigration_accommodation_end_date',
+  code: Question.immigration_accommodation_end_date,
   fieldset: {
-    legend: { text: 'Enter expected end date (optional)' },
+    legend: { text: locale.question[Question.immigration_accommodation_end_date] },
   },
-  hint: 'For example, 27 3 2025',
-  dependentWhen: Answer('type_of_temporary_accommodation').match(Condition.Equals('IMMIGRATION')),
+  dependentWhen: Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.immigration)),
   formatters: [Transformer.Object.ToISO({ year: 'year', month: 'month', day: 'day' })],
   validWhen: optionalFutureDateValidations(),
 })
 
-const typeOfSettledAccommodation = GovUKRadioInput({
-  code: 'type_of_settled_accommodation',
+export const typeOfSettledAccommodation = GovUKRadioInput({
+  code: Question.type_of_settled_accommodation,
   fieldset: {
     legend: {
-      text: 'Select the type of settled accommodation',
+      text: locale.question[Question.type_of_settled_accommodation],
       classes: 'govuk-visually-hidden',
     },
   },
-  dependentWhen: Answer('current_accommodation').match(Condition.Equals('SETTLED')),
+  dependentWhen: Answer(Question.current_accommodation).match(Condition.Equals(Option.settled)),
   items: [
-    { value: 'HOMEOWNER', text: 'Homeowner' },
-    { value: 'FRIENDS_OR_FAMILY', text: 'Living with friends or family' },
-    { value: 'RENTING_PRIVATELY', text: 'Renting privately' },
-    { value: 'RENTING_OTHER', text: 'Renting from social, local authority or other' },
-    { value: 'RESIDENTIAL_HEALTHCARE', text: 'Residential healthcare' },
-    { value: 'SUPPORTED_ACCOMMODATION', text: 'Supported accommodation' },
-    { value: 'UNKNOWN', text: 'Unknown' },
+    { value: Option.homeowner, text: locale.option[Option.homeowner] },
+    { value: Option.friends_or_family, text: locale.option[Option.friends_or_family] },
+    { value: Option.renting_privately, text: locale.option[Option.renting_privately] },
+    { value: Option.renting_other, text: locale.option[Option.renting_other] },
+    { value: Option.residential_healthcare, text: locale.option[Option.residential_healthcare] },
+    { value: Option.supported_accommodation, text: locale.option[Option.supported_accommodation] },
+    { value: Option.unknown, text: locale.option[Option.unknown] },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select the type of settled accommodation',
+      message: locale.validation[Question.type_of_settled_accommodation],
     }),
   ],
 })
 
-const typeOfTemporaryAccommodation = GovUKRadioInput({
-  code: 'type_of_temporary_accommodation',
+export const typeOfTemporaryAccommodation = GovUKRadioInput({
+  code: Question.type_of_temporary_accommodation,
   fieldset: {
     legend: {
-      text: 'Select the type of temporary accommodation',
+      text: locale.question[Question.type_of_temporary_accommodation],
       classes: 'govuk-visually-hidden',
     },
   },
-  dependentWhen: Answer('current_accommodation').match(Condition.Equals('TEMPORARY')),
+  dependentWhen: Answer(Question.current_accommodation).match(Condition.Equals(Option.temporary)),
   items: [
-    { value: 'APPROVED_PREMISES', text: 'Approved premises', block: approvedPremisesEndDate },
+    { value: Option.approved_premises, text: locale.option[Option.approved_premises], block: approvedPremisesEndDate },
     {
-      value: 'CAS2',
-      text: 'Community Accommodation Service Tier 2 (CAS2)',
+      value: Option.cas2,
+      text: locale.option[Option.cas2],
       block: cas2EndDate,
     },
     {
-      value: 'CAS3',
-      text: 'Community Accommodation Service Tier 3 (CAS3)',
+      value: Option.cas3,
+      text: locale.option[Option.cas3],
       block: cas3EndDate,
     },
     {
-      value: 'IMMIGRATION',
-      text: 'Immigration accommodation',
+      value: Option.immigration,
+      text: locale.option[Option.immigration],
       hint: {
-        text: 'Includes accommodation provided under Schedule 10 of the Immigration and Asylum Act 1999 or under section 4 of the same Act.',
+        text: locale.hint[Question.type_of_temporary_accommodation + '_' + Option.immigration],
       },
       block: immigrationEndDate,
     },
     {
-      value: 'SHORT_TERM',
-      text: 'Short term accommodation',
-      hint: { text: 'Includes living with friends or family.' },
+      value: Option.short_term,
+      text: locale.option[Option.short_term],
+      hint: { text: locale.hint[Question.type_of_temporary_accommodation + '_' + Option.short_term], },
       block: shortTermEndDate,
     },
-    { value: 'UNKNOWN', text: 'Unknown' },
+    { value: Option.unknown, text: locale.option[Option.unknown] },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select the type of temporary accommodation',
+      message: locale.validation[Question.type_of_temporary_accommodation],
     }),
   ],
 })
 
-const typeOfNoAccommodation = GovUKRadioInput({
-  code: 'type_of_no_accommodation',
+export const typeOfNoAccommodation = GovUKRadioInput({
+  code: Question.type_of_no_accommodation,
   fieldset: {
     legend: {
-      text: 'Select the type of no accommodation',
+      text: locale.question[Question.type_of_no_accommodation],
       classes: 'govuk-visually-hidden',
     },
   },
-  dependentWhen: Answer('current_accommodation').match(Condition.Equals('NO_ACCOMMODATION')),
+  dependentWhen: Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation)),
   items: [
-    { value: 'CAMPSITE', text: 'Campsite' },
-    { value: 'EMERGENCY_HOSTEL', text: 'Emergency hostel' },
-    { value: 'HOMELESS', text: 'Homeless - includes squatting' },
-    { value: 'ROUGH_SLEEPING', text: 'Rough sleeping' },
-    { value: 'SHELTER', text: 'Shelter' },
-    { value: 'UNKNOWN', text: 'Unknown' },
+    { value: Option.campsite, text: locale.option[Option.campsite] },
+    { value: Option.emergency_hostel, text: locale.option[Option.emergency_hostel] },
+    { value: Option.homeless, text: locale.option[Option.homeless] },
+    { value: Option.rough_sleeping, text: locale.option[Option.rough_sleeping] },
+    { value: Option.shelter, text: locale.option[Option.shelter] },
+    { value: Option.unknown, text: locale.option[Option.unknown] },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select the type of no accommodation',
+      message: locale.validation[Question.type_of_no_accommodation],
     }),
   ],
 })
 
 export const currentAccommodation = GovUKRadioInput({
-  code: 'current_accommodation',
+  code: Question.current_accommodation,
   fieldset: {
     legend: {
-      text: Format('What type of accommodation does %1 currently have?', CaseData.Forename),
+      text: Format(locale.question[Question.current_accommodation], CaseData.Forename),
       classes: 'govuk-fieldset__legend--l',
     },
   },
   items: [
-    { value: 'SETTLED', text: 'Settled', block: typeOfSettledAccommodation },
-    { value: 'TEMPORARY', text: 'Temporary', block: typeOfTemporaryAccommodation },
-    { value: 'NO_ACCOMMODATION', text: 'No accommodation', block: typeOfNoAccommodation },
+    { value: Option.settled, text: locale.option[Option.settled], block: typeOfSettledAccommodation },
+    { value: Option.temporary, text: locale.option[Option.temporary], block: typeOfTemporaryAccommodation },
+    { value: Option.no_accommodation, text: locale.option[Option.no_accommodation], block: typeOfNoAccommodation },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select the type of accommodation they currently have',
+      message: locale.validation[Question.current_accommodation],
     }),
   ],
 })

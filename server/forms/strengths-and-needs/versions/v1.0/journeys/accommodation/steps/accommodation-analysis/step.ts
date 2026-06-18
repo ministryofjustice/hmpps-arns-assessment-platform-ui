@@ -1,9 +1,10 @@
 import { step } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Step } from '../../constants/step'
+import { locale } from '../../constants/locale'
+import { accommodationPractitionerAnalysisSummaryTab } from './fields'
 
 export const accommodationAnalysisStep = step({
-  path: '/accommodation-analysis',
-  title: 'Accommodation analysis',
-  // TODO: Add template for read-only analysis display
-  // view: { template: 'strengths-and-needs/views/analysis-complete' },
-  blocks: [],
+  path: '/' + Step.accommodation_analysis.path,
+  title: locale.step[Step.accommodation_analysis.code],
+  blocks: [accommodationPractitionerAnalysisSummaryTab],
 })

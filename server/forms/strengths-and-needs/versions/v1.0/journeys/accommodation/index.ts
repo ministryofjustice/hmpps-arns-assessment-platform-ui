@@ -6,6 +6,8 @@ import { temporaryAccommodationCasApStep } from './steps/temporary-accommodation
 import { noAccommodationStep } from './steps/no-accommodation/step'
 import { accommodationSummaryStep } from './steps/accommodation-summary/step'
 import { accommodationAnalysisStep } from './steps/accommodation-analysis/step'
+import { Section } from '../../constants/section';
+import { commonLocale } from '../../constants/locale';
 
 /**
  * Accommodation Journey
@@ -19,13 +21,13 @@ import { accommodationAnalysisStep } from './steps/accommodation-analysis/step'
  *                                         → accommodation-analysis
  */
 export const accommodationJourney = journey({
-  code: 'accommodation',
-  title: 'Accommodation',
-  path: '/accommodation',
+  code: Section.accommodation.code,
+  title: commonLocale.sectionTitle[Section.accommodation.code],
+  path: Section.accommodation.path,
   view: {
     locals: {
-      sectionTitle: 'Accommodation',
-      sectionStatus: Data('sectionStatus.accommodation'),
+      sectionTitle: commonLocale.sectionTitle[Section.accommodation.code],
+      sectionStatus: Data(Section.accommodation.statusKey),
     },
   },
   steps: [

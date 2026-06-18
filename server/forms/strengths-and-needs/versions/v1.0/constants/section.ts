@@ -8,7 +8,7 @@ export const SectionStatus = {
 export const Section = {
   accommodation: {
     code: 'accommodation',
-    path: '',
+    path: '/accommodation',
     sideNavHref: `${basePath}/accommodation/current-accommodation`,
     statusKey: 'accommodation_section_status',
   },

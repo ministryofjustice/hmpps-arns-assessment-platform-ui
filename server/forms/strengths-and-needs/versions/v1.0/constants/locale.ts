@@ -5,6 +5,8 @@ export const commonLocale = {
   optional_details: 'Give details (optional)',
   required_details: 'Give details',
   select_one_option: 'Select one option',
+  select_all_that_apply: 'Select all that apply.',
+  select_all_that_apply_optional: 'Select all that apply (optional).',
   save_and_continue: 'Save and continue',
   mark_as_complete: 'Mark as complete',
   or: 'or',
@@ -22,5 +24,13 @@ export const commonLocale = {
     [Section.employment_and_education.code]: 'Employment and education',
     [Section.finances.code]: 'Finances',
     [Section.health_and_wellbeing.code]: 'Health and wellbeing',
+  },
+  validation: {
+    valid_date: 'Enter a valid date',
+    valid_date_day: 'Date must include a day',
+    valid_date_month: 'Date must include a month',
+    valid_date_year: 'Date must include a year',
+    future_date: 'The date must be in the future',
+    enter_details: 'Enter details'
   },
 }

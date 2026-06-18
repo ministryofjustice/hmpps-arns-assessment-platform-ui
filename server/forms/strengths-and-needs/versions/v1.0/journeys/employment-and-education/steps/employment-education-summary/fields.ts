@@ -95,17 +95,15 @@ export const employmentStatusSummary = GovUKSummaryList({
       actions: {
         items: [{ href: Step.employed.path, text: commonLocale.change }],
       },
-      visibleWhen: not(
-        or(
-          Answer(Question.had_previous_employment_unavailable_for_work).match(
-            Condition.Equals(Option.no_has_never_been_employed),
-          ),
-          Answer(Question.had_previous_employment_actively_looking_for_work).match(
-            Condition.Equals(Option.no_has_never_been_employed),
-          ),
-          Answer(Question.had_previous_employment_not_looking_for_work).match(
-            Condition.Equals(Option.no_has_never_been_employed),
-          ),
+      visibleWhen: and(
+        Answer(Question.had_previous_employment_unavailable_for_work).not.match(
+          Condition.Equals(Option.no_has_never_been_employed),
+        ),
+        Answer(Question.had_previous_employment_actively_looking_for_work).not.match(
+          Condition.Equals(Option.no_has_never_been_employed),
+        ),
+        Answer(Question.had_previous_employment_not_looking_for_work).not.match(
+          Condition.Equals(Option.no_has_never_been_employed),
         ),
       ),
     },

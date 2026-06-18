@@ -1,66 +1,69 @@
 import { validation, Self, Answer, Format, and, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKCheckboxInput, GovUKCharacterCount } from '@ministryofjustice/hmpps-forge/govuk-components'
-
 import { CaseData } from '../../../../constants/formVersion'
+import { Question } from '../../constants/question'
+import { Option } from '../../constants/option'
+import { commonLocale } from '../../../../constants/locale'
+import { locale } from '../../constants/locale'
 
 // --- No Accommodation Reason Group ---
 
 const noAccommodationReasonOtherDetails = GovUKCharacterCount({
-  code: 'no_accommodation_reason_other_details',
-  label: 'Give details',
+  code: Question.no_accommodation_reason_other_details,
+  label: commonLocale.required_details,
   maxLength: 2000,
   dependentWhen: and(
-    Answer('no_accommodation_reason').match(Condition.IsRequired()),
-    Answer('no_accommodation_reason').match(Condition.Array.Contains('OTHER')),
+    Answer(Question.no_accommodation_reason).match(Condition.IsRequired()),
+    Answer(Question.no_accommodation_reason).match(Condition.Array.Contains(Option.other)),
   ),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Enter details',
+      message: commonLocale.validation.enter_details,
     }),
   ],
 })
 
 export const noAccommodationReason = GovUKCheckboxInput({
-  code: 'no_accommodation_reason',
+  code: Question.no_accommodation_reason,
   multiple: true,
   fieldset: {
     legend: {
-      text: Format('Why does %1 have no accommodation?', CaseData.Forename),
+      text: Format(locale.question[Question.no_accommodation_reason], CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: 'Consider current and past homelessness issues. Select all that apply.',
+  hint: locale.hint[Question.no_accommodation_reason],
   items: [
-    { value: 'ALCOHOL_PROBLEMS', text: 'Alcohol related problems' },
-    { value: 'DRUG_PROBLEMS', text: 'Drug related problems' },
-    { value: 'FINANCIAL_DIFFICULTIES', text: 'Financial difficulties' },
+    { value: Option.alcohol_problems, text: locale.option[Question.no_accommodation_reason + Option.alcohol_problems] },
+    { value: Option.drug_problems, text: locale.option[Question.no_accommodation_reason + Option.drug_problems] },
+    { value: Option.financial_difficulties, text: locale.option[Question.no_accommodation_reason + Option.financial_difficulties] },
     {
-      value: 'RISK_TO_OTHERS',
-      text: 'Left previous accommodation due to risk to others',
+      value: Option.risk_to_others,
+      text: locale.option[Question.no_accommodation_reason + Option.risk_to_others],
     },
     {
-      value: 'SAFETY',
-      text: 'Left previous accommodation for their own safety',
+      value: Option.safety,
+      text: locale.option[Question.no_accommodation_reason + Option.safety],
     },
     {
-      value: 'PRISON_RELEASE',
-      text: 'No accommodation when released from prison',
+      value: Option.prison_release,
+      text: locale.option[Question.no_accommodation_reason + Option.prison_release],
     },
-    { value: 'OTHER', text: 'Other', block: noAccommodationReasonOtherDetails },
+    { value: Option.other, text: locale.option[Option.other], block: noAccommodationReasonOtherDetails },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select why they have no accommodation',
+      message: locale.validation[Question.no_accommodation_reason],
     }),
   ],
 })
 
 export const pastAccommodationDetails = GovUKCharacterCount({
-  code: 'past_accommodation_details',
+  code: Question.past_accommodation_details,
   label: {
-    text: Format("What's helped %1 stay in accommodation in the past? (optional)", CaseData.Forename),
+    text: Format(locale.question[Question.past_accommodation_details], CaseData.Forename),
     classes: 'govuk-label--m',
   },
   maxLength: 2000,
