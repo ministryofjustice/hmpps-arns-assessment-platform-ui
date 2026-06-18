@@ -271,8 +271,8 @@ test.describe('Plan Overview Page', () => {
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
-      const hasChangeLink = await planOverviewPage.goalCardHasChangeLink(0)
-      expect(hasChangeLink).toBe(true)
+      const hasUpdateGoalLink = await planOverviewPage.goalCardHasUpdateGoalLink(0)
+      expect(hasUpdateGoalLink).toBe(true)
     })
 
     test('shows Add or update steps link on goal cards only when goal has at least one step (draft plan)', async ({
@@ -287,8 +287,8 @@ test.describe('Plan Overview Page', () => {
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
-      const hasAddStepsLink = await planOverviewPage.goalCardHasAddStepsLink(0)
-      expect(hasAddStepsLink).toBe(true)
+      const hasAddUpdateStepsLink = await planOverviewPage.goalCardHasAddUpdateStepsLink(0)
+      expect(hasAddUpdateStepsLink).toBe(true)
     })
 
     test(`doesn't show Add or update steps link on goal cards for a goal with no steps (draft plan)`, async ({
@@ -303,8 +303,8 @@ test.describe('Plan Overview Page', () => {
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
-      const hasAddStepsLink = await planOverviewPage.goalCardHasAddStepsLink(0)
-      expect(hasAddStepsLink).toBe(false)
+      const hasAddUpdateStepsLink = await planOverviewPage.goalCardHasAddUpdateStepsLink(0)
+      expect(hasAddUpdateStepsLink).toBe(false)
     })
 
     test('gives Add steps links a unique accessible name for each goal', async ({

@@ -103,13 +103,13 @@ export default class PlanOverviewPage extends AbstractPage {
     return card.locator('[data-qa="goal-area-of-need"]')
   }
 
-  async goalCardHasChangeLink(index: number): Promise<boolean> {
+  async goalCardHasUpdateGoalLink(index: number): Promise<boolean> {
     const card = await this.getGoalCardByIndex(index)
-    const changeLink = card.getByRole('link', { name: /change goal/i })
+    const changeLink = card.getByRole('link', { name: /update goal/i })
     return (await changeLink.count()) > 0
   }
 
-  async goalCardHasAddStepsLink(index: number): Promise<boolean> {
+  async goalCardHasAddUpdateStepsLink(index: number): Promise<boolean> {
     const card = await this.getGoalCardByIndex(index)
     const addStepsLink = card.getByRole('link', { name: /add or update steps/i })
     return (await addStepsLink.count()) > 0
