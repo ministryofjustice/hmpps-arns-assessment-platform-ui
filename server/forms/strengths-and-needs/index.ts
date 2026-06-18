@@ -4,6 +4,8 @@ import { StrengthsAndNeedsEffectImplementations } from './effects'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import config from '../../config'
 import { StrengthsAndNeedsGeneratorImplementations } from './generators'
+import { strengthsAndNeedsTransformerImplementations } from './transformers'
+import { strengthsAndNeedsConditionImplementations } from './conditions'
 import { Section } from './versions/v1.0/constants/section'
 import { commonLocale } from './versions/v1.0/constants/locale'
 
@@ -38,5 +40,7 @@ export default createForgePackage<StrengthsAndNeedsEffectsDeps>({
   functions: {
     ...StrengthsAndNeedsEffectImplementations,
     ...StrengthsAndNeedsGeneratorImplementations,
+    ...strengthsAndNeedsTransformerImplementations,
+    ...strengthsAndNeedsConditionImplementations,
   },
 })

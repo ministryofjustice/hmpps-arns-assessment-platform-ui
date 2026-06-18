@@ -19,10 +19,10 @@ export const Section = {
     statusKey: 'employment_section_status',
   },
   finances: {
-    code: 'finances',
-    path: '',
-    sideNavHref: `${basePath}/finances/finance`,
-    statusKey: 'finances_section_status',
+    code: 'finance',
+    path: '/finances',
+    sideNavHref: `${basePath}/finances/finance?resume=true`,
+    statusKey: 'finance_section_status',
   },
   drug_use: {
     code: 'drug-use',
