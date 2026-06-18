@@ -21,7 +21,7 @@ const assessmentInfoDetails = AssessmentInfoDetails({
 
 const goalTitle = AccessibleAutocomplete({
   data: Data('currentAreaOfNeed.goals'),
-  inputClasses: 'govuk-!-width-two-thirds',
+  classes: 'govuk-!-width-two-thirds',
   field: GovUKTextInput({
     code: 'goal_title',
     label: {
