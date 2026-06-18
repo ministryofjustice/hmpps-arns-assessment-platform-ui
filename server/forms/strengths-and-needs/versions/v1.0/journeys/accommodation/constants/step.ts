@@ -27,4 +27,4 @@ export const Step = {
     code: 'accommodation_analysis',
     path: 'accommodation-analysis',
   },
-}
+} as const

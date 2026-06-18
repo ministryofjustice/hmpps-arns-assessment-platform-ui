@@ -37,4 +37,4 @@ export const Question = {
   accommodation_risk_of_reoffending_details: 'accommodation_risk_of_reoffending_details',
   accommodation_no_risk_of_reoffending_details: 'accommodation_no_risk_of_reoffending_details',
   accommodation_linked_to_reoffending: 'accommodation_linked_to_reoffending',
-}
+} as const

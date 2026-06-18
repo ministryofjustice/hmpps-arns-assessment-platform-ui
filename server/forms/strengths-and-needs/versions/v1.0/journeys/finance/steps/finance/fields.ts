@@ -15,20 +15,12 @@ import {
 
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import {content as locale} from '../../locales'
-import { StrengthsAndNeedsTransformers } from '../../../../../../transformers'
 import { StrengthsAndNeedsConditions } from '../../../../../../conditions'
 import { CaseData } from '../../../../constants/formVersion'
 import { Paths } from '../../../../../../@types/i18n'
 import { FinanceContent } from '../../locales/en-gb'
 
 const DEFAULT_CHARACTER_COUNT = 2000
-
-const contentWith =
-  <T extends Paths<any>>(content: Record<string, any>) =>
-    (code: T, ...replacements: any[]) =>
-    Request.Headers('accept-language').pipe(StrengthsAndNeedsTransformers.ContentFor(content, code, ...replacements))
-
-const contentFor = contentWith<Paths<FinanceContent>>(locale)
 
 const toDetailsField = (parent: string) => (option: string) =>
   GovUKTextareaInput({

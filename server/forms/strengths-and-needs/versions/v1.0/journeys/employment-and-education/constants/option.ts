@@ -54,4 +54,4 @@ export const Option = {
   non_of_these: 'NON_OF_THESE',
   other: 'OTHER',
   none: 'NONE',
-}
+} as const

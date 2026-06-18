@@ -1,6 +1,6 @@
-import { Section } from './section'
+import { Section } from '../constants/section'
 
-export const commonLocale = {
+export const english = {
   strengths_and_needs: 'Strengths and needs',
   optional_details: 'Give details (optional)',
   required_details: 'Give details',
@@ -33,4 +33,6 @@ export const commonLocale = {
     future_date: 'The date must be in the future',
     enter_details: 'Enter details',
   },
-}
+} as const
+
+export type CommonLocale = typeof english
