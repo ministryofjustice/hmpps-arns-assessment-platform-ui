@@ -205,7 +205,9 @@ const professionalQualificationsDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: Self().match(Condition.IsRequired()),
+      condition: and(Self().match(Condition.IsRequired()),and(
+          Answer('professional_qualification').match(Condition.IsRequired()),
+          Answer('professional_qualification').match(Condition.Equals('YES')))),
       message: 'Enter details',
     }),
   ],
@@ -573,8 +575,7 @@ export const employmentAndEducationChanges = GovUKRadioInput({
     },
   },
   items: [
-    {
-      value: 'HAS_MADE_CHANGES', text: locale.options.HAS_MADE_CHANGES, block: hasMadePositiveChangesDetails },
+    { value: 'HAS_MADE_CHANGES', text: locale.options.HAS_MADE_CHANGES, block: hasMadePositiveChangesDetails },
     { value: 'IS_MAKING_CHANGES', text: locale.options.IS_MAKING_CHANGES, block: isActivelyMakingChangesDetails },
     { value: 'WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO', text: locale.options.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO, block: wantsToMakeChangesKnowsHowDetails },
     { value: 'WANTS_TO_MAKE_CHANGES_NEEDS_HELP', text: locale.options.WANTS_TO_MAKE_CHANGES_NEEDS_HELP, block: wantsToMakeChangesNeedsHelpDetails },

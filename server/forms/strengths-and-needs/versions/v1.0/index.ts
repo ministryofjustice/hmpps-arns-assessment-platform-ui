@@ -4,6 +4,7 @@ import { employmentJourney } from './journeys/employment-and-education'
 import { drugUseJourney } from './journeys/drug-use'
 import { formVersion, sectionNavItems } from './constants'
 import { StrengthsAndNeedsEffects } from '../../effects'
+import {healthWellbeingJourney} from "./journeys/health-wellbeing";
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -37,5 +38,5 @@ export const strengthsAndNeedsV1Journey = journey({
       ],
     }),
   ],
-  children: [accommodationJourney, employmentJourney, drugUseJourney],
+  children: [accommodationJourney, employmentJourney, healthWellbeingJourney, drugUseJourney],
 })

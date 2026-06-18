@@ -1,0 +1,103 @@
+{
+  "optional_details": "Give details (optional)",
+  "required_details": "Give details",
+  "options": {
+    "ACCOMMODATION": "Accommodation",
+    "EMPLOYMENT": "Employment",
+    "FAITH_RELIGION": "Faith or religion",
+    "FEELING_PART_OF_COMMUNITY": "Feeling part of a community or giving back",
+    "MEDICATION_OR_TREATMENT": "Medication and treatment",
+    "MONEY": "Money",
+    "RELATIONSHIPS": "Relationships",
+    "OTHER": "Other",
+    "OPTIMISTIC_OUTLOOK": "Optimistic and has a positive outlook about their future",
+    "UNSURE_OUTLOOK": "Not sure and thinks their future could get better or worse",
+    "NOT_OPTIMISTIC_OUTLOOK": "Not optimistic and thinks their future will not get better or may get worse",
+    "POSITIVE_REASONABLY_HAPPY": "Positive and reasonably happy",
+    "WOULD_LIKE_TO_CHANGE_ASPECTS": "There are some aspects they would like to change or do not like",
+    "NEGATIVE_UNHAPPY": "Negative self-image and unhappy",
+    "PENDING_TREATMENT": "Pending treatment",
+    "HAS_MADE_CHANGES": "I have already made positive changes and want to maintain them",
+    "IS_MAKING_CHANGES": "I am actively making changes",
+    "WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO": "I want to make changes and know how to",
+    "WANTS_TO_MAKE_CHANGES_NEEDS_HELP": "I want to make changes but need help",
+    "THINKING_ABOUT_MAKING_CHANGES": "I am thinking about making changes",
+    "DOES_NOT_WANT_TO_MAKE_CHANGES": "I do not want to make changes",
+    "DO_NOT_WANT_TO_ANSWER": "I do not want to answer",
+    "YES": "Yes",
+    "YES_ONGOING_SEVERE": "Yes, ongoing - severe and documented over a prolonged period of times",
+    "YES_ONGOING_DURATION_UNKNOWN": "Yes, ongoing - duration is not known or there is no link to offending",
+    "YES_PAST": "Yes, in the past",
+    "YES_LEARNING_SIGNIFICANTLY_IMPACTED": "Yes, their ability to learn is significantly impacted",
+    "YES_LEARNING_SLIGHTLY_IMPACTED": "Yes, their ability to learn is slightly impacted",
+    "YES_ABLE_TO_COPE": "Yes, able to cope well",
+    "HAS_DIFFICULTIES_COPING": "Has some difficulties coping",
+    "NO": "No",
+    "NO_LEARNING_ABILITIES_IMPACT": "No, they do not have any conditions or disabilities that impact their ability to learn",
+    "NOT_ABLE_TO_COPE": "Not able to cope",
+    "DOES_NOT_WANT_TO_ANSWER": "%1 does not want to answer",
+    "NOT_PRESENT": "%1 is not present",
+    "NOT_APPLICABLE": "Not applicable",
+    "UNKNOWN": "Unknown"
+  },
+  "health_wellbeing": {
+    "health_conditions": {
+      "text": "Does %1 have any physical health conditions?"
+    },
+    "mental_health_problems": {
+      "text": "Does %1 have any diagnosed or documented mental health problems?"
+    }
+  },
+  "phyisical_mental_health": {
+    "prescribed_physical_health_medications_treatments": {
+      "text": "Give details if %1 is on prescribed medication or treatment for physical health conditions (optional)"
+    },
+    "prescribed_mental_health_medications_treatments": {
+      "text": "Give details if %1 is on prescribed medication or treatment for mental health problems (optional)"
+    },
+    "head_injuries": {
+      "text": "Has %1 had a head injury or any illness affecting the brain?"
+    },
+    "psychiatric_treatment": {
+      "text": "Is %1 currently having psychiatric treatment?"
+    },
+    "neurodiverse_conditions": {
+      "text": "Does %1 have any neurodiverse conditions?"
+    },
+    "impact_on_learning_abilities": {
+      "text": "Does %1 have any conditions or disabilities that impact their ability to learn? (optional)"
+    },
+    "cope_with_day_to_day_life": {
+      "text": "Is %1 able to cope with day-to-day life?"
+    },
+    "attitude_towards_sef": {
+      "text": "What is %1 attitude towards themselves?"
+    },
+    "self_harm": {
+      "text": "Has %1 ever self-harmed?"
+    },
+    "suicidal_tendencies": {
+      "text": "Has %1 ever attempted suicide or had suicidal thoughts?"
+    },
+    "feeling_about_future_health_wellbeing": {
+      "text": "How does %1 feel about their future?"
+    },
+    "helped_during_periods_good_health_wellbeing": {
+      "text": "What's helped Prince during periods of good health and wellbeing? (optional)"
+    },
+    "changes_to_health_wellbeing": {
+      "text": "Does %1 want to make changes to their health and wellbeing?"
+    }
+  },
+  "practitioner_analysis": {
+    "strengths_protective_factors_health_wellbeing": {
+      "text": "Are there any strengths or protective factors related to %1 health and wellbeing?"
+    },
+    "serious_harm_health_wellbeing": {
+      "text": "Is %1 health and wellbeing linked to risk of serious harm?"
+    },
+    "risk_of_reoffending_health_wellbeing": {
+      "text": "Is %1 health and wellbeing linked to risk of reoffending?\n"
+    }
+  }
+}

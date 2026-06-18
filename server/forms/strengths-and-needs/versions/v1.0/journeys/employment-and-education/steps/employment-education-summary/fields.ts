@@ -261,7 +261,7 @@ const strenthsProtectiveFactorsDetails = GovUKCharacterCount({
     Answer('strengths_protective_factors').match(Condition.Equals('YES'))),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Give details on strengths or protective factors related to their employment and education',
     }),
   ],
@@ -289,7 +289,7 @@ export const strenthsProtectiveFactors = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select if there are any strengths or protective factors',
     }),
   ],
@@ -305,7 +305,7 @@ const seriousHarmDetails = GovUKCharacterCount({
     Answer('employment_education_linked_to_serious_harm').match(Condition.Equals('YES'))),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Give details on the risk of serious harm',
     }),
   ],
@@ -332,7 +332,7 @@ export const employmentOrEducationLinkedToSeriousHarm = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select if linked to risk of serious harm',
     }),
   ],
@@ -348,7 +348,7 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
     Answer('employment_education_linked_to_reoffending').match(Condition.Equals('YES'))),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Give details on the risk of reoffending',
     }),
   ],
@@ -375,7 +375,7 @@ export const employmentOrEducationLinkedReoffending = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select if linked to risk of reoffending',
     }),
   ],

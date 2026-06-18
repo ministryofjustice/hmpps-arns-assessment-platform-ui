@@ -59,7 +59,7 @@ export const sectionNavItems = [
   {
     code: 'health-and-wellbeing',
     text: 'Health and wellbeing',
-    href: `${basePath}/health-and-wellbeing/physical-health`,
+    href: `${basePath}/health-and-wellbeing/health-wellbeing?resume=true`,
     statusKey: 'health_section_status'
   },
   {
