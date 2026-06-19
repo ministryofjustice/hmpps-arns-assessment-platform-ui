@@ -16,10 +16,10 @@ export const typeOfEmployment = GovUKRadioInput({
   },
   dependentWhen: Answer(Question.current_employment_status).match(Condition.Equals(Option.employed)),
   items: [
-    { value: Option.full_time, text: contentFor('option.FULL_TIME') },
-    { value: Option.part_time, text: contentFor('option.PART_TIME') },
-    { value: Option.temporary_or_casual, text: contentFor('option.TEMPORARY_OR_CASUAL') },
-    { value: Option.apprenticeship, text: contentFor('option.APPRENTICESHIP') },
+    { value: Option.full_time, text: contentFor('question.type_of_employment.option.FULL_TIME') },
+    { value: Option.part_time, text: contentFor('question.type_of_employment.option.PART_TIME') },
+    { value: Option.temporary_or_casual, text: contentFor('question.type_of_employment.option.TEMPORARY_OR_CASUAL') },
+    { value: Option.apprenticeship, text: contentFor('question.type_of_employment.option.APPRENTICESHIP') },
   ],
   validWhen: [
     validation({
@@ -102,22 +102,22 @@ export const currentEmploymentStatus = GovUKRadioInput({
     },
   },
   items: [
-    { value: Option.employed, text: contentFor('option.EMPLOYED'), block: typeOfEmployment },
-    { value: Option.self_employed, text: contentFor('option.SELF_EMPLOYED') },
-    { value: Option.retired, text: contentFor('option.RETIRED') },
+    { value: Option.employed, text: contentFor('question.current_employment_status.option.EMPLOYED'), block: typeOfEmployment },
+    { value: Option.self_employed, text: contentFor('question.current_employment_status.option.SELF_EMPLOYED') },
+    { value: Option.retired, text: contentFor('question.current_employment_status.option.RETIRED') },
     {
       value: Option.currently_unavailable_for_work,
-      text: contentFor('option.CURRENTLY_UNAVAILABLE_FOR_WORK'),
+      text: contentFor('question.current_employment_status.option.CURRENTLY_UNAVAILABLE_FOR_WORK'),
       block: hadPreviousEmploymentUnavailableForWork,
     },
     {
       value: Option.unemployed_actively_looking,
-      text: contentFor('option.UNEMPLOYED_ACTIVELY_LOOKING'),
+      text: contentFor('question.current_employment_status.option.UNEMPLOYED_ACTIVELY_LOOKING'),
       block: hadPreviousEmploymentActivelyLookingForWork,
     },
     {
       value: Option.unemployed_not_actively_looking,
-      text: contentFor('option.UNEMPLOYED_NOT_ACTIVELY_LOOKING'),
+      text: contentFor('question.current_employment_status.option.UNEMPLOYED_NOT_ACTIVELY_LOOKING'),
       block: hadPreviousEmploymentNotLookingForWork,
     },
   ],

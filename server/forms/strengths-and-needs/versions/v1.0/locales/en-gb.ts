@@ -1,5 +1,6 @@
 import { Section } from '../constants/section'
 import { Option } from '../journeys/employment-and-education/constants/option'
+import { Question } from '../journeys/employment-and-education/constants/question'
 
 export const english = {
   strengths_and_needs: 'Strengths and needs',

@@ -8,7 +8,8 @@ import { contentFor } from '../../locales';
 
 export const currentEmploymentStep = step({
   path: `/${Step.current_employment.path}`,
-  title: contentFor('step.current_employment'),
+  // title: contentFor('step.current_employment'),
+  title: 'PLACEHOLDER',
   reachability: { entryWhen: true },
   view: {
     locals: {

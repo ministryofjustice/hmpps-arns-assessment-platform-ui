@@ -12,6 +12,12 @@ export const english = {
   question: {
     [Question.type_of_employment]: {
       text: 'Select the type of employment',
+      option: {
+        [Option.full_time]: 'Full-time',
+        [Option.part_time]: 'Part-time',
+        [Option.temporary_or_casual]: 'Temporary or casual',
+        [Option.apprenticeship]: 'Apprenticeship',
+      },
       validation: 'Select the type of employment',
     },
     [Question.had_previous_employment_unavailable_for_work]: {
@@ -25,6 +31,14 @@ export const english = {
     },
     [Question.current_employment_status]: {
       text: 'What is %1 current employment status?',
+      option: {
+        [Option.employed]: 'Employed',
+        [Option.self_employed]: 'Self-employed',
+        [Option.retired]: 'Retired',
+        [Option.currently_unavailable_for_work]: 'Currently unavailable for work',
+        [Option.unemployed_actively_looking]: 'Unemployed - actively looking for work',
+        [Option.unemployed_not_actively_looking]: 'Unemployed - not actively looking for work',
+      },
       validation: 'Select the type of employment they currently have',
     },
     [Question.employment_history]: {
@@ -156,6 +170,18 @@ export const english = {
       text: 'Select level of difficulty',
       validation: 'Select level of difficulty',
     },
+    [Question.continuous_employment_history_employment_details]: {
+      hint: `Include what type of work they've done before.`,
+    },
+    [Question.changes_often_employment_history_employment_details]: {
+      hint: `Include what type of work they've done before.`,
+    },
+    [Question.unstable_employment_history_employment_details]: {
+      hint: `Include what type of work they've done before.`,
+    },
+    [Question.unknown_employment_history_employment_details]: {
+      hint: `Include what type of work they've done before.`,
+    },
     [Question.employment_education_strengths_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 employment and education?',
       hint: 'Include any strategies, people or support networks that helped.',
@@ -178,55 +204,10 @@ export const english = {
     [Question.employment_education_risk_of_reoffending_details]: {
       validation: 'Give details on the risk of reoffending',
     },
-    [Question.continuous_employment_history_employment_details]: {
-      hint: `Include what type of work they've done before.`,
-    },
-    [Question.changes_often_employment_history_employment_details]: {
-      hint: `Include what type of work they've done before.`,
-    },
-    [Question.unstable_employment_history_employment_details]: {
-      hint: `Include what type of work they've done before.`,
-    },
-    [Question.unknown_employment_history_employment_details]: {
-      hint: `Include what type of work they've done before.`,
-    },
   },
   option: {
-    [Option.employed]: 'Employed',
-    [Option.self_employed]: 'Self-employed',
-    [Option.retired]: 'Retired',
-    [Option.currently_unavailable_for_work]: 'Currently unavailable for work',
-    [Option.unemployed_actively_looking]: 'Unemployed - actively looking for work',
-    [Option.unemployed_not_actively_looking]: 'Unemployed - not actively looking for work',
-    [Option.stable]: 'Continuous employment history',
-    [Option.periods_of_instability]: 'Generally in employment but changes jobs often',
-    [Option.unstable]: 'Unstable employment history with regular periods of unemployment',
-    [Option.entry_level]: 'Entry level',
-    [Option.full_time]: 'Full-time',
-    [Option.part_time]: 'Part-time',
-    [Option.temporary_or_casual]: 'Temporary or casual',
-    [Option.apprenticeship]: 'Apprenticeship',
     [Option.yes_has_been_employed_before]: 'Yes, has been employed before',
     [Option.no_has_never_been_employed]: 'No, has never been employed',
-    [Option.caring]: 'Caring responsibilities',
-    [Option.children]: 'Child Responsibilities',
-    [Option.studying]: 'Studying',
-    [Option.volunteering]: 'Volunteering',
-    [Option.level_1]: 'Level 1',
-    [Option.level_2]: 'Level 2',
-    [Option.level_3]: 'Level 3',
-    [Option.level_4]: 'Level 4',
-    [Option.level_5]: 'Level 5',
-    [Option.level_6]: 'Level 6',
-    [Option.level_7]: 'Level 7',
-    [Option.level_8]: 'Level 8',
-    [Option.has_made_changes]: 'I have already made positive changes and want to maintain them',
-    [Option.is_making_changes]: 'I am actively making changes',
-    [Option.wants_to_make_changes_knows_how_to]: 'I want to make changes and know how to',
-    [Option.wants_to_make_changes_needs_help]: 'I want to make changes but need help',
-    [Option.thinking_about_making_changes]: 'I am thinking about making changes',
-    [Option.does_not_want_to_make_changes]: 'I do not want to make changes',
-    [Option.does_not_want_to_answer]: 'I do not want to answer',
     [Option.not_present]: '%1 is not present',
     [Option.not_applicable]: 'Not applicable',
     [Option.positive]: 'Positive',
