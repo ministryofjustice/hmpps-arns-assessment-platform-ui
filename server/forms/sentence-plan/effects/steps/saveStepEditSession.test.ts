@@ -44,6 +44,9 @@ function createMockContext(options: MockContextOptions = {}) {
     getState: jest.fn((key: string) => (key === 'user' ? user : undefined)),
     getData: jest.fn((key: string) => data[key]),
     getAnswer: jest.fn((key: string) => answers[key]),
+    setData: jest.fn((key: string, value: unknown) => {
+      data[key] = value
+    }),
   } as unknown as SentencePlanContext
 }
 
@@ -372,6 +375,79 @@ describe('saveStepEditSession', () => {
         }),
       }),
     )
+  })
+
+  it('should set allStepsCompleted to true when every step is marked completed', async () => {
+    // Arrange
+    const deps = createDeps()
+    const session: SentencePlanSession = {
+      stepChanges: {
+        [activeGoal.uuid]: createStepChanges({
+          steps: [createStep({ id: 'step-1' }), createStep({ id: 'step-2' })],
+        }),
+      },
+    }
+    const context = createMockContext({
+      session,
+      data: {
+        activeGoalStepsOriginal: [createStep({ id: 'step-1' }), createStep({ id: 'step-2' })],
+      },
+      answers: {
+        step_status_0: 'COMPLETED',
+        step_status_1: 'COMPLETED',
+      },
+    })
+
+    // Act
+    await saveStepEditSession(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('allStepsCompleted', true)
+  })
+
+  it('should set allStepsCompleted to false when at least one step is not completed', async () => {
+    // Arrange
+    const deps = createDeps()
+    const session: SentencePlanSession = {
+      stepChanges: {
+        [activeGoal.uuid]: createStepChanges({
+          steps: [createStep({ id: 'step-1' }), createStep({ id: 'step-2' })],
+        }),
+      },
+    }
+    const context = createMockContext({
+      session,
+      data: {
+        activeGoalStepsOriginal: [createStep({ id: 'step-1' }), createStep({ id: 'step-2' })],
+      },
+      answers: {
+        step_status_0: 'COMPLETED',
+        step_status_1: 'IN_PROGRESS',
+      },
+    })
+
+    // Act
+    await saveStepEditSession(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('allStepsCompleted', false)
+  })
+
+  it('should set allStepsCompleted to false when the goal has no steps', async () => {
+    // Arrange
+    const deps = createDeps()
+    const session: SentencePlanSession = {
+      stepChanges: {
+        [activeGoal.uuid]: createStepChanges({ steps: [] }),
+      },
+    }
+    const context = createMockContext({ session })
+
+    // Act
+    await saveStepEditSession(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('allStepsCompleted', false)
   })
 
   it('should snapshot the submitted step status when saving steps for a newly-created goal', async () => {
