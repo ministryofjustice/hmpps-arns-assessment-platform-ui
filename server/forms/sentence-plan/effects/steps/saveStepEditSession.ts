@@ -201,4 +201,11 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
   if (activeGoalUuid && storage[activeGoalUuid]) {
     delete storage[activeGoalUuid]
   }
+
+  // Flag whether every remaining step is now COMPLETED, so the add-steps page can
+  // prompt the confirm-if-achieved page (read by Data('allStepsCompleted')).
+  const allStepsCompleted =
+    steps.length > 0 && steps.every((_step, index) => getFormValues(index).status === 'COMPLETED')
+
+  context.setData('allStepsCompleted', allStepsCompleted)
 }
