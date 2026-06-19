@@ -1,19 +1,20 @@
 import {Answer, Condition, Format, Self, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {GovUKCharacterCount, GovUKRadioInput} from '@ministryofjustice/hmpps-forge/govuk-components'
-import {CaseData} from '../../../../constants'
+import {CaseData} from '../../../../constants/formVersion'
 import locale from '../../locale.json'
+import {Question} from "../../constants/question";
 
 // --- Physical health conditions Group ---
 
 const hasHealthConditions = GovUKCharacterCount({
-  code: 'has_health_conditions_details',
+  code: Question.has_health_conditions_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer('health_conditions').match(Condition.Equals('YES'))
+  dependentWhen: Answer(Question.health_conditions).match(Condition.Equals('YES'))
 })
 
 export const healthConditions = GovUKRadioInput({
-  code: 'health_conditions',
+  code: Question.health_conditions,
   fieldset: {
     legend: {
       text: Format(locale.health_wellbeing.health_conditions.text, CaseData.Forename),
@@ -36,28 +37,28 @@ export const healthConditions = GovUKRadioInput({
 // --- Mental health conditions Group ---
 
 const severeMentalHealthProblemsDetails = GovUKCharacterCount({
-  code: 'severe_mental_health_problems_details',
+  code: Question.severe_mental_health_problems_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer('mental_health_problems').match(Condition.Equals('YES_ONGOING_SEVERE')),
+  dependentWhen: Answer(Question.mental_health_problems).match(Condition.Equals('YES_ONGOING_SEVERE')),
 })
 
 const ongoingDurationUnknownMentalHealthProblemsDetails = GovUKCharacterCount({
-  code: 'ongoing_duration_unknown_mental_health_problems_details',
+  code: Question.ongoing_duration_unknown_mental_health_problems_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer('mental_health_problems').match(Condition.Equals('YES_ONGOING_DURATION_UNKNOWN')),
+  dependentWhen: Answer(Question.mental_health_problems).match(Condition.Equals('YES_ONGOING_DURATION_UNKNOWN')),
 })
 
 const pastMentalHealthProblemsDetails = GovUKCharacterCount({
-  code: 'past_mental_health_problems_details',
+  code: Question.past_mental_health_problems_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer('mental_health_problems').match(Condition.Equals('YES_PAST')),
+  dependentWhen: Answer(Question.mental_health_problems).match(Condition.Equals('YES_PAST')),
 })
 
 export const mentalHealthProblems = GovUKRadioInput({
-  code: 'mental_health_problems',
+  code: Question.mental_health_problems,
   fieldset: {
     legend: {
       text: Format(locale.health_wellbeing.mental_health_problems.text, CaseData.Forename),

@@ -1,7 +1,7 @@
 import {Answer, Format} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {GovUKBody, GovUKLinkButton, GovUKSummaryList, GovUKTabs,} from '@ministryofjustice/hmpps-forge/govuk-components'
-import {CaseData} from '../../../../constants'
-import {SANGenerators} from "../../../../../../generators/customGenerator";
+import {CaseData} from '../../../../constants/formVersion'
+import {SANGenerators} from "../../../../../../generators";
 import locale from '../../locale.json'
 import {
   healthWellbeingSummary,
@@ -9,6 +9,7 @@ import {
   seriousHarmHealthWellbeing,
   strengthsProtectiveFactorsHealthWellbeing
 } from "../health-wellbeing-summary/fields";
+import {Question} from "../../constants/question";
 
 
 // --- Practitioner Analysis Button Group ---
@@ -28,9 +29,9 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       value: {
         blocks:
           [
-            GovUKBody({text: SANGenerators.getTextFromListDefinition(strengthsProtectiveFactorsHealthWellbeing.items, Answer('strengths_protective_factors_health_wellbeing'))}),
-            GovUKBody({ text: Answer('strengths_protective_factors_health_wellbeing_details'), size: "s" }),
-            GovUKBody({ text: Answer('no_strengths_protective_factors_health_wellbeing_details'), size: "s" }),
+            GovUKBody({text: SANGenerators.getTextFromListDefinition(strengthsProtectiveFactorsHealthWellbeing.items, Answer(Question.strengths_protective_factors_health_wellbeing))}),
+            GovUKBody({ text: Answer(Question.strengths_protective_factors_health_wellbeing_details), size: "s" }),
+            GovUKBody({ text: Answer(Question.no_strengths_protective_factors_health_wellbeing_details), size: "s" }),
           ]
       },
       actions: {
@@ -42,9 +43,9 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       value: {
         blocks:
           [
-            GovUKBody({text: SANGenerators.getTextFromListDefinition(seriousHarmHealthWellbeing.items, Answer('serious_harm_health_wellbeing'))}),
-            GovUKBody({ text: Answer('serious_harm_health_wellbeing_details'), size: "s" }),
-            GovUKBody({ text: Answer('no_serious_harm_health_wellbeing_details'), size: "s" }),
+            GovUKBody({text: SANGenerators.getTextFromListDefinition(seriousHarmHealthWellbeing.items, Answer(Question.serious_harm_health_wellbeing))}),
+            GovUKBody({ text: Answer(Question.serious_harm_health_wellbeing_details), size: "s" }),
+            GovUKBody({ text: Answer(Question.no_serious_harm_health_wellbeing_details), size: "s" }),
           ]
       },
       actions: {
@@ -56,9 +57,9 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       value: {
         blocks:
           [
-            GovUKBody({text: SANGenerators.getTextFromListDefinition(riskOfReoffendingHealthWellbeing.items, Answer('risk_of_reoffending_health_wellbeing'))}),
-            GovUKBody({ text: Answer('risk_of_reoffending_health_wellbeing_details'), size: "s" }),
-            GovUKBody({ text: Answer('no_risk_of_reoffending_health_wellbeing_details'), size: "s" }),
+            GovUKBody({text: SANGenerators.getTextFromListDefinition(riskOfReoffendingHealthWellbeing.items, Answer(Question.risk_of_reoffending_health_wellbeing))}),
+            GovUKBody({ text: Answer(Question.risk_of_reoffending_health_wellbeing_details), size: "s" }),
+            GovUKBody({ text: Answer(Question.no_risk_of_reoffending_health_wellbeing_details), size: "s" }),
           ]
       },
       actions: {

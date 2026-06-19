@@ -1,9 +1,10 @@
 import {Condition, Post, redirect, step, submit,} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {StrengthsAndNeedsEffects} from '../../../../../../effects'
 import {healthWellbeingSummaryTab} from './fields'
+import {Step} from "../../constants/step";
 
 export const healthWellbeingSummaryStep = step({
-  path: '/health-wellbeing-summary',
+  path: `/${Step.health_wellbeing_summary.path}`,
   title: 'Health and Wellbeing Summary',
   view: {
     template: 'strengths-and-needs/views/san-step',

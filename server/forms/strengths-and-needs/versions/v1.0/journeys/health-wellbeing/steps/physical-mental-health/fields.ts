@@ -5,25 +5,26 @@ import {
 } from "@ministryofjustice/hmpps-forge/govuk-components";
 import locale from "../../locale.json";
 import {and, Answer, Condition, Format, not, or, Self, validation} from "@ministryofjustice/hmpps-forge/core/authoring";
-import {CaseData} from "../../../../constants";
+import {CaseData} from "../../../../constants/formVersion";
+import {Question} from "../../constants/question";
 
 // --- Prescribed physical health treatments Group ---
 
 export const prescribedPhysicalHealthMedicationsTreatments = GovUKCharacterCount({
-  code: 'prescribed_physical_health_medications_treatments',
+  code: Question.prescribed_physical_health_medications_treatments,
   label: {
     text: Format(locale.phyisical_mental_health.prescribed_physical_health_medications_treatments.text, CaseData.Forename),
     classes: 'govuk-fieldset__legend--m',
   },
   maxLength: 2000,
-  visibleWhen: Answer('health_conditions').match(Condition.Equals('YES')),
-  dependentWhen: Answer('health_conditions').match(Condition.Equals('YES')),
+  visibleWhen: Answer(Question.health_conditions).match(Condition.Equals('YES')),
+  dependentWhen: Answer(Question.health_conditions).match(Condition.Equals('YES')),
 })
 
 // --- Prescribed mental health treatments Group ---
 
 export const prescribedMentalHealthMedicationsTreatments = GovUKCharacterCount({
-  code: 'prescribed_mental_health_medications_treatments',
+  code: Question.prescribed_mental_health_medications_treatments,
   label: {
     text: Format(locale.phyisical_mental_health.prescribed_mental_health_medications_treatments.text, CaseData.Forename),
     classes: 'govuk-fieldset__legend--m',
@@ -31,14 +32,14 @@ export const prescribedMentalHealthMedicationsTreatments = GovUKCharacterCount({
   maxLength: 2000,
   visibleWhen: not(
       or(
-        Answer('mental_health_problems').match(Condition.Equals('NO')),
-        Answer('mental_health_problems').match(Condition.Equals('UNKNOWN')),
+        Answer(Question.mental_health_problems).match(Condition.Equals('NO')),
+        Answer(Question.mental_health_problems).match(Condition.Equals('UNKNOWN')),
       )
   ),
   dependentWhen: not(
     or(
-      Answer('mental_health_problems').match(Condition.Equals('NO')),
-      Answer('mental_health_problems').match(Condition.Equals('UNKNOWN')),
+      Answer(Question.mental_health_problems).match(Condition.Equals('NO')),
+      Answer(Question.mental_health_problems).match(Condition.Equals('UNKNOWN')),
     )
   ),
 })
@@ -46,7 +47,7 @@ export const prescribedMentalHealthMedicationsTreatments = GovUKCharacterCount({
 // --- Prescribed psychiatric treatments Group ---
 
 export const psychiatricTreatment = GovUKRadioInput({
-  code: 'psychiatric_treatment',
+  code: Question.psychiatric_treatment,
   fieldset: {
     legend: {
       text: Format(locale.phyisical_mental_health.psychiatric_treatment.text, CaseData.Forename),
@@ -61,14 +62,14 @@ export const psychiatricTreatment = GovUKRadioInput({
   ],
   visibleWhen: not(
     or(
-      Answer('mental_health_problems').match(Condition.Equals('NO')),
-      Answer('mental_health_problems').match(Condition.Equals('UNKNOWN')),
+      Answer(Question.mental_health_problems).match(Condition.Equals('NO')),
+      Answer(Question.mental_health_problems).match(Condition.Equals('UNKNOWN')),
     )
   ),
   dependentWhen: not(
     or(
-      Answer('mental_health_problems').match(Condition.Equals('NO')),
-      Answer('mental_health_problems').match(Condition.Equals('UNKNOWN')),
+      Answer(Question.mental_health_problems).match(Condition.Equals('NO')),
+      Answer(Question.mental_health_problems).match(Condition.Equals('UNKNOWN')),
     )
   ),
   validWhen: [
@@ -82,7 +83,7 @@ export const psychiatricTreatment = GovUKRadioInput({
 // --- Head injuries Group ---
 
 export const headInjuries = GovUKRadioInput({
-  code: 'head_injuries',
+  code: Question.head_injuries,
   fieldset: {
     legend: {
       text: Format(locale.phyisical_mental_health.head_injuries.text, CaseData.Forename),
@@ -117,13 +118,13 @@ export const headInjuries = GovUKRadioInput({
 // --- Neurodiverse Group ---
 
 const neurodiverseConditionsDetails = GovUKCharacterCount({
-  code: 'neurodiverse_conditions_details',
+  code: Question.neurodiverse_conditions_details,
   label: locale.optional_details,
   maxLength: 2000,
 })
 
 export const neurodiverseConditions = GovUKRadioInput({
-  code: 'neurodiverse_conditions',
+  code: Question.neurodiverse_conditions,
   fieldset: {
     legend: {
       text: Format(locale.phyisical_mental_health.neurodiverse_conditions.text, CaseData.Forename),
@@ -147,19 +148,19 @@ export const neurodiverseConditions = GovUKRadioInput({
 // --- Learning abilities impact Group ---
 
 const learningAbilitiesImpactedSignificantlyDetails = GovUKCharacterCount({
-  code: 'learning_abilities_impacted_significantly_details',
+  code: Question.learning_abilities_impacted_significantly_details,
   label: locale.optional_details,
   maxLength: 2000,
 })
 
 const learningAbilitiesImpactedSlightlyDetails = GovUKCharacterCount({
-  code: 'learning_abilities_impacted_slightly_details',
+  code: Question.learning_abilities_impacted_slightly_details,
   label: locale.optional_details,
   maxLength: 2000,
 })
 
 export const impactOnLearningAbilities = GovUKRadioInput({
-  code: 'impact_on_learning_abilities',
+  code: Question.impact_on_learning_abilities,
   fieldset: {
     legend: {
       text: Format(locale.phyisical_mental_health.impact_on_learning_abilities.text, CaseData.Forename),
@@ -177,7 +178,7 @@ export const impactOnLearningAbilities = GovUKRadioInput({
 // --- Cope with daya to day life Group ---
 
 export const copeWithDayToDayLife = GovUKRadioInput({
-  code: 'cope_with_day_to_day_life',
+  code: Question.cope_with_day_to_day_life,
   fieldset: {
     legend: {
       text: Format(locale.phyisical_mental_health.cope_with_day_to_day_life.text, CaseData.Forename),
@@ -201,10 +202,10 @@ export const copeWithDayToDayLife = GovUKRadioInput({
 // --- Attitude towards self Group ---
 
 export const attitudeTowardsSelf = GovUKRadioInput({
-  code: 'attitude_towards_sef',
+  code: Question.attitude_towards_self,
   fieldset: {
     legend: {
-      text: Format(locale.phyisical_mental_health.attitude_towards_sef.text, CaseData.ForenamePossessive),
+      text: Format(locale.phyisical_mental_health.attitude_towards_self.text, CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
@@ -225,11 +226,11 @@ export const attitudeTowardsSelf = GovUKRadioInput({
 // --- Self harm Group ---
 
 const selfHarmDetails = GovUKCharacterCount({
-  code: 'self_harm_details',
+  code: Question.self_harm_details,
   label: locale.required_details,
   maxLength: 2000,
-  dependentWhen: and(Answer('self_harm').match(Condition.IsRequired()),
-    Answer('self_harm').match(Condition.Equals('YES'))),
+  dependentWhen: and(Answer(Question.self_harm).match(Condition.IsRequired()),
+    Answer(Question.self_harm).match(Condition.Equals('YES'))),
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMinLength(1)),
@@ -239,7 +240,7 @@ const selfHarmDetails = GovUKCharacterCount({
 })
 
 export const selfHarm = GovUKRadioInput({
-  code: 'self_harm',
+  code: Question.self_harm,
   fieldset: {
     legend: {
       text: Format(locale.phyisical_mental_health.self_harm.text, CaseData.Forename),
@@ -262,11 +263,11 @@ export const selfHarm = GovUKRadioInput({
 // --- Suicidal tendencies Group ---
 
 const suicidalTendenciesDetails = GovUKCharacterCount({
-  code: 'suicidal_tendencies_details',
+  code: Question.suicidal_tendencies_details,
   label: locale.required_details,
   maxLength: 2000,
-  dependentWhen: and(Answer('suicidal_tendencies').match(Condition.IsRequired()),
-    Answer('suicidal_tendencies').match(Condition.Equals('YES'))),
+  dependentWhen: and(Answer(Question.suicidal_tendencies).match(Condition.IsRequired()),
+    Answer(Question.suicidal_tendencies).match(Condition.Equals('YES'))),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
@@ -276,7 +277,7 @@ const suicidalTendenciesDetails = GovUKCharacterCount({
 })
 
 export const suicidalTendencies = GovUKRadioInput({
-  code: 'suicidal_tendencies',
+  code: Question.suicidal_tendencies,
   fieldset: {
     legend: {
       text: Format(locale.phyisical_mental_health.suicidal_tendencies.text, CaseData.Forename),
@@ -299,7 +300,7 @@ export const suicidalTendencies = GovUKRadioInput({
 // --- Feelings about future Group ---
 
 export const feelingsAboutFuture = GovUKRadioInput({
-  code: 'feeling_about_future_health_wellbeing',
+  code: Question.feeling_about_future_health_wellbeing,
   fieldset: {
     legend: {
       text: Format(locale.phyisical_mental_health.feeling_about_future_health_wellbeing.text, CaseData.Forename),
@@ -326,12 +327,14 @@ export const feelingsAboutFuture = GovUKRadioInput({
 // --- Helped during periods of good health Group ---
 
 const helpedDuringPeriodsGoodHealthWellbeingDetails = GovUKCharacterCount({
-  code: 'helped_during_periods_good_health_wellbeing_details',
+  code: Question.helped_during_periods_good_health_wellbeing_details,
   label: locale.required_details,
   maxLength: 2000,
   dependentWhen:
-    and(Answer('helped_during_periods_good_health_wellbeing').match(Condition.IsRequired())
-      ,Answer('helped_during_periods_good_health_wellbeing').match(Condition.Array.Contains('OTHER'))),
+    and(
+      Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.IsRequired()),
+      Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains('OTHER'))
+    ),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
@@ -341,7 +344,7 @@ const helpedDuringPeriodsGoodHealthWellbeingDetails = GovUKCharacterCount({
 })
 
 export const helpedDuringPeriodsGoodHealthWellbeing = GovUKCheckboxInput({
-  code: 'helped_during_periods_good_health_wellbeing',
+  code: Question.helped_during_periods_good_health_wellbeing,
   multiple: true,
   fieldset: {
     legend: {
@@ -365,56 +368,56 @@ export const helpedDuringPeriodsGoodHealthWellbeing = GovUKCheckboxInput({
 // --- Changes to health wellbeing Group ---
 
 const hasMadePositiveChangesDetails = GovUKCharacterCount({
-  code: 'has_made_positive_changes_health_wellbeing_details',
+  code: Question.has_made_positive_changes_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer('changes_to_health_wellbeing').match(Condition.Equals('HAS_MADE_CHANGES')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('HAS_MADE_CHANGES')),
 })
 
 const isActivelyMakingChangesDetails = GovUKCharacterCount({
-  code: 'actively_making_changes_health_wellbeing_details',
+  code: Question.actively_making_changes_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer('changes_to_health_wellbeing').match(Condition.Equals('IS_MAKING_CHANGES')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('IS_MAKING_CHANGES')),
 })
 
 const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
-  code: 'wants_to_make_changes_knows_how_to_health_wellbeing_details',
+  code: Question.wants_to_make_changes_knows_how_to_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer('changes_to_health_wellbeing').match(Condition.Equals('WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO')),
 })
 
 const wantsToMakeChangesNeedsHelpDetails = GovUKCharacterCount({
-  code: 'wants_to_make_changes_needs_help_health_wellbeing_details',
+  code: Question.wants_to_make_changes_needs_help_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer('changes_to_health_wellbeing').match(Condition.Equals('WANTS_TO_MAKE_CHANGES_NEEDS_HELP')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('WANTS_TO_MAKE_CHANGES_NEEDS_HELP')),
 })
 
 const thinkingAboutMakingChangesDetails = GovUKCharacterCount({
-  code: 'thinkging_about_making_changes_health_wellbeing_details',
+  code: Question.thinking_about_making_changes_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer('changes_to_health_wellbeing').match(Condition.Equals('THINKING_ABOUT_MAKING_CHANGES')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('THINKING_ABOUT_MAKING_CHANGES')),
 })
 
 const doesNotWantToMakeChangesDetails = GovUKCharacterCount({
-  code: 'does_not_want_to_make_changes_health_wellbeing_details',
+  code: Question.does_not_want_to_make_changes_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer('changes_to_health_wellbeing').match(Condition.Equals('DOES_NOT_WANT_TO_MAKE_CHANGES')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('DOES_NOT_WANT_TO_MAKE_CHANGES')),
 })
 
 const doesNotWantToAnswerChangesDetails = GovUKCharacterCount({
-  code: 'does_not_want_to_answer_health_wellbeing_details',
+  code: Question.does_not_want_to_answer_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer('changes_to_health_wellbeing').match(Condition.Equals('DO_NOT_WANT_TO_ANSWER')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('DO_NOT_WANT_TO_ANSWER')),
 })
 
 export const changesToHealthWellbeing = GovUKRadioInput({
-  code: 'changes_to_health_wellbeing',
+  code: Question.changes_to_health_wellbeing,
   fieldset: {
     legend: {
       text: Format(locale.phyisical_mental_health.changes_to_health_wellbeing.text, CaseData.Forename),

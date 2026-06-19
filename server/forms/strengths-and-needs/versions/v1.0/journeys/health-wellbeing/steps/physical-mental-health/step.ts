@@ -16,6 +16,9 @@ import {
   selfHarm,
   suicidalTendencies
 } from './fields'
+import {Step} from "../../constants/step";
+import {sectionPath} from "../../../../constants/path";
+import {Section} from "../../../../constants/section";
 
 const saveButton = block<GovUKButton>({
   variant: 'govukButton',
@@ -25,12 +28,11 @@ const saveButton = block<GovUKButton>({
 })
 
 export const physicalMentalHealthStep = step({
-  path: '/physical-mental-health',
+  path: `/${Step.physical_mental_health.path}`,
   title: 'Physical mental health',
   view: {
-    template: 'strengths-and-needs/views/san-step',
     locals: {
-      backlink: '/strengths-and-needs/v1.0/health-and-wellbeing'
+      backlink: sectionPath(Section.health_and_wellbeing),
     },
   },
   blocks: [

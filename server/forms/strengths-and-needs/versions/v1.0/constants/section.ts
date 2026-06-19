@@ -37,9 +37,9 @@ export const Section = {
     statusKey: 'alcohol_section_status',
   },
   health_and_wellbeing: {
-    code: 'health-and-wellbeing',
-    path: '',
-    sideNavHref: `${basePath}/health-and-wellbeing/physical-health`,
+    code: 'health-wellbeing',
+    path: '/health-and-wellbeing',
+    sideNavHref: `${basePath}/health-and-wellbeing/health-wellbeing?resume=true`,
     statusKey: 'health_section_status',
   },
   personal_relationships_and_community: {
