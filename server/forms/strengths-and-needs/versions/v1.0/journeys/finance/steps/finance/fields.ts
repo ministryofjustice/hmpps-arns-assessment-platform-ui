@@ -14,24 +14,19 @@ import {
   GovUKTextareaInput,
 
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import locale from '../../locale.json'
-import { StrengthsAndNeedsTransformers } from '../../../../../../transformers'
+import {content as locale} from '../../locales'
 import { StrengthsAndNeedsConditions } from '../../../../../../conditions'
 import { CaseData } from '../../../../constants/formVersion'
+import { Paths } from '../../../../../../@types/i18n'
+import { FinanceContent } from '../../locales/en-gb'
 
 const DEFAULT_CHARACTER_COUNT = 2000
-
-const contentWith =
-  (content: Record<string, any>) =>
-  (code: string, ...replacements: any[]) =>
-    Request.Headers('accept-language').pipe(StrengthsAndNeedsTransformers.ContentFor(content, code, ...replacements))
-const contentFor = contentWith(locale)
 
 const toDetailsField = (parent: string) => (option: string) =>
   GovUKTextareaInput({
     code: `${parent}_${option.toLowerCase()}_details`,
     label: {
-      text: contentFor('optional_details'),
+      text: contentFor('questions.foo.bar'),
     },
     dependentWhen: and(
       Answer(parent).match(Condition.IsRequired()),

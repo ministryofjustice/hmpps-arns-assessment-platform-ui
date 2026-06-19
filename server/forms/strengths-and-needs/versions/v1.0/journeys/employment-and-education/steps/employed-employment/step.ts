@@ -15,12 +15,12 @@ import {
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
-import { locale } from '../../constants/locale'
 import { sectionPath } from '../../../../constants/path'
 
 export const employedEmploymentStep = step({
   path: `/${Step.employed.path}`,
-  title: locale.step[Step.employed.code],
+  // title: contentFor('step.employed'),
+  title: 'PLACEHOLDER',
   view: {
     locals: {
       backlink: sectionPath(Section.employment_and_education),

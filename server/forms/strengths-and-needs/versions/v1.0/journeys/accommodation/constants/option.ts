@@ -58,4 +58,4 @@ export const Option = {
   financial_difficulties: 'FINANCIAL_DIFFICULTIES',
   risk_to_others: 'RISK_TO_OTHERS',
   prison_release: 'PRISON_RELEASE',
-}
+} as const

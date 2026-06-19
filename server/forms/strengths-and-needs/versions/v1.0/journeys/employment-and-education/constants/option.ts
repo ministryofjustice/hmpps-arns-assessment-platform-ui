@@ -12,9 +12,9 @@ export const Option = {
   apprenticeship: 'APPRENTICESHIP',
   yes_has_been_employed_before: 'YES_HAS_BEEN_EMPLOYED_BEFORE',
   no_has_never_been_employed: 'NO_HAS_NEVER_BEEN_EMPLOYED',
-  continuous_employment: 'CONTINUOUS_EMPLOYMENT',
-  changes_jobs_often: 'CHANGES_JOBS_OFTEN',
-  unstable_employment: 'UNSTABLE_EMPLOYMENT',
+  stable: 'STABLE',
+  periods_of_instability: 'PERIODS_OF_INSTABILITY',
+  unstable: 'UNSTABLE',
   unknown: 'UNKNOWN',
   has_made_changes: 'HAS_MADE_CHANGES',
   is_making_changes: 'IS_MAKING_CHANGES',
@@ -37,7 +37,8 @@ export const Option = {
   level_6: 'LEVEL_6',
   level_7: 'LEVEL_7',
   level_8: 'LEVEL_8',
-  significant: 'SIGNIFICANT',
+  significant_difficulties: 'SIGNIFICANT_DIFFICULTIES',
+  some_difficulties: 'SOME_DIFFICULTIES',
   positive: 'POSITIVE',
   mostly_positive: 'MOSTLY_POSITIVE',
   positive_and_negative: 'POSITIVE_AND_NEGATIVE',
@@ -54,4 +55,4 @@ export const Option = {
   non_of_these: 'NON_OF_THESE',
   other: 'OTHER',
   none: 'NONE',
-}
+} as const

@@ -2,7 +2,6 @@ import {
   validation,
   Self,
   Answer,
-  Format,
   and,
   Condition,
   not,
@@ -13,18 +12,18 @@ import {
   GovUKCheckboxInput,
   GovUKCharacterCount,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { locale } from '../../constants/locale'
+import { contentFor } from '../../locales'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
-import { commonLocale } from '../../../../constants/locale'
 import { CaseData } from '../../../../constants/formVersion'
+import { commonContentFor } from '../../../../locales'
 
 // --- Employment Sector Group ---
 
 export const employmentSector = GovUKCharacterCount({
   code: Question.employment_sector,
   label: {
-    text: Format(locale.question[Question.employment_sector], CaseData.Forename),
+    text: contentFor('question.employment_sector.text', CaseData.Forename),
     classes: 'govuk-fieldset__legend--m',
   },
   maxLength: 2000,
@@ -42,32 +41,32 @@ export const employmentSector = GovUKCharacterCount({
 
 const continuousEmploymentHistoryEmploymentDetails = GovUKCharacterCount({
   code: Question.continuous_employment_history_employment_details,
-  label: commonLocale.optional_details,
-  hint: locale.hint[Question.continuous_employment_history_employment_details],
+  label: commonContentFor('optional_details'),
+  hint: contentFor('question.continuous_employment_history_employment_details.hint'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_history).match(Condition.Equals(Option.continuous_employment)),
+  dependentWhen: Answer(Question.employment_history).match(Condition.Equals(Option.stable)),
 })
 
 const changesOftenEmploymentHistoryEmploymentOftenDetails = GovUKCharacterCount({
   code: Question.changes_often_employment_history_employment_details,
-  label: commonLocale.optional_details,
-  hint: locale.hint[Question.changes_often_employment_history_employment_details],
+  label: commonContentFor('optional_details'),
+  hint: contentFor('question.changes_often_employment_history_employment_details.hint'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_history).match(Condition.Equals(Option.changes_jobs_often)),
+  dependentWhen: Answer(Question.employment_history).match(Condition.Equals(Option.periods_of_instability)),
 })
 
 const unstableEmploymentHistoryEmploymentDetails = GovUKCharacterCount({
   code: Question.unstable_employment_history_employment_details,
-  label: commonLocale.optional_details,
-  hint: locale.hint[Question.unstable_employment_history_employment_details],
+  label: commonContentFor('optional_details'),
+  hint: contentFor('question.unstable_employment_history_employment_details.hint'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_history).match(Condition.Equals(Option.unstable_employment)),
+  dependentWhen: Answer(Question.employment_history).match(Condition.Equals(Option.unstable)),
 })
 
 const unknownEmploymentHistoryDetails = GovUKCharacterCount({
   code: Question.unknown_employment_history_employment_details,
-  label: commonLocale.optional_details,
-  hint: locale.hint[Question.unknown_employment_history_employment_details],
+  label: commonContentFor('optional_details'),
+  hint: contentFor('question.unknown_employment_history_employment_details.hint'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_history).match(Condition.Equals(Option.unknown)),
 })
@@ -76,31 +75,31 @@ export const employmentHistory = GovUKRadioInput({
   code: Question.employment_history,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.employment_history], CaseData.ForenamePossessive),
+      text: contentFor('question.employment_history.text', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: locale.hint[Question.employment_history],
+  hint: contentFor('question.employment_history.hint'),
   items: [
     {
-      value: Option.continuous_employment,
-      text: locale.option[Option.continuous_employment],
-      hint: locale.hint[`${Question.employment_history}_${Option.continuous_employment}`],
+      value: Option.stable,
+      text: contentFor('question.employment_history.option.STABLE.text'),
+      hint: contentFor('question.employment_history.option.STABLE.hint'),
       block: continuousEmploymentHistoryEmploymentDetails,
     },
     {
-      value: Option.changes_jobs_often,
-      text: locale.option[Option.changes_jobs_often],
+      value: Option.periods_of_instability,
+      text: contentFor('question.employment_history.option.PERIODS_OF_INSTABILITY'),
       block: changesOftenEmploymentHistoryEmploymentOftenDetails,
     },
     {
-      value: Option.unstable_employment,
-      text: locale.option[Option.unstable_employment],
+      value: Option.unstable,
+      text: contentFor('question.employment_history.option.UNSTABLE'),
       block: unstableEmploymentHistoryEmploymentDetails,
     },
     {
       value: Option.unknown,
-      text: locale.option[Option.unknown],
+      text: contentFor('question.employment_history.option.UNKNOWN'),
       block: unknownEmploymentHistoryDetails,
     },
   ],
@@ -133,7 +132,7 @@ export const employmentHistory = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.employment_history],
+      message: contentFor('question.employment_history.validation'),
     }),
   ],
 })
@@ -142,28 +141,28 @@ export const employmentHistory = GovUKRadioInput({
 
 const dayToDayCaringResponsibilitiesDetails = GovUKCharacterCount({
   code: Question.day_to_day_caring_responsibilities_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.caring)),
 })
 
 const dayToDayVolunteeringDetails = GovUKCharacterCount({
   code: Question.day_to_day_volunteering_responsibilities_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.volunteering)),
 })
 
 const dayToDayChildResponsibilitiesDetails = GovUKCharacterCount({
   code: Question.day_to_day_child_responsibilities_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.children)),
 })
 
 const dayToDayOtherCommitmentsDetails = GovUKCharacterCount({
   code: Question.day_to_day_other_commitments_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.other)),
 })
@@ -173,25 +172,37 @@ export const dayToDayCommitments = GovUKCheckboxInput({
   multiple: true,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.day_to_day_commitments], CaseData.Forename),
+      text: contentFor('question.day_to_day_commitments.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: locale.hint[Question.day_to_day_commitments],
+  hint: contentFor('question.day_to_day_commitments.hint'),
   items: [
-    { value: Option.caring, text: locale.option[Option.caring], block: dayToDayCaringResponsibilitiesDetails },
-    { value: Option.children, text: locale.option[Option.children], block: dayToDayChildResponsibilitiesDetails },
-    { value: Option.studying, text: locale.option[Option.studying] },
-    { value: Option.volunteering, text: locale.option[Option.volunteering], block: dayToDayVolunteeringDetails },
-    { value: Option.other, text: locale.option[Option.other], block: dayToDayOtherCommitmentsDetails },
-    { value: Option.unknown, text: locale.option[Option.unknown] },
-    { divider: commonLocale.or },
-    { value: Option.none, text: locale.option[Option.none], behaviour: 'exclusive' },
+    {
+      value: Option.caring,
+      text: contentFor('question.day_to_day_commitments.option.CARING'),
+      block: dayToDayCaringResponsibilitiesDetails,
+    },
+    {
+      value: Option.children,
+      text: contentFor('question.day_to_day_commitments.option.CHILDREN'),
+      block: dayToDayChildResponsibilitiesDetails,
+    },
+    { value: Option.studying, text: contentFor('question.day_to_day_commitments.option.STUDYING') },
+    {
+      value: Option.volunteering,
+      text: contentFor('question.day_to_day_commitments.option.VOLUNTEERING'),
+      block: dayToDayVolunteeringDetails,
+    },
+    { value: Option.other, text: commonContentFor('option.OTHER'), block: dayToDayOtherCommitmentsDetails },
+    { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
+    { divider: commonContentFor('or') },
+    { value: Option.none, text: commonContentFor('option.NONE'), behaviour: 'exclusive' },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.day_to_day_commitments],
+      message: contentFor('question.day_to_day_commitments.validation'),
     }),
   ],
 })
@@ -202,64 +213,64 @@ export const academicQualification = GovUKRadioInput({
   code: Question.academic_qualification,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.academic_qualification], CaseData.Forename),
+      text: contentFor('question.academic_qualification.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
     {
       value: Option.entry_level,
-      text: locale.option[Option.entry_level],
-      hint: locale.hint[`${Question.academic_qualification}_${Option.entry_level}`],
+      text: contentFor('question.academic_qualification.option.ENTRY_LEVEL.text'),
+      hint: contentFor('question.academic_qualification.option.ENTRY_LEVEL.hint'),
     },
     {
       value: Option.level_1,
-      text: locale.option[Option.level_1],
-      hint: locale.hint[`${Question.academic_qualification}_${Option.level_1}`],
+      text: contentFor('question.academic_qualification.option.LEVEL_1.text'),
+      hint: contentFor('question.academic_qualification.option.LEVEL_1.hint'),
     },
     {
       value: Option.level_2,
-      text: locale.option[Option.level_2],
-      hint: locale.hint[`${Question.academic_qualification}_${Option.level_2}`],
+      text: contentFor('question.academic_qualification.option.LEVEL_2.text'),
+      hint: contentFor('question.academic_qualification.option.LEVEL_2.hint'),
     },
     {
       value: Option.level_3,
-      text: locale.option[Option.level_3],
-      hint: locale.hint[`${Question.academic_qualification}_${Option.level_3}`],
+      text: contentFor('question.academic_qualification.option.LEVEL_3.text'),
+      hint: contentFor('question.academic_qualification.option.LEVEL_3.hint'),
     },
     {
       value: Option.level_4,
-      text: locale.option[Option.level_4],
-      hint: locale.hint[`${Question.academic_qualification}_${Option.level_4}`],
+      text: contentFor('question.academic_qualification.option.LEVEL_4.text'),
+      hint: contentFor('question.academic_qualification.option.LEVEL_4.hint'),
     },
     {
       value: Option.level_5,
-      text: locale.option[Option.level_5],
-      hint: locale.hint[`${Question.academic_qualification}_${Option.level_5}`],
+      text: contentFor('question.academic_qualification.option.LEVEL_5.text'),
+      hint: contentFor('question.academic_qualification.option.LEVEL_5.hint'),
     },
     {
       value: Option.level_6,
-      text: locale.option[Option.level_6],
-      hint: locale.hint[`${Question.academic_qualification}_${Option.level_6}`],
+      text: contentFor('question.academic_qualification.option.LEVEL_6.text'),
+      hint: contentFor('question.academic_qualification.option.LEVEL_6.hint'),
     },
     {
       value: Option.level_7,
-      text: locale.option[Option.level_7],
-      hint: locale.hint[`${Question.academic_qualification}_${Option.level_7}`],
+      text: contentFor('question.academic_qualification.option.LEVEL_7.text'),
+      hint: contentFor('question.academic_qualification.option.LEVEL_7.hint'),
     },
     {
       value: Option.level_8,
-      text: locale.option[Option.level_8],
-      hint: locale.hint[`${Question.academic_qualification}_${Option.level_8}`],
+      text: contentFor('question.academic_qualification.option.LEVEL_8.text'),
+      hint: contentFor('question.academic_qualification.option.LEVEL_8.hint'),
     },
-    { divider: commonLocale.or },
-    { value: Option.non_of_these, text: locale.option[Option.non_of_these] },
-    { value: Option.unknown, text: locale.option[Option.unknown] },
+    { divider: commonContentFor('or') },
+    { value: Option.non_of_these, text: contentFor('question.academic_qualification.option.NON_OF_THESE') },
+    { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.academic_qualification],
+      message: contentFor('question.academic_qualification.validation'),
     }),
   ],
 })
@@ -268,7 +279,7 @@ export const academicQualification = GovUKRadioInput({
 
 const professionalQualificationDetails = GovUKCharacterCount({
   code: Question.professional_qualification_details,
-  label: commonLocale.required_details,
+  label: commonContentFor('required_details'),
   maxLength: 2000,
   dependentWhen: and(
     Answer(Question.professional_qualification).match(Condition.IsRequired()),
@@ -277,7 +288,7 @@ const professionalQualificationDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.professional_qualification_details],
+      message: contentFor('question.professional_qualification_details.validation'),
     }),
   ],
 })
@@ -286,20 +297,20 @@ export const professionalQualifications = GovUKRadioInput({
   code: Question.professional_qualification,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.professional_qualification], CaseData.Forename),
+      text: contentFor('question.professional_qualification.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
-    { value: Option.yes, text: locale.option[Option.yes], block: professionalQualificationDetails },
-    { value: Option.no, text: locale.option[Option.no] },
-    { divider: commonLocale.or },
-    { value: Option.unknown, text: locale.option[Option.unknown] },
+    { value: Option.yes, text: commonContentFor('option.YES'), block: professionalQualificationDetails },
+    { value: Option.no, text: commonContentFor('option.NO'), block: professionalQualificationDetails },
+    { divider: commonContentFor('or') },
+    { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.professional_qualification],
+      message: contentFor('question.professional_qualification.validation'),
     }),
   ],
 })
@@ -308,14 +319,14 @@ export const professionalQualifications = GovUKRadioInput({
 
 const hasJobSkillsDetails = GovUKCharacterCount({
   code: Question.has_job_skills_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.job_skills).match(Condition.Equals(Option.yes)),
 })
 
 const someJobSkillsDetails = GovUKCharacterCount({
   code: Question.some_job_skills_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.job_skills).match(Condition.Equals(Option.some_skills)),
 })
@@ -324,33 +335,33 @@ export const jobSkills = GovUKRadioInput({
   code: Question.job_skills,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.job_skills], CaseData.ForenamePossessive),
+      text: contentFor('question.job_skills.text', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
     {
       value: Option.yes,
-      text: locale.option[Option.yes],
-      hint: locale.hint[`${Question.job_skills}_${Option.yes}`],
+      text: commonContentFor('option.YES'),
+      hint: contentFor('question.job_skills.option.YES.hint'),
       block: hasJobSkillsDetails,
     },
     {
       value: Option.some_skills,
-      text: locale.option[Option.some_skills],
-      hint: locale.hint[`${Question.job_skills}_${Option.some_skills}`],
+      text: contentFor('question.job_skills.option.SOME_SKILLS.text'),
+      hint: contentFor('question.job_skills.option.SOME_SKILLS.hint'),
       block: someJobSkillsDetails,
     },
     {
       value: Option.no,
-      text: locale.option[Option.no],
-      hint: locale.hint[`${Question.job_skills}_${Option.no}`],
+      text: commonContentFor('option.NO'),
+      hint: contentFor('question.job_skills.option.NO.hint'),
     },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.job_skills],
+      message: contentFor('question.job_skills.validation'),
     }),
   ],
 })
@@ -361,12 +372,12 @@ export const readingDifficultyLevel = GovUKRadioInput({
   code: Question.reading_difficulty_level,
   fieldset: {
     legend: {
-      text: locale.question[Question.reading_difficulty_level],
+      text: contentFor('question.reading_difficulty_level.text'),
     },
   },
   items: [
-    { value: Option.significant, text: locale.option[Option.significant] },
-    { value: Option.some, text: locale.option[Option.some] },
+    { value: Option.significant_difficulties, text: contentFor('option.SIGNIFICANT_DIFFICULTIES') },
+    { value: Option.some_difficulties, text: contentFor('option.SOME_DIFFICULTIES') },
   ],
   dependentWhen: and(
     Answer(Question.difficulties_reading_writing_numeracy).match(Condition.IsRequired()),
@@ -375,7 +386,7 @@ export const readingDifficultyLevel = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.reading_difficulty_level],
+      message: contentFor('question.reading_difficulty_level.validation'),
     }),
   ],
 })
@@ -384,12 +395,12 @@ export const writingDifficultyLevel = GovUKRadioInput({
   code: Question.writing_difficulty_level,
   fieldset: {
     legend: {
-      text: locale.question[Question.writing_difficulty_level],
+      text: contentFor('question.writing_difficulty_level.text'),
     },
   },
   items: [
-    { value: Option.significant, text: locale.option[Option.significant] },
-    { value: Option.some, text: locale.option[Option.some] },
+    { value: Option.significant_difficulties, text: contentFor('option.SIGNIFICANT_DIFFICULTIES') },
+    { value: Option.some_difficulties, text: contentFor('option.SOME_DIFFICULTIES') },
   ],
   dependentWhen: and(
     Answer(Question.difficulties_reading_writing_numeracy).match(Condition.IsRequired()),
@@ -398,7 +409,7 @@ export const writingDifficultyLevel = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.writing_difficulty_level],
+      message: contentFor('question.writing_difficulty_level.validation'),
     }),
   ],
 })
@@ -407,12 +418,12 @@ export const numeracyDifficultyLevel = GovUKRadioInput({
   code: Question.numeracy_difficulty_level,
   fieldset: {
     legend: {
-      text: locale.question[Question.numeracy_difficulty_level],
+      text: contentFor('question.numeracy_difficulty_level.text'),
     },
   },
   items: [
-    { value: Option.significant, text: locale.option[Option.significant] },
-    { value: Option.some, text: locale.option[Option.some] },
+    { value: Option.significant_difficulties, text: contentFor('option.SIGNIFICANT_DIFFICULTIES') },
+    { value: Option.some_difficulties, text: contentFor('option.SOME_DIFFICULTIES') },
   ],
   dependentWhen: and(
     Answer(Question.difficulties_reading_writing_numeracy).match(Condition.IsRequired()),
@@ -421,7 +432,7 @@ export const numeracyDifficultyLevel = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.numeracy_difficulty_level],
+      message: contentFor('question.numeracy_difficulty_level.validation'),
     }),
   ],
 })
@@ -431,22 +442,38 @@ export const difficultiesReadingWritingNumeracy = GovUKCheckboxInput({
   multiple: true,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.difficulties_reading_writing_numeracy], CaseData.Forename),
+      text: contentFor('question.difficulties_reading_writing_numeracy.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: locale.hint[Question.difficulties_reading_writing_numeracy],
+  hint: contentFor('question.difficulties_reading_writing_numeracy.hint'),
   items: [
-    { value: Option.yes_reading, text: locale.option[Option.yes_reading], block: readingDifficultyLevel },
-    { value: Option.yes_writing, text: locale.option[Option.yes_writing], block: writingDifficultyLevel },
-    { value: Option.yes_numeracy, text: locale.option[Option.yes_numeracy], block: numeracyDifficultyLevel },
-    { divider: commonLocale.or },
-    { value: Option.no_difficulties, text: locale.option[Option.no_difficulties], behaviour: 'exclusive' },
+    {
+      value: Option.yes_reading,
+      text: contentFor('question.difficulties_reading_writing_numeracy.option.YES_READING'),
+      block: readingDifficultyLevel,
+    },
+    {
+      value: Option.yes_writing,
+      text: contentFor('question.difficulties_reading_writing_numeracy.option.YES_WRITING'),
+      block: writingDifficultyLevel,
+    },
+    {
+      value: Option.yes_numeracy,
+      text: contentFor('question.difficulties_reading_writing_numeracy.option.YES_NUMERACY'),
+      block: numeracyDifficultyLevel,
+    },
+    { divider: commonContentFor('or') },
+    {
+      value: Option.no_difficulties,
+      text: contentFor('question.difficulties_reading_writing_numeracy.option.NO_DIFFICULTIES'),
+      behaviour: 'exclusive',
+    },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.difficulties_reading_writing_numeracy],
+      message: contentFor('question.difficulties_reading_writing_numeracy.validation'),
     }),
   ],
 })
@@ -455,35 +482,35 @@ export const difficultiesReadingWritingNumeracy = GovUKCheckboxInput({
 
 const positiveEmploymentExperienceDetails = GovUKCharacterCount({
   code: Question.positive_employment_experience_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_experience).match(Condition.Equals(Option.positive)),
 })
 
 const mostlyPositiveEmploymentExperienceDetails = GovUKCharacterCount({
   code: Question.mostly_positive_employment_experience_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_experience).match(Condition.Equals(Option.mostly_positive)),
 })
 
 const positiveAndNegativeEmploymentExperienceDetails = GovUKCharacterCount({
   code: Question.positive_and_negative_employment_experience_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_experience).match(Condition.Equals(Option.positive_and_negative)),
 })
 
 const mostlyNegativeEmploymentExperienceDetails = GovUKCharacterCount({
   code: Question.mostly_negative_employment_experience_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_experience).match(Condition.Equals(Option.mostly_negative)),
 })
 
 const negativeEmploymentExperienceDetails = GovUKCharacterCount({
   code: Question.negative_employment_experience_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_experience).match(Condition.Equals(Option.negative)),
 })
@@ -492,29 +519,29 @@ export const employmentExperience = GovUKRadioInput({
   code: Question.employment_experience,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.employment_experience], CaseData.ForenamePossessive),
+      text: contentFor('question.employment_experience.text', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
-    { value: Option.positive, text: locale.option[Option.positive], block: positiveEmploymentExperienceDetails },
+    { value: Option.positive, text: contentFor('option.POSITIVE'), block: positiveEmploymentExperienceDetails },
     {
       value: Option.mostly_positive,
-      text: locale.option[Option.mostly_positive],
+      text: contentFor('option.MOSTLY_POSITIVE'),
       block: mostlyPositiveEmploymentExperienceDetails,
     },
     {
       value: Option.positive_and_negative,
-      text: locale.option[Option.positive_and_negative],
+      text: contentFor('option.POSITIVE_AND_NEGATIVE'),
       block: positiveAndNegativeEmploymentExperienceDetails,
     },
     {
       value: Option.mostly_negative,
-      text: locale.option[Option.mostly_negative],
+      text: contentFor('option.MOSTLY_NEGATIVE'),
       block: mostlyNegativeEmploymentExperienceDetails,
     },
-    { value: Option.negative, text: locale.option[Option.negative], block: negativeEmploymentExperienceDetails },
-    { value: Option.unknown, text: locale.option[Option.unknown] },
+    { value: Option.negative, text: contentFor('option.NEGATIVE'), block: negativeEmploymentExperienceDetails },
+    { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
   ],
   visibleWhen: not(
     or(
@@ -545,7 +572,7 @@ export const employmentExperience = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.employment_experience],
+      message: contentFor('question.employment_experience.validation'),
     }),
   ],
 })
@@ -554,35 +581,35 @@ export const employmentExperience = GovUKRadioInput({
 
 const positiveEducationExperienceDetails = GovUKCharacterCount({
   code: Question.positive_education_experience_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.education_experience).match(Condition.Equals(Option.positive)),
 })
 
 const mostlyPositiveEducationExperienceDetails = GovUKCharacterCount({
   code: Question.mostly_positive_education_experience_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.education_experience).match(Condition.Equals(Option.mostly_positive)),
 })
 
 const positiveAndNegativeEducationExperienceDetails = GovUKCharacterCount({
   code: Question.positive_and_negative_education_experience_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.education_experience).match(Condition.Equals(Option.positive_and_negative)),
 })
 
 const mostlyNegativeEducationExperienceDetails = GovUKCharacterCount({
   code: Question.mostly_negative_education_experience_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.education_experience).match(Condition.Equals(Option.mostly_negative)),
 })
 
 const negativeEducationExperienceDetails = GovUKCharacterCount({
   code: Question.negative_education_experience_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.education_experience).match(Condition.Equals(Option.negative)),
 })
@@ -591,34 +618,34 @@ export const educationExperience = GovUKRadioInput({
   code: Question.education_experience,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.education_experience], CaseData.ForenamePossessive),
+      text: contentFor('question.education_experience.text', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
-    { value: Option.positive, text: locale.option[Option.positive], block: positiveEducationExperienceDetails },
+    { value: Option.positive, text: contentFor('option.POSITIVE'), block: positiveEducationExperienceDetails },
     {
       value: Option.mostly_positive,
-      text: locale.option[Option.mostly_positive],
+      text: contentFor('option.MOSTLY_POSITIVE'),
       block: mostlyPositiveEducationExperienceDetails,
     },
     {
       value: Option.positive_and_negative,
-      text: locale.option[Option.positive_and_negative],
+      text: contentFor('option.POSITIVE_AND_NEGATIVE'),
       block: positiveAndNegativeEducationExperienceDetails,
     },
     {
       value: Option.mostly_negative,
-      text: locale.option[Option.mostly_negative],
+      text: contentFor('option.MOSTLY_NEGATIVE'),
       block: mostlyNegativeEducationExperienceDetails,
     },
-    { value: Option.negative, text: locale.option[Option.negative], block: negativeEducationExperienceDetails },
-    { value: Option.unknown, text: locale.option[Option.unknown] },
+    { value: Option.negative, text: contentFor('option.NEGATIVE'), block: negativeEducationExperienceDetails },
+    { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.education_experience],
+      message: contentFor('question.education_experience.validation'),
     }),
   ],
 })
@@ -627,21 +654,21 @@ export const educationExperience = GovUKRadioInput({
 
 const hasMadePositiveChangesDetails = GovUKCharacterCount({
   code: Question.has_made_positive_changes_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(Option.has_made_changes)),
 })
 
 const isActivelyMakingChangesDetails = GovUKCharacterCount({
   code: Question.actively_making_changes_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(Option.is_making_changes)),
 })
 
 const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
   code: Question.wants_to_make_changes_knows_how_to_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
     Condition.Equals(Option.wants_to_make_changes_knows_how_to),
@@ -650,7 +677,7 @@ const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
 
 const wantsToMakeChangesNeedsHelpDetails = GovUKCharacterCount({
   code: Question.wants_to_make_changes_needs_help_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
     Condition.Equals(Option.wants_to_make_changes_needs_help),
@@ -659,7 +686,7 @@ const wantsToMakeChangesNeedsHelpDetails = GovUKCharacterCount({
 
 const thinkingAboutMakingChangesDetails = GovUKCharacterCount({
   code: Question.thinking_about_making_changes_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
     Condition.Equals(Option.thinking_about_making_changes),
@@ -668,7 +695,7 @@ const thinkingAboutMakingChangesDetails = GovUKCharacterCount({
 
 const doesNotWantToMakeChangesDetails = GovUKCharacterCount({
   code: Question.does_not_want_to_make_changes_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
     Condition.Equals(Option.does_not_want_to_make_changes),
@@ -677,7 +704,7 @@ const doesNotWantToMakeChangesDetails = GovUKCharacterCount({
 
 const doesNotWantToAnswerChangesDetails = GovUKCharacterCount({
   code: Question.does_not_want_to_answer_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
     Condition.Equals(Option.does_not_want_to_answer),
@@ -688,54 +715,54 @@ export const employmentAndEducationChanges = GovUKRadioInput({
   code: Question.employment_and_education_changes,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.employment_and_education_changes], CaseData.Forename),
+      text: contentFor('question.employment_and_education_changes.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
     {
       value: Option.has_made_changes,
-      text: locale.option[Option.has_made_changes],
+      text: commonContentFor('option.HAS_MADE_CHANGES'),
       block: hasMadePositiveChangesDetails,
     },
     {
       value: Option.is_making_changes,
-      text: locale.option[Option.is_making_changes],
+      text: commonContentFor('option.IS_MAKING_CHANGES'),
       block: isActivelyMakingChangesDetails,
     },
     {
       value: Option.wants_to_make_changes_knows_how_to,
-      text: locale.option[Option.wants_to_make_changes_knows_how_to],
+      text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
       block: wantsToMakeChangesKnowsHowDetails,
     },
     {
       value: Option.wants_to_make_changes_needs_help,
-      text: locale.option[Option.wants_to_make_changes_needs_help],
+      text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
       block: wantsToMakeChangesNeedsHelpDetails,
     },
     {
       value: Option.thinking_about_making_changes,
-      text: locale.option[Option.thinking_about_making_changes],
+      text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
       block: thinkingAboutMakingChangesDetails,
     },
     {
       value: Option.does_not_want_to_make_changes,
-      text: locale.option[Option.does_not_want_to_make_changes],
+      text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
       block: doesNotWantToMakeChangesDetails,
     },
     {
       value: Option.does_not_want_to_answer,
-      text: locale.option[Option.does_not_want_to_answer],
+      text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'),
       block: doesNotWantToAnswerChangesDetails,
     },
-    { divider: commonLocale.or },
-    { value: Option.not_present, text: Format(locale.option[Option.not_present], CaseData.Forename) },
-    { value: Option.not_applicable, text: locale.option[Option.not_applicable] },
+    { divider: commonContentFor('or') },
+    { value: Option.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },
+    { value: Option.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: locale.validation[Question.employment_and_education_changes],
+      message: contentFor('question.employment_and_education_changes.validation'),
     }),
   ],
 })

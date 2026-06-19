@@ -56,4 +56,4 @@ export const Question = {
     'employment_education_strengths_protective_factors_details',
   employment_education_no_strengths_protective_factors_details:
     'employment_education_no_strengths_protective_factors_details',
-}
+} as const
