@@ -1,6 +1,7 @@
 import { Question } from '../constants/question'
 import { Step } from '../constants/step'
 import { Option } from '../constants/option'
+import { Locale } from '../../../../../i18n'
 
 export const english = {
   step: {
@@ -221,4 +222,4 @@ export const english = {
   },
 } as const
 
-export type EmploymentAndEducationLocale = typeof english
+export type EmploymentAndEducationLocale = Locale<typeof english>

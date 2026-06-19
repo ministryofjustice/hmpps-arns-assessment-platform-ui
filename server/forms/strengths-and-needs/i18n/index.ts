@@ -10,6 +10,15 @@ export type Paths<T> = {
   [K in keyof T & string]: T[K] extends object ? `${K}.${Paths<T[K]>}` : K
 }[keyof T & string]
 
+export type Locale<T> = {
+  [K in keyof T]:
+  T[K] extends string
+    ? string
+    : T[K] extends object
+      ? Locale<T[K]>
+      : T[K];
+};
+
 export const contentFrom =
   <T>(locales: Locales) =>
     (code: Paths<T>, ...replacements: any[]): ChainableExpr<PipelineExpr> =>

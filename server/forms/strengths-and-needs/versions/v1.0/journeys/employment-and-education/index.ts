@@ -18,7 +18,8 @@ import { commonContentFor } from '../../locales';
  */
 export const employmentJourney = journey({
   code: Section.employment_and_education.code,
-  title: commonContentFor('sectionTitle.employment_and_education'),
+  // title: commonContentFor('sectionTitle.employment_and_education'),
+  title: 'PLACEHOLDER',
   path: Section.employment_and_education.path,
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {
