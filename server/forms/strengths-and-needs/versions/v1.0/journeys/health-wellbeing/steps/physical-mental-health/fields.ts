@@ -7,6 +7,8 @@ import locale from "../../locale.json";
 import {and, Answer, Condition, Format, not, or, Self, validation} from "@ministryofjustice/hmpps-forge/core/authoring";
 import {CaseData} from "../../../../constants/formVersion";
 import {Question} from "../../constants/question";
+import {Option} from "../../constants/option";
+import {commonLocale} from "../../../../constants/locale";
 
 // --- Prescribed physical health treatments Group ---
 
@@ -17,8 +19,8 @@ export const prescribedPhysicalHealthMedicationsTreatments = GovUKCharacterCount
     classes: 'govuk-fieldset__legend--m',
   },
   maxLength: 2000,
-  visibleWhen: Answer(Question.health_conditions).match(Condition.Equals('YES')),
-  dependentWhen: Answer(Question.health_conditions).match(Condition.Equals('YES')),
+  visibleWhen: Answer(Question.health_conditions).match(Condition.Equals(Option.yes)),
+  dependentWhen: Answer(Question.health_conditions).match(Condition.Equals(Option.yes)),
 })
 
 // --- Prescribed mental health treatments Group ---
@@ -32,14 +34,14 @@ export const prescribedMentalHealthMedicationsTreatments = GovUKCharacterCount({
   maxLength: 2000,
   visibleWhen: not(
       or(
-        Answer(Question.mental_health_problems).match(Condition.Equals('NO')),
-        Answer(Question.mental_health_problems).match(Condition.Equals('UNKNOWN')),
+        Answer(Question.mental_health_problems).match(Condition.Equals(Option.no)),
+        Answer(Question.mental_health_problems).match(Condition.Equals(Option.unknown)),
       )
   ),
   dependentWhen: not(
     or(
-      Answer(Question.mental_health_problems).match(Condition.Equals('NO')),
-      Answer(Question.mental_health_problems).match(Condition.Equals('UNKNOWN')),
+      Answer(Question.mental_health_problems).match(Condition.Equals(Option.no)),
+      Answer(Question.mental_health_problems).match(Condition.Equals(Option.unknown)),
     )
   ),
 })
@@ -55,21 +57,21 @@ export const psychiatricTreatment = GovUKRadioInput({
     },
   },
   items: [
-    { value: 'YES', text: locale.options.YES },
-    { value: 'PENDING_TREATMENT', text: locale.options.PENDING_TREATMENT},
-    { value: 'NO', text: locale.options.NO },
-    { value: 'UNKNOWN', text: locale.options.UNKNOWN }
+    { value: Option.yes, text: locale.options.YES },
+    { value: Option.pending_treatment, text: locale.options.PENDING_TREATMENT},
+    { value: Option.no, text: locale.options.NO },
+    { value: Option.unknown, text: locale.options.UNKNOWN }
   ],
   visibleWhen: not(
     or(
-      Answer(Question.mental_health_problems).match(Condition.Equals('NO')),
-      Answer(Question.mental_health_problems).match(Condition.Equals('UNKNOWN')),
+      Answer(Question.mental_health_problems).match(Condition.Equals(Option.no)),
+      Answer(Question.mental_health_problems).match(Condition.Equals(Option.unknown)),
     )
   ),
   dependentWhen: not(
     or(
-      Answer(Question.mental_health_problems).match(Condition.Equals('NO')),
-      Answer(Question.mental_health_problems).match(Condition.Equals('UNKNOWN')),
+      Answer(Question.mental_health_problems).match(Condition.Equals(Option.no)),
+      Answer(Question.mental_health_problems).match(Condition.Equals(Option.unknown)),
     )
   ),
   validWhen: [
@@ -103,9 +105,9 @@ export const headInjuries = GovUKRadioInput({
       '</div>'
   },
   items: [
-    { value: 'YES', text: locale.options.YES },
-    { value: 'NO', text: locale.options.NO },
-    { value: 'UNKNOWN', text: locale.options.UNKNOWN }
+    { value: Option.yes, text: locale.options.YES },
+    { value: Option.no, text: locale.options.NO },
+    { value: Option.unknown, text: locale.options.UNKNOWN }
   ],
   validWhen: [
     validation({
@@ -133,9 +135,9 @@ export const neurodiverseConditions = GovUKRadioInput({
   },
   hint: 'Include diagnosis and neurodiverse characteristics.',
   items: [
-    { value: 'YES', text: locale.options.YES, block: neurodiverseConditionsDetails },
-    { value: 'NO', text: locale.options.NO },
-    { value: 'UNKNOWN', text: locale.options.UNKNOWN }
+    { value: Option.yes, text: locale.options.YES, block: neurodiverseConditionsDetails },
+    { value: Option.no, text: locale.options.NO },
+    { value: Option.unknown, text: locale.options.UNKNOWN }
   ],
   validWhen: [
     validation({
@@ -169,9 +171,9 @@ export const impactOnLearningAbilities = GovUKRadioInput({
   },
   hint: 'This refers to both learning disabilities (reduced intellectual ability) and learning difficulties (such as dyslexia or ADHD).',
   items: [
-    { value: 'YES_LEARNING_SIGNIFICANTLY_IMPACTED', text: locale.options.YES_LEARNING_SIGNIFICANTLY_IMPACTED, block: learningAbilitiesImpactedSignificantlyDetails },
-    { value: 'YES_LEARNING_SLIGHTLY_IMPACTED', text: locale.options.YES_LEARNING_SLIGHTLY_IMPACTED, block: learningAbilitiesImpactedSlightlyDetails},
-    { value: 'NO_LEARNING_ABILITIES_IMPACT', text: locale.options.NO_LEARNING_ABILITIES_IMPACT },
+    { value: Option.yes_learning_significantly_impacted, text: locale.options.YES_LEARNING_SIGNIFICANTLY_IMPACTED, block: learningAbilitiesImpactedSignificantlyDetails },
+    { value: Option.yes_learning_slightly_impacted, text: locale.options.YES_LEARNING_SLIGHTLY_IMPACTED, block: learningAbilitiesImpactedSlightlyDetails},
+    { value: Option.no_learning_abilities_impact, text: locale.options.NO_LEARNING_ABILITIES_IMPACT },
   ],
 })
 
@@ -187,9 +189,9 @@ export const copeWithDayToDayLife = GovUKRadioInput({
   },
   hint: '',
   items: [
-    { value: 'YES_ABLE_TO_COPE', text: locale.options.YES_ABLE_TO_COPE },
-    { value: 'HAS_DIFFICULTIES_COPING', text: locale.options.HAS_DIFFICULTIES_COPING },
-    { value: 'NOT_ABLE_TO_COPE', text: locale.options.NOT_ABLE_TO_COPE },
+    { value: Option.yes_able_to_cope, text: locale.options.YES_ABLE_TO_COPE },
+    { value: Option.has_difficulties_coping, text: locale.options.HAS_DIFFICULTIES_COPING },
+    { value: Option.not_able_to_cope, text: locale.options.NOT_ABLE_TO_COPE },
   ],
   validWhen: [
     validation({
@@ -211,9 +213,9 @@ export const attitudeTowardsSelf = GovUKRadioInput({
   },
   hint: '',
   items: [
-    { value: 'POSITIVE_REASONABLY_HAPPY', text: locale.options.POSITIVE_REASONABLY_HAPPY },
-    { value: 'WOULD_LIKE_TO_CHANGE_ASPECTS', text: locale.options.WOULD_LIKE_TO_CHANGE_ASPECTS },
-    { value: 'NEGATIVE_UNHAPPY', text: locale.options.NEGATIVE_UNHAPPY, hint:'This includes if they have an overly positive or unrealistic self-image which in reality is not true.' },
+    { value: Option.positive_reasonably_happy, text: locale.options.POSITIVE_REASONABLY_HAPPY },
+    { value: Option.would_like_to_change_aspects, text: locale.options.WOULD_LIKE_TO_CHANGE_ASPECTS },
+    { value: Option.negative_unhappy, text: locale.options.NEGATIVE_UNHAPPY, hint:'This includes if they have an overly positive or unrealistic self-image which in reality is not true.' },
   ],
   validWhen: [
     validation({
@@ -249,8 +251,8 @@ export const selfHarm = GovUKRadioInput({
   },
   hint: 'Consider what factors or circumstances are associated and if it\'s recurring.',
   items: [
-    { value: 'YES', text: locale.options.YES, block: selfHarmDetails },
-    { value: 'NO', text: locale.options.NO },
+    { value: Option.yes, text: locale.options.YES, block: selfHarmDetails },
+    { value: Option.no, text: locale.options.NO },
   ],
   validWhen: [
     validation({
@@ -267,7 +269,7 @@ const suicidalTendenciesDetails = GovUKCharacterCount({
   label: locale.required_details,
   maxLength: 2000,
   dependentWhen: and(Answer(Question.suicidal_tendencies).match(Condition.IsRequired()),
-    Answer(Question.suicidal_tendencies).match(Condition.Equals('YES'))),
+    Answer(Question.suicidal_tendencies).match(Condition.Equals(Option.yes))),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
@@ -286,8 +288,8 @@ export const suicidalTendencies = GovUKRadioInput({
   },
   hint: 'Consider what factors or circumstances are associated and if it\'s recurring.',
   items: [
-    { value: 'YES', text: locale.options.YES, block: suicidalTendenciesDetails },
-    { value: 'NO', text: locale.options.NO },
+    { value: Option.yes, text: locale.options.YES, block: suicidalTendenciesDetails },
+    { value: Option.no, text: locale.options.NO },
   ],
   validWhen: [
     validation({
@@ -309,12 +311,12 @@ export const feelingsAboutFuture = GovUKRadioInput({
   },
   hint: Format('%1 must answer this question.', CaseData.Forename),
   items: [
-    { value: 'OPTIMISTIC_OUTLOOK', text: locale.options.OPTIMISTIC_OUTLOOK },
-    { value: 'UNSURE_OUTLOOK', text: locale.options.UNSURE_OUTLOOK },
-    { value: 'NOT_OPTIMISTIC_OUTLOOK', text: locale.options.NOT_OPTIMISTIC_OUTLOOK },
-    { divider: 'or' },
-    { value: 'DOES_NOT_WANT_TO_ANSWER', text: Format(locale.options.DOES_NOT_WANT_TO_ANSWER, CaseData.Forename) },
-    { value: 'NOT_PRESENT', text: Format(locale.options.NOT_PRESENT, CaseData.Forename) },
+    { value: Option.optimistic_outlook, text: locale.options.OPTIMISTIC_OUTLOOK },
+    { value: Option.unsure_outlook, text: locale.options.UNSURE_OUTLOOK },
+    { value: Option.not_optimistic_outlook, text: locale.options.NOT_OPTIMISTIC_OUTLOOK },
+    { divider: commonLocale.or },
+    { value: Option.does_not_want_to_answer, text: Format(locale.options.DOES_NOT_WANT_TO_ANSWER, CaseData.Forename) },
+    { value: Option.not_present, text: Format(locale.options.NOT_PRESENT, CaseData.Forename) },
   ],
   validWhen: [
     validation({
@@ -333,7 +335,7 @@ const helpedDuringPeriodsGoodHealthWellbeingDetails = GovUKCharacterCount({
   dependentWhen:
     and(
       Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.IsRequired()),
-      Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains('OTHER'))
+      Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains(Option.other))
     ),
   validWhen: [
     validation({
@@ -354,14 +356,14 @@ export const helpedDuringPeriodsGoodHealthWellbeing = GovUKCheckboxInput({
   },
   hint: {html: 'Consider what\'s helped them feel more hopeful.<br><br> Select all that apply.'},
   items: [
-    { value: 'ACCOMMODATION', text: locale.options.ACCOMMODATION },
-    { value: 'EMPLOYMENT', text: locale.options.EMPLOYMENT },
-    { value: 'FAITH_RELIGION', text: locale.options.FAITH_RELIGION },
-    { value: 'FEELING_PART_OF_COMMUNITY', text: locale.options.FEELING_PART_OF_COMMUNITY },
-    { value: 'MEDICATION_OR_TREATMENT', text: locale.options.MEDICATION_OR_TREATMENT },
-    { value: 'MONEY', text: locale.options.MONEY },
-    { value: 'RELATIONSHIPS', text: locale.options.RELATIONSHIPS },
-    { value: 'OTHER', text: locale.options.OTHER, block: helpedDuringPeriodsGoodHealthWellbeingDetails},
+    { value: Option.accommodation, text: locale.options.ACCOMMODATION },
+    { value: Option.employment, text: locale.options.EMPLOYMENT },
+    { value: Option.faith_religion, text: locale.options.FAITH_RELIGION },
+    { value: Option.feeling_part_of_community, text: locale.options.FEELING_PART_OF_COMMUNITY },
+    { value: Option.medication_or_treatment, text: locale.options.MEDICATION_OR_TREATMENT },
+    { value: Option.money, text: locale.options.MONEY },
+    { value: Option.relationships, text: locale.options.RELATIONSHIPS },
+    { value: Option.other, text: locale.options.OTHER, block: helpedDuringPeriodsGoodHealthWellbeingDetails},
   ],
 })
 
@@ -371,49 +373,49 @@ const hasMadePositiveChangesDetails = GovUKCharacterCount({
   code: Question.has_made_positive_changes_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('HAS_MADE_CHANGES')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.has_made_changes)),
 })
 
 const isActivelyMakingChangesDetails = GovUKCharacterCount({
   code: Question.actively_making_changes_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('IS_MAKING_CHANGES')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.is_making_changes)),
 })
 
 const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
   code: Question.wants_to_make_changes_knows_how_to_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.wants_to_make_changes_knows_how_to)),
 })
 
 const wantsToMakeChangesNeedsHelpDetails = GovUKCharacterCount({
   code: Question.wants_to_make_changes_needs_help_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('WANTS_TO_MAKE_CHANGES_NEEDS_HELP')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.wants_to_make_changes_needs_help)),
 })
 
 const thinkingAboutMakingChangesDetails = GovUKCharacterCount({
   code: Question.thinking_about_making_changes_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('THINKING_ABOUT_MAKING_CHANGES')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.thinking_about_making_changes)),
 })
 
 const doesNotWantToMakeChangesDetails = GovUKCharacterCount({
   code: Question.does_not_want_to_make_changes_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('DOES_NOT_WANT_TO_MAKE_CHANGES')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.does_not_want_to_make_changes)),
 })
 
 const doesNotWantToAnswerChangesDetails = GovUKCharacterCount({
   code: Question.does_not_want_to_answer_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals('DO_NOT_WANT_TO_ANSWER')),
+  dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.do_not_want_to_answer)),
 })
 
 export const changesToHealthWellbeing = GovUKRadioInput({
@@ -426,16 +428,16 @@ export const changesToHealthWellbeing = GovUKRadioInput({
   },
   hint: Format('%1 must answer this question.', CaseData.Forename),
   items: [
-    { value: 'HAS_MADE_CHANGES', text: locale.options.HAS_MADE_CHANGES, block: hasMadePositiveChangesDetails },
-    { value: 'IS_MAKING_CHANGES', text: locale.options.IS_MAKING_CHANGES, block: isActivelyMakingChangesDetails },
-    { value: 'WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO', text: locale.options.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO, block: wantsToMakeChangesKnowsHowDetails },
-    { value: 'WANTS_TO_MAKE_CHANGES_NEEDS_HELP', text: locale.options.WANTS_TO_MAKE_CHANGES_NEEDS_HELP, block: wantsToMakeChangesNeedsHelpDetails },
-    { value: 'THINKING_ABOUT_MAKING_CHANGES', text: locale.options.THINKING_ABOUT_MAKING_CHANGES, block: thinkingAboutMakingChangesDetails },
-    { value: 'DOES_NOT_WANT_TO_MAKE_CHANGES', text: locale.options.DOES_NOT_WANT_TO_MAKE_CHANGES, block: doesNotWantToMakeChangesDetails },
-    { value: 'DO_NOT_WANT_TO_ANSWER', text: locale.options.DO_NOT_WANT_TO_ANSWER, block: doesNotWantToAnswerChangesDetails },
-    { divider: 'or' },
-    { value: 'NOT_PRESENT', text: Format(locale.options.NOT_PRESENT, CaseData.Forename) },
-    { value: 'NOT_APPLICABLE', text: locale.options.NOT_APPLICABLE },
+    { value: Option.has_made_changes, text: locale.options.HAS_MADE_CHANGES, block: hasMadePositiveChangesDetails },
+    { value: Option.is_making_changes, text: locale.options.IS_MAKING_CHANGES, block: isActivelyMakingChangesDetails },
+    { value: Option.wants_to_make_changes_knows_how_to, text: locale.options.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO, block: wantsToMakeChangesKnowsHowDetails },
+    { value: Option.wants_to_make_changes_needs_help, text: locale.options.WANTS_TO_MAKE_CHANGES_NEEDS_HELP, block: wantsToMakeChangesNeedsHelpDetails },
+    { value: Option.thinking_about_making_changes, text: locale.options.THINKING_ABOUT_MAKING_CHANGES, block: thinkingAboutMakingChangesDetails },
+    { value: Option.does_not_want_to_make_changes, text: locale.options.DOES_NOT_WANT_TO_MAKE_CHANGES, block: doesNotWantToMakeChangesDetails },
+    { value: Option.do_not_want_to_answer, text: locale.options.DO_NOT_WANT_TO_ANSWER, block: doesNotWantToAnswerChangesDetails },
+    { divider: commonLocale.or },
+    { value: Option.not_present, text: Format(locale.options.NOT_PRESENT, CaseData.Forename) },
+    { value: Option.not_applicable, text: locale.options.NOT_APPLICABLE },
   ],
   validWhen: [
     validation({

@@ -6,9 +6,6 @@ import {Step} from "../../constants/step";
 export const healthWellbeingSummaryStep = step({
   path: `/${Step.health_wellbeing_summary.path}`,
   title: 'Health and Wellbeing Summary',
-  view: {
-    template: 'strengths-and-needs/views/san-step',
-  },
   blocks: [healthWellbeingSummaryTab],
   onSubmission: [
     submit({

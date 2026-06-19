@@ -26,6 +26,7 @@ import {
   suicidalTendencies
 } from "../physical-mental-health/fields";
 import {Question} from "../../constants/question";
+import {Option} from "../../constants/option";
 
 // --- Health and Wellbeing Summary Group ---
 
@@ -196,22 +197,22 @@ export const healthWellbeingSummary = GovUKSummaryList({
       key: {text: Format(locale.phyisical_mental_health.helped_during_periods_good_health_wellbeing.text, CaseData.ForenamePossessive)},
       value: {
         blocks: [
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, 'ACCOMMODATION'),
-            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains('ACCOMMODATION'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, 'EMPLOYMENT'),
-            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains('EMPLOYMENT'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, 'FAITH_RELIGION'),
-            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains('FAITH_RELIGION'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, 'FEELING_PART_OF_COMMUNITY'),
-            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains('FEELING_PART_OF_COMMUNITY'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, 'MEDICATION_OR_TREATMENT'),
-            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains('MEDICATION_OR_TREATMENT'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, 'MONEY'),
-            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains('MONEY'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, 'RELATIONSHIPS'),
-            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains('RELATIONSHIPS'))}),
-          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, 'OTHER'),
-            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains('OTHER'))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, Option.accommodation),
+            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains(Option.accommodation))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, Option.employment),
+            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains(Option.employment))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, Option.faith_religion),
+            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains(Option.faith_religion))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, Option.feeling_part_of_community),
+            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains(Option.feeling_part_of_community))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, Option.medication_or_treatment),
+            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains(Option.medication_or_treatment))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, Option.money),
+            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains(Option.money))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, Option.relationships),
+            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains(Option.relationships))}),
+          GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, Option.other),
+            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains(Option.other))}),
           GovUKBody({text: Answer(Question.helped_during_periods_good_health_wellbeing_details), size: "s"}),
         ]
       },
@@ -258,7 +259,7 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   label: locale.required_details,
   maxLength: 2000,
   dependentWhen: and(Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.IsRequired()),
-    Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.Equals('YES'))),
+    Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.Equals(Option.yes))),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
@@ -271,7 +272,7 @@ const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.no_strengths_protective_factors_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.Equals('NO')),
+  dependentWhen: Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.Equals(Option.no)),
 })
 
 export const strengthsProtectiveFactorsHealthWellbeing = GovUKRadioInput({
@@ -284,8 +285,8 @@ export const strengthsProtectiveFactorsHealthWellbeing = GovUKRadioInput({
   },
   hint:'Include any strategies, people or support networks that helped.',
   items: [
-    { value: 'YES', text: locale.options['YES'], block: strengthsProtectiveFactorsDetails },
-    { value: 'NO', text: locale.options['NO'], block: noStrengthsProtectiveFactorsDetails },
+    { value: Option.yes, text: locale.options.YES, block: strengthsProtectiveFactorsDetails },
+    { value: Option.no, text: locale.options.NO, block: noStrengthsProtectiveFactorsDetails },
   ],
   validWhen: [
     validation({
@@ -302,7 +303,7 @@ const seriousHarmDetails = GovUKCharacterCount({
   label: locale.required_details,
   maxLength: 2000,
   dependentWhen: and(Answer(Question.serious_harm_health_wellbeing).match(Condition.IsRequired()),
-    Answer(Question.serious_harm_health_wellbeing).match(Condition.Equals('YES'))),
+    Answer(Question.serious_harm_health_wellbeing).match(Condition.Equals(Option.yes))),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
@@ -315,7 +316,7 @@ const noSeriousHarmDetails = GovUKCharacterCount({
   code: Question.no_serious_harm_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.serious_harm_health_wellbeing).match(Condition.Equals('NO')),
+  dependentWhen: Answer(Question.serious_harm_health_wellbeing).match(Condition.Equals(Option.no)),
 })
 
 export const seriousHarmHealthWellbeing = GovUKRadioInput({
@@ -327,8 +328,8 @@ export const seriousHarmHealthWellbeing = GovUKRadioInput({
     },
   },
   items: [
-    { value: 'YES', text: locale.options['YES'], block: seriousHarmDetails },
-    { value: 'NO', text: locale.options['NO'], block: noSeriousHarmDetails },
+    { value: Option.yes, text: locale.options.YES, block: seriousHarmDetails },
+    { value: Option.no, text: locale.options.NO, block: noSeriousHarmDetails },
   ],
   validWhen: [
     validation({
@@ -344,7 +345,7 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.risk_of_reoffending_health_wellbeing_details,
   label: locale.required_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.risk_of_reoffending_health_wellbeing).match(Condition.Equals('YES')),
+  dependentWhen: Answer(Question.risk_of_reoffending_health_wellbeing).match(Condition.Equals(Option.yes)),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
@@ -357,7 +358,7 @@ const noRiskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.no_risk_of_reoffending_health_wellbeing_details,
   label: locale.optional_details,
   maxLength: 2000,
-  dependentWhen: Answer(Question.risk_of_reoffending_health_wellbeing).match(Condition.Equals('NO')),
+  dependentWhen: Answer(Question.risk_of_reoffending_health_wellbeing).match(Condition.Equals(Option.no)),
 })
 
 export const riskOfReoffendingHealthWellbeing = GovUKRadioInput({
@@ -369,8 +370,8 @@ export const riskOfReoffendingHealthWellbeing = GovUKRadioInput({
     },
   },
   items: [
-    { value: 'YES', text: locale.options['YES'], block: riskOfReoffendingDetails },
-    { value: 'NO', text: locale.options['NO'], block: noRiskOfReoffendingDetails },
+    { value: Option.yes, text: locale.options.YES, block: riskOfReoffendingDetails },
+    { value: Option.no, text: locale.options.NO, block: noRiskOfReoffendingDetails },
   ],
   validWhen: [
     validation({

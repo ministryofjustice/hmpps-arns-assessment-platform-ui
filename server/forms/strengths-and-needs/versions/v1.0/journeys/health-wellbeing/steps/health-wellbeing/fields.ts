@@ -3,6 +3,7 @@ import {GovUKCharacterCount, GovUKRadioInput} from '@ministryofjustice/hmpps-for
 import {CaseData} from '../../../../constants/formVersion'
 import locale from '../../locale.json'
 import {Question} from "../../constants/question";
+import {Option} from "../../constants/option";
 
 // --- Physical health conditions Group ---
 
@@ -22,9 +23,9 @@ export const healthConditions = GovUKRadioInput({
     },
   },
   items: [
-    { value: "YES", text: locale.options.YES, block: hasHealthConditions },
-    { value: "NO", text: locale.options.NO },
-    { value: "UNKNOWN", text: locale.options.UNKNOWN },
+    { value: Option.yes, text: locale.options.YES, block: hasHealthConditions },
+    { value: Option.no, text: locale.options.NO },
+    { value: Option.unknown, text: locale.options.UNKNOWN },
   ],
   validWhen: [
     validation({
@@ -66,11 +67,11 @@ export const mentalHealthProblems = GovUKRadioInput({
     },
   },
   items: [
-    { value: "YES_ONGOING_SEVERE", text: locale.options.YES_ONGOING_SEVERE, block: severeMentalHealthProblemsDetails },
-    { value: "YES_ONGOING_DURATION_UNKNOWN", text: locale.options.YES_ONGOING_DURATION_UNKNOWN, block: ongoingDurationUnknownMentalHealthProblemsDetails },
-    { value: "YES_PAST", text: locale.options.YES_PAST, block: pastMentalHealthProblemsDetails },
-    { value: "NO", text: locale.options.NO },
-    { value: "UNKNOWN", text: locale.options.UNKNOWN },
+    { value: Option.yes_ongoing_severe, text: locale.options.YES_ONGOING_SEVERE, block: severeMentalHealthProblemsDetails },
+    { value: Option.yes_ongoing_duration_unknown, text: locale.options.YES_ONGOING_DURATION_UNKNOWN, block: ongoingDurationUnknownMentalHealthProblemsDetails },
+    { value: Option.yes_past, text: locale.options.YES_PAST, block: pastMentalHealthProblemsDetails },
+    { value: Option.no, text: locale.options.NO },
+    { value: Option.unknown, text: locale.options.UNKNOWN },
   ],
   validWhen: [
     validation({
