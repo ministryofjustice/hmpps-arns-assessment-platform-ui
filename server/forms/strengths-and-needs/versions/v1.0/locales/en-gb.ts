@@ -1,4 +1,5 @@
 import { Section } from '../constants/section'
+import { Option } from '../journeys/employment-and-education/constants/option'
 
 export const english = {
   strengths_and_needs: 'Strengths and needs',
@@ -32,6 +33,23 @@ export const english = {
     valid_date_year: 'Date must include a year',
     future_date: 'The date must be in the future',
     enter_details: 'Enter details',
+  },
+  option: {
+    [Option.has_made_changes]: 'I have already made positive changes and want to maintain them',
+    [Option.is_making_changes]: 'I am actively making changes',
+    [Option.wants_to_make_changes_knows_how_to]: 'I want to make changes and know how to',
+    [Option.wants_to_make_changes_needs_help]: 'I want to make changes but need help',
+    [Option.thinking_about_making_changes]: 'I am thinking about making changes',
+    [Option.does_not_want_to_make_changes]: 'I do not want to make changes',
+    [Option.does_not_want_to_answer]: 'I do not want to answer',
+    [Option.not_present]: '%1 is not present',
+    [Option.not_applicable]: 'Not applicable',
+    [Option.yes]: 'Yes',
+    [Option.no]: 'No',
+    [Option.non_of_these]: 'None of these',
+    [Option.other]: 'Other',
+    [Option.unknown]: 'Unknown',
+    [Option.none]: 'None',
   },
 } as const
 

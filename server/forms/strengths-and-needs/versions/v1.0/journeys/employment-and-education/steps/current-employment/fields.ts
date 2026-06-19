@@ -3,8 +3,8 @@ import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { CaseData } from '../../../../constants/formVersion'
-import { contentFor } from '../../locales';
-import { commonContentFor } from '../../../../locales';
+import { contentFor } from '../../locales'
+import { commonContentFor } from '../../../../locales'
 
 export const typeOfEmployment = GovUKRadioInput({
   code: Question.type_of_employment,

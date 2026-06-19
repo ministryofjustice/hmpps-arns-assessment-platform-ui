@@ -9,7 +9,7 @@ export const Section = {
   accommodation: {
     code: 'accommodation',
     path: '/accommodation',
-    sideNavHref: `${basePath}/accommodation/current-accommodation`,
+    sideNavHref: `${basePath}/accommodation/current-accommodation?resume=true`,
     statusKey: 'accommodation_section_status',
   },
   employment_and_education: {
@@ -27,37 +27,37 @@ export const Section = {
   drug_use: {
     code: 'drug-use',
     path: '',
-    sideNavHref: `${basePath}/drug-use/drug-use`,
+    sideNavHref: `${basePath}/drug-use/drug-use?resume=true`,
     statusKey: 'drugs_section_status',
   },
   alcohol_use: {
     code: 'alcohol-use',
     path: '',
-    sideNavHref: `${basePath}/alcohol-use/alcohol-use`,
+    sideNavHref: `${basePath}/alcohol-use/alcohol-use?resume=true`,
     statusKey: 'alcohol_section_status',
   },
   health_and_wellbeing: {
     code: 'health-and-wellbeing',
     path: '',
-    sideNavHref: `${basePath}/health-and-wellbeing/physical-health`,
+    sideNavHref: `${basePath}/health-and-wellbeing/physical-health?resume=true`,
     statusKey: 'health_section_status',
   },
   personal_relationships_and_community: {
     code: 'personal-relationships-and-community',
     path: '',
-    sideNavHref: `${basePath}/personal-relationships-and-community/personal-relationships`,
+    sideNavHref: `${basePath}/personal-relationships-and-community/personal-relationships?resume=true`,
     statusKey: 'relationship_section_status',
   },
   thinking_behaviours_and_attitudes: {
     code: 'thinking-behaviours-and-attitudes',
     path: '',
-    sideNavHref: `${basePath}/thinking-behaviours-and-attitudes/thinking-behaviours`,
+    sideNavHref: `${basePath}/thinking-behaviours-and-attitudes/thinking-behaviours?resume=true`,
     statusKey: 'thinking_behaviour_section_status',
   },
   offence_analysis: {
     code: 'offence-analysis',
     path: '',
-    sideNavHref: `${basePath}/offence-analysis/offence-analysis`,
+    sideNavHref: `${basePath}/offence-analysis/offence-analysis?resume=true`,
     statusKey: 'offences_section_status',
   },
 }

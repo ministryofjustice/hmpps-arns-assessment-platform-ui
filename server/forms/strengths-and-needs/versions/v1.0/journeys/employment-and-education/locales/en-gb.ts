@@ -1,6 +1,6 @@
-import { Question } from '../constants/question';
-import { Step } from '../constants/step';
-import { Option } from '../constants/option';
+import { Question } from '../constants/question'
+import { Step } from '../constants/step'
+import { Option } from '../constants/option'
 
 export const english = {
   step: {
@@ -15,13 +15,13 @@ export const english = {
       validation: 'Select the type of employment',
     },
     [Question.had_previous_employment_unavailable_for_work]: {
-      text: 'Have they been employed before?'
+      text: 'Have they been employed before?',
     },
     [Question.had_previous_employment_actively_looking_for_work]: {
-      text: 'Have they been employed before?'
+      text: 'Have they been employed before?',
     },
     [Question.had_previous_employment_not_looking_for_work]: {
-      text: 'Have they been employed before?'
+      text: 'Have they been employed before?',
     },
     [Question.current_employment_status]: {
       text: 'What is %1 current employment status?',
@@ -31,12 +31,18 @@ export const english = {
       text: 'What is  %1 employment history?',
       hint: 'Include their current employment.',
       option: {
-        [Option.continuous_employment]: 'They may have had a break in employment due to things like redundancy, illness or caring for a family member.',
+        [Option.stable]: {
+          text: 'Continuous employment history',
+          hint: 'They may have had a break in employment due to things like redundancy, illness or caring for a family member.',
+        },
+        [Option.periods_of_instability]: 'Generally in employment but changes jobs often',
+        [Option.unstable]: 'Unstable employment history with regular periods of unemployment',
+        [Option.unknown]: 'Unknown',
       },
-      validation: 'Select their employment history'
+      validation: 'Select their employment history',
     },
     [Question.employment_sector]: {
-      text: 'What job sector does %1 work in? (optional)'
+      text: 'What job sector does %1 work in? (optional)',
     },
     [Question.employment_and_education_changes]: {
       text: 'Does %1 want to make changes to their employment and education?',
@@ -45,20 +51,54 @@ export const english = {
     [Question.day_to_day_commitments]: {
       text: 'Does %1 have any day-to-day commitments?',
       hint: 'Select all that apply.',
+      option: {
+        [Option.caring]: 'Caring responsibilities',
+        [Option.children]: 'Child responsibilities',
+        [Option.studying]: 'Studying',
+        [Option.volunteering]: 'Volunteering',
+      },
       validation: `Select if they have any additional day-to-day commitments, or select 'None'`,
     },
     [Question.academic_qualification]: {
       text: 'Select the highest level of academic qualification %1 has completed',
       option: {
-        [Option.entry_level]: 'For example, entry level diploma',
-        [Option.level_1]: 'For example, GCSE grades 3, 2, 1 or grades D, E, F, G',
-        [Option.level_2]: 'For example, GCSE grades 9, 8, 7, 6, 5, 4 or grades A*, A, B, C',
-        [Option.level_3]: 'For example, A level',
-        [Option.level_4]: 'For example, higher apprenticeship',
-        [Option.level_5]: 'For example, foundation degree',
-        [Option.level_6]: 'For example, degree with honours',
-        [Option.level_7]: `For example, master's degree`,
-        [Option.level_8]: 'For example, doctorate',
+        [Option.entry_level]: {
+          text: 'Entry level',
+          hint: 'For example, entry level diploma',
+        },
+        [Option.level_1]: {
+          text: 'Level 1',
+          hint: 'For example, GCSE grades 3, 2, 1 or grades D, E, F, G',
+        },
+        [Option.level_2]: {
+          text: 'Level 2',
+          hint: 'For example, GCSE grades 9, 8, 7, 6, 5, 4 or grades A*, A, B, C',
+        },
+        [Option.level_3]: {
+          text: 'Level 3',
+          hint: 'For example, A level',
+        },
+        [Option.level_4]: {
+          text: 'Level 4',
+          hint: 'For example, higher apprenticeship',
+        },
+        [Option.level_5]: {
+          text: 'Level 5',
+          hint: 'For example, foundation degree',
+        },
+        [Option.level_6]: {
+          text: 'Level 6',
+          hint: 'For example, degree with honours',
+        },
+        [Option.level_7]: {
+          text: 'Level 7',
+          hint: `For example, master's degree`,
+        },
+        [Option.level_8]: {
+          text: 'Level 8',
+          hint: 'For example, doctorate',
+        },
+        [Option.non_of_these]: 'None of these',
       },
       validation: 'Select the highest level of academic qualification completed',
     },
@@ -72,18 +112,28 @@ export const english = {
     [Question.job_skills]: {
       text: 'Does %1 have any skills that could help them in a job or to get a job?',
       option: {
-        [Option.yes]:
-          'This includes any completed training, qualifications, work experience or transferable skills.',
-        [Option.some_skills]:
-          'This includes partially completed training or qualifications, limited on the job experience or skills that are not directly transferable.',
-        [Option.no]:
-          'This includes having no other qualifications, incomplete apprenticeships or no history of working in the same industry.',
+        [Option.yes]: {
+          hint: 'This includes any completed training, qualifications, work experience or transferable skills.',
+        },
+        [Option.some_skills]: {
+          text: 'Some skills',
+          hint: 'This includes partially completed training or qualifications, limited on the job experience or skills that are not directly transferable.',
+        },
+        [Option.no]: {
+          hint: 'This includes having no other qualifications, incomplete apprenticeships or no history of working in the same industry.',
+        },
       },
       validation: 'Select if they have any skills that could help them in a job or to get a job',
     },
     [Question.difficulties_reading_writing_numeracy]: {
       text: 'Does %1 have difficulties with reading, writing or numeracy?',
       hint: 'Select all that apply.',
+      option: {
+        [Option.yes_reading]: 'Yes, with reading',
+        [Option.yes_writing]: 'Yes, with writing',
+        [Option.yes_numeracy]: 'Yes, with numeracy',
+        [Option.no_difficulties]: 'No difficulties',
+      },
       validation: `Select if they have difficulties with reading, writing or numeracy, or select 'No difficulties'`,
     },
     [Question.employment_experience]: {
@@ -96,11 +146,11 @@ export const english = {
     },
     [Question.numeracy_difficulty_level]: {
       text: 'Select level of difficulty',
-      validation: 'Select level of difficulty'
+      validation: 'Select level of difficulty',
     },
     [Question.writing_difficulty_level]: {
       text: 'Select level of difficulty',
-      validation: 'Select level of difficulty'
+      validation: 'Select level of difficulty',
     },
     [Question.reading_difficulty_level]: {
       text: 'Select level of difficulty',
@@ -119,7 +169,7 @@ export const english = {
       validation: 'Select if linked to risk of serious harm',
     },
     [Question.employment_education_serious_harm_details]: {
-      validation: 'Give details on the risk of serious harm'
+      validation: 'Give details on the risk of serious harm',
     },
     [Question.employment_education_linked_to_reoffending]: {
       text: 'Is %1 employment and education linked to risk of reoffending?',
@@ -148,9 +198,9 @@ export const english = {
     [Option.currently_unavailable_for_work]: 'Currently unavailable for work',
     [Option.unemployed_actively_looking]: 'Unemployed - actively looking for work',
     [Option.unemployed_not_actively_looking]: 'Unemployed - not actively looking for work',
-    [Option.continuous_employment]: 'Continuous employment history',
-    [Option.changes_jobs_often]: 'Generally in employment but changes jobs often',
-    [Option.unstable_employment]: 'Unstable employment history with regular periods of unemployment',
+    [Option.stable]: 'Continuous employment history',
+    [Option.periods_of_instability]: 'Generally in employment but changes jobs often',
+    [Option.unstable]: 'Unstable employment history with regular periods of unemployment',
     [Option.entry_level]: 'Entry level',
     [Option.full_time]: 'Full-time',
     [Option.part_time]: 'Part-time',
@@ -179,24 +229,14 @@ export const english = {
     [Option.does_not_want_to_answer]: 'I do not want to answer',
     [Option.not_present]: '%1 is not present',
     [Option.not_applicable]: 'Not applicable',
-    [Option.significant]: 'Significant difficulties',
     [Option.positive]: 'Positive',
     [Option.mostly_positive]: 'Mostly positive',
     [Option.positive_and_negative]: 'Positive and negative',
     [Option.mostly_negative]: 'Mostly negative',
     [Option.negative]: 'Negative',
-    [Option.some]: 'Some difficulties',
     [Option.some_skills]: 'Some skills',
-    [Option.yes]: 'Yes',
-    [Option.yes_reading]: 'Yes, with reading',
-    [Option.yes_writing]: 'Yes, with writing',
-    [Option.yes_numeracy]: 'Yes, with numeracy',
-    [Option.no]: 'No',
-    [Option.no_difficulties]: 'No difficulties',
-    [Option.non_of_these]: 'None of these',
-    [Option.other]: 'Other',
-    [Option.unknown]: 'Unknown',
-    [Option.none]: 'None',
+    [Option.significant_difficulties]: 'Significant difficulties',
+    [Option.some_difficulties]: 'Some difficulties',
   },
 } as const
 
