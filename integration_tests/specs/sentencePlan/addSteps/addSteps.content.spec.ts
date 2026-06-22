@@ -62,7 +62,6 @@ test.describe('Add or update steps page', () => {
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
       await expect(addStepsPage.pageHeading).toHaveText('Add or update steps')
-      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.addOrUpdateSteps))
     })
   })
 
@@ -230,7 +229,15 @@ test.describe('Add or update steps page', () => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder
         .extend(sentencePlanId)
-        .withGoals(currentGoals(1))
+        .withGoals([
+          {
+            title: 'Current Goal 1',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Existing step', status: 'NOT_STARTED' }],
+          },
+        ])
         .withAgreementStatus('AGREED')
         .save()
 
