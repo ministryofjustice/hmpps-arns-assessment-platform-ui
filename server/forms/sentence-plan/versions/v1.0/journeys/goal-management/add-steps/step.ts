@@ -29,7 +29,7 @@ import { redirectIfGoalNotFound } from '../../../guards'
  */
 export const addStepsStep = step({
   path: '/add-steps',
-  title: 'Add or change steps',
+  title: 'Add steps',
   reachability: { entryWhen: true },
   view: {
     locals: {
