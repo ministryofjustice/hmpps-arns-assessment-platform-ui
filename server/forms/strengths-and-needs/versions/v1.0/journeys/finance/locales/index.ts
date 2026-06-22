@@ -1,4 +1,8 @@
-import { Locale } from '../../../../../@types/i18n'
-import { english } from './en-gb'
+import { english, FinanceLocale } from './en-gb'
+import { contentFrom, Locales } from '../../../../../i18n'
 
-export const content: Locale = { "en-gb": english, cy: english }
+const locales: Locales = {
+  'en-gb': english,
+}
+
+export const contentFor = contentFrom<FinanceLocale>(locales)

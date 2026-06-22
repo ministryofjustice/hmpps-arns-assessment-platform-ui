@@ -6,21 +6,15 @@ import {
   GovUKTabs,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { SANGenerators } from '../../../../../../generators'
-import locale from '../../locale.json'
 import {
   financeSummary,
   linkedToReoffending,
   linkedToSeriousHarm,
   strengthsOrProtectiveFactors,
 } from '../finance-summary/fields'
-import { StrengthsAndNeedsTransformers } from '../../../../../../transformers'
 import { CaseData } from '../../../../constants/formVersion'
-
-const contentWith =
-  (content: Record<string, any>) =>
-  (code: string, ...replacements: any[]) =>
-    Request.Headers('accept-language').pipe(StrengthsAndNeedsTransformers.ContentFor(content, code, ...replacements))
-const contentFor = contentWith(locale)
+import { contentFor } from '../../locales'
+import { commonContentFor } from '../../../../locales'
 
 const goToPractitionerAnalysisButton = GovUKLinkButton({
   text: 'Go to practitioner analysis',
@@ -32,7 +26,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
     {
       key: {
-        text: contentFor('practitioner_analysis.strengths_protective_factors.text', CaseData.ForenamePossessive),
+        text: contentFor('question.finance_strengths_protective_factors.text', CaseData.ForenamePossessive),
       },
       value: {
         blocks: [
@@ -47,13 +41,22 @@ const practitionerAnalysisSummary = GovUKSummaryList({
         ],
       },
       actions: {
-        items: [{ href: 'finance-summary#practitioner-analysis', text: 'Change', visuallyHiddenText: 'name' }],
+        items: [
+          {
+            href: 'finance-summary#practitioner-analysis',
+            text: commonContentFor('change'),
+            visuallyHiddenText: `"${contentFor(
+              'question.finance_strengths_protective_factors.text',
+              CaseData.ForenamePossessive,
+            )}"`,
+          },
+        ],
       },
     },
     {
       key: {
         text: contentFor(
-          'practitioner_analysis.finance_linked_to_serious_harm.text',
+          'question.finance_linked_to_serious_harm.text',
 
           CaseData.ForenamePossessive,
         ),
@@ -71,12 +74,21 @@ const practitionerAnalysisSummary = GovUKSummaryList({
         ],
       },
       actions: {
-        items: [{ href: 'finance-summary#practitioner-analysis', text: 'Change', visuallyHiddenText: 'name' }],
+        items: [
+          {
+            href: 'finance-summary#practitioner-analysis',
+            text: commonContentFor('change'),
+            visuallyHiddenText: `"${contentFor(
+              'question.finance_linked_to_serious_harm.text',
+              CaseData.ForenamePossessive,
+            )}"`,
+          },
+        ],
       },
     },
     {
       key: {
-        text: contentFor('practitioner_analysis.finance_linked_to_reoffending.text', CaseData.ForenamePossessive),
+        text: contentFor('question.finance_linked_to_reoffending.text', CaseData.ForenamePossessive),
       },
       value: {
         blocks: [
@@ -91,7 +103,16 @@ const practitionerAnalysisSummary = GovUKSummaryList({
         ],
       },
       actions: {
-        items: [{ href: 'finance-summary#practitioner-analysis', text: 'Change', visuallyHiddenText: 'name' }],
+        items: [
+          {
+            href: 'finance-summary#practitioner-analysis',
+            text: commonContentFor('change'),
+            visuallyHiddenText: `"${contentFor(
+              'question.finance_linked_to_reoffending.text',
+              CaseData.ForenamePossessive,
+            )}"`,
+          },
+        ],
       },
     },
   ],
@@ -102,12 +123,12 @@ export const employmentStatusAnalysisSummaryTab = GovUKTabs({
   items: [
     {
       id: 'summary-analysis',
-      label: 'Summary',
+      label: commonContentFor('summary'),
       panel: { blocks: [financeSummary, goToPractitionerAnalysisButton] },
     },
     {
       id: 'practitioner-analysis-summary',
-      label: 'Practitioner analysis',
+      label: commonContentFor('practitioner_analysis'),
       panel: { blocks: [practitionerAnalysisSummary] },
     },
   ],
