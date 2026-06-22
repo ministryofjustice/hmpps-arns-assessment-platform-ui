@@ -70,7 +70,8 @@ export const sentencePlanPageTitles = {
   // Goal management
   selectAreaOfNeed: 'Create a goal',
   createGoal: 'Add goal details',
-  addSteps: 'Add or change steps',
+  addSteps: 'Add steps',
+  addOrUpdateSteps: 'Add or update steps',
   updateGoalAndSteps: 'Update goal and steps',
   changeGoal: 'Change goal',
   confirmDeleteGoal: 'Confirm you want to delete this goal',
