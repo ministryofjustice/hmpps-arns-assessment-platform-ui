@@ -36,8 +36,8 @@ export const updateGoalAndStepsStep = step({
   view: {
     locals: {
       backlink: when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
-        .then('../../plan/overview?type=current')
-        .else('../../plan/overview?type=future'),
+        .then('../../plan/overview?goalStatusTab=current')
+        .else('../../plan/overview?goalStatusTab=future'),
     },
   },
   blocks: [
@@ -87,9 +87,9 @@ export const updateGoalAndStepsStep = step({
           // Otherwise, go back to plan overview based on goal status
           redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
-            goto: '../../plan/overview?type=future',
+            goto: '../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),

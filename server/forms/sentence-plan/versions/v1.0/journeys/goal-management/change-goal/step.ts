@@ -40,8 +40,8 @@ export const changeGoalStep = step({
         .then(Format("../../goal/%1/update-goal-steps", Data("activeGoal.uuid")))
         .else(
           when(Data("activeGoal.status").match(Condition.Equals("ACTIVE")))
-            .then("../../plan/overview?type=current")
-            .else("../../plan/overview?type=future"),
+            .then("../../plan/overview?goalStatusTab=current")
+            .else("../../plan/overview?goalStatusTab=future"),
         ),
     },
   },
@@ -105,10 +105,10 @@ export const changeGoalStep = step({
           // If changed to a future goal, redirect to future goals tab
           redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
-            goto: '../../plan/overview?type=future',
+            goto: '../../plan/overview?goalStatusTab=future',
           }),
           // Otherwise redirect to current goals tab
-          redirect({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),

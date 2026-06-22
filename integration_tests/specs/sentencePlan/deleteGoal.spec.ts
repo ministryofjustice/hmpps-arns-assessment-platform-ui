@@ -22,7 +22,7 @@ test.describe('Delete goal journey', () => {
 
       await page.getByRole('button', { name: 'Confirm' }).click()
 
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       await expect(planOverviewPage.notificationBanner).toBeVisible()
       await expect(planOverviewPage.notificationBannerText).toContainText(/You deleted a goal from .+'s plan/i)
@@ -42,7 +42,7 @@ test.describe('Delete goal journey', () => {
 
       await page.getByRole('button', { name: 'Confirm' }).click()
 
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
     })
   })
 

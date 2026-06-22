@@ -50,8 +50,8 @@ export const cancelLink = GovUKBody({
   text: Format(
     '<a href="%1" class="govuk-link" data-ai-id="confirm-delete-goal-cancel-link">Do not delete goal</a>',
     when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
-      .then('../../plan/overview?type=future')
-      .else('../../plan/overview?type=current'),
+      .then('../../plan/overview?goalStatusTab=future')
+      .else('../../plan/overview?goalStatusTab=current'),
   ),
 })
 

@@ -23,6 +23,12 @@ export default class CreateGoalPage extends AbstractPage {
 
   readonly errorSummary: Locator
 
+  readonly backLink: Locator
+
+  readonly areaOfNeedInset: Locator
+
+  readonly changeAreaOfNeedLink: Locator
+
   private assessmentInfo: AssessmentInfoHelper
 
   private canStartNow: CanStartNowHelper
@@ -35,16 +41,19 @@ export default class CreateGoalPage extends AbstractPage {
     this.goalTitleAutocomplete = page.locator('accessible-autocomplete-wrapper[data-initialized="true"]')
     this.goalTitleInput = this.goalTitleAutocomplete.getByRole('combobox')
     this.isRelatedYes = page
-      .getByRole('group', { name: /related to any other area/i })
+      .getByRole('group', { name: /relate to any other areas of need/i })
       .getByRole('radio', { name: 'Yes' })
     this.isRelatedNo = page
-      .getByRole('group', { name: /related to any other area/i })
+      .getByRole('group', { name: /relate to any other areas of need/i })
       .getByRole('radio', { name: 'No' })
     this.addStepsButton = page.getByRole('button', { name: /add steps/i })
     this.saveWithoutStepsButton = page.getByRole('button', { name: /save without steps/i })
     this.goalTitles = page.getByTestId('autocomplete-data-goal_title')
     this.findAccomodationGoal = page.getByRole('option', { name: 'I will find accommodation' })
     this.errorSummary = page.locator('[data-module="govuk-error-summary"]')
+    this.backLink = page.locator('.govuk-back-link')
+    this.areaOfNeedInset = page.locator('.govuk-inset-text')
+    this.changeAreaOfNeedLink = page.getByRole('link', { name: /change area of need/i })
     this.assessmentInfo = new AssessmentInfoHelper(page)
     this.canStartNow = new CanStartNowHelper(page)
     this.targetDate = new TargetDateHelper(page)
@@ -68,7 +77,7 @@ export default class CreateGoalPage extends AbstractPage {
 
   static async verifyOnPage(page: Page): Promise<CreateGoalPage> {
     const createGoalPage = new CreateGoalPage(page)
-    await expect(createGoalPage.pageHeading).toContainText(/create a goal/i)
+    await expect(createGoalPage.pageHeading).toContainText(/what goal does .+ aim to achieve/i)
     return createGoalPage
   }
 

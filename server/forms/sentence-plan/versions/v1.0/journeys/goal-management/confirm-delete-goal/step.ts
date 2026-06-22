@@ -27,8 +27,8 @@ export const confirmDeleteGoalStep = step({
   view: {
     locals: {
       backlink: when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
-        .then('../../plan/overview?type=future')
-        .else('../../plan/overview?type=current'),
+        .then('../../plan/overview?goalStatusTab=future')
+        .else('../../plan/overview?goalStatusTab=current'),
     },
   },
 
@@ -62,9 +62,9 @@ export const confirmDeleteGoalStep = step({
         next: [
           redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
-            goto: '../../plan/overview?type=future',
+            goto: '../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),

@@ -73,7 +73,7 @@ test.describe('Plan Overview Page', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.clickFutureGoalsTab()
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       await expect(planOverviewPage.noFutureGoalsMessage).toBeVisible()
       await expect(planOverviewPage.noFutureGoalsMessage).toContainText(/does not have any future goals/i)
@@ -208,7 +208,7 @@ test.describe('Plan Overview Page', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
     })
 
     test('can switch to future goals tab', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -221,7 +221,7 @@ test.describe('Plan Overview Page', () => {
 
       await planOverviewPage.clickFutureGoalsTab()
 
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
       const goalCount = await planOverviewPage.getGoalCount()
       expect(goalCount).toBe(1)
     })
@@ -235,23 +235,27 @@ test.describe('Plan Overview Page', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.clickFutureGoalsTab()
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       await planOverviewPage.clickCurrentGoalsTab()
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       const goalCount = await planOverviewPage.getGoalCount()
       expect(goalCount).toBe(2)
     })
 
-    test('respects type=future query param on page load', async ({ page, createSession, sentencePlanBuilder }) => {
+    test('respects goalStatusTab=future query param on page load', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(mixedGoals()).save()
 
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate directly to future goals tab
-      await page.goto('/sentence-plan/v1.0/plan/overview?type=future')
+      await page.goto('/sentence-plan/v1.0/plan/overview?goalStatusTab=future')
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const goalCount = await planOverviewPage.getGoalCount()
@@ -348,7 +352,7 @@ test.describe('Plan Overview Page', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       // Click "Add or update steps" on the first goal
       await planOverviewPage.clickAddOrUpdateSteps(0)
@@ -362,7 +366,7 @@ test.describe('Plan Overview Page', () => {
 
       // Verify we're back on plan overview with correct tab
       await PlanOverviewPage.verifyOnPage(page)
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
     })
   })
 
@@ -518,13 +522,13 @@ test.describe('Plan Overview Page', () => {
 
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
         await planOverviewPage.clickFutureGoalsTab()
-        await expect(page).toHaveURL(/type=future/)
+        await expect(page).toHaveURL(/goalStatusTab=future/)
 
         // Move first future goal down
         await planOverviewPage.clickMoveGoalDown(0)
 
         // Should stay on future tab
-        await expect(page).toHaveURL(/type=future/)
+        await expect(page).toHaveURL(/goalStatusTab=future/)
       })
 
       test('goals only reorder within their status group', async ({ page, createSession, sentencePlanBuilder }) => {
