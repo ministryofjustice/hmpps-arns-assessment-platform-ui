@@ -25,7 +25,7 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       // ensure page title is correct
       await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.changeGoal))
@@ -41,7 +41,7 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -66,7 +66,7 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -105,7 +105,7 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -140,7 +140,7 @@ test.describe('Change goal journey', () => {
       expect(await planOverviewPage.goalCardHasTargetDateText(0)).toBe(true)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -163,7 +163,7 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -182,7 +182,7 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -206,7 +206,7 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -232,7 +232,7 @@ test.describe('Change goal journey', () => {
 
       await navigateToSentencePlan(page, handoverLink)
 
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -263,7 +263,7 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -285,7 +285,7 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -312,7 +312,7 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -335,7 +335,7 @@ test.describe('Change goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -360,7 +360,7 @@ test.describe('Change goal journey', () => {
 
       // Navigate to future goals tab and click change goal
       await page.getByRole('link', { name: 'Future goals' }).click()
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -393,7 +393,7 @@ test.describe('Change goal journey', () => {
 
       // Navigate to future goals tab and click change goal
       await page.getByRole('link', { name: 'Future goals' }).click()
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 

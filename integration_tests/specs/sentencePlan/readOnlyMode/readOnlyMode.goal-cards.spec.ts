@@ -20,12 +20,12 @@ test.describe('READ_ONLY Access Mode', () => {
       await navigateToSentencePlan(page, handoverLink)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
-      const hasChangeLink = await planOverviewPage.goalCardHasChangeLink(0)
-      const hasAddStepsLink = await planOverviewPage.goalCardHasAddStepsLink(0)
+      const hasUpdateGoalLink = await planOverviewPage.goalCardHasUpdateGoalLink(0)
+      const hasAddUpdateStepsLink = await planOverviewPage.goalCardHasAddUpdateStepsLink(0)
       const hasDeleteLink = await planOverviewPage.goalCardHasDeleteLink(0)
 
-      expect(hasChangeLink).toBe(false)
-      expect(hasAddStepsLink).toBe(false)
+      expect(hasUpdateGoalLink).toBe(false)
+      expect(hasAddUpdateStepsLink).toBe(false)
       expect(hasDeleteLink).toBe(false)
     })
 

@@ -182,8 +182,8 @@ test.describe('Update goal and steps page', () => {
       expect(await updatePage.getStepDescriptionByIndex(0)).toContain('First step description')
       expect(await updatePage.getStepDescriptionByIndex(1)).toContain('Second step description')
 
-      // check that add or change steps link is visible
-      await expect(updatePage.addOrChangeStepsLink).toBeVisible()
+      // check that add or update steps link is visible
+      await expect(updatePage.addOrUpdateStepsLink).toBeVisible()
     })
 
     test('displays no steps message when goal has no steps', async ({ page, createSession, sentencePlanBuilder }) => {
