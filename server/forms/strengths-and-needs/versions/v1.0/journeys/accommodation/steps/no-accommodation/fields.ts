@@ -1,25 +1,26 @@
-import { validation, Self, Answer, Format, and, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { validation, Self, Answer, and, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKCheckboxInput, GovUKCharacterCount } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CaseData } from '../../../../constants/formVersion'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
-import { commonLocale } from '../../../../constants/locale'
-import { locale } from '../../constants/locale'
+import { commonContentFor } from '../../../../locales'
+import { CommonOption } from '../../../../constants/commonOption'
+import { contentFor } from '../../locales'
 
 // --- No Accommodation Reason Group ---
 
 const noAccommodationReasonOtherDetails = GovUKCharacterCount({
   code: Question.no_accommodation_reason_other_details,
-  label: commonLocale.required_details,
+  label: commonContentFor('required_details'),
   maxLength: 2000,
   dependentWhen: and(
     Answer(Question.no_accommodation_reason).match(Condition.IsRequired()),
-    Answer(Question.no_accommodation_reason).match(Condition.Array.Contains(Option.other)),
+    Answer(Question.no_accommodation_reason).match(Condition.Array.Contains(CommonOption.other)),
   ),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: commonLocale.validation.enter_details,
+      message: commonContentFor('validation.enter_details'),
     }),
   ],
 })
@@ -29,36 +30,36 @@ export const noAccommodationReason = GovUKCheckboxInput({
   multiple: true,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.no_accommodation_reason], CaseData.Forename),
+      text: contentFor('question.no_accommodation_reason.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: locale.hint[Question.no_accommodation_reason],
+  hint: contentFor('question.no_accommodation_reason.hint'),
   items: [
-    { value: Option.alcohol_problems, text: locale.option[Question.no_accommodation_reason + Option.alcohol_problems] },
-    { value: Option.drug_problems, text: locale.option[Question.no_accommodation_reason + Option.drug_problems] },
+    { value: Option.alcohol_problems, text: contentFor('question.no_accommodation_reason.option.ALCOHOL_PROBLEMS') },
+    { value: Option.drug_problems, text: contentFor('question.no_accommodation_reason.option.DRUG_PROBLEMS') },
     {
       value: Option.financial_difficulties,
-      text: locale.option[Question.no_accommodation_reason + Option.financial_difficulties],
+      text: contentFor('question.no_accommodation_reason.option.FINANCIAL_DIFFICULTIES'),
     },
     {
       value: Option.risk_to_others,
-      text: locale.option[Question.no_accommodation_reason + Option.risk_to_others],
+      text: contentFor('question.no_accommodation_reason.option.RISK_TO_OTHERS'),
     },
     {
       value: Option.safety,
-      text: locale.option[Question.no_accommodation_reason + Option.safety],
+      text: contentFor('question.no_accommodation_reason.option.SAFETY'),
     },
     {
       value: Option.prison_release,
-      text: locale.option[Question.no_accommodation_reason + Option.prison_release],
+      text: contentFor('question.no_accommodation_reason.option.PRISON_RELEASE'),
     },
-    { value: Option.other, text: locale.option[Option.other], block: noAccommodationReasonOtherDetails },
+    { value: CommonOption.other, text: commonContentFor('option.OTHER'), block: noAccommodationReasonOtherDetails },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: locale.validation[Question.no_accommodation_reason],
+      message: contentFor('question.no_accommodation_reason.validation'),
     }),
   ],
 })
@@ -66,7 +67,7 @@ export const noAccommodationReason = GovUKCheckboxInput({
 export const pastAccommodationDetails = GovUKCharacterCount({
   code: Question.past_accommodation_details,
   label: {
-    text: Format(locale.question[Question.past_accommodation_details], CaseData.Forename),
+    text: contentFor('question.past_accommodation_details.text', CaseData.Forename),
     classes: 'govuk-label--m',
   },
   maxLength: 2000,

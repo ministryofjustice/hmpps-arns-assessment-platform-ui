@@ -2,13 +2,12 @@ import { step, submit, redirect, Post, Condition } from '@ministryofjustice/hmpp
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { livingWith, suitableHousingLocation, suitableHousing, accommodationChanges } from './fields'
 import { saveButton } from '../../../../constants/buttons'
-import { locale } from '../../constants/locale'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 
 export const settledAccommodationStep = step({
   path: `/${Step.settled_accommodation.path}`,
-  title: locale.step[Step.settled_accommodation.code],
+  title: 'Settled accommodation', // TODO: contentFor('step.settled_accommodation')
   blocks: [livingWith, suitableHousingLocation, suitableHousing, accommodationChanges, saveButton],
   onSubmission: [
     submit({

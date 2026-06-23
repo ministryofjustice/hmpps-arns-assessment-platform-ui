@@ -4,13 +4,12 @@ import { accommodationChanges } from '../settled-accommodation/fields'
 import { suitableHousingPlanned } from '../temporary-accommodation/fields'
 import { noAccommodationReason, pastAccommodationDetails } from './fields'
 import { saveButton } from '../../../../constants/buttons'
-import { locale } from '../../constants/locale'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 
 export const noAccommodationStep = step({
   path: `/${Step.no_accommodation.path}`,
-  title: locale.step[Step.no_accommodation.code],
+  title: 'No accommodation', // TODO: contentFor('step.no_accommodation')
   blocks: [noAccommodationReason, pastAccommodationDetails, suitableHousingPlanned, accommodationChanges, saveButton],
   onSubmission: [
     submit({

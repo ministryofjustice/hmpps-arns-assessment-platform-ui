@@ -8,13 +8,12 @@ import {
 } from '../settled-accommodation/fields'
 import { suitableHousingPlanned } from './fields'
 import { Step } from '../../constants/step'
-import { locale } from '../../constants/locale'
 import { saveButton } from '../../../../constants/buttons'
 import { Section, SectionStatus } from '../../../../constants/section'
 
 export const temporaryAccommodationStep = step({
   path: `/${Step.temporary_accommodation.path}`,
-  title: locale.step[Step.temporary_accommodation.code],
+  title: 'Temporary accommodation', // TODO: contentFor('step.temporary_accommodation')
   blocks: [
     livingWith,
     suitableHousingLocation,
