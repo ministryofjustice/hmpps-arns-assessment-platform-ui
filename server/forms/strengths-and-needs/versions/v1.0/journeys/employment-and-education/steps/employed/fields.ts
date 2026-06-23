@@ -17,6 +17,7 @@ import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { CaseData } from '../../../../constants/formVersion'
 import { commonContentFor } from '../../../../locales'
+import { CommonOption } from '../../../../constants/commonOption'
 
 // --- Employment Sector Group ---
 
@@ -68,7 +69,7 @@ const unknownEmploymentHistoryDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   hint: contentFor('question.unknown_employment_history_employment_details.hint'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_history).match(Condition.Equals(Option.unknown)),
+  dependentWhen: Answer(Question.employment_history).match(Condition.Equals(CommonOption.unknown)),
 })
 
 export const employmentHistory = GovUKRadioInput({
@@ -98,8 +99,8 @@ export const employmentHistory = GovUKRadioInput({
       block: unstableEmploymentHistoryEmploymentDetails,
     },
     {
-      value: Option.unknown,
-      text: contentFor('question.employment_history.option.UNKNOWN'),
+      value: CommonOption.unknown,
+      text: commonContentFor('option.UNKNOWN'),
       block: unknownEmploymentHistoryDetails,
     },
   ],
@@ -164,7 +165,7 @@ const dayToDayOtherCommitmentsDetails = GovUKCharacterCount({
   code: Question.day_to_day_other_commitments_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.other)),
+  dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(CommonOption.other)),
 })
 
 export const dayToDayCommitments = GovUKCheckboxInput({
@@ -194,10 +195,10 @@ export const dayToDayCommitments = GovUKCheckboxInput({
       text: contentFor('question.day_to_day_commitments.option.VOLUNTEERING'),
       block: dayToDayVolunteeringDetails,
     },
-    { value: Option.other, text: commonContentFor('option.OTHER'), block: dayToDayOtherCommitmentsDetails },
-    { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
+    { value: CommonOption.other, text: commonContentFor('option.OTHER'), block: dayToDayOtherCommitmentsDetails },
+    { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     { divider: commonContentFor('or') },
-    { value: Option.none, text: commonContentFor('option.NONE'), behaviour: 'exclusive' },
+    { value: CommonOption.none, text: commonContentFor('option.NONE'), behaviour: 'exclusive' },
   ],
   validWhen: [
     validation({
@@ -264,8 +265,8 @@ export const academicQualification = GovUKRadioInput({
       hint: contentFor('question.academic_qualification.option.LEVEL_8.hint'),
     },
     { divider: commonContentFor('or') },
-    { value: Option.non_of_these, text: contentFor('question.academic_qualification.option.NON_OF_THESE') },
-    { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
+    { value: CommonOption.non_of_these, text: commonContentFor('option.NON_OF_THESE') },
+    { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
   ],
   validWhen: [
     validation({
@@ -283,7 +284,7 @@ const professionalQualificationDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: and(
     Answer(Question.professional_qualification).match(Condition.IsRequired()),
-    Answer(Question.professional_qualification).match(Condition.Equals(Option.yes)),
+    Answer(Question.professional_qualification).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
@@ -302,10 +303,10 @@ export const professionalQualifications = GovUKRadioInput({
     },
   },
   items: [
-    { value: Option.yes, text: commonContentFor('option.YES'), block: professionalQualificationDetails },
-    { value: Option.no, text: commonContentFor('option.NO'), block: professionalQualificationDetails },
+    { value: CommonOption.yes, text: commonContentFor('option.YES'), block: professionalQualificationDetails },
+    { value: CommonOption.no, text: commonContentFor('option.NO'), block: professionalQualificationDetails },
     { divider: commonContentFor('or') },
-    { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
+    { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
   ],
   validWhen: [
     validation({
@@ -321,7 +322,7 @@ const hasJobSkillsDetails = GovUKCharacterCount({
   code: Question.has_job_skills_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.job_skills).match(Condition.Equals(Option.yes)),
+  dependentWhen: Answer(Question.job_skills).match(Condition.Equals(CommonOption.yes)),
 })
 
 const someJobSkillsDetails = GovUKCharacterCount({
@@ -341,7 +342,7 @@ export const jobSkills = GovUKRadioInput({
   },
   items: [
     {
-      value: Option.yes,
+      value: CommonOption.yes,
       text: commonContentFor('option.YES'),
       hint: contentFor('question.job_skills.option.YES.hint'),
       block: hasJobSkillsDetails,
@@ -353,7 +354,7 @@ export const jobSkills = GovUKRadioInput({
       block: someJobSkillsDetails,
     },
     {
-      value: Option.no,
+      value: CommonOption.no,
       text: commonContentFor('option.NO'),
       hint: contentFor('question.job_skills.option.NO.hint'),
     },
@@ -541,7 +542,7 @@ export const employmentExperience = GovUKRadioInput({
       block: mostlyNegativeEmploymentExperienceDetails,
     },
     { value: Option.negative, text: contentFor('option.NEGATIVE'), block: negativeEmploymentExperienceDetails },
-    { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
+    { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
   ],
   visibleWhen: not(
     or(
@@ -640,7 +641,7 @@ export const educationExperience = GovUKRadioInput({
       block: mostlyNegativeEducationExperienceDetails,
     },
     { value: Option.negative, text: contentFor('option.NEGATIVE'), block: negativeEducationExperienceDetails },
-    { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
+    { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
   ],
   validWhen: [
     validation({
@@ -656,14 +657,14 @@ const hasMadePositiveChangesDetails = GovUKCharacterCount({
   code: Question.has_made_positive_changes_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(Option.has_made_changes)),
+  dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(CommonOption.has_made_changes)),
 })
 
 const isActivelyMakingChangesDetails = GovUKCharacterCount({
   code: Question.actively_making_changes_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(Option.is_making_changes)),
+  dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(CommonOption.is_making_changes)),
 })
 
 const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
@@ -671,7 +672,7 @@ const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
-    Condition.Equals(Option.wants_to_make_changes_knows_how_to),
+    Condition.Equals(CommonOption.wants_to_make_changes_knows_how_to),
   ),
 })
 
@@ -680,7 +681,7 @@ const wantsToMakeChangesNeedsHelpDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
-    Condition.Equals(Option.wants_to_make_changes_needs_help),
+    Condition.Equals(CommonOption.wants_to_make_changes_needs_help),
   ),
 })
 
@@ -689,7 +690,7 @@ const thinkingAboutMakingChangesDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
-    Condition.Equals(Option.thinking_about_making_changes),
+    Condition.Equals(CommonOption.thinking_about_making_changes),
   ),
 })
 
@@ -698,7 +699,7 @@ const doesNotWantToMakeChangesDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
-    Condition.Equals(Option.does_not_want_to_make_changes),
+    Condition.Equals(CommonOption.does_not_want_to_make_changes),
   ),
 })
 
@@ -707,7 +708,7 @@ const doesNotWantToAnswerChangesDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
-    Condition.Equals(Option.does_not_want_to_answer),
+    Condition.Equals(CommonOption.does_not_want_to_answer),
   ),
 })
 
@@ -721,43 +722,43 @@ export const employmentAndEducationChanges = GovUKRadioInput({
   },
   items: [
     {
-      value: Option.has_made_changes,
+      value: CommonOption.has_made_changes,
       text: commonContentFor('option.HAS_MADE_CHANGES'),
       block: hasMadePositiveChangesDetails,
     },
     {
-      value: Option.is_making_changes,
+      value: CommonOption.is_making_changes,
       text: commonContentFor('option.IS_MAKING_CHANGES'),
       block: isActivelyMakingChangesDetails,
     },
     {
-      value: Option.wants_to_make_changes_knows_how_to,
+      value: CommonOption.wants_to_make_changes_knows_how_to,
       text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
       block: wantsToMakeChangesKnowsHowDetails,
     },
     {
-      value: Option.wants_to_make_changes_needs_help,
+      value: CommonOption.wants_to_make_changes_needs_help,
       text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
       block: wantsToMakeChangesNeedsHelpDetails,
     },
     {
-      value: Option.thinking_about_making_changes,
+      value: CommonOption.thinking_about_making_changes,
       text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
       block: thinkingAboutMakingChangesDetails,
     },
     {
-      value: Option.does_not_want_to_make_changes,
+      value: CommonOption.does_not_want_to_make_changes,
       text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
       block: doesNotWantToMakeChangesDetails,
     },
     {
-      value: Option.does_not_want_to_answer,
+      value: CommonOption.does_not_want_to_answer,
       text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'),
       block: doesNotWantToAnswerChangesDetails,
     },
     { divider: commonContentFor('or') },
-    { value: Option.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },
-    { value: Option.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
+    { value: CommonOption.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },
+    { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
   ],
   validWhen: [
     validation({

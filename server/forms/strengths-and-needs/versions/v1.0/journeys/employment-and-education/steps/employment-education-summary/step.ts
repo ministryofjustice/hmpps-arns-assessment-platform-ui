@@ -6,8 +6,7 @@ import { Step } from '../../constants/step'
 
 export const employmentEducationSummaryStep = step({
   path: `/${Step.employment_education_summary.path}`,
-  // title: contentFor('step.employment_education_summary'),
-  title: 'PLACEHOLDER',
+  title: 'Employment and Education Summary', // TODO: contentFor('step.employment-education-summary')
   blocks: [employmentStatusSummaryTab],
   onSubmission: [
     submit({

@@ -1,13 +1,11 @@
-import { Answer, Condition, Format } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
-  GovUKRadioInput,
   GovUKSummaryList,
   GovUKTabs,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import {
   employmentStatusSummary, strengthsProtectiveFactors,
-
 } from '../employment-education-summary/fields'
 import { CaseData } from '../../../../constants/formVersion'
 import { Question } from '../../constants/question'
@@ -15,7 +13,6 @@ import { Step } from '../../constants/step'
 import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
 import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
-import { Option } from '../../constants/option'
 import { linkedToReoffending, linkedToSeriousHarm } from '../../../finance/steps/finance-summary/fields'
 import { getDisplayTextForItems } from '../../../../../../i18n'
 

@@ -4,11 +4,11 @@ export const Step = {
     path: 'finance',
   },
   financeSummary: {
-    code: 'finance-summary',
+    code: 'finance_summary',
     path: 'finance-summary',
   },
   financeAnalysis: {
-    code: 'finance-analysis',
+    code: 'finance_analysis',
     path: 'finance-analysis',
   },
 } as const
