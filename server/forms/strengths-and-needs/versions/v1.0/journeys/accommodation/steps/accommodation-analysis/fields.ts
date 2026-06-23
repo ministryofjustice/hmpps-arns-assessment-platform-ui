@@ -106,7 +106,7 @@ export const accommodationPractitionerAnalysisSummaryTab = GovUKTabs({
       id: 'summary-analysis',
       label: commonLocale.summary,
       panel: {
-        blocks: [accommodationSummary, goToPractitionerAnalysisButton(Step.accommodation_summary.path)],
+        blocks: [accommodationSummary, goToPractitionerAnalysisButton(Step.accommodation_analysis.path)],
       },
     },
     {

@@ -1,21 +1,14 @@
 import {
   and,
   Answer,
-  block,
   Condition,
-  Format,
   not,
-  or,
-  Request,
   Self,
-  Transformer,
   validation,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
-  GovUKButton,
   GovUKCharacterCount,
-  GovUKLinkButton,
   GovUKRadioInput,
   GovUKSummaryList,
   GovUKTabs,
@@ -36,6 +29,8 @@ import { contentFor } from '../../locales'
 import { Option } from '../../constants/option'
 import { commonContentFor } from '../../../../locales'
 import { Step } from '../../constants/step'
+import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
+import { CommonOption } from '../../../../constants/commonOption'
 
 const PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT = 1425
 
@@ -68,9 +63,9 @@ export const financeSummary = GovUKSummaryList({
           createSummaryRowForFinanceIncome(Option.employment),
           createSummaryRowForFinanceIncome(Option.family_or_friends),
           [
-            { option: Option.yes, text: contentFor('question.finance_income.summary.option.YES') },
-            { option: Option.no, text: contentFor('question.finance_income.summary.option.NO') },
-            { option: Option.unknown, text: contentFor('question.finance_income.summary.option.UNKNOWN') },
+            { option: CommonOption.yes, text: contentFor('question.finance_income.summary.option.YES') },
+            { option: CommonOption.no, text: contentFor('question.finance_income.summary.option.NO') },
+            { option: CommonOption.unknown, text: contentFor('question.finance_income.summary.option.UNKNOWN') },
           ].map(({ option, text }) =>
             GovUKBody({
               text,
@@ -85,9 +80,9 @@ export const financeSummary = GovUKSummaryList({
           createSummaryRowForFinanceIncome(Option.student_loan),
           createSummaryRowForFinanceIncome(Option.undeclared),
           createSummaryRowForFinanceIncome(Option.work_related_benefits),
-          createSummaryRowForFinanceIncome(Option.other),
+          createSummaryRowForFinanceIncome(CommonOption.other),
           createSummaryDetailsRow(Question.finance_income_other_details),
-          createSummaryRowForFinanceIncome(Option.unknown),
+          createSummaryRowForFinanceIncome(CommonOption.unknown),
           createSummaryRowForFinanceIncome(Option.no_money),
           createSummaryDetailsRow(Question.finance_income_no_money_details),
         ].flat(),
@@ -99,7 +94,7 @@ export const financeSummary = GovUKSummaryList({
     {
       key: { text: contentFor('question.finance_bank_account.text', CaseData.Forename) },
       value: {
-        blocks: [Option.yes, Option.no, Option.unknown]
+        blocks: [CommonOption.yes, CommonOption.no, CommonOption.unknown]
           .map(option => getDisplayTextForSpecificItem(Question.finance_bank_account, financeBankAccount.items, option))
           .flat(),
       },
@@ -133,8 +128,8 @@ export const financeSummary = GovUKSummaryList({
           createSummaryDetailsRow(Question.finance_gambling_yes_their_gambling_details),
           createSummaryRowForFinanceGambling(Option.yes_someone_elses_gambling),
           createSummaryDetailsRow(Question.finance_gambling_yes_someone_elses_gambling_details),
-          createSummaryRowForFinanceGambling(Option.no),
-          createSummaryRowForFinanceGambling(Option.unknown),
+          createSummaryRowForFinanceGambling(CommonOption.no),
+          createSummaryRowForFinanceGambling(CommonOption.unknown),
           createSummaryDetailsRow(Question.finance_gambling_unknown_details),
         ].flat(),
       },
@@ -172,8 +167,8 @@ export const financeSummary = GovUKSummaryList({
             Option.formal_debt,
           ),
           createSummaryDetailsRow(Question.yes_someone_elses_debt_formal_debt_details),
-          createSummaryRowForFinanceDebt(Option.no),
-          createSummaryRowForFinanceDebt(Option.unknown),
+          createSummaryRowForFinanceDebt(CommonOption.no),
+          createSummaryRowForFinanceDebt(CommonOption.unknown),
           createSummaryDetailsRow(Question.finance_debt_unknown_details),
         ].flat(),
       },
@@ -185,22 +180,22 @@ export const financeSummary = GovUKSummaryList({
       key: { text: contentFor('question.finance_changes.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForFinanceChanges(Option.has_made_changes),
+          createSummaryRowForFinanceChanges(CommonOption.has_made_changes),
           createSummaryDetailsRow(Question.finance_changes_has_made_changes_details),
-          createSummaryRowForFinanceChanges(Option.is_making_changes),
+          createSummaryRowForFinanceChanges(CommonOption.is_making_changes),
           createSummaryDetailsRow(Question.finance_changes_is_making_changes_details),
-          createSummaryRowForFinanceChanges(Option.wants_to_make_changes_knows_how_to),
+          createSummaryRowForFinanceChanges(CommonOption.wants_to_make_changes_knows_how_to),
           createSummaryDetailsRow(Question.finance_changes_wants_to_make_changes_knows_how_to_details),
-          createSummaryRowForFinanceChanges(Option.wants_to_make_changes_needs_help),
+          createSummaryRowForFinanceChanges(CommonOption.wants_to_make_changes_needs_help),
           createSummaryDetailsRow(Question.finance_changes_wants_to_make_changes_needs_help_details),
-          createSummaryRowForFinanceChanges(Option.thinking_about_making_changes),
+          createSummaryRowForFinanceChanges(CommonOption.thinking_about_making_changes),
           createSummaryDetailsRow(Question.finance_changes_thinking_about_making_changes_details),
-          createSummaryRowForFinanceChanges(Option.does_not_want_to_make_changes),
+          createSummaryRowForFinanceChanges(CommonOption.does_not_want_to_make_changes),
           createSummaryDetailsRow(Question.finance_changes_does_not_want_to_answer_details),
-          createSummaryRowForFinanceChanges(Option.does_not_want_to_answer),
+          createSummaryRowForFinanceChanges(CommonOption.does_not_want_to_answer),
           createSummaryDetailsRow(Question.finance_changes_does_not_want_to_answer_details),
-          createSummaryRowForFinanceChanges(Option.not_present),
-          createSummaryRowForFinanceChanges(Option.not_applicable),
+          createSummaryRowForFinanceChanges(CommonOption.not_present),
+          createSummaryRowForFinanceChanges(CommonOption.not_applicable),
         ].flat(),
       },
       actions: {
@@ -210,19 +205,13 @@ export const financeSummary = GovUKSummaryList({
   ],
 })
 
-const goToPractitionerAnalysis = GovUKLinkButton({
-  text: commonContentFor('go_to_practitioner_analysis'),
-  href: `${Step.financeAnalysis}#practitioner-analysis`,
-  classes: 'govuk-button--secondary',
-})
-
 const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.finance_strengths_protective_factors_details,
   label: commonContentFor('required_details'),
   maxLength: PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT,
   dependentWhen: and(
     Answer(Question.finance_strengths_protective_factors).match(Condition.IsRequired()),
-    Answer(Question.finance_strengths_protective_factors_details).match(Condition.Equals(Option.yes)),
+    Answer(Question.finance_strengths_protective_factors_details).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
@@ -236,7 +225,7 @@ const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.finance_no_strengths_protective_factors_details,
   label: commonContentFor('optional_details'),
   maxLength: PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT,
-  dependentWhen: Answer(Question.finance_strengths_protective_factors).match(Condition.Equals(Option.no)),
+  dependentWhen: Answer(Question.finance_strengths_protective_factors).match(Condition.Equals(CommonOption.no)),
 })
 
 export const strengthsOrProtectiveFactors = GovUKRadioInput({
@@ -249,8 +238,8 @@ export const strengthsOrProtectiveFactors = GovUKRadioInput({
   },
   hint: contentFor('question.finance_strengths_protective_factors.hint'),
   items: [
-    { value: Option.yes, text: commonContentFor('option.YES'), block: strengthsProtectiveFactorsDetails },
-    { value: Option.no, text: commonContentFor('option.NO'), block: noStrengthsProtectiveFactorsDetails },
+    { value: CommonOption.yes, text: commonContentFor('option.YES'), block: strengthsProtectiveFactorsDetails },
+    { value: CommonOption.no, text: commonContentFor('option.NO'), block: noStrengthsProtectiveFactorsDetails },
   ],
   validWhen: [
     validation({
@@ -266,7 +255,7 @@ const seriousHarmDetails = GovUKCharacterCount({
   maxLength: PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT,
   dependentWhen: and(
     Answer(Question.finance_linked_to_serious_harm).match(Condition.IsRequired()),
-    Answer(Question.finance_linked_to_serious_harm).match(Condition.Equals(Option.yes)),
+    Answer(Question.finance_linked_to_serious_harm).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
@@ -280,11 +269,11 @@ const noSeriousHarmDetails = GovUKCharacterCount({
   code: Question.finance_no_serious_harm_details,
   label: commonContentFor('optional_details'),
   maxLength: PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT,
-  dependentWhen: Answer(Question.finance_linked_to_serious_harm).match(Condition.Equals(Option.no)),
+  dependentWhen: Answer(Question.finance_linked_to_serious_harm).match(Condition.Equals(CommonOption.no)),
 })
 
 export const linkedToSeriousHarm = GovUKRadioInput({
-  code: 'finance_linked_to_serious_harm',
+  code: Question.finance_linked_to_serious_harm,
   fieldset: {
     legend: {
       text: contentFor('question.finance_linked_to_serious_harm.text', CaseData.ForenamePossessive),
@@ -292,8 +281,8 @@ export const linkedToSeriousHarm = GovUKRadioInput({
     },
   },
   items: [
-    { value: Option.yes, text: commonContentFor('option.YES'), block: seriousHarmDetails },
-    { value: Option.no, text: commonContentFor('option.NO'), block: noSeriousHarmDetails },
+    { value: CommonOption.yes, text: commonContentFor('option.YES'), block: seriousHarmDetails },
+    { value: CommonOption.no, text: commonContentFor('option.NO'), block: noSeriousHarmDetails },
   ],
   validWhen: [
     validation({
@@ -304,41 +293,39 @@ export const linkedToSeriousHarm = GovUKRadioInput({
 })
 
 const riskOfReoffendingDetails = GovUKCharacterCount({
-  code: 'risk_of_reoffending_details',
+  code: Question.finance_risk_of_reoffending_details,
   label: commonContentFor('required_details'),
   maxLength: PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT,
   dependentWhen: and(
-    Answer('finance_linked_to_reoffending').match(Condition.IsRequired()),
-    Answer('finance_linked_to_reoffending').match(Condition.Equals('YES')),
+    Answer(Question.finance_linked_to_reoffending).match(Condition.IsRequired()),
+    Answer(Question.finance_linked_to_reoffending).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Give details on the risk of reoffending',
+      message: contentFor('question.finance_risk_of_reoffending_details.validation'),
     }),
   ],
 })
 
 const noRiskOfReoffendingDetails = GovUKCharacterCount({
-  code: 'no_risk_of_reoffending_details',
+  code: Question.finance_no_risk_of_reoffending_details,
   label: commonContentFor('optional_details'),
   maxLength: PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT,
-  dependentWhen: Answer('finance_linked_to_reoffending').match(Condition.Equals('NO')),
+  dependentWhen: Answer(Question.finance_linked_to_reoffending).match(Condition.Equals(CommonOption.no)),
 })
 
 export const linkedToReoffending = GovUKRadioInput({
-  code: 'finance_linked_to_reoffending',
+  code: Question.finance_linked_to_reoffending,
   fieldset: {
     legend: {
-      text: contentFor('question.finance_linked_to_reoffending.text').pipe(
-        Transformer.String.Replace('%1', CaseData.ForenamePossessive),
-      ),
+      text: contentFor('question.finance_linked_to_reoffending.text', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
-    { value: 'YES', text: commonContentFor('option.YES'), block: riskOfReoffendingDetails },
-    { value: 'NO', text: commonContentFor('option.NO'), block: noRiskOfReoffendingDetails },
+    { value: CommonOption.yes, text: commonContentFor('option.YES'), block: riskOfReoffendingDetails },
+    { value: CommonOption.no, text: commonContentFor('option.NO'), block: noRiskOfReoffendingDetails },
   ],
   validWhen: [
     validation({
@@ -348,20 +335,13 @@ export const linkedToReoffending = GovUKRadioInput({
   ],
 })
 
-const markAsCompleteButton = block<GovUKButton>({
-  variant: 'govukButton',
-  text: commonContentFor('mark_as_complete'),
-  name: 'action',
-  value: 'save',
-})
-
 export const summaryTab = GovUKTabs({
   id: 'summaries',
   items: [
     {
       id: 'summary',
       label: commonContentFor('summary'),
-      panel: { blocks: [financeSummary, goToPractitionerAnalysis] },
+      panel: { blocks: [financeSummary, goToPractitionerAnalysisButton(Step.financeSummary.path)] },
     },
     {
       id: 'practitioner-analysis',

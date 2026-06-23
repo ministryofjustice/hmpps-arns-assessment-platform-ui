@@ -3,7 +3,6 @@ import {
   GovUKCheckboxInput,
   GovUKRadioInput,
   GovUKTextareaInput,
-
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsConditions } from '../../../../../../conditions'
 import { CaseData } from '../../../../constants/formVersion'
@@ -11,6 +10,7 @@ import { contentFor } from '../../locales'
 import { Question } from '../../constants/question'
 import { commonContentFor } from '../../../../locales'
 import { Option } from '../../constants/option'
+import { CommonOption } from '../../../../constants/commonOption';
 
 const DEFAULT_CHARACTER_COUNT = 2000
 
@@ -45,7 +45,7 @@ const toDetailsField =
 
 const [financeIncomeNoMoneyDetails, financeIncomeOtherDetails] = [
   { option: Option.no_money, code: Question.finance_income_no_money_details },
-  { option: Option.other, code: Question.finance_income_other_details },
+  { option: CommonOption.other, code: Question.finance_income_other_details },
 ].map(toDetailsField(Question.finance_income))
 
 export const financeIncomeFamilyOrFriendsDetails = GovUKRadioInput({
@@ -57,20 +57,20 @@ export const financeIncomeFamilyOrFriendsDetails = GovUKRadioInput({
   },
   dependentWhen: and(
     Answer(Question.finance_income).match(Condition.IsRequired()),
-    Answer(Question.finance_income).match(Condition.Array.Contains('FAMILY_OR_FRIENDS')),
+    Answer(Question.finance_income).match(Condition.Array.Contains(Option.family_or_friends)),
   ),
   items: [
     {
       text: commonContentFor('option.YES'),
-      value: Option.yes,
+      value: CommonOption.yes,
     },
     {
       text: commonContentFor('option.NO'),
-      value: Option.no,
+      value: CommonOption.no,
     },
     {
       text: commonContentFor('option.UNKNOWN'),
-      value: Option.unknown,
+      value: CommonOption.unknown,
     },
   ],
   validWhen: [
@@ -114,8 +114,8 @@ export const financeIncome = GovUKCheckboxInput({
       value: Option.work_related_benefits,
       hint: { text: contentFor('question.finance_income.option.WORK_RELATED_BENEFITS.hint') },
     },
-    { text: commonContentFor('option.OTHER'), value: Option.other, block: [financeIncomeOtherDetails] },
-    { text: commonContentFor('option.UNKNOWN'), value: Option.unknown, behaviour: 'exclusive' },
+    { text: commonContentFor('option.OTHER'), value: CommonOption.other, block: [financeIncomeOtherDetails] },
+    { text: commonContentFor('option.UNKNOWN'), value: CommonOption.unknown, behaviour: 'exclusive' },
     { divider: commonContentFor('or') },
     {
       text: contentFor('question.finance_income.option.NO_MONEY'),
@@ -127,7 +127,7 @@ export const financeIncome = GovUKCheckboxInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: "Select where they currently get their money from, or select 'No money'",
+      message: contentFor('question.finance_income.validation'),
     }),
   ],
 })
@@ -141,9 +141,9 @@ export const financeBankAccount = GovUKRadioInput({
     },
   },
   items: [
-    { text: commonContentFor('option.YES'), value: Option.yes },
-    { text: commonContentFor('option.NO'), value: Option.no },
-    { text: commonContentFor('option.UNKNOWN'), value: Option.unknown },
+    { text: commonContentFor('option.YES'), value: CommonOption.yes },
+    { text: commonContentFor('option.NO'), value: CommonOption.no },
+    { text: commonContentFor('option.UNKNOWN'), value: CommonOption.unknown },
   ],
   validWhen: [
     validation({
@@ -210,9 +210,9 @@ const [
   financeGamblingSomeoneElsesGamblingDetails,
   financeGamblingUnknownGamblingDetails,
 ] = [
-  { option: 'YES_THEIR_GAMBLING', code: Question.finance_gambling_yes_their_gambling_details },
-  { option: 'YES_SOMEONE_ELSES_GAMBLING', code: Question.finance_gambling_yes_someone_elses_gambling_details },
-  { option: 'UNKNOWN', code: Question.finance_gambling_unknown_details },
+  { option: Option.yes_their_gambling, code: Question.finance_gambling_yes_their_gambling_details },
+  { option: Option.yes_someone_elses_gambling, code: Question.finance_gambling_yes_someone_elses_gambling_details },
+  { option: CommonOption.unknown, code: Question.finance_gambling_unknown_details },
 ].map(toDetailsField(Question.finance_gambling))
 
 export const financeGambling = GovUKCheckboxInput({
@@ -238,12 +238,12 @@ export const financeGambling = GovUKCheckboxInput({
     { divider: commonContentFor('or') },
     {
       text: commonContentFor('option.NO'),
-      value: Option.no,
+      value: CommonOption.no,
       behaviour: 'exclusive',
     },
     {
       text: commonContentFor('option.UNKNOWN'),
-      value: Option.unknown,
+      value: CommonOption.unknown,
       behaviour: 'exclusive',
       block: [financeGamblingUnknownGamblingDetails],
     },
@@ -290,14 +290,14 @@ export const [yesTypeOfDebt, yesSomeoneElsesTypeOfDebt] = [
       { text: contentFor('common.option.FORMAL_DEBT'), value: Option.formal_debt, block: [formalDebtDetails] },
     ],
     dependentWhen: and(
-      Answer('finance_debt').match(Condition.IsRequired()),
-      Answer('finance_debt').match(Condition.Array.Contains(option)),
+      Answer(Question.finance_debt).match(Condition.IsRequired()),
+      Answer(Question.finance_debt).match(Condition.Array.Contains(option)),
     ),
   })
 })
 
 const unknownTypeOfDebt = toDetailsField(Question.finance_debt)({
-  option: Option.unknown,
+  option: CommonOption.unknown,
   code: Question.finance_debt_unknown_details,
 })
 
@@ -324,12 +324,12 @@ export const financeDebt = GovUKCheckboxInput({
     { divider: commonContentFor('or') },
     {
       text: commonContentFor('option.NO'),
-      value: Option.no,
+      value: CommonOption.no,
       behaviour: 'exclusive',
     },
     {
       text: commonContentFor('option.UNKNOWN'),
-      value: Option.unknown,
+      value: CommonOption.unknown,
       behaviour: 'exclusive',
       block: [unknownTypeOfDebt],
     },
@@ -351,25 +351,25 @@ const [
   doesNotWantToMakeChangesDetails,
   doesNotWantToAnswerChangesDetails,
 ] = [
-  { option: Option.has_made_changes, code: Question.finance_changes_has_made_changes_details },
-  { option: Option.is_making_changes, code: Question.finance_changes_is_making_changes_details },
+  { option: CommonOption.has_made_changes, code: Question.finance_changes_has_made_changes_details },
+  { option: CommonOption.is_making_changes, code: Question.finance_changes_is_making_changes_details },
   {
-    option: Option.wants_to_make_changes_knows_how_to,
+    option: CommonOption.wants_to_make_changes_knows_how_to,
     code: Question.finance_changes_wants_to_make_changes_knows_how_to_details,
   },
   {
-    option: Option.wants_to_make_changes_needs_help,
+    option: CommonOption.wants_to_make_changes_needs_help,
     code: Question.finance_changes_wants_to_make_changes_needs_help_details,
   },
   {
-    option: Option.thinking_about_making_changes,
+    option: CommonOption.thinking_about_making_changes,
     code: Question.finance_changes_thinking_about_making_changes_details,
   },
   {
-    option: Option.does_not_want_to_make_changes,
+    option: CommonOption.does_not_want_to_make_changes,
     code: Question.finance_changes_does_not_want_to_make_changes_details,
   },
-  { option: Option.does_not_want_to_answer, code: Question.finance_changes_does_not_want_to_answer_details },
+  { option: CommonOption.does_not_want_to_answer, code: Question.finance_changes_does_not_want_to_answer_details },
 ].map(toDetailsField(Question.finance_changes))
 
 export const financeChanges = GovUKRadioInput({
@@ -382,46 +382,46 @@ export const financeChanges = GovUKRadioInput({
   },
   items: [
     {
-      value: Option.has_made_changes,
+      value: CommonOption.has_made_changes,
       text: commonContentFor('option.HAS_MADE_CHANGES'),
       block: hasMadePositiveChangesDetails,
     },
     {
-      value: Option.is_making_changes,
+      value: CommonOption.is_making_changes,
       text: commonContentFor('option.IS_MAKING_CHANGES'),
       block: isActivelyMakingChangesDetails,
     },
     {
-      value: Option.wants_to_make_changes_knows_how_to,
+      value: CommonOption.wants_to_make_changes_knows_how_to,
       text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
       block: wantsToMakeChangesKnowsHowDetails,
     },
     {
-      value: Option.wants_to_make_changes_needs_help,
+      value: CommonOption.wants_to_make_changes_needs_help,
       text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
       block: wantsToMakeChangesNeedsHelpDetails,
     },
     {
-      value: Option.thinking_about_making_changes,
+      value: CommonOption.thinking_about_making_changes,
       text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
       block: thinkingAboutMakingChangesDetails,
     },
     {
-      value: Option.does_not_want_to_make_changes,
+      value: CommonOption.does_not_want_to_make_changes,
       text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
       block: doesNotWantToMakeChangesDetails,
     },
     {
-      value: Option.does_not_want_to_answer,
+      value: CommonOption.does_not_want_to_answer,
       text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'),
       block: doesNotWantToAnswerChangesDetails,
     },
     { divider: commonContentFor('or') },
     {
-      value: Option.not_present,
+      value: CommonOption.not_present,
       text: commonContentFor('option.NOT_PRESENT', CaseData.Forename),
     },
-    { value: Option.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
+    { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
   ],
   validWhen: [
     validation({

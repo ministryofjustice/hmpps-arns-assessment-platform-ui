@@ -2,10 +2,13 @@ import { Locale } from '../../../../../i18n'
 import { Question } from '../constants/question'
 import { Step } from '../constants/step'
 import { Option } from '../constants/option'
+import { CommonOption } from '../../../constants/commonOption'
 
 export const english = {
   step: {
     [Step.finance.code]: 'Finance',
+    [Step.financeSummary.code]: 'Finance Summary',
+    [Step.financeAnalysis.code]: 'Finance Analysis',
   },
   question: {
     [Question.finance_income]: {
@@ -32,9 +35,9 @@ export const english = {
       validation: 'Select where they currently get their money from, or select \'No money\'',
       summary: {
         option: {
-          [Option.yes]: 'Yes, over reliant on friends and family for money',
-          [Option.no]: 'No, not over reliant on friends and family for money',
-          [Option.unknown]: 'Unknown if they’re over reliant on friends and family for money',
+          [CommonOption.yes]: 'Yes, over reliant on friends and family for money',
+          [CommonOption.no]: 'No, not over reliant on friends and family for money',
+          [CommonOption.unknown]: 'Unknown if they’re over reliant on friends and family for money',
         },
       },
     },

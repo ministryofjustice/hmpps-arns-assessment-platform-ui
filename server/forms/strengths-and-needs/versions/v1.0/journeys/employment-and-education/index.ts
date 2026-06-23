@@ -24,7 +24,7 @@ export const employmentJourney = journey({
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {
     locals: {
-      sectionTitle: commonContentFor('sectionTitle.employment_and_education'),
+      sectionTitle: commonContentFor('sectionTitle.employment-and-education'),
       sectionStatus: Data(Section.employment_and_education.statusKey),
     },
   },
