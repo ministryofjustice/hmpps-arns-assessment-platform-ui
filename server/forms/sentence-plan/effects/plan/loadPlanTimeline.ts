@@ -4,7 +4,7 @@ import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 /**
  * Load timeline events for goal lifecycle changes from the API.
  *
- * Fetches GOAL_CREATED, GOAL_ACHIEVED, GOAL_REMOVED, GOAL_READDED, and GOAL_UPDATED timeline events
+ * Fetches GOAL_CREATED, GOAL_ACHIEVED, GOAL_REMOVED, GOAL_READDED, GOAL_UPDATED, and GOAL_DELETED timeline events
  * and stores the raw timeline items for downstream transformation by
  * derivePlanHistoryEntries.
  *
@@ -26,7 +26,14 @@ export const loadPlanTimeline = (deps: SentencePlanEffectsDeps) => async (contex
 
   const result = await deps.api.executeQuery({
     type: 'TimelineQuery',
-    includeCustomTypes: ['GOAL_CREATED', 'GOAL_ACHIEVED', 'GOAL_REMOVED', 'GOAL_READDED', 'GOAL_UPDATED'],
+    includeCustomTypes: [
+      'GOAL_CREATED',
+      'GOAL_ACHIEVED',
+      'GOAL_REMOVED',
+      'GOAL_READDED',
+      'GOAL_UPDATED',
+      'GOAL_DELETED',
+    ],
     assessmentIdentifier: sessionDetails.planIdentifier,
     user,
   })

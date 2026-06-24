@@ -104,6 +104,13 @@
                 {% for block in blocks %}
                   {{ block | safe if loop.index0 != sidebarIndex }}
                 {% endfor %}
+
+                {# Visible by default so it works without JS; back-to-top.mjs hides it when the page fits the viewport (SP2-2313). #}
+                {% if not hideBackToTop %}
+                  <p class="govuk-body js-back-to-top govuk-!-display-none-print">
+                    <a href="#" class="govuk-link" data-ai-id="back-to-top">↑ Back to top</a>
+                  </p>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -116,6 +123,13 @@
           {% for block in blocks %}
             {{ block | safe }}
           {% endfor %}
+
+          {# Visible by default so it works without JS; back-to-top.mjs hides it when the page fits the viewport #}
+          {% if not hideBackToTop %}
+            <p class="govuk-body js-back-to-top govuk-!-display-none-print">
+              <a href="#" class="govuk-link" data-ai-id="back-to-top">↑ Back to top</a>
+            </p>
+          {% endif %}
         {% endif %}
       </form>
     </div>
