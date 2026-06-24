@@ -3,7 +3,7 @@ import { employmentStatusAnalysisSummaryTab } from './fields'
 import { Step } from '../../constants/step'
 
 export const financeAnalysisStep = step({
-  path: '/' + Step.financeAnalysis.path,
+  path: `/${Step.financeAnalysis.path}`,
   title: 'Finance Analysis', // TODO: contentFor('step.finance_analysis')
   blocks: [employmentStatusAnalysisSummaryTab],
 })

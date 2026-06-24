@@ -10,7 +10,7 @@ import { contentFor } from '../../locales'
 import { Question } from '../../constants/question'
 import { commonContentFor } from '../../../../locales'
 import { Option } from '../../constants/option'
-import { CommonOption } from '../../../../constants/commonOption';
+import { CommonOption } from '../../../../constants/commonOption'
 
 const DEFAULT_CHARACTER_COUNT = 2000
 

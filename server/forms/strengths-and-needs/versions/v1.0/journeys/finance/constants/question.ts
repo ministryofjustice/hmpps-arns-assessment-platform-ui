@@ -24,7 +24,8 @@ export const Question = {
   finance_changes: 'finance_changes',
   finance_changes_has_made_changes_details: 'finance_changes_has_made_changes_details',
   finance_changes_is_making_changes_details: 'finance_changes_is_making_changes_details',
-  finance_changes_wants_to_make_changes_knows_how_to_details: 'finance_changes_wants_to_make_changes_knows_how_to_details',
+  finance_changes_wants_to_make_changes_knows_how_to_details:
+    'finance_changes_wants_to_make_changes_knows_how_to_details',
   finance_changes_wants_to_make_changes_needs_help_details: 'finance_changes_wants_to_make_changes_needs_help_details',
   finance_changes_thinking_about_making_changes_details: 'finance_changes_thinking_about_making_changes_details',
   finance_changes_does_not_want_to_make_changes_details: 'finance_changes_does_not_want_to_make_changes_details',

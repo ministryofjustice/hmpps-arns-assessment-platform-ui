@@ -92,12 +92,28 @@ export const suitableHousingLocationConcerns = GovUKCheckboxInput({
   hint: commonContentFor('select_all_that_apply_optional'),
   dependentWhen: Answer(Question.suitable_housing_location).match(Condition.Equals(CommonOption.no)),
   items: [
-    { value: Option.criminal_associates, text: contentFor('question.suitable_housing_location_concerns.option.CRIMINAL_ASSOCIATES') },
-    { value: Option.victimisation, text: contentFor('question.suitable_housing_location_concerns.option.VICTIMISATION') },
-    { value: Option.victim_proximity, text: contentFor('question.suitable_housing_location_concerns.option.VICTIM_PROXIMITY') },
-    { value: Option.neighbour_difficulty, text: contentFor('question.suitable_housing_location_concerns.option.NEIGHBOUR_DIFFICULTY') },
+    {
+      value: Option.criminal_associates,
+      text: contentFor('question.suitable_housing_location_concerns.option.CRIMINAL_ASSOCIATES'),
+    },
+    {
+      value: Option.victimisation,
+      text: contentFor('question.suitable_housing_location_concerns.option.VICTIMISATION'),
+    },
+    {
+      value: Option.victim_proximity,
+      text: contentFor('question.suitable_housing_location_concerns.option.VICTIM_PROXIMITY'),
+    },
+    {
+      value: Option.neighbour_difficulty,
+      text: contentFor('question.suitable_housing_location_concerns.option.NEIGHBOUR_DIFFICULTY'),
+    },
     { value: Option.area_safety, text: contentFor('question.suitable_housing_location_concerns.option.AREA_SAFETY') },
-    { value: CommonOption.other, text: commonContentFor('option.OTHER'), block: suitableHousingLocationConcernsDetails },
+    {
+      value: CommonOption.other,
+      text: commonContentFor('option.OTHER'),
+      block: suitableHousingLocationConcernsDetails,
+    },
   ],
 })
 
@@ -218,7 +234,11 @@ export const suitableHousing = GovUKRadioInput({
   hint: contentFor('question.suitable_housing.hint'),
   items: [
     { value: CommonOption.yes, text: commonContentFor('option.YES') },
-    { value: Option.yes_with_concerns, text: contentFor('question.suitable_housing.option.YES_WITH_CONCERNS'), block: suitableHousingConcerns },
+    {
+      value: Option.yes_with_concerns,
+      text: contentFor('question.suitable_housing.option.YES_WITH_CONCERNS'),
+      block: suitableHousingConcerns,
+    },
     { value: CommonOption.no, text: commonContentFor('option.NO'), block: unsuitableHousingConcerns },
   ],
   validWhen: [
@@ -242,10 +262,22 @@ export const accommodationChanges = GovUKRadioInput({
   items: [
     { value: CommonOption.has_made_changes, text: commonContentFor('option.HAS_MADE_CHANGES') },
     { value: CommonOption.is_making_changes, text: commonContentFor('option.IS_MAKING_CHANGES') },
-    { value: CommonOption.wants_to_make_changes_knows_how_to, text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO') },
-    { value: CommonOption.wants_to_make_changes_needs_help, text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP') },
-    { value: CommonOption.thinking_about_making_changes, text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES') },
-    { value: CommonOption.does_not_want_to_make_changes, text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES') },
+    {
+      value: CommonOption.wants_to_make_changes_knows_how_to,
+      text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
+    },
+    {
+      value: CommonOption.wants_to_make_changes_needs_help,
+      text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
+    },
+    {
+      value: CommonOption.thinking_about_making_changes,
+      text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
+    },
+    {
+      value: CommonOption.does_not_want_to_make_changes,
+      text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
+    },
     { value: CommonOption.does_not_want_to_answer, text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER') },
     { divider: commonContentFor('or') },
     { value: CommonOption.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },

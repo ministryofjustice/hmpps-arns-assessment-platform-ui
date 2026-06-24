@@ -27,7 +27,7 @@ import { Step } from '../../constants/step'
 import { commonContentFor } from '../../../../locales'
 import { contentFor } from '../../locales'
 import { getDisplayTextForItems } from '../../../../../../i18n'
-import { CommonOption } from '../../../../constants/commonOption';
+import { CommonOption } from '../../../../constants/commonOption'
 
 // --- Employment and Education Summary Group ---
 
@@ -300,7 +300,9 @@ const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.employment_education_no_strengths_protective_factors_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_education_strengths_protective_factors).match(Condition.Equals(CommonOption.no)),
+  dependentWhen: Answer(Question.employment_education_strengths_protective_factors).match(
+    Condition.Equals(CommonOption.no),
+  ),
 })
 
 export const strengthsProtectiveFactors = GovUKRadioInput({

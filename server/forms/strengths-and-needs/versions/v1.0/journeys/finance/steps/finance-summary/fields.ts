@@ -1,11 +1,4 @@
-import {
-  and,
-  Answer,
-  Condition,
-  not,
-  Self,
-  validation,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, not, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
   GovUKCharacterCount,
@@ -23,7 +16,7 @@ import {
   yesTypeOfDebt,
 } from '../finance/fields'
 import { CaseData } from '../../../../constants/formVersion'
-import {   getDisplayTextForSpecificItem } from '../../../../../../i18n'
+import { getDisplayTextForSpecificItem } from '../../../../../../i18n'
 import { Question } from '../../constants/question'
 import { contentFor } from '../../locales'
 import { Option } from '../../constants/option'

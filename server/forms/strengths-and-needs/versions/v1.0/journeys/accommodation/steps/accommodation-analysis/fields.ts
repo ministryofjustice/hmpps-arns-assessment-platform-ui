@@ -11,8 +11,8 @@ import {
   accommodationStrengthsProtectiveFactors,
   accommodationSummary,
 } from '../accommodation-summary/fields'
-import { contentFor } from '../../locales';
-import { commonContentFor } from '../../../../locales';
+import { contentFor } from '../../locales'
+import { commonContentFor } from '../../../../locales'
 
 // --- Practitioner Analysis Summary Group ---
 

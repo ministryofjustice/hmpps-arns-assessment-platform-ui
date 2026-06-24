@@ -5,7 +5,7 @@ import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 
 export const financeSummaryStep = step({
-  path: '/' + Step.financeSummary.path,
+  path: `/${Step.financeSummary.path}`,
   title: 'Finance Summary', // TODO: contentFor('step.finance_summary')
   blocks: [summaryTab],
   onSubmission: [

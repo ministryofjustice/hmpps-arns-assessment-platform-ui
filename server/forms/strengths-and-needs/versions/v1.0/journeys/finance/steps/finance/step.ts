@@ -13,7 +13,7 @@ import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 
 export const financeStep = step({
-  path: '/' + Step.finance.path,
+  path: `/${Step.finance.path}`,
   title: 'Finance', // TODO: contentFor('step.finance')
   reachability: { entryWhen: true },
   blocks: [

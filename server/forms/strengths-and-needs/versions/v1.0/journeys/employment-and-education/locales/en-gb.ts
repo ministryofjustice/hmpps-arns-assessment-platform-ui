@@ -2,7 +2,7 @@ import { Question } from '../constants/question'
 import { Step } from '../constants/step'
 import { Option } from '../constants/option'
 import { Locale } from '../../../../../i18n'
-import { CommonOption } from '../../../constants/commonOption';
+import { CommonOption } from '../../../constants/commonOption'
 
 export const english = {
   step: {

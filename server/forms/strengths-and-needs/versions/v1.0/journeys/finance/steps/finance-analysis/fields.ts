@@ -1,9 +1,5 @@
 import { Answer } from '@ministryofjustice/hmpps-forge/core/authoring'
-import {
-  GovUKBody,
-  GovUKSummaryList,
-  GovUKTabs,
-} from '@ministryofjustice/hmpps-forge/govuk-components'
+import { GovUKBody, GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { SANGenerators } from '../../../../../../generators'
 import {
   financeSummary,
@@ -39,7 +35,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       actions: {
         items: [
           {
-            href: Step.financeSummary.path + '#practitioner-analysis',
+            href: `${Step.financeSummary.path}#practitioner-analysis`,
             text: commonContentFor('change'),
             visuallyHiddenText: `"${contentFor(
               'question.finance_strengths_protective_factors.text',
@@ -72,7 +68,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       actions: {
         items: [
           {
-            href: Step.financeSummary.path + '#practitioner-analysis',
+            href: `${Step.financeSummary.path}#practitioner-analysis`,
             text: commonContentFor('change'),
             visuallyHiddenText: `"${contentFor(
               'question.finance_linked_to_serious_harm.text',
@@ -101,7 +97,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       actions: {
         items: [
           {
-            href: Step.financeSummary.path + '#practitioner-analysis',
+            href: `${Step.financeSummary.path}#practitioner-analysis`,
             text: commonContentFor('change'),
             visuallyHiddenText: `"${contentFor(
               'question.finance_linked_to_reoffending.text',

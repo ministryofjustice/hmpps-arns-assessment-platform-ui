@@ -32,7 +32,12 @@ export const getDisplayTextForItems = (fieldCode: string, items: any[], options:
   items.filter(item => !item.divider)
     .map(item => getDisplayTextForItem(fieldCode, item, options))
 
-export const getDisplayTextForSpecificItem = (fieldCode: string, items: any[], value: string, options: { size?: 's' | 'l' } = {}) =>
+export const getDisplayTextForSpecificItem = (
+  fieldCode: string,
+  items: any[],
+  value: string,
+  options: { size?: 's' | 'l' } = {},
+) =>
   items.filter(item => !item.divider && item.value === value)
     .map(item => getDisplayTextForItem(fieldCode, item, options))
 

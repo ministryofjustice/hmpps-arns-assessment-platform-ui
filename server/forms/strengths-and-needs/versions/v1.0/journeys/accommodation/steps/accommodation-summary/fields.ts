@@ -1,12 +1,4 @@
-import {
-  and,
-  Answer,
-  Condition,
-  not,
-  or,
-  Self,
-  validation,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, not, or, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
   GovUKCharacterCount,
@@ -25,9 +17,9 @@ import {
   typeOfSettledAccommodation,
   typeOfTemporaryAccommodation,
 } from '../current-accommodation/fields'
-import { contentFor } from '../../locales';
-import { commonContentFor } from '../../../../locales';
-import { CommonOption } from '../../../../constants/commonOption';
+import { contentFor } from '../../locales'
+import { commonContentFor } from '../../../../locales'
+import { CommonOption } from '../../../../constants/commonOption'
 
 // --- Accommodation Summary Group ---
 
@@ -38,20 +30,32 @@ export const accommodationSummary = GovUKSummaryList({
       value: {
         blocks: [
           GovUKBody({
-            text: SANGenerators.getTextFromListDefinition(currentAccommodation.items, Answer(Question.current_accommodation)),
+            text: SANGenerators.getTextFromListDefinition(
+              currentAccommodation.items,
+              Answer(Question.current_accommodation),
+            ),
           }),
           GovUKBody({
-            text: SANGenerators.getTextFromListDefinition(typeOfSettledAccommodation.items, Answer(Question.type_of_settled_accommodation)),
+            text: SANGenerators.getTextFromListDefinition(
+              typeOfSettledAccommodation.items,
+              Answer(Question.type_of_settled_accommodation),
+            ),
             size: 's',
             visibleWhen: Answer(Question.type_of_settled_accommodation).match(Condition.IsRequired()),
           }),
           GovUKBody({
-            text: SANGenerators.getTextFromListDefinition(typeOfTemporaryAccommodation.items, Answer(Question.type_of_temporary_accommodation)),
+            text: SANGenerators.getTextFromListDefinition(
+              typeOfTemporaryAccommodation.items,
+              Answer(Question.type_of_temporary_accommodation),
+            ),
             size: 's',
             visibleWhen: Answer(Question.type_of_temporary_accommodation).match(Condition.IsRequired()),
           }),
           GovUKBody({
-            text: SANGenerators.getTextFromListDefinition(typeOfNoAccommodation.items, Answer(Question.type_of_no_accommodation)),
+            text: SANGenerators.getTextFromListDefinition(
+              typeOfNoAccommodation.items,
+              Answer(Question.type_of_no_accommodation),
+            ),
             size: 's',
             visibleWhen: Answer(Question.type_of_no_accommodation).match(Condition.IsRequired()),
           }),

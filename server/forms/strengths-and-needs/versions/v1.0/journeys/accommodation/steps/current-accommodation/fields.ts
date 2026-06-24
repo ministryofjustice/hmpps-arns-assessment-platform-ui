@@ -12,9 +12,9 @@ import { GovUKRadioInput, GovUKDateInputFull } from '@ministryofjustice/hmpps-fo
 import { CaseData } from '../../../../constants/formVersion'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
-import { commonContentFor } from '../../../../locales';
-import { contentFor } from '../../locales';
-import { CommonOption } from '../../../../constants/commonOption';
+import { commonContentFor } from '../../../../locales'
+import { contentFor } from '../../locales'
+import { CommonOption } from '../../../../constants/commonOption'
 
 const hasAnyDatePart = () => {
   return and(
@@ -142,11 +142,23 @@ export const typeOfSettledAccommodation = GovUKRadioInput({
   dependentWhen: Answer(Question.current_accommodation).match(Condition.Equals(Option.settled)),
   items: [
     { value: Option.homeowner, text: contentFor('question.type_of_settled_accommodation.option.HOMEOWNER') },
-    { value: Option.friends_or_family, text: contentFor('question.type_of_settled_accommodation.option.FRIENDS_OR_FAMILY') },
-    { value: Option.renting_privately, text: contentFor('question.type_of_settled_accommodation.option.RENTING_PRIVATELY') },
+    {
+      value: Option.friends_or_family,
+      text: contentFor('question.type_of_settled_accommodation.option.FRIENDS_OR_FAMILY'),
+    },
+    {
+      value: Option.renting_privately,
+      text: contentFor('question.type_of_settled_accommodation.option.RENTING_PRIVATELY'),
+    },
     { value: Option.renting_other, text: contentFor('question.type_of_settled_accommodation.option.RENTING_OTHER') },
-    { value: Option.residential_healthcare, text: contentFor('question.type_of_settled_accommodation.option.RESIDENTIAL_HEALTHCARE') },
-    { value: Option.supported_accommodation, text: contentFor('question.type_of_settled_accommodation.option.SUPPORTED_ACCOMMODATION') },
+    {
+      value: Option.residential_healthcare,
+      text: contentFor('question.type_of_settled_accommodation.option.RESIDENTIAL_HEALTHCARE'),
+    },
+    {
+      value: Option.supported_accommodation,
+      text: contentFor('question.type_of_settled_accommodation.option.SUPPORTED_ACCOMMODATION'),
+    },
     { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
   ],
   validWhen: [
@@ -167,7 +179,11 @@ export const typeOfTemporaryAccommodation = GovUKRadioInput({
   },
   dependentWhen: Answer(Question.current_accommodation).match(Condition.Equals(Option.temporary)),
   items: [
-    { value: Option.approved_premises, text: contentFor('question.type_of_temporary_accommodation.option.APPROVED_PREMISES'), block: approvedPremisesEndDate },
+    {
+      value: Option.approved_premises,
+      text: contentFor('question.type_of_temporary_accommodation.option.APPROVED_PREMISES'),
+      block: approvedPremisesEndDate,
+    },
     {
       value: Option.cas2,
       text: contentFor('question.type_of_temporary_accommodation.option.CAS2'),
@@ -236,9 +252,21 @@ export const currentAccommodation = GovUKRadioInput({
     },
   },
   items: [
-    { value: Option.settled, text: contentFor('question.current_accommodation.option.SETTLED'), block: typeOfSettledAccommodation },
-    { value: Option.temporary, text: contentFor('question.current_accommodation.option.TEMPORARY'), block: typeOfTemporaryAccommodation },
-    { value: Option.no_accommodation, text: contentFor('question.current_accommodation.option.NO_ACCOMMODATION'), block: typeOfNoAccommodation },
+    {
+      value: Option.settled,
+      text: contentFor('question.current_accommodation.option.SETTLED'),
+      block: typeOfSettledAccommodation,
+    },
+    {
+      value: Option.temporary,
+      text: contentFor('question.current_accommodation.option.TEMPORARY'),
+      block: typeOfTemporaryAccommodation,
+    },
+    {
+      value: Option.no_accommodation,
+      text: contentFor('question.current_accommodation.option.NO_ACCOMMODATION'),
+      block: typeOfNoAccommodation,
+    },
   ],
   validWhen: [
     validation({

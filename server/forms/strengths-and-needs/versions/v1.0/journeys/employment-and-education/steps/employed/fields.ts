@@ -1,12 +1,4 @@
-import {
-  validation,
-  Self,
-  Answer,
-  and,
-  Condition,
-  not,
-  or,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { validation, Self, Answer, and, Condition, not, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKRadioInput,
   GovUKCheckboxInput,
@@ -657,14 +649,18 @@ const hasMadePositiveChangesDetails = GovUKCharacterCount({
   code: Question.has_made_positive_changes_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(CommonOption.has_made_changes)),
+  dependentWhen: Answer(Question.employment_and_education_changes).match(
+    Condition.Equals(CommonOption.has_made_changes),
+  ),
 })
 
 const isActivelyMakingChangesDetails = GovUKCharacterCount({
   code: Question.actively_making_changes_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_and_education_changes).match(Condition.Equals(CommonOption.is_making_changes)),
+  dependentWhen: Answer(Question.employment_and_education_changes).match(
+    Condition.Equals(CommonOption.is_making_changes),
+  ),
 })
 
 const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
