@@ -1,8 +1,9 @@
 import { step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { employmentStatusAnalysisSummaryTab } from './fields'
+import { Step } from '../../constants/step'
 
 export const financeAnalysisStep = step({
-  path: '/finance-analysis',
-  title: 'Finance Analysis',
+  path: `/${Step.financeAnalysis.path}`,
+  title: 'Finance Analysis', // TODO: contentFor('step.finance_analysis')
   blocks: [employmentStatusAnalysisSummaryTab],
 })

@@ -2,7 +2,6 @@ import { step, submit, redirect, Post, Answer, and, or, Condition } from '@minis
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { currentAccommodation } from './fields'
 import { saveButton } from '../../../../constants/buttons'
-import { locale } from '../../constants/locale'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { Question } from '../../constants/question'
@@ -10,7 +9,7 @@ import { Option } from '../../constants/option'
 
 export const currentAccommodationStep = step({
   path: `/${Step.current_accommodation.path}`,
-  title: locale.step[Step.current_accommodation.code],
+  title: 'Current accommodation', // TODO: contentFor('step.current_accommodation')
   reachability: { entryWhen: true },
   view: {
     locals: {

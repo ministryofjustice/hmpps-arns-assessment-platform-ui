@@ -12,7 +12,7 @@ export const Step = {
     path: 'temporary-accommodation',
   },
   temporary_accommodation_cas_ap: {
-    code: 'temporary_accommodationCasAp',
+    code: 'temporary_accommodation_cas_ap',
     path: 'temporary-accommodation-cas-ap',
   },
   no_accommodation: {
@@ -27,4 +27,4 @@ export const Step = {
     code: 'accommodation_analysis',
     path: 'accommodation-analysis',
   },
-}
+} as const

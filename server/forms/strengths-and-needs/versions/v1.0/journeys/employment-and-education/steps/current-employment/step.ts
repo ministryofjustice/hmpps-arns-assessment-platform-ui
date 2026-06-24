@@ -4,11 +4,10 @@ import { currentEmploymentStatus } from './fields'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
-import { locale } from '../../constants/locale'
 
 export const currentEmploymentStep = step({
   path: `/${Step.current_employment.path}`,
-  title: locale.step[Step.current_employment.code],
+  title: 'Employed', // TODO: contentFor('step.current_employment')
   reachability: { entryWhen: true },
   view: {
     locals: {

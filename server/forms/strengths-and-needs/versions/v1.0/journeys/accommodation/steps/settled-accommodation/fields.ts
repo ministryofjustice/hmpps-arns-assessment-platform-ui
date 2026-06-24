@@ -1,4 +1,4 @@
-import { validation, Self, Answer, Format, and, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { validation, Self, Answer, and, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKRadioInput,
   GovUKCheckboxInput,
@@ -7,15 +7,16 @@ import {
 import { CaseData } from '../../../../constants/formVersion'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
-import { commonLocale } from '../../../../constants/locale'
-import { locale } from '../../constants/locale'
+import { commonContentFor } from '../../../../locales'
+import { CommonOption } from '../../../../constants/commonOption'
+import { contentFor } from '../../locales'
 
 // --- Living With Group ---
 
 const livingWithPartnerDetails = GovUKCharacterCount({
   code: Question.living_with_partner_details,
-  label: commonLocale.optional_details,
-  hint: locale.hint[Question.living_with_partner_details],
+  label: commonContentFor('optional_details'),
+  hint: contentFor('question.living_with_partner_details.hint'),
   maxLength: 2000,
   dependentWhen: and(
     Answer(Question.living_with).match(Condition.IsRequired()),
@@ -25,11 +26,11 @@ const livingWithPartnerDetails = GovUKCharacterCount({
 
 const livingWithOtherDetails = GovUKCharacterCount({
   code: Question.living_with_other_details,
-  label: commonLocale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: and(
     Answer(Question.living_with).match(Condition.IsRequired()),
-    Answer(Question.living_with).match(Condition.Array.Contains(Option.other)),
+    Answer(Question.living_with).match(Condition.Array.Contains(CommonOption.other)),
   ),
 })
 
@@ -38,25 +39,25 @@ export const livingWith = GovUKCheckboxInput({
   multiple: true,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.living_with], CaseData.Forename),
+      text: contentFor('question.living_with.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: commonLocale.select_all_that_apply,
+  hint: commonContentFor('select_all_that_apply'),
   items: [
-    { value: Option.family, text: locale.option[Option.family] },
-    { value: Option.friends, text: locale.option[Option.friends] },
-    { value: Option.partner, text: locale.option[Option.partner], block: livingWithPartnerDetails },
-    { value: Option.person_under_18, text: locale.option[Option.person_under_18] },
-    { value: Option.other, text: locale.option[Option.other], block: livingWithOtherDetails },
-    { value: Option.unknown, text: locale.option[Option.unknown] },
-    { divider: commonLocale.or },
-    { value: Option.alone, text: locale.option[Option.alone], behaviour: 'exclusive' },
+    { value: Option.family, text: contentFor('question.living_with.option.FAMILY') },
+    { value: Option.friends, text: contentFor('question.living_with.option.FRIENDS') },
+    { value: Option.partner, text: contentFor('question.living_with.option.PARTNER'), block: livingWithPartnerDetails },
+    { value: Option.person_under_18, text: contentFor('question.living_with.option.PERSON_UNDER_18') },
+    { value: CommonOption.other, text: commonContentFor('option.OTHER'), block: livingWithOtherDetails },
+    { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+    { divider: commonContentFor('or') },
+    { value: Option.alone, text: contentFor('question.living_with.option.ALONE'), behaviour: 'exclusive' },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: locale.validation[Question.living_with],
+      message: contentFor('question.living_with.validation'),
     }),
   ],
 })
@@ -65,16 +66,16 @@ export const livingWith = GovUKCheckboxInput({
 
 const suitableHousingLocationConcernsDetails = GovUKCharacterCount({
   code: Question.suitable_housing_location_concerns_details,
-  label: commonLocale.required_details,
+  label: commonContentFor('required_details'),
   maxLength: 2000,
   dependentWhen: and(
     Answer(Question.suitable_housing_location_concerns).match(Condition.IsRequired()),
-    Answer(Question.suitable_housing_location_concerns).match(Condition.Array.Contains(Option.other)),
+    Answer(Question.suitable_housing_location_concerns).match(Condition.Array.Contains(CommonOption.other)),
   ),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: commonLocale.validation.enter_details,
+      message: commonContentFor('validation.enter_details'),
     }),
   ],
 })
@@ -84,19 +85,35 @@ export const suitableHousingLocationConcerns = GovUKCheckboxInput({
   multiple: true,
   fieldset: {
     legend: {
-      text: locale.question[Question.suitable_housing_location_concerns],
+      text: contentFor('question.suitable_housing_location_concerns.text'),
       classes: 'govuk-visually-hidden',
     },
   },
-  hint: commonLocale.select_all_that_apply_optional,
-  dependentWhen: Answer(Question.suitable_housing_location).match(Condition.Equals(Option.no)),
+  hint: commonContentFor('select_all_that_apply_optional'),
+  dependentWhen: Answer(Question.suitable_housing_location).match(Condition.Equals(CommonOption.no)),
   items: [
-    { value: Option.criminal_associates, text: locale.option[Option.criminal_associates] },
-    { value: Option.victimisation, text: locale.option[Option.victimisation] },
-    { value: Option.victim_proximity, text: locale.option[Option.victim_proximity] },
-    { value: Option.neighbour_difficulty, text: locale.option[Option.neighbour_difficulty] },
-    { value: Option.area_safety, text: locale.option[Option.area_safety] },
-    { value: Option.other, text: locale.option[Option.other], block: suitableHousingLocationConcernsDetails },
+    {
+      value: Option.criminal_associates,
+      text: contentFor('question.suitable_housing_location_concerns.option.CRIMINAL_ASSOCIATES'),
+    },
+    {
+      value: Option.victimisation,
+      text: contentFor('question.suitable_housing_location_concerns.option.VICTIMISATION'),
+    },
+    {
+      value: Option.victim_proximity,
+      text: contentFor('question.suitable_housing_location_concerns.option.VICTIM_PROXIMITY'),
+    },
+    {
+      value: Option.neighbour_difficulty,
+      text: contentFor('question.suitable_housing_location_concerns.option.NEIGHBOUR_DIFFICULTY'),
+    },
+    { value: Option.area_safety, text: contentFor('question.suitable_housing_location_concerns.option.AREA_SAFETY') },
+    {
+      value: CommonOption.other,
+      text: commonContentFor('option.OTHER'),
+      block: suitableHousingLocationConcernsDetails,
+    },
   ],
 })
 
@@ -104,18 +121,18 @@ export const suitableHousingLocation = GovUKRadioInput({
   code: Question.suitable_housing_location,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.suitable_housing_location], CaseData.ForenamePossessive),
+      text: contentFor('question.suitable_housing_location.text', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
-    { value: Option.yes, text: locale.option[Option.yes] },
-    { value: Option.no, text: locale.option[Option.no], block: suitableHousingLocationConcerns },
+    { value: CommonOption.yes, text: commonContentFor('option.YES') },
+    { value: CommonOption.no, text: commonContentFor('option.NO'), block: suitableHousingLocationConcerns },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: locale.validation[Question.suitable_housing_location],
+      message: contentFor('question.suitable_housing_location.validation'),
     }),
   ],
 })
@@ -125,33 +142,33 @@ export const suitableHousingLocation = GovUKRadioInput({
 const suitableHousingConcernsOptions = [
   {
     value: Option.facilities,
-    text: locale.option[Question.suitable_housing_concerns + Option.facilities],
+    text: contentFor('question.suitable_housing_concerns.option.FACILITIES'),
   },
-  { value: Option.overcrowding, text: locale.option[Question.suitable_housing_concerns + Option.overcrowding] },
+  { value: Option.overcrowding, text: contentFor('question.suitable_housing_concerns.option.OVERCROWDING') },
   {
     value: Option.exploitation,
-    text: locale.option[Question.suitable_housing_concerns + Option.exploitation],
+    text: contentFor('question.suitable_housing_concerns.option.EXPLOITATION'),
   },
-  { value: Option.safety, text: locale.option[Question.suitable_housing_concerns + Option.safety] },
+  { value: Option.safety, text: contentFor('question.suitable_housing_concerns.option.SAFETY') },
   {
     value: Option.lives_with_victim,
-    text: locale.option[Question.suitable_housing_concerns + Option.lives_with_victim],
+    text: contentFor('question.suitable_housing_concerns.option.LIVES_WITH_VICTIM'),
   },
-  { value: Option.victimisation, text: locale.option[Question.suitable_housing_concerns + Option.victimisation] },
+  { value: Option.victimisation, text: contentFor('question.suitable_housing_concerns.option.VICTIMISATION') },
 ]
 
 const suitableHousingConcernsDetails = GovUKCharacterCount({
   code: Question.suitable_housing_concerns_details,
-  label: commonLocale.required_details,
+  label: commonContentFor('required_details'),
   maxLength: 2000,
   dependentWhen: and(
     Answer(Question.suitable_housing_concerns).match(Condition.IsRequired()),
-    Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.other)),
+    Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(CommonOption.other)),
   ),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: commonLocale.validation.enter_details,
+      message: commonContentFor('validation.enter_details'),
     }),
   ],
 })
@@ -161,30 +178,30 @@ export const suitableHousingConcerns = GovUKCheckboxInput({
   multiple: true,
   fieldset: {
     legend: {
-      text: locale.question[Question.suitable_housing_concerns],
+      text: contentFor('question.suitable_housing_concerns.text'),
       classes: 'govuk-visually-hidden',
     },
   },
-  hint: commonLocale.select_all_that_apply_optional,
+  hint: commonContentFor('select_all_that_apply_optional'),
   dependentWhen: Answer(Question.suitable_housing).match(Condition.Equals(Option.yes_with_concerns)),
   items: [
     ...suitableHousingConcernsOptions,
-    { value: Option.other, text: locale.option[Option.other], block: suitableHousingConcernsDetails },
+    { value: CommonOption.other, text: commonContentFor('option.OTHER'), block: suitableHousingConcernsDetails },
   ],
 })
 
 const unsuitableHousingConcernsDetails = GovUKCharacterCount({
   code: Question.unsuitable_housing_concerns_details,
-  label: commonLocale.required_details,
+  label: commonContentFor('required_details'),
   maxLength: 2000,
   dependentWhen: and(
     Answer(Question.unsuitable_housing_concerns).match(Condition.IsRequired()),
-    Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.other)),
+    Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(CommonOption.other)),
   ),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: commonLocale.validation.enter_details,
+      message: commonContentFor('validation.enter_details'),
     }),
   ],
 })
@@ -194,15 +211,15 @@ export const unsuitableHousingConcerns = GovUKCheckboxInput({
   multiple: true,
   fieldset: {
     legend: {
-      text: locale.question[Question.unsuitable_housing_concerns],
+      text: contentFor('question.unsuitable_housing_concerns.text'),
       classes: 'govuk-visually-hidden',
     },
   },
-  hint: commonLocale.select_all_that_apply_optional,
-  dependentWhen: Answer(Question.suitable_housing).match(Condition.Equals(Option.no)),
+  hint: commonContentFor('select_all_that_apply_optional'),
+  dependentWhen: Answer(Question.suitable_housing).match(Condition.Equals(CommonOption.no)),
   items: [
     ...suitableHousingConcernsOptions,
-    { value: Option.other, text: locale.option[Option.other], block: unsuitableHousingConcernsDetails },
+    { value: CommonOption.other, text: commonContentFor('option.OTHER'), block: unsuitableHousingConcernsDetails },
   ],
 })
 
@@ -210,20 +227,24 @@ export const suitableHousing = GovUKRadioInput({
   code: Question.suitable_housing,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.suitable_housing], CaseData.ForenamePossessive),
+      text: contentFor('question.suitable_housing.text', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: locale.hint[Question.suitable_housing],
+  hint: contentFor('question.suitable_housing.hint'),
   items: [
-    { value: Option.yes, text: locale.option[Option.yes] },
-    { value: Option.yes_with_concerns, text: locale.option[Option.yes_with_concerns], block: suitableHousingConcerns },
-    { value: Option.no, text: locale.option[Option.no], block: unsuitableHousingConcerns },
+    { value: CommonOption.yes, text: commonContentFor('option.YES') },
+    {
+      value: Option.yes_with_concerns,
+      text: contentFor('question.suitable_housing.option.YES_WITH_CONCERNS'),
+      block: suitableHousingConcerns,
+    },
+    { value: CommonOption.no, text: commonContentFor('option.NO'), block: unsuitableHousingConcerns },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: locale.validation[Question.suitable_housing],
+      message: contentFor('question.suitable_housing.validation'),
     }),
   ],
 })
@@ -234,26 +255,38 @@ export const accommodationChanges = GovUKRadioInput({
   code: Question.accommodation_changes,
   fieldset: {
     legend: {
-      text: Format(locale.question[Question.accommodation_changes], CaseData.Forename),
+      text: contentFor('question.accommodation_changes.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
-    { value: Option.made_changes, text: locale.option[Option.made_changes] },
-    { value: Option.making_changes, text: locale.option[Option.making_changes] },
-    { value: Option.want_to_make_changes, text: locale.option[Option.want_to_make_changes] },
-    { value: Option.needs_help_to_make_changes, text: locale.option[Option.needs_help_to_make_changes] },
-    { value: Option.thinking_about_making_changes, text: locale.option[Option.thinking_about_making_changes] },
-    { value: Option.does_not_want_to_make_changes, text: locale.option[Option.does_not_want_to_make_changes] },
-    { value: Option.does_not_want_to_answer, text: locale.option[Option.does_not_want_to_answer] },
-    { divider: commonLocale.or },
-    { value: Option.not_present, text: Format(locale.option[Option.not_present], CaseData.Forename) },
-    { value: Option.not_applicable, text: locale.option[Option.not_applicable] },
+    { value: CommonOption.has_made_changes, text: commonContentFor('option.HAS_MADE_CHANGES') },
+    { value: CommonOption.is_making_changes, text: commonContentFor('option.IS_MAKING_CHANGES') },
+    {
+      value: CommonOption.wants_to_make_changes_knows_how_to,
+      text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
+    },
+    {
+      value: CommonOption.wants_to_make_changes_needs_help,
+      text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
+    },
+    {
+      value: CommonOption.thinking_about_making_changes,
+      text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
+    },
+    {
+      value: CommonOption.does_not_want_to_make_changes,
+      text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
+    },
+    { value: CommonOption.does_not_want_to_answer, text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER') },
+    { divider: commonContentFor('or') },
+    { value: CommonOption.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },
+    { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: locale.validation[Question.accommodation_changes],
+      message: contentFor('question.accommodation_changes.validation'),
     }),
   ],
 })

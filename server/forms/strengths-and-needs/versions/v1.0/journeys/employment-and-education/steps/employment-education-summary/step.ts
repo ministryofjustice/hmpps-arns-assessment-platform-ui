@@ -2,12 +2,11 @@ import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpp
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { employmentStatusSummaryTab } from './fields'
 import { Section, SectionStatus } from '../../../../constants/section'
-import { locale } from '../../constants/locale'
 import { Step } from '../../constants/step'
 
 export const employmentEducationSummaryStep = step({
   path: `/${Step.employment_education_summary.path}`,
-  title: locale.step[Step.employment_education_summary.code],
+  title: 'Employment and Education Summary', // TODO: contentFor('step.employment-education-summary')
   blocks: [employmentStatusSummaryTab],
   onSubmission: [
     submit({

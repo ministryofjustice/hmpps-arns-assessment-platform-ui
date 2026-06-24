@@ -3,13 +3,12 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { suitableHousingLocation, suitableHousing, accommodationChanges } from '../settled-accommodation/fields'
 import { suitableHousingPlanned } from '../temporary-accommodation/fields'
 import { Step } from '../../constants/step'
-import { locale } from '../../constants/locale'
 import { saveButton } from '../../../../constants/buttons'
 import { Section, SectionStatus } from '../../../../constants/section'
 
 export const temporaryAccommodationCasApStep = step({
   path: `/${Step.temporary_accommodation_cas_ap.path}`,
-  title: locale.step[Step.temporary_accommodation_cas_ap.code],
+  title: 'Temporary accommodation', // TODO: contentFor('step.temporary_accommodation_cas_ap')
   blocks: [suitableHousingLocation, suitableHousing, suitableHousingPlanned, accommodationChanges, saveButton],
   onSubmission: [
     submit({

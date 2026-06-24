@@ -6,7 +6,7 @@ import { drugUseJourney } from './journeys/drug-use'
 import { StrengthsAndNeedsEffects } from '../../effects'
 import { Section } from './constants/section'
 import { basePath, formVersion } from './constants/formVersion'
-import { commonLocale } from './constants/locale'
+import { commonContentFor } from './locales'
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -16,7 +16,7 @@ import { commonLocale } from './constants/locale'
  */
 export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
-  title: commonLocale.strengths_and_needs,
+  title: 'Strengths and needs', // TODO: commonContentFor('strengths_and_needs'),
   path: `/${formVersion}`,
   view: {
     template: 'strengths-and-needs/views/san-step',
@@ -25,7 +25,7 @@ export const strengthsAndNeedsV1Journey = journey({
       sectionNavItems: Object.values(Section).map(section => ({
         ...section,
         status: Data(section.statusKey),
-        text: commonLocale.sectionTitle[section.code],
+        text: commonContentFor(`sectionTitle.${section.code}`),
       })),
     },
   },

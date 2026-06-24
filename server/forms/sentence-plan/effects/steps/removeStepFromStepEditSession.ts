@@ -29,7 +29,7 @@ export const removeStepFromStepEditSession = () => async (context: SentencePlanC
 
   // Get action from POST data
   // Parse the index from action (e.g., "remove_0" -> 0)
-  const indexStr = context.getPostData('action').replace('remove_', '')
+  const indexStr = (context.getPostData('action') as string).replace('remove_', '')
   const index = parseInt(indexStr, 10)
 
   if (Number.isNaN(index) || index < 0 || index >= changes.steps.length) {

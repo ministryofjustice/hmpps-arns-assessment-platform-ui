@@ -1,10 +1,10 @@
 import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { currentEmploymentStep } from './steps/current-employment/step'
-import { employedEmploymentStep } from './steps/employed-employment/step'
+import { employedEmploymentStep } from './steps/employed/step'
 import { employmentEducationSummaryStep } from './steps/employment-education-summary/step'
 import { employmentEducationAnalysisStep } from './steps/employment-education-analysis/step'
 import { Section } from '../../constants/section'
-import { commonLocale } from '../../constants/locale'
+import { commonContentFor } from '../../locales'
 
 /**
  * Employment Journey
@@ -18,12 +18,12 @@ import { commonLocale } from '../../constants/locale'
  */
 export const employmentJourney = journey({
   code: Section.employment_and_education.code,
-  title: commonLocale.sectionTitle[Section.employment_and_education.code],
+  title: 'Employment and education', // TODO: commonContentFor('sectionTitle.employment-and-education')
   path: Section.employment_and_education.path,
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {
     locals: {
-      sectionTitle: commonLocale.sectionTitle[Section.employment_and_education.code],
+      sectionTitle: commonContentFor('sectionTitle.employment-and-education'),
       sectionStatus: Data(Section.employment_and_education.statusKey),
     },
   },
