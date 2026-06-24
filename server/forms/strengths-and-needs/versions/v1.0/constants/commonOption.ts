@@ -1,0 +1,17 @@
+export const CommonOption = {
+  has_made_changes: 'HAS_MADE_CHANGES',
+  is_making_changes: 'IS_MAKING_CHANGES',
+  wants_to_make_changes_knows_how_to: 'WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO',
+  wants_to_make_changes_needs_help: 'WANTS_TO_MAKE_CHANGES_NEEDS_HELP',
+  thinking_about_making_changes: 'THINKING_ABOUT_MAKING_CHANGES',
+  does_not_want_to_make_changes: 'DOES_NOT_WANT_TO_MAKE_CHANGES',
+  does_not_want_to_answer: 'DOES_NOT_WANT_TO_ANSWER',
+  not_present: 'NOT_PRESENT',
+  not_applicable: 'NOT_APPLICABLE',
+  yes: 'YES',
+  no: 'NO',
+  non_of_these: 'NON_OF_THESE',
+  other: 'OTHER',
+  none: 'NONE',
+  unknown: 'UNKNOWN',
+} as const

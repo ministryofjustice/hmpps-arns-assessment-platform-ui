@@ -19,8 +19,7 @@ import { sectionPath } from '../../../../constants/path'
 
 export const employedEmploymentStep = step({
   path: `/${Step.employed.path}`,
-  // title: contentFor('step.employed'),
-  title: 'PLACEHOLDER',
+  title: 'Employed', // TODO: contentFor('step.employed')
   view: {
     locals: {
       backlink: sectionPath(Section.employment_and_education),

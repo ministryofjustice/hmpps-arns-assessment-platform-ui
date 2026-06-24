@@ -3,7 +3,7 @@ import { basePath } from './formVersion'
 export const SectionStatus = {
   complete: 'COMPLETE',
   incomplete: 'INCOMPLETE',
-}
+} as const
 
 export const Section = {
   accommodation: {
@@ -18,7 +18,7 @@ export const Section = {
     sideNavHref: `${basePath}/employment-and-education/current-employment?resume=true`,
     statusKey: 'employment_section_status',
   },
-  finances: {
+  finance: {
     code: 'finance',
     path: '/finances',
     sideNavHref: `${basePath}/finances/finance?resume=true`,
@@ -38,8 +38,8 @@ export const Section = {
   },
   health_and_wellbeing: {
     code: 'health-and-wellbeing',
-    path: '/health-and-wellbeing',
-    sideNavHref: `${basePath}/health-and-wellbeing/health-wellbeing?resume=true`,
+    path: '',
+    sideNavHref: `${basePath}/health-and-wellbeing/physical-health?resume=true`,
     statusKey: 'health_section_status',
   },
   personal_relationships_and_community: {

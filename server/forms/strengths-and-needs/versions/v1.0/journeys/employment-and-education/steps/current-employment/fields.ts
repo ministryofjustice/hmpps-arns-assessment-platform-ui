@@ -102,7 +102,11 @@ export const currentEmploymentStatus = GovUKRadioInput({
     },
   },
   items: [
-    { value: Option.employed, text: contentFor('question.current_employment_status.option.EMPLOYED'), block: typeOfEmployment },
+    {
+      value: Option.employed,
+      text: contentFor('question.current_employment_status.option.EMPLOYED'),
+      block: typeOfEmployment,
+    },
     { value: Option.self_employed, text: contentFor('question.current_employment_status.option.SELF_EMPLOYED') },
     { value: Option.retired, text: contentFor('question.current_employment_status.option.RETIRED') },
     {

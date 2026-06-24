@@ -1,11 +1,9 @@
-import { Answer, Format } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKBody, GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { SANGenerators } from '../../../../../../generators'
-import { locale } from '../../constants/locale'
 import { CaseData } from '../../../../constants/formVersion'
 import { Question } from '../../constants/question'
 import { Step } from '../../constants/step'
-import { commonLocale } from '../../../../constants/locale'
 import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
 import {
   accommodationLinkedReoffending,
@@ -13,6 +11,8 @@ import {
   accommodationStrengthsProtectiveFactors,
   accommodationSummary,
 } from '../accommodation-summary/fields'
+import { contentFor } from '../../locales'
+import { commonContentFor } from '../../../../locales'
 
 // --- Practitioner Analysis Summary Group ---
 
@@ -20,7 +20,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
     {
       key: {
-        text: Format(locale.question[Question.accommodation_strengths_protective_factors], CaseData.ForenamePossessive),
+        text: contentFor('question.accommodation_strengths_protective_factors.text', CaseData.ForenamePossessive),
       },
       value: {
         blocks: [
@@ -38,7 +38,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
         items: [
           {
             href: `${Step.accommodation_summary.path}#practitioner-analysis`,
-            text: commonLocale.change,
+            text: commonContentFor('change'),
             visuallyHiddenText: 'name',
           },
         ],
@@ -46,7 +46,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: Format(locale.question[Question.accommodation_linked_to_serious_harm], CaseData.ForenamePossessive),
+        text: contentFor('question.accommodation_linked_to_serious_harm.text', CaseData.ForenamePossessive),
       },
       value: {
         blocks: [
@@ -64,7 +64,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
         items: [
           {
             href: `${Step.accommodation_summary.path}#practitioner-analysis`,
-            text: commonLocale.change,
+            text: commonContentFor('change'),
             visuallyHiddenText: 'name',
           },
         ],
@@ -72,7 +72,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: Format(locale.question[Question.accommodation_linked_to_reoffending], CaseData.ForenamePossessive),
+        text: contentFor('question.accommodation_linked_to_reoffending.text', CaseData.ForenamePossessive),
       },
       value: {
         blocks: [
@@ -90,7 +90,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
         items: [
           {
             href: `${Step.accommodation_summary.path}#practitioner-analysis`,
-            text: commonLocale.change,
+            text: commonContentFor('change'),
             visuallyHiddenText: 'name',
           },
         ],
@@ -104,14 +104,14 @@ export const accommodationPractitionerAnalysisSummaryTab = GovUKTabs({
   items: [
     {
       id: 'summary-analysis',
-      label: commonLocale.summary,
+      label: commonContentFor('summary'),
       panel: {
-        blocks: [accommodationSummary, goToPractitionerAnalysisButton(Step.accommodation_summary.path)],
+        blocks: [accommodationSummary, goToPractitionerAnalysisButton(Step.accommodation_analysis.path)],
       },
     },
     {
       id: 'practitioner-analysis-summary',
-      label: commonLocale.practitioner_analysis,
+      label: commonContentFor('practitioner_analysis'),
       panel: { blocks: [practitionerAnalysisSummary] },
     },
   ],

@@ -7,11 +7,10 @@ import { StrengthsAndNeedsGeneratorImplementations } from './generators'
 import { strengthsAndNeedsTransformerImplementations } from './transformers'
 import { strengthsAndNeedsConditionImplementations } from './conditions'
 import { Section } from './versions/v1.0/constants/section'
-import { commonLocale } from './versions/v1.0/constants/locale'
 
 const versionRedirectStep = step({
   path: '/',
-  title: commonLocale.strengths_and_needs,
+  title: 'Strengths and needs', // TODO: commonContentFor('strengths_and_needs')
   onAccess: [
     access({
       next: [
@@ -25,7 +24,7 @@ const versionRedirectStep = step({
 
 const strengthsAndNeedsRootJourney = journey({
   code: 'strengths-and-needs',
-  title: commonLocale.strengths_and_needs,
+  title: 'Strengths and needs', // TODO: commonContentFor('strengths_and_needs')
   path: '/strengths-and-needs',
   steps: [versionRedirectStep],
   children: [strengthsAndNeedsV1Journey],

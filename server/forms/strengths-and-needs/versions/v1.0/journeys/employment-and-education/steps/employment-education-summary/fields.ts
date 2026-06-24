@@ -17,7 +17,7 @@ import {
   professionalQualifications,
   readingDifficultyLevel,
   writingDifficultyLevel,
-} from '../employed-employment/fields'
+} from '../employed/fields'
 import { currentEmploymentStatus, typeOfEmployment } from '../current-employment/fields'
 import { Option } from '../../constants/option'
 import { Question } from '../../constants/question'
@@ -27,6 +27,7 @@ import { Step } from '../../constants/step'
 import { commonContentFor } from '../../../../locales'
 import { contentFor } from '../../locales'
 import { getDisplayTextForItems } from '../../../../../../i18n'
+import { CommonOption } from '../../../../constants/commonOption'
 
 // --- Employment and Education Summary Group ---
 
@@ -115,18 +116,18 @@ export const employmentStatusSummary = GovUKSummaryList({
 
           GovUKBody({
             text: commonContentFor('option.OTHER'),
-            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.other)),
+            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(CommonOption.other)),
           }),
           GovUKBody({ text: Answer(Question.day_to_day_other_commitments_details), size: 's' }),
 
           GovUKBody({
             text: commonContentFor('option.UNKNOWN'),
-            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.unknown)),
+            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(CommonOption.unknown)),
           }),
 
           GovUKBody({
             text: commonContentFor('option.NONE'),
-            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.none)),
+            visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(CommonOption.none)),
           }),
         ],
       },
@@ -285,7 +286,7 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: and(
     Answer(Question.employment_education_strengths_protective_factors).match(Condition.IsRequired()),
-    Answer(Question.employment_education_strengths_protective_factors).match(Condition.Equals(Option.yes)),
+    Answer(Question.employment_education_strengths_protective_factors).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
@@ -299,7 +300,9 @@ const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.employment_education_no_strengths_protective_factors_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_education_strengths_protective_factors).match(Condition.Equals(Option.no)),
+  dependentWhen: Answer(Question.employment_education_strengths_protective_factors).match(
+    Condition.Equals(CommonOption.no),
+  ),
 })
 
 export const strengthsProtectiveFactors = GovUKRadioInput({
@@ -312,8 +315,8 @@ export const strengthsProtectiveFactors = GovUKRadioInput({
   },
   hint: contentFor('question.employment_education_strengths_protective_factors.hint'),
   items: [
-    { value: Option.yes, text: commonContentFor('option.YES'), block: strengthsProtectiveFactorsDetails },
-    { value: Option.no, text: commonContentFor('option.NO'), block: noStrengthsProtectiveFactorsDetails },
+    { value: CommonOption.yes, text: commonContentFor('option.YES'), block: strengthsProtectiveFactorsDetails },
+    { value: CommonOption.no, text: commonContentFor('option.NO'), block: noStrengthsProtectiveFactorsDetails },
   ],
   validWhen: [
     validation({
@@ -331,7 +334,7 @@ const seriousHarmDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: and(
     Answer(Question.employment_education_linked_to_serious_harm).match(Condition.IsRequired()),
-    Answer(Question.employment_education_linked_to_serious_harm).match(Condition.Equals(Option.yes)),
+    Answer(Question.employment_education_linked_to_serious_harm).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
@@ -345,7 +348,7 @@ const noSeriousHarmDetails = GovUKCharacterCount({
   code: Question.employment_education_no_serious_harm_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_education_linked_to_serious_harm).match(Condition.Equals(Option.no)),
+  dependentWhen: Answer(Question.employment_education_linked_to_serious_harm).match(Condition.Equals(CommonOption.no)),
 })
 
 export const employmentOrEducationLinkedToSeriousHarm = GovUKRadioInput({
@@ -357,8 +360,8 @@ export const employmentOrEducationLinkedToSeriousHarm = GovUKRadioInput({
     },
   },
   items: [
-    { value: Option.yes, text: commonContentFor('option.YES'), block: seriousHarmDetails },
-    { value: Option.no, text: commonContentFor('option.NO'), block: noSeriousHarmDetails },
+    { value: CommonOption.yes, text: commonContentFor('option.YES'), block: seriousHarmDetails },
+    { value: CommonOption.no, text: commonContentFor('option.NO'), block: noSeriousHarmDetails },
   ],
   validWhen: [
     validation({
@@ -376,7 +379,7 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: and(
     Answer(Question.employment_education_linked_to_reoffending).match(Condition.IsRequired()),
-    Answer(Question.employment_education_linked_to_reoffending).match(Condition.Equals(Option.yes)),
+    Answer(Question.employment_education_linked_to_reoffending).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
@@ -390,7 +393,7 @@ const noRiskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.employment_education_no_risk_of_reoffending_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.employment_education_linked_to_reoffending).match(Condition.Equals(Option.no)),
+  dependentWhen: Answer(Question.employment_education_linked_to_reoffending).match(Condition.Equals(CommonOption.no)),
 })
 
 export const employmentOrEducationLinkedReoffending = GovUKRadioInput({
@@ -402,8 +405,8 @@ export const employmentOrEducationLinkedReoffending = GovUKRadioInput({
     },
   },
   items: [
-    { value: Option.yes, text: commonContentFor('option.YES'), block: riskOfReoffendingDetails },
-    { value: Option.no, text: commonContentFor('option.NO'), block: noRiskOfReoffendingDetails },
+    { value: CommonOption.yes, text: commonContentFor('option.YES'), block: riskOfReoffendingDetails },
+    { value: CommonOption.no, text: commonContentFor('option.NO'), block: noRiskOfReoffendingDetails },
   ],
   validWhen: [
     validation({

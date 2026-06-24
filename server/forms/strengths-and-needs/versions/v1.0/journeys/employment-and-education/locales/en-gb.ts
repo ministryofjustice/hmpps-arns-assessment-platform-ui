@@ -1,6 +1,8 @@
 import { Question } from '../constants/question'
 import { Step } from '../constants/step'
 import { Option } from '../constants/option'
+import { Locale } from '../../../../../i18n'
+import { CommonOption } from '../../../constants/commonOption'
 
 export const english = {
   step: {
@@ -51,7 +53,6 @@ export const english = {
         },
         [Option.periods_of_instability]: 'Generally in employment but changes jobs often',
         [Option.unstable]: 'Unstable employment history with regular periods of unemployment',
-        [Option.unknown]: 'Unknown',
       },
       validation: 'Select their employment history',
     },
@@ -112,7 +113,6 @@ export const english = {
           text: 'Level 8',
           hint: 'For example, doctorate',
         },
-        [Option.non_of_these]: 'None of these',
       },
       validation: 'Select the highest level of academic qualification completed',
     },
@@ -126,14 +126,14 @@ export const english = {
     [Question.job_skills]: {
       text: 'Does %1 have any skills that could help them in a job or to get a job?',
       option: {
-        [Option.yes]: {
+        [CommonOption.yes]: {
           hint: 'This includes any completed training, qualifications, work experience or transferable skills.',
         },
         [Option.some_skills]: {
           text: 'Some skills',
           hint: 'This includes partially completed training or qualifications, limited on the job experience or skills that are not directly transferable.',
         },
-        [Option.no]: {
+        [CommonOption.no]: {
           hint: 'This includes having no other qualifications, incomplete apprenticeships or no history of working in the same industry.',
         },
       },
@@ -208,8 +208,6 @@ export const english = {
   option: {
     [Option.yes_has_been_employed_before]: 'Yes, has been employed before',
     [Option.no_has_never_been_employed]: 'No, has never been employed',
-    [Option.not_present]: '%1 is not present',
-    [Option.not_applicable]: 'Not applicable',
     [Option.positive]: 'Positive',
     [Option.mostly_positive]: 'Mostly positive',
     [Option.positive_and_negative]: 'Positive and negative',
@@ -221,4 +219,4 @@ export const english = {
   },
 } as const
 
-export type EmploymentAndEducationLocale = typeof english
+export type EmploymentAndEducationLocale = Locale<typeof english>

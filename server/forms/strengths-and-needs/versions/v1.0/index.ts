@@ -1,10 +1,12 @@
-import {access, Data, journey} from '@ministryofjustice/hmpps-forge/core/authoring'
-// import { accommodationJourney } from './journeys/accommodation'
-import {healthWellbeingJourney} from "./journeys/health-wellbeing";
-import {StrengthsAndNeedsEffects} from '../../effects'
-import {Section} from './constants/section'
-import {basePath, formVersion} from './constants/formVersion'
-import {commonContentFor} from "./locales";
+import { access, Data, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { accommodationJourney } from './journeys/accommodation'
+import { employmentJourney } from './journeys/employment-and-education'
+import { financeJourney } from './journeys/finance'
+import { drugUseJourney } from './journeys/drug-use'
+import { StrengthsAndNeedsEffects } from '../../effects'
+import { Section } from './constants/section'
+import { basePath, formVersion } from './constants/formVersion'
+import { commonContentFor } from './locales'
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -14,7 +16,7 @@ import {commonContentFor} from "./locales";
  */
 export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
-  title: 'Strengths and Needs',
+  title: 'Strengths and needs', // TODO: commonContentFor('strengths_and_needs'),
   path: `/${formVersion}`,
   view: {
     template: 'strengths-and-needs/views/san-step',
@@ -39,5 +41,5 @@ export const strengthsAndNeedsV1Journey = journey({
       ],
     }),
   ],
-  children: [ healthWellbeingJourney],
+  children: [accommodationJourney, employmentJourney, drugUseJourney, financeJourney],
 })

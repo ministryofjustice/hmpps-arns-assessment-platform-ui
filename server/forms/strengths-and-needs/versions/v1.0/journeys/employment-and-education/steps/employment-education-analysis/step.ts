@@ -4,7 +4,6 @@ import { Step } from '../../constants/step'
 
 export const employmentEducationAnalysisStep = step({
   path: `/${Step.employment_education_analysis.path}`,
-  // title: contentFor('step.employment_education_analysis'),
-  title: 'PLACEHOLDER',
+  title: 'Employment and Education Analysis', // TODO: contentFor('step.employment_education_analysis')
   blocks: [employmentStatusAnalysisSummaryTab],
 })

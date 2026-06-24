@@ -1,5 +1,4 @@
-import { block, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
   financeBankAccount,
@@ -9,17 +8,13 @@ import {
   financeIncome,
   financeMoneyManagement,
 } from './fields'
-
-const saveButton = block<GovUKButton>({
-  variant: 'govukButton',
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { Step } from '../../constants/step'
+import { Section, SectionStatus } from '../../../../constants/section'
+import { saveButton } from '../../../../constants/buttons'
 
 export const financeStep = step({
-  path: '/finance',
-  title: 'Finance',
+  path: `/${Step.finance.path}`,
+  title: 'Finance', // TODO: contentFor('step.finance')
   reachability: { entryWhen: true },
   blocks: [
     financeIncome,
@@ -40,11 +35,11 @@ export const financeStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress('finance_section_status', 'INCOMPLETE'),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.finance.statusKey, SectionStatus.incomplete),
         ],
         next: [
           redirect({
-            goto: 'finance-summary',
+            goto: Step.financeSummary.path,
           }),
         ],
       },
