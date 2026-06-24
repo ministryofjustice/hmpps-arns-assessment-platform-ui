@@ -1,4 +1,4 @@
-import {and, Answer, block, Condition, Format, Self, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {and, Answer, block, Condition, Self, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
   GovUKButton,
@@ -10,7 +10,6 @@ import {
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import {CaseData} from '../../../../constants/formVersion'
 import {SANGenerators} from "../../../../../../generators";
-import locale from '../../locale.json'
 import {healthConditions, mentalHealthProblems} from "../health-wellbeing/fields";
 import {
   attitudeTowardsSelf,
@@ -27,13 +26,15 @@ import {
 } from "../physical-mental-health/fields";
 import {Question} from "../../constants/question";
 import {Option} from "../../constants/option";
+import {commonContentFor} from "../../../../locales";
+import {contentFor} from "../../locales";
 
 // --- Health and Wellbeing Summary Group ---
 
 export const healthWellbeingSummary = GovUKSummaryList({
   rows: [
     {
-      key: {text: Format(locale.health_wellbeing.health_conditions.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.health_conditions.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(healthConditions.items, Answer(Question.health_conditions))}),
@@ -45,7 +46,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: {text: Format(locale.health_wellbeing.health_conditions.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.health_conditions.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(mentalHealthProblems.items, Answer(Question.mental_health_problems))}),
@@ -59,7 +60,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.prescribed_physical_health_medications_treatments.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.prescribed_physical_health_medications_treatments.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: Answer(Question.prescribed_physical_health_medications_treatments), size: "s" }),
@@ -71,7 +72,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.prescribed_physical_health_medications_treatments).match(Condition.IsRequired()),
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.prescribed_mental_health_medications_treatments.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.prescribed_mental_health_medications_treatments.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: Answer(Question.prescribed_mental_health_medications_treatments), size: "s" }),
@@ -83,7 +84,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.prescribed_mental_health_medications_treatments).match(Condition.IsRequired()),
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.psychiatric_treatment.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.psychiatric_treatment.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(psychiatricTreatment.items, Answer(Question.psychiatric_treatment))})
@@ -95,7 +96,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.psychiatric_treatment).match(Condition.IsRequired()),
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.head_injuries.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.head_injuries.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(headInjuries.items, Answer(Question.head_injuries)), })
@@ -107,7 +108,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.head_injuries).match(Condition.IsRequired()),
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.neurodiverse_conditions.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.neurodiverse_conditions.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(neurodiverseConditions.items, Answer(Question.neurodiverse_conditions))}),
@@ -119,7 +120,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.impact_on_learning_abilities.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.impact_on_learning_abilities.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(impactOnLearningAbilities.items, Answer(Question.impact_on_learning_abilities)),
@@ -135,7 +136,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.cope_with_day_to_day_life.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.cope_with_day_to_day_life.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(copeWithDayToDayLife.items, Answer(Question.cope_with_day_to_day_life))})
@@ -146,7 +147,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.attitude_towards_self.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.attitude_towards_self.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(attitudeTowardsSelf.items, Answer(Question.attitude_towards_self))})
@@ -157,7 +158,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.self_harm.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.self_harm.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(selfHarm.items, Answer(Question.self_harm))}),
@@ -170,7 +171,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.suicidal_tendencies.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.suicidal_tendencies.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(suicidalTendencies.items, Answer(Question.suicidal_tendencies))}),
@@ -183,7 +184,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.feeling_about_future_health_wellbeing.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.feeling_about_future_health_wellbeing.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(feelingsAboutFuture.items, Answer(Question.feeling_about_future_health_wellbeing))})
@@ -194,7 +195,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.helped_during_periods_good_health_wellbeing.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.helped_during_periods_good_health_wellbeing.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(helpedDuringPeriodsGoodHealthWellbeing.items, Option.accommodation),
@@ -222,7 +223,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: {text: Format(locale.phyisical_mental_health.changes_to_health_wellbeing.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.changes_to_health_wellbeing.text', CaseData.ForenamePossessive)},
       value: {
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(changesToHealthWellbeing.items, Answer(Question.changes_to_health_wellbeing))}),
@@ -256,21 +257,21 @@ const goToPractitionerAnalysis = GovUKLinkButton({
 
 const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.strengths_protective_factors_health_wellbeing_details,
-  label: locale.required_details,
+  label: commonContentFor('required_details'),
   maxLength: 2000,
   dependentWhen: and(Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.IsRequired()),
     Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.Equals(Option.yes))),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Give details on strengths or protective factors related to their employment and education',
+      message: contentFor('question.strengths_protective_factors_health_wellbeing_details.validation'),
     }),
   ],
 })
 
 const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.no_strengths_protective_factors_health_wellbeing_details,
-  label: locale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.Equals(Option.no)),
 })
@@ -279,19 +280,19 @@ export const strengthsProtectiveFactorsHealthWellbeing = GovUKRadioInput({
   code: Question.strengths_protective_factors_health_wellbeing,
   fieldset: {
     legend: {
-      text: Format(locale.practitioner_analysis.strengths_protective_factors_health_wellbeing.text, CaseData.ForenamePossessive),
+      text: contentFor('question.strengths_protective_factors_health_wellbeing.text', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint:'Include any strategies, people or support networks that helped.',
+  hint: contentFor('question.strengths_protective_factors_health_wellbeing.hint'),
   items: [
-    { value: Option.yes, text: locale.options.YES, block: strengthsProtectiveFactorsDetails },
-    { value: Option.no, text: locale.options.NO, block: noStrengthsProtectiveFactorsDetails },
+    { value: Option.yes, text: commonContentFor('option.YES'), block: strengthsProtectiveFactorsDetails },
+    { value: Option.no, text: commonContentFor('option.NO'), block: noStrengthsProtectiveFactorsDetails },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Select if there are any strengths or protective factors',
+      message: contentFor('question.strengths_protective_factors_health_wellbeing.validation'),
     }),
   ],
 })
@@ -300,7 +301,7 @@ export const strengthsProtectiveFactorsHealthWellbeing = GovUKRadioInput({
 
 const seriousHarmDetails = GovUKCharacterCount({
   code: Question.serious_harm_health_wellbeing_details,
-  label: locale.required_details,
+  label: commonContentFor('required_details'),
   maxLength: 2000,
   dependentWhen: and(Answer(Question.serious_harm_health_wellbeing).match(Condition.IsRequired()),
     Answer(Question.serious_harm_health_wellbeing).match(Condition.Equals(Option.yes))),
@@ -314,7 +315,7 @@ const seriousHarmDetails = GovUKCharacterCount({
 
 const noSeriousHarmDetails = GovUKCharacterCount({
   code: Question.no_serious_harm_health_wellbeing_details,
-  label: locale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.serious_harm_health_wellbeing).match(Condition.Equals(Option.no)),
 })
@@ -323,18 +324,18 @@ export const seriousHarmHealthWellbeing = GovUKRadioInput({
   code: Question.serious_harm_health_wellbeing,
   fieldset: {
     legend: {
-      text: Format(locale.practitioner_analysis.serious_harm_health_wellbeing.text, CaseData.ForenamePossessive),
+      text: contentFor('question.serious_harm_health_wellbeing.text', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
-    { value: Option.yes, text: locale.options.YES, block: seriousHarmDetails },
-    { value: Option.no, text: locale.options.NO, block: noSeriousHarmDetails },
+    { value: Option.yes, text: commonContentFor('option.YES'), block: seriousHarmDetails },
+    { value: Option.no, text: commonContentFor('option.NO'), block: noSeriousHarmDetails },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Select if linked to risk of serious harm',
+      message: contentFor('question.serious_harm_health_wellbeing.validation'),
     }),
   ],
 })
@@ -343,20 +344,20 @@ export const seriousHarmHealthWellbeing = GovUKRadioInput({
 
 const riskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.risk_of_reoffending_health_wellbeing_details,
-  label: locale.required_details,
+  label: commonContentFor('required_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.risk_of_reoffending_health_wellbeing).match(Condition.Equals(Option.yes)),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Give details on the risk of reoffending',
+      message: contentFor('question.risk_of_reoffending_health_wellbeing_details.validation'),
     }),
   ],
 })
 
 const noRiskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.no_risk_of_reoffending_health_wellbeing_details,
-  label: locale.optional_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.risk_of_reoffending_health_wellbeing).match(Condition.Equals(Option.no)),
 })
@@ -365,18 +366,18 @@ export const riskOfReoffendingHealthWellbeing = GovUKRadioInput({
   code: Question.risk_of_reoffending_health_wellbeing,
   fieldset: {
     legend: {
-      text: Format(locale.practitioner_analysis.risk_of_reoffending_health_wellbeing.text, CaseData.ForenamePossessive),
+      text: contentFor('question.risk_of_reoffending_health_wellbeing.text', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
-    { value: Option.yes, text: locale.options.YES, block: riskOfReoffendingDetails },
-    { value: Option.no, text: locale.options.NO, block: noRiskOfReoffendingDetails },
+    { value: Option.yes, text: commonContentFor('option.YES'), block: riskOfReoffendingDetails },
+    { value: Option.no, text: commonContentFor('option.NO'), block: noRiskOfReoffendingDetails },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Select if linked to risk of reoffending',
+      message: contentFor('question.risk_of_reoffending_health_wellbeing.validation'),
     }),
   ],
 })

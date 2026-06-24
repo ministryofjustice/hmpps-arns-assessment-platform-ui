@@ -60,4 +60,4 @@ export const Section = {
     sideNavHref: `${basePath}/offence-analysis/offence-analysis?resume=true`,
     statusKey: 'offences_section_status',
   },
-}
+} as const

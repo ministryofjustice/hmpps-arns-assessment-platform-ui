@@ -1,8 +1,7 @@
-import {Answer, Format} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {Answer} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {GovUKBody, GovUKLinkButton, GovUKSummaryList, GovUKTabs,} from '@ministryofjustice/hmpps-forge/govuk-components'
 import {CaseData} from '../../../../constants/formVersion'
 import {SANGenerators} from "../../../../../../generators";
-import locale from '../../locale.json'
 import {
   healthWellbeingSummary,
   riskOfReoffendingHealthWellbeing,
@@ -10,6 +9,7 @@ import {
   strengthsProtectiveFactorsHealthWellbeing
 } from "../health-wellbeing-summary/fields";
 import {Question} from "../../constants/question";
+import {contentFor} from "../../locales";
 
 
 // --- Practitioner Analysis Button Group ---
@@ -25,7 +25,7 @@ const goToPractitionerAnalysis = GovUKLinkButton({
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
     {
-      key: {text: Format(locale.practitioner_analysis.strengths_protective_factors_health_wellbeing.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.strengths_protective_factors_health_wellbeing.text', CaseData.ForenamePossessive)},
       value: {
         blocks:
           [
@@ -39,7 +39,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       },
     },
     {
-      key: {text: Format(locale.practitioner_analysis.serious_harm_health_wellbeing.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.serious_harm_health_wellbeing.text', CaseData.ForenamePossessive)},
       value: {
         blocks:
           [
@@ -53,7 +53,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       },
     },
     {
-      key: {text: Format(locale.practitioner_analysis.risk_of_reoffending_health_wellbeing.text, CaseData.ForenamePossessive)},
+      key: {text: contentFor('question.risk_of_reoffending_health_wellbeing.text', CaseData.ForenamePossessive)},
       value: {
         blocks:
           [

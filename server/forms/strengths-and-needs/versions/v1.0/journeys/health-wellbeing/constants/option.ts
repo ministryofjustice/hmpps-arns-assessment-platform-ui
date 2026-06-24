@@ -37,4 +37,4 @@ export const Option = {
   other: 'OTHER',
   none: 'NONE',
   unknown: 'UNKNOWN',
-}
+} as const

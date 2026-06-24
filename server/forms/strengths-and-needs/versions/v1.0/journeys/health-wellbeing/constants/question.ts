@@ -40,4 +40,4 @@ export const Question = {
   risk_of_reoffending_health_wellbeing_details: 'risk_of_reoffending_health_wellbeing_details',
   no_risk_of_reoffending_health_wellbeing_details: 'no_risk_of_reoffending_health_wellbeing_details',
   risk_of_reoffending_health_wellbeing: 'risk_of_reoffending_health_wellbeing',
-}
+} as const

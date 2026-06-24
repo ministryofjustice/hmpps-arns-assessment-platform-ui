@@ -83,7 +83,7 @@
       "text": "How does %1 feel about their future?"
     },
     "helped_during_periods_good_health_wellbeing": {
-      "text": "What's helped Prince during periods of good health and wellbeing? (optional)"
+      "text": "What's helped %1 during periods of good health and wellbeing? (optional)"
     },
     "changes_to_health_wellbeing": {
       "text": "Does %1 want to make changes to their health and wellbeing?"
@@ -97,7 +97,7 @@
       "text": "Is %1 health and wellbeing linked to risk of serious harm?"
     },
     "risk_of_reoffending_health_wellbeing": {
-      "text": "Is %1 health and wellbeing linked to risk of reoffending?\n"
+      "text": "Is %1 health and wellbeing linked to risk of reoffending?"
     }
   }
 }
