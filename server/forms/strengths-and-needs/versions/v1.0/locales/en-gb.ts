@@ -1,5 +1,6 @@
 import { Section } from '../constants/section'
 import { CommonOption } from '../constants/commonOption'
+import { Locale } from '../../../i18n'
 
 export const english = {
   strengths_and_needs: 'Strengths and needs',
@@ -54,4 +55,4 @@ export const english = {
   },
 } as const
 
-export type CommonLocale = typeof english
+export type CommonLocale = Locale<typeof english>
