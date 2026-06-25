@@ -3,6 +3,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
 import { navigateToSentencePlan, sentencePlanV1URLs, sentencePlanV1UrlBuilders } from '../sentencePlanUtils'
+import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
 
 test.describe('READ_ONLY Access Mode', () => {
   test.describe('Privacy Screen', () => {
@@ -173,28 +174,62 @@ test.describe('READ_ONLY Access Mode', () => {
   })
 
   test.describe('Plan history entries', () => {
-    test('hides goal action links in READ_ONLY mode', async ({ page, createSession, sentencePlanBuilder }) => {
+    test('hides view goal links', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({
         targetService: TargetService.SENTENCE_PLAN,
         planAccessMode: 'READ_ONLY',
       })
       await sentencePlanBuilder
         .extend(sentencePlanId)
-        .withGoal({
-          title: 'Removed goal',
-          areaOfNeed: 'accommodation',
-          status: 'REMOVED',
-          notes: [{ type: 'REMOVED', note: 'No longer needed', createdBy: 'Test Practitioner' }],
-        })
+        .withGoals([
+          {
+            title: 'Find stable accommodation',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
+          },
+          {
+            title: 'Another goal',
+            areaOfNeed: 'accommodation',
+            status: 'ACHIEVED',
+          },
+          {
+            title: 'Another goal',
+            areaOfNeed: 'drug-use',
+            status: 'FUTURE',
+          },
+          {
+            title: 'Another goal',
+            areaOfNeed: 'drug-use',
+            status: 'REMOVED',
+          },
+        ])
         .withAgreementStatus('AGREED')
         .save()
 
       await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
+      const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
+      await planHistoryPage.clickShowAllSectionsButton()
 
-      await expect(
-        page.getByTestId('main-form').getByRole('link', { name: /View goal|View latest version/i }),
-      ).toHaveCount(0)
+      await expect(page.getByTestId('main-form').getByRole('link', { name: 'View goal' })).toHaveCount(0)
+    })
+    test('hides update agreement link', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        planAccessMode: 'READ_ONLY',
+      })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withAgreementStatus('COULD_NOT_ANSWER')
+        .save()
+
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
+      const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
+      await planHistoryPage.clickShowAllSectionsButton()
+
+      await expect(page.getByTestId('main-form').getByTestId('plan-history-update-agreement-link')).toHaveCount(0)
     })
   })
 })

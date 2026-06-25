@@ -16,6 +16,9 @@
     {% if user and user.authSource %}
       <meta name="ai-entry-point" content="{{ user.authSource }}">
     {% endif %}
+    {% if userContext %}
+      <meta name="ai-user-context" content="{{ userContext }}">
+    {% endif %}
     {% if data and data.assessment and data.assessment.flags %}
       <meta name="ai-user-type" content="{{ 'PRIVATE_BETA' if 'SAN_BETA' in data.assessment.flags else 'NATIONAL_ROLLOUT' }}">
     {% endif %}

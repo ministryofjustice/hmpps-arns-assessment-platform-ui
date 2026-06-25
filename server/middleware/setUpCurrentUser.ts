@@ -24,13 +24,20 @@ export default function setUpCurrentUser() {
         authorities?: string[]
       }
 
+      const userRoles = roles.map(role => role.substring(role.indexOf('_') + 1))
+
       res.locals.user = {
         ...res.locals.user,
         userId,
         name,
         displayName: convertToTitleCase(name),
-        userRoles: roles.map(role => role.substring(role.indexOf('_') + 1)),
+        userRoles,
       }
+
+      res.locals.userContext =
+        res.locals.user.authSource === 'HMPPS_AUTH'
+          ? (userRoles[0] ?? 'UNKNOWN')
+          : (req.session.handoverContext?.subject.location ?? 'UNKNOWN')
 
       req.session.principal = {
         identifier: userId || res.locals.user.username,

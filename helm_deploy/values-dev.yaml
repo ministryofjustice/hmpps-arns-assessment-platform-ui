@@ -4,14 +4,24 @@
 generic-service:
   ingress:
     host: arns-assessment-platform-dev.hmpps.service.justice.gov.uk
+    className: modsec-non-prod
     modsecurity_enabled: true
     modsecurity_audit_enabled: true
     modsecurity_snippet: |
       SecRuleEngine On
       # Team here grants access to the OpenSearch logs to delve into the cause of the blockage
       SecDefaultAction "phase:2,pass,log,tag:github_team=hmpps-assessments,tag:namespace={{ .Release.Namespace }}"
-      # Disables request body scanning so free-text form fields (goal titles, step descriptions) do not trigger false positives
+      # Rule 920272 (unusual characters) false-alarms on normal post bodies; skip the raw body for this check only.
       SecRuleUpdateTargetById 920272 "!REQUEST_BODY"
+      # Practitioner free-text in sentence-plan forms (goals, steps, notes) can false-block; skip those checks on these pages only.
+      SecRule REQUEST_URI "@beginsWith /sentence-plan/" "id:10010,phase:1,pass,nolog,ctl:ruleRemoveTargetByTag=attack-rce;ARGS,ctl:ruleRemoveTargetByTag=attack-sqli;ARGS,ctl:ruleRemoveTargetByTag=attack-injection-php;ARGS,ctl:ruleRemoveTargetByTag=attack-injection-generic;ARGS"
+      # Random sign-in tokens (code/state) can false-block; skip those checks on the sign-in routes only.
+      SecRule REQUEST_URI "@beginsWith /sign-in/" "id:10020,phase:1,pass,nolog,ctl:ruleRemoveTargetByTag=attack-sqli;ARGS,ctl:ruleRemoveTargetByTag=attack-rce;ARGS"
+      SecRule REQUEST_URI "@beginsWith /oauth2/" "id:10021,phase:1,pass,nolog,ctl:ruleRemoveTargetByTag=attack-sqli;ARGS,ctl:ruleRemoveTargetByTag=attack-rce;ARGS"
+      # Random cookie values (analytics ai_*, login session) can false-block a user on every page; skip these cookies only.
+      SecRuleUpdateTargetByTag "attack-rce" "!REQUEST_COOKIES:ai_user|!REQUEST_COOKIES:ai_session|!REQUEST_COOKIES:hmpps-arns-assessment-platform-ui.session"
+      SecRuleUpdateTargetByTag "attack-sqli" "!REQUEST_COOKIES:ai_user|!REQUEST_COOKIES:ai_session|!REQUEST_COOKIES:hmpps-arns-assessment-platform-ui.session"
+      SecRuleUpdateTargetByTag "attack-lfi" "!REQUEST_COOKIES:ai_user|!REQUEST_COOKIES:ai_session|!REQUEST_COOKIES:hmpps-arns-assessment-platform-ui.session"
       # Change default denial to be a 406 so that we can tell easily that it is modsecurity doing the blocking
       SecRuleUpdateActionById 949110 "deny,status:406,logdata:%{SERVER_NAME}"
       SecRuleUpdateActionById 959100 "deny,status:406,logdata:%{SERVER_NAME}"
