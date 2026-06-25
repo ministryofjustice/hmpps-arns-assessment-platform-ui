@@ -6,12 +6,12 @@ import {
   step,
   submit,
   Format,
-  when,
+  match,
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, goalCard, allStepsCompletedField, hasAchievedGoal, saveAndContinueButton } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
-import { hasPostAgreementStatus, redirectIfGoalNotFound, redirectUnlessAllStepsCompleted } from '../../../guards'
+import { redirectIfGoalNotFound, redirectUnlessAllStepsCompleted } from '../../../guards'
 import { CaseData } from '../../../constants'
 
 /**
@@ -25,8 +25,9 @@ export const confirmIfAchievedStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
-      // Draft plans arrive from add-steps; agreed plans from update-goal-steps (which drafts cannot reach)
-      backlink: when(hasPostAgreementStatus).then('update-goal-steps').else('add-steps'),
+      backlink: match(Data('navigationReferrer'))
+        .branch(Condition.Equals('add-steps'), Format('../../goal/%1/add-steps', Data('activeGoal.uuid')))
+        .otherwise(Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid'))),
     },
   },
   blocks: [pageHeading, allStepsCompletedField, goalCard, hasAchievedGoal, saveAndContinueButton],
