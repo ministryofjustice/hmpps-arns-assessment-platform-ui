@@ -11,9 +11,6 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   pageHeading,
-  goalSubheading,
-  goalInfoFuture,
-  goalInfoActive,
   reviewStepsHeading,
   reviewStepsTable,
   addOrChangeStepsLink,
@@ -21,6 +18,7 @@ import {
   progressNotesSection,
   viewAllNotesSection,
   actionButtons,
+  goalContextInsetText,
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
@@ -42,9 +40,7 @@ export const updateGoalAndStepsStep = step({
   },
   blocks: [
     pageHeading,
-    goalSubheading,
-    goalInfoFuture,
-    goalInfoActive,
+    goalContextInsetText,
     reviewStepsHeading,
     reviewStepsTable,
     addOrChangeStepsLink,
