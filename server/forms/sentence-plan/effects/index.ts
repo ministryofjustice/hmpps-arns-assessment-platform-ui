@@ -22,6 +22,7 @@ import { loadAllAreasAssessmentInfo } from './goals/loadAllAreasAssessmentInfo'
 import { setActiveGoalContext } from './goals/setActiveGoalContext'
 import { loadActiveGoalForEdit } from './goals/loadActiveGoalForEdit'
 import { updateActiveGoal } from './goals/updateActiveGoal'
+import { updateActiveGoalAreaOfNeed } from './goals/updateActiveGoalAreaOfNeed'
 import { updateGoalProgress } from './goals/updateGoalProgress'
 import { markGoalAsAchieved } from './goals/markGoalAsAchieved'
 import { markGoalAsRemoved } from './goals/markGoalAsRemoved'
@@ -82,6 +83,7 @@ const sentencePlanEffectFactories = {
   setActiveGoalContext,
   loadActiveGoalForEdit,
   updateActiveGoal,
+  updateActiveGoalAreaOfNeed,
   updateGoalProgress,
   markGoalAsAchieved,
   markGoalAsRemoved,
