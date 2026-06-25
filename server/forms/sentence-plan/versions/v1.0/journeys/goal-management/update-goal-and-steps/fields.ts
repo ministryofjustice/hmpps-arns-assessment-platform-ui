@@ -17,14 +17,9 @@ import {
   GovUKGridRow,
   GovUKHeading,
   GovUKBody,
+  GovUKInsetText,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CaseData } from '../../../constants'
-
-const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
-  Transformer.Array.Sort(),
-  Transformer.Array.Join('; '),
-  Transformer.String.ToLowerCase(),
-)
 
 const hasSteps = Data('activeGoal.steps').match(Condition.IsRequired())
 
@@ -37,38 +32,62 @@ const stepStatusOptions = [
 ]
 
 export const pageHeading = GovUKHeading({
-  caption: when(Data('activeGoal.relatedAreasOfNeedLabels').match(Condition.IsRequired()))
-    .then(
-      Format(
-        '%1 (and %2)',
-        Data('activeGoal.areaOfNeedLabel').pipe(Transformer.String.EscapeHtml()),
-        relatedAreasOfNeedText.pipe(Transformer.String.EscapeHtml()),
-      ),
-    )
-    .else(Data('activeGoal.areaOfNeedLabel').pipe(Transformer.String.EscapeHtml())),
   text: 'Update goal and steps',
 })
 
-export const goalSubheading = GovUKHeading({
-  text: Format('Goal: %1', Data('activeGoal.title').pipe(Transformer.String.EscapeHtml())),
-  size: 'm',
-})
+/**
+ * Inset text block summarising the goal context
+ *
+ * Shows:
+ * - Area of need (in bold)
+ * - Also relates to (only when the goal is related to other areas)
+ * - Goal text
+ * - Aim to achieve by date (if the goal is not a future goal)
+ * - Update goal details link
+ *
+ */
+const areaOfNeedText = Data('activeGoal.areaOfNeedLabel').pipe(
+  Transformer.String.ToLowerCase(),
+  Transformer.String.EscapeHtml(),
+)
 
-export const goalInfoFuture = GovUKBody({
-  visibleWhen: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
-  text: Format(
-    'This is a future goal. <a href="../../goal/%1/change-goal" class="govuk-link">Change goal details</a>',
-    Data('activeGoal.uuid'),
-  ),
-})
+const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
+  Transformer.Array.Sort(),
+  Transformer.Array.Join('; '),
+  Transformer.String.ToLowerCase(),
+  Transformer.String.EscapeHtml(),
+)
 
-export const goalInfoActive = GovUKBody({
-  visibleWhen: Data('activeGoal.status').not.match(Condition.Equals('FUTURE')),
-  text: Format(
-    'Aim to achieve this by %1. <a href="../../goal/%2/change-goal" class="govuk-link">Change goal details</a>',
-    Data('activeGoal.targetDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
-    Data('activeGoal.uuid'),
-  ),
+const areaBlockContent = when(Data('activeGoal.relatedAreasOfNeedLabels').match(Condition.IsRequired()))
+  .then(
+    Format('<p>Area of need: <strong>%1</strong><br>Also relates to: %2</p>', areaOfNeedText, relatedAreasOfNeedText),
+  )
+  .else(Format('<p>Area of need: <strong>%1</strong></p>', areaOfNeedText))
+
+const goalBlockContent = Format('<p>Goal: %1</p>', Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()))
+
+const achieveByContent = when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
+  .then('<p>This is a future goal.</p>')
+  .else(
+    Format(
+      '<p>Aim to achieve this by %1.</p>',
+      Data('activeGoal.targetDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+    ),
+  )
+
+const updateGoalDetailsLink = Format(
+  '<p><a href="../../goal/%1/change-goal" class="govuk-link">Update goal details</a></p>',
+  Data('activeGoal.uuid'),
+)
+
+export const goalContextInsetText = GovUKInsetText({
+  classes: 'guidance-panel govuk-!-margin-top-2',
+  blocks: [
+    HtmlBlock({ content: areaBlockContent }),
+    HtmlBlock({ content: goalBlockContent }),
+    HtmlBlock({ content: achieveByContent }),
+    HtmlBlock({ content: updateGoalDetailsLink }),
+  ],
 })
 
 export const reviewStepsHeading = GovUKHeading({

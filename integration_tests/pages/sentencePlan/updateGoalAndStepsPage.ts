@@ -4,7 +4,7 @@ import AbstractPage from '../abstractPage'
 export default class UpdateGoalAndStepsPage extends AbstractPage {
   readonly pageHeading: Locator
 
-  readonly areaOfNeedCaption: Locator
+  readonly goalContextInset: Locator
 
   readonly goalTitle: Locator
 
@@ -45,11 +45,11 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
-    this.areaOfNeedCaption = page.locator('span.govuk-caption-l')
-    this.goalTitle = page.locator('h2.govuk-heading-m').filter({ hasText: 'Goal:' })
-    this.targetDateMessage = page.locator('p.govuk-body').filter({ hasText: 'Aim to achieve this by' })
-    this.futureGoalMessage = page.locator('p.govuk-body').filter({ hasText: 'This is a future goal' })
-    this.changeGoalDetailsLink = page.getByRole('link', { name: 'Change goal details' })
+    this.goalContextInset = page.locator('.guidance-panel')
+    this.goalTitle = this.goalContextInset.locator('p').filter({ hasText: 'Goal:' })
+    this.targetDateMessage = this.goalContextInset.locator('p').filter({ hasText: 'Aim to achieve this by' })
+    this.futureGoalMessage = this.goalContextInset.locator('p').filter({ hasText: 'This is a future goal' })
+    this.changeGoalDetailsLink = this.goalContextInset.getByRole('link', { name: 'Update goal details' })
     this.stepsTable = page.locator('table.goal-summary-card__steps')
     this.noStepsMessage = page.locator('.goal-summary-card__steps--empty-no-shadow')
     this.addStepsLink = page
@@ -76,8 +76,8 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
     return updateGoalAndStepsPage
   }
 
-  async getAreaOfNeedCaption(): Promise<string> {
-    return (await this.areaOfNeedCaption.textContent()) ?? ''
+  async getGoalContextInsetText(): Promise<string> {
+    return (await this.goalContextInset.textContent()) ?? ''
   }
 
   async getGoalTitleText(): Promise<string> {
