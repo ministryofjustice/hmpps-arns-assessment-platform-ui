@@ -112,5 +112,22 @@ export const changeGoalStep = step({
         ],
       },
     }),
+
+    // "Add or update steps" button — save the goal edits, then continue to the steps page
+    submit({
+      when: Post('action').match(Condition.Equals('addSteps')),
+      validate: true,
+      onValid: {
+        effects: [
+          SentencePlanEffects.updateActiveGoal(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL, {
+            planStatus: when(Data('latestAgreementStatus').match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)))
+              .then('POST_AGREE')
+              .else('PRE_AGREE'),
+          }),
+        ],
+        next: [redirect({ goto: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')) })],
+      },
+    }),
   ],
 })
