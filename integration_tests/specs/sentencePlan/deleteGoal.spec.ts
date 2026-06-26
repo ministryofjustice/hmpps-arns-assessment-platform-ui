@@ -18,6 +18,13 @@ test.describe('Delete goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalConfirmDelete(goalUuid))
 
+      await expect(
+        page.getByText(/Delete this goal if it’s not needed\. It will not be saved to .+'s plan\./),
+      ).toBeVisible()
+      const updateGoalLink = page.getByRole('link', { name: 'update the goal' })
+      await expect(updateGoalLink).toBeVisible()
+      await expect(updateGoalLink).toHaveAttribute('href', 'change-goal')
+
       await checkAccessibility(page)
 
       await page.getByRole('button', { name: 'Confirm' }).click()
