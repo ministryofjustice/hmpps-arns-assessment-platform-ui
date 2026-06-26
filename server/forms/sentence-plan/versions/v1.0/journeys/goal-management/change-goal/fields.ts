@@ -1,5 +1,11 @@
 import { Data, Format, Self, validation, Condition, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton, GovUKTextInput, GovUKHeading } from '@ministryofjustice/hmpps-forge/govuk-components'
+import {
+  GovUKButton,
+  GovUKTextInput,
+  GovUKHeading,
+  GovUKInsetText,
+  GovUKBody,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
 import { TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 import { AccessibleAutocomplete, AssessmentInfoDetails } from '../../../../../components'
 import { CaseData } from '../../../constants'
@@ -7,8 +13,7 @@ import { canAccessSanContent } from '../../../guards'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 
 const pageHeading = GovUKHeading({
-  caption: Data('activeGoal.areaOfNeedLabel').pipe(Transformer.String.EscapeHtml()),
-  text: Format('Change goal with %1', CaseData.Forename),
+  text: 'Update goal',
 })
 
 const assessmentInfoDetails = AssessmentInfoDetails({
@@ -38,6 +43,41 @@ const goalTitle = AccessibleAutocomplete({
   }),
 })
 
+const changeAreaOfNeedHref = Format(
+  '../../goal/%1/change-area-of-need?area=%2',
+  Data('activeGoal.uuid'),
+  Data('currentAreaOfNeed.slug'),
+)
+
+const areaOfNeedInset = GovUKInsetText({
+  blocks: [
+    GovUKBody({
+      text: Format(
+        'Area of need: <strong>%1</strong>',
+        Data('currentAreaOfNeed.text').pipe(Transformer.String.ToLowerCase(), Transformer.String.EscapeHtml()),
+      ),
+    }),
+    GovUKBody({
+      classes: 'govuk-!-margin-bottom-0',
+      text: Format(
+        '<a class="govuk-link govuk-link--no-visited-state" href="%1" data-ai-id="update-goal-change-area-of-need-link">Change area of need</a>',
+        changeAreaOfNeedHref,
+      ),
+    }),
+  ],
+})
+
+const addOrUpdateStepsButton = GovUKButton({
+  text: 'Add or update steps',
+  classes: 'govuk-button--secondary',
+  name: 'action',
+  value: 'addSteps',
+  preventDoubleClick: true,
+  attributes: {
+    'data-ai-id': 'update-goal-add-steps-button',
+  },
+})
+
 const saveGoalButton = GovUKButton({
   text: 'Save goal',
   name: 'action',
@@ -48,23 +88,38 @@ const saveGoalButton = GovUKButton({
   },
 })
 
+const buttonGroup = TemplateWrapper({
+  template: `
+      <div class="govuk-button-group">
+        {{slot:saveGoalButton}}
+        {{slot:addOrUpdateStepsButton}}
+      </div>
+    `,
+  slots: {
+    saveGoalButton: [saveGoalButton],
+    addOrUpdateStepsButton: [addOrUpdateStepsButton],
+  },
+})
+
 export const pageLayout = TemplateWrapper({
   template: `
     <div>
       {{slot:pageHeading}}
       {{slot:assessmentInfoDetails}}
       {{slot:goalTitle}}
+      {{slot:areaOfNeedInset}}
       {{slot:isRelatedToOtherAreas}}
       {{slot:canStartNow}}
-      {{slot:saveGoalButton}}
+      {{slot:buttonGroup}}
     </div>
   `,
   slots: {
     pageHeading: [pageHeading],
     assessmentInfoDetails: [assessmentInfoDetails],
     goalTitle: [goalTitle],
+    areaOfNeedInset: [areaOfNeedInset],
     isRelatedToOtherAreas: [isRelatedToOtherAreas],
     canStartNow: [canStartNow],
-    saveGoalButton: [saveGoalButton],
+    buttonGroup: [buttonGroup],
   },
 })
