@@ -43,7 +43,6 @@ const goalTitle = AccessibleAutocomplete({
   }),
 })
 
-// TODO (Step 3): point at the new "Change area of need" flow for an existing goal
 const changeAreaOfNeedHref = Format('../../goal/%1/change-area-of-need', Data('activeGoal.uuid'))
 
 const areaOfNeedInset = GovUKInsetText({
@@ -57,7 +56,7 @@ const areaOfNeedInset = GovUKInsetText({
     GovUKBody({
       classes: 'govuk-!-margin-bottom-0',
       text: Format(
-        '<a class="govuk-link govuk-link--no-visited-state" href="%1" data-ai-id="update-goal-change-area-of-need-link">Change area of need.</a>',
+        '<a class="govuk-link govuk-link--no-visited-state" href="%1" data-ai-id="update-goal-change-area-of-need-link">Change area of need</a>',
         changeAreaOfNeedHref,
       ),
     }),
