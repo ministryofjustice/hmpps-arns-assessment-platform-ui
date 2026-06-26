@@ -66,6 +66,34 @@ test.describe('Confirm if achieved page', () => {
       await expect(page).toHaveURL(planOverviewPageCurrentGoalsTabPath)
     })
 
+    test('redirects to achieved goals when goal has already been achieved', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
+          {
+            title: 'Already achieved goal',
+            areaOfNeed: 'accommodation',
+            status: 'ACHIEVED',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Completed step', status: 'COMPLETED' }],
+          },
+        ])
+        .save()
+      const goalUuid = plan.goals[0].uuid
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      await page.goto(sentencePlanV1UrlBuilders.goalConfirmIfAchieved(goalUuid))
+
+      await PlanOverviewPage.verifyOnPage(page)
+      await expect(page).toHaveURL(planOverviewPageAchievedGoalsTabPath)
+    })
+
     test('allows access when plan status is AGREED', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       const plan = await sentencePlanBuilder
