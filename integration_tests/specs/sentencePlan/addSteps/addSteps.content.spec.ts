@@ -63,6 +63,35 @@ test.describe('Add or update steps page', () => {
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
       await expect(addStepsPage.pageHeading).toHaveText('Add or update steps')
     })
+
+    test('shows "Add steps" heading when editing an existing goal with no steps', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
+          {
+            title: 'Existing goal with no steps',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [],
+          },
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
+      const goalUuid = plan.goals[0].uuid
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      await page.goto(sentencePlanV1UrlBuilders.goalAddSteps(goalUuid))
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      await expect(addStepsPage.pageHeading).toHaveText('Add steps')
+    })
   })
 
   test.describe('goal context inset text', () => {

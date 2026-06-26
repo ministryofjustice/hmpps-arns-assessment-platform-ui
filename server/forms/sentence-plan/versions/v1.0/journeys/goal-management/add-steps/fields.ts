@@ -4,6 +4,7 @@ import {
   Item,
   Loop,
   Iterator,
+  or,
   Self,
   validation,
   when,
@@ -32,7 +33,12 @@ const stepActorHintId = 'step-actor-hint'
 const stepDescriptionHintId = 'step-description-hint'
 
 export const pageHeading = GovUKHeading({
-  text: when(Data('navigationReferrer').match(Condition.Equals('add-goal')))
+  text: when(
+    or(
+      Data('navigationReferrer').match(Condition.Equals('add-goal')),
+      Data('activeGoal.steps').not.match(Condition.IsRequired()),
+    ),
+  )
     .then('Add steps')
     .else('Add or update steps'),
 })
