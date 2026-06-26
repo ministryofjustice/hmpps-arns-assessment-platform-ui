@@ -5,6 +5,12 @@
     word-break: break-word;
   }
 
+  // Ensure summary card actions do not wrap with long goal titles
+  .govuk-summary-card__actions {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
   // Prevent links from turning purple when visited
   a:visited {
     color: govuk-functional-colour(link);
