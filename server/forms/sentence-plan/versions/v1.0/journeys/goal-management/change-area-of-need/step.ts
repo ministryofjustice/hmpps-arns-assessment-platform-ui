@@ -1,4 +1,4 @@
-import { access, Data, Format, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, Answer, Data, Format, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, areaOfNeedField, continueButton } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalNotFound } from '../../../guards'
@@ -35,11 +35,11 @@ export const changeAreaOfNeedStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [
-          SentencePlanEffects.updateActiveGoalAreaOfNeed(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL),
+        next: [
+          redirect({
+            goto: Format('../../goal/%1/change-goal?area=%2', Data('activeGoal.uuid'), Answer('area_of_need')),
+          }),
         ],
-        next: [redirect({ goto: Format('../../goal/%1/change-goal', Data('activeGoal.uuid')) })],
       },
     }),
   ],

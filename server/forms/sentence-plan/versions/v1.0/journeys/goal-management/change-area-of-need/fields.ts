@@ -1,4 +1,4 @@
-import { Data, Self, validation, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Data, Query, Self, validation, when, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton, GovUKHeading, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { areasOfNeed } from '../../../constants'
 
@@ -16,11 +16,13 @@ export const areaOfNeedField = GovUKRadioInput({
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  // Pre-select the goal's current area of need.
+  // Pre-select the area carried in the query
   items: sortedAreasOfNeed.map(({ slug, text }) => ({
     value: slug,
     text,
-    checked: Data('activeGoal.areaOfNeed').match(Condition.Equals(slug)),
+    checked: when(Query('area').match(Condition.IsRequired()))
+      .then(Query('area').match(Condition.Equals(slug)))
+      .else(Data('activeGoal.areaOfNeed').match(Condition.Equals(slug))),
   })),
   validWhen: [
     validation({

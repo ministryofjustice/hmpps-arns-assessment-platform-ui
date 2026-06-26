@@ -91,7 +91,7 @@ test.describe('Change area of need', () => {
       expect(await changeAreaPage.isAreaSelected('accommodation')).toBe(true)
     })
 
-    test('changing the area of need updates the goal and returns to the Update goal page', async ({
+    test('carries the chosen area back as a pending change and persists it on Save', async ({
       page,
       createSession,
       sentencePlanBuilder,
@@ -106,13 +106,45 @@ test.describe('Change area of need', () => {
       const changeAreaPage = await ChangeAreaOfNeedPage.verifyOnPage(page)
       await changeAreaPage.selectAreaAndContinue('finances')
 
-      // Back on the Update goal page, the inset now reflects the new area
+      // Back on the Update goal page the inset reflects the pending area
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
-      const insetText = await changeGoalPage.getAreaOfNeedInsetText()
-      expect(insetText).toContain('Area of need: finances')
+      expect(await changeGoalPage.getAreaOfNeedInsetText()).toContain('Area of need: finances')
+
+      // The change is only persisted once the goal is saved
+      await changeGoalPage.saveGoal()
+
+      // Re-open the Update goal page fresh (no pending query) — the new area has stuck
+      await page.goto(sentencePlanV1UrlBuilders.goalChange(goalUuid))
+      const reloaded = await ChangeGoalPage.verifyOnPage(page)
+      expect(await reloaded.getAreaOfNeedInsetText()).toContain('Area of need: finances')
     })
 
-    test("changing the area to one of the goal's related areas removes the overlap", async ({
+    test('does not persist the area change if the user leaves without saving', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(activeGoal()).save()
+      const goalUuid = plan.goals[0].uuid
+
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto(sentencePlanV1UrlBuilders.goalChangeArea(goalUuid))
+
+      const changeAreaPage = await ChangeAreaOfNeedPage.verifyOnPage(page)
+      await changeAreaPage.selectAreaAndContinue('finances')
+
+      // Pending change is shown, but the user leaves without saving
+      const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+      expect(await changeGoalPage.getAreaOfNeedInsetText()).toContain('Area of need: finances')
+
+      // Re-open the Update goal page fresh — the area is unchanged
+      await page.goto(sentencePlanV1UrlBuilders.goalChange(goalUuid))
+      const reloaded = await ChangeGoalPage.verifyOnPage(page)
+      expect(await reloaded.getAreaOfNeedInsetText()).toContain('Area of need: accommodation')
+    })
+
+    test("changing the area to one of the goal's related areas removes the overlap on save", async ({
       page,
       createSession,
       sentencePlanBuilder,
@@ -128,15 +160,20 @@ test.describe('Change area of need', () => {
       await page.goto(sentencePlanV1UrlBuilders.goalChangeArea(goalUuid))
 
       const changeAreaPage = await ChangeAreaOfNeedPage.verifyOnPage(page)
-      // Change the primary area to a related area — it should be dropped from the related list
+      // Change the primary area to a related area — it should be dropped from the related areas
       await changeAreaPage.selectAreaAndContinue('finances')
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
-      const insetText = await changeGoalPage.getAreaOfNeedInsetText()
-      expect(insetText).toContain('Area of need: finances')
-
-      // The only related area (finances) became the primary area, so the goal now has no related areas
+      expect(await changeGoalPage.getAreaOfNeedInsetText()).toContain('Area of need: finances')
+      // finances became the primary area, so it is no longer offered/selected as a related area
       await expect(changeGoalPage.isRelatedNo).toBeChecked()
+
+      // Persist and confirm the overlap is gone after a fresh reload
+      await changeGoalPage.saveGoal()
+      await page.goto(sentencePlanV1UrlBuilders.goalChange(goalUuid))
+      const reloaded = await ChangeGoalPage.verifyOnPage(page)
+      expect(await reloaded.getAreaOfNeedInsetText()).toContain('Area of need: finances')
+      await expect(reloaded.isRelatedNo).toBeChecked()
     })
   })
 })

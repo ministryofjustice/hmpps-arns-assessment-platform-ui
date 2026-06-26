@@ -43,14 +43,18 @@ const goalTitle = AccessibleAutocomplete({
   }),
 })
 
-const changeAreaOfNeedHref = Format('../../goal/%1/change-area-of-need', Data('activeGoal.uuid'))
+const changeAreaOfNeedHref = Format(
+  '../../goal/%1/change-area-of-need?area=%2',
+  Data('activeGoal.uuid'),
+  Data('currentAreaOfNeed.slug'),
+)
 
 const areaOfNeedInset = GovUKInsetText({
   blocks: [
     GovUKBody({
       text: Format(
         'Area of need: <strong>%1</strong>',
-        Data('activeGoal.areaOfNeedLabel').pipe(Transformer.String.ToLowerCase(), Transformer.String.EscapeHtml()),
+        Data('currentAreaOfNeed.text').pipe(Transformer.String.ToLowerCase(), Transformer.String.EscapeHtml()),
       ),
     }),
     GovUKBody({
