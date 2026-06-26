@@ -23,7 +23,7 @@ export const english = {
     [Section.alcohol_use.code]: 'Alcohol use',
     [Section.drug_use.code]: 'Drug use',
     [Section.employment_and_education.code]: 'Employment and education',
-    [Section.finances.code]: 'Finance',
+    [Section.finance.code]: 'Finance',
     [Section.health_and_wellbeing.code]: 'Health and wellbeing',
   },
   validation: {

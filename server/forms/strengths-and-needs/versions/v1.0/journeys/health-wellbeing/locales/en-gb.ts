@@ -38,15 +38,15 @@ export const english = {
     },
     [Question.head_injuries]: {
       text: 'Has %1 had a head injury or any illness affecting the brain?',
-      hint: '\'<div class="govuk-grid-width-full">\' +\n' +
-        '      \'<p class="govuk-hint">This includes:</p>\' +\n' +
-        '      \'<ul class="govuk-hint govuk-list govuk-list--bullet">\' +\n' +
-        '      \'<li>traumatic brain injury</li>\' +\n' +
-        '      \'<li>acquired brain injury</li>\' +\n' +
-        '      \'<li>having fits</li>\'+\n' +
-        '      \'<li>significant episodes of unconsciousness as a result of a head injury</li>\'+\n' +
-        '      \'</ul>\'+\n' +
-        '      \'</div>\'',
+      hint: '<div class="govuk-grid-width-full">' +
+        '<p class="govuk-hint">This includes:</p>' +
+        '<ul class="govuk-hint govuk-list govuk-list--bullet">' +
+        '<li>traumatic brain injury</li>' +
+        '<li>acquired brain injury</li>' +
+        '<li>having fits</li>' +
+        '<li>significant episodes of unconsciousness as a result of a head injury</li>' +
+        '</ul>' +
+        '</div>',
       validation: 'Select if they have had a head injury or any illness affecting the brain',
       },
     [Question.neurodiverse_conditions]: {

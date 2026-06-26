@@ -23,7 +23,7 @@ export const healthWellbeingJourney = journey({
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {
     locals: {
-      sectionTitle: commonContentFor('sectionTitle.health_and_wellbeing'),
+      sectionTitle: commonContentFor('sectionTitle.health-and-wellbeing'),
       sectionStatus: Data(Section.health_and_wellbeing.statusKey),
     },
   },

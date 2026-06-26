@@ -163,7 +163,8 @@ export const healthWellbeingSummary = GovUKSummaryList({
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(selfHarm.items, Answer(Question.self_harm))}),
           GovUKBody({text: Answer(Question.self_harm_details), size: "s",
-            visibleWhen: Answer(Question.self_harm_details).match(Condition.String.HasMinLength(1))}),
+            visibleWhen: Answer(Question.self_harm_details).match(Condition.IsRequired()),
+          }),
         ]
       },
       actions: {
@@ -176,7 +177,8 @@ export const healthWellbeingSummary = GovUKSummaryList({
         blocks: [
           GovUKBody({text: SANGenerators.getTextFromListDefinition(suicidalTendencies.items, Answer(Question.suicidal_tendencies))}),
           GovUKBody({text: Answer(Question.suicidal_tendencies_details), size: "s",
-            visibleWhen: Answer(Question.suicidal_tendencies_details).match(Condition.String.HasMinLength(1))}),
+            visibleWhen: Answer(Question.suicidal_tendencies_details).match(Condition.IsRequired())
+          }),
         ]
       },
       actions: {

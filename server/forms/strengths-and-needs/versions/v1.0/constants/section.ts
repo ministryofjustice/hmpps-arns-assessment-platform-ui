@@ -38,8 +38,8 @@ export const Section = {
   },
   health_and_wellbeing: {
     code: 'health-and-wellbeing',
-    path: '',
-    sideNavHref: `${basePath}/health-and-wellbeing/physical-health?resume=true`,
+    path: '/health-and-wellbeing',
+    sideNavHref: `${basePath}/health-and-wellbeing/health-wellbeing?resume=true`,
     statusKey: 'health_section_status',
   },
   personal_relationships_and_community: {
