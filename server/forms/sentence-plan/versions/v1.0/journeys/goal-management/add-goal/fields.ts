@@ -76,14 +76,14 @@ const areaOfNeedInset = GovUKInsetText({
   blocks: [
     GovUKBody({
       text: Format(
-        'Area of need: <strong>%1</strong>.',
+        'Area of need: <strong>%1</strong>',
         Data('currentAreaOfNeed.text').pipe(Transformer.String.ToLowerCase(), Transformer.String.EscapeHtml()),
       ),
     }),
     GovUKBody({
       classes: 'govuk-!-margin-bottom-0',
       text: Format(
-        '<a class="govuk-link govuk-link--no-visited-state" href="%1" data-ai-id="create-goal-change-area-of-need-link">Change area of need.</a>',
+        '<a class="govuk-link govuk-link--no-visited-state" href="%1" data-ai-id="create-goal-change-area-of-need-link">Change area of need</a>',
         changeAreaOfNeedHref,
       ),
     }),
