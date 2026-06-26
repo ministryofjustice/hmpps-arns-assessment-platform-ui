@@ -144,6 +144,31 @@ test.describe('Change area of need', () => {
       expect(await reloaded.getAreaOfNeedInsetText()).toContain('Area of need: accommodation')
     })
 
+    test('ignores an invalid area in the query and keeps the saved area on save', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(activeGoal()).save()
+      const goalUuid = plan.goals[0].uuid
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      // A tampered query param that isn't a real area-of-need slug
+      await page.goto(`${sentencePlanV1UrlBuilders.goalChange(goalUuid)}?area=banana`)
+
+      const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+      // The invalid area is ignored — the inset still shows the saved area
+      expect(await changeGoalPage.getAreaOfNeedInsetText()).toContain('Area of need: accommodation')
+
+      await changeGoalPage.saveGoal()
+
+      await page.goto(sentencePlanV1UrlBuilders.goalChange(goalUuid))
+      const reloaded = await ChangeGoalPage.verifyOnPage(page)
+      expect(await reloaded.getAreaOfNeedInsetText()).toContain('Area of need: accommodation')
+    })
+
     test("changing the area to one of the goal's related areas removes the overlap on save", async ({
       page,
       createSession,

@@ -11,6 +11,7 @@ import {
   buildGoalAnswers,
 } from './goalUtils'
 import { snapshotFromGoal } from './goalSnapshot'
+import { areasOfNeed } from '../../versions/v1.0/constants'
 
 /**
  * Update an existing goal
@@ -45,8 +46,14 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
   const customDate = context.getAnswer('custom_target_date')
 
   // The area of need can be changed on the "Change area of need" page, which carries the
-  // chosen area back as a query param (?area=). It is only persisted here, on save.
-  const areaOfNeed = (context.getQueryParam('area') as string | undefined) ?? activeGoal.areaOfNeed
+  // chosen area back as a query param (?area=). It is only persisted here, on save. Only
+  // accept a real area-of-need slug, so a tampered/invalid query (e.g. ?area=banana) can't
+  // store a bad value — fall back to the goal's saved area.
+  const pendingAreaOfNeed = context.getQueryParam('area') as string | undefined
+  const areaOfNeed =
+    pendingAreaOfNeed && areasOfNeed.some(area => area.slug === pendingAreaOfNeed)
+      ? pendingAreaOfNeed
+      : activeGoal.areaOfNeed
 
   // A goal can't relate to its own primary area, so drop any overlap with the chosen area.
   const relatedAreas = (

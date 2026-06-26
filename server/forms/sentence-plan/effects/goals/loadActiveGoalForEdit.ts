@@ -26,7 +26,11 @@ export const loadActiveGoalForEdit = () => async (context: SentencePlanContext) 
   // chosen area back as a query param (?area=). Until the goal is saved this is a pending
   // selection, so the edit page reflects it without persisting anything yet.
   const pendingAreaOfNeed = context.getQueryParam('area') as string | undefined
-  const effectiveAreaOfNeed = pendingAreaOfNeed ?? activeGoal.areaOfNeed
+  // Ignore an unknown/invalid area (e.g. a manually edited query string) and use the saved area.
+  const effectiveAreaOfNeed =
+    pendingAreaOfNeed && areasOfNeed?.some(area => area.slug === pendingAreaOfNeed)
+      ? pendingAreaOfNeed
+      : activeGoal.areaOfNeed
 
   // Set up area of need data based on the effective area
   const currentAreaOfNeed = areasOfNeed?.find(area => area.slug === effectiveAreaOfNeed)
