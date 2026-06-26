@@ -402,6 +402,7 @@ export interface SentencePlanData extends Record<string, unknown> {
 export interface SentencePlanAnswers extends Record<string, unknown> {
   // Goal form fields
   goal_title: string
+  area_of_need: string
   related_areas_of_need: string[]
   can_start_now: string
   target_date_option: string

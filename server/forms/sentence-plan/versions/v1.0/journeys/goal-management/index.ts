@@ -3,6 +3,7 @@ import { selectAreaOfNeedStep } from './select-area-of-need/step'
 import { createGoalStep } from './add-goal/step'
 import { addStepsStep } from './add-steps/step'
 import { changeGoalStep } from './change-goal/step'
+import { changeAreaOfNeedStep } from './change-area-of-need/step'
 import { confirmAchievedGoalStep } from './confirm-achieved-goal/step'
 import { confirmDeleteGoalStep } from './confirm-delete-goal/step'
 import { confirmIfAchievedStep } from './confirm-if-achieved/step'
@@ -22,6 +23,7 @@ export const goalManagementJourney = journey({
     createGoalStep,
     addStepsStep,
     changeGoalStep,
+    changeAreaOfNeedStep,
     confirmIfAchievedStep,
     confirmAchievedGoalStep,
     confirmDeleteGoalStep,

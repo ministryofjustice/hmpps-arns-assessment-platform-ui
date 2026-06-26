@@ -44,6 +44,8 @@ export const sentencePlanV1URLs = {
 
 export const sentencePlanV1UrlBuilders = {
   goalChange: (goalUuid: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/change-goal`,
+  goalChangeArea: (goalUuid: string) =>
+    `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/change-area-of-need`,
   goalUpdateSteps: (goalUuid: string) =>
     `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/update-goal-steps`,
   goalAddSteps: (goalUuid: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/add-steps`,
@@ -74,6 +76,7 @@ export const sentencePlanPageTitles = {
   addOrUpdateSteps: 'Add or update steps',
   updateGoalAndSteps: 'Update goal and steps',
   changeGoal: 'Change goal',
+  changeAreaOfNeed: 'Change area of need',
   confirmDeleteGoal: 'Confirm you want to delete this goal',
   confirmAchievedGoal: 'Confirm they have achieved this goal',
   confirmIfAchieved: 'Confirm if they have achieved this goal',
