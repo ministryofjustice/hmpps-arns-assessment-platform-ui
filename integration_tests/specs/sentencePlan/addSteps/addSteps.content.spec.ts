@@ -62,6 +62,7 @@ test.describe('Add or update steps page', () => {
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
       await expect(addStepsPage.pageHeading).toHaveText('Add or update steps')
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.addOrUpdateSteps))
     })
 
     test('shows "Add steps" heading when editing an existing goal with no steps', async ({
@@ -91,6 +92,7 @@ test.describe('Add or update steps page', () => {
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
       await expect(addStepsPage.pageHeading).toHaveText('Add steps')
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.addSteps))
     })
   })
 
