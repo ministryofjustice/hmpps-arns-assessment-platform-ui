@@ -125,6 +125,11 @@ export const changeGoalStep = step({
               .then('POST_AGREE')
               .else('PRE_AGREE'),
           }),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            message: Format('You changed a goal in %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+          }),
         ],
         next: [redirect({ goto: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')) })],
       },
