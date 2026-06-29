@@ -9,6 +9,7 @@
   .govuk-summary-card__actions {
     flex-wrap: nowrap;
     white-space: nowrap;
+    height: fit-content;
   }
 
   // Prevent links from turning purple when visited
