@@ -75,7 +75,7 @@ export const sentencePlanPageTitles = {
   addSteps: 'Add steps',
   addOrUpdateSteps: 'Add or update steps',
   updateGoalAndSteps: 'Update goal and steps',
-  changeGoal: 'Change goal',
+  changeGoal: 'Update goal details',
   changeAreaOfNeed: 'Change area of need',
   confirmDeleteGoal: 'Confirm you want to delete this goal',
   confirmAchievedGoal: 'Confirm they have achieved this goal',
