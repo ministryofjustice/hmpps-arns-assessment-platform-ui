@@ -1,6 +1,7 @@
 import {
   access,
   and,
+  or,
   Data,
   Format,
   match,
@@ -33,6 +34,15 @@ export const addStepsStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
+      dynamicTitle: when(
+        or(
+          Data('navigationReferrer').match(Condition.Equals('add-goal')),
+          Data('activeGoal.steps').not.match(Condition.IsRequired()),
+        ),
+      )
+        .then('Add steps')
+        .else('Add or update steps'),
+
       // Backlink logic (priority order):
       // 1. If navigationReferrer='add-goal', navigate to change-goal and persist goal information
       // 2. If navigationReferrer='update-goal-steps', navigate back to update-goal-steps page

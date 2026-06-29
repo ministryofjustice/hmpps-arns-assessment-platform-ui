@@ -26,7 +26,7 @@ import { hasPostAgreementStatus, redirectIfGoalNotFound } from '../../../guards'
  */
 export const changeGoalStep = step({
   path: '/change-goal',
-  title: 'Change goal',
+  title: 'Update goal details',
   reachability: { entryWhen: true },
   view: {
     locals: {

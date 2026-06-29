@@ -4,7 +4,13 @@ import ChangeGoalPage from '../../pages/sentencePlan/changeGoalPage'
 import ChangeAreaOfNeedPage from '../../pages/sentencePlan/changeAreaOfNeedPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import type { GoalConfig } from '../../builders/types'
-import { getDatePlusDaysAsISO, navigateToSentencePlan, sentencePlanV1UrlBuilders } from './sentencePlanUtils'
+import {
+  buildPageTitle,
+  getDatePlusDaysAsISO,
+  navigateToSentencePlan,
+  sentencePlanPageTitles,
+  sentencePlanV1UrlBuilders,
+} from './sentencePlanUtils'
 
 const activeGoal = (overrides: Partial<GoalConfig> = {}): GoalConfig[] => [
   {
@@ -88,6 +94,7 @@ test.describe('Change area of need', () => {
 
       const changeAreaPage = await ChangeAreaOfNeedPage.verifyOnPage(page)
 
+      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.changeAreaOfNeed))
       expect(await changeAreaPage.isAreaSelected('accommodation')).toBe(true)
     })
 
