@@ -41,9 +41,16 @@ export function initBackToTop() {
   window.addEventListener('resize', update)
 
   // Content height can change after load (fonts, images, expanding sections),
-  // so re-check whenever the body resizes.
+  // so re-check whenever the body resizes. update() toggles `hidden`, which
+  // resizes the body, so we defer to the next frame to avoid the observer
+  // re-firing in the same frame (a benign "ResizeObserver loop" error).
   if ('ResizeObserver' in window) {
-    new ResizeObserver(update).observe(document.body)
+    let frame
+
+    new ResizeObserver(() => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(update)
+    }).observe(document.body)
   }
 }
 
