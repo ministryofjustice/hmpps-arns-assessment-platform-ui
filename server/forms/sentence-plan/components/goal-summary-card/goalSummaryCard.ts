@@ -1,50 +1,51 @@
 import type nunjucks from 'nunjucks'
-import { buildNunjucksComponent } from '@form-engine-express-nunjucks/utils/buildNunjucksComponent'
+import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import {
+  BasicBlockProps,
   BlockDefinition,
-  ConditionalArray,
-  ConditionalBoolean,
-  ConditionalNumber,
-  ConditionalString,
+  ResolvableArray,
+  ResolvableBoolean,
+  ResolvableNumber,
+  ResolvableString,
   EvaluatedBlock,
-} from '@form-engine/form/types/structures.type'
-import { block as blockBuilder } from '@form-engine/form/builders'
+} from '@ministryofjustice/hmpps-forge/core/components'
+import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 /**
  * A step within a goal.
  */
 export interface GoalStep {
-  actor: ConditionalString
-  description: ConditionalString
-  status: ConditionalString
+  actor: ResolvableString
+  description: ResolvableString
+  status: ResolvableString
 }
 
 /**
  * Action link displayed in the card header.
  */
 export interface GoalAction {
-  text: ConditionalString
-  href: ConditionalString
-  visuallyHiddenText?: ConditionalString
-  classes?: ConditionalString
-  hidden?: ConditionalBoolean
+  text: ResolvableString
+  href: ResolvableString
+  visuallyHiddenText?: ResolvableString
+  classes?: ResolvableString
+  hidden?: ResolvableBoolean
 }
 
 /**
  * Button displayed at the bottom of the card.
  */
 export interface GoalButton {
-  text: ConditionalString
-  href: ConditionalString
-  classes?: ConditionalString
+  text: ResolvableString
+  href: ResolvableString
+  classes?: ResolvableString
 }
 
 /**
  * Note attached to a goal (used for removed goals).
  */
 export interface GoalNote {
-  type: ConditionalString
-  note: ConditionalString
+  type: ResolvableString
+  note: ResolvableString
 }
 
 /**
@@ -73,63 +74,63 @@ export interface GoalNote {
  * })
  * ```
  */
-export interface GoalSummaryCardProps {
+export interface GoalSummaryCardProps extends BasicBlockProps {
   /** The goal title displayed in the card header */
-  goalTitle: ConditionalString
+  goalTitle: ResolvableString
 
   /** Goal status - affects how dates and information are displayed */
-  goalStatus: ConditionalString
+  goalStatus: ResolvableString
 
   /** Goal UUID for generating links */
-  goalUuid?: ConditionalString
+  goalUuid?: ResolvableString
 
   /** Target date for the goal (formatted string) */
-  targetDate?: ConditionalString
+  targetDate?: ResolvableString
 
   /** Date the goal status changed (for achieved/removed goals) */
-  statusDate?: ConditionalString
+  statusDate?: ResolvableString
 
-  /** Main area of need for the goal */
-  areaOfNeed: ConditionalString
+  /** Main area of need label for the goal */
+  areaOfNeed: ResolvableString
 
-  /** Related areas of need (displayed as semicolon-separated list) */
-  relatedAreasOfNeed?: ConditionalArray<string>
+  /** Related area of need labels (displayed as semicolon-separated list) */
+  relatedAreasOfNeed?: ResolvableArray<string>
 
   /** Steps associated with this goal */
-  steps?: ConditionalArray<GoalStep>
+  steps?: ResolvableArray<GoalStep>
 
   /** Notes attached to the goal (e.g., removal reason) */
-  notes?: ConditionalArray<GoalNote>
+  notes?: ResolvableArray<GoalNote>
 
   /** Action links shown in the card header */
-  actions?: ConditionalArray<GoalAction>
+  actions?: ResolvableArray<GoalAction>
 
   /** Whether the page is in read-only mode */
-  isReadOnly?: ConditionalBoolean
+  isReadOnly?: ResolvableBoolean
 
   /** Buttons shown at the bottom of the card */
-  buttons?: ConditionalArray<GoalButton>
+  buttons?: ResolvableArray<GoalButton>
 
   /** Error message to display at the top of the card */
-  errorMessage?: ConditionalString
+  errorMessage?: ResolvableString
 
   /** Index for generating unique IDs */
-  index?: ConditionalNumber
+  index?: ResolvableNumber
 
   /** Additional CSS classes */
-  classes?: ConditionalString
+  classes?: ResolvableString
 
   /** Whether to show the "Move goal up" link */
-  showMoveUp?: ConditionalBoolean
+  showMoveUp?: ResolvableBoolean
 
   /** Whether to show the "Move goal down" link */
-  showMoveDown?: ConditionalBoolean
+  showMoveDown?: ResolvableBoolean
 
   /** URL for the "Move goal up" action */
-  moveUpHref?: ConditionalString
+  moveUpHref?: ResolvableString
 
   /** URL for the "Move goal down" action */
-  moveDownHref?: ConditionalString
+  moveDownHref?: ResolvableString
 }
 
 /**
@@ -156,7 +157,18 @@ export interface GoalSummaryCardDraft extends BlockDefinition, GoalSummaryCardPr
   variant: 'goalSummaryCardDraft'
 }
 
-type GoalSummaryCardBlock = GoalSummaryCardAgreed | GoalSummaryCardDraft
+/**
+ * Goal Summary Card (History) component interface.
+ *
+ * Read-only variant used inside the Plan History accordion. Steps are shown
+ * inline (no collapsible wrapper), the step counter uses "X of Y" wording,
+ * and FUTURE-status goals display a "This is a future goal" line.
+ */
+export interface GoalSummaryCardHistory extends BlockDefinition, GoalSummaryCardProps {
+  variant: 'goalSummaryCardHistory'
+}
+
+type GoalSummaryCardBlock = GoalSummaryCardAgreed | GoalSummaryCardDraft | GoalSummaryCardHistory
 
 /**
  * Builds the template parameters for goal summary card rendering.
@@ -178,9 +190,7 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
     removedNote = removedNoteObj?.note as string | undefined
   }
 
-  // Build related areas text
-  const relatedAreasText =
-    relatedAreasOfNeed.length > 0 ? [...relatedAreasOfNeed].sort().join('; ').toLowerCase() : undefined
+  const relatedAreasText = relatedAreasOfNeed.length > 0 ? [...relatedAreasOfNeed].sort().join('; ') : undefined
 
   return {
     goalTitle: block.goalTitle,
@@ -188,7 +198,7 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
     goalUuid: block.goalUuid,
     targetDate: block.targetDate,
     statusDate: block.statusDate,
-    areaOfNeed: block.areaOfNeed?.toLowerCase(),
+    areaOfNeed: block.areaOfNeed,
     relatedAreasText,
     steps,
     stepsCount: steps.length,
@@ -234,6 +244,15 @@ export const goalSummaryCardAgreed = buildNunjucksComponent<GoalSummaryCardAgree
 export const goalSummaryCardDraft = buildNunjucksComponent<GoalSummaryCardDraft>(
   'goalSummaryCardDraft',
   createRenderer('sentence-plan/components/goal-summary-card/draft.njk'),
+)
+
+/**
+ * Goal Summary Card (History) component.
+ * Read-only variant for the Plan History accordion: inline steps and "X of Y" counter.
+ */
+export const goalSummaryCardHistory = buildNunjucksComponent<GoalSummaryCardHistory>(
+  'goalSummaryCardHistory',
+  createRenderer('sentence-plan/components/goal-summary-card/history.njk'),
 )
 
 /**
@@ -286,4 +305,14 @@ export function GoalSummaryCardAgreed(props: GoalSummaryCardProps): GoalSummaryC
  */
 export function GoalSummaryCardDraft(props: GoalSummaryCardProps): GoalSummaryCardDraft {
   return blockBuilder<GoalSummaryCardDraft>({ ...props, variant: 'goalSummaryCardDraft' })
+}
+
+/**
+ * Creates a Goal Summary Card for the Plan History accordion.
+ *
+ * Steps are shown inline and the counter reads "X of Y steps completed".
+ * For FUTURE-status goals the card includes a "This is a future goal" line.
+ */
+export function GoalSummaryCardHistory(props: GoalSummaryCardProps): GoalSummaryCardHistory {
+  return blockBuilder<GoalSummaryCardHistory>({ ...props, variant: 'goalSummaryCardHistory' })
 }

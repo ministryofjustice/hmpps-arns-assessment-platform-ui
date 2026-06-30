@@ -26,6 +26,20 @@ test.describe('READ_ONLY Access Mode', () => {
       const viewHistoryLink = page.getByRole('link', { name: /View plan history/i })
       await expect(viewHistoryLink).toBeVisible()
     })
+
+    test('hides update agreement link', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        planAccessMode: 'READ_ONLY',
+      })
+
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
+
+      await navigateToSentencePlan(page, handoverLink)
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      await expect(planOverviewPage.updateAgreementLink).not.toBeVisible()
+    })
   })
 
   test.describe('Empty Plan State', () => {

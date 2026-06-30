@@ -1,7 +1,6 @@
-import { Item, Iterator } from '@form-engine/form/builders'
-import { Transformer } from '@form-engine/registry/transformers'
-import { CollectionBlock, HtmlBlock, TemplateWrapper } from '@form-engine/registry/components'
-import { GovUKTag } from '@form-engine-govuk-components/components'
+import { Item, Iterator, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { CollectionBlock, HtmlBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
+import { GovUKTag } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CriminogenicNeedsList } from '../../components'
 
 export const scenarioDetailsBlock = TemplateWrapper({

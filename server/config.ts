@@ -134,9 +134,6 @@ export default {
     audit: auditConfig(),
   },
   forms: {
-    formEngineDeveloperGuide: {
-      enabled: get('FORM_ENGINE_DEVELOPER_GUIDE_ENABLED', 'false') === 'true',
-    },
     sentencePlan: {
       enabled: get('FORM_SENTENCE_PLAN_ENABLED', 'true') === 'true',
     },

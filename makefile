@@ -70,7 +70,7 @@ install-node-modules: ## Installs Node modules into the Docker volume.
 	  -v ./package-lock.json:/package-lock.json \
 	  -v ~/.npm:/npm_cache \
 	  -v ${PROJECT_NAME}_node_modules:/node_modules \
-	  node:22-alpine \
+	  node:24-alpine \
 	  /bin/sh -c '\
 	    CURRENT_HASH=$$(cat /package.json /package-lock.json | sha256sum | cut -d" " -f1); \
 	    STORED_HASH=$$(cat /node_modules/.package-hash 2>/dev/null || echo ""); \

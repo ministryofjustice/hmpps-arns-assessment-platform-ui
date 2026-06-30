@@ -1,10 +1,8 @@
 import { Router } from 'express'
 
-import type { Services } from '../services'
-import demo from './demo'
 import sessionRoutes from './session'
 
-export default function routes(services: Services): Router {
+export default function routes(): Router {
   const router = Router()
 
   router.get('/', async (_req, res) => {
@@ -18,7 +16,6 @@ export default function routes(services: Services): Router {
     })
   })
 
-  router.use(demo(services))
   router.use('/session', sessionRoutes())
 
   return router

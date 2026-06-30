@@ -1492,6 +1492,199 @@
       ],
       "title": "Database Free Storage (GiB)",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "gbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 69
+      },
+      "id": 24,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "min by (dbinstance_identifier) (min_over_time(aws_rds_freeable_memory_average{dbinstance_identifier=~'$db_instance',dbinstance_identifier!=''}[5m])) / 1024 / 1024 / 1024",
+          "legendFormat": "{{dbinstance_identifier}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Database Freeable Memory (GiB)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 69
+      },
+      "id": 25,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "avg by (dbinstance_identifier) (avg_over_time(aws_rds_read_latency_average{dbinstance_identifier=~'$db_instance',dbinstance_identifier!=''}[5m]))",
+          "legendFormat": "{{dbinstance_identifier}} read",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "avg by (dbinstance_identifier) (avg_over_time(aws_rds_write_latency_average{dbinstance_identifier=~'$db_instance',dbinstance_identifier!=''}[5m]))",
+          "legendFormat": "{{dbinstance_identifier}} write",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Database Read/Write Latency",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "iops"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 69
+      },
+      "id": 26,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "avg by (dbinstance_identifier) (avg_over_time(aws_rds_read_iops_average{dbinstance_identifier=~'$db_instance',dbinstance_identifier!=''}[5m]))",
+          "legendFormat": "{{dbinstance_identifier}} read",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "avg by (dbinstance_identifier) (avg_over_time(aws_rds_write_iops_average{dbinstance_identifier=~'$db_instance',dbinstance_identifier!=''}[5m]))",
+          "legendFormat": "{{dbinstance_identifier}} write",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Database Read/Write IOPS",
+      "type": "timeseries"
     }
   ],
   "preload": false,

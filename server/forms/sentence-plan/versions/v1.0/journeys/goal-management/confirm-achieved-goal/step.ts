@@ -1,5 +1,4 @@
-import { accessTransition, Format, redirect, Post, step, submitTransition } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import { access, Format, redirect, Post, step, submit, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, goalCard, howHelpedField, buttonGroup } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
@@ -11,11 +10,11 @@ import { CaseData } from '../../../constants'
 export const confirmAchievedGoalStep = step({
   path: '/confirm-achieved-goal',
   title: 'Confirm they have achieved this goal',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   blocks: [pageHeading, goalCard, howHelpedField, buttonGroup],
 
   onAccess: [
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_ACHIEVED),
@@ -27,7 +26,7 @@ export const confirmAchievedGoalStep = step({
   ],
 
   onSubmission: [
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('confirm')),
       validate: true,
       onValid: {

@@ -48,6 +48,9 @@ make help
 
 The application will be available at http://localhost:3000 with HMPPS Auth running on http://localhost:9090
 
+> [!NOTE]
+> You can access the Training Session Launcher, our way of accessing the app without authentication, through http://localhost:3000/training-session-launcher/browse?scenario=default
+
 ### Common Development Commands
 
 ```bash
@@ -243,10 +246,3 @@ The project uses Husky for pre-commit hooks that run:
 - ESLint with HMPPS configuration
 - Prettier for code formatting
 - TypeScript strict mode enabled
-
-## Documentation
-
-- [Form Engine Documentation](packages/form-engine/docs/form-engine.md)
-- [ARNS Assessment Platform Overview](packages/form-engine/docs/arns-assessment-platform.md)
-- [Custom Components Guide](packages/form-engine/docs/custom-components.md)
-- [Validation System](packages/form-engine/docs/validation-system.md)

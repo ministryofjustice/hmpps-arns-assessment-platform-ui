@@ -4,6 +4,7 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
+import { snapshotFromGoal } from './goalSnapshot'
 
 /**
  * Mark a goal as removed
@@ -32,6 +33,10 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
   // Read form answers before building commands (needed for timeline data)
   const removalNote = context.getAnswer('removal_note')
 
+  const statusDate = new Date().toISOString()
+  // Removing a goal also clears its target date, so the snapshot drops it too.
+  const goalSnapshot = snapshotFromGoal(activeGoal, { status: 'REMOVED', statusDate, targetDate: undefined })
+
   const commands: Commands[] = []
 
   // 1. Update goal status to REMOVED
@@ -40,7 +45,7 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
     collectionItemUuid: activeGoal.uuid,
     added: wrapAll({
       status: 'REMOVED',
-      status_date: new Date().toISOString(),
+      status_date: statusDate,
     }),
     removed: [],
     timeline: {
@@ -50,6 +55,7 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
         goalTitle: activeGoal.title,
         removedBy: practitionerName,
         reason: (typeof removalNote === 'string' && removalNote.trim()) || undefined,
+        goalSnapshot,
       },
     },
     assessmentUuid,

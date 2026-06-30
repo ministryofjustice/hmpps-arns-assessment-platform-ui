@@ -23,7 +23,9 @@ export const deleteActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
     collectionItemUuid: activeGoal.uuid,
     timeline: {
       type: 'GOAL_DELETED',
-      data: {},
+      data: {
+        goalUuid: activeGoal.uuid,
+      },
     },
     assessmentUuid,
     user,

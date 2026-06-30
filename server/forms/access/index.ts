@@ -1,6 +1,6 @@
-import { createFormPackage, journey } from '@form-engine/form/builders'
+import { createForgePackage, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { AccessEffectImplementations } from './effects'
 import { AccessEffectsDeps } from './effects/types'
-import { AccessEffectsRegistry } from './effects'
 import { oasysAccessStep } from './steps/oasys-access/step'
 import { crnAccessStep } from './steps/crn-access/step'
 
@@ -42,9 +42,7 @@ const accessJourney = journey({
  * - deliusApi: For CRN-based case lookups
  * - handoverApi: For OASys handover context
  */
-export default createFormPackage({
+export default createForgePackage<AccessEffectsDeps>({
   journey: accessJourney,
-  createRegistries: (deps: AccessEffectsDeps) => ({
-    ...AccessEffectsRegistry(deps),
-  }),
+  functions: AccessEffectImplementations,
 })

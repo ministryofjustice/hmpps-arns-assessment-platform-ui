@@ -1,13 +1,21 @@
-import { Data, Format, Item, validation, Self } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
-import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import { GovUKTextareaInput } from '@form-engine-govuk-components/components/textarea-input/govukTextareaInput'
-import { Transformer } from '@form-engine/registry/transformers'
-import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
-import { GovUKButtonGroup } from '@form-engine-govuk-components/wrappers/govukButtonGroup'
-import { GovUKGridRow } from '@form-engine-govuk-components/wrappers/govukGridRow'
-import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
+import {
+  Data,
+  Format,
+  Item,
+  validation,
+  Self,
+  Condition,
+  Iterator,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  GovUKButton,
+  GovUKTextareaInput,
+  GovUKHeading,
+  GovUKButtonGroup,
+  GovUKGridRow,
+  GovUKBody,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
 import { GoalSummaryCardAgreed } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
@@ -33,7 +41,7 @@ export const introText = GovUKGridRow({
 export const goalCard = GoalSummaryCardAgreed({
   goalTitle: Data('activeGoal.title'),
   goalStatus: Data('activeGoal.status'),
-  targetDate: Data('activeGoal.targetDate').pipe(Transformer.Date.ToUKLongDate()),
+  targetDate: Data('activeGoal.targetDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   areaOfNeed: Data('activeGoal.areaOfNeedLabel'),
   relatedAreasOfNeed: Data('activeGoal.relatedAreasOfNeedLabels'),
   steps: Data('activeGoal.steps').each(
@@ -52,9 +60,9 @@ const removalNoteField = GovUKTextareaInput({
     classes: 'govuk-label--m',
   },
   rows: '3',
-  validate: [
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Enter why you want to remove this goal',
     }),
   ],

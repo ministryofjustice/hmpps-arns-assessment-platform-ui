@@ -166,6 +166,11 @@ function computeAvailableServices(session: Session): ServiceOption[] {
  */
 function transformToDisplaySession(session: Session): DisplaySession {
   const { values } = session
+  const sentencePlanVersionValue = session.sentencePlanVersion ?? values.sentencePlanVersion
+  const sentencePlanVersion =
+    sentencePlanVersionValue === undefined || sentencePlanVersionValue === null
+      ? ''
+      : String(sentencePlanVersionValue).trim()
 
   return {
     ...session,
@@ -179,7 +184,7 @@ function transformToDisplaySession(session: Session): DisplaySession {
     crn: values.crn || '',
     pnc: values.pnc || '',
     oasysAssessmentPk: values.oasysAssessmentPk || '',
-    sentencePlanVersion: values.sentencePlanVersion || null,
+    sentencePlanVersion,
     availableServices: computeAvailableServices(session),
   }
 }
@@ -192,6 +197,10 @@ function resolveSavedScenario(saved: SavedScenario): DisplayScenario {
   const excludedFields = getExcludedFields(saved.flags)
   const randomizeFields = getRandomizeFields(saved.fixedValues, excludedFields)
   const values = applyRandomization(saved.fixedValues, randomizeFields, seed)
+  const sentencePlanVersion =
+    values.sentencePlanVersion === undefined || values.sentencePlanVersion === null
+      ? ''
+      : String(values.sentencePlanVersion).trim()
 
   return {
     id: saved.id,
@@ -209,7 +218,7 @@ function resolveSavedScenario(saved: SavedScenario): DisplayScenario {
     crn: values.crn || '',
     pnc: values.pnc || '',
     oasysAssessmentPk: values.oasysAssessmentPk || '',
-    sentencePlanVersion: values.sentencePlanVersion || null,
+    sentencePlanVersion,
 
     displayNeeds: transformToDisplayNeeds(values),
     isCustom: true,

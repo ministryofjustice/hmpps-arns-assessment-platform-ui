@@ -1,4 +1,4 @@
-import { accessTransition, journey } from '@form-engine/form/builders'
+import { access, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { browseStep } from './steps/browse/step'
 import { customiseStep } from './steps/customise/step'
 import { sessionsStep } from './steps/sessions/step'
@@ -33,7 +33,7 @@ export const trainingSessionLauncherJourney = journey({
   },
 
   onAccess: [
-    accessTransition({
+    access({
       effects: [
         TrainingSessionLauncherEffects.setTargetService('sentence-plan'),
         TrainingSessionLauncherEffects.storeCsrf(),

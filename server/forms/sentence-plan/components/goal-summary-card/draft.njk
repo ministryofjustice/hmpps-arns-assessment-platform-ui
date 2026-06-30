@@ -10,8 +10,8 @@
     goalUuid         - UUID for generating links
     targetDate       - Target date (formatted string)
     statusDate       - Date status changed (for achieved/removed)
-    areaOfNeed       - Main area of need (lowercase)
-    relatedAreasText - Related areas (semicolon-separated, lowercase)
+    areaOfNeed       - Main area of need label
+    relatedAreasText - Related area labels (semicolon-separated)
     steps            - Array of { actor, description, status }
     stepsCount       - Number of steps
     removedNote      - Note text if goal was removed
@@ -116,9 +116,9 @@
 
       {#- Areas of need -#}
       <p class="goal-summary-card__areas-of-need" data-qa="goal-area-of-need">
-        Area of need: {{ params.areaOfNeed }}
+        Area of need: {{ params.areaOfNeed | lower }}
         {% if params.relatedAreasText %}
-          <br>Also linked to: {{ params.relatedAreasText }}
+          <br>Also linked to: {{ params.relatedAreasText | lower}}
         {% endif %}
       </p>
 

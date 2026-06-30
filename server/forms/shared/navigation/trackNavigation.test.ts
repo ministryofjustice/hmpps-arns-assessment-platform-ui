@@ -1,4 +1,4 @@
-import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
+import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
 import { trackNavigation, NavKeyPatterns } from './trackNavigation'
 
 const PATTERNS: NavKeyPatterns = {

@@ -1,8 +1,5 @@
-import { FunctionRegistryObject } from '@form-engine/registry/types/functions.type'
-import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
-import { EffectFunctionExpr, ValueExpr } from '@form-engine/form/types/expressions.type'
-import { FunctionType } from '@form-engine/form/types/enums'
-import { isAsyncFunction } from '@form-engine/registry/utils/createRegisterableFunction'
+import type { EffectFunctionContext, ForgePackage } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { EffectFunctionExpr, FunctionType } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 /**
  * Utility type that extracts all parameters except the first from a tuple type.
@@ -31,7 +28,9 @@ type EffectBuildersFromFactories<Fns> = {
 /**
  * A factory function that creates an effect evaluator when given dependencies.
  */
-type EffectFactory<D> = (deps: D) => (context: EffectFunctionContext, ...args: ValueExpr[]) => void | Promise<void>
+type EffectFactory<D> = (deps: D) => (context: EffectFunctionContext, ...args: unknown[]) => void | Promise<void>
+
+type FunctionImplementations<D> = NonNullable<ForgePackage<D>['functions']>
 
 /**
  * Capitalizes the first letter of a string.
@@ -55,7 +54,7 @@ function capitalize(str: string): string {
  *
  * @example
  * ```typescript
- * export const { effects, createRegistry } = defineNamespacedEffectsWithDeps<MyDeps>('trainingLauncher')({
+ * export const { effects, implementations } = defineNamespacedEffectsWithDeps<MyDeps>('trainingLauncher')({
  *   addNotification: (deps) => (context, notification) => { ... },
  *   loadNotifications: (deps) => (context, target) => { ... },
  * })
@@ -79,29 +78,15 @@ export function defineNamespacedEffectsWithDeps<D>(namespace: string) {
       const namespacedName = `${namespace}${capitalize(shortName)}`
       ;(effects as Record<string, unknown>)[shortName] = (...args: unknown[]): EffectFunctionExpr<unknown[]> => ({
         type: FunctionType.EFFECT,
-        name: namespacedName, // Registry lookup uses namespaced name
+        name: namespacedName,
         arguments: args,
       })
     })
 
-    // Factory function to create registry with namespaced keys
-    const createRegistry = (deps: D): FunctionRegistryObject => {
-      const registry = {} as FunctionRegistryObject
+    const implementations = Object.fromEntries(
+      Object.entries(factories).map(([shortName, factory]) => [`${namespace}${capitalize(shortName)}`, factory]),
+    ) as FunctionImplementations<D>
 
-      Object.entries(factories).forEach(([shortName, factory]) => {
-        const namespacedName = `${namespace}${capitalize(shortName)}`
-        const evaluate = factory(deps)
-        const isAsync = isAsyncFunction(evaluate)
-        ;(registry as Record<string, unknown>)[namespacedName] = {
-          name: namespacedName,
-          evaluate,
-          isAsync,
-        }
-      })
-
-      return registry
-    }
-
-    return { effects, createRegistry }
+    return { effects, implementations }
   }
 }

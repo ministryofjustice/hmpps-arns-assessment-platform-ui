@@ -1,5 +1,4 @@
-import { step, submitTransition, accessTransition, redirect, Query, Post } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import { step, submit, access, redirect, Query, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, customiseFormWrapper } from './fields'
 import { TrainingSessionLauncherEffects } from '../../../effects'
 
@@ -21,23 +20,23 @@ import { TrainingSessionLauncherEffects } from '../../../effects'
 export const customiseStep = step({
   path: '/customise',
   title: 'Customise scenario',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
 
   blocks: [pageHeading, customiseFormWrapper],
 
   onAccess: [
-    accessTransition({
+    access({
       when: Query('scenario').not.match(Condition.IsRequired()),
       next: [redirect({ goto: 'browse' })],
     }),
 
-    accessTransition({
+    access({
       effects: [TrainingSessionLauncherEffects.loadScenarioForCustomise()],
     }),
   ],
 
   onSubmission: [
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('createSession')),
       onAlways: {
         effects: [TrainingSessionLauncherEffects.createSessionFromCustomize()],
@@ -45,7 +44,7 @@ export const customiseStep = step({
       },
     }),
 
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('savePreset')),
       onAlways: {
         effects: [TrainingSessionLauncherEffects.saveCustomPreset()],

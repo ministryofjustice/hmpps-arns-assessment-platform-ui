@@ -11,6 +11,8 @@ export default class UpdateAgreePlanPage extends AbstractPage {
 
   readonly detailsForNoTextarea: Locator
 
+  readonly notesTextarea: Locator
+
   readonly saveButton: Locator
 
   readonly goBackLink: Locator
@@ -22,6 +24,7 @@ export default class UpdateAgreePlanPage extends AbstractPage {
     this.agreementQuestionLegend = page.locator('legend')
     this.agreeYesRadio = page.locator('input[name="update_plan_agreement_question"][value="yes"]')
     this.agreeNoRadio = page.locator('input[name="update_plan_agreement_question"][value="no"]')
+    this.notesTextarea = page.locator('#update_plan_agreement_notes')
     this.detailsForNoTextarea = page.locator('#update_plan_agreement_details_no')
     this.saveButton = page.getByRole('button', { name: 'Save' })
     this.goBackLink = page.locator('.govuk-back-link')
@@ -44,6 +47,10 @@ export default class UpdateAgreePlanPage extends AbstractPage {
 
   async enterDetailsForNo(details: string): Promise<void> {
     await this.detailsForNoTextarea.fill(details)
+  }
+
+  async enterNotes(details: string): Promise<void> {
+    await this.notesTextarea.fill(details)
   }
 
   async clickSave(): Promise<void> {

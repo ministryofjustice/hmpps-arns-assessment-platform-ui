@@ -10,6 +10,8 @@ import {
   buildGoalAnswers,
   getPractitionerName,
 } from './goalUtils'
+import { getUserContext } from '../telemetry/getUserContext'
+import { GoalSnapshotData } from './goalSnapshot'
 
 /**
  * Create a new goal
@@ -74,6 +76,15 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
   // Store goal UUID for redirect to add-steps
   context.setData('activeGoalUuid', addResult.collectionItemUuid)
 
+  const goalSnapshot: GoalSnapshotData = {
+    status,
+    targetDate: targetDate ?? undefined,
+    statusDate: properties.status_date,
+    areaOfNeed: areaOfNeedSlug,
+    relatedAreasOfNeed: relatedAreas,
+    steps: [],
+  }
+
   await deps.api.executeCommand({
     type: 'UpdateCollectionItemPropertiesCommand',
     collectionItemUuid: addResult.collectionItemUuid,
@@ -85,6 +96,7 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
         goalUuid: addResult.collectionItemUuid,
         goalTitle,
         createdBy: getPractitionerName(context, user),
+        goalSnapshot,
       },
     },
     assessmentUuid,
@@ -99,5 +111,9 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
     isRelatedToOtherAreas: relatedAreas.length > 0 ? 'yes' : 'no',
     relatedAreasOfNeed: relatedAreas.join(','),
     relatedAreasCount: String(relatedAreas.length),
+    targetDateOption: targetDateOption ?? '',
+    targetDate: targetDate ?? '',
+    authSource: context.getState('user').authSource,
+    userContext: getUserContext(context),
   })
 }

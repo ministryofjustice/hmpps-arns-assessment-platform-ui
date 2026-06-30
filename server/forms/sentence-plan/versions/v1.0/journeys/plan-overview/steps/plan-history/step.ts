@@ -1,12 +1,12 @@
-import { accessTransition, step } from '@form-engine/form/builders'
-import { subtitleText, sectionBreak, agreementHistory, backToTopLink } from './fields'
+import { access, step } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { subtitleText, agreementHistory } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { isOasysAccess, redirectIfNotPostAgreement, redirectToPrivacyUnlessAccepted } from '../../../../guards'
 
 export const planHistoryStep = step({
   path: '/plan-history',
   title: 'Plan history',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   view: {
     locals: {
       headerPageHeading: 'Plan history',
@@ -15,10 +15,10 @@ export const planHistoryStep = step({
       },
     },
   },
-  blocks: [subtitleText, sectionBreak, agreementHistory, backToTopLink],
+  blocks: [subtitleText, agreementHistory],
   onAccess: [
     redirectToPrivacyUnlessAccepted(),
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.derivePlanHistoryEntries(),

@@ -115,14 +115,14 @@ describe('saveStepEditSession', () => {
       expect.objectContaining({
         type: 'UpdateCollectionItemPropertiesCommand',
         collectionItemUuid: activeGoal.uuid,
-        timeline: {
+        timeline: expect.objectContaining({
           type: 'GOAL_UPDATED',
-          data: {
+          data: expect.objectContaining({
             goalUuid: activeGoal.uuid,
             goalTitle: activeGoal.title,
             updatedBy: 'Jane Smith',
-          },
-        },
+          }),
+        }),
       }),
     )
   })
@@ -220,7 +220,10 @@ describe('saveStepEditSession', () => {
     )
   })
 
-  it('should not add a GOAL_UPDATED timeline event when saving steps for a newly-created goal', async () => {
+  it('should flag GOAL_UPDATED as isInitialStepAdd when saving steps for a newly-created goal', async () => {
+    // The plan-history reader folds initial step-adds into the matching
+    // GOAL_CREATED entry so the user sees a single "Goal created" history
+    // item that already contains the steps.
     const deps = createDeps()
     const newStep = createStep({ id: 'step-new', actor: '', description: '' })
     const session: SentencePlanSession = {
@@ -243,9 +246,14 @@ describe('saveStepEditSession', () => {
     await saveStepEditSession(deps)(context)
 
     const commands = getExecutedCommands(deps)
-    expect(commands).not.toContainEqual(
+    expect(commands).toContainEqual(
       expect.objectContaining({
-        timeline: expect.objectContaining({ type: 'GOAL_UPDATED' }),
+        type: 'UpdateCollectionItemPropertiesCommand',
+        collectionItemUuid: activeGoal.uuid,
+        timeline: expect.objectContaining({
+          type: 'GOAL_UPDATED',
+          data: expect.objectContaining({ isInitialStepAdd: true }),
+        }),
       }),
     )
   })

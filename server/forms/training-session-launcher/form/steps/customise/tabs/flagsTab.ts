@@ -1,6 +1,6 @@
-import { Data } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components'
-import { GovUKCheckboxInput, GovUKTextInput } from '@form-engine-govuk-components/components'
+import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { GovUKCheckboxInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 /**
  * Scenario flags tab content

@@ -1,11 +1,11 @@
-import { step, Query, Conditional } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { GovUKLinkButton } from '@form-engine-govuk-components/components/button/govukButton'
+import { step, Query, Conditional, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { GovUKLinkButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 export const unsavedInformationDeletedStep = step({
   path: '/unsaved-information-deleted',
   title: 'Your unsaved information has been deleted',
+  reachability: { entryWhen: true },
   view: {
     template: 'sentence-plan/views/simple-page',
     locals: {

@@ -174,7 +174,6 @@ services:
       AUDIT_SQS_REGION: eu-west-2
       AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
       NODE_CLUSTER_ENABLED: true
-      FORM_ENGINE_DEVELOPER_GUIDE_ENABLED: true
       FORM_TRAINING_SESSION_LAUNCHER_ENABLED: true
       CACHE_REDIS_HOST: redis
       SERVICE_NOW_FORM_URL: '#service-now-link'

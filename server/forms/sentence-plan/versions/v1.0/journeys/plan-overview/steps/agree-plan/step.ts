@@ -1,5 +1,13 @@
-import { redirect, step, submitTransition, Post, when, Query, Format } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
+import {
+  redirect,
+  step,
+  submit,
+  Post,
+  when,
+  Query,
+  Format,
+  Condition,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { planAgreementQuestion, notesField, saveButton } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { redirectToOverviewIfReadOnly } from '../../../../guards'
@@ -7,7 +15,7 @@ import { redirectToOverviewIfReadOnly } from '../../../../guards'
 export const agreePlanStep = step({
   path: '/agree-plan',
   title: 'Do they agree to this plan?',
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   blocks: [planAgreementQuestion, notesField, saveButton],
   view: {
     locals: {
@@ -18,7 +26,7 @@ export const agreePlanStep = step({
   },
   onAccess: [redirectToOverviewIfReadOnly()],
   onSubmission: [
-    submitTransition({
+    submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {

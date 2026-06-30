@@ -429,7 +429,7 @@ test.describe('View inactive goal page', () => {
       sentencePlanBuilder,
     }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder
+      const plan = await sentencePlanBuilder
         .extend(sentencePlanId)
         .withGoals([
           {
@@ -442,18 +442,18 @@ test.describe('View inactive goal page', () => {
         ])
         .withAgreementStatus('AGREED')
         .save()
+      const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
 
-      // Navigate via plan history
+      // Visit plan history first to set the "came from plan history" context
       await page.goto('/sentence-plan/v1.0/plan/plan-history')
       await PlanHistoryPage.verifyOnPage(page)
 
-      // Click "View goal" link from plan history
-      await page
-        .getByRole('link', { name: /View goal/i })
-        .first()
-        .click()
+      // Navigate directly to view-inactive-goal — the link from plan history was removed
+      // in SP2-2105 and will be re-introduced later. Direct navigation preserves the
+      // referrer, exercising the same back-link routing the link click used to.
+      await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/view-inactive-goal`)
 
       await ViewInactiveGoalPage.verifyOnPage(page)
 

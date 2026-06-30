@@ -1,4 +1,5 @@
 import { HmppsUser } from '../../interfaces/hmppsUser'
+import { HandoverContext } from '../../interfaces/handover-api/response'
 
 export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -17,6 +18,7 @@ export declare module 'express-session' {
     targetService?: string
     csrfToken?: string
     telemetryId?: string
+    handoverContext?: HandoverContext
   }
 }
 
@@ -35,6 +37,7 @@ declare global {
         name: string
         authSource: string
         token: string
+        userRoles: string[]
       }
     }
 
@@ -54,6 +57,7 @@ declare global {
 
     interface Locals {
       user: HmppsUser
+      userContext?: string
       pageHistory?: string[]
       previousPageUrl?: string
       requestId?: string

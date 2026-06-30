@@ -1,12 +1,21 @@
-import { and, Data, Format, Item, not, or, when } from '@form-engine/form/builders'
-import { HtmlBlock } from '@form-engine/registry/components/html'
-import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { Condition } from '@form-engine/registry/conditions'
-import { Transformer } from '@form-engine/registry/transformers'
-import { GovUKAccordion, GovUKTable, GovUKWarningText } from '@form-engine-govuk-components/components'
-import { MOJBanner } from '@form-engine-moj-components/components'
+import {
+  and,
+  Data,
+  Format,
+  Item,
+  not,
+  or,
+  when,
+  Iterator,
+  Condition,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { GovUKAccordion, GovUKTable, GovUKWarningText } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
 import { CaseData, sentencePlanOverviewPath } from '../../constants'
 import { AssessmentInfoDetails } from '../../../../components'
+import { SentencePlanTransformers } from '../../../../transformers'
 
 // used to hide area sections on error and display warning
 const hasAssessmentDataFailedToLoad = Data('allAreasAssessmentStatus').match(Condition.Equals('error'))
@@ -21,7 +30,7 @@ export const isSentenceInformationAndAssessmentLoadingError = and(
 // Combined error message shown when both assessment AND NDelius data failed to load
 // Note: The h1 heading is set via headerPageHeading in step.ts
 export const sentenceInformationMissingAndAssessmentErrorMessage = HtmlBlock({
-  hidden: not(isSentenceInformationAndAssessmentLoadingError),
+  visibleWhen: isSentenceInformationAndAssessmentLoadingError,
   content: Format(
     `<p class="govuk-body">Try reloading the page. You can do this by pressing F5 (on a PC), or Cmd + R (on a Mac).</p>
     <p class="govuk-body">If the page still does not load, try again later or <a href="${sentencePlanOverviewPath}" class="govuk-link">go to %1's plan</a>.</p>`,
@@ -30,10 +39,12 @@ export const sentenceInformationMissingAndAssessmentErrorMessage = HtmlBlock({
 })
 
 export const incompleteAssessmentWarning = MOJBanner({
-  hidden: or(
-    hasAssessmentDataFailedToLoad,
-    isSentenceInformationAndAssessmentLoadingError,
-    Data('isAssessmentComplete').match(Condition.Equals(true)),
+  visibleWhen: not(
+    or(
+      hasAssessmentDataFailedToLoad,
+      isSentenceInformationAndAssessmentLoadingError,
+      Data('isAssessmentComplete').match(Condition.Equals(true)),
+    ),
   ),
   bannerType: 'warning',
   html: `
@@ -44,9 +55,11 @@ export const incompleteAssessmentWarning = MOJBanner({
 })
 
 export const assessmentLastUpdated = HtmlBlock({
-  hidden: or(
-    isSentenceInformationAndAssessmentLoadingError,
-    not(Data('assessmentLastUpdated').match(Condition.IsRequired())),
+  visibleWhen: not(
+    or(
+      isSentenceInformationAndAssessmentLoadingError,
+      not(Data('assessmentLastUpdated').match(Condition.IsRequired())),
+    ),
   ),
   content: Format(
     '<p class="govuk-body govuk-!-margin-bottom-1"> %1 assessment was last updated on %2.</p>',
@@ -58,13 +71,13 @@ export const assessmentLastUpdated = HtmlBlock({
 // Sentence information starts
 
 export const sentenceHeading = HtmlBlock({
-  hidden: isSentenceInformationAndAssessmentLoadingError,
+  visibleWhen: not(isSentenceInformationAndAssessmentLoadingError),
   content: '<h2 class="govuk-heading-m">Sentence information</h2>',
 })
 
 // Table displaying sentence details with unpaid work and RAR progress:
 export const sentenceTable = GovUKTable({
-  hidden: or(isSentenceInformationAndAssessmentLoadingError, hasNDeliusSentenceDataFailedToLoad),
+  visibleWhen: not(or(isSentenceInformationAndAssessmentLoadingError, hasNDeliusSentenceDataFailedToLoad)),
   classes: 'sentence-information-table',
   head: [
     { text: 'Sentence' },
@@ -80,10 +93,12 @@ export const sentenceTable = GovUKTable({
           Item().path('description'),
           Item()
             .path('startDate')
-            .pipe(Transformer.String.ToSentenceLength(Item().path('endDate'))),
+            .pipe(SentencePlanTransformers.ToSentenceLength(Item().path('endDate'))),
         ),
       },
-      { text: Item().path('endDate').pipe(Transformer.String.ToDate(), Transformer.Date.ToUKLongDate()) },
+      {
+        text: Item().path('endDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+      },
       {
         text: when(Item().path('unpaidWorkHoursOrdered').match(Condition.Number.GreaterThan(0)))
           .then(Format('%1 hours', Item().path('unpaidWorkHoursOrdered')))
@@ -100,7 +115,7 @@ export const sentenceTable = GovUKTable({
 })
 
 export const nDeliusFailureWarningNoSentenceInfo = GovUKWarningText({
-  hidden: or(isSentenceInformationAndAssessmentLoadingError, not(hasNDeliusSentenceDataFailedToLoad)),
+  visibleWhen: not(or(isSentenceInformationAndAssessmentLoadingError, not(hasNDeliusSentenceDataFailedToLoad))),
   text: 'There is a problem getting the sentence information from NDelius. Try reloading the page or try again later',
   iconFallbackText: 'Warning',
   attributes: { 'data-qa': 'no-sentence-info-warning' },
@@ -108,7 +123,7 @@ export const nDeliusFailureWarningNoSentenceInfo = GovUKWarningText({
 // Sentence information ends
 
 export const assessmentDataLoadFailureWarning = GovUKWarningText({
-  hidden: or(isSentenceInformationAndAssessmentLoadingError, not(hasAssessmentDataFailedToLoad)),
+  visibleWhen: not(or(isSentenceInformationAndAssessmentLoadingError, not(hasAssessmentDataFailedToLoad))),
   text: 'There is a problem getting assessment information. Try reloading the page or try again later.',
   iconFallbackText: 'Warning',
   attributes: { 'data-qa': 'no-assessment-data-warning' },
@@ -167,10 +182,12 @@ const createAreaAccordionItems = (dataKey: string) =>
 // Hidden when assessment data failed to load OR when there are no items in the collection
 const createAreaAccordion = (dataKey: string, accordionId: string) =>
   GovUKAccordion({
-    hidden: or(
-      hasAssessmentDataFailedToLoad,
-      isSentenceInformationAndAssessmentLoadingError,
-      not(Data(dataKey).match(Condition.IsRequired())),
+    visibleWhen: not(
+      or(
+        hasAssessmentDataFailedToLoad,
+        isSentenceInformationAndAssessmentLoadingError,
+        not(Data(dataKey).match(Condition.IsRequired())),
+      ),
     ),
     id: accordionId,
     classes: 'about-page-accordion',
@@ -186,10 +203,12 @@ const createAreaAccordion = (dataKey: string, accordionId: string) =>
 // Hidden when assessment data failed to load OR when there are items in the collection
 const createNoAreasMessage = (dataKey: string, sectionName: string) =>
   HtmlBlock({
-    hidden: or(
-      hasAssessmentDataFailedToLoad,
-      isSentenceInformationAndAssessmentLoadingError,
-      Data(dataKey).match(Condition.IsRequired()),
+    visibleWhen: not(
+      or(
+        hasAssessmentDataFailedToLoad,
+        isSentenceInformationAndAssessmentLoadingError,
+        Data(dataKey).match(Condition.IsRequired()),
+      ),
     ),
     content: when(Data('isAssessmentComplete').match(Condition.Equals(true)))
       .then(`<p class="govuk-body">No ${sectionName}.</p>`)
@@ -199,10 +218,12 @@ const createNoAreasMessage = (dataKey: string, sectionName: string) =>
 // Incomplete Areas:
 // only shown when there are incomplete areas, hidden on assessment error
 export const incompleteAreasHeading = HtmlBlock({
-  hidden: or(
-    hasAssessmentDataFailedToLoad,
-    isSentenceInformationAndAssessmentLoadingError,
-    not(Data('incompleteAreas').match(Condition.IsRequired())),
+  visibleWhen: not(
+    or(
+      hasAssessmentDataFailedToLoad,
+      isSentenceInformationAndAssessmentLoadingError,
+      not(Data('incompleteAreas').match(Condition.IsRequired())),
+    ),
   ),
   content: `<h2 class="govuk-heading-m govuk-!-margin-top-6">Incomplete areas</h2>
     <p class="govuk-body">These areas have not been marked as complete in the assessment yet, but you can see the latest information available.</p>`,
@@ -212,7 +233,7 @@ export const incompleteAreasAccordion = createAreaAccordion('incompleteAreas', '
 // High-scoring Areas:
 // always shown with fallback text when empty, hidden on assessment error
 export const highScoringAreasHeading = HtmlBlock({
-  hidden: or(isSentenceInformationAndAssessmentLoadingError, hasAssessmentDataFailedToLoad),
+  visibleWhen: not(or(isSentenceInformationAndAssessmentLoadingError, hasAssessmentDataFailedToLoad)),
   content: '<h2 class="govuk-heading-m govuk-!-margin-top-6">High-scoring areas from the assessment</h2>',
 })
 export const highScoringAreasAccordion = [
@@ -223,7 +244,7 @@ export const highScoringAreasAccordion = [
 // Low-scoring Areas:
 // always shown with fallback text when empty, hidden on assessment error
 export const lowScoringAreasHeading = HtmlBlock({
-  hidden: or(isSentenceInformationAndAssessmentLoadingError, hasAssessmentDataFailedToLoad),
+  visibleWhen: not(or(isSentenceInformationAndAssessmentLoadingError, hasAssessmentDataFailedToLoad)),
   content: '<h2 class="govuk-heading-m govuk-!-margin-top-6">Low-scoring areas from the assessment</h2>',
 })
 export const lowScoringAreasAccordion = [
@@ -234,7 +255,7 @@ export const lowScoringAreasAccordion = [
 // Other Areas (no scores):
 // Finance and Health and Wellbeing when marked as Complete (else under Incomplete), hidden on assessment error
 export const otherAreasHeading = HtmlBlock({
-  hidden: or(isSentenceInformationAndAssessmentLoadingError, hasAssessmentDataFailedToLoad),
+  visibleWhen: not(or(isSentenceInformationAndAssessmentLoadingError, hasAssessmentDataFailedToLoad)),
   content: `<h2 class="govuk-heading-m govuk-!-margin-top-6">Areas without a need score</h2>
     <p class="govuk-body">Health and wellbeing, and finances never have a need score. When other information is available for those areas, you can see it here.</p>`,
 })

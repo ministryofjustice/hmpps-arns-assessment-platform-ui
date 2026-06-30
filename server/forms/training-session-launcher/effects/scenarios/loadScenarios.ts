@@ -175,6 +175,10 @@ function transformToDisplayNeeds(values: ScenarioValues): DisplayNeed[] {
  */
 function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolean): DisplayScenario {
   const { values } = scenario
+  const sentencePlanVersion =
+    values.sentencePlanVersion === undefined || values.sentencePlanVersion === null
+      ? ''
+      : String(values.sentencePlanVersion).trim()
 
   return {
     id: scenario.id,
@@ -193,7 +197,7 @@ function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolea
     crn: values.crn || '',
     pnc: values.pnc || '',
     oasysAssessmentPk: values.oasysAssessmentPk || '',
-    sentencePlanVersion: values.sentencePlanVersion || null,
+    sentencePlanVersion,
 
     displayNeeds: transformToDisplayNeeds(values),
     isCustom,

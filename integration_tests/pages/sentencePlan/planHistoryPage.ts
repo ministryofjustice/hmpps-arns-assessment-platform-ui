@@ -4,18 +4,18 @@ import AbstractPage from '../abstractPage'
 export default class PlanHistoryPage extends AbstractPage {
   readonly pageHeading: Locator
 
-  readonly historyEntries: Locator
-
   readonly mainContent: Locator
 
-  readonly updateAgreementLink: Locator
+  readonly showAllSectionsButton: Locator
+
+  readonly viewGoalLink: Locator
 
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
-    this.historyEntries = page.locator('.govuk-\\!-margin-bottom-6')
     this.mainContent = page.getByTestId('main-form')
-    this.updateAgreementLink = page.getByRole('link', { name: /Update .+'s agreement/i })
+    this.showAllSectionsButton = page.getByRole('button', { name: 'Show all sections' })
+    this.viewGoalLink = page.getByRole('link', { name: 'View goal' })
   }
 
   static async verifyOnPage(page: Page): Promise<PlanHistoryPage> {
@@ -24,15 +24,12 @@ export default class PlanHistoryPage extends AbstractPage {
     return planHistoryPage
   }
 
-  async getHistoryEntryByIndex(index: number): Promise<Locator> {
-    return this.historyEntries.nth(index)
+  async clickShowAllSectionsButton(): Promise<void> {
+    await this.showAllSectionsButton.click()
   }
 
-  /**
-   * Get the "View goal" or "View latest version" link from a goal entry
-   */
-  async getViewGoalLink(index: number): Promise<Locator> {
-    const entry = await this.getHistoryEntryByIndex(index)
-    return entry.getByRole('link', { name: /View (goal|latest version)/i })
+  async clickViewGoalLink(): Promise<void> {
+    await this.viewGoalLink.first().click()
   }
+
 }

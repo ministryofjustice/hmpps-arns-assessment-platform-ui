@@ -4,6 +4,7 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, calculateTargetDate, determineGoalStatus, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
+import { snapshotFromGoal } from './goalSnapshot'
 
 /**
  * Re-add a removed goal back to the plan
@@ -44,12 +45,19 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
   const targetDate = calculateTargetDate(canStartNow, targetDateOption, customDate)
   const status = determineGoalStatus(canStartNow)
 
+  const statusDate = new Date().toISOString()
+  const goalSnapshot = snapshotFromGoal(activeGoal, {
+    status,
+    statusDate,
+    targetDate: targetDate ?? undefined,
+  })
+
   const commands: Commands[] = []
 
   // 1. Update goal status and target date
   const propertiesToAdd: Record<string, unknown> = {
     status,
-    status_date: new Date().toISOString(),
+    status_date: statusDate,
   }
 
   const answersToAdd: Record<string, unknown> = {}
@@ -69,6 +77,7 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
         goalTitle: activeGoal.title,
         readdedBy: practitionerName,
         reason: (typeof readdNote === 'string' && readdNote.trim()) || undefined,
+        goalSnapshot,
       },
     },
     assessmentUuid,

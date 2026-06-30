@@ -38,7 +38,7 @@ const DEFAULT_PREFERENCES: TrainingLauncherPreferences = {
  * Usage:
  * ```typescript
  * onAccess: [
- *   accessTransition({
+ *   access({
  *     effects: [TrainingSessionLauncherEffects.loadScenarioForCustomise()],
  *   }),
  * ]

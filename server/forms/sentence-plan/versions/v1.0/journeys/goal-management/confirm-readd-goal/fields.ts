@@ -1,12 +1,21 @@
-import { Data, Format, Item, Self, validation } from '@form-engine/form/builders'
-import { GovUKButton, GovUKTextareaInput } from '@form-engine-govuk-components/components'
-import { Transformer } from '@form-engine/registry/transformers'
-import { Iterator } from '@form-engine/form/builders/IteratorBuilder'
-import { Condition } from '@form-engine/registry/conditions'
-import { GovUKHeading } from '@form-engine-govuk-components/wrappers/govukHeading'
-import { GovUKBody } from '@form-engine-govuk-components/wrappers/govukBody'
-import { GovUKButtonGroup } from '@form-engine-govuk-components/wrappers/govukButtonGroup'
-import { GovUKGridRow } from '@form-engine-govuk-components/wrappers/govukGridRow'
+import {
+  Data,
+  Format,
+  Item,
+  Self,
+  validation,
+  Iterator,
+  Condition,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  GovUKButton,
+  GovUKTextareaInput,
+  GovUKHeading,
+  GovUKBody,
+  GovUKButtonGroup,
+  GovUKGridRow,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
 import { GoalSummaryCardAgreed } from '../../../../../components'
 import { CaseData } from '../../../constants'
 import { canStartNow } from '../sharedFields'
@@ -18,7 +27,7 @@ export const pageHeading = GovUKHeading({
 export const goalCard = GoalSummaryCardAgreed({
   goalTitle: Data('activeGoal.title'),
   goalStatus: Data('activeGoal.status'),
-  statusDate: Data('activeGoal.statusDate').pipe(Transformer.Date.ToUKLongDate()),
+  statusDate: Data('activeGoal.statusDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   areaOfNeed: Data('activeGoal.areaOfNeedLabel'),
   relatedAreasOfNeed: Data('activeGoal.relatedAreasOfNeedLabels'),
   notes: Data('activeGoal.notes').each(
@@ -43,9 +52,9 @@ const readdNoteField = GovUKTextareaInput({
     classes: 'govuk-label--m',
   },
   rows: '3',
-  validate: [
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Enter why you want to add this goal back into their plan',
     }),
   ],

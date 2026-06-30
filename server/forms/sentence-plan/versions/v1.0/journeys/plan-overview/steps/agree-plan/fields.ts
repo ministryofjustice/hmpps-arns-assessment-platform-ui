@@ -1,17 +1,14 @@
-import { Format, validation, Self, Answer } from '@form-engine/form/builders'
-import { GovUKButton } from '@form-engine-govuk-components/components/button/govukButton'
-import { GovUKRadioInput } from '@form-engine-govuk-components/components/radio-input/govukRadioInput'
-import { GovUKTextareaInput } from '@form-engine-govuk-components/components/textarea-input/govukTextareaInput'
-import { Condition } from '@form-engine/registry/conditions'
+import { Format, validation, Self, Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKButton, GovUKRadioInput, GovUKTextareaInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CaseData } from '../../../../constants'
 
 const detailsForNoField = GovUKTextareaInput({
   code: 'plan_agreement_details_no',
   label: 'Enter details',
-  dependent: Answer('plan_agreement_question').match(Condition.Equals('no')),
-  validate: [
+  dependentWhen: Answer('plan_agreement_question').match(Condition.Equals('no')),
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Enter details about why they do not agree',
     }),
   ],
@@ -20,10 +17,10 @@ const detailsForNoField = GovUKTextareaInput({
 const detailsForCouldNotAnswerField = GovUKTextareaInput({
   code: 'plan_agreement_details_could_not_answer',
   label: 'Enter details',
-  dependent: Answer('plan_agreement_question').match(Condition.Equals('could_not_answer')),
-  validate: [
+  dependentWhen: Answer('plan_agreement_question').match(Condition.Equals('could_not_answer')),
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Enter details about why they could not answer',
     }),
   ],
@@ -50,9 +47,9 @@ export const planAgreementQuestion = GovUKRadioInput({
       block: detailsForCouldNotAnswerField,
     },
   ],
-  validate: [
+  validWhen: [
     validation({
-      when: Self().not.match(Condition.IsRequired()),
+      condition: Self().match(Condition.IsRequired()),
       message: 'Select if they agree to the plan, or that they could not answer this question',
     }),
   ],

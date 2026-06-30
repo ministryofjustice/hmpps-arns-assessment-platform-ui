@@ -1,5 +1,4 @@
-import { FormatExpr } from '@form-engine/form/types/expressions.type'
-import EffectFunctionContext from '@form-engine/core/nodes/expressions/effect/EffectFunctionContext'
+import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
 import { User } from '../../../interfaces/user'
 import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
@@ -25,8 +24,9 @@ import FeatureFlagService from '../../../services/featureFlagService'
  *
  * - 'success': Data loaded successfully (data may or may not be present depending on assessment state)
  * - 'error': Failed to load data from one or both sources
+ * - 'unavailable': Assessment data is not applicable (such as SP-only assessment without SAN data)
  */
-export type AssessmentInfoStatus = 'success' | 'error'
+export type AssessmentInfoStatus = 'success' | 'error' | 'unavailable'
 
 export interface AccessDetails {
   accessType: AuthSource
@@ -82,15 +82,15 @@ export interface DerivedNote {
   type: string
   note: string
   createdBy: string
-  createdAt: Date
+  createdAt: string
 }
 
 export interface DerivedGoal {
   uuid: string
   title: string
   status: string
-  targetDate: Date
-  statusDate: Date
+  targetDate?: string
+  statusDate: string
   areaOfNeed: string
   areaOfNeedLabel: string
   relatedAreasOfNeed: string[]
@@ -124,7 +124,7 @@ export interface DerivedGoal {
 export interface DerivedPlanAgreement {
   uuid: string
   status: AgreementStatus
-  statusDate: Date
+  statusDate: string
   agreementQuestion: string
   detailsNo?: string
   detailsCouldNotAnswer?: string
@@ -147,7 +147,7 @@ export type PlanHistoryEntry =
 export interface PlanAgreementHistoryEntry {
   type: 'agreement'
   uuid: string
-  date: Date
+  date: string
   status: AgreementStatus
   createdBy?: string
   detailsNo?: string
@@ -155,29 +155,47 @@ export interface PlanAgreementHistoryEntry {
   notes?: string
 }
 
-export interface GoalCreatedHistoryEntry {
+/**
+ * Per-event goal context on a plan-history entry.
+ *
+ * Snapshot fields are the goal as it was at the time of the event (from
+ * `customData.goalSnapshot`). `currentGoalStatus` is the goal as it is now
+ * (from `Data('goals')`) and drives routing decisions like the "View goal"
+ * link target. Fields are optional because the goal may have been deleted.
+ */
+export interface GoalEventContext {
+  goalStatus?: GoalStatus
+  targetDate?: string
+  statusDate?: string
+  areaOfNeedLabel?: string
+  relatedAreasOfNeedLabels?: string[]
+  steps?: Array<{ actor: string; description: string; status: string }>
+  currentGoalStatus?: GoalStatus
+}
+
+export interface GoalCreatedHistoryEntry extends GoalEventContext {
   type: 'goal_created'
   uuid: string
-  date: Date
+  date: string
   goalUuid: string
   goalTitle: string
   createdBy?: string
 }
 
-export interface GoalAchievedHistoryEntry {
+export interface GoalAchievedHistoryEntry extends GoalEventContext {
   type: 'goal_achieved'
   uuid: string
-  date: Date
+  date: string
   goalUuid: string
   goalTitle: string
   achievedBy?: string
   notes?: string
 }
 
-export interface GoalRemovedHistoryEntry {
+export interface GoalRemovedHistoryEntry extends GoalEventContext {
   type: 'goal_removed'
   uuid: string
-  date: Date
+  date: string
   goalUuid: string
   goalTitle: string
   removedBy?: string
@@ -186,20 +204,20 @@ export interface GoalRemovedHistoryEntry {
   isCurrentlyActive: boolean
 }
 
-export interface GoalReaddedHistoryEntry {
+export interface GoalReaddedHistoryEntry extends GoalEventContext {
   type: 'goal_readded'
   uuid: string
-  date: Date
+  date: string
   goalUuid: string
   goalTitle: string
   readdedBy?: string
   reason?: string
 }
 
-export interface GoalUpdatedHistoryEntry {
+export interface GoalUpdatedHistoryEntry extends GoalEventContext {
   type: 'goal_updated'
   uuid: string
-  date: Date
+  date: string
   goalUuid: string
   goalTitle: string
   updatedBy?: string
@@ -250,9 +268,9 @@ export interface HistoricPlanData {
   assessment: AssessmentVersionQueryResult
   goals: DerivedGoal[]
   latestAgreementStatus: AgreementStatus
-  latestAgreementDate: Date | undefined
+  latestAgreementDate: string | undefined
   isUpdatedAfterAgreement?: boolean
-  lastUpdatedDate?: Date
+  lastUpdatedDate?: string
   lastUpdatedByName?: string
 }
 
@@ -267,7 +285,7 @@ export type NotificationType = 'information' | 'success' | 'warning' | 'error'
 export interface PlanNotification {
   type: NotificationType
   title?: string
-  message: string | FormatExpr
+  message: unknown
   target: string
   clearOtherNotifications?: boolean
 }
@@ -322,11 +340,11 @@ export interface SentencePlanData extends Record<string, unknown> {
   planAgreements: DerivedPlanAgreement[]
   planAgreementsCollectionUuid: string
   latestAgreementStatus: AgreementStatus
-  latestAgreementDate: Date | undefined
+  latestAgreementDate: string | undefined
 
   // Plan last updated (derived from timeline vs agreement date)
   isUpdatedAfterAgreement: boolean
-  lastUpdatedDate: Date | undefined
+  lastUpdatedDate: string | undefined
   lastUpdatedByName: string | undefined
 
   // Plan Timeline (raw timeline events from API)
@@ -361,6 +379,9 @@ export interface SentencePlanData extends Record<string, unknown> {
 
   // Feature flags
   featureFlags?: Record<string, boolean>
+
+  // Privacy screen state copied from the Express session
+  privacyAccepted?: boolean
 
   // all assessment areas grouped by scoring category (for about page; from coordinator API)
   allAssessmentAreas: AssessmentArea[]
@@ -411,7 +432,7 @@ export interface SentencePlanSession {
  * Request state via context.getState()
  */
 export interface SentencePlanState extends Record<string, unknown> {
-  user: User & { authSource: string; token: string }
+  user: User & { authSource: string; token: string; userRoles: string[] }
   requestId: string
 }
 

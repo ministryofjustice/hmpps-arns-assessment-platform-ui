@@ -1,12 +1,11 @@
-import { accessTransition, Data, Format, step, when } from '@form-engine/form/builders'
-import { Condition } from '@form-engine/registry/conditions'
-import { Transformer } from '@form-engine/registry/transformers'
+import { access, Data, Format, step, when, Condition, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   pageHeading,
   goalSubheading,
   goalAchievedInfo,
   goalRemovedInfo,
-  reviewStepsSection,
+  reviewStepsTable,
+  noStepsMessage,
   viewAllNotesSection,
   addToPlanButton,
 } from './fields'
@@ -28,7 +27,7 @@ import { redirectIfGoalNotFound } from '../../../guards'
 export const viewInactiveGoalStep = step({
   path: '/view-inactive-goal',
   title: `View inactive goal`,
-  isEntryPoint: true,
+  reachability: { entryWhen: true },
   view: {
     locals: {
       backlink: when(Data('navigationReferrer').match(Condition.Equals('plan-history')))
@@ -46,12 +45,13 @@ export const viewInactiveGoalStep = step({
     goalSubheading,
     goalAchievedInfo,
     goalRemovedInfo,
-    reviewStepsSection,
+    reviewStepsTable,
+    noStepsMessage,
     viewAllNotesSection,
     addToPlanButton,
   ],
   onAccess: [
-    accessTransition({
+    access({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_INACTIVE_GOAL, { goalStatus: Data('activeGoal.status') }),

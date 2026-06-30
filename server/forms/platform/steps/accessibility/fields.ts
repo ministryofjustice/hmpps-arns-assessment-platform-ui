@@ -1,4 +1,4 @@
-import { HtmlBlock } from '@form-engine/registry/components/html'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 
 export const pageHeading = HtmlBlock({
   content: '<h1 class="govuk-heading-l">Accessibility statement for Assess and plan: Sentence plan</h1>',

@@ -52,7 +52,6 @@ ENV NODE_ENV=production \
 
 COPY --from=build --chown=appuser:appgroup /app/package.json /app/package-lock.json ./
 COPY --from=build --chown=appuser:appgroup /app/dist ./dist
-RUN mv ./dist/packages ./packages
 COPY --from=prod-deps --chown=appuser:appgroup /app/node_modules ./node_modules
 
 EXPOSE 3000

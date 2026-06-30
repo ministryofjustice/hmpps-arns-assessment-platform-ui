@@ -1,4 +1,4 @@
-import { journey } from '@form-engine/form/builders'
+import { journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { planStep } from './steps/plan/step'
 import { agreePlanStep } from './steps/agree-plan/step'
 import { updateAgreePlanStep } from './steps/update-agree-plan/step'

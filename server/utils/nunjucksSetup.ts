@@ -2,7 +2,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { ValidationResult } from '@form-engine/core/nodes/expressions/validation/ValidationHandler'
+import { ValidationResult } from '@ministryofjustice/hmpps-forge/core/framework'
 import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -57,9 +57,7 @@ export default function nunjucksSetup(app?: express.Express) {
       path.join(__dirname, '../../server/views'),
       path.join(__dirname, 'server/forms'),
       path.join(__dirname, '../../server/forms'),
-      path.join(__dirname, 'packages/form-engine/src/diagnostics/inspector/templates'),
-      path.join(__dirname, '../../packages/form-engine/src/diagnostics/inspector/templates'),
-      'packages/form-engine-moj-components/src/',
+      'node_modules/@ministryofjustice/hmpps-forge/dist/moj-components/',
       'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
     ],
@@ -148,6 +146,20 @@ export default function nunjucksSetup(app?: express.Express) {
 
     return goals.filter(g => Array.isArray(g?.steps) && g.steps.length > 1).length
   })
+
+  njkEnv.addFilter(
+    'countStepsByActor',
+    (goals: Array<{ steps?: Array<{ actor?: string }> }> | undefined, actor: string): number => {
+      if (!Array.isArray(goals)) {
+        return 0
+      }
+
+      return goals.reduce(
+        (sum, goal) => sum + (Array.isArray(goal?.steps) ? goal.steps.filter(s => s?.actor === actor).length : 0),
+        0,
+      )
+    },
+  )
 
   return njkEnv
 }

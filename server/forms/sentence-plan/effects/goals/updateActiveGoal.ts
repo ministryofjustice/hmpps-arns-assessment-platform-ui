@@ -10,6 +10,7 @@ import {
   buildGoalProperties,
   buildGoalAnswers,
 } from './goalUtils'
+import { snapshotFromGoal } from './goalSnapshot'
 
 /**
  * Update an existing goal
@@ -54,6 +55,14 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
   // If changing to a future goal, clear the target_date
   const answersToRemove = targetDate ? [] : ['target_date']
 
+  // Steps unchanged here — step edits live in saveStepEditSession.
+  const goalSnapshot = snapshotFromGoal(activeGoal, {
+    status,
+    statusDate: properties.status_date,
+    targetDate: targetDate ?? undefined,
+    relatedAreasOfNeed: relatedAreas,
+  })
+
   // Batch both updates in a single API call for atomicity
   const commands: Commands[] = [
     {
@@ -75,6 +84,7 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
           goalUuid: activeGoal.uuid,
           goalTitle: goalTitle as string,
           updatedBy: getPractitionerName(context, user),
+          goalSnapshot,
         },
       },
       assessmentUuid,

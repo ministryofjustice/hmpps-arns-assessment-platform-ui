@@ -1,7 +1,6 @@
-import { Data } from '@form-engine/form/builders'
-import { BlockDefinition } from '@form-engine/form/types/structures.type'
-import { HtmlBlock } from '@form-engine/registry/components'
-import { GovUKTextInput, GovUKRadioInput, GovUKDetails } from '@form-engine-govuk-components/components'
+import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { BlockDefinition, HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { GovUKTextInput, GovUKRadioInput, GovUKDetails } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { RandomizableField } from '../../../../components'
 
 /**
