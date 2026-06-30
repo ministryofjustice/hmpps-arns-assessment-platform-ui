@@ -8,12 +8,14 @@ import { initBackToTop } from './back-to-top.mjs'
 import { CopyCode } from './copy-code.mjs'
 import { SessionTimeoutModal } from './session-timeout-modal.mjs'
 import { ArnsCommonHeader } from './arns-common-header.mjs'
+import { initAutosizeTextareas } from './autosize-textareas.mjs'
 import '../../server/forms/sentence-plan/components/copy-button/copy-button.mjs'
 import '../../server/forms/sentence-plan/components/report-problem-link/report-problem-link.mjs'
 
 govukFrontend.initAll()
 mojFrontend.initAll()
 initScrollRestore()
+initAutosizeTextareas()
 initBackToTop()
 
 customElements.define('app-copy-code', CopyCode)
