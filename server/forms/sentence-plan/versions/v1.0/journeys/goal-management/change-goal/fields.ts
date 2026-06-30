@@ -30,14 +30,14 @@ const goalTitle = AccessibleAutocomplete({
   field: GovUKTextInput({
     code: 'goal_title',
     label: {
-      text: Format('What goal should %1 try to achieve?', CaseData.Forename),
+      text: Format('What goal does %1 aim to achieve?', CaseData.Forename),
       classes: 'govuk-label--m',
     },
     hint: 'Search for a suggested goal or enter your own. Add one goal at a time.',
     validWhen: [
       validation({
         condition: Self().match(Condition.IsRequired()),
-        message: 'Select or enter what goal they should try to achieve',
+        message: 'Select or enter what goal they should aim to achieve',
       }),
     ],
   }),
