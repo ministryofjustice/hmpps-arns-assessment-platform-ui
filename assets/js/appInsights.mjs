@@ -83,6 +83,55 @@ function createAppInsights() {
     }
   })
 
+  const accordionNames = {
+    'high-scoring-areas-accordion': 'High scoring areas',
+    'low-scoring-areas-accordion': 'Low scoring areas',
+    'incomplete-areas-accordion': 'Incomplete areas',
+    'other-areas-accordion': 'Areas without a need score',
+  }
+
+  // About page accordion: Show all/Hide all sections
+  document.querySelectorAll('.about-page-accordion .govuk-accordion__show-all').forEach(button => {
+    button.addEventListener('click', () => {
+      const isExpanded = button.getAttribute('aria-expanded') === 'true'
+      const accordionId = button.closest('.govuk-accordion')?.id
+      const accordionName = accordionNames[accordionId] || accordionId
+
+      appInsights.trackEvent({
+        name: 'san-info-accordion',
+        properties: {
+          AccordionName: accordionName,
+          Action: isExpanded ? 'Expand all' : 'Collapse all',
+          ControlType: 'AccordionHeader',
+        },
+      })
+    })
+  })
+
+  // About page accordion: individual sections
+  document.querySelectorAll('.about-page-accordion .govuk-accordion__section').forEach((section, index) => {
+    const button = section.querySelector('.govuk-accordion__section-button')
+    if (!button) return
+
+    button.addEventListener('click', () => {
+      const isExpanded = button.getAttribute('aria-expanded') === 'true'
+      const itemName = button.querySelector('.govuk-accordion__section-heading-text-focus')?.textContent?.trim()
+      const accordionId = section.closest('.govuk-accordion')?.id
+      const accordionName = accordionNames[accordionId] || accordionId
+
+      appInsights.trackEvent({
+        name: 'san-info-area-of-need-accordion',
+        properties: {
+          AccordionName: accordionName,
+          ItemName: itemName,
+          Index: String(index + 1),
+          Action: isExpanded ? 'Expand' : 'Collapse',
+          ControlType: 'Item',
+        },
+      })
+    })
+  })
+
   instance.startTrackPage()
 
   // stop the page visit timer and flush telemetry before the page unloads:
