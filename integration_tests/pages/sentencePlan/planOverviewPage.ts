@@ -103,15 +103,15 @@ export default class PlanOverviewPage extends AbstractPage {
     return card.locator('[data-qa="goal-area-of-need"]')
   }
 
-  async goalCardHasChangeLink(index: number): Promise<boolean> {
+  async goalCardHasUpdateGoalLink(index: number): Promise<boolean> {
     const card = await this.getGoalCardByIndex(index)
-    const changeLink = card.getByRole('link', { name: /change goal/i })
+    const changeLink = card.getByRole('link', { name: /update goal/i })
     return (await changeLink.count()) > 0
   }
 
-  async goalCardHasAddStepsLink(index: number): Promise<boolean> {
+  async goalCardHasAddUpdateStepsLink(index: number): Promise<boolean> {
     const card = await this.getGoalCardByIndex(index)
-    const addStepsLink = card.getByRole('link', { name: /add or change steps/i })
+    const addStepsLink = card.getByRole('link', { name: /add or update steps/i })
     return (await addStepsLink.count()) > 0
   }
 
@@ -169,9 +169,9 @@ export default class PlanOverviewPage extends AbstractPage {
     return (await targetDateText.count()) > 0
   }
 
-  async clickAddOrChangeSteps(index: number): Promise<void> {
+  async clickAddOrUpdateSteps(index: number): Promise<void> {
     const card = await this.getGoalCardByIndex(index)
-    const addStepsLink = card.getByRole('link', { name: /add or change steps/i })
+    const addStepsLink = card.getByRole('link', { name: /add or update steps/i })
     await addStepsLink.click()
   }
 

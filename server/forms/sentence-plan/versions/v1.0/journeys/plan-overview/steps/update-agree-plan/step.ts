@@ -13,7 +13,7 @@ export const updateAgreePlanStep = step({
     locals: {
       backlink: when(Data('navigationReferrer').match(Condition.Equals('plan-history')))
         .then('plan-history')
-        .else('overview?type=current'),
+        .else('overview?goalStatusTab=current'),
     },
   },
   onSubmission: [
@@ -27,7 +27,7 @@ export const updateAgreePlanStep = step({
             agreementStatus: Post('update_plan_agreement_question'),
           }),
         ],
-        next: [redirect({ goto: 'overview?type=current' })],
+        next: [redirect({ goto: 'overview?goalStatusTab=current' })],
       },
     }),
   ],

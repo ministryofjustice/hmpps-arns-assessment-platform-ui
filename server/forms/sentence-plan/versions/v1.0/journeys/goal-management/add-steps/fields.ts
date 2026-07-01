@@ -4,6 +4,7 @@ import {
   Item,
   Loop,
   Iterator,
+  or,
   Self,
   validation,
   when,
@@ -17,6 +18,7 @@ import {
   GovUKTextInput,
   GovUKHeading,
   GovUKGridRow,
+  GovUKInsetText,
   GovUKBody,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { AssessmentInfoDetails, ButtonAsLink } from '../../../../../components'
@@ -31,8 +33,50 @@ const stepActorHintId = 'step-actor-hint'
 const stepDescriptionHintId = 'step-description-hint'
 
 export const pageHeading = GovUKHeading({
-  caption: Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()),
-  text: 'Add or change steps',
+  text: when(
+    or(
+      Data('navigationReferrer').match(Condition.Equals('add-goal')),
+      Data('activeGoal.steps').not.match(Condition.IsRequired()),
+    ),
+  )
+    .then('Add steps')
+    .else('Add or update steps'),
+})
+
+/**
+ * Inset text block summarising the goal context
+ *
+ * Shows:
+ * - Area of need (in bold)
+ * - Also relates to (only when the goal is related to other areas)
+ * - Goal text
+ *
+ * Area of need and "Also relates to" share a single paragraph (with a <br>)
+ * so the lines are adjacent — only "Goal" sits in its own paragraph below.
+ */
+const areaOfNeedText = Data('activeGoal.areaOfNeedLabel').pipe(
+  Transformer.String.ToLowerCase(),
+  Transformer.String.EscapeHtml(),
+)
+
+const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
+  Transformer.Array.Sort(),
+  Transformer.Array.Join(', '),
+  Transformer.String.ToLowerCase(),
+  Transformer.String.EscapeHtml(),
+)
+
+const areaBlockContent = when(Data('activeGoal.relatedAreasOfNeedLabels').match(Condition.IsRequired()))
+  .then(
+    Format('<p>Area of need: <strong>%1</strong><br>Also relates to: %2</p>', areaOfNeedText, relatedAreasOfNeedText),
+  )
+  .else(Format('<p>Area of need: <strong>%1</strong></p>', areaOfNeedText))
+
+const goalBlockContent = Format('<p>Goal: %1</p>', Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()))
+
+export const goalContextInsetText = GovUKInsetText({
+  classes: 'govuk-!-margin-top-2',
+  blocks: [HtmlBlock({ content: areaBlockContent }), HtmlBlock({ content: goalBlockContent })],
 })
 
 /**
@@ -40,7 +84,7 @@ export const pageHeading = GovUKHeading({
  */
 export const assessmentInfoDetails = AssessmentInfoDetails({
   personName: CaseData.Forename,
-  areaName: Data('currentAreaOfNeed').path('text'),
+  areaName: Data('currentAreaOfNeed.text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
   visibleWhen: canAccessSanContent,
@@ -200,6 +244,7 @@ export const pageLayout = TemplateWrapper({
       <div>
         {{slot:pageHeading}}
         {{slot:assessmentInfoDetails}}
+        {{slot:goalContextInsetText}}
         {{slot:columnHeaders}}
         {{slot:stepRows}}
         {{slot:buttonGroup}}
@@ -211,6 +256,7 @@ export const pageLayout = TemplateWrapper({
     hiddenDefaultSubmit: [hiddenDefaultSubmit],
     pageHeading: [pageHeading],
     assessmentInfoDetails: [assessmentInfoDetails],
+    goalContextInsetText: [goalContextInsetText],
     columnHeaders: [columnHeaders],
     stepRows: [stepRows],
     saveAndContinueButton: [saveAndContinueButton],

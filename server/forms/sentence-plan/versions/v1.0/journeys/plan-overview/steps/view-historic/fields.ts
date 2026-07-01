@@ -85,29 +85,29 @@ export const planCreatedMessage = GovUKBody({
 
 const currentGoalsNavigationItem = {
   text: Format('Goals to work on now (%1)', activeGoalsCount),
-  href: Format('%1?type=current', Params('timestamp')),
-  active: when(Query('type').match(Condition.Equals('current'))),
+  href: Format('%1?goalStatusTab=current', Params('timestamp')),
+  active: when(Query('goalStatusTab').match(Condition.Equals('current'))),
   attributes: { 'data-ai-id': 'view-historic-current-goals-tab' },
 }
 
 const futureGoalsNavigationItem = {
   text: Format('Future goals (%1)', futureGoalsCount),
-  href: Format('%1?type=future', Params('timestamp')),
-  active: when(Query('type').match(Condition.Equals('future'))),
+  href: Format('%1?goalStatusTab=future', Params('timestamp')),
+  active: when(Query('goalStatusTab').match(Condition.Equals('future'))),
   attributes: { 'data-ai-id': 'view-historic-future-goals-tab' },
 }
 
 const achievedGoalsNavigationItem = {
   text: Format('Achieved goals (%1)', achievedGoalsCount),
-  href: Format('%1?type=achieved', Params('timestamp')),
-  active: when(Query('type').match(Condition.Equals('achieved'))),
+  href: Format('%1?goalStatusTab=achieved', Params('timestamp')),
+  active: when(Query('goalStatusTab').match(Condition.Equals('achieved'))),
   attributes: { 'data-ai-id': 'view-historic-achieved-goals-tab' },
 }
 
 const removedGoalsNavigationItem = {
   text: Format('Removed goals (%1)', removedGoalsCount),
-  href: Format('%1?type=removed', Params('timestamp')),
-  active: when(Query('type').match(Condition.Equals('removed'))),
+  href: Format('%1?goalStatusTab=removed', Params('timestamp')),
+  active: when(Query('goalStatusTab').match(Condition.Equals('removed'))),
   attributes: { 'data-ai-id': 'view-historic-removed-goals-tab' },
 }
 
@@ -152,7 +152,7 @@ export const notificationBanners = CollectionBlock({
 
 /**
  * Goals section - renders goal summary cards for each goal in the plan
- * Filters goals based on query param: ?type=current shows ACTIVE, ?type=future shows FUTURE
+ * Filters goals based on query param: ?goalStatusTab=current shows ACTIVE, ?goalStatusTab=future shows FUTURE
  * Wrapped in an ordered list for numbered display
  */
 export const goalsSection = TemplateWrapper({
@@ -166,19 +166,19 @@ export const goalsSection = TemplateWrapper({
             Iterator.Filter(
               or(
                 and(
-                  Query('type').match(Condition.Equals('current')),
+                  Query('goalStatusTab').match(Condition.Equals('current')),
                   Item().path('status').match(Condition.Equals('ACTIVE')),
                 ),
                 and(
-                  Query('type').match(Condition.Equals('future')),
+                  Query('goalStatusTab').match(Condition.Equals('future')),
                   Item().path('status').match(Condition.Equals('FUTURE')),
                 ),
                 and(
-                  Query('type').match(Condition.Equals('achieved')),
+                  Query('goalStatusTab').match(Condition.Equals('achieved')),
                   Item().path('status').match(Condition.Equals('ACHIEVED')),
                 ),
                 and(
-                  Query('type').match(Condition.Equals('removed')),
+                  Query('goalStatusTab').match(Condition.Equals('removed')),
                   Item().path('status').match(Condition.Equals('REMOVED')),
                 ),
               ),
@@ -299,9 +299,9 @@ export const goalsSection = TemplateWrapper({
 })
 
 const hideBlankPlanOverviewContent = or(
-  Query('type').match(Condition.Equals('future')),
-  Query('type').match(Condition.Equals('achieved')),
-  Query('type').match(Condition.Equals('removed')),
+  Query('goalStatusTab').match(Condition.Equals('future')),
+  Query('goalStatusTab').match(Condition.Equals('achieved')),
+  Query('goalStatusTab').match(Condition.Equals('removed')),
   Data('historic.goals')
     .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
     .match(Condition.IsRequired()),
@@ -320,7 +320,7 @@ export const blankPlanOverviewContentReadOnly = HtmlBlock({
 export const futureGoalsContent = GovUKBody({
   visibleWhen: not(
     or(
-      Query('type').not.match(Condition.Equals('future')),
+      Query('goalStatusTab').not.match(Condition.Equals('future')),
       Data('historic.goals')
         .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
         .match(Condition.IsRequired()),

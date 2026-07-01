@@ -19,7 +19,13 @@ export default class ChangeGoalPage extends AbstractPage {
 
   readonly isRelatedNo: Locator
 
+  readonly areaOfNeedInset: Locator
+
+  readonly changeAreaOfNeedLink: Locator
+
   readonly saveGoalButton: Locator
+
+  readonly addOrUpdateStepsButton: Locator
 
   readonly backLink: Locator
 
@@ -38,7 +44,10 @@ export default class ChangeGoalPage extends AbstractPage {
     this.goalTitleInput = this.goalTitleAutocomplete.getByRole('combobox')
     this.isRelatedYes = page.locator('input[name="is_related_to_other_areas"][value="yes"]')
     this.isRelatedNo = page.locator('input[name="is_related_to_other_areas"][value="no"]')
+    this.areaOfNeedInset = page.locator('.govuk-inset-text')
+    this.changeAreaOfNeedLink = page.getByRole('link', { name: 'Change area of need' })
     this.saveGoalButton = page.getByRole('button', { name: 'Save goal' })
+    this.addOrUpdateStepsButton = page.getByRole('button', { name: 'Add or update steps' })
     this.backLink = page.locator('.govuk-back-link')
     this.assessmentInfo = new AssessmentInfoHelper(page)
     this.canStartNow = new CanStartNowHelper(page)
@@ -60,8 +69,20 @@ export default class ChangeGoalPage extends AbstractPage {
 
   static async verifyOnPage(page: Page): Promise<ChangeGoalPage> {
     const changeGoalPage = new ChangeGoalPage(page)
-    await expect(changeGoalPage.header).toContainText('Change goal')
+    await expect(changeGoalPage.header).toContainText('Update goal')
     return changeGoalPage
+  }
+
+  async getAreaOfNeedInsetText(): Promise<string> {
+    return (await this.areaOfNeedInset.textContent()) ?? ''
+  }
+
+  async clickChangeAreaOfNeed(): Promise<void> {
+    await this.changeAreaOfNeedLink.click()
+  }
+
+  async clickAddOrUpdateSteps(): Promise<void> {
+    await this.addOrUpdateStepsButton.click()
   }
 
   async getGoalTitle(): Promise<string> {
