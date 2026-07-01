@@ -8,7 +8,7 @@ generic-service:
     modsecurity_enabled: true
     modsecurity_audit_enabled: true
     modsecurity_snippet: |
-      SecRuleEngine DetectionOnly
+      SecRuleEngine On
       # Team here grants access to the OpenSearch logs to delve into the cause of the blockage
       SecDefaultAction "phase:2,pass,log,tag:github_team=hmpps-assessments,tag:namespace={{ .Release.Namespace }}"
       # Rule 920272 (unusual characters) false-alarms on normal post bodies; skip the raw body for this check only.
