@@ -1,8 +1,5 @@
 import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
-import {
-  BlockDefinition,
-  EvaluatedBlock,
-} from '@ministryofjustice/hmpps-forge/core/components'
+import { BlockDefinition, EvaluatedBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import type nunjucks from 'nunjucks'
 

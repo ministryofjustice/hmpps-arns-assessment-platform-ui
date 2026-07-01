@@ -1,8 +1,4 @@
-import {
-  access,
-  redirect,
-  step, tieBreaker,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, redirect, step, tieBreaker } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { DataDeletionToolEffects } from '../../../effects'
 
 export const clearStep = step({
@@ -14,10 +10,8 @@ export const clearStep = step({
   },
   onAccess: [
     access({
-      effects: [
-        DataDeletionToolEffects.clearSession(),
-      ],
-      next: [redirect({ goto: 'configuration' })]
-    })
+      effects: [DataDeletionToolEffects.clearSession()],
+      next: [redirect({ goto: 'configuration' })],
+    }),
   ],
 })

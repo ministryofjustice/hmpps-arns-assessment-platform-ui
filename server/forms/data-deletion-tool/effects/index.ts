@@ -9,19 +9,17 @@ import { loadAnswers } from './session/loadAnswers'
 import { createDeletionRequest } from './session/createDeletionRequest'
 import { clearDeletionResponse } from './session/clearDeletionResponse'
 
-export const {
-  effects: DataDeletionToolEffects,
-  implementations: DataDeletionToolEffectImplementations
-} = defineNamespacedEffectsWithDeps<DataDeletionToolEffectsDeps>('dataDeletionTool')({
-  // Session
-  clearSession,
-  loadAnswers,
-  saveAnswers,
-  createDeletionRequest,
-  clearDeletionResponse,
+export const { effects: DataDeletionToolEffects, implementations: DataDeletionToolEffectImplementations } =
+  defineNamespacedEffectsWithDeps<DataDeletionToolEffectsDeps>('dataDeletionTool')({
+    // Session
+    clearSession,
+    loadAnswers,
+    saveAnswers,
+    createDeletionRequest,
+    clearDeletionResponse,
 
-  // API
-  loadAssessmentData,
-  deletionDryRun,
-  deletionPersist,
-})
+    // API
+    loadAssessmentData,
+    deletionDryRun,
+    deletionPersist,
+  })

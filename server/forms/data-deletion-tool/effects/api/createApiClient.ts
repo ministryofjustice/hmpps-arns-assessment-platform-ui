@@ -1,7 +1,7 @@
 import { InternalServerError } from 'http-errors'
+import { AuthenticationClient, InMemoryTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 import { DataDeletionToolContext } from '../types'
 import AssessmentPlatformApiClient from '../../../../data/assessmentPlatformApiClient'
-import { AuthenticationClient, InMemoryTokenStore } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../../../../config'
 import logger from '../../../../../logger'
 

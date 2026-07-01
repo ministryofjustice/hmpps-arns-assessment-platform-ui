@@ -32,7 +32,7 @@ import accessFormPackage from './forms/access'
 import platformPoliciesFormPackage from './forms/platform'
 import sentencePlanFormPackage from './forms/sentence-plan'
 import trainingSessionLauncher from './forms/training-session-launcher'
-import dataDeletionTool from './forms/data-deletion-tool';
+import dataDeletionTool from './forms/data-deletion-tool'
 
 export default function createApp(services: Services): express.Application {
   const app = express()

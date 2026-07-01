@@ -5,21 +5,29 @@ import {
   Condition,
   Format,
   Item,
-  Iterator, Query,
-  redirect, Self,
+  Iterator,
+  Query,
+  redirect,
+  Self,
   Session,
   step,
-  submit, tieBreaker, validation,
+  submit,
+  tieBreaker,
+  validation,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
-  GovUKButton, GovUKCheckboxInput, GovUKNotificationBanner, GovUKSummaryList,
-  GovUKTextareaInput, GovUKTextInput,
+  GovUKButton,
+  GovUKCheckboxInput,
+  GovUKNotificationBanner,
+  GovUKSummaryList,
+  GovUKTextareaInput,
+  GovUKTextInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { DataDeletionToolEffects } from '../../../effects'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { DataDeletionToolEffects } from '../../../effects'
 import { DataDeletionToolTransformers } from '../../../transformers'
 import { Outdent } from '../../../components/outdent/outdent'
-import { DataDeletionConditions } from '../../../conditions';
+import { DataDeletionConditions } from '../../../conditions'
 
 export const timelineStep = step({
   path: '/timeline',
@@ -32,19 +40,13 @@ export const timelineStep = step({
     submit({
       validate: true,
       onAlways: {
-        effects: [
-          DataDeletionToolEffects.saveAnswers(),
-          DataDeletionToolEffects.clearDeletionResponse(),
-        ],
+        effects: [DataDeletionToolEffects.saveAnswers(), DataDeletionToolEffects.clearDeletionResponse()],
       },
       onValid: {
-        effects: [
-          DataDeletionToolEffects.createDeletionRequest(),
-          DataDeletionToolEffects.deletionDryRun(),
-        ],
+        effects: [DataDeletionToolEffects.createDeletionRequest(), DataDeletionToolEffects.deletionDryRun()],
         next: [redirect({ goto: 'timeline?valid=true' })],
       },
-    })
+    }),
   ],
   blocks: [
     GovUKNotificationBanner({
@@ -89,31 +91,41 @@ export const timelineStep = step({
               },
               rows: [
                 {
-                  key: {text: 'Position'},
-                  value: {text: Item().path('position')},
+                  key: { text: 'Position' },
+                  value: { text: Item().path('position') },
                 },
                 {
-                  key: {text: 'Created'},
-                  value: {text: Item().path('timestamp')},
+                  key: { text: 'Created' },
+                  value: { text: Item().path('timestamp') },
                 },
                 {
-                  key: {text: 'UUID'},
-                  value: {text: Item().path('uuid')},
+                  key: { text: 'UUID' },
+                  value: { text: Item().path('uuid') },
                 },
                 {
-                  key: {text: 'Data'},
-                  value: {html: Format("<pre>\n%1</pre>", Item().path('data').pipe(DataDeletionToolTransformers.JSONStringify()))},
+                  key: { text: 'Data' },
+                  value: {
+                    html: Format(
+                      '<pre>\n%1</pre>',
+                      Item().path('data').pipe(DataDeletionToolTransformers.JSONStringify()),
+                    ),
+                  },
                 },
                 {
-                  key: {text: 'Custom type'},
-                  value: {text: Item().path('customType')},
+                  key: { text: 'Custom type' },
+                  value: { text: Item().path('customType') },
                 },
                 {
-                  key: {text: 'Custom data'},
-                  value: {html: Format("<pre>\n%1</pre>", Item().path('customData').pipe(DataDeletionToolTransformers.JSONStringify()))},
+                  key: { text: 'Custom data' },
+                  value: {
+                    html: Format(
+                      '<pre>\n%1</pre>',
+                      Item().path('customData').pipe(DataDeletionToolTransformers.JSONStringify()),
+                    ),
+                  },
                 },
                 {
-                  key: {text: 'Actions'},
+                  key: { text: 'Actions' },
                   value: {
                     blocks: [
                       GovUKCheckboxInput({
@@ -154,7 +166,7 @@ export const timelineStep = step({
                                   validation({
                                     condition: Self().match(DataDeletionConditions.IsValidJson()),
                                     message: 'Invalid JSON',
-                                  })
+                                  }),
                                 ],
                               }),
                               GovUKTextInput({
@@ -181,20 +193,20 @@ export const timelineStep = step({
                                   validation({
                                     condition: Self().match(DataDeletionConditions.IsValidJson()),
                                     message: 'Invalid JSON',
-                                  })
+                                  }),
                                 ],
                               }),
                             ],
-                          }
+                          },
                         ],
-                      })
+                      }),
                     ],
                   },
                 },
               ],
-            })
-          })
-        )
+            }),
+          }),
+        ),
       ),
     }),
     GovUKButton({

@@ -3,8 +3,9 @@ import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from '../types'
 /**
  * Clear deletion response data from session
  */
-export const clearDeletionResponse = (deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
-  const session = context.getSession()
+export const clearDeletionResponse =
+  (deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
+    const session = context.getSession()
 
-  session.deletionResponse = null
-}
+    session.deletionResponse = null
+  }

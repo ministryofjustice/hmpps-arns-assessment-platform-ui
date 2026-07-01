@@ -5,18 +5,26 @@ import {
   Condition,
   Format,
   Item,
-  Iterator, Query,
-  redirect, Self,
+  Iterator,
+  Query,
+  redirect,
+  Self,
   Session,
   step,
-  submit, tieBreaker, validation, when,
+  submit,
+  tieBreaker,
+  validation,
+  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
-  GovUKButton, GovUKCheckboxInput, GovUKNotificationBanner, GovUKSummaryList,
+  GovUKButton,
+  GovUKCheckboxInput,
+  GovUKNotificationBanner,
+  GovUKSummaryList,
   GovUKTextareaInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { DataDeletionToolEffects } from '../../../effects'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { DataDeletionToolEffects } from '../../../effects'
 import { DataDeletionToolTransformers } from '../../../transformers'
 import { Outdent } from '../../../components/outdent/outdent'
 import { DataDeletionConditions } from '../../../conditions'
@@ -32,25 +40,19 @@ export const eventsStep = step({
     access({
       when: Session('currentData').not.match(Condition.Object.IsObject()),
       next: [redirect({ goto: 'configuration' })],
-    })
+    }),
   ],
   onSubmission: [
     submit({
       validate: true,
       onAlways: {
-        effects: [
-          DataDeletionToolEffects.saveAnswers(),
-          DataDeletionToolEffects.clearDeletionResponse(),
-        ],
+        effects: [DataDeletionToolEffects.saveAnswers(), DataDeletionToolEffects.clearDeletionResponse()],
       },
       onValid: {
-        effects: [
-          DataDeletionToolEffects.createDeletionRequest(),
-          DataDeletionToolEffects.deletionDryRun(),
-        ],
+        effects: [DataDeletionToolEffects.createDeletionRequest(), DataDeletionToolEffects.deletionDryRun()],
         next: [redirect({ goto: 'events?valid=true' })],
-      }
-    })
+      },
+    }),
   ],
   blocks: [
     GovUKNotificationBanner({
@@ -81,10 +83,16 @@ export const eventsStep = step({
         when(Session('deletionResponse').path('exception').match(Condition.Object.IsObject()))
           .then(
             when(Session('deletionResponse').path('exception').match(Condition.Object.PropertyHasValue('eventUuid')))
-              .then(Format('<a href="#%1">Could not aggregate %2</a>', Session('deletionResponse').path('exception.eventUuid'), Session('deletionResponse').path('exception.eventName')))
-              .else(Format('<a href="#">%1</a>', Session('deletionResponse').path('exception.cause.developerMessage')))
+              .then(
+                Format(
+                  '<a href="#%1">Could not aggregate %2</a>',
+                  Session('deletionResponse').path('exception.eventUuid'),
+                  Session('deletionResponse').path('exception.eventName'),
+                ),
+              )
+              .else(Format('<a href="#">%1</a>', Session('deletionResponse').path('exception.cause.developerMessage'))),
           )
-          .else('')
+          .else(''),
       ),
     }),
     HtmlBlock({
@@ -99,9 +107,11 @@ export const eventsStep = step({
                 attributes: { id: Item().path('uuid') },
                 classes: Format(
                   'govuk-summary-card %1',
-                  when(Session('deletionResponse').path('exception.eventUuid').match(Condition.Equals(Item().path('uuid'))))
-                    .then('govuk-summary-card--error').else('')
-                )
+                  when(
+                    Session('deletionResponse').path('exception.eventUuid').match(Condition.Equals(Item().path('uuid'))),
+                  )
+                    .then('govuk-summary-card--error').else(''),
+                ),
               },
               rows: [
                 {
@@ -113,28 +123,33 @@ export const eventsStep = step({
                         classes: 'govuk-error-message',
                         content: Session('deletionResponse').path('exception.cause.developerMessage'),
                       }),
-                    ]
+                    ],
                   },
                   visibleWhen: Session('deletionResponse').path('exception.eventUuid').match(Condition.Equals(Item().path('uuid'))),
                 },
                 {
-                  key: {text: 'Position'},
-                  value: {text: Item().path('position')},
+                  key: { text: 'Position' },
+                  value: { text: Item().path('position') },
                 },
                 {
-                  key: {text: 'Created'},
-                  value: {text: Item().path('createdAt')},
+                  key: { text: 'Created' },
+                  value: { text: Item().path('createdAt') },
                 },
                 {
-                  key: {text: 'UUID'},
-                  value: {text: Item().path('uuid')},
+                  key: { text: 'UUID' },
+                  value: { text: Item().path('uuid') },
                 },
                 {
-                  key: {text: 'Data'},
-                  value: {html: Format("<pre>\n%1</pre>", Item().path('data').pipe(DataDeletionToolTransformers.JSONStringify()))},
+                  key: { text: 'Data' },
+                  value: {
+                    html: Format(
+                      '<pre>\n%1</pre>',
+                      Item().path('data').pipe(DataDeletionToolTransformers.JSONStringify()),
+                    ),
+                  },
                 },
                 {
-                  key: {text: 'Actions'},
+                  key: { text: 'Actions' },
                   value: {
                     blocks: [
                       GovUKCheckboxInput({
@@ -164,19 +179,19 @@ export const eventsStep = step({
                                 validation({
                                   condition: Self().match(DataDeletionConditions.IsValidJson()),
                                   message: 'Invalid JSON',
-                                })
+                                }),
                               ],
                             }),
-                          }
+                          },
                         ],
-                      })
-                    ]
+                      }),
+                    ],
                   },
-                }
+                },
               ],
-            })
-          })
-        )
+            }),
+          }),
+        ),
       ),
     }),
     GovUKButton({

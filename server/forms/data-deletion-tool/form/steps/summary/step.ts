@@ -2,18 +2,25 @@ import {
   and,
   Answer,
   Condition,
-  Format, Item, Iterator,
+  Format,
+  Item,
+  Iterator,
   redirect,
   Session,
   step,
   submit,
-  tieBreaker, Transformer, when
+  tieBreaker,
+  Transformer,
+  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
-  GovUKButton, GovUKSummaryList, GovUKTabs, GovUKWarningText,
+  GovUKButton,
+  GovUKSummaryList,
+  GovUKTabs,
+  GovUKWarningText,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { DataDeletionToolEffects } from '../../../effects'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { DataDeletionToolEffects } from '../../../effects'
 import { DataDeletionToolTransformers } from '../../../transformers'
 import { Outdent } from '../../../components/outdent/outdent'
 
@@ -35,7 +42,7 @@ export const summaryStep = step({
         ],
         next: [redirect({ goto: 'success' })],
       },
-    })
+    }),
   ],
   blocks: [
     Outdent({
@@ -62,41 +69,59 @@ export const summaryStep = step({
                           Answer(Format('event-action-%1', Item().path('uuid')))
                             .match(Condition.IsRequired()),
                           Answer(Format('event-action-%1', Item().path('uuid')))
-                            .match(Condition.Array.ContainsAny(['UPDATE', 'DELETE']))
+                            .match(Condition.Array.ContainsAny(['UPDATE', 'DELETE'])),
                         ),
                         card: {
                           title: { text: Item().path('data.type') },
                         },
                         rows: [
                           {
-                            key: {text: 'Position'},
-                            value: {text: Item().path('position')},
+                            key: { text: 'Position' },
+                            value: { text: Item().path('position') },
                           },
                           {
-                            key: {text: 'Created'},
-                            value: {text: Item().path('createdAt')},
+                            key: { text: 'Created' },
+                            value: { text: Item().path('createdAt') },
                           },
                           {
-                            key: {text: 'UUID'},
-                            value: {text: Item().path('uuid')},
+                            key: { text: 'UUID' },
+                            value: { text: Item().path('uuid') },
                           },
                           {
-                            key: {text: 'Operation'},
-                            value: {text: Answer(Format('event-action-%1', Item().path('uuid'))).pipe(Transformer.Array.First())},
+                            key: { text: 'Operation' },
+                            value: {
+                              text: Answer(Format('event-action-%1', Item().path('uuid'))).pipe(
+                                Transformer.Array.First(),
+                              ),
+                            },
                           },
                           {
-                            key: {text: 'Data'},
-                            value: {html: Item().path('data').pipe(DataDeletionToolTransformers.Diff(
-                                when(and(
-                                  Answer(Format('event-action-%1', Item().path('uuid'))).match(Condition.IsRequired()),
-                                  Answer(Format('event-action-%1', Item().path('uuid'))).match(Condition.Array.Contains('UPDATE'))
-                                )).then(Answer(Format('event-data-%1', Item().path('uuid'))).pipe(DataDeletionToolTransformers.JSONParse()))
-                                  .else({})
-                              ))},
+                            key: { text: 'Data' },
+                            value: {
+                              html: Item().path('data').pipe(
+                                  DataDeletionToolTransformers.Diff(
+                                    when(
+                                      and(
+                                        Answer(Format('event-action-%1', Item().path('uuid'))).match(
+                                          Condition.IsRequired(),
+                                        ),
+                                        Answer(Format('event-action-%1', Item().path('uuid'))).match(
+                                          Condition.Array.Contains('UPDATE'),
+                                        ),
+                                      ),
+                                    ).then(
+                                        Answer(Format('event-data-%1', Item().path('uuid'))).pipe(
+                                          DataDeletionToolTransformers.JSONParse(),
+                                        ),
+                                      )
+                                      .else({}),
+                                  ),
+                                ),
+                            },
                           },
                         ],
-                      })
-                    )
+                      }),
+                    ),
                   ),
                 }),
               ],
@@ -121,99 +146,147 @@ export const summaryStep = step({
                           Answer(Format('timeline-action-%1', Item().path('uuid')))
                             .match(Condition.IsRequired()),
                           Answer(Format('timeline-action-%1', Item().path('uuid')))
-                            .match(Condition.Array.ContainsAny(['UPDATE', 'DELETE']))
+                            .match(Condition.Array.ContainsAny(['UPDATE', 'DELETE'])),
                         ),
                         card: {
                           title: { text: Item().path('event') },
                         },
                         rows: [
                           {
-                            key: {text: 'Position'},
-                            value: {text: Item().path('position')},
+                            key: { text: 'Position' },
+                            value: { text: Item().path('position') },
                           },
                           {
-                            key: {text: 'Created'},
-                            value: {text: Item().path('timestamp')},
+                            key: { text: 'Created' },
+                            value: { text: Item().path('timestamp') },
                           },
                           {
-                            key: {text: 'UUID'},
-                            value: {text: Item().path('uuid')},
+                            key: { text: 'UUID' },
+                            value: { text: Item().path('uuid') },
                           },
                           {
-                            key: {text: 'Operation'},
-                            value: {text: Answer(Format('timeline-action-%1', Item().path('uuid'))).pipe(Transformer.Array.First())},
-                          },
-                          {
-                            key: {text: 'Event'},
-                            value: {html: Item().path('event')
-                                .pipe(DataDeletionToolTransformers.Diff(
-                                  when(and(
-                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.IsRequired()),
-                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.Array.Contains('UPDATE'))
-                                  ))
-                                    .then(Answer(Format('timeline-event-%1', Item().path('uuid'))))
-                                    .else(
-                                      when(Item().value().match(Condition.Object.PropertyHasValue('event')))
-                                        .then('')
-                                        .else(null)
-                                    )
-                                ))
+                            key: { text: 'Operation' },
+                            value: {
+                              text: Answer(Format('timeline-action-%1', Item().path('uuid'))).pipe(
+                                Transformer.Array.First(),
+                              ),
                             },
                           },
                           {
-                            key: {text: 'Data'},
-                            value: {html: Item().path('data')
-                                .pipe(DataDeletionToolTransformers.Diff(
-                                  when(and(
-                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.IsRequired()),
-                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.Array.Contains('UPDATE'))
-                                  ))
-                                    .then(Answer(Format('timeline-data-%1', Item().path('uuid'))).pipe(DataDeletionToolTransformers.JSONParse()))
-                                    .else(
-                                      when(Item().path('data').match(Condition.Object.IsObject()))
-                                        .then({})
-                                        .else(null)
+                            key: { text: 'Event' },
+                            value: {
+                              html: Item().path('event')
+                                .pipe(
+                                  DataDeletionToolTransformers.Diff(
+                                    when(
+                                      and(
+                                        Answer(Format('timeline-action-%1', Item().path('uuid'))).match(
+                                          Condition.IsRequired(),
+                                        ),
+                                        Answer(Format('timeline-action-%1', Item().path('uuid'))).match(
+                                          Condition.Array.Contains('UPDATE'),
+                                        ),
+                                      ),
                                     )
-                                ))
+                                      .then(Answer(Format('timeline-event-%1', Item().path('uuid'))))
+                                      .else(
+                                        when(Item().value().match(Condition.Object.PropertyHasValue('event')))
+                                          .then('')
+                                          .else(null),
+                                      ),
+                                  ),
+                                ),
                             },
                           },
                           {
-                            key: {text: 'Custom type'},
-                            value: {html: Item().path('customType')
-                                .pipe(DataDeletionToolTransformers.Diff(
-                                  when(and(
-                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.IsRequired()),
-                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.Array.Contains('UPDATE'))
-                                  ))
-                                    .then(Answer(Format('timeline-custom-type-%1', Item().path('uuid'))))
-                                    .else(
-                                      when(Item().value().match(Condition.Object.PropertyHasValue('customType')))
-                                        .then('')
-                                        .else(null)
+                            key: { text: 'Data' },
+                            value: {
+                              html: Item().path('data')
+                                .pipe(
+                                  DataDeletionToolTransformers.Diff(
+                                    when(
+                                      and(
+                                        Answer(Format('timeline-action-%1', Item().path('uuid'))).match(
+                                          Condition.IsRequired(),
+                                        ),
+                                        Answer(Format('timeline-action-%1', Item().path('uuid'))).match(
+                                          Condition.Array.Contains('UPDATE'),
+                                        ),
+                                      ),
                                     )
-                                ))
+                                      .then(
+                                        Answer(Format('timeline-data-%1', Item().path('uuid'))).pipe(
+                                          DataDeletionToolTransformers.JSONParse(),
+                                        ),
+                                      )
+                                      .else(
+                                        when(Item().path('data').match(Condition.Object.IsObject()))
+                                          .then({})
+                                          .else(null),
+                                      ),
+                                  ),
+                                ),
                             },
                           },
                           {
-                            key: {text: 'Custom data'},
-                            value: {html: Item().path('customData')
-                                .pipe(DataDeletionToolTransformers.Diff(
-                                  when(and(
-                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.IsRequired()),
-                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.Array.Contains('UPDATE'))
-                                  ))
-                                    .then(Answer(Format('timeline-custom-data-%1', Item().path('uuid'))).pipe(DataDeletionToolTransformers.JSONParse()))
-                                    .else(
-                                      when(Item().path('customData').match(Condition.Object.IsObject()))
-                                        .then({})
-                                        .else(null)
+                            key: { text: 'Custom type' },
+                            value: {
+                              html: Item().path('customType')
+                                .pipe(
+                                  DataDeletionToolTransformers.Diff(
+                                    when(
+                                      and(
+                                        Answer(Format('timeline-action-%1', Item().path('uuid'))).match(
+                                          Condition.IsRequired(),
+                                        ),
+                                        Answer(Format('timeline-action-%1', Item().path('uuid'))).match(
+                                          Condition.Array.Contains('UPDATE'),
+                                        ),
+                                      ),
                                     )
-                                ))
+                                      .then(Answer(Format('timeline-custom-type-%1', Item().path('uuid'))))
+                                      .else(
+                                        when(Item().value().match(Condition.Object.PropertyHasValue('customType')))
+                                          .then('')
+                                          .else(null),
+                                      ),
+                                  ),
+                                ),
+                            },
+                          },
+                          {
+                            key: { text: 'Custom data' },
+                            value: {
+                              html: Item().path('customData')
+                                .pipe(
+                                  DataDeletionToolTransformers.Diff(
+                                    when(
+                                      and(
+                                        Answer(Format('timeline-action-%1', Item().path('uuid'))).match(
+                                          Condition.IsRequired(),
+                                        ),
+                                        Answer(Format('timeline-action-%1', Item().path('uuid'))).match(
+                                          Condition.Array.Contains('UPDATE'),
+                                        ),
+                                      ),
+                                    )
+                                      .then(
+                                        Answer(Format('timeline-custom-data-%1', Item().path('uuid'))).pipe(
+                                          DataDeletionToolTransformers.JSONParse(),
+                                        ),
+                                      )
+                                      .else(
+                                        when(Item().path('customData').match(Condition.Object.IsObject()))
+                                          .then({})
+                                          .else(null),
+                                      ),
+                                  ),
+                                ),
                             },
                           },
                         ],
-                      })
-                    )
+                      }),
+                    ),
                   ),
                 }),
               ],
@@ -223,18 +296,24 @@ export const summaryStep = step({
             id: 'request',
             label: 'Request',
             panel: {
-              html: Format('<pre>%1</pre>', Session('deletionRequest').pipe(DataDeletionToolTransformers.JSONStringify())),
+              html: Format(
+                '<pre>%1</pre>',
+                Session('deletionRequest').pipe(DataDeletionToolTransformers.JSONStringify()),
+              ),
             },
           },
           {
             id: 'response',
             label: 'Dry-run response',
             panel: {
-              html: Format('<pre>%1</pre>', Session('deletionResponse').pipe(DataDeletionToolTransformers.JSONStringify())),
+              html: Format(
+                '<pre>%1</pre>',
+                Session('deletionResponse').pipe(DataDeletionToolTransformers.JSONStringify()),
+              ),
             },
           },
         ],
-      })
+      }),
     }),
     GovUKButton({
       text: 'Persist',

@@ -1,8 +1,8 @@
-import { EventDTO, TimelineItem } from './dataModel';
+import { EventDTO, TimelineItem } from './dataModel'
 
 export interface DataDeletionDataResponse {
-  events: EventDTO[],
-  timeline: TimelineItem[],
+  events: EventDTO[]
+  timeline: TimelineItem[]
 }
 
 export interface DataDeletionRequest {
@@ -24,14 +24,14 @@ export interface TimelineUpdate {
 }
 
 export enum DataDeletionOperation {
-  UPDATE = "UPDATE",
-  DELETE = "DELETE",
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE',
 }
 
 export interface EventHandlingException {
-  eventUuid: string;
-  eventName: string;
-  handlerName: string;
+  eventUuid: string
+  eventName: string
+  handlerName: string
   cause: Record<string, any>
 }
 

@@ -3,14 +3,15 @@ import {
   redirect,
   Self,
   step,
-  submit, tieBreaker,
-  validation
+  submit,
+  tieBreaker,
+  validation,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKButton,
   GovUKPasswordInput,
   GovUKSelectInput,
-  GovUKTextInput
+  GovUKTextInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import config from '../../../../../config'
 import { DataDeletionToolEffects } from '../../../effects'
@@ -26,13 +27,10 @@ export const configurationStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [
-          DataDeletionToolEffects.saveAnswers(),
-          DataDeletionToolEffects.loadAssessmentData(),
-        ],
+        effects: [DataDeletionToolEffects.saveAnswers(), DataDeletionToolEffects.loadAssessmentData()],
         next: [redirect({ goto: 'events' })],
       },
-    })
+    }),
   ],
   blocks: [
     GovUKSelectInput({
@@ -40,9 +38,10 @@ export const configurationStep = step({
       label: 'Environment',
       items: [
         { value: '', text: '' },
-        ...(Object.entries(config.forms.dataDeletionTool.environments).map(([key, value]) => (
-          { value: key, text: value.apiUrl }
-        ))),
+        ...Object.entries(config.forms.dataDeletionTool.environments).map(([key, value]) => ({
+          value: key,
+          text: value.apiUrl,
+        })),
       ],
       validWhen: [
         validation({
