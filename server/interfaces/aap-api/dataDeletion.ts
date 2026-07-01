@@ -39,5 +39,5 @@ export interface DataDeletionResponse {
   success: boolean
   dryRun: boolean
   exception?: EventHandlingException
-  state: Record<string, any>
+  rebuiltState?: Record<string, any>
 }

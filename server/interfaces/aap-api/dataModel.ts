@@ -48,6 +48,7 @@ export interface TimelineItem {
   position: number
   event: string
   timestamp: string
+  assessment: string
   data: Record<string, any>
   customType?: string
   customData?: Record<string, any>

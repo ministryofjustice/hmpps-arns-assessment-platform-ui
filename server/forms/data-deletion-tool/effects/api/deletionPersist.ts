@@ -14,8 +14,5 @@ export const deletionPersist = (deps: DataDeletionToolEffectsDeps) => async (con
   const request = session.deletionRequest
 
   request.dryRun = false
-
-  const response = await api.postDataDeletionRequest(assessmentUuid, request)
-
-  // TODO: handle response
+  session.deletionResponse = await api.postDataDeletionRequest(assessmentUuid, request)
 }

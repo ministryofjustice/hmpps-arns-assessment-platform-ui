@@ -1,4 +1,5 @@
 import {
+  and,
   Answer,
   Condition,
   Format, Item, Iterator,
@@ -9,19 +10,19 @@ import {
   tieBreaker, Transformer, when
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
-  GovUKButton, GovUKSummaryList, GovUKTabs,
+  GovUKButton, GovUKSummaryList, GovUKTabs, GovUKWarningText,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { DataDeletionToolEffects } from '../../../effects'
-import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components';
-import { DataDeletionToolTransformers } from '../../../transformers';
-import { Outdent } from '../../../components/outdent/outdent';
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { DataDeletionToolTransformers } from '../../../transformers'
+import { Outdent } from '../../../components/outdent/outdent'
 
 export const summaryStep = step({
   path: '/summary',
   title: 'Summary',
   reachability: {
     entryWhen: Session('deletionResponse').path('success').match(Condition.Equals(true)),
-    tieBreakers: [tieBreaker({ priority: 40 })],
+    tieBreakers: [tieBreaker({ priority: 25 })],
   },
   onSubmission: [
     submit({
@@ -29,8 +30,10 @@ export const summaryStep = step({
       onValid: {
         effects: [
           DataDeletionToolEffects.deletionPersist(),
+          DataDeletionToolEffects.clearSession(),
+          DataDeletionToolEffects.loadAssessmentData(),
         ],
-        next: [redirect({ goto: 'summary?success=true' })],
+        next: [redirect({ goto: 'success' })],
       },
     })
   ],
@@ -45,13 +48,22 @@ export const summaryStep = step({
             label: 'Events',
             panel: {
               blocks: [
+                GovUKWarningText({
+                  text: 'No event data to delete',
+                  classes: 'govuk-!-margin-0',
+                  visibleWhen: Session('deletionRequest.events').match(Condition.Array.ContainsAll(['dummyValue'])),
+                }),
                 HtmlBlock({
                   classes: 'data-list',
                   content: Session('currentData.events').each(
                     Iterator.Map(
                       GovUKSummaryList({
-                        visibleWhen: Answer(Format('event-action-%1', Item().path('uuid')))
-                          .match(Condition.Array.ContainsAny(['UPDATE', 'DELETE'])),
+                        visibleWhen: and(
+                          Answer(Format('event-action-%1', Item().path('uuid')))
+                            .match(Condition.IsRequired()),
+                          Answer(Format('event-action-%1', Item().path('uuid')))
+                            .match(Condition.Array.ContainsAny(['UPDATE', 'DELETE']))
+                        ),
                         card: {
                           title: { text: Item().path('data.type') },
                         },
@@ -74,14 +86,13 @@ export const summaryStep = step({
                           },
                           {
                             key: {text: 'Data'},
-                            value: {html: Item().path('data')
-                                .pipe(DataDeletionToolTransformers.Diff(
-                                  when(Answer(Format('event-action-%1', Item().path('uuid')))
-                                    .match(Condition.Array.Contains('UPDATE')))
-                                    .then(Answer(Format('event-data-%1', Item().path('uuid'))).pipe(DataDeletionToolTransformers.JSONParse()))
-                                    .else({})
-                                ))
-                            },
+                            value: {html: Item().path('data').pipe(DataDeletionToolTransformers.Diff(
+                                when(and(
+                                  Answer(Format('event-action-%1', Item().path('uuid'))).match(Condition.IsRequired()),
+                                  Answer(Format('event-action-%1', Item().path('uuid'))).match(Condition.Array.Contains('UPDATE'))
+                                )).then(Answer(Format('event-data-%1', Item().path('uuid'))).pipe(DataDeletionToolTransformers.JSONParse()))
+                                  .else({})
+                              ))},
                           },
                         ],
                       })
@@ -96,13 +107,22 @@ export const summaryStep = step({
             label: 'Timeline',
             panel: {
               blocks: [
+                GovUKWarningText({
+                  text: 'No timeline data to delete',
+                  classes: 'govuk-!-margin-0',
+                  visibleWhen: Session('deletionRequest.timeline').match(Condition.Array.ContainsAll(['dummyValue'])),
+                }),
                 HtmlBlock({
                   classes: 'data-list',
                   content: Session('currentData.timeline').each(
                     Iterator.Map(
                       GovUKSummaryList({
-                        visibleWhen: Answer(Format('timeline-action-%1', Item().path('uuid')))
-                          .match(Condition.Array.ContainsAny(['UPDATE', 'DELETE'])),
+                        visibleWhen: and(
+                          Answer(Format('timeline-action-%1', Item().path('uuid')))
+                            .match(Condition.IsRequired()),
+                          Answer(Format('timeline-action-%1', Item().path('uuid')))
+                            .match(Condition.Array.ContainsAny(['UPDATE', 'DELETE']))
+                        ),
                         card: {
                           title: { text: Item().path('event') },
                         },
@@ -127,8 +147,10 @@ export const summaryStep = step({
                             key: {text: 'Event'},
                             value: {html: Item().path('event')
                                 .pipe(DataDeletionToolTransformers.Diff(
-                                  when(Answer(Format('timeline-action-%1', Item().path('uuid')))
-                                    .match(Condition.Array.Contains('UPDATE')))
+                                  when(and(
+                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.IsRequired()),
+                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.Array.Contains('UPDATE'))
+                                  ))
                                     .then(Answer(Format('timeline-event-%1', Item().path('uuid'))))
                                     .else(
                                       when(Item().value().match(Condition.Object.PropertyHasValue('event')))
@@ -142,8 +164,10 @@ export const summaryStep = step({
                             key: {text: 'Data'},
                             value: {html: Item().path('data')
                                 .pipe(DataDeletionToolTransformers.Diff(
-                                  when(Answer(Format('timeline-action-%1', Item().path('uuid')))
-                                    .match(Condition.Array.Contains('UPDATE')))
+                                  when(and(
+                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.IsRequired()),
+                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.Array.Contains('UPDATE'))
+                                  ))
                                     .then(Answer(Format('timeline-data-%1', Item().path('uuid'))).pipe(DataDeletionToolTransformers.JSONParse()))
                                     .else(
                                       when(Item().path('data').match(Condition.Object.IsObject()))
@@ -157,8 +181,10 @@ export const summaryStep = step({
                             key: {text: 'Custom type'},
                             value: {html: Item().path('customType')
                                 .pipe(DataDeletionToolTransformers.Diff(
-                                  when(Answer(Format('timeline-action-%1', Item().path('uuid')))
-                                    .match(Condition.Array.Contains('UPDATE')))
+                                  when(and(
+                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.IsRequired()),
+                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.Array.Contains('UPDATE'))
+                                  ))
                                     .then(Answer(Format('timeline-custom-type-%1', Item().path('uuid'))))
                                     .else(
                                       when(Item().value().match(Condition.Object.PropertyHasValue('customType')))
@@ -172,8 +198,10 @@ export const summaryStep = step({
                             key: {text: 'Custom data'},
                             value: {html: Item().path('customData')
                                 .pipe(DataDeletionToolTransformers.Diff(
-                                  when(Answer(Format('timeline-action-%1', Item().path('uuid')))
-                                    .match(Condition.Array.Contains('UPDATE')))
+                                  when(and(
+                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.IsRequired()),
+                                    Answer(Format('timeline-action-%1', Item().path('uuid'))).match(Condition.Array.Contains('UPDATE'))
+                                  ))
                                     .then(Answer(Format('timeline-custom-data-%1', Item().path('uuid'))).pipe(DataDeletionToolTransformers.JSONParse()))
                                     .else(
                                       when(Item().path('customData').match(Condition.Object.IsObject()))

@@ -1,49 +1,60 @@
 import {
+  access,
   and,
   Answer,
   Condition,
   Format,
   Item,
-  Iterator,
-  redirect,
+  Iterator, Query,
+  redirect, Self,
   Session,
   step,
-  submit, validation,
+  submit, tieBreaker, validation,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
-  GovUKButton, GovUKCheckboxInput, GovUKSummaryList,
+  GovUKButton, GovUKCheckboxInput, GovUKNotificationBanner, GovUKSummaryList,
   GovUKTextareaInput, GovUKTextInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { DataDeletionToolEffects } from '../../../effects'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { DataDeletionToolTransformers } from '../../../transformers'
 import { Outdent } from '../../../components/outdent/outdent'
+import { DataDeletionConditions } from '../../../conditions';
 
 export const timelineStep = step({
   path: '/timeline',
   title: 'Timeline',
+  reachability: {
+    entryWhen: Session('currentData').match(Condition.Object.IsObject()),
+    tieBreakers: [tieBreaker({ priority: 20 })],
+  },
   onSubmission: [
     submit({
       validate: true,
       onAlways: {
         effects: [
           DataDeletionToolEffects.saveAnswers(),
-          DataDeletionToolEffects.createDeletionRequest(),
-          DataDeletionToolEffects.deletionDryRun(),
+          DataDeletionToolEffects.clearDeletionResponse(),
         ],
       },
       onValid: {
-        next: [redirect({ goto: 'summary' })],
+        effects: [
+          DataDeletionToolEffects.createDeletionRequest(),
+          DataDeletionToolEffects.deletionDryRun(),
+        ],
+        next: [redirect({ goto: 'timeline?valid=true' })],
       },
     })
   ],
-  validWhen: [
-    validation({
-      condition: Session('deletionResponse').path('success').match(Condition.Equals(true)),
-      message: 'Data deletion exception',
-    }),
-  ],
   blocks: [
+    GovUKNotificationBanner({
+      visibleWhen: and(
+        Query('valid').match(Condition.IsRequired()),
+        Session('deletionResponse').path('success').match(Condition.Equals(true)),
+      ),
+      bannerType: 'success',
+      html: `<p>The timeline deletion data is valid. Continue to <a href="summary">Summary</a></p>`,
+    }),
     HtmlBlock({
       visibleWhen: Session('deletionResponse').path('exception').match(Condition.Object.IsObject()),
       content: Format(
@@ -126,11 +137,8 @@ export const timelineStep = step({
                                   classes: 'govuk-label--s',
                                 },
                                 defaultValue: Item().path('event'),
-                                dependentWhen: and(
-                                  Item().value().match(Condition.Object.PropertyHasValue('event')),
-                                  Answer(Format('timeline-action-%1', Item().path('uuid')))
-                                    .match(Condition.Array.Contains('UPDATE')),
-                                ),
+                                dependentWhen: Answer(Format('timeline-action-%1', Item().path('uuid')))
+                                  .match(Condition.Array.Contains('UPDATE')),
                               }),
                               GovUKTextareaInput({
                                 code: Format('timeline-data-%1', Item().path('uuid')),
@@ -140,11 +148,14 @@ export const timelineStep = step({
                                 },
                                 rows: 12,
                                 defaultValue: Item().path('data').pipe(DataDeletionToolTransformers.JSONStringify()),
-                                dependentWhen: and(
-                                  Item().value().match(Condition.Object.PropertyHasValue('data')),
-                                  Answer(Format('timeline-action-%1', Item().path('uuid')))
-                                    .match(Condition.Array.Contains('UPDATE')),
-                                ),
+                                dependentWhen: Answer(Format('timeline-action-%1', Item().path('uuid')))
+                                  .match(Condition.Array.Contains('UPDATE')),
+                                validWhen: [
+                                  validation({
+                                    condition: Self().match(DataDeletionConditions.IsValidJson()),
+                                    message: 'Invalid JSON',
+                                  })
+                                ],
                               }),
                               GovUKTextInput({
                                 code: Format('timeline-custom-type-%1', Item().path('uuid')),
@@ -153,11 +164,8 @@ export const timelineStep = step({
                                   classes: 'govuk-label--s',
                                 },
                                 defaultValue: Item().path('customType'),
-                                dependentWhen: and(
-                                  Item().value().match(Condition.Object.PropertyHasValue('customType')),
-                                  Answer(Format('timeline-action-%1', Item().path('uuid')))
-                                    .match(Condition.Array.Contains('UPDATE')),
-                                ),
+                                dependentWhen: Answer(Format('timeline-action-%1', Item().path('uuid')))
+                                  .match(Condition.Array.Contains('UPDATE')),
                               }),
                               GovUKTextareaInput({
                                 code: Format('timeline-custom-data-%1', Item().path('uuid')),
@@ -167,11 +175,14 @@ export const timelineStep = step({
                                 },
                                 rows: 12,
                                 defaultValue: Item().path('customData').pipe(DataDeletionToolTransformers.JSONStringify()),
-                                dependentWhen: and(
-                                  Item().value().match(Condition.Object.PropertyHasValue('customData')),
-                                  Answer(Format('timeline-action-%1', Item().path('uuid')))
-                                    .match(Condition.Array.Contains('UPDATE')),
-                                ),
+                                dependentWhen: Answer(Format('timeline-action-%1', Item().path('uuid')))
+                                  .match(Condition.Array.Contains('UPDATE')),
+                                validWhen: [
+                                  validation({
+                                    condition: Self().match(DataDeletionConditions.IsValidJson()),
+                                    message: 'Invalid JSON',
+                                  })
+                                ],
                               }),
                             ],
                           }
@@ -187,9 +198,9 @@ export const timelineStep = step({
       ),
     }),
     GovUKButton({
-      text: 'Next',
+      text: 'Validate',
       name: 'action',
-      value: 'next',
+      value: 'validate',
       preventDoubleClick: true,
     }),
   ],

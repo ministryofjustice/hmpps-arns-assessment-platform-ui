@@ -5,6 +5,7 @@ import { eventsStep } from './steps/events/step';
 import { timelineStep } from './steps/timeline/step';
 import { summaryStep } from './steps/summary/step';
 import { clearStep } from './steps/clear/step';
+import { successStep } from './steps/success/step';
 
 export const dataDeletionToolJourney = journey({
   code: 'data-deletion-tool',
@@ -29,6 +30,7 @@ export const dataDeletionToolJourney = journey({
     eventsStep,
     timelineStep,
     summaryStep,
+    successStep,
     clearStep,
   ],
 })

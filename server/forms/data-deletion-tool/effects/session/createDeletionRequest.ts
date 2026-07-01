@@ -22,11 +22,10 @@ export const createDeletionRequest = (deps: DataDeletionToolEffectsDeps) => asyn
         }
       }),
     timeline: Object.entries(answers)
-      .filter(([key, value]) => key.startsWith("timeline-action-")
-        && Object.values(DataDeletionOperation).includes(value as DataDeletionOperation))
+      .filter(([key, value]) => key.startsWith("timeline-action-") && (value as string[]).length > 0)
       .map(([key, value]) => {
         const uuid = key.slice('timeline-action-'.length)
-        const operation = value as DataDeletionOperation
+        const operation = (value as DataDeletionOperation[])[0]
         const currentTimelineItem = session.currentData.timeline.find(it => it.uuid == uuid)
         const event = answers[`timeline-event-${uuid}`] as string
         const eventData = answers[`timeline-data-${uuid}`] as string
@@ -38,6 +37,7 @@ export const createDeletionRequest = (deps: DataDeletionToolEffectsDeps) => asyn
           operation: operation,
           timeline: {
             uuid: uuid,
+            assessment: currentTimelineItem.assessment,
             position: currentTimelineItem.position,
             event: operation == DataDeletionOperation.UPDATE
               ? event ?? currentTimelineItem.event

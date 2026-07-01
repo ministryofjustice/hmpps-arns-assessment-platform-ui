@@ -4,7 +4,8 @@ import config from '../../config'
 import { DataDeletionToolEffectImplementations } from './effects'
 import { dataDeletionToolJourney } from './form'
 import { DataDeletionToolTransformerImplementations } from './transformers'
-import { dataDeletionToolComponents } from './components';
+import { dataDeletionToolComponents } from './components'
+import { DataDeletionConditionImplementations } from './conditions'
 
 /**
  * Root Data Deletion Tool Form Package
@@ -16,5 +17,6 @@ export default createForgePackage<DataDeletionToolEffectsDeps>({
   functions: {
     ...DataDeletionToolEffectImplementations,
     ...DataDeletionToolTransformerImplementations,
+    ...DataDeletionConditionImplementations,
   },
 })

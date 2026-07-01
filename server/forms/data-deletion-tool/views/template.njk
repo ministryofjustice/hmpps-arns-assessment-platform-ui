@@ -1,6 +1,9 @@
 {%- extends "partials/layout.njk" -%}
 {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+{%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
 {%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+
+{% set allValidationErrors = fieldValidationErrors.concat(domainValidationErrors) %}
 
 {% block head %}
   {{ super() }}
@@ -21,7 +24,7 @@
   {% set isOnConfigurationPage = step.path == '/configuration' %}
   {% set isOnEventsPage = step.path == '/events' %}
   {% set isOnTimelinePage = step.path == '/timeline' %}
-  {% set isOnSummaryPage = step.path == '/summary' %}
+  {% set isOnSummaryPage = step.path == '/summary' or step.path == '/success' %}
 
   {{ govukServiceNavigation({
     navigation: [
@@ -56,6 +59,11 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
+      {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: allValidationErrors | toErrorSummary
+      }) if allValidationErrors.length }}
+
       <form id="main-form" method="post" action="#">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% for block in blocks %}

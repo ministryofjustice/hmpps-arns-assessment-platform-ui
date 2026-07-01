@@ -1,52 +1,66 @@
 import {
+  access,
+  and,
   Answer,
   Condition,
   Format,
   Item,
-  Iterator,
-  redirect,
+  Iterator, Query,
+  redirect, Self,
   Session,
   step,
   submit, tieBreaker, validation, when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
-  GovUKButton, GovUKCheckboxInput, GovUKSummaryList,
+  GovUKButton, GovUKCheckboxInput, GovUKNotificationBanner, GovUKSummaryList,
   GovUKTextareaInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { DataDeletionToolEffects } from '../../../effects'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { DataDeletionToolTransformers } from '../../../transformers'
-import { Outdent } from '../../../components/outdent/outdent';
+import { Outdent } from '../../../components/outdent/outdent'
+import { DataDeletionConditions } from '../../../conditions'
 
 export const eventsStep = step({
   path: '/events',
   title: 'Events',
   reachability: {
     entryWhen: Session('currentData').match(Condition.Object.IsObject()),
-    tieBreakers: [tieBreaker({ priority: 20 })],
+    tieBreakers: [tieBreaker({ priority: 15 })],
   },
+  onAccess: [
+    access({
+      when: Session('currentData').not.match(Condition.Object.IsObject()),
+      next: [redirect({ goto: 'configuration' })],
+    })
+  ],
   onSubmission: [
     submit({
       validate: true,
       onAlways: {
         effects: [
           DataDeletionToolEffects.saveAnswers(),
-          DataDeletionToolEffects.createDeletionRequest(),
-          DataDeletionToolEffects.deletionDryRun(),
+          DataDeletionToolEffects.clearDeletionResponse(),
         ],
       },
       onValid: {
-        next: [redirect({ goto: 'timeline' })],
+        effects: [
+          DataDeletionToolEffects.createDeletionRequest(),
+          DataDeletionToolEffects.deletionDryRun(),
+        ],
+        next: [redirect({ goto: 'events?valid=true' })],
       }
     })
   ],
-  validWhen: [
-    validation({
-      condition: Session('deletionResponse').path('success').match(Condition.Equals(true)),
-      message: 'Data deletion exception',
-    }),
-  ],
   blocks: [
+    GovUKNotificationBanner({
+      visibleWhen: and(
+        Query('valid').match(Condition.IsRequired()),
+        Session('deletionResponse').path('success').match(Condition.Equals(true)),
+      ),
+      bannerType: 'success',
+      html: `<p>The events deletion data is valid. Continue to <a href="timeline">Timeline</a></p>`,
+    }),
     HtmlBlock({
       visibleWhen: Session('deletionResponse').path('exception').match(Condition.Object.IsObject()),
       content: Format(
@@ -146,6 +160,12 @@ export const eventsStep = step({
                               defaultValue: Item().path('data').pipe(DataDeletionToolTransformers.JSONStringify()),
                               dependentWhen: Answer(Format('event-action-%1', Item().path('uuid')))
                                 .match(Condition.Array.Contains('UPDATE')),
+                              validWhen: [
+                                validation({
+                                  condition: Self().match(DataDeletionConditions.IsValidJson()),
+                                  message: 'Invalid JSON',
+                                })
+                              ],
                             }),
                           }
                         ],
@@ -160,9 +180,9 @@ export const eventsStep = step({
       ),
     }),
     GovUKButton({
-      text: 'Next',
+      text: 'Validate',
       name: 'action',
-      value: 'next',
+      value: 'validate',
       preventDoubleClick: true,
     }),
   ],

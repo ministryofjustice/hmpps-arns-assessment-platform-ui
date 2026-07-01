@@ -39,6 +39,8 @@ export interface DataDeletionToolSession {
   currentData: DataDeletionDataResponse
   deletionRequest: DataDeletionRequest
   deletionResponse: DataDeletionResponse
+  eventsValidated: boolean
+  timelineValidated: boolean
 }
 
 /**

@@ -21,7 +21,7 @@ export const deletionDryRun = (deps: DataDeletionToolEffectsDeps) => async (cont
     session.deletionResponse = {
       success: false,
       dryRun: true,
-      state: null,
+      rebuiltState: null,
       exception: {
         eventUuid: null,
         eventName: null,
