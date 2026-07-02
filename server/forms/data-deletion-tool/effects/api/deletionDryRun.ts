@@ -2,7 +2,7 @@ import { InternalServerError } from 'http-errors'
 import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from '../types'
 import { createApiClient } from './createApiClient'
 
-export const deletionDryRun = (deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
+export const deletionDryRun = (_deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
   const session = context.getSession()
   const assessmentUuid = session.answers.assessmentUuid
 

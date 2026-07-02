@@ -156,6 +156,9 @@ ${children}
 ${children}
 <div class="line unchanged">${pad}]</div>`
     }
+
+    default:
+      return ''
   }
 }
 

@@ -2,7 +2,7 @@ import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from '../types'
 import { DataDeletionOperation } from '../../../../interfaces/aap-api/dataDeletion'
 
 export const createDeletionRequest =
-  (deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
+  (_deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {
     const answers = context.getAllAnswers()
     const session = context.getSession()
 
@@ -13,13 +13,13 @@ export const createDeletionRequest =
         .map(([key, value]) => {
           const uuid = key.slice('event-action-'.length)
           const operation = (value as DataDeletionOperation[])[0]
-          const currentEvent = session.currentData.events.find(it => it.uuid == uuid)
+          const currentEvent = session.currentData.events.find(it => it.uuid === uuid)
           const eventData = answers[`event-data-${uuid}`] as string
 
           return {
             uuid,
             operation,
-            event: operation == DataDeletionOperation.UPDATE ? JSON.parse(eventData) : currentEvent.data,
+            event: operation === DataDeletionOperation.UPDATE ? JSON.parse(eventData) : currentEvent.data,
           }
         }),
       timeline: Object.entries(answers)
@@ -27,7 +27,7 @@ export const createDeletionRequest =
         .map(([key, value]) => {
           const uuid = key.slice('timeline-action-'.length)
           const operation = (value as DataDeletionOperation[])[0]
-          const currentTimelineItem = session.currentData.timeline.find(it => it.uuid == uuid)
+          const currentTimelineItem = session.currentData.timeline.find(it => it.uuid === uuid)
           const event = answers[`timeline-event-${uuid}`] as string
           const eventData = answers[`timeline-data-${uuid}`] as string
           const customType = answers[`timeline-custom-type-${uuid}`] as string
@@ -41,25 +41,21 @@ export const createDeletionRequest =
               assessment: currentTimelineItem.assessment,
               position: currentTimelineItem.position,
               event:
-                operation == DataDeletionOperation.UPDATE
+                operation === DataDeletionOperation.UPDATE
                   ? (event ?? currentTimelineItem.event)
                   : currentTimelineItem.event,
               timestamp: currentTimelineItem.timestamp,
               data:
-                operation == DataDeletionOperation.UPDATE
-                  ? eventData
-                    ? JSON.parse(eventData)
-                    : currentTimelineItem.data
+                operation === DataDeletionOperation.UPDATE && eventData
+                  ? JSON.parse(eventData)
                   : currentTimelineItem.data,
               customType:
-                operation == DataDeletionOperation.UPDATE
+                operation === DataDeletionOperation.UPDATE
                   ? (customType ?? currentTimelineItem.customType)
                   : currentTimelineItem.customType,
               customData:
-                operation == DataDeletionOperation.UPDATE
-                  ? customData
-                    ? JSON.parse(customData)
-                    : currentTimelineItem.customData
+                operation === DataDeletionOperation.UPDATE && customData
+                  ? JSON.parse(customData)
                   : currentTimelineItem.customData,
               user: currentTimelineItem.user,
             },

@@ -1,4 +1,4 @@
-import { access, journey, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { DataDeletionToolEffects } from '../effects'
 import { configurationStep } from './steps/configuration/step'
 import { eventsStep } from './steps/events/step'
