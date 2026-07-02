@@ -6,6 +6,7 @@ import {
   Format,
   Item,
   Iterator,
+  or,
   Query,
   redirect,
   Self,
@@ -173,11 +174,14 @@ export const eventsStep = step({
                               },
                               rows: 12,
                               defaultValue: Item().path('data').pipe(DataDeletionToolTransformers.JSONStringify()),
-                              dependentWhen: Answer(Format('event-action-%1', Item().path('uuid')))
-                                .match(Condition.Array.Contains('UPDATE')),
                               validWhen: [
                                 validation({
-                                  condition: Self().match(DataDeletionConditions.IsValidJson()),
+                                  condition: or(
+                                    Answer(Format('event-action-%1', Item().path('uuid'))).not.match(
+                                      Condition.Array.Contains('UPDATE'),
+                                    ),
+                                    Self().match(DataDeletionConditions.IsValidJson()),
+                                  ),
                                   message: 'Invalid JSON',
                                 }),
                               ],

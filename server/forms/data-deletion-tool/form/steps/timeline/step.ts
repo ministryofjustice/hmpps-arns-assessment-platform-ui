@@ -5,6 +5,7 @@ import {
   Format,
   Item,
   Iterator,
+  or,
   Query,
   redirect,
   Self,
@@ -148,8 +149,6 @@ export const timelineStep = step({
                                   classes: 'govuk-label--s',
                                 },
                                 defaultValue: Item().path('event'),
-                                dependentWhen: Answer(Format('timeline-action-%1', Item().path('uuid')))
-                                  .match(Condition.Array.Contains('UPDATE')),
                               }),
                               GovUKTextareaInput({
                                 code: Format('timeline-data-%1', Item().path('uuid')),
@@ -159,11 +158,14 @@ export const timelineStep = step({
                                 },
                                 rows: 12,
                                 defaultValue: Item().path('data').pipe(DataDeletionToolTransformers.JSONStringify()),
-                                dependentWhen: Answer(Format('timeline-action-%1', Item().path('uuid')))
-                                  .match(Condition.Array.Contains('UPDATE')),
                                 validWhen: [
                                   validation({
-                                    condition: Self().match(DataDeletionConditions.IsValidJson()),
+                                    condition: or(
+                                      Answer(Format('timeline-action-%1', Item().path('uuid'))).not.match(
+                                        Condition.Array.Contains('UPDATE'),
+                                      ),
+                                      Self().match(DataDeletionConditions.IsValidJson()),
+                                    ),
                                     message: 'Invalid JSON',
                                   }),
                                 ],
@@ -175,8 +177,6 @@ export const timelineStep = step({
                                   classes: 'govuk-label--s',
                                 },
                                 defaultValue: Item().path('customType'),
-                                dependentWhen: Answer(Format('timeline-action-%1', Item().path('uuid')))
-                                  .match(Condition.Array.Contains('UPDATE')),
                               }),
                               GovUKTextareaInput({
                                 code: Format('timeline-custom-data-%1', Item().path('uuid')),
@@ -185,12 +185,17 @@ export const timelineStep = step({
                                   classes: 'govuk-label--s',
                                 },
                                 rows: 12,
-                                defaultValue: Item().path('customData').pipe(DataDeletionToolTransformers.JSONStringify()),
-                                dependentWhen: Answer(Format('timeline-action-%1', Item().path('uuid')))
-                                  .match(Condition.Array.Contains('UPDATE')),
+                                defaultValue: Item()
+                                  .path('customData')
+                                  .pipe(DataDeletionToolTransformers.JSONStringify()),
                                 validWhen: [
                                   validation({
-                                    condition: Self().match(DataDeletionConditions.IsValidJson()),
+                                    condition: or(
+                                      Answer(Format('timeline-action-%1', Item().path('uuid'))).not.match(
+                                        Condition.Array.Contains('UPDATE'),
+                                      ),
+                                      Self().match(DataDeletionConditions.IsValidJson()),
+                                    ),
                                     message: 'Invalid JSON',
                                   }),
                                 ],
