@@ -1,4 +1,6 @@
-import { defineTransformerFunctions } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  defineTransformerFunctions,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import { Language, Locales } from './i18n'
 
@@ -9,7 +11,8 @@ export const {
   implementations: strengthsAndNeedsTransformerImplementations,
 } = defineTransformerFunctions<
   {
-    ContentFor: (language: string, locales: Locales, path: string, ...replacements: string[]) => string
+    ContentFor: (language: string, locales: Locales, path: string, ...replacements: string[]) => string,
+    ToISO: (value: any) => string
   },
   StrengthsAndNeedsEffectsDeps
 >({
@@ -28,4 +31,26 @@ export const {
 
       return replacements.reduce((acc, value, index) => acc.replace(`%${index + 1}`, value), raw)
     },
+  ToISO: () => (value: any) => {
+    if (typeof value !== 'object') {
+      return value
+    }
+
+    const day = value.day
+    const month = value.month
+    const year = value.year
+
+    if (day === '' && month === '' && year === '') {
+      return ''
+    }
+
+    if (day !== '' && month !== '' && year !== '') {
+      const paddedYear = year.padStart(4, '0')
+      const paddedMonth = month.padStart(2, '0')
+      const paddedDay = day.padStart(2, '0')
+      return `${paddedYear}-${paddedMonth}-${paddedDay}`
+    }
+
+    return value
+  }
 })

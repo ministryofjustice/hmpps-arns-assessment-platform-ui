@@ -5,7 +5,6 @@ import {
   and,
   or,
   Condition,
-  Transformer,
   not,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKRadioInput, GovUKDateInputFull } from '@ministryofjustice/hmpps-forge/govuk-components'
@@ -15,6 +14,7 @@ import { Option } from '../../constants/option'
 import { commonContentFor } from '../../../../locales'
 import { contentFor } from '../../locales'
 import { CommonOption } from '../../../../constants/commonOption'
+import { StrengthsAndNeedsTransformers } from '../../../../../../transformers'
 
 const hasAnyDatePart = () => {
   return and(
@@ -87,7 +87,7 @@ const shortTermEndDate = GovUKDateInputFull({
     legend: { text: contentFor('question.short_term_accommodation_end_date.text') },
   },
   dependentWhen: Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.short_term)),
-  formatters: [Transformer.Object.ToISO({ year: 'year', month: 'month', day: 'day' })],
+  formatters: [StrengthsAndNeedsTransformers.ToISO()],
   validWhen: optionalFutureDateValidations(),
 })
 
@@ -97,7 +97,7 @@ const approvedPremisesEndDate = GovUKDateInputFull({
     legend: { text: contentFor('question.approved_premises_end_date.text') },
   },
   dependentWhen: Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.approved_premises)),
-  formatters: [Transformer.Object.ToISO({ year: 'year', month: 'month', day: 'day' })],
+  formatters: [StrengthsAndNeedsTransformers.ToISO()],
   validWhen: optionalFutureDateValidations(),
 })
 
@@ -107,7 +107,7 @@ const cas2EndDate = GovUKDateInputFull({
     legend: { text: contentFor('question.cas2_end_date.text') },
   },
   dependentWhen: Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.cas2)),
-  formatters: [Transformer.Object.ToISO({ year: 'year', month: 'month', day: 'day' })],
+  formatters: [StrengthsAndNeedsTransformers.ToISO()],
   validWhen: optionalFutureDateValidations(),
 })
 
@@ -117,7 +117,7 @@ const cas3EndDate = GovUKDateInputFull({
     legend: { text: contentFor('question.cas3_end_date.text') },
   },
   dependentWhen: Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.cas3)),
-  formatters: [Transformer.Object.ToISO({ year: 'year', month: 'month', day: 'day' })],
+  formatters: [StrengthsAndNeedsTransformers.ToISO()],
   validWhen: optionalFutureDateValidations(),
 })
 
@@ -127,7 +127,7 @@ const immigrationEndDate = GovUKDateInputFull({
     legend: { text: contentFor('question.immigration_accommodation_end_date.text') },
   },
   dependentWhen: Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.immigration)),
-  formatters: [Transformer.Object.ToISO({ year: 'year', month: 'month', day: 'day' })],
+  formatters: [StrengthsAndNeedsTransformers.ToISO()],
   validWhen: optionalFutureDateValidations(),
 })
 
