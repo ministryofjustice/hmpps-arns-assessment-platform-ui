@@ -195,6 +195,28 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
   return request
 }
 
+async function updateHandoverAssessmentContext(
+  deps: TrainingSessionLauncherEffectsDeps,
+  response: { handoverSessionId: string },
+  request: CreateHandoverLinkRequest,
+  session: Session,
+): Promise<void> {
+  if (!session.sanAssessmentId) {
+    return
+  }
+
+  await deps.handoverApiClient.updateContext(response.handoverSessionId, {
+    principal: request.user,
+    subject: request.subjectDetails,
+    assessmentContext: {
+      oasysAssessmentPk: session.values.oasysAssessmentPk,
+      assessmentId: session.sanAssessmentId,
+      assessmentVersion: session.sanAssessmentVersion,
+    },
+    criminogenicNeedsData: request.criminogenicNeedsData,
+  })
+}
+
 /**
  * Generate a handover link for an existing training session.
  *
@@ -240,6 +262,10 @@ export const generateHandoverLink =
     const request = handoverConfig.modifyRequest(baseRequest)
 
     const response = await deps.handoverApiClient.createHandoverLink(request)
+
+    if (targetApplication === 'strengths-and-needs' && session.flags.includes('SAN_PRIVATE_BETA')) {
+      await updateHandoverAssessmentContext(deps, response, request, session)
+    }
 
     // Append clientId and any flag-based URL params to the handover link
     const clientId = getClientIdForTarget(targetApplication)
