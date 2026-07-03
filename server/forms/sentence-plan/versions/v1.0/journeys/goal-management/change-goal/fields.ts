@@ -1,4 +1,12 @@
-import { Data, Format, Self, validation, Condition, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Data,
+  Format,
+  Self,
+  validation,
+  Condition,
+  Transformer,
+  when,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKButton,
   GovUKTextInput,
@@ -68,7 +76,9 @@ const areaOfNeedInset = GovUKInsetText({
 })
 
 const addOrUpdateStepsButton = GovUKButton({
-  text: 'Add or update steps',
+  text: when(Data('activeGoal.steps').match(Condition.IsRequired()))
+    .then('Add or update steps')
+    .else('Add steps'),
   classes: 'govuk-button--secondary',
   name: 'action',
   value: 'addSteps',
