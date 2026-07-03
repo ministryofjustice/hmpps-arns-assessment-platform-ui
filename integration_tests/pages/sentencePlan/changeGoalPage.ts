@@ -47,7 +47,7 @@ export default class ChangeGoalPage extends AbstractPage {
     this.areaOfNeedInset = page.locator('.govuk-inset-text')
     this.changeAreaOfNeedLink = page.getByRole('link', { name: 'Change area of need' })
     this.saveGoalButton = page.getByRole('button', { name: 'Save goal' })
-    this.addOrUpdateStepsButton = page.getByRole('button', { name: 'Add or update steps' })
+    this.addOrUpdateStepsButton = page.locator('[data-ai-id="update-goal-add-steps-button"]')
     this.backLink = page.locator('.govuk-back-link')
     this.assessmentInfo = new AssessmentInfoHelper(page)
     this.canStartNow = new CanStartNowHelper(page)
