@@ -1,6 +1,6 @@
-import './appInsights.mjs'
 import * as govukFrontend from 'govuk-frontend'
 import * as mojFrontend from '@ministryofjustice/frontend'
+import { initAccordionTelemetry } from './appInsights.mjs'
 import { CollapsibleNav } from './collapsible-nav.mjs'
 import { SupportWidget } from './support-widget.mjs'
 import { initScrollRestore } from './scroll-restore.mjs'
@@ -15,6 +15,7 @@ import '../../server/forms/sentence-plan/components/report-problem-link/report-p
 
 govukFrontend.initAll()
 mojFrontend.initAll()
+initAccordionTelemetry()
 initScrollRestore()
 initAutosizeTextareas()
 initBackToTop()
