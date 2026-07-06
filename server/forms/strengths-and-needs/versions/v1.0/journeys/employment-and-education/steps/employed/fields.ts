@@ -296,7 +296,7 @@ export const professionalQualifications = GovUKRadioInput({
   },
   items: [
     { value: CommonOption.yes, text: commonContentFor('option.YES'), block: professionalQualificationDetails },
-    { value: CommonOption.no, text: commonContentFor('option.NO'), block: professionalQualificationDetails },
+    { value: CommonOption.no, text: commonContentFor('option.NO') },
     { divider: commonContentFor('or') },
     { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
   ],

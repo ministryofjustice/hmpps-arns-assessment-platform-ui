@@ -1,13 +1,12 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { healthWellbeingSummaryTab } from './fields'
 import { Step } from '../../constants/step'
-import { Section, SectionStatus } from '../../../../constants/section'
-import { summaryTab } from './fields'
 
-export const financeSummaryStep = step({
-  path: `/${Step.financeSummary.path}`,
-  title: 'Finance Summary', // TODO: contentFor('step.finance_summary')
-  blocks: [summaryTab],
+export const healthWellbeingSummaryStep = step({
+  path: `/${Step.health_wellbeing_summary.path}`,
+  title: 'Health and Wellbeing Summary',
+  blocks: [healthWellbeingSummaryTab],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -15,9 +14,9 @@ export const financeSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.finance.statusKey, SectionStatus.complete),
+          StrengthsAndNeedsEffects.setSectionProgress('health_section_status', 'COMPLETE'),
         ],
-        next: [redirect({ goto: Step.financeAnalysis.path })],
+        next: [redirect({ goto: 'health-wellbeing-analysis' })],
       },
     }),
   ],

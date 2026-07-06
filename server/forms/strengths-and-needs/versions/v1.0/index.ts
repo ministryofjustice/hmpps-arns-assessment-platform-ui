@@ -7,6 +7,7 @@ import { StrengthsAndNeedsEffects } from '../../effects'
 import { Section } from './constants/section'
 import { basePath, formVersion } from './constants/formVersion'
 import { commonContentFor } from './locales'
+import { healthWellbeingJourney } from './journeys/health-wellbeing'
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -41,5 +42,5 @@ export const strengthsAndNeedsV1Journey = journey({
       ],
     }),
   ],
-  children: [accommodationJourney, employmentJourney, drugUseJourney, financeJourney],
+  children: [accommodationJourney, employmentJourney, drugUseJourney, financeJourney, healthWellbeingJourney],
 })

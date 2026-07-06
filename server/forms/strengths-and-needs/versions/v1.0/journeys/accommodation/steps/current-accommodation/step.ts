@@ -1,11 +1,9 @@
-import { step, submit, redirect, Post, Answer, and, or, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { currentAccommodation } from './fields'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
-import { Question } from '../../constants/question'
-import { Option } from '../../constants/option'
 
 export const currentAccommodationStep = step({
   path: `/${Step.current_accommodation.path}`,
@@ -28,26 +26,7 @@ export const currentAccommodationStep = step({
         ],
         next: [
           redirect({
-            when: Answer(Question.current_accommodation).match(Condition.Equals(Option.settled)),
-            goto: Step.settled_accommodation.path,
-          }),
-          redirect({
-            when: and(
-              Answer(Question.current_accommodation).match(Condition.Equals(Option.temporary)),
-              or(
-                Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.short_term)),
-                Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.immigration)),
-              ),
-            ),
-            goto: Step.temporary_accommodation.path,
-          }),
-          redirect({
-            when: Answer(Question.current_accommodation).match(Condition.Equals(Option.temporary)),
-            goto: Step.temporary_accommodation_cas_ap.path,
-          }),
-          redirect({
-            when: Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation)),
-            goto: Step.no_accommodation.path,
+            goto: Step.accommodation_details.path,
           }),
         ],
       },

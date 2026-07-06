@@ -18,12 +18,12 @@ import {
 import { CaseData } from '../../../../constants/formVersion'
 import { getDisplayTextForSpecificItem } from '../../../../../../i18n'
 import { Question } from '../../constants/question'
-import { contentFor } from '../../locales'
 import { Option } from '../../constants/option'
 import { commonContentFor } from '../../../../locales'
 import { Step } from '../../constants/step'
 import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
 import { CommonOption } from '../../../../constants/commonOption'
+import { contentFor } from '../../locales'
 
 const PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT = 1425
 

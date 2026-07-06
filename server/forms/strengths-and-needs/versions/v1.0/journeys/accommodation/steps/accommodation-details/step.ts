@@ -1,21 +1,31 @@
-import { step, submit, redirect, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
-  livingWith,
-  suitableHousingLocation,
-  suitableHousing,
   accommodationChanges,
-} from '../settled-accommodation/fields'
-import { suitableHousingPlanned } from './fields'
-import { Step } from '../../constants/step'
+  livingWith,
+  noAccommodationReason,
+  pastAccommodationDetails,
+  suitableHousing,
+  suitableHousingLocation,
+  suitableHousingPlanned,
+} from './fields'
 import { saveButton } from '../../../../constants/buttons'
+import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
+import { sectionPath } from '../../../../constants/path'
 
-export const temporaryAccommodationStep = step({
-  path: `/${Step.temporary_accommodation.path}`,
-  title: 'Temporary accommodation', // TODO: contentFor('step.temporary_accommodation')
+export const accommodationDetailsStep = step({
+  path: `/${Step.accommodation_details.path}`,
+  title: 'Settled accommodation', // TODO: contentFor('step.settled_accommodation')
+  view: {
+    locals: {
+      backlink: sectionPath(Section.accommodation),
+    },
+  },
   blocks: [
     livingWith,
+    noAccommodationReason,
+    pastAccommodationDetails,
     suitableHousingLocation,
     suitableHousing,
     suitableHousingPlanned,

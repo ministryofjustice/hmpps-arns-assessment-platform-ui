@@ -6,10 +6,7 @@ import { Option } from '../constants/option'
 export const english = {
   step: {
     [Step.current_accommodation.code]: 'Current accommodation',
-    [Step.settled_accommodation.code]: 'Settled accommodation',
-    [Step.temporary_accommodation.code]: 'Temporary accommodation',
-    [Step.temporary_accommodation_cas_ap.code]: 'Temporary accommodation',
-    [Step.no_accommodation.code]: 'No accommodation',
+    [Step.accommodation_details.code]: 'Accommodation details',
     [Step.accommodation_summary.code]: 'Accommodation summary',
     [Step.accommodation_analysis.code]: 'Accommodation analysis',
   },
@@ -49,7 +46,14 @@ export const english = {
         [Option.cas3]: 'Community Accommodation Service Tier 3 (CAS3)',
         [Option.immigration]: {
           text: 'Immigration accommodation',
-          hint: 'Includes accommodation provided under Schedule 10 of the Immigration and Asylum Act 1999 or under section 4 of the same Act.',
+          hint:
+            '<div class="govuk-grid-column-full">' +
+            '<p class="govuk-hint">This includes:</p>' +
+            '<ul class="govuk-hint govuk-list govuk-list--bullet">' +
+            '<li class=" govuk-!-margin-bottom-5">Schedule 10 - Home Office provides accommodation under the Immigration Act 2016</li>' +
+            '<li>Schedule 4 - Home Office provides accommodation for those on immigration bail, prior to the Immigration Act 2016</li>' +
+            '</ul>' +
+            '</div>',
         },
         [Option.short_term]: {
           text: 'Short term accommodation',
@@ -149,7 +153,11 @@ export const english = {
     },
     [Question.no_accommodation_reason]: {
       text: 'Why does %1 have no accommodation?',
-      hint: 'Consider current and past homelessness issues. Select all that apply.',
+      hint:
+        '<div class="govuk-!-width-two-thirds">' +
+        '<p class="govuk-hint">Consider current and past homelessness issues.</p>' +
+        '<p class="govuk-hint">Select all that apply.</p>' +
+        '</div>',
       option: {
         [Option.alcohol_problems]: 'Alcohol related problems',
         [Option.drug_problems]: 'Drug related problems',
@@ -193,6 +201,7 @@ export const english = {
     },
   },
   expected_end_date: 'Expected end date:',
+  not_provided: 'Not provided',
 } as const
 
 export type AccommodationLocale = Locale<typeof english>
