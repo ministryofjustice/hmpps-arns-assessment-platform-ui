@@ -198,7 +198,7 @@ export const typeOfTemporaryAccommodation = GovUKRadioInput({
       value: Option.immigration,
       text: contentFor('question.type_of_temporary_accommodation.option.IMMIGRATION.text'),
       hint: {
-        text: contentFor('question.type_of_temporary_accommodation.option.IMMIGRATION.hint'),
+        html: contentFor('question.type_of_temporary_accommodation.option.IMMIGRATION.hint'),
       },
       block: immigrationEndDate,
     },

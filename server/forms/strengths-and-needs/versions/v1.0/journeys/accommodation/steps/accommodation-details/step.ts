@@ -1,20 +1,26 @@
 import {Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {currentAccommodation} from './fields'
+import {
+  accommodationChanges,
+  livingWith,
+  noAccommodationReason, pastAccommodationDetails,
+  suitableHousing,
+  suitableHousingLocation, suitableHousingPlanned
+} from './fields'
 import {saveButton} from '../../../../constants/buttons'
 import {Step} from '../../constants/step'
 import {Section, SectionStatus} from '../../../../constants/section'
+import {sectionPath} from "../../../../constants/path";
 
-export const currentAccommodationStep = step({
-  path: `/${Step.current_accommodation.path}`,
-  title: 'Current accommodation', // TODO: contentFor('step.current_accommodation')
-  reachability: { entryWhen: true },
+export const accommodationDetailsStep = step({
+  path: `/${Step.accommodation_details.path}`,
+  title: 'Settled accommodation', // TODO: contentFor('step.settled_accommodation')
   view: {
     locals: {
-      sectionTitleClass: 'govuk-body-l',
+      backlink: sectionPath(Section.accommodation),
     },
   },
-  blocks: [currentAccommodation, saveButton],
+  blocks: [livingWith, noAccommodationReason, pastAccommodationDetails, suitableHousingLocation, suitableHousing, suitableHousingPlanned, accommodationChanges, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -24,11 +30,7 @@ export const currentAccommodationStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation.statusKey, SectionStatus.incomplete),
         ],
-        next: [
-          redirect({
-            goto: Step.accommodation_details.path,
-          }),
-        ],
+        next: [redirect({ goto: Step.accommodation_summary.path })],
       },
     }),
   ],
