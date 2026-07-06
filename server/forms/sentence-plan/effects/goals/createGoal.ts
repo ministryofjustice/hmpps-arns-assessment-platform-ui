@@ -12,6 +12,8 @@ import {
 } from './goalUtils'
 import { getUserContext } from '../telemetry/getUserContext'
 import { GoalSnapshotData } from './goalSnapshot'
+import { hashGoalText, matchSuggestedGoal } from '../../../../utils/goalTelemetry'
+import { areasOfNeed } from '../../versions/v1.0/constants'
 
 /**
  * Create a new goal
@@ -103,6 +105,9 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
     user,
   })
 
+  const selectedArea = areasOfNeed.find(area => area.slug === areaOfNeedSlug)
+  const goalMatch = matchSuggestedGoal(goalTitle as string, selectedArea?.goals ?? [])
+
   telemetry.trackEvent('CREATE_GOAL_PAGE_SUBMITTED', {
     assessmentUuid,
     goalUuid: addResult.collectionItemUuid,
@@ -115,5 +120,12 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
     targetDate: targetDate ?? '',
     authSource: context.getState('user').authSource,
     userContext: getUserContext(context),
+    goalTitleHash: hashGoalText(goalTitle as string),
+    suggestedGoalMatch: goalMatch.matchRating ?? 'no match',
+    suggestedGoalMatchPercentage: String(goalMatch.matchPercentage),
+    suggestedGoalTitle:
+      goalMatch.matchRating === 'exact' || goalMatch.matchRating === 'high'
+        ? (goalMatch.suggestedGoalTitle ?? '')
+        : 'N/A',
   })
 }
