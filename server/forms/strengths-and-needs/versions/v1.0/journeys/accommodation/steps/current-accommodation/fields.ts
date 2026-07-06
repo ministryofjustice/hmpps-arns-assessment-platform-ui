@@ -1,12 +1,4 @@
-import {
-  validation,
-  Self,
-  Answer,
-  and,
-  or,
-  Condition,
-  not,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { validation, Self, Answer, and, or, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKRadioInput, GovUKDateInputFull } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CaseData } from '../../../../constants/formVersion'
 import { Question } from '../../constants/question'

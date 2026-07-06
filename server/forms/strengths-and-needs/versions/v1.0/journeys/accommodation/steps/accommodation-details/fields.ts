@@ -1,4 +1,4 @@
-import {validation, Self, Answer, and, Condition, not, or} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { validation, Self, Answer, and, Condition, not, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKRadioInput,
   GovUKCheckboxInput,
@@ -57,12 +57,12 @@ export const livingWith = GovUKCheckboxInput({
   visibleWhen: or(
     Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.immigration)),
     Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.short_term)),
-    Answer(Question.current_accommodation).match(Condition.Equals(Option.settled))
+    Answer(Question.current_accommodation).match(Condition.Equals(Option.settled)),
   ),
   dependentWhen: or(
     Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.immigration)),
     Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.short_term)),
-    Answer(Question.current_accommodation).match(Condition.Equals(Option.settled))
+    Answer(Question.current_accommodation).match(Condition.Equals(Option.settled)),
   ),
   validWhen: [
     validation({
@@ -100,7 +100,7 @@ export const noAccommodationReason = GovUKCheckboxInput({
     },
   },
   hint: {
-    html: contentFor('question.no_accommodation_reason.hint')
+    html: contentFor('question.no_accommodation_reason.hint'),
   },
   items: [
     { value: Option.alcohol_problems, text: contentFor('question.no_accommodation_reason.option.ALCOHOL_PROBLEMS') },
@@ -521,37 +521,37 @@ export const accommodationChanges = GovUKRadioInput({
     {
       value: CommonOption.has_made_changes,
       text: commonContentFor('option.HAS_MADE_CHANGES'),
-      block: hasMadeChangesAccommodationDetails
+      block: hasMadeChangesAccommodationDetails,
     },
     {
       value: CommonOption.is_making_changes,
       text: commonContentFor('option.IS_MAKING_CHANGES'),
-      block: activelyMakingChangesAccommodationDetails
+      block: activelyMakingChangesAccommodationDetails,
     },
     {
       value: CommonOption.wants_to_make_changes_knows_how_to,
       text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
-      block: wantsToMakeChangesKnowsHowToAccommodationDetails
+      block: wantsToMakeChangesKnowsHowToAccommodationDetails,
     },
     {
       value: CommonOption.wants_to_make_changes_needs_help,
       text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
-      block: wantsToMakeChangesNeedsHelpAccommodationDetails
+      block: wantsToMakeChangesNeedsHelpAccommodationDetails,
     },
     {
       value: CommonOption.thinking_about_making_changes,
       text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
-      block: thinkingAboutMakingChangesAccommodationDetails
+      block: thinkingAboutMakingChangesAccommodationDetails,
     },
     {
       value: CommonOption.does_not_want_to_make_changes,
       text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
-      block: doesNotWantToMakeChangesAccommodationDetails
+      block: doesNotWantToMakeChangesAccommodationDetails,
     },
     {
       value: CommonOption.does_not_want_to_answer,
       text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'),
-      block: doesNotWantToAnswerAccommodationDetails
+      block: doesNotWantToAnswerAccommodationDetails,
     },
     { divider: commonContentFor('or') },
     { value: CommonOption.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },

@@ -1,13 +1,4 @@
-import {
-  and,
-  Answer,
-  Condition,
-  not,
-  or,
-  Self,
-  Transformer,
-  validation
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, not, or, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
   GovUKCharacterCount,
@@ -29,15 +20,14 @@ import {
 import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
 import { CommonOption } from '../../../../constants/commonOption'
-import {Option} from "../../constants/option";
+import { Option } from '../../constants/option'
 import {
   accommodationChanges,
   futureAccommodationType,
-  livingWith,
   suitableHousing,
   suitableHousingLocation,
-  suitableHousingPlanned
-} from "../accommodation-details/fields";
+  suitableHousingPlanned,
+} from '../accommodation-details/fields'
 
 // --- Accommodation Summary Group ---
 
@@ -82,13 +72,15 @@ export const accommodationSummary = GovUKSummaryList({
             size: 's',
             visibleWhen: and(
               not(Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(CommonOption.unknown))),
-              Answer(Question.current_accommodation).match(Condition.Equals(Option.temporary))
+              Answer(Question.current_accommodation).match(Condition.Equals(Option.temporary)),
             ),
           }),
           GovUKBody({
             text: SANGenerators.getFormatterDateFromIso(Answer(Question.approved_premises_end_date)),
             size: 's',
-            visibleWhen: Answer(Question.type_of_temporary_accommodation).match(Condition.Equals(Option.approved_premises)),
+            visibleWhen: Answer(Question.type_of_temporary_accommodation).match(
+              Condition.Equals(Option.approved_premises),
+            ),
           }),
           GovUKBody({
             text: SANGenerators.getFormatterDateFromIso(Answer(Question.cas2_end_date)),
@@ -124,7 +116,7 @@ export const accommodationSummary = GovUKSummaryList({
             text: contentFor('question.living_with.option.FAMILY'),
             visibleWhen: and(
               Answer(Question.living_with).match(Condition.IsRequired()),
-              Answer(Question.living_with).match(Condition.Array.Contains(Option.family))
+              Answer(Question.living_with).match(Condition.Array.Contains(Option.family)),
             ),
           }),
           GovUKBody({
@@ -168,7 +160,7 @@ export const accommodationSummary = GovUKSummaryList({
             text: contentFor('question.living_with.option.ALONE'),
             visibleWhen: and(
               Answer(Question.living_with).match(Condition.IsRequired()),
-              Answer(Question.living_with).match(Condition.Array.Contains(Option.alone))
+              Answer(Question.living_with).match(Condition.Array.Contains(Option.alone)),
             ),
           }),
         ],
@@ -192,15 +184,17 @@ export const accommodationSummary = GovUKSummaryList({
             text: contentFor('question.suitable_housing_location_concerns.option.CRIMINAL_ASSOCIATES'),
             visibleWhen: and(
               Answer(Question.suitable_housing_location_concerns).match(Condition.IsRequired()),
-              Answer(Question.suitable_housing_location_concerns).match(Condition.Array.Contains(Option.criminal_associates))
+              Answer(Question.suitable_housing_location_concerns).match(
+                Condition.Array.Contains(Option.criminal_associates),
               ),
+            ),
             size: 's',
           }),
           GovUKBody({
             text: contentFor('question.suitable_housing_location_concerns.option.VICTIMISATION'),
             visibleWhen: and(
               Answer(Question.suitable_housing_location_concerns).match(Condition.IsRequired()),
-              Answer(Question.suitable_housing_location_concerns).match(Condition.Array.Contains(Option.victimisation))
+              Answer(Question.suitable_housing_location_concerns).match(Condition.Array.Contains(Option.victimisation)),
             ),
             size: 's',
           }),
@@ -208,7 +202,9 @@ export const accommodationSummary = GovUKSummaryList({
             text: contentFor('question.suitable_housing_location_concerns.option.VICTIM_PROXIMITY'),
             visibleWhen: and(
               Answer(Question.suitable_housing_location_concerns).match(Condition.IsRequired()),
-              Answer(Question.suitable_housing_location_concerns).match(Condition.Array.Contains(Option.victim_proximity))
+              Answer(Question.suitable_housing_location_concerns).match(
+                Condition.Array.Contains(Option.victim_proximity),
+              ),
             ),
             size: 's',
           }),
@@ -216,7 +212,9 @@ export const accommodationSummary = GovUKSummaryList({
             text: contentFor('question.suitable_housing_location_concerns.option.NEIGHBOUR_DIFFICULTY'),
             visibleWhen: and(
               Answer(Question.suitable_housing_location_concerns).match(Condition.IsRequired()),
-              Answer(Question.suitable_housing_location_concerns).match(Condition.Array.Contains(Option.neighbour_difficulty))
+              Answer(Question.suitable_housing_location_concerns).match(
+                Condition.Array.Contains(Option.neighbour_difficulty),
+              ),
             ),
             size: 's',
           }),
@@ -224,7 +222,7 @@ export const accommodationSummary = GovUKSummaryList({
             text: contentFor('question.suitable_housing_location_concerns.option.AREA_SAFETY'),
             visibleWhen: and(
               Answer(Question.suitable_housing_location_concerns).match(Condition.IsRequired()),
-              Answer(Question.suitable_housing_location_concerns).match(Condition.Array.Contains(Option.area_safety))
+              Answer(Question.suitable_housing_location_concerns).match(Condition.Array.Contains(Option.area_safety)),
             ),
             size: 's',
           }),
@@ -232,7 +230,7 @@ export const accommodationSummary = GovUKSummaryList({
             text: commonContentFor('option.OTHER'),
             visibleWhen: and(
               Answer(Question.suitable_housing_location_concerns).match(Condition.IsRequired()),
-              Answer(Question.suitable_housing_location_concerns).match(Condition.Array.Contains(CommonOption.other))
+              Answer(Question.suitable_housing_location_concerns).match(Condition.Array.Contains(CommonOption.other)),
             ),
             size: 's',
           }),
@@ -242,130 +240,127 @@ export const accommodationSummary = GovUKSummaryList({
       actions: {
         items: [{ href: Step.accommodation_details.path, text: commonContentFor('change') }],
       },
-      visibleWhen: not(Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation)))
+      visibleWhen: not(Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation))),
     },
     {
-      key: {text: contentFor('question.suitable_housing.text', CaseData.Forename)},
+      key: { text: contentFor('question.suitable_housing.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
-            text: SANGenerators.getTextFromListDefinition(
-              suitableHousing.items,
-              Answer(Question.suitable_housing),
-            ),
+            text: SANGenerators.getTextFromListDefinition(suitableHousing.items, Answer(Question.suitable_housing)),
           }),
           GovUKBody({
             text: contentFor('question.suitable_housing_concerns.option.FACILITIES'),
-            visibleWhen:or(
+            visibleWhen: or(
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(CommonOption.no)),
-                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.facilities))
+                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.facilities)),
               ),
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(Option.yes_with_concerns)),
-                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.facilities))
+                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.facilities)),
               ),
             ),
-            size: "s"
+            size: 's',
           }),
           GovUKBody({
             text: contentFor('question.suitable_housing_concerns.option.OVERCROWDING'),
-            visibleWhen:or(
+            visibleWhen: or(
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(CommonOption.no)),
-                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.overcrowding))
+                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.overcrowding)),
               ),
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(Option.yes_with_concerns)),
-                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.overcrowding))
+                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.overcrowding)),
               ),
             ),
-            size: "s"
+            size: 's',
           }),
           GovUKBody({
             text: contentFor('question.suitable_housing_concerns.option.EXPLOITATION'),
-            visibleWhen:or(
+            visibleWhen: or(
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(CommonOption.no)),
-                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.exploitation))
+                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.exploitation)),
               ),
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(Option.yes_with_concerns)),
-                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.exploitation))
+                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.exploitation)),
               ),
             ),
-            size: "s"
+            size: 's',
           }),
           GovUKBody({
             text: contentFor('question.suitable_housing_concerns.option.SAFETY'),
-            visibleWhen:or(
+            visibleWhen: or(
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(CommonOption.no)),
-                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.safety))
+                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.safety)),
               ),
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(Option.yes_with_concerns)),
-                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.safety))
+                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.safety)),
               ),
             ),
-            size: "s"
+            size: 's',
           }),
           GovUKBody({
             text: contentFor('question.suitable_housing_concerns.option.LIVES_WITH_VICTIM'),
-            visibleWhen:or(
+            visibleWhen: or(
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(CommonOption.no)),
-                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.lives_with_victim))
+                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.lives_with_victim)),
               ),
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(Option.yes_with_concerns)),
-                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.lives_with_victim))
+                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.lives_with_victim)),
               ),
             ),
-            size: "s"
+            size: 's',
           }),
           GovUKBody({
             text: contentFor('question.suitable_housing_concerns.option.VICTIMISATION'),
-            visibleWhen:or(
+            visibleWhen: or(
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(CommonOption.no)),
-                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.victimisation))
+                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(Option.victimisation)),
               ),
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(Option.yes_with_concerns)),
-                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.victimisation))
+                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(Option.victimisation)),
               ),
             ),
-            size: "s"
+            size: 's',
           }),
           GovUKBody({
             text: commonContentFor('option.OTHER'),
-            visibleWhen:or(
+            visibleWhen: or(
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(CommonOption.no)),
-                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(CommonOption.other))
+                Answer(Question.unsuitable_housing_concerns).match(Condition.Array.Contains(CommonOption.other)),
               ),
               and(
                 Answer(Question.suitable_housing).match(Condition.Equals(Option.yes_with_concerns)),
-                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(CommonOption.other))
+                Answer(Question.suitable_housing_concerns).match(Condition.Array.Contains(CommonOption.other)),
               ),
             ),
-            size: "s"
+            size: 's',
           }),
           GovUKBody({
             text: Answer(Question.suitable_housing_concerns_details),
-            size: "s"
+            size: 's',
           }),
           GovUKBody({
             text: Answer(Question.unsuitable_housing_concerns_details),
-            size: "s"
+            size: 's',
           }),
         ],
       },
       actions: {
-        items: [{href: Step.accommodation_details.path, text: commonContentFor('change')}],
+        items: [{ href: Step.accommodation_details.path, text: commonContentFor('change') }],
       },
-      visibleWhen: not(Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation)))
+      visibleWhen: not(Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation))),
     },
     {
       key: { text: contentFor('question.no_accommodation_reason.text', CaseData.Forename) },
@@ -375,7 +370,7 @@ export const accommodationSummary = GovUKSummaryList({
             text: contentFor('question.no_accommodation_reason.option.ALCOHOL_PROBLEMS'),
             visibleWhen: and(
               Answer(Question.no_accommodation_reason).match(Condition.IsRequired()),
-              Answer(Question.no_accommodation_reason).match(Condition.Array.Contains(Option.alcohol_problems))
+              Answer(Question.no_accommodation_reason).match(Condition.Array.Contains(Option.alcohol_problems)),
             ),
           }),
           GovUKBody({
@@ -424,9 +419,7 @@ export const accommodationSummary = GovUKSummaryList({
     {
       key: { text: contentFor('question.past_accommodation_details.text', CaseData.Forename) },
       value: {
-        blocks: [
-          GovUKBody({ text: Answer(Question.past_accommodation_details) }),
-        ],
+        blocks: [GovUKBody({ text: Answer(Question.past_accommodation_details) })],
       },
       actions: {
         items: [{ href: Step.accommodation_details.path, text: commonContentFor('change') }],
@@ -434,7 +427,7 @@ export const accommodationSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.past_accommodation_details).match(Condition.IsRequired()),
     },
     {
-      key: {text: contentFor('question.suitable_housing_planned.text', CaseData.Forename)},
+      key: { text: contentFor('question.suitable_housing_planned.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -448,29 +441,29 @@ export const accommodationSummary = GovUKSummaryList({
               futureAccommodationType.items,
               Answer(Question.future_accommodation_type),
             ),
-            size: "s",
+            size: 's',
           }),
           GovUKBody({
             text: Answer(Question.future_accommodation_type_awaiting_assessment_details),
-            size: "s",
+            size: 's',
           }),
           GovUKBody({
             text: Answer(Question.future_accommodation_type_awaiting_placement_details),
-            size: "s",
+            size: 's',
           }),
           GovUKBody({
             text: Answer(Question.future_accommodation_type_other_details),
-            size: "s",
+            size: 's',
           }),
         ],
       },
       actions: {
-        items: [{href: Step.accommodation_details.path, text: commonContentFor('change')}],
+        items: [{ href: Step.accommodation_details.path, text: commonContentFor('change') }],
       },
       visibleWhen: Answer(Question.suitable_housing_planned).match(Condition.IsRequired()),
     },
     {
-      key: {text: contentFor('question.accommodation_changes.text', CaseData.Forename)},
+      key: { text: contentFor('question.accommodation_changes.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -481,36 +474,36 @@ export const accommodationSummary = GovUKSummaryList({
           }),
           GovUKBody({
             text: Answer(Question.has_made_positive_changes_accommodation_details),
-            size: "s",
+            size: 's',
           }),
           GovUKBody({
             text: Answer(Question.actively_making_changes_accommodation_details),
-            size: "s",
+            size: 's',
           }),
           GovUKBody({
             text: Answer(Question.wants_to_make_changes_knows_how_to_accommodation_details),
-            size: "s",
+            size: 's',
           }),
           GovUKBody({
             text: Answer(Question.wants_to_make_changes_needs_help_accommodation_details),
-            size: "s",
+            size: 's',
           }),
           GovUKBody({
             text: Answer(Question.thinking_about_making_changes_accommodation_details),
-            size: "s",
+            size: 's',
           }),
           GovUKBody({
             text: Answer(Question.does_not_want_to_make_changes_accommodation_details),
-            size: "s",
+            size: 's',
           }),
           GovUKBody({
             text: Answer(Question.does_not_want_to_answer_accommodation_details),
-            size: "s",
+            size: 's',
           }),
-        ]
+        ],
       },
       actions: {
-        items: [{href: Step.accommodation_details.path, text: commonContentFor('change')}],
+        items: [{ href: Step.accommodation_details.path, text: commonContentFor('change') }],
       },
     },
   ],

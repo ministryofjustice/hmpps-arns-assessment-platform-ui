@@ -1,4 +1,4 @@
-import {and, Answer, Condition, not, Self, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, not, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
   GovUKCharacterCount,
@@ -7,19 +7,23 @@ import {
   GovUKTabs,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import {
-  financeBankAccount, financeChanges, financeDebt, financeGambling, financeIncome,
+  financeBankAccount,
+  financeChanges,
+  financeDebt,
+  financeGambling,
+  financeIncome,
   financeMoneyManagement,
-  yesTypeOfDebt
+  yesTypeOfDebt,
 } from '../finance/fields'
-import {CaseData} from '../../../../constants/formVersion'
-import {getDisplayTextForSpecificItem} from '../../../../../../i18n'
-import {Question} from '../../constants/question'
-import {Option} from '../../constants/option'
-import {commonContentFor} from '../../../../locales'
-import {Step} from '../../constants/step'
-import {goToPractitionerAnalysisButton, markAsCompleteButton} from '../../../../constants/buttons'
-import {CommonOption} from '../../../../constants/commonOption'
-import {contentFor} from "../../locales";
+import { CaseData } from '../../../../constants/formVersion'
+import { getDisplayTextForSpecificItem } from '../../../../../../i18n'
+import { Question } from '../../constants/question'
+import { Option } from '../../constants/option'
+import { commonContentFor } from '../../../../locales'
+import { Step } from '../../constants/step'
+import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
+import { CommonOption } from '../../../../constants/commonOption'
+import { contentFor } from '../../locales'
 
 const PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT = 1425
 

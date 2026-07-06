@@ -1,10 +1,10 @@
-import {Condition, Data, journey, Query} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {healthWellbeingStep} from "./steps/health-wellbeing/step";
-import {physicalMentalHealthStep} from "./steps/physical-mental-health/step";
-import {healthWellbeingSummaryStep} from "./steps/health-wellbeing-summary/step";
-import {healthWellbeingAnalysisStep} from "./steps/health-wellbeing-analysis/step";
-import {Section} from "../../constants/section";
-import {commonContentFor} from "../../locales";
+import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { healthWellbeingStep } from './steps/health-wellbeing/step'
+import { physicalMentalHealthStep } from './steps/physical-mental-health/step'
+import { healthWellbeingSummaryStep } from './steps/health-wellbeing-summary/step'
+import { healthWellbeingAnalysisStep } from './steps/health-wellbeing-analysis/step'
+import { Section } from '../../constants/section'
+import { commonContentFor } from '../../locales'
 
 /**
  * Health and wellbeing Journey
@@ -27,10 +27,5 @@ export const healthWellbeingJourney = journey({
       sectionStatus: Data(Section.health_and_wellbeing.statusKey),
     },
   },
-  steps: [
-    healthWellbeingStep,
-    physicalMentalHealthStep,
-    healthWellbeingSummaryStep,
-    healthWellbeingAnalysisStep
-  ],
+  steps: [healthWellbeingStep, physicalMentalHealthStep, healthWellbeingSummaryStep, healthWellbeingAnalysisStep],
 })

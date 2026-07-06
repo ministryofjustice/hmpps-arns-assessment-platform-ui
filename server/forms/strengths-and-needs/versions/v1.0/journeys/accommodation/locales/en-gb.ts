@@ -46,13 +46,14 @@ export const english = {
         [Option.cas3]: 'Community Accommodation Service Tier 3 (CAS3)',
         [Option.immigration]: {
           text: 'Immigration accommodation',
-          hint: "<div class=\"govuk-grid-column-full\">" +
-                  "<p class=\"govuk-hint\">This includes:</p>" +
-                  "<ul class=\"govuk-hint govuk-list govuk-list--bullet\">" +
-                    "<li class=\" govuk-!-margin-bottom-5\">Schedule 10 - Home Office provides accommodation under the Immigration Act 2016</li>" +
-                    "<li>Schedule 4 - Home Office provides accommodation for those on immigration bail, prior to the Immigration Act 2016</li>" +
-                  "</ul>" +
-                "</div>",
+          hint:
+            '<div class="govuk-grid-column-full">' +
+            '<p class="govuk-hint">This includes:</p>' +
+            '<ul class="govuk-hint govuk-list govuk-list--bullet">' +
+            '<li class=" govuk-!-margin-bottom-5">Schedule 10 - Home Office provides accommodation under the Immigration Act 2016</li>' +
+            '<li>Schedule 4 - Home Office provides accommodation for those on immigration bail, prior to the Immigration Act 2016</li>' +
+            '</ul>' +
+            '</div>',
         },
         [Option.short_term]: {
           text: 'Short term accommodation',
@@ -153,10 +154,10 @@ export const english = {
     [Question.no_accommodation_reason]: {
       text: 'Why does %1 have no accommodation?',
       hint:
-        "<div class=\"govuk-!-width-two-thirds\">" +
-          "<p class=\"govuk-hint\">Consider current and past homelessness issues.</p>" +
-          "<p class=\"govuk-hint\">Select all that apply.</p>" +
-        "</div>",
+        '<div class="govuk-!-width-two-thirds">' +
+        '<p class="govuk-hint">Consider current and past homelessness issues.</p>' +
+        '<p class="govuk-hint">Select all that apply.</p>' +
+        '</div>',
       option: {
         [Option.alcohol_problems]: 'Alcohol related problems',
         [Option.drug_problems]: 'Drug related problems',

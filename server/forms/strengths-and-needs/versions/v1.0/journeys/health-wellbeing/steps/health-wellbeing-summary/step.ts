@@ -1,7 +1,7 @@
-import {Condition, Post, redirect, step, submit,} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {healthWellbeingSummaryTab} from './fields'
-import {Step} from "../../constants/step";
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { healthWellbeingSummaryTab } from './fields'
+import { Step } from '../../constants/step'
 
 export const healthWellbeingSummaryStep = step({
   path: `/${Step.health_wellbeing_summary.path}`,
@@ -14,7 +14,7 @@ export const healthWellbeingSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress('health_section_status', 'COMPLETE')
+          StrengthsAndNeedsEffects.setSectionProgress('health_section_status', 'COMPLETE'),
         ],
         next: [redirect({ goto: 'health-wellbeing-analysis' })],
       },

@@ -1,10 +1,10 @@
-import {Answer, Condition, Self, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKCharacterCount, GovUKRadioInput} from '@ministryofjustice/hmpps-forge/govuk-components'
-import {CaseData} from '../../../../constants/formVersion'
-import {Question} from "../../constants/question";
-import {Option} from "../../constants/option";
-import {contentFor} from "../../locales";
-import {commonContentFor} from "../../../../locales";
+import { Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKCharacterCount, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { CaseData } from '../../../../constants/formVersion'
+import { Question } from '../../constants/question'
+import { Option } from '../../constants/option'
+import { contentFor } from '../../locales'
+import { commonContentFor } from '../../../../locales'
 
 // --- Physical health conditions Group ---
 
@@ -12,7 +12,7 @@ const hasHealthConditions = GovUKCharacterCount({
   code: Question.has_health_conditions_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.health_conditions).match(Condition.Equals(Option.yes))
+  dependentWhen: Answer(Question.health_conditions).match(Condition.Equals(Option.yes)),
 })
 
 export const healthConditions = GovUKRadioInput({
@@ -25,8 +25,8 @@ export const healthConditions = GovUKRadioInput({
   },
   items: [
     { value: Option.yes, text: commonContentFor('option.YES'), block: hasHealthConditions },
-    { value: Option.no, text: commonContentFor('option.NO'), },
-    { value: Option.unknown, text: commonContentFor('option.UNKNOWN'), },
+    { value: Option.no, text: commonContentFor('option.NO') },
+    { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
   ],
   validWhen: [
     validation({
@@ -68,9 +68,21 @@ export const mentalHealthProblems = GovUKRadioInput({
     },
   },
   items: [
-    { value: Option.yes_ongoing_severe, text: contentFor('question.mental_health_problems.option.YES_ONGOING_SEVERE'), block: severeMentalHealthProblemsDetails },
-    { value: Option.yes_ongoing_duration_unknown, text: contentFor('question.mental_health_problems.option.YES_ONGOING_DURATION_UNKNOWN'), block: ongoingDurationUnknownMentalHealthProblemsDetails },
-    { value: Option.yes_past, text: contentFor('question.mental_health_problems.option.YES_PAST'), block: pastMentalHealthProblemsDetails },
+    {
+      value: Option.yes_ongoing_severe,
+      text: contentFor('question.mental_health_problems.option.YES_ONGOING_SEVERE'),
+      block: severeMentalHealthProblemsDetails,
+    },
+    {
+      value: Option.yes_ongoing_duration_unknown,
+      text: contentFor('question.mental_health_problems.option.YES_ONGOING_DURATION_UNKNOWN'),
+      block: ongoingDurationUnknownMentalHealthProblemsDetails,
+    },
+    {
+      value: Option.yes_past,
+      text: contentFor('question.mental_health_problems.option.YES_PAST'),
+      block: pastMentalHealthProblemsDetails,
+    },
     { value: Option.no, text: commonContentFor('option.NO') },
     { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
   ],

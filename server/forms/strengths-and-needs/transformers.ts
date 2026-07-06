@@ -1,6 +1,4 @@
-import {
-  defineTransformerFunctions,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { defineTransformerFunctions } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import { Language, Locales } from './i18n'
 
@@ -11,7 +9,7 @@ export const {
   implementations: strengthsAndNeedsTransformerImplementations,
 } = defineTransformerFunctions<
   {
-    ContentFor: (language: string, locales: Locales, path: string, ...replacements: string[]) => string,
+    ContentFor: (language: string, locales: Locales, path: string, ...replacements: string[]) => string
     ToISO: (value: any) => string
   },
   StrengthsAndNeedsEffectsDeps
@@ -52,5 +50,5 @@ export const {
     }
 
     return value
-  }
+  },
 })

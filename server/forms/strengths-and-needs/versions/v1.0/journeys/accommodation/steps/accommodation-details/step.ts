@@ -1,16 +1,18 @@
-import {Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
   accommodationChanges,
   livingWith,
-  noAccommodationReason, pastAccommodationDetails,
+  noAccommodationReason,
+  pastAccommodationDetails,
   suitableHousing,
-  suitableHousingLocation, suitableHousingPlanned
+  suitableHousingLocation,
+  suitableHousingPlanned,
 } from './fields'
-import {saveButton} from '../../../../constants/buttons'
-import {Step} from '../../constants/step'
-import {Section, SectionStatus} from '../../../../constants/section'
-import {sectionPath} from "../../../../constants/path";
+import { saveButton } from '../../../../constants/buttons'
+import { Step } from '../../constants/step'
+import { Section, SectionStatus } from '../../../../constants/section'
+import { sectionPath } from '../../../../constants/path'
 
 export const accommodationDetailsStep = step({
   path: `/${Step.accommodation_details.path}`,
@@ -20,7 +22,16 @@ export const accommodationDetailsStep = step({
       backlink: sectionPath(Section.accommodation),
     },
   },
-  blocks: [livingWith, noAccommodationReason, pastAccommodationDetails, suitableHousingLocation, suitableHousing, suitableHousingPlanned, accommodationChanges, saveButton],
+  blocks: [
+    livingWith,
+    noAccommodationReason,
+    pastAccommodationDetails,
+    suitableHousingLocation,
+    suitableHousing,
+    suitableHousingPlanned,
+    accommodationChanges,
+    saveButton,
+  ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

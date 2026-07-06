@@ -1,6 +1,6 @@
-import {block, Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKButton} from '@ministryofjustice/hmpps-forge/govuk-components'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
+import { block, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
   attitudeTowardsSelf,
   changesToHealthWellbeing,
@@ -14,11 +14,11 @@ import {
   prescribedPhysicalHealthMedicationsTreatments,
   psychiatricTreatment,
   selfHarm,
-  suicidalTendencies
+  suicidalTendencies,
 } from './fields'
-import {Step} from "../../constants/step";
-import {sectionPath} from "../../../../constants/path";
-import {Section} from "../../../../constants/section";
+import { Step } from '../../constants/step'
+import { sectionPath } from '../../../../constants/path'
+import { Section } from '../../../../constants/section'
 
 const saveButton = block<GovUKButton>({
   variant: 'govukButton',
@@ -58,12 +58,13 @@ export const physicalMentalHealthStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress('health_section_status','INCOMPLETE')
+          StrengthsAndNeedsEffects.setSectionProgress('health_section_status', 'INCOMPLETE'),
         ],
         next: [
           redirect({
             goto: 'health-wellbeing-summary',
-          })],
+          }),
+        ],
       },
     }),
   ],

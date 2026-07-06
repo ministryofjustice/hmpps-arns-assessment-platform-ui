@@ -1,10 +1,10 @@
-import {Condition, Data, journey, Query} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {currentAccommodationStep} from './steps/current-accommodation/step'
-import {accommodationSummaryStep} from './steps/accommodation-summary/step'
-import {accommodationAnalysisStep} from './steps/accommodation-analysis/step'
-import {Section} from '../../constants/section'
-import {commonContentFor} from '../../locales'
-import {accommodationDetailsStep} from "./steps/accommodation-details/step";
+import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { currentAccommodationStep } from './steps/current-accommodation/step'
+import { accommodationSummaryStep } from './steps/accommodation-summary/step'
+import { accommodationAnalysisStep } from './steps/accommodation-analysis/step'
+import { Section } from '../../constants/section'
+import { commonContentFor } from '../../locales'
+import { accommodationDetailsStep } from './steps/accommodation-details/step'
 
 /**
  * Accommodation Journey
@@ -28,10 +28,5 @@ export const accommodationJourney = journey({
       sectionStatus: Data(Section.accommodation.statusKey),
     },
   },
-  steps: [
-    currentAccommodationStep,
-    accommodationDetailsStep,
-    accommodationSummaryStep,
-    accommodationAnalysisStep,
-  ],
+  steps: [currentAccommodationStep, accommodationDetailsStep, accommodationSummaryStep, accommodationAnalysisStep],
 })

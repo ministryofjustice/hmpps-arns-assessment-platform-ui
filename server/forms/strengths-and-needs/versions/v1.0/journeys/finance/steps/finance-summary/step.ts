@@ -2,7 +2,7 @@ import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpp
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
-import {summaryTab} from "./fields";
+import { summaryTab } from './fields'
 
 export const financeSummaryStep = step({
   path: `/${Step.financeSummary.path}`,
