@@ -22,9 +22,11 @@ export const loadActiveGoalForEdit = () => async (context: SentencePlanContext) 
   }
   const { activeGoal } = activeGoalResolution
 
-  // The area of need can be changed on the "Change area of need" page, which carries the
-  // chosen area back as a query param (?area=). Until the goal is saved this is a pending
-  // selection, so the edit page reflects it without persisting anything yet.
+  /*
+   * The area of need can be changed on the "Change area of need" page, which carries the
+   * chosen area back as a query param (?area=). Until the goal is saved this is a pending
+   * selection, so the edit page reflects it without persisting anything yet.
+   */
   const pendingAreaOfNeed = context.getQueryParam('area') as string | undefined
   // Ignore an unknown/invalid area (e.g. a manually edited query string) and use the saved area.
   const effectiveAreaOfNeed =
@@ -46,14 +48,24 @@ export const loadActiveGoalForEdit = () => async (context: SentencePlanContext) 
   // Pre-populate form fields with existing values
   context.setAnswer('goal_title', activeGoal.title)
 
-  // Drop the (possibly newly chosen) primary area from related areas — a goal can't relate
-  // to its own area, so it is not offered as a related option.
+  /*
+   * Drop the (possibly newly chosen) primary area from related areas — a goal can't relate
+   * to its own area, so it is not offered as a related option.
+   */
   const relatedAreasOfNeed = (activeGoal.relatedAreasOfNeed ?? []).filter(area => area !== effectiveAreaOfNeed)
   const hasRelatedAreas = relatedAreasOfNeed.length > 0
-  context.setAnswer('is_related_to_other_areas', hasRelatedAreas ? 'yes' : 'no')
 
+  /*
+   * When the area of need has been changed and no valid related areas remain,
+   * leave the related areas question unanswered so the practitioner must actively re-select.
+   * If valid related areas still exist after filtering, keep them pre-selected.
+   */
+  const areaHasChanged = pendingAreaOfNeed !== undefined && pendingAreaOfNeed !== activeGoal.areaOfNeed
   if (hasRelatedAreas) {
+    context.setAnswer('is_related_to_other_areas', 'yes')
     context.setAnswer('related_areas_of_need', relatedAreasOfNeed)
+  } else if (!areaHasChanged) {
+    context.setAnswer('is_related_to_other_areas', 'no')
   }
 
   // Determine if goal can start now based on status
