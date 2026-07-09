@@ -53,11 +53,11 @@ export function initAreaOfNeedTracking() {
     appInsights.trackEvent({
       name: 'primary-area-of-need-radio',
       properties: {
-        'Selected Value': selectedValue,
-        'Previous Value': previousValue,
-        'Selection Chain': selections.join(' -> '),
-        'Selection Count': String(selections.length),
-        'Was Changed': String(wasChanged),
+        SelectedValue: selectedValue,
+        PreviousValue: previousValue,
+        SelectionChain: selections.join(' -> '),
+        SelectionCount: String(selections.length),
+        WasChanged: String(wasChanged),
         Journey: journey,
       },
     })
