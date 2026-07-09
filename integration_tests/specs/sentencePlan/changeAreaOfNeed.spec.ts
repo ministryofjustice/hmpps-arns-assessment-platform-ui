@@ -117,6 +117,9 @@ test.describe('Change area of need', () => {
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
       expect(await changeGoalPage.getAreaOfNeedInsetText()).toContain('Area of need: finances')
 
+      // Related areas question is unanswered after an area change — select 'no' to proceed
+      await changeGoalPage.selectIsRelatedToOtherAreas(false)
+
       // The change is only persisted once the goal is saved
       await changeGoalPage.saveGoal()
 
@@ -197,10 +200,13 @@ test.describe('Change area of need', () => {
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
       expect(await changeGoalPage.getAreaOfNeedInsetText()).toContain('Area of need: finances')
-      // finances became the primary area, so it is no longer offered/selected as a related area
-      await expect(changeGoalPage.isRelatedNo).toBeChecked()
+      // finances became the primary area and was the only related area,
+      // so the related areas question is unanswered (AC1)
+      await expect(changeGoalPage.isRelatedYes).not.toBeChecked()
+      await expect(changeGoalPage.isRelatedNo).not.toBeChecked()
 
-      // Persist and confirm the overlap is gone after a fresh reload
+      // Select 'no' and persist — confirm the overlap is gone after a fresh reload
+      await changeGoalPage.selectIsRelatedToOtherAreas(false)
       await changeGoalPage.saveGoal()
       await page.goto(sentencePlanV1UrlBuilders.goalChange(goalUuid))
       const reloaded = await ChangeGoalPage.verifyOnPage(page)
