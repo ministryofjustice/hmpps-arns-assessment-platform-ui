@@ -248,6 +248,7 @@ export const goalsSection = TemplateWrapper({
                               {
                                 text: 'Update goal',
                                 href: Format('../goal/%1/change-goal', Item().path('uuid')),
+                                dataAiId: 'update-draft-goal-inline-link',
                               },
                               {
                                 text: 'Add or update steps',
@@ -322,6 +323,13 @@ export const goalsSection = TemplateWrapper({
                                 )
                                   .then(Format('../goal/%1/view-inactive-goal', Item().path('uuid')))
                                   .else(Format('../goal/%1/update-goal-steps', Item().path('uuid'))),
+                                dataAiId: when(
+                                  Item()
+                                    .path('status')
+                                    .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
+                                )
+                                  .then('view-inactive-goal-inline-link')
+                                  .else('update-goal-inline-link'),
                               },
                             ],
                             isReadOnly: when(isReadOnly),

@@ -29,6 +29,7 @@ export interface GoalAction {
   visuallyHiddenText?: ResolvableString
   classes?: ResolvableString
   hidden?: ResolvableBoolean
+  dataAiId?: ResolvableString
 }
 
 /**
