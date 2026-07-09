@@ -108,7 +108,7 @@ const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
       modifyRequest: request => ({ ...request, sentencePlanVersion: undefined }),
     },
   },
-  TIERING_ASSESSMENT_PRIVATE_BETA: {
+  TIERING_ASSESSMENT: {
     handover: {
       availableServices: Object.keys(config.handoverTargets) as TargetApplication[],
     },
@@ -243,8 +243,8 @@ export function mapFlagToTargetApplication(flag: TrainingScenarioFlag): TargetAp
     case 'SAN_PRIVATE_BETA':
       return 'strengths-and-needs'
 
-    case 'TIERING_ASSESSMENT_PRIVATE_BETA':
-      return 'tiering-assessment-private-beta'
+    case 'TIERING_ASSESSMENT':
+      return 'tiering-assessment'
 
     default:
       return 'sentence-plan'

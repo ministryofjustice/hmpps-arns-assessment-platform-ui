@@ -48,7 +48,7 @@ export const flagsTabContent = [
         }),
       },
       {
-        value: 'TIERING_ASSESSMENT_PRIVATE_BETA',
+        value: 'TIERING_ASSESSMENT',
         text: 'Tiering Assessment Private Beta',
         hint: 'Enables Tiering Assessment Private Beta features',
       },
