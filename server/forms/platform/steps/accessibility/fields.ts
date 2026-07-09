@@ -21,16 +21,16 @@ export const pageContent = HtmlBlock({
     <p class="govuk-body">We’ve also made the website text as simple as possible to understand.</p>
     <p class="govuk-body">
       AbilityNet has
-        <a href="https://mcmw.abilitynet.org.uk/" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank">
-            advice on making your device easier to use (opens in a new tab)
+        <a href="https://mcmw.abilitynet.org.uk/" class="govuk-link govuk-link--no-visited-state">
+            advice on making your device easier to use
         </a>
       if you have a disability.
     </p>
 
     <h2 class="govuk-heading-m">How accessible this website is</h2>
     <p class="govuk-body">This website is accessible. It has been tested against
-      <a href="https://www.w3.org/TR/WCAG22" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank">
-          Web Content Accessibility Guidelines version 2.2 (opens in a new tab)
+      <a href="https://www.w3.org/TR/WCAG22" class="govuk-link govuk-link--no-visited-state">
+          Web Content Accessibility Guidelines version 2.2
       </a>
       standard.
     </p>
@@ -38,8 +38,8 @@ export const pageContent = HtmlBlock({
 
     <h2 class="govuk-heading-m">Feedback and contact information</h2>
     <p class="govuk-body">
-      <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank">
-          Contact us (opens in a new tab)
+      <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u" class="govuk-link govuk-link--no-visited-state">
+          Contact us
       </a>
       if you:
     </p>
@@ -52,8 +52,8 @@ export const pageContent = HtmlBlock({
     <p class="govuk-body">
       The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the ‘accessibility regulations’).
       If you’re not happy with how we respond to your complaint,
-      <a href="https://www.equalityadvisoryservice.com" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank">
-          contact the Equality Advisory and Support Service (EASS) (opens in a new tab)
+      <a href="https://www.equalityadvisoryservice.com" class="govuk-link govuk-link--no-visited-state">
+          contact the Equality Advisory and Support Service (EASS)
       </a>
       .
     </p>
@@ -66,13 +66,13 @@ export const pageContent = HtmlBlock({
     <p class="govuk-body">You can read the:</p>
         <ul class="govuk-list govuk-list--bullet govuk-!-margin-left-4">
             <li>
-               <a href="https://uv3383-moj-arns-spot-check.uservisionaccessibility.co.uk/index.html" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank">
-                    spot check report (opens in a new tab)
+               <a href="https://uv3383-moj-arns-spot-check.uservisionaccessibility.co.uk/index.html" class="govuk-link govuk-link--no-visited-state">
+                    spot check report
                </a>
             </li>
             <li>
-                <a href="https://uv3334-moj-arns-sentence-plan.uservisionaccessibility.co.uk/index.html" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank">
-                    full accessibility test report (opens in a new tab)
+                <a href="https://uv3334-moj-arns-sentence-plan.uservisionaccessibility.co.uk/index.html" class="govuk-link govuk-link--no-visited-state">
+                    full accessibility test report
                 </a>
             </li>
         </ul>
