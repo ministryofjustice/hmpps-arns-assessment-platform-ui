@@ -192,6 +192,10 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
     request.sentencePlanVersion = values.sentencePlanVersion
   }
 
+  if (targetApplication === 'tiering-assessment-private-beta' && session.tieringAssessmentVersion) {
+    request.sentencePlanVersion = session.tieringAssessmentVersion
+  }
+
   return request
 }
 

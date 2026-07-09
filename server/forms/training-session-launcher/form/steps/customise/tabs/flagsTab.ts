@@ -47,6 +47,11 @@ export const flagsTabContent = [
           classes: 'govuk-input--width-10',
         }),
       },
+      {
+        value: 'TIERING_ASSESSMENT_PRIVATE_BETA',
+        text: 'Tiering Assessment Private Beta',
+        hint: 'Enables Tiering Assessment Private Beta features',
+      },
     ],
   }),
 ]

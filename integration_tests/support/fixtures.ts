@@ -83,11 +83,13 @@ const defaultCriminogenicNeedsData: CriminogenicNeedsData = {
 export enum TargetService {
   SENTENCE_PLAN = 'sentence-plan',
   STRENGTHS_AND_NEEDS = 'strengths-and-needs',
+  TIERING_ASSESSMENT_PRIVATE_BETA = 'tiering-assessment-private-beta',
 }
 
 const TARGET_SERVICE_CLIENT_IDS: Record<TargetService, string> = {
   [TargetService.SENTENCE_PLAN]: 'sentence-plan',
   [TargetService.STRENGTHS_AND_NEEDS]: 'strengths-and-needs-assessment',
+  [TargetService.TIERING_ASSESSMENT_PRIVATE_BETA]: 'tiering-assessment-private-beta',
 }
 
 export interface CreateSessionOptions {

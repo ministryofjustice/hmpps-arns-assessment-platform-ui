@@ -162,5 +162,9 @@ export default {
       clientId: get('SAN_HANDOVER_CLIENT_ID', 'strengths-and-needs-assessment'),
       displayName: 'Strengths and Needs (SAN)',
     },
+    'tiering-assessment-private-beta': {
+      clientId: get('TIERING_ASSESSMENT_HANDOVER_CLIENT_ID', 'tiering-assessment-private-beta'),
+      displayName: 'Tiering Assessment Private Beta',
+    },
   },
 }
