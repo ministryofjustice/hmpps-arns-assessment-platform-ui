@@ -115,6 +115,11 @@ export const addStepsStep = step({
           }),
         ],
         next: [
+          // A new goal whose steps are all completed on creation also gets the achievement prompt
+          redirect({
+            when: Data('allStepsCompleted').match(Condition.Equals(true)),
+            goto: Format('../../goal/%1/confirm-if-achieved', Data('activeGoal.uuid')),
+          }),
           redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
             goto: '../../plan/overview?goalStatusTab=future',
@@ -131,6 +136,11 @@ export const addStepsStep = step({
       onValid: {
         effects: [SentencePlanEffects.saveStepEditSession(), SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEPS)],
         next: [
+          // Prompt to confirm achievement once every step is marked completed, on any agreement status
+          redirect({
+            when: Data('allStepsCompleted').match(Condition.Equals(true)),
+            goto: Format('../../goal/%1/confirm-if-achieved', Data('activeGoal.uuid')),
+          }),
           redirect({
             when: Data('navigationReferrer').match(Condition.Equals('update-goal-steps')),
             goto: Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')),

@@ -15,13 +15,13 @@ import { HtmlBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/
 import {
   GovUKButton,
   GovUKSelectInput,
-  GovUKTextInput,
+  GovUKTextareaInput,
   GovUKHeading,
   GovUKGridRow,
   GovUKInsetText,
   GovUKBody,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { AssessmentInfoDetails, ButtonAsLink } from '../../../../../components'
+import { AssessmentInfoDetails, ButtonAsLink, WrappingSelect } from '../../../../../components'
 import { actorLabelOptions, CaseData } from '../../../constants'
 import { canAccessSanContent } from '../../../guards'
 
@@ -29,8 +29,20 @@ const stepActorLabelText = 'Who will do the step?'
 const stepActorHintText = 'Add one person or agency.'
 const stepDescriptionLabelText = 'What should they do to achieve the goal?'
 const stepDescriptionHintText = 'Enter one step at a time.'
+const stepStatusLabelText = 'What is the status?'
+const stepStatusHintText = 'For example, not started.'
 const stepActorHintId = 'step-actor-hint'
 const stepDescriptionHintId = 'step-description-hint'
+const stepStatusHintId = 'step-status-hint'
+
+const stepStatusOptions = [
+  { value: '', text: 'Choose status' },
+  { value: 'NOT_STARTED', text: 'Not started' },
+  { value: 'IN_PROGRESS', text: 'In progress' },
+  { value: 'COMPLETED', text: 'Completed' },
+  { value: 'CANNOT_BE_DONE_YET', text: 'Cannot be done yet' },
+  { value: 'NO_LONGER_NEEDED', text: 'No longer needed' },
+]
 
 export const pageHeading = GovUKHeading({
   text: when(
@@ -94,10 +106,10 @@ export const assessmentInfoDetails = AssessmentInfoDetails({
  * Column headers for the step rows
  */
 export const columnHeaders = GovUKGridRow({
-  classes: 'govuk-!-margin-bottom-2',
+  classes: 'govuk-!-margin-bottom-2 step-row-headers',
   columns: [
     {
-      width: 'one-quarter',
+      width: 'one-sixth',
       blocks: [
         GovUKBody({ text: stepActorLabelText, classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1' }),
         GovUKBody({
@@ -108,7 +120,7 @@ export const columnHeaders = GovUKGridRow({
       ],
     },
     {
-      width: 'two-thirds',
+      width: 'one-half',
       blocks: [
         GovUKBody({
           text: stepDescriptionLabelText,
@@ -118,6 +130,20 @@ export const columnHeaders = GovUKGridRow({
           text: stepDescriptionHintText,
           classes: 'govuk-hint govuk-!-margin-bottom-0',
           attributes: { id: stepDescriptionHintId },
+        }),
+      ],
+    },
+    {
+      width: 'one-sixth',
+      blocks: [
+        GovUKBody({
+          text: stepStatusLabelText,
+          classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1',
+        }),
+        GovUKBody({
+          text: stepStatusHintText,
+          classes: 'govuk-hint govuk-!-margin-bottom-0',
+          attributes: { id: stepStatusHintId },
         }),
       ],
     },
@@ -140,30 +166,32 @@ export const stepRows = HtmlBlock({
         attributes: { 'data-qa': 'step-row' },
         columns: [
           {
-            width: 'one-quarter',
+            width: 'one-sixth',
             blocks: [
-              GovUKSelectInput({
-                code: Format('step_actor_%1', Loop.Index0()),
-                label: {
-                  text: stepActorLabelText,
-                  classes: 'govuk-visually-hidden',
-                },
-                describedBy: stepActorHintId,
-                items: actorLabelOptions,
-                defaultValue: Item().path('actor'),
-                validWhen: [
-                  validation({
-                    condition: Self().match(Condition.IsRequired()),
-                    message: 'Select who will do the step',
-                  }),
-                ],
+              WrappingSelect({
+                field: GovUKSelectInput({
+                  code: Format('step_actor_%1', Loop.Index0()),
+                  label: {
+                    text: stepActorLabelText,
+                    classes: 'govuk-visually-hidden',
+                  },
+                  describedBy: stepActorHintId,
+                  items: actorLabelOptions,
+                  defaultValue: Item().path('actor'),
+                  validWhen: [
+                    validation({
+                      condition: Self().match(Condition.IsRequired()),
+                      message: 'Select who will do the step',
+                    }),
+                  ],
+                }),
               }),
             ],
           },
           {
-            width: 'two-thirds',
+            width: 'one-half',
             blocks: [
-              GovUKTextInput({
+              GovUKTextareaInput({
                 code: Format('step_description_%1', Loop.Index0()),
                 label: {
                   text: stepDescriptionLabelText,
@@ -171,7 +199,11 @@ export const stepRows = HtmlBlock({
                 },
                 autocomplete: 'off',
                 describedBy: stepDescriptionHintId,
-                classes: 'govuk-!-width-full',
+                rows: '1',
+                classes: 'govuk-!-width-full app-autosize-textarea',
+                attributes: {
+                  'data-autosize': 'true',
+                },
                 defaultValue: Item().path('description'),
                 validWhen: [
                   validation({
@@ -179,6 +211,29 @@ export const stepRows = HtmlBlock({
                     message: 'Enter what they should do to achieve the goal',
                   }),
                 ],
+              }),
+            ],
+          },
+          {
+            width: 'one-sixth',
+            blocks: [
+              WrappingSelect({
+                field: GovUKSelectInput({
+                  code: Format('step_status_%1', Loop.Index0()),
+                  label: {
+                    text: stepStatusLabelText,
+                    classes: 'govuk-visually-hidden',
+                  },
+                  describedBy: stepStatusHintId,
+                  items: stepStatusOptions,
+                  defaultValue: Item().path('status'),
+                  validWhen: [
+                    validation({
+                      condition: Self().match(Condition.IsRequired()),
+                      message: 'Select the status',
+                    }),
+                  ],
+                }),
               }),
             ],
           },

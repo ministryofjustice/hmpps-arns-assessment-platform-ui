@@ -26,15 +26,61 @@
   @include govuk-text-colour;
 }
 
-// Step rows - align remove button with input fields
+// Add-steps page row layout: actor / description / status / remove.
+//
+// GOV.UK grid rows use negative margins and padded columns. These rows remove
+// that default spacing so the header text, controls, and action link share one
+// explicit grid and line up with the rest of the page content.
+@include govuk-media-query($from: tablet) {
+  .step-row,
+  .step-row-headers {
+    display: grid;
+    grid-template-columns: 290px minmax(0, 1fr) 205px 74px;
+    column-gap: govuk-spacing(3);
+    margin-right: 0;
+    margin-left: 0;
+
+    > [class*='govuk-grid-column-'] {
+      min-width: 0;
+      width: auto;
+      padding-right: 0;
+      padding-left: 0;
+      float: none;
+    }
+  }
+
+  .step-row-headers > [class*='govuk-grid-column-']:nth-child(3) .govuk-body:first-child,
+  .step-row-headers > [class*='govuk-grid-column-']:nth-child(3) .govuk-hint {
+    white-space: nowrap;
+  }
+}
+
+.step-row-headers {
+  align-items: start;
+  padding-bottom: govuk-spacing(2);
+  border-bottom: 1px solid $govuk-border-colour;
+}
+
 .step-row {
-  display: flex;
-  align-items: flex-end;
-  margin-bottom: govuk-spacing(4);
+  align-items: start;
+  padding-bottom: govuk-spacing(2);
+  margin-bottom: govuk-spacing(3);
+  border-bottom: 1px solid $govuk-border-colour;
 
   .govuk-form-group {
     margin-bottom: 0;
   }
+
+  .govuk-select {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+.app-autosize-textarea {
+  margin-bottom: 0;
+  overflow-y: hidden;
+  resize: none;
 }
 
 // Plan history accordion - only the action label (e.g., "Goal created") is bold via <strong>.

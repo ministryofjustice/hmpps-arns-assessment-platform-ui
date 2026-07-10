@@ -29,6 +29,8 @@ const isMissingStepsOnAgreePlan = and(
   Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
 )
 
+const isAchievedGoal = Item().path('status').match(Condition.Equals('ACHIEVED'))
+
 /**
  * Builds move buttons for goal cards.
  * Hide controls when the goal cannot move:
@@ -244,20 +246,28 @@ export const goalsSection = TemplateWrapper({
                                   note: Item().path('note'),
                                 }),
                               ),
-                            actions: [
-                              {
-                                text: 'Update goal',
-                                href: Format('../goal/%1/change-goal', Item().path('uuid')),
-                                dataAiId: 'update-draft-goal-inline-link',
-                              },
+                            actions: [                                                                                                                                                          
+                                {                                                                                                                                                                 
+                                  text: when(isAchievedGoal).then('View details').else('Update goal'),                                                                                            
+                                  href: when(isAchievedGoal)                                                                                                                                      
+                                    .then(Format('../goal/%1/view-inactive-goal', Item().path('uuid')))                                                                                           
+                                    .else(Format('../goal/%1/change-goal', Item().path('uuid'))),                                                                                                 
+                                  dataAiId: when(isAchievedGoal)                                                                                                                                  
+                                    .then('view-inactive-goal-inline-link')                                                                                                                       
+                                    .else('update-draft-goal-inline-link'),                                                                                                                       
+                                },
                               {
                                 text: 'Add or update steps',
                                 href: Format('../goal/%1/add-steps', Item().path('uuid')),
-                                hidden: Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
+                                hidden: or(
+                                  isAchievedGoal,
+                                  Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
+                                ),
                               },
                               {
                                 text: 'Delete',
                                 href: Format('../goal/%1/confirm-delete-goal', Item().path('uuid')),
+                                hidden: isAchievedGoal,
                               },
                             ],
                             isReadOnly: when(isReadOnly),

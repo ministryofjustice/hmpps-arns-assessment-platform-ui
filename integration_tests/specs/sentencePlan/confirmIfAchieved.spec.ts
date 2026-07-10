@@ -20,22 +20,78 @@ const allStepsCompletedMessage = 'All steps have been completed. Check if this g
 
 test.describe('Confirm if achieved page', () => {
   test.describe('access control', () => {
-    test('redirects to plan overview when plan is not agreed (draft)', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
+    test('allows access when plan is not agreed (draft)', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
       const goalUuid = plan.goals[0].uuid
 
       await navigateToSentencePlan(page, handoverLink)
 
-      // Try to access confirm-if-achieved page directly
       await page.goto(sentencePlanV1UrlBuilders.goalConfirmIfAchieved(goalUuid))
 
-      // Should be redirected to plan overview
+      // Draft plans can confirm achievement once every step is completed
+      await ConfirmIfAchievedPage.verifyOnPage(page)
+      await expect(page).toHaveURL(sentencePlanV1UrlBuilders.goalConfirmIfAchieved(goalUuid))
+    })
+
+    test('redirects to plan overview when not all steps are completed', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
+          {
+            title: 'Goal With Incomplete Steps',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [
+              { actor: 'probation_practitioner', description: 'First step', status: 'COMPLETED' },
+              { actor: 'person_on_probation', description: 'Second step', status: 'IN_PROGRESS' },
+            ],
+          },
+        ])
+        .withAgreementStatus('AGREED')
+        .save()
+      const goalUuid = plan.goals[0].uuid
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      // Direct access is blocked until every step is completed
+      await page.goto(sentencePlanV1UrlBuilders.goalConfirmIfAchieved(goalUuid))
+
       await expect(page).toHaveURL(planOverviewPageCurrentGoalsTabPath)
+    })
+
+    test('redirects to achieved goals when goal has already been achieved', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
+          {
+            title: 'Already achieved goal',
+            areaOfNeed: 'accommodation',
+            status: 'ACHIEVED',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Completed step', status: 'COMPLETED' }],
+          },
+        ])
+        .save()
+      const goalUuid = plan.goals[0].uuid
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      await page.goto(sentencePlanV1UrlBuilders.goalConfirmIfAchieved(goalUuid))
+
+      await PlanOverviewPage.verifyOnPage(page)
+      await expect(page).toHaveURL(planOverviewPageAchievedGoalsTabPath)
     })
 
     test('allows access when plan status is AGREED', async ({ page, createSession, sentencePlanBuilder }) => {

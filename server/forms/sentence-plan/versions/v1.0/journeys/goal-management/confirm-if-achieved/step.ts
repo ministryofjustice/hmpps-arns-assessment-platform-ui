@@ -6,17 +6,18 @@ import {
   step,
   submit,
   Format,
+  match,
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, goalCard, allStepsCompletedField, hasAchievedGoal, saveAndContinueButton } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
-import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
+import { redirectIfGoalNotFound, redirectUnlessAllStepsCompleted } from '../../../guards'
 import { CaseData } from '../../../constants'
 
 /**
- * This page is only accessible after a plan has been agreed.
- * For automatically asking the user to confirm a goal is achieved
- * if they have marked all steps as 'Complete' on a goal.
+ * Automatically asks the user to confirm a goal is achieved when they have
+ * marked all of its steps as 'Complete'. Reached from update-goal-steps on
+ * agreed plans, and from add-steps on pre-agreed (draft) plans.
  */
 export const confirmIfAchievedStep = step({
   path: '/confirm-if-achieved',
@@ -24,7 +25,9 @@ export const confirmIfAchievedStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
-      backlink: 'update-goal-steps',
+      backlink: match(Data('navigationReferrer'))
+        .branch(Condition.Equals('add-steps'), Format('../../goal/%1/add-steps', Data('activeGoal.uuid')))
+        .otherwise(Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid'))),
     },
   },
   blocks: [pageHeading, allStepsCompletedField, goalCard, hasAchievedGoal, saveAndContinueButton],
@@ -36,9 +39,13 @@ export const confirmIfAchievedStep = step({
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_ACHIEVED),
       ],
     }),
-    // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
-    redirectIfNotPostAgreement('../../plan/overview'),
     redirectIfGoalNotFound('../../plan/overview'),
+    access({
+      when: Data('activeGoal.status').match(Condition.Equals('ACHIEVED')),
+      next: [redirect({ goto: '../../plan/overview?goalStatusTab=achieved' })],
+    }),
+    // Block direct access until every step on the goal is completed
+    redirectUnlessAllStepsCompleted('../../plan/overview'),
   ],
 
   onSubmission: [
@@ -54,6 +61,8 @@ export const confirmIfAchievedStep = step({
             type: 'success',
             message: Format('Congratulations on achieving a goal, %1', CaseData.Forename),
             target: 'plan-overview',
+            // Replace any queued banner (e.g. "You added a goal with steps") so only the achievement shows
+            clearOtherNotifications: true,
           }),
         ],
         next: [redirect({ goto: '../../plan/overview?goalStatusTab=achieved' })],

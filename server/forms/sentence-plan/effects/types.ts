@@ -35,7 +35,7 @@ export interface AccessDetails {
 }
 
 export type GoalStatus = 'ACTIVE' | 'FUTURE' | 'REMOVED' | 'ACHIEVED'
-export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
+export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANNOT_BE_DONE_YET' | 'NO_LONGER_NEEDED'
 
 // Plan agreement statuses - DRAFT is the initial status before any agreement action
 export type AgreementStatus =
@@ -297,6 +297,7 @@ export interface StepSession {
   id: string
   actor: string
   description: string
+  status: string
 }
 
 /**
@@ -411,6 +412,7 @@ export interface SentencePlanAnswers extends Record<string, unknown> {
   // Dynamic step fields are accessed via index signature
   [key: `step_actor_${number}`]: string
   [key: `step_description_${number}`]: string
+  [key: `step_status_${number}`]: string
 }
 
 /**

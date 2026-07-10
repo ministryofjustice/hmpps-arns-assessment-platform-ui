@@ -14,6 +14,8 @@ export default class PlanOverviewPage extends AbstractPage {
 
   readonly futureGoalsTab: Locator
 
+  readonly achievedGoalsTab: Locator
+
   readonly removedGoalsTab: Locator
 
   readonly noGoalsMessage: Locator
@@ -50,6 +52,7 @@ export default class PlanOverviewPage extends AbstractPage {
     this.goalCards = page.locator('[data-qa="goal-summary-card"]')
     this.currentGoalsTab = page.getByRole('link', { name: /Goals to work on now/i })
     this.futureGoalsTab = page.getByRole('link', { name: /Future goals/i })
+    this.achievedGoalsTab = page.getByRole('link', { name: /Achieved goals/i })
     this.removedGoalsTab = page.getByRole('link', { name: /Removed goals/i })
     this.noGoalsMessage = page.getByText(/does not have any goals/i)
     this.updateAgreementLink = page.getByRole('link', { name: /update .+'s agreement/i })
@@ -84,6 +87,10 @@ export default class PlanOverviewPage extends AbstractPage {
     await this.futureGoalsTab.click()
   }
 
+  async clickAchievedGoalsTab(): Promise<void> {
+    await this.achievedGoalsTab.click()
+  }
+
   async getGoalCardByIndex(index: number): Promise<Locator> {
     return this.goalCards.nth(index)
   }
@@ -105,8 +112,8 @@ export default class PlanOverviewPage extends AbstractPage {
 
   async goalCardHasUpdateGoalLink(index: number): Promise<boolean> {
     const card = await this.getGoalCardByIndex(index)
-    const changeLink = card.getByRole('link', { name: /update goal/i })
-    return (await changeLink.count()) > 0
+    const updateLink = card.getByRole('link', { name: /update goal/i })
+    return (await updateLink.count()) > 0
   }
 
   async goalCardHasAddUpdateStepsLink(index: number): Promise<boolean> {

@@ -1,4 +1,14 @@
-import { access, and, Data, not, redirect, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  and,
+  Data,
+  Item,
+  Iterator,
+  not,
+  redirect,
+  Condition,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
 import { sentencePlanOverviewPath } from './constants'
 
@@ -60,6 +70,28 @@ export const redirectIfPostAgreement = (goto: string) =>
 export const redirectIfGoalNotFound = (goto: string) =>
   access({
     when: Data('activeGoal').not.match(Condition.IsRequired()),
+    next: [redirect({ goto })],
+  })
+
+/**
+ * True when the active goal has at least one step and every step is COMPLETED.
+ * Derived from the saved goal (not form answers), so it also holds on a direct page load.
+ */
+export const allActiveGoalStepsCompleted = and(
+  Data('activeGoal.steps').match(Condition.IsRequired()),
+  Data('activeGoal.steps')
+    .each(Iterator.Filter(Item().path('status').not.match(Condition.Equals('COMPLETED'))))
+    .pipe(Transformer.Array.Length())
+    .match(Condition.Equals(0)),
+)
+
+/**
+ * Redirect users unless every step on the active goal is completed.
+ * Stops the confirm-if-achieved page being reached directly before a goal is ready to be achieved.
+ */
+export const redirectUnlessAllStepsCompleted = (goto: string) =>
+  access({
+    when: not(allActiveGoalStepsCompleted),
     next: [redirect({ goto })],
   })
 

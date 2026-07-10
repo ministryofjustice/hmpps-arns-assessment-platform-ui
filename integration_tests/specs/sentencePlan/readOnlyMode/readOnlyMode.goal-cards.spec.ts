@@ -6,7 +6,7 @@ import { navigateToSentencePlan } from '../sentencePlanUtils'
 
 test.describe('READ_ONLY Access Mode', () => {
   test.describe('Draft Goal Card Actions', () => {
-    test('hides Change goal, Add or change steps, and Delete links', async ({
+    test('hides Update goal, Add or update steps, and Delete links', async ({
       page,
       createSession,
       sentencePlanBuilder,
