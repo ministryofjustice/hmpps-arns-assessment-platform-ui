@@ -7,8 +7,10 @@ const backToTopWrapper = '.js-back-to-top'
 const backToTopLink = '[data-ai-id="back-to-top"]'
 
 test.describe('Back to top link', () => {
-  test('is hidden when the page content fits within the viewport', async ({ page, createSession }) => {
-    // Arrange - a blank plan overview is short content, and a tall viewport leaves nothing to scroll.
+  test('is hidden when the content above the footer fits within the viewport', async ({ page, createSession }) => {
+    // Arrange - a blank plan overview is short content, and a tall viewport leaves nothing to scroll
+    // above the footer. The footer height is excluded so the link is only shown when the real
+    // content is too long, not when only the footer tips the page past the viewport.
     await page.setViewportSize({ width: 1280, height: 3000 })
     const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
 
