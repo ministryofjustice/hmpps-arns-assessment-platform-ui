@@ -14,6 +14,8 @@ export default class PlanOverviewPage extends AbstractPage {
 
   readonly futureGoalsTab: Locator
 
+  readonly achievedGoalsTab: Locator
+
   readonly removedGoalsTab: Locator
 
   readonly noGoalsMessage: Locator
@@ -50,6 +52,7 @@ export default class PlanOverviewPage extends AbstractPage {
     this.goalCards = page.locator('[data-qa="goal-summary-card"]')
     this.currentGoalsTab = page.getByRole('link', { name: /Goals to work on now/i })
     this.futureGoalsTab = page.getByRole('link', { name: /Future goals/i })
+    this.achievedGoalsTab = page.getByRole('link', { name: /Achieved goals/i })
     this.removedGoalsTab = page.getByRole('link', { name: /Removed goals/i })
     this.noGoalsMessage = page.getByText(/does not have any goals/i)
     this.updateAgreementLink = page.getByRole('link', { name: /update .+'s agreement/i })
@@ -82,6 +85,10 @@ export default class PlanOverviewPage extends AbstractPage {
 
   async clickFutureGoalsTab(): Promise<void> {
     await this.futureGoalsTab.click()
+  }
+
+  async clickAchievedGoalsTab(): Promise<void> {
+    await this.achievedGoalsTab.click()
   }
 
   async getGoalCardByIndex(index: number): Promise<Locator> {
