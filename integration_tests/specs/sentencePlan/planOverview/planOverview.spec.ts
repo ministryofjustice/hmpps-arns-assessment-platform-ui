@@ -267,7 +267,7 @@ test.describe('Plan Overview Page', () => {
   })
 
   test.describe('Goal Actions', () => {
-    test('shows Change goal link on goal cards', async ({ page, createSession, sentencePlanBuilder }) => {
+    test('shows Update goal link on goal cards', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 

@@ -112,8 +112,8 @@ export default class PlanOverviewPage extends AbstractPage {
 
   async goalCardHasUpdateGoalLink(index: number): Promise<boolean> {
     const card = await this.getGoalCardByIndex(index)
-    const changeLink = card.getByRole('link', { name: /update goal/i })
-    return (await changeLink.count()) > 0
+    const updateLink = card.getByRole('link', { name: /update goal/i })
+    return (await updateLink.count()) > 0
   }
 
   async goalCardHasAddUpdateStepsLink(index: number): Promise<boolean> {

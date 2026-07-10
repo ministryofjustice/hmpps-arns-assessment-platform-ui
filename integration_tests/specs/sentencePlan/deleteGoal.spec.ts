@@ -2,7 +2,14 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoals, futureGoals } from '../../builders/sentencePlanFactories'
-import { checkAccessibility, navigateToSentencePlan, sentencePlanV1UrlBuilders } from './sentencePlanUtils'
+import {
+  checkAccessibility,
+  navigateToSentencePlan,
+  sentencePlanV1UrlBuilders,
+  sentencePlanV1URLs,
+} from './sentencePlanUtils'
+
+const planOverviewPageAchievedGoalsTabPath = `${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=achieved`
 
 test.describe('Delete goal journey', () => {
   test.describe('redirect after deletion', () => {
@@ -94,7 +101,7 @@ test.describe('Delete goal journey', () => {
       await page.goto(sentencePlanV1UrlBuilders.goalConfirmDelete(goalUuid))
 
       await PlanOverviewPage.verifyOnPage(page)
-      await expect(page).toHaveURL(/type=achieved/)
+      await expect(page).toHaveURL(planOverviewPageAchievedGoalsTabPath)
     })
   })
 })

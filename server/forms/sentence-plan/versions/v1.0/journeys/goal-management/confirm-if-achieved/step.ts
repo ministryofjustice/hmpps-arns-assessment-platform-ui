@@ -42,7 +42,7 @@ export const confirmIfAchievedStep = step({
     redirectIfGoalNotFound('../../plan/overview'),
     access({
       when: Data('activeGoal.status').match(Condition.Equals('ACHIEVED')),
-      next: [redirect({ goto: '../../plan/overview?type=achieved' })],
+      next: [redirect({ goto: '../../plan/overview?goalStatusTab=achieved' })],
     }),
     // Block direct access until every step on the goal is completed
     redirectUnlessAllStepsCompleted('../../plan/overview'),

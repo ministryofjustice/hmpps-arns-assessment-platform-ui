@@ -248,7 +248,7 @@ export const goalsSection = TemplateWrapper({
                               ),
                             actions: [
                               {
-                                text: when(isAchievedGoal).then('View details').else('Change goal'),
+                                text: when(isAchievedGoal).then('View details').else('Update goal'),
                                 href: when(isAchievedGoal)
                                   .then(Format('../goal/%1/view-inactive-goal', Item().path('uuid')))
                                   .else(Format('../goal/%1/change-goal', Item().path('uuid'))),

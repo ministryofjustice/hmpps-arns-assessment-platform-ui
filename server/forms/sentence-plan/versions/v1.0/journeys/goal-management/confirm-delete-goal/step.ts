@@ -46,7 +46,7 @@ export const confirmDeleteGoalStep = step({
     redirectIfGoalNotFound('../../plan/overview'),
     access({
       when: Data('activeGoal.status').match(Condition.Equals('ACHIEVED')),
-      next: [redirect({ goto: '../../plan/overview?type=achieved' })],
+      next: [redirect({ goto: '../../plan/overview?goalStatusTab=achieved' })],
     }),
   ],
 
