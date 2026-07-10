@@ -49,11 +49,14 @@ test.describe('Create Goal Journey', () => {
 
       const actorSelect = await addStepsPage.getStepActorSelect(0)
       const descriptionInput = await addStepsPage.getStepDescriptionInput(0)
+      const statusSelect = await addStepsPage.getStepStatusSelect(0)
 
       await expect(page.locator('#step-actor-hint')).toHaveText('Add one person or agency.')
       await expect(page.locator('#step-description-hint')).toHaveText('Enter one step at a time.')
+      await expect(page.locator('#step-status-hint')).toHaveText('For example, not started.')
       await expect(actorSelect).toHaveAttribute('aria-describedby', 'step-actor-hint')
       await expect(descriptionInput).toHaveAttribute('aria-describedby', 'step-description-hint')
+      await expect(statusSelect).toHaveAttribute('aria-describedby', 'step-status-hint')
 
       await addStepsPage.clickSaveAndContinue()
 
@@ -61,6 +64,8 @@ test.describe('Create Goal Journey', () => {
       await expect(actorSelect).toHaveAttribute('aria-describedby', /step_actor_0-error/)
       await expect(descriptionInput).toHaveAttribute('aria-describedby', /step-description-hint/)
       await expect(descriptionInput).toHaveAttribute('aria-describedby', /step_description_0-error/)
+      await expect(statusSelect).toHaveAttribute('aria-describedby', /step-status-hint/)
+      await expect(statusSelect).toHaveAttribute('aria-describedby', /step_status_0-error/)
 
       await addStepsPage.enterStep(0, 'probation_practitioner', "Contact housing services about 'emergency housing'")
 
@@ -108,6 +113,63 @@ test.describe('Create Goal Journey', () => {
       const goalCard = await planOverviewPage.getGoalCardByIndex(0)
       await expect(goalCard).toContainText('Contact housing services')
       await expect(goalCard).toContainText('Attend housing appointment')
+    })
+
+    test('step description wraps and expands vertically while typing', async ({ page, createSession }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.enterGoalTitle('Find stable accommodation')
+      await createGoalPage.selectIsRelated(false)
+      await createGoalPage.selectCanStartNow(true)
+      await createGoalPage.selectTargetDateOption('6_months')
+      await createGoalPage.clickAddSteps()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      const firstStepRow = page.getByTestId('step-row').first()
+      const actorToggle = page.locator('#step_actor_0')
+      const descriptionInput = await addStepsPage.getStepDescriptionInput(0)
+      const statusToggle = page.locator('#step_status_0')
+
+      await expect(descriptionInput).toHaveJSProperty('tagName', 'TEXTAREA')
+
+      const [actorBox, descriptionBox, statusBox] = await Promise.all([
+        actorToggle.boundingBox(),
+        descriptionInput.boundingBox(),
+        statusToggle.boundingBox(),
+      ])
+
+      expect(descriptionBox?.y).toBeCloseTo(actorBox?.y ?? 0, 0)
+      expect(descriptionBox?.y).toBeCloseTo(statusBox?.y ?? 0, 0)
+
+      const initialHeight = await descriptionInput.evaluate(element => element.getBoundingClientRect().height)
+
+      await descriptionInput.fill(
+        'Contact housing services, gather supporting documents, book the appointment, confirm travel arrangements, and record the outcome. '.repeat(
+          8,
+        ),
+      )
+
+      await expect
+        .poll(async () => descriptionInput.evaluate(element => element.getBoundingClientRect().height), {
+          timeout: 1000,
+        })
+        .toBeGreaterThan(initialHeight)
+
+      const [expandedDescriptionBox, rowBox] = await Promise.all([
+        descriptionInput.boundingBox(),
+        firstStepRow.boundingBox(),
+      ])
+
+      const descriptionBottomGap =
+        (rowBox?.y ?? 0) +
+        (rowBox?.height ?? 0) -
+        ((expandedDescriptionBox?.y ?? 0) + (expandedDescriptionBox?.height ?? 0))
+
+      expect(descriptionBottomGap).toBeLessThanOrEqual(12)
     })
 
     test('shows goal added notification after creating goal with steps', async ({ page, createSession }) => {

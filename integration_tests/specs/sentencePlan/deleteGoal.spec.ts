@@ -69,5 +69,32 @@ test.describe('Delete goal journey', () => {
       // Should redirect to plan overview since delete is only for draft plans
       await PlanOverviewPage.verifyOnPage(page)
     })
+
+    test('redirects to achieved goals when goal has already been achieved', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      const plan = await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
+          {
+            title: 'Achieved Goal',
+            areaOfNeed: 'accommodation',
+            status: 'ACHIEVED',
+            targetDate: '2025-06-01',
+            steps: [{ actor: 'probation_practitioner', description: 'Completed step', status: 'COMPLETED' }],
+          },
+        ])
+        .save()
+      const goalUuid = plan.goals[0].uuid
+
+      await navigateToSentencePlan(page, handoverLink)
+      await page.goto(sentencePlanV1UrlBuilders.goalConfirmDelete(goalUuid))
+
+      await PlanOverviewPage.verifyOnPage(page)
+      await expect(page).toHaveURL(/type=achieved/)
+    })
   })
 })

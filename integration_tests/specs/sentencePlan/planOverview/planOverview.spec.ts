@@ -311,6 +311,66 @@ test.describe('Plan Overview Page', () => {
       expect(hasAddUpdateStepsLink).toBe(false)
     })
 
+    test('shows only View details for achieved goal cards in pre-agreed plans', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
+          {
+            title: 'Achieved Goal 1',
+            areaOfNeed: 'accommodation',
+            status: 'ACHIEVED',
+            targetDate: '2025-06-01',
+            steps: [{ actor: 'probation_practitioner', description: 'Completed step', status: 'COMPLETED' }],
+          },
+        ])
+        .save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      await planOverviewPage.clickAchievedGoalsTab()
+
+      expect(await planOverviewPage.goalCardHasViewDetailsLink(0)).toBe(true)
+      expect(await planOverviewPage.goalCardHasDeleteLink(0)).toBe(false)
+      expect(await planOverviewPage.goalCardHasUpdateLink(0)).toBe(false)
+      expect(await planOverviewPage.goalCardHasAddUpdateStepsLink(0)).toBe(false)
+    })
+
+    test('shows only View details for achieved goal cards in agreed plans', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withAgreementStatus('AGREED')
+        .withGoals([
+          {
+            title: 'Achieved Goal 1',
+            areaOfNeed: 'accommodation',
+            status: 'ACHIEVED',
+            targetDate: '2025-06-01',
+            steps: [{ actor: 'probation_practitioner', description: 'Completed step', status: 'COMPLETED' }],
+          },
+        ])
+        .save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      await planOverviewPage.clickAchievedGoalsTab()
+
+      expect(await planOverviewPage.goalCardHasViewDetailsLink(0)).toBe(true)
+      expect(await planOverviewPage.goalCardHasDeleteLink(0)).toBe(false)
+      expect(await planOverviewPage.goalCardHasUpdateLink(0)).toBe(false)
+    })
+
     test('gives Add steps links a unique accessible name for each goal', async ({
       page,
       createSession,

@@ -26,6 +26,7 @@ export const addStepToStepEditSession = () => async (context: SentencePlanContex
   changes.steps.forEach((step, index) => {
     step.actor = context.getAnswer(`step_actor_${index}`) ?? step.actor
     step.description = context.getAnswer(`step_description_${index}`) ?? step.description
+    step.status = context.getAnswer(`step_status_${index}`) ?? step.status
   })
 
   // Add new empty step
@@ -35,6 +36,7 @@ export const addStepToStepEditSession = () => async (context: SentencePlanContex
     id: newStepId,
     actor: '',
     description: '',
+    status: '',
   })
 
   // Track for creation on save
@@ -46,5 +48,6 @@ export const addStepToStepEditSession = () => async (context: SentencePlanContex
   changes.steps.forEach((step, index) => {
     context.setAnswer(`step_actor_${index}`, step.actor)
     context.setAnswer(`step_description_${index}`, step.description)
+    context.setAnswer(`step_status_${index}`, step.status)
   })
 }
