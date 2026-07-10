@@ -114,4 +114,18 @@ describe('goal summary card', () => {
 
     expect(html).toContain('1 of 1 step completed.')
   })
+
+  it('renders data-ai-id on an action link when dataAiId is set', async () => {
+    const block = {
+      ...baseBlock,
+      variant: 'goalSummaryCardAgreed',
+      actions: [
+        { text: 'Update', href: '/goal/123/update-goal-steps', dataAiId: 'update-goal-inline-link' },
+      ] as GoalAction[],
+    } as EvaluatedBlock<GoalSummaryCardAgreed>
+
+    const html = await goalSummaryCardAgreed.render(block, nunjucksEnv)
+
+    expect(html).toContain('data-ai-id="update-goal-inline-link"')
+  })
 })
