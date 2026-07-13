@@ -3,31 +3,36 @@ import { health, navigateToStrengthsAndNeeds, sanFormPath, v1Path } from 'specs/
 import AbstractPage from '../abstractPage'
 
 export default class HealthAndWellbeingPage extends AbstractPage {
-  readonly pageHeading: Locator
-
   readonly incomplete: Locator
 
   readonly currentEmploymentStatus: Locator
 
+  readonly mainSection: Locator
+
   private constructor(page: Page) {
     super(page)
-    this.pageHeading = page.getByText('any physical health conditions')
     this.incomplete = page.getByText('Incomplete')
     this.currentEmploymentStatus = page.getByTestId('main-form')
+    this.mainSection = page.getByText('Back Health and wellbeing')
   }
 
   /**
    * Navigates to health and wellbeing via handover link and handles the privacy screen.
    */
-  static async navigateToHealthAndWellbeing(page: Page, handoverLink: string, baseUrl: string): Promise<void> {
+  static async navigateToHealthAndWellbeing(
+    page: Page,
+    handoverLink: string,
+    baseUrl: string,
+    url: string = 'health-wellbeing',
+  ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v1Path}${health}/health-wellbeing`)
-    await expect(page).toHaveURL(/health-wellbeing/)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}${health}/${url}`)
+    expect(page.url()).toContain(url)
   }
 
-  static async verifyOnPage(page: Page): Promise<HealthAndWellbeingPage> {
+  static async verifyOnPage(page: Page, pageHeading: string): Promise<HealthAndWellbeingPage> {
     const healthAndWellbeingPage = new HealthAndWellbeingPage(page)
-    await expect(healthAndWellbeingPage.pageHeading).toBeVisible()
+    await expect(page.getByText(pageHeading)).toBeVisible()
     return healthAndWellbeingPage
   }
 }

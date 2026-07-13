@@ -6,7 +6,7 @@ import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
 export const sanFormPath = '/strengths-and-needs'
 export const v1Path = '/v1.0'
 const privacyStepPath = '/privacy'
-const accommodation = '/accommodation'
+export const accommodation = '/accommodation'
 export const employment = '/employment-and-education'
 export const health = '/health-and-wellbeing'
 
@@ -70,8 +70,12 @@ export const handlePrivacyScreenIfPresent = async (page: Page): Promise<void> =>
  * Navigates to a strengths and needs via handover link and handles the privacy screen.
  * Use this for tests that need to get to the San assessment via OASys handover.
  */
-export const navigateToStrengthsAndNeeds = async (page: Page, handoverLink: string): Promise<void> => {
+export const navigateToStrengthsAndNeeds = async (
+  page: Page,
+  handoverLink: string,
+  url: string = 'current-accommodation',
+): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
-  await expect(page).toHaveURL(/current-accommodation/)
+  expect(page.url()).toContain(url)
 }
