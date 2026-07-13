@@ -32,8 +32,10 @@ test.describe('Accessibility page', () => {
       name: /Web Content Accessibility Guidelines version 2.2/i,
     })
     const feedbackAndContactLink = page.getByRole('link', { name: /Contact us/i })
-    const equalityAdvisoryLink = page.getByRole('link', { name: /contact the Equality Advisory and Support Service (EASS)/i })
-    const spotCheckReportLink = page.getByRole('link', { name: /spot check report/i})
+    const equalityAdvisoryLink = page.getByRole('link', {
+      name: /contact the Equality Advisory and Support Service (EASS)/i,
+    })
+    const spotCheckReportLink = page.getByRole('link', { name: /spot check report/i })
     const fullAccessibilityReportLink = page.getByRole('link', { name: /full accessibility test report/i })
 
     await checkLinkOpens(abilityNetLink)
@@ -52,7 +54,10 @@ test.describe('Accessibility page', () => {
     await expect(equalityAdvisoryLink).toHaveAttribute('href', 'https://www.equalityadvisoryservice.com')
 
     await checkLinkOpens(spotCheckReportLink)
-    await expect(spotCheckReportLink).toHaveAttribute('href', 'https://uv3383-moj-arns-spot-check.uservisionaccessibility.co.uk/index.html')
+    await expect(spotCheckReportLink).toHaveAttribute(
+      'href',
+      'https://uv3383-moj-arns-spot-check.uservisionaccessibility.co.uk/index.html',
+    )
 
     await checkLinkOpens(fullAccessibilityReportLink)
     await expect(fullAccessibilityReportLink).toHaveAttribute(
