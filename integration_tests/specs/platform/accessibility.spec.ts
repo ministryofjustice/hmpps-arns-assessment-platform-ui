@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import { test } from '../../support/fixtures'
-import { checkHeaderVisibility, checkLinkOpensInANewTab } from '../../testUtils'
+import { checkHeaderVisibility, checkLinkOpens } from '../../testUtils'
 
 const accessibilityPageUrl = '/platform/accessibility'
 
@@ -11,6 +11,10 @@ test.describe('Accessibility page', () => {
 
     await checkHeaderVisibility(page, 1, 'Accessibility statement for Assess and plan: Sentence plan')
     await checkHeaderVisibility(page, 2, 'How accessible this website is')
+    await checkHeaderVisibility(page, 2, 'Feedback and contact information')
+    await checkHeaderVisibility(page, 3, 'Enforcement procedure')
+    await checkHeaderVisibility(page, 2, 'Preparation of this accessibility statement')
+
     await checkHeaderVisibility(page, 2, 'Technical information about this website’s accessibility')
     await checkHeaderVisibility(page, 2, 'Non-accessible content')
     await checkHeaderVisibility(page, 2, 'What we’re doing to improve accessibility')
@@ -24,29 +28,33 @@ test.describe('Accessibility page', () => {
 
     // links open in a new tab:
     const abilityNetLink = page.getByRole('link', { name: /advice on making your device easier to use/i })
-    const feedbackAndContactLink = page.getByRole('link', { name: /Contact us/i })
-    const equalityAdvisoryLink = page.getByRole('link', { name: /contact the Equality Advisory/i })
     const webContentAccessibilityLink = page.getByRole('link', {
       name: /Web Content Accessibility Guidelines version 2.2/i,
     })
+    const feedbackAndContactLink = page.getByRole('link', { name: /Contact us/i })
+    const equalityAdvisoryLink = page.getByRole('link', { name: /contact the Equality Advisory and Support Service (EASS)/i })
+    const spotCheckReportLink = page.getByRole('link', { name: /spot check report/i})
     const fullAccessibilityReportLink = page.getByRole('link', { name: /full accessibility test report/i })
 
-    await checkLinkOpensInANewTab(abilityNetLink)
-    await expect(abilityNetLink).toHaveAttribute('href', 'https://mcmw.abilitynet.org.uk/')
+    await checkLinkOpens(abilityNetLink)
+    await expect(abilityNetLink).toHaveAttribute('href', 'https://mcmw.abilitynet.org.uk')
 
-    await checkLinkOpensInANewTab(feedbackAndContactLink)
-    await expect(feedbackAndContactLink).toHaveAttribute(
-      'href',
-      'https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u',
-    )
-
-    await checkLinkOpensInANewTab(equalityAdvisoryLink)
-    await expect(equalityAdvisoryLink).toHaveAttribute('href', 'https://www.equalityadvisoryservice.com')
-
-    await checkLinkOpensInANewTab(webContentAccessibilityLink)
+    await checkLinkOpens(webContentAccessibilityLink)
     await expect(webContentAccessibilityLink).toHaveAttribute('href', 'https://www.w3.org/TR/WCAG22')
 
-    await checkLinkOpensInANewTab(fullAccessibilityReportLink)
+    await checkLinkOpens(feedbackAndContactLink)
+    await expect(feedbackAndContactLink).toHaveAttribute(
+      'href',
+      'https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2GF5fsslU5tImfiqSSPf6JhUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOSQlQCN0PWcu',
+    )
+
+    await checkLinkOpens(equalityAdvisoryLink)
+    await expect(equalityAdvisoryLink).toHaveAttribute('href', 'https://www.equalityadvisoryservice.com')
+
+    await checkLinkOpens(spotCheckReportLink)
+    await expect(spotCheckReportLink).toHaveAttribute('href', 'https://uv3383-moj-arns-spot-check.uservisionaccessibility.co.uk/index.html')
+
+    await checkLinkOpens(fullAccessibilityReportLink)
     await expect(fullAccessibilityReportLink).toHaveAttribute(
       'href',
       'https://uv3334-moj-arns-sentence-plan.uservisionaccessibility.co.uk/index.html',
