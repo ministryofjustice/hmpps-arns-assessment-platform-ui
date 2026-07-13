@@ -19,9 +19,13 @@ if (clusterEnabled && cluster.isPrimary) {
   // Single process mode, or we're a cluster worker
   // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
   const app = require('./server/index').default
+  // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
+  const { attachForgeDevTools } = require('./server/forgeDevTools')
 
-  app.listen(app.get('port'), () => {
+  const server = app.listen(app.get('port'), () => {
     const mode = clusterEnabled ? `worker ${process.pid}` : 'single process'
     logger.info(`Server (${mode}) listening on port ${app.get('port')}`)
   })
+
+  attachForgeDevTools(server)
 }

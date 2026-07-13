@@ -35,6 +35,7 @@ export default {
   branchName: get('GIT_BRANCH', 'xxxxxxxxxxxxxxxxxxx', requiredInProduction),
   production,
   https: process.env.NO_HTTPS === 'true' ? false : production,
+  forgeDevToolsEnabled: get('FORGE_DEVTOOLS_ENABLED', 'false') === 'true',
   staticResourceCacheDuration: '1h',
   redis: {
     enabled: get('REDIS_ENABLED', 'false', requiredInProduction) === 'true',

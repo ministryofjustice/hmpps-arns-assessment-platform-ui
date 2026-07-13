@@ -1,3 +1,4 @@
+import { EffectRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TrainingSessionLauncherEffectsDeps } from './types'
 import { loadScenarios } from './scenarios/loadScenarios'
 import { storeCsrf } from './storeCsrf'
@@ -11,14 +12,12 @@ import { createSessionFromCustomize } from './sessions/createSessionFromCustomiz
 import { generateHandoverLink } from './sessions/generateHandoverLink'
 import { addNotification } from './notifications/addNotification'
 import { loadNotifications } from './notifications/loadNotifications'
-import { defineNamespacedEffectsWithDeps } from '../../shared/defineNamespacedEffectsWithDeps'
 import { setTargetService } from '../../shared/setTargetService'
+
+export const trainingSessionLauncherEffectRegistry = new EffectRegistry<TrainingSessionLauncherEffectsDeps>()
 
 /**
  * Training Session Launcher Effects
- *
- * All effects are namespaced in the registry (e.g., trainingLauncherLoadScenarios)
- * but use short names in the effects API (e.g., effects.loadScenarios()).
  *
  * Usage in forms:
  * ```typescript
@@ -29,37 +28,34 @@ import { setTargetService } from '../../shared/setTargetService'
  * TrainingSessionLauncherEffects.loadNotifications('target')
  * ```
  */
-export const {
-  effects: TrainingSessionLauncherEffects,
-  implementations: trainingSessionLauncherEffectImplementations,
-} = defineNamespacedEffectsWithDeps<TrainingSessionLauncherEffectsDeps>('trainingLauncher')({
+export const TrainingSessionLauncherEffects = {
   // Scenarios
-  loadScenarios,
+  loadScenarios: trainingSessionLauncherEffectRegistry.register(loadScenarios),
 
   // Preferences
-  loadPreferences,
-  saveScenario,
-  deleteScenario,
-  saveSession,
-  deleteSession,
-  deleteAllSessions,
+  loadPreferences: trainingSessionLauncherEffectRegistry.register(loadPreferences),
+  saveScenario: trainingSessionLauncherEffectRegistry.register(saveScenario),
+  deleteScenario: trainingSessionLauncherEffectRegistry.register(deleteScenario),
+  saveSession: trainingSessionLauncherEffectRegistry.register(saveSession),
+  deleteSession: trainingSessionLauncherEffectRegistry.register(deleteSession),
+  deleteAllSessions: trainingSessionLauncherEffectRegistry.register(deleteAllSessions),
 
   // Sessions
-  createSessionFromPreset,
-  createSessionFromCustomize,
-  generateHandoverLink,
+  createSessionFromPreset: trainingSessionLauncherEffectRegistry.register(createSessionFromPreset),
+  createSessionFromCustomize: trainingSessionLauncherEffectRegistry.register(createSessionFromCustomize),
+  generateHandoverLink: trainingSessionLauncherEffectRegistry.register(generateHandoverLink),
 
   // Customise
-  loadScenarioForCustomise,
-  saveCustomPreset,
+  loadScenarioForCustomise: trainingSessionLauncherEffectRegistry.register(loadScenarioForCustomise),
+  saveCustomPreset: trainingSessionLauncherEffectRegistry.register(saveCustomPreset),
 
   // Notifications
-  addNotification,
-  loadNotifications,
+  addNotification: trainingSessionLauncherEffectRegistry.register(addNotification),
+  loadNotifications: trainingSessionLauncherEffectRegistry.register(loadNotifications),
 
   // Context
-  setTargetService,
+  setTargetService: trainingSessionLauncherEffectRegistry.register(setTargetService),
 
   // Utilities
-  storeCsrf,
-})
+  storeCsrf: trainingSessionLauncherEffectRegistry.register(storeCsrf),
+}
