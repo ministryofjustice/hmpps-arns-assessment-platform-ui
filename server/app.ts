@@ -26,6 +26,7 @@ import setUpFeatureFlags from './middleware/setUpFeatureFlags'
 import routes from './routes'
 import type { Services } from './services'
 import logger from '../logger'
+import { forgeDevToolsInstrumentationSink } from './forgeDevTools'
 
 // Form packages
 import accessFormPackage from './forms/access'
@@ -43,6 +44,7 @@ export default function createApp(services: Services): express.Application {
   const nunjucksEnv = nunjucksSetup(app)
   const formEngine = new Forge({
     logger,
+    instrumentation: forgeDevToolsInstrumentationSink ? { sinks: [forgeDevToolsInstrumentationSink] } : undefined,
   })
     .registerGlobalComponents(govukComponents)
     .registerGlobalComponents(mojComponents)
