@@ -1,3 +1,4 @@
+{{- if .Values.grafanaDashboard.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,3 +7,4 @@ metadata:
     grafana_dashboard: "hmpps-arns-assessment-platform-dashboard"
 data:
 {{ (.Files.Glob "grafana/hmpps-arns-assessment-platform-dashboard.json").AsConfig | indent 2 }}
+{{- end }}
