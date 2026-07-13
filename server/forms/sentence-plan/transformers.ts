@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { defineTransformerFunctions } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { TransformerRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import type { SentencePlanEffectsDeps } from './effects/types'
 
 function assertString(value: unknown, functionName: string): asserts value is string {
@@ -10,14 +10,12 @@ function assertString(value: unknown, functionName: string): asserts value is st
 
 const pluralise = (count: number, unit: string): string => (count === 1 ? `${count} ${unit}` : `${count} ${unit}s`)
 
-export const { transformers: SentencePlanTransformers, implementations: sentencePlanTransformerImplementations } =
-  defineTransformerFunctions<
-    {
-      ToSentenceLength: (value: unknown, endDate: unknown) => string
-    },
-    SentencePlanEffectsDeps
-  >({
-    ToSentenceLength: () => (value: unknown, endDate: unknown) => {
+export const sentencePlanTransformerRegistry = new TransformerRegistry<SentencePlanEffectsDeps>()
+
+export const SentencePlanTransformers = {
+  ToSentenceLength: sentencePlanTransformerRegistry.register(
+    'ToSentenceLength',
+    () => (value: unknown, endDate: unknown) => {
       assertString(value, 'SentencePlanTransformers.ToSentenceLength (startDate)')
       assertString(endDate, 'SentencePlanTransformers.ToSentenceLength (endDate)')
 
@@ -54,4 +52,5 @@ export const { transformers: SentencePlanTransformers, implementations: sentence
 
       return `(${parts[0]}, ${parts[1]} and ${parts[2]})`
     },
-  })
+  ),
+}

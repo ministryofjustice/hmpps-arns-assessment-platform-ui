@@ -3,7 +3,7 @@ import express from 'express'
 import createError from 'http-errors'
 
 import { Forge } from '@ministryofjustice/hmpps-forge/core'
-import { ExpressFrameworkAdapter } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { createExpressRouter } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import { govukComponents } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { mojComponents } from '@ministryofjustice/hmpps-forge/moj-components'
 import nunjucksSetup from './utils/nunjucksSetup'
@@ -43,10 +43,6 @@ export default function createApp(services: Services): express.Application {
   const nunjucksEnv = nunjucksSetup(app)
   const formEngine = new Forge({
     logger,
-    frameworkAdapter: ExpressFrameworkAdapter.configure({
-      nunjucksEnv,
-      defaultTemplate: 'partials/form-step',
-    }),
   })
     .registerGlobalComponents(govukComponents)
     .registerGlobalComponents(mojComponents)
@@ -106,7 +102,7 @@ export default function createApp(services: Services): express.Application {
 
   // Mount routes
   app.use(routes())
-  app.use(formEngine.getRouter() as express.Router)
+  app.use(createExpressRouter(formEngine, { nunjucksEnv, defaultTemplate: 'partials/form-step' }))
 
   app.use((req, _res, next) => {
     logger.warn({ path: req.path }, 'Page not found')

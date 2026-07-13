@@ -1,5 +1,4 @@
-import { defineEffectFunctions } from '@ministryofjustice/hmpps-forge/core/authoring'
-import type { FunctionEvaluator } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { EffectRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { addNotification } from './notifications/addNotification'
 import { loadNotifications } from './notifications/loadNotifications'
 import { createNavigationEffects } from '../../shared/navigation/createNavigationEffects'
@@ -41,61 +40,12 @@ import { loadFeatureFlags } from './feature-flags/loadFeatureFlags'
 import { sendTelemetryEvent } from './telemetry/sendTelemetryEvent'
 import { SentencePlanEffectsDeps } from './types'
 
-type EffectShapesFromFactories<TFactories> = {
-  [K in keyof TFactories]: TFactories[K] extends (deps: infer _Deps) => infer Evaluator
-    ? Evaluator extends FunctionEvaluator<unknown>
-      ? Evaluator
-      : never
-    : never
-}
-
 const { trackNavigation, insertNavigationReferrer } = createNavigationEffects({
   stackKey: 'sentence-plan',
   clearKey: Nav.PLAN_OVERVIEW,
 })
 
-const sentencePlanEffectFactories = {
-  initializeSessionFromAccess,
-  loadSessionData,
-  loadSentenceInformation,
-  setPrivacyAccepted,
-  addNotification,
-  loadNotifications,
-  trackNavigation,
-  insertNavigationReferrer,
-  loadPlan,
-  deriveGoalsWithStepsFromAssessment,
-  derivePlanAgreementsFromAssessment,
-  loadPlanTimeline,
-  derivePlanHistoryEntries,
-  derivePlanLastUpdated,
-  derivePlanLastUpdatedForHistoric,
-  updatePlanAgreementStatus,
-  updatePlanAgreement,
-  loadPreviousVersions,
-  loadHistoricPlan,
-  createGoal,
-  setAreaDataFromUrlParam,
-  setAreaDataFromActiveGoal,
-  loadAreaAssessmentInfo,
-  loadAllAreasAssessmentInfo,
-  setActiveGoalContext,
-  loadActiveGoalForEdit,
-  updateActiveGoal,
-  updateGoalProgress,
-  markGoalAsAchieved,
-  markGoalAsRemoved,
-  readdGoalToPlan,
-  deleteActiveGoal,
-  reorderGoal,
-  initializeStepEditSession,
-  addStepToStepEditSession,
-  removeStepFromStepEditSession,
-  saveStepEditSession,
-  sendAuditEvent,
-  sendTelemetryEvent,
-  loadFeatureFlags,
-}
+export const sentencePlanEffectRegistry = new EffectRegistry<SentencePlanEffectsDeps>()
 
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
@@ -126,7 +76,45 @@ export { AuditEvent } from '../../../services/auditService'
  * SentencePlanEffects.createGoal()
  * ```
  */
-export const { effects: SentencePlanEffects, implementations: SentencePlanEffectImplementations } =
-  defineEffectFunctions<EffectShapesFromFactories<typeof sentencePlanEffectFactories>, SentencePlanEffectsDeps>(
-    sentencePlanEffectFactories,
-  )
+export const SentencePlanEffects = {
+  initializeSessionFromAccess: sentencePlanEffectRegistry.register(initializeSessionFromAccess),
+  loadSessionData: sentencePlanEffectRegistry.register(loadSessionData),
+  loadSentenceInformation: sentencePlanEffectRegistry.register(loadSentenceInformation),
+  setPrivacyAccepted: sentencePlanEffectRegistry.register(setPrivacyAccepted),
+  addNotification: sentencePlanEffectRegistry.register(addNotification),
+  loadNotifications: sentencePlanEffectRegistry.register(loadNotifications),
+  trackNavigation: sentencePlanEffectRegistry.register(trackNavigation),
+  insertNavigationReferrer: sentencePlanEffectRegistry.register(insertNavigationReferrer),
+  loadPlan: sentencePlanEffectRegistry.register(loadPlan),
+  deriveGoalsWithStepsFromAssessment: sentencePlanEffectRegistry.register(deriveGoalsWithStepsFromAssessment),
+  derivePlanAgreementsFromAssessment: sentencePlanEffectRegistry.register(derivePlanAgreementsFromAssessment),
+  loadPlanTimeline: sentencePlanEffectRegistry.register(loadPlanTimeline),
+  derivePlanHistoryEntries: sentencePlanEffectRegistry.register(derivePlanHistoryEntries),
+  derivePlanLastUpdated: sentencePlanEffectRegistry.register(derivePlanLastUpdated),
+  derivePlanLastUpdatedForHistoric: sentencePlanEffectRegistry.register(derivePlanLastUpdatedForHistoric),
+  updatePlanAgreementStatus: sentencePlanEffectRegistry.register(updatePlanAgreementStatus),
+  updatePlanAgreement: sentencePlanEffectRegistry.register(updatePlanAgreement),
+  loadPreviousVersions: sentencePlanEffectRegistry.register(loadPreviousVersions),
+  loadHistoricPlan: sentencePlanEffectRegistry.register(loadHistoricPlan),
+  createGoal: sentencePlanEffectRegistry.register(createGoal),
+  setAreaDataFromUrlParam: sentencePlanEffectRegistry.register(setAreaDataFromUrlParam),
+  setAreaDataFromActiveGoal: sentencePlanEffectRegistry.register(setAreaDataFromActiveGoal),
+  loadAreaAssessmentInfo: sentencePlanEffectRegistry.register(loadAreaAssessmentInfo),
+  loadAllAreasAssessmentInfo: sentencePlanEffectRegistry.register(loadAllAreasAssessmentInfo),
+  setActiveGoalContext: sentencePlanEffectRegistry.register(setActiveGoalContext),
+  loadActiveGoalForEdit: sentencePlanEffectRegistry.register(loadActiveGoalForEdit),
+  updateActiveGoal: sentencePlanEffectRegistry.register(updateActiveGoal),
+  updateGoalProgress: sentencePlanEffectRegistry.register(updateGoalProgress),
+  markGoalAsAchieved: sentencePlanEffectRegistry.register(markGoalAsAchieved),
+  markGoalAsRemoved: sentencePlanEffectRegistry.register(markGoalAsRemoved),
+  readdGoalToPlan: sentencePlanEffectRegistry.register(readdGoalToPlan),
+  deleteActiveGoal: sentencePlanEffectRegistry.register(deleteActiveGoal),
+  reorderGoal: sentencePlanEffectRegistry.register(reorderGoal),
+  initializeStepEditSession: sentencePlanEffectRegistry.register(initializeStepEditSession),
+  addStepToStepEditSession: sentencePlanEffectRegistry.register(addStepToStepEditSession),
+  removeStepFromStepEditSession: sentencePlanEffectRegistry.register(removeStepFromStepEditSession),
+  saveStepEditSession: sentencePlanEffectRegistry.register(saveStepEditSession),
+  sendAuditEvent: sentencePlanEffectRegistry.register(sendAuditEvent),
+  sendTelemetryEvent: sentencePlanEffectRegistry.register(sendTelemetryEvent),
+  loadFeatureFlags: sentencePlanEffectRegistry.register(loadFeatureFlags),
+}
