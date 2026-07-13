@@ -56,21 +56,25 @@ jobs:
       - name: Get Playwright version
         run: echo "PLAYWRIGHT_VERSION=$(make -s playwright-version)" >> "$GITHUB_ENV"
 
-      - uses: docker/setup-buildx-action@v3
+      - name: Restore Playwright image cache
+        id: playwright-image-cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ runner.temp }}/playwright-image.tar
+          key: playwright-image-${{ env.PLAYWRIGHT_VERSION }}
 
       - name: Build Playwright image
-        uses: docker/build-push-action@v6
-        with:
-          context: docker
-          file: docker/playwright.Dockerfile
-          build-args: PLAYWRIGHT_VERSION=${{ env.PLAYWRIGHT_VERSION }}
-          tags: playwright:${{ env.PLAYWRIGHT_VERSION }}
-          load: true
-          cache-from: type=gha,scope=playwright
-          cache-to: type=gha,scope=playwright
+        if: steps.playwright-image-cache.outputs.cache-hit != 'true'
+        run: |
+          docker build -f docker/playwright.Dockerfile \
+            --build-arg PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION \
+            -t playwright:$PLAYWRIGHT_VERSION docker
+          docker save playwright:$PLAYWRIGHT_VERSION -o ${{ runner.temp }}/playwright-image.tar
 
       - name: Load image and pull dependencies
         run: |
+          docker image inspect playwright:$PLAYWRIGHT_VERSION > /dev/null 2>&1 \
+            || docker load --input ${{ runner.temp }}/playwright-image.tar &
           docker compose -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml pull --ignore-buildable &
           docker pull node:24-alpine &
 
