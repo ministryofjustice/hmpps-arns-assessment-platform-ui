@@ -77,7 +77,7 @@ const achieveByContent = when(Data('activeGoal.status').match(Condition.Equals('
   )
 
 const updateGoalDetailsLink = Format(
-  '<p><a href="../../goal/%1/change-goal" class="govuk-link">Update goal details</a></p>',
+  '<p><a href="../../goal/%1/change-goal" class="govuk-link" data-ai-id="update-goal-details-link">Update goal details</a></p>',
   Data('activeGoal.uuid'),
 )
 
