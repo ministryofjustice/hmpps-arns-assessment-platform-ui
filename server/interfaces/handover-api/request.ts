@@ -6,7 +6,7 @@ export interface CreateHandoverLinkRequest {
   oasysAssessmentPk: string
   assessmentVersion?: number | null
   sentencePlanVersion?: number | null
-  arnsHandoverVersion?: number | null
+  tieringAssessmentVersion?: number | null
   criminogenicNeedsData?: CriminogenicNeedsData
 }
 

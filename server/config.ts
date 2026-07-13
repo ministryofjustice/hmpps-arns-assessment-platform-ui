@@ -163,7 +163,7 @@ export default {
       displayName: 'Strengths and Needs (SAN)',
     },
     'tiering-assessment': {
-      clientId: get('ARNS_HANDOVER_CLIENT_ID', 'tiering-assessment'),
+      clientId: get('ARNS_ASSESSMENT_PLATFORM_CLIENT_ID', 'arns-assessment-platform'),
       displayName: 'Tiering Assessment',
     },
   },

@@ -131,8 +131,8 @@ export interface Session {
   sanAssessmentVersion?: number
   sentencePlanId?: string
   sentencePlanVersion?: number
-  arnsHandoverId?: string
-  arnsHandoverVersion?: number
+  tieringAssessmentId?: string
+  tieringAssessmentVersion?: number
 }
 
 /**
