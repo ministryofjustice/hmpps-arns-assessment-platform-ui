@@ -273,6 +273,42 @@ test.describe('Employment and education Page', () => {
       `)
     })
 
+    test('shows currently unavailable for work - never been employed questions', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+      baseURL,
+    }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'current_employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
+          { question: 'had_previous_employment_unavailable_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+        ]).save()
+
+      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
+
+      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
+      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
+
+      await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
+        - /children: equal
+        - link "Back"
+        - text: Employment and education
+        - strong: Incomplete
+        - group "Does Test have any day-to-day commitments?"
+        - group "Select the highest level of academic qualification Test has completed"
+        - group "Does Test have any professional or vocational qualifications?"
+        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have difficulties with reading, writing or numeracy?"
+        - group "What is Test's experience of education?"
+        - group "Does Test want to make changes to their employment and education?"
+        - button "Save and continue"
+      `)
+    })
+
     test('shows unemployed - actively looking for work questions', async ({
       page,
       createSession,
@@ -311,6 +347,42 @@ test.describe('Employment and education Page', () => {
       `)
     })
 
+    test('shows unemployed - actively looking for work - never been employed questions', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+      baseURL,
+    }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'current_employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' },
+          { question: 'had_previous_employment_actively_looking_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+        ]).save()
+
+      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
+
+      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
+      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
+
+      await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
+        - /children: equal
+        - link "Back"
+        - text: Employment and education
+        - strong: Incomplete
+        - group "Does Test have any day-to-day commitments?"
+        - group "Select the highest level of academic qualification Test has completed"
+        - group "Does Test have any professional or vocational qualifications?"
+        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have difficulties with reading, writing or numeracy?"
+        - group "What is Test's experience of education?"
+        - group "Does Test want to make changes to their employment and education?"
+        - button "Save and continue"
+      `)
+    })
+
     test('shows unemployed - not actively looking for work questions', async ({
       page,
       createSession,
@@ -343,6 +415,42 @@ test.describe('Employment and education Page', () => {
         - group "Does Test's have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
+        - group "What is Test's experience of education?"
+        - group "Does Test want to make changes to their employment and education?"
+        - button "Save and continue"
+      `)
+    })
+
+    test('shows unemployed - not actively looking for work - never been employed questions', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+      baseURL,
+    }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
+          { question: 'had_previous_employment_not_looking_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+        ]).save()
+
+      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
+
+      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
+      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
+
+      await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
+        - /children: equal
+        - link "Back"
+        - text: Employment and education
+        - strong: Incomplete
+        - group "Does Test have any day-to-day commitments?"
+        - group "Select the highest level of academic qualification Test has completed"
+        - group "Does Test have any professional or vocational qualifications?"
+        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
         - button "Save and continue"
