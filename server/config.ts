@@ -163,8 +163,8 @@ export default {
       displayName: 'Strengths and Needs (SAN)',
     },
     'tiering-assessment': {
-      clientId: get('TIERING_ASSESSMENT_HANDOVER_CLIENT_ID', 'tiering-assessment'),
-      displayName: 'Tiering Assessment Private Beta',
+      clientId: get('ARNS_HANDOVER_CLIENT_ID', 'tiering-assessment'),
+      displayName: 'Tiering Assessment',
     },
   },
 }
