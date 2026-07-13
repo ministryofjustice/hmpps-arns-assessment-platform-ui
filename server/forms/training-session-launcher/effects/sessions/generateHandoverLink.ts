@@ -192,7 +192,7 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
     request.sentencePlanVersion = values.sentencePlanVersion
   }
 
-  if (targetApplication === 'arns-handover' && session.arnsHandoverVersion) {
+  if (targetApplication === 'tiering-assessment' && session.arnsHandoverVersion) {
     request.arnsHandoverVersion = session.arnsHandoverVersion
   }
 

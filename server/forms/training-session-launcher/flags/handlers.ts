@@ -244,7 +244,7 @@ export function mapFlagToTargetApplication(flag: TrainingScenarioFlag): TargetAp
       return 'strengths-and-needs'
 
     case 'TIERING_ASSESSMENT':
-      return 'arns-handover'
+      return 'tiering-assessment'
 
     default:
       return 'sentence-plan'
