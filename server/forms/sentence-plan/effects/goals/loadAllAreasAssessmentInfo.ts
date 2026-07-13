@@ -1,4 +1,3 @@
-import { TransformersRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import logger from '../../../../../logger'
 import { transformAssessmentData } from '../../../../utils/assessmentUtils'
 import { mapHandoverToCriminogenicNeeds } from '../../../../utils/handoverApiMapper'
@@ -74,7 +73,11 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
     context.setData('areasByGoalRoute', areasByGoalRoute)
 
     const lastUpdated = entityAssessment.lastUpdatedTimestampSAN
-      ? TransformersRegistry.ToUKLongDate.evaluate(new Date(entityAssessment.lastUpdatedTimestampSAN))
+      ? new Date(entityAssessment.lastUpdatedTimestampSAN).toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        })
       : null
     context.setData('assessmentLastUpdated', lastUpdated)
 

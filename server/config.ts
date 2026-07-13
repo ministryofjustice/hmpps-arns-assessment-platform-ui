@@ -35,6 +35,7 @@ export default {
   branchName: get('GIT_BRANCH', 'xxxxxxxxxxxxxxxxxxx', requiredInProduction),
   production,
   https: process.env.NO_HTTPS === 'true' ? false : production,
+  forgeDevToolsEnabled: get('FORGE_DEVTOOLS_ENABLED', 'false') === 'true',
   staticResourceCacheDuration: '1h',
   redis: {
     enabled: get('REDIS_ENABLED', 'false', requiredInProduction) === 'true',
@@ -145,6 +146,7 @@ export default {
   logLevel: get('LOG_LEVEL', 'info'),
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
+  nationalRolloutFeedbackUrl: get('NATIONAL_ROLLOUT_FEEDBACK_URL', '#'),
   serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#service-now-link', requiredInProduction),
   oasysUrl: get('OASYS_URL', 'http://localhost:3000/training-session-launcher/sessions', requiredInProduction),
   mpopUrl: get('MPOP_URL', 'http://localhost:3000/sign-in', requiredInProduction),

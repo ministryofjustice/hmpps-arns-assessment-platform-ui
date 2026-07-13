@@ -3,7 +3,9 @@ import { ClickAnalyticsPlugin } from '@microsoft/applicationinsights-clickanalyt
 
 const connectionString = document.querySelector('meta[name="ai-connection-string"]')?.content
 
-if (connectionString) {
+function createAppInsights() {
+  if (!connectionString) return null
+
   const clickAnalyticsPlugin = new ClickAnalyticsPlugin()
 
   const clickAnalyticsConfig = {
@@ -16,7 +18,7 @@ if (connectionString) {
     },
   }
 
-  const appInsights = new ApplicationInsights({
+  const instance = new ApplicationInsights({
     config: {
       connectionString,
       disableXhr: true,
@@ -30,9 +32,9 @@ if (connectionString) {
     },
   })
 
-  appInsights.loadAppInsights()
+  instance.loadAppInsights()
 
-  appInsights.addTelemetryInitializer(envelope => {
+  instance.addTelemetryInitializer(envelope => {
     const assessmentUuid = document.querySelector('[data-qa-assessment-uuid]')?.getAttribute('data-qa-assessment-uuid')
     const requestId = document.querySelector('meta[name="ai-request-id"]')?.content
     const telemetryId = document.querySelector('meta[name="ai-telemetry-id"]')?.content
@@ -95,7 +97,7 @@ if (connectionString) {
       const accordionId = button.closest('.govuk-accordion')?.id
       const accordionName = accordionNames[accordionId] || accordionId
 
-      appInsights.trackEvent({
+      instance.trackEvent({
         name: 'san-info-accordion',
         properties: {
           AccordionName: accordionName,
@@ -117,7 +119,7 @@ if (connectionString) {
       const accordionId = section.closest('.govuk-accordion')?.id
       const accordionName = accordionNames[accordionId] || accordionId
 
-      appInsights.trackEvent({
+      instance.trackEvent({
         name: 'san-info-area-of-need-accordion',
         properties: {
           AccordionName: accordionName,
@@ -130,16 +132,20 @@ if (connectionString) {
     })
   })
 
-  appInsights.startTrackPage()
+  instance.startTrackPage()
 
   // stop the page visit timer and flush telemetry before the page unloads:
   // in an MPA, the JS context is destroyed on navigation, so without this
   // the last page of a session would never have its visit duration recorded
   window.addEventListener('pagehide', () => {
-    appInsights.stopTrackPage()
-    appInsights.flush()
+    instance.stopTrackPage()
+    instance.flush()
   })
+
+  return instance
 }
+
+export const appInsights = createAppInsights()
 
 const accordionNames = {
   'high-scoring-areas-accordion': 'High scoring areas',

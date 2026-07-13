@@ -17,7 +17,15 @@ export function initBackToTop() {
   }
 
   const update = () => {
-    const isScrollable = document.documentElement.scrollHeight > window.innerHeight
+    // Measure only content above the footer so the link is not shown when the
+    // page is only marginally scrollable because of footer height.
+    const footer = document.querySelector('footer[role="contentinfo"]') ?? document.querySelector('.app-report-problem')
+
+    const contentHeight = footer
+      ? footer.getBoundingClientRect().top + window.scrollY
+      : document.documentElement.scrollHeight
+
+    const isScrollable = contentHeight > window.innerHeight
 
     links.forEach(link => {
       link.hidden = !isScrollable

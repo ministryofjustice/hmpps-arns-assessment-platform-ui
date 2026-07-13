@@ -51,6 +51,7 @@ function createStep(overrides: Partial<StepSession> = {}): StepSession {
     id: `step_${Date.now()}_${Math.random()}`,
     actor: '',
     description: '',
+    status: '',
     ...overrides,
   }
 }
@@ -645,12 +646,12 @@ describe('removeStepFromStepEditSession', () => {
 
     it('should set empty answers when clearing the last step', async () => {
       // Arrange
-      const steps = [createStep({ id: 'only-step', actor: 'Actor', description: 'Desc' })]
+      const steps = [createStep({ id: 'only-step', actor: 'Actor', description: 'Desc', status: 'IN_PROGRESS' })]
       const context = createMockContext({
         session: { stepChanges: { 'goal-1': createStepChanges({ steps }) } },
         activeGoalUuid: 'goal-1',
         postAction: 'remove_0',
-        answers: { step_actor_0: 'Actor', step_description_0: 'Desc' },
+        answers: { step_actor_0: 'Actor', step_description_0: 'Desc', step_status_0: 'IN_PROGRESS' },
       })
 
       // Act
@@ -659,6 +660,39 @@ describe('removeStepFromStepEditSession', () => {
       // Assert
       expect(context.setAnswer).toHaveBeenCalledWith('step_actor_0', '')
       expect(context.setAnswer).toHaveBeenCalledWith('step_description_0', '')
+      expect(context.setAnswer).toHaveBeenCalledWith('step_status_0', '')
+    })
+
+    it('should preserve step_status answers on remaining rows after removing a step', async () => {
+      // Arrange
+      const steps = [
+        createStep({ id: 'step-a', actor: 'A', description: 'Da', status: 'NOT_STARTED' }),
+        createStep({ id: 'step-b', actor: 'B', description: 'Db', status: 'IN_PROGRESS' }),
+        createStep({ id: 'step-c', actor: 'C', description: 'Dc', status: 'COMPLETED' }),
+      ]
+      const context = createMockContext({
+        session: { stepChanges: { 'goal-1': createStepChanges({ steps }) } },
+        activeGoalUuid: 'goal-1',
+        postAction: 'remove_0',
+        answers: {
+          step_actor_0: 'A',
+          step_description_0: 'Da',
+          step_status_0: 'NOT_STARTED',
+          step_actor_1: 'B',
+          step_description_1: 'Db',
+          step_status_1: 'IN_PROGRESS',
+          step_actor_2: 'C',
+          step_description_2: 'Dc',
+          step_status_2: 'COMPLETED',
+        },
+      })
+
+      // Act
+      await removeStepFromStepEditSession()(context)
+
+      // Assert
+      expect(context.setAnswer).toHaveBeenCalledWith('step_status_0', 'IN_PROGRESS')
+      expect(context.setAnswer).toHaveBeenCalledWith('step_status_1', 'COMPLETED')
     })
   })
 
