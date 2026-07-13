@@ -1,29 +1,11 @@
-import { step, submit, redirect, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import {
-  drugsPractitionerAnalysisMotivatedToStop,
-  strengthsOrProtectiveFactors,
-  riskOfSeriousHarm,
-  riskOfReoffending,
-} from './fields'
-
-const saveButton = GovUKButton({
-  text: 'Save',
-  name: 'action',
-  value: 'save',
-})
+import { drugsSummaryTab } from './fields'
 
 export const drugUseSummaryStep = step({
   path: '/drug-use-summary',
   title: 'Drug use analysis',
-  blocks: [
-    drugsPractitionerAnalysisMotivatedToStop,
-    strengthsOrProtectiveFactors,
-    riskOfSeriousHarm,
-    riskOfReoffending,
-    saveButton,
-  ],
+  blocks: [drugsSummaryTab],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

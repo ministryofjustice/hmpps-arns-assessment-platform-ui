@@ -22,6 +22,7 @@ import {
 import { CollectionBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 
 import { CaseData } from '../../../../constants/formVersion'
+import {drugValueToText} from "../../locales";
 
 // --- Conditions ---
 
@@ -108,7 +109,7 @@ export const usedMoreThanSixMonthsSection = TemplateWrapper({
           '%1 used %2 more than 6 months ago.',
           CaseData.Forename,
           Data('drugsUsedMoreThanSix')
-            .each(Iterator.Map(Item().path('text').pipe(Transformer.String.ToLowerCase())))
+            .each(Iterator.Map(Item().path('value').pipe(Transformer.String.ToLowerCase())))
             .pipe(Transformer.Array.Join(', ')),
         ),
       }),

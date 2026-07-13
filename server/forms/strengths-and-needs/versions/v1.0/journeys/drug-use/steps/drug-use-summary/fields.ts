@@ -1,32 +1,45 @@
-import { validation, Self, Answer, Format, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKRadioInput, GovUKCharacterCount } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Answer, Condition, Format, not, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  GovUKBody,
+  GovUKCharacterCount,
+  GovUKRadioInput,
+  GovUKSummaryList,
+  GovUKTabs,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
 
 import { CaseData } from '../../../../constants/formVersion'
+import { commonContentFor } from '../../../../locales'
+import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
+import { Step } from '../../constants/step'
+import { contentFor } from '../../locales'
+import { Question } from '../../constants/question'
+import { SANGenerators } from '../../../../../../generators'
+import { drugUse } from '../drug-use/fields'
 
 // --- Motivated to stop (drug-use specific) ---
 
-export const drugsPractitionerAnalysisMotivatedToStop = GovUKRadioInput({
-  code: 'drugs_practitioner_analysis_motivated_to_stop',
-  fieldset: {
-    legend: {
-      text: Format('Does %1 seem motivated to stop or reduce their drug use?', CaseData.Forename),
-      classes: 'govuk-fieldset__legend--m',
-    },
-  },
-  dependentWhen: Answer('drug_use').match(Condition.Equals('YES')),
-  items: [
-    { value: 'NO_MOTIVATION', text: 'Does not show motivation to stop or reduce' },
-    { value: 'PARTIAL_MOTIVATION', text: 'Shows some motivation to stop or reduce' },
-    { value: 'FULL_MOTIVATION', text: 'Motivated to stop or reduce' },
-    { value: 'UNKNOWN', text: 'Unknown' },
-  ],
-  validWhen: [
-    validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select if they seem motivated to stop or reduce their drug use',
-    }),
-  ],
-})
+// export const drugsPractitionerAnalysisMotivatedToStop = GovUKRadioInput({
+//   code: 'drugs_practitioner_analysis_motivated_to_stop',
+//   fieldset: {
+//     legend: {
+//       text: Format('Does %1 seem motivated to stop or reduce their drug use?', CaseData.Forename),
+//       classes: 'govuk-fieldset__legend--m',
+//     },
+//   },
+//   dependentWhen: Answer('drug_use').match(Condition.Equals('YES')),
+//   items: [
+//     { value: 'NO_MOTIVATION', text: 'Does not show motivation to stop or reduce' },
+//     { value: 'PARTIAL_MOTIVATION', text: 'Shows some motivation to stop or reduce' },
+//     { value: 'FULL_MOTIVATION', text: 'Motivated to stop or reduce' },
+//     { value: 'UNKNOWN', text: 'Unknown' },
+//   ],
+//   validWhen: [
+//     validation({
+//       condition: not(Self().not.match(Condition.IsRequired())),
+//       message: 'Select if they seem motivated to stop or reduce their drug use',
+//     }),
+//   ],
+// })
 
 // --- Practitioner Analysis: Strengths or Protective Factors ---
 
@@ -156,5 +169,43 @@ export const riskOfReoffending = GovUKRadioInput({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: 'Select if drug use is linked to risk of reoffending',
     }),
+  ],
+})
+
+export const drugsSummary = GovUKSummaryList({
+  rows: [
+    {
+      key: { text: contentFor('question.drug_use.text', CaseData.Forename) },
+      value: {
+        blocks: [
+          GovUKBody({
+            text: SANGenerators.getTextFromListDefinition(drugUse.items, Answer(Question.drug_use)),
+          }),
+        ],
+      },
+      actions: {
+        items: [{ href: Step.drug_use.path, text: commonContentFor('change') }],
+      },
+    },
+  ],
+})
+
+export const drugsSummaryTab = GovUKTabs({
+  id: 'summaries',
+  items: [
+    {
+      id: 'summary',
+      label: commonContentFor('summary'),
+      panel: {
+        blocks: [drugsSummary, goToPractitionerAnalysisButton(Step.drug_use_summary.path)],
+      },
+    },
+    {
+      id: 'practitioner-analysis',
+      label: commonContentFor('practitioner_analysis'),
+      panel: {
+        blocks: [markAsCompleteButton],
+      },
+    },
   ],
 })

@@ -9,6 +9,7 @@ import {
   receivingTreatmentField,
   anyDrugUsedInLastSix,
 } from './fields'
+import { Step } from '../../constants/step'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -17,7 +18,7 @@ const saveButton = GovUKButton({
 })
 
 export const drugDetailsStep = step({
-  path: '/drug-details',
+  path: `/${Step.drug_details.path}`,
   title: 'Drug details',
   onAccess: [
     access({
@@ -41,9 +42,9 @@ export const drugDetailsStep = step({
         next: [
           redirect({
             when: anyDrugUsedInLastSix,
-            goto: 'drug-use-history',
+            goto: Step.drug_use_history.path,
           }),
-          redirect({ goto: 'drug-use-history-more-than-six-months' }),
+          redirect({ goto: Step.drug_use_history_more_than_six_months.path }),
         ],
       },
     }),

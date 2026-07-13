@@ -1,25 +1,28 @@
-import { validation, Self, Format, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, not, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 import { CaseData } from '../../../../constants/formVersion'
+import { contentFor } from '../../locales'
+import { CommonOption } from '../../../../constants/commonOption'
+import { commonContentFor } from '../../../../locales'
 
 export const drugUse = GovUKRadioInput({
   code: 'drug_use',
   fieldset: {
     legend: {
-      text: Format('Has %1 ever misused drugs?', CaseData.Forename),
+      text: contentFor('question.drug_use.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: 'This includes illegal and prescription drugs.',
+  hint: contentFor('question.drug_use.hint'),
   items: [
-    { value: 'YES', text: 'Yes' },
-    { value: 'NO', text: 'No' },
+    { value: CommonOption.yes, text: commonContentFor('option.YES') },
+    { value: CommonOption.no, text: commonContentFor('option.NO') },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: "Select if they've ever misused drugs",
+      message: contentFor('question.drug_use.validation'),
     }),
   ],
 })

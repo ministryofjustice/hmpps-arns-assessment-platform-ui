@@ -2,6 +2,7 @@ import { step, submit, redirect, Post, Condition } from '@ministryofjustice/hmpp
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { selectMisusedDrugs } from './fields'
+import { Step } from '../../constants/step'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -10,7 +11,7 @@ const saveButton = GovUKButton({
 })
 
 export const addDrugsStep = step({
-  path: '/add-drugs',
+  path: `/${Step.add_drugs.path}`,
   title: 'Add drugs',
   blocks: [selectMisusedDrugs, saveButton],
   onSubmission: [
@@ -19,7 +20,7 @@ export const addDrugsStep = step({
       validate: true,
       onValid: {
         effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
-        next: [redirect({ goto: 'drug-details' })],
+        next: [redirect({ goto: Step.drug_details.path })],
       },
     }),
   ],

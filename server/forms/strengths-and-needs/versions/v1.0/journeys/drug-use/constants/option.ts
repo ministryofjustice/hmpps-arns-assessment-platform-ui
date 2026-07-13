@@ -1,0 +1,18 @@
+export const Option = {
+  last_six: 'LAST_SIX',
+  more_than_six: 'MORE_THAN_SIX',
+  amphetamines: 'AMPHETAMINES',
+  benzodiazepines: 'BENZODIAZEPINES',
+  cannabis: 'CANNABIS',
+  cocaine: 'COCAINE',
+  crack: 'CRACK',
+  ecstasy: 'ECSTASY',
+  hallucinogenics: 'HALLUCINOGENICS',
+  heroin: 'HEROIN',
+  methadone_not_prescribed: 'METHADONE_NOT_PRESCRIBED',
+  misused_prescribed_drugs: 'MISUSED_PRESCRIBED_DRUGS',
+  other_opiates: 'OTHER_OPIATES',
+  solvents: 'SOLVENTS',
+  steroids: 'STEROIDS',
+  spice: 'SPICE',
+} as const

@@ -1,52 +1,56 @@
-import { validation, Self, Answer, Format, and, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, not, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKCheckboxInput, GovUKRadioInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { Drug, drugsList, fieldCode, otherDrugOption } from '../../constants'
 import { CaseData } from '../../../../constants/formVersion'
+import { Question } from '../../constants/question'
+import { contentFor, drugValueToText } from '../../locales'
+import { Option } from '../../constants/option'
+import { commonContentFor } from '../../../../locales'
 
 const drugLastUsedField = (drug: Drug) =>
   GovUKRadioInput({
-    code: fieldCode('drug_last_used', drug.value),
+    code: fieldCode(Question.drug_last_used, drug.value),
     fieldset: {
       legend: {
-        text: `When did they last use ${drug.text}?`,
+        text: contentFor('question.drug_last_used.text', drugValueToText(drug.value)),
         classes: 'govuk-visually-hidden',
       },
     },
     dependentWhen: and(
-      Answer('select_misused_drugs').match(Condition.IsRequired()),
-      Answer('select_misused_drugs').match(Condition.Array.Contains(drug.value)),
+      Answer(Question.select_misused_drugs).match(Condition.IsRequired()),
+      Answer(Question.select_misused_drugs).match(Condition.Array.Contains(drug.value)),
     ),
     items: [
-      { value: 'LAST_SIX', text: 'Used in the last 6 months' },
-      { value: 'MORE_THAN_SIX', text: 'Used more than 6 months ago' },
+      { value: Option.last_six, text: contentFor('question.drug_last_used.option.LAST_SIX') },
+      { value: Option.more_than_six, text: contentFor('question.drug_last_used.option.MORE_THAN_SIX') },
     ],
     validWhen: [
       validation({
         condition: not(Self().not.match(Condition.IsRequired())),
-        message: 'Select when they last used this drug',
+        message: contentFor('question.drug_last_used.validation'),
       }),
     ],
   })
 
 const otherDrugName = GovUKTextInput({
-  code: 'other_drug_name',
+  code: Question.other_drug_name,
   label: {
-    text: "Enter which other drug they've misused",
+    text: contentFor('question.other_drug_name.text'),
     classes: 'govuk-visually-hidden',
   },
-  hint: 'Add drug name',
+  hint: contentFor('question.other_drug_name.hint'),
   dependentWhen: and(
-    Answer('select_misused_drugs').match(Condition.IsRequired()),
-    Answer('select_misused_drugs').match(Condition.Array.Contains(otherDrugOption.value)),
+    Answer(Question.select_misused_drugs).match(Condition.IsRequired()),
+    Answer(Question.select_misused_drugs).match(Condition.Array.Contains(otherDrugOption.value)),
   ),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: "Enter which other drug they've misused",
+      message: contentFor('question.other_drug_name.text'),
     }),
     validation({
       condition: not(Self().not.match(Condition.String.HasMaxLength(200))),
-      message: 'Drug name must be 200 characters or less',
+      message: contentFor('question.other_drug_name.validation'),
     }),
   ],
 })
@@ -54,31 +58,32 @@ const otherDrugName = GovUKTextInput({
 const drugsListItems = [
   ...drugsList.map(drug => ({
     value: drug.value,
+    // text: drugValueToText(drug.value),
     text: drug.text,
     block: drugLastUsedField(drug),
   })),
   {
     value: otherDrugOption.value,
-    text: otherDrugOption.text,
+    text: commonContentFor('option.OTHER'),
     block: [otherDrugName, drugLastUsedField(otherDrugOption)],
   },
 ]
 
 export const selectMisusedDrugs = GovUKCheckboxInput({
-  code: 'select_misused_drugs',
+  code: Question.select_misused_drugs,
   multiple: true,
   fieldset: {
     legend: {
-      text: Format('Which drugs has %1 misused?', CaseData.Forename),
+      text: contentFor('question.select_misused_drugs.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: 'Select all that apply.',
+  hint: contentFor('question.select_misused_drugs.hint'),
   items: drugsListItems,
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: "Select which drugs they've misused",
+      message: contentFor('question.select_misused_drugs.validation'),
     }),
   ],
 })
