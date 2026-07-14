@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import { test } from '../../support/fixtures'
-import { checkHeaderVisibility, checkLinkOpens } from '../../testUtils'
+import { checkHeaderVisibility, checkLinkOpensInCurrentTab } from '../../testUtils'
 
 const accessibilityPageUrl = '/platform/accessibility'
 
@@ -27,28 +27,28 @@ test.describe('Accessibility page', () => {
     const spotCheckReportLink = page.getByRole('link', { name: /spot check report/i })
     const fullAccessibilityReportLink = page.getByRole('link', { name: /full accessibility test report/i })
 
-    await checkLinkOpens(abilityNetLink)
+    await checkLinkOpensInCurrentTab(abilityNetLink)
     await expect(abilityNetLink).toHaveAttribute('href', 'https://mcmw.abilitynet.org.uk')
 
-    await checkLinkOpens(webContentAccessibilityLink)
+    await checkLinkOpensInCurrentTab(webContentAccessibilityLink)
     await expect(webContentAccessibilityLink).toHaveAttribute('href', 'https://www.w3.org/TR/WCAG22')
 
-    await checkLinkOpens(feedbackAndContactLink)
+    await checkLinkOpensInCurrentTab(feedbackAndContactLink)
     await expect(feedbackAndContactLink).toHaveAttribute(
       'href',
       'https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u',
     )
 
-    await checkLinkOpens(equalityAdvisoryLink)
+    await checkLinkOpensInCurrentTab(equalityAdvisoryLink)
     await expect(equalityAdvisoryLink).toHaveAttribute('href', 'https://www.equalityadvisoryservice.com')
 
-    await checkLinkOpens(spotCheckReportLink)
+    await checkLinkOpensInCurrentTab(spotCheckReportLink)
     await expect(spotCheckReportLink).toHaveAttribute(
       'href',
       'https://uv3383-moj-arns-spot-check.uservisionaccessibility.co.uk/index.html',
     )
 
-    await checkLinkOpens(fullAccessibilityReportLink)
+    await checkLinkOpensInCurrentTab(fullAccessibilityReportLink)
     await expect(fullAccessibilityReportLink).toHaveAttribute(
       'href',
       'https://uv3334-moj-arns-sentence-plan.uservisionaccessibility.co.uk/index.html',

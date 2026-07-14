@@ -16,7 +16,7 @@ export const checkHeaderVisibility = async (page: Page, headerLevel: number, hea
   await expect(page.getByRole('heading', { level: headerLevel, name: headerText })).toBeVisible()
 }
 
-export const checkLinkOpens = async (link: Locator) => {
+export const checkLinkOpensInCurrentTab = async (link: Locator) => {
   await expect(link).toBeVisible()
   await expect(link).toHaveClass(/govuk-link--no-visited-state/)
 }
