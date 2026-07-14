@@ -108,6 +108,11 @@ const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
       modifyRequest: request => ({ ...request, sentencePlanVersion: undefined }),
     },
   },
+  TIERING_ASSESSMENT: {
+    handover: {
+      availableServices: Object.keys(config.handoverTargets) as TargetApplication[],
+    },
+  },
 }
 
 /**
@@ -146,8 +151,17 @@ export function resolveHandoverConfig(flags: TrainingScenarioFlag[]): ResolvedHa
       return acc
     }
 
+    const flagToTarget = mapFlagToTargetApplication(flag)
+
+    const isAvailableService = handover.availableServices?.includes(flagToTarget)
+
+    const filteredServices =
+      isAvailableService && !acc.availableServices.includes(flagToTarget)
+        ? [...acc.availableServices, flagToTarget]
+        : acc.availableServices
+
     return {
-      availableServices: handover.availableServices ?? acc.availableServices,
+      availableServices: filteredServices,
       urlParams: { ...acc.urlParams, ...handover.urlParams },
       modifyRequest: handover.modifyRequest
         ? req => handover.modifyRequest!(acc.modifyRequest(req))
@@ -221,5 +235,18 @@ export async function runAfterCreateSessionHooks(
       // eslint-disable-next-line no-await-in-loop -- Hooks must run sequentially
       await handler.session.afterCreate(deps, context, session)
     }
+  }
+}
+
+export function mapFlagToTargetApplication(flag: TrainingScenarioFlag): TargetApplication {
+  switch (flag) {
+    case 'SAN_PRIVATE_BETA':
+      return 'strengths-and-needs'
+
+    case 'TIERING_ASSESSMENT':
+      return 'tiering-assessment'
+
+    default:
+      return 'sentence-plan'
   }
 }
