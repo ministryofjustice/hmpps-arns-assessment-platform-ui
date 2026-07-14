@@ -34,7 +34,7 @@ export const pageContent = HtmlBlock({
       </a>
       standard.
     </p>
-    <p>This website is filly compliant with the WCAG 2.2 AA standard.</p>
+    <p>This website is fully compliant with the WCAG 2.2 AA standard.</p>
 
     <h2 class="govuk-heading-m">Feedback and contact information</h2>
     <p class="govuk-body">
