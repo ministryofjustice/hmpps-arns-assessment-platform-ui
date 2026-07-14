@@ -15,17 +15,6 @@ test.describe('Accessibility page', () => {
     await checkHeaderVisibility(page, 3, 'Enforcement procedure')
     await checkHeaderVisibility(page, 2, 'Preparation of this accessibility statement')
 
-    await checkHeaderVisibility(page, 2, 'Technical information about this website’s accessibility')
-    await checkHeaderVisibility(page, 2, 'Non-accessible content')
-    await checkHeaderVisibility(page, 2, 'What we’re doing to improve accessibility')
-    await checkHeaderVisibility(page, 2, 'Preparation of this accessibility statement')
-    await checkHeaderVisibility(page, 3, 'Enforcement procedure')
-    await checkHeaderVisibility(page, 3, 'Compliance status')
-    await checkHeaderVisibility(page, 3, 'Responsive design and visual layout')
-    await checkHeaderVisibility(page, 3, 'Screen reader announcements')
-    await checkHeaderVisibility(page, 3, 'Keyboard operability')
-    await checkHeaderVisibility(page, 3, 'Page structure and navigation')
-
     // links open in a new tab:
     const abilityNetLink = page.getByRole('link', { name: /advice on making your device easier to use/i })
     const webContentAccessibilityLink = page.getByRole('link', {
@@ -33,7 +22,7 @@ test.describe('Accessibility page', () => {
     })
     const feedbackAndContactLink = page.getByRole('link', { name: /Contact us/i })
     const equalityAdvisoryLink = page.getByRole('link', {
-      name: /contact the Equality Advisory and Support Service (EASS)/i,
+      name: /contact the Equality Advisory and Support Service/i,
     })
     const spotCheckReportLink = page.getByRole('link', { name: /spot check report/i })
     const fullAccessibilityReportLink = page.getByRole('link', { name: /full accessibility test report/i })
@@ -47,7 +36,7 @@ test.describe('Accessibility page', () => {
     await checkLinkOpens(feedbackAndContactLink)
     await expect(feedbackAndContactLink).toHaveAttribute(
       'href',
-      'https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2GF5fsslU5tImfiqSSPf6JhUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOSQlQCN0PWcu',
+      'https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u',
     )
 
     await checkLinkOpens(equalityAdvisoryLink)

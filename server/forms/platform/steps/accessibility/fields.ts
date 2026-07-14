@@ -21,7 +21,7 @@ export const pageContent = HtmlBlock({
     <p class="govuk-body">We’ve also made the website text as simple as possible to understand.</p>
     <p class="govuk-body">
       AbilityNet has
-        <a href="https://mcmw.abilitynet.org.uk/" class="govuk-link govuk-link--no-visited-state">
+        <a href="https://mcmw.abilitynet.org.uk" class="govuk-link govuk-link--no-visited-state">
             advice on making your device easier to use
         </a>
       if you have a disability.
