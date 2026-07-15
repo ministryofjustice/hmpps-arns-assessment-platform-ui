@@ -197,6 +197,49 @@ test.describe('Health and wellbeing Page', () => {
       `)
     })
 
+    test('validation give details option', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'health_conditions', value: 'YES' },
+          {
+            question: 'has_health_conditions_details',
+            value: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+            when an unknown printer took a galley of type and scrambled it to make a type 
+            specimen book. It has survived not only five centuries, but also the leap into 
+            electronic typesetting, remaining essentially unchanged. It was popularised in 
+            the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
+            and more recently with desktop publishing software like Aldus PageMaker including 
+            versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and 
+            typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever 
+            since the 1500s, when an unknown printer took a galley of type and scrambled it to 
+            make a type specimen book. It has survived not only five centuries, but also the leap 
+            into electronic typesetting, remaining essentially unchanged. It was popularised in the 
+            1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more 
+            recently with desktop publishing software like Aldus PageMaker including versions of 
+            Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an 
+            unknown printer took a galley of type and scrambled it to make a type specimen book. 
+            It has survived not only five centuries, but also the leap into electronic typesetting, 
+            remaining essentially unchanged. It was popularised in the 1960s with the release of 
+            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing 
+            software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply 
+            dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's 
+            standard dummy text ever since the 1500s, when an unknown printer took a galley of type 
+            and scrambled it to make a type specimen book. It has survived not only five.`,
+          },
+        ]).save()
+
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL)
+
+      const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any physical health conditions')
+
+      expect(await healthAndWellbeingPage.giveDetailsCharacterError('300')).toBeVisible()
+    })
+
     test('shows no physical mental health questions', async ({
       page,
       createSession,

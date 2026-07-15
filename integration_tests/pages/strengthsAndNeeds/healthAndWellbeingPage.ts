@@ -35,4 +35,8 @@ export default class HealthAndWellbeingPage extends AbstractPage {
     await expect(page.getByText(pageHeading)).toBeVisible()
     return healthAndWellbeingPage
   }
+
+  async giveDetailsCharacterError(count: string) {
+    return this.page.getByText(`You have ${count} characters too many`).first()
+  }
 }

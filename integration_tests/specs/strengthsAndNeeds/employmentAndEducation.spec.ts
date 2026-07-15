@@ -184,6 +184,26 @@ test.describe('Employment and education Page', () => {
       `)
     })
 
+    test('validation employed option', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'EMPLOYED' }]).save()
+
+      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
+
+      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(
+        page,
+        'current employment status',
+      )
+
+      await employmentAndEducationPage.saveAndContinue.click()
+      await employmentAndEducationPage.selectTypeOfEmployment.click()
+
+      await expect(employmentAndEducationPage.fullTime).toBeFocused()
+    })
+
     test('shows self-employed questions', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
       const { handoverLink, sanAssessmentId } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
@@ -309,6 +329,31 @@ test.describe('Employment and education Page', () => {
       `)
     })
 
+    test('validation currently unavailable option', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+      baseURL,
+    }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' }]).save()
+
+      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
+
+      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(
+        page,
+        'current employment status',
+      )
+
+      await employmentAndEducationPage.saveAndContinue.click()
+      await employmentAndEducationPage.selectOneOption.click()
+
+      await expect(employmentAndEducationPage.yesHasBeenEmployedBefore).toBeFocused()
+    })
+
     test('shows unemployed - actively looking for work questions', async ({
       page,
       createSession,
@@ -383,6 +428,31 @@ test.describe('Employment and education Page', () => {
       `)
     })
 
+    test('validation unemployed - actively looking option', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+      baseURL,
+    }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' }]).save()
+
+      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
+
+      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(
+        page,
+        'current employment status',
+      )
+
+      await employmentAndEducationPage.saveAndContinue.click()
+      await employmentAndEducationPage.selectOneOption.click()
+
+      await expect(employmentAndEducationPage.yesHasBeenEmployedBefore).toBeFocused()
+    })
+
     test('shows unemployed - not actively looking for work questions', async ({
       page,
       createSession,
@@ -455,6 +525,31 @@ test.describe('Employment and education Page', () => {
         - group "Does Test want to make changes to their employment and education?"
         - button "Save and continue"
       `)
+    })
+
+    test('validation unemployed - not actively looking option', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+      baseURL,
+    }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' }]).save()
+
+      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
+
+      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(
+        page,
+        'current employment status',
+      )
+
+      await employmentAndEducationPage.saveAndContinue.click()
+      await employmentAndEducationPage.selectOneOption.click()
+
+      await expect(employmentAndEducationPage.yesHasBeenEmployedBefore).toBeFocused()
     })
   })
 

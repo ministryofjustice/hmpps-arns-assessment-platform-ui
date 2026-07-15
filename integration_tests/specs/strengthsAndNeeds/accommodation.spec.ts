@@ -28,7 +28,7 @@ test.describe('Accommodation Page', () => {
       `)
     })
 
-    test('shows settled questions', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+    test('shows settled questions', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
       const { handoverLink, sanAssessmentId } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
@@ -96,7 +96,23 @@ test.describe('Accommodation Page', () => {
       `)
     })
 
-    test('shows temporary questions', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+    test('validation settled option', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([{ question: 'current_accommodation', value: 'SETTLED' }]).save()
+
+      await navigateToStrengthsAndNeeds(page, handoverLink)
+      const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
+
+      await accommodationPage.saveAndContinue.click()
+      await accommodationPage.selectTypeOfAccommodation('settled')
+
+      await expect(accommodationPage.homeowner).toBeFocused()
+    })
+
+    test('shows temporary questions', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
       const { handoverLink, sanAssessmentId } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
@@ -123,7 +139,23 @@ test.describe('Accommodation Page', () => {
       `)
     })
 
-    test('shows no accommodation questions', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+    test('validation temporary option', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([{ question: 'current_accommodation', value: 'TEMPORARY' }]).save()
+
+      await navigateToStrengthsAndNeeds(page, handoverLink)
+      const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
+
+      await accommodationPage.saveAndContinue.click()
+      await accommodationPage.selectTypeOfAccommodation('temporary')
+
+      await expect(accommodationPage.approvedPremises).toBeFocused()
+    })
+
+    test('shows no accommodation questions', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
       const { handoverLink, sanAssessmentId } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
@@ -149,6 +181,22 @@ test.describe('Accommodation Page', () => {
         - group "Does Test want to make changes to their accommodation?"
         - button "Save and continue"
       `)
+    })
+
+    test('validation no accommodation option', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([{ question: 'current_accommodation', value: 'NO_ACCOMMODATION' }]).save()
+
+      await navigateToStrengthsAndNeeds(page, handoverLink)
+      const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
+
+      await accommodationPage.saveAndContinue.click()
+      await accommodationPage.selectTypeOfAccommodation('no accommodation')
+
+      await expect(accommodationPage.campsite).toBeFocused()
     })
   })
 

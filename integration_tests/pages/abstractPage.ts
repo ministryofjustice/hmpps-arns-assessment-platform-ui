@@ -15,12 +15,15 @@ export default class AbstractPage {
   /** account type text shown under username in header */
   readonly accountType: Locator
 
+  readonly saveAndContinue: Locator
+
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
     this.usersName = page.getByTestId('header-user-name')
     this.signoutLink = page.getByText('Sign out')
     this.accountType = page.locator('.arns-common-header__menu-toggle-label, .arns-common-header__oasys-account-label')
+    this.saveAndContinue = page.getByRole('button', { name: 'Save and continue' })
   }
 
   async signOut() {

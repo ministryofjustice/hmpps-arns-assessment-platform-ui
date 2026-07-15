@@ -9,11 +9,23 @@ export default class EmploymentAndEducationPage extends AbstractPage {
 
   readonly mainSection: Locator
 
+  readonly selectTypeOfEmployment: Locator
+
+  readonly fullTime: Locator
+
+  readonly selectOneOption: Locator
+
+  readonly yesHasBeenEmployedBefore: Locator
+
   private constructor(page: Page) {
     super(page)
     this.incomplete = page.getByText('Incomplete')
     this.currentEmploymentStatus = page.getByTestId('main-form')
     this.mainSection = page.getByText('Back Employment and education')
+    this.selectTypeOfEmployment = page.getByRole('link', { name: 'Select the type of employment' })
+    this.fullTime = page.getByLabel('Full-time')
+    this.selectOneOption = page.getByRole('link', { name: 'Select one option' })
+    this.yesHasBeenEmployedBefore = page.getByRole('radio', { name: 'Yes, has been employed before' })
   }
 
   /**
