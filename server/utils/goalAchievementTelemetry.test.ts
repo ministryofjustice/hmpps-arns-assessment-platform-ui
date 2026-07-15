@@ -4,15 +4,13 @@ import {
 } from './goalAchievementTelemetry'
 
 describe('goal achievement telemetry', () => {
-  const noValue = "No, go to Pip's plan"
-
   it('does not include a previous value for the first selection', () => {
     const buildRadioEvent = createGoalAchievementRadioTelemetryTracker()
 
-    expect(buildRadioEvent('yes', noValue)).toEqual({
+    expect(buildRadioEvent('yes')).toEqual({
       name: 'mark-goal-achieved-yes-radio',
       properties: {
-        'Selected Value': 'Yes, mark as achieved',
+        'Selected Value': 'Yes, mark it as achieved',
       },
     })
   })
@@ -20,13 +18,13 @@ describe('goal achievement telemetry', () => {
   it('includes the previous value after the selection changes', () => {
     const buildRadioEvent = createGoalAchievementRadioTelemetryTracker()
 
-    buildRadioEvent('yes', noValue)
+    buildRadioEvent('yes')
 
-    expect(buildRadioEvent('no', noValue)).toEqual({
+    expect(buildRadioEvent('no')).toEqual({
       name: 'mark-goal-achieved-no-radio',
       properties: {
-        'Selected Value': noValue,
-        'Previous Value': 'Yes, mark as achieved',
+        'Selected Value': 'No, go to plan',
+        'Previous Value': 'Yes, mark it as achieved',
       },
     })
   })
@@ -34,13 +32,22 @@ describe('goal achievement telemetry', () => {
   it('tracks each selection change in sequence', () => {
     const buildRadioEvent = createGoalAchievementRadioTelemetryTracker()
 
-    buildRadioEvent('no', noValue)
-    buildRadioEvent('yes', noValue)
+    buildRadioEvent('no')
+    buildRadioEvent('yes')
 
-    expect(buildRadioEvent('no', noValue).properties).toEqual({
-      'Selected Value': noValue,
-      'Previous Value': 'Yes, mark as achieved',
+    expect(buildRadioEvent('no').properties).toEqual({
+      'Selected Value': 'No, go to plan',
+      'Previous Value': 'Yes, mark it as achieved',
     })
+  })
+
+  it('uses a non-personal value for the No option', () => {
+    const buildRadioEvent = createGoalAchievementRadioTelemetryTracker()
+
+    const event = buildRadioEvent('no')
+
+    expect(event.properties['Selected Value']).toBe('No, go to plan')
+    expect(JSON.stringify(event)).not.toContain('Pip')
   })
 
   it.each([true, false])('builds the note event without including note content', noteAdded => {

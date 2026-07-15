@@ -15,22 +15,23 @@ export interface GoalAchievementNoteTelemetryEvent {
   }
 }
 
-const yesValue = 'Yes, mark as achieved'
+const selectionValues: Record<GoalAchievementSelection, string> = {
+  yes: 'Yes, mark it as achieved',
+  no: 'No, go to plan',
+}
 
-const getSelectionValue = (selection: GoalAchievementSelection, noValue: string): string =>
-  selection === 'yes' ? yesValue : noValue
+const getSelectionValue = (selection: GoalAchievementSelection): string => selectionValues[selection]
 
 const buildGoalAchievementRadioTelemetryEvent = (
   selection: GoalAchievementSelection,
-  noValue: string,
   previousSelection?: GoalAchievementSelection,
 ): GoalAchievementRadioTelemetryEvent => ({
   name: `mark-goal-achieved-${selection}-radio`,
   properties: {
-    'Selected Value': getSelectionValue(selection, noValue),
+    'Selected Value': getSelectionValue(selection),
     ...(previousSelection &&
       previousSelection !== selection && {
-        'Previous Value': getSelectionValue(previousSelection, noValue),
+        'Previous Value': getSelectionValue(previousSelection),
       }),
   },
 })
@@ -38,8 +39,8 @@ const buildGoalAchievementRadioTelemetryEvent = (
 export const createGoalAchievementRadioTelemetryTracker = (initialSelection?: GoalAchievementSelection) => {
   let previousSelection = initialSelection
 
-  return (selection: GoalAchievementSelection, noValue: string): GoalAchievementRadioTelemetryEvent => {
-    const event = buildGoalAchievementRadioTelemetryEvent(selection, noValue, previousSelection)
+  return (selection: GoalAchievementSelection): GoalAchievementRadioTelemetryEvent => {
+    const event = buildGoalAchievementRadioTelemetryEvent(selection, previousSelection)
     previousSelection = selection
     return event
   }

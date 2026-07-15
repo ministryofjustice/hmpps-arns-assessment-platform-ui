@@ -6,11 +6,6 @@ import { appInsights } from './appInsights.mjs'
 
 const RADIO_NAME = 'has_achieved_goal'
 
-function getNoValue(form) {
-  const noRadio = form.querySelector(`input[name="${RADIO_NAME}"][value="no"]`)
-  return noRadio?.labels?.[0]?.textContent?.trim()
-}
-
 export function initGoalAchievementTracking() {
   const radioGroup = document.querySelector(`input[name="${RADIO_NAME}"]`)
   const form = radioGroup?.closest('form')
@@ -25,16 +20,11 @@ export function initGoalAchievementTracking() {
     if (!appInsights) return
 
     const selectedRadio = event.target
-    const noValue = getNoValue(form)
-    if (
-      !selectedRadio?.matches?.(`input[name="${RADIO_NAME}"]`) ||
-      !noValue ||
-      !['yes', 'no'].includes(selectedRadio.value)
-    ) {
-      return
-    }
+    const isGoalAchievementRadio = selectedRadio?.matches?.(`input[name="${RADIO_NAME}"]`)
+    const isValidSelection = ['yes', 'no'].includes(selectedRadio?.value)
+    if (!isGoalAchievementRadio || !isValidSelection) return
 
-    appInsights.trackEvent(buildRadioEvent(selectedRadio.value, noValue))
+    appInsights.trackEvent(buildRadioEvent(selectedRadio.value))
   })
 
   form.addEventListener('submit', () => {
