@@ -17,12 +17,14 @@ export function initBackToTop() {
   }
 
   const update = () => {
-    // Measure only content above the footer so the link is not shown when the
-    // page is only marginally scrollable because of footer height.
-    const footer = document.querySelector('footer[role="contentinfo"]') ?? document.querySelector('.app-report-problem')
+    // Measure only the main page content, stopping at the "Report a problem"
+    // section (and the footer below it). This way the link is not shown when the
+    // page only needs to scroll because of those sections at the bottom.
+    const boundary =
+      document.querySelector('.app-report-problem') ?? document.querySelector('footer[role="contentinfo"]')
 
-    const contentHeight = footer
-      ? footer.getBoundingClientRect().top + window.scrollY
+    const contentHeight = boundary
+      ? boundary.getBoundingClientRect().top + window.scrollY
       : document.documentElement.scrollHeight
 
     const isScrollable = contentHeight > window.innerHeight
