@@ -3,10 +3,11 @@ import { appInsights } from './appInsights.mjs'
 const ACTOR_SELECT_PREFIX = 'step_actor_'
 
 // 'person_on_probation' renders as the subject's forename, so it must never reach
-// telemetry - resolve it to a stable label.
+// telemetry - resolve it to a stable label. The subject may be in the community
+// or in prison, so the label covers both rather than assuming probation.
 function resolveActorLabel(select) {
   const option = select.options[select.selectedIndex]
-  if (option?.value === 'person_on_probation') return 'Person on probation'
+  if (option?.value === 'person_on_probation') return 'Person on probation/in prison'
 
   return option?.text || ''
 }
