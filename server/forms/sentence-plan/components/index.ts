@@ -7,6 +7,7 @@ import {
   goalSummaryCardHistory,
 } from './goal-summary-card/goalSummaryCard'
 import { previousVersions } from './previous-versions/previousVersions'
+import { wrappingSelect } from './wrapping-select/wrappingSelect'
 
 export { AccessibleAutocomplete } from './accessible-autocomplete/accessibleAutocomplete'
 export { AssessmentInfoDetails } from './assessment-info-details/assessmentInfoDetails'
@@ -16,6 +17,7 @@ export {
   GoalSummaryCardDraft,
   GoalSummaryCardHistory,
 } from './goal-summary-card/goalSummaryCard'
+export { WrappingSelect } from './wrapping-select/wrappingSelect'
 
 export const sentencePlanComponents = [
   accessibleAutocomplete,
@@ -25,4 +27,5 @@ export const sentencePlanComponents = [
   goalSummaryCardAgreed,
   goalSummaryCardHistory,
   previousVersions,
+  wrappingSelect,
 ]

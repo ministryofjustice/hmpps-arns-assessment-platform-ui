@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import { test } from '../../support/fixtures'
-import { checkHeaderVisibility, checkLinkOpensInANewTab } from '../../testUtils'
+import { checkHeaderVisibility, checkLinkOpensInCurrentTab } from '../../testUtils'
 
 const accessibilityPageUrl = '/platform/accessibility'
 
@@ -11,42 +11,44 @@ test.describe('Accessibility page', () => {
 
     await checkHeaderVisibility(page, 1, 'Accessibility statement for Assess and plan: Sentence plan')
     await checkHeaderVisibility(page, 2, 'How accessible this website is')
-    await checkHeaderVisibility(page, 2, 'Technical information about this website’s accessibility')
-    await checkHeaderVisibility(page, 2, 'Non-accessible content')
-    await checkHeaderVisibility(page, 2, 'What we’re doing to improve accessibility')
-    await checkHeaderVisibility(page, 2, 'Preparation of this accessibility statement')
+    await checkHeaderVisibility(page, 2, 'Feedback and contact information')
     await checkHeaderVisibility(page, 3, 'Enforcement procedure')
-    await checkHeaderVisibility(page, 3, 'Compliance status')
-    await checkHeaderVisibility(page, 3, 'Responsive design and visual layout')
-    await checkHeaderVisibility(page, 3, 'Screen reader announcements')
-    await checkHeaderVisibility(page, 3, 'Keyboard operability')
-    await checkHeaderVisibility(page, 3, 'Page structure and navigation')
+    await checkHeaderVisibility(page, 2, 'Preparation of this accessibility statement')
 
     // links open in a new tab:
     const abilityNetLink = page.getByRole('link', { name: /advice on making your device easier to use/i })
-    const feedbackAndContactLink = page.getByRole('link', { name: /Contact us/i })
-    const equalityAdvisoryLink = page.getByRole('link', { name: /contact the Equality Advisory/i })
     const webContentAccessibilityLink = page.getByRole('link', {
       name: /Web Content Accessibility Guidelines version 2.2/i,
     })
+    const feedbackAndContactLink = page.getByRole('link', { name: /Contact us/i })
+    const equalityAdvisoryLink = page.getByRole('link', {
+      name: /contact the Equality Advisory and Support Service/i,
+    })
+    const spotCheckReportLink = page.getByRole('link', { name: /spot check report/i })
     const fullAccessibilityReportLink = page.getByRole('link', { name: /full accessibility test report/i })
 
-    await checkLinkOpensInANewTab(abilityNetLink)
-    await expect(abilityNetLink).toHaveAttribute('href', 'https://mcmw.abilitynet.org.uk/')
+    await checkLinkOpensInCurrentTab(abilityNetLink)
+    await expect(abilityNetLink).toHaveAttribute('href', 'https://mcmw.abilitynet.org.uk')
 
-    await checkLinkOpensInANewTab(feedbackAndContactLink)
+    await checkLinkOpensInCurrentTab(webContentAccessibilityLink)
+    await expect(webContentAccessibilityLink).toHaveAttribute('href', 'https://www.w3.org/TR/WCAG22')
+
+    await checkLinkOpensInCurrentTab(feedbackAndContactLink)
     await expect(feedbackAndContactLink).toHaveAttribute(
       'href',
       'https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u',
     )
 
-    await checkLinkOpensInANewTab(equalityAdvisoryLink)
+    await checkLinkOpensInCurrentTab(equalityAdvisoryLink)
     await expect(equalityAdvisoryLink).toHaveAttribute('href', 'https://www.equalityadvisoryservice.com')
 
-    await checkLinkOpensInANewTab(webContentAccessibilityLink)
-    await expect(webContentAccessibilityLink).toHaveAttribute('href', 'https://www.w3.org/TR/WCAG22')
+    await checkLinkOpensInCurrentTab(spotCheckReportLink)
+    await expect(spotCheckReportLink).toHaveAttribute(
+      'href',
+      'https://uv3383-moj-arns-spot-check.uservisionaccessibility.co.uk/index.html',
+    )
 
-    await checkLinkOpensInANewTab(fullAccessibilityReportLink)
+    await checkLinkOpensInCurrentTab(fullAccessibilityReportLink)
     await expect(fullAccessibilityReportLink).toHaveAttribute(
       'href',
       'https://uv3334-moj-arns-sentence-plan.uservisionaccessibility.co.uk/index.html',

@@ -42,6 +42,7 @@ generic-service:
     FEATURE_FLAG_URL: 'https://feature-toggles-dev.hmpps.service.justice.gov.uk'
     SERVICE_NOW_FORM_URL: '#service-now-link'
     ENVIRONMENT_NAME: DEV
+    FORGE_DEVTOOLS_ENABLED: 'true'
     AUDIT_ENABLED: 'true'
     FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'true'
     SMART_SURVEY_POPUP_CODE: 'XF5PNV'
