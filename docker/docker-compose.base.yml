@@ -177,6 +177,8 @@ services:
       FORM_TRAINING_SESSION_LAUNCHER_ENABLED: true
       CACHE_REDIS_HOST: redis
       SERVICE_NOW_FORM_URL: '#service-now-link'
+      NATIONAL_ROLLOUT_FEEDBACK_URL: national-rollout-feedback-url
+      FEEDBACK_FORM_URL: private-beta-feedback-url
       OASYS_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
       MPOP_URL: 'http://aap-ui:3000/sign-in'
 
