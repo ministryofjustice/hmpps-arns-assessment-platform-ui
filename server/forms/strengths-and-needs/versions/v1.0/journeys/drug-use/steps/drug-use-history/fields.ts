@@ -16,6 +16,11 @@ import {
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { drugsList, fieldCode } from '../../constants'
 import { CaseData } from '../../../../constants/formVersion'
+import {Question} from "../../constants/question";
+import {contentFor} from "../../locales";
+import {Option} from "../../constants/option";
+import {CommonOption} from "../../../../constants/commonOption";
+import {commonContentFor} from "../../../../locales";
 
 const lastSixMonthConditions = drugsList.map(drug =>
   Answer(fieldCode('drug_last_used', drug.value)).match(Condition.Equals('LAST_SIX')),
@@ -30,97 +35,99 @@ const anyDrugUsedInLastSixMonths = or(
 // --- Reasons for use ---
 
 export const drugsReasonsForUse = GovUKCheckboxInput({
-  code: 'drugs_reasons_for_use',
+  code: Question.drugs_reasons_for_use,
   multiple: true,
   fieldset: {
     legend: {
       text: when(anyDrugUsedInLastSixMonths)
-        .then(Format('Why does %1 use drugs?', CaseData.Forename))
-        .else(Format('Why did %1 use drugs?', CaseData.Forename)),
+        .then(contentFor('question.drugs_reasons_for_use.text.usedLastSixMonths', CaseData.Forename))
+        .else(contentFor('question.drugs_reasons_for_use.text.default', CaseData.Forename)),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: 'Consider why they started using, their history, and any triggers. Select all that apply.',
+  hint: contentFor('question.drugs_reasons_for_use.hint'),
   items: [
-    { value: 'CULTURAL_OR_RELIGIOUS', text: 'Cultural or religious practice' },
-    { value: 'CURIOSITY_OR_EXPERIMENTATION', text: 'Curiosity or experimentation' },
-    { value: 'ENHANCE_PERFORMANCE', text: 'Enhance performance' },
-    { value: 'ESCAPISM_OR_AVOIDANCE', text: 'Escapism or avoidance' },
-    { value: 'MANAGING_EMOTIONAL_ISSUES', text: 'Manage stress or emotional issues' },
-    { value: 'PEER_PRESSURE', text: 'Peer pressure or social influence' },
-    { value: 'RECREATION_OR_PLEASURE', text: 'Recreation or pleasure' },
-    { value: 'SELF_MEDICATION', text: 'Self-medication' },
-    { value: 'OTHER', text: 'Other' },
+    { value: Option.cultural_or_religious, text: contentFor('question.drugs_reasons_for_use.option.CULTURAL_OR_RELIGIOUS') },
+    { value: Option.curiosity_or_experimentation, text: contentFor('question.drugs_reasons_for_use.option.CURIOSITY_OR_EXPERIMENTATION') },
+    { value: Option.enhance_performance, text: contentFor('question.drugs_reasons_for_use.option.ENHANCE_PERFORMANCE') },
+    { value: Option.escapism_or_avoidance, text: contentFor('question.drugs_reasons_for_use.option.ESCAPISM_OR_AVOIDANCE') },
+    { value: Option.managing_emotional_issues, text: contentFor('question.drugs_reasons_for_use.option.MANAGING_EMOTIONAL_ISSUES') },
+    { value: Option.peer_pressure, text: contentFor('question.drugs_reasons_for_use.option.PEER_PRESSURE') },
+    { value: Option.recreation_or_pleasure, text: contentFor('question.drugs_reasons_for_use.option.RECREATION_OR_PLEASURE') },
+    { value: Option.self_medication, text: contentFor('question.drugs_reasons_for_use.option.SELF_MEDICATION') },
+    { value: CommonOption.other, text: commonContentFor('option.OTHER') },
   ],
   validWhen: [
     validation({
       condition: not(and(anyDrugUsedInLastSixMonths, Self().not.match(Condition.IsRequired()))),
-      message: 'Select why they use drugs',
+      message: contentFor('question.drugs_reasons_for_use.validation.usedLastSixMonths'),
     }),
     validation({
       condition: not(and(not(anyDrugUsedInLastSixMonths), Self().not.match(Condition.IsRequired()))),
-      message: 'Select why they used drugs',
+      message: contentFor('question.drugs_reasons_for_use.validation.default'),
     }),
   ],
 })
 
 export const drugsReasonsForUseDetails = GovUKCharacterCount({
-  code: 'drugs_reasons_for_use_details',
-  label: 'Give details (optional)',
+  code: Question.drugs_reasons_for_use_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
 })
 
 // --- How drug use has affected their life ---
 
 export const drugsAffectedTheirLife = GovUKCheckboxInput({
-  code: 'drugs_affected_their_life',
+  code: Question.drugs_affected_their_life,
   multiple: true,
   fieldset: {
     legend: {
-      text: Format("How has %1's drug use affected their life?", CaseData.ForenamePossessive),
+      text: contentFor('question.drugs_affected_their_life.text', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: 'Select all that apply.',
+  hint: commonContentFor('select_all_that_apply'),
   items: [
     {
-      value: 'BEHAVIOUR',
-      text: 'Behaviour',
-      hint: { text: 'Includes unemployment, disruption on education or lack of productivity.' },
+      value: Option.behaviour,
+      text: contentFor('question.drugs_affected_their_life.option.BEHAVIOUR.text'),
+      hint: { text: contentFor('question.drugs_affected_their_life.option.BEHAVIOUR.hint') },
     },
     {
-      value: 'COMMUNITY',
-      text: 'Community',
-      hint: { text: 'Includes limited opportunities or judgement from others.' },
+      value: Option.community,
+      text: contentFor('question.drugs_affected_their_life.option.COMMUNITY.text'),
+      hint: { text: contentFor('question.drugs_affected_their_life.option.COMMUNITY.hint') },
     },
     {
-      value: 'FINANCES',
-      text: 'Finances',
-      hint: { text: 'Includes having no money.' },
-    },
-    { value: 'LINKS_TO_OFFENDING', text: 'Links to offending' },
-    {
-      value: 'HEALTH',
-      text: 'Physical or mental health',
-      hint: { text: 'Includes overdose.' },
+      value: Option.finances,
+      text: contentFor('question.drugs_affected_their_life.option.FINANCES.text'),
+      hint: { text: contentFor('question.drugs_affected_their_life.option.FINANCES.hint') },
     },
     {
-      value: 'RELATIONSHIPS',
-      text: 'Relationships',
-      hint: { text: 'Includes isolation or neglecting responsibilities.' },
+      value: Option.links_to_offending,
+      text: contentFor('question.drugs_affected_their_life.option.LINKS_TO_OFFENDING.text') },
+    {
+      value: Option.health,
+      text: contentFor('question.drugs_affected_their_life.option.HEALTH.text'),
+      hint: { text: contentFor('question.drugs_affected_their_life.option.HEALTH.hint') },
     },
-    { value: 'OTHER', text: 'Other' },
+    {
+      value: Option.relationships,
+      text: contentFor('question.drugs_affected_their_life.option.RELATIONSHIPS.text'),
+      hint: { text: contentFor('question.drugs_affected_their_life.option.RELATIONSHIPS.hint') },
+    },
+    { value: CommonOption.other, text: commonContentFor('option.OTHER') },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select how their drug use has affected their life',
+      message: contentFor('question.drugs_affected_their_life.validation'),
     }),
   ],
 })
 
 export const drugsAffectedTheirLifeDetails = GovUKCharacterCount({
-  code: 'drugs_affected_their_life_details',
+  code: Question.drugs_affected_their_life_details,
   label: 'Give details (optional)',
   maxLength: 2000,
 })
@@ -128,49 +135,107 @@ export const drugsAffectedTheirLifeDetails = GovUKCharacterCount({
 // --- Help and future ---
 
 export const drugsAnythingHelpedStopOrReduceUse = GovUKCharacterCount({
-  code: 'drugs_anything_helped_stop_or_reduce_use',
+  code: Question.drugs_anything_helped_stop_or_reduce_use,
   label: {
-    text: Format('Has anything helped %1 stop or reduce their drug use? (optional)', CaseData.Forename),
+    text: contentFor('question.drugs_anything_helped_stop_or_reduce_use.text', CaseData.Forename),
     classes: 'govuk-label--m',
   },
-  hint: 'Note any treatment or lifestyle changes that have helped them.',
+  hint: contentFor('question.drugs_anything_helped_stop_or_reduce_use.hint'),
   maxLength: 2000,
+  visibleWhen: anyDrugUsedInLastSixMonths
 })
 
 export const drugsWhatCouldHelpNotUseDrugsInFuture = GovUKCharacterCount({
-  code: 'drugs_what_could_help_not_use_drugs_in_future',
+  code: Question.drugs_what_could_help_not_use_drugs_in_future,
   label: {
     text: Format('What could help %1 not use drugs in the future? (optional)', CaseData.Forename),
     classes: 'govuk-label--m',
   },
   maxLength: 2000,
+  visibleWhen: not(anyDrugUsedInLastSixMonths)
 })
 
-// --- Want to make changes ---
+// --- Wants to make changes ---
+
+const hasMadeChangesAccommodationDetails = GovUKCharacterCount({
+  code: Question.has_made_positive_changes_accommodation_details,
+  label: commonContentFor('optional_details'),
+  maxLength: 2000,
+  dependentWhen: Answer(Question.drug_use_changes)
+    .match(Condition.Equals(CommonOption.has_made_changes)),
+})
+
+const activelyMakingChangesAccommodationDetails = GovUKCharacterCount({
+  code: Question.actively_making_changes_accommodation_details,
+  label: commonContentFor('optional_details'),
+  maxLength: 2000,
+  dependentWhen: Answer(Question.drug_use_changes)
+    .match(Condition.Equals(CommonOption.is_making_changes)),
+})
+
+const wantsToMakeChangesKnowsHowToAccommodationDetails = GovUKCharacterCount({
+  code: Question.wants_to_make_changes_knows_how_to_accommodation_details,
+  label: commonContentFor('optional_details'),
+  maxLength: 2000,
+  dependentWhen: Answer(Question.drug_use_changes)
+    .match(Condition.Equals(CommonOption.wants_to_make_changes_knows_how_to)),
+})
+
+const wantsToMakeChangesNeedsHelpAccommodationDetails = GovUKCharacterCount({
+  code: Question.wants_to_make_changes_needs_help_accommodation_details,
+  label: commonContentFor('optional_details'),
+  maxLength: 2000,
+  dependentWhen: Answer(Question.drug_use_changes)
+    .match(Condition.Equals(CommonOption.wants_to_make_changes_needs_help)),
+})
+
+const thinkingAboutMakingChangesAccommodationDetails = GovUKCharacterCount({
+  code: Question.thinking_about_making_changes_accommodation_details,
+  label: commonContentFor('optional_details'),
+  maxLength: 2000,
+  dependentWhen: Answer(Question.drug_use_changes)
+    .match(Condition.Equals(CommonOption.thinking_about_making_changes)),
+})
+
+const doesNotWantToMakeChangesAccommodationDetails = GovUKCharacterCount({
+  code: Question.does_not_want_to_make_changes_accommodation_details,
+  label: commonContentFor('optional_details'),
+  maxLength: 2000,
+  dependentWhen: Answer(Question.drug_use_changes)
+    .match(Condition.Equals(CommonOption.does_not_want_to_make_changes)),
+})
+
+const doesNotWantToAnswerAccommodationDetails = GovUKCharacterCount({
+  code: Question.does_not_want_to_answer_accommodation_details,
+  label: commonContentFor('optional_details'),
+  maxLength: 2000,
+  dependentWhen: Answer(Question.drug_use_changes)
+    .match(Condition.Equals(CommonOption.does_not_want_to_answer)),
+})
 
 export const drugUseChanges = GovUKRadioInput({
-  code: 'drug_use_changes',
+  code: Question.drug_use_changes,
   fieldset: {
     legend: {
-      text: Format('Does %1 want to make changes to their drug use?', CaseData.Forename),
+      text: contentFor('question.drug_use_changes.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
-    { value: 'MADE_CHANGES', text: 'I have already made positive changes and want to maintain them' },
-    { value: 'MAKING_CHANGES', text: 'I am actively making changes' },
-    { value: 'WANT_TO_MAKE_CHANGES', text: 'I want to make changes and know how to' },
-    { value: 'NEEDS_HELP_TO_MAKE_CHANGES', text: 'I want to make changes but need help' },
-    { value: 'THINKING_ABOUT_MAKING_CHANGES', text: 'I am thinking about making changes' },
-    { value: 'DOES_NOT_WANT_TO_MAKE_CHANGES', text: 'I do not want to make changes' },
-    { value: 'DOES_NOT_WANT_TO_ANSWER', text: 'I do not want to answer' },
+    { value: CommonOption.has_made_changes, text: commonContentFor('option.HAS_MADE_CHANGES'), block: hasMadeChangesAccommodationDetails },
+    { value: CommonOption.is_making_changes, text: commonContentFor('option.IS_MAKING_CHANGES'), block: activelyMakingChangesAccommodationDetails },
+    { value: CommonOption.wants_to_make_changes_knows_how_to, text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'), block: wantsToMakeChangesKnowsHowToAccommodationDetails },
+    { value: CommonOption.wants_to_make_changes_needs_help, text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'), block: wantsToMakeChangesNeedsHelpAccommodationDetails },
+    { value: CommonOption.thinking_about_making_changes, text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'), block: thinkingAboutMakingChangesAccommodationDetails },
+    { value: CommonOption.does_not_want_to_make_changes, text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'), block: doesNotWantToMakeChangesAccommodationDetails },
+    { value: CommonOption.does_not_want_to_answer, text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'), block: doesNotWantToAnswerAccommodationDetails },
     { divider: 'or' },
-    { value: 'NOT_APPLICABLE', text: 'Not applicable' },
+    { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
-      message: 'Select if they want to make changes to their drug use',
+      message: contentFor('question.drug_use_changes.validation'),
     }),
   ],
 })

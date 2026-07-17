@@ -1,7 +1,8 @@
-import { Drug, drugsList, otherDrugOption } from '../../versions/v1.0/journeys/drug-use/constants'
+import { Drug, drugsList } from '../../versions/v1.0/journeys/drug-use/constants'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { contentFor } from '../../versions/v1.0/journeys/drug-use/locales'
 
-const allDrugs = [...drugsList, otherDrugOption]
+const allDrugs = [...drugsList]
 const drugByValue = new Map(allDrugs.map(drug => [drug.value, drug]))
 
 export const deriveDrugCategories =
@@ -9,9 +10,9 @@ export const deriveDrugCategories =
     const selectedDrugs = context.getAnswer('select_misused_drugs') as string[] | undefined
 
     if (!selectedDrugs?.length) {
-      context.setData('drugsUsedInLastSix', [])
-      context.setData('drugsUsedMoreThanSix', [])
-      context.setData('injectableSelectedDrugs', [])
+      context.setAnswer('drugsUsedInLastSix', [])
+      context.setAnswer('drugsUsedMoreThanSix', [])
+      context.setAnswer('injectableSelectedDrugs', [])
 
       return
     }
@@ -22,13 +23,8 @@ export const deriveDrugCategories =
 
     const resolveDrug = (drugValue: string): Drug | undefined => {
       const drug = drugByValue.get(drugValue)
-
       if (!drug) {
         return undefined
-      }
-
-      if (drug.value === otherDrugOption.value) {
-        return { ...drug, text: (context.getAnswer('other_drug_name') as string) ?? drug.text }
       }
 
       return drug
@@ -54,7 +50,7 @@ export const deriveDrugCategories =
       }
     })
 
-    context.setData('drugsUsedInLastSix', usedInLastSix)
-    context.setData('drugsUsedMoreThanSix', usedMoreThanSix)
-    context.setData('injectableSelectedDrugs', injectableSelected)
+    context.setAnswer('drugsUsedInLastSix', usedInLastSix)
+    context.setAnswer('drugsUsedMoreThanSix', usedMoreThanSix)
+    context.setAnswer('injectableSelectedDrugs', injectableSelected)
   }

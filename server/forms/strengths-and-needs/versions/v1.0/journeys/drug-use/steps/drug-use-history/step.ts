@@ -7,8 +7,10 @@ import {
   drugsAffectedTheirLife,
   drugsAffectedTheirLifeDetails,
   drugsAnythingHelpedStopOrReduceUse,
+  drugsWhatCouldHelpNotUseDrugsInFuture,
   drugUseChanges,
 } from './fields'
+import {Step} from "../../constants/step";
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -17,7 +19,7 @@ const saveButton = GovUKButton({
 })
 
 export const drugUseHistoryStep = step({
-  path: '/drug-use-history',
+  path: `/${Step.drug_use_history.path}`,
   title: 'Drug use background',
   blocks: [
     drugsReasonsForUse,
@@ -25,6 +27,7 @@ export const drugUseHistoryStep = step({
     drugsAffectedTheirLife,
     drugsAffectedTheirLifeDetails,
     drugsAnythingHelpedStopOrReduceUse,
+    drugsWhatCouldHelpNotUseDrugsInFuture,
     drugUseChanges,
     saveButton,
   ],

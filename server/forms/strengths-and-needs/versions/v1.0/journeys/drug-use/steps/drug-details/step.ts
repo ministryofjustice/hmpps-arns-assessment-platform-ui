@@ -1,15 +1,14 @@
-import { step, submit, access, redirect, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import {access, Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {GovUKButton} from '@ministryofjustice/hmpps-forge/govuk-components'
+import {StrengthsAndNeedsEffects} from '../../../../../../effects'
 import {
-  usedInLastSixMonthsSection,
-  sectionDivider,
-  usedMoreThanSixMonthsSection,
   injectedDrugsField,
   receivingTreatmentField,
-  anyDrugUsedInLastSix,
+  sectionDivider,
+  usedInLastSixMonthsSection,
+  usedMoreThanSixMonthsSection,
 } from './fields'
-import { Step } from '../../constants/step'
+import {Step} from '../../constants/step'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -29,7 +28,7 @@ export const drugDetailsStep = step({
     usedInLastSixMonthsSection,
     sectionDivider,
     usedMoreThanSixMonthsSection,
-    injectedDrugsField,
+    // injectedDrugsField,
     receivingTreatmentField,
     saveButton,
   ],
@@ -41,10 +40,8 @@ export const drugDetailsStep = step({
         effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
         next: [
           redirect({
-            when: anyDrugUsedInLastSix,
             goto: Step.drug_use_history.path,
           }),
-          redirect({ goto: Step.drug_use_history_more_than_six_months.path }),
         ],
       },
     }),

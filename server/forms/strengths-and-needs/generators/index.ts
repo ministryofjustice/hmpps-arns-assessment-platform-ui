@@ -1,6 +1,6 @@
 import {
   ChainableExpr,
-  defineGeneratorFunctions,
+  defineGeneratorFunctions, GeneratorBuilder,
   GeneratorFunctionExpr,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
@@ -10,8 +10,8 @@ import { getFormatterDateFromIso } from './getFormatterDateFromIso'
 export interface SANGeneratorShape {
   getTextFromListDefinition: (
     items: any[] | ChainableExpr<any[]>,
-    value: string | ResolvableString,
-  ) => GeneratorFunctionExpr
+    value: string | ResolvableString
+  ) => GeneratorBuilder<ResolvableString[]>
   getFormatterDateFromIso: (value: any | ChainableExpr<any>) => GeneratorFunctionExpr
 }
 
