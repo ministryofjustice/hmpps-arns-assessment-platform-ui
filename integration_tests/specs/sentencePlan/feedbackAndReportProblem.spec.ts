@@ -29,6 +29,7 @@ test.describe('Feedback and Report a Problem', () => {
       // AC2: Feedback link opens in a new tab
       const feedbackLink = phaseBanner.getByRole('link', { name: /give feedback/i })
       await expect(feedbackLink).toBeVisible()
+      await expect(feedbackLink).toHaveAttribute('href', 'private-beta-feedback-url')
       await expect(feedbackLink).toHaveAttribute('target', '_blank')
       await expect(feedbackLink).toHaveClass(/govuk-link--no-visited-state/)
 

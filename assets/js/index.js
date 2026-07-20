@@ -10,6 +10,7 @@ import { SessionTimeoutModal } from './session-timeout-modal.mjs'
 import { ArnsCommonHeader } from './arns-common-header.mjs'
 import { initAutosizeTextareas } from './autosize-textareas.mjs'
 import { initStepStatusTracking } from './step-status-tracking.mjs'
+import { initStepActorTracking } from './step-actor-tracking.mjs'
 import { initGoalAchievementTracking } from './goal-achievement-tracking.mjs'
 import '../../server/forms/sentence-plan/components/copy-button/copy-button.mjs'
 import '../../server/forms/sentence-plan/components/report-problem-link/report-problem-link.mjs'
@@ -21,6 +22,7 @@ initScrollRestore()
 initAutosizeTextareas()
 initBackToTop()
 initStepStatusTracking()
+initStepActorTracking()
 initGoalAchievementTracking()
 
 customElements.define('app-copy-code', CopyCode)

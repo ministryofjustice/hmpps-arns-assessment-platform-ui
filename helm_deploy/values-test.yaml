@@ -41,6 +41,8 @@ generic-service:
     MPOP_URL: 'https://manage-people-on-probation-test.hmpps.service.justice.gov.uk'
     FEATURE_FLAG_URL: 'https://feature-toggles-dev.hmpps.service.justice.gov.uk'
     SERVICE_NOW_FORM_URL: '#service-now-link'
+    NATIONAL_ROLLOUT_FEEDBACK_URL: 'national-rollout-feedback-url'
+    FEEDBACK_FORM_URL: 'private-beta-feedback-url'
     ENVIRONMENT_NAME: TEST
     FORGE_DEVTOOLS_ENABLED: 'true'
     AUDIT_ENABLED: 'true'
