@@ -20,8 +20,8 @@ function trackStatusChange(select, previousText, pageName) {
   appInsights.trackEvent({
     name: 'step-status-dropdown',
     properties: {
-      'Selected Value': selectedText,
-      'Previous Value': previousText,
+      SelectedValue: selectedText,
+      PreviousValue: previousText,
       Page: pageName,
       'Goal ID': getGoalId(),
     },
