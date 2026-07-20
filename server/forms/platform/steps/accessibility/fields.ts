@@ -1,11 +1,14 @@
+import { Format, Literal, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import config from '../../../../config'
 
 export const pageHeading = HtmlBlock({
   content: '<h1 class="govuk-heading-l">Accessibility statement for Assess and plan: Sentence plan</h1>',
 })
 
 export const pageContent = HtmlBlock({
-  content: `
+  content: Format(
+    `
     <p class="govuk-body">Last reviewed: 30 June 2026</p>
     <p class="govuk-body">This accessibility statement applies to the Sentence plan service.</p>
     <p class="govuk-body">This website is run by Justice Digital, part of the Ministry of Justice.</p>
@@ -38,7 +41,7 @@ export const pageContent = HtmlBlock({
 
     <h2 class="govuk-heading-m">Feedback and contact information</h2>
     <p class="govuk-body">
-      <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u" class="govuk-link govuk-link--no-visited-state">
+      <a href="%1" class="govuk-link govuk-link--no-visited-state">
           Contact us
       </a>
       if you:
@@ -77,4 +80,6 @@ export const pageContent = HtmlBlock({
             </li>
         </ul>
   `,
+    Literal(config.nationalRolloutFeedbackUrl).pipe(Transformer.String.EscapeHtml()),
+  ),
 })
