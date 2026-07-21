@@ -13,6 +13,7 @@ import {
   resolveActiveGoalFromRequest,
   setActiveGoalData,
   deriveAreasOfNeedData,
+  sanitizeDateValue,
 } from './goalUtils'
 
 const createMockContext = (
@@ -655,6 +656,44 @@ describe('goalUtils', () => {
 
     it('should map date_in_12_months to 12', () => {
       expect(MONTHS_BY_OPTION.date_in_12_months).toBe(12)
+    })
+  })
+
+  describe('sanitizeDateValue()', () => {
+    it('should return a valid ISO date string unchanged', () => {
+      expect(sanitizeDateValue('2025-06-15T00:00:00.000Z')).toBe('2025-06-15T00:00:00.000Z')
+    })
+
+    it('should return undefined for the literal string "null"', () => {
+      expect(sanitizeDateValue('null')).toBeUndefined()
+    })
+
+    it('should return undefined for null', () => {
+      expect(sanitizeDateValue(null)).toBeUndefined()
+    })
+
+    it('should return undefined for the literal string "undefined"', () => {
+      expect(sanitizeDateValue('undefined')).toBeUndefined()
+    })
+
+    it('should return undefined for an empty string', () => {
+      expect(sanitizeDateValue('')).toBeUndefined()
+    })
+
+    it('should return undefined when value is undefined', () => {
+      expect(sanitizeDateValue(undefined)).toBeUndefined()
+    })
+
+    it('should return undefined for an unparseable date string', () => {
+      expect(sanitizeDateValue('not-a-date')).toBeUndefined()
+    })
+
+    it('should return a valid short date string unchanged', () => {
+      expect(sanitizeDateValue('2025-06-15')).toBe('2025-06-15')
+    })
+
+    it('should return undefined for non-ISO short date string', () => {
+      expect(sanitizeDateValue('15-06-2025')).toBeUndefined()
     })
   })
 })
