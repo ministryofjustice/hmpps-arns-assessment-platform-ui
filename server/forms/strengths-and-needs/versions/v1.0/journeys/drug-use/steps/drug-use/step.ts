@@ -1,12 +1,11 @@
-import { step, submit, redirect, Post, Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { drugUse } from './fields'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
-import {Section, SectionStatus} from "../../../../constants/section";
-import {saveAndClearStaleAnswers} from "../../../../../../effects/assessment/saveAndClearStaleAnswers";
+import { Section, SectionStatus } from '../../../../constants/section'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',

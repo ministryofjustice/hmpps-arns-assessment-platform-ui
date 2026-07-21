@@ -5,7 +5,7 @@ import { CaseData } from '../../../../constants/formVersion'
 import { contentFor } from '../../locales'
 import { CommonOption } from '../../../../constants/commonOption'
 import { commonContentFor } from '../../../../locales'
-import {Question} from "../../constants/question";
+import { Question } from '../../constants/question'
 
 export const drugUse = GovUKRadioInput({
   code: Question.drug_use,

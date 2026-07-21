@@ -1,8 +1,8 @@
-import {access, Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {drugsSummaryTab} from './fields'
-import {Step} from "../../constants/step";
-import {Section, SectionStatus} from "../../../../constants/section";
+import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { drugsSummaryTab } from './fields'
+import { Step } from '../../constants/step'
+import { Section, SectionStatus } from '../../../../constants/section'
 
 export const drugUseSummaryStep = step({
   path: `/${Step.drug_use_summary.path}`,

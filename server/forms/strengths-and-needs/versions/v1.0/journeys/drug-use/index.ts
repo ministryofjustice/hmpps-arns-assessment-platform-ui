@@ -1,4 +1,4 @@
-import {Condition, Data, journey, Query} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { drugUseStep } from './steps/drug-use/step'
 import { addDrugsStep } from './steps/add-drugs/step'
 import { drugDetailsStep } from './steps/drug-details/step'
@@ -28,12 +28,5 @@ export const drugUseJourney = journey({
       sectionStatus: Data('sectionStatus.drug-use'),
     },
   },
-  steps: [
-    drugUseStep,
-    addDrugsStep,
-    drugDetailsStep,
-    drugUseHistoryStep,
-    drugUseSummaryStep,
-    drugUseAnalysisStep,
-  ],
+  steps: [drugUseStep, addDrugsStep, drugDetailsStep, drugUseHistoryStep, drugUseSummaryStep, drugUseAnalysisStep],
 })

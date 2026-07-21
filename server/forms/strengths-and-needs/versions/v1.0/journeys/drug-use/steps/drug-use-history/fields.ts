@@ -14,13 +14,13 @@ import {
   GovUKCheckboxInput,
   GovUKRadioInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import {drugsList, fieldCodeString} from '../../constants'
-import {CaseData} from '../../../../constants/formVersion'
-import {Question} from "../../constants/question";
-import {contentFor} from "../../locales";
-import {Option} from "../../constants/option";
-import {CommonOption} from "../../../../constants/commonOption";
-import {commonContentFor} from "../../../../locales";
+import { drugsList, fieldCodeString } from '../../constants'
+import { CaseData } from '../../../../constants/formVersion'
+import { Question } from '../../constants/question'
+import { contentFor } from '../../locales'
+import { Option } from '../../constants/option'
+import { CommonOption } from '../../../../constants/commonOption'
+import { commonContentFor } from '../../../../locales'
 
 const lastSixMonthConditions = drugsList.map(drug =>
   Answer(fieldCodeString('drug_last_used', drug.value)).match(Condition.Equals('LAST_SIX')),
@@ -47,13 +47,31 @@ export const drugsReasonsForUse = GovUKCheckboxInput({
   },
   hint: contentFor('question.drugs_reasons_for_use.hint'),
   items: [
-    { value: Option.cultural_or_religious, text: contentFor('question.drugs_reasons_for_use.option.CULTURAL_OR_RELIGIOUS') },
-    { value: Option.curiosity_or_experimentation, text: contentFor('question.drugs_reasons_for_use.option.CURIOSITY_OR_EXPERIMENTATION') },
-    { value: Option.enhance_performance, text: contentFor('question.drugs_reasons_for_use.option.ENHANCE_PERFORMANCE') },
-    { value: Option.escapism_or_avoidance, text: contentFor('question.drugs_reasons_for_use.option.ESCAPISM_OR_AVOIDANCE') },
-    { value: Option.managing_emotional_issues, text: contentFor('question.drugs_reasons_for_use.option.MANAGING_EMOTIONAL_ISSUES') },
+    {
+      value: Option.cultural_or_religious,
+      text: contentFor('question.drugs_reasons_for_use.option.CULTURAL_OR_RELIGIOUS'),
+    },
+    {
+      value: Option.curiosity_or_experimentation,
+      text: contentFor('question.drugs_reasons_for_use.option.CURIOSITY_OR_EXPERIMENTATION'),
+    },
+    {
+      value: Option.enhance_performance,
+      text: contentFor('question.drugs_reasons_for_use.option.ENHANCE_PERFORMANCE'),
+    },
+    {
+      value: Option.escapism_or_avoidance,
+      text: contentFor('question.drugs_reasons_for_use.option.ESCAPISM_OR_AVOIDANCE'),
+    },
+    {
+      value: Option.managing_emotional_issues,
+      text: contentFor('question.drugs_reasons_for_use.option.MANAGING_EMOTIONAL_ISSUES'),
+    },
     { value: Option.peer_pressure, text: contentFor('question.drugs_reasons_for_use.option.PEER_PRESSURE') },
-    { value: Option.recreation_or_pleasure, text: contentFor('question.drugs_reasons_for_use.option.RECREATION_OR_PLEASURE') },
+    {
+      value: Option.recreation_or_pleasure,
+      text: contentFor('question.drugs_reasons_for_use.option.RECREATION_OR_PLEASURE'),
+    },
     { value: Option.self_medication, text: contentFor('question.drugs_reasons_for_use.option.SELF_MEDICATION') },
     { value: CommonOption.other, text: commonContentFor('option.OTHER') },
   ],
@@ -105,7 +123,8 @@ export const drugsAffectedTheirLife = GovUKCheckboxInput({
     },
     {
       value: Option.links_to_offending,
-      text: contentFor('question.drugs_affected_their_life.option.LINKS_TO_OFFENDING.text') },
+      text: contentFor('question.drugs_affected_their_life.option.LINKS_TO_OFFENDING.text'),
+    },
     {
       value: Option.health,
       text: contentFor('question.drugs_affected_their_life.option.HEALTH.text'),
@@ -142,7 +161,7 @@ export const drugsAnythingHelpedStopOrReduceUse = GovUKCharacterCount({
   },
   hint: contentFor('question.drugs_anything_helped_stop_or_reduce_use.hint'),
   maxLength: 2000,
-  visibleWhen: anyDrugUsedInLastSixMonths
+  visibleWhen: anyDrugUsedInLastSixMonths,
 })
 
 export const drugsWhatCouldHelpNotUseDrugsInFuture = GovUKCharacterCount({
@@ -152,7 +171,7 @@ export const drugsWhatCouldHelpNotUseDrugsInFuture = GovUKCharacterCount({
     classes: 'govuk-label--m',
   },
   maxLength: 2000,
-  visibleWhen: not(anyDrugUsedInLastSixMonths)
+  visibleWhen: not(anyDrugUsedInLastSixMonths),
 })
 
 // --- Wants to make changes ---
@@ -222,13 +241,41 @@ export const drugUseChanges = GovUKRadioInput({
     },
   },
   items: [
-    { value: CommonOption.has_made_changes, text: commonContentFor('option.HAS_MADE_CHANGES'), block: hasMadeChangesDrugsDetails },
-    { value: CommonOption.is_making_changes, text: commonContentFor('option.IS_MAKING_CHANGES'), block: activelyMakingChangesDrugsDetails },
-    { value: CommonOption.wants_to_make_changes_knows_how_to, text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'), block: wantsToMakeChangesKnowsHowToDrugsDetails },
-    { value: CommonOption.wants_to_make_changes_needs_help, text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'), block: wantsToMakeChangesNeedsHelpDrugsDetails },
-    { value: CommonOption.thinking_about_making_changes, text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'), block: thinkingAboutMakingChangesDrugsDetails },
-    { value: CommonOption.does_not_want_to_make_changes, text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'), block: doesNotWantToMakeChangesDrugsDetails },
-    { value: CommonOption.does_not_want_to_answer, text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'), block: doesNotWantToAnswerDrugsDetails },
+    {
+      value: CommonOption.has_made_changes,
+      text: commonContentFor('option.HAS_MADE_CHANGES'),
+      block: hasMadeChangesDrugsDetails,
+    },
+    {
+      value: CommonOption.is_making_changes,
+      text: commonContentFor('option.IS_MAKING_CHANGES'),
+      block: activelyMakingChangesDrugsDetails,
+    },
+    {
+      value: CommonOption.wants_to_make_changes_knows_how_to,
+      text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
+      block: wantsToMakeChangesKnowsHowToDrugsDetails,
+    },
+    {
+      value: CommonOption.wants_to_make_changes_needs_help,
+      text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
+      block: wantsToMakeChangesNeedsHelpDrugsDetails,
+    },
+    {
+      value: CommonOption.thinking_about_making_changes,
+      text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
+      block: thinkingAboutMakingChangesDrugsDetails,
+    },
+    {
+      value: CommonOption.does_not_want_to_make_changes,
+      text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
+      block: doesNotWantToMakeChangesDrugsDetails,
+    },
+    {
+      value: CommonOption.does_not_want_to_answer,
+      text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'),
+      block: doesNotWantToAnswerDrugsDetails,
+    },
     { divider: 'or' },
     { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
   ],

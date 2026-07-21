@@ -1,4 +1,4 @@
-import {and, Answer, Condition, Self, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKCharacterCount, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CaseData } from '../../../../constants/formVersion'
 import { Question } from '../../constants/question'
@@ -15,11 +15,10 @@ const hasHealthConditions = GovUKCharacterCount({
   dependentWhen: Answer(Question.health_conditions).match(Condition.Equals(Option.yes)),
   validWhen: [
     validation({
-      condition:
-        Self().match(Condition.String.HasMaxLength(2000)),
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
       message: commonContentFor('validation.two_thousand_characters_max'),
-    })
-  ]
+    }),
+  ],
 })
 
 export const healthConditions = GovUKRadioInput({

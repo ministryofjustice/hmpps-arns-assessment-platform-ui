@@ -1,6 +1,6 @@
-import {access, Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKButton} from '@ministryofjustice/hmpps-forge/govuk-components'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
+import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
   injectedDrugsField,
   receivingTreatmentField,
@@ -8,10 +8,9 @@ import {
   usedInLastSixMonthsSection,
   usedMoreThanSixMonthsSection,
 } from './fields'
-import {Step} from '../../constants/step'
-import {Section, SectionStatus} from "../../../../constants/section";
-import {sectionPath} from "../../../../constants/path";
-import {formVersion} from "../../../../constants/formVersion";
+import { Step } from '../../constants/step'
+import { Section, SectionStatus } from '../../../../constants/section'
+import { formVersion } from '../../../../constants/formVersion'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',

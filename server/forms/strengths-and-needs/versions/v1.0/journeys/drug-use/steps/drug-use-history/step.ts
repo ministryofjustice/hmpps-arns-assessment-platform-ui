@@ -10,9 +10,9 @@ import {
   drugsWhatCouldHelpNotUseDrugsInFuture,
   drugUseChanges,
 } from './fields'
-import {Step} from "../../constants/step";
-import {Section, SectionStatus} from "../../../../constants/section";
-import {formVersion} from "../../../../constants/formVersion";
+import { Step } from '../../constants/step'
+import { Section, SectionStatus } from '../../../../constants/section'
+import { formVersion } from '../../../../constants/formVersion'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',

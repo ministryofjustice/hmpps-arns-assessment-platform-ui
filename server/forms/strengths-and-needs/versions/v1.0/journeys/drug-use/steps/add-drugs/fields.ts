@@ -7,15 +7,15 @@ import {
   not,
   PipelineExpr,
   Self,
-  validation
+  validation,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKCheckboxInput, GovUKRadioInput, GovUKTextInput} from '@ministryofjustice/hmpps-forge/govuk-components'
-import {CaseData} from '../../../../constants/formVersion'
-import {Question} from '../../constants/question'
-import {contentFor, drugValueToText} from '../../locales'
-import {Option} from '../../constants/option'
-import {commonContentFor} from '../../../../locales'
-import {CommonOption} from '../../../../constants/commonOption'
+import { GovUKCheckboxInput, GovUKRadioInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { CaseData } from '../../../../constants/formVersion'
+import { Question } from '../../constants/question'
+import { contentFor, drugValueToText } from '../../locales'
+import { Option } from '../../constants/option'
+import { commonContentFor } from '../../../../locales'
+import { CommonOption } from '../../../../constants/commonOption'
 
 export const drugLastUsedField = (drugValue: string | ChainableExpr<PipelineExpr>) =>
   GovUKRadioInput({
@@ -38,7 +38,7 @@ export const drugLastUsedField = (drugValue: string | ChainableExpr<PipelineExpr
       validation({
         condition: not(Self().not.match(Condition.IsRequired())),
         message: contentFor('question.drug_last_used.validation'),
-        groups: ['drugs']
+        groups: ['drugs'],
       }),
     ],
   })
@@ -87,16 +87,16 @@ export const selectMisusedDrugs = GovUKCheckboxInput({
       text: contentFor('option.BENZODIAZEPINES'),
       block: drugLastUsedField(Option.benzodiazepines),
     },
-    { value: Option.cannabis, text: contentFor('option.CANNABIS'), block: drugLastUsedField(Option.cannabis)},
-    { value: Option.cocaine, text: contentFor('option.COCAINE'), block: drugLastUsedField(Option.cocaine)},
-    { value: Option.crack, text: contentFor('option.CRACK'), block: drugLastUsedField(Option.crack)},
-    { value: Option.ecstasy, text: contentFor('option.ECSTASY'), block: drugLastUsedField(Option.ecstasy)},
+    { value: Option.cannabis, text: contentFor('option.CANNABIS'), block: drugLastUsedField(Option.cannabis) },
+    { value: Option.cocaine, text: contentFor('option.COCAINE'), block: drugLastUsedField(Option.cocaine) },
+    { value: Option.crack, text: contentFor('option.CRACK'), block: drugLastUsedField(Option.crack) },
+    { value: Option.ecstasy, text: contentFor('option.ECSTASY'), block: drugLastUsedField(Option.ecstasy) },
     {
       value: Option.hallucinogenics,
       text: contentFor('option.HALLUCINOGENICS'),
       block: drugLastUsedField(Option.hallucinogenics),
     },
-    { value: Option.heroin, text: contentFor('option.HEROIN'), block: drugLastUsedField(Option.heroin)},
+    { value: Option.heroin, text: contentFor('option.HEROIN'), block: drugLastUsedField(Option.heroin) },
     {
       value: Option.methadone_not_prescribed,
       text: contentFor('option.METHADONE_NOT_PRESCRIBED'),
@@ -112,16 +112,20 @@ export const selectMisusedDrugs = GovUKCheckboxInput({
       text: contentFor('option.OTHER_OPIATES'),
       block: drugLastUsedField(Option.other_opiates),
     },
-    { value: Option.solvents, text: contentFor('option.SOLVENTS'), block: drugLastUsedField(Option.solvents)},
-    { value: Option.steroids, text: contentFor('option.STEROIDS'), block: drugLastUsedField(Option.steroids)},
-    { value: Option.spice, text: contentFor('option.SPICE'), block: drugLastUsedField(Option.spice)},
-    { value: CommonOption.other, text: commonContentFor('option.OTHER'), block: [otherDrugName, drugLastUsedField(CommonOption.other)], },
+    { value: Option.solvents, text: contentFor('option.SOLVENTS'), block: drugLastUsedField(Option.solvents) },
+    { value: Option.steroids, text: contentFor('option.STEROIDS'), block: drugLastUsedField(Option.steroids) },
+    { value: Option.spice, text: contentFor('option.SPICE'), block: drugLastUsedField(Option.spice) },
+    {
+      value: CommonOption.other,
+      text: commonContentFor('option.OTHER'),
+      block: [otherDrugName, drugLastUsedField(CommonOption.other)],
+    },
   ],
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: contentFor('question.select_misused_drugs.validation'),
-      groups: ['drugs']
+      groups: ['drugs'],
     }),
   ],
 })

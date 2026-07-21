@@ -62,27 +62,27 @@ export const english = {
     [Question.drug_use_more_than_six_months_details]: {
       text: 'Give details about %1 use of these drugs',
       hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
-      validation: 'Enter details about their use of these drugs'
+      validation: 'Enter details about their use of these drugs',
     },
     [Question.drugs_injected]: {
       text: 'Which drugs has %1 injected?',
       hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
-      validation: 'Select which drugs they\'ve injected, or select \'None\''
+      validation: "Select which drugs they've injected, or select 'None'",
     },
     [Question.drugs_injected_months]: {
       code: 'drugs_injected_%1',
       text: 'When has Hassan injected this drug?',
       hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
-      validation: 'Select which drugs they\'ve injected, or select \'None\''
+      validation: "Select which drugs they've injected, or select 'None'",
 
     },
     [Question.receiving_treatment]: {
       text: 'Is %1 receiving treatment for their drug use?',
       hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
-      validation: 'Select if they\'re receiving treatment for their drug use'
+      validation: "Select if they're receiving treatment for their drug use",
     },
     [Question.receiving_treatment_yes_details]: {
-      validation: 'Enter details about the treatment they are receiving'
+      validation: 'Enter details about the treatment they are receiving',
     },
     [Question.drugs_reasons_for_use]: {
       text: {
@@ -103,13 +103,13 @@ export const english = {
       validation: {
         default: 'Select why they use drugs',
         usedLastSixMonths: 'Select why they used drugs',
-      }
+      },
     },
     [Question.drugs_reasons_for_use_details]: {
-      text: 'Details on why %1 uses drugs'
+      text: 'Details on why %1 uses drugs',
     },
     [Question.drugs_affected_their_life]: {
-      text: 'How has %1\'s drug use affected their life?',
+      text: "How has %1's drug use affected their life?",
       option: {
         [Option.behaviour]: {
           text: 'Behaviour',
@@ -138,7 +138,7 @@ export const english = {
       validation: 'Select how their drug use has affected their life',
     },
     [Question.drugs_affected_their_life_details]: {
-      text: 'Details on how %1 drug use has affected their life'
+      text: 'Details on how %1 drug use has affected their life',
     },
     [Question.drugs_anything_helped_stop_or_reduce_use]: {
       text: 'Has anything helped %1 stop or reduce their drug use? (optional)',
@@ -153,7 +153,7 @@ export const english = {
     },
     [Question.drugs_practitioner_analysis_motivated_to_stop]: {
       text: 'Does %1 seem motivated to stop or reduce their drug use?',
-      option:{
+      option: {
         [Option.no_motivation]: 'Does not show motivation to stop or reduce',
         [Option.partial_motivation]: 'Shows some motivation to stop or reduce',
         [Option.full_motivation]: 'Motivated to stop or reduce',
@@ -174,9 +174,9 @@ export const english = {
     },
   },
   text: {
-    lastUsed: {text: 'Last used'},
-    howOften: {text: 'How often'},
-    injected: {text: 'Injected'},
+    lastUsed: { text: 'Last used' },
+    howOften: { text: 'How often' },
+    injected: { text: 'Injected' },
     more_information: 'More information',
   },
   option: {

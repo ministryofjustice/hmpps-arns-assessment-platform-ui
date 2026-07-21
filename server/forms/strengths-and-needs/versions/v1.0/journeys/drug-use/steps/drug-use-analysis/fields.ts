@@ -1,21 +1,26 @@
-import {Answer, Condition} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKBody, GovUKSummaryList, GovUKTabs,} from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKBody, GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
 
-import {CaseData} from '../../../../constants/formVersion'
-import {commonContentFor} from '../../../../locales'
-import {goToPractitionerAnalysisButton, markAsCompleteButton} from '../../../../constants/buttons'
-import {Step} from '../../constants/step'
-import {Question} from '../../constants/question'
+import { CaseData } from '../../../../constants/formVersion'
+import { commonContentFor } from '../../../../locales'
+import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
+import { Step } from '../../constants/step'
+import { Question } from '../../constants/question'
 import {
   drugsPractitionerAnalysisMotivatedToStop,
   drugsSummaryPartOne,
-  drugsSummaryPartThree, drugsSummaryPartTwo, moreInformationHeading, notUsedInLastSixMonthsSection, riskOfReoffending,
-  riskOfSeriousHarm, strengthsOrProtectiveFactors
-} from "../drug-use-summary/fields";
-import {usedInLastSixMonthsSection} from "../drug-details/fields";
-import {SANGenerators} from "../../../../../../generators";
-import {contentFor} from "../../locales";
-import {CommonOption} from "../../../../constants/commonOption";
+  drugsSummaryPartThree,
+  drugsSummaryPartTwo,
+  moreInformationHeading,
+  notUsedInLastSixMonthsSection,
+  riskOfReoffending,
+  riskOfSeriousHarm,
+  strengthsOrProtectiveFactors,
+} from '../drug-use-summary/fields'
+import { usedInLastSixMonthsSection } from '../drug-details/fields'
+import { SANGenerators } from '../../../../../../generators'
+import { contentFor } from '../../locales'
+import { CommonOption } from '../../../../constants/commonOption'
 
 // --- Practitioner Analysis: Motivated to stop (drug-use specific) ---
 
@@ -47,7 +52,10 @@ const practitionerAnalysisSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor( 'question.drug_use_practitioner_analysis_strengths_or_protective_factors.text', CaseData.ForenamePossessive),
+        text: contentFor(
+          'question.drug_use_practitioner_analysis_strengths_or_protective_factors.text',
+          CaseData.ForenamePossessive,
+        ),
       },
       value: {
         blocks: [
@@ -57,8 +65,14 @@ const practitionerAnalysisSummary = GovUKSummaryList({
               Answer(Question.drug_use_practitioner_analysis_strengths_or_protective_factors),
             ),
           }),
-          GovUKBody({ text: Answer(Question.drug_use_practitioner_analysis_strengths_or_protective_factors_yes_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.drug_use_practitioner_analysis_strengths_or_protective_factors_no_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.drug_use_practitioner_analysis_strengths_or_protective_factors_yes_details),
+            size: 's',
+          }),
+          GovUKBody({
+            text: Answer(Question.drug_use_practitioner_analysis_strengths_or_protective_factors_no_details),
+            size: 's',
+          }),
         ],
       },
       actions: {
@@ -72,7 +86,10 @@ const practitionerAnalysisSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor('question.drug_use_practitioner_analysis_risk_of_serious_harm.text', CaseData.ForenamePossessive),
+        text: contentFor(
+          'question.drug_use_practitioner_analysis_risk_of_serious_harm.text',
+          CaseData.ForenamePossessive,
+        ),
       },
       value: {
         blocks: [
@@ -82,8 +99,14 @@ const practitionerAnalysisSummary = GovUKSummaryList({
               Answer(Question.drug_use_practitioner_analysis_risk_of_serious_harm),
             ),
           }),
-          GovUKBody({ text: Answer(Question.drug_use_practitioner_analysis_risk_of_serious_harm_yes_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.drug_use_practitioner_analysis_risk_of_serious_harm_no_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.drug_use_practitioner_analysis_risk_of_serious_harm_yes_details),
+            size: 's',
+          }),
+          GovUKBody({
+            text: Answer(Question.drug_use_practitioner_analysis_risk_of_serious_harm_no_details),
+            size: 's',
+          }),
         ],
       },
       actions: {
@@ -98,7 +121,10 @@ const practitionerAnalysisSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor('question.drug_use_practitioner_analysis_risk_of_reoffending.text', CaseData.ForenamePossessive),
+        text: contentFor(
+          'question.drug_use_practitioner_analysis_risk_of_reoffending.text',
+          CaseData.ForenamePossessive,
+        ),
       },
       value: {
         blocks: [
@@ -108,8 +134,14 @@ const practitionerAnalysisSummary = GovUKSummaryList({
               Answer(Question.drug_use_practitioner_analysis_risk_of_reoffending),
             ),
           }),
-          GovUKBody({ text: Answer(Question.drug_use_practitioner_analysis_risk_of_reoffending_yes_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.drug_use_practitioner_analysis_risk_of_reoffending_no_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.drug_use_practitioner_analysis_risk_of_reoffending_yes_details),
+            size: 's',
+          }),
+          GovUKBody({
+            text: Answer(Question.drug_use_practitioner_analysis_risk_of_reoffending_no_details),
+            size: 's',
+          }),
         ],
       },
       actions: {
@@ -139,16 +171,15 @@ export const drugsSummaryAnalysisTab = GovUKTabs({
           drugsSummaryPartTwo,
           moreInformationHeading,
           drugsSummaryPartThree,
-          goToPractitionerAnalysisButton(Step.drug_use_summary.path)],
+          goToPractitionerAnalysisButton(Step.drug_use_summary.path),
+        ],
       },
     },
     {
       id: 'practitioner-analysis',
       label: commonContentFor('practitioner_analysis'),
       panel: {
-        blocks: [
-          practitionerAnalysisSummary,
-        ],
+        blocks: [practitionerAnalysisSummary],
       },
     },
   ],

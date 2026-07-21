@@ -1,5 +1,5 @@
-import {Drug, drugsList} from '../../versions/v1.0/journeys/drug-use/constants'
-import {StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps} from '../types'
+import { Drug, drugsList } from '../../versions/v1.0/journeys/drug-use/constants'
+import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 
 const allDrugs = [...drugsList]
 const drugByValue = new Map(allDrugs.map(drug => [drug.value, drug]))
