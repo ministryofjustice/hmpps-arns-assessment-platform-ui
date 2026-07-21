@@ -91,6 +91,12 @@ export const drugsReasonsForUseDetails = GovUKCharacterCount({
   code: Question.drugs_reasons_for_use_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 // --- How drug use has affected their life ---
@@ -149,6 +155,12 @@ export const drugsAffectedTheirLifeDetails = GovUKCharacterCount({
   code: Question.drugs_affected_their_life_details,
   label: 'Give details (optional)',
   maxLength: 2000,
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 // --- Help and future ---
@@ -182,6 +194,12 @@ const hasMadeChangesDrugsDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
     .match(Condition.Equals(CommonOption.has_made_changes)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const activelyMakingChangesDrugsDetails = GovUKCharacterCount({
@@ -190,6 +208,12 @@ const activelyMakingChangesDrugsDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
     .match(Condition.Equals(CommonOption.is_making_changes)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const wantsToMakeChangesKnowsHowToDrugsDetails = GovUKCharacterCount({
@@ -206,6 +230,12 @@ const wantsToMakeChangesNeedsHelpDrugsDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
     .match(Condition.Equals(CommonOption.wants_to_make_changes_needs_help)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const thinkingAboutMakingChangesDrugsDetails = GovUKCharacterCount({
@@ -214,6 +244,12 @@ const thinkingAboutMakingChangesDrugsDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
     .match(Condition.Equals(CommonOption.thinking_about_making_changes)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const doesNotWantToMakeChangesDrugsDetails = GovUKCharacterCount({
@@ -222,6 +258,12 @@ const doesNotWantToMakeChangesDrugsDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
     .match(Condition.Equals(CommonOption.does_not_want_to_make_changes)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const doesNotWantToAnswerDrugsDetails = GovUKCharacterCount({
@@ -230,6 +272,12 @@ const doesNotWantToAnswerDrugsDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
     .match(Condition.Equals(CommonOption.does_not_want_to_answer)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 export const drugUseChanges = GovUKRadioInput({

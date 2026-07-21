@@ -166,7 +166,7 @@ export const drugsSummaryCards = (drugValue: ChainableExpr<PipelineExpr>) =>
     ],
   })
 
-export const usedInLastSixMonthsSection = TemplateWrapper({
+export const usedInLastSixMonthsSummarySection = TemplateWrapper({
   template: '<h2 class="govuk-heading-m">{{slot:heading}}</h2>{{slot:content}}',
   slots: {
     heading: [
@@ -183,7 +183,7 @@ export const usedInLastSixMonthsSection = TemplateWrapper({
   },
 })
 
-export const notUsedInLastSixMonthsSection = TemplateWrapper({
+export const notUsedInLastSixMonthsSummarySection = TemplateWrapper({
   template: '<h2 class="govuk-heading-m">{{slot:heading}}</h2>{{slot:content}}',
   slots: {
     heading: [
@@ -571,6 +571,10 @@ const strengthsYesDetails = GovUKCharacterCount({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: commonContentFor('validation.enter_details'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(1425)),
+      message: commonContentFor('validation.details_must_be_less_than', 1425),
+    }),
   ],
 })
 
@@ -580,6 +584,12 @@ const strengthsNoDetails = GovUKCharacterCount({
   maxLength: 1425,
   dependentWhen: Answer(Question.drug_use_practitioner_analysis_strengths_or_protective_factors)
     .match(Condition.Equals(CommonOption.no)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(1425)),
+      message: commonContentFor('validation.details_must_be_less_than', 1425),
+    }),
+  ],
 })
 
 export const strengthsOrProtectiveFactors = GovUKRadioInput({
@@ -619,6 +629,10 @@ const riskOfSeriousHarmYesDetails = GovUKCharacterCount({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: commonContentFor('validation.enter_details'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(1425)),
+      message: commonContentFor('validation.details_must_be_less_than', 1425),
+    }),
   ],
 })
 
@@ -629,6 +643,12 @@ const riskOfSeriousHarmNoDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.drug_use_practitioner_analysis_risk_of_serious_harm).match(
     Condition.Equals(CommonOption.no),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(1425)),
+      message: commonContentFor('validation.details_must_be_less_than', 1425),
+    }),
+  ],
 })
 
 export const riskOfSeriousHarm = GovUKRadioInput({
@@ -666,6 +686,10 @@ const riskOfReoffendingYesDetails = GovUKCharacterCount({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: commonContentFor('validation.enter_details'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(1000)),
+      message: commonContentFor('validation.details_must_be_less_than', 1000),
+    }),
   ],
 })
 
@@ -674,6 +698,12 @@ const riskOfReoffendingNoDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 1000,
   dependentWhen: Answer(Question.drug_use_practitioner_analysis_risk_of_reoffending).match(Condition.Equals('NO')),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(1000)),
+      message: commonContentFor('validation.details_must_be_less_than', 1000),
+    }),
+  ],
 })
 
 export const riskOfReoffending = GovUKRadioInput({
@@ -705,8 +735,8 @@ export const drugsSummaryTab = GovUKTabs({
       panel: {
         blocks: [
           drugsSummaryPartOne,
-          usedInLastSixMonthsSection,
-          notUsedInLastSixMonthsSection,
+          usedInLastSixMonthsSummarySection,
+          notUsedInLastSixMonthsSummarySection,
           drugsSummaryPartTwo,
           moreInformationHeading,
           drugsSummaryPartThree,

@@ -16,7 +16,7 @@ const hasHealthConditions = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -52,7 +52,7 @@ const severeMentalHealthProblemsDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -65,7 +65,7 @@ const ongoingDurationUnknownMentalHealthProblemsDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -78,7 +78,7 @@ const pastMentalHealthProblemsDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })

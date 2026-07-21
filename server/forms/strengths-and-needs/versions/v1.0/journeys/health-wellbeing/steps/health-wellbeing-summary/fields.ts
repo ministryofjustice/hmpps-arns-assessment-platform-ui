@@ -390,7 +390,7 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
     }),
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -403,7 +403,7 @@ const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -446,7 +446,7 @@ const seriousHarmDetails = GovUKCharacterCount({
     }),
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -459,7 +459,7 @@ const noSeriousHarmDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -498,7 +498,7 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
     }),
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -511,7 +511,7 @@ const noRiskOfReoffendingDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })

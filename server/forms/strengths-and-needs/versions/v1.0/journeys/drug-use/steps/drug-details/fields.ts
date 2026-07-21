@@ -44,7 +44,7 @@ const drugValueLower = Item().path('value').pipe(Transformer.String.ToLowerCase(
 
 export const drugIntakeFrequency = (drugValue: ChainableExpr<PipelineExpr>) =>
   GovUKRadioInput({
-    code: contentFor('question.how_often_used.code', drugValue),
+    code: Format(Question.how_often_used_value, drugValue),
     classes: 'govuk-radios--inline',
     fieldset: {
       legend: {
@@ -161,6 +161,10 @@ export const usedMoreThanSixMonthsSection = TemplateWrapper({
           validation({
             condition: not(Self().not.match(Condition.IsRequired())),
             message: contentFor('question.drug_use_more_than_six_months_details.validation'),
+          }),
+          validation({
+            condition: Self().match(Condition.String.HasMaxLength(2000)),
+            message: commonContentFor('validation.details_must_be_less_than', 2000),
           }),
         ],
       }),
@@ -334,19 +338,29 @@ const receivingTreatmentDetails = GovUKCharacterCount({
   code: Question.receiving_treatment_yes_details,
   label: commonContentFor('required_details'),
   maxLength: 2000,
+  dependentWhen: Answer(Question.receiving_treatment).match(Condition.Equals(CommonOption.yes)),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: contentFor('question.receiving_treatment_yes_details.validation'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
   ],
-  dependentWhen: Answer(Question.receiving_treatment).match(Condition.Equals(CommonOption.yes)),
 })
 
 const receivingTreatmentNoDetails = GovUKCharacterCount({
   code: Question.receiving_treatment_no_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 export const receivingTreatmentField = GovUKRadioInput({

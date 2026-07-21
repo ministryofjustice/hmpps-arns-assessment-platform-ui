@@ -20,6 +20,7 @@ export const addDrugsStep = step({
       backlink: sectionPath(Section.drug_use),
     },
   },
+  cleardownFieldCodes: ['^trip_*$'],
   blocks: [selectMisusedDrugs, saveButton],
   onSubmission: [
     submit({

@@ -12,12 +12,12 @@ import {
   drugsSummaryPartThree,
   drugsSummaryPartTwo,
   moreInformationHeading,
-  notUsedInLastSixMonthsSection,
+  notUsedInLastSixMonthsSummarySection,
   riskOfReoffending,
   riskOfSeriousHarm,
   strengthsOrProtectiveFactors,
+  usedInLastSixMonthsSummarySection,
 } from '../drug-use-summary/fields'
-import { usedInLastSixMonthsSection } from '../drug-details/fields'
 import { SANGenerators } from '../../../../../../generators'
 import { contentFor } from '../../locales'
 import { CommonOption } from '../../../../constants/commonOption'
@@ -166,12 +166,12 @@ export const drugsSummaryAnalysisTab = GovUKTabs({
       panel: {
         blocks: [
           drugsSummaryPartOne,
-          usedInLastSixMonthsSection,
-          notUsedInLastSixMonthsSection,
+          usedInLastSixMonthsSummarySection,
+          notUsedInLastSixMonthsSummarySection,
           drugsSummaryPartTwo,
           moreInformationHeading,
           drugsSummaryPartThree,
-          goToPractitionerAnalysisButton(Step.drug_use_summary.path),
+          goToPractitionerAnalysisButton(Step.drug_use_analysis.path),
         ],
       },
     },

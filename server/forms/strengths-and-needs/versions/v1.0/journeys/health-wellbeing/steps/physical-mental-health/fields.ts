@@ -24,7 +24,7 @@ export const prescribedPhysicalHealthMedicationsTreatments = GovUKCharacterCount
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -53,7 +53,7 @@ export const prescribedMentalHealthMedicationsTreatments = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -129,7 +129,7 @@ const neurodiverseConditionsDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -165,7 +165,7 @@ const learningAbilitiesImpactedSignificantlyDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -177,7 +177,7 @@ const learningAbilitiesImpactedSlightlyDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -286,7 +286,7 @@ const selfHarmDetails = GovUKCharacterCount({
     }),
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -329,7 +329,7 @@ const suicidalTendenciesDetails = GovUKCharacterCount({
     }),
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -417,7 +417,7 @@ const helpedDuringPeriodsGoodHealthWellbeingDetails = GovUKCharacterCount({
     }),
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -476,7 +476,7 @@ const hasMadePositiveChangesDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -489,7 +489,7 @@ const isActivelyMakingChangesDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -504,7 +504,7 @@ const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -519,7 +519,7 @@ const wantsToMakeChangesNeedsHelpDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -534,7 +534,7 @@ const thinkingAboutMakingChangesDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -549,7 +549,7 @@ const doesNotWantToMakeChangesDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -562,7 +562,7 @@ const doesNotWantToAnswerChangesDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.two_thousand_characters_max'),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })

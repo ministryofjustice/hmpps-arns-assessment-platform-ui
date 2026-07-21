@@ -44,7 +44,6 @@ export const english = {
     },
     [Question.how_often_used]: {
       text: 'How often is %1 using this drug?',
-      code: 'how_often_used_%1',
       summaryText: 'How to record frequency',
       summaryHtml:
         '<p class="govuk-body"><strong>Daily:</strong> uses every day or most days.</p>' +
