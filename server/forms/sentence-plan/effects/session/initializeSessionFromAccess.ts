@@ -1,4 +1,5 @@
 import { InternalServerError } from 'http-errors'
+import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 import { SentencePlanContext } from '../types'
 import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
 
@@ -59,4 +60,14 @@ export const initializeSessionFromAccess = () => (context: SentencePlanContext) 
   }
 
   context.setData('sessionDetails', session.sessionDetails)
+
+  // Record that a user accessed the plan, tagged with their id, so we can count
+  // distinct users of Sentence Plan.
+  const authenticatedUserId = session.principal?.identifier
+  if (authenticatedUserId) {
+    telemetry.trackEvent('SENTENCE_PLAN_ACCESSED', {
+      authenticatedUserId,
+      authSource: context.getState('user').authSource,
+    })
+  }
 }
