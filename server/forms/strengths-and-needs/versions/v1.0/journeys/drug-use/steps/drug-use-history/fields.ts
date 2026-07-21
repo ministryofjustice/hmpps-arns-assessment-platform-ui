@@ -1,21 +1,21 @@
 import {
-  validation,
-  Self,
-  Format,
-  Answer,
-  or,
   and,
-  not,
-  when,
+  Answer,
   Condition,
+  Format,
+  not,
+  or,
+  Self,
+  validation,
+  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
-  GovUKRadioInput,
-  GovUKCheckboxInput,
   GovUKCharacterCount,
+  GovUKCheckboxInput,
+  GovUKRadioInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { drugsList, fieldCode } from '../../constants'
-import { CaseData } from '../../../../constants/formVersion'
+import {drugsList, fieldCodeString} from '../../constants'
+import {CaseData} from '../../../../constants/formVersion'
 import {Question} from "../../constants/question";
 import {contentFor} from "../../locales";
 import {Option} from "../../constants/option";
@@ -23,7 +23,7 @@ import {CommonOption} from "../../../../constants/commonOption";
 import {commonContentFor} from "../../../../locales";
 
 const lastSixMonthConditions = drugsList.map(drug =>
-  Answer(fieldCode('drug_last_used', drug.value)).match(Condition.Equals('LAST_SIX')),
+  Answer(fieldCodeString('drug_last_used', drug.value)).match(Condition.Equals('LAST_SIX')),
 )
 
 const anyDrugUsedInLastSixMonths = or(
@@ -157,56 +157,56 @@ export const drugsWhatCouldHelpNotUseDrugsInFuture = GovUKCharacterCount({
 
 // --- Wants to make changes ---
 
-const hasMadeChangesAccommodationDetails = GovUKCharacterCount({
-  code: Question.has_made_positive_changes_accommodation_details,
+const hasMadeChangesDrugsDetails = GovUKCharacterCount({
+  code: Question.has_made_positive_changes_drugs_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
     .match(Condition.Equals(CommonOption.has_made_changes)),
 })
 
-const activelyMakingChangesAccommodationDetails = GovUKCharacterCount({
-  code: Question.actively_making_changes_accommodation_details,
+const activelyMakingChangesDrugsDetails = GovUKCharacterCount({
+  code: Question.actively_making_changes_drugs_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
     .match(Condition.Equals(CommonOption.is_making_changes)),
 })
 
-const wantsToMakeChangesKnowsHowToAccommodationDetails = GovUKCharacterCount({
-  code: Question.wants_to_make_changes_knows_how_to_accommodation_details,
+const wantsToMakeChangesKnowsHowToDrugsDetails = GovUKCharacterCount({
+  code: Question.wants_to_make_changes_knows_how_to_drugs_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
     .match(Condition.Equals(CommonOption.wants_to_make_changes_knows_how_to)),
 })
 
-const wantsToMakeChangesNeedsHelpAccommodationDetails = GovUKCharacterCount({
-  code: Question.wants_to_make_changes_needs_help_accommodation_details,
+const wantsToMakeChangesNeedsHelpDrugsDetails = GovUKCharacterCount({
+  code: Question.wants_to_make_changes_needs_help_drugs_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
     .match(Condition.Equals(CommonOption.wants_to_make_changes_needs_help)),
 })
 
-const thinkingAboutMakingChangesAccommodationDetails = GovUKCharacterCount({
-  code: Question.thinking_about_making_changes_accommodation_details,
+const thinkingAboutMakingChangesDrugsDetails = GovUKCharacterCount({
+  code: Question.thinking_about_making_changes_drugs_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
     .match(Condition.Equals(CommonOption.thinking_about_making_changes)),
 })
 
-const doesNotWantToMakeChangesAccommodationDetails = GovUKCharacterCount({
-  code: Question.does_not_want_to_make_changes_accommodation_details,
+const doesNotWantToMakeChangesDrugsDetails = GovUKCharacterCount({
+  code: Question.does_not_want_to_make_changes_drugs_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
     .match(Condition.Equals(CommonOption.does_not_want_to_make_changes)),
 })
 
-const doesNotWantToAnswerAccommodationDetails = GovUKCharacterCount({
-  code: Question.does_not_want_to_answer_accommodation_details,
+const doesNotWantToAnswerDrugsDetails = GovUKCharacterCount({
+  code: Question.does_not_want_to_answer_drugs_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.drug_use_changes)
@@ -222,13 +222,13 @@ export const drugUseChanges = GovUKRadioInput({
     },
   },
   items: [
-    { value: CommonOption.has_made_changes, text: commonContentFor('option.HAS_MADE_CHANGES'), block: hasMadeChangesAccommodationDetails },
-    { value: CommonOption.is_making_changes, text: commonContentFor('option.IS_MAKING_CHANGES'), block: activelyMakingChangesAccommodationDetails },
-    { value: CommonOption.wants_to_make_changes_knows_how_to, text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'), block: wantsToMakeChangesKnowsHowToAccommodationDetails },
-    { value: CommonOption.wants_to_make_changes_needs_help, text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'), block: wantsToMakeChangesNeedsHelpAccommodationDetails },
-    { value: CommonOption.thinking_about_making_changes, text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'), block: thinkingAboutMakingChangesAccommodationDetails },
-    { value: CommonOption.does_not_want_to_make_changes, text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'), block: doesNotWantToMakeChangesAccommodationDetails },
-    { value: CommonOption.does_not_want_to_answer, text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'), block: doesNotWantToAnswerAccommodationDetails },
+    { value: CommonOption.has_made_changes, text: commonContentFor('option.HAS_MADE_CHANGES'), block: hasMadeChangesDrugsDetails },
+    { value: CommonOption.is_making_changes, text: commonContentFor('option.IS_MAKING_CHANGES'), block: activelyMakingChangesDrugsDetails },
+    { value: CommonOption.wants_to_make_changes_knows_how_to, text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'), block: wantsToMakeChangesKnowsHowToDrugsDetails },
+    { value: CommonOption.wants_to_make_changes_needs_help, text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'), block: wantsToMakeChangesNeedsHelpDrugsDetails },
+    { value: CommonOption.thinking_about_making_changes, text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'), block: thinkingAboutMakingChangesDrugsDetails },
+    { value: CommonOption.does_not_want_to_make_changes, text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'), block: doesNotWantToMakeChangesDrugsDetails },
+    { value: CommonOption.does_not_want_to_answer, text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'), block: doesNotWantToAnswerDrugsDetails },
     { divider: 'or' },
     { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
   ],

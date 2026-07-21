@@ -7,7 +7,7 @@ export const english = {
   step: {
     [Step.drug_use.code]: 'Drug use',
     [Step.drug_use_summary.code]: 'Drug use summary',
-    [Step.accommodation_analysis.code]: 'Accommodation analysis',
+    [Step.drug_use_analysis.code]: 'Drug use analysis',
   },
   question: {
     [Question.drug_use]: {
@@ -73,10 +73,6 @@ export const english = {
       code: 'drugs_injected_%1',
       text: 'When has Hassan injected this drug?',
       hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
-      option: {
-        [Option.last_six]: 'In the last 6 months',
-        [Option.more_than_six]: 'More than 6 months ago',
-      },
       validation: 'Select which drugs they\'ve injected, or select \'None\''
 
     },
@@ -84,6 +80,9 @@ export const english = {
       text: 'Is %1 receiving treatment for their drug use?',
       hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
       validation: 'Select if they\'re receiving treatment for their drug use'
+    },
+    [Question.receiving_treatment_yes_details]: {
+      validation: 'Enter details about the treatment they are receiving'
     },
     [Question.drugs_reasons_for_use]: {
       text: {
@@ -105,6 +104,9 @@ export const english = {
         default: 'Select why they use drugs',
         usedLastSixMonths: 'Select why they used drugs',
       }
+    },
+    [Question.drugs_reasons_for_use_details]: {
+      text: 'Details on why %1 uses drugs'
     },
     [Question.drugs_affected_their_life]: {
       text: 'How has %1\'s drug use affected their life?',
@@ -135,6 +137,9 @@ export const english = {
       },
       validation: 'Select how their drug use has affected their life',
     },
+    [Question.drugs_affected_their_life_details]: {
+      text: 'Details on how %1 drug use has affected their life'
+    },
     [Question.drugs_anything_helped_stop_or_reduce_use]: {
       text: 'Has anything helped %1 stop or reduce their drug use? (optional)',
       hint: 'Note any treatment or lifestyle changes that have helped them.',
@@ -146,11 +151,33 @@ export const english = {
       text: 'Does %1 want to make changes to their drug use?',
       validation: 'Select if they want to make changes to their drug use',
     },
+    [Question.drugs_practitioner_analysis_motivated_to_stop]: {
+      text: 'Does %1 seem motivated to stop or reduce their drug use?',
+      option:{
+        [Option.no_motivation]: 'Does not show motivation to stop or reduce',
+        [Option.partial_motivation]: 'Shows some motivation to stop or reduce',
+        [Option.full_motivation]: 'Motivated to stop or reduce',
+      },
+      validation: 'Select if they seem motivated to stop or reduce their drug use',
+    },
+    [Question.drug_use_practitioner_analysis_strengths_or_protective_factors]: {
+      text: 'Are there any strengths or protective factors related to drug use?',
+      validation: 'Select if there are any strengths or protective factors related to drug use',
+    },
+    [Question.drug_use_practitioner_analysis_risk_of_serious_harm]: {
+      text: 'Is %1 drug use linked to risk of serious harm?',
+      validation: 'Select if drug use is linked to risk of serious harm',
+    },
+    [Question.drug_use_practitioner_analysis_risk_of_reoffending]: {
+      text: 'Is %1 drug use linked to risk of reoffending?',
+      validation: 'Select if drug use is linked to risk of reoffending',
+    },
   },
   text: {
     lastUsed: {text: 'Last used'},
     howOften: {text: 'How often'},
     injected: {text: 'Injected'},
+    more_information: 'More information',
   },
   option: {
     [Option.amphetamines]: 'Amphetamines (including speed, methamphetamine)',
@@ -167,9 +194,14 @@ export const english = {
     [Option.solvents]: 'Solvents (including gases and glues)',
     [Option.steroids]: 'Steroids',
     [Option.spice]: 'Synthetic cannabinoids (spice)',
+    [Option.last_six]: 'Used in the last 6 months',
+    [Option.in_the_last_six]: 'In the last 6 months',
+    [Option.more_than_six]: 'More than 6 months ago',
+    [Option.used_more_than_six]: 'Used more than 6 months ago',
   },
-  expected_end_date: 'Expected end date:',
-  not_provided: 'Not provided',
+  heading: {
+    not_used_in_last_six_months: 'Not used in the last 6 months',
+  },
 } as const
 
 export type AccommodationLocale = Locale<typeof english>

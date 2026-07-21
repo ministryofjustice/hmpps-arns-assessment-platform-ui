@@ -19,7 +19,7 @@ import {CommonOption} from '../../../../constants/commonOption'
 
 export const drugLastUsedField = (drugValue: string | ChainableExpr<PipelineExpr>) =>
   GovUKRadioInput({
-    code: Format(Question.drug_last_used_value, drugValue),
+    code: Format(Question.drug_last_used_value, drugValue.toString().toLowerCase()),
     fieldset: {
       legend: {
         text: contentFor('question.drug_last_used.text', drugValueToText(drugValue)),
@@ -31,13 +31,14 @@ export const drugLastUsedField = (drugValue: string | ChainableExpr<PipelineExpr
       Answer(Question.select_misused_drugs).match(Condition.Array.Contains(drugValue)),
     ),
     items: [
-      { value: Option.last_six, text: contentFor('question.drug_last_used.option.LAST_SIX') },
+      { value: Option.last_six, text: contentFor('option.LAST_SIX') },
       { value: Option.more_than_six, text: contentFor('question.drug_last_used.option.MORE_THAN_SIX') },
     ],
     validWhen: [
       validation({
         condition: not(Self().not.match(Condition.IsRequired())),
         message: contentFor('question.drug_last_used.validation'),
+        groups: ['drugs']
       }),
     ],
   })
@@ -64,19 +65,6 @@ const otherDrugName = GovUKTextInput({
     }),
   ],
 })
-
-// const drugsListItems = [
-//   ...drugsList.map(drug => ({
-//     value: drug.value,
-//     // text: drugValueToText(drug.value),
-//     block: drugLastUsedField(drug),
-//   })),
-//   {
-//     value: CommonOption.other,
-//     text: commonContentFor('option.OTHER'),
-//     block: [otherDrugName, drugLastUsedField(otherDrugOption)],
-//   },
-// ]
 
 export const selectMisusedDrugs = GovUKCheckboxInput({
   code: Question.select_misused_drugs,
@@ -133,6 +121,7 @@ export const selectMisusedDrugs = GovUKCheckboxInput({
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: contentFor('question.select_misused_drugs.validation'),
+      groups: ['drugs']
     }),
   ],
 })

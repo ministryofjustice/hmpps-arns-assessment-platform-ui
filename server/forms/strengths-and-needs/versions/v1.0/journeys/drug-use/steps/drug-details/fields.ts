@@ -2,7 +2,7 @@ import {
   and,
   Answer,
   ChainableExpr,
-  Condition,
+  Condition, Data,
   Format,
   Item,
   Iterator,
@@ -30,20 +30,18 @@ import {Option} from "../../constants/option";
 import {commonContentFor} from "../../../../locales";
 import {Question} from "../../constants/question";
 import {CommonOption} from "../../../../constants/commonOption";
-import {fieldCode} from "../../constants";
-import {drugLastSixMonths} from "../drug-use-summary/fields";
-import {Literal} from "@sinclair/typebox";
+import {fieldCode, fieldCodeString} from "../../constants";
 
 // --- Conditions ---
 
-const anyDrugUsedInLastSix = Answer('drugsUsedInLastSix').match(Condition.IsRequired())
-export const anyDrugUsedMoreThanSix = Answer('drugsUsedMoreThanSix').match(Condition.IsRequired())
+const anyDrugUsedInLastSix = Data('drugsUsedInLastSix').match(Condition.IsRequired())
+export const anyDrugUsedMoreThanSix = Data('drugsUsedMoreThanSix').match(Condition.IsRequired())
 
 // --- Used in the last 6 months ---
 
 const drugValueLower = Item().path('value').pipe(Transformer.String.ToLowerCase())
 
-export const drugIntakeFrequency = (drugValue: string | ChainableExpr<PipelineExpr>) =>  GovUKRadioInput({
+export const drugIntakeFrequency = (drugValue: ChainableExpr<PipelineExpr>) =>  GovUKRadioInput({
   code: contentFor('question.how_often_used.code', drugValue),
   classes: 'govuk-radios--inline',
   fieldset: {
@@ -57,6 +55,7 @@ export const drugIntakeFrequency = (drugValue: string | ChainableExpr<PipelineEx
     { value: Option.monthly, text: contentFor('question.how_often_used.option.MONTHLY') },
     { value: Option.occasionally, text: contentFor('question.how_often_used.option.OCCASIONALLY') },
   ],
+  dependentWhen: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
   validWhen: [
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
@@ -80,7 +79,7 @@ export const usedInLastSixMonthsSection = TemplateWrapper({
         html: contentFor('question.how_often_used.summaryHtml')
       }),
       CollectionBlock({
-        collection: Answer('drugsUsedInLastSix').each(
+        collection: Data('drugsUsedInLastSix').each(
           Iterator.Map(
             TemplateWrapper({
               template: '<h2 class="govuk-heading-m">{{heading}}</h2>{{slot:fields}}',
@@ -125,7 +124,7 @@ export const usedMoreThanSixMonthsSection = TemplateWrapper({
         text: Format(
           '%1 used %2 more than 6 months ago.',
           CaseData.Forename,
-          Answer('drugsUsedMoreThanSix')
+          Data('drugsUsedMoreThanSix')
             .each(
               Iterator.Map(
                 when(
@@ -164,11 +163,12 @@ export const usedMoreThanSixMonthsSection = TemplateWrapper({
 
 // --- Injected drugs ---
 
-const anyInjectableSelectedDrugs = Answer('injectableSelectedDrugs').match(Condition.IsRequired())
+const anyInjectableSelectedDrugs = Data('injectableSelectedDrugs').match(Condition.IsRequired())
 
 
-export const drugInjectedLast = (drugValue: string) => GovUKCheckboxInput({
-  code: fieldCode(Question.drugs_injected, drugValue.toLowerCase()),
+export const drugInjectedLastString = (drugValue: string) => GovUKCheckboxInput({
+  code: fieldCodeString(Question.drugs_injected, drugValue),
+  multiple: true,
   fieldset: {
     legend: {
       text: contentFor('question.drugs_injected_months.text', CaseData.Forename),
@@ -177,8 +177,8 @@ export const drugInjectedLast = (drugValue: string) => GovUKCheckboxInput({
   },
   hint: commonContentFor('select_one_or_both'),
   items:[
-    { value: Option.last_six, text: contentFor('question.drugs_injected_months.option.LAST_SIX') },
-    { value: Option.more_than_six, text: contentFor('question.drugs_injected_months.option.MORE_THAN_SIX') },
+    { value: Option.last_six, text: contentFor('option.IN_THE_LAST_SIX') },
+    { value: Option.more_than_six, text: contentFor('option.MORE_THAN_SIX') },
   ],
   dependentWhen: and(
     Answer(Question.drugs_injected).match(Condition.IsRequired()),
@@ -197,35 +197,36 @@ export const drugInjectedLast = (drugValue: string) => GovUKCheckboxInput({
   ],
 })
 
-// export const drugInjectedLastString = (drugValue: string) => GovUKCheckboxInput({
-//   code: fieldCode(Question.drugs_injected, drugValue),
-//   fieldset: {
-//     legend: {
-//       text: contentFor('question.drugs_injected_months.text', CaseData.Forename),
-//       classes: 'govuk-fieldset__legend--m',
-//     },
-//   },
-//   hint: commonContentFor('select_one_or_both'),
-//   items:[
-//     { value: Option.last_six, text: contentFor('question.drugs_injected_months.option.LAST_SIX') },
-//     { value: Option.more_than_six, text: contentFor('question.drugs_injected_months.option.MORE_THAN_SIX') },
-//   ],
-//   dependentWhen: and(
-//     Answer(Question.drugs_injected).match(Condition.IsRequired()),
-//     Answer(Question.drugs_injected).match(Condition.Array.Contains(drugValue)),
-//     Answer(drugLastUsedField(drugValue.toLowerCase()))
-//       .match(Condition.Equals(Option.last_six))
-//   ),
-//   visibleWhen:
-//     Answer(drugLastUsedField(drugValue))
-//       .match(Condition.Equals(Option.last_six)),
-//   validWhen: [
-//     validation({
-//       condition: Self().match(Condition.IsRequired()),
-//       message: contentFor('question.drug_last_used.validation'),
-//     }),
-//   ],
-// })
+export const drugInjectedLast = (drugValue: ChainableExpr<PipelineExpr>) => GovUKCheckboxInput({
+  code: fieldCode(Question.drugs_injected, drugValue),
+  multiple: true,
+  fieldset: {
+    legend: {
+      text: contentFor('question.drugs_injected_months.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  hint: commonContentFor('select_one_or_both'),
+  items:[
+    { value: Option.last_six, text: contentFor('option.LAST_SIX') },
+    { value: Option.more_than_six, text: contentFor('option.MORE_THAN_SIX') },
+  ],
+  dependentWhen: and(
+    Answer(Question.drugs_injected).match(Condition.IsRequired()),
+    Answer(Question.drugs_injected).match(Condition.Array.Contains(drugValue)),
+    Answer(drugLastUsedField(drugValue.pipe(Transformer.String.ToLowerCase())))
+      .match(Condition.Equals(Option.last_six))
+  ),
+  visibleWhen:
+    Answer(drugLastUsedField(drugValue))
+      .match(Condition.Equals(Option.last_six)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.drug_last_used.validation'),
+    }),
+  ],
+})
 
 export const injectedDrugsField = GovUKCheckboxInput({
   code: Question.drugs_injected,
@@ -242,43 +243,43 @@ export const injectedDrugsField = GovUKCheckboxInput({
     {divider: 'or'},
     {value: Option.amphetamines,
       text: contentFor('option.AMPHETAMINES'),
-      // block: drugInjectedLastString(Option.amphetamines),
+      block: drugInjectedLastString(Option.amphetamines),
       visibleWhen: Answer(Question.select_misused_drugs)
         .match(Condition.Array.Contains(Option.amphetamines))},
     {value: Option.benzodiazepines, text: contentFor('option.BENZODIAZEPINES'),
-      // block: drugInjectedLastString(Option.benzodiazepines),
+      block: drugInjectedLastString(Option.benzodiazepines),
       visibleWhen: Answer(Question.select_misused_drugs)
         .match(Condition.Array.Contains(Option.benzodiazepines))},
     {value: Option.cocaine, text: contentFor('option.COCAINE'),
-      // block: drugInjectedLastString(Option.cocaine),
+      block: drugInjectedLastString(Option.cocaine),
       visibleWhen: Answer(Question.select_misused_drugs)
         .match(Condition.Array.Contains(Option.cocaine))},
     {value: Option.crack, text: contentFor('option.CRACK'),
-      // block: drugInjectedLastString(Option.crack),
+      block: drugInjectedLastString(Option.crack),
       visibleWhen: Answer(Question.select_misused_drugs)
         .match(Condition.Array.Contains(Option.crack))},
     {value: Option.heroin, text: contentFor('option.HEROIN'),
-      // block: drugInjectedLastString(Option.heroin),
+      block: drugInjectedLastString(Option.heroin),
       visibleWhen: Answer(Question.select_misused_drugs)
         .match(Condition.Array.Contains(Option.heroin))},
     {value: Option.methadone_not_prescribed, text: contentFor('option.METHADONE_NOT_PRESCRIBED'),
-      // block: drugInjectedLastString(Option.methadone_not_prescribed),
+      block: drugInjectedLastString(Option.methadone_not_prescribed),
       visibleWhen: Answer(Question.select_misused_drugs)
         .match(Condition.Array.Contains(Option.methadone_not_prescribed))},
     {value: Option.misused_prescribed_drugs, text: contentFor('option.MISUSED_PRESCRIBED_DRUGS'),
-      // block: drugInjectedLastString(Option.misused_prescribed_drugs),
+      block: drugInjectedLastString(Option.misused_prescribed_drugs),
       visibleWhen: Answer(Question.select_misused_drugs)
         .match(Condition.Array.Contains(Option.misused_prescribed_drugs))},
     {value: Option.other_opiates, text: contentFor('option.OTHER_OPIATES'),
-      // block: drugInjectedLastString(Option.other_opiates),
+      block: drugInjectedLastString(Option.other_opiates),
       visibleWhen: Answer(Question.select_misused_drugs)
         .match(Condition.Array.Contains(Option.other_opiates))},
     {value: Option.steroids, text: contentFor('option.STEROIDS'),
-      // block: drugInjectedLastString(Option.steroids),
+      block: drugInjectedLastString(Option.steroids),
       visibleWhen: Answer(Question.select_misused_drugs)
         .match(Condition.Array.Contains(Option.steroids))},
     {value: CommonOption.other, text: Answer(Question.other_drug_name),
-      // block: drugInjectedLastString(Option.amphetamines),
+      block: drugInjectedLastString(Option.amphetamines),
       visibleWhen: Answer(Question.select_misused_drugs)
         .match(Condition.Array.Contains(CommonOption.other))},
   ],
@@ -294,21 +295,21 @@ export const injectedDrugsField = GovUKCheckboxInput({
 // --- Receiving treatment ---
 
 const receivingTreatmentDetails = GovUKCharacterCount({
-    code: 'receiving_treatment_yes_details',
-    label: 'Give details',
+    code: Question.receiving_treatment_yes_details,
+    label: commonContentFor('required_details'),
     maxLength: 2000,
     validWhen: [
       validation({
         condition: not(Self().not.match(Condition.IsRequired())),
-        message: 'Enter details about the treatment they are receiving',
+        message: contentFor('question.receiving_treatment_yes_details.validation'),
       }),
     ],
-    dependentWhen: Answer('receiving_treatment').match(Condition.Equals('YES')),
+    dependentWhen: Answer(Question.receiving_treatment).match(Condition.Equals(CommonOption.yes)),
 })
 
 const receivingTreatmentNoDetails = GovUKCharacterCount({
-  code: 'receiving_treatment_no_details',
-  label: 'Give details (optional)',
+  code: Question.receiving_treatment_no_details,
+  label: commonContentFor('optional_details'),
   maxLength: 2000,
 })
 

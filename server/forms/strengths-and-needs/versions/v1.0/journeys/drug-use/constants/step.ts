@@ -23,8 +23,8 @@ export const Step = {
     code: 'drug_use_summary',
     path: 'drug-use-summary',
   },
-  accommodation_analysis: {
-    code: 'accommodation_analysis',
-    path: 'accommodation-analysis',
+  drug_use_analysis: {
+    code: 'drug_use_analysis',
+    path: 'drug-use-analysis',
   },
 } as const

@@ -1,6 +1,8 @@
 export const Option = {
   last_six: 'LAST_SIX',
+  in_the_last_six: 'IN_THE_LAST_SIX',
   more_than_six: 'MORE_THAN_SIX',
+  used_more_than_six: 'USED_MORE_THAN_SIX',
   amphetamines: 'AMPHETAMINES',
   benzodiazepines: 'BENZODIAZEPINES',
   cannabis: 'CANNABIS',
@@ -33,4 +35,7 @@ export const Option = {
   links_to_offending: 'LINKS_TO_OFFENDING',
   health: 'HEALTH',
   relationships: 'RELATIONSHIPS',
+  no_motivation: 'NO_MOTIVATION',
+  partial_motivation: 'PARTIAL_MOTIVATION',
+  full_motivation: 'FULL_MOTIVATION',
 } as const

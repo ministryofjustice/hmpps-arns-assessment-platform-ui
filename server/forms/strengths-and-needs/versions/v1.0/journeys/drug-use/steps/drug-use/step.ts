@@ -5,6 +5,8 @@ import { drugUse } from './fields'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
+import {Section, SectionStatus} from "../../../../constants/section";
+import {saveAndClearStaleAnswers} from "../../../../../../effects/assessment/saveAndClearStaleAnswers";
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -27,7 +29,10 @@ export const drugUseStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
+        effects: [
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use.statusKey, SectionStatus.incomplete),
+        ],
         next: [
           redirect({
             when: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
@@ -35,7 +40,7 @@ export const drugUseStep = step({
           }),
           redirect({
             when: Answer(Question.drug_use).match(Condition.Equals(CommonOption.no)),
-            goto: 'drug-use-summary',
+            goto: Step.drug_use_summary.path,
           }),
         ],
       },

@@ -1,6 +1,5 @@
-import { Drug, drugsList } from '../../versions/v1.0/journeys/drug-use/constants'
-import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
-import { contentFor } from '../../versions/v1.0/journeys/drug-use/locales'
+import {Drug, drugsList} from '../../versions/v1.0/journeys/drug-use/constants'
+import {StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps} from '../types'
 
 const allDrugs = [...drugsList]
 const drugByValue = new Map(allDrugs.map(drug => [drug.value, drug]))
@@ -10,9 +9,9 @@ export const deriveDrugCategories =
     const selectedDrugs = context.getAnswer('select_misused_drugs') as string[] | undefined
 
     if (!selectedDrugs?.length) {
-      context.setAnswer('drugsUsedInLastSix', [])
-      context.setAnswer('drugsUsedMoreThanSix', [])
-      context.setAnswer('injectableSelectedDrugs', [])
+      context.setData('drugsUsedInLastSix', [])
+      context.setData('drugsUsedMoreThanSix', [])
+      context.setData('injectableSelectedDrugs', [])
 
       return
     }
@@ -50,7 +49,7 @@ export const deriveDrugCategories =
       }
     })
 
-    context.setAnswer('drugsUsedInLastSix', usedInLastSix)
-    context.setAnswer('drugsUsedMoreThanSix', usedMoreThanSix)
-    context.setAnswer('injectableSelectedDrugs', injectableSelected)
+    context.setData('drugsUsedInLastSix', usedInLastSix)
+    context.setData('drugsUsedMoreThanSix', usedMoreThanSix)
+    context.setData('injectableSelectedDrugs', injectableSelected)
   }

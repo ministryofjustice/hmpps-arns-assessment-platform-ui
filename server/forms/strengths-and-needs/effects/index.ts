@@ -7,6 +7,7 @@ import { initializeSessionFromAccess } from './session/initializeSessionFromAcce
 import { loadSessionData } from './session/loadSessionData'
 import { StrengthsAndNeedsEffectsDeps } from './types'
 import { setSectionProgress } from './assessment/setSectionProgress'
+import {saveAndClearStaleAnswers} from "./assessment/saveAndClearStaleAnswers";
 
 type EffectShapesFromFactories<TFactories> = {
   [K in keyof TFactories]: TFactories[K] extends (deps: infer _Deps) => infer Evaluator
@@ -21,6 +22,7 @@ const strengthsAndNeedsEffectFactories = {
   loadSessionData,
   loadAssessment,
   saveCurrentStepAnswers,
+  saveAndClearStaleAnswers,
   deriveDrugCategories,
   setSectionProgress,
 }

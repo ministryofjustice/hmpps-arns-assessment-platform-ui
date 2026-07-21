@@ -29,6 +29,7 @@ export const english = {
     [Section.health_and_wellbeing.code]: 'Health and wellbeing',
   },
   validation: {
+    two_thousand_characters_max: 'Details must be 2000 characters or less',
     valid_date: 'Enter a valid date',
     valid_date_day: 'Date must include a day',
     valid_date_month: 'Date must include a month',

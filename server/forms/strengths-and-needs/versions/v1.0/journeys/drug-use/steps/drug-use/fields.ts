@@ -5,9 +5,10 @@ import { CaseData } from '../../../../constants/formVersion'
 import { contentFor } from '../../locales'
 import { CommonOption } from '../../../../constants/commonOption'
 import { commonContentFor } from '../../../../locales'
+import {Question} from "../../constants/question";
 
 export const drugUse = GovUKRadioInput({
-  code: 'drug_use',
+  code: Question.drug_use,
   fieldset: {
     legend: {
       text: contentFor('question.drug_use.text', CaseData.Forename),

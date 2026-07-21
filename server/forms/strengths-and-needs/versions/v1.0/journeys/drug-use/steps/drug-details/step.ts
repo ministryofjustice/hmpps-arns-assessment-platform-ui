@@ -9,6 +9,9 @@ import {
   usedMoreThanSixMonthsSection,
 } from './fields'
 import {Step} from '../../constants/step'
+import {Section, SectionStatus} from "../../../../constants/section";
+import {sectionPath} from "../../../../constants/path";
+import {formVersion} from "../../../../constants/formVersion";
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -19,6 +22,11 @@ const saveButton = GovUKButton({
 export const drugDetailsStep = step({
   path: `/${Step.drug_details.path}`,
   title: 'Drug details',
+  view: {
+    locals: {
+      backlink: `/strengths-and-needs/${formVersion}${Section.drug_use.path}/${Step.add_drugs.path}/`,
+    },
+  },
   onAccess: [
     access({
       effects: [StrengthsAndNeedsEffects.deriveDrugCategories()],
@@ -28,7 +36,7 @@ export const drugDetailsStep = step({
     usedInLastSixMonthsSection,
     sectionDivider,
     usedMoreThanSixMonthsSection,
-    // injectedDrugsField,
+    injectedDrugsField,
     receivingTreatmentField,
     saveButton,
   ],
@@ -37,7 +45,10 @@ export const drugDetailsStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use.statusKey, SectionStatus.incomplete),
+        ],
         next: [
           redirect({
             goto: Step.drug_use_history.path,
