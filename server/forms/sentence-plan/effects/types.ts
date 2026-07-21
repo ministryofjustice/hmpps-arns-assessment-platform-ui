@@ -428,6 +428,11 @@ export interface SentencePlanSession {
   sessionDetails?: SessionDetails
   practitionerDetails?: PractitionerDetails
   caseDetails?: CaseDetails
+  principal?: {
+    identifier: string
+    username: string
+    displayName: string
+  }
 }
 
 /**
