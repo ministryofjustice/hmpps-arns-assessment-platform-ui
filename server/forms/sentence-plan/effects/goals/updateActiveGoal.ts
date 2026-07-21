@@ -1,5 +1,5 @@
 import { InternalServerError } from 'http-errors'
-import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
+import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
@@ -101,12 +101,11 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
   const selectedArea = areasOfNeed.find(area => area.slug === activeGoal.areaOfNeed)
   const goalMatch = matchSuggestedGoal(goalTitle as string, selectedArea?.goals ?? [])
 
-  telemetry.trackEvent('UPDATE_GOAL_PAGE_SUBMITTED', {
+  trackBusinessEvent(context, 'UPDATE_GOAL_PAGE_SUBMITTED', {
     assessmentUuid,
     goalUuid: activeGoal.uuid,
     goalStatus: status,
     areaOfNeed: activeGoal.areaOfNeed,
-    authSource: context.getState('user').authSource,
     userContext: getUserContext(context),
     goalTitleHash: hashGoalText(goalTitle as string),
     suggestedGoalMatch: goalMatch.matchRating ?? 'no match',

@@ -5,6 +5,7 @@ import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, calculateTargetDate, determineGoalStatus, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
 import { snapshotFromGoal } from './goalSnapshot'
+import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 
 /**
  * Re-add a removed goal back to the plan
@@ -116,6 +117,8 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
   if (commands.length > 0) {
     await deps.api.executeCommands(...commands)
   }
+
+  trackBusinessEvent(context, 'READD_GOAL_PAGE_SUBMITTED', { assessmentUuid, goalUuid: activeGoal.uuid })
 
   // Move goal to bottom of the list
   const goals = context.getData('goals') as DerivedGoal[]
