@@ -1,7 +1,7 @@
-import { Drug, drugsList, otherDrugOption } from '../../versions/v1.0/journeys/drug-use/constants'
+import { Drug, drugsList } from '../../versions/v1.0/journeys/drug-use/constants'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 
-const allDrugs = [...drugsList, otherDrugOption]
+const allDrugs = [...drugsList]
 const drugByValue = new Map(allDrugs.map(drug => [drug.value, drug]))
 
 export const deriveDrugCategories =
@@ -22,13 +22,8 @@ export const deriveDrugCategories =
 
     const resolveDrug = (drugValue: string): Drug | undefined => {
       const drug = drugByValue.get(drugValue)
-
       if (!drug) {
         return undefined
-      }
-
-      if (drug.value === otherDrugOption.value) {
-        return { ...drug, text: (context.getAnswer('other_drug_name') as string) ?? drug.text }
       }
 
       return drug

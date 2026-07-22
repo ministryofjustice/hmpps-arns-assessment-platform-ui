@@ -1,25 +1,31 @@
+import { ChainableExpr, PipelineExpr, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Option } from './constants/option'
+import { CommonOption } from '../../constants/commonOption'
+
 export interface Drug {
   value: string
-  text: string
+  text?: string
   injectable: boolean
 }
 
 export const drugsList: Drug[] = [
-  { value: 'AMPHETAMINES', text: 'Amphetamines (including speed, methamphetamine)', injectable: true },
-  { value: 'BENZODIAZEPINES', text: 'Benzodiazepines (including diazepam, temazepam)', injectable: true },
-  { value: 'CANNABIS', text: 'Cannabis', injectable: false },
-  { value: 'COCAINE', text: 'Cocaine', injectable: true },
-  { value: 'CRACK', text: 'Crack cocaine', injectable: true },
-  { value: 'ECSTASY', text: 'Ecstasy (MDMA)', injectable: false },
-  { value: 'HALLUCINOGENICS', text: 'Hallucinogens', injectable: false },
-  { value: 'HEROIN', text: 'Heroin', injectable: true },
-  { value: 'METHADONE_NOT_PRESCRIBED', text: 'Methadone (not prescribed)', injectable: true },
-  { value: 'MISUSED_PRESCRIBED_DRUGS', text: 'Prescribed drugs', injectable: true },
-  { value: 'OTHER_OPIATES', text: 'Other opiates', injectable: true },
-  { value: 'SOLVENTS', text: 'Solvents (including gases and glues)', injectable: false },
-  { value: 'STEROIDS', text: 'Steroids', injectable: true },
-  { value: 'SPICE', text: 'Synthetic cannabinoids (spice)', injectable: false },
+  { value: Option.amphetamines, injectable: true },
+  { value: Option.benzodiazepines, injectable: true },
+  { value: Option.cannabis, injectable: false },
+  { value: Option.cocaine, injectable: true },
+  { value: Option.crack, injectable: true },
+  { value: Option.ecstasy, injectable: false },
+  { value: Option.hallucinogenics, injectable: false },
+  { value: Option.heroin, injectable: true },
+  { value: Option.methadone_not_prescribed, injectable: true },
+  { value: Option.misused_prescribed_drugs, injectable: true },
+  { value: Option.other_opiates, injectable: true },
+  { value: Option.solvents, injectable: false },
+  { value: Option.steroids, injectable: true },
+  { value: Option.spice, injectable: false },
+  { value: CommonOption.other, injectable: true },
 ]
-export const otherDrugOption: Drug = { value: 'OTHER', text: 'Other', injectable: true }
 
-export const fieldCode = (prefix: string, drugValue: string) => `${prefix}_${drugValue.toLowerCase()}`
+export const fieldCodeString = (prefix: string, drugValue: string) => `${prefix}_${drugValue.toLowerCase()}`
+export const fieldCode = (prefix: string, drugValue: ChainableExpr<PipelineExpr>) =>
+  `${prefix}_${drugValue.pipe(Transformer.String.ToLowerCase())}`
