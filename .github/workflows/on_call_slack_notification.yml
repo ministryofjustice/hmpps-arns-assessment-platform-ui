@@ -1,0 +1,64 @@
+name: Post daily on-call to Slack
+
+on:
+  schedule:
+    # UK 9am shifts between 08:00 and 09:00 UTC across GMT/BST, so both
+    # crons fire and the "check_time" job filters out the wrong one.
+    - cron: '0 8 * * 1-5'
+    - cron: '0 9 * * 1-5'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  check_time:
+    name: Check it's 9am UK time
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - id: check
+        run: |
+          HOUR=$(TZ=Europe/London date +%H)
+          if [ "$HOUR" = "09" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  post_on_call:
+    name: Look up on-call and post to Slack
+    needs: check_time
+    if: github.event_name == 'workflow_dispatch' || needs.check_time.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    env:
+      PAGERDUTY_SCHEDULE_ID: P5LXJUT
+      SLACK_CHANNEL: '#assess-and-plan-support'
+    steps:
+      - name: Get current on-call user from PagerDuty
+        id: pagerduty
+        env:
+          PAGERDUTY_API_TOKEN: ${{ secrets.PAGERDUTY_API_TOKEN }}
+        run: |
+          RESPONSE=$(curl -sf \
+            -H "Authorization: Token token=$PAGERDUTY_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://api.pagerduty.com/oncalls?schedule_ids[]=$PAGERDUTY_SCHEDULE_ID&earliest=true")
+
+          ON_CALL_NAME=$(echo "$RESPONSE" | jq -r '[.oncalls[]] | sort_by(.escalation_level) | .[0].user.name // empty')
+
+          if [ -z "$ON_CALL_NAME" ]; then
+            ON_CALL_NAME="Nobody found on the on-call schedule"
+          fi
+
+          echo "name=$ON_CALL_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Post to Slack
+        uses: slackapi/slack-github-action@v4.0.0
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.HMPPS_SRE_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.SLACK_CHANNEL }}
+            text: ${{ toJSON(format(':pager: On-call today: *{0}*', steps.pagerduty.outputs.name)) }}
