@@ -10,8 +10,7 @@ import {
 } from './fields'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
-import { formVersion } from '../../../../constants/formVersion'
-import {sectionPath} from "../../../../constants/path";
+import { sectionPath } from '../../../../constants/path'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
