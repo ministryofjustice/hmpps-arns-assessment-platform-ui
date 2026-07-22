@@ -29,7 +29,9 @@ export const thinkingBehavioursSexualPreoccupation = GovUKRadioInput({
       value: Option.sometimes_sexual_preoccupation,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.NO_SEXUAL_PREOCCUPATION'),
+      text: contentFor(
+        'question.thinking_behaviours_attitudes_sexual_preoccupation.option.NO_SEXUAL_PREOCCUPATION.text',
+      ),
       value: Option.no_sexual_preoccupation,
     },
     {
