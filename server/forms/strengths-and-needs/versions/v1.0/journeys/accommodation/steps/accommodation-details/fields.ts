@@ -22,6 +22,12 @@ const livingWithPartnerDetails = GovUKCharacterCount({
     Answer(Question.living_with).match(Condition.IsRequired()),
     Answer(Question.living_with).match(Condition.Array.Contains(Option.partner)),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const livingWithOtherDetails = GovUKCharacterCount({
@@ -32,6 +38,12 @@ const livingWithOtherDetails = GovUKCharacterCount({
     Answer(Question.living_with).match(Condition.IsRequired()),
     Answer(Question.living_with).match(Condition.Array.Contains(CommonOption.other)),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 export const livingWith = GovUKCheckboxInput({
@@ -86,6 +98,10 @@ const noAccommodationReasonOtherDetails = GovUKCharacterCount({
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: commonContentFor('validation.enter_details'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -142,6 +158,12 @@ export const pastAccommodationDetails = GovUKCharacterCount({
   maxLength: 2000,
   visibleWhen: Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation)),
   dependentWhen: Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 // --- Suitable Location Group ---
@@ -158,6 +180,10 @@ const suitableHousingLocationConcernsDetails = GovUKCharacterCount({
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: commonContentFor('validation.enter_details'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -254,6 +280,10 @@ const suitableHousingConcernsDetails = GovUKCharacterCount({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: commonContentFor('validation.enter_details'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
   ],
 })
 
@@ -286,6 +316,10 @@ const unsuitableHousingConcernsDetails = GovUKCharacterCount({
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: commonContentFor('validation.enter_details'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -347,6 +381,10 @@ const futureAccommodationAwaitingAssessmentDetails = GovUKCharacterCount({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: commonContentFor('validation.enter_details'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
   ],
 })
 
@@ -359,6 +397,10 @@ const futureAccommodationAwaitingPlacementDetails = GovUKCharacterCount({
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: commonContentFor('validation.enter_details'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -373,6 +415,10 @@ const futureAccommodationOtherDetails = GovUKCharacterCount({
     validation({
       condition: not(Self().not.match(Condition.IsRequired())),
       message: commonContentFor('validation.enter_details'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -459,6 +505,12 @@ const hasMadeChangesAccommodationDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: Answer(Question.accommodation_changes)
     .match(Condition.Equals(CommonOption.has_made_changes)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const activelyMakingChangesAccommodationDetails = GovUKCharacterCount({
@@ -467,6 +519,12 @@ const activelyMakingChangesAccommodationDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: Answer(Question.accommodation_changes)
     .match(Condition.Equals(CommonOption.is_making_changes)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const wantsToMakeChangesKnowsHowToAccommodationDetails = GovUKCharacterCount({
@@ -475,6 +533,12 @@ const wantsToMakeChangesKnowsHowToAccommodationDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: Answer(Question.accommodation_changes)
     .match(Condition.Equals(CommonOption.wants_to_make_changes_knows_how_to)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const wantsToMakeChangesNeedsHelpAccommodationDetails = GovUKCharacterCount({
@@ -483,6 +547,12 @@ const wantsToMakeChangesNeedsHelpAccommodationDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: Answer(Question.accommodation_changes)
     .match(Condition.Equals(CommonOption.wants_to_make_changes_needs_help)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const thinkingAboutMakingChangesAccommodationDetails = GovUKCharacterCount({
@@ -491,6 +561,12 @@ const thinkingAboutMakingChangesAccommodationDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: Answer(Question.accommodation_changes)
     .match(Condition.Equals(CommonOption.thinking_about_making_changes)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const doesNotWantToMakeChangesAccommodationDetails = GovUKCharacterCount({
@@ -507,6 +583,12 @@ const doesNotWantToAnswerAccommodationDetails = GovUKCharacterCount({
   maxLength: 2000,
   dependentWhen: Answer(Question.accommodation_changes)
     .match(Condition.Equals(CommonOption.does_not_want_to_answer)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 export const accommodationChanges = GovUKRadioInput({

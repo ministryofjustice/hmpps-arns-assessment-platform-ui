@@ -8,7 +8,7 @@ generic-service:
     modsecurity_enabled: true
     modsecurity_audit_enabled: true
     modsecurity_snippet: |
-      SecRuleEngine DetectionOnly
+      SecRuleEngine On
       # Team here grants access to the OpenSearch logs to delve into the cause of the blockage
       SecDefaultAction "phase:2,pass,log,tag:github_team=hmpps-assessments,tag:namespace={{ .Release.Namespace }}"
       # Rule 920272 (unusual characters) false-alarms on normal post bodies; skip the raw body for this check only.
@@ -43,6 +43,7 @@ generic-service:
     ENVIRONMENT_NAME: PRE-PRODUCTION
     AUDIT_ENABLED: 'true'
     FEEDBACK_FORM_URL: 'https://forms.office.com/Pages/ResponsePage.aspx?id=KEeHxuZx_kGp4S6MNndq2NZZrIGKlVRMlQWYqMMLQ_ZUQU4xRlA2RTQ0UFlXV1lJWjRPRlVSRE5LOS4u'
+    NATIONAL_ROLLOUT_FEEDBACK_URL: 'https://www.smartsurvey.co.uk/t/AAGPPN?service=ARNS%20Sentence%20Plan'
     SERVICE_NOW_FORM_URL: 'https://mojprod.service-now.com/moj_sp?id=sc_cat_item&sys_id=276572591bce4910a93242ead34bcb53'
     FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'true'
 

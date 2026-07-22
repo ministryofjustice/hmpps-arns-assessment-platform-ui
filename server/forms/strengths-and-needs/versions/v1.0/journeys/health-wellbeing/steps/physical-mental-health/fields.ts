@@ -21,6 +21,12 @@ export const prescribedPhysicalHealthMedicationsTreatments = GovUKCharacterCount
   maxLength: 2000,
   visibleWhen: Answer(Question.health_conditions).match(Condition.Equals(Option.yes)),
   dependentWhen: Answer(Question.health_conditions).match(Condition.Equals(Option.yes)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 // --- Prescribed mental health treatments Group ---
@@ -44,6 +50,12 @@ export const prescribedMentalHealthMedicationsTreatments = GovUKCharacterCount({
       Answer(Question.mental_health_problems).match(Condition.Equals(Option.unknown)),
     ),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 // --- Prescribed psychiatric treatments Group ---
@@ -114,6 +126,12 @@ const neurodiverseConditionsDetails = GovUKCharacterCount({
   code: Question.neurodiverse_conditions_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 export const neurodiverseConditions = GovUKRadioInput({
@@ -144,12 +162,24 @@ const learningAbilitiesImpactedSignificantlyDetails = GovUKCharacterCount({
   code: Question.learning_abilities_impacted_significantly_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const learningAbilitiesImpactedSlightlyDetails = GovUKCharacterCount({
   code: Question.learning_abilities_impacted_slightly_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 export const impactOnLearningAbilities = GovUKRadioInput({
@@ -254,6 +284,10 @@ const selfHarmDetails = GovUKCharacterCount({
       condition: Self().match(Condition.String.HasMinLength(1)),
       message: commonContentFor('validation.enter_details'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
   ],
 })
 
@@ -291,7 +325,11 @@ const suicidalTendenciesDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor('validation.risk_of_serious_harm_details'),
+      message: commonContentFor('validation.enter_details'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
     }),
   ],
 })
@@ -377,6 +415,10 @@ const helpedDuringPeriodsGoodHealthWellbeingDetails = GovUKCharacterCount({
       condition: Self().match(Condition.IsRequired()),
       message: contentFor('validation.risk_of_serious_harm_details'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
   ],
 })
 
@@ -431,6 +473,12 @@ const hasMadePositiveChangesDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.has_made_changes)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const isActivelyMakingChangesDetails = GovUKCharacterCount({
@@ -438,6 +486,12 @@ const isActivelyMakingChangesDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.is_making_changes)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
@@ -447,6 +501,12 @@ const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(
     Condition.Equals(Option.wants_to_make_changes_knows_how_to),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const wantsToMakeChangesNeedsHelpDetails = GovUKCharacterCount({
@@ -456,6 +516,12 @@ const wantsToMakeChangesNeedsHelpDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(
     Condition.Equals(Option.wants_to_make_changes_needs_help),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const thinkingAboutMakingChangesDetails = GovUKCharacterCount({
@@ -465,6 +531,12 @@ const thinkingAboutMakingChangesDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(
     Condition.Equals(Option.thinking_about_making_changes),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const doesNotWantToMakeChangesDetails = GovUKCharacterCount({
@@ -474,6 +546,12 @@ const doesNotWantToMakeChangesDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(
     Condition.Equals(Option.does_not_want_to_make_changes),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const doesNotWantToAnswerChangesDetails = GovUKCharacterCount({
@@ -481,6 +559,12 @@ const doesNotWantToAnswerChangesDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.do_not_want_to_answer)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 export const changesToHealthWellbeing = GovUKRadioInput({

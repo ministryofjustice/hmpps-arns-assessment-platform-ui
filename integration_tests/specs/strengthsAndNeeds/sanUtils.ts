@@ -9,6 +9,7 @@ const privacyStepPath = '/privacy'
 export const accommodation = '/accommodation'
 export const employment = '/employment-and-education'
 export const health = '/health-and-wellbeing'
+export const drugUse = '/drug-use'
 
 export const sentencePlanV1URLs = {
   PRIVACY_SCREEN: `${sanFormPath}${privacyStepPath}`,
@@ -21,6 +22,7 @@ export const sanPageTitles = {
   accommodation: 'Current accommodation',
   employmentAndEducation: 'Employed',
   healthAndWellbeing: 'Health Wellbeing',
+  drugUse: 'Drug use',
 }
 
 export const sanServiceName = 'Strengths and needs'

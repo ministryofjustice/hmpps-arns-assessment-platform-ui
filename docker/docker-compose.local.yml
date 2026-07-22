@@ -25,6 +25,7 @@ services:
       NODE_ENV: development
       NODE_CLUSTER_ENABLED: false
       ENVIRONMENT_NAME: dev
+      FORGE_DEVTOOLS_ENABLED: true
       HMPPS_AUTH_URL: http://wiremock:8080/auth
       HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
       HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080/handover

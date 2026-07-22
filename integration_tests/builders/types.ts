@@ -70,7 +70,7 @@ export interface GoalConfig {
 
 export interface AnswerConfig {
   question: string
-  value: string
+  value: string | string[]
 }
 
 /**

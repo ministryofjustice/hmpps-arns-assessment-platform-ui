@@ -5,6 +5,7 @@
 {% set isPrivateBetaUser = data.assessment.flags and 'SAN_BETA' in data.assessment.flags %}
 {% set showSmartSurveyForPrivateBeta = data.featureFlags.smartSurveyInPrivateBetaEnabled and isPrivateBetaUser %}
 {% set showSmartSurveyForNationalRollout = data.featureFlags.smartSurveyInNationalRolloutEnabled and not isPrivateBetaUser %}
+{% set userFeedbackUrl = feedbackFormUrl if isPrivateBetaUser else nationalRolloutFeedbackUrl %}
 
 {# ancestor[0].title is root journey title, in this case it's 'Sentence Plan' #}
 {# step.title is current step(page) of the journey #}
