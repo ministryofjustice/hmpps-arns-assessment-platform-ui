@@ -161,7 +161,10 @@ export const english = {
     [Question.thinking_behaviours_attitudes_risk_sexual_harm]: {
       text: 'Are there any concerns that %1 poses a risk of sexual harm to others?',
       option: {
-        [Option.yes_risk_sexual_harm]: 'Yes',
+        [Option.yes_risk_sexual_harm]: {
+          text: 'Yes',
+          hint: 'Information suggests that there is evidence of sexual behaviour that could pose a risk of sexual harm to others',
+        },
         [Option.no_risk_sexual_harm]: 'No',
       },
       validation: 'Select if there are any concerns they are a risk of sexual harm',
@@ -173,8 +176,10 @@ export const english = {
           'Yes, the amount of time they spend engaging in sexual activity or thinking about sex is unhealthy and is impacting their day-to-day life',
         [Option.sometimes_sexual_preoccupation]:
           'Shows some evidence of improving their day-to-day life but still spends a significant amount of time preoccupied with sex',
-        [Option.no_sexual_preoccupation]:
-          'No, the amount of time they spend engaging in sexual activity or thinking about sex is healthy and is balanced alongside all other important areas of their life',
+        [Option.no_sexual_preoccupation]: {
+          text: 'No, the amount of time they spend engaging in sexual activity or thinking about sex is healthy and is balanced alongside all other important areas of their life',
+          hint: 'This includes behaviours like masturbating regularly, having casual sex or using pornography to meet their needs in a healthy way.',
+        },
         [Option.unknown_sexual_preoccupation]: 'Unknown',
       },
       validation: "Select if there's evidence of sexual preoccupation",

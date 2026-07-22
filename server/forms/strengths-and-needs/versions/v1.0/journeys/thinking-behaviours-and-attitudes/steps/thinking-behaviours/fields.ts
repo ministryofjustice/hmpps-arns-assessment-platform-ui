@@ -1,5 +1,5 @@
 import { validation, Self, Answer, Condition, and, or } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKRadioInput, GovUKTextareaInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { GovUKCharacterCount, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsConditions } from '../../../../../../conditions'
 import { CaseData } from '../../../../constants/formVersion'
 import { contentFor } from '../../locales'
@@ -13,11 +13,10 @@ const DEFAULT_CHARACTER_COUNT = 2000
 const toDetailsField =
   (parent: string) =>
   ({ code, option, mandatory = false }: { code: string; option: string; mandatory?: boolean }) =>
-    GovUKTextareaInput({
+    GovUKCharacterCount({
       code,
-      label: {
-        text: mandatory ? commonContentFor('required_details') : commonContentFor('optional_details'),
-      },
+      label: mandatory ? commonContentFor('required_details') : commonContentFor('optional_details'),
+      maxLength: DEFAULT_CHARACTER_COUNT,
       dependentWhen: and(
         Answer(parent).match(Condition.IsRequired()),
         or(
@@ -31,12 +30,6 @@ const toDetailsField =
           ),
         ),
       ),
-      validWhen: [
-        validation({
-          condition: Self().match(Condition.String.HasMaxLength(DEFAULT_CHARACTER_COUNT)),
-          message: commonContentFor('validation.details_character_limit', DEFAULT_CHARACTER_COUNT),
-        }),
-      ],
     })
 
 const thinkingBehavioursPeerPressureYesDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
@@ -506,7 +499,8 @@ export const thinkingBehavioursRiskSexualHarm = GovUKRadioInput({
   },
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.option.YES_RISK_SEXUAL_HARM'),
+      text: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.option.YES_RISK_SEXUAL_HARM.text'),
+      hint: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.option.YES_RISK_SEXUAL_HARM.hint'),
       value: Option.yes_risk_sexual_harm,
     },
     {
