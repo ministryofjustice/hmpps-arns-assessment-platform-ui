@@ -29,7 +29,7 @@ export const removeStepFromStepEditSession = () => async (context: SentencePlanC
 
   // Get action from POST data
   // Parse the index from action (e.g., "remove_0" -> 0)
-  const indexStr = (context.getPostData('action') as string).replace('remove_', '')
+  const indexStr = context.getPostData<string>('action').replace('remove_', '')
   const index = parseInt(indexStr, 10)
 
   if (Number.isNaN(index) || index < 0 || index >= changes.steps.length) {
@@ -40,6 +40,7 @@ export const removeStepFromStepEditSession = () => async (context: SentencePlanC
   changes.steps.forEach((step, i) => {
     step.actor = context.getAnswer(`step_actor_${i}`) ?? step.actor
     step.description = context.getAnswer(`step_description_${i}`) ?? step.description
+    step.status = context.getAnswer(`step_status_${i}`) ?? step.status
   })
 
   // If only 1 step, clear it instead of removing
@@ -57,6 +58,7 @@ export const removeStepFromStepEditSession = () => async (context: SentencePlanC
       id: newStepId,
       actor: '',
       description: '',
+      status: '',
     }
 
     changes.toCreate.push(newStepId)
@@ -78,5 +80,6 @@ export const removeStepFromStepEditSession = () => async (context: SentencePlanC
   changes.steps.forEach((step, i) => {
     context.setAnswer(`step_actor_${i}`, step.actor)
     context.setAnswer(`step_description_${i}`, step.description)
+    context.setAnswer(`step_status_${i}`, step.status)
   })
 }

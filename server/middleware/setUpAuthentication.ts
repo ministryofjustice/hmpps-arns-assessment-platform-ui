@@ -284,17 +284,6 @@ export default function setupAuthentication(options: AuthenticationOptions = {})
     const hmppsUser = req.user as HmppsUser
     res.locals.user = hmppsUser
 
-    req.state = {
-      ...req.state,
-      user: {
-        id: hmppsUser.username,
-        name: hmppsUser.displayName ?? hmppsUser.username,
-        authSource: hmppsUser.authSource,
-        token: hmppsUser.token,
-        userRoles: hmppsUser.userRoles,
-      },
-    }
-
     return next()
   })
 

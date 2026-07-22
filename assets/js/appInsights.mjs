@@ -3,7 +3,9 @@ import { ClickAnalyticsPlugin } from '@microsoft/applicationinsights-clickanalyt
 
 const connectionString = document.querySelector('meta[name="ai-connection-string"]')?.content
 
-if (connectionString) {
+function createAppInsights() {
+  if (!connectionString) return null
+
   const clickAnalyticsPlugin = new ClickAnalyticsPlugin()
 
   const clickAnalyticsConfig = {
@@ -16,7 +18,7 @@ if (connectionString) {
     },
   }
 
-  const appInsights = new ApplicationInsights({
+  const instance = new ApplicationInsights({
     config: {
       connectionString,
       disableXhr: true,
@@ -30,9 +32,9 @@ if (connectionString) {
     },
   })
 
-  appInsights.loadAppInsights()
+  instance.loadAppInsights()
 
-  appInsights.addTelemetryInitializer(envelope => {
+  instance.addTelemetryInitializer(envelope => {
     const assessmentUuid = document.querySelector('[data-qa-assessment-uuid]')?.getAttribute('data-qa-assessment-uuid')
     const requestId = document.querySelector('meta[name="ai-request-id"]')?.content
     const telemetryId = document.querySelector('meta[name="ai-telemetry-id"]')?.content
@@ -81,13 +83,115 @@ if (connectionString) {
     }
   })
 
-  appInsights.startTrackPage()
+  const accordionNames = {
+    'high-scoring-areas-accordion': 'High scoring areas',
+    'low-scoring-areas-accordion': 'Low scoring areas',
+    'incomplete-areas-accordion': 'Incomplete areas',
+    'other-areas-accordion': 'Areas without a need score',
+  }
+
+  // About page accordion: Show all/Hide all sections
+  document.querySelectorAll('.about-page-accordion .govuk-accordion__show-all').forEach(button => {
+    button.addEventListener('click', () => {
+      const isExpanded = button.getAttribute('aria-expanded') === 'true'
+      const accordionId = button.closest('.govuk-accordion')?.id
+      const accordionName = accordionNames[accordionId] || accordionId
+
+      instance.trackEvent({
+        name: 'san-info-accordion',
+        properties: {
+          AccordionName: accordionName,
+          Action: isExpanded ? 'Expand all' : 'Collapse all',
+          ControlType: 'AccordionHeader',
+        },
+      })
+    })
+  })
+
+  // About page accordion: individual sections
+  document.querySelectorAll('.about-page-accordion .govuk-accordion__section').forEach((section, index) => {
+    const button = section.querySelector('.govuk-accordion__section-button')
+    if (!button) return
+
+    button.addEventListener('click', () => {
+      const isExpanded = button.getAttribute('aria-expanded') === 'true'
+      const itemName = button.querySelector('.govuk-accordion__section-heading-text-focus')?.textContent?.trim()
+      const accordionId = section.closest('.govuk-accordion')?.id
+      const accordionName = accordionNames[accordionId] || accordionId
+
+      instance.trackEvent({
+        name: 'san-info-area-of-need-accordion',
+        properties: {
+          AccordionName: accordionName,
+          ItemName: itemName,
+          Index: String(index + 1),
+          Action: isExpanded ? 'Expand' : 'Collapse',
+          ControlType: 'Item',
+        },
+      })
+    })
+  })
+
+  instance.startTrackPage()
 
   // stop the page visit timer and flush telemetry before the page unloads:
   // in an MPA, the JS context is destroyed on navigation, so without this
   // the last page of a session would never have its visit duration recorded
   window.addEventListener('pagehide', () => {
-    appInsights.stopTrackPage()
-    appInsights.flush()
+    instance.stopTrackPage()
+    instance.flush()
+  })
+
+  return instance
+}
+
+export const appInsights = createAppInsights()
+
+const accordionNames = {
+  'high-scoring-areas-accordion': 'High scoring areas',
+  'low-scoring-areas-accordion': 'Low scoring areas',
+  'incomplete-areas-accordion': 'Incomplete areas',
+  'other-areas-accordion': 'Areas without a need score',
+}
+
+export function initAccordionTelemetry() {
+  if (!connectionString) return
+
+  // About page accordion: Show all/Hide all sections
+  document.querySelectorAll('.about-page-accordion .govuk-accordion__show-all').forEach(button => {
+    const accordionId = button.closest('.govuk-accordion')?.id
+    const accordionName = accordionNames[accordionId] || accordionId
+
+    button.setAttribute('data-ai-id', 'san-info-accordion')
+    button.setAttribute('data-ai-accordionname', accordionName)
+    button.setAttribute('data-ai-controltype', 'AccordionHeader')
+    button.setAttribute('data-ai-action', 'Expand all')
+
+    button.addEventListener('click', () => {
+      const isExpanded = button.getAttribute('aria-expanded') === 'true'
+      button.setAttribute('data-ai-action', isExpanded ? 'Expand all' : 'Collapse all')
+    })
+  })
+
+  // About page accordion: individual sections
+  document.querySelectorAll('.about-page-accordion .govuk-accordion__section').forEach((section, index) => {
+    const button = section.querySelector('.govuk-accordion__section-button')
+    if (!button) return
+
+    const accordionId = section.closest('.govuk-accordion')?.id
+    const accordionName = accordionNames[accordionId] || accordionId
+    const itemName = button.querySelector('.govuk-accordion__section-heading-text-focus')?.textContent?.trim()
+
+    button.setAttribute('data-ai-id', 'san-info-area-of-need-accordion')
+    button.setAttribute('data-ai-accordionname', accordionName)
+    button.setAttribute('data-ai-itemname', itemName)
+    button.setAttribute('data-ai-index', String(index + 1))
+    button.setAttribute('data-ai-controltype', 'Item')
+    button.setAttribute('data-ai-action', 'Expand')
+
+    button.addEventListener('click', () => {
+      const isExpanded = button.getAttribute('aria-expanded') === 'true'
+      button.setAttribute('data-ai-action', isExpanded ? 'Expand' : 'Collapse')
+    })
   })
 }

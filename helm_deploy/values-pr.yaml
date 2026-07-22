@@ -24,6 +24,7 @@ generic-service:
     FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'false'
     DEPLOYMENT_NAME: PR-$PR_NUMBER
     ENVIRONMENT_NAME: DEV
+    FORGE_DEVTOOLS_ENABLED: 'true'
 
   autoscaling:
     enabled: false
