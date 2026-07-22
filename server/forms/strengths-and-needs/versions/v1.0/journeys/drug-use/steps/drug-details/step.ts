@@ -1,14 +1,16 @@
-import { step, submit, access, redirect, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
-  usedInLastSixMonthsSection,
-  sectionDivider,
-  usedMoreThanSixMonthsSection,
   injectedDrugsField,
   receivingTreatmentField,
-  anyDrugUsedInLastSix,
+  sectionDivider,
+  usedInLastSixMonthsSection,
+  usedMoreThanSixMonthsSection,
 } from './fields'
+import { Step } from '../../constants/step'
+import { Section, SectionStatus } from '../../../../constants/section'
+import { sectionPath } from '../../../../constants/path'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -17,8 +19,13 @@ const saveButton = GovUKButton({
 })
 
 export const drugDetailsStep = step({
-  path: '/drug-details',
+  path: `/${Step.drug_details.path}`,
   title: 'Drug details',
+  view: {
+    locals: {
+      backlink: sectionPath(Section.drug_use) + Step.add_drugs.path,
+    },
+  },
   onAccess: [
     access({
       effects: [StrengthsAndNeedsEffects.deriveDrugCategories()],
@@ -37,13 +44,14 @@ export const drugDetailsStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use.statusKey, SectionStatus.incomplete),
+        ],
         next: [
           redirect({
-            when: anyDrugUsedInLastSix,
-            goto: 'drug-use-history',
+            goto: Step.drug_use_history.path,
           }),
-          redirect({ goto: 'drug-use-history-more-than-six-months' }),
         ],
       },
     }),

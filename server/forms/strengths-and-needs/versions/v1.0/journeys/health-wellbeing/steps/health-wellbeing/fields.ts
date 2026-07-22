@@ -13,6 +13,12 @@ const hasHealthConditions = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.health_conditions).match(Condition.Equals(Option.yes)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 export const healthConditions = GovUKRadioInput({
@@ -43,6 +49,12 @@ const severeMentalHealthProblemsDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.mental_health_problems).match(Condition.Equals(Option.yes_ongoing_severe)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const ongoingDurationUnknownMentalHealthProblemsDetails = GovUKCharacterCount({
@@ -50,6 +62,12 @@ const ongoingDurationUnknownMentalHealthProblemsDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.mental_health_problems).match(Condition.Equals(Option.yes_ongoing_duration_unknown)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 const pastMentalHealthProblemsDetails = GovUKCharacterCount({
@@ -57,6 +75,12 @@ const pastMentalHealthProblemsDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.mental_health_problems).match(Condition.Equals(Option.yes_past)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 export const mentalHealthProblems = GovUKRadioInput({

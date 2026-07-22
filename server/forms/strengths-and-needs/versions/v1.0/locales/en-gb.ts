@@ -7,6 +7,7 @@ export const english = {
   optional_details: 'Give details (optional)',
   required_details: 'Give details',
   select_one_option: 'Select one option',
+  select_one_or_both: 'Select one or both.',
   select_all_that_apply: 'Select all that apply.',
   select_all_that_apply_optional: 'Select all that apply (optional).',
   save_and_continue: 'Save and continue',
@@ -28,6 +29,7 @@ export const english = {
     [Section.health_and_wellbeing.code]: 'Health and wellbeing',
   },
   validation: {
+    details_must_be_less_than: 'Details must be %1 characters or less',
     valid_date: 'Enter a valid date',
     valid_date_day: 'Date must include a day',
     valid_date_month: 'Date must include a month',

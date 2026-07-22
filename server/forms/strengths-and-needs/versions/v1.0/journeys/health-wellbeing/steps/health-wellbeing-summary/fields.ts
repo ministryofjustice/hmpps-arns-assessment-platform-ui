@@ -388,6 +388,10 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
       condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.strengths_protective_factors_health_wellbeing_details.validation'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
   ],
 })
 
@@ -396,6 +400,12 @@ const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.Equals(Option.no)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 export const strengthsProtectiveFactorsHealthWellbeing = GovUKRadioInput({
@@ -434,6 +444,10 @@ const seriousHarmDetails = GovUKCharacterCount({
       condition: Self().match(Condition.IsRequired()),
       message: 'Give details on the risk of serious harm',
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
   ],
 })
 
@@ -442,6 +456,12 @@ const noSeriousHarmDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.serious_harm_health_wellbeing).match(Condition.Equals(Option.no)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 export const seriousHarmHealthWellbeing = GovUKRadioInput({
@@ -476,6 +496,10 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
       condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.risk_of_reoffending_health_wellbeing_details.validation'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
   ],
 })
 
@@ -484,6 +508,12 @@ const noRiskOfReoffendingDetails = GovUKCharacterCount({
   label: commonContentFor('optional_details'),
   maxLength: 2000,
   dependentWhen: Answer(Question.risk_of_reoffending_health_wellbeing).match(Condition.Equals(Option.no)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(2000)),
+      message: commonContentFor('validation.details_must_be_less_than', 2000),
+    }),
+  ],
 })
 
 export const riskOfReoffendingHealthWellbeing = GovUKRadioInput({

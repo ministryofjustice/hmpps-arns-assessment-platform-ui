@@ -26,7 +26,7 @@ export const Section = {
   },
   drug_use: {
     code: 'drug-use',
-    path: '',
+    path: '/drug-use',
     sideNavHref: `${basePath}/drug-use/drug-use?resume=true`,
     statusKey: 'drugs_section_status',
   },
