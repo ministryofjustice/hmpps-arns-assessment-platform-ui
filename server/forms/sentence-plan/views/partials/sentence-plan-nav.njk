@@ -13,18 +13,20 @@
       {
         text: (personName | possessive) + " plan",
         href: basePath + "/plan/overview",
-        active: isOnPlanPage
+        active: isOnPlanPage,
+        attributes: { "data-ai-id": "plan-primary-nav-link" }
       },
       {
         text: "Plan history",
         href: basePath + "/plan/plan-history",
-        active: isOnPlanHistoryPage
+        active: isOnPlanHistoryPage,
+        attributes: { "data-ai-id": "plan-history-primary-nav-link" }
       } if showPlanHistoryTab,
       {
         text: "About " + personName,
         href: basePath + "/about-person",
         active: isOnAboutPage,
-        attributes: { "data-ai-id": "about-page-primary-nav-link" } if not isOnAboutPage
+        attributes: { "data-ai-id": "about-page-primary-nav-link" }
       } if showAboutTab
     ] | select | list
   }) }}

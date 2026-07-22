@@ -10,6 +10,7 @@ import {
   EvaluatedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
 import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { toKebabCase } from '../../../../utils/dataTag'
 
 /**
  * A step within a goal.
@@ -26,6 +27,8 @@ export interface GoalStep {
 export interface GoalAction {
   text: ResolvableString
   href: ResolvableString
+  /** Optional override. Literal text generates this automatically; resolved text does not. */
+  dataTag?: ResolvableString
   visuallyHiddenText?: ResolvableString
   classes?: ResolvableString
   hidden?: ResolvableBoolean
@@ -37,6 +40,8 @@ export interface GoalAction {
 export interface GoalButton {
   text: ResolvableString
   href: ResolvableString
+  /** Optional override. Literal text generates this automatically; resolved text does not. */
+  dataTag?: ResolvableString
   classes?: ResolvableString
 }
 
@@ -170,6 +175,27 @@ export interface GoalSummaryCardHistory extends BlockDefinition, GoalSummaryCard
 
 type GoalSummaryCardBlock = GoalSummaryCardAgreed | GoalSummaryCardDraft | GoalSummaryCardHistory
 
+const addDataTag = <T extends GoalAction | GoalButton>(control: T, suffix: 'link' | 'button'): T => {
+  if (control.dataTag || typeof control.text !== 'string') return control
+
+  const textTag = toKebabCase(control.text)
+  return textTag ? { ...control, dataTag: `${textTag}-${suffix}` } : control
+}
+
+const addGeneratedDataTags = (props: GoalSummaryCardProps): GoalSummaryCardProps => {
+  const taggedProps = { ...props }
+
+  // Resolved text may contain case data, so only literal text is used automatically.
+  if (Array.isArray(props.actions)) {
+    taggedProps.actions = props.actions.map(action => addDataTag(action, 'link'))
+  }
+  if (Array.isArray(props.buttons)) {
+    taggedProps.buttons = props.buttons.map(button => addDataTag(button, 'button'))
+  }
+
+  return taggedProps
+}
+
 /**
  * Builds the template parameters for goal summary card rendering.
  */
@@ -278,7 +304,7 @@ export const goalSummaryCardHistory = buildNunjucksComponent<GoalSummaryCardHist
  * ```
  */
 export function GoalSummaryCardAgreed(props: GoalSummaryCardProps): GoalSummaryCardAgreed {
-  return blockBuilder<GoalSummaryCardAgreed>({ ...props, variant: 'goalSummaryCardAgreed' })
+  return blockBuilder<GoalSummaryCardAgreed>({ ...addGeneratedDataTags(props), variant: 'goalSummaryCardAgreed' })
 }
 
 /**
@@ -304,7 +330,7 @@ export function GoalSummaryCardAgreed(props: GoalSummaryCardProps): GoalSummaryC
  * ```
  */
 export function GoalSummaryCardDraft(props: GoalSummaryCardProps): GoalSummaryCardDraft {
-  return blockBuilder<GoalSummaryCardDraft>({ ...props, variant: 'goalSummaryCardDraft' })
+  return blockBuilder<GoalSummaryCardDraft>({ ...addGeneratedDataTags(props), variant: 'goalSummaryCardDraft' })
 }
 
 /**
@@ -314,5 +340,5 @@ export function GoalSummaryCardDraft(props: GoalSummaryCardProps): GoalSummaryCa
  * For FUTURE-status goals the card includes a "This is a future goal" line.
  */
 export function GoalSummaryCardHistory(props: GoalSummaryCardProps): GoalSummaryCardHistory {
-  return blockBuilder<GoalSummaryCardHistory>({ ...props, variant: 'goalSummaryCardHistory' })
+  return blockBuilder<GoalSummaryCardHistory>({ ...addGeneratedDataTags(props), variant: 'goalSummaryCardHistory' })
 }

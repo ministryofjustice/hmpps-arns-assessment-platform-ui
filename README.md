@@ -50,6 +50,7 @@ The application will be available at http://localhost:3000 with HMPPS Auth runni
 
 > [!NOTE]
 > You can access the Training Session Launcher, our way of accessing the app without authentication, through http://localhost:3000/training-session-launcher/browse?scenario=default
+
 ### Common Development Commands
 
 ```bash
@@ -183,51 +184,89 @@ The application is deployed to Cloud Platform environments using GitHub Actions 
 
 ## Telemetry
 
-**Click events**
+### Adding interaction tracking
 
-Buttons and links throughout the app are tagged with `data-ai-id` attributes. The App Insights `ClickAnalyticsPlugin` (configured in [appInsights.mjs](assets/js/appInsights.mjs)) records a click event in `customEvents` for each tagged element, using the `data-ai-id` value as the event `name`. Search the codebase for `data-ai-id` to find what's currently tracked.
+Add a lowercase, kebab-case `data-ai-id` to every new Sentence Plan control. End the tag with its control type: `-button`, `-link`, `-radio`, `-checkbox`, `-select` or `-summary`.
 
-**Custom dimensions**
+For a checkbox or radio group, add a tag to **every item**:
 
-Every telemetry envelope carries these custom dimensions:
+```typescript
+GovUKCheckboxInput({
+  code: 'contact_methods',
+  items: [
+    {
+      value: 'email',
+      text: 'Email',
+      attributes: { 'data-ai-id': 'contact-methods-email-checkbox' },
+    },
+    {
+      value: 'phone',
+      text: 'Phone',
+      attributes: { 'data-ai-id': 'contact-methods-phone-checkbox' },
+    },
+  ],
+})
+```
 
-| Dimension        | Notes                                                       |
-| ---------------- | ----------------------------------------------------------- |
-| `assessmentUuid` | Assessment in context                                       |
-| `telemetryId`    | Per-Express-session UUID, resets on sign-out + sign-in      |
-| `requestId`      | Per-HTTP-request ID (also shown in Report a Problem widget) |
-| `entryPoint`     | Auth source (`OASYS`, `hmpps-auth`)                         |
-| `userType`       | `PRIVATE_BETA` or `NATIONAL_ROLLOUT`                        |
+Use the same item-level `attributes` for `GovUKRadioInput`, ending each tag with `-radio`.
 
-Pages that load goal data (most of the sentence plan journey) also emit goal-count snapshots:
+For a button, link button or select, add `attributes` to the component itself:
 
-| Dimension       | Notes                                  |
-| --------------- | -------------------------------------- |
-| `goalsActive`   | Number of goals with `ACTIVE` status   |
-| `goalsFuture`   | Number of goals with `FUTURE` status   |
-| `goalsAchieved` | Number of goals with `ACHIEVED` status |
-| `goalsRemoved`  | Number of goals with `REMOVED` status  |
-| `goalsTotal`    | Total goals on the assessment          |
-| `stepsTotal`    | Total steps across all goals           |
+```typescript
+GovUKButton({
+  text: 'Save and continue',
+  attributes: { 'data-ai-id': 'save-and-continue-button' },
+})
 
-Use `customDimensions.telemetryId` to dedupe events to one-per-login-session in KQL queries. For per-assessment metrics (totals, averages), use `arg_max(timestamp, ...)` to take the latest snapshot per `assessmentUuid` before aggregating.
+GovUKLinkButton({
+  text: 'Change goal',
+  href: '/goal/change',
+  attributes: { 'data-ai-id': 'change-goal-link' },
+})
 
-**Page visit time & count**
+GovUKSelectInput({
+  code: 'step_status',
+  label: 'Status',
+  items: statusOptions,
+  attributes: { 'data-ai-id': 'step-status-select' },
+})
+```
 
-Page visit durations are tracked by the App Insights JS SDK (configured in assets/js/appInsights.mjs). The SDK starts a timer on page load and records the visit duration when the user
-navigates away or closes the tab. The duration is stored in the duration field of the pageViews table.
+Add the attribute directly to links and summaries in Nunjucks:
 
-Pages currently tracked in App Insights dashboard:
+```njk
+<a href="/example" data-ai-id="change-goal-link">Change goal</a>
+<summary data-ai-id="view-all-notes-summary">View all notes</summary>
+```
 
-| Page                  | `customDimensions` filter                      |
-| --------------------- | ---------------------------------------------- |
-| Plan history          | `Plan history - Sentence plan`                 |
-| Privacy               | `Close other applications - Sentence plan`     |
-| Create a goal         | `Create a goal - Sentence plan`                |
-| Add or change steps   | `Add or change steps - Sentence plan`          |
-| Update goal and steps | `Update goal and steps - Sentence plan`        |
-| Agree plan            | `Do they agree to this plan? - Sentence plan`  |
-| Update agreement      | `Do they agree to their plan? - Sentence plan` |
+For `GovUKDetails`, add `attributes` to the component. For `GovUKAccordion`, provide a stable `id`; its generated show/hide and section buttons are tagged automatically.
+
+```typescript
+GovUKDetails({
+  summaryText: 'View all notes',
+  text: 'Notes',
+  attributes: { 'data-ai-id': 'view-all-notes-summary' },
+})
+
+GovUKAccordion({
+  id: 'plan-history-accordion',
+  items: historyItems,
+})
+```
+
+Fixed-text goal-card actions are the exception: their tag is generated from their text. If the action text is calculated at runtime, provide its `dataTag` explicitly.
+
+If GOV.UK or MOJ JavaScript creates a control and provides no way to pass `attributes`, add its selector and tag to [component-data-tags.mjs](assets/js/component-data-tags.mjs).
+
+Select options do not need tags. Text inputs and textareas are not click-tracked.
+
+The goal-achievement save event also records whether a note was added, without its content. About-page accordion events record whether sections were expanded or collapsed.
+
+[DataTagAudit.spec.ts](integration_tests/specs/sentencePlan/DataTagAudit.spec.ts) scans representative Sentence Plan pages once and reports any untagged control. Run it with:
+
+```bash
+npx playwright test integration_tests/specs/sentencePlan/DataTagAudit.spec.ts
+```
 
 ## Contributing
 

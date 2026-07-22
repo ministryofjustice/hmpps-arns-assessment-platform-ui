@@ -95,7 +95,7 @@ const agreementContentHtml = Format(
         .then('')
         .else(
           Format(
-            `<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state" data-qa="plan-history-update-agreement-link">Update %1 agreement</a></p>`,
+            `<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state" data-qa="plan-history-update-agreement-link" data-ai-id="plan-history-update-agreement-link">Update %1 agreement</a></p>`,
             CaseData.ForenamePossessive,
           ),
         ),

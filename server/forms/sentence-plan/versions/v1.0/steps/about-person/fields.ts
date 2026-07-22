@@ -33,7 +33,7 @@ export const sentenceInformationMissingAndAssessmentErrorMessage = HtmlBlock({
   visibleWhen: isSentenceInformationAndAssessmentLoadingError,
   content: Format(
     `<p class="govuk-body">Try reloading the page. You can do this by pressing F5 (on a PC), or Cmd + R (on a Mac).</p>
-    <p class="govuk-body">If the page still does not load, try again later or <a href="${sentencePlanOverviewPath}" class="govuk-link">go to %1's plan</a>.</p>`,
+    <p class="govuk-body">If the page still does not load, try again later or <a href="${sentencePlanOverviewPath}" class="govuk-link" data-ai-id="about-error-go-to-plan-link">go to %1's plan</a>.</p>`,
     CaseData.Forename,
   ),
 })
@@ -166,7 +166,7 @@ const createAreaAccordionItems = (dataKey: string) =>
           }),
           HtmlBlock({
             content: Format(
-              `<p class="add-goal-link"><a href="goal/new/add-goal/%1">Create %2 goal</a></p>`,
+              `<p class="add-goal-link"><a href="goal/new/add-goal/%1" data-ai-id="about-create-%1-goal-link">Create %2 goal</a></p>`,
               Item().path('goalRoute'),
               Item().path('title').pipe(Transformer.String.ToLowerCase()),
             ),

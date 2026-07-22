@@ -63,6 +63,12 @@ class WrappingSelect extends HTMLElement {
     toggle.type = 'button'
     toggle.id = selectId || `${this.selectEl.name}-toggle`
     toggle.className = 'wrapping-select__toggle'
+
+    // The toggle is created in the browser, so derive its tag from the select.
+    const dataTag = this.selectEl.getAttribute('data-ai-id')
+    if (dataTag) {
+      toggle.setAttribute('data-ai-id', `${dataTag}-toggle-button`)
+    }
     toggle.setAttribute('aria-haspopup', 'listbox')
     toggle.setAttribute('aria-expanded', 'false')
 

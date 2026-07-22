@@ -1,5 +1,3 @@
-import { appInsights } from '../../../../../assets/js/appInsights.mjs'
-
 // Copy button: copies target element text to clipboard (MOJ design pattern)
 // https://design-patterns.service.justice.gov.uk/components/copy-button
 document.querySelectorAll('[data-copy-target]').forEach(button => {
@@ -15,11 +13,6 @@ document.querySelectorAll('[data-copy-target]').forEach(button => {
     const screenReaderAlert = document.getElementById('copy-alert')
 
     navigator.clipboard.writeText(target.textContent.trim())
-
-    // Report a problem section: track copy clicks
-    if (targetId === 'report-problem-details') {
-      appInsights?.trackEvent({ name: 'report-problem-details-button', properties: { Page: document.title } })
-    }
 
     if (screenReaderAlert) {
       screenReaderAlert.textContent = 'Support details copied'

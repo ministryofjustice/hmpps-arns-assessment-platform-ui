@@ -41,7 +41,7 @@
 
       {% set assessmentVersionLink %}
         {% if version.assessmentVersion %}
-          <a href="{{ params.sanUrl }}/view-previous-version/{{ version.assessmentVersion.uuid }}" class="govuk-link" rel="noreferrer noopener" target="_blank">View<span class="govuk-visually-hidden"> assessment from {{ version.assessmentVersion.updatedAt }} (opens in new tab) </span></a>
+          <a href="{{ params.sanUrl }}/view-previous-version/{{ version.assessmentVersion.uuid }}" class="govuk-link" data-ai-id="previous-version-assessment-view-link" rel="noreferrer noopener" target="_blank">View<span class="govuk-visually-hidden"> assessment from {{ version.assessmentVersion.updatedAt }} (opens in new tab) </span></a>
         {% endif %}
       {% endset %}
 

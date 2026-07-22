@@ -132,6 +132,9 @@ export const stepRows = HtmlBlock({
                     classes: 'govuk-visually-hidden',
                   },
                   describedBy: stepActorHintId,
+                  attributes: {
+                    'data-ai-id': 'add-steps-step-actor-select',
+                  },
                   items: actorLabelOptions,
                   defaultValue: Item().path('actor'),
                   validWhen: [
@@ -181,6 +184,9 @@ export const stepRows = HtmlBlock({
                     classes: 'govuk-visually-hidden',
                   },
                   describedBy: stepStatusHintId,
+                  attributes: {
+                    'data-ai-id': 'add-steps-step-status-select',
+                  },
                   items: stepStatusOptions,
                   defaultValue: Item().path('status'),
                   validWhen: [
@@ -203,6 +209,9 @@ export const stepRows = HtmlBlock({
                 name: 'action',
                 value: Format('remove_%1', Loop.Index0()),
                 classes: 'govuk-!-margin-bottom-0',
+                attributes: {
+                  'data-ai-id': 'add-steps-remove-button',
+                },
               }),
             ],
           },
@@ -212,12 +221,12 @@ export const stepRows = HtmlBlock({
   ),
 })
 
-/**
- * Cheeky little hack to handle Enter key triggering the removal of a step
- * Stolen straight from SP!
+/*
+ * Enter submits the first button. Keep this hidden add-step button first so
+ * Enter cannot remove a step by accident.
  */
 export const hiddenDefaultSubmit = HtmlBlock({
-  content: `<button aria-hidden="true" tabindex="-1" value="addStep" type="submit" name="action" class="govuk-visually-hidden">Add another step</button>`,
+  content: `<button aria-hidden="true" tabindex="-1" value="addStep" type="submit" name="action" class="govuk-visually-hidden" data-ai-id="add-steps-default-submit-button">Add another step</button>`,
 })
 
 /**

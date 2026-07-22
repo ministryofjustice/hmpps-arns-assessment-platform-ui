@@ -73,7 +73,7 @@ export const planLastUpdatedMessage = GovUKBody({
     ),
   ),
   text: Format(
-    'Last updated on %1 by %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
+    'Last updated on %1 by %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print" data-ai-id="plan-view-history-link">View plan history</a>',
     Data('lastUpdatedDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
     Data('lastUpdatedByName'),
   ),
@@ -87,7 +87,7 @@ export const planAgreedMessage = GovUKBody({
     ),
   ),
   text: Format(
-    '%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
+    '%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print" data-ai-id="plan-view-history-link">View plan history</a>',
     CaseData.Forename,
     Data('latestAgreementDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   ),
@@ -101,7 +101,7 @@ export const planCreatedMessage = GovUKBody({
     ),
   ),
   text: Format(
-    'Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
+    'Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print" data-ai-id="plan-view-history-link">View plan history</a>',
     Data('latestAgreementDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   ),
 })
@@ -109,7 +109,7 @@ export const planCreatedMessage = GovUKBody({
 export const updateAgreementMessage = GovUKBody({
   visibleWhen: and(not(isReadOnly), Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))),
   text: Format(
-    '<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a> when you\'ve shared the plan with them.',
+    '<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state" data-ai-id="plan-update-agreement-link">Update %1\'s agreement</a> when you\'ve shared the plan with them.',
     CaseData.Forename,
   ),
 })
@@ -249,6 +249,7 @@ export const goalsSection = TemplateWrapper({
                             actions: [
                               {
                                 text: when(isAchievedGoal).then('View details').else('Change goal'),
+                                dataTag: when(isAchievedGoal).then('goal-view-details-link').else('goal-change-link'),
                                 href: when(isAchievedGoal)
                                   .then(Format('../goal/%1/view-inactive-goal', Item().path('uuid')))
                                   .else(Format('../goal/%1/change-goal', Item().path('uuid'))),
@@ -323,6 +324,13 @@ export const goalsSection = TemplateWrapper({
                                 )
                                   .then('View details')
                                   .else('Update'),
+                                dataTag: when(
+                                  Item()
+                                    .path('status')
+                                    .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
+                                )
+                                  .then('goal-view-details-link')
+                                  .else('goal-update-link'),
                                 href: when(
                                   Item()
                                     .path('status')
@@ -385,7 +393,7 @@ export const blankPlanOverviewContent = HtmlBlock({
         Format(
           `<p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can either:</p>
       <ul class="govuk-list govuk-list--bullet govuk-!-display-none-print">
-        <li><a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a></li>
+        <li><a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state" data-ai-id="blank-plan-create-goal-link">create a goal with %1</a></li>
         <li><a href="../about-person" class="govuk-link govuk-link--no-visited-state" data-ai-id="about-page-blank-plan-link">view information from %1's assessment</a></li>
       </ul>`,
           CaseData.Forename,
@@ -393,7 +401,7 @@ export const blankPlanOverviewContent = HtmlBlock({
       )
       .else(
         Format(
-          '<p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can <a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a>.</p>',
+          '<p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can <a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state" data-ai-id="no-current-goals-create-goal-link">create a goal with %1</a>.</p>',
           CaseData.Forename,
         ),
       ),

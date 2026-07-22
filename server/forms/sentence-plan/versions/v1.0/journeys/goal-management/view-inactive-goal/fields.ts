@@ -137,6 +137,7 @@ export const noStepsMessage = GovUKBody({
 
 export const viewAllNotesSection = GovUKDetails({
   summaryText: 'View all notes',
+  attributes: { 'data-ai-id': 'goal-view-all-notes-summary' },
   content: [
     CollectionBlock({
       collection: Data('activeGoal.notes').each(

@@ -10,7 +10,7 @@
 
 {#- Renders a card action link with optional hidden context -#}
 {% macro actionLink(action, cardTitle) %}
-  <a class="govuk-link{%- if action.classes %} {{ action.classes }}{% endif %}" href="{{ action.href }}">
+  <a class="govuk-link{%- if action.classes %} {{ action.classes }}{% endif %}" href="{{ action.href }}"{% if action.dataTag %} data-ai-id="{{ action.dataTag }}"{% endif %}>
     {{- action.text -}}
     {%- if action.visuallyHiddenText or cardTitle -%}
       <span class="govuk-visually-hidden">

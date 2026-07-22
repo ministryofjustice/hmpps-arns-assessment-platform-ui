@@ -58,7 +58,7 @@ export const goalSubheading = GovUKHeading({
 export const goalInfoFuture = GovUKBody({
   visibleWhen: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
   text: Format(
-    'This is a future goal. <a href="../../goal/%1/change-goal" class="govuk-link">Change goal details</a>',
+    'This is a future goal. <a href="../../goal/%1/change-goal" class="govuk-link" data-ai-id="update-goal-change-details-link">Change goal details</a>',
     Data('activeGoal.uuid'),
   ),
 })
@@ -66,7 +66,7 @@ export const goalInfoFuture = GovUKBody({
 export const goalInfoActive = GovUKBody({
   visibleWhen: Data('activeGoal.status').not.match(Condition.Equals('FUTURE')),
   text: Format(
-    'Aim to achieve this by %1. <a href="../../goal/%2/change-goal" class="govuk-link">Change goal details</a>',
+    'Aim to achieve this by %1. <a href="../../goal/%2/change-goal" class="govuk-link" data-ai-id="update-goal-change-details-link">Change goal details</a>',
     Data('activeGoal.targetDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
     Data('activeGoal.uuid'),
   ),
@@ -79,7 +79,10 @@ export const reviewStepsHeading = GovUKHeading({
 
 export const addOrChangeStepsLink = GovUKBody({
   visibleWhen: hasSteps,
-  text: Format('<a href="../../goal/%1/add-steps" class="govuk-link">Add or change steps</a>', Data('activeGoal.uuid')),
+  text: Format(
+    '<a href="../../goal/%1/add-steps" class="govuk-link" data-ai-id="update-goal-add-or-change-steps-link">Add or change steps</a>',
+    Data('activeGoal.uuid'),
+  ),
 })
 
 export const noStepsMessage = HtmlBlock({
@@ -88,7 +91,7 @@ export const noStepsMessage = HtmlBlock({
   content: [
     GovUKBody({
       text: Format(
-        'No steps added. <a href="../../goal/%1/add-steps" class="govuk-link">Add steps</a>',
+        'No steps added. <a href="../../goal/%1/add-steps" class="govuk-link" data-ai-id="update-goal-add-steps-link">Add steps</a>',
         Data('activeGoal.uuid'),
       ),
     }),
@@ -139,6 +142,9 @@ export const reviewStepsTable = TemplateWrapper({
                       formGroup: {
                         classes: 'govuk-!-margin-bottom-0',
                       },
+                      attributes: {
+                        'data-ai-id': 'update-goal-step-status-select',
+                      },
                       items: stepStatusOptions,
                       defaultValue: Item().path('status'),
                     }),
@@ -172,6 +178,7 @@ export const progressNotesSection = GovUKGridRow({
 
 export const viewAllNotesSection = GovUKDetails({
   summaryText: 'View all notes',
+  attributes: { 'data-ai-id': 'goal-view-all-notes-summary' },
   content: [
     CollectionBlock({
       collection: Data('activeGoal.notes').each(

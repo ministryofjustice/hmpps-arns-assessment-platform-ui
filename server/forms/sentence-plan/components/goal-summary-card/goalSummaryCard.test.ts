@@ -73,6 +73,25 @@ describe('goal summary card', () => {
     expect(html).toContain('Also relates to: employment and education; finances')
   })
 
+  it('derives data tags from literal action and button text', () => {
+    const action = { text: 'Change goal', href: '/change-goal' }
+    const button = { text: 'Mark as achieved', href: '/mark-achieved' }
+    const card = GoalSummaryCardAgreed({
+      goalTitle: 'My goal',
+      goalStatus: 'ACTIVE',
+      areaOfNeed: 'Accommodation',
+      actions: [action],
+      buttons: [button],
+    })
+
+    expect(action).not.toHaveProperty('dataTag')
+    expect(button).not.toHaveProperty('dataTag')
+    expect(card.actions).toEqual([{ text: 'Change goal', href: '/change-goal', dataTag: 'change-goal-link' }])
+    expect(card.buttons).toEqual([
+      { text: 'Mark as achieved', href: '/mark-achieved', dataTag: 'mark-as-achieved-button' },
+    ])
+  })
+
   it('uses "X of Y" wording for agreed card step counters', async () => {
     const html = await goalSummaryCardAgreed.render(
       {

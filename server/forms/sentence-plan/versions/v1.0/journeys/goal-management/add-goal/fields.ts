@@ -27,6 +27,7 @@ const sideNavigation = MOJSideNavigation({
     Iterator.Map({
       text: Item().path('text'),
       href: Item().path('slug'),
+      attributes: { 'data-ai-id': Format('add-goal-%1-area-link', Item().path('slug')) },
       active: Item()
         .path('slug')
         .match(Condition.Equals(Params('areaOfNeed'))),

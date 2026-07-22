@@ -87,7 +87,7 @@
           {{ params.completedCount }} of {{ params.stepsCount }} step{% if params.stepsCount != 1 %}s{% endif %} completed.
         </p>
         <details class="govuk-details">
-          <summary class="govuk-details__summary">
+          <summary class="govuk-details__summary" data-ai-id="goal-view-steps-summary">
             <span class="govuk-details__summary-text">View steps</span>
           </summary>
           <div class="govuk-details__text">
@@ -160,7 +160,8 @@
             {{ govukButton({
               text: button.text,
               href: button.href,
-              classes: button.classes
+              classes: button.classes,
+              attributes: ({ "data-ai-id": button.dataTag } if button.dataTag else {})
             }) }}
           {% endfor %}
         </div>

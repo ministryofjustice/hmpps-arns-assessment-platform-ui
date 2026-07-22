@@ -151,7 +151,8 @@
             {{ govukButton({
               text: button.text,
               href: button.href,
-              classes: button.classes
+              classes: button.classes,
+              attributes: ({ "data-ai-id": button.dataTag } if button.dataTag else {})
             }) }}
           {% endfor %}
         </div>

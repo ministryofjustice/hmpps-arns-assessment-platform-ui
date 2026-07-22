@@ -18,7 +18,7 @@ export const introText = [
     text: Format("Delete this goal if you've made a mistake. It will not be saved to %1's plan.", CaseData.Forename),
   }),
   GovUKBody({
-    text: 'Alternatively, you can <a href="change-goal" class="govuk-link">change the goal</a> instead.',
+    text: 'Alternatively, you can <a href="change-goal" class="govuk-link" data-ai-id="confirm-delete-goal-change-link">change the goal</a> instead.',
   }),
 ]
 

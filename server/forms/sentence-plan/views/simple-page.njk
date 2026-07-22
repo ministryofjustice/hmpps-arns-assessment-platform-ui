@@ -1,5 +1,19 @@
 {%- extends "partials/layout.njk" -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
+{%- from "govuk/components/skip-link/macro.njk" import govukSkipLink -%}
+
+{% block govukHeader %}
+  {% set sentencePlanDataTags = true %}
+  {% include "partials/header.njk" %}
+{% endblock %}
+
+{% block govukSkipLink %}
+  {{ govukSkipLink({
+    href: '#main-content',
+    text: 'Skip to main content',
+    attributes: { 'data-ai-id': 'skip-to-main-content-link' }
+  }) }}
+{% endblock %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -16,7 +30,7 @@
     {% set reportProblemHtml %}
       <p class="govuk-body">
         Copy this information and paste it into the
-        <a href="{{ serviceNowFormUrl }}" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
+        <a href="{{ serviceNowFormUrl }}" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer" data-ai-id="report-problem-service-now-link">ServiceNow form (opens in a new tab)</a>.
       </p>
       <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
       <div class="app-report-problem__info">
@@ -24,7 +38,7 @@
 {% if traceId and traceId != requestId %}Trace ID: {{ traceId }}
 {% endif %}</pre>
         <div class="app-report-problem__copy">
-          <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
+          <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details" data-ai-id="report-problem-details-button">
             Copy
           </button>
         </div>

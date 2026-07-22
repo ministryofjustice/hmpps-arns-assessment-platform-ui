@@ -9,7 +9,7 @@ export const warningContent = block<HtmlBlock>({
       <h1 class="govuk-heading-l govuk-!-margin-top-6">You need to use OASys to access this plan</h1>
       <p class="govuk-body">This is because it is a merged case.</p>
       <p class="govuk-body">
-        <a href="${config.oasysUrl}" class="govuk-link">Go to OASys to access the sentence plan.</a>
+        <a href="${config.oasysUrl}" class="govuk-link" data-ai-id="merged-plan-open-oasys-link">Go to OASys to access the sentence plan.</a>
       </p>
     </div>
   `,
