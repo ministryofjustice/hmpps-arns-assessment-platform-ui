@@ -68,6 +68,11 @@ export interface GoalConfig {
   createdBy?: string
 }
 
+export interface AnswerConfig {
+  question: string
+  value: string
+}
+
 /**
  * Definition types - built during fluent API calls, before execution
  */
