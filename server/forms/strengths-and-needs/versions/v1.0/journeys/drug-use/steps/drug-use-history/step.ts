@@ -13,6 +13,7 @@ import {
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { formVersion } from '../../../../constants/formVersion'
+import {sectionPath} from "../../../../constants/path";
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -25,7 +26,7 @@ export const drugUseHistoryStep = step({
   title: 'Drug use background',
   view: {
     locals: {
-      backlink: `/strengths-and-needs/${formVersion}${Section.drug_use.path}/${Step.drug_details.path}/`,
+      backlink: sectionPath(Section.drug_use) + Step.drug_details.path,
     },
   },
   blocks: [
