@@ -127,9 +127,8 @@ test.describe('Accommodation Page', () => {
       const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Is the location')
 
       await expect(accommodationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Accommodation
+        - heading "Accommodation" [level=1]
         - strong: Incomplete
         - group "Is the location of Test's accommodation suitable?"
         - group "Is Test's accommodation suitable?"
@@ -169,9 +168,8 @@ test.describe('Accommodation Page', () => {
       const accommodationPage = await AccommodationPage.verifyOnPage(page, 'have no accommodation')
 
       await expect(accommodationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Accommodation
+        - heading "Accommodation" [level=1]
         - strong: Incomplete
         - group "Why does Test have no accommodation?"
         - text: What's helped Test stay in accommodation in the past? (optional)

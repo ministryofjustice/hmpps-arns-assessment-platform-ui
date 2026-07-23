@@ -260,9 +260,8 @@ test.describe('Health and wellbeing Page', () => {
       const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any illness affecting the brain')
 
       await expect(healthAndWellbeingPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Health and wellbeing
+        - heading "Health and wellbeing" [level=1]
         - strong: Incomplete
         - group "Has Test had a head injury or any illness affecting the brain?"
         - group "Does Test have any neurodiverse conditions?"
