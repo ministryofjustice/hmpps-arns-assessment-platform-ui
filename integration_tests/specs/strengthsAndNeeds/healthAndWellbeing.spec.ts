@@ -309,37 +309,37 @@ test.describe('Health and wellbeing Page', () => {
 
       await expect(healthAndWellbeingPage.summary).toMatchAriaSnapshot(`
         - tabpanel "Summary":
-          - term: Does Test's have any physical health conditions?
+          - term: Does Test have any physical health conditions?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
               - /url: health-wellbeing
-          - term: Does Test's have any physical health conditions?
+          - term: Does Test have any diagnosed or documented mental health problems?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
               - /url: health-wellbeing
-          - term: Has Test's had a head injury or any illness affecting the brain?
+          - term: Has Test had a head injury or any illness affecting the brain?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
               - /url: physical-mental-health
-          - term: Does Test's have any neurodiverse conditions?
+          - term: Does Test have any neurodiverse conditions?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
               - /url: physical-mental-health
-          - term: Does Test's have any conditions or disabilities that impact their ability to learn? (optional)
+          - term: Does Test have any conditions or disabilities that impact their ability to learn? (optional)
           - definition:
             - paragraph: No, they do not have any conditions or disabilities that impact their ability to learn
           - definition:
             - link "Change":
               - /url: physical-mental-health
-          - term: Is Test's able to cope with day-to-day life?
+          - term: Is Test able to cope with day-to-day life?
           - definition:
             - paragraph: Not able to cope
           - definition:
@@ -351,25 +351,25 @@ test.describe('Health and wellbeing Page', () => {
           - definition:
             - link "Change":
               - /url: physical-mental-health
-          - term: Has Test's ever self-harmed?
+          - term: Has Test ever self-harmed?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
               - /url: physical-mental-health
-          - term: Has Test's ever attempted suicide or had suicidal thoughts?
+          - term: Has Test ever attempted suicide or had suicidal thoughts?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
               - /url: physical-mental-health
-          - term: How does Test's feel about their future?
+          - term: How does Test feel about their future?
           - definition:
             - paragraph: Not optimistic and thinks their future will not get better or may get worse
           - definition:
             - link "Change":
               - /url: physical-mental-health
-          - term: Does Test's want to make changes to their health and wellbeing?
+          - term: Does Test want to make changes to their health and wellbeing?
           - definition:
             - paragraph: Test is not present
           - definition:

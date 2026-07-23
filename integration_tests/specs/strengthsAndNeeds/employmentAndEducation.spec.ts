@@ -588,31 +588,31 @@ test.describe('Employment and education Page', () => {
           - definition:
             - link "Change":
               - /url: current-employment
-          - term: Does Test's have any day-to-day commitments?
+          - term: Does Test have any day-to-day commitments?
           - definition:
             - paragraph: None
           - definition:
             - link "Change":
               - /url: employed
-          - term: Select the highest level of academic qualification Test's has completed
+          - term: Select the highest level of academic qualification Test has completed
           - definition:
             - paragraph: None of these
           - definition:
             - link "Change":
               - /url: employed
-          - term: Does Test's have any professional or vocational qualifications?
+          - term: Does Test have any professional or vocational qualifications?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
               - /url: employed
-          - term: Does Test's have any skills that could help them in a job or to get a job?
+          - term: Does Test have any skills that could help them in a job or to get a job?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
               - /url: employed
-          - term: Does Test's have difficulties with reading, writing or numeracy?
+          - term: Does Test have difficulties with reading, writing or numeracy?
           - definition:
             - paragraph: No difficulties
           - definition:
@@ -624,7 +624,7 @@ test.describe('Employment and education Page', () => {
           - definition:
             - link "Change":
               - /url: employed
-          - term: Does Test's want to make changes to their employment and education?
+          - term: Does Test want to make changes to their employment and education?
           - definition:
             - paragraph: Test is not present
           - definition:
