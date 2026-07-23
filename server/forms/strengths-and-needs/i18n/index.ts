@@ -43,11 +43,11 @@ export const getDisplayTextForSpecificItem = (
 
 export const getDisplayTextForItem = (
   fieldCode: string,
-  item: { text: string; value: string },
+  item: { text?: string; html?: string; value: string },
   options: { size?: 's' | 'l' } = {},
 ) =>
   GovUKBody({
-    text: item.text,
+    text: item.text ?? item.html?.replace(/<[^>]*>/g, ''),
     visibleWhen: or(
       and(
         Answer(fieldCode).match(StrengthsAndNeedsConditions.IsArray()),
