@@ -141,6 +141,31 @@ export default {
     trainingSessionLauncher: {
       enabled: get('FORM_TRAINING_SESSION_LAUNCHER_ENABLED', 'false') === 'true',
     },
+    dataDeletionTool: {
+      enabled: get('FORM_DATA_DELETION_TOOL_ENABLED', 'false') === 'true',
+      environments: {
+        local: {
+          authUrl: 'http:///hmpps-auth:9090/auth',
+          apiUrl: 'http://aap-api:8080',
+        },
+        dev: {
+          authUrl: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth',
+          apiUrl: 'https://arns-assessment-platform-api-dev.hmpps.service.justice.gov.uk',
+        },
+        test: {
+          authUrl: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth',
+          apiUrl: 'https://arns-assessment-platform-api-test.hmpps.service.justice.gov.uk',
+        },
+        preprod: {
+          authUrl: 'https://sign-in-preprod.hmpps.service.justice.gov.uk/auth',
+          apiUrl: 'https://arns-assessment-platform-api-preprod.hmpps.service.justice.gov.uk',
+        },
+        prod: {
+          authUrl: 'https://sign-in.hmpps.service.justice.gov.uk/auth',
+          apiUrl: 'https://arns-assessment-platform-api.hmpps.service.justice.gov.uk',
+        },
+      },
+    },
   },
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   logLevel: get('LOG_LEVEL', 'info'),
