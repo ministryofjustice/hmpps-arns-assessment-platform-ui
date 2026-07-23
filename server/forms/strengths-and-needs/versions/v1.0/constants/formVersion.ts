@@ -11,3 +11,5 @@ export const CaseData = {
   Surname: Data('caseData.name.surname'),
 }
 export const basePath = `/strengths-and-needs/${formVersion}`
+
+export const sectionTitleClass = 'govuk-body-l'

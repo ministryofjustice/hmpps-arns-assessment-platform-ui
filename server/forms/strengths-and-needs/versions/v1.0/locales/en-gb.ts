@@ -37,6 +37,7 @@ export const english = {
     future_date: 'The date must be in the future',
     enter_details: 'Enter details',
     details_character_limit: `Details must be %1 characters or less`,
+    select_at_least_one_option: 'Select at least one option',
   },
   option: {
     [CommonOption.has_made_changes]: 'I have already made positive changes and want to maintain them',
