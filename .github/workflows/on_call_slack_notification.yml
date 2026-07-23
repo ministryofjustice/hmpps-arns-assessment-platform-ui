@@ -27,7 +27,7 @@ jobs:
             -H "Content-Type: application/json" \
             "https://api.pagerduty.com/oncalls?schedule_ids[]=$PAGERDUTY_SCHEDULE_ID&earliest=true")
 
-          ON_CALL_NAME=$(echo "$RESPONSE" | jq -r '[.oncalls[]] | sort_by(.escalation_level) | .[0].user.name // empty')
+          ON_CALL_NAME=$(echo "$RESPONSE" | jq -r '[.oncalls[]] | sort_by(.escalation_level) | .[0].user.summary // empty')
 
           if [ -z "$ON_CALL_NAME" ]; then
             ON_CALL_NAME="Nobody found on the on-call schedule"
