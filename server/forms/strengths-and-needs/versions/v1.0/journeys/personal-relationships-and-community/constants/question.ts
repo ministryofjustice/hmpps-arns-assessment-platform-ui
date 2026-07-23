@@ -8,6 +8,19 @@ export const Question = {
     'personal_relationships_community_children_details_yes_children_visiting_details',
 
   personal_relationships_community_important_people: 'personal_relationships_community_important_people',
+  personal_relationships_community_important_people_partner_intimate_relationship_details:
+    'personal_relationships_community_important_people_partner_intimate_relationship_details',
+  personal_relationships_community_important_people_child_parental_responsibilities_details:
+    'personal_relationships_community_important_people_child_parental_responsibilities_details',
+  personal_relationships_community_important_people_other_children_details:
+    'personal_relationships_community_important_people_other_children_details',
+  personal_relationships_community_important_people_family_details:
+    'personal_relationships_community_important_people_family_details',
+  personal_relationships_community_important_people_friends_details:
+    'personal_relationships_community_important_people_friends_details',
+  personal_relationships_community_important_people_other_details:
+    'personal_relationships_community_important_people_other_details',
+
   personal_relationships_community_family_relationship: 'personal_relationships_community_family_relationship',
   personal_relationships_community_childhood: 'personal_relationships_community_childhood',
   personal_relationships_community_childhood_behaviour: 'personal_relationships_community_childhood_behaviour',
@@ -19,4 +32,4 @@ export const Question = {
   personal_relationships_community_challenges_intimate_relationship:
     'personal_relationships_community_challenges_intimate_relationship',
   personal_relationships_community_changes: 'personal_relationships_community_changes',
-}
+} as const

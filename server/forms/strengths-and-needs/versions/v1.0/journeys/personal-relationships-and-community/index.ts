@@ -2,6 +2,7 @@ import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/
 import { Section } from '../../constants/section'
 import { commonContentFor } from '../../locales'
 import { personalRelationshipsChildrenInformationStep } from './steps/personal-relationships-children-information/step'
+import { personalRelationshipsStep } from './steps/personal-relationships/step'
 
 // Personal relationships and community journey
 // Flow:
@@ -22,5 +23,5 @@ export const personalRelationshipsJourney = journey({
       sectionStatus: Data(Section.personal_relationships_and_community.statusKey),
     },
   },
-  steps: [personalRelationshipsChildrenInformationStep],
+  steps: [personalRelationshipsChildrenInformationStep, personalRelationshipsStep],
 })

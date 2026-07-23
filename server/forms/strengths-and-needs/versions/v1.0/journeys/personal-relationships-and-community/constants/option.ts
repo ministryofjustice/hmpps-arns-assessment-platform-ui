@@ -6,6 +6,13 @@ export const Option = {
   no_children: 'NO_CHILDREN',
 
   // Q: Who are the important people in [subject]'s life?
+  partner_intimate_relationship: 'PARTNER_INTIMATE_RELATIONSHIP',
+  child_parental_responsibilities: 'CHILD_PARENTAL_RESPONSIBILITIES',
+  other_children: 'OTHER_CHILDREN',
+  family: 'FAMILY',
+  friends: 'FRIENDS',
+  other: 'OTHER',
+
   // Q: What is [subject]'s current relationship like with their family?
   // Q: What was [subject]'s experience of their childhood?
   // Q: Did [subject] have any childhood behavioural problems?
