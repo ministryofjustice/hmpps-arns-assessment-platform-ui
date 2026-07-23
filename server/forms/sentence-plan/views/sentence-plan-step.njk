@@ -78,7 +78,9 @@
 {% block content %}
   {% set sidebarIndex = twoColumnLayout.sidebarBlockIndex if twoColumnLayout else -1 %}
 
-  {% include "sentence-plan/views/partials/phase-banner.njk" %}
+  {% if not hidePhaseBanner %}
+    {% include "sentence-plan/views/partials/phase-banner.njk" %}
+  {% endif %}
   {% include "sentence-plan/views/partials/plan-header.njk" %}
 
   <div class="govuk-grid-row" data-qa-assessment-uuid="{{ data.assessmentUuid }}">
