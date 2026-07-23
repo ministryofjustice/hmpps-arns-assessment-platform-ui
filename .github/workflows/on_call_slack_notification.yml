@@ -41,5 +41,5 @@ jobs:
           method: chat.postMessage
           token: ${{ secrets.HMPPS_SRE_SLACK_BOT_TOKEN }}
           payload: |
-            channel: ${{ env.SLACK_CHANNEL }}
+            channel: "${{ env.SLACK_CHANNEL }}"
             text: ${{ toJSON(format(':pager: On-call today: *{0}*', steps.pagerduty.outputs.name)) }}
