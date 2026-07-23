@@ -7,6 +7,7 @@ import {
   goalSummaryCardHistory,
 } from './goal-summary-card/goalSummaryCard'
 import { previousVersions } from './previous-versions/previousVersions'
+import { printGoalSummaryCard } from './print-goal-summary-card/printGoalSummaryCard'
 import { wrappingSelect } from './wrapping-select/wrappingSelect'
 
 export { AccessibleAutocomplete } from './accessible-autocomplete/accessibleAutocomplete'
@@ -18,6 +19,7 @@ export {
   GoalSummaryCardHistory,
 } from './goal-summary-card/goalSummaryCard'
 export { WrappingSelect } from './wrapping-select/wrappingSelect'
+export { PrintGoalSummaryCard } from './print-goal-summary-card/printGoalSummaryCard'
 
 export const sentencePlanComponents = [
   accessibleAutocomplete,
@@ -26,6 +28,7 @@ export const sentencePlanComponents = [
   goalSummaryCardDraft,
   goalSummaryCardAgreed,
   goalSummaryCardHistory,
+  printGoalSummaryCard,
   previousVersions,
   wrappingSelect,
 ]
