@@ -2,35 +2,16 @@ name: Post daily on-call to Slack
 
 on:
   schedule:
-    # UK 9am shifts between 08:00 and 09:00 UTC across GMT/BST, so both
-    # crons fire and the "check_time" job filters out the wrong one.
-    - cron: '0 8 * * 1-5'
     - cron: '0 9 * * 1-5'
+      timezone: "Europe/London"
   workflow_dispatch: {}
 
 permissions:
   contents: read
 
 jobs:
-  check_time:
-    name: Check it's 9am UK time
-    runs-on: ubuntu-latest
-    outputs:
-      should_run: ${{ steps.check.outputs.should_run }}
-    steps:
-      - id: check
-        run: |
-          HOUR=$(TZ=Europe/London date +%H)
-          if [ "$HOUR" = "09" ]; then
-            echo "should_run=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "should_run=false" >> "$GITHUB_OUTPUT"
-          fi
-
   post_on_call:
     name: Look up on-call and post to Slack
-    needs: check_time
-    if: github.event_name == 'workflow_dispatch' || needs.check_time.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     env:
       PAGERDUTY_SCHEDULE_ID: P5LXJUT
