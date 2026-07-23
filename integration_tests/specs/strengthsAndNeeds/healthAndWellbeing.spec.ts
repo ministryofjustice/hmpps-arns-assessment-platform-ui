@@ -279,6 +279,107 @@ test.describe('Health and wellbeing Page', () => {
     })
   })
 
+  test.describe('Summary', () => {
+    test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'health_conditions', value: 'NO' },
+          { question: 'mental_health_problems', value: 'NO' },
+          { question: 'head_injuries', value: 'NO' },
+          { question: 'neurodiverse_conditions', value: 'NO' },
+          { question: 'neurodiverse_conditions_details', value: '' },
+          { question: 'impact_on_learning_abilities', value: 'NO_LEARNING_ABILITIES_IMPACT' },
+          { question: 'learning_abilities_impacted_significantly_details', value: '' },
+          { question: 'learning_abilities_impacted_slightly_details', value: '' },
+          { question: 'cope_with_day_to_day_life', value: 'NOT_ABLE_TO_COPE' },
+          { question: 'attitude_towards_self', value: 'NEGATIVE_UNHAPPY' },
+          { question: 'self_harm', value: 'NO' },
+          { question: 'suicidal_tendencies', value: 'NO' },
+          { question: 'feeling_about_future_health_wellbeing', value: 'NOT_OPTIMISTIC_OUTLOOK' },
+          { question: 'helped_during_periods_good_health_wellbeing', value: [] },
+          { question: 'changes_to_health_wellbeing', value: 'NOT_PRESENT' },
+        ]).save()
+
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'health-wellbeing-summary')
+
+      const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'Summary')
+
+      await expect(healthAndWellbeingPage.summary).toMatchAriaSnapshot(`
+        - tabpanel "Summary":
+          - term: Does Test's have any physical health conditions?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: health-wellbeing
+          - term: Does Test's have any physical health conditions?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: health-wellbeing
+          - term: Has Test's had a head injury or any illness affecting the brain?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: physical-mental-health
+          - term: Does Test's have any neurodiverse conditions?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: physical-mental-health
+          - term: Does Test's have any conditions or disabilities that impact their ability to learn? (optional)
+          - definition:
+            - paragraph: No, they do not have any conditions or disabilities that impact their ability to learn
+          - definition:
+            - link "Change":
+              - /url: physical-mental-health
+          - term: Is Test's able to cope with day-to-day life?
+          - definition:
+            - paragraph: Not able to cope
+          - definition:
+            - link "Change":
+              - /url: physical-mental-health
+          - term: What is Test's attitude towards themselves?
+          - definition:
+            - paragraph: Negative self-image and unhappy
+          - definition:
+            - link "Change":
+              - /url: physical-mental-health
+          - term: Has Test's ever self-harmed?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: physical-mental-health
+          - term: Has Test's ever attempted suicide or had suicidal thoughts?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: physical-mental-health
+          - term: How does Test's feel about their future?
+          - definition:
+            - paragraph: Not optimistic and thinks their future will not get better or may get worse
+          - definition:
+            - link "Change":
+              - /url: physical-mental-health
+          - term: Does Test's want to make changes to their health and wellbeing?
+          - definition:
+            - paragraph: Test is not present
+          - definition:
+            - link "Change":
+              - /url: physical-mental-health
+          - button "Go to practitioner analysis"
+      `)
+    })
+  })
+
   test.describe('Accessibility', () => {
     test('should be accessible', async ({ page, createSession, baseURL }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })

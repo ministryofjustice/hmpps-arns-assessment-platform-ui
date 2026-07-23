@@ -553,6 +553,88 @@ test.describe('Employment and education Page', () => {
     })
   })
 
+  test.describe('Summary', () => {
+    test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
+          { question: 'had_previous_employment_not_looking_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'day_to_day_commitments', value: ['NONE'] },
+          { question: 'academic_qualification', value: 'NON_OF_THESE' },
+          { question: 'professional_qualification', value: 'NO' },
+          { question: 'job_skills', value: 'NO' },
+          { question: 'difficulties_reading_writing_numeracy', value: ['NO_DIFFICULTIES'] },
+          { question: 'education_experience', value: 'UNKNOWN' },
+          { question: 'employment_and_education_changes', value: 'NOT_PRESENT' },
+        ]).save()
+
+      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
+        page,
+        handoverLink,
+        baseURL,
+        'employment-education-summary',
+      )
+
+      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'Summary')
+
+      await expect(employmentAndEducationPage.summary).toMatchAriaSnapshot(`
+        - tabpanel "Summary":
+          - term: What is Test's current employment status?
+          - definition:
+            - paragraph: Unemployed - not actively looking for work
+          - definition:
+            - link "Change":
+              - /url: current-employment
+          - term: Does Test's have any day-to-day commitments?
+          - definition:
+            - paragraph: None
+          - definition:
+            - link "Change":
+              - /url: employed
+          - term: Select the highest level of academic qualification Test's has completed
+          - definition:
+            - paragraph: None of these
+          - definition:
+            - link "Change":
+              - /url: employed
+          - term: Does Test's have any professional or vocational qualifications?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: employed
+          - term: Does Test's have any skills that could help them in a job or to get a job?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: employed
+          - term: Does Test's have difficulties with reading, writing or numeracy?
+          - definition:
+            - paragraph: No difficulties
+          - definition:
+            - link "Change":
+              - /url: employed
+          - term: What is Test's experience of education?
+          - definition:
+            - paragraph: Unknown
+          - definition:
+            - link "Change":
+              - /url: employed
+          - term: Does Test's want to make changes to their employment and education?
+          - definition:
+            - paragraph: Test is not present
+          - definition:
+            - link "Change":
+              - /url: employed
+          - button "Go to practitioner analysis"
+      `)
+    })
+  })
+
   test.describe('Accessibility', () => {
     test('should be accessible', async ({ page, createSession, baseURL }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
