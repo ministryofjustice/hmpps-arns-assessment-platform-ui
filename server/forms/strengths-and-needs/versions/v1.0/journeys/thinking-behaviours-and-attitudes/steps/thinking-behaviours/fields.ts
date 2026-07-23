@@ -35,16 +35,19 @@ const toDetailsField =
 const thinkingBehavioursPeerPressureYesDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
   option: Option.yes_peer_pressure,
   code: Question.thinking_behaviours_attitudes_peer_pressure_yes_details,
+  mandatory: true,
 })
 
 const thinkingBehavioursPeerPressureSomeDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
   option: Option.some_peer_pressure,
   code: Question.thinking_behaviours_attitudes_peer_pressure_some_details,
+  mandatory: true,
 })
 
 const thinkingBehavioursPeerPressureNoDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
   option: Option.no_peer_pressure,
   code: Question.thinking_behaviours_attitudes_peer_pressure_no_details,
+  mandatory: true,
 })
 
 export const thinkingBehavioursConsequences = GovUKRadioInput({
