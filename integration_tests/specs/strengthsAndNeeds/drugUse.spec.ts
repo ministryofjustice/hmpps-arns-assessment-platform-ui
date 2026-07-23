@@ -167,6 +167,97 @@ test.describe('Drug use Page', () => {
         - button "Save and continue"
       `)
     })
+
+    test('shows drug use history questions', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'drug_use', value: 'YES' },
+          { question: 'drugs_section_status', value: 'INCOMPLETE' },
+          { question: 'select_misused_drugs', value: ['AMPHETAMINES', 'BENZODIAZEPINES'] },
+          { question: 'drug_last_used_amphetamines', value: 'LAST_SIX' },
+          { question: 'drug_last_used_benzodiazepines', value: 'MORE_THAN_SIX' },
+          { question: 'drugs_injected', value: ['NONE'] },
+          { question: 'receiving_treatment', value: 'YES' },
+          { question: 'how_often_used_amphetamines', value: 'DAILY' },
+          { question: 'receiving_treatment_no_details', value: '' },
+          { question: 'how_often_used_amphetamines_details', value: 'test' },
+          { question: 'drug_use_more_than_six_months_details', value: 'test' },
+          { question: 'receiving_treatment_yes_details', value: 'test' },
+        ]).save()
+
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-history')
+
+      const drugUsePage = await DrugUsePage.verifyOnPage(page, 'use drugs?')
+
+      await expect(drugUsePage.mainSection).toMatchAriaSnapshot(`
+        - group "Why does Test use drugs?":
+          - text: Why does Test use drugs? Consider why they started using, their history, and any triggers. Select all that apply.
+          - checkbox "Cultural or religious practice"
+          - text: Cultural or religious practice
+          - checkbox "Curiosity or experimentation"
+          - text: Curiosity or experimentation
+          - checkbox "Enhance performance"
+          - text: Enhance performance
+          - checkbox "Escapism or avoidance"
+          - text: Escapism or avoidance
+          - checkbox "Manage stress or emotional issues"
+          - text: Manage stress or emotional issues
+          - checkbox "Peer pressure or social influence"
+          - text: Peer pressure or social influence
+          - checkbox "Recreation or pleasure"
+          - text: Recreation or pleasure
+          - checkbox "Self-medication"
+          - text: Self-medication
+          - checkbox "Other"
+          - text: Other
+        - text: Give details (optional)
+        - textbox "Give details (optional)"
+        - text: You can enter up to 2000 characters You have 2,000 characters remaining
+        - group "How has Test's drug use affected their life?":
+          - text: How has Test's drug use affected their life? Select all that apply.
+          - checkbox "Behaviour"
+          - text: Behaviour Includes unemployment, disruption on education or lack of productivity.
+          - checkbox "Community"
+          - text: Community Includes limited opportunities or judgement from others.
+          - checkbox "Finances"
+          - text: Finances Includes having no money.
+          - checkbox "Links to offending"
+          - text: Links to offending
+          - checkbox "Physical or mental health"
+          - text: Physical or mental health Includes overdose.
+          - checkbox "Relationships"
+          - text: Relationships Includes isolation or neglecting responsibilities.
+          - checkbox "Other"
+          - text: Other
+        - text: Give details (optional)
+        - textbox "Give details (optional)"
+        - text: You can enter up to 2000 characters You have 2,000 characters remaining Has anything helped Test stop or reduce their drug use? (optional) Note any treatment or lifestyle changes that have helped them.
+        - textbox "Has anything helped Test stop or reduce their drug use? (optional)"
+        - text: You can enter up to 2000 characters You have 2,000 characters remaining
+        - group "Does Test want to make changes to their drug use?":
+          - text: Does Test want to make changes to their drug use?
+          - radio "I have already made positive changes and want to maintain them"
+          - text: I have already made positive changes and want to maintain them
+          - radio "I am actively making changes"
+          - text: I am actively making changes
+          - radio "I want to make changes and know how to"
+          - text: I want to make changes and know how to
+          - radio "I want to make changes but need help"
+          - text: I want to make changes but need help
+          - radio "I am thinking about making changes"
+          - text: I am thinking about making changes
+          - radio "I do not want to make changes"
+          - text: I do not want to make changes
+          - radio "I do not want to answer"
+          - text: I do not want to answer or
+          - radio "Not applicable"
+          - text: Not applicable
+        - button "Save and continue"
+      `)
+    })
   })
 
   test.describe('Accessibility', () => {

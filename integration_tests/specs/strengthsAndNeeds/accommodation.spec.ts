@@ -58,14 +58,14 @@ test.describe('Accommodation Page', () => {
           - text: Unknown or
           - checkbox "Alone"
           - text: Alone
-        - group "Is the location of Test's's accommodation suitable?":
-          - text: Is the location of Test's's accommodation suitable?
+        - group "Is the location of Test's accommodation suitable?":
+          - text: Is the location of Test's accommodation suitable?
           - radio "Yes"
           - text: "Yes"
           - radio "No"
           - text: "No"
-        - group "Is Test's's accommodation suitable?":
-          - text: Is Test's's accommodation suitable? This includes things like safety or having appropriate amenities.
+        - group "Is Test's accommodation suitable?":
+          - text: Is Test's accommodation suitable? This includes things like safety or having appropriate amenities.
           - radio "Yes"
           - text: "Yes"
           - radio "Yes, with concerns"
@@ -131,8 +131,8 @@ test.describe('Accommodation Page', () => {
         - link "Back"
         - text: Accommodation
         - strong: Incomplete
-        - group "Is the location of Test's's accommodation suitable?"
-        - group "Is Test's's accommodation suitable?"
+        - group "Is the location of Test's accommodation suitable?"
+        - group "Is Test's accommodation suitable?"
         - group "Does Test have future accommodation planned?"
         - group "Does Test want to make changes to their accommodation?"
         - button "Save and continue"
