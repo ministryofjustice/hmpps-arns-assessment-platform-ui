@@ -1,0 +1,45 @@
+name: Post daily on-call to Slack
+
+on:
+  schedule:
+    - cron: '0 9 * * 1-5'
+      timezone: "Europe/London"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  post_on_call:
+    name: Look up on-call and post to Slack
+    runs-on: ubuntu-latest
+    env:
+      PAGERDUTY_SCHEDULE_ID: P5LXJUT
+      SLACK_CHANNEL: '#assess-and-plan-support'
+    steps:
+      - name: Get current on-call user from PagerDuty
+        id: pagerduty
+        env:
+          PAGERDUTY_API_TOKEN: ${{ secrets.PAGERDUTY_API_TOKEN }}
+        run: |
+          RESPONSE=$(curl -sf \
+            -H "Authorization: Token token=$PAGERDUTY_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://api.pagerduty.com/oncalls?schedule_ids[]=$PAGERDUTY_SCHEDULE_ID&earliest=true")
+
+          ON_CALL_NAME=$(echo "$RESPONSE" | jq -r '[.oncalls[]] | sort_by(.escalation_level) | .[0].user.name // empty')
+
+          if [ -z "$ON_CALL_NAME" ]; then
+            ON_CALL_NAME="Nobody found on the on-call schedule"
+          fi
+
+          echo "name=$ON_CALL_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Post to Slack
+        uses: slackapi/slack-github-action@v4.0.0
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.HMPPS_SRE_SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ env.SLACK_CHANNEL }}
+            text: ${{ toJSON(format(':pager: On-call today: *{0}*', steps.pagerduty.outputs.name)) }}
