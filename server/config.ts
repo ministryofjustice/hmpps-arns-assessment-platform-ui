@@ -57,6 +57,16 @@ export default {
     countdownMinutes: Number(get('SESSION_COUNTDOWN_MINUTES', 10)),
   },
   apis: {
+    gotenberg: {
+      url: get('GOTENBERG_API_URL', 'http://localhost:3001', requiredInProduction),
+      healthPath: '/health',
+      renderUrl: get('GOTENBERG_RENDER_URL', 'http://host.docker.internal:3000', requiredInProduction),
+      timeout: {
+        response: Number(get('GOTENBERG_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('GOTENBERG_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('GOTENBERG_TIMEOUT_RESPONSE', 30000))),
+    },
     hmppsAuth: {
       url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
       healthPath: '/health/ping',

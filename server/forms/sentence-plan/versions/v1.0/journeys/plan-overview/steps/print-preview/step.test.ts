@@ -43,4 +43,15 @@ describe('print preview step', () => {
     expect(printPreviewStep.onAccess?.[0]?.next).toEqual([expect.objectContaining({ goto: sentencePlanOverviewPath })])
     expect(planOverviewJourney.steps).toContainEqual(printPreviewStep)
   })
+
+  it.each([
+    ['active', activeGoalsSection],
+    ['future', futureGoalsSection],
+    ['achieved', achievedGoalsSection],
+    ['removed', removedGoalsSection],
+  ])('identifies the %s goal area for print page breaks', (status, section) => {
+    expect(section).toMatchObject({
+      template: expect.stringContaining(`print-goal-section print-goal-section--${status}`),
+    })
+  })
 })

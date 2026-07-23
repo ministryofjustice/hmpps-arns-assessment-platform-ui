@@ -87,7 +87,7 @@ const goalCard = () =>
 const goalSection = (heading: string, status: GoalStatus, showWhenEmpty = false) =>
   TemplateWrapper({
     ...(showWhenEmpty ? {} : { visibleWhen: hasGoalsByStatus(status) }),
-    template: `<section class="govuk-!-margin-top-6" aria-labelledby="goal-section-${status.toLowerCase()}">
+    template: `<section class="print-goal-section print-goal-section--${status.toLowerCase()} govuk-!-margin-top-6" aria-labelledby="goal-section-${status.toLowerCase()}">
       <h2 class="govuk-heading-m" id="goal-section-${status.toLowerCase()}">${heading}</h2>
       {{slot:goals}}
     </section>`,

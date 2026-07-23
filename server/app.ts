@@ -103,7 +103,7 @@ export default function createApp(services: Services): express.Application {
   })
 
   // Mount routes
-  app.use(routes())
+  app.use(routes(services))
   app.use(createExpressRouter(formEngine, { nunjucksEnv, defaultTemplate: 'partials/form-step' }))
 
   app.use((req, _res, next) => {
