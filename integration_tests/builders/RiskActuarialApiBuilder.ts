@@ -1,6 +1,14 @@
 import { test } from '@playwright/test'
 import { TestRiskActuarialApiClient } from 'support/apis/TestRiskActuarialApiClient'
-import { CurrentRelationshipStatus, PreviousConviction, ProblemLevel, RiskScoreInput, RiskScores, SupervisionStatus, MotivationLevel } from '@server/interfaces/risk-actuarial-api/riskScores'
+import {
+  CurrentRelationshipStatus,
+  PreviousConviction,
+  ProblemLevel,
+  RiskScoreInput,
+  RiskScores,
+  SupervisionStatus,
+  MotivationLevel,
+} from '@server/interfaces/risk-actuarial-api/riskScores'
 
 /**
  * Factory for creating RiskActuarialApiBuilder instances with a bound client.
@@ -11,7 +19,7 @@ import { CurrentRelationshipStatus, PreviousConviction, ProblemLevel, RiskScoreI
  *   const association = await riskActuarialApiBuilder.create()
  *     .withGender('MALE')
  *     .withTotalNumberOfSanctionsForAllOffences('A123456')
- *     ... 
+ *     ...
  *     .save()
  * })
  */
@@ -32,50 +40,95 @@ export class RiskActuarialApiBuilderInstance {
   private readonly client: TestRiskActuarialApiClient
 
   private gender: string
+
   private dateOfBirth: string
+
   private dateOfCurrentConviction: string
+
   private dateAtStartOfFollowup: string
+
   private totalNumberOfSanctionsForAllOffences: number
+
   private ageAtFirstSanction: number
+
   private currentOffenceCode: string
+
   private totalNumberOfViolentSanctions: number
+
   private isUnemployed: boolean
+
   private currentAlcoholUseProblems: ProblemLevel
+
   private excessiveAlcoholUse: ProblemLevel
+
   private temperControl: ProblemLevel
+
   private proCriminalAttitudes: ProblemLevel
+
   private regularOffendingActivities: ProblemLevel
+
   private motivationToTackleDrugMisuse: MotivationLevel
+
   private impulsivityProblems: ProblemLevel
+
   private supervisionStatus: SupervisionStatus
+
   private hasEverCommittedSexualOffence: boolean
+
   private didOffenceInvolveCarryingOrUsingWeapon: boolean
+
   private evidenceOfDomesticAbuse: boolean
+
   private totalContactAdultSexualSanctions: number
+
   private totalContactChildSexualSanctions: number
+
   private totalIndecentImageSanctions: number
+
   private totalNonContactSexualOffences: number
+
   private dateOfMostRecentSexualOffence: string
+
   private isCurrentOffenceAgainstVictimStranger: boolean
+
   private suitabilityOfAccommodation: ProblemLevel
+
   private currentRelationshipWithPartner: ProblemLevel
+
   private currentRelationshipStatus: CurrentRelationshipStatus
+
   private previousConvictions: PreviousConviction[]
+
   private isCurrentOffenceSexuallyMotivated: boolean
+
   private mostRecentOffenceDate: string
+
   private hasHeroinUsage: boolean
+
   private hasOtherOpiateUsage: boolean
+
   private hasCrackCocaineUsage: boolean
+
   private hasPowderCocaineUsage: boolean
+
   private hasMisusedPrescriptionDrugUsage: boolean
+
   private hasBenzodiazepinesUsage: boolean
+
   private hasCannabisUsage: boolean
+
   private hasSteroidsUsage: boolean
+
   private hasOtherDrugsUsage: boolean
+
   private hasKetamineUsage: boolean
+
   private hasSpiceUsage: boolean
+
   private hasHallucinogensUsage: boolean
+
   private hasSolventsUsage: boolean
+
   private hasMethadoneUsage: boolean
 
   constructor(client: TestRiskActuarialApiClient) {

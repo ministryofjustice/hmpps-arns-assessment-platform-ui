@@ -1,8 +1,8 @@
 import { RestClient, asSystem, AgentConfig } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import type { TestInfo } from '@playwright/test'
-import { noopLogger } from './noopLogger'
 import { RiskScoreInput, RiskScores } from '@server/interfaces/risk-actuarial-api/riskScores'
+import { noopLogger } from './noopLogger'
 
 export interface TestRiskActuarialApiClientConfig {
   baseUrl: string
@@ -37,7 +37,7 @@ export class TestRiskActuarialApiClient extends RestClient {
    */
   async getRiskScores(input: RiskScoreInput): Promise<RiskScores> {
     return this.request('getRiskScores', input, () =>
-      this.post({ path: `/risk-scores/v1`, data: { ...input } }, asSystem())
+      this.post({ path: `/risk-scores/v1`, data: { ...input } }, asSystem()),
     )
   }
 

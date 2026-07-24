@@ -2,62 +2,74 @@ export type Type = 'STATIC' | 'DYNAMIC' | 'COMBINED'
 export type Band = 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH' | 'NOT_APPLICABLE'
 export type ProblemLevel = 'NO_PROBLEMS' | 'SOME_PROBLEMS' | 'SIGNIFICANT_PROBLEMS'
 export type MotivationLevel = 'FULL_MOTIVATION' | 'PARTIAL_MOTIVATION' | 'NO_MOTIVATION'
-export type CurrentRelationshipStatus = 'NOT_IN_RELATIONSHIP' | 'IN_RELATIONSHIP_LIVING_TOGETHER' | 'IN_RELATIONSHIP_NOT_LIVING_TOGETHER'
-export type PreviousConviction = 'HOMICIDE' | 'WOUNDING_GBH' | 'KIDNAPPING' | 'FIREARMS' | 'ROBBERY' | 'AGGRAVATED_BURGLARY' | 'WEAPON' | 'CRIMINAL_DAMAGE' | 'ARSON'
+export type CurrentRelationshipStatus =
+  | 'NOT_IN_RELATIONSHIP'
+  | 'IN_RELATIONSHIP_LIVING_TOGETHER'
+  | 'IN_RELATIONSHIP_NOT_LIVING_TOGETHER'
+export type PreviousConviction =
+  | 'HOMICIDE'
+  | 'WOUNDING_GBH'
+  | 'KIDNAPPING'
+  | 'FIREARMS'
+  | 'ROBBERY'
+  | 'AGGRAVATED_BURGLARY'
+  | 'WEAPON'
+  | 'CRIMINAL_DAMAGE'
+  | 'ARSON'
 export type SupervisionStatus = 'CUSTODY' | 'COMMUNITY' | 'REMAND'
 
 export interface RiskScores {
   actuarialPredictors: {
     allPredictor: {
-      algorithm: string,
+      algorithm: string
       type?: Type
-      modelVersion: string,
-      thresholdsVersion: string,
+      modelVersion: string
+      thresholdsVersion: string
       output: {
         band: Band
         score: number
-      },
-      featureValues: Record<string, number>,
+      }
+      featureValues: Record<string, number>
       validationErrors: ValidationError[]
     }
     violentPredictor: {
-      algorithm: string,
+      algorithm: string
       type?: Type
-      modelVersion: string,
-      thresholdsVersion: string,
+      modelVersion: string
+      thresholdsVersion: string
       output: {
         band: Band
         score: number
-      },
-      featureValues: Record<string, number>,
+      }
+      featureValues: Record<string, number>
       validationErrors: ValidationError[]
     }
     directContactSexualPredictor: DirectContactSexualPredictorResponse
     indirectContactSexualPredictor: IndirectContactSexualPredictorResponse
     seriousViolentPredictor: SeriousViolentPredictorResponse
     seriousPredictor: {
-      algorithm: string,
+      algorithm: string
       type?: Type
-      modelVersion: string,
-      thresholdsVersion: string,
+      modelVersion: string
+      thresholdsVersion: string
       output: {
         band?: Band
         overallScore?: number
-        femaleVersion?: boolean,
-        hasSexualOffenceHistory?: boolean,
-        componentScores: SeriousPredictorComponentScores,
-      },
-      featureValues: Record<string, number>,
+        femaleVersion?: boolean
+        hasSexualOffenceHistory?: boolean
+        componentScores: SeriousPredictorComponentScores
+      }
+      featureValues: Record<string, number>
       validationErrors: ValidationError[]
     }
   }
 }
 
 export interface RiskScoreInput {
-  gender: string,
-  dateOfBirth: string,
+  gender: string
+  dateOfBirth: string
   dateOfCurrentConviction: string
-  dateAtStartOfFollowup: string,
+  dateAtStartOfFollowup: string
   totalNumberOfSanctionsForAllOffences: number
   ageAtFirstSanction: number
   currentOffenceCode: string
@@ -70,15 +82,15 @@ export interface RiskScoreInput {
   regularOffendingActivities: ProblemLevel
   motivationToTackleDrugMisuse: MotivationLevel
   impulsivityProblems: ProblemLevel
-  supervisionStatus: SupervisionStatus,
-  hasEverCommittedSexualOffence: boolean,
-  didOffenceInvolveCarryingOrUsingWeapon: boolean,
-  evidenceOfDomesticAbuse: boolean,
-  totalContactAdultSexualSanctions: number,
-  totalContactChildSexualSanctions: number,
-  totalIndecentImageSanctions: number,
-  totalNonContactSexualOffences: number,
-  dateOfMostRecentSexualOffence: string,
+  supervisionStatus: SupervisionStatus
+  hasEverCommittedSexualOffence: boolean
+  didOffenceInvolveCarryingOrUsingWeapon: boolean
+  evidenceOfDomesticAbuse: boolean
+  totalContactAdultSexualSanctions: number
+  totalContactChildSexualSanctions: number
+  totalIndecentImageSanctions: number
+  totalNonContactSexualOffences: number
+  dateOfMostRecentSexualOffence: string
   isCurrentOffenceAgainstVictimStranger: boolean
   suitabilityOfAccommodation: ProblemLevel
   currentRelationshipWithPartner: ProblemLevel
@@ -109,47 +121,47 @@ export interface ValidationError {
 }
 
 interface DirectContactSexualPredictorResponse {
-  algorithm: string,
+  algorithm: string
   type?: Type
-  modelVersion: string,
-  thresholdsVersion: string,
+  modelVersion: string
+  thresholdsVersion: string
   output: {
     band?: Band
     score?: number
-    pointScore?: number,
-    femaleVersion?: boolean,
-    hasSexualOffenceHistory?: boolean,
-    riskBandReductionApplied?: boolean,
-  },
-  featureValues: Record<string, number>,
+    pointScore?: number
+    femaleVersion?: boolean
+    hasSexualOffenceHistory?: boolean
+    riskBandReductionApplied?: boolean
+  }
+  featureValues: Record<string, number>
   validationErrors: ValidationError[]
 }
 
 interface IndirectContactSexualPredictorResponse {
-  algorithm: string,
+  algorithm: string
   type?: Type
-  modelVersion: string,
-  thresholdsVersion: string,
+  modelVersion: string
+  thresholdsVersion: string
   output: {
     band?: Band
     score?: number
-    femaleVersion?: boolean,
-    hasSexualOffenceHistory?: boolean,
-  },
-  featureValues: Record<string, number>,
+    femaleVersion?: boolean
+    hasSexualOffenceHistory?: boolean
+  }
+  featureValues: Record<string, number>
   validationErrors: ValidationError[]
 }
 
 interface SeriousViolentPredictorResponse {
-  algorithm: string,
+  algorithm: string
   type?: Type
-  modelVersion: string,
-  thresholdsVersion: string,
+  modelVersion: string
+  thresholdsVersion: string
   output: {
     band?: Band
     score?: number
-  },
-  featureValues: Record<string, number>,
+  }
+  featureValues: Record<string, number>
   validationErrors: ValidationError[]
 }
 

@@ -4,6 +4,7 @@ import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients
 import { promises as fs } from 'node:fs'
 import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
 import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
+import { RiskActuarialApiBuilder, RiskActuarialApiBuilderFactory } from 'builders/RiskActuarialApiBuilder'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
 import { TestHmppsAuthClient } from './apis/TestHmppsAuthClient'
 import { TestAapApiClient } from './apis/TestAapApiClient'
@@ -20,7 +21,6 @@ import { HandoverBuilder } from '../builders/HandoverBuilder'
 import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
 import { AuditQueueClient } from './AuditQueueClient'
 import { captureContainerLogs } from './DockerLogCapture'
-import { RiskActuarialApiBuilder, RiskActuarialApiBuilderFactory } from 'builders/RiskActuarialApiBuilder'
 
 /**
  * Default criminogenic needs data for E2E tests.
@@ -330,7 +330,7 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
   captureDockerLogsOnFailure: [
     // eslint-disable-next-line no-empty-pattern
-    async ({ }, use, testInfo) => {
+    async ({}, use, testInfo) => {
       const startedAt = new Date()
 
       await use()
