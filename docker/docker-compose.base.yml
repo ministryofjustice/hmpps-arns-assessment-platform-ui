@@ -119,6 +119,26 @@ services:
       CLIENT_SAN_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/callback
       CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in
 
+  gotenberg:
+    image: gotenberg/gotenberg:8.34.0
+    networks:
+      - hmpps
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - '3001:3000'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 5s
+      retries: 20
+    command:
+      - gotenberg
+      - --chromium-ignore-certificate-errors
+      - --chromium-clear-cookies
+      - --libreoffice-disable-routes
+      - --webhook-disable
+      - --prometheus-disable-collect
+
   aap-ui:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:${APP_VERSION:-local}
     networks:
@@ -127,6 +147,7 @@ services:
       - redis
       - localstack
       - wiremock
+      - gotenberg
     build:
       context: ../
       target: production
@@ -148,6 +169,8 @@ services:
       REDIS_HOST: redis
       SESSION_SECRET: somesecretvalue
       INGRESS_URL: http://localhost:3000
+      GOTENBERG_API_URL: http://gotenberg:3000
+      GOTENBERG_RENDER_URL: http://aap-ui:3000
       NO_HTTPS: true
       AUTH_CODE_CLIENT_ID: hmpps-arns-assessment-platform-ui
       AUTH_CODE_CLIENT_SECRET: clientsecret

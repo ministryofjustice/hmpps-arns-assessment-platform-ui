@@ -22,6 +22,8 @@ generic-service:
     MPOP_URL: 'https://manage-people-on-probation-dev.hmpps.service.justice.gov.uk'
     FEATURE_FLAG_URL: 'https://feature-toggles-dev.hmpps.service.justice.gov.uk'
     FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'false'
+    GOTENBERG_API_URL: 'http://$RELEASE_NAME-gotenberg'
+    GOTENBERG_RENDER_URL: 'http://$RELEASE_NAME'
     DEPLOYMENT_NAME: PR-$PR_NUMBER
     ENVIRONMENT_NAME: DEV
     FORGE_DEVTOOLS_ENABLED: 'true'

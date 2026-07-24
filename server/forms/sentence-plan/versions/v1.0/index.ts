@@ -11,7 +11,7 @@ import {
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
-import { actorLabels, areasOfNeed, formVersion } from './constants'
+import { actorLabels, areasOfNeed, formVersion, sentencePlanBasePath, sentencePlanOverviewPath } from './constants'
 import { SentencePlanEffects } from '../../effects'
 import { NAV_KEY_PATTERNS } from '../../effects/navigation'
 import {
@@ -39,8 +39,8 @@ export const sentencePlanV1Journey = journey({
     template: 'sentence-plan/views/sentence-plan-step',
     locals: {
       footerBaseUrl: '/platform',
-      basePath: '/sentence-plan/v1.0',
-      hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
+      basePath: sentencePlanBasePath,
+      hmppsHeaderServiceNameLink: sentencePlanOverviewPath,
       showAboutTab: canAccessSanContent,
       showPlanHistoryTab: hasPostAgreementStatus,
     },
@@ -69,7 +69,10 @@ export const sentencePlanV1Journey = journey({
       ),
       next: [
         redirect({
-          goto: Format('/sentence-plan/v1.0/plan/view-historic/%1?type=current', Data('sessionDetails.planVersion')),
+          goto: Format(
+            `${sentencePlanBasePath}/plan/view-historic/%1?type=current`,
+            Data('sessionDetails.planVersion'),
+          ),
         }),
       ],
     }),

@@ -81,10 +81,10 @@
                   {% if buttons.showExportAsPdfButton %}
                     {{ govukButton({
                       text: 'Export as PDF',
-                      type: 'button',
+                      href: basePath + '/plan/print-preview/pdf',
                       classes: 'govuk-button--secondary govuk-!-display-none-print',
                       attributes: {
-                        'data-ai-id': 'export-sentence-plan-pdf-button'
+                        'data-ai-id': 'print-preview-export-pdf-button'
                       }
                     }) }}
                   {% endif %}
@@ -95,7 +95,7 @@
                       type: 'button',
                       classes: 'govuk-!-display-none-print js-only',
                       attributes: {
-                        'data-ai-id': 'print-sentence-plan-button',
+                        'data-ai-id': 'print-preview-print-button',
                         'data-print-sentence-plan': ''
                       }
                     }) }}
