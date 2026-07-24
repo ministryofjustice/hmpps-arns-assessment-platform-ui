@@ -133,7 +133,6 @@ services:
       retries: 20
     command:
       - gotenberg
-      - --chromium-ignore-certificate-errors
       - --chromium-clear-cookies
       - --libreoffice-disable-routes
       - --webhook-disable
