@@ -511,10 +511,6 @@ export const personalRelationshipsCommunityStrengthsProtectiveFactors = GovUKRad
       condition: not(Self().not.match(Condition.IsRequired())),
       message: contentFor(`${prcShortcut}practitioner_analysis_strengths_or_protective_factors.validation`),
     }),
-    validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
-    }),
   ],
 })
 
