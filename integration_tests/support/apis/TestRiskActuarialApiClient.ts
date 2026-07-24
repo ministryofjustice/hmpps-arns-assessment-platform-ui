@@ -50,7 +50,7 @@ export class TestRiskActuarialApiClient extends RestClient {
       const response = await fn()
 
       if (this.testInfo) {
-        await this.testInfo.attach(`TEST COORDINATOR API SUCCESS: ${operation}`, {
+        await this.testInfo.attach(`TEST RISK ACTUARIAL API SUCCESS: ${operation}`, {
           body: JSON.stringify({ request, response }, null, 2),
           contentType: 'application/json',
         })
@@ -59,7 +59,7 @@ export class TestRiskActuarialApiClient extends RestClient {
       return response
     } catch (error) {
       if (this.testInfo) {
-        await this.testInfo.attach(`TEST COORDINATOR API ERROR: ${operation}`, {
+        await this.testInfo.attach(`TEST RISK ACTUARIAL API ERROR: ${operation}`, {
           body: JSON.stringify({ request, error }, null, 2),
           contentType: 'application/json',
         })
