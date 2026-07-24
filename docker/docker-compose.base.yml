@@ -28,7 +28,7 @@ services:
     ports:
       - '4566:4566'
     healthcheck:
-      test: ['CMD', 'bash', '/scripts/wait/healthcheck.sh']
+      test: [ 'CMD', 'bash', '/scripts/wait/healthcheck.sh' ]
       interval: 5s
       timeout: 10s
       retries: 50
@@ -51,7 +51,7 @@ services:
     ports:
       - '9090:9090'
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:9090/auth/health']
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:9090/auth/health' ]
       interval: 5s
       retries: 20
     volumes:
@@ -69,7 +69,7 @@ services:
     networks:
       - hmpps
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://coordinator-api:8080/health/ping']
+      test: [ 'CMD', 'curl', '-f', 'http://coordinator-api:8080/health/ping' ]
       interval: 5s
       retries: 20
     environment:
@@ -92,7 +92,7 @@ services:
       - redis
       - localstack
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://arns-handover:7070/health/ping']
+      test: [ 'CMD', 'curl', '-f', 'http://arns-handover:7070/health/ping' ]
       interval: 5s
       retries: 20
     networks:
@@ -139,7 +139,7 @@ services:
       - '3000:3000'
       - '9229:9229'
     healthcheck:
-      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:3000/health']
+      test: [ 'CMD', 'wget', '-q', '--spider', 'http://localhost:3000/health' ]
       interval: 5s
       retries: 20
     environment:
@@ -161,6 +161,7 @@ services:
       COORDINATOR_API_URL: http://wiremock:8080/coordinator-api
       DELIUS_API_URL: http://wiremock:8080/delius
       ARNS_API_URL: http://wiremock:8080/arns-api
+      RISK_ACTUARIAL_API_URL: http://wiremock:8080/risk-actuarial-api
       SAN_URL: http://localhost:3000
       HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080/handover
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
@@ -190,7 +191,7 @@ services:
       - postgres
       - localstack
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health/ping']
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:8080/health/ping' ]
       interval: 5s
       retries: 20
     environment:
@@ -203,6 +204,23 @@ services:
       - HMPPS_SQS_QUEUES_AUDIT_QUEUE_NAME=audit-queue
       - SPRING_DATA_REDIS_HOST=redis
 
+  risk-actuarial-api:
+    image: ghcr.io/ministryofjustice/hmpps-arns-risk-actuarial-api:latest
+    networks:
+      - hmpps
+    depends_on:
+      - redis
+    healthcheck:
+      test: [ 'CMD', 'bash', '-c', 'echo > /dev/tcp/localhost/8080' ]
+      interval: 5s
+      retries: 20
+    environment:
+      - SERVER_PORT=8080
+      - HMPPS_AUTH_URL=http://hmpps-auth:9090/auth
+      - MANAGE_OFFENCES_API_URL=http://manage-offences-api:8080
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATA_REDIS_HOST=redis
+
   wiremock:
     image: wiremock/wiremock:3.13.2
     networks:
@@ -211,6 +229,8 @@ services:
       aap-api:
         condition: service_healthy
       coordinator-api:
+        condition: service_healthy
+      risk-actuarial-api:
         condition: service_healthy
       arns-handover:
         condition: service_healthy
@@ -223,6 +243,7 @@ services:
       WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:9090
       WIREMOCK_AAP_API_URL: http://aap-api:8080
       WIREMOCK_COORDINATOR_API_URL: http://coordinator-api:8080
+      WIREMOCK_RISK_ACTUARIAL_API_URL: http://risk-actuarial-api:8080
       WIREMOCK_HANDOVER_URL: http://arns-handover:7070
       WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
       WIREMOCK_DELIUS_URL: http://delius-api:8080

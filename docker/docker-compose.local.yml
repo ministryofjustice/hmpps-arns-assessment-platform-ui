@@ -9,6 +9,7 @@ services:
       WIREMOCK_HMPPS_AUTH_URL: http://hmpps-auth:9090
       WIREMOCK_AAP_API_URL: http://aap-api:8080
       WIREMOCK_COORDINATOR_API_URL: http://coordinator-api:8080
+      WIREMOCK_RISK_ACTUARIAL_API_URL: http://risk-actuarial-api:8080
       WIREMOCK_HANDOVER_URL: http://arns-handover:7070
       WIREMOCK_TOKEN_VERIFICATION_URL: http://token-verification:8080
       WIREMOCK_DELIUS_URL: http://delius-api:8080
@@ -32,6 +33,7 @@ services:
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
       AAP_API_URL: http://wiremock:8080/aap-api
       COORDINATOR_API_URL: http://wiremock:8080/coordinator-api
+      RISK_ACTUARIAL_API_URL: http://localhost:8080/risk-actuarial-api
       TOKEN_VERIFICATION_API_URL: http://wiremock:8080/verification
       TOKEN_VERIFICATION_ENABLED: true
       DELIUS_API_URL: http://wiremock:8080/delius
