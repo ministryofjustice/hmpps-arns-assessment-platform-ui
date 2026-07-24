@@ -69,4 +69,20 @@ describe('plan header', () => {
     expect(printButton).toContain('data-print-sentence-plan')
   })
 
+  it('hides the print button until JavaScript is enabled', () => {
+    const html = nunjucksEnv.render(template, {
+      data: {
+        caseData: {
+          name: { forename: 'Joan', surname: 'Smith' },
+          crn: 'X000000',
+          dateOfBirth: '1990-01-01',
+        },
+      },
+      headerPageHeading: "Joan's plan",
+      buttons: { showExportAsPdfButton: true, showPrintButton: true },
+    })
+
+    const printButton = html.match(/<button[^>]*data-ai-id="print-sentence-plan-button"[^>]*>/)?.[0]
+    expect(printButton).toContain('js-only')
+  })
 })
