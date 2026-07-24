@@ -13,7 +13,7 @@ export const detailsFactory = (options: {
   GovUKCharacterCount({
     code: options.code,
     label: options.label,
-    hint: options.hint,
+    ...(options.hint && { hint: options.hint }),
     maxLength: 2000,
     dependentWhen: options.dependentWhen,
     validWhen: [

@@ -15,7 +15,7 @@ describe('detailsFactory', () => {
     expect(result.code).toBe('test_details')
     expect(result.label).toBe('Give details')
     expect(result.maxLength).toBe(2000)
-    expect(result.hint).toBeUndefined()
+    expect(result).not.toHaveProperty('hint')
   })
 
   it('should pass through hint when provided', () => {
