@@ -4,7 +4,7 @@ import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { CommonOption } from '../../../../constants/commonOption'
 import { CaseData } from '../../../../constants/formVersion'
-import { contentFor } from '../../locales'
+import { contentFor, prcShortcut } from '../../locales'
 import { commonContentFor } from '../../../../locales'
 import { detailsFactory } from '../../detailsFactory'
 
@@ -23,7 +23,7 @@ const changesDetails = (code: string, optionValue: string) =>
 
 // --- Current Relationship Status ---
 
-const currentRelationshipContentFor = 'question.personal_relationships_community_current_relationship'
+const currentRelationshipContentFor = `${prcShortcut}current_relationship`
 
 const happyRelationshipDetails = radioDetails(
   Question.personal_relationships_community_current_relationship_happy_relationship_details,
@@ -78,7 +78,7 @@ export const currentRelationship = GovUKRadioInput({
 
 // --- Intimate Relationship History ---
 
-const intimateRelationshipContentFor = 'question.personal_relationships_community_intimate_relationship'
+const intimateRelationshipContentFor = `${prcShortcut}intimate_relationship`
 
 const stableIntimateDetails = radioDetails(
   Question.personal_relationships_community_intimate_relationship_stable_relationships_details,
@@ -139,8 +139,7 @@ export const intimateRelationship = GovUKRadioInput({
 
 // --- Challenges in Intimate Relationships ---
 
-const challengesIntimateRelationshipContentFor =
-  'question.personal_relationships_community_challenges_intimate_relationship'
+const challengesIntimateRelationshipContentFor = `${prcShortcut}challenges_intimate_relationship`
 
 const challengesIntimateRelationship = GovUKCharacterCount({
   code: Question.personal_relationships_community_challenges_intimate_relationship,
@@ -164,7 +163,7 @@ const challengesIntimateRelationship = GovUKCharacterCount({
 
 // --- Parental Responsibilities (conditional on important_people containing CHILD_PARENTAL_RESPONSIBILITIES) ---
 
-const parentalContentFor = 'question.personal_relationships_community_parental_responsibilities'
+const parentalContentFor = `${prcShortcut}parental_responsibilities`
 
 const hasParentalResponsibilities = Answer(Question.personal_relationships_community_important_people).match(
   Condition.Array.Contains(Option.child_parental_responsibilities),
@@ -230,7 +229,7 @@ export const parentalResponsibilities = GovUKRadioInput({
 
 // --- Family Relationship ---
 
-const familyRelationshipContentFor = 'question.personal_relationships_community_family_relationship'
+const familyRelationshipContentFor = `${prcShortcut}family_relationship`
 
 const stableFamilyDetails = radioDetails(
   Question.personal_relationships_community_family_relationship_stable_relationship_details,
@@ -291,7 +290,7 @@ export const familyRelationship = GovUKRadioInput({
 
 // --- Childhood Experience ---
 
-const childhoodContentFor = 'question.personal_relationships_community_childhood'
+const childhoodContentFor = `${prcShortcut}childhood`
 
 const positiveChildhoodDetails = radioDetails(
   Question.personal_relationships_community_childhood_positive_childhood_details,
@@ -348,7 +347,7 @@ export const childhood = GovUKRadioInput({
 
 // --- Childhood Behavioural Problems ---
 
-const childhoodBehaviourContentFor = 'question.personal_relationships_community_childhood_behaviour'
+const childhoodBehaviourContentFor = `${prcShortcut}childhood_behaviour`
 
 const yesChildhoodBehaviourDetails = radioDetails(
   Question.personal_relationships_community_childhood_behaviour_yes_details,
@@ -393,7 +392,7 @@ export const childhoodBehaviour = GovUKRadioInput({
 
 // --- Belonging (optional) ---
 
-const belongingContentFor = 'question.personal_relationships_community_belonging'
+const belongingContentFor = `${prcShortcut}belonging`
 
 const belonging = GovUKCharacterCount({
   code: Question.personal_relationships_community_belonging,
@@ -413,7 +412,7 @@ const belonging = GovUKCharacterCount({
 
 // --- Changes ---
 
-const changesContentFor = 'question.personal_relationships_community_changes'
+const changesContentFor = `${prcShortcut}changes`
 
 const hasMadeChangesDetails = changesDetails(
   Question.personal_relationships_community_changes_made_changes_details,
