@@ -7,6 +7,7 @@ export enum AuditEvent {
 
   // Plan Overview
   VIEW_PLAN_OVERVIEW = 'VIEW_PLAN_OVERVIEW',
+  EXPORT_PLAN_PDF = 'EXPORT_PLAN_PDF',
 
   // Goal Management - Pre Agree
   VIEW_CREATE_GOAL = 'VIEW_CREATE_GOAL',

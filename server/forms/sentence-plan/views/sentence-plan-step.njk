@@ -78,11 +78,15 @@
 {% block content %}
   {% set sidebarIndex = twoColumnLayout.sidebarBlockIndex if twoColumnLayout else -1 %}
 
-  {% include "sentence-plan/views/partials/phase-banner.njk" %}
+  {% if not hidePhaseBanner %}
+    {% include "sentence-plan/views/partials/phase-banner.njk" %}
+  {% endif %}
   {% include "sentence-plan/views/partials/plan-header.njk" %}
 
   <div class="govuk-grid-row" data-qa-assessment-uuid="{{ data.assessmentUuid }}">
     <div class="govuk-grid-column-full">
+      {% include "sentence-plan/views/partials/print-no-js-message.njk" %}
+
       {% if backlink %}
         <a href="{{ backlink }}" class="govuk-back-link"{% if backlinkAiId %} data-ai-id="{{ backlinkAiId }}"{% endif %}>Back</a>
       {% endif %}
