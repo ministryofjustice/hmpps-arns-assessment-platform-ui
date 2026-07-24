@@ -1,4 +1,4 @@
-import { and, Answer, Condition, not, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
   GovUKCharacterCount,
@@ -465,7 +465,7 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor(`${prcShortcut}practitioner_analysis_strengths_or_protective_factors_yes_details.validation`),
     }),
     validation({
@@ -508,7 +508,7 @@ export const personalRelationshipsCommunityStrengthsProtectiveFactors = GovUKRad
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor(`${prcShortcut}practitioner_analysis_strengths_or_protective_factors.validation`),
     }),
   ],
@@ -530,7 +530,7 @@ const seriousHarmDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor(`${prcShortcut}practitioner_analysis_risk_of_serious_harm_yes_details.validation`),
     }),
     validation({
@@ -569,7 +569,7 @@ export const personalRelationshipsCommunityLinkedToSeriousHarm = GovUKRadioInput
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor(`${prcShortcut}practitioner_analysis_risk_of_serious_harm.validation`),
     }),
   ],
@@ -591,7 +591,7 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor(`${prcShortcut}practitioner_analysis_risk_of_reoffending_yes_details.validation`),
     }),
     validation({
@@ -630,7 +630,7 @@ export const personalRelationshipsCommunityLinkedReoffending = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor(`${prcShortcut}practitioner_analysis_risk_of_reoffending.validation`),
     }),
   ],
