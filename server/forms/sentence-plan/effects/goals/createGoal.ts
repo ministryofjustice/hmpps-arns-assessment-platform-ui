@@ -10,7 +10,6 @@ import {
   buildGoalAnswers,
   getPractitionerName,
 } from './goalUtils'
-import { getUserContext } from '../telemetry/getUserContext'
 import { GoalSnapshotData } from './goalSnapshot'
 import { hashGoalText, matchSuggestedGoal } from '../../../../utils/goalTelemetry'
 import { areasOfNeed } from '../../versions/v1.0/constants'
@@ -118,7 +117,6 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
     relatedAreasCount: String(relatedAreas.length),
     targetDateOption: targetDateOption ?? '',
     targetDate: targetDate ?? '',
-    userContext: getUserContext(context),
     goalTitleHash: hashGoalText(goalTitle as string),
     suggestedGoalMatch: goalMatch.matchRating ?? 'no match',
     suggestedGoalMatchPercentage: String(goalMatch.matchPercentage),

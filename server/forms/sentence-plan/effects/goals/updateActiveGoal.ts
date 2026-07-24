@@ -12,7 +12,6 @@ import {
   buildGoalAnswers,
 } from './goalUtils'
 import { snapshotFromGoal } from './goalSnapshot'
-import { getUserContext } from '../telemetry/getUserContext'
 import { hashGoalText, matchSuggestedGoal } from '../../../../utils/goalTelemetry'
 import { areasOfNeed } from '../../versions/v1.0/constants'
 
@@ -106,7 +105,6 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
     goalUuid: activeGoal.uuid,
     goalStatus: status,
     areaOfNeed: activeGoal.areaOfNeed,
-    userContext: getUserContext(context),
     goalTitleHash: hashGoalText(goalTitle as string),
     suggestedGoalMatch: goalMatch.matchRating ?? 'no match',
     suggestedGoalMatchPercentage: String(goalMatch.matchPercentage),
