@@ -238,7 +238,7 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
   riskActuarialApiClient: async ({ authClient, apis }, use, testInfo) => {
     const client = new TestRiskActuarialApiClient({
-      baseUrl: apis.coordinatorApi.url,
+      baseUrl: apis.riskActuarialApi.url,
       authenticationClient: authClient as unknown as AuthenticationClient,
       testInfo,
     })
