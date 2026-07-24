@@ -3,6 +3,7 @@ import { SentencePlanContext, SentencePlanEffectsDeps, StepChangesStorage, StepP
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getPractitionerName, getRequiredEffectContext } from '../goals/goalUtils'
 import { snapshotFromGoal } from '../goals/goalSnapshot'
+import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 
 /**
  * Save the step edit session to the API
@@ -195,6 +196,13 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
   // Execute all commands in a single batch
   if (commands.length) {
     await deps.api.executeCommands(...commands)
+  }
+
+  if (hasStepChanges) {
+    trackBusinessEvent(context, isCreatingGoal ? 'ADD_STEPS_PAGE_SUBMITTED' : 'EDIT_STEPS_PAGE_SUBMITTED', {
+      assessmentUuid,
+      goalUuid: activeGoalUuid,
+    })
   }
 
   // Clear session state for this goal after successful save
