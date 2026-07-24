@@ -13,6 +13,8 @@ import { initAreaOfNeedTracking } from './area-of-need-tracking.mjs'
 import { initChangeAreaOfNeedTracking } from './change-area-of-need-tracking.mjs'
 import { initStepStatusTracking } from './step-status-tracking.mjs'
 import { initGoalRelationTracking } from './goal-relation-tracking.mjs'
+import { initStepActorTracking } from './step-actor-tracking.mjs'
+import { initGoalAchievementTracking } from './goal-achievement-tracking.mjs'
 import '../../server/forms/sentence-plan/components/copy-button/copy-button.mjs'
 import '../../server/forms/sentence-plan/components/report-problem-link/report-problem-link.mjs'
 
@@ -26,6 +28,8 @@ initAreaOfNeedTracking()
 initChangeAreaOfNeedTracking()
 initStepStatusTracking()
 initGoalRelationTracking()
+initStepActorTracking()
+initGoalAchievementTracking()
 
 customElements.define('app-copy-code', CopyCode)
 customElements.define('app-support-widget', SupportWidget)

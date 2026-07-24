@@ -35,6 +35,7 @@ declare global {
       user?: {
         id: string
         name: string
+        displayName: string
         authSource: string
         token: string
         userRoles: string[]

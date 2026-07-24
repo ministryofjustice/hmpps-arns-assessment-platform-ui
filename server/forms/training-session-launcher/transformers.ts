@@ -1,19 +1,13 @@
-import { defineTransformerFunctions } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { TransformerRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { assertNumber } from '../shared/asserts'
 import type { TrainingSessionLauncherEffectsDeps } from './effects/types'
+
+export const trainingSessionLauncherTransformerRegistry = new TransformerRegistry<TrainingSessionLauncherEffectsDeps>()
 
 /**
  * Training Session Launcher transformers
  */
-export const {
-  transformers: TrainingSessionLauncherTransformers,
-  implementations: TrainingSessionLauncherTransformerImplementations,
-} = defineTransformerFunctions<
-  {
-    RelativeTime: (value: unknown) => string
-  },
-  TrainingSessionLauncherEffectsDeps
->({
+export const TrainingSessionLauncherTransformers = {
   /**
    * Transform a Unix timestamp (from Date.now()) into a human-readable relative time string
    * Returns strings like:
@@ -27,7 +21,7 @@ export const {
    * Item().path('createdAt').pipe(TrainingSessionLauncherTransformers.RelativeTime())
    * // -> "Created 5 mins ago"
    */
-  RelativeTime: () => (value: unknown) => {
+  RelativeTime: trainingSessionLauncherTransformerRegistry.register('RelativeTime', () => (value: unknown) => {
     assertNumber(value, 'TrainingSessionLauncherTransformers.RelativeTime')
 
     const now = Date.now()
@@ -77,5 +71,5 @@ export const {
     const dateStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
 
     return `Created on ${dateStr} at ${timeStr}`
-  },
-})
+  }),
+}

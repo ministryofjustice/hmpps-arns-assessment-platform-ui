@@ -2,6 +2,25 @@ import { InternalServerError } from 'http-errors'
 import { User } from '../../../../interfaces/user'
 import { AreaOfNeed, DerivedGoal, GoalAnswers, GoalProperties, GoalStatus, SentencePlanContext } from '../types'
 
+/**
+ * Sanitize a date string from the API. Returns undefined for invalid values
+ * (e.g. the literal string "null") so downstream code and transformers
+ * receive either a valid ISO date or undefined — never a garbage string.
+ */
+export const sanitizeDateValue = (value: string | undefined): string | undefined => {
+  if (!value || value === 'null' || value === 'undefined') {
+    return undefined
+  }
+
+  const parsed = new Date(value)
+
+  if (Number.isNaN(parsed.getTime())) {
+    return undefined
+  }
+
+  return value
+}
+
 export const MONTHS_BY_OPTION: Record<string, number> = {
   date_in_3_months: 3,
   date_in_6_months: 6,

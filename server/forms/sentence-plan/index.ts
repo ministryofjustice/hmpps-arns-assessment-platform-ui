@@ -1,9 +1,9 @@
 import { createForgePackage, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { sentencePlanV1Journey } from './versions/v1.0'
-import { AuditEvent, SentencePlanEffects, SentencePlanEffectImplementations } from './effects'
+import { AuditEvent, SentencePlanEffects, sentencePlanEffectRegistry } from './effects'
 import { SentencePlanEffectsDeps } from './effects/types'
 import { sentencePlanComponents } from './components'
-import { sentencePlanTransformerImplementations } from './transformers'
+import { sentencePlanTransformerRegistry } from './transformers'
 import { createPrivacyScreen } from '../shared'
 import { CaseData } from './versions/v1.0/constants'
 import { unsavedInformationDeletedStep } from './steps/unsaved-information-deleted/step'
@@ -64,8 +64,5 @@ export default createForgePackage<SentencePlanEffectsDeps>({
   enabled: config.forms.sentencePlan.enabled,
   journey: sentencePlanRootJourney,
   components: sentencePlanComponents,
-  functions: {
-    ...SentencePlanEffectImplementations,
-    ...sentencePlanTransformerImplementations,
-  },
+  functions: [sentencePlanEffectRegistry, sentencePlanTransformerRegistry],
 })
