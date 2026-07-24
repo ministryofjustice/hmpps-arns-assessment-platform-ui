@@ -18,6 +18,7 @@ import {
  * test('my test', async ({ riskActuarialApiBuilder }) => {
  *   const association = await riskActuarialApiBuilder.create()
  *     .withGender('MALE')
+ *     .withAssessmentDate('1999-01-01)
  *     .withTotalNumberOfSanctionsForAllOffences('A123456')
  *     ...
  *     .save()
@@ -40,95 +41,51 @@ export class RiskActuarialApiBuilderInstance {
   private readonly client: TestRiskActuarialApiClient
 
   private gender: string
-
+  private assessmentDate: string
   private dateOfBirth: string
-
   private dateOfCurrentConviction: string
-
   private dateAtStartOfFollowup: string
-
   private totalNumberOfSanctionsForAllOffences: number
-
   private ageAtFirstSanction: number
-
   private currentOffenceCode: string
-
   private totalNumberOfViolentSanctions: number
-
   private isUnemployed: boolean
-
   private currentAlcoholUseProblems: ProblemLevel
-
   private excessiveAlcoholUse: ProblemLevel
-
   private temperControl: ProblemLevel
-
   private proCriminalAttitudes: ProblemLevel
-
   private regularOffendingActivities: ProblemLevel
-
   private motivationToTackleDrugMisuse: MotivationLevel
-
   private impulsivityProblems: ProblemLevel
-
   private supervisionStatus: SupervisionStatus
-
   private hasEverCommittedSexualOffence: boolean
-
   private didOffenceInvolveCarryingOrUsingWeapon: boolean
-
   private evidenceOfDomesticAbuse: boolean
-
   private totalContactAdultSexualSanctions: number
-
   private totalContactChildSexualSanctions: number
-
   private totalIndecentImageSanctions: number
-
   private totalNonContactSexualOffences: number
-
   private dateOfMostRecentSexualOffence: string
-
   private isCurrentOffenceAgainstVictimStranger: boolean
-
   private suitabilityOfAccommodation: ProblemLevel
-
   private currentRelationshipWithPartner: ProblemLevel
-
   private currentRelationshipStatus: CurrentRelationshipStatus
-
   private previousConvictions: PreviousConviction[]
-
   private isCurrentOffenceSexuallyMotivated: boolean
-
   private mostRecentOffenceDate: string
-
   private hasHeroinUsage: boolean
-
   private hasOtherOpiateUsage: boolean
-
   private hasCrackCocaineUsage: boolean
-
   private hasPowderCocaineUsage: boolean
-
   private hasMisusedPrescriptionDrugUsage: boolean
-
   private hasBenzodiazepinesUsage: boolean
-
   private hasCannabisUsage: boolean
-
   private hasSteroidsUsage: boolean
-
   private hasOtherDrugsUsage: boolean
-
   private hasKetamineUsage: boolean
-
   private hasSpiceUsage: boolean
-
   private hasHallucinogensUsage: boolean
-
   private hasSolventsUsage: boolean
-
   private hasMethadoneUsage: boolean
 
   constructor(client: TestRiskActuarialApiClient) {
@@ -143,6 +100,12 @@ export class RiskActuarialApiBuilderInstance {
 
   withDateOfBirth(dateOfBirth: string): this {
     this.dateOfBirth = dateOfBirth
+
+    return this
+  }
+
+  withAssessmentDate(assessmentDate: string): this {
+    this.assessmentDate = assessmentDate
 
     return this
   }
@@ -418,6 +381,7 @@ export class RiskActuarialApiBuilderInstance {
     return test.step('Get risk scores', async () => {
       const request: RiskScoreInput = {
         gender: this.gender,
+        assessmentDate: this.assessmentDate,
         dateOfBirth: this.dateOfBirth,
         dateOfCurrentConviction: this.dateOfCurrentConviction,
         currentOffenceCode: this.currentOffenceCode,

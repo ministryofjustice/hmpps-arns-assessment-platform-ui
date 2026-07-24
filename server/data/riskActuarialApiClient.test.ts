@@ -38,6 +38,7 @@ describe('RiskActuarialApiClient', () => {
       // Arrange
       const request: RiskScoreInput = {
         gender: 'MALE',
+        assessmentDate: '1999-01-01',
         dateOfBirth: '1980-01-01',
         dateOfCurrentConviction: '2020-01-01',
         currentOffenceCode: '02700',

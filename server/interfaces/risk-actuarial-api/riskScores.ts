@@ -26,8 +26,8 @@ export interface RiskScores {
       modelVersion: string
       thresholdsVersion: string
       output: {
-        band: Band
-        score: number
+        band?: Band
+        score?: number
       }
       featureValues: Record<string, number>
       validationErrors: ValidationError[]
@@ -38,8 +38,8 @@ export interface RiskScores {
       modelVersion: string
       thresholdsVersion: string
       output: {
-        band: Band
-        score: number
+        band?: Band
+        score?: number
       }
       featureValues: Record<string, number>
       validationErrors: ValidationError[]
@@ -66,52 +66,53 @@ export interface RiskScores {
 }
 
 export interface RiskScoreInput {
-  gender: string
-  dateOfBirth: string
-  dateOfCurrentConviction: string
-  dateAtStartOfFollowup: string
-  totalNumberOfSanctionsForAllOffences: number
-  ageAtFirstSanction: number
-  currentOffenceCode: string
-  totalNumberOfViolentSanctions: number
-  isUnemployed: boolean
-  currentAlcoholUseProblems: ProblemLevel
-  excessiveAlcoholUse: ProblemLevel
-  temperControl: ProblemLevel
-  proCriminalAttitudes: ProblemLevel
-  regularOffendingActivities: ProblemLevel
-  motivationToTackleDrugMisuse: MotivationLevel
-  impulsivityProblems: ProblemLevel
-  supervisionStatus: SupervisionStatus
-  hasEverCommittedSexualOffence: boolean
-  didOffenceInvolveCarryingOrUsingWeapon: boolean
-  evidenceOfDomesticAbuse: boolean
-  totalContactAdultSexualSanctions: number
-  totalContactChildSexualSanctions: number
-  totalIndecentImageSanctions: number
-  totalNonContactSexualOffences: number
-  dateOfMostRecentSexualOffence: string
-  isCurrentOffenceAgainstVictimStranger: boolean
-  suitabilityOfAccommodation: ProblemLevel
-  currentRelationshipWithPartner: ProblemLevel
-  currentRelationshipStatus: CurrentRelationshipStatus
-  previousConvictions: PreviousConviction[]
-  isCurrentOffenceSexuallyMotivated: boolean
-  mostRecentOffenceDate: string
-  hasHeroinUsage: boolean
-  hasOtherOpiateUsage: boolean
-  hasCrackCocaineUsage: boolean
-  hasPowderCocaineUsage: boolean
-  hasMisusedPrescriptionDrugUsage: boolean
-  hasBenzodiazepinesUsage: boolean
-  hasCannabisUsage: boolean
-  hasSteroidsUsage: boolean
-  hasOtherDrugsUsage: boolean
-  hasKetamineUsage: boolean
-  hasSpiceUsage: boolean
-  hasHallucinogensUsage: boolean
-  hasSolventsUsage: boolean
-  hasMethadoneUsage: boolean
+  gender?: string
+  assessmentDate?: string,
+  dateOfBirth?: string
+  dateOfCurrentConviction?: string
+  dateAtStartOfFollowup?: string
+  totalNumberOfSanctionsForAllOffences?: number
+  ageAtFirstSanction?: number
+  currentOffenceCode?: string
+  totalNumberOfViolentSanctions?: number
+  isUnemployed?: boolean
+  currentAlcoholUseProblems?: ProblemLevel
+  excessiveAlcoholUse?: ProblemLevel
+  temperControl?: ProblemLevel
+  proCriminalAttitudes?: ProblemLevel
+  regularOffendingActivities?: ProblemLevel
+  motivationToTackleDrugMisuse?: MotivationLevel
+  impulsivityProblems?: ProblemLevel
+  supervisionStatus?: SupervisionStatus
+  hasEverCommittedSexualOffence?: boolean
+  didOffenceInvolveCarryingOrUsingWeapon?: boolean
+  evidenceOfDomesticAbuse?: boolean
+  totalContactAdultSexualSanctions?: number
+  totalContactChildSexualSanctions?: number
+  totalIndecentImageSanctions?: number
+  totalNonContactSexualOffences?: number
+  dateOfMostRecentSexualOffence?: string
+  isCurrentOffenceAgainstVictimStranger?: boolean
+  suitabilityOfAccommodation?: ProblemLevel
+  currentRelationshipWithPartner?: ProblemLevel
+  currentRelationshipStatus?: CurrentRelationshipStatus
+  previousConvictions?: PreviousConviction[]
+  isCurrentOffenceSexuallyMotivated?: boolean
+  mostRecentOffenceDate?: string
+  hasHeroinUsage?: boolean
+  hasOtherOpiateUsage?: boolean
+  hasCrackCocaineUsage?: boolean
+  hasPowderCocaineUsage?: boolean
+  hasMisusedPrescriptionDrugUsage?: boolean
+  hasBenzodiazepinesUsage?: boolean
+  hasCannabisUsage?: boolean
+  hasSteroidsUsage?: boolean
+  hasOtherDrugsUsage?: boolean
+  hasKetamineUsage?: boolean
+  hasSpiceUsage?: boolean
+  hasHallucinogensUsage?: boolean
+  hasSolventsUsage?: boolean
+  hasMethadoneUsage?: boolean
 }
 
 export interface ValidationError {
