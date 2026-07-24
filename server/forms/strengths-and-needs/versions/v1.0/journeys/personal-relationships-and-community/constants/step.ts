@@ -19,4 +19,4 @@ export const Step = {
     code: 'personal_relationships_community_analysis',
     path: 'personal-relationships-community-analysis',
   },
-}
+} as const

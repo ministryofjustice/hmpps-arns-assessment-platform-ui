@@ -1,86 +1,67 @@
-import { GovUKCharacterCount, GovUKCheckboxInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { GovUKCheckboxInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { Question } from '../../constants/question'
 import { contentFor } from '../../locales'
 import { CaseData } from '../../../../constants/formVersion'
 import { commonContentFor } from '../../../../locales'
 import { Option } from '../../constants/option'
+import { detailsFactory } from '../../detailsFactory'
 
 // --------------------------- reusable items:
 const currentQContentForShortcut = 'question.personal_relationships_community_important_people'
 
-const detailsFactory = (code: string, optionKey: string, optionValue: string) =>
-  GovUKCharacterCount({
+const importantPeopleDetails = (
+  code: string,
+  optionKey: 'CHILD_PARENTAL_RESPONSIBILITIES' | 'OTHER_CHILDREN' | 'FAMILY' | 'FRIENDS',
+  optionValue: string,
+) =>
+  detailsFactory({
     code,
     label: contentFor(`${currentQContentForShortcut}.option.${optionKey}.label`),
-    maxLength: 2000,
     dependentWhen: Answer(Question.personal_relationships_community_important_people).match(
       Condition.Array.Contains(optionValue),
     ),
-    validWhen: [
-      validation({
-        condition: Self().match(Condition.String.HasMaxLength(2000)),
-        message: commonContentFor('validation.details_character_limit', '2000'),
-      }),
-    ],
   })
 //---------------------------
 
 // --------------------------- options:
-const partnerIntimateRelationshipDetails = GovUKCharacterCount({
+const partnerIntimateRelationshipDetails = detailsFactory({
   code: Question.personal_relationships_community_important_people_partner_intimate_relationship_details,
   label: commonContentFor('optional_details'),
   hint: contentFor(`${currentQContentForShortcut}.option.PARTNER_INTIMATE_RELATIONSHIP.hint`),
-  maxLength: 2000,
   dependentWhen: Answer(Question.personal_relationships_community_important_people).match(
     Condition.Array.Contains(Option.partner_intimate_relationship),
   ),
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_character_limit', '2000'),
-    }),
-  ],
 })
 
-const childParentalResponsibilitiesDetails = detailsFactory(
+const childParentalResponsibilitiesDetails = importantPeopleDetails(
   Question.personal_relationships_community_important_people_child_parental_responsibilities_details,
   'CHILD_PARENTAL_RESPONSIBILITIES',
   Option.child_parental_responsibilities,
 )
-const otherChildrenDetails = detailsFactory(
+const otherChildrenDetails = importantPeopleDetails(
   Question.personal_relationships_community_important_people_other_children_details,
   'OTHER_CHILDREN',
   Option.other_children,
 )
-const familyDetails = detailsFactory(
+const familyDetails = importantPeopleDetails(
   Question.personal_relationships_community_important_people_family_details,
   'FAMILY',
   Option.family,
 )
-const friendsDetails = detailsFactory(
+const friendsDetails = importantPeopleDetails(
   Question.personal_relationships_community_important_people_friends_details,
   'FRIENDS',
   Option.friends,
 )
 
-const otherDetails = GovUKCharacterCount({
+const otherDetails = detailsFactory({
   code: Question.personal_relationships_community_important_people_other_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
   dependentWhen: Answer(Question.personal_relationships_community_important_people).match(
     Condition.Array.Contains(Option.other),
   ),
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: commonContentFor('validation.enter_details'),
-    }),
-    validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_character_limit', '2000'),
-    }),
-  ],
+  requiredMessage: commonContentFor('validation.enter_details'),
 })
 //---------------------------
 

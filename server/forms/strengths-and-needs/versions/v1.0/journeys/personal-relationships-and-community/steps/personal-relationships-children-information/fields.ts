@@ -1,48 +1,43 @@
-import { GovUKCharacterCount, GovUKCheckboxInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { GovUKCheckboxInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { Question } from '../../constants/question'
 import { CaseData } from '../../../../constants/formVersion'
 import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
 import { Option } from '../../constants/option'
+import { detailsFactory } from '../../detailsFactory'
 
 // --------------------------- reusable items:
 const currentQContentForShortcut = 'question.personal_relationships_community_children_details'
 
-const detailsFactory = (code: string, optionKey: string, optionValue: string) =>
-  GovUKCharacterCount({
+const childrenDetails = (
+  code: string,
+  optionKey: 'YES_CHILDREN_LIVING_WITH_POP' | 'YES_CHILDREN_NOT_LIVING_WITH_POP' | 'YES_CHILDREN_VISITING',
+  optionValue: string,
+) =>
+  detailsFactory({
     code,
     label: contentFor(`${currentQContentForShortcut}.option.${optionKey}.label`, CaseData.Forename),
-    maxLength: 2000,
     dependentWhen: Answer(Question.personal_relationships_community_children_details).match(
       Condition.Array.Contains(optionValue),
     ),
-    validWhen: [
-      validation({
-        condition: Self().match(Condition.IsRequired()),
-        message: contentFor(`${currentQContentForShortcut}.option.${optionKey}.validation`),
-      }),
-      validation({
-        condition: Self().match(Condition.String.HasMaxLength(2000)),
-        message: commonContentFor('validation.details_character_limit', '2000'),
-      }),
-    ],
+    requiredMessage: contentFor(`${currentQContentForShortcut}.option.${optionKey}.validation`),
   })
 //---------------------------
 
-const yesChildrenLivingWithPopDetails = detailsFactory(
+const yesChildrenLivingWithPopDetails = childrenDetails(
   Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
   'YES_CHILDREN_LIVING_WITH_POP',
   Option.yes_children_living_with_pop,
 )
 
-const yesChildrenNotLivingWithPopDetails = detailsFactory(
+const yesChildrenNotLivingWithPopDetails = childrenDetails(
   Question.personal_relationships_community_children_details_yes_children_not_living_with_pop_details,
   'YES_CHILDREN_NOT_LIVING_WITH_POP',
   Option.yes_children_not_living_with_pop,
 )
 
-const yesChildrenVisitingDetails = detailsFactory(
+const yesChildrenVisitingDetails = childrenDetails(
   Question.personal_relationships_community_children_details_yes_children_visiting_details,
   'YES_CHILDREN_VISITING',
   Option.yes_children_visiting,

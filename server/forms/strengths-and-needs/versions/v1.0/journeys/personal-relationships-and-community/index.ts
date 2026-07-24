@@ -3,6 +3,7 @@ import { Section } from '../../constants/section'
 import { commonContentFor } from '../../locales'
 import { personalRelationshipsChildrenInformationStep } from './steps/personal-relationships-children-information/step'
 import { personalRelationshipsStep } from './steps/personal-relationships/step'
+import { personalRelationshipsCommunityStep } from './steps/personal-relationships-community/step'
 
 // Personal relationships and community journey
 // Flow:
@@ -23,5 +24,5 @@ export const personalRelationshipsJourney = journey({
       sectionStatus: Data(Section.personal_relationships_and_community.statusKey),
     },
   },
-  steps: [personalRelationshipsChildrenInformationStep, personalRelationshipsStep],
+  steps: [personalRelationshipsChildrenInformationStep, personalRelationshipsStep, personalRelationshipsCommunityStep],
 })
