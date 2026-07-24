@@ -92,6 +92,39 @@ test.describe('Drug use Page', () => {
       `)
     })
 
+    test('shows summary page, never misused drugs', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+      baseURL,
+    }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'drug_use', value: 'NO' },
+          { question: 'drugs_section_status', value: 'INCOMPLETE' },
+        ]).save()
+
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-summary')
+
+      const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Summary')
+
+      await expect(drugUsePage.summary).toMatchAriaSnapshot(`
+        - tabpanel "Summary":
+          - term: Has Test ever misused drugs?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: drug-use
+          - heading [level=2]
+          - heading [level=2]
+          - button "Go to practitioner analysis"
+      `)
+    })
+
     test('validation misused drugs', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
       const { handoverLink, sanAssessmentId } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
@@ -256,6 +289,41 @@ test.describe('Drug use Page', () => {
           - radio "Not applicable"
           - text: Not applicable
         - button "Save and continue"
+      `)
+    })
+  })
+
+  test.describe('Summary', () => {
+    test('shows summary page, never misused drugs', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+      baseURL,
+    }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'drug_use', value: 'NO' },
+          { question: 'drugs_section_status', value: 'INCOMPLETE' },
+        ]).save()
+
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-summary')
+
+      const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Summary')
+
+      await expect(drugUsePage.summary).toMatchAriaSnapshot(`
+        - tabpanel "Summary":
+          - term: Has Test ever misused drugs?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: drug-use
+          - heading [level=2]
+          - heading [level=2]
+          - button "Go to practitioner analysis"
       `)
     })
   })

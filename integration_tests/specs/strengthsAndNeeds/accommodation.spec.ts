@@ -198,6 +198,64 @@ test.describe('Accommodation Page', () => {
     })
   })
 
+  test.describe('Summary', () => {
+    test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'current_accommodation', value: 'SETTLED' },
+          { question: 'type_of_settled_accommodation', value: 'HOMEOWNER' },
+          { question: 'living_with', value: ['FAMILY'] },
+          { question: 'suitable_housing_location', value: 'NO' },
+          { question: 'suitable_housing_location_concerns', value: [] },
+          { question: 'suitable_housing', value: 'NO' },
+          { question: 'unsuitable_housing_concerns', value: [] },
+          { question: 'accommodation_changes', value: 'NOT_PRESENT' },
+        ]).save()
+
+      await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-summary')
+      const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Summary')
+
+      await expect(accommodationPage.summary).toMatchAriaSnapshot(`
+        - tabpanel "Summary":
+          - term: What type of accommodation does Test currently have?
+          - definition:
+            - paragraph: Settled
+            - paragraph: Homeowner
+          - definition:
+            - link "Change":
+              - /url: current-accommodation
+          - term: Who is Test living with?
+          - definition:
+            - paragraph: Family
+          - definition:
+            - link "Change":
+              - /url: accommodation-details
+          - term: Is the location of Test's accommodation suitable?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: accommodation-details
+          - term: Is Test's accommodation suitable?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: accommodation-details
+          - term: Does Test want to make changes to their accommodation?
+          - definition:
+            - paragraph: Test is not present
+          - definition:
+            - link "Change":
+              - /url: accommodation-details
+          - button "Go to practitioner analysis"
+      `)
+    })
+  })
+
   test.describe('Accessibility', () => {
     test('should be accessible', async ({ page, createSession }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
