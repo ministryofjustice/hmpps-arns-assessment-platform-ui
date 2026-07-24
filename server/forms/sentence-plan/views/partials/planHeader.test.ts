@@ -82,7 +82,7 @@ describe('plan header', () => {
       buttons: { showExportAsPdfButton: true, showPrintButton: true },
     })
 
-    const printButton = html.match(/<button[^>]*data-ai-id="print-sentence-plan-button"[^>]*>/)?.[0]
+    const printButton = html.match(/<button[^>]*data-ai-id="print-preview-print-button"[^>]*>/)?.[0]
     expect(printButton).toContain('js-only')
   })
 })
