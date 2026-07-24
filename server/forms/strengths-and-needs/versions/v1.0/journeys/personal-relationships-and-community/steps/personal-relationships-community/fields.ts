@@ -26,24 +26,24 @@ const changesDetails = (code: string, optionValue: string) =>
 const currentRelationshipContentFor = 'question.personal_relationships_community_current_relationship'
 
 const happyRelationshipDetails = radioDetails(
-  Question.personal_relationships_community_current_relationship_happy_details,
+  Question.personal_relationships_community_current_relationship_happy_relationship_details,
   Question.personal_relationships_community_current_relationship,
   Option.happy_relationship,
 )
 
 const concernsRelationshipDetails = radioDetails(
-  Question.personal_relationships_community_current_relationship_concerns_details,
+  Question.personal_relationships_community_current_relationship_concerns_happy_relationship_details,
   Question.personal_relationships_community_current_relationship,
   Option.concerns_happy_relationship,
 )
 
 const unhappyRelationshipDetails = radioDetails(
-  Question.personal_relationships_community_current_relationship_unhappy_details,
+  Question.personal_relationships_community_current_relationship_unhappy_relationship_details,
   Question.personal_relationships_community_current_relationship,
   Option.unhappy_relationship,
 )
 
-const currentRelationship = GovUKRadioInput({
+export const currentRelationship = GovUKRadioInput({
   code: Question.personal_relationships_community_current_relationship,
   fieldset: {
     legend: {
@@ -81,27 +81,27 @@ const currentRelationship = GovUKRadioInput({
 const intimateRelationshipContentFor = 'question.personal_relationships_community_intimate_relationship'
 
 const stableIntimateDetails = radioDetails(
-  Question.personal_relationships_community_intimate_relationship_stable_details,
+  Question.personal_relationships_community_intimate_relationship_stable_relationships_details,
   Question.personal_relationships_community_intimate_relationship,
   Option.stable_relationships,
   'Consider patterns and quality of any significant relationships.',
 )
 
 const mixedIntimateDetails = radioDetails(
-  Question.personal_relationships_community_intimate_relationship_mixed_details,
+  Question.personal_relationships_community_intimate_relationship_positive_and_negative_relationships_details,
   Question.personal_relationships_community_intimate_relationship,
   Option.positive_and_negative_relationships,
   'Consider patterns and quality of any significant relationships.',
 )
 
 const unstableIntimateDetails = radioDetails(
-  Question.personal_relationships_community_intimate_relationship_unstable_details,
+  Question.personal_relationships_community_intimate_relationship_unstable_relationships_details,
   Question.personal_relationships_community_intimate_relationship,
   Option.unstable_relationships,
   'Consider patterns and quality of any significant relationships.',
 )
 
-const intimateRelationship = GovUKRadioInput({
+export const intimateRelationship = GovUKRadioInput({
   code: Question.personal_relationships_community_intimate_relationship,
   fieldset: {
     legend: {
@@ -188,7 +188,7 @@ const parentalNoDetails = radioDetails(
   CommonOption.no,
 )
 
-const parentalResponsibilities = GovUKRadioInput({
+export const parentalResponsibilities = GovUKRadioInput({
   code: Question.personal_relationships_community_parental_responsibilities,
   visibleWhen: hasParentalResponsibilities,
   dependentWhen: hasParentalResponsibilities,
@@ -233,24 +233,24 @@ const parentalResponsibilities = GovUKRadioInput({
 const familyRelationshipContentFor = 'question.personal_relationships_community_family_relationship'
 
 const stableFamilyDetails = radioDetails(
-  Question.personal_relationships_community_family_relationship_stable_details,
+  Question.personal_relationships_community_family_relationship_stable_relationship_details,
   Question.personal_relationships_community_family_relationship,
   Option.stable_relationship,
 )
 
 const mixedFamilyDetails = radioDetails(
-  Question.personal_relationships_community_family_relationship_mixed_details,
+  Question.personal_relationships_community_family_relationship_mixed_relationship_details,
   Question.personal_relationships_community_family_relationship,
   Option.mixed_relationship,
 )
 
 const unstableFamilyDetails = radioDetails(
-  Question.personal_relationships_community_family_relationship_unstable_details,
+  Question.personal_relationships_community_family_relationship_unstable_relationship_details,
   Question.personal_relationships_community_family_relationship,
   Option.unstable_relationship,
 )
 
-const familyRelationship = GovUKRadioInput({
+export const familyRelationship = GovUKRadioInput({
   code: Question.personal_relationships_community_family_relationship,
   fieldset: {
     legend: {
@@ -294,24 +294,24 @@ const familyRelationship = GovUKRadioInput({
 const childhoodContentFor = 'question.personal_relationships_community_childhood'
 
 const positiveChildhoodDetails = radioDetails(
-  Question.personal_relationships_community_childhood_positive_details,
+  Question.personal_relationships_community_childhood_positive_childhood_details,
   Question.personal_relationships_community_childhood,
   Option.positive_childhood,
 )
 
 const mixedChildhoodDetails = radioDetails(
-  Question.personal_relationships_community_childhood_mixed_details,
+  Question.personal_relationships_community_childhood_mixed_childhood_details,
   Question.personal_relationships_community_childhood,
   Option.mixed_childhood,
 )
 
 const negativeChildhoodDetails = radioDetails(
-  Question.personal_relationships_community_childhood_negative_details,
+  Question.personal_relationships_community_childhood_negative_childhood_details,
   Question.personal_relationships_community_childhood,
   Option.negative_childhood,
 )
 
-const childhood = GovUKRadioInput({
+export const childhood = GovUKRadioInput({
   code: Question.personal_relationships_community_childhood,
   fieldset: {
     legend: {
@@ -362,7 +362,7 @@ const noChildhoodBehaviourDetails = radioDetails(
   CommonOption.no,
 )
 
-const childhoodBehaviour = GovUKRadioInput({
+export const childhoodBehaviour = GovUKRadioInput({
   code: Question.personal_relationships_community_childhood_behaviour,
   fieldset: {
     legend: {
@@ -416,19 +416,19 @@ const belonging = GovUKCharacterCount({
 const changesContentFor = 'question.personal_relationships_community_changes'
 
 const hasMadeChangesDetails = changesDetails(
-  Question.personal_relationships_community_changes_has_made_changes_details,
+  Question.personal_relationships_community_changes_made_changes_details,
   CommonOption.has_made_changes,
 )
 const isMakingChangesDetails = changesDetails(
-  Question.personal_relationships_community_changes_is_making_changes_details,
+  Question.personal_relationships_community_changes_making_changes_details,
   CommonOption.is_making_changes,
 )
 const wantsToMakeChangesKnowsHowDetails = changesDetails(
-  Question.personal_relationships_community_changes_wants_to_make_changes_knows_how_to_details,
+  Question.personal_relationships_community_changes_want_to_make_changes_details,
   CommonOption.wants_to_make_changes_knows_how_to,
 )
 const wantsToMakeChangesNeedsHelpDetails = changesDetails(
-  Question.personal_relationships_community_changes_wants_to_make_changes_needs_help_details,
+  Question.personal_relationships_community_changes_needs_help_to_make_changes_details,
   CommonOption.wants_to_make_changes_needs_help,
 )
 const thinkingAboutChangesDetails = changesDetails(
@@ -444,7 +444,7 @@ const doesNotWantToAnswerDetails = changesDetails(
   CommonOption.does_not_want_to_answer,
 )
 
-const changes = GovUKRadioInput({
+export const changes = GovUKRadioInput({
   code: Question.personal_relationships_community_changes,
   fieldset: {
     legend: {
