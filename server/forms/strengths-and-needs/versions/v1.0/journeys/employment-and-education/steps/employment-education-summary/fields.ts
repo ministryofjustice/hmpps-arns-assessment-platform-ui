@@ -46,7 +46,7 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.employment_sector.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.employment_sector.text', CaseData.Forename) },
       value: {
         blocks: [GovUKBody({ text: Answer(Question.employment_sector) })],
       },
@@ -88,7 +88,7 @@ export const employmentStatusSummary = GovUKSummaryList({
       ),
     },
     {
-      key: { text: contentFor('question.day_to_day_commitments.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.day_to_day_commitments.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -136,7 +136,7 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.academic_qualification.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.academic_qualification.text', CaseData.Forename) },
       value: {
         blocks: getDisplayTextForItems(Question.academic_qualification, academicQualification.items),
       },
@@ -145,7 +145,7 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.professional_qualification.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.professional_qualification.text', CaseData.Forename) },
       value: {
         blocks: [
           getDisplayTextForItems(Question.professional_qualification, professionalQualifications.items),
@@ -157,7 +157,7 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.job_skills.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.job_skills.text', CaseData.Forename) },
       value: {
         blocks: [
           getDisplayTextForItems(Question.job_skills, jobSkills.items),
@@ -171,7 +171,7 @@ export const employmentStatusSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor('question.difficulties_reading_writing_numeracy.text', CaseData.ForenamePossessive),
+        text: contentFor('question.difficulties_reading_writing_numeracy.text', CaseData.Forename),
       },
       value: {
         blocks: [
@@ -257,7 +257,7 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.employment_and_education_changes.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.employment_and_education_changes.text', CaseData.Forename) },
       value: {
         blocks: [
           getDisplayTextForItems(Question.employment_and_education_changes, employmentAndEducationChanges.items),

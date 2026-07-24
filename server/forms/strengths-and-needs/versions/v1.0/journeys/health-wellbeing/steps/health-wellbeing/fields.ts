@@ -25,7 +25,7 @@ export const healthConditions = GovUKRadioInput({
   code: Question.health_conditions,
   fieldset: {
     legend: {
-      text: contentFor('question.health_conditions.text', CaseData.ForenamePossessive),
+      text: contentFor('question.health_conditions.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--l',
     },
   },
