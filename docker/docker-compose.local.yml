@@ -33,7 +33,7 @@ services:
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
       AAP_API_URL: http://wiremock:8080/aap-api
       COORDINATOR_API_URL: http://wiremock:8080/coordinator-api
-      RISK_ACTUARIAL_API_URL: http://wiremock:8080/risk-actuarial-api
+      RISK_ACTUARIAL_API_URL: http://localhost:8080/risk-actuarial-api
       TOKEN_VERIFICATION_API_URL: http://wiremock:8080/verification
       TOKEN_VERIFICATION_ENABLED: true
       DELIUS_API_URL: http://wiremock:8080/delius
