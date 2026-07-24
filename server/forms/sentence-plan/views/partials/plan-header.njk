@@ -89,10 +89,11 @@
                     }) }}
                   {% endif %}
                   {% if buttons.showPrintButton %}
+                    {# Requires JavaScript (window.print). Hidden until GOV.UK adds `js-enabled` to <body>; a <noscript> message in the main content replaces it. #}
                     {{ govukButton({
                       text: 'Print',
                       type: 'button',
-                      classes: 'govuk-!-display-none-print',
+                      classes: 'govuk-!-display-none-print js-only',
                       attributes: {
                         'data-ai-id': 'print-sentence-plan-button',
                         'data-print-sentence-plan': ''
