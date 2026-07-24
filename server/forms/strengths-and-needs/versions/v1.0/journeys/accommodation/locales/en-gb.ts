@@ -104,7 +104,7 @@ export const english = {
       },
     },
     [Question.suitable_housing_location]: {
-      text: `Is the location of %1's accommodation suitable?`,
+      text: `Is the location of %1 accommodation suitable?`,
       validation: 'Select if the location of the accommodation is suitable',
     },
     [Question.suitable_housing_concerns]: {
@@ -122,7 +122,7 @@ export const english = {
       text: 'What are the concerns?',
     },
     [Question.suitable_housing]: {
-      text: `Is %1's accommodation suitable?`,
+      text: `Is %1 accommodation suitable?`,
       hint: 'This includes things like safety or having appropriate amenities.',
       option: {
         [Option.yes_with_concerns]: 'Yes, with concerns',

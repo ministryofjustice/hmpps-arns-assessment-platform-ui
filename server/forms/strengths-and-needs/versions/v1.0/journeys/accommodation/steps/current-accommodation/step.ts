@@ -4,6 +4,7 @@ import { currentAccommodation } from './fields'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
+import { sectionTitleClass } from '../../../../constants/formVersion'
 
 export const currentAccommodationStep = step({
   path: `/${Step.current_accommodation.path}`,
@@ -11,7 +12,7 @@ export const currentAccommodationStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
-      sectionTitleClass: 'govuk-body-l',
+      sectionTitleClass,
     },
   },
   blocks: [currentAccommodation, saveButton],

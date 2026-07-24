@@ -1,21 +1,22 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { currentEmploymentStatus } from './fields'
-import { Section, SectionStatus } from '../../../../constants/section'
-import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
+import { saveButton } from '../../../../constants/buttons'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { Section, SectionStatus } from '../../../../constants/section'
 import { sectionTitleClass } from '../../../../constants/formVersion'
+import { personalRelationshipsChildrenInformation } from './fields'
+import { contentFor } from '../../locales'
 
-export const currentEmploymentStep = step({
-  path: `/${Step.current_employment.path}`,
-  title: 'Employed', // TODO: contentFor('step.current_employment')
+export const personalRelationshipsChildrenInformationStep = step({
+  path: `/${Step.personal_relationships_children_information.path}`,
+  title: contentFor(`step.personal_relationships_children_information`),
   reachability: { entryWhen: true },
   view: {
     locals: {
       sectionTitleClass,
     },
   },
-  blocks: [currentEmploymentStatus, saveButton],
+  blocks: [personalRelationshipsChildrenInformation, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -24,13 +25,13 @@ export const currentEmploymentStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(
-            Section.employment_and_education.statusKey,
+            Section.personal_relationships_and_community.statusKey,
             SectionStatus.incomplete,
           ),
         ],
         next: [
           redirect({
-            goto: Step.employed.path,
+            goto: Step.personal_relationships.path,
           }),
         ],
       },

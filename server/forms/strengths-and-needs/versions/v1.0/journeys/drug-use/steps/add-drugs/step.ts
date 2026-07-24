@@ -25,7 +25,7 @@ export const addDrugsStep = step({
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
-      validate: true,
+      validate: { groups: ['default', 'drugs'] },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
