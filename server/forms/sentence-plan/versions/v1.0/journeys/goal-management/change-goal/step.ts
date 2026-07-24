@@ -26,7 +26,7 @@ import { hasPostAgreementStatus, redirectIfGoalNotFound } from '../../../guards'
  */
 export const changeGoalStep = step({
   path: '/change-goal',
-  title: 'Change goal',
+  title: 'Update goal details',
   reachability: { entryWhen: true },
   view: {
     locals: {
@@ -40,8 +40,8 @@ export const changeGoalStep = step({
         .then(Format("../../goal/%1/update-goal-steps", Data("activeGoal.uuid")))
         .else(
           when(Data("activeGoal.status").match(Condition.Equals("ACTIVE")))
-            .then("../../plan/overview?type=current")
-            .else("../../plan/overview?type=future"),
+            .then("../../plan/overview?goalStatusTab=current")
+            .else("../../plan/overview?goalStatusTab=future"),
         ),
     },
   },
@@ -105,11 +105,33 @@ export const changeGoalStep = step({
           // If changed to a future goal, redirect to future goals tab
           redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
-            goto: '../../plan/overview?type=future',
+            goto: '../../plan/overview?goalStatusTab=future',
           }),
           // Otherwise redirect to current goals tab
-          redirect({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
         ],
+      },
+    }),
+
+    // "Add or update steps" button — save the goal edits, then continue to the steps page
+    submit({
+      when: Post('action').match(Condition.Equals('addSteps')),
+      validate: true,
+      onValid: {
+        effects: [
+          SentencePlanEffects.updateActiveGoal(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL, {
+            planStatus: when(Data('latestAgreementStatus').match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)))
+              .then('POST_AGREE')
+              .else('PRE_AGREE'),
+          }),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            message: Format('You changed a goal in %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+          }),
+        ],
+        next: [redirect({ goto: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')) })],
       },
     }),
   ],

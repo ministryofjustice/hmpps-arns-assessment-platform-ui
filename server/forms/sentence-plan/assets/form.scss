@@ -21,6 +21,12 @@
   padding-top: 0;
 }
 
+// Render a field hint in standard body text colour rather than the muted grey hint
+// colour (design decision SP2-2263: goal-detail field labels match body text).
+.govuk-hint.app-label--body-text {
+  @include govuk-text-colour;
+}
+
 // Add-steps page row layout: actor / description / status / remove.
 //
 // GOV.UK grid rows use negative margins and padded columns. These rows remove
@@ -114,7 +120,7 @@
 }
 
 // Plan overview sub-navigation - position "Removed goals" tab on the right
-.moj-sub-navigation__list > li:has(> a[href$='type=removed']) {
+.moj-sub-navigation__list > li:has(> a[href$='goalStatusTab=removed']) {
   float: right;
 }
 

@@ -43,7 +43,7 @@ export const planStep = step({
   view: {
     locals: {
       headerPageHeading: Format(`%1 plan`, CaseData.ForenamePossessive),
-      currentTab: Query('type'),
+      currentTab: Query('goalStatusTab'),
       buttons: {
         showPrintAllGoalsButton: isPrintAndShareEnabled,
         showReturnToOasysButton: isOasysAccess,
@@ -92,10 +92,13 @@ export const planStep = step({
       when: and(Query('goalUuid').match(Condition.IsRequired()), not(isReadOnlyAccess)),
       effects: [SentencePlanEffects.reorderGoal()],
       next: [
-        redirect({ when: Query('status').match(Condition.Equals('FUTURE')), goto: 'overview?type=future' }),
-        redirect({ when: Query('status').match(Condition.Equals('ACHIEVED')), goto: 'overview?type=achieved' }),
-        redirect({ when: Query('status').match(Condition.Equals('REMOVED')), goto: 'overview?type=removed' }),
-        redirect({ goto: 'overview?type=current' }),
+        redirect({ when: Query('status').match(Condition.Equals('FUTURE')), goto: 'overview?goalStatusTab=future' }),
+        redirect({
+          when: Query('status').match(Condition.Equals('ACHIEVED')),
+          goto: 'overview?goalStatusTab=achieved',
+        }),
+        redirect({ when: Query('status').match(Condition.Equals('REMOVED')), goto: 'overview?goalStatusTab=removed' }),
+        redirect({ goto: 'overview?goalStatusTab=current' }),
       ],
     }),
     access({
@@ -103,12 +106,12 @@ export const planStep = step({
         SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.derivePlanLastUpdated(),
         SentencePlanEffects.loadNotifications('plan-overview'),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('type') }),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') }),
       ],
       next: [
         redirect({
-          when: Query('type').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
-          goto: 'overview?type=current',
+          when: Query('goalStatusTab').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
+          goto: 'overview?goalStatusTab=current',
         }),
       ],
     }),

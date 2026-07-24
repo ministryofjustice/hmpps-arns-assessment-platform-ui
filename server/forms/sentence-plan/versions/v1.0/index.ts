@@ -69,7 +69,10 @@ export const sentencePlanV1Journey = journey({
       ),
       next: [
         redirect({
-          goto: Format('/sentence-plan/v1.0/plan/view-historic/%1?type=current', Data('sessionDetails.planVersion')),
+          goto: Format(
+            '/sentence-plan/v1.0/plan/view-historic/%1?goalStatusTab=current',
+            Data('sessionDetails.planVersion'),
+          ),
         }),
       ],
     }),

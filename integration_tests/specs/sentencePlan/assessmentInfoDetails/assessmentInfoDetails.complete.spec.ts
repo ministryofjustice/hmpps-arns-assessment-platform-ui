@@ -171,7 +171,7 @@ test.describe('Assessment Info Details - Complete Section', () => {
 
       // Navigate to change goal
       await PlanOverviewPage.verifyOnPage(page)
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 

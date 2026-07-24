@@ -106,8 +106,9 @@ test.describe('About Person Tab', () => {
     })
 
     test('hides About tab in primary navigation', async ({ page }) => {
+      // The About nav item is omitted server-side in MPoP, so assert it is absent from the DOM.
       const primaryNavigation = page.getByLabel('Primary navigation')
-      await expect(primaryNavigation.getByRole('link', { name: /^About /i })).not.toBeVisible()
+      await expect(primaryNavigation.getByRole('link', { name: /^About /i })).toHaveCount(0)
     })
 
     test('redirects to plan overview when visiting About page directly', async ({ page }) => {
@@ -116,7 +117,8 @@ test.describe('About Person Tab', () => {
     })
 
     test('hides "view information from assessment" link on plan overview', async ({ page }) => {
-      await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).not.toBeVisible()
+      // The assessment-info link is omitted server-side in MPoP, so assert it is absent from the DOM.
+      await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).toHaveCount(0)
     })
   })
 
@@ -131,8 +133,9 @@ test.describe('About Person Tab', () => {
     })
 
     test('hides About tab in primary navigation', async ({ page }) => {
+      // The About nav item is omitted server-side in MPoP, so assert it is absent from the DOM.
       const primaryNavigation = page.getByLabel('Primary navigation')
-      await expect(primaryNavigation.getByRole('link', { name: /^About /i })).not.toBeVisible()
+      await expect(primaryNavigation.getByRole('link', { name: /^About /i })).toHaveCount(0)
     })
 
     test('redirects to plan overview when visiting About page directly', async ({ page }) => {
@@ -141,7 +144,8 @@ test.describe('About Person Tab', () => {
     })
 
     test('hides "view information from assessment" link on plan overview', async ({ page }) => {
-      await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).not.toBeVisible()
+      // The assessment-info link is omitted server-side in MPoP, so assert it is absent from the DOM.
+      await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).toHaveCount(0)
     })
   })
 })

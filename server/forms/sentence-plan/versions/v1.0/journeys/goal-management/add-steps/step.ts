@@ -1,6 +1,7 @@
 import {
   access,
   and,
+  or,
   Data,
   Format,
   match,
@@ -29,10 +30,19 @@ import { redirectIfGoalNotFound } from '../../../guards'
  */
 export const addStepsStep = step({
   path: '/add-steps',
-  title: 'Add or change steps',
+  title: 'Add steps',
   reachability: { entryWhen: true },
   view: {
     locals: {
+      dynamicTitle: when(
+        or(
+          Data('navigationReferrer').match(Condition.Equals('add-goal')),
+          Data('activeGoal.steps').not.match(Condition.IsRequired()),
+        ),
+      )
+        .then('Add steps')
+        .else('Add or update steps'),
+
       // Backlink logic (priority order):
       // 1. If navigationReferrer='add-goal', navigate to change-goal and persist goal information
       // 2. If navigationReferrer='update-goal-steps', navigate back to update-goal-steps page
@@ -45,8 +55,8 @@ export const addStepsStep = step({
         )
         .otherwise(
           when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
-            .then('../../plan/overview?type=current')
-            .else('../../plan/overview?type=future'),
+            .then('../../plan/overview?goalStatusTab=current')
+            .else('../../plan/overview?goalStatusTab=future'),
         ),
     },
   },
@@ -112,9 +122,9 @@ export const addStepsStep = step({
           }),
           redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
-            goto: '../../plan/overview?type=future',
+            goto: '../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),
@@ -137,9 +147,9 @@ export const addStepsStep = step({
           }),
           redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
-            goto: '../../plan/overview?type=future',
+            goto: '../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),

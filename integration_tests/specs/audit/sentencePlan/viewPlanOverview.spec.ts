@@ -29,7 +29,7 @@ test.describe('View Plan Overview page', () => {
     await navigateToSentencePlan(page, handoverLink)
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
     await planOverviewPage.clickFutureGoalsTab()
-    await expect(page).toHaveURL(/type=future/)
+    await expect(page).toHaveURL(/goalStatusTab=future/)
 
     const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_OVERVIEW, {
       additionalFilter: msg => msg.details.tab === 'future',
@@ -44,7 +44,7 @@ test.describe('View Plan Overview page', () => {
     await sentencePlanBuilder.extend(sentencePlanId).withGoals(achievedGoals()).withAgreementStatus('AGREED').save()
 
     await navigateToSentencePlan(page, handoverLink)
-    await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=achieved`)
+    await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=achieved`)
     await PlanOverviewPage.verifyOnPage(page)
 
     const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_OVERVIEW, {
@@ -60,7 +60,7 @@ test.describe('View Plan Overview page', () => {
     await sentencePlanBuilder.extend(sentencePlanId).withGoals(removedGoals(1)).withAgreementStatus('AGREED').save()
 
     await navigateToSentencePlan(page, handoverLink)
-    await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=removed`)
+    await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=removed`)
     await PlanOverviewPage.verifyOnPage(page)
 
     const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_OVERVIEW, {
