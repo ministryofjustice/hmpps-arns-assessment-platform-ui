@@ -98,5 +98,6 @@ save-logs: ## Saves docker container logs in a directory defined by OUTPUT_LOGS_
 	docker logs ${PROJECT_NAME}-arns-handover-1 > ${OUTPUT_LOGS_DIR}/arns-handover.log
 	docker logs ${PROJECT_NAME}-coordinator-api-1 > ${OUTPUT_LOGS_DIR}/coordinator-api.log
 	docker logs ${PROJECT_NAME}-aap-api-1 > ${OUTPUT_LOGS_DIR}/aap-api.log
+	docker logs ${PROJECT_NAME}-risk-actuarial-api-1 > ${OUTPUT_LOGS_DIR}/risk-actuarial-api.log
 	docker logs ${PROJECT_NAME}-hmpps-auth-1 > ${OUTPUT_LOGS_DIR}/hmpps-auth.log
 	docker logs ${PROJECT_NAME}-wiremock-1 > ${OUTPUT_LOGS_DIR}/wiremock.log

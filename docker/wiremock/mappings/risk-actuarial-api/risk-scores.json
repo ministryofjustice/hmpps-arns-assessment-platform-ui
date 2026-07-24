@@ -1,0 +1,296 @@
+{
+  "name": "Risk Actuarial API - Risk Scores",
+  "request": {
+    "method": "POST",
+    "urlPathPattern": "/risk-actuarial-api/risk-scores/v1"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "actuarialPredictors": {
+        "allPredictor": {
+          "algorithm": "ALL_REOFFENDING_PREDICTOR",
+          "type": "DYNAMIC",
+          "modelVersion": "1.0",
+          "thresholdsVersion": "1.0",
+          "output": {
+            "band": "MEDIUM",
+            "score": 62.62
+          },
+          "featureValues": {
+            "twoYearInterceptWeight": 3.83654148692014,
+            "ageGenderPolynomialWeight": -3.28173525216702,
+            "genderWeight": 0.0,
+            "offenceGroupWeight": 0.09711571795253,
+            "firstSanctionWeight": 0.0,
+            "secondSanctionWeight": 0.0,
+            "totalNumberOfSanctionsForAllOffencesWeight": -0.06355203885829,
+            "secondSanctionGapWeight": 0.0,
+            "offenceFreeMonthsWeight": 0.0,
+            "copasScore": -0.26598630159921,
+            "copasScoreSquared": 0.00365775217639,
+            "suitableAccommodationWeight": 0.0,
+            "unemployedWeight": 0.0,
+            "liveInRelationshipWeight": 0.0,
+            "relationshipQualityWeight": 0.0,
+            "multiplicativeRelationshipWeight": 0.0,
+            "domesticViolenceWeight": 0.06356691968339,
+            "regularOffendingActivitiesWeight": 0.12649160259203,
+            "drugMotivationWeight": 0.0,
+            "chronicDrinkingProblemsWeight": 0.0,
+            "bingeDrinkingProblemsWeight": 0.0,
+            "impulsivityProblemsWeight": 0.0,
+            "proCriminalAttitudesWeight": 0.0,
+            "heroinUsageWeight": 0.0,
+            "otherOpiateUsageWeight": 0.0,
+            "crackCocaineUsageWeight": 0.0,
+            "powderCocaineUsageWeight": 0.0,
+            "misusedPrescriptionDrugUsageWeight": 0.0,
+            "benzodiazepinesUsageWeight": 0.0,
+            "cannabisUsageWeight": 0.0,
+            "steroidUsageWeight": 0.0,
+            "otherDrugUsageWeight": 0.0,
+            "totalWeight": 0.51609988669997
+          },
+          "validationErrors": []
+        },
+        "violentPredictor": {
+          "algorithm": "VIOLENT_REOFFENDING_PREDICTOR",
+          "type": "DYNAMIC",
+          "modelVersion": "1.0",
+          "thresholdsVersion": "1.0",
+          "output": {
+            "band": "LOW",
+            "score": 25.43
+          },
+          "featureValues": {
+            "twoYearInterceptWeight": 1.81687448362791,
+            "ageGenderPolynomialWeight": -2.19932854876,
+            "genderWeight": 0.0,
+            "offenceGroupWeight": 0.18630088324696,
+            "firstSanctionWeight": 0.0,
+            "secondSanctionWeight": 0.0,
+            "totalNumberOfSanctionsForAllOffencesWeight": -0.14351040045746,
+            "neverViolentWeight": 0.0,
+            "onceViolentWeight": 0.15835779514232,
+            "totalNumberOfViolentSanctionsWeight": 0.01437809575998,
+            "secondSanctionGapWeight": 0.0,
+            "offenceFreeMonthsWeight": 0.0,
+            "copasScore": 0.33535289259305,
+            "copasViolentOffencesScore": -1.4184288873795,
+            "suitableAccommodationWeight": 0.0,
+            "unemployedWeight": 0.0,
+            "liveInRelationshipWeight": 0.0,
+            "relationshipQualityWeight": 0.0,
+            "multiplicativeRelationshipWeight": 0.0,
+            "domesticViolenceWeight": 0.10847373067241,
+            "regularOffendingActivitiesWeight": 0.06554913045843,
+            "drugMotivationWeight": 0.0,
+            "chronicDrinkingProblemsWeight": 0.0,
+            "bingeDrinkingProblemsWeight": 0.0,
+            "impulsivityProblemsWeight": 0.0,
+            "temperControlWeight": 0.0,
+            "methadoneUsageWeight": 0.0,
+            "otherOpiateUsageWeight": 0.0,
+            "crackCocaineUsageWeight": 0.0,
+            "powderCocaineUsageWeight": 0.0,
+            "misusedPrescriptionDrugUsageWeight": 0.0,
+            "benzodiazepinesUsageWeight": 0.0,
+            "cannabisUsageWeight": 0.0,
+            "steroidUsageWeight": 0.0,
+            "otherDrugUsageWeight": 0.0,
+            "totalWeight": -1.07598082509591
+          },
+          "validationErrors": []
+        },
+        "directContactSexualPredictor": {
+          "algorithm": "DIRECT_CONTACT_SEXUAL_REOFFENDING_PREDICTOR",
+          "type": "STATIC",
+          "modelVersion": "1.0",
+          "thresholdsVersion": "1.0",
+          "output": {
+            "band": "VERY_HIGH",
+            "pointScore": 36,
+            "score": 5.31,
+            "femaleVersion": false,
+            "hasSexualOffenceHistory": true,
+            "riskBandReductionApplied": false
+          },
+          "featureValues": {
+            "totalContactAdultSexualSanctionsWeight": 15.0,
+            "totalContactChildSexualSanctionsWeight": 9.0,
+            "totalNonContactSexualOffencesWeight": 6.0,
+            "ageAtStartOfFollowUpWeight": 0.0,
+            "ageAtLastSanctionForSexualOffenceWeight": 0.0,
+            "totalNumberOfSanctionsForAllOffencesWeight": 6.0,
+            "currentOffenceAgainstVictimStrangerWeight": 0.0,
+            "totalWeight": 36.0
+          },
+          "validationErrors": []
+        },
+        "indirectContactSexualPredictor": {
+          "algorithm": "IMAGES_AND_INDIRECT_CONTACT_SEXUAL_REOFFENDING_PREDICTOR",
+          "type": "STATIC",
+          "modelVersion": "1.0",
+          "thresholdsVersion": "1.0",
+          "output": {
+            "band": "HIGH",
+            "score": 10.31,
+            "femaleVersion": false,
+            "hasSexualOffenceHistory": true
+          },
+          "featureValues": {
+            "imagesAndIndirectContactWeight": 0.1031
+          },
+          "validationErrors": []
+        },
+        "seriousViolentPredictor": {
+          "algorithm": "SERIOUS_VIOLENT_REOFFENDING_PREDICTOR",
+          "type": "DYNAMIC",
+          "modelVersion": "1.0",
+          "thresholdsVersion": "1.0",
+          "output": {
+            "band": "MEDIUM",
+            "score": 1.08
+          },
+          "featureValues": {
+            "twoYearInterceptWeight": -1.70588696906607,
+            "ageGenderPolynomialWeight": -2.80501656842515,
+            "genderWeight": 0.0,
+            "offenceGroupWeight": 0.13528641162272,
+            "firstSanctionWeight": 0.0,
+            "secondSanctionWeight": 0.0,
+            "totalNumberOfSanctionsForAllOffencesWeight": -0.54583359142931,
+            "secondSanctionGapWeight": 0.0,
+            "offenceFreeMonthsWeight": 0.0,
+            "copasScore": 0.4802070290742,
+            "neverViolentWeight": 0.0,
+            "onceViolentWeight": 0.07774684948062,
+            "violentSanctionsWeight": 0.00653299922463,
+            "violenceRateWeight": -0.56166371754086,
+            "offenceInvolveCarryingOrUsingWeaponsWeight": 0.0,
+            "suitableAccommodationWeight": 0.0,
+            "unemployedWeight": 0.0,
+            "chronicDrinkingProblemsWeight": 0.0,
+            "temperControlWeight": 0.0,
+            "proCriminalAttitudesWeight": 0.0,
+            "pastHomicideOffenceWeight": 0.0,
+            "pastWoundingGrievousBodilyHarmOffenceWeight": 0.39984582678849,
+            "pastKidnappingOffenceWeight": 0.0,
+            "pastFirearmsOffenceWeight": 0.0,
+            "pastRobberyOffenceWeight": 0.0,
+            "pastAggravatedBurglaryOffenceWeight": 0.0,
+            "pastNonFirearmWeaponOffenceWeight": 0.0,
+            "pastCriminalDamageOffenceWeight": 0.0,
+            "pastArsonOffenceWeight": 0.0,
+            "totalWeight": -4.51878173027072
+          },
+          "validationErrors": []
+        },
+        "seriousPredictor": {
+          "algorithm": "COMBINED_SERIOUS_REOFFENDING_PREDICTOR",
+          "type": "COMBINED",
+          "modelVersion": "1.0",
+          "thresholdsVersion": "1.0",
+          "output": {
+            "band": "VERY_HIGH",
+            "overallScore": 16.7,
+            "femaleVersion": false,
+            "hasSexualOffenceHistory": true,
+            "componentScores": {
+              "directContactSexualPredictorScore": {
+                "algorithm": "DIRECT_CONTACT_SEXUAL_REOFFENDING_PREDICTOR",
+                "type": "STATIC",
+                "modelVersion": "1.0",
+                "thresholdsVersion": "1.0",
+                "output": {
+                  "band": "VERY_HIGH",
+                  "pointScore": 36,
+                  "score": 5.31,
+                  "femaleVersion": false,
+                  "hasSexualOffenceHistory": true,
+                  "riskBandReductionApplied": false
+                },
+                "featureValues": {
+                  "totalContactAdultSexualSanctionsWeight": 15.0,
+                  "totalContactChildSexualSanctionsWeight": 9.0,
+                  "totalNonContactSexualOffencesWeight": 6.0,
+                  "ageAtStartOfFollowUpWeight": 0.0,
+                  "ageAtLastSanctionForSexualOffenceWeight": 0.0,
+                  "totalNumberOfSanctionsForAllOffencesWeight": 6.0,
+                  "currentOffenceAgainstVictimStrangerWeight": 0.0,
+                  "totalWeight": 36.0
+                },
+                "validationErrors": []
+              },
+              "indirectContactSexualPredictorScore": {
+                "algorithm": "IMAGES_AND_INDIRECT_CONTACT_SEXUAL_REOFFENDING_PREDICTOR",
+                "type": "STATIC",
+                "modelVersion": "1.0",
+                "thresholdsVersion": "1.0",
+                "output": {
+                  "band": "HIGH",
+                  "score": 10.31,
+                  "femaleVersion": false,
+                  "hasSexualOffenceHistory": true
+                },
+                "featureValues": {
+                  "imagesAndIndirectContactWeight": 0.1031
+                },
+                "validationErrors": []
+              },
+              "seriousViolentPredictorScore": {
+                "algorithm": "SERIOUS_VIOLENT_REOFFENDING_PREDICTOR",
+                "type": "DYNAMIC",
+                "modelVersion": "1.0",
+                "thresholdsVersion": "1.0",
+                "output": {
+                  "band": "MEDIUM",
+                  "score": 1.08
+                },
+                "featureValues": {
+                  "twoYearInterceptWeight": -1.70588696906607,
+                  "ageGenderPolynomialWeight": -2.80501656842515,
+                  "genderWeight": 0.0,
+                  "offenceGroupWeight": 0.13528641162272,
+                  "firstSanctionWeight": 0.0,
+                  "secondSanctionWeight": 0.0,
+                  "totalNumberOfSanctionsForAllOffencesWeight": -0.54583359142931,
+                  "secondSanctionGapWeight": 0.0,
+                  "offenceFreeMonthsWeight": 0.0,
+                  "copasScore": 0.4802070290742,
+                  "neverViolentWeight": 0.0,
+                  "onceViolentWeight": 0.07774684948062,
+                  "violentSanctionsWeight": 0.00653299922463,
+                  "violenceRateWeight": -0.56166371754086,
+                  "offenceInvolveCarryingOrUsingWeaponsWeight": 0.0,
+                  "suitableAccommodationWeight": 0.0,
+                  "unemployedWeight": 0.0,
+                  "chronicDrinkingProblemsWeight": 0.0,
+                  "temperControlWeight": 0.0,
+                  "proCriminalAttitudesWeight": 0.0,
+                  "pastHomicideOffenceWeight": 0.0,
+                  "pastWoundingGrievousBodilyHarmOffenceWeight": 0.39984582678849,
+                  "pastKidnappingOffenceWeight": 0.0,
+                  "pastFirearmsOffenceWeight": 0.0,
+                  "pastRobberyOffenceWeight": 0.0,
+                  "pastAggravatedBurglaryOffenceWeight": 0.0,
+                  "pastNonFirearmWeaponOffenceWeight": 0.0,
+                  "pastCriminalDamageOffenceWeight": 0.0,
+                  "pastArsonOffenceWeight": 0.0,
+                  "totalWeight": -4.51878173027072
+                },
+                "validationErrors": []
+              }
+            }
+          },
+          "featureValues": {},
+          "validationErrors": []
+        }
+      }
+    }
+  }
+}

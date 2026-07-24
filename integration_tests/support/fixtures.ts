@@ -7,6 +7,7 @@ import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCre
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
 import { TestHmppsAuthClient } from './apis/TestHmppsAuthClient'
 import { TestAapApiClient } from './apis/TestAapApiClient'
+import { TestRiskActuarialApiClient } from './apis/TestRiskActuarialApiClient'
 import { TestHandoverApiClient } from './apis/TestHandoverApiClient'
 import { TestCoordinatorApiClient } from './apis/TestCoordinatorApiClient'
 import { AssessmentBuilder } from '../builders/AssessmentBuilder'
@@ -19,6 +20,7 @@ import { HandoverBuilder } from '../builders/HandoverBuilder'
 import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
 import { AuditQueueClient } from './AuditQueueClient'
 import { captureContainerLogs } from './DockerLogCapture'
+import { RiskActuarialApiBuilder, RiskActuarialApiBuilderFactory } from 'builders/RiskActuarialApiBuilder'
 
 /**
  * Default criminogenic needs data for E2E tests.
@@ -139,10 +141,12 @@ type TestApiFixtures = {
   aapClient: TestAapApiClient
   handoverClient: TestHandoverApiClient
   coordinatorClient: TestCoordinatorApiClient
+  riskActuarialApiClient: TestRiskActuarialApiClient
   assessmentBuilder: AssessmentBuilderFactory
   sentencePlanBuilder: SentencePlanBuilderFactory
   coordinatorBuilder: CoordinatorBuilderFactory
   handoverBuilder: HandoverBuilderFactory
+  riskActuarialApiBuilder: RiskActuarialApiBuilderFactory
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
   auditQueue: AuditQueueClient
   makeAxeBuilder: () => AxeBuilder
@@ -232,6 +236,16 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
     await use(client)
   },
 
+  riskActuarialApiClient: async ({ authClient, apis }, use, testInfo) => {
+    const client = new TestRiskActuarialApiClient({
+      baseUrl: apis.coordinatorApi.url,
+      authenticationClient: authClient as unknown as AuthenticationClient,
+      testInfo,
+    })
+
+    await use(client)
+  },
+
   assessmentBuilder: async ({ aapClient }, use) => {
     await use(AssessmentBuilder(aapClient))
   },
@@ -242,6 +256,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
   coordinatorBuilder: async ({ coordinatorClient }, use) => {
     await use(CoordinatorBuilder(coordinatorClient))
+  },
+
+  riskActuarialApiBuilder: async ({ riskActuarialApiClient }, use) => {
+    await use(RiskActuarialApiBuilder(riskActuarialApiClient))
   },
 
   handoverBuilder: async ({ handoverClient }, use) => {
@@ -312,7 +330,7 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
   captureDockerLogsOnFailure: [
     // eslint-disable-next-line no-empty-pattern
-    async ({}, use, testInfo) => {
+    async ({ }, use, testInfo) => {
       const startedAt = new Date()
 
       await use()

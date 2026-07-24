@@ -10,6 +10,7 @@ import HandoverApiClient from './handoverApiClient'
 import CoordinatorApiClient from './coordinatorApiClient'
 import AssessmentCacheStore from './assessmentCacheStore'
 import PreferencesStore from './preferencesStore'
+import RiskActuarialApiClient from './riskActuarialApiClient'
 
 const applicationInfo = applicationInfoSupplier()
 
@@ -29,6 +30,7 @@ export const dataAccess = () => {
     deliusApiClient: new DeliusApiClient(hmppsAuthClient),
     handoverApiClient: new HandoverApiClient(hmppsAuthClient),
     coordinatorApiClient: new CoordinatorApiClient(hmppsAuthClient),
+    riskActuarialApiClient: new RiskActuarialApiClient(hmppsAuthClient),
     assessmentCacheStore,
     preferencesStore: new PreferencesStore(),
   }
