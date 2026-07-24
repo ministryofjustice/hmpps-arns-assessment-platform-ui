@@ -67,7 +67,7 @@ export interface RiskScores {
 
 export interface RiskScoreInput {
   gender?: string
-  assessmentDate?: string,
+  assessmentDate?: string
   dateOfBirth?: string
   dateOfCurrentConviction?: string
   dateAtStartOfFollowup?: string
