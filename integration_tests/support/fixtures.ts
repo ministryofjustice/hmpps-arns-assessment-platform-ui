@@ -4,6 +4,7 @@ import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients
 import { promises as fs } from 'node:fs'
 import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
 import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
+import { StrengthsAndNeedsBuilder, StrengthsAndNeedsBuilderFactory } from 'builders/StrengthsAndNeedsBuilder'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
 import { TestHmppsAuthClient } from './apis/TestHmppsAuthClient'
 import { TestAapApiClient } from './apis/TestAapApiClient'
@@ -141,6 +142,7 @@ type TestApiFixtures = {
   coordinatorClient: TestCoordinatorApiClient
   assessmentBuilder: AssessmentBuilderFactory
   sentencePlanBuilder: SentencePlanBuilderFactory
+  strengthsAndNeedsBuilder: StrengthsAndNeedsBuilderFactory
   coordinatorBuilder: CoordinatorBuilderFactory
   handoverBuilder: HandoverBuilderFactory
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
@@ -238,6 +240,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
   sentencePlanBuilder: async ({ aapClient }, use) => {
     await use(SentencePlanBuilder(aapClient))
+  },
+
+  strengthsAndNeedsBuilder: async ({ aapClient }, use) => {
+    await use(StrengthsAndNeedsBuilder(aapClient))
   },
 
   coordinatorBuilder: async ({ coordinatorClient }, use) => {

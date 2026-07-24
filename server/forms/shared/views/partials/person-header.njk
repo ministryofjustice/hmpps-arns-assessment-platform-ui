@@ -1,0 +1,86 @@
+{% from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions %}
+{% from "moj/components/alert/macro.njk" import mojAlert %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% macro appPersonHeader(params) %}
+  {% if params.person %}
+    {% set person = params.person %}
+    {% set fullName = params.fullName or (person.name.forename + ' ' + person.name.surname if person.name else 'Unknown') %}
+    {% set navigationLinks = params.navigationLinks or [] %}
+    {% set buttonItems = params.buttonItems or [] %}
+
+    <div class="govuk-width-container">
+      <header class="plan-header" role="presentation" data-qa="{{ params.dataQa or 'person-header' }}">
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-full plan-header__subject-details">
+            <p class="plan-header__subject-details__title">{{ fullName }}</p>
+            <dl class="plan-header__subject-details__identifiers">
+              <div>
+                <dt>CRN:</dt>
+                <dd>{{ person.crn }}</dd>
+              </div>
+              <div>
+                <dt>PNC:</dt>
+                <dd>{{ person.pnc | default('Unknown PNC', true) }}</dd>
+              </div>
+              <div>
+                <dt>Date of birth:</dt>
+                <dd>{{ person.dateOfBirth | formatSimpleDate }}</dd>
+              </div>
+            </dl>
+            {% if navigationLinks | length %}
+              <div class="plan-header__subject-details__navigation-links">
+                {% for link in navigationLinks %}
+                  <a href="{{ link.href }}"
+                     class="govuk-link--no-visited-state govuk-!-display-none-print"
+                     {% if link.attributes %}
+                       {% for attrName, attrValue in link.attributes %}
+                         {{ attrName }}="{{ attrValue }}"
+                       {% endfor %}
+                     {% endif %}>
+                    {{ link.text }}
+                  </a>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if params.alert %}
+          <div class="plan-header__previous-version-date-banner">
+            <div class="govuk-grid-row">
+              <div class="govuk-grid-column-full">
+                {{ mojAlert({
+                  variant: "information",
+                  title: params.alert.title,
+                  dismissible: false,
+                  html: '<span class="moj-alert__heading">' ~ params.alert.message ~ '</span>'
+                }) }}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if params.headerPageHeading %}
+          <div class="plan-header__header-actions">
+            {{ mojPageHeaderActions({
+              heading: {
+                text: params.headerPageHeading,
+                classes: "govuk-heading-l govuk-!-margin-bottom-0"
+              },
+              items: buttonItems
+            }) }}
+          </div>
+        {% elseif buttonItems | length %}
+          <div class="plan-header__actions-only govuk-!-display-none-print">
+            <div class="moj-button-group moj-button-group--inline">
+              {% for button in buttonItems %}
+                {{ govukButton(button) }}
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </header>
+    </div>
+  {% endif %}
+{% endmacro %}

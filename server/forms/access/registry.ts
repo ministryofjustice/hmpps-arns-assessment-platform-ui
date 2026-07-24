@@ -23,6 +23,10 @@ export const targetServices: Record<string, TargetService> = {
     name: 'Sentence Plan',
     entryPath: '/sentence-plan',
   },
+  'strengths-and-needs': {
+    name: 'Strengths and needs',
+    entryPath: '/strengths-and-needs',
+  },
 }
 
 /**

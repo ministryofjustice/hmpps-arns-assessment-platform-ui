@@ -1,0 +1,36 @@
+{%- from "shared/views/partials/person-header.njk" import appPersonHeader -%}
+
+{% if data.caseData %}
+  {% set person = data.caseData %}
+  {% set buttonItems = [] %}
+  {% set navigationLinks = [] %}
+
+  {% if buttons.showReturnToOasysButton %}
+    {% set buttonItems = buttonItems.concat([{
+      text: 'Return to OASys',
+      href: data.sessionDetails.oasysRedirectUrl,
+      classes: "govuk-button--secondary govuk-!-display-none-print",
+      type: 'button'
+    }]) %}
+  {% endif %}
+
+  {% if not hideNavigationLinks %}
+    {% set navigationLinks = navigationLinks.concat([
+      {
+        text: 'View previous versions',
+        href: basePath + '/previous-versions'
+      },
+      {
+        text: 'View all answers',
+        href: basePath + '/view-all-answers'
+      }
+    ]) %}
+  {% endif %}
+
+  {{ appPersonHeader({
+    person: person,
+    navigationLinks: navigationLinks,
+    buttonItems: buttonItems,
+    dataQa: 'person-header'
+  }) }}
+{% endif %}

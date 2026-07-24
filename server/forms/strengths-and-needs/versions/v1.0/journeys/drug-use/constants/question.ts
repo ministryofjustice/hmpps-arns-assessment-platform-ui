@@ -1,0 +1,52 @@
+export const Question = {
+  drug_use: 'drug_use',
+  drug_last_used: 'drug_last_used',
+  drug_last_used_value: 'drug_last_used_%1',
+  select_misused_drugs: 'select_misused_drugs',
+  other_drug_name: 'other_drug_name',
+  type_of_temporary_drugs: 'type_of_temporary_drugs',
+  how_often_used: 'how_often_used',
+  how_often_used_value: 'how_often_used_%1',
+  how_often_used_other: 'how_often_used_other',
+  how_often_used_other_test: 'how_often_used_other_test',
+  how_often_used_other_details_test: 'how_often_used_other_%1_details_test',
+  how_often_used_details: 'how_often_used_%1_details',
+  drug_use_more_than_six_months_details: 'drug_use_more_than_six_months_details',
+  drugs_injected: 'drugs_injected',
+  drugs_injected_value: 'drugs_injected_%1',
+  drugs_injected_months: 'drugs_injected_months',
+  receiving_treatment: 'receiving_treatment',
+  receiving_treatment_yes_details: 'receiving_treatment_yes_details',
+  receiving_treatment_no_details: 'receiving_treatment_no_details',
+  drugs_reasons_for_use: 'drugs_reasons_for_use',
+  drugs_reasons_for_use_details: 'drugs_reasons_for_use_details',
+  drugs_affected_their_life: 'drugs_affected_their_life',
+  drugs_affected_their_life_details: 'drugs_affected_their_life_details',
+  drugs_anything_helped_stop_or_reduce_use: 'drugs_anything_helped_stop_or_reduce_use',
+  drugs_what_could_help_not_use_drugs_in_future: 'drugs_what_could_help_not_use_drugs_in_future',
+  drug_use_changes: 'drug_use_changes',
+  has_made_positive_changes_drugs_details: 'has_made_positive_changes_drugs_details',
+  actively_making_changes_drugs_details: 'actively_making_changes_drugs_details',
+  wants_to_make_changes_knows_how_to_drugs_details: 'wants_to_make_changes_knows_how_to_drugs_details',
+  wants_to_make_changes_needs_help_drugs_details: 'wants_to_make_changes_needs_help_drugs_details',
+  thinking_about_making_changes_drugs_details: 'thinking_about_making_changes_drugs_details',
+  does_not_want_to_make_changes_drugs_details: 'does_not_want_to_make_changes_drugs_details',
+  does_not_want_to_answer_drugs_details: 'does_not_want_to_answer_drugs_details',
+  drugs_practitioner_analysis_motivated_to_stop: 'drugs_practitioner_analysis_motivated_to_stop',
+  drug_use_practitioner_analysis_strengths_or_protective_factors_yes_details:
+    'drug_use_practitioner_analysis_strengths_or_protective_factors_yes_details',
+  drug_use_practitioner_analysis_strengths_or_protective_factors_no_details:
+    'drug_use_practitioner_analysis_strengths_or_protective_factors_no_details',
+  drug_use_practitioner_analysis_strengths_or_protective_factors:
+    'drug_use_practitioner_analysis_strengths_or_protective_factors',
+  drug_use_practitioner_analysis_risk_of_serious_harm_yes_details:
+    'drug_use_practitioner_analysis_risk_of_serious_harm_yes_details',
+  drug_use_practitioner_analysis_risk_of_serious_harm_no_details:
+    'drug_use_practitioner_analysis_risk_of_serious_harm_no_details',
+  drug_use_practitioner_analysis_risk_of_serious_harm: 'drug_use_practitioner_analysis_risk_of_serious_harm',
+  drug_use_practitioner_analysis_risk_of_reoffending_yes_details:
+    'drug_use_practitioner_analysis_risk_of_reoffending_yes_details',
+  drug_use_practitioner_analysis_risk_of_reoffending_no_details:
+    'drug_use_practitioner_analysis_risk_of_reoffending_no_details',
+  drug_use_practitioner_analysis_risk_of_reoffending: 'drug_use_practitioner_analysis_risk_of_reoffending',
+} as const
