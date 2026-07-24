@@ -86,6 +86,14 @@ gotenberg:
   nameOverride: gotenberg
   replicaCount: 2
 
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+
   image:
     repository: gotenberg/gotenberg
     tag: 8.34.0
