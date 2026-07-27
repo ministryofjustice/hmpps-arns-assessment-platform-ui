@@ -1,5 +1,5 @@
 import { BadRequest } from 'http-errors'
-import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
+import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import {
@@ -10,7 +10,6 @@ import {
   buildGoalAnswers,
   getPractitionerName,
 } from './goalUtils'
-import { getUserContext } from '../telemetry/getUserContext'
 import { GoalSnapshotData } from './goalSnapshot'
 import { hashGoalText, matchSuggestedGoal } from '../../../../utils/goalTelemetry'
 import { areasOfNeed } from '../../versions/v1.0/constants'
@@ -108,7 +107,7 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
   const selectedArea = areasOfNeed.find(area => area.slug === areaOfNeedSlug)
   const goalMatch = matchSuggestedGoal(goalTitle as string, selectedArea?.goals ?? [])
 
-  telemetry.trackEvent('CREATE_GOAL_PAGE_SUBMITTED', {
+  trackBusinessEvent(context, 'CREATE_GOAL_PAGE_SUBMITTED', {
     assessmentUuid,
     goalUuid: addResult.collectionItemUuid,
     goalStatus: status,
@@ -118,8 +117,6 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
     relatedAreasCount: String(relatedAreas.length),
     targetDateOption: targetDateOption ?? '',
     targetDate: targetDate ?? '',
-    authSource: context.getState('user').authSource,
-    userContext: getUserContext(context),
     goalTitleHash: hashGoalText(goalTitle as string),
     suggestedGoalMatch: goalMatch.matchRating ?? 'no match',
     suggestedGoalMatchPercentage: String(goalMatch.matchPercentage),
