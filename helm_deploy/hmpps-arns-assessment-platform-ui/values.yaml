@@ -33,7 +33,6 @@ generic-service:
     AUDIT_SQS_REGION: 'eu-west-2'
     AUDIT_SERVICE_NAME: 'hmpps-arns-assessment-platform-ui'
     GOTENBERG_API_URL: 'http://hmpps-arns-assessment-platform-ui-gotenberg'
-    GOTENBERG_RENDER_URL: 'http://hmpps-arns-assessment-platform-ui'
     OASYS_URL: 'https://oasys.service.justice.gov.uk'
     MPOP_URL: 'https://manage-people-on-probation.hmpps.service.justice.gov.uk'
 
@@ -101,13 +100,7 @@ gotenberg:
 
   containerCommand: ['gotenberg']
   containerArgs:
-    [
-      '--chromium-ignore-certificate-errors',
-      '--chromium-clear-cookies',
-      '--libreoffice-disable-routes',
-      '--webhook-disable',
-      '--prometheus-disable-collect',
-    ]
+    ['--chromium-clear-cookies', '--libreoffice-disable-routes', '--webhook-disable', '--prometheus-disable-collect']
 
   ingress:
     enabled: false
