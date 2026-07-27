@@ -7,9 +7,11 @@ import {
   not,
   redirect,
   Condition,
+  Request,
   Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
+import { GOTENBERG_RENDER_HEADER, GOTENBERG_RENDER_HEADER_VALUE } from '../../../../data/gotenbergClient'
 import { sentencePlanOverviewPath } from './constants'
 
 /**
@@ -27,6 +29,16 @@ export const isOasysAccess = Data('sessionDetails.accessType').match(Condition.E
 export const isReadOnlyAccess = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
 export const isPrintAndShareEnabled = Data('featureFlags.printAndShareEnabled').match(Condition.Equals(true))
+
+/**
+ * True when Gotenberg is loading this page to build a PDF, rather than a person viewing it.
+ *
+ * This only picks which label the audit event gets, never whether one is sent. A faked header
+ * can mislabel an event but cannot remove it.
+ */
+export const isPdfRenderRequest = Request.Headers(GOTENBERG_RENDER_HEADER).match(
+  Condition.Equals(GOTENBERG_RENDER_HEADER_VALUE),
+)
 
 export const hasPostAgreementStatus = Data('latestAgreementStatus').match(
   Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),

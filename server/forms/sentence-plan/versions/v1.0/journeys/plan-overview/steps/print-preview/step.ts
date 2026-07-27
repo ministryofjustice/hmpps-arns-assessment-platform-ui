@@ -1,7 +1,7 @@
-import { access, Format, step } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { SentencePlanEffects } from '../../../../../../effects'
+import { access, Format, not, step } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
-import { redirectToOverviewUnlessPrintAndShareEnabled } from '../../../../guards'
+import { isPdfRenderRequest, redirectToOverviewUnlessPrintAndShareEnabled } from '../../../../guards'
 import {
   achievedGoalsSection,
   activeGoalsSection,
@@ -46,6 +46,18 @@ export const printPreviewStep = step({
     redirectToOverviewUnlessPrintAndShareEnabled(),
     access({
       effects: [SentencePlanEffects.loadPlanTimeline(), SentencePlanEffects.derivePlanLastUpdated()],
+    }),
+    /*
+     * Gotenberg builds the PDF by loading this page, so a download arrives here as a second
+     * request. Both are audited, and the download is flagged so the two can be told apart.
+     */
+    access({
+      when: not(isPdfRenderRequest),
+      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.PRINT_ALL_GOALS)],
+    }),
+    access({
+      when: isPdfRenderRequest,
+      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.PRINT_ALL_GOALS, { exportedAsPdf: true })],
     }),
   ],
 })

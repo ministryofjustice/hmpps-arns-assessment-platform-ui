@@ -33,6 +33,18 @@ const sanitiseError = (error: unknown): SanitisedError => {
 
 const CONVERT_URL_PATH = '/forms/chromium/convert/url'
 
+/**
+ * Header sent by Gotenberg's headless Chromium when it loads a page to turn into a PDF.
+ *
+ * Pages use it to tell a PDF render apart from a person browsing. It only changes how a
+ * request is labelled, so a faked header cannot hide anything.
+ *
+ * The value is scoped to the render origin (see renderPdfFromUrl) so Chromium never sends it
+ * to third parties. Express lowercases header names, so read it in lowercase.
+ */
+export const GOTENBERG_RENDER_HEADER = 'x-gotenberg-render'
+export const GOTENBERG_RENDER_HEADER_VALUE = 'true'
+
 export default class GotenbergClient extends RestClient {
   constructor(private readonly gotenbergConfig: GotenbergConfig) {
     super('Gotenberg API', gotenbergConfig, logger)
@@ -56,6 +68,7 @@ export default class GotenbergClient extends RestClient {
             'extraHttpHeaders',
             JSON.stringify({
               Cookie: `${sessionCookie};scope=${headerScope}`,
+              [GOTENBERG_RENDER_HEADER]: `${GOTENBERG_RENDER_HEADER_VALUE};scope=${headerScope}`,
             }),
           )
           .field('skipNetworkIdleEvent', false)
