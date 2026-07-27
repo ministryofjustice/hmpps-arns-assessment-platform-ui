@@ -15,9 +15,7 @@
       data-print-page-header
       data-print-plan-title="{{ headerPageHeading }}"
       data-print-person-name="{{ fullName }}"
-      data-print-crn="{{ person.crn }}"
-      data-print-pnc="{{ person.pnc | default('Unknown PNC', true) }}"
-      data-print-date-of-birth="{{ person.dateOfBirth | formatSimpleDate }}"
+      data-print-identifiers="CRN: {{ person.crn }} | PNC: {{ person.pnc | default('Unknown PNC', true) }} | Date of birth: {{ person.dateOfBirth | formatSimpleDate }}"
     ></div>
   {% endif %}
 

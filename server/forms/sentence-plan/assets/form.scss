@@ -171,8 +171,7 @@
   }
 
   @top-right {
-    content: 'CRN: ' attr(data-print-crn) ' | PNC: ' attr(data-print-pnc) ' | Date of birth: '
-      attr(data-print-date-of-birth);
+    content: attr(data-print-identifiers);
     padding-left: 2mm;
     border-bottom: 1px solid $govuk-border-colour;
     font-family: Arial, sans-serif;

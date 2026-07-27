@@ -2,14 +2,12 @@
 const printPageHeader = document.querySelector('[data-print-page-header]')
 
 if (printPageHeader) {
-  const { printPlanTitle, printPersonName, printCrn, printPnc, printDateOfBirth } = printPageHeader.dataset
+  const { printPlanTitle, printPersonName, printIdentifiers } = printPageHeader.dataset
 
   Object.assign(document.documentElement.dataset, {
     printPlanTitle,
     printPersonName,
-    printCrn,
-    printPnc,
-    printDateOfBirth,
+    printIdentifiers,
   })
 }
 
