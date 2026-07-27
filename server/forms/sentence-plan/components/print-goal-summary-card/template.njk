@@ -1,0 +1,50 @@
+{% import "sentence-plan/components/goal-summary-card/_macros.njk" as goalCard %}
+
+<article class="print-goal-summary-card" data-qa="print-goal-summary-card">
+  <div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+      <h3 class="govuk-summary-card__title" data-qa="goal-title">{{ params.goalTitle }}</h3>
+    </div>
+
+    <div class="govuk-summary-card__content">
+      {% if params.goalStatus == 'FUTURE' %}
+        <p class="print-goal-summary-card__date">This is a future goal.</p>
+      {% elif params.goalStatus == 'ACHIEVED' and params.statusDate %}
+        <p class="print-goal-summary-card__date">Marked as achieved on {{ params.statusDate }}.</p>
+      {% elif params.goalStatus == 'REMOVED' and params.statusDate %}
+        <p class="print-goal-summary-card__date">Removed on {{ params.statusDate }}.</p>
+      {% elif params.targetDate %}
+        <p class="print-goal-summary-card__date">Aim to achieve this by {{ params.targetDate }}.</p>
+      {% endif %}
+
+      <p class="print-goal-summary-card__steps-heading">
+        <strong>Steps</strong> – {{ params.completedCount }} of {{ params.steps.length }} completed
+      </p>
+
+      {% if params.steps.length %}
+        <ol class="print-goal-summary-card__steps govuk-list">
+          {% for step in params.steps %}
+            <li class="print-goal-summary-card__step">
+              <div>
+                <p class="print-goal-summary-card__step-name">{{ step.description }}</p>
+                <p class="print-goal-summary-card__step-actor"><strong>{{ step.actor | replace(" (include who in the step)", "") }} will do this</strong></p>
+              </div>
+              <div class="print-goal-summary-card__step-status">
+                {{ goalCard.stepStatusTag(step.status) }}
+              </div>
+            </li>
+          {% endfor %}
+        </ol>
+      {% else %}
+        <p class="print-goal-summary-card__no-steps"><strong>No steps added</strong></p>
+      {% endif %}
+
+      <p class="print-goal-summary-card__areas" data-qa="goal-area-of-need">
+        Area of need: {{ params.areaOfNeed | lower }}
+        {% if params.relatedAreasText %}
+          <br>Also relates to: {{ params.relatedAreasText | lower }}
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</article>

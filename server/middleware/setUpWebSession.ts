@@ -6,6 +6,8 @@ import { createRedisClient } from '../data/redisClient'
 import config from '../config'
 import logger from '../../logger'
 
+export const SESSION_COOKIE_NAME = 'hmpps-arns-assessment-platform-ui.session'
+
 export default function setUpWebSession(): Router {
   let store: Store
   if (config.redis.enabled) {
@@ -20,7 +22,7 @@ export default function setUpWebSession(): Router {
   router.use(
     session({
       store,
-      name: 'hmpps-arns-assessment-platform-ui.session',
+      name: SESSION_COOKIE_NAME,
       cookie: { secure: config.https, sameSite: 'lax', maxAge: config.session.expiryMinutes * 60 * 1000 },
       secret: config.session.secret,
       resave: false, // redis implements touch so shouldn't need this

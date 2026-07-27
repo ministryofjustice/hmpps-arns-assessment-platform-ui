@@ -12,6 +12,11 @@ export const BooleanFeatureFlags = {
     nunjucksKey: 'smartSurveyInNationalRolloutEnabled',
     fallbackState: false,
   },
+  ENABLE_PRINT_AND_SHARE: {
+    fliptKey: 'sp-enable-print-and-share',
+    nunjucksKey: 'printAndShareEnabled',
+    fallbackState: false,
+  },
 }
 
 export interface FeatureFlagConfig {
