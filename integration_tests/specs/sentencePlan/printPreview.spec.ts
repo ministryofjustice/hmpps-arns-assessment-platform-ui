@@ -67,7 +67,7 @@ test.describe('Print preview', () => {
     await expect(printPreviewPage.printAllGoalsButton).toHaveCount(0)
   })
 
-  test('shows the DRAFT watermark for a plan that has not been agreed', async ({
+  test('shows the DRAFT watermark when printing a plan that has not been agreed', async ({
     page,
     createSession,
     sentencePlanBuilder,
@@ -79,11 +79,15 @@ test.describe('Print preview', () => {
 
     const printPreviewPage = await openPrintPreview(page, handoverLink)
 
+    await expect(printPreviewPage.draftWatermark).toBeHidden()
+
+    await printPreviewPage.page.emulateMedia({ media: 'print' })
+
     await expect(printPreviewPage.draftWatermark).toBeVisible()
     await expect(printPreviewPage.draftWatermark).toHaveText('DRAFT')
   })
 
-  test('does not show the DRAFT watermark once the plan has been agreed', async ({
+  test('does not show the DRAFT watermark when printing an agreed plan', async ({
     page,
     createSession,
     sentencePlanBuilder,
@@ -98,6 +102,7 @@ test.describe('Print preview', () => {
       .save()
 
     const printPreviewPage = await openPrintPreview(page, handoverLink)
+    await printPreviewPage.page.emulateMedia({ media: 'print' })
 
     await expect(printPreviewPage.draftWatermark).toHaveCount(0)
   })
