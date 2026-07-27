@@ -50,6 +50,7 @@ describe('plan header', () => {
 
   it('renders the read-only print preview actions', () => {
     const html = nunjucksEnv.render(template, {
+      basePath: '/sentence-plan/v1.0',
       data: {
         caseData: {
           name: { forename: 'Joan', surname: 'Smith' },
@@ -61,10 +62,27 @@ describe('plan header', () => {
       buttons: { showExportAsPdfButton: true, showPrintButton: true },
     })
 
-    const exportButton = html.match(/<button[^>]*data-ai-id="export-sentence-plan-pdf-button"[^>]*>/)?.[0]
+    const exportButton = html.match(/<a[^>]*data-ai-id="print-preview-export-pdf-button"[^>]*>/)?.[0]
+    const printButton = html.match(/<button[^>]*data-ai-id="print-preview-print-button"[^>]*>/)?.[0]
 
-    expect(exportButton).toContain('type="button"')
-    expect(exportButton).not.toContain('href=')
-    expect(html).toContain('data-print-sentence-plan')
+    expect(exportButton).toContain('href="/sentence-plan/v1.0/plan/print-preview/pdf"')
+    expect(printButton).toContain('data-print-sentence-plan')
+  })
+
+  it('hides the print button until JavaScript is enabled', () => {
+    const html = nunjucksEnv.render(template, {
+      data: {
+        caseData: {
+          name: { forename: 'Joan', surname: 'Smith' },
+          crn: 'X000000',
+          dateOfBirth: '1990-01-01',
+        },
+      },
+      headerPageHeading: "Joan's plan",
+      buttons: { showExportAsPdfButton: true, showPrintButton: true },
+    })
+
+    const printButton = html.match(/<button[^>]*data-ai-id="print-preview-print-button"[^>]*>/)?.[0]
+    expect(printButton).toContain('js-only')
   })
 })

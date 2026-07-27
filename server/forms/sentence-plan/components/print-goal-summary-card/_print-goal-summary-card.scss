@@ -1,6 +1,7 @@
 .print-goal-summary-card {
   margin-bottom: govuk-spacing(5);
   break-inside: avoid;
+  page-break-inside: avoid;
 
   .govuk-summary-card__title-wrapper {
     background-color: govuk-colour('blue', $variant: 'tint-95');
@@ -69,5 +70,13 @@
     margin-top: 0;
     margin-bottom: 0;
     color: $govuk-secondary-text-colour;
+  }
+}
+
+@media print {
+  // Start every populated goal area after the first on a new page
+  .print-goal-section:has(.print-goal-summary-card) ~ .print-goal-section:has(.print-goal-summary-card) {
+    break-before: page;
+    page-break-before: always;
   }
 }
