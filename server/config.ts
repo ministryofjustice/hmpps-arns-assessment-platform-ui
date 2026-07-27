@@ -13,6 +13,7 @@ function get<T>(name: string, fallback: T, options = { requireInProduction: fals
 }
 
 const requiredInProduction = { requireInProduction: true }
+const ingressUrl = get('INGRESS_URL', 'http://localhost:3000', requiredInProduction)
 
 const auditConfig = () => {
   const auditEnabled = get('AUDIT_ENABLED', 'false') === 'true'
@@ -60,7 +61,7 @@ export default {
     gotenberg: {
       url: get('GOTENBERG_API_URL', 'http://localhost:3001', requiredInProduction),
       healthPath: '/health',
-      renderUrl: get('GOTENBERG_RENDER_URL', 'http://host.docker.internal:3000', requiredInProduction),
+      renderUrl: get('GOTENBERG_RENDER_URL', ingressUrl),
       timeout: {
         response: Number(get('GOTENBERG_TIMEOUT_RESPONSE', 30000)),
         deadline: Number(get('GOTENBERG_TIMEOUT_DEADLINE', 30000)),
@@ -152,7 +153,7 @@ export default {
       enabled: get('FORM_TRAINING_SESSION_LAUNCHER_ENABLED', 'false') === 'true',
     },
   },
-  ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
+  ingressUrl,
   logLevel: get('LOG_LEVEL', 'info'),
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
