@@ -19,6 +19,7 @@
 
 {% block content %}
   <div class="govuk-grid-row">
+    {% include "sentence-plan/views/partials/downtime-banner.njk" %}
     <div class="govuk-grid-column-two-thirds">
       {% if backlink %}
         <a href="{{ backlink }}" class="govuk-back-link" data-ai-id="back-link">Back</a>

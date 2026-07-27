@@ -12,6 +12,7 @@
   <div class="govuk-width-container">
     <div class="plan-header" data-qa="plan-header">
       <div class="govuk-grid-row">
+        {% include "sentence-plan/views/partials/downtime-banner.njk" %}
           <div class="govuk-grid-column-full plan-header__subject-details">
             <p class="plan-header__subject-details__title">{{ fullName }}</p>
             <dl class="plan-header__subject-details__identifiers">
