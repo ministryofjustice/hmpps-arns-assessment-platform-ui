@@ -3,7 +3,7 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { summaryTab } from './fields'
-import { contentFor } from '../../locales';
+import { contentFor } from '../../locales'
 
 export const thinkingBehavioursSummaryStep = step({
   path: `/${Step.thinkingBehavioursSummary.path}`,

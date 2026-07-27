@@ -5,7 +5,7 @@ import { thinkingBehavioursSummaryStep } from './steps/thinking-behaviours-summa
 import { thinkingBehavioursAnalysisStep } from './steps/thinking-behaviours-analysis/step'
 import { Section } from '../../constants/section'
 import { commonContentFor } from '../../locales'
-import { thinkingBehavioursRiskOfSexualHarmStep } from './steps/thinking-behaviours-risk-of-sexual-harm/step';
+import { thinkingBehavioursRiskOfSexualHarmStep } from './steps/thinking-behaviours-risk-of-sexual-harm/step'
 
 /**
  * Thinking, Behaviours and Attitudes Journey

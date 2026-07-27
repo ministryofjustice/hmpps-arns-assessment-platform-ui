@@ -9,8 +9,8 @@ import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { contentFor } from '../../locales'
-import { commonContentFor } from '../../../../locales';
-import { sectionPath } from '../../../../constants/path';
+import { commonContentFor } from '../../../../locales'
+import { sectionPath } from '../../../../constants/path'
 
 export const thinkingBehavioursSexualHarmStep = step({
   path: `/${Step.thinkingBehavioursSexualHarm.path}`,

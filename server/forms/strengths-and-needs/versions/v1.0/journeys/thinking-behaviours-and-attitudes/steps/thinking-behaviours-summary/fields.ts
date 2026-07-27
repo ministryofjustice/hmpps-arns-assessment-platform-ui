@@ -350,7 +350,12 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       actions: { items: [{ href: Step.thinkingBehavioursSexualHarm.path, text: commonContentFor('change') }] },
     },
     {
-      key: { text: contentFor('question.thinking_behaviours_attitudes_offence_related_sexual_interest.text', CaseData.Forename) },
+      key: {
+        text: contentFor(
+          'question.thinking_behaviours_attitudes_offence_related_sexual_interest.text',
+          CaseData.Forename,
+        ),
+      },
       value: {
         blocks: [
           createSummaryRowForOffenceRelatedSexualInterest(Option.yes_offence_related_sexual_interest),
