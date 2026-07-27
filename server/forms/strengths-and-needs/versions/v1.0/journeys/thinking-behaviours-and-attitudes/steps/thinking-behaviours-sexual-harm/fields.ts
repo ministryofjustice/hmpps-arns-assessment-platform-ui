@@ -33,6 +33,9 @@ export const thinkingBehavioursSexualPreoccupation = GovUKRadioInput({
         'question.thinking_behaviours_attitudes_sexual_preoccupation.option.NO_SEXUAL_PREOCCUPATION.text',
       ),
       value: Option.no_sexual_preoccupation,
+      hint: contentFor(
+        'question.thinking_behaviours_attitudes_sexual_preoccupation.option.NO_SEXUAL_PREOCCUPATION.hint',
+      ),
     },
     {
       text: contentFor(
@@ -63,9 +66,12 @@ export const thinkingBehavioursOffenceRelatedSexualInterest = GovUKRadioInput({
   items: [
     {
       text: contentFor(
-        'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.YES_OFFENCE_RELATED_SEXUAL_INTEREST',
+        'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.YES_OFFENCE_RELATED_SEXUAL_INTEREST.text',
       ),
       value: Option.yes_offence_related_sexual_interest,
+      hint: contentFor(
+        'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.YES_OFFENCE_RELATED_SEXUAL_INTEREST.hint',
+      ),
     },
     {
       text: contentFor(
@@ -75,9 +81,12 @@ export const thinkingBehavioursOffenceRelatedSexualInterest = GovUKRadioInput({
     },
     {
       text: contentFor(
-        'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.NO_OFFENCE_RELATED_SEXUAL_INTEREST',
+        'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.NO_OFFENCE_RELATED_SEXUAL_INTEREST.text',
       ),
       value: Option.no_offence_related_sexual_interest,
+      hint: contentFor(
+        'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.NO_OFFENCE_RELATED_SEXUAL_INTEREST.text',
+      ),
     },
     {
       text: contentFor(

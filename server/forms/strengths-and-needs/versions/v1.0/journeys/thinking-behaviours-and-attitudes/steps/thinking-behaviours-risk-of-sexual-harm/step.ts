@@ -1,31 +1,30 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
-  thinkingBehavioursSexualPreoccupation,
-  thinkingBehavioursOffenceRelatedSexualInterest,
-  thinkingBehavioursEmotionalIntimacy,
+  thinkingBehavioursRiskSexualHarm,
 } from './fields'
 import { Step } from '../../constants/step'
+import { Question } from '../../constants/question'
+import { Option } from '../../constants/option'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
-import { contentFor } from '../../locales'
-import { commonContentFor } from '../../../../locales';
-import { sectionPath } from '../../../../constants/path';
+import { contentFor } from '../../locales';
+import { commonContentFor } from '../../../../locales'
+import { sectionPath } from '../../../../constants/path'
 
-export const thinkingBehavioursSexualHarmStep = step({
-  path: `/${Step.thinkingBehavioursSexualHarm.path}`,
-  title: contentFor('step.thinking_behaviours_sexual_harm'),
+export const thinkingBehavioursRiskOfSexualHarmStep = step({
+  path: `/${Step.thinkingBehavioursRiskOfSexualHarm.path}`,
+  title: contentFor('step.thinking_behaviours_risk_of_sexual_harm'),
   view: {
     locals: {
       sectionTitle: contentFor('step.thinking_behaviours_sexual_harm'),
       pageSubHeading: commonContentFor('sectionTitle.thinking-behaviours-and-attitudes'),
-      backlink: sectionPath(Section.thinking_behaviours_and_attitudes) + Step.thinkingBehavioursRiskOfSexualHarm.path,
+      sectionTitleClass: 'govuk-body-l',
+      backlink: sectionPath(Section.thinking_behaviours_and_attitudes) + Step.thinkingBehaviours.path,
     },
   },
   blocks: [
-    thinkingBehavioursSexualPreoccupation,
-    thinkingBehavioursOffenceRelatedSexualInterest,
-    thinkingBehavioursEmotionalIntimacy,
+    thinkingBehavioursRiskSexualHarm,
     saveButton,
   ],
   onSubmission: [
@@ -41,6 +40,12 @@ export const thinkingBehavioursSexualHarmStep = step({
           ),
         ],
         next: [
+          redirect({
+            when: Answer(Question.thinking_behaviours_attitudes_risk_sexual_harm).match(
+              Condition.Equals(Option.yes_risk_sexual_harm),
+            ),
+            goto: Step.thinkingBehavioursSexualHarm.path,
+          }),
           redirect({
             goto: Step.thinkingBehavioursSummary.path,
           }),

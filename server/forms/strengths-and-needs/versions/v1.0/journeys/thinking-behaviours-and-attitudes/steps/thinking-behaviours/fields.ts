@@ -35,19 +35,19 @@ const toDetailsField =
 const thinkingBehavioursPeerPressureYesDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
   option: Option.yes_peer_pressure,
   code: Question.thinking_behaviours_attitudes_peer_pressure_yes_details,
-  mandatory: true,
+  mandatory: false,
 })
 
 const thinkingBehavioursPeerPressureSomeDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
   option: Option.some_peer_pressure,
   code: Question.thinking_behaviours_attitudes_peer_pressure_some_details,
-  mandatory: true,
+  mandatory: false,
 })
 
 const thinkingBehavioursPeerPressureNoDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
   option: Option.no_peer_pressure,
   code: Question.thinking_behaviours_attitudes_peer_pressure_no_details,
-  mandatory: true,
+  mandatory: false,
 })
 
 export const thinkingBehavioursConsequences = GovUKRadioInput({
@@ -566,7 +566,7 @@ export const thinkingBehavioursChanges = GovUKRadioInput({
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: contentFor('question.thinking_behaviours_attitudes_changes.hint'),
+  hint: contentFor('question.thinking_behaviours_attitudes_changes.hint', CaseData.Forename),
   items: [
     {
       value: CommonOption.has_made_changes,

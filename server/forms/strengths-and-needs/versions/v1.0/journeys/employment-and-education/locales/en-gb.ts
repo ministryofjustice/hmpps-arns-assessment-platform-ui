@@ -61,6 +61,7 @@ export const english = {
     },
     [Question.employment_and_education_changes]: {
       text: 'Does %1 want to make changes to their employment and education?',
+      hint: '%1 must answer this question.',
       validation: 'Select if they want to make changes to their employment and education',
     },
     [Question.day_to_day_commitments]: {

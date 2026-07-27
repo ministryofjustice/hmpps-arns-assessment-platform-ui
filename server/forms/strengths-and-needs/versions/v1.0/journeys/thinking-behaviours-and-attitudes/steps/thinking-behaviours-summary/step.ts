@@ -3,10 +3,11 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { summaryTab } from './fields'
+import { contentFor } from '../../locales';
 
 export const thinkingBehavioursSummaryStep = step({
   path: `/${Step.thinkingBehavioursSummary.path}`,
-  title: 'Thinking, behaviours and attitudes Summary', // TODO: contentFor('step.thinking_behaviours_summary')
+  title: contentFor('step.thinking_behaviours_summary'),
   blocks: [summaryTab],
   onSubmission: [
     submit({

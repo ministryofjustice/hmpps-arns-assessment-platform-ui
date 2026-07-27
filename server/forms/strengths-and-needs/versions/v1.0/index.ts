@@ -18,7 +18,7 @@ import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behav
  */
 export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
-  title: 'Strengths and needs', // TODO: commonContentFor('strengths_and_needs'),
+  title: commonContentFor('strengths_and_needs'),
   path: `/${formVersion}`,
   view: {
     template: 'strengths-and-needs/views/san-step',

@@ -300,27 +300,6 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       actions: { items: [{ href: Step.thinkingBehaviours.path, text: commonContentFor('change') }] },
     },
     {
-      key: { text: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.text', CaseData.Forename) },
-      value: {
-        blocks: [
-          createSummaryRowForRiskSexualHarm(Option.yes_risk_sexual_harm),
-          createSummaryRowForSexualPreoccupation(Option.yes_sexual_preoccupation),
-          createSummaryRowForSexualPreoccupation(Option.sometimes_sexual_preoccupation),
-          createSummaryRowForSexualPreoccupation(Option.no_sexual_preoccupation),
-          createSummaryRowForSexualPreoccupation(Option.unknown_sexual_preoccupation),
-          createSummaryRowForOffenceRelatedSexualInterest(Option.yes_offence_related_sexual_interest),
-          createSummaryRowForOffenceRelatedSexualInterest(Option.some_offence_related_sexual_interest),
-          createSummaryRowForOffenceRelatedSexualInterest(Option.no_offence_related_sexual_interest),
-          createSummaryRowForOffenceRelatedSexualInterest(Option.unknown_offence_related_sexual_interest),
-          createSummaryRowForEmotionalIntimacy(Option.yes_emotional_intimacy),
-          createSummaryRowForEmotionalIntimacy(Option.sometimes_emotional_intimacy),
-          createSummaryRowForEmotionalIntimacy(Option.no_emotional_intimacy),
-          createSummaryRowForEmotionalIntimacy(Option.unknown_emotional_intimacy),
-        ].flat(),
-      },
-      actions: { items: [{ href: Step.thinkingBehaviours.path, text: commonContentFor('change') }] },
-    },
-    {
       key: { text: contentFor('question.thinking_behaviours_attitudes_changes.text', CaseData.Forename) },
       value: {
         blocks: [
@@ -347,6 +326,52 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehaviours.path, text: commonContentFor('change') }] },
+    },
+    {
+      key: { text: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.text', CaseData.Forename) },
+      value: {
+        blocks: [
+          createSummaryRowForRiskSexualHarm(Option.yes_risk_sexual_harm),
+          createSummaryRowForRiskSexualHarm(Option.no_risk_sexual_harm),
+        ].flat(),
+      },
+      actions: { items: [{ href: Step.thinkingBehavioursRiskOfSexualHarm.path, text: commonContentFor('change') }] },
+    },
+    {
+      key: { text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.text', CaseData.Forename) },
+      value: {
+        blocks: [
+          createSummaryRowForSexualPreoccupation(Option.yes_sexual_preoccupation),
+          createSummaryRowForSexualPreoccupation(Option.sometimes_sexual_preoccupation),
+          createSummaryRowForSexualPreoccupation(Option.no_sexual_preoccupation),
+          createSummaryRowForSexualPreoccupation(Option.unknown_sexual_preoccupation),
+        ].flat(),
+      },
+      actions: { items: [{ href: Step.thinkingBehavioursSexualHarm.path, text: commonContentFor('change') }] },
+    },
+    {
+      key: { text: contentFor('question.thinking_behaviours_attitudes_offence_related_sexual_interest.text', CaseData.Forename) },
+      value: {
+        blocks: [
+          createSummaryRowForOffenceRelatedSexualInterest(Option.yes_offence_related_sexual_interest),
+          createSummaryRowForOffenceRelatedSexualInterest(Option.some_offence_related_sexual_interest),
+          createSummaryRowForOffenceRelatedSexualInterest(Option.no_offence_related_sexual_interest),
+          createSummaryRowForOffenceRelatedSexualInterest(Option.unknown_offence_related_sexual_interest),
+        ].flat(),
+      },
+      actions: { items: [{ href: Step.thinkingBehavioursSexualHarm.path, text: commonContentFor('change') }] },
+    },
+    {
+      key: { text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.text', CaseData.Forename) },
+      value: {
+        blocks: [
+          createSummaryRowForEmotionalIntimacy(Option.yes_emotional_intimacy),
+          createSummaryRowForEmotionalIntimacy(Option.sometimes_emotional_intimacy),
+          createSummaryRowForEmotionalIntimacy(Option.no_emotional_intimacy),
+          createSummaryRowForEmotionalIntimacy(Option.unknown_emotional_intimacy),
+        ].flat(),
+      },
+      actions: { items: [{ href: Step.thinkingBehavioursSexualHarm.path, text: commonContentFor('change') }] },
     },
   ],
 })

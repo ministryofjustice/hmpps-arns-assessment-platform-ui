@@ -1,4 +1,4 @@
-import { Answer, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
   thinkingBehavioursConsequences,
@@ -15,18 +15,16 @@ import {
   thinkingBehavioursHostileOrientation,
   thinkingBehavioursSupervision,
   thinkingBehavioursCriminalBehaviour,
-  thinkingBehavioursRiskSexualHarm,
   thinkingBehavioursChanges,
 } from './fields'
 import { Step } from '../../constants/step'
-import { Question } from '../../constants/question'
-import { Option } from '../../constants/option'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
+import { contentFor } from '../../locales'
 
 export const thinkingBehavioursStep = step({
   path: `/${Step.thinkingBehaviours.path}`,
-  title: 'Thinking, behaviours and attitudes', // TODO: contentFor('step.thinking_behaviours')
+  title: contentFor('step.thinking_behaviours'),
   reachability: { entryWhen: true },
   blocks: [
     thinkingBehavioursConsequences,
@@ -43,13 +41,9 @@ export const thinkingBehavioursStep = step({
     thinkingBehavioursHostileOrientation,
     thinkingBehavioursSupervision,
     thinkingBehavioursCriminalBehaviour,
-    thinkingBehavioursRiskSexualHarm,
     thinkingBehavioursChanges,
     saveButton,
   ],
-  view: {
-    template: 'strengths-and-needs/views/san-step',
-  },
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -64,13 +58,7 @@ export const thinkingBehavioursStep = step({
         ],
         next: [
           redirect({
-            when: Answer(Question.thinking_behaviours_attitudes_risk_sexual_harm).match(
-              Condition.Equals(Option.yes_risk_sexual_harm),
-            ),
-            goto: Step.thinkingBehavioursSexualHarm.path,
-          }),
-          redirect({
-            goto: Step.thinkingBehavioursSummary.path,
+            goto: Step.thinkingBehavioursRiskOfSexualHarm.path,
           }),
         ],
       },

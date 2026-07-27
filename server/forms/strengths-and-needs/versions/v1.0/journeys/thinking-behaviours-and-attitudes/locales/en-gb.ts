@@ -7,6 +7,7 @@ export const english = {
   step: {
     [Step.thinkingBehaviours.code]: 'Thinking, behaviours and attitudes',
     [Step.thinkingBehavioursSexualHarm.code]: 'Risk of sexual harm',
+    [Step.thinkingBehavioursRiskOfSexualHarm.code]: 'Risk of sexual harm',
     [Step.thinkingBehavioursSummary.code]: 'Thinking, behaviours and attitudes Summary',
     [Step.thinkingBehavioursAnalysis.code]: 'Thinking, behaviours and attitudes Analysis',
   },
@@ -93,7 +94,7 @@ export const english = {
         [Option.sometimes_temper]: 'Sometimes has outbreaks of uncontrolled anger',
         [Option.no_temper]: {
           text: 'No, easily loses their temper',
-          hint: 'This may include frequent arguments or physical aggression',
+          hint: 'This may result in a loss of control or inability to stay calm until they have expressed their anger.',
         },
       },
       validation: 'Select if they are able to manage their temper',
@@ -160,6 +161,15 @@ export const english = {
     },
     [Question.thinking_behaviours_attitudes_risk_sexual_harm]: {
       text: 'Are there any concerns that %1 poses a risk of sexual harm to others?',
+      hint: `
+        <div class="govuk-warning-text govuk-!-static-margin-0">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-visually-hidden">Warning</span>
+            %1 does not have any current or previous sexual or sexually motivated offences
+          </strong>
+        </div>
+      `,
       option: {
         [Option.yes_risk_sexual_harm]: {
           text: 'Yes',
@@ -187,12 +197,16 @@ export const english = {
     [Question.thinking_behaviours_attitudes_offence_related_sexual_interest]: {
       text: 'Is there evidence %1 has offence-related sexual interests?',
       option: {
-        [Option.yes_offence_related_sexual_interest]:
-          'Yes, there are recurrent and persistent patterns of a preference for sexual activity that is illegal or harmful and no evidence of healthy sexual interests',
+        [Option.yes_offence_related_sexual_interest]: {
+          text: 'Yes, there are recurrent and persistent patterns of a preference for sexual activity that is illegal or harmful and no evidence of healthy sexual interests',
+          hint: 'They are strongly aroused by illegal harmful sexual acts with little or no interest in consensual sex.',
+        },
         [Option.some_offence_related_sexual_interest]:
           'Shows some evidence of healthy sexual activity including consensual sex but shows behaviour that is recurrent and persistent or an interest in sexual activity that is illegal or harmful',
-        [Option.no_offence_related_sexual_interest]:
-          'No, they have healthy sexual interests rather than a preference for sexual activity that is illegal or harmful',
+        [Option.no_offence_related_sexual_interest]: {
+          text: 'No, they have healthy sexual interests rather than a preference for sexual activity that is illegal or harmful',
+          hint: 'While offending, they may have engaged in sexual activity that is illegal but their preferred route to meeting their sexual needs is both legal and consensual.',
+        },
         [Option.unknown_offence_related_sexual_interest]: 'Unknown',
       },
       validation: 'Select if they show evidence of offence-related sexual interests',
@@ -213,7 +227,7 @@ export const english = {
     },
     [Question.thinking_behaviours_attitudes_changes]: {
       text: 'Does %1 want to make changes to their thinking, behaviours and attitudes?',
-      hint: 'This includes any changes they have made, are making or would like to make.',
+      hint: '%1 must answer this question.',
       validation: 'Select if they want to make changes to their thinking, behaviours and attitudes',
     },
     [Question.thinking_behaviours_attitudes_strengths_protective_factors]: {
@@ -225,14 +239,14 @@ export const english = {
       validation: 'Give details on strengths or protective factors related to their thinking, behaviours and attitudes',
     },
     [Question.thinking_behaviours_attitudes_linked_to_serious_harm]: {
-      text: 'Is %1 thinking, behaviours and attitudes linked to risk of serious harm?',
+      text: 'Are %1 thinking, behaviours and attitudes linked to risk of serious harm?',
       validation: 'Select if linked to risk of serious harm',
     },
     [Question.thinking_behaviours_attitudes_serious_harm_details]: {
       validation: 'Give details on the risk of serious harm',
     },
     [Question.thinking_behaviours_attitudes_linked_to_reoffending]: {
-      text: 'Is %1 thinking, behaviours and attitudes linked to risk of reoffending?',
+      text: 'Are %1 thinking, behaviours and attitudes linked to risk of reoffending?',
       validation: 'Select if linked to risk of reoffending',
     },
     [Question.thinking_behaviours_attitudes_risk_of_reoffending_details]: {

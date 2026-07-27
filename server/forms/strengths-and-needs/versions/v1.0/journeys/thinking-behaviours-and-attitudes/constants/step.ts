@@ -3,6 +3,10 @@ export const Step = {
     code: 'thinking_behaviours',
     path: 'thinking-behaviours',
   },
+  thinkingBehavioursRiskOfSexualHarm: {
+    code: 'thinking_behaviours_risk_of_sexual_harm',
+    path: 'thinking-behaviours-risk-of-sexual-harm',
+  },
   thinkingBehavioursSexualHarm: {
     code: 'thinking_behaviours_sexual_harm',
     path: 'thinking-behaviours-sexual-harm',

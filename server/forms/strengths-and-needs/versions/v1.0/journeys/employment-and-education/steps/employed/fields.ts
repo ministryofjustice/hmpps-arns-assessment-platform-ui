@@ -716,6 +716,7 @@ export const employmentAndEducationChanges = GovUKRadioInput({
       classes: 'govuk-fieldset__legend--m',
     },
   },
+  hint: contentFor('question.employment_and_education_changes.hint', CaseData.Forename),
   items: [
     {
       value: CommonOption.has_made_changes,
