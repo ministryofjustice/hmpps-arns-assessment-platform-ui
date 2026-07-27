@@ -5,9 +5,37 @@ import AbstractPage from '../abstractPage'
 export default class PersonalRelationshipsAndCommunityPage extends AbstractPage {
   readonly mainForm: Locator
 
+  readonly errorChildrenThatLive: Locator
+
+  readonly enterDetailsChildrenThatLive: Locator
+
+  readonly errorChildrenThatDoNotLive: Locator
+
+  readonly enterDetailsChildrenThatDoNotLive: Locator
+
+  readonly errorChildrenThatVisit: Locator
+
+  readonly enterDetailsChildrenThatVisit: Locator
+
   private constructor(page: Page) {
     super(page)
     this.mainForm = page.getByTestId('main-form')
+    this.errorChildrenThatLive = page.getByRole('link', { name: 'Enter details of any children that live with them' })
+    this.errorChildrenThatDoNotLive = page.getByRole('link', {
+      name: 'Enter details of any children that do not live with them',
+    })
+    this.errorChildrenThatVisit = page.getByRole('link', {
+      name: 'Enter details of any children that visit them regularly',
+    })
+    this.enterDetailsChildrenThatLive = page.getByRole('textbox', {
+      description: 'Enter details of any children that live with them',
+    })
+    this.enterDetailsChildrenThatDoNotLive = page.getByRole('textbox', {
+      description: 'Enter details of any children that do not live with them',
+    })
+    this.enterDetailsChildrenThatVisit = page.getByRole('textbox', {
+      description: 'Enter details of any children that visit them regularly',
+    })
   }
 
   /**

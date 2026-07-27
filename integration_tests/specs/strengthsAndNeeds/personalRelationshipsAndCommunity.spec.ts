@@ -183,6 +183,73 @@ test.describe('Personal relationships and community Page', () => {
     })
   })
 
+  test.describe('Validation', () => {
+    test('validation yes children', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          {
+            question: 'personal_relationships_community_children_details',
+            value: ['YES_CHILDREN_LIVING_WITH_POP', 'YES_CHILDREN_NOT_LIVING_WITH_POP', 'YES_CHILDREN_VISITING'],
+          },
+        ]).save()
+
+      await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+        page,
+        handoverLink,
+        baseURL,
+      )
+
+      const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
+        page,
+        'Are there any children',
+      )
+
+      await personalRelationshipsAndCommunityPage.saveAndContinue.click()
+
+      await personalRelationshipsAndCommunityPage.errorChildrenThatLive.click()
+      await expect(personalRelationshipsAndCommunityPage.enterDetailsChildrenThatLive).toBeFocused()
+      await personalRelationshipsAndCommunityPage.errorChildrenThatDoNotLive.click()
+      await expect(personalRelationshipsAndCommunityPage.enterDetailsChildrenThatDoNotLive).toBeFocused()
+      await personalRelationshipsAndCommunityPage.errorChildrenThatVisit.click()
+      await expect(personalRelationshipsAndCommunityPage.enterDetailsChildrenThatVisit).toBeFocused()
+    })
+
+    test('validation other important people', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'personal_relationships_community_children_details', value: ['YES_CHILDREN_LIVING_WITH_POP'] },
+          {
+            question: 'personal_relationships_community_children_details_yes_children_living_with_pop_details',
+            value: 'test',
+          },
+          { question: 'personal_relationships_community_important_people', value: ['OTHER'] },
+        ]).save()
+
+      await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+        page,
+        handoverLink,
+        baseURL,
+        'personal-relationships',
+      )
+
+      const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
+        page,
+        'Who are the important people',
+      )
+
+      await personalRelationshipsAndCommunityPage.saveAndContinue.click()
+      await personalRelationshipsAndCommunityPage.errorEnterDetails.click()
+
+      await expect(personalRelationshipsAndCommunityPage.enterDetails).toBeFocused()
+    })
+  })
+
   test.describe('Summary', () => {
     test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
       const { handoverLink, sanAssessmentId } = await createSession({
