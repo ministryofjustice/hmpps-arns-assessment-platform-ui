@@ -20,6 +20,10 @@ import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../c
 import { CaseData } from '../../../../constants'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
 
+const hasHistoricPostAgreementStatus = Data('historic.latestAgreementStatus').match(
+  Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
+)
+
 function buildMoveButtonProps() {
   return {
     showMoveUp: false,
@@ -216,9 +220,7 @@ export const goalsSection = TemplateWrapper({
                   card: [
                     TemplateWrapper({
                       // Before any agreement status exists, render the draft card variant.
-                      visibleWhen: Data('historic.latestAgreementStatus').not.match(
-                        Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
-                      ),
+                      visibleWhen: not(hasHistoricPostAgreementStatus),
                       template: '{{slot:draftCard}}',
                       slots: {
                         draftCard: [
@@ -253,9 +255,7 @@ export const goalsSection = TemplateWrapper({
                     }),
                     TemplateWrapper({
                       // Once an agreement status exists (including "could not answer"), use the agreed variant.
-                      visibleWhen: Data('historic.latestAgreementStatus').match(
-                        Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
-                      ),
+                      visibleWhen: hasHistoricPostAgreementStatus,
                       template: '{{slot:agreedCard}}',
                       slots: {
                         agreedCard: [

@@ -1,8 +1,11 @@
+import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { planOverviewJourney } from '../..'
 import { sentencePlanOverviewPath } from '../../../../constants'
+import { hasPostAgreementStatus } from '../../../../guards'
 import {
   achievedGoalsSection,
   activeGoalsSection,
+  draftPlanWatermark,
   futureGoalsSection,
   planAgreedMessage,
   planCreatedMessage,
@@ -32,6 +35,7 @@ describe('print preview step', () => {
       },
     })
     expect(printPreviewStep.blocks).toEqual([
+      draftPlanWatermark,
       planLastUpdatedMessage,
       planAgreedMessage,
       planCreatedMessage,
@@ -42,6 +46,13 @@ describe('print preview step', () => {
     ])
     expect(printPreviewStep.onAccess?.[0]?.next).toEqual([expect.objectContaining({ goto: sentencePlanOverviewPath })])
     expect(planOverviewJourney.steps).toContainEqual(printPreviewStep)
+  })
+
+  it('adds a draft-only watermark to the print preview', () => {
+    expect(draftPlanWatermark).toMatchObject({
+      template: expect.stringContaining('class="draft-plan-watermark" aria-hidden="true">DRAFT</div>'),
+      visibleWhen: not(hasPostAgreementStatus),
+    })
   })
 
   it.each([

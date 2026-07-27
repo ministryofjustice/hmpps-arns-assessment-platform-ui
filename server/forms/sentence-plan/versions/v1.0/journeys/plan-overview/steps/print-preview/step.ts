@@ -5,6 +5,7 @@ import { redirectToOverviewUnlessPrintAndShareEnabled } from '../../../../guards
 import {
   achievedGoalsSection,
   activeGoalsSection,
+  draftPlanWatermark,
   futureGoalsSection,
   planAgreedMessage,
   planCreatedMessage,
@@ -32,6 +33,7 @@ export const printPreviewStep = step({
     },
   },
   blocks: [
+    draftPlanWatermark,
     planLastUpdatedMessage,
     planAgreedMessage,
     planCreatedMessage,

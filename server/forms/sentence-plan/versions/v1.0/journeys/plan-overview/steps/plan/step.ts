@@ -29,13 +29,7 @@ import {
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
-import {
-  isOasysAccess,
-  isPrintAndShareEnabled,
-  isReadOnlyAccess,
-  isReadWriteAccess,
-  lacksPostAgreementStatus,
-} from '../../../../guards'
+import { hasPostAgreementStatus, isOasysAccess, isPrintAndShareEnabled, isReadOnlyAccess } from '../../../../guards'
 
 export const planStep = step({
   path: '/overview',
@@ -47,9 +41,9 @@ export const planStep = step({
       buttons: {
         showPrintAllGoalsButton: isPrintAndShareEnabled,
         showReturnToOasysButton: isOasysAccess,
-        showCreateGoalButton: isReadWriteAccess,
+        showCreateGoalButton: not(isReadOnlyAccess),
         // Only show "Agree plan" while still in draft and when the user has edit access.
-        showAgreePlanButton: and(lacksPostAgreementStatus, isReadWriteAccess),
+        showAgreePlanButton: and(not(hasPostAgreementStatus), not(isReadOnlyAccess)),
       },
     },
   },

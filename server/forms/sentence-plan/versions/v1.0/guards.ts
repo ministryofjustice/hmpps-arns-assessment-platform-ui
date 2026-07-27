@@ -26,22 +26,13 @@ export const isOasysAccess = Data('sessionDetails.accessType').match(Condition.E
 
 export const isReadOnlyAccess = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
-export const isReadWriteAccess = Data('sessionDetails.planAccessMode').not.match(Condition.Equals('READ_ONLY'))
-
 export const isPrintAndShareEnabled = Data('featureFlags.printAndShareEnabled').match(Condition.Equals(true))
 
 export const hasPostAgreementStatus = Data('latestAgreementStatus').match(
   Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
 )
 
-export const lacksPostAgreementStatus = Data('latestAgreementStatus').not.match(
-  Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
-)
-
 export const hasCouldNotAnswerStatus = Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))
-
-export const lacksCouldNotAnswerStatus = Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER'))
-export const isCouldNotAnswerStatus = Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))
 
 /**
  * Redirect users with READ_ONLY access to plan overview.
@@ -66,7 +57,7 @@ export const redirectToOverviewUnlessPrintAndShareEnabled = () =>
  */
 export const redirectIfNotPostAgreement = (goto: string) =>
   access({
-    when: lacksPostAgreementStatus,
+    when: not(hasPostAgreementStatus),
     next: [redirect({ goto })],
   })
 
@@ -111,7 +102,7 @@ export const redirectUnlessAllStepsCompleted = (goto: string) =>
  */
 export const redirectUnlessCouldNotAnswer = (goto: string) =>
   access({
-    when: lacksCouldNotAnswerStatus,
+    when: not(hasCouldNotAnswerStatus),
     next: [redirect({ goto })],
   })
 
@@ -164,6 +155,6 @@ export const redirectIfMergedMpopPlan = () =>
  */
 export const redirectToPrivacyUnlessAccepted = () =>
   access({
-    when: and(Data('privacyAccepted').not.match(Condition.Equals(true)), isReadWriteAccess),
+    when: and(Data('privacyAccepted').not.match(Condition.Equals(true)), not(isReadOnlyAccess)),
     next: [redirect({ goto: '/sentence-plan/privacy' })],
   })
