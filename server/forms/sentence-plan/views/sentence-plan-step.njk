@@ -88,7 +88,7 @@
       {% include "sentence-plan/views/partials/print-no-js-message.njk" %}
 
       {% if backlink %}
-        <a href="{{ backlink }}" class="govuk-back-link"{% if backlinkAiId %} data-ai-id="{{ backlinkAiId }}"{% endif %}>Back</a>
+        <a href="{{ backlink }}" class="govuk-back-link" data-ai-id="back-link">Back</a>
       {% endif %}
 
       <form id="main-form" method="post" novalidate data-qa="main-form">
