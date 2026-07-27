@@ -28,6 +28,8 @@ export const isReadOnlyAccess = Data('sessionDetails.planAccessMode').match(Cond
 
 export const isReadWriteAccess = Data('sessionDetails.planAccessMode').not.match(Condition.Equals('READ_ONLY'))
 
+export const isPrintAndShareEnabled = Data('featureFlags.printAndShareEnabled').match(Condition.Equals(true))
+
 export const hasPostAgreementStatus = Data('latestAgreementStatus').match(
   Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
 )
@@ -47,6 +49,15 @@ export const isCouldNotAnswerStatus = Data('latestAgreementStatus').match(Condit
 export const redirectToOverviewIfReadOnly = () =>
   access({
     when: isReadOnlyAccess,
+    next: [redirect({ goto: sentencePlanOverviewPath })],
+  })
+
+/**
+ * Redirect users to plan overview when print and share is disabled.
+ */
+export const redirectToOverviewUnlessPrintAndShareEnabled = () =>
+  access({
+    when: not(isPrintAndShareEnabled),
     next: [redirect({ goto: sentencePlanOverviewPath })],
   })
 
