@@ -27,6 +27,8 @@ describe('GotenbergClient', () => {
         expect(multipartBody).toContain(
           'hmpps-arns-assessment-platform-ui.session=session-value;scope=^http://assessment-ui/',
         )
+        expect(multipartBody).toContain('x-gotenberg-render')
+        expect(multipartBody).toContain('true;scope=^http://assessment-ui/')
         expect(multipartBody).toContain('skipNetworkIdleEvent')
         expect(multipartBody).toContain('printBackground')
         return true

@@ -78,6 +78,28 @@
   resize: none;
 }
 
+/*
+ * Hidden on screen, then repeated once on every printed page by Chromium. Because
+ * this is real text rather than a background image, print settings cannot hide it.
+ */
+.draft-plan-watermark {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  color: rgba(govuk-colour('black'), 0.13);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 180px;
+  font-weight: bold;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(45deg);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
 // Plan history accordion - only the action label (e.g., "Goal created") is bold via <strong>.
 // GOV.UK's default applies bold to the whole section heading; we override to normal so the
 // trailing "on [date] by [person]" renders at regular weight.
@@ -120,6 +142,10 @@
 
 // Print styles
 @media print {
+  .draft-plan-watermark {
+    display: block;
+  }
+
   .moj-primary-navigation {
     display: none !important;
   }
