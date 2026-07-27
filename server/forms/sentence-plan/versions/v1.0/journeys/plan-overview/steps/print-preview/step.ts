@@ -25,6 +25,7 @@ export const printPreviewStep = step({
       hidePreviousVersions: true,
       hidePhaseBanner: true,
       hideBackToTop: true,
+      showPrintPageHeaders: true,
       headerPageHeading: Format('%1 plan', CaseData.ForenamePossessive),
       buttons: {
         showExportAsPdfButton: true,
