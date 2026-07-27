@@ -33,6 +33,7 @@ import accessFormPackage from './forms/access'
 import platformPoliciesFormPackage from './forms/platform'
 import sentencePlanFormPackage from './forms/sentence-plan'
 import trainingSessionLauncher from './forms/training-session-launcher'
+import tieringAssessmentFormPackage from './forms/tiering-assessment'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -59,6 +60,13 @@ export default function createApp(services: Services): express.Application {
       handoverApi: services.handoverApiClient,
     })
     .registerPackage(sentencePlanFormPackage, {
+      api: services.assessmentPlatformApiClient,
+      coordinatorApi: services.coordinatorApiClient,
+      deliusApi: services.deliusApiClient,
+      auditService: services.auditService,
+      featureFlagService: services.featureFlagService,
+    })
+    .registerPackage(tieringAssessmentFormPackage, {
       api: services.assessmentPlatformApiClient,
       coordinatorApi: services.coordinatorApiClient,
       deliusApi: services.deliusApiClient,
