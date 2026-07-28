@@ -209,6 +209,28 @@
     print-color-adjust: exact;
   }
 
+  // Scale the printed plan content down
+  .govuk-main-wrapper {
+    zoom: 0.75;
+  }
+
+  // The DRAFT watermark is a field inside .govuk-main-wrapper, so the zoom above shrinks it too.
+  // Cancel that here so it keeps its original size.
+  .draft-plan-watermark {
+    zoom: 1.5;
+  }
+
+  // Let the printed content run the full page width — the GOV.UK width container's max-width,
+  // centering and side padding are what create the wide side margins (the @page margin is only 5mm).
+  // Exclude the common header's own width containers, or its logo sits flush against the edge.
+  .govuk-width-container:not(.arns-common-header *) {
+    max-width: none;
+    margin-right: 0;
+    margin-left: 0;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
   .arns-common-header {
     break-inside: avoid;
     page-break-inside: avoid;
