@@ -79,11 +79,10 @@
 }
 
 /*
- * Hidden on screen, then repeated once on every printed page by Chromium. Because
- * this is real text rather than a background image, print settings cannot hide it.
+ * Fixed to the viewport on screen, then repeated once on every printed page by Chromium.
+ * Because this is real text rather than a background image, print settings cannot hide it.
  */
 .draft-plan-watermark {
-  display: none;
   position: fixed;
   z-index: 1;
   top: 50%;
@@ -142,10 +141,6 @@
 
 // Print styles
 @media print {
-  .draft-plan-watermark {
-    display: block;
-  }
-
   .moj-primary-navigation {
     display: none !important;
   }
