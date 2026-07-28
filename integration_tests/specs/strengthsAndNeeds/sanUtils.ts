@@ -10,11 +10,13 @@ export const accommodation = '/accommodation'
 export const employment = '/employment-and-education'
 export const health = '/health-and-wellbeing'
 export const drugUse = '/drug-use'
+export const alcohol = '/alcohol-use'
 
 export const sentencePlanV1URLs = {
   PRIVACY_SCREEN: `${sanFormPath}${privacyStepPath}`,
   ACCOMODATION: sanFormPath + v1Path + accommodation,
   EMPLOYMENT_AND_EDUCATION: sanFormPath + v1Path + employment,
+  ALCOHOL_USE: sanFormPath + v1Path + alcohol,
 }
 
 // Page titles for san
@@ -23,6 +25,7 @@ export const sanPageTitles = {
   employmentAndEducation: 'Employed',
   healthAndWellbeing: 'Health Wellbeing',
   drugUse: 'Drug use',
+  alcoholUse: 'Alcohol use',
 }
 
 export const sanServiceName = 'Strengths and needs'

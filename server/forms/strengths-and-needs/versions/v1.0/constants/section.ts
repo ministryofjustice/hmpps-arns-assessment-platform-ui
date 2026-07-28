@@ -32,7 +32,7 @@ export const Section = {
   },
   alcohol_use: {
     code: 'alcohol-use',
-    path: '',
+    path: '/alcohol-use',
     sideNavHref: `${basePath}/alcohol-use/alcohol-use?resume=true`,
     statusKey: 'alcohol_section_status',
   },

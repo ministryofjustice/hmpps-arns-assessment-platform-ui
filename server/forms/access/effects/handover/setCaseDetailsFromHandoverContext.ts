@@ -25,6 +25,7 @@ export const setCaseDetailsFromHandoverContext = () => (context: AccessContext) 
     },
     crn: subject.crn,
     pnc: subject.pnc,
+    gender: subject.gender == null ? undefined : String(subject.gender),
     dateOfBirth: subject.dateOfBirth,
     nomisId: subject.nomisId,
     location: subject.location,

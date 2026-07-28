@@ -3,6 +3,7 @@ import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 import { financeJourney } from './journeys/finance'
 import { drugUseJourney } from './journeys/drug-use'
+import { alcoholUseJourney } from './journeys/alcohol-use'
 import { StrengthsAndNeedsEffects } from '../../effects'
 import { Section } from './constants/section'
 import { basePath, formVersion } from './constants/formVersion'
@@ -42,5 +43,12 @@ export const strengthsAndNeedsV1Journey = journey({
       ],
     }),
   ],
-  children: [accommodationJourney, employmentJourney, drugUseJourney, financeJourney, healthWellbeingJourney],
+  children: [
+    accommodationJourney,
+    employmentJourney,
+    drugUseJourney,
+    alcoholUseJourney,
+    financeJourney,
+    healthWellbeingJourney,
+  ],
 })
