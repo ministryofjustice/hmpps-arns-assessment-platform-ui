@@ -56,6 +56,7 @@ services:
       AAP_DATABASE_CONNECTION_STRING: postgres://root:dev@postgres:5432/postgres
       HANDOVER_API_URL: http://arns-handover:7070
       COORDINATOR_API_URL: http://coordinator-api:8080
+      RISK_ACTUARIAL_API_URL: http://risk-actuarial-api:8080
       HMPPS_AUTH_URL: http://hmpps-auth:9090/auth
       CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-e2e
       CLIENT_CREDS_CLIENT_SECRET: clientsecret
