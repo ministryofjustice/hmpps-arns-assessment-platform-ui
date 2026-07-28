@@ -101,3 +101,10 @@ save-logs: ## Saves docker container logs in a directory defined by OUTPUT_LOGS_
 	docker logs ${PROJECT_NAME}-risk-actuarial-api-1 > ${OUTPUT_LOGS_DIR}/risk-actuarial-api.log
 	docker logs ${PROJECT_NAME}-hmpps-auth-1 > ${OUTPUT_LOGS_DIR}/hmpps-auth.log
 	docker logs ${PROJECT_NAME}-wiremock-1 > ${OUTPUT_LOGS_DIR}/wiremock.log
+
+dev-api-token: ## Generates a JWT for authenticating with the aap-api for hmpps-arns-assessment-platform-ui-system client.
+	docker compose ${DEV_COMPOSE_FILES} exec aap-api \
+	curl --location 'http://hmpps-auth:9090/auth/oauth/token' \
+	--header 'authorization: Basic aG1wcHMtYXJucy1hc3Nlc3NtZW50LXBsYXRmb3JtLXVpLXN5c3RlbTpjbGllbnRzZWNyZXQ=' \
+	--header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=client_credentials' \
+	| jq -r '.access_token' | xargs printf "\nToken:\n%s\n"

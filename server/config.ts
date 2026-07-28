@@ -137,6 +137,7 @@ export default {
         deadline: Number(get('RISK_ACTUARIAL_API_TIMEOUT_DEADLINE', 5000)),
       },
       agent: new AgentConfig(Number(get('RISK_ACTUARIAL_API_TIMEOUT_RESPONSE', 5000))),
+      enabled: get('RISK_ACTUARIAL_API_ENABLED', 'false') === 'true',
     },
   },
   sanUrl: get('SAN_URL', 'http://localhost:3000', requiredInProduction),
