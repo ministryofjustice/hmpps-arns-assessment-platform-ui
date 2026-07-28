@@ -12,6 +12,7 @@ import { CollectionBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge
 import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { PrintGoalSummaryCard } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
+import { hasPostAgreementStatus } from '../../../../guards'
 
 type GoalStatus = 'ACTIVE' | 'FUTURE' | 'ACHIEVED' | 'REMOVED'
 
@@ -20,6 +21,11 @@ const hasLastUpdatedDetails = and(
   Data('lastUpdatedDate').match(Condition.IsRequired()),
   Data('lastUpdatedByName').match(Condition.IsRequired()),
 )
+
+export const draftPlanWatermark = TemplateWrapper({
+  visibleWhen: not(hasPostAgreementStatus),
+  template: '<div class="draft-plan-watermark" aria-hidden="true">DRAFT</div>',
+})
 
 export const planLastUpdatedMessage = GovUKBody({
   visibleWhen: hasLastUpdatedDetails,

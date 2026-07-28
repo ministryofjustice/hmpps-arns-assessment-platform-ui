@@ -36,7 +36,6 @@ services:
       TOKEN_VERIFICATION_ENABLED: true
       DELIUS_API_URL: http://wiremock:8080/delius
       INGRESS_URL: http://localhost:3000
-      FEATURE_FLAG_URL: https://feature-toggles-dev.hmpps.service.justice.gov.uk
       OASYS_URL: http://localhost:3000/training-session-launcher/sessions
       MPOP_URL: http://localhost:3000/sign-in
       SAN_URL: http://localhost:3000
