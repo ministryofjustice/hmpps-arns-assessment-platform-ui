@@ -1,0 +1,21 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% macro renderModal(id, title, buttonText) %}
+  <div class="gem-c-modal-dialogue" data-module="modal-dialogue" id="{{ id }}">
+    <div class="gem-c-modal-dialogue__overlay"></div>
+    <dialog class="gem-c-modal-dialogue__box" aria-modal="true" role="dialog" tabindex="0" aria-label="Delete">
+      <div class="gem-c-modal-dialogue__content">
+        <p class="govuk-heading-m">{{ title }}</p>
+        <div class="gem-c-modal-dialogue__actions">
+          {{ govukButton({
+            text: buttonText,
+            name: 'delete',
+            value: id,
+            classes: 'govuk-button--warning'
+          }) }}
+          <button class="govuk-link gem-c-modal-dialogue__custom-close-button">Cancel</button>
+        </div>
+      </div>
+    </dialog>
+  </div>
+{% endmacro %}

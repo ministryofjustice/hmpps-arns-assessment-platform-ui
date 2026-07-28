@@ -10,7 +10,7 @@ const isMissingAssessmentQueryError = (error: unknown): boolean =>
 
 const isNotFoundApiError = (error: unknown): boolean => error instanceof SanitisedError && error.responseStatus === 404
 
-const loadAssessmentQuery = async (deps: StrengthsAndNeedsEffectsDeps, query: AssessmentVersionQuery) => {
+export const loadAssessmentQuery = async (deps: StrengthsAndNeedsEffectsDeps, query: AssessmentVersionQuery) => {
   try {
     return await deps.api.executeQuery(query)
   } catch (error) {
@@ -73,6 +73,7 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
 
   const answers = unwrapAll<Record<string, unknown>>(assessment.answers)
   const properties = unwrapAll<Record<string, unknown>>(assessment.properties)
+  const collections = assessment.collections
 
   Object.entries(answers).forEach(([code, value]) => {
     context.setAnswer(code, value)

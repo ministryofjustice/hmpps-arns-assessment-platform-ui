@@ -56,7 +56,7 @@ export const Section = {
   },
   offence_analysis: {
     code: 'offence-analysis',
-    path: '',
+    path: '/offence-analysis',
     sideNavHref: `${basePath}/offence-analysis/offence-analysis?resume=true`,
     statusKey: 'offences_section_status',
   },

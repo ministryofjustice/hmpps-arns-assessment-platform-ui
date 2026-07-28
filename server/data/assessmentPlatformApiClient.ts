@@ -25,6 +25,7 @@ export default class AssessmentPlatformApiClient extends RestClient {
    * Throws if the command fails.
    */
   async executeCommand<T extends Commands>(command: T): Promise<CommandResultFor<T>> {
+    let x = JSON.stringify(command)
     const [result] = await this.executeCommands(command)
     return result
   }

@@ -4,14 +4,14 @@ import {
   GeneratorBuilder,
   GeneratorFunctionExpr,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
+import {ResolvableArray, ResolvableString} from '@ministryofjustice/hmpps-forge/core/components'
 import { getTextFromListDefinition } from './getTextFromListDefinition'
 import { getFormatterDateFromIso } from './getFormatterDateFromIso'
 import { getDrugValueLower } from './getDrugValueLower'
 
 export interface SANGeneratorShape {
   getTextFromListDefinition: (
-    items: any[] | ChainableExpr<any[]>,
+    items: any[] | ChainableExpr<any[]> | ResolvableArray<any>,
     value: string | ResolvableString,
   ) => GeneratorBuilder<ResolvableString[]>
   getFormatterDateFromIso: (value: any | ChainableExpr<any>) => GeneratorFunctionExpr

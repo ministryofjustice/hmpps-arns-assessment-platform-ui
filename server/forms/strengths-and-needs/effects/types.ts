@@ -1,8 +1,12 @@
 import type { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
 import { User } from '../../../interfaces/user'
-import { CommandResult, CreateAssessmentCommandResult } from '../../../interfaces/aap-api/commandResult'
 import {
-  CreateAssessmentCommand,
+  CommandResult,
+  CreateAssessmentCommandResult,
+  CreateCollectionCommandResult
+} from '../../../interfaces/aap-api/commandResult'
+import {
+  CreateAssessmentCommand, CreateCollectionCommand,
   UpdateAssessmentAnswersCommand,
   UpdateAssessmentPropertiesCommand,
 } from '../../../interfaces/aap-api/command'
@@ -12,6 +16,8 @@ import { AssessmentIdentifiers } from '../../../interfaces/aap-api/identifier'
 import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessSessionDetails } from '../../access/effects/types'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
+import {AssessmentPlatformApiClient} from "../../../data";
+import {Collection, CollectionItem} from "../../../interfaces/aap-api/dataModel";
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers
@@ -27,16 +33,19 @@ export interface StrengthsAndNeedsSession {
   accessDetails?: AccessSessionDetails
   sessionDetails?: StrengthsAndNeedsSessionDetails
   handoverContext?: HandoverContext
+  patternDrafts?: Record<string, Record<string, unknown>>
 }
 
 /**
  * Data context for SAN effects.
  */
 export interface StrengthsAndNeedsData {
+  victimCollectionUuid: string
   caseData?: CaseDetails
   sessionDetails?: StrengthsAndNeedsSessionDetails
   assessment?: AssessmentVersionQueryResult
   assessmentUuid?: string
+  victims?: CollectionItem[]
   [key: string]: unknown
 }
 
@@ -59,13 +68,6 @@ export type StrengthsAndNeedsContext = EffectFunctionContext<
   StrengthsAndNeedsState
 >
 
-export interface StrengthsAndNeedsAssessmentApi {
-  executeQuery(query: AssessmentVersionQuery): Promise<AssessmentVersionQueryResult>
-  executeCommand(command: CreateAssessmentCommand): Promise<CreateAssessmentCommandResult>
-  executeCommand(command: UpdateAssessmentAnswersCommand): Promise<CommandResult>
-  executeCommand(command: UpdateAssessmentPropertiesCommand): Promise<CommandResult>
-}
-
 export interface StrengthsAndNeedsEffectsDeps {
-  api: StrengthsAndNeedsAssessmentApi
+  api: AssessmentPlatformApiClient
 }

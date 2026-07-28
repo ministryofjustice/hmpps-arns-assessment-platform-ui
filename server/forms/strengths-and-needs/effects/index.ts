@@ -1,13 +1,18 @@
-import { defineEffectFunctions } from '@ministryofjustice/hmpps-forge/core/authoring'
-import type { FunctionEvaluator } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { deriveDrugCategories } from './assessment/deriveDrugCategories'
-import { loadAssessment } from './assessment/loadAssessment'
-import { saveCurrentStepAnswers } from './assessment/saveCurrentStepAnswers'
-import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
-import { loadSessionData } from './session/loadSessionData'
-import { StrengthsAndNeedsEffectsDeps } from './types'
-import { setSectionProgress } from './assessment/setSectionProgress'
-import { saveAndClearStaleAnswers } from './assessment/saveAndClearStaleAnswers'
+import type {FunctionEvaluator} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {defineEffectFunctions} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {deriveDrugCategories} from './assessment/deriveDrugCategories'
+import {loadAssessment} from './assessment/loadAssessment'
+import {saveCurrentStepAnswers} from './assessment/saveCurrentStepAnswers'
+import {initializeSessionFromAccess} from './session/initializeSessionFromAccess'
+import {loadSessionData} from './session/loadSessionData'
+import {StrengthsAndNeedsEffectsDeps} from './types'
+import {setSectionProgress} from './assessment/setSectionProgress'
+import {saveAndClearStaleAnswers} from './assessment/saveAndClearStaleAnswers'
+import {addItemToCollection} from "./assessment/addItemToCollection";
+import {removeItemToCollection} from "./assessment/removeItemToCollection";
+import {loadAnswersFromCollection} from "./assessment/loadAnswersFromCollection";
+import {loadItemFromCollection} from "./assessment/loadItemFromCollection";
+import {updateItemFromCollection} from "./assessment/updateItemFromCollection";
 
 type EffectShapesFromFactories<TFactories> = {
   [K in keyof TFactories]: TFactories[K] extends (deps: infer _Deps) => infer Evaluator
@@ -23,6 +28,11 @@ const strengthsAndNeedsEffectFactories = {
   loadAssessment,
   saveCurrentStepAnswers,
   saveAndClearStaleAnswers,
+  addItemToCollection,
+  updateItemFromCollection,
+  loadItemFromCollection,
+  loadAnswersFromCollection,
+  removeItemToCollection,
   deriveDrugCategories,
   setSectionProgress,
 }

@@ -24,6 +24,13 @@
   {% endblock %}
 {% endblock %}
 
+{% block bodyEnd %}
+  {{ super() }}
+  {% block pageScripts %}
+    <script src="{{ '/assets/js/forms/strengths-and-needs/assets/form.js' | assetMap }}"></script>
+  {% endblock %}
+{% endblock %}
+
 {% block govukHeader %}
   {{ super() }}
   {% include "sentence-plan/views/partials/phase-banner.njk" %}
