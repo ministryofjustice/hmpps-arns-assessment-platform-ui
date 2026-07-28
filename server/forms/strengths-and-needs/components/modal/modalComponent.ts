@@ -1,13 +1,15 @@
 import {buildNunjucksComponent} from "@ministryofjustice/hmpps-forge/express-nunjucks";
 import {block as buildBlock,} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {BasicBlockProps, BlockDefinition, ResolvableString} from "@ministryofjustice/hmpps-forge/core/components";
+import {
+  BasicBlockProps,
+  BlockDefinition,
+  EvaluatedBlock,
+  ResolvableString
+} from "@ministryofjustice/hmpps-forge/core/components";
 
 export interface ModalProps extends BasicBlockProps {
-  /** The card's heading. */
   id: ResolvableString
-  /** The card's heading. */
   title: ResolvableString
-  /** Body text shown below the heading. */
   buttonText: ResolvableString
 }
 
@@ -20,12 +22,10 @@ export function Modal(props: ModalProps): Modal {
 }
 
 export const modalComponent =
-  buildNunjucksComponent<Modal>('modal', (block, nunjucksEnv) => {
+  buildNunjucksComponent<Modal>('modal', (block: EvaluatedBlock<Modal>, nunjucksEnv) => {
   return nunjucksEnv.render('strengths-and-needs/components/modal/modal.njk', {
-    params: {
-      id: block.id,
-      title: block.title,
-      button: block.buttonText
-    },
+    id: block.id,
+    title: block.title,
+    buttonText: block.buttonText
   })
 })
