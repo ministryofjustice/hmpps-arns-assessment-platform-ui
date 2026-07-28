@@ -3,13 +3,10 @@ import request from 'supertest'
 import GotenbergClient from '../data/gotenbergClient'
 import pdfRoutes, { PRINT_PREVIEW_PATH, PRINT_PREVIEW_PDF_PATH } from './pdf'
 import { SESSION_COOKIE_NAME } from '../middleware/setUpWebSession'
-import AuditService, { AuditEvent } from '../services/auditService'
 
 describe(`GET ${PRINT_PREVIEW_PDF_PATH}`, () => {
   const renderPdfFromUrl = jest.fn()
   const gotenbergClient = { renderPdfFromUrl } as unknown as GotenbergClient
-  const sendAuditEvent = jest.fn()
-  const auditService = { send: sendAuditEvent } as unknown as AuditService
 
   const createApp = ({ printAndShareEnabled = true } = {}) => {
     const app = express()
@@ -25,7 +22,7 @@ describe(`GET ${PRINT_PREVIEW_PDF_PATH}`, () => {
       res.locals.featureFlags = { printAndShareEnabled }
       next()
     })
-    app.use(pdfRoutes(gotenbergClient, auditService))
+    app.use(pdfRoutes(gotenbergClient))
     app.use(
       (
         error: { status?: number; message: string },
@@ -58,17 +55,6 @@ describe(`GET ${PRINT_PREVIEW_PDF_PATH}`, () => {
       sessionCookie: `${SESSION_COOKIE_NAME}=session-value`,
       requestId: 'request-id',
     })
-    expect(sendAuditEvent).toHaveBeenCalledWith({
-      action: AuditEvent.EXPORT_PLAN_PDF,
-      who: 'user-id',
-      subjectId: 'X000001',
-      subjectType: 'CRN',
-      correlationId: 'request-id',
-      details: {
-        formVersion: 'v1.0',
-        planIdentifier: { type: 'UUID', uuid: 'assessment-id' },
-      },
-    })
   })
 
   it('rejects a request without a session cookie', async () => {
@@ -78,7 +64,6 @@ describe(`GET ${PRINT_PREVIEW_PDF_PATH}`, () => {
       .expect('A valid session is required to export a sentence plan')
 
     expect(renderPdfFromUrl).not.toHaveBeenCalled()
-    expect(sendAuditEvent).not.toHaveBeenCalled()
   })
 
   it('rejects a request when print and share is disabled', async () => {
@@ -89,7 +74,6 @@ describe(`GET ${PRINT_PREVIEW_PDF_PATH}`, () => {
       .expect('PDF export is not available')
 
     expect(renderPdfFromUrl).not.toHaveBeenCalled()
-    expect(sendAuditEvent).not.toHaveBeenCalled()
   })
 
   it('passes a Gotenberg failure to the error handler', async () => {
@@ -100,7 +84,5 @@ describe(`GET ${PRINT_PREVIEW_PDF_PATH}`, () => {
       .set('Cookie', `${SESSION_COOKIE_NAME}=session-value`)
       .expect(500)
       .expect('Gotenberg failed')
-
-    expect(sendAuditEvent).not.toHaveBeenCalled()
   })
 })

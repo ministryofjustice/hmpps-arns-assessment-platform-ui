@@ -12,7 +12,7 @@ import {
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageLayout } from './fields'
-import { AuditEvent, POST_AGREEMENT_PROCESS_STATUSES, SentencePlanEffects } from '../../../../../effects'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 import { hasPostAgreementStatus, redirectIfGoalNotFound } from '../../../guards'
 
@@ -67,7 +67,7 @@ export const changeGoalStep = step({
         effects: [
           SentencePlanEffects.updateActiveGoal(),
           SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL, {
-            planStatus: when(Data('latestAgreementStatus').match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)))
+            planStatus: when(hasPostAgreementStatus)
               .then('POST_AGREE')
               .else('PRE_AGREE'),
           }),
