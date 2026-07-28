@@ -1,7 +1,8 @@
 {
+  "name": "Manage Offences API - Offence Codes",
   "request": {
     "method": "GET",
-    "url": "/offences/actuarial-mapping"
+    "urlPathPattern": "/manage-offences-api/offences/actuarial-mapping"
   },
   "response": {
     "status": 200,
