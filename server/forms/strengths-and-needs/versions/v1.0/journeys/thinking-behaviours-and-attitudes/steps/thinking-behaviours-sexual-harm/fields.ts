@@ -4,6 +4,8 @@ import { contentFor } from '../../locales'
 import { Question } from '../../constants/question'
 import { CaseData } from '../../../../constants/formVersion'
 import { Option } from '../../constants/option'
+import { CommonOption } from '../../../../constants/commonOption'
+import { commonContentFor } from '../../../../locales'
 
 /* ------------------------------------------------------------------ */
 /* Sexual harm detail questions (shown when risk = YES)               */
@@ -19,29 +21,21 @@ export const thinkingBehavioursSexualPreoccupation = GovUKRadioInput({
   },
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.YES_SEXUAL_PREOCCUPATION'),
-      value: Option.yes_sexual_preoccupation,
+      text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.YES'),
+      value: CommonOption.yes,
     },
     {
-      text: contentFor(
-        'question.thinking_behaviours_attitudes_sexual_preoccupation.option.SOMETIMES_SEXUAL_PREOCCUPATION',
-      ),
-      value: Option.sometimes_sexual_preoccupation,
+      text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.SOMETIMES'),
+      value: Option.sometimes,
     },
     {
-      text: contentFor(
-        'question.thinking_behaviours_attitudes_sexual_preoccupation.option.NO_SEXUAL_PREOCCUPATION.text',
-      ),
-      value: Option.no_sexual_preoccupation,
-      hint: contentFor(
-        'question.thinking_behaviours_attitudes_sexual_preoccupation.option.NO_SEXUAL_PREOCCUPATION.hint',
-      ),
+      text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.NO.text'),
+      value: CommonOption.no,
+      hint: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.NO.hint'),
     },
     {
-      text: contentFor(
-        'question.thinking_behaviours_attitudes_sexual_preoccupation.option.UNKNOWN_SEXUAL_PREOCCUPATION',
-      ),
-      value: Option.unknown_sexual_preoccupation,
+      text: commonContentFor('option.UNKNOWN'),
+      value: CommonOption.unknown,
     },
   ],
   validWhen: [
@@ -89,10 +83,8 @@ export const thinkingBehavioursOffenceRelatedSexualInterest = GovUKRadioInput({
       ),
     },
     {
-      text: contentFor(
-        'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.UNKNOWN_OFFENCE_RELATED_SEXUAL_INTEREST',
-      ),
-      value: Option.unknown_offence_related_sexual_interest,
+      text: commonContentFor('option.UNKNOWN'),
+      value: CommonOption.unknown,
     },
   ],
   validWhen: [
@@ -113,20 +105,20 @@ export const thinkingBehavioursEmotionalIntimacy = GovUKRadioInput({
   },
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.YES_EMOTIONAL_INTIMACY'),
-      value: Option.yes_emotional_intimacy,
+      text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.YES'),
+      value: CommonOption.yes,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.SOMETIMES_EMOTIONAL_INTIMACY'),
-      value: Option.sometimes_emotional_intimacy,
+      text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.SOMETIMES'),
+      value: Option.sometimes,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.NO_EMOTIONAL_INTIMACY'),
-      value: Option.no_emotional_intimacy,
+      text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.NO'),
+      value: CommonOption.no,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.UNKNOWN_EMOTIONAL_INTIMACY'),
-      value: Option.unknown_emotional_intimacy,
+      text: commonContentFor('option.UNKNOWN'),
+      value: CommonOption.unknown,
     },
   ],
   validWhen: [

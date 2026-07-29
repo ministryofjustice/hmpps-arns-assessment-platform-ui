@@ -33,19 +33,19 @@ const toDetailsField =
     })
 
 const thinkingBehavioursPeerPressureYesDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
-  option: Option.yes_peer_pressure,
+  option: CommonOption.yes,
   code: Question.thinking_behaviours_attitudes_peer_pressure_yes_details,
   mandatory: false,
 })
 
 const thinkingBehavioursPeerPressureSomeDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
-  option: Option.some_peer_pressure,
+  option: Option.some,
   code: Question.thinking_behaviours_attitudes_peer_pressure_some_details,
   mandatory: false,
 })
 
 const thinkingBehavioursPeerPressureNoDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
-  option: Option.no_peer_pressure,
+  option: CommonOption.no,
   code: Question.thinking_behaviours_attitudes_peer_pressure_no_details,
   mandatory: false,
 })
@@ -61,16 +61,16 @@ export const thinkingBehavioursConsequences = GovUKRadioInput({
   hint: contentFor('question.thinking_behaviours_attitudes_consequences.hint'),
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_consequences.option.YES_CONSEQUENCES'),
-      value: Option.yes_consequences,
+      text: contentFor('question.thinking_behaviours_attitudes_consequences.option.YES'),
+      value: CommonOption.yes,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_consequences.option.SOMETIMES_CONSEQUENCES'),
-      value: Option.sometimes_consequences,
+      text: contentFor('question.thinking_behaviours_attitudes_consequences.option.SOMETIMES'),
+      value: Option.sometimes,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_consequences.option.NO_CONSEQUENCES'),
-      value: Option.no_consequences,
+      text: contentFor('question.thinking_behaviours_attitudes_consequences.option.NO'),
+      value: CommonOption.no,
     },
   ],
   validWhen: [
@@ -92,16 +92,16 @@ export const thinkingBehavioursStableBehaviour = GovUKRadioInput({
   hint: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.hint'),
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.option.YES_STABLE'),
-      value: Option.yes_stable,
+      text: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.option.YES'),
+      value: CommonOption.yes,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.option.SOMETIMES_STABLE'),
-      value: Option.sometimes_stable,
+      text: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.option.SOMETIMES'),
+      value: Option.sometimes,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.option.NO_STABLE'),
-      value: Option.no_stable,
+      text: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.option.NO'),
+      value: CommonOption.no,
     },
   ],
   validWhen: [
@@ -154,18 +154,18 @@ export const thinkingBehavioursPeerPressure = GovUKRadioInput({
   },
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.YES_PEER_PRESSURE'),
-      value: Option.yes_peer_pressure,
+      text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.YES'),
+      value: CommonOption.yes,
       block: [thinkingBehavioursPeerPressureYesDetails],
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.SOME_PEER_PRESSURE'),
-      value: Option.some_peer_pressure,
+      text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.SOME'),
+      value: Option.some,
       block: [thinkingBehavioursPeerPressureSomeDetails],
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.NO_PEER_PRESSURE'),
-      value: Option.no_peer_pressure,
+      text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.NO'),
+      value: CommonOption.no,
       block: [thinkingBehavioursPeerPressureNoDetails],
     },
   ],
@@ -187,16 +187,16 @@ export const thinkingBehavioursProblemSolving = GovUKRadioInput({
   },
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_problem_solving.option.YES_PROBLEM_SOLVING'),
-      value: Option.yes_problem_solving,
+      text: contentFor('question.thinking_behaviours_attitudes_problem_solving.option.YES'),
+      value: CommonOption.yes,
     },
     {
       text: contentFor('question.thinking_behaviours_attitudes_problem_solving.option.LIMITED_PROBLEM_SOLVING'),
       value: Option.limited_problem_solving,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_problem_solving.option.NO_PROBLEM_SOLVING'),
-      value: Option.no_problem_solving,
+      text: contentFor('question.thinking_behaviours_attitudes_problem_solving.option.NO'),
+      value: CommonOption.no,
     },
   ],
   validWhen: [
@@ -217,16 +217,16 @@ export const thinkingBehavioursPeoplesViews = GovUKRadioInput({
   },
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_peoples_views.option.YES_PEOPLES_VIEWS'),
-      value: Option.yes_peoples_views,
+      text: contentFor('question.thinking_behaviours_attitudes_peoples_views.option.YES'),
+      value: CommonOption.yes,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_peoples_views.option.SOMETIMES_PEOPLES_VIEWS'),
-      value: Option.sometimes_peoples_views,
+      text: contentFor('question.thinking_behaviours_attitudes_peoples_views.option.SOMETIMES'),
+      value: Option.sometimes,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_peoples_views.option.NO_PEOPLES_VIEWS'),
-      value: Option.no_peoples_views,
+      text: contentFor('question.thinking_behaviours_attitudes_peoples_views.option.NO'),
+      value: CommonOption.no,
     },
   ],
   validWhen: [
@@ -250,22 +250,16 @@ export const thinkingBehavioursManipulativePredatoryBehaviour = GovUKRadioInput(
   },
   items: [
     {
-      text: contentFor(
-        'question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.NO_MANIPULATIVE',
-      ),
-      value: Option.no_manipulative,
+      text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.NO'),
+      value: CommonOption.no,
     },
     {
-      text: contentFor(
-        'question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.SOME_MANIPULATIVE',
-      ),
-      value: Option.some_manipulative,
+      text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.SOME'),
+      value: Option.some,
     },
     {
-      text: contentFor(
-        'question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.YES_MANIPULATIVE',
-      ),
-      value: Option.yes_manipulative,
+      text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.YES'),
+      value: CommonOption.yes,
     },
   ],
   validWhen: [
@@ -286,17 +280,17 @@ export const thinkingBehavioursTemperManagement = GovUKRadioInput({
   },
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.YES_TEMPER'),
-      value: Option.yes_temper,
+      text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.YES'),
+      value: CommonOption.yes,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.SOMETIMES_TEMPER'),
-      value: Option.sometimes_temper,
+      text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.SOMETIMES'),
+      value: Option.sometimes,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.NO_TEMPER.text'),
-      hint: contentFor('question.thinking_behaviours_attitudes_temper_management.option.NO_TEMPER.hint'),
-      value: Option.no_temper,
+      text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.NO.text'),
+      hint: contentFor('question.thinking_behaviours_attitudes_temper_management.option.NO.hint'),
+      value: CommonOption.no,
     },
   ],
   validWhen: [
@@ -321,10 +315,8 @@ export const thinkingBehavioursViolenceControllingBehaviour = GovUKRadioInput({
       value: Option.no_violence,
     },
     {
-      text: contentFor(
-        'question.thinking_behaviours_attitudes_violence_controlling_behaviour.option.SOMETIMES_VIOLENCE',
-      ),
-      value: Option.sometimes_violence,
+      text: contentFor('question.thinking_behaviours_attitudes_violence_controlling_behaviour.option.SOMETIMES'),
+      value: Option.sometimes,
     },
     {
       text: contentFor('question.thinking_behaviours_attitudes_violence_controlling_behaviour.option.YES_VIOLENCE'),
@@ -349,16 +341,16 @@ export const thinkingBehavioursImpulsiveBehaviour = GovUKRadioInput({
   },
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.option.NO_IMPULSIVE'),
-      value: Option.no_impulsive,
+      text: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.option.NO'),
+      value: CommonOption.no,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.option.SOMETIMES_IMPULSIVE'),
-      value: Option.sometimes_impulsive,
+      text: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.option.SOMETIMES'),
+      value: Option.sometimes,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.option.YES_IMPULSIVE'),
-      value: Option.yes_impulsive,
+      text: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.option.YES'),
+      value: CommonOption.yes,
     },
   ],
   validWhen: [
@@ -379,8 +371,8 @@ export const thinkingBehavioursPositiveAttitude = GovUKRadioInput({
   },
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_positive_attitude.option.YES_POSITIVE_ATTITUDE'),
-      value: Option.yes_positive_attitude,
+      text: contentFor('question.thinking_behaviours_attitudes_positive_attitude.option.YES_POSITIVE'),
+      value: Option.yes_positive,
     },
     {
       text: contentFor('question.thinking_behaviours_attitudes_positive_attitude.option.NEGATIVE_ATTITUDE_NO_CONCERNS'),
@@ -411,17 +403,17 @@ export const thinkingBehavioursHostileOrientation = GovUKRadioInput({
   },
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.NO_HOSTILE'),
-      value: Option.no_hostile,
+      text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.NO'),
+      value: CommonOption.no,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.SOME_HOSTILE'),
-      value: Option.some_hostile,
+      text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.SOME'),
+      value: Option.some,
     },
     {
       text: 'There is evidence of suspicious, angry and vengeful thinking and behaviour',
-      html: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.YES_HOSTILE'),
-      value: Option.yes_hostile,
+      html: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.YES'),
+      value: CommonOption.yes,
     },
   ],
   validWhen: [
@@ -472,16 +464,16 @@ export const thinkingBehavioursCriminalBehaviour = GovUKRadioInput({
   },
   items: [
     {
-      text: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.option.NO_CRIMINAL_BEHAVIOUR'),
-      value: Option.no_criminal_behaviour,
+      text: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.option.NO'),
+      value: CommonOption.no,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.option.SOMETIMES_CRIMINAL_BEHAVIOUR'),
-      value: Option.sometimes_criminal_behaviour,
+      text: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.option.SOMETIMES'),
+      value: Option.sometimes,
     },
     {
-      text: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.option.YES_CRIMINAL_BEHAVIOUR'),
-      value: Option.yes_criminal_behaviour,
+      text: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.option.YES'),
+      value: CommonOption.yes,
     },
   ],
   validWhen: [

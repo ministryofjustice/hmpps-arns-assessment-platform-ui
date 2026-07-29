@@ -136,9 +136,9 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_consequences.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForConsequences(Option.yes_consequences),
-          createSummaryRowForConsequences(Option.sometimes_consequences),
-          createSummaryRowForConsequences(Option.no_consequences),
+          createSummaryRowForConsequences(CommonOption.yes),
+          createSummaryRowForConsequences(Option.sometimes),
+          createSummaryRowForConsequences(CommonOption.no),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehaviours.path, text: commonContentFor('change') }] },
@@ -147,9 +147,9 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForStableBehaviour(Option.yes_stable),
-          createSummaryRowForStableBehaviour(Option.sometimes_stable),
-          createSummaryRowForStableBehaviour(Option.no_stable),
+          createSummaryRowForStableBehaviour(CommonOption.yes),
+          createSummaryRowForStableBehaviour(Option.sometimes),
+          createSummaryRowForStableBehaviour(CommonOption.no),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehaviours.path, text: commonContentFor('change') }] },
@@ -169,11 +169,11 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForPeerPressure(Option.yes_peer_pressure),
+          createSummaryRowForPeerPressure(CommonOption.yes),
           createSummaryDetailsRow(Question.thinking_behaviours_attitudes_peer_pressure_yes_details),
-          createSummaryRowForPeerPressure(Option.some_peer_pressure),
+          createSummaryRowForPeerPressure(Option.some),
           createSummaryDetailsRow(Question.thinking_behaviours_attitudes_peer_pressure_some_details),
-          createSummaryRowForPeerPressure(Option.no_peer_pressure),
+          createSummaryRowForPeerPressure(CommonOption.no),
           createSummaryDetailsRow(Question.thinking_behaviours_attitudes_peer_pressure_no_details),
         ].flat(),
       },
@@ -183,9 +183,9 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_problem_solving.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForProblemSolving(Option.yes_problem_solving),
+          createSummaryRowForProblemSolving(CommonOption.yes),
           createSummaryRowForProblemSolving(Option.limited_problem_solving),
-          createSummaryRowForProblemSolving(Option.no_problem_solving),
+          createSummaryRowForProblemSolving(CommonOption.no),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehaviours.path, text: commonContentFor('change') }] },
@@ -194,9 +194,9 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_peoples_views.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForPeoplesViews(Option.yes_peoples_views),
-          createSummaryRowForPeoplesViews(Option.sometimes_peoples_views),
-          createSummaryRowForPeoplesViews(Option.no_peoples_views),
+          createSummaryRowForPeoplesViews(CommonOption.yes),
+          createSummaryRowForPeoplesViews(Option.sometimes),
+          createSummaryRowForPeoplesViews(CommonOption.no),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehaviours.path, text: commonContentFor('change') }] },
@@ -210,9 +210,9 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       },
       value: {
         blocks: [
-          createSummaryRowForManipulativePredatoryBehaviour(Option.no_manipulative),
-          createSummaryRowForManipulativePredatoryBehaviour(Option.some_manipulative),
-          createSummaryRowForManipulativePredatoryBehaviour(Option.yes_manipulative),
+          createSummaryRowForManipulativePredatoryBehaviour(CommonOption.no),
+          createSummaryRowForManipulativePredatoryBehaviour(Option.some),
+          createSummaryRowForManipulativePredatoryBehaviour(CommonOption.yes),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehaviours.path, text: commonContentFor('change') }] },
@@ -221,9 +221,9 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_temper_management.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForTemperManagement(Option.yes_temper),
-          createSummaryRowForTemperManagement(Option.sometimes_temper),
-          createSummaryRowForTemperManagement(Option.no_temper),
+          createSummaryRowForTemperManagement(CommonOption.yes),
+          createSummaryRowForTemperManagement(Option.sometimes),
+          createSummaryRowForTemperManagement(CommonOption.no),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehaviours.path, text: commonContentFor('change') }] },
@@ -238,7 +238,7 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       value: {
         blocks: [
           createSummaryRowForViolenceControllingBehaviour(Option.no_violence),
-          createSummaryRowForViolenceControllingBehaviour(Option.sometimes_violence),
+          createSummaryRowForViolenceControllingBehaviour(Option.sometimes),
           createSummaryRowForViolenceControllingBehaviour(Option.yes_violence),
         ].flat(),
       },
@@ -248,9 +248,9 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForImpulsiveBehaviour(Option.no_impulsive),
-          createSummaryRowForImpulsiveBehaviour(Option.sometimes_impulsive),
-          createSummaryRowForImpulsiveBehaviour(Option.yes_impulsive),
+          createSummaryRowForImpulsiveBehaviour(CommonOption.no),
+          createSummaryRowForImpulsiveBehaviour(Option.sometimes),
+          createSummaryRowForImpulsiveBehaviour(CommonOption.yes),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehaviours.path, text: commonContentFor('change') }] },
@@ -259,7 +259,7 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_positive_attitude.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForPositiveAttitude(Option.yes_positive_attitude),
+          createSummaryRowForPositiveAttitude(Option.yes_positive),
           createSummaryRowForPositiveAttitude(Option.negative_attitude_no_concerns),
           createSummaryRowForPositiveAttitude(Option.negative_attitude_and_concerns),
         ].flat(),
@@ -270,9 +270,9 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForHostileOrientation(Option.no_hostile),
-          createSummaryRowForHostileOrientation(Option.some_hostile),
-          createSummaryRowForHostileOrientation(Option.yes_hostile),
+          createSummaryRowForHostileOrientation(CommonOption.no),
+          createSummaryRowForHostileOrientation(Option.some),
+          createSummaryRowForHostileOrientation(CommonOption.yes),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehaviours.path, text: commonContentFor('change') }] },
@@ -292,9 +292,9 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForCriminalBehaviour(Option.no_criminal_behaviour),
-          createSummaryRowForCriminalBehaviour(Option.sometimes_criminal_behaviour),
-          createSummaryRowForCriminalBehaviour(Option.yes_criminal_behaviour),
+          createSummaryRowForCriminalBehaviour(CommonOption.no),
+          createSummaryRowForCriminalBehaviour(Option.sometimes),
+          createSummaryRowForCriminalBehaviour(CommonOption.yes),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehaviours.path, text: commonContentFor('change') }] },
@@ -341,10 +341,10 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForSexualPreoccupation(Option.yes_sexual_preoccupation),
-          createSummaryRowForSexualPreoccupation(Option.sometimes_sexual_preoccupation),
-          createSummaryRowForSexualPreoccupation(Option.no_sexual_preoccupation),
-          createSummaryRowForSexualPreoccupation(Option.unknown_sexual_preoccupation),
+          createSummaryRowForSexualPreoccupation(CommonOption.yes),
+          createSummaryRowForSexualPreoccupation(Option.sometimes),
+          createSummaryRowForSexualPreoccupation(CommonOption.no),
+          createSummaryRowForSexualPreoccupation(CommonOption.unknown),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehavioursSexualHarm.path, text: commonContentFor('change') }] },
@@ -361,7 +361,7 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
           createSummaryRowForOffenceRelatedSexualInterest(Option.yes_offence_related_sexual_interest),
           createSummaryRowForOffenceRelatedSexualInterest(Option.some_offence_related_sexual_interest),
           createSummaryRowForOffenceRelatedSexualInterest(Option.no_offence_related_sexual_interest),
-          createSummaryRowForOffenceRelatedSexualInterest(Option.unknown_offence_related_sexual_interest),
+          createSummaryRowForOffenceRelatedSexualInterest(CommonOption.unknown),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehavioursSexualHarm.path, text: commonContentFor('change') }] },
@@ -370,10 +370,10 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForEmotionalIntimacy(Option.yes_emotional_intimacy),
-          createSummaryRowForEmotionalIntimacy(Option.sometimes_emotional_intimacy),
-          createSummaryRowForEmotionalIntimacy(Option.no_emotional_intimacy),
-          createSummaryRowForEmotionalIntimacy(Option.unknown_emotional_intimacy),
+          createSummaryRowForEmotionalIntimacy(CommonOption.yes),
+          createSummaryRowForEmotionalIntimacy(Option.sometimes),
+          createSummaryRowForEmotionalIntimacy(CommonOption.no),
+          createSummaryRowForEmotionalIntimacy(CommonOption.unknown),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehavioursSexualHarm.path, text: commonContentFor('change') }] },
