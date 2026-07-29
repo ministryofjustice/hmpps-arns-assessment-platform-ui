@@ -86,6 +86,8 @@ services:
       APP_STRATEGIES_ASSESSMENT: false
       CLIENT_ID: hmpps-assess-risks-and-needs-oastub-ui
       CLIENT_SECRET: clientsecret
+      PLAN_TYPE: AAP_PLAN
+      ASSESSMENT_TYPE: AAP_SAN
 
   arns-handover:
     image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:latest
