@@ -1,11 +1,11 @@
-import {buildNunjucksComponent} from "@ministryofjustice/hmpps-forge/express-nunjucks";
-import {block as buildBlock,} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { block as buildBlock } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   BasicBlockProps,
   BlockDefinition,
   EvaluatedBlock,
-  ResolvableString
-} from "@ministryofjustice/hmpps-forge/core/components";
+  ResolvableString,
+} from '@ministryofjustice/hmpps-forge/core/components'
 
 export interface ModalProps extends BasicBlockProps {
   id: ResolvableString
@@ -21,11 +21,10 @@ export function Modal(props: ModalProps): Modal {
   return buildBlock<Modal>({ ...props, variant: 'modal' })
 }
 
-export const modalComponent =
-  buildNunjucksComponent<Modal>('modal', (block: EvaluatedBlock<Modal>, nunjucksEnv) => {
+export const modalComponent = buildNunjucksComponent<Modal>('modal', (block: EvaluatedBlock<Modal>, nunjucksEnv) => {
   return nunjucksEnv.render('strengths-and-needs/components/modal/modal.njk', {
     id: block.id,
     title: block.title,
-    buttonText: block.buttonText
+    buttonText: block.buttonText,
   })
 })

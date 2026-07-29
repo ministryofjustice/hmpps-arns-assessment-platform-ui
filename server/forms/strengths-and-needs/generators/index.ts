@@ -4,7 +4,7 @@ import {
   GeneratorBuilder,
   GeneratorFunctionExpr,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import {ResolvableArray, ResolvableString} from '@ministryofjustice/hmpps-forge/core/components'
+import { ResolvableArray, ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { getTextFromListDefinition } from './getTextFromListDefinition'
 import { getFormatterDateFromIso } from './getFormatterDateFromIso'
 import { getDrugValueLower } from './getDrugValueLower'

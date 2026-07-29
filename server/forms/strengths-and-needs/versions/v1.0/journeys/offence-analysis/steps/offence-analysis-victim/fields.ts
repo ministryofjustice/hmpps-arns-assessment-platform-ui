@@ -127,36 +127,80 @@ export const victimEthnicity = GovUKSelectInput({
     },
     { text: 'Select the victim’s ethnicity', value: '' },
     {
-      text: contentFor('question.offence_analysis_victim_ethnicity.option.WHITE_ENGLISH_WELSH_SCOTTISH_NORTHERN_IRISH_OR_BRITISH'),
+      text: contentFor(
+        'question.offence_analysis_victim_ethnicity.option.WHITE_ENGLISH_WELSH_SCOTTISH_NORTHERN_IRISH_OR_BRITISH',
+      ),
       value: Option.white_english_welsh_scottish_northern_irish_or_british,
     },
     { text: contentFor('question.offence_analysis_victim_ethnicity.option.WHITE_IRISH'), value: Option.white_irish },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.WHITE_GYPSY_OR_IRISH_TRAVELLER'), value: Option.white_gypsy_or_irish_traveller },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.WHITE_ROMA'), value: Option.white_roma },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.WHITE_ANY_OTHER_WHITE_BACKGROUND'), value: Option.white_any_other_white_background },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.MIXED_WHITE_AND_BLACK_CARIBBEAN'), value: Option.mixed_white_and_black_caribbean },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.MIXED_WHITE_AND_BLACK_AFRICAN'), value: Option.mixed_white_and_black_african },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.MIXED_WHITE_AND_ASIAN'), value: Option.mixed_white_and_asian },
     {
-      text: contentFor('question.offence_analysis_victim_ethnicity.option.MIXED_ANY_OTHER_MIXED_OR_MULTIPLE_ETHNIC_BACKGROUND_BACKGROUND'),
+      text: contentFor('question.offence_analysis_victim_ethnicity.option.WHITE_GYPSY_OR_IRISH_TRAVELLER'),
+      value: Option.white_gypsy_or_irish_traveller,
+    },
+    { text: contentFor('question.offence_analysis_victim_ethnicity.option.WHITE_ROMA'), value: Option.white_roma },
+    {
+      text: contentFor('question.offence_analysis_victim_ethnicity.option.WHITE_ANY_OTHER_WHITE_BACKGROUND'),
+      value: Option.white_any_other_white_background,
+    },
+    {
+      text: contentFor('question.offence_analysis_victim_ethnicity.option.MIXED_WHITE_AND_BLACK_CARIBBEAN'),
+      value: Option.mixed_white_and_black_caribbean,
+    },
+    {
+      text: contentFor('question.offence_analysis_victim_ethnicity.option.MIXED_WHITE_AND_BLACK_AFRICAN'),
+      value: Option.mixed_white_and_black_african,
+    },
+    {
+      text: contentFor('question.offence_analysis_victim_ethnicity.option.MIXED_WHITE_AND_ASIAN'),
+      value: Option.mixed_white_and_asian,
+    },
+    {
+      text: contentFor(
+        'question.offence_analysis_victim_ethnicity.option.MIXED_ANY_OTHER_MIXED_OR_MULTIPLE_ETHNIC_BACKGROUND_BACKGROUND',
+      ),
       value: Option.mixed_any_other_mixed_or_multiple_ethnic_background_background,
     },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_INDIAN'), value: Option.asian_or_asian_british_indian },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_PAKISTANI'), value: Option.asian_or_asian_british_pakistani },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_BANGLADESHI'), value: Option.asian_or_asian_british_bangladeshi },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_CHINESE'), value: Option.asian_or_asian_british_chinese },
     {
-      text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_ANY_OTHER_ASIAN_BACKGROUND'),
+      text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_INDIAN'),
+      value: Option.asian_or_asian_british_indian,
+    },
+    {
+      text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_PAKISTANI'),
+      value: Option.asian_or_asian_british_pakistani,
+    },
+    {
+      text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_BANGLADESHI'),
+      value: Option.asian_or_asian_british_bangladeshi,
+    },
+    {
+      text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_CHINESE'),
+      value: Option.asian_or_asian_british_chinese,
+    },
+    {
+      text: contentFor(
+        'question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_ANY_OTHER_ASIAN_BACKGROUND',
+      ),
       value: Option.asian_or_asian_british_any_other_asian_background,
     },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.BLACK_OR_BLACK_BRITISH_CARIBBEAN'), value: Option.black_or_black_british_caribbean },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.BLACK_OR_BLACK_BRITISH_AFRICAN'), value: Option.black_or_black_british_african },
     {
-      text: contentFor('question.offence_analysis_victim_ethnicity.option.BLACK_OR_BLACK_BRITISH_ANY_OTHER_BLACK_BACKGROUND'),
+      text: contentFor('question.offence_analysis_victim_ethnicity.option.BLACK_OR_BLACK_BRITISH_CARIBBEAN'),
+      value: Option.black_or_black_british_caribbean,
+    },
+    {
+      text: contentFor('question.offence_analysis_victim_ethnicity.option.BLACK_OR_BLACK_BRITISH_AFRICAN'),
+      value: Option.black_or_black_british_african,
+    },
+    {
+      text: contentFor(
+        'question.offence_analysis_victim_ethnicity.option.BLACK_OR_BLACK_BRITISH_ANY_OTHER_BLACK_BACKGROUND',
+      ),
       value: Option.black_or_black_british_any_other_black_background,
     },
     { text: contentFor('question.offence_analysis_victim_ethnicity.option.ARAB'), value: Option.arab },
-    { text: contentFor('question.offence_analysis_victim_ethnicity.option.ANY_OTHER_ETHNIC_GROUP'), value: Option.any_other_ethnic_group },
+    {
+      text: contentFor('question.offence_analysis_victim_ethnicity.option.ANY_OTHER_ETHNIC_GROUP'),
+      value: Option.any_other_ethnic_group,
+    },
     { text: commonContentFor('option.UNKNOWN'), value: CommonOption.unknown },
   ],
   validWhen: [

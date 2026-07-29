@@ -3,6 +3,14 @@ export const Step = {
     code: 'offence_analysis',
     path: 'offence-analysis',
   },
+  offence_analysis_involved_parties: {
+    code: 'offence_analysis_involved_parties',
+    path: 'offence-analysis-involved-parties',
+  },
+  offence_analysis_impact: {
+    code: 'offence_analysis_impact',
+    path: 'offence-analysis-impact',
+  },
   offence_analysis_summary: {
     code: 'offence_analysis_summary',
     path: 'offence-analysis-summary',

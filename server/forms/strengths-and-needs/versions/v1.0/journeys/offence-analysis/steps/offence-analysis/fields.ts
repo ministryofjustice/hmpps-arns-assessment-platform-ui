@@ -115,7 +115,7 @@ export const offenceElements = GovUKCheckboxInput({
     { divider: 'or' },
     {
       value: Option.none,
-      text: contentFor('question.offence_analysis_offence_elements.option.NONE'),
+      text: contentFor('option.NONE'),
       behaviour: 'exclusive',
     },
   ],

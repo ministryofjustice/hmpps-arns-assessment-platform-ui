@@ -28,7 +28,6 @@ export const english = {
         [Option.victim_targeted]: 'Victim targeted',
         [Option.violence_threat_coercion]: 'Violence, or threat of violence or coercion',
         [Option.weapon]: 'Weapon',
-        [Option.none]: 'None',
       },
       validation: 'Select if the offence(s) had any of the elements',
     },
@@ -92,7 +91,7 @@ export const english = {
         [Option.age_65_and_over]: '65 years and over',
         [Option.age_unknown]: 'Unknown',
       },
-      validation: "Select approximate age",
+      validation: 'Select approximate age',
     },
     [Question.offence_analysis_victim_sex]: {
       text: "What is the victim's sex?",
@@ -102,13 +101,14 @@ export const english = {
         [Option.intersex]: 'Intersex',
         [Option.sex_unknown]: 'Unknown',
       },
-      validation: "Select sex",
+      validation: 'Select sex',
     },
     [Question.offence_analysis_victim_ethnicity]: {
       text: "What is the victim's ethnicity?",
       option_label: "Select the victim's ethnicity",
       option: {
-        [Option.white_english_welsh_scottish_northern_irish_or_british]: 'White - English, Welsh, Scottish, Northern Irish or British',
+        [Option.white_english_welsh_scottish_northern_irish_or_british]:
+          'White - English, Welsh, Scottish, Northern Irish or British',
         [Option.white_irish]: 'White - Irish',
         [Option.white_gypsy_or_irish_traveller]: 'White - Gypsy or Irish Traveller',
         [Option.white_roma]: 'White - Roma',
@@ -116,15 +116,18 @@ export const english = {
         [Option.mixed_white_and_black_caribbean]: 'Mixed - White and Black Caribbean',
         [Option.mixed_white_and_black_african]: 'Mixed - White and Black African',
         [Option.mixed_white_and_asian]: 'Mixed - White and Asian',
-        [Option.mixed_any_other_mixed_or_multiple_ethnic_background_background]: 'Mixed - Any other mixed or multiple ethnic background',
+        [Option.mixed_any_other_mixed_or_multiple_ethnic_background_background]:
+          'Mixed - Any other mixed or multiple ethnic background',
         [Option.asian_or_asian_british_indian]: 'Asian or Asian British - Indian',
         [Option.asian_or_asian_british_pakistani]: 'Asian or Asian British - Pakistani',
         [Option.asian_or_asian_british_bangladeshi]: 'Asian or Asian British - Bangladeshi',
         [Option.asian_or_asian_british_chinese]: 'Asian or Asian British - Chinese',
-        [Option.asian_or_asian_british_any_other_asian_background]: 'Asian or Asian British - Any other Asian background',
+        [Option.asian_or_asian_british_any_other_asian_background]:
+          'Asian or Asian British - Any other Asian background',
         [Option.black_or_black_british_caribbean]: 'Black or Black British - Caribbean',
         [Option.black_or_black_british_african]: 'Black or Black British - African',
-        [Option.black_or_black_british_any_other_black_background]: 'Black or Black British - Any other Black background',
+        [Option.black_or_black_british_any_other_black_background]:
+          'Black or Black British - Any other Black background',
         [Option.arab]: 'Arab',
         [Option.any_other_ethnic_group]: 'Any other ethnic group',
       },
@@ -132,10 +135,6 @@ export const english = {
     },
     [Question.offence_analysis_strengths_protective_factors]: {
       text: 'Are there any strengths or protective factors?',
-      option: {
-        yes: 'Yes',
-        no: 'No',
-      },
       validation: 'Select whether there are strengths or protective factors',
     },
     [Question.offence_analysis_strengths_protective_factors_yes_details]: {
@@ -146,10 +145,6 @@ export const english = {
     },
     [Question.offence_analysis_risk_of_serious_harm]: {
       text: 'Is there a risk of serious harm?',
-      option: {
-        yes: 'Yes',
-        no: 'No',
-      },
       validation: 'Select whether there is a risk of serious harm',
     },
     [Question.offence_analysis_risk_of_serious_harm_yes_details]: {
@@ -160,10 +155,6 @@ export const english = {
     },
     [Question.offence_analysis_risk_of_reoffending]: {
       text: 'Is there a risk of reoffending?',
-      option: {
-        yes: 'Yes',
-        no: 'No',
-      },
       validation: 'Select whether there is a risk of reoffending',
     },
     [Question.offence_analysis_risk_of_reoffending_yes_details]: {
@@ -172,6 +163,27 @@ export const english = {
     [Question.offence_analysis_risk_of_reoffending_no_details]: {
       text: 'Explain why there is no risk of reoffending',
     },
+    [Question.offence_analysis_how_many_involved]: {
+      text: "How many other people were involved with committing the current index offence(s)?",
+      option: {
+        [Option.one]: '1',
+        [Option.two]: '2',
+        [Option.three]: '3',
+        [Option.four]: '4',
+        [Option.five]: '5',
+        [Option.six_to_ten]: '6 to 10',
+        [Option.eleven_to_fifteen]: '11 to 15',
+        [Option.more_than_fifteen]: 'More than 15',
+      },
+      validation: 'Select how many other people were involved in the offence',
+    },
+    [Question.offence_analysis_impact_on_victims]: {
+      text: "Does %1 recognise the impact on the victims or wider community?",
+      validation: 'Select if they recognise the impact on the victim or consequences for others and the wider community',
+    },
+  },
+  option:{
+    [Option.none]: 'None',
   },
   are_you_sure_you_want_to_delete: 'Are you sure you want to delete the victim details?',
   victim_card_title: '%1 victim',

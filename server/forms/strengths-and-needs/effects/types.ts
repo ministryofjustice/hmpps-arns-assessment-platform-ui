@@ -3,10 +3,11 @@ import { User } from '../../../interfaces/user'
 import {
   CommandResult,
   CreateAssessmentCommandResult,
-  CreateCollectionCommandResult
+  CreateCollectionCommandResult,
 } from '../../../interfaces/aap-api/commandResult'
 import {
-  CreateAssessmentCommand, CreateCollectionCommand,
+  CreateAssessmentCommand,
+  CreateCollectionCommand,
   UpdateAssessmentAnswersCommand,
   UpdateAssessmentPropertiesCommand,
 } from '../../../interfaces/aap-api/command'
@@ -16,8 +17,8 @@ import { AssessmentIdentifiers } from '../../../interfaces/aap-api/identifier'
 import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessSessionDetails } from '../../access/effects/types'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
-import {AssessmentPlatformApiClient} from "../../../data";
-import {Collection, CollectionItem} from "../../../interfaces/aap-api/dataModel";
+import { AssessmentPlatformApiClient } from '../../../data'
+import { Collection, CollectionItem } from '../../../interfaces/aap-api/dataModel'
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers

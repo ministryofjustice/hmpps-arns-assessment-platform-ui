@@ -1,9 +1,9 @@
-import {access, Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKButton} from '@ministryofjustice/hmpps-forge/govuk-components'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {victimAge, victimEthnicity, victimSex, victimType} from './fields'
-import {Step} from '../../constants/step'
-import {Question} from "../../constants/question";
+import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { victimAge, victimEthnicity, victimSex, victimType } from './fields'
+import { Step } from '../../constants/step'
+import { Question } from '../../constants/question'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -11,7 +11,8 @@ const saveButton = GovUKButton({
   value: 'save',
 })
 
-const collectionCode = 'victims'
+const collectionName = 'victims'
+const collectionCode = 'OFFENCE_ANALYSIS_VICTIM'
 
 const VICTIM_FIELD_CODES = [
   Question.offence_analysis_victim_type,
@@ -28,16 +29,14 @@ export const offenceAnalysisVictimStep = step({
   onAccess: [
     access({
       effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection('victims', 'OFFENCE_ANALYSIS_VICTIM')],
-    })
+    }),
   ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [
-          StrengthsAndNeedsEffects.addItemToCollection(collectionCode, VICTIM_FIELD_CODES),
-        ],
+        effects: [StrengthsAndNeedsEffects.addItemToCollection(collectionName, collectionCode, VICTIM_FIELD_CODES)],
         next: [redirect({ goto: Step.offence_analysis_victim_summary.path })],
       },
     }),

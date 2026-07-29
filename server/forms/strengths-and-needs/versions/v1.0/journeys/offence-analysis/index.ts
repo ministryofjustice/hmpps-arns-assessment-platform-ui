@@ -1,10 +1,12 @@
-import {Condition, Data, journey, Query} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {offenceAnalysisStep} from './steps/offence-analysis/step'
-import {offenceAnalysisVictimStep} from './steps/offence-analysis-victim/step'
-import {offenceAnalysisVictimSummaryStep} from './steps/offence-analysis-victim-summary/step'
-import {Section} from '../../constants/section'
-import {commonContentFor} from '../../locales'
-import {offenceAnalysisEditVictimStep} from "./steps/offence-analysis-edit-victim/step";
+import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { offenceAnalysisStep } from './steps/offence-analysis/step'
+import { offenceAnalysisVictimStep } from './steps/offence-analysis-victim/step'
+import { offenceAnalysisVictimSummaryStep } from './steps/offence-analysis-victim-summary/step'
+import { Section } from '../../constants/section'
+import { commonContentFor } from '../../locales'
+import { offenceAnalysisEditVictimStep } from './steps/offence-analysis-edit-victim/step'
+import {offenceAnalysisInvolvedPartiesStep} from "./steps/offence-analysis-involved-parties/step";
+import {offenceAnalysisImpactStep} from "./steps/offence-analysis-impact/step";
 
 /**
  * Offence Analysis Journey
@@ -33,6 +35,8 @@ export const offenceAnalysisJourney = journey({
     offenceAnalysisStep,
     offenceAnalysisVictimStep,
     offenceAnalysisVictimSummaryStep,
-    offenceAnalysisEditVictimStep
+    offenceAnalysisEditVictimStep,
+    offenceAnalysisInvolvedPartiesStep,
+    offenceAnalysisImpactStep
   ],
 })

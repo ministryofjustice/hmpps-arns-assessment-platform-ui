@@ -20,5 +20,9 @@ export const Question = {
   offence_analysis_victim_sex: 'offence_analysis_victim_sex',
   offence_analysis_victim_ethnicity: 'offence_analysis_victim_ethnicity',
   offence_analysis_commited_against: 'offence_analysis_commited_against',
+  offence_analysis_how_many_involved: 'offence_analysis_how_many_involved',
+  offence_analysis_impact_on_victims: 'offence_analysis_impact_on_victims',
+  offence_analysis_impact_on_victims_details: 'offence_analysis_impact_on_victims_details',
+  offence_analysis_no_impact_on_victims_details: 'offence_analysis_no_impact_on_victims_details',
   offence_analysis_commited_against_other_details: 'offence_analysis_commited_against_other_details',
 } as const

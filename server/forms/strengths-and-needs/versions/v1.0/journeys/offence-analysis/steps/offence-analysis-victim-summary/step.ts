@@ -1,11 +1,19 @@
-import {access, Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  and,
+  Answer,
+  Condition,
+  Post,
+  redirect,
+  step,
+  submit
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {GovUKButton} from '@ministryofjustice/hmpps-forge/govuk-components'
 import {victimCards} from './fields'
 import {Step} from '../../constants/step'
-import {StrengthsAndNeedsEffects} from "../../../../../../effects";
-import {effect} from "zod/v3";
-import {loadAnswersFromCollection} from "../../../../../../effects/assessment/loadAnswersFromCollection";
+import {StrengthsAndNeedsEffects} from '../../../../../../effects'
 import {Question} from "../../constants/question";
+import {CommonOption} from "../../../../constants/commonOption";
 
 const addAnotherButton = GovUKButton({
   text: 'Add another victim',
@@ -19,12 +27,8 @@ const continueButton = GovUKButton({
   value: 'continue',
 })
 
-const VICTIM_FIELD_CODES = [
-  Question.offence_analysis_victim_type,
-  Question.offence_analysis_victim_age,
-  Question.offence_analysis_victim_sex,
-  Question.offence_analysis_victim_ethnicity,
-]
+const collectionCode = 'victims'
+const collectionName = 'OFFENCE_ANALYSIS_VICTIM'
 
 export const offenceAnalysisVictimSummaryStep = step({
   path: `/${Step.offence_analysis_victim_summary.path}`,
@@ -33,15 +37,40 @@ export const offenceAnalysisVictimSummaryStep = step({
   blocks: [victimCards, addAnotherButton, continueButton],
   onAccess: [
     access({
-      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection('victims', 'OFFENCE_ANALYSIS_VICTIM')],
-    })
+      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(collectionCode, collectionName)],
+    }),
   ],
   onSubmission: [
+    submit({
+      when: and(
+        Answer(Question.offence_analysis_commited_against).match(Condition.Array.Contains(CommonOption.other)),
+        Post('action').match(Condition.Equals('continue'))
+      ),
+      validate: true,
+      onValid: {
+        next: [redirect({ goto: Step.offence_analysis_involved_parties.path })],
+      },
+    }),
+    submit({
+      when: Post('action').match(Condition.Equals('continue')),
+      validate: true,
+      onValid: {
+        next: [redirect({ goto: Step.offence_analysis_impact.path })],
+      },
+    }),
     submit({
       when: Post('action').match(Condition.Equals('add_another')),
       validate: true,
       onValid: {
         next: [redirect({ goto: Step.offence_analysis_victim.path })],
+      },
+    }),
+    submit({
+      when: Post('delete').match(Condition.IsRequired()),
+      validate: true,
+      onValid: {
+        effects: [StrengthsAndNeedsEffects.removeItemFromCollection(collectionName, Post('delete'))],
+        next: [redirect({ goto: Step.offence_analysis_victim_summary.path })],
       },
     }),
   ],

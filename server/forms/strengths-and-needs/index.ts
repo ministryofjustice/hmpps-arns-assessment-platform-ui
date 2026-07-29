@@ -7,7 +7,7 @@ import { StrengthsAndNeedsGeneratorImplementations } from './generators'
 import { strengthsAndNeedsTransformerImplementations } from './transformers'
 import { strengthsAndNeedsConditionImplementations } from './conditions'
 import { Section } from './versions/v1.0/constants/section'
-import {modalComponent} from "./components/modal/modalComponent";
+import { modalComponent } from './components/modal/modalComponent'
 
 const versionRedirectStep = step({
   path: '/',
@@ -37,9 +37,7 @@ const strengthsAndNeedsRootJourney = journey({
 export default createForgePackage<StrengthsAndNeedsEffectsDeps>({
   enabled: config.forms.strengthsAndNeeds.enabled,
   journey: strengthsAndNeedsRootJourney,
-  components: [
-    modalComponent
-  ],
+  components: [modalComponent],
   functions: {
     ...StrengthsAndNeedsEffectImplementations,
     ...StrengthsAndNeedsGeneratorImplementations,
@@ -47,4 +45,3 @@ export default createForgePackage<StrengthsAndNeedsEffectsDeps>({
     ...strengthsAndNeedsConditionImplementations,
   },
 })
-

@@ -6,14 +6,14 @@ import {
   redirect,
   step,
   submit,
-  Transformer
+  Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKButton} from '@ministryofjustice/hmpps-forge/govuk-components'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {Step} from '../../constants/step'
-import {Question} from "../../constants/question";
-import {victimAge, victimEthnicity, victimSex, victimType} from "../offence-analysis-victim/fields";
-import {loadItemFromCollection} from "../../../../../../effects/assessment/loadItemFromCollection";
+import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { Step } from '../../constants/step'
+import { Question } from '../../constants/question'
+import { victimAge, victimEthnicity, victimSex, victimType } from '../offence-analysis-victim/fields'
+import { loadItemFromCollection } from '../../../../../../effects/assessment/loadItemFromCollection'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -40,9 +40,13 @@ export const offenceAnalysisEditVictimStep = step({
     access({
       effects: [
         StrengthsAndNeedsEffects.loadAnswersFromCollection(collectionCode, collectionName),
-        StrengthsAndNeedsEffects.loadItemFromCollection(VICTIM_FIELD_CODES, collectionName, Params('itemId').pipe(Transformer.String.ToInt())),
+        StrengthsAndNeedsEffects.loadItemFromCollection(
+          VICTIM_FIELD_CODES,
+          collectionName,
+          Params('itemId').pipe(Transformer.String.ToInt()),
+        ),
       ],
-    })
+    }),
   ],
   onSubmission: [
     submit({
@@ -50,7 +54,12 @@ export const offenceAnalysisEditVictimStep = step({
       validate: true,
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.updateItemFromCollection(collectionCode, collectionName, VICTIM_FIELD_CODES, Params('itemId').pipe(Transformer.String.ToInt())),
+          StrengthsAndNeedsEffects.updateItemFromCollection(
+            collectionCode,
+            collectionName,
+            VICTIM_FIELD_CODES,
+            Params('itemId').pipe(Transformer.String.ToInt()),
+          ),
         ],
         next: [redirect({ goto: Step.offence_analysis_victim_summary.path })],
       },
