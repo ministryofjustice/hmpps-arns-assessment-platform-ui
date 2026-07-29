@@ -1,17 +1,11 @@
 import type { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
 import { User } from '../../../interfaces/user'
-import { CommandResult, CreateAssessmentCommandResult } from '../../../interfaces/aap-api/commandResult'
-import {
-  CreateAssessmentCommand,
-  UpdateAssessmentAnswersCommand,
-  UpdateAssessmentPropertiesCommand,
-} from '../../../interfaces/aap-api/command'
-import { AssessmentVersionQuery } from '../../../interfaces/aap-api/query'
 import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryResult'
 import { AssessmentIdentifiers } from '../../../interfaces/aap-api/identifier'
 import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessSessionDetails } from '../../access/effects/types'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
+import { AssessmentPlatformApiClient } from '../../../data'
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers
@@ -59,13 +53,6 @@ export type StrengthsAndNeedsContext = EffectFunctionContext<
   StrengthsAndNeedsState
 >
 
-export interface StrengthsAndNeedsAssessmentApi {
-  executeQuery(query: AssessmentVersionQuery): Promise<AssessmentVersionQueryResult>
-  executeCommand(command: CreateAssessmentCommand): Promise<CreateAssessmentCommandResult>
-  executeCommand(command: UpdateAssessmentAnswersCommand): Promise<CommandResult>
-  executeCommand(command: UpdateAssessmentPropertiesCommand): Promise<CommandResult>
-}
-
 export interface StrengthsAndNeedsEffectsDeps {
-  api: StrengthsAndNeedsAssessmentApi
+  api: AssessmentPlatformApiClient
 }

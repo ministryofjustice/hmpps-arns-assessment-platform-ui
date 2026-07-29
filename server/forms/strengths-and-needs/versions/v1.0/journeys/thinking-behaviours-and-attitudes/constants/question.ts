@@ -1,0 +1,62 @@
+export const Question = {
+  // Main thinking behaviours and attitudes questions
+  thinking_behaviours_attitudes_consequences: 'thinking_behaviours_attitudes_consequences',
+  thinking_behaviours_attitudes_stable_behaviour: 'thinking_behaviours_attitudes_stable_behaviour',
+  thinking_behaviours_attitudes_offending_activities: 'thinking_behaviours_attitudes_offending_activities',
+  thinking_behaviours_attitudes_peer_pressure: 'thinking_behaviours_attitudes_peer_pressure',
+  thinking_behaviours_attitudes_peer_pressure_yes_details: 'thinking_behaviours_attitudes_peer_pressure_yes_details',
+  thinking_behaviours_attitudes_peer_pressure_some_details: 'thinking_behaviours_attitudes_peer_pressure_some_details',
+  thinking_behaviours_attitudes_peer_pressure_no_details: 'thinking_behaviours_attitudes_peer_pressure_no_details',
+  thinking_behaviours_attitudes_problem_solving: 'thinking_behaviours_attitudes_problem_solving',
+  thinking_behaviours_attitudes_peoples_views: 'thinking_behaviours_attitudes_peoples_views',
+  thinking_behaviours_attitudes_manipulative_predatory_behaviour:
+    'thinking_behaviours_attitudes_manipulative_predatory_behaviour',
+  thinking_behaviours_attitudes_temper_management: 'thinking_behaviours_attitudes_temper_management',
+  thinking_behaviours_attitudes_violence_controlling_behaviour:
+    'thinking_behaviours_attitudes_violence_controlling_behaviour',
+  thinking_behaviours_attitudes_impulsive_behaviour: 'thinking_behaviours_attitudes_impulsive_behaviour',
+  thinking_behaviours_attitudes_positive_attitude: 'thinking_behaviours_attitudes_positive_attitude',
+  thinking_behaviours_attitudes_hostile_orientation: 'thinking_behaviours_attitudes_hostile_orientation',
+  thinking_behaviours_attitudes_supervision: 'thinking_behaviours_attitudes_supervision',
+  thinking_behaviours_attitudes_criminal_behaviour: 'thinking_behaviours_attitudes_criminal_behaviour',
+
+  // Risk of sexual harm questions
+  thinking_behaviours_attitudes_risk_sexual_harm: 'thinking_behaviours_attitudes_risk_sexual_harm',
+  thinking_behaviours_attitudes_sexual_preoccupation: 'thinking_behaviours_attitudes_sexual_preoccupation',
+  thinking_behaviours_attitudes_offence_related_sexual_interest:
+    'thinking_behaviours_attitudes_offence_related_sexual_interest',
+  thinking_behaviours_attitudes_emotional_intimacy: 'thinking_behaviours_attitudes_emotional_intimacy',
+
+  // Changes question
+  thinking_behaviours_attitudes_changes: 'thinking_behaviours_attitudes_changes',
+  thinking_behaviours_attitudes_changes_has_made_changes_details:
+    'thinking_behaviours_attitudes_changes_has_made_changes_details',
+  thinking_behaviours_attitudes_changes_is_making_changes_details:
+    'thinking_behaviours_attitudes_changes_is_making_changes_details',
+  thinking_behaviours_attitudes_changes_wants_to_make_changes_knows_how_to_details:
+    'thinking_behaviours_attitudes_changes_wants_to_make_changes_knows_how_to_details',
+  thinking_behaviours_attitudes_changes_wants_to_make_changes_needs_help_details:
+    'thinking_behaviours_attitudes_changes_wants_to_make_changes_needs_help_details',
+  thinking_behaviours_attitudes_changes_thinking_about_making_changes_details:
+    'thinking_behaviours_attitudes_changes_thinking_about_making_changes_details',
+  thinking_behaviours_attitudes_changes_does_not_want_to_make_changes_details:
+    'thinking_behaviours_attitudes_changes_does_not_want_to_make_changes_details',
+  thinking_behaviours_attitudes_changes_does_not_want_to_answer_details:
+    'thinking_behaviours_attitudes_changes_does_not_want_to_answer_details',
+
+  // Practitioner analysis questions
+  thinking_behaviours_attitudes_strengths_protective_factors:
+    'thinking_behaviours_attitudes_strengths_protective_factors',
+  thinking_behaviours_attitudes_strengths_protective_factors_details:
+    'thinking_behaviours_attitudes_strengths_protective_factors_details',
+  thinking_behaviours_attitudes_no_strengths_protective_factors_details:
+    'thinking_behaviours_attitudes_no_strengths_protective_factors_details',
+  thinking_behaviours_attitudes_linked_to_serious_harm: 'thinking_behaviours_attitudes_linked_to_serious_harm',
+  thinking_behaviours_attitudes_serious_harm_details: 'thinking_behaviours_attitudes_serious_harm_details',
+  thinking_behaviours_attitudes_no_serious_harm_details: 'thinking_behaviours_attitudes_no_serious_harm_details',
+  thinking_behaviours_attitudes_linked_to_reoffending: 'thinking_behaviours_attitudes_linked_to_reoffending',
+  thinking_behaviours_attitudes_risk_of_reoffending_details:
+    'thinking_behaviours_attitudes_risk_of_reoffending_details',
+  thinking_behaviours_attitudes_no_risk_of_reoffending_details:
+    'thinking_behaviours_attitudes_no_risk_of_reoffending_details',
+} as const

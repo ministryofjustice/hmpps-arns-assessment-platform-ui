@@ -69,6 +69,9 @@
           {% if sectionTitle %}
             <div class="govuk-grid-row">
               <div class="govuk-grid-column-three-quarters">
+                {% if pageSubHeading %}
+                  <p class="page-sub-heading">{{ pageSubHeading }}</p>
+                {% endif %}
                 <h1 class="{{ sectionTitleClass | default("govuk-heading-l") }}">{{ sectionTitle }}</h1>
               </div>
               {% if sectionStatus %}

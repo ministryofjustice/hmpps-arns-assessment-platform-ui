@@ -380,6 +380,7 @@ export const financeChanges = GovUKRadioInput({
       classes: 'govuk-fieldset__legend--m',
     },
   },
+  hint: contentFor('question.finance_changes.hint', CaseData.Forename),
   items: [
     {
       value: CommonOption.has_made_changes,

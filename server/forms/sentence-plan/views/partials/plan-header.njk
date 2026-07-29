@@ -9,9 +9,19 @@
   {% set person = data.caseData %}
   {% set fullName = person.name.forename + ' ' + person.name.surname if person.name else 'Unknown' %}
 
-  <div class="govuk-width-container">
-    <div class="plan-header" data-qa="plan-header">
-      <div class="govuk-grid-row">
+  {% if showPrintPageHeaders %}
+    <div
+      hidden
+      data-print-page-header
+      data-print-plan-title="{{ headerPageHeading }}"
+      data-print-person-name="{{ fullName }}"
+      data-print-identifiers="CRN: {{ person.crn }} | PNC: {{ person.pnc | default('Unknown PNC', true) }} | Date of birth: {{ person.dateOfBirth | formatSimpleDate }}"
+    ></div>
+  {% endif %}
+
+  <div class="govuk-width-container{% if showPrintPageHeaders %} plan-header-container--print-preview{% endif %}">
+    <div class="plan-header{% if showPrintPageHeaders %} plan-header--print-preview{% endif %}" data-qa="plan-header">
+      <div class="govuk-grid-row plan-header__subject-details-row">
           <div class="govuk-grid-column-full plan-header__subject-details">
             <p class="plan-header__subject-details__title">{{ fullName }}</p>
             <dl class="plan-header__subject-details__identifiers">

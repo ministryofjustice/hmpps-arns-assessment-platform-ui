@@ -32,7 +32,7 @@ export const Section = {
   },
   alcohol_use: {
     code: 'alcohol-use',
-    path: '',
+    path: '/alcohol-use',
     sideNavHref: `${basePath}/alcohol-use/alcohol-use?resume=true`,
     statusKey: 'alcohol_section_status',
   },
@@ -50,13 +50,13 @@ export const Section = {
   },
   thinking_behaviours_and_attitudes: {
     code: 'thinking-behaviours-and-attitudes',
-    path: '',
+    path: '/thinking-behaviours-and-attitudes',
     sideNavHref: `${basePath}/thinking-behaviours-and-attitudes/thinking-behaviours?resume=true`,
     statusKey: 'thinking_behaviour_section_status',
   },
   offence_analysis: {
     code: 'offence-analysis',
-    path: '',
+    path: '/offence-analysis',
     sideNavHref: `${basePath}/offence-analysis/offence-analysis?resume=true`,
     statusKey: 'offences_section_status',
   },

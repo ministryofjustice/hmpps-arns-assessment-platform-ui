@@ -9,6 +9,7 @@ import { basePath, formVersion } from './constants/formVersion'
 import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
+import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -18,7 +19,7 @@ import { personalRelationshipsJourney } from './journeys/personal-relationships-
  */
 export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
-  title: 'Strengths and needs', // TODO: commonContentFor('strengths_and_needs'),
+  title: commonContentFor('strengths_and_needs'),
   path: `/${formVersion}`,
   view: {
     template: 'strengths-and-needs/views/san-step',
@@ -40,6 +41,7 @@ export const strengthsAndNeedsV1Journey = journey({
         StrengthsAndNeedsEffects.initializeSessionFromAccess(),
         StrengthsAndNeedsEffects.loadSessionData(),
         StrengthsAndNeedsEffects.loadAssessment(),
+        StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
     }),
   ],
@@ -50,5 +52,6 @@ export const strengthsAndNeedsV1Journey = journey({
     financeJourney,
     healthWellbeingJourney,
     personalRelationshipsJourney,
+    thinkingBehavioursAndAttitudesJourney,
   ],
 })

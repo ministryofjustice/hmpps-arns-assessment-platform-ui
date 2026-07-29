@@ -9,6 +9,7 @@ export const CaseData = {
   Forename: Data('caseData.name.forename'),
   ForenamePossessive: Data('caseData.name.forename').pipe(Transformer.String.Possessive()),
   Surname: Data('caseData.name.surname'),
+  RiskOfSexualHarm: Data('caseData.r'),
 }
 export const basePath = `/strengths-and-needs/${formVersion}`
 
