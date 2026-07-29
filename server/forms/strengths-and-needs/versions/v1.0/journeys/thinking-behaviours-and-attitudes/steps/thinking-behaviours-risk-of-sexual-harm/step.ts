@@ -3,12 +3,12 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { thinkingBehavioursRiskSexualHarm } from './fields'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
-import { Option } from '../../constants/option'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
 import { sectionPath } from '../../../../constants/path'
+import { CommonOption } from '../../../../constants/commonOption'
 
 export const thinkingBehavioursRiskOfSexualHarmStep = step({
   path: `/${Step.thinkingBehavioursRiskOfSexualHarm.path}`,
@@ -37,7 +37,7 @@ export const thinkingBehavioursRiskOfSexualHarmStep = step({
         next: [
           redirect({
             when: Answer(Question.thinking_behaviours_attitudes_risk_sexual_harm).match(
-              Condition.Equals(Option.yes_risk_sexual_harm),
+              Condition.Equals(CommonOption.yes),
             ),
             goto: Step.thinkingBehavioursSexualHarm.path,
           }),

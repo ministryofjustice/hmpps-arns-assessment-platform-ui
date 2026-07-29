@@ -3,6 +3,7 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Section, SectionStatus } from '../../versions/v1.0/constants/section'
 import { Question } from '../../versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/question'
 import { Commands } from '../../../../interfaces/aap-api/command'
+import { CommonOption } from '../../versions/v1.0/constants/commonOption'
 
 export const setRiskOfSexualHarm =
   (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
@@ -12,12 +13,12 @@ export const setRiskOfSexualHarm =
     const oasysAnswer = context.getSession().caseDetails.sexuallyMotivatedOffenceHistory
     const sanAnswer = context.getAnswer(Question.thinking_behaviours_attitudes_risk_sexual_harm)
 
-    if (oasysAnswer === 'YES' && oasysAnswer !== sanAnswer) {
+    if (oasysAnswer === CommonOption.yes && oasysAnswer !== sanAnswer) {
       const updateAnswers: Commands = {
         type: 'UpdateAssessmentAnswersCommand',
         assessmentUuid,
         user,
-        added: wrapAll({ [Question.thinking_behaviours_attitudes_risk_sexual_harm]: oasysAnswer }),
+        added: wrapAll({ [Question.thinking_behaviours_attitudes_risk_sexual_harm]: CommonOption.yes }),
         removed: [],
       }
 
@@ -38,7 +39,7 @@ export const setRiskOfSexualHarm =
         answers: { ...answers, ...updateAnswers.added },
         properties: { ...properties, ...updateProperties.added },
       })
-      context.setAnswer(Question.thinking_behaviours_attitudes_risk_sexual_harm, oasysAnswer)
+      context.setAnswer(Question.thinking_behaviours_attitudes_risk_sexual_harm, CommonOption.yes)
       context.setData(Section.thinking_behaviours_and_attitudes.statusKey, SectionStatus.incomplete)
     }
   }

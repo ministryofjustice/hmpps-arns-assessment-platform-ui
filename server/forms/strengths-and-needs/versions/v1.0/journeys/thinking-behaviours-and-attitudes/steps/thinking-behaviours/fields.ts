@@ -492,33 +492,6 @@ export const thinkingBehavioursCriminalBehaviour = GovUKRadioInput({
   ],
 })
 
-export const thinkingBehavioursRiskSexualHarm = GovUKRadioInput({
-  code: Question.thinking_behaviours_attitudes_risk_sexual_harm,
-  fieldset: {
-    legend: {
-      text: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.text', CaseData.Forename),
-      classes: 'govuk-fieldset__legend--m',
-    },
-  },
-  items: [
-    {
-      text: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.option.YES_RISK_SEXUAL_HARM.text'),
-      hint: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.option.YES_RISK_SEXUAL_HARM.hint'),
-      value: Option.yes_risk_sexual_harm,
-    },
-    {
-      text: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.option.NO_RISK_SEXUAL_HARM'),
-      value: Option.no_risk_sexual_harm,
-    },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.validation'),
-    }),
-  ],
-})
-
 const [
   hasMadePositiveChangesDetails,
   isActivelyMakingChangesDetails,

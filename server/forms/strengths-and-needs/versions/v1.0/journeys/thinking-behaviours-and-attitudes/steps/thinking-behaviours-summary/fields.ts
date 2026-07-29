@@ -21,7 +21,6 @@ import {
   thinkingBehavioursHostileOrientation,
   thinkingBehavioursSupervision,
   thinkingBehavioursCriminalBehaviour,
-  thinkingBehavioursRiskSexualHarm,
   thinkingBehavioursChanges,
 } from '../thinking-behaviours/fields'
 import {
@@ -38,6 +37,7 @@ import { Step } from '../../constants/step'
 import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
 import { CommonOption } from '../../../../constants/commonOption'
 import { contentFor } from '../../locales'
+import { thinkingBehavioursRiskSexualHarm } from '../thinking-behaviours-risk-of-sexual-harm/fields'
 
 const PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT = 1425
 
@@ -331,8 +331,8 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
       key: { text: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.text', CaseData.Forename) },
       value: {
         blocks: [
-          createSummaryRowForRiskSexualHarm(Option.yes_risk_sexual_harm),
-          createSummaryRowForRiskSexualHarm(Option.no_risk_sexual_harm),
+          createSummaryRowForRiskSexualHarm(CommonOption.yes),
+          createSummaryRowForRiskSexualHarm(CommonOption.no),
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehavioursRiskOfSexualHarm.path, text: commonContentFor('change') }] },

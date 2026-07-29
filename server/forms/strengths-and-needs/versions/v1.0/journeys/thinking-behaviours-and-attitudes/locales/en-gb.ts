@@ -2,6 +2,7 @@ import { Locale } from '../../../../../i18n'
 import { Question } from '../constants/question'
 import { Step } from '../constants/step'
 import { Option } from '../constants/option'
+import { CommonOption } from '../../../constants/commonOption'
 
 export const english = {
   step: {
@@ -171,11 +172,9 @@ export const english = {
         </div>
       `,
       option: {
-        [Option.yes_risk_sexual_harm]: {
-          text: 'Yes',
+        [CommonOption.yes]: {
           hint: 'Information suggests that there is evidence of sexual behaviour that could pose a risk of sexual harm to others',
         },
-        [Option.no_risk_sexual_harm]: 'No',
       },
       validation: 'Select if there are any concerns they are a risk of sexual harm',
     },

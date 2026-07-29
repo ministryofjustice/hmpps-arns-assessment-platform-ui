@@ -69,10 +69,6 @@ export const Option = {
   sometimes_criminal_behaviour: 'SOMETIMES_CRIMINAL_BEHAVIOUR',
   yes_criminal_behaviour: 'YES_CRIMINAL_BEHAVIOUR',
 
-  // Risk of sexual harm
-  yes_risk_sexual_harm: 'YES_RISK_SEXUAL_HARM',
-  no_risk_sexual_harm: 'NO_RISK_SEXUAL_HARM',
-
   // Sexual preoccupation
   yes_sexual_preoccupation: 'YES_SEXUAL_PREOCCUPATION',
   sometimes_sexual_preoccupation: 'SOMETIMES_SEXUAL_PREOCCUPATION',
