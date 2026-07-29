@@ -3,6 +3,8 @@ import { Condition, PredicateExpr, Self, validation } from '@ministryofjustice/h
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { commonContentFor } from '../../locales'
 
+const MAX_DETAILS_LENGTH = 2000
+
 export const detailsFactory = (options: {
   code: string
   label: ResolvableString
@@ -14,7 +16,7 @@ export const detailsFactory = (options: {
     code: options.code,
     label: options.label,
     ...(options.hint && { hint: options.hint }),
-    maxLength: 2000,
+    maxLength: MAX_DETAILS_LENGTH,
     dependentWhen: options.dependentWhen,
     validWhen: [
       ...(options.requiredMessage
@@ -26,8 +28,8 @@ export const detailsFactory = (options: {
           ]
         : []),
       validation({
-        condition: Self().match(Condition.String.HasMaxLength(2000)),
-        message: commonContentFor('validation.details_character_limit', '2000'),
+        condition: Self().match(Condition.String.HasMaxLength(MAX_DETAILS_LENGTH)),
+        message: commonContentFor('validation.details_character_limit', `${MAX_DETAILS_LENGTH}`),
       }),
     ],
   })
