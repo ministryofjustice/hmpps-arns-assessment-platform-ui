@@ -65,15 +65,14 @@ export const english = {
     },
     [Question.drugs_injected]: {
       text: 'Which drugs has %1 injected?',
-      hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
+      hint: 'Select all that apply.',
       validation: "Select which drugs they've injected, or select 'None'",
     },
     [Question.drugs_injected_months]: {
       code: 'drugs_injected_%1',
-      text: 'When has Hassan injected this drug?',
-      hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
-      validation: "Select which drugs they've injected, or select 'None'",
-
+      text: 'When has %1 injected this drug?',
+      hint: 'Select one or both.',
+      validation: 'Select when they injected this drug',
     },
     [Question.receiving_treatment]: {
       text: 'Is %1 receiving treatment for their drug use?',
@@ -108,7 +107,7 @@ export const english = {
       text: 'Details on why %1 uses drugs',
     },
     [Question.drugs_affected_their_life]: {
-      text: "How has %1's drug use affected their life?",
+      text: 'How has %1 drug use affected their life?',
       option: {
         [Option.behaviour]: {
           text: 'Behaviour',
@@ -160,8 +159,8 @@ export const english = {
       validation: 'Select if they seem motivated to stop or reduce their drug use',
     },
     [Question.drug_use_practitioner_analysis_strengths_or_protective_factors]: {
-      text: 'Are there any strengths or protective factors related to drug use?',
-      validation: 'Select if there are any strengths or protective factors related to drug use',
+      text: 'Are there any strengths or protective factors related to %1 drug use?',
+      validation: 'Select if there are any strengths or protective factors',
     },
     [Question.drug_use_practitioner_analysis_risk_of_serious_harm]: {
       text: 'Is %1 drug use linked to risk of serious harm?',

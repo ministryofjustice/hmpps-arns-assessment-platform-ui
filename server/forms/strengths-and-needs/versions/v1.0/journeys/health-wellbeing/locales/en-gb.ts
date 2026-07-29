@@ -135,7 +135,7 @@ export const english = {
       validation: 'Select if they want to make changes to their health and wellbeing',
     },
     [Question.strengths_protective_factors_health_wellbeing_details]: {
-      validation: 'Give details on strengths or protective factors related to their employment and education',
+      validation: 'Give details on strengths or protective factors related to their health and wellbeing',
     },
     [Question.strengths_protective_factors_health_wellbeing]: {
       text: 'Are there any strengths or protective factors related to %1 health and wellbeing?',

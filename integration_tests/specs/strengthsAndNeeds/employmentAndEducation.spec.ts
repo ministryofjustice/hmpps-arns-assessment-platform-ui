@@ -66,8 +66,8 @@ test.describe('Employment and education Page', () => {
           - text: Unstable employment history with regular periods of unemployment
           - radio "Unknown"
           - text: Unknown
-        - group "Does Test have any day-to-day commitments?":
-          - text: Does Test have any day-to-day commitments? Select all that apply.
+        - group "Does Test have any additional day-to-day commitments?":
+          - text: Does Test have any additional day-to-day commitments? Select all that apply.
           - checkbox "Caring responsibilities"
           - text: Caring responsibilities
           - checkbox "Child responsibilities"
@@ -114,8 +114,8 @@ test.describe('Employment and education Page', () => {
           - text: No or
           - radio "Unknown"
           - text: Unknown
-        - group "Does Test's have any skills that could help them in a job or to get a job?":
-          - text: Does Test's have any skills that could help them in a job or to get a job?
+        - group "Does Test have any skills that could help them in a job or to get a job?":
+          - text: Does Test have any skills that could help them in a job or to get a job?
           - radio "Yes"
           - text: Yes This includes any completed training, qualifications, work experience or transferable skills.
           - radio "Some skills"
@@ -243,10 +243,10 @@ test.describe('Employment and education Page', () => {
         - text: Employment and education
         - strong: Incomplete
         - group "What is Test's employment history?"
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -281,10 +281,10 @@ test.describe('Employment and education Page', () => {
         - text: Employment and education
         - strong: Incomplete
         - group "What is Test's employment history?"
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -318,10 +318,10 @@ test.describe('Employment and education Page', () => {
         - link "Back"
         - text: Employment and education
         - strong: Incomplete
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
@@ -380,10 +380,10 @@ test.describe('Employment and education Page', () => {
         - text: Employment and education
         - strong: Incomplete
         - group "What is Test's employment history?"
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -417,10 +417,10 @@ test.describe('Employment and education Page', () => {
         - link "Back"
         - text: Employment and education
         - strong: Incomplete
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
@@ -479,10 +479,10 @@ test.describe('Employment and education Page', () => {
         - text: Employment and education
         - strong: Incomplete
         - group "What is Test's employment history?"
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -516,10 +516,10 @@ test.describe('Employment and education Page', () => {
         - link "Back"
         - text: Employment and education
         - strong: Incomplete
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
@@ -588,7 +588,7 @@ test.describe('Employment and education Page', () => {
           - definition:
             - link "Change":
               - /url: current-employment
-          - term: Does Test have any day-to-day commitments?
+          - term: Does Test have any additional day-to-day commitments?
           - definition:
             - paragraph: None
           - definition:

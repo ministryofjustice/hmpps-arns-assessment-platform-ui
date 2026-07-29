@@ -44,7 +44,7 @@ export const english = {
       validation: 'Select the type of employment they currently have',
     },
     [Question.employment_history]: {
-      text: 'What is  %1 employment history?',
+      text: 'What is %1 employment history?',
       hint: 'Include their current employment.',
       option: {
         [Option.stable]: {
@@ -64,7 +64,7 @@ export const english = {
       validation: 'Select if they want to make changes to their employment and education',
     },
     [Question.day_to_day_commitments]: {
-      text: 'Does %1 have any day-to-day commitments?',
+      text: 'Does %1 have any additional day-to-day commitments?',
       hint: 'Select all that apply.',
       option: {
         [Option.caring]: 'Caring responsibilities',

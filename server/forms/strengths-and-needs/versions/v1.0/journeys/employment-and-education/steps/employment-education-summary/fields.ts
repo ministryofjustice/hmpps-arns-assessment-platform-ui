@@ -46,7 +46,7 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.employment_sector.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.employment_sector.text', CaseData.Forename) },
       value: {
         blocks: [GovUKBody({ text: Answer(Question.employment_sector) })],
       },
@@ -66,10 +66,30 @@ export const employmentStatusSummary = GovUKSummaryList({
       value: {
         blocks: [
           getDisplayTextForItems(Question.employment_history, employmentHistory.items),
-          GovUKBody({ text: Answer(Question.continuous_employment_history_employment_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.changes_often_employment_history_employment_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.unstable_employment_history_employment_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.unknown_employment_history_employment_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.continuous_employment_history_employment_details),
+            size: 's',
+            visibleWhen: Answer(Question.continuous_employment_history_employment_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.changes_often_employment_history_employment_details),
+            size: 's',
+            visibleWhen: Answer(Question.changes_often_employment_history_employment_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.unstable_employment_history_employment_details),
+            size: 's',
+            visibleWhen: Answer(Question.unstable_employment_history_employment_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.unknown_employment_history_employment_details),
+            size: 's',
+            visibleWhen: Answer(Question.unknown_employment_history_employment_details).match(Condition.IsRequired()),
+          }),
         ].flat(),
       },
       actions: {
@@ -88,20 +108,28 @@ export const employmentStatusSummary = GovUKSummaryList({
       ),
     },
     {
-      key: { text: contentFor('question.day_to_day_commitments.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.day_to_day_commitments.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
             text: contentFor('question.day_to_day_commitments.option.CARING'),
             visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.caring)),
           }),
-          GovUKBody({ text: Answer(Question.day_to_day_caring_responsibilities_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.day_to_day_caring_responsibilities_details),
+            size: 's',
+            visibleWhen: Answer(Question.day_to_day_caring_responsibilities_details).match(Condition.IsRequired()),
+          }),
 
           GovUKBody({
             text: contentFor('question.day_to_day_commitments.option.CHILDREN'),
             visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.children)),
           }),
-          GovUKBody({ text: Answer(Question.day_to_day_child_responsibilities_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.day_to_day_child_responsibilities_details),
+            size: 's',
+            visibleWhen: Answer(Question.day_to_day_child_responsibilities_details).match(Condition.IsRequired()),
+          }),
 
           GovUKBody({
             text: contentFor('question.day_to_day_commitments.option.STUDYING'),
@@ -112,13 +140,23 @@ export const employmentStatusSummary = GovUKSummaryList({
             text: contentFor('question.day_to_day_commitments.option.VOLUNTEERING'),
             visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.volunteering)),
           }),
-          GovUKBody({ text: Answer(Question.day_to_day_volunteering_responsibilities_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.day_to_day_volunteering_responsibilities_details),
+            size: 's',
+            visibleWhen: Answer(Question.day_to_day_volunteering_responsibilities_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
 
           GovUKBody({
             text: commonContentFor('option.OTHER'),
             visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(CommonOption.other)),
           }),
-          GovUKBody({ text: Answer(Question.day_to_day_other_commitments_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.day_to_day_other_commitments_details),
+            size: 's',
+            visibleWhen: Answer(Question.day_to_day_other_commitments_details).match(Condition.IsRequired()),
+          }),
 
           GovUKBody({
             text: commonContentFor('option.UNKNOWN'),
@@ -136,7 +174,7 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.academic_qualification.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.academic_qualification.text', CaseData.Forename) },
       value: {
         blocks: getDisplayTextForItems(Question.academic_qualification, academicQualification.items),
       },
@@ -145,11 +183,15 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.professional_qualification.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.professional_qualification.text', CaseData.Forename) },
       value: {
         blocks: [
           getDisplayTextForItems(Question.professional_qualification, professionalQualifications.items),
-          GovUKBody({ text: Answer(Question.professional_qualification_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.professional_qualification_details),
+            size: 's',
+            visibleWhen: Answer(Question.professional_qualification_details).match(Condition.IsRequired()),
+          }),
         ].flat(),
       },
       actions: {
@@ -157,12 +199,20 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.job_skills.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.job_skills.text', CaseData.Forename) },
       value: {
         blocks: [
           getDisplayTextForItems(Question.job_skills, jobSkills.items),
-          GovUKBody({ text: Answer(Question.has_job_skills_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.some_job_skills_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.has_job_skills_details),
+            size: 's',
+            visibleWhen: Answer(Question.has_job_skills_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.some_job_skills_details),
+            size: 's',
+            visibleWhen: Answer(Question.some_job_skills_details).match(Condition.IsRequired()),
+          }),
         ].flat(),
       },
       actions: {
@@ -171,7 +221,7 @@ export const employmentStatusSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor('question.difficulties_reading_writing_numeracy.text', CaseData.ForenamePossessive),
+        text: contentFor('question.difficulties_reading_writing_numeracy.text', CaseData.Forename),
       },
       value: {
         blocks: [
@@ -216,11 +266,33 @@ export const employmentStatusSummary = GovUKSummaryList({
       value: {
         blocks: [
           getDisplayTextForItems(Question.employment_experience, employmentExperience.items),
-          GovUKBody({ text: Answer(Question.positive_employment_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.mostly_positive_employment_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.positive_and_negative_employment_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.mostly_negative_employment_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.negative_employment_experience_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.positive_employment_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.positive_employment_experience_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.mostly_positive_employment_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.mostly_positive_employment_experience_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.positive_and_negative_employment_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.positive_and_negative_employment_experience_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.mostly_negative_employment_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.mostly_negative_employment_experience_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.negative_employment_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.negative_employment_experience_details).match(Condition.IsRequired()),
+          }),
         ].flat(),
       },
       actions: {
@@ -245,11 +317,33 @@ export const employmentStatusSummary = GovUKSummaryList({
       value: {
         blocks: [
           getDisplayTextForItems(Question.education_experience, educationExperience.items),
-          GovUKBody({ text: Answer(Question.positive_education_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.mostly_positive_education_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.positive_and_negative_education_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.mostly_negative_education_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.negative_education_experience_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.positive_education_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.positive_education_experience_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.mostly_positive_education_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.mostly_positive_education_experience_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.positive_and_negative_education_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.positive_and_negative_education_experience_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.mostly_negative_education_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.mostly_negative_education_experience_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.negative_education_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.negative_education_experience_details).match(Condition.IsRequired()),
+          }),
         ].flat(),
       },
       actions: {
@@ -257,16 +351,40 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.employment_and_education_changes.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.employment_and_education_changes.text', CaseData.Forename) },
       value: {
         blocks: [
           getDisplayTextForItems(Question.employment_and_education_changes, employmentAndEducationChanges.items),
-          GovUKBody({ text: Answer(Question.has_made_positive_changes_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.actively_making_changes_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.wants_to_make_changes_needs_help_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.thinking_about_making_changes_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.does_not_want_to_make_changes_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.does_not_want_to_answer_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.has_made_positive_changes_details),
+            size: 's',
+            visibleWhen: Answer(Question.has_made_positive_changes_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.actively_making_changes_details),
+            size: 's',
+            visibleWhen: Answer(Question.actively_making_changes_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.wants_to_make_changes_needs_help_details),
+            size: 's',
+            visibleWhen: Answer(Question.wants_to_make_changes_needs_help_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.thinking_about_making_changes_details),
+            size: 's',
+            visibleWhen: Answer(Question.thinking_about_making_changes_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.does_not_want_to_make_changes_details),
+            size: 's',
+            visibleWhen: Answer(Question.does_not_want_to_make_changes_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.does_not_want_to_answer_details),
+            size: 's',
+            visibleWhen: Answer(Question.does_not_want_to_answer_details).match(Condition.IsRequired()),
+          }),
         ].flat(),
       },
       actions: {

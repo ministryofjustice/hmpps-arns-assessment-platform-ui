@@ -133,7 +133,11 @@ export const accommodationSummary = GovUKSummaryList({
               Answer(Question.living_with).match(Condition.Array.Contains(Option.partner)),
             ),
           }),
-          GovUKBody({ text: Answer(Question.living_with_partner_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.living_with_partner_details),
+            size: 's',
+            visibleWhen: Answer(Question.living_with_partner_details).match(Condition.IsRequired()),
+          }),
           GovUKBody({
             text: contentFor('question.living_with.option.PERSON_UNDER_18'),
             visibleWhen: and(
@@ -148,7 +152,11 @@ export const accommodationSummary = GovUKSummaryList({
               Answer(Question.living_with).match(Condition.Array.Contains(CommonOption.other)),
             ),
           }),
-          GovUKBody({ text: Answer(Question.living_with_other_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.living_with_other_details),
+            size: 's',
+            visibleWhen: Answer(Question.living_with_other_details).match(Condition.IsRequired()),
+          }),
           GovUKBody({
             text: commonContentFor('option.UNKNOWN'),
             visibleWhen: and(
@@ -171,7 +179,7 @@ export const accommodationSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.living_with).match(Condition.IsRequired()),
     },
     {
-      key: { text: contentFor('question.suitable_housing_location.text', CaseData.Forename) },
+      key: { text: contentFor('question.suitable_housing_location.text', CaseData.ForenamePossessive) },
       value: {
         blocks: [
           GovUKBody({
@@ -234,7 +242,11 @@ export const accommodationSummary = GovUKSummaryList({
             ),
             size: 's',
           }),
-          GovUKBody({ text: Answer(Question.suitable_housing_location_concerns_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.suitable_housing_location_concerns_details),
+            size: 's',
+            visibleWhen: Answer(Question.suitable_housing_location_concerns_details).match(Condition.IsRequired()),
+          }),
         ],
       },
       actions: {
@@ -243,7 +255,7 @@ export const accommodationSummary = GovUKSummaryList({
       visibleWhen: not(Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation))),
     },
     {
-      key: { text: contentFor('question.suitable_housing.text', CaseData.Forename) },
+      key: { text: contentFor('question.suitable_housing.text', CaseData.ForenamePossessive) },
       value: {
         blocks: [
           GovUKBody({
@@ -408,7 +420,11 @@ export const accommodationSummary = GovUKSummaryList({
               Answer(Question.no_accommodation_reason).match(Condition.Array.Contains(CommonOption.other)),
             ),
           }),
-          GovUKBody({ text: Answer(Question.no_accommodation_reason_other_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.no_accommodation_reason_other_details),
+            size: 's',
+            visibleWhen: Answer(Question.no_accommodation_reason_other_details).match(Condition.IsRequired()),
+          }),
         ],
       },
       actions: {
