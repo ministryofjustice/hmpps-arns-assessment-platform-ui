@@ -17,6 +17,9 @@ export interface PlaywrightExtendedConfig {
     coordinatorApi: {
       url: string
     }
+    riskActuarialApi: {
+      url: string
+    }
     localstack: {
       url: string
       queueUrl: string
@@ -79,6 +82,9 @@ export default defineConfig<PlaywrightExtendedConfig>({
       },
       coordinatorApi: {
         url: process.env.COORDINATOR_API_URL || 'http://localhost:9091/coordinator-api',
+      },
+      riskActuarialApi: {
+        url: process.env.RISK_ACTUARIAL_API_URL || 'http://localhost:9091/risk-actuarial-api',
       },
       localstack: {
         url: process.env.LOCALSTACK_URL || 'http://localhost:4566',

@@ -4,9 +4,11 @@ import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients
 import { promises as fs } from 'node:fs'
 import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
 import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
+import { RiskActuarialApiBuilder, RiskActuarialApiBuilderFactory } from 'builders/RiskActuarialApiBuilder'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
 import { TestHmppsAuthClient } from './apis/TestHmppsAuthClient'
 import { TestAapApiClient } from './apis/TestAapApiClient'
+import { TestRiskActuarialApiClient } from './apis/TestRiskActuarialApiClient'
 import { TestHandoverApiClient } from './apis/TestHandoverApiClient'
 import { TestCoordinatorApiClient } from './apis/TestCoordinatorApiClient'
 import { AssessmentBuilder } from '../builders/AssessmentBuilder'
@@ -139,10 +141,12 @@ type TestApiFixtures = {
   aapClient: TestAapApiClient
   handoverClient: TestHandoverApiClient
   coordinatorClient: TestCoordinatorApiClient
+  riskActuarialApiClient: TestRiskActuarialApiClient
   assessmentBuilder: AssessmentBuilderFactory
   sentencePlanBuilder: SentencePlanBuilderFactory
   coordinatorBuilder: CoordinatorBuilderFactory
   handoverBuilder: HandoverBuilderFactory
+  riskActuarialApiBuilder: RiskActuarialApiBuilderFactory
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
   auditQueue: AuditQueueClient
   makeAxeBuilder: () => AxeBuilder
@@ -232,6 +236,16 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
     await use(client)
   },
 
+  riskActuarialApiClient: async ({ authClient, apis }, use, testInfo) => {
+    const client = new TestRiskActuarialApiClient({
+      baseUrl: apis.riskActuarialApi.url,
+      authenticationClient: authClient as unknown as AuthenticationClient,
+      testInfo,
+    })
+
+    await use(client)
+  },
+
   assessmentBuilder: async ({ aapClient }, use) => {
     await use(AssessmentBuilder(aapClient))
   },
@@ -242,6 +256,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
   coordinatorBuilder: async ({ coordinatorClient }, use) => {
     await use(CoordinatorBuilder(coordinatorClient))
+  },
+
+  riskActuarialApiBuilder: async ({ riskActuarialApiClient }, use) => {
+    await use(RiskActuarialApiBuilder(riskActuarialApiClient))
   },
 
   handoverBuilder: async ({ handoverClient }, use) => {

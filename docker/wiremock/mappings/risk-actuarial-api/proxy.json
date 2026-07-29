@@ -1,0 +1,11 @@
+{
+  "name": "Proxy to Risk Actuarial API",
+  "request": {
+    "urlPattern": "/risk-actuarial-api/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "{{systemValue type='ENVIRONMENT' key='WIREMOCK_RISK_ACTUARIAL_API_URL'}}",
+    "proxyUrlPrefixToRemove": "/risk-actuarial-api"
+  },
+  "priority": 100
+}

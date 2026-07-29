@@ -129,6 +129,16 @@ export default {
       },
       agent: new AgentConfig(Number(get('COORDINATOR_API_TIMEOUT_RESPONSE', 10000))),
     },
+    riskActuarialApi: {
+      url: get('RISK_ACTUARIAL_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('RISK_ACTUARIAL_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('RISK_ACTUARIAL_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('RISK_ACTUARIAL_API_TIMEOUT_RESPONSE', 5000))),
+      enabled: get('RISK_ACTUARIAL_API_ENABLED', 'false') === 'true',
+    },
   },
   sanUrl: get('SAN_URL', 'http://localhost:3000', requiredInProduction),
   sqs: {
