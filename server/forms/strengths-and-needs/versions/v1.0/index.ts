@@ -40,6 +40,7 @@ export const strengthsAndNeedsV1Journey = journey({
         StrengthsAndNeedsEffects.initializeSessionFromAccess(),
         StrengthsAndNeedsEffects.loadSessionData(),
         StrengthsAndNeedsEffects.loadAssessment(),
+        StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
     }),
   ],
