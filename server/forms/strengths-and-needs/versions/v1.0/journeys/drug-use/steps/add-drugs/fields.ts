@@ -38,7 +38,6 @@ export const drugLastUsedField = (drugValue: string | ChainableExpr<PipelineExpr
       validation({
         condition: Self().match(Condition.IsRequired()),
         message: contentFor('question.drug_last_used.validation'),
-        groups: ['drugs'],
       }),
     ],
   })
