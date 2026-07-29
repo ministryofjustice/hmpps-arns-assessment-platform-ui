@@ -1,0 +1,51 @@
+import { Answer, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { thinkingBehavioursRiskSexualHarm } from './fields'
+import { Step } from '../../constants/step'
+import { Question } from '../../constants/question'
+import { Section, SectionStatus } from '../../../../constants/section'
+import { saveButton } from '../../../../constants/buttons'
+import { contentFor } from '../../locales'
+import { commonContentFor } from '../../../../locales'
+import { sectionPath } from '../../../../constants/path'
+import { CommonOption } from '../../../../constants/commonOption'
+
+export const thinkingBehavioursRiskOfSexualHarmStep = step({
+  path: `/${Step.thinkingBehavioursRiskOfSexualHarm.path}`,
+  title: contentFor('step.thinking_behaviours_risk_of_sexual_harm'),
+  view: {
+    locals: {
+      sectionTitle: contentFor('step.thinking_behaviours_sexual_harm'),
+      pageSubHeading: commonContentFor('sectionTitle.thinking-behaviours-and-attitudes'),
+      sectionTitleClass: 'govuk-body-l',
+      backlink: sectionPath(Section.thinking_behaviours_and_attitudes) + Step.thinkingBehaviours.path,
+    },
+  },
+  blocks: [thinkingBehavioursRiskSexualHarm, saveButton],
+  onSubmission: [
+    submit({
+      when: Post('action').match(Condition.Equals('save')),
+      validate: true,
+      onValid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress(
+            Section.thinking_behaviours_and_attitudes.statusKey,
+            SectionStatus.incomplete,
+          ),
+        ],
+        next: [
+          redirect({
+            when: Answer(Question.thinking_behaviours_attitudes_risk_sexual_harm).match(
+              Condition.Equals(CommonOption.yes),
+            ),
+            goto: Step.thinkingBehavioursSexualHarm.path,
+          }),
+          redirect({
+            goto: Step.thinkingBehavioursSummary.path,
+          }),
+        ],
+      },
+    }),
+  ],
+})

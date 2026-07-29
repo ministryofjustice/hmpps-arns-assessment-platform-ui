@@ -1,1 +1,8 @@
+@import 'govuk-frontend/dist/govuk/base';
+
 @import "navigation/side-nav";
+
+.page-sub-heading {
+  @include govuk-font($size: 24);
+  margin-bottom: -5px;
+}

@@ -8,6 +8,7 @@ import { Section } from './constants/section'
 import { basePath, formVersion } from './constants/formVersion'
 import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
+import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -17,7 +18,7 @@ import { healthWellbeingJourney } from './journeys/health-wellbeing'
  */
 export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
-  title: 'Strengths and needs', // TODO: commonContentFor('strengths_and_needs'),
+  title: commonContentFor('strengths_and_needs'),
   path: `/${formVersion}`,
   view: {
     template: 'strengths-and-needs/views/san-step',
@@ -39,8 +40,16 @@ export const strengthsAndNeedsV1Journey = journey({
         StrengthsAndNeedsEffects.initializeSessionFromAccess(),
         StrengthsAndNeedsEffects.loadSessionData(),
         StrengthsAndNeedsEffects.loadAssessment(),
+        StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
     }),
   ],
-  children: [accommodationJourney, employmentJourney, drugUseJourney, financeJourney, healthWellbeingJourney],
+  children: [
+    accommodationJourney,
+    employmentJourney,
+    drugUseJourney,
+    financeJourney,
+    healthWellbeingJourney,
+    thinkingBehavioursAndAttitudesJourney,
+  ],
 })

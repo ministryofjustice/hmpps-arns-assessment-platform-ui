@@ -599,6 +599,7 @@ export const accommodationChanges = GovUKRadioInput({
       classes: 'govuk-fieldset__legend--m',
     },
   },
+  hint: contentFor('question.accommodation_changes.hint', CaseData.Forename),
   items: [
     {
       value: CommonOption.has_made_changes,
