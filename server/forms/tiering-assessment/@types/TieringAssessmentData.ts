@@ -4,4 +4,7 @@ import { CreateAssessmentCommandResult } from '../../../interfaces/aap-api/comma
 export interface TieringAssessmentData extends Record<string, unknown> {
   assessment: AssessmentVersionQueryResult | CreateAssessmentCommandResult
   assessmentUuid: string
+  gender: string
+  dateOfCurrentConviction: string
+  offenceCode: string
 }

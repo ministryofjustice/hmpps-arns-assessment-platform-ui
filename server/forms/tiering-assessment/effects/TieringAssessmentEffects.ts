@@ -2,6 +2,8 @@ import { defineEffectFunctions, EffectFunctionExpr } from '@ministryofjustice/hm
 import { unwrapAll, wrapAll } from '../../../data/aap-api/wrappers'
 import { TieringAssessmentEffectsDeps } from '../@types/TieringAssessmentEffectsDeps'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
+import {offenceCodeMock, OffenceDetails} from "./offenceCodeMock";
+import {SingleValue} from "../../../interfaces/aap-api/dataModel";
 
 export interface TieringAssessmentEffectShape {
   InitialiseAssessment: () => EffectFunctionExpr
@@ -9,6 +11,7 @@ export interface TieringAssessmentEffectShape {
   LoadAssessmentData: () => EffectFunctionExpr
   SaveAssessmentData: () => EffectFunctionExpr
   SetAssessmentComplete: () => EffectFunctionExpr
+  LoadOffenceCodeDetails: () => EffectFunctionExpr
 }
 
 export const { effects: TieringAssessmentEffects, implementations: TieringAssessmentEffectsImplementations } =
@@ -78,5 +81,22 @@ export const { effects: TieringAssessmentEffects, implementations: TieringAssess
         },
         removed: [],
       })
+    },
+    LoadOffenceCodeDetails: (deps: TieringAssessmentEffectsDeps) => async (context: TieringAssessmentEffectContext) => {
+      const session = context.getSession()
+      const assessmentUuid = session.assessmentUuid
+
+      if (assessmentUuid != null) {
+        const assessment = await deps.api.executeQuery({
+          type: 'AssessmentVersionQuery',
+          user: context.getState('user'),
+          assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
+        })
+        const offenceCodeAnswer = assessment.answers['offence-code']
+        const key = offenceCodeAnswer?.type === 'Single' ? offenceCodeAnswer.value : undefined
+        const offenceDetails: OffenceDetails = (key && key in offenceCodeMock) ? offenceCodeMock[key as keyof typeof offenceCodeMock] : undefined
+        context.setData('offence-description', offenceDetails.subCategoryDescription)
+
+      }
     },
   })
