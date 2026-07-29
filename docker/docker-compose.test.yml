@@ -24,6 +24,10 @@ services:
     build:
       target: production
     command: npm run start
+    volumes:
+      - ./scripts/manageoffences:/scripts/manageoffences/init
+    post_start:
+      - command: '/scripts/manageoffences/init/offences_codes_init.sh'
     environment:
       NODE_ENV: production
       HMPPS_AUTH_URL: http://wiremock:8080/auth
