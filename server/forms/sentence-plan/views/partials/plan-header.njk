@@ -1,6 +1,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
+{% set showDowntimeNotificationBanner = data.featureFlags.downtimeNotificationBanner %}
+
 {% if hidePlanHeader %}
   <div class="govuk-width-container">
     <div class="plan-header" style="padding: 0; min-height: 1px;"></div>
@@ -22,7 +24,9 @@
   <div class="govuk-width-container{% if showPrintPageHeaders %} plan-header-container--print-preview{% endif %}">
     <div class="plan-header{% if showPrintPageHeaders %} plan-header--print-preview{% endif %}" data-qa="plan-header">
       <div class="govuk-grid-row plan-header__subject-details-row">
-        {% include "sentence-plan/views/partials/downtime-banner.njk" %}
+        {% if showDowntimeNotificationBanner %}
+          {% include "sentence-plan/views/partials/downtime-banner.njk" %}
+        {% endif %}
           <div class="govuk-grid-column-full plan-header__subject-details">
             <p class="plan-header__subject-details__title">{{ fullName }}</p>
             <dl class="plan-header__subject-details__identifiers">
