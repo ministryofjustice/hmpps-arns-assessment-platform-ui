@@ -78,6 +78,7 @@ export const english = {
     },
     [Question.finance_changes]: {
       text: 'Does %1 want to make changes to their finances?',
+      hint: '%1 must answer this question.',
       validation: 'Select if they want to make changes to their finances',
     },
     [Question.finance_strengths_protective_factors]: {

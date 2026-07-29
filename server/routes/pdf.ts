@@ -2,9 +2,7 @@ import { Router } from 'express'
 import { NotFound, Unauthorized } from 'http-errors'
 import GotenbergClient from '../data/gotenbergClient'
 import { SESSION_COOKIE_NAME } from '../middleware/setUpWebSession'
-import AuditService, { AuditEvent } from '../services/auditService'
 import {
-  formVersion,
   sentencePlanPrintPreviewPath,
   sentencePlanPrintPreviewPdfPath,
 } from '../forms/sentence-plan/versions/v1.0/constants'
@@ -20,7 +18,7 @@ const getSessionCookie = (cookieHeader?: string): string | undefined => {
       .find(cookie => cookie.startsWith(cookieName))
 }
 
-export default function pdfRoutes(gotenbergClient: GotenbergClient, auditService: AuditService): Router {
+export default function pdfRoutes(gotenbergClient: GotenbergClient): Router {
   const router = Router()
 
   router.get(PRINT_PREVIEW_PDF_PATH, async (req, res, next) => {
@@ -35,23 +33,14 @@ export default function pdfRoutes(gotenbergClient: GotenbergClient, auditService
     }
 
     try {
+      /*
+       * The export is audited by the print preview page that Gotenberg loads, so auditing
+       * here as well would record one download twice.
+       */
       const pdf = await gotenbergClient.renderPdfFromUrl({
         path: PRINT_PREVIEW_PATH,
         sessionCookie,
         requestId: req.id,
-      })
-
-      const crn = req.session.caseDetails?.crn
-      await auditService.send({
-        action: AuditEvent.EXPORT_PLAN_PDF,
-        who: req.session.principal?.identifier ?? 'unknown',
-        subjectId: crn,
-        subjectType: crn ? 'CRN' : undefined,
-        correlationId: req.id,
-        details: {
-          formVersion,
-          planIdentifier: req.session.sessionDetails?.planIdentifier,
-        },
       })
 
       res.attachment('sentence-plan.pdf')

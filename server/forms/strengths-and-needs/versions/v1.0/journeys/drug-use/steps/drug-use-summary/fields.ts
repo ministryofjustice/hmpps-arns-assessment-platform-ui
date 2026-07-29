@@ -7,7 +7,6 @@ import {
   Format,
   Item,
   Iterator,
-  not,
   PipelineExpr,
   Self,
   Transformer,
@@ -568,7 +567,7 @@ const strengthsYesDetails = GovUKCharacterCount({
     .match(Condition.Equals(CommonOption.yes)),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: commonContentFor('validation.enter_details'),
     }),
     validation({
@@ -609,7 +608,7 @@ export const strengthsOrProtectiveFactors = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.drug_use_practitioner_analysis_strengths_or_protective_factors.validation'),
     }),
   ],
@@ -626,7 +625,7 @@ const riskOfSeriousHarmYesDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: commonContentFor('validation.enter_details'),
     }),
     validation({
@@ -668,7 +667,7 @@ export const riskOfSeriousHarm = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.drug_use_practitioner_analysis_risk_of_serious_harm.validation'),
     }),
   ],
@@ -683,7 +682,7 @@ const riskOfReoffendingYesDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.drug_use_practitioner_analysis_risk_of_reoffending).match(Condition.Equals('YES')),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: commonContentFor('validation.enter_details'),
     }),
     validation({
@@ -720,7 +719,7 @@ export const riskOfReoffending = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.drug_use_practitioner_analysis_risk_of_reoffending.validation'),
     }),
   ],

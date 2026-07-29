@@ -8,6 +8,7 @@ import { loadSessionData } from './session/loadSessionData'
 import { StrengthsAndNeedsEffectsDeps } from './types'
 import { setSectionProgress } from './assessment/setSectionProgress'
 import { saveAndClearStaleAnswers } from './assessment/saveAndClearStaleAnswers'
+import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
 
 type EffectShapesFromFactories<TFactories> = {
   [K in keyof TFactories]: TFactories[K] extends (deps: infer _Deps) => infer Evaluator
@@ -25,6 +26,7 @@ const strengthsAndNeedsEffectFactories = {
   saveAndClearStaleAnswers,
   deriveDrugCategories,
   setSectionProgress,
+  setRiskOfSexualHarm,
 }
 
 // TODO: Implement additional effects for:

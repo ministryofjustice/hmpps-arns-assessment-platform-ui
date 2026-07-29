@@ -36,7 +36,7 @@ export const drugLastUsedField = (drugValue: string | ChainableExpr<PipelineExpr
     ],
     validWhen: [
       validation({
-        condition: not(Self().not.match(Condition.IsRequired())),
+        condition: Self().match(Condition.IsRequired()),
         message: contentFor('question.drug_last_used.validation'),
       }),
     ],
@@ -55,7 +55,7 @@ const otherDrugName = GovUKTextInput({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.other_drug_name.text'),
     }),
     validation({
@@ -122,7 +122,7 @@ export const selectMisusedDrugs = GovUKCheckboxInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.select_misused_drugs.validation'),
     }),
   ],

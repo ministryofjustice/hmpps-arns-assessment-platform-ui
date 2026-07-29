@@ -78,7 +78,7 @@ export const livingWith = GovUKCheckboxInput({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.living_with.validation'),
     }),
   ],
@@ -96,7 +96,7 @@ const noAccommodationReasonOtherDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: commonContentFor('validation.enter_details'),
     }),
     validation({
@@ -143,7 +143,7 @@ export const noAccommodationReason = GovUKCheckboxInput({
   dependentWhen: Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation)),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.no_accommodation_reason.validation'),
     }),
   ],
@@ -178,7 +178,7 @@ const suitableHousingLocationConcernsDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: commonContentFor('validation.enter_details'),
     }),
     validation({
@@ -241,7 +241,7 @@ export const suitableHousingLocation = GovUKRadioInput({
   visibleWhen: not(Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation))),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.suitable_housing_location.validation'),
     }),
   ],
@@ -277,7 +277,7 @@ const suitableHousingConcernsDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: commonContentFor('validation.enter_details'),
     }),
     validation({
@@ -314,7 +314,7 @@ const unsuitableHousingConcernsDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: commonContentFor('validation.enter_details'),
     }),
     validation({
@@ -363,7 +363,7 @@ export const suitableHousing = GovUKRadioInput({
   dependentWhen: not(Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation))),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.suitable_housing.validation'),
     }),
   ],
@@ -378,7 +378,7 @@ const futureAccommodationAwaitingAssessmentDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.future_accommodation_type).match(Condition.Equals(Option.awaiting_assessment)),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: commonContentFor('validation.enter_details'),
     }),
     validation({
@@ -395,7 +395,7 @@ const futureAccommodationAwaitingPlacementDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.future_accommodation_type).match(Condition.Equals(Option.awaiting_placement)),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: commonContentFor('validation.enter_details'),
     }),
     validation({
@@ -413,7 +413,7 @@ const futureAccommodationOtherDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.future_accommodation_type).match(Condition.Equals(CommonOption.other)),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: commonContentFor('validation.enter_details'),
     }),
     validation({
@@ -462,7 +462,7 @@ export const futureAccommodationType = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.future_accommodation_type.validation'),
     }),
   ],
@@ -491,7 +491,7 @@ export const suitableHousingPlanned = GovUKRadioInput({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.suitable_housing_planned.validation'),
     }),
   ],
@@ -599,6 +599,7 @@ export const accommodationChanges = GovUKRadioInput({
       classes: 'govuk-fieldset__legend--m',
     },
   },
+  hint: contentFor('question.accommodation_changes.hint', CaseData.Forename),
   items: [
     {
       value: CommonOption.has_made_changes,
@@ -641,7 +642,7 @@ export const accommodationChanges = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_changes.validation'),
     }),
   ],

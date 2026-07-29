@@ -131,6 +131,7 @@ export const english = {
     },
     [Question.accommodation_changes]: {
       text: 'Does %1 want to make changes to their accommodation?',
+      hint: '%1 must answer this question.',
       validation: 'Select if they want to make changes to their accommodation',
     },
     [Question.suitable_housing_planned]: {

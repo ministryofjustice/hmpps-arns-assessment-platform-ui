@@ -85,4 +85,27 @@ describe('plan header', () => {
     const printButton = html.match(/<button[^>]*data-ai-id="print-preview-print-button"[^>]*>/)?.[0]
     expect(printButton).toContain('js-only')
   })
+
+  it('renders the data used by repeated print page headers', () => {
+    const html = nunjucksEnv.render(template, {
+      data: {
+        caseData: {
+          name: { forename: 'Joan', surname: 'Smith' },
+          crn: 'X000000',
+          pnc: '00/1000000X',
+          dateOfBirth: '1990-01-01',
+        },
+      },
+      headerPageHeading: "Joan's plan",
+      showPrintPageHeaders: true,
+      buttons: {},
+    })
+
+    expect(html).toContain('data-print-page-header')
+    expect(html).toContain('data-print-plan-title="Joan&#39;s plan"')
+    expect(html).toContain('data-print-person-name="Joan Smith"')
+    expect(html).toContain('data-print-identifiers="CRN: X000000 | PNC: 00/1000000X | Date of birth: 1 January 1990"')
+    expect(html).toContain('class="govuk-width-container plan-header-container--print-preview"')
+    expect(html).toContain('class="plan-header plan-header--print-preview"')
+  })
 })

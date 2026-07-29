@@ -408,7 +408,7 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_strengths_protective_factors_details.validation'),
     }),
   ],
@@ -438,7 +438,7 @@ export const strengthsProtectiveFactors = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_strengths_protective_factors.validation'),
     }),
   ],
@@ -456,7 +456,7 @@ const seriousHarmDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_serious_harm_details.validation'),
     }),
   ],
@@ -483,7 +483,7 @@ export const employmentOrEducationLinkedToSeriousHarm = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_linked_to_serious_harm.validation'),
     }),
   ],
@@ -501,7 +501,7 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_risk_of_reoffending_details.validation'),
     }),
   ],
@@ -528,7 +528,7 @@ export const employmentOrEducationLinkedReoffending = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_linked_to_reoffending.validation'),
     }),
   ],
