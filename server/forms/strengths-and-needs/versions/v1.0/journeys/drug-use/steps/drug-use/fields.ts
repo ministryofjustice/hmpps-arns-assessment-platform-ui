@@ -1,4 +1,4 @@
-import { Condition, not, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 import { CaseData } from '../../../../constants/formVersion'

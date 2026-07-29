@@ -1,4 +1,4 @@
-import { and, Answer, Condition, not, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
   GovUKCharacterCount,
@@ -7,26 +7,26 @@ import {
   GovUKTabs,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import {
+  thinkingBehavioursChanges,
   thinkingBehavioursConsequences,
-  thinkingBehavioursStableBehaviour,
+  thinkingBehavioursCriminalBehaviour,
+  thinkingBehavioursHostileOrientation,
+  thinkingBehavioursImpulsiveBehaviour,
+  thinkingBehavioursManipulativePredatoryBehaviour,
   thinkingBehavioursOffendingActivities,
   thinkingBehavioursPeerPressure,
-  thinkingBehavioursProblemSolving,
   thinkingBehavioursPeoplesViews,
-  thinkingBehavioursManipulativePredatoryBehaviour,
+  thinkingBehavioursPositiveAttitude,
+  thinkingBehavioursProblemSolving,
+  thinkingBehavioursStableBehaviour,
+  thinkingBehavioursSupervision,
   thinkingBehavioursTemperManagement,
   thinkingBehavioursViolenceControllingBehaviour,
-  thinkingBehavioursImpulsiveBehaviour,
-  thinkingBehavioursPositiveAttitude,
-  thinkingBehavioursHostileOrientation,
-  thinkingBehavioursSupervision,
-  thinkingBehavioursCriminalBehaviour,
-  thinkingBehavioursChanges,
 } from '../thinking-behaviours/fields'
 import {
-  thinkingBehavioursSexualPreoccupation,
-  thinkingBehavioursOffenceRelatedSexualInterest,
   thinkingBehavioursEmotionalIntimacy,
+  thinkingBehavioursOffenceRelatedSexualInterest,
+  thinkingBehavioursSexualPreoccupation,
 } from '../thinking-behaviours-sexual-harm/fields'
 import { CaseData } from '../../../../constants/formVersion'
 import { getDisplayTextForSpecificItem } from '../../../../../../i18n'

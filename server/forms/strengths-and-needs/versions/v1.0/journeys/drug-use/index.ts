@@ -5,7 +5,7 @@ import { drugDetailsStep } from './steps/drug-details/step'
 import { drugUseHistoryStep } from './steps/drug-use-history/step'
 import { drugUseSummaryStep } from './steps/drug-use-summary/step'
 import { drugUseAnalysisStep } from './steps/drug-use-analysis/step'
-import {Section} from "../../constants/section";
+import { Section } from '../../constants/section'
 
 /**
  * Drug Use Journey

@@ -7,7 +7,6 @@ import {
   Format,
   Item,
   Iterator,
-  not,
   PipelineExpr,
   Self,
   Transformer,
