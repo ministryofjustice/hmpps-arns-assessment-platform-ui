@@ -6,7 +6,7 @@
 </svg>
 {% endset %}
 
-<arns-common-header class="arns-common-header govuk-!-display-none-print" data-qa="hmpps-header">
+<arns-common-header class="arns-common-header{% if not showPrintPageHeaders %} govuk-!-display-none-print{% endif %}" data-qa="hmpps-header">
   <div class="govuk-clearfix">
     <div class="govuk-width-container arns-common-header__title">
       {% if disableHeaderLink %}

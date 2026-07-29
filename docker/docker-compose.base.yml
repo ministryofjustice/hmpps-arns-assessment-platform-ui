@@ -184,6 +184,7 @@ services:
       COORDINATOR_API_URL: http://wiremock:8080/coordinator-api
       DELIUS_API_URL: http://wiremock:8080/delius
       ARNS_API_URL: http://wiremock:8080/arns-api
+      FEATURE_FLAG_URL: http://wiremock:8080/flipt
       SAN_URL: http://localhost:3000
       HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080/handover
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
@@ -198,6 +199,7 @@ services:
       AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
       NODE_CLUSTER_ENABLED: true
       FORM_TRAINING_SESSION_LAUNCHER_ENABLED: true
+      FORM_DATA_DELETION_TOOL_ENABLED: true
       CACHE_REDIS_HOST: redis
       SERVICE_NOW_FORM_URL: '#service-now-link'
       NATIONAL_ROLLOUT_FEEDBACK_URL: national-rollout-feedback-url
