@@ -348,6 +348,9 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehavioursSexualHarm.path, text: commonContentFor('change') }] },
+      visibleWhen: Answer(Question.thinking_behaviours_attitudes_risk_sexual_harm).match(
+        Condition.Equals(CommonOption.yes),
+      ),
     },
     {
       key: {
@@ -365,6 +368,9 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehavioursSexualHarm.path, text: commonContentFor('change') }] },
+      visibleWhen: Answer(Question.thinking_behaviours_attitudes_risk_sexual_harm).match(
+        Condition.Equals(CommonOption.yes),
+      ),
     },
     {
       key: { text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.text', CaseData.Forename) },
@@ -377,6 +383,9 @@ export const thinkingBehavioursSummary = GovUKSummaryList({
         ].flat(),
       },
       actions: { items: [{ href: Step.thinkingBehavioursSexualHarm.path, text: commonContentFor('change') }] },
+      visibleWhen: Answer(Question.thinking_behaviours_attitudes_risk_sexual_harm).match(
+        Condition.Equals(CommonOption.yes),
+      ),
     },
   ],
 })
