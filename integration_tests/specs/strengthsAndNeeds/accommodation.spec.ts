@@ -42,6 +42,7 @@ test.describe('Accommodation Page', () => {
       const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Who is')
 
       await expect(accommodationPage.mainSection).toMatchAriaSnapshot(`
+        - heading "Accommodation" [level=1]
         - group "Who is Test living with?":
           - text: Who is Test living with? Select all that apply.
           - checkbox "Family"
@@ -73,7 +74,7 @@ test.describe('Accommodation Page', () => {
           - radio "No"
           - text: "No"
         - group "Does Test want to make changes to their accommodation?":
-          - text: Does Test want to make changes to their accommodation?
+          - text: Does Test want to make changes to their accommodation? Test must answer this question.
           - radio "I have already made positive changes and want to maintain them"
           - text: I have already made positive changes and want to maintain them
           - radio "I am actively making changes"

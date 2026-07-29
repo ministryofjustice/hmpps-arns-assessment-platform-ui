@@ -53,6 +53,7 @@ test.describe('Employment and education Page', () => {
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
+        - heading "Employment and education" [level=1]
         - text: What job sector does Test work in? (optional)
         - textbox "What job sector does Test work in? (optional)"
         - text: You can enter up to 2000 characters You have 2,000 characters remaining
@@ -161,7 +162,7 @@ test.describe('Employment and education Page', () => {
           - radio "Unknown"
           - text: Unknown
         - group "Does Test want to make changes to their employment and education?":
-          - text: Does Test want to make changes to their employment and education?
+          - text: Does Test want to make changes to their employment and education? Test must answer this question.
           - radio "I have already made positive changes and want to maintain them"
           - text: I have already made positive changes and want to maintain them
           - radio "I am actively making changes"
