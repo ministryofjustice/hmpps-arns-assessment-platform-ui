@@ -5,6 +5,7 @@ import { drugDetailsStep } from './steps/drug-details/step'
 import { drugUseHistoryStep } from './steps/drug-use-history/step'
 import { drugUseSummaryStep } from './steps/drug-use-summary/step'
 import { drugUseAnalysisStep } from './steps/drug-use-analysis/step'
+import {Section} from "../../constants/section";
 
 /**
  * Drug Use Journey
@@ -25,7 +26,7 @@ export const drugUseJourney = journey({
   view: {
     locals: {
       sectionTitle: 'Drug use',
-      sectionStatus: Data('sectionStatus.drug-use'),
+      sectionStatus: Data(Section.drug_use.statusKey),
     },
   },
   steps: [drugUseStep, addDrugsStep, drugDetailsStep, drugUseHistoryStep, drugUseSummaryStep, drugUseAnalysisStep],

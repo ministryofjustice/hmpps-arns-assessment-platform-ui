@@ -523,7 +523,7 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_strengths_protective_factors_details.validation'),
     }),
     validation({
@@ -561,7 +561,7 @@ export const accommodationStrengthsProtectiveFactors = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_strengths_protective_factors.validation'),
     }),
     validation({
@@ -583,7 +583,7 @@ const seriousHarmDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_serious_harm_details.validation'),
     }),
     validation({
@@ -620,7 +620,7 @@ export const accommodationLinkedToSeriousHarm = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_linked_to_serious_harm.validation'),
     }),
   ],
@@ -638,7 +638,7 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_risk_of_reoffending_details.validation'),
     }),
     validation({
@@ -675,7 +675,7 @@ export const accommodationLinkedReoffending = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_linked_to_reoffending.validation'),
     }),
   ],

@@ -145,7 +145,7 @@ export const drugsAffectedTheirLife = GovUKCheckboxInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.drugs_affected_their_life.validation'),
     }),
   ],
@@ -329,7 +329,7 @@ export const drugUseChanges = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.drug_use_changes.validation'),
     }),
   ],

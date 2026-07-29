@@ -60,7 +60,7 @@ export const drugIntakeFrequency = (drugValue: ChainableExpr<PipelineExpr>) =>
     dependentWhen: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
     validWhen: [
       validation({
-        condition: not(Self().not.match(Condition.IsRequired())),
+        condition: Self().match(Condition.IsRequired()),
         message: contentFor('question.how_often_used.validation'),
       }),
     ],
@@ -159,7 +159,7 @@ export const usedMoreThanSixMonthsSection = TemplateWrapper({
         dependentWhen: anyDrugUsedMoreThanSix,
         validWhen: [
           validation({
-            condition: not(Self().not.match(Condition.IsRequired())),
+            condition: Self().match(Condition.IsRequired()),
             message: contentFor('question.drug_use_more_than_six_months_details.validation'),
           }),
           validation({
@@ -326,7 +326,7 @@ export const injectedDrugsField = GovUKCheckboxInput({
   dependentWhen: anyInjectableSelectedDrugs,
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.drugs_injected.validation', CaseData.Forename),
     }),
   ],
@@ -341,7 +341,7 @@ const receivingTreatmentDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.receiving_treatment).match(Condition.Equals(CommonOption.yes)),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.receiving_treatment_yes_details.validation'),
     }),
     validation({
@@ -385,7 +385,7 @@ export const receivingTreatmentField = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.receiving_treatment.validation'),
     }),
   ],

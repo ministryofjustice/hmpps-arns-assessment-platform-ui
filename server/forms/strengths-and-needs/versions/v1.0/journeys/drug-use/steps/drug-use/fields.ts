@@ -22,7 +22,7 @@ export const drugUse = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.drug_use.validation'),
     }),
   ],

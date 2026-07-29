@@ -402,7 +402,7 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.thinking_behaviours_attitudes_strengths_protective_factors_details.validation'),
     }),
   ],
@@ -435,7 +435,7 @@ export const strengthsOrProtectiveFactors = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.thinking_behaviours_attitudes_strengths_protective_factors.validation'),
     }),
   ],
@@ -451,7 +451,7 @@ const seriousHarmDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.thinking_behaviours_attitudes_serious_harm_details.validation'),
     }),
   ],
@@ -483,7 +483,7 @@ export const linkedToSeriousHarm = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.thinking_behaviours_attitudes_linked_to_serious_harm.validation'),
     }),
   ],
@@ -499,7 +499,7 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.thinking_behaviours_attitudes_risk_of_reoffending_details.validation'),
     }),
   ],
@@ -531,7 +531,7 @@ export const linkedToReoffending = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.thinking_behaviours_attitudes_linked_to_reoffending.validation'),
     }),
   ],
