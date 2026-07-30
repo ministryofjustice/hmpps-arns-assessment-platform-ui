@@ -2,8 +2,7 @@ import { defineEffectFunctions, EffectFunctionExpr } from '@ministryofjustice/hm
 import { unwrapAll, wrapAll } from '../../../data/aap-api/wrappers'
 import { TieringAssessmentEffectsDeps } from '../@types/TieringAssessmentEffectsDeps'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
-import { OffenceDetails } from '../@types/OffenceDetails'
-import { offenceCodeMock } from '../data/offenceCodeMock'
+import { OffenceCodeDetails } from '../../../interfaces/risk-actuarial-api/offenceCodes'
 
 export interface TieringAssessmentEffectShape {
   InitialiseAssessment: () => EffectFunctionExpr
@@ -84,6 +83,7 @@ export const { effects: TieringAssessmentEffects, implementations: TieringAssess
     },
     LoadOffenceCodeDetails: (deps: TieringAssessmentEffectsDeps) => async (context: TieringAssessmentEffectContext) => {
       const session = context.getSession()
+      const offenceCodes = (await deps.riskActuarialApiClient.getOffenceCodes())?.offenceCodes
       const assessmentUuid = session.assessmentUuid
 
       if (assessmentUuid != null) {
@@ -94,8 +94,8 @@ export const { effects: TieringAssessmentEffects, implementations: TieringAssess
         })
         const offenceCodeAnswer = assessment.answers['offence-code']
         const key = offenceCodeAnswer?.type === 'Single' ? offenceCodeAnswer.value : undefined
-        const offenceDetails: OffenceDetails =
-          key && key in offenceCodeMock ? offenceCodeMock[key as keyof typeof offenceCodeMock] : undefined
+        const offenceDetails: OffenceCodeDetails =
+          key && key in offenceCodes ? offenceCodes[key as keyof typeof offenceCodes] : undefined
         context.setData('offence-description', offenceDetails.subCategoryDescription)
 
       }
