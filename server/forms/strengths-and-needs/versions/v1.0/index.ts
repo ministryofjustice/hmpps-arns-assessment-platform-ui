@@ -8,6 +8,7 @@ import { Section } from './constants/section'
 import { basePath, formVersion } from './constants/formVersion'
 import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
+import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
 
 /**
@@ -50,6 +51,7 @@ export const strengthsAndNeedsV1Journey = journey({
     drugUseJourney,
     financeJourney,
     healthWellbeingJourney,
+    personalRelationshipsJourney,
     thinkingBehavioursAndAttitudesJourney,
   ],
 })

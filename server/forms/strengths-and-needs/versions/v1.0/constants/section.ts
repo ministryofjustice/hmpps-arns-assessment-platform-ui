@@ -45,7 +45,7 @@ export const Section = {
   personal_relationships_and_community: {
     code: 'personal-relationships-and-community',
     path: '/personal-relationships-and-community',
-    sideNavHref: `${basePath}/personal-relationships-and-community/personal-relationships?resume=true`,
+    sideNavHref: `${basePath}/personal-relationships-and-community/personal-relationships-children-information?resume=true`,
     statusKey: 'relationship_section_status',
   },
   thinking_behaviours_and_attitudes: {
