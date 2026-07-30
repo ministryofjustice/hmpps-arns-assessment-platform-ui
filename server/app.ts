@@ -67,6 +67,7 @@ export default function createApp(services: Services): express.Application {
       coordinatorApi: services.coordinatorApiClient,
       arnsApi: services.arnsApiClient,
       deliusApi: services.deliusApiClient,
+      mpopComponents: services.mpopComponents,
       auditService: services.auditService,
       featureFlagService: services.featureFlagService,
     })

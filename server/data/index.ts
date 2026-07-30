@@ -1,4 +1,5 @@
 import { AuthenticationClient, InMemoryTokenStore, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
+import { MPoPComponents } from '@ministryofjustice/hmpps-mpop-frontend-components-lib'
 import applicationInfoSupplier from '../applicationInfo'
 
 import { createRedisClient } from './redisClient'
@@ -31,6 +32,15 @@ export const dataAccess = () => {
     deliusApiClient: new DeliusApiClient(hmppsAuthClient),
     handoverApiClient: new HandoverApiClient(hmppsAuthClient),
     coordinatorApiClient: new CoordinatorApiClient(hmppsAuthClient),
+    mpopComponents: new MPoPComponents(
+      hmppsAuthClient,
+      {
+        ...config.apis.tierApi,
+        masApiConfig: config.apis.masApi,
+        supervisionPackageApiConfig: config.apis.supervisionPackageApi,
+      },
+      logger,
+    ),
     arnsApiClient: new ArnsApiClient(hmppsAuthClient),
     gotenbergClient: new GotenbergClient(config.apis.gotenberg),
     assessmentCacheStore,
@@ -50,4 +60,5 @@ export {
   ArnsApiClient,
   GotenbergClient,
   PreferencesStore,
+  MPoPComponents,
 }
