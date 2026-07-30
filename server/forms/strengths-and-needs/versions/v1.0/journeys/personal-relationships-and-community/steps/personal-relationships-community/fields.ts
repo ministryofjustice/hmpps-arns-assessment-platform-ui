@@ -1,5 +1,12 @@
 import { GovUKCharacterCount, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Answer, ChainableExpr, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Answer,
+  ChainableExpr,
+  Condition,
+  Self,
+  Transformer,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { CommonOption } from '../../../../constants/commonOption'
@@ -514,7 +521,10 @@ export const changes = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: commonContentFor('validation.select_changes', 'personal relationships and community'),
+      message: commonContentFor(
+        'validation.select_changes',
+        commonContentFor('sectionTitle.personal-relationships-and-community').pipe(Transformer.String.ToLowerCase()),
+      ),
     }),
   ],
 })

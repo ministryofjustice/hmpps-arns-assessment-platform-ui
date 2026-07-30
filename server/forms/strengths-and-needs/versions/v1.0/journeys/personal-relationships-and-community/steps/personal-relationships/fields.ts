@@ -13,14 +13,17 @@ const currentQContentForShortcut = 'question.personal_relationships_community_im
 
 const importantPeopleDetails = (
   code: string,
-  optionKey: 'CHILD_PARENTAL_RESPONSIBILITIES' | 'OTHER_CHILDREN' | 'FAMILY' | 'FRIENDS',
-  optionValue: string,
+  optionKey:
+    | typeof Option.child_parental_responsibilities
+    | typeof Option.other_children
+    | typeof Option.family
+    | typeof Option.friends,
 ) =>
   detailsFactory({
     code,
     label: contentFor(`${currentQContentForShortcut}.option.${optionKey}.label`),
     dependentWhen: Answer(Question.personal_relationships_community_important_people).match(
-      Condition.Array.Contains(optionValue),
+      Condition.Array.Contains(optionKey),
     ),
   })
 //---------------------------
@@ -37,22 +40,18 @@ const partnerIntimateRelationshipDetails = detailsFactory({
 
 const childParentalResponsibilitiesDetails = importantPeopleDetails(
   Question.personal_relationships_community_important_people_child_parental_responsibilities_details,
-  'CHILD_PARENTAL_RESPONSIBILITIES',
   Option.child_parental_responsibilities,
 )
 const otherChildrenDetails = importantPeopleDetails(
   Question.personal_relationships_community_important_people_other_children_details,
-  'OTHER_CHILDREN',
   Option.other_children,
 )
 const familyDetails = importantPeopleDetails(
   Question.personal_relationships_community_important_people_family_details,
-  'FAMILY',
   Option.family,
 )
 const friendsDetails = importantPeopleDetails(
   Question.personal_relationships_community_important_people_friends_details,
-  'FRIENDS',
   Option.friends,
 )
 
