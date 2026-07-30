@@ -12,7 +12,7 @@ import { Option } from '../../constants/option'
 import { CaseData } from '../../../../constants/formVersion'
 import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
-import { contentFor, prcShortcut } from '../../locales'
+import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
 import { CommonOption } from '../../../../constants/commonOption'
 import {
@@ -31,12 +31,17 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
   rows: [
     {
       key: {
-        text: contentFor(`${prcShortcut}children_details.text`, CaseData.ForenamePossessive),
+        text: contentFor(
+          'question.personal_relationships_community_children_details.text',
+          CaseData.ForenamePossessive,
+        ),
       },
       value: {
         blocks: [
           GovUKBody({
-            text: contentFor(`${prcShortcut}children_details.option.YES_CHILDREN_LIVING_WITH_POP.text`),
+            text: contentFor(
+              'question.personal_relationships_community_children_details.option.YES_CHILDREN_LIVING_WITH_POP.text',
+            ),
             visibleWhen: and(
               Answer(Question.personal_relationships_community_children_details).match(Condition.IsRequired()),
               Answer(Question.personal_relationships_community_children_details).match(
@@ -51,7 +56,9 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
             size: 's',
           }),
           GovUKBody({
-            text: contentFor(`${prcShortcut}children_details.option.YES_CHILDREN_NOT_LIVING_WITH_POP.text`),
+            text: contentFor(
+              'question.personal_relationships_community_children_details.option.YES_CHILDREN_NOT_LIVING_WITH_POP.text',
+            ),
             visibleWhen: and(
               Answer(Question.personal_relationships_community_children_details).match(Condition.IsRequired()),
               Answer(Question.personal_relationships_community_children_details).match(
@@ -66,7 +73,9 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
             size: 's',
           }),
           GovUKBody({
-            text: contentFor(`${prcShortcut}children_details.option.YES_CHILDREN_VISITING.text`),
+            text: contentFor(
+              'question.personal_relationships_community_children_details.option.YES_CHILDREN_VISITING.text',
+            ),
             visibleWhen: and(
               Answer(Question.personal_relationships_community_children_details).match(Condition.IsRequired()),
               Answer(Question.personal_relationships_community_children_details).match(
@@ -79,7 +88,10 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
             size: 's',
           }),
           GovUKBody({
-            text: contentFor(`${prcShortcut}children_details.option.NO_CHILDREN.text`, CaseData.ForenamePossessive),
+            text: contentFor(
+              'question.personal_relationships_community_children_details.option.NO_CHILDREN.text',
+              CaseData.ForenamePossessive,
+            ),
             visibleWhen: and(
               Answer(Question.personal_relationships_community_children_details).match(Condition.IsRequired()),
               Answer(Question.personal_relationships_community_children_details).match(
@@ -95,12 +107,17 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(`${prcShortcut}important_people.text`, CaseData.ForenamePossessive),
+        text: contentFor(
+          'question.personal_relationships_community_important_people.text',
+          CaseData.ForenamePossessive,
+        ),
       },
       value: {
         blocks: [
           GovUKBody({
-            text: contentFor(`${prcShortcut}important_people.option.PARTNER_INTIMATE_RELATIONSHIP.text`),
+            text: contentFor(
+              'question.personal_relationships_community_important_people.option.PARTNER_INTIMATE_RELATIONSHIP.text',
+            ),
             visibleWhen: and(
               Answer(Question.personal_relationships_community_important_people).match(Condition.IsRequired()),
               Answer(Question.personal_relationships_community_important_people).match(
@@ -115,7 +132,9 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
             size: 's',
           }),
           GovUKBody({
-            text: contentFor(`${prcShortcut}important_people.option.CHILD_PARENTAL_RESPONSIBILITIES.text`),
+            text: contentFor(
+              'question.personal_relationships_community_important_people.option.CHILD_PARENTAL_RESPONSIBILITIES.text',
+            ),
             visibleWhen: and(
               Answer(Question.personal_relationships_community_important_people).match(Condition.IsRequired()),
               Answer(Question.personal_relationships_community_important_people).match(
@@ -130,7 +149,7 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
             size: 's',
           }),
           GovUKBody({
-            text: contentFor(`${prcShortcut}important_people.option.OTHER_CHILDREN.text`),
+            text: contentFor('question.personal_relationships_community_important_people.option.OTHER_CHILDREN.text'),
             visibleWhen: and(
               Answer(Question.personal_relationships_community_important_people).match(Condition.IsRequired()),
               Answer(Question.personal_relationships_community_important_people).match(
@@ -143,7 +162,10 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
             size: 's',
           }),
           GovUKBody({
-            text: contentFor(`${prcShortcut}important_people.option.FAMILY.text`, CaseData.ForenamePossessive),
+            text: contentFor(
+              'question.personal_relationships_community_important_people.option.FAMILY.text',
+              CaseData.ForenamePossessive,
+            ),
             visibleWhen: and(
               Answer(Question.personal_relationships_community_important_people).match(Condition.IsRequired()),
               Answer(Question.personal_relationships_community_important_people).match(
@@ -156,7 +178,7 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
             size: 's',
           }),
           GovUKBody({
-            text: contentFor(`${prcShortcut}important_people.option.FRIENDS.text`),
+            text: contentFor('question.personal_relationships_community_important_people.option.FRIENDS.text'),
             visibleWhen: and(
               Answer(Question.personal_relationships_community_important_people).match(Condition.IsRequired()),
               Answer(Question.personal_relationships_community_important_people).match(
@@ -189,7 +211,7 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(`${prcShortcut}current_relationship.text`, CaseData.Forename),
+        text: contentFor('question.personal_relationships_community_current_relationship.text', CaseData.Forename),
       },
       value: {
         blocks: [
@@ -221,7 +243,10 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(`${prcShortcut}intimate_relationship.text`, CaseData.ForenamePossessive),
+        text: contentFor(
+          'question.personal_relationships_community_intimate_relationship.text',
+          CaseData.ForenamePossessive,
+        ),
       },
       value: {
         blocks: [
@@ -255,7 +280,10 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(`${prcShortcut}challenges_intimate_relationship.text`, CaseData.Forename),
+        text: contentFor(
+          'question.personal_relationships_community_challenges_intimate_relationship.text',
+          CaseData.Forename,
+        ),
       },
       value: {
         blocks: [
@@ -271,7 +299,7 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(`${prcShortcut}parental_responsibilities.text`, CaseData.Forename),
+        text: contentFor('question.personal_relationships_community_parental_responsibilities.text', CaseData.Forename),
       },
       value: {
         blocks: [
@@ -304,7 +332,10 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(`${prcShortcut}family_relationship.text`, CaseData.ForenamePossessive),
+        text: contentFor(
+          'question.personal_relationships_community_family_relationship.text',
+          CaseData.ForenamePossessive,
+        ),
       },
       value: {
         blocks: [
@@ -334,7 +365,7 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(`${prcShortcut}childhood.text`, CaseData.ForenamePossessive),
+        text: contentFor('question.personal_relationships_community_childhood.text', CaseData.ForenamePossessive),
       },
       value: {
         blocks: [
@@ -364,7 +395,7 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(`${prcShortcut}childhood_behaviour.text`, CaseData.Forename),
+        text: contentFor('question.personal_relationships_community_childhood_behaviour.text', CaseData.Forename),
       },
       value: {
         blocks: [
@@ -390,7 +421,7 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(`${prcShortcut}belonging.text`, CaseData.Forename),
+        text: contentFor('question.personal_relationships_community_belonging.text', CaseData.Forename),
       },
       value: {
         blocks: [GovUKBody({ text: Answer(Question.personal_relationships_community_belonging) })],
@@ -402,7 +433,7 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(`${prcShortcut}changes.text`, CaseData.Forename),
+        text: contentFor('question.personal_relationships_community_changes.text', CaseData.Forename),
       },
       value: {
         blocks: [
@@ -466,7 +497,9 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${prcShortcut}practitioner_analysis_strengths_or_protective_factors_yes_details.validation`),
+      message: contentFor(
+        'question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_yes_details.validation',
+      ),
     }),
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
@@ -495,13 +528,15 @@ export const personalRelationshipsCommunityStrengthsProtectiveFactors = GovUKRad
   fieldset: {
     legend: {
       text: contentFor(
-        `${prcShortcut}practitioner_analysis_strengths_or_protective_factors.text`,
+        'question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors.text',
         CaseData.ForenamePossessive,
       ),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: contentFor(`${prcShortcut}practitioner_analysis_strengths_or_protective_factors.hint`),
+  hint: contentFor(
+    'question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors.hint',
+  ),
   items: [
     { value: CommonOption.yes, text: commonContentFor('option.YES'), block: strengthsProtectiveFactorsDetails },
     { value: CommonOption.no, text: commonContentFor('option.NO'), block: noStrengthsProtectiveFactorsDetails },
@@ -509,7 +544,9 @@ export const personalRelationshipsCommunityStrengthsProtectiveFactors = GovUKRad
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${prcShortcut}practitioner_analysis_strengths_or_protective_factors.validation`),
+      message: contentFor(
+        'question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors.validation',
+      ),
     }),
   ],
 })
@@ -531,7 +568,9 @@ const seriousHarmDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${prcShortcut}practitioner_analysis_risk_of_serious_harm_yes_details.validation`),
+      message: contentFor(
+        'question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm_yes_details.validation',
+      ),
     }),
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
@@ -559,7 +598,10 @@ export const personalRelationshipsCommunityLinkedToSeriousHarm = GovUKRadioInput
   code: Question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm,
   fieldset: {
     legend: {
-      text: contentFor(`${prcShortcut}practitioner_analysis_risk_of_serious_harm.text`, CaseData.ForenamePossessive),
+      text: contentFor(
+        'question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm.text',
+        CaseData.ForenamePossessive,
+      ),
       classes: 'govuk-fieldset__legend--m',
     },
   },
@@ -570,7 +612,9 @@ export const personalRelationshipsCommunityLinkedToSeriousHarm = GovUKRadioInput
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${prcShortcut}practitioner_analysis_risk_of_serious_harm.validation`),
+      message: contentFor(
+        'question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm.validation',
+      ),
     }),
   ],
 })
@@ -592,7 +636,9 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${prcShortcut}practitioner_analysis_risk_of_reoffending_yes_details.validation`),
+      message: contentFor(
+        'question.personal_relationships_community_practitioner_analysis_risk_of_reoffending_yes_details.validation',
+      ),
     }),
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
@@ -620,7 +666,10 @@ export const personalRelationshipsCommunityLinkedReoffending = GovUKRadioInput({
   code: Question.personal_relationships_community_practitioner_analysis_risk_of_reoffending,
   fieldset: {
     legend: {
-      text: contentFor(`${prcShortcut}practitioner_analysis_risk_of_reoffending.text`, CaseData.ForenamePossessive),
+      text: contentFor(
+        'question.personal_relationships_community_practitioner_analysis_risk_of_reoffending.text',
+        CaseData.ForenamePossessive,
+      ),
       classes: 'govuk-fieldset__legend--m',
     },
   },
@@ -631,7 +680,9 @@ export const personalRelationshipsCommunityLinkedReoffending = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${prcShortcut}practitioner_analysis_risk_of_reoffending.validation`),
+      message: contentFor(
+        'question.personal_relationships_community_practitioner_analysis_risk_of_reoffending.validation',
+      ),
     }),
   ],
 })
