@@ -24,7 +24,6 @@ export type ActuarialCategory =
   | 'SEXUAL_AGAINST_CHILD'
   | 'SEXUAL_NOT_AGAINST_CHILD'
   | 'THEFT_NON_MOTOR'
-  | 'NEED_DETAILS_OF_EXACT_OFFENCE'
 
 export interface OffenceCodeFlags {
   opdViolenceSex: boolean
