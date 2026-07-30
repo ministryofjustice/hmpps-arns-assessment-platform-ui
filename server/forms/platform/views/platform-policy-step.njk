@@ -2,6 +2,8 @@
 {%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
 
+{% set showDowntimeNotificationBanner = featureFlags.downtimeNotificationBanner %}
+
 {% set backlink = previousPageUrl %}
 {% set fullPageTitle = step.title + ' - ' + applicationName %}
 {% set pageTitle %}
@@ -19,7 +21,9 @@
 
 {% block content %}
   <div class="govuk-grid-row">
-    {% include "sentence-plan/views/partials/downtime-banner.njk" %}
+    {% if showDowntimeNotificationBanner %}
+      {% include "sentence-plan/views/partials/downtime-banner.njk" %}
+    {% endif %}
     <div class="govuk-grid-column-two-thirds">
       {% if backlink %}
         <a href="{{ backlink }}" class="govuk-back-link" data-ai-id="back-link">Back</a>
