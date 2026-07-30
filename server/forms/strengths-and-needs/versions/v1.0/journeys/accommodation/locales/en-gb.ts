@@ -104,7 +104,7 @@ export const english = {
       },
     },
     [Question.suitable_housing_location]: {
-      text: `Is the location of %1 accommodation suitable?`,
+      text: 'Is the location of %1 accommodation suitable?',
       validation: 'Select if the location of the accommodation is suitable',
     },
     [Question.suitable_housing_concerns]: {
@@ -122,7 +122,7 @@ export const english = {
       text: 'What are the concerns?',
     },
     [Question.suitable_housing]: {
-      text: `Is %1 accommodation suitable?`,
+      text: 'Is %1 accommodation suitable?',
       hint: 'This includes things like safety or having appropriate amenities.',
       option: {
         [Option.yes_with_concerns]: 'Yes, with concerns',
@@ -170,7 +170,7 @@ export const english = {
       validation: 'Select why they have no accommodation',
     },
     [Question.past_accommodation_details]: {
-      text: `What's helped %1 stay in accommodation in the past? (optional)`,
+      text: `What’s helped %1 stay in accommodation in the past? (optional)`,
     },
     [Question.accommodation_strengths_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 accommodation?',

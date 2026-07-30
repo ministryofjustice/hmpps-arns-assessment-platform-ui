@@ -10,11 +10,11 @@ const enIntimateRelationshipDetailsHint = 'Consider patterns and quality of any 
 
 export const english = {
   step: {
-    [Step.personal_relationships_children_information.code]: 'Personal Relationships: Children Information',
-    [Step.personal_relationships.code]: 'Personal Relationships',
-    [Step.personal_relationships_community.code]: 'Personal Relationships and Community',
-    [Step.personal_relationships_community_summary.code]: 'Personal Relationships and Community Summary',
-    [Step.personal_relationships_community_analysis.code]: 'Personal Relationships and Community Analysis',
+    [Step.personal_relationships_children_information.code]: 'Personal relationships: children information',
+    [Step.personal_relationships.code]: 'Personal relationships',
+    [Step.personal_relationships_community.code]: 'Personal relationships and community',
+    [Step.personal_relationships_community_summary.code]: 'Personal relationships and community summary',
+    [Step.personal_relationships_community_analysis.code]: 'Personal relationships and community analysis',
   },
   question: {
     [Question.personal_relationships_community_children_details]: {
@@ -45,8 +45,8 @@ export const english = {
       text: 'Who are the important people in %1 life?',
       option: {
         [Option.partner_intimate_relationship]: {
-          text: `Partner or someone they're in an intimate relationship with`,
-          hint: `Include their name, age, gender and the nature of their relationship. For example, if they're in a casual or committed relationship.`,
+          text: `Partner or someone they’re in an intimate relationship with`,
+          hint: `Include their name, age, gender and the nature of their relationship. For example, if they’re in a casual or committed relationship.`,
         },
         [Option.child_parental_responsibilities]: {
           text: 'Their children or anyone they have parenting responsibilities for',
@@ -110,7 +110,7 @@ export const english = {
     [Question.personal_relationships_community_parental_responsibilities]: {
       text: 'Is %1 able to manage their parenting responsibilities?',
       hint: 'If there are parenting concerns, it does not always mean there are child wellbeing concerns. They may just require some help or support.',
-      validation: "Select if they're able to manage their parenting responsibilities",
+      validation: 'Select if they’re able to manage their parenting responsibilities',
       option: {
         [CommonOption.yes]: {
           text: 'Yes, manages parenting responsibilities well',

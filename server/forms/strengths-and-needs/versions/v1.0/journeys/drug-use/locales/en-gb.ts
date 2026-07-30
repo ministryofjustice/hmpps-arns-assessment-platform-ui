@@ -13,11 +13,10 @@ export const english = {
     [Question.drug_use]: {
       text: 'Has %1 ever misused drugs?',
       hint: 'This includes illegal and prescription drugs.',
-      validation: "Select if they've ever misused drugs",
+      validation: 'Select if they’ve ever misused drugs',
     },
     [Question.drug_last_used]: {
       text: 'When did they last use %1?',
-      hint: 'This includes illegal and prescription drugs.',
       option: {
         [Option.last_six]: 'Used in the last 6 months',
         [Option.more_than_six]: 'Used more than 6 months ago',
@@ -25,13 +24,13 @@ export const english = {
       validation: 'Select when they last used this drug',
     },
     [Question.other_drug_name]: {
-      text: "Enter which other drug they've misused",
-      hint: 'Add drug name',
+      text: 'Enter which other drug they’ve misused',
+      hint: 'Add drug name.',
       option: {
         [Option.last_six]: 'Used in the last 6 months',
         [Option.more_than_six]: 'Used more than 6 months ago',
       },
-      validation: 'Drug name must be 200 characters or less',
+      validation: 'Drug name must be %1 characters or less',
     },
     [Question.select_misused_drugs]: {
       text: 'Which drugs has %1 misused?',
@@ -40,7 +39,7 @@ export const english = {
         [Option.last_six]: 'Used in the last 6 months',
         [Option.more_than_six]: 'Used more than 6 months ago',
       },
-      validation: "Select which drugs they've misused",
+      validation: 'Select which drugs they’ve misused',
     },
     [Question.how_often_used]: {
       text: 'How often is %1 using this drug?',
@@ -56,7 +55,7 @@ export const english = {
         [Option.monthly]: 'Monthly',
         [Option.occasionally]: 'Occasionally',
       },
-      validation: "Select how often they're using this drug",
+      validation: 'Select how often they’re using this drug',
     },
     [Question.drug_use_more_than_six_months_details]: {
       text: 'Give details about %1 use of these drugs',
@@ -65,27 +64,31 @@ export const english = {
     },
     [Question.drugs_injected]: {
       text: 'Which drugs has %1 injected?',
-      hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
-      validation: "Select which drugs they've injected, or select 'None'",
+      hint: 'Select all that apply.',
+      validation: "Select which drugs they’ve injected, or select 'None'",
     },
     [Question.drugs_injected_months]: {
       code: 'drugs_injected_%1',
-      text: 'When has Hassan injected this drug?',
-      hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
-      validation: "Select which drugs they've injected, or select 'None'",
-
+      text: 'When has %1 injected this drug?',
+      hint: 'Select one or both.',
+      validation: 'Select when they injected this drug',
     },
     [Question.receiving_treatment]: {
-      text: 'Is %1 receiving treatment for their drug use?',
-      hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
-      validation: "Select if they're receiving treatment for their drug use",
+      text: {
+        notUsedInLastSixMonths: 'Has %1 ever received treatment for their drug use?',
+        usedLastSixMonths: 'Is %1 receiving treatment for their drug use?',
+      },
+      validation: {
+        notUsedInLastSixMonths: 'Select if they have ever received treatment',
+        usedLastSixMonths: 'Select if they’re receiving treatment for their drug use',
+      },
     },
     [Question.receiving_treatment_yes_details]: {
-      validation: 'Enter details about the treatment they are receiving',
+      validation: 'Give details on their treatment',
     },
     [Question.drugs_reasons_for_use]: {
       text: {
-        default: 'Why did %1 use drugs?',
+        notUsedInLastSixMonths: 'Why did %1 use drugs?',
         usedLastSixMonths: 'Why does %1 use drugs?',
       },
       hint: 'Consider why they started using, their history, and any triggers. Select all that apply.',
@@ -100,12 +103,15 @@ export const english = {
         [Option.self_medication]: 'Self-medication',
       },
       validation: {
-        default: 'Select why they use drugs',
-        usedLastSixMonths: 'Select why they used drugs',
+        notUsedInLastSixMonths: 'Select why they used drugs',
+        usedLastSixMonths: 'Select why they use drugs',
       },
     },
     [Question.drugs_reasons_for_use_details]: {
-      text: 'Details on why %1 uses drugs',
+      text: {
+        notUsedInLastSixMonths: 'Details on why %1 used drugs',
+        usedLastSixMonths: 'Details on why %1 uses drugs',
+      },
     },
     [Question.drugs_affected_their_life]: {
       text: 'How has %1 drug use affected their life?',
@@ -148,6 +154,7 @@ export const english = {
     },
     [Question.drug_use_changes]: {
       text: 'Does %1 want to make changes to their drug use?',
+      hint: '%1 must answer this question.',
       validation: 'Select if they want to make changes to their drug use',
     },
     [Question.drugs_practitioner_analysis_motivated_to_stop]: {
@@ -160,16 +167,26 @@ export const english = {
       validation: 'Select if they seem motivated to stop or reduce their drug use',
     },
     [Question.drug_use_practitioner_analysis_strengths_or_protective_factors]: {
-      text: 'Are there any strengths or protective factors related to drug use?',
-      validation: 'Select if there are any strengths or protective factors related to drug use',
+      text: 'Are there any strengths or protective factors related to %1 drug use?',
+      hint: 'Include any strategies, people or support networks that helped.',
+      validation: 'Select if there are any strengths or protective factors',
+    },
+    [Question.drug_use_practitioner_analysis_strengths_or_protective_factors_yes_details]: {
+      validation: 'Give details on strengths or protective factors related to their drug use',
     },
     [Question.drug_use_practitioner_analysis_risk_of_serious_harm]: {
       text: 'Is %1 drug use linked to risk of serious harm?',
-      validation: 'Select if drug use is linked to risk of serious harm',
+      validation: 'Select if linked to risk of serious harm',
+    },
+    [Question.drug_use_practitioner_analysis_risk_of_serious_harm_yes_details]: {
+      validation: 'Give details on the risk of serious harm',
     },
     [Question.drug_use_practitioner_analysis_risk_of_reoffending]: {
       text: 'Is %1 drug use linked to risk of reoffending?',
-      validation: 'Select if drug use is linked to risk of reoffending',
+      validation: 'Select if linked to risk of reoffending',
+    },
+    [Question.drug_use_practitioner_analysis_risk_of_reoffending_yes_details]: {
+      validation: 'Give details on the risk of reoffending',
     },
   },
   text: {

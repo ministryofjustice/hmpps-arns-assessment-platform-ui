@@ -22,9 +22,9 @@ export const sentencePlanV1URLs = {
 export const sanPageTitles = {
   accommodation: 'Current accommodation',
   employmentAndEducation: 'Employed',
-  healthAndWellbeing: 'Health Wellbeing',
+  healthAndWellbeing: 'Health wellbeing',
   drugUse: 'Drug use',
-  personal: 'Personal Relationships: Children Information',
+  personal: 'Personal relationships: children information',
 }
 
 export const sanServiceName = 'Strengths and needs'

@@ -14,6 +14,7 @@ import { CaseData } from '../../../../constants/formVersion'
 import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
 import { detailsFactory } from '../../detailsFactory'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 // --- Reusable helpers ---
 
@@ -177,15 +178,15 @@ const challengesIntimateRelationship = GovUKCharacterCount({
     classes: 'govuk-label--m',
   },
   hint: contentFor('question.personal_relationships_community_challenges_intimate_relationship.hint'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.personal_relationships_community_challenges_intimate_relationship.validation'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_character_limit', '2000'),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -429,11 +430,11 @@ const belonging = GovUKCharacterCount({
     classes: 'govuk-label--m',
   },
   hint: contentFor('question.personal_relationships_community_belonging.hint'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_character_limit', '2000'),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })

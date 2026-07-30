@@ -7,8 +7,7 @@ import { Question } from '../../constants/question'
 import { commonContentFor } from '../../../../locales'
 import { Option } from '../../constants/option'
 import { CommonOption } from '../../../../constants/commonOption'
-
-const DEFAULT_CHARACTER_COUNT = 2000
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 const toDetailsField =
   (parent: string) =>
@@ -16,7 +15,7 @@ const toDetailsField =
     GovUKCharacterCount({
       code,
       label: mandatory ? commonContentFor('required_details') : commonContentFor('optional_details'),
-      maxLength: DEFAULT_CHARACTER_COUNT,
+      maxLength: CharacterLimit.c2000,
       dependentWhen: and(
         Answer(parent).match(Condition.IsRequired()),
         or(
@@ -30,6 +29,12 @@ const toDetailsField =
           ),
         ),
       ),
+      validWhen: [
+        validation({
+          condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+          message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+        }),
+      ],
     })
 
 const thinkingBehavioursPeerPressureYesDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({

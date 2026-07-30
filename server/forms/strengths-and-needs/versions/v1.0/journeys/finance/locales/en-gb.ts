@@ -7,15 +7,15 @@ import { CommonOption } from '../../../constants/commonOption'
 export const english = {
   step: {
     [Step.finance.code]: 'Finance',
-    [Step.financeSummary.code]: 'Finance Summary',
-    [Step.financeAnalysis.code]: 'Finance Analysis',
+    [Step.financeSummary.code]: 'Finance summary',
+    [Step.financeAnalysis.code]: 'Finance analysis',
   },
   question: {
     [Question.finance_income]: {
       text: 'Where does %1 currently get their money from?',
       hint: '',
       option: {
-        [Option.carers_allowance]: "Carer's allowance",
+        [Option.carers_allowance]: 'Carer’s allowance',
         [Option.disability_benefits]: {
           text: 'Disability benefits',
           hint: 'For example, Personal Independence Payment (PIP) (also known as Disability Living Allowance) or Severe Disablement Allowance.',
@@ -28,7 +28,7 @@ export const english = {
         [Option.undeclared]: 'Undeclared (includes cash in hand)',
         [Option.work_related_benefits]: {
           text: 'Work related benefits',
-          hint: "For example, Universal Credit or Jobseeker's Allowance (JSA).",
+          hint: 'For example, Universal Credit or Jobseeker’s Allowance (JSA).',
         },
         [Option.no_money]: 'No money',
       },
@@ -64,40 +64,40 @@ export const english = {
       text: 'Is %1 affected by gambling?',
       option: {
         [Option.yes_their_gambling]: 'Yes, their own gambling',
-        [Option.yes_someone_elses_gambling]: "Yes, someone else's gambling",
+        [Option.yes_someone_elses_gambling]: 'Yes, someone else’s gambling',
       },
       validation: 'Select if they are affected by gambling',
     },
     [Question.finance_debt]: {
-      text: 'Is %1 affected by debt',
+      text: 'Is %1 affected by debt?',
       option: {
-        [Option.yes_their_debt]: 'Yes, their debt',
-        [Option.yes_someone_elses_debt]: "Yes, someone else's debt",
+        [Option.yes_their_debt]: 'Yes, their own debt',
+        [Option.yes_someone_elses_debt]: 'Yes, someone else’s debt',
       },
       validation: 'Select if they are affected by debt',
     },
     [Question.finance_changes]: {
-      text: 'Does %1 want to make changes to their finance?',
+      text: 'Does %1 want to make changes to their finances?',
       hint: '%1 must answer this question.',
-      validation: 'Select if they want to make changes to their finance',
+      validation: 'Select if they want to make changes to their finances',
     },
     [Question.finance_strengths_protective_factors]: {
-      text: 'Are there any strengths or protective factors related to %1 finance?',
+      text: 'Are there any strengths or protective factors related to %1 finances?',
       hint: 'Include any strategies, people or support networks that helped.',
       validation: 'Select if there are any strengths or protective factors',
     },
     [Question.finance_strengths_protective_factors_details]: {
-      validation: 'Give details on strengths or protective factors related to their finance',
+      validation: 'Give details on strengths or protective factors related to their finances',
     },
     [Question.finance_linked_to_serious_harm]: {
-      text: 'Is %1 finance linked to risk of serious harm?',
+      text: 'Are %1 finances linked to risk of serious harm?',
       validation: 'Select if linked to risk of serious harm',
     },
     [Question.finance_serious_harm_details]: {
       validation: 'Give details on the risk of serious harm',
     },
     [Question.finance_linked_to_reoffending]: {
-      text: 'Is %1 finance linked to risk of reoffending?',
+      text: 'Are %1 finances linked to risk of reoffending?',
       validation: 'Select if linked to risk of reoffending',
     },
     [Question.finance_risk_of_reoffending_details]: {
@@ -108,6 +108,10 @@ export const english = {
     option: {
       [Option.debt_to_others]: 'Debt to others',
       [Option.formal_debt]: 'Formal debt',
+    },
+    hint: {
+      [Option.debt_to_others]: 'Includes things like owing money to family, friends, other prisoners or loan sharks.',
+      [Option.formal_debt]: 'Includes things like credit cards, phone bills or rent arrears.',
     },
     validation: {
       select_type_of_debt: 'Select type of debt',
