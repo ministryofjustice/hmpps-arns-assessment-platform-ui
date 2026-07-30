@@ -108,7 +108,7 @@ export const english = {
       text: 'Details on why %1 uses drugs',
     },
     [Question.drugs_affected_their_life]: {
-      text: "How has %1's drug use affected their life?",
+      text: 'How has %1 drug use affected their life?',
       option: {
         [Option.behaviour]: {
           text: 'Behaviour',

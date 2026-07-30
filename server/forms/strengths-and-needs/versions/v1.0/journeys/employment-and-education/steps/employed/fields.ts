@@ -328,7 +328,7 @@ export const jobSkills = GovUKRadioInput({
   code: Question.job_skills,
   fieldset: {
     legend: {
-      text: contentFor('question.job_skills.text', CaseData.ForenamePossessive),
+      text: contentFor('question.job_skills.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },

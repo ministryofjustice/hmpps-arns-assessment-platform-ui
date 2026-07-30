@@ -34,7 +34,7 @@ import { contentFor } from '../../locales'
 export const healthWellbeingSummary = GovUKSummaryList({
   rows: [
     {
-      key: { text: contentFor('question.health_conditions.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.health_conditions.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -48,7 +48,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.health_conditions.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.mental_health_problems.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -68,10 +68,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(
-          'question.prescribed_physical_health_medications_treatments.text',
-          CaseData.ForenamePossessive,
-        ),
+        text: contentFor('question.prescribed_physical_health_medications_treatments.text', CaseData.Forename),
       },
       value: {
         blocks: [GovUKBody({ text: Answer(Question.prescribed_physical_health_medications_treatments), size: 's' })],
@@ -83,7 +80,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor('question.prescribed_mental_health_medications_treatments.text', CaseData.ForenamePossessive),
+        text: contentFor('question.prescribed_mental_health_medications_treatments.text', CaseData.Forename),
       },
       value: {
         blocks: [GovUKBody({ text: Answer(Question.prescribed_mental_health_medications_treatments), size: 's' })],
@@ -94,7 +91,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.prescribed_mental_health_medications_treatments).match(Condition.IsRequired()),
     },
     {
-      key: { text: contentFor('question.psychiatric_treatment.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.psychiatric_treatment.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -111,7 +108,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.psychiatric_treatment).match(Condition.IsRequired()),
     },
     {
-      key: { text: contentFor('question.head_injuries.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.head_injuries.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -125,7 +122,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.head_injuries).match(Condition.IsRequired()),
     },
     {
-      key: { text: contentFor('question.neurodiverse_conditions.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.neurodiverse_conditions.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -142,7 +139,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.impact_on_learning_abilities.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.impact_on_learning_abilities.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -173,7 +170,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.cope_with_day_to_day_life.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.cope_with_day_to_day_life.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -205,7 +202,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.self_harm.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.self_harm.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({ text: SANGenerators.getTextFromListDefinition(selfHarm.items, Answer(Question.self_harm)) }),
@@ -221,7 +218,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.suicidal_tendencies.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.suicidal_tendencies.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -242,7 +239,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.feeling_about_future_health_wellbeing.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.feeling_about_future_health_wellbeing.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -259,7 +256,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor('question.helped_during_periods_good_health_wellbeing.text', CaseData.ForenamePossessive),
+        text: contentFor('question.helped_during_periods_good_health_wellbeing.text', CaseData.Forename),
       },
       value: {
         blocks: [
@@ -338,7 +335,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.changes_to_health_wellbeing.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.changes_to_health_wellbeing.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({

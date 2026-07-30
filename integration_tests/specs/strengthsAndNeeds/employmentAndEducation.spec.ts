@@ -53,6 +53,7 @@ test.describe('Employment and education Page', () => {
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
+        - heading "Employment and education" [level=1]
         - text: What job sector does Test work in? (optional)
         - textbox "What job sector does Test work in? (optional)"
         - text: You can enter up to 2000 characters You have 2,000 characters remaining
@@ -114,8 +115,8 @@ test.describe('Employment and education Page', () => {
           - text: No or
           - radio "Unknown"
           - text: Unknown
-        - group "Does Test's have any skills that could help them in a job or to get a job?":
-          - text: Does Test's have any skills that could help them in a job or to get a job?
+        - group "Does Test have any skills that could help them in a job or to get a job?":
+          - text: Does Test have any skills that could help them in a job or to get a job?
           - radio "Yes"
           - text: Yes This includes any completed training, qualifications, work experience or transferable skills.
           - radio "Some skills"
@@ -161,7 +162,7 @@ test.describe('Employment and education Page', () => {
           - radio "Unknown"
           - text: Unknown
         - group "Does Test want to make changes to their employment and education?":
-          - text: Does Test want to make changes to their employment and education?
+          - text: Does Test want to make changes to their employment and education? Test must answer this question.
           - radio "I have already made positive changes and want to maintain them"
           - text: I have already made positive changes and want to maintain them
           - radio "I am actively making changes"
@@ -217,7 +218,7 @@ test.describe('Employment and education Page', () => {
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - text: What job sector does Test work in? (optional)
         - textbox "What job sector does Test work in? (optional)"
@@ -238,15 +239,14 @@ test.describe('Employment and education Page', () => {
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "What is Test's employment history?"
         - group "Does Test have any day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -276,15 +276,14 @@ test.describe('Employment and education Page', () => {
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "What is Test's employment history?"
         - group "Does Test have any day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -314,14 +313,13 @@ test.describe('Employment and education Page', () => {
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "Does Test have any day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
@@ -375,15 +373,14 @@ test.describe('Employment and education Page', () => {
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "What is Test's employment history?"
         - group "Does Test have any day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -413,14 +410,13 @@ test.describe('Employment and education Page', () => {
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "Does Test have any day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
@@ -474,15 +470,14 @@ test.describe('Employment and education Page', () => {
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "What is Test's employment history?"
         - group "Does Test have any day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -512,14 +507,13 @@ test.describe('Employment and education Page', () => {
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "Does Test have any day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"

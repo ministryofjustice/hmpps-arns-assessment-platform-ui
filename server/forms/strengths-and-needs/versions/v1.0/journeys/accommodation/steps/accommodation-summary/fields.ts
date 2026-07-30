@@ -171,7 +171,7 @@ export const accommodationSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.living_with).match(Condition.IsRequired()),
     },
     {
-      key: { text: contentFor('question.suitable_housing_location.text', CaseData.Forename) },
+      key: { text: contentFor('question.suitable_housing_location.text', CaseData.ForenamePossessive) },
       value: {
         blocks: [
           GovUKBody({
@@ -243,7 +243,7 @@ export const accommodationSummary = GovUKSummaryList({
       visibleWhen: not(Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation))),
     },
     {
-      key: { text: contentFor('question.suitable_housing.text', CaseData.Forename) },
+      key: { text: contentFor('question.suitable_housing.text', CaseData.ForenamePossessive) },
       value: {
         blocks: [
           GovUKBody({
