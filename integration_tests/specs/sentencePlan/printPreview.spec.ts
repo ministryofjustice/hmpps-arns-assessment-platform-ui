@@ -1,5 +1,5 @@
 import { expect, type Page } from '@playwright/test'
-import { currentGoals, mixedGoals } from '../../builders/sentencePlanFactories'
+import { currentGoals, futureGoals, mixedGoals } from '../../builders/sentencePlanFactories'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import PrintPreviewPage from '../../pages/sentencePlan/printPreviewPage'
 import { test, TargetService } from '../../support/fixtures'
@@ -36,10 +36,11 @@ test.describe('Print preview', () => {
     ])
   })
 
-  test('does not provide navigation back into the plan', async ({ page, createSession }) => {
-    const { handoverLink } = await createSession({
+  test('does not provide navigation back into the plan', async ({ page, createSession, sentencePlanBuilder }) => {
+    const { sentencePlanId, handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
     })
+    await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
     const printPreviewPage = await openPrintPreview(page, handoverLink)
 
@@ -51,10 +52,11 @@ test.describe('Print preview', () => {
     await expect(printPreviewPage.backToTopLink).toHaveCount(0)
   })
 
-  test('shows only the print-preview actions', async ({ page, createSession }) => {
-    const { handoverLink } = await createSession({
+  test('shows only the print-preview actions', async ({ page, createSession, sentencePlanBuilder }) => {
+    const { sentencePlanId, handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
     })
+    await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
     const printPreviewPage = await openPrintPreview(page, handoverLink)
 
@@ -109,5 +111,61 @@ test.describe('Print preview', () => {
     await printPreviewPage.page.emulateMedia({ media: 'print' })
 
     await expect(printPreviewPage.draftWatermark).toHaveCount(0)
+  })
+
+  test.describe('Print all goals button', () => {
+    test('is hidden when a draft plan has no goals', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+      })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      await expect(planOverviewPage.printAllGoalsButton).toHaveCount(0)
+    })
+
+    test('is shown when a draft plan only has future goals', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+      })
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(futureGoals(1)).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      await expect(planOverviewPage.printAllGoalsButton).toBeVisible()
+    })
+
+    test('is shown when a draft plan only has achieved goals', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+      })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([{ title: 'Achieved goal', areaOfNeed: 'accommodation', status: 'ACHIEVED' }])
+        .save()
+
+      await navigateToSentencePlan(page, handoverLink)
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      await expect(planOverviewPage.printAllGoalsButton).toBeVisible()
+    })
+
+    test('is shown when an agreed plan has no goals', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+      })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withPlanAgreements([{ status: 'AGREED', dateOffset: -oneDay, createdBy: 'Jane Smith' }])
+        .save()
+
+      await navigateToSentencePlan(page, handoverLink)
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      await expect(planOverviewPage.printAllGoalsButton).toBeVisible()
+    })
   })
 })
