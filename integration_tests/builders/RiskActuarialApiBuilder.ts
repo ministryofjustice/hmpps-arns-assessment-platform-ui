@@ -9,6 +9,7 @@ import {
   SupervisionStatus,
   MotivationLevel,
 } from '@server/interfaces/risk-actuarial-api/riskScores'
+import { OffenceCodesResponse } from '@server/interfaces/risk-actuarial-api/offenceCodes'
 
 /**
  * Factory for creating RiskActuarialApiBuilder instances with a bound client.
@@ -423,7 +424,7 @@ export class RiskActuarialApiBuilderInstance {
   /**
    * Get the risk scores via the Risk Actuarial API.
    */
-  async save(): Promise<RiskScores> {
+  async getRiskScores(): Promise<RiskScores> {
     return test.step('Get risk scores', async () => {
       const request: RiskScoreInput = {
         gender: this.gender,
@@ -476,6 +477,12 @@ export class RiskActuarialApiBuilderInstance {
       }
 
       return await this.client.getRiskScores(request)
+    })
+  }
+
+  async getOffenceCodes(): Promise<OffenceCodesResponse> {
+    return test.step('Get offence codes', async () => {
+      return await this.client.getOffenceCodes()
     })
   }
 }
