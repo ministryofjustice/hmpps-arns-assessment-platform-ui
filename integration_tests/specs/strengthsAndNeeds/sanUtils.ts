@@ -11,6 +11,7 @@ export const employment = '/employment-and-education'
 export const health = '/health-and-wellbeing'
 export const drugUse = '/drug-use'
 export const personal = '/personal-relationships-and-community'
+export const thinking = '/thinking-behaviours-and-attitudes'
 
 export const sentencePlanV1URLs = {
   PRIVACY_SCREEN: `${sanFormPath}${privacyStepPath}`,
@@ -25,6 +26,7 @@ export const sanPageTitles = {
   healthAndWellbeing: 'Health Wellbeing',
   drugUse: 'Drug use',
   personal: 'Personal Relationships: Children Information',
+  thinking: 'Thinking, behaviours and attitudes',
 }
 
 export const sanServiceName = 'Strengths and needs'

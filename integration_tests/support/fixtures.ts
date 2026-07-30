@@ -2,7 +2,7 @@ import { AxeBuilder } from '@axe-core/playwright'
 import { test as base } from '@playwright/test'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import { promises as fs } from 'node:fs'
-import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
+import type { AccessMode, CriminogenicNeedsData, YesNoNull } from '@server/interfaces/handover-api/shared'
 import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
 import { StrengthsAndNeedsBuilder, StrengthsAndNeedsBuilderFactory } from 'builders/StrengthsAndNeedsBuilder'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
@@ -110,6 +110,7 @@ export interface CreateSessionOptions {
    * When set, indicates the user is accessing a previous version of the plan.
    */
   planVersion?: number
+  sexuallyMotivatedOffenceHistory?: YesNoNull
 }
 
 export interface SessionFixture {
@@ -285,6 +286,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
       if (options.planVersion) {
         sessionBuilder.withPlanVersion(options.planVersion)
+      }
+
+      if (options.sexuallyMotivatedOffenceHistory) {
+        sessionBuilder.withSexuallyMotivatedOffenceHistory(options.sexuallyMotivatedOffenceHistory)
       }
 
       const session = await sessionBuilder.save()
