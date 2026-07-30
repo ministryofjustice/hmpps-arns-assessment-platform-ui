@@ -13,7 +13,7 @@ export const english = {
     [Question.drug_use]: {
       text: 'Has %1 ever misused drugs?',
       hint: 'This includes illegal and prescription drugs.',
-      validation: "Select if they've ever misused drugs",
+      validation: 'Select if they’ve ever misused drugs',
     },
     [Question.drug_last_used]: {
       text: 'When did they last use %1?',
@@ -24,13 +24,13 @@ export const english = {
       validation: 'Select when they last used this drug',
     },
     [Question.other_drug_name]: {
-      text: "Enter which other drug they've misused",
-      hint: 'Add drug name',
+      text: 'Enter which other drug they’ve misused',
+      hint: 'Add drug name.',
       option: {
         [Option.last_six]: 'Used in the last 6 months',
         [Option.more_than_six]: 'Used more than 6 months ago',
       },
-      validation: 'Drug name must be 200 characters or less',
+      validation: 'Drug name must be %1 characters or less',
     },
     [Question.select_misused_drugs]: {
       text: 'Which drugs has %1 misused?',
@@ -39,7 +39,7 @@ export const english = {
         [Option.last_six]: 'Used in the last 6 months',
         [Option.more_than_six]: 'Used more than 6 months ago',
       },
-      validation: "Select which drugs they've misused",
+      validation: 'Select which drugs they’ve misused',
     },
     [Question.how_often_used]: {
       text: 'How often is %1 using this drug?',
@@ -55,7 +55,7 @@ export const english = {
         [Option.monthly]: 'Monthly',
         [Option.occasionally]: 'Occasionally',
       },
-      validation: "Select how often they're using this drug",
+      validation: 'Select how often they’re using this drug',
     },
     [Question.drug_use_more_than_six_months_details]: {
       text: 'Give details about %1 use of these drugs',
@@ -65,7 +65,7 @@ export const english = {
     [Question.drugs_injected]: {
       text: 'Which drugs has %1 injected?',
       hint: 'Select all that apply.',
-      validation: "Select which drugs they've injected, or select 'None'",
+      validation: "Select which drugs they’ve injected, or select 'None'",
     },
     [Question.drugs_injected_months]: {
       code: 'drugs_injected_%1',
@@ -80,7 +80,7 @@ export const english = {
       },
       validation: {
         notUsedInLastSixMonths: 'Select if they have ever received treatment',
-        usedLastSixMonths: "Select if they're receiving treatment for their drug use",
+        usedLastSixMonths: 'Select if they’re receiving treatment for their drug use',
       },
     },
     [Question.receiving_treatment_yes_details]: {

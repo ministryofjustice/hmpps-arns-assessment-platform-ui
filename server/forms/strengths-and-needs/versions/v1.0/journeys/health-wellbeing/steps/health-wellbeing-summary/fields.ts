@@ -457,8 +457,8 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
       message: contentFor('question.strengths_protective_factors_health_wellbeing_details.validation'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
-      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -470,8 +470,8 @@ const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.Equals(Option.no)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
-      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -513,8 +513,8 @@ const seriousHarmDetails = GovUKCharacterCount({
       message: 'Give details on the risk of serious harm',
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
-      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -526,8 +526,8 @@ const noSeriousHarmDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.serious_harm_health_wellbeing).match(Condition.Equals(Option.no)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
-      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -565,8 +565,8 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
       message: contentFor('question.risk_of_reoffending_health_wellbeing_details.validation'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
-      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
     }),
   ],
 })
@@ -578,8 +578,8 @@ const noRiskOfReoffendingDetails = GovUKCharacterCount({
   dependentWhen: Answer(Question.risk_of_reoffending_health_wellbeing).match(Condition.Equals(Option.no)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
-      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
     }),
   ],
 })

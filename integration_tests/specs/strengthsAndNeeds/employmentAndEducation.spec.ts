@@ -86,23 +86,23 @@ test.describe('Employment and education Page', () => {
         - group "Select the highest level of academic qualification Test has completed":
           - text: Select the highest level of academic qualification Test has completed
           - radio "Entry level"
-          - text: Entry level For example, entry level diploma
+          - text: Entry level For example, entry level diploma.
           - radio "Level 1"
-          - text: Level 1 For example, GCSE grades 3, 2, 1 or grades D, E, F, G
+          - text: Level 1 For example, GCSE grades 3, 2, 1 or grades D, E, F, G.
           - radio "Level 2"
-          - text: Level 2 For example, GCSE grades 9, 8, 7, 6, 5, 4 or grades A*, A, B, C
+          - text: Level 2 For example, GCSE grades 9, 8, 7, 6, 5, 4 or grades A*, A, B, C.
           - radio "Level 3"
-          - text: Level 3 For example, A level
+          - text: Level 3 For example, A level.
           - radio "Level 4"
-          - text: Level 4 For example, higher apprenticeship
+          - text: Level 4 For example, higher apprenticeship.
           - radio "Level 5"
-          - text: Level 5 For example, foundation degree
+          - text: Level 5 For example, foundation degree.
           - radio "Level 6"
-          - text: Level 6 For example, degree with honours
+          - text: Level 6 For example, degree with honours.
           - radio "Level 7"
-          - text: Level 7 For example, master's degree
+          - text: Level 7 For example, master’s degree.
           - radio "Level 8"
-          - text: Level 8 For example, doctorate or
+          - text: Level 8 For example, doctorate. or
           - radio "None of these"
           - text: None of these
           - radio "Unknown"

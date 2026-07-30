@@ -61,7 +61,7 @@ const otherDrugName = GovUKTextInput({
     }),
     validation({
       condition: not(Self().not.match(Condition.String.HasMaxLength(CharacterLimit.c200))),
-      message: contentFor('question.other_drug_name.validation'),
+      message: contentFor('question.other_drug_name.validation', CharacterLimit.c200),
     }),
   ],
 })

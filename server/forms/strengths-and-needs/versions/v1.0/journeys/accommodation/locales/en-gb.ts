@@ -170,7 +170,7 @@ export const english = {
       validation: 'Select why they have no accommodation',
     },
     [Question.past_accommodation_details]: {
-      text: `What's helped %1 stay in accommodation in the past? (optional)`,
+      text: `What’s helped %1 stay in accommodation in the past? (optional)`,
     },
     [Question.accommodation_strengths_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 accommodation?',

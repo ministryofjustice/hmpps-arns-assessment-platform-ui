@@ -300,7 +300,7 @@ export const selfHarm = GovUKRadioInput({
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: "Consider what factors or circumstances are associated and if it's recurring.",
+  hint: 'Consider what factors or circumstances are associated and if it’s recurring.',
   items: [
     { value: Option.yes, text: commonContentFor('option.YES'), block: selfHarmDetails },
     { value: Option.no, text: commonContentFor('option.NO') },

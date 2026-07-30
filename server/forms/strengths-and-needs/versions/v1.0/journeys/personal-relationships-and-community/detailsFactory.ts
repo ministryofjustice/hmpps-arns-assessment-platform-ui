@@ -2,8 +2,7 @@ import { GovUKCharacterCount } from '@ministryofjustice/hmpps-forge/govuk-compon
 import { Condition, PredicateExpr, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { commonContentFor } from '../../locales'
-
-const MAX_DETAILS_LENGTH = 2000
+import { CharacterLimit } from '../../constants/characterLimit'
 
 export const detailsFactory = (options: {
   code: string
@@ -16,7 +15,7 @@ export const detailsFactory = (options: {
     code: options.code,
     label: options.label,
     ...(options.hint && { hint: options.hint }),
-    maxLength: MAX_DETAILS_LENGTH,
+    maxLength: CharacterLimit.c2000,
     dependentWhen: options.dependentWhen,
     validWhen: [
       ...(options.requiredMessage
@@ -28,8 +27,8 @@ export const detailsFactory = (options: {
           ]
         : []),
       validation({
-        condition: Self().match(Condition.String.HasMaxLength(MAX_DETAILS_LENGTH)),
-        message: commonContentFor('validation.details_character_limit', `${MAX_DETAILS_LENGTH}`),
+        condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+        message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
       }),
     ],
   })

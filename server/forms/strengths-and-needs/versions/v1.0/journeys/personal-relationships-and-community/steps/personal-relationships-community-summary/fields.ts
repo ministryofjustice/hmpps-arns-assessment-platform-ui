@@ -24,6 +24,7 @@ import {
   intimateRelationship,
   parentalResponsibilities,
 } from '../personal-relationships-community/fields'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 // -------- Personal Relationships and Community Summary Group
 
@@ -454,7 +455,7 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
 const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_yes_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: and(
     Answer(Question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors).match(
       Condition.IsRequired(),
@@ -469,8 +470,8 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
       message: contentFor(`${prcShortcut}practitioner_analysis_strengths_or_protective_factors_yes_details.validation`),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -478,14 +479,14 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
 const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_no_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: Answer(
     Question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors,
   ).match(Condition.Equals(CommonOption.no)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -519,7 +520,7 @@ export const personalRelationshipsCommunityStrengthsProtectiveFactors = GovUKRad
 const seriousHarmDetails = GovUKCharacterCount({
   code: Question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm_yes_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: and(
     Answer(Question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm).match(
       Condition.IsRequired(),
@@ -534,8 +535,8 @@ const seriousHarmDetails = GovUKCharacterCount({
       message: contentFor(`${prcShortcut}practitioner_analysis_risk_of_serious_harm_yes_details.validation`),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -543,14 +544,14 @@ const seriousHarmDetails = GovUKCharacterCount({
 const noSeriousHarmDetails = GovUKCharacterCount({
   code: Question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm_no_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: Answer(Question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm).match(
     Condition.Equals(CommonOption.no),
   ),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -580,7 +581,7 @@ export const personalRelationshipsCommunityLinkedToSeriousHarm = GovUKRadioInput
 const riskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.personal_relationships_community_practitioner_analysis_risk_of_reoffending_yes_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1000,
   dependentWhen: and(
     Answer(Question.personal_relationships_community_practitioner_analysis_risk_of_reoffending).match(
       Condition.IsRequired(),
@@ -595,8 +596,8 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
       message: contentFor(`${prcShortcut}practitioner_analysis_risk_of_reoffending_yes_details.validation`),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
     }),
   ],
 })
@@ -604,14 +605,14 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
 const noRiskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.personal_relationships_community_practitioner_analysis_risk_of_reoffending_no_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1000,
   dependentWhen: Answer(Question.personal_relationships_community_practitioner_analysis_risk_of_reoffending).match(
     Condition.Equals(CommonOption.no),
   ),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
     }),
   ],
 })

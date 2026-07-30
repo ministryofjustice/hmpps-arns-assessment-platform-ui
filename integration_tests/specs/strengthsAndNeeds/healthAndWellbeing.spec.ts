@@ -132,13 +132,13 @@ test.describe('Health and wellbeing Page', () => {
           - radio "Negative self-image and unhappy"
           - text: Negative self-image and unhappy This includes if they have an overly positive or unrealistic self-image which in reality is not true.
         - group "Has Test ever self-harmed?":
-          - text: Has Test ever self-harmed? Consider what factors or circumstances are associated and if it's recurring.
+          - text: Has Test ever self-harmed? Consider what factors or circumstances are associated and if it’s recurring.
           - radio "Yes"
           - text: "Yes"
           - radio "No"
           - text: "No"
         - group "Has Test ever attempted suicide or had suicidal thoughts?":
-          - text: Has Test ever attempted suicide or had suicidal thoughts? Consider what factors or circumstances are associated and if it's recurring.
+          - text: Has Test ever attempted suicide or had suicidal thoughts? Consider what factors or circumstances are associated and if it’s recurring.
           - radio "Yes"
           - text: "Yes"
           - radio "No"
@@ -155,8 +155,8 @@ test.describe('Health and wellbeing Page', () => {
           - text: Test does not want to answer
           - radio "Test is not present"
           - text: Test is not present
-        - group "What's helped Test during periods of good health and wellbeing? (optional)":
-          - text: What's helped Test during periods of good health and wellbeing? (optional) Consider what's helped them feel more hopeful. Select all that apply.
+        - group "What’s helped Test during periods of good health and wellbeing? (optional)":
+          - text: What’s helped Test during periods of good health and wellbeing? (optional) Consider what’s helped them feel more hopeful. Select all that apply.
           - checkbox "Accommodation"
           - text: Accommodation
           - checkbox "Employment"
@@ -207,27 +207,27 @@ test.describe('Health and wellbeing Page', () => {
           {
             question: 'has_health_conditions_details',
             value: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+            Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, 
             when an unknown printer took a galley of type and scrambled it to make a type 
             specimen book. It has survived not only five centuries, but also the leap into 
             electronic typesetting, remaining essentially unchanged. It was popularised in 
             the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
             and more recently with desktop publishing software like Aldus PageMaker including 
             versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and 
-            typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever 
+            typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever 
             since the 1500s, when an unknown printer took a galley of type and scrambled it to 
             make a type specimen book. It has survived not only five centuries, but also the leap 
             into electronic typesetting, remaining essentially unchanged. It was popularised in the 
             1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more 
             recently with desktop publishing software like Aldus PageMaker including versions of 
             Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an 
+            Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an 
             unknown printer took a galley of type and scrambled it to make a type specimen book. 
             It has survived not only five centuries, but also the leap into electronic typesetting, 
             remaining essentially unchanged. It was popularised in the 1960s with the release of 
             Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing 
             software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply 
-            dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's 
+            dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s 
             standard dummy text ever since the 1500s, when an unknown printer took a galley of type 
             and scrambled it to make a type specimen book. It has survived not only five.`,
           },
@@ -271,7 +271,7 @@ test.describe('Health and wellbeing Page', () => {
         - group "Has Test ever self-harmed?"
         - group "Has Test ever attempted suicide or had suicidal thoughts?"
         - group "How does Test feel about their future?"
-        - group "What's helped Test during periods of good health and wellbeing? (optional)"
+        - group "What’s helped Test during periods of good health and wellbeing? (optional)"
         - group "Does Test want to make changes to their health and wellbeing?"
         - button "Save and continue"
       `)

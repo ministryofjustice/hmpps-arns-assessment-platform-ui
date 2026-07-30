@@ -6,10 +6,10 @@ import { CommonOption } from '../../../constants/commonOption'
 
 export const english = {
   step: {
-    [Step.current_employment.code]: 'Current Employment',
+    [Step.current_employment.code]: 'Current employment',
     [Step.employed.code]: 'Employed',
-    [Step.employment_education_summary.code]: 'Employment and Education Summary',
-    [Step.employment_education_analysis.code]: 'Employment and Education Analysis',
+    [Step.employment_education_summary.code]: 'Employment and education summary',
+    [Step.employment_education_analysis.code]: 'Employment and education analysis',
   },
   question: {
     [Question.type_of_employment]: {
@@ -78,39 +78,39 @@ export const english = {
       option: {
         [Option.entry_level]: {
           text: 'Entry level',
-          hint: 'For example, entry level diploma',
+          hint: 'For example, entry level diploma.',
         },
         [Option.level_1]: {
           text: 'Level 1',
-          hint: 'For example, GCSE grades 3, 2, 1 or grades D, E, F, G',
+          hint: 'For example, GCSE grades 3, 2, 1 or grades D, E, F, G.',
         },
         [Option.level_2]: {
           text: 'Level 2',
-          hint: 'For example, GCSE grades 9, 8, 7, 6, 5, 4 or grades A*, A, B, C',
+          hint: 'For example, GCSE grades 9, 8, 7, 6, 5, 4 or grades A*, A, B, C.',
         },
         [Option.level_3]: {
           text: 'Level 3',
-          hint: 'For example, A level',
+          hint: 'For example, A level.',
         },
         [Option.level_4]: {
           text: 'Level 4',
-          hint: 'For example, higher apprenticeship',
+          hint: 'For example, higher apprenticeship.',
         },
         [Option.level_5]: {
           text: 'Level 5',
-          hint: 'For example, foundation degree',
+          hint: 'For example, foundation degree.',
         },
         [Option.level_6]: {
           text: 'Level 6',
-          hint: 'For example, degree with honours',
+          hint: 'For example, degree with honours.',
         },
         [Option.level_7]: {
           text: 'Level 7',
-          hint: `For example, master's degree`,
+          hint: `For example, master’s degree.`,
         },
         [Option.level_8]: {
           text: 'Level 8',
-          hint: 'For example, doctorate',
+          hint: 'For example, doctorate.',
         },
       },
       validation: 'Select the highest level of academic qualification completed',
@@ -170,16 +170,16 @@ export const english = {
       validation: 'Select level of difficulty',
     },
     [Question.continuous_employment_history_employment_details]: {
-      hint: `Include what type of work they've done before.`,
+      hint: `Include what type of work they’ve done before.`,
     },
     [Question.changes_often_employment_history_employment_details]: {
-      hint: `Include what type of work they've done before.`,
+      hint: `Include what type of work they’ve done before.`,
     },
     [Question.unstable_employment_history_employment_details]: {
-      hint: `Include what type of work they've done before.`,
+      hint: `Include what type of work they’ve done before.`,
     },
     [Question.unknown_employment_history_employment_details]: {
-      hint: `Include what type of work they've done before.`,
+      hint: `Include what type of work they’ve done before.`,
     },
     [Question.employment_education_strengths_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 employment and education?',

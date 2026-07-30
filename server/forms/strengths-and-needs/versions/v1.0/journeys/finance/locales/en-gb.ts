@@ -7,15 +7,15 @@ import { CommonOption } from '../../../constants/commonOption'
 export const english = {
   step: {
     [Step.finance.code]: 'Finance',
-    [Step.financeSummary.code]: 'Finance Summary',
-    [Step.financeAnalysis.code]: 'Finance Analysis',
+    [Step.financeSummary.code]: 'Finance summary',
+    [Step.financeAnalysis.code]: 'Finance analysis',
   },
   question: {
     [Question.finance_income]: {
       text: 'Where does %1 currently get their money from?',
       hint: '',
       option: {
-        [Option.carers_allowance]: "Carer's allowance",
+        [Option.carers_allowance]: 'Carer’s allowance',
         [Option.disability_benefits]: {
           text: 'Disability benefits',
           hint: 'For example, Personal Independence Payment (PIP) (also known as Disability Living Allowance) or Severe Disablement Allowance.',
@@ -28,7 +28,7 @@ export const english = {
         [Option.undeclared]: 'Undeclared (includes cash in hand)',
         [Option.work_related_benefits]: {
           text: 'Work related benefits',
-          hint: "For example, Universal Credit or Jobseeker's Allowance (JSA).",
+          hint: 'For example, Universal Credit or Jobseeker’s Allowance (JSA).',
         },
         [Option.no_money]: 'No money',
       },
@@ -64,7 +64,7 @@ export const english = {
       text: 'Is %1 affected by gambling?',
       option: {
         [Option.yes_their_gambling]: 'Yes, their own gambling',
-        [Option.yes_someone_elses_gambling]: "Yes, someone else's gambling",
+        [Option.yes_someone_elses_gambling]: 'Yes, someone else’s gambling',
       },
       validation: 'Select if they are affected by gambling',
     },
@@ -72,7 +72,7 @@ export const english = {
       text: 'Is %1 affected by debt?',
       option: {
         [Option.yes_their_debt]: 'Yes, their own debt',
-        [Option.yes_someone_elses_debt]: "Yes, someone else's debt",
+        [Option.yes_someone_elses_debt]: 'Yes, someone else’s debt',
       },
       validation: 'Select if they are affected by debt',
     },

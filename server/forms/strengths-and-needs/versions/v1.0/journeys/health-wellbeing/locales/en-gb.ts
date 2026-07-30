@@ -4,10 +4,10 @@ import { Option } from '../constants/option'
 
 export const english = {
   step: {
-    [Step.health_wellbeing.code]: 'Health Wellbeing',
-    [Step.physical_mental_health.code]: 'Physical Mental Health',
-    [Step.health_wellbeing_summary.code]: 'Health and Wellbeing Summary',
-    [Step.health_wellbeing_analysis.code]: 'Health and Wellbeing Analysis',
+    [Step.health_wellbeing.code]: 'Health wellbeing',
+    [Step.physical_mental_health.code]: 'Physical mental health',
+    [Step.health_wellbeing_summary.code]: 'Health and wellbeing summary',
+    [Step.health_wellbeing_analysis.code]: 'Health and wellbeing analysis',
   },
   question: {
     [Question.health_conditions]: {
@@ -91,7 +91,7 @@ export const english = {
     },
     [Question.suicidal_tendencies]: {
       text: 'Has %1 ever attempted suicide or had suicidal thoughts?',
-      hint: "Consider what factors or circumstances are associated and if it's recurring.",
+      hint: 'Consider what factors or circumstances are associated and if it’s recurring.',
       validation: 'Select if they have ever attempted suicide or had suicidal thoughts',
     },
     [Question.feeling_about_future_health_wellbeing]: {
@@ -107,8 +107,8 @@ export const english = {
       validation: 'Select how optimistic they are about their future',
     },
     [Question.helped_during_periods_good_health_wellbeing]: {
-      text: "What's helped %1 during periods of good health and wellbeing? (optional)",
-      hint: "Consider what's helped them feel more hopeful.<br><br> Select all that apply.",
+      text: 'What’s helped %1 during periods of good health and wellbeing? (optional)',
+      hint: 'Consider what’s helped them feel more hopeful.<br><br> Select all that apply.',
       option: {
         [Option.accommodation]: 'Accommodation',
         [Option.employment]: 'Employment',
