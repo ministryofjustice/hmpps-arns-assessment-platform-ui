@@ -31,6 +31,8 @@ export const isReadOnlyAccess = Data('sessionDetails.planAccessMode').match(Cond
 
 export const isPrintAndShareEnabled = Data('featureFlags.printAndShareEnabled').match(Condition.Equals(true))
 
+export const isSupervisionPackageEnabled = Data('featureFlags.supervisionPackageEnabled').match(Condition.Equals(true))
+
 export const isMpopAssessmentInfoEnabled = Data('featureFlags.mpopAssessmentInfoEnabled').match(Condition.Equals(true))
 
 /**
@@ -64,6 +66,12 @@ export const redirectToOverviewIfReadOnly = () =>
 export const redirectToOverviewUnlessPrintAndShareEnabled = () =>
   access({
     when: not(isPrintAndShareEnabled),
+    next: [redirect({ goto: sentencePlanOverviewPath })],
+  })
+
+export const redirectToOverviewUnlessSupervisionPackageEnabled = () =>
+  access({
+    when: not(isSupervisionPackageEnabled),
     next: [redirect({ goto: sentencePlanOverviewPath })],
   })
 
