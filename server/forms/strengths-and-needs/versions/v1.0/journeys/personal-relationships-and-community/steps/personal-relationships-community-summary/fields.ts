@@ -169,11 +169,11 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
             size: 's',
           }),
           GovUKBody({
-            text: contentFor(`${prcShortcut}important_people.option.OTHER.text`, CaseData.ForenamePossessive),
+            text: commonContentFor('option.OTHER'),
             visibleWhen: and(
               Answer(Question.personal_relationships_community_important_people).match(Condition.IsRequired()),
               Answer(Question.personal_relationships_community_important_people).match(
-                Condition.Array.Contains(Option.other),
+                Condition.Array.Contains(CommonOption.other),
               ),
             ),
           }),

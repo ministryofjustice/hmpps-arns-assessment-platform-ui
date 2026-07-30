@@ -11,7 +11,6 @@ export const Option = {
   other_children: 'OTHER_CHILDREN',
   family: 'FAMILY',
   friends: 'FRIENDS',
-  other: 'OTHER',
 
   // Q: Is [subject] happy with their current relationship status?
   happy_relationship: 'HAPPY_RELATIONSHIP',

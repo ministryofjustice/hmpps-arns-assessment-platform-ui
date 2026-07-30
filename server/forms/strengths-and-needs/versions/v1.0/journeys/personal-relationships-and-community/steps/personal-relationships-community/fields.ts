@@ -216,7 +216,7 @@ export const parentalResponsibilities = GovUKRadioInput({
     },
     {
       value: CommonOption.unknown,
-      text: contentFor(`${parentalContentFor}.option.UNKNOWN.text`),
+      text: commonContentFor('option.UNKNOWN'),
     },
   ],
   validWhen: [
@@ -277,7 +277,7 @@ export const familyRelationship = GovUKRadioInput({
     },
     {
       value: CommonOption.unknown,
-      text: contentFor(`${familyRelationshipContentFor}.option.UNKNOWN.text`),
+      text: commonContentFor('option.UNKNOWN'),
     },
   ],
   validWhen: [

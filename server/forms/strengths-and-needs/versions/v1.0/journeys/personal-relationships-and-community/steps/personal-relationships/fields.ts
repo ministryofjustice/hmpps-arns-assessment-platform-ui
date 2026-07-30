@@ -6,6 +6,7 @@ import { CaseData } from '../../../../constants/formVersion'
 import { commonContentFor } from '../../../../locales'
 import { Option } from '../../constants/option'
 import { detailsFactory } from '../../detailsFactory'
+import { CommonOption } from '../../../../constants/commonOption'
 
 // --------------------------- reusable items:
 const currentQContentForShortcut = 'question.personal_relationships_community_important_people'
@@ -59,7 +60,7 @@ const otherDetails = detailsFactory({
   code: Question.personal_relationships_community_important_people_other_details,
   label: commonContentFor('required_details'),
   dependentWhen: Answer(Question.personal_relationships_community_important_people).match(
-    Condition.Array.Contains(Option.other),
+    Condition.Array.Contains(CommonOption.other),
   ),
   requiredMessage: commonContentFor('validation.enter_details'),
 })
@@ -93,7 +94,7 @@ export const personalRelationshipsCommunityImportantPeople = GovUKCheckboxInput(
     },
     {
       value: Option.family,
-      text: contentFor(`${currentQContentForShortcut}.option.FAMILY.text`, CaseData.ForenamePossessive),
+      text: contentFor(`${currentQContentForShortcut}.option.FAMILY.text`),
       block: familyDetails,
     },
     {
@@ -102,8 +103,8 @@ export const personalRelationshipsCommunityImportantPeople = GovUKCheckboxInput(
       block: friendsDetails,
     },
     {
-      value: Option.other,
-      text: contentFor(`${currentQContentForShortcut}.option.OTHER.text`, CaseData.ForenamePossessive),
+      value: CommonOption.other,
+      text: commonContentFor('option.OTHER'),
       block: otherDetails,
     },
   ],

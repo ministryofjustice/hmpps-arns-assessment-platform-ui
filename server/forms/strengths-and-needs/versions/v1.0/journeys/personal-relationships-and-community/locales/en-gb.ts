@@ -63,9 +63,6 @@ export const english = {
           text: 'Friends',
           label: 'Give details about their friendship (optional)',
         },
-        [Option.other]: {
-          text: 'Other',
-        },
       },
     },
     [Question.personal_relationships_community_current_relationship]: {
@@ -120,9 +117,6 @@ export const english = {
         [CommonOption.no]: {
           text: 'No, is not able to manage parenting responsibilities',
         },
-        [CommonOption.unknown]: {
-          text: 'Unknown',
-        },
       },
     },
     [Question.personal_relationships_community_family_relationship]: {
@@ -139,9 +133,6 @@ export const english = {
         [Option.unstable_relationship]: {
           text: 'Unstable and unsupportive relationship',
           hint: 'This includes those who have little or no contact with their family.',
-        },
-        [CommonOption.unknown]: {
-          text: 'Unknown',
         },
       },
     },
