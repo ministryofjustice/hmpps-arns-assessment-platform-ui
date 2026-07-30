@@ -5,9 +5,12 @@ import AbstractPage from '../abstractPage'
 export default class ThinkingBehavioursAndAttitudesPage extends AbstractPage {
   readonly mainForm: Locator
 
+  readonly no: Locator
+
   private constructor(page: Page) {
     super(page)
     this.mainForm = page.getByTestId('main-form')
+    this.no = page.getByRole('radio', { name: 'No' })
   }
 
   /**

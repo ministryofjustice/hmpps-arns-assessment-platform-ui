@@ -206,6 +206,7 @@ test.describe('Thinking behaviours and attitudes Page', () => {
           - text: "No"
         - button "Save and continue"
       `)
+      await expect(personalRelationshipsAndCommunityPage.no).not.toBeEnabled()
     })
 
     test('shows no risk of sexual harm', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -259,6 +260,7 @@ test.describe('Thinking behaviours and attitudes Page', () => {
           - text: "No"
         - button "Save and continue"
       `)
+      await expect(personalRelationshipsAndCommunityPage.no).toBeEnabled()
     })
   })
 
