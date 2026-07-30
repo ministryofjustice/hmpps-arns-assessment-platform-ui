@@ -22,7 +22,7 @@ export default class EmploymentAndEducationPage extends AbstractPage {
     this.incomplete = page.getByText('Incomplete')
     this.currentEmploymentStatus = page.getByTestId('main-form')
     this.mainSection = page.getByText('Back Employment and education')
-    this.selectTypeOfEmployment = page.getByRole('link', { name: 'Select the type of employment' })
+    this.selectTypeOfEmployment = page.getByRole('link', { name: 'Select one option' })
     this.fullTime = page.getByLabel('Full-time')
     this.selectOneOption = page.getByRole('link', { name: 'Select one option' })
     this.yesHasBeenEmployedBefore = page.getByRole('radio', { name: 'Yes, has been employed before' })

@@ -155,7 +155,7 @@ export const typeOfSettledAccommodation = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.type_of_settled_accommodation.validation'),
     }),
   ],
@@ -204,7 +204,7 @@ export const typeOfTemporaryAccommodation = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.type_of_temporary_accommodation.validation'),
     }),
   ],
@@ -229,7 +229,7 @@ export const typeOfNoAccommodation = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.type_of_no_accommodation.validation'),
     }),
   ],
@@ -262,7 +262,7 @@ export const currentAccommodation = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.current_accommodation.validation'),
     }),
   ],

@@ -28,19 +28,24 @@ import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { commonContentFor } from '../../../../locales'
 import { contentFor } from '../../locales'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 // --- Health and Wellbeing Summary Group ---
 
 export const healthWellbeingSummary = GovUKSummaryList({
   rows: [
     {
-      key: { text: contentFor('question.health_conditions.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.health_conditions.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
             text: SANGenerators.getTextFromListDefinition(healthConditions.items, Answer(Question.health_conditions)),
           }),
-          GovUKBody({ text: Answer(Question.has_health_conditions_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.has_health_conditions_details),
+            size: 's',
+            visibleWhen: Answer(Question.has_health_conditions_details).match(Condition.IsRequired()),
+          }),
         ],
       },
       actions: {
@@ -48,7 +53,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.health_conditions.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.mental_health_problems.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -57,9 +62,23 @@ export const healthWellbeingSummary = GovUKSummaryList({
               Answer(Question.mental_health_problems),
             ),
           }),
-          GovUKBody({ text: Answer(Question.severe_mental_health_problems_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.ongoing_duration_unknown_mental_health_problems_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.past_mental_health_problems_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.severe_mental_health_problems_details),
+            size: 's',
+            visibleWhen: Answer(Question.severe_mental_health_problems_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.ongoing_duration_unknown_mental_health_problems_details),
+            size: 's',
+            visibleWhen: Answer(Question.ongoing_duration_unknown_mental_health_problems_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.past_mental_health_problems_details),
+            size: 's',
+            visibleWhen: Answer(Question.past_mental_health_problems_details).match(Condition.IsRequired()),
+          }),
         ],
       },
       actions: {
@@ -68,10 +87,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(
-          'question.prescribed_physical_health_medications_treatments.text',
-          CaseData.ForenamePossessive,
-        ),
+        text: contentFor('question.prescribed_physical_health_medications_treatments.text', CaseData.Forename),
       },
       value: {
         blocks: [GovUKBody({ text: Answer(Question.prescribed_physical_health_medications_treatments), size: 's' })],
@@ -83,7 +99,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor('question.prescribed_mental_health_medications_treatments.text', CaseData.ForenamePossessive),
+        text: contentFor('question.prescribed_mental_health_medications_treatments.text', CaseData.Forename),
       },
       value: {
         blocks: [GovUKBody({ text: Answer(Question.prescribed_mental_health_medications_treatments), size: 's' })],
@@ -94,7 +110,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.prescribed_mental_health_medications_treatments).match(Condition.IsRequired()),
     },
     {
-      key: { text: contentFor('question.psychiatric_treatment.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.psychiatric_treatment.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -111,7 +127,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.psychiatric_treatment).match(Condition.IsRequired()),
     },
     {
-      key: { text: contentFor('question.head_injuries.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.head_injuries.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -125,7 +141,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.head_injuries).match(Condition.IsRequired()),
     },
     {
-      key: { text: contentFor('question.neurodiverse_conditions.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.neurodiverse_conditions.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -134,7 +150,11 @@ export const healthWellbeingSummary = GovUKSummaryList({
               Answer(Question.neurodiverse_conditions),
             ),
           }),
-          GovUKBody({ text: Answer(Question.neurodiverse_conditions_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.neurodiverse_conditions_details),
+            size: 's',
+            visibleWhen: Answer(Question.neurodiverse_conditions_details).match(Condition.IsRequired()),
+          }),
         ],
       },
       actions: {
@@ -142,7 +162,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.impact_on_learning_abilities.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.impact_on_learning_abilities.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -173,7 +193,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.cope_with_day_to_day_life.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.cope_with_day_to_day_life.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -205,7 +225,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.self_harm.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.self_harm.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({ text: SANGenerators.getTextFromListDefinition(selfHarm.items, Answer(Question.self_harm)) }),
@@ -221,7 +241,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.suicidal_tendencies.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.suicidal_tendencies.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -242,7 +262,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.feeling_about_future_health_wellbeing.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.feeling_about_future_health_wellbeing.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -259,7 +279,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor('question.helped_during_periods_good_health_wellbeing.text', CaseData.ForenamePossessive),
+        text: contentFor('question.helped_during_periods_good_health_wellbeing.text', CaseData.Forename),
       },
       value: {
         blocks: [
@@ -329,7 +349,13 @@ export const healthWellbeingSummary = GovUKSummaryList({
               Condition.Array.Contains(Option.other),
             ),
           }),
-          GovUKBody({ text: Answer(Question.helped_during_periods_good_health_wellbeing_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.helped_during_periods_good_health_wellbeing_details),
+            size: 's',
+            visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
         ],
       },
       visibleWhen: Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.IsRequired()),
@@ -338,7 +364,7 @@ export const healthWellbeingSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.changes_to_health_wellbeing.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.changes_to_health_wellbeing.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
@@ -347,13 +373,55 @@ export const healthWellbeingSummary = GovUKSummaryList({
               Answer(Question.changes_to_health_wellbeing),
             ),
           }),
-          GovUKBody({ text: Answer(Question.has_made_positive_changes_health_wellbeing_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.actively_making_changes_health_wellbeing_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.wants_to_make_changes_knows_how_to_health_wellbeing_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.wants_to_make_changes_needs_help_health_wellbeing_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.thinking_about_making_changes_health_wellbeing_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.does_not_want_to_make_changes_health_wellbeing_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.does_not_want_to_answer_health_wellbeing_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.has_made_positive_changes_health_wellbeing_details),
+            size: 's',
+            visibleWhen: Answer(Question.has_made_positive_changes_health_wellbeing_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.actively_making_changes_health_wellbeing_details),
+            size: 's',
+            visibleWhen: Answer(Question.actively_making_changes_health_wellbeing_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.wants_to_make_changes_knows_how_to_health_wellbeing_details),
+            size: 's',
+            visibleWhen: Answer(Question.wants_to_make_changes_knows_how_to_health_wellbeing_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.wants_to_make_changes_needs_help_health_wellbeing_details),
+            size: 's',
+            visibleWhen: Answer(Question.wants_to_make_changes_needs_help_health_wellbeing_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.thinking_about_making_changes_health_wellbeing_details),
+            size: 's',
+            visibleWhen: Answer(Question.thinking_about_making_changes_health_wellbeing_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.does_not_want_to_make_changes_health_wellbeing_details),
+            size: 's',
+            visibleWhen: Answer(Question.does_not_want_to_make_changes_health_wellbeing_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.does_not_want_to_answer_health_wellbeing_details),
+            size: 's',
+            visibleWhen: Answer(Question.does_not_want_to_answer_health_wellbeing_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
         ],
       },
       actions: {
@@ -378,7 +446,7 @@ const goToPractitionerAnalysis = GovUKLinkButton({
 const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.strengths_protective_factors_health_wellbeing_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: and(
     Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.IsRequired()),
     Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.Equals(Option.yes)),
@@ -389,8 +457,8 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
       message: contentFor('question.strengths_protective_factors_health_wellbeing_details.validation'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -398,12 +466,12 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
 const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.no_strengths_protective_factors_health_wellbeing_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: Answer(Question.strengths_protective_factors_health_wellbeing).match(Condition.Equals(Option.no)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -434,7 +502,7 @@ export const strengthsProtectiveFactorsHealthWellbeing = GovUKRadioInput({
 const seriousHarmDetails = GovUKCharacterCount({
   code: Question.serious_harm_health_wellbeing_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: and(
     Answer(Question.serious_harm_health_wellbeing).match(Condition.IsRequired()),
     Answer(Question.serious_harm_health_wellbeing).match(Condition.Equals(Option.yes)),
@@ -445,8 +513,8 @@ const seriousHarmDetails = GovUKCharacterCount({
       message: 'Give details on the risk of serious harm',
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -454,12 +522,12 @@ const seriousHarmDetails = GovUKCharacterCount({
 const noSeriousHarmDetails = GovUKCharacterCount({
   code: Question.no_serious_harm_health_wellbeing_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: Answer(Question.serious_harm_health_wellbeing).match(Condition.Equals(Option.no)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -489,7 +557,7 @@ export const seriousHarmHealthWellbeing = GovUKRadioInput({
 const riskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.risk_of_reoffending_health_wellbeing_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1000,
   dependentWhen: Answer(Question.risk_of_reoffending_health_wellbeing).match(Condition.Equals(Option.yes)),
   validWhen: [
     validation({
@@ -497,8 +565,8 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
       message: contentFor('question.risk_of_reoffending_health_wellbeing_details.validation'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
     }),
   ],
 })
@@ -506,12 +574,12 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
 const noRiskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.no_risk_of_reoffending_health_wellbeing_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1000,
   dependentWhen: Answer(Question.risk_of_reoffending_health_wellbeing).match(Condition.Equals(Option.no)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
     }),
   ],
 })

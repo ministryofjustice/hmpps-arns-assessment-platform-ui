@@ -16,6 +16,7 @@ import { contentFor, drugValueToText } from '../../locales'
 import { Option } from '../../constants/option'
 import { commonContentFor } from '../../../../locales'
 import { CommonOption } from '../../../../constants/commonOption'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 export const drugLastUsedField = (drugValue: string | ChainableExpr<PipelineExpr>) =>
   GovUKRadioInput({
@@ -36,9 +37,8 @@ export const drugLastUsedField = (drugValue: string | ChainableExpr<PipelineExpr
     ],
     validWhen: [
       validation({
-        condition: not(Self().not.match(Condition.IsRequired())),
+        condition: Self().match(Condition.IsRequired()),
         message: contentFor('question.drug_last_used.validation'),
-        groups: ['drugs'],
       }),
     ],
   })
@@ -56,12 +56,12 @@ const otherDrugName = GovUKTextInput({
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.other_drug_name.text'),
     }),
     validation({
-      condition: not(Self().not.match(Condition.String.HasMaxLength(200))),
-      message: contentFor('question.other_drug_name.validation'),
+      condition: not(Self().not.match(Condition.String.HasMaxLength(CharacterLimit.c200))),
+      message: contentFor('question.other_drug_name.validation', CharacterLimit.c200),
     }),
   ],
 })
@@ -123,9 +123,8 @@ export const selectMisusedDrugs = GovUKCheckboxInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.select_misused_drugs.validation'),
-      groups: ['drugs'],
     }),
   ],
 })

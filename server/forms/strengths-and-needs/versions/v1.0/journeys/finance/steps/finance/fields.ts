@@ -11,17 +11,27 @@ import { Question } from '../../constants/question'
 import { commonContentFor } from '../../../../locales'
 import { Option } from '../../constants/option'
 import { CommonOption } from '../../../../constants/commonOption'
-
-const DEFAULT_CHARACTER_COUNT = 2000
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 const toDetailsField =
   (parent: string) =>
-  ({ code, option, mandatory = false }: { code: string; option: string; mandatory?: boolean }) =>
+  ({
+    code,
+    option,
+    mandatory = false,
+    hint,
+  }: {
+    code: string
+    option: string
+    mandatory?: boolean
+    hint?: ReturnType<typeof contentFor>
+  }) =>
     GovUKTextareaInput({
       code,
       label: {
         text: mandatory ? commonContentFor('required_details') : commonContentFor('optional_details'),
       },
+      ...(hint ? { hint } : {}),
       dependentWhen: and(
         Answer(parent).match(Condition.IsRequired()),
         or(
@@ -37,8 +47,8 @@ const toDetailsField =
       ),
       validWhen: [
         validation({
-          condition: Self().match(Condition.String.HasMaxLength(DEFAULT_CHARACTER_COUNT)),
-          message: commonContentFor('validation.details_character_limit', DEFAULT_CHARACTER_COUNT),
+          condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+          message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
         }),
       ],
     })
@@ -261,16 +271,32 @@ export const [yesTypeOfDebt, yesSomeoneElsesTypeOfDebt] = [
     option: Option.yes_their_debt,
     code: Question.finance_debt_yes_their_debt,
     subOptions: [
-      { option: Option.debt_to_others, code: Question.yes_their_debt_debt_to_others_details },
-      { option: Option.formal_debt, code: Question.yes_their_debt_formal_debt_details },
+      {
+        option: Option.debt_to_others,
+        code: Question.yes_their_debt_debt_to_others_details,
+        hint: contentFor('common.hint.DEBT_TO_OTHERS'),
+      },
+      {
+        option: Option.formal_debt,
+        code: Question.yes_their_debt_formal_debt_details,
+        hint: contentFor('common.hint.FORMAL_DEBT'),
+      },
     ],
   },
   {
     option: Option.yes_someone_elses_debt,
     code: Question.finance_debt_yes_someone_elses_debt,
     subOptions: [
-      { option: Option.debt_to_others, code: Question.yes_someone_elses_debt_debt_to_others_details },
-      { option: Option.formal_debt, code: Question.yes_someone_elses_debt_formal_debt_details },
+      {
+        option: Option.debt_to_others,
+        code: Question.yes_someone_elses_debt_debt_to_others_details,
+        hint: contentFor('common.hint.DEBT_TO_OTHERS'),
+      },
+      {
+        option: Option.formal_debt,
+        code: Question.yes_someone_elses_debt_formal_debt_details,
+        hint: contentFor('common.hint.FORMAL_DEBT'),
+      },
     ],
   },
 ].map(({ code, option, subOptions }) => {
@@ -309,7 +335,6 @@ export const financeDebt = GovUKCheckboxInput({
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: commonContentFor('select_all_that_apply'),
   items: [
     {
       text: contentFor('question.finance_debt.option.YES_THEIR_DEBT'),
@@ -380,6 +405,7 @@ export const financeChanges = GovUKRadioInput({
       classes: 'govuk-fieldset__legend--m',
     },
   },
+  hint: contentFor('question.finance_changes.hint', CaseData.Forename),
   items: [
     {
       value: CommonOption.has_made_changes,

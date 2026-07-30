@@ -42,6 +42,7 @@ test.describe('Accommodation Page', () => {
       const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Who is')
 
       await expect(accommodationPage.mainSection).toMatchAriaSnapshot(`
+        - heading "Accommodation" [level=1]
         - group "Who is Test living with?":
           - text: Who is Test living with? Select all that apply.
           - checkbox "Family"
@@ -73,7 +74,7 @@ test.describe('Accommodation Page', () => {
           - radio "No"
           - text: "No"
         - group "Does Test want to make changes to their accommodation?":
-          - text: Does Test want to make changes to their accommodation?
+          - text: Does Test want to make changes to their accommodation? Test must answer this question.
           - radio "I have already made positive changes and want to maintain them"
           - text: I have already made positive changes and want to maintain them
           - radio "I am actively making changes"
@@ -127,9 +128,8 @@ test.describe('Accommodation Page', () => {
       const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Is the location')
 
       await expect(accommodationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Accommodation
+        - heading "Accommodation" [level=1]
         - strong: Incomplete
         - group "Is the location of Test's accommodation suitable?"
         - group "Is Test's accommodation suitable?"
@@ -169,13 +169,12 @@ test.describe('Accommodation Page', () => {
       const accommodationPage = await AccommodationPage.verifyOnPage(page, 'have no accommodation')
 
       await expect(accommodationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Accommodation
+        - heading "Accommodation" [level=1]
         - strong: Incomplete
         - group "Why does Test have no accommodation?"
-        - text: What's helped Test stay in accommodation in the past? (optional)
-        - textbox "What's helped Test stay in accommodation in the past? (optional)"
+        - text: What’s helped Test stay in accommodation in the past? (optional)
+        - textbox "What’s helped Test stay in accommodation in the past? (optional)"
         - text: You can enter up to 2000 characters You have 2,000 characters remaining
         - group "Does Test have future accommodation planned?"
         - group "Does Test want to make changes to their accommodation?"

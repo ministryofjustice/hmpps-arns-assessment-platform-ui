@@ -4,6 +4,7 @@ import { currentEmploymentStatus } from './fields'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
+import { sectionTitleClass } from '../../../../constants/formVersion'
 
 export const currentEmploymentStep = step({
   path: `/${Step.current_employment.path}`,
@@ -11,7 +12,7 @@ export const currentEmploymentStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
-      sectionTitleClass: 'govuk-body-l',
+      sectionTitleClass,
     },
   },
   blocks: [currentEmploymentStatus, saveButton],

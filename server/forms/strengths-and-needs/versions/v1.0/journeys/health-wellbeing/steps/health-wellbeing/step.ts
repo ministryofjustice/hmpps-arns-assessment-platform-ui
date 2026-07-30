@@ -13,7 +13,7 @@ const saveButton = block<GovUKButton>({
 
 export const healthWellbeingStep = step({
   path: `/${Step.health_wellbeing.path}`,
-  title: 'Health Wellbeing',
+  title: 'Health wellbeing',
   reachability: { entryWhen: true },
   blocks: [healthConditions, mentalHealthProblems, saveButton],
   onSubmission: [

@@ -44,19 +44,19 @@ export const Section = {
   },
   personal_relationships_and_community: {
     code: 'personal-relationships-and-community',
-    path: '',
-    sideNavHref: `${basePath}/personal-relationships-and-community/personal-relationships?resume=true`,
+    path: '/personal-relationships-and-community',
+    sideNavHref: `${basePath}/personal-relationships-and-community/personal-relationships-children-information?resume=true`,
     statusKey: 'relationship_section_status',
   },
   thinking_behaviours_and_attitudes: {
     code: 'thinking-behaviours-and-attitudes',
-    path: '',
+    path: '/thinking-behaviours-and-attitudes',
     sideNavHref: `${basePath}/thinking-behaviours-and-attitudes/thinking-behaviours?resume=true`,
     statusKey: 'thinking_behaviour_section_status',
   },
   offence_analysis: {
     code: 'offence-analysis',
-    path: '',
+    path: '/offence-analysis',
     sideNavHref: `${basePath}/offence-analysis/offence-analysis?resume=true`,
     statusKey: 'offences_section_status',
   },
