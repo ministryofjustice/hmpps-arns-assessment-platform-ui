@@ -1,0 +1,12 @@
+{#
+  Supervision Package component
+
+  Thin wrapper around the MPoP-built supervision package macro from
+  @ministryofjustice/hmpps-mpop-frontend-components-lib, resolved via the
+  library's dist/ directory on the Nunjucks search path.
+
+  Params are built in supervisionPackage.ts to mirror MPoP's own usage.
+#}
+{% from "mpop/components/supervision-package/macro.njk" import supervisionPackage %}
+
+{{ supervisionPackage(params) }}

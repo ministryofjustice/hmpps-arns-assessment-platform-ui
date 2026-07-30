@@ -11,6 +11,7 @@ export const services = () => {
     gotenbergClient,
     handoverApiClient,
     deliusApiClient,
+    mpopComponents,
     preferencesStore,
   } = dataAccess()
 
@@ -21,6 +22,7 @@ export const services = () => {
     coordinatorApiClient,
     gotenbergClient,
     handoverApiClient,
+    mpopComponents,
     preferencesStore,
     auditService: new AuditService(applicationInfo.applicationName),
     assessmentService: new AssessmentService(assessmentPlatformApiClient),
