@@ -28,6 +28,7 @@ export const Nav = {
   CONFIRM_READD_GOAL: 'confirm-readd-goal',
   VIEW_INACTIVE_GOAL: 'view-inactive-goal',
   ABOUT: 'about',
+  SUPERVISION_PACKAGE: 'supervision-package',
 } as const
 
 export type NavigationReferrer = (typeof Nav)[keyof typeof Nav]
@@ -58,4 +59,5 @@ export const NAV_KEY_PATTERNS: Record<NavigationReferrer, string> = {
   [Nav.CONFIRM_READD_GOAL]: '/confirm-readd-goal',
   [Nav.VIEW_INACTIVE_GOAL]: '/view-inactive-goal',
   [Nav.ABOUT]: '/about-person',
+  [Nav.SUPERVISION_PACKAGE]: '/supervision-package',
 }

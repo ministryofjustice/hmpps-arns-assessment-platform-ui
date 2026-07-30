@@ -4,7 +4,8 @@
   {% set personName = data.caseData.name.forename if data.caseData and data.caseData.name else "Person" %}
   {% set isOnAboutPage = step.path == '/about-person' %}
   {% set isOnPlanHistoryPage = step.path == '/plan-history' %}
-  {% set isOnPlanPage = not isOnAboutPage and not isOnPlanHistoryPage %}
+  {% set isOnSupervisionPackagePage = step.path == '/supervision-package' %}
+  {% set isOnPlanPage = not isOnAboutPage and not isOnPlanHistoryPage and not isOnSupervisionPackagePage %}
 
   {# use '| select | list' to filter out the undefined or falsy values from the items array #}
   {{ mojPrimaryNavigation({
@@ -25,7 +26,13 @@
         href: basePath + "/about-person",
         active: isOnAboutPage,
         attributes: { "data-ai-id": "about-page-primary-nav-link" } if not isOnAboutPage
-      } if showAboutTab
+      } if showAboutTab,
+      {
+        text: "Supervision package",
+        href: basePath + "/supervision-package",
+        active: isOnSupervisionPackagePage,
+        attributes: { "data-ai-id": "supervision-package-primary-nav-link" } if not isOnSupervisionPackagePage
+      } if showSupervisionPackageTab
     ] | select | list
   }) }}
 {% endif %}

@@ -11,12 +11,14 @@ import {
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
+import { supervisionPackageStep } from './steps/supervision-package/step'
 import { actorLabels, areasOfNeed, formVersion, sentencePlanBasePath, sentencePlanOverviewPath } from './constants'
 import { SentencePlanEffects } from '../../effects'
 import { NAV_KEY_PATTERNS } from '../../effects/navigation'
 import {
   canAccessSanContent,
   hasPostAgreementStatus,
+  isSupervisionPackageEnabled,
   redirectIfMergedMpopPlan,
   redirectToPrivacyUnlessAccepted,
 } from './guards'
@@ -43,6 +45,7 @@ export const sentencePlanV1Journey = journey({
       hmppsHeaderServiceNameLink: sentencePlanOverviewPath,
       showAboutTab: canAccessSanContent,
       showPlanHistoryTab: hasPostAgreementStatus,
+      showSupervisionPackageTab: isSupervisionPackageEnabled,
     },
   },
   data: {
@@ -81,6 +84,6 @@ export const sentencePlanV1Journey = journey({
     // READ_ONLY users skip privacy and go straight to overview; edit users must accept privacy first.
     redirectToPrivacyUnlessAccepted(),
   ],
-  steps: [aboutPersonStep],
+  steps: [aboutPersonStep, supervisionPackageStep],
   children: [planOverviewJourney, goalManagementJourney],
 })
