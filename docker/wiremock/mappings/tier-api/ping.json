@@ -1,0 +1,17 @@
+{
+  "name": "Tier API - Health Ping",
+  "request": {
+    "method": "GET",
+    "urlPath": "/tier-api/health/ping"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "status": "UP"
+    }
+  },
+  "priority": 50
+}

@@ -1,0 +1,69 @@
+{
+  "mappings": [
+    {
+      "name": "MAS API - X222222 - no upcoming appointments",
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/mas-api/schedule/X222222/upcoming"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "personSummary": {
+            "name": { "forename": "Test", "surname": "Person" },
+            "crn": "X222222",
+            "dateOfBirth": "1990-01-01"
+          },
+          "personSchedule": { "size": 1, "page": 0, "totalResults": 0, "totalPages": 0, "appointments": [] }
+        }
+      },
+      "priority": 10
+    },
+    {
+      "name": "MAS API - X666666 - server error",
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/mas-api/schedule/X666666/upcoming"
+      },
+      "response": {
+        "status": 500
+      },
+      "priority": 10
+    },
+    {
+      "name": "MAS API - default next appointment",
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/mas-api/schedule/[A-Z0-9]+/upcoming"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "personSummary": {
+            "name": { "forename": "Test", "surname": "Person" },
+            "crn": "X123456",
+            "dateOfBirth": "1990-01-01"
+          },
+          "personSchedule": {
+            "size": 1,
+            "page": 0,
+            "totalResults": 1,
+            "totalPages": 1,
+            "appointments": [
+              {
+                "id": "10001",
+                "type": "planned office visit",
+                "startDateTime": "2026-08-12T10:30:00Z",
+                "endDateTime": "2026-08-12T11:00:00Z",
+                "isAppointment": true
+              }
+            ]
+          }
+        }
+      },
+      "priority": 20
+    }
+  ]
+}
