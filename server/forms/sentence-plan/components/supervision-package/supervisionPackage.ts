@@ -3,10 +3,11 @@ import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-n
 import {
   BasicBlockProps,
   BlockDefinition,
+  ResolvableObject,
   ResolvableString,
   EvaluatedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { ChainableRef, block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { NextAppointment, SupervisionPackageDetails, TierCalculation } from '../../effects/types'
 
 export interface SupervisionPackageProps extends BasicBlockProps {
@@ -14,13 +15,13 @@ export interface SupervisionPackageProps extends BasicBlockProps {
   forename: ResolvableString
 
   /** Tier calculation loaded by the loadSupervisionPackage effect, or a Data() reference to it */
-  tierCalculation: TierCalculation | undefined | ChainableRef
+  tierCalculation: ResolvableObject<TierCalculation> | undefined
 
   /** Supervision package details loaded by the loadSupervisionPackage effect, or a Data() reference to them */
-  supervisionPackageDetails: SupervisionPackageDetails | undefined | ChainableRef
+  supervisionPackageDetails: ResolvableObject<SupervisionPackageDetails> | undefined
 
   /** Next upcoming appointment, or a Data() reference to it */
-  nextAppointment: NextAppointment | undefined | ChainableRef
+  nextAppointment: ResolvableObject<NextAppointment> | undefined
 }
 
 export interface SupervisionPackageBlock extends BlockDefinition, SupervisionPackageProps {
@@ -55,7 +56,7 @@ function renderSupervisionPackage(
 ): string {
   const params = buildParams(block)
 
-  return nunjucksEnv.render('sentence-plan/components/supervision-package/supervisionPackage.njk', { params })
+  return nunjucksEnv.render('mpop/components/supervision-package/template.njk', { params })
 }
 
 export const supervisionPackage = buildNunjucksComponent<SupervisionPackageBlock>(
