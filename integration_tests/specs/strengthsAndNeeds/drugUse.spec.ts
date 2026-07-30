@@ -271,7 +271,7 @@ test.describe('Drug use Page', () => {
         - textbox "Has anything helped Test stop or reduce their drug use? (optional)"
         - text: You can enter up to 2000 characters You have 2,000 characters remaining
         - group "Does Test want to make changes to their drug use?":
-          - text: Does Test want to make changes to their drug use?
+          - text: Does Test want to make changes to their drug use? Test must answer this question.
           - radio "I have already made positive changes and want to maintain them"
           - text: I have already made positive changes and want to maintain them
           - radio "I am actively making changes"
@@ -286,6 +286,8 @@ test.describe('Drug use Page', () => {
           - text: I do not want to make changes
           - radio "I do not want to answer"
           - text: I do not want to answer or
+          - radio "Test is not present"
+          - text: Test is not present
           - radio "Not applicable"
           - text: Not applicable
         - button "Save and continue"

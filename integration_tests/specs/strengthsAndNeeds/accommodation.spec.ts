@@ -173,8 +173,8 @@ test.describe('Accommodation Page', () => {
         - heading "Accommodation" [level=1]
         - strong: Incomplete
         - group "Why does Test have no accommodation?"
-        - text: What's helped Test stay in accommodation in the past? (optional)
-        - textbox "What's helped Test stay in accommodation in the past? (optional)"
+        - text: What’s helped Test stay in accommodation in the past? (optional)
+        - textbox "What’s helped Test stay in accommodation in the past? (optional)"
         - text: You can enter up to 2000 characters You have 2,000 characters remaining
         - group "Does Test have future accommodation planned?"
         - group "Does Test want to make changes to their accommodation?"

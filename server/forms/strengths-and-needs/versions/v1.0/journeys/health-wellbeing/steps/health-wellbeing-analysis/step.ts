@@ -4,6 +4,6 @@ import { Step } from '../../constants/step'
 
 export const healthWellbeingAnalysisStep = step({
   path: `/${Step.health_wellbeing_analysis.path}`,
-  title: 'Health and Wellbeing Analysis',
+  title: 'Health and wellbeing analysis',
   blocks: [healthWellbeingAnalysisSummaryTab],
 })

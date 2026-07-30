@@ -9,6 +9,7 @@ import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { commonContentFor } from '../../../../locales'
 import { contentFor } from '../../locales'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 // --- Prescribed physical health treatments Group ---
 
@@ -18,13 +19,13 @@ export const prescribedPhysicalHealthMedicationsTreatments = GovUKCharacterCount
     text: contentFor('question.prescribed_physical_health_medications_treatments.text', CaseData.Forename),
     classes: 'govuk-fieldset__legend--m',
   },
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   visibleWhen: Answer(Question.health_conditions).match(Condition.Equals(Option.yes)),
   dependentWhen: Answer(Question.health_conditions).match(Condition.Equals(Option.yes)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -37,7 +38,7 @@ export const prescribedMentalHealthMedicationsTreatments = GovUKCharacterCount({
     text: contentFor('question.prescribed_mental_health_medications_treatments.text', CaseData.Forename),
     classes: 'govuk-fieldset__legend--m',
   },
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   visibleWhen: not(
     or(
       Answer(Question.mental_health_problems).match(Condition.Equals(Option.no)),
@@ -52,8 +53,8 @@ export const prescribedMentalHealthMedicationsTreatments = GovUKCharacterCount({
   ),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -125,11 +126,11 @@ export const headInjuries = GovUKRadioInput({
 const neurodiverseConditionsDetails = GovUKCharacterCount({
   code: Question.neurodiverse_conditions_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -161,11 +162,11 @@ export const neurodiverseConditions = GovUKRadioInput({
 const learningAbilitiesImpactedSignificantlyDetails = GovUKCharacterCount({
   code: Question.learning_abilities_impacted_significantly_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -173,11 +174,11 @@ const learningAbilitiesImpactedSignificantlyDetails = GovUKCharacterCount({
 const learningAbilitiesImpactedSlightlyDetails = GovUKCharacterCount({
   code: Question.learning_abilities_impacted_slightly_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -274,7 +275,7 @@ export const attitudeTowardsSelf = GovUKRadioInput({
 const selfHarmDetails = GovUKCharacterCount({
   code: Question.self_harm_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: and(
     Answer(Question.self_harm).match(Condition.IsRequired()),
     Answer(Question.self_harm).match(Condition.Equals(Option.yes)),
@@ -285,8 +286,8 @@ const selfHarmDetails = GovUKCharacterCount({
       message: commonContentFor('validation.enter_details'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -299,7 +300,7 @@ export const selfHarm = GovUKRadioInput({
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: "Consider what factors or circumstances are associated and if it's recurring.",
+  hint: 'Consider what factors or circumstances are associated and if it’s recurring.',
   items: [
     { value: Option.yes, text: commonContentFor('option.YES'), block: selfHarmDetails },
     { value: Option.no, text: commonContentFor('option.NO') },
@@ -317,7 +318,7 @@ export const selfHarm = GovUKRadioInput({
 const suicidalTendenciesDetails = GovUKCharacterCount({
   code: Question.suicidal_tendencies_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: and(
     Answer(Question.suicidal_tendencies).match(Condition.IsRequired()),
     Answer(Question.suicidal_tendencies).match(Condition.Equals(Option.yes)),
@@ -328,8 +329,8 @@ const suicidalTendenciesDetails = GovUKCharacterCount({
       message: commonContentFor('validation.enter_details'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -405,7 +406,7 @@ export const feelingsAboutFuture = GovUKRadioInput({
 const helpedDuringPeriodsGoodHealthWellbeingDetails = GovUKCharacterCount({
   code: Question.helped_during_periods_good_health_wellbeing_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: and(
     Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.IsRequired()),
     Answer(Question.helped_during_periods_good_health_wellbeing).match(Condition.Array.Contains(Option.other)),
@@ -416,8 +417,8 @@ const helpedDuringPeriodsGoodHealthWellbeingDetails = GovUKCharacterCount({
       message: contentFor('validation.risk_of_serious_harm_details'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -471,12 +472,12 @@ export const helpedDuringPeriodsGoodHealthWellbeing = GovUKCheckboxInput({
 const hasMadePositiveChangesDetails = GovUKCharacterCount({
   code: Question.has_made_positive_changes_health_wellbeing_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.has_made_changes)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -484,12 +485,12 @@ const hasMadePositiveChangesDetails = GovUKCharacterCount({
 const isActivelyMakingChangesDetails = GovUKCharacterCount({
   code: Question.actively_making_changes_health_wellbeing_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.is_making_changes)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -497,14 +498,14 @@ const isActivelyMakingChangesDetails = GovUKCharacterCount({
 const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
   code: Question.wants_to_make_changes_knows_how_to_health_wellbeing_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(
     Condition.Equals(Option.wants_to_make_changes_knows_how_to),
   ),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -512,14 +513,14 @@ const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
 const wantsToMakeChangesNeedsHelpDetails = GovUKCharacterCount({
   code: Question.wants_to_make_changes_needs_help_health_wellbeing_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(
     Condition.Equals(Option.wants_to_make_changes_needs_help),
   ),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -527,14 +528,14 @@ const wantsToMakeChangesNeedsHelpDetails = GovUKCharacterCount({
 const thinkingAboutMakingChangesDetails = GovUKCharacterCount({
   code: Question.thinking_about_making_changes_health_wellbeing_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(
     Condition.Equals(Option.thinking_about_making_changes),
   ),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -542,14 +543,14 @@ const thinkingAboutMakingChangesDetails = GovUKCharacterCount({
 const doesNotWantToMakeChangesDetails = GovUKCharacterCount({
   code: Question.does_not_want_to_make_changes_health_wellbeing_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(
     Condition.Equals(Option.does_not_want_to_make_changes),
   ),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -557,12 +558,12 @@ const doesNotWantToMakeChangesDetails = GovUKCharacterCount({
 const doesNotWantToAnswerChangesDetails = GovUKCharacterCount({
   code: Question.does_not_want_to_answer_health_wellbeing_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.changes_to_health_wellbeing).match(Condition.Equals(Option.do_not_want_to_answer)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })

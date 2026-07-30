@@ -6,7 +6,7 @@ import { summaryTab } from './fields'
 
 export const financeSummaryStep = step({
   path: `/${Step.financeSummary.path}`,
-  title: 'Finance Summary', // TODO: contentFor('step.finance_summary')
+  title: 'Finance summary', // TODO: contentFor('step.finance_summary')
   blocks: [summaryTab],
   onSubmission: [
     submit({

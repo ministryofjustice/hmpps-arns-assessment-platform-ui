@@ -10,6 +10,7 @@ import { Option } from '../../constants/option'
 import { CaseData } from '../../../../constants/formVersion'
 import { commonContentFor } from '../../../../locales'
 import { CommonOption } from '../../../../constants/commonOption'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 // --- Employment Sector Group ---
 
@@ -19,7 +20,7 @@ export const employmentSector = GovUKCharacterCount({
     text: contentFor('question.employment_sector.text', CaseData.Forename),
     classes: 'govuk-fieldset__legend--m',
   },
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   visibleWhen: or(
     Answer(Question.current_employment_status).match(Condition.Equals(Option.employed)),
     Answer(Question.current_employment_status).match(Condition.Equals(Option.self_employed)),
@@ -28,6 +29,12 @@ export const employmentSector = GovUKCharacterCount({
     Answer(Question.current_employment_status).match(Condition.Equals(Option.employed)),
     Answer(Question.current_employment_status).match(Condition.Equals(Option.self_employed)),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 // --- Employment History Group ---
@@ -36,32 +43,56 @@ const continuousEmploymentHistoryEmploymentDetails = GovUKCharacterCount({
   code: Question.continuous_employment_history_employment_details,
   label: commonContentFor('optional_details'),
   hint: contentFor('question.continuous_employment_history_employment_details.hint'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_history).match(Condition.Equals(Option.stable)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const changesOftenEmploymentHistoryEmploymentOftenDetails = GovUKCharacterCount({
   code: Question.changes_often_employment_history_employment_details,
   label: commonContentFor('optional_details'),
   hint: contentFor('question.changes_often_employment_history_employment_details.hint'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_history).match(Condition.Equals(Option.periods_of_instability)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const unstableEmploymentHistoryEmploymentDetails = GovUKCharacterCount({
   code: Question.unstable_employment_history_employment_details,
   label: commonContentFor('optional_details'),
   hint: contentFor('question.unstable_employment_history_employment_details.hint'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_history).match(Condition.Equals(Option.unstable)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const unknownEmploymentHistoryDetails = GovUKCharacterCount({
   code: Question.unknown_employment_history_employment_details,
   label: commonContentFor('optional_details'),
   hint: contentFor('question.unknown_employment_history_employment_details.hint'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_history).match(Condition.Equals(CommonOption.unknown)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 export const employmentHistory = GovUKRadioInput({
@@ -135,29 +166,53 @@ export const employmentHistory = GovUKRadioInput({
 const dayToDayCaringResponsibilitiesDetails = GovUKCharacterCount({
   code: Question.day_to_day_caring_responsibilities_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.caring)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const dayToDayVolunteeringDetails = GovUKCharacterCount({
   code: Question.day_to_day_volunteering_responsibilities_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.volunteering)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const dayToDayChildResponsibilitiesDetails = GovUKCharacterCount({
   code: Question.day_to_day_child_responsibilities_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.children)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const dayToDayOtherCommitmentsDetails = GovUKCharacterCount({
   code: Question.day_to_day_other_commitments_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(CommonOption.other)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 export const dayToDayCommitments = GovUKCheckboxInput({
@@ -273,7 +328,7 @@ export const academicQualification = GovUKRadioInput({
 const professionalQualificationDetails = GovUKCharacterCount({
   code: Question.professional_qualification_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c400,
   dependentWhen: and(
     Answer(Question.professional_qualification).match(Condition.IsRequired()),
     Answer(Question.professional_qualification).match(Condition.Equals(CommonOption.yes)),
@@ -282,6 +337,10 @@ const professionalQualificationDetails = GovUKCharacterCount({
     validation({
       condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.professional_qualification_details.validation'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c400)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c400),
     }),
   ],
 })
@@ -313,15 +372,27 @@ export const professionalQualifications = GovUKRadioInput({
 const hasJobSkillsDetails = GovUKCharacterCount({
   code: Question.has_job_skills_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.job_skills).match(Condition.Equals(CommonOption.yes)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const someJobSkillsDetails = GovUKCharacterCount({
   code: Question.some_job_skills_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.job_skills).match(Condition.Equals(Option.some_skills)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 export const jobSkills = GovUKRadioInput({
@@ -476,36 +547,66 @@ export const difficultiesReadingWritingNumeracy = GovUKCheckboxInput({
 const positiveEmploymentExperienceDetails = GovUKCharacterCount({
   code: Question.positive_employment_experience_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_experience).match(Condition.Equals(Option.positive)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const mostlyPositiveEmploymentExperienceDetails = GovUKCharacterCount({
   code: Question.mostly_positive_employment_experience_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_experience).match(Condition.Equals(Option.mostly_positive)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const positiveAndNegativeEmploymentExperienceDetails = GovUKCharacterCount({
   code: Question.positive_and_negative_employment_experience_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_experience).match(Condition.Equals(Option.positive_and_negative)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const mostlyNegativeEmploymentExperienceDetails = GovUKCharacterCount({
   code: Question.mostly_negative_employment_experience_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_experience).match(Condition.Equals(Option.mostly_negative)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const negativeEmploymentExperienceDetails = GovUKCharacterCount({
   code: Question.negative_employment_experience_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_experience).match(Condition.Equals(Option.negative)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 export const employmentExperience = GovUKRadioInput({
@@ -575,36 +676,66 @@ export const employmentExperience = GovUKRadioInput({
 const positiveEducationExperienceDetails = GovUKCharacterCount({
   code: Question.positive_education_experience_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.education_experience).match(Condition.Equals(Option.positive)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const mostlyPositiveEducationExperienceDetails = GovUKCharacterCount({
   code: Question.mostly_positive_education_experience_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.education_experience).match(Condition.Equals(Option.mostly_positive)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const positiveAndNegativeEducationExperienceDetails = GovUKCharacterCount({
   code: Question.positive_and_negative_education_experience_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.education_experience).match(Condition.Equals(Option.positive_and_negative)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const mostlyNegativeEducationExperienceDetails = GovUKCharacterCount({
   code: Question.mostly_negative_education_experience_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.education_experience).match(Condition.Equals(Option.mostly_negative)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const negativeEducationExperienceDetails = GovUKCharacterCount({
   code: Question.negative_education_experience_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.education_experience).match(Condition.Equals(Option.negative)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 export const educationExperience = GovUKRadioInput({
@@ -648,64 +779,106 @@ export const educationExperience = GovUKRadioInput({
 const hasMadePositiveChangesDetails = GovUKCharacterCount({
   code: Question.has_made_positive_changes_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
     Condition.Equals(CommonOption.has_made_changes),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const isActivelyMakingChangesDetails = GovUKCharacterCount({
   code: Question.actively_making_changes_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
     Condition.Equals(CommonOption.is_making_changes),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const wantsToMakeChangesKnowsHowDetails = GovUKCharacterCount({
   code: Question.wants_to_make_changes_knows_how_to_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
     Condition.Equals(CommonOption.wants_to_make_changes_knows_how_to),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const wantsToMakeChangesNeedsHelpDetails = GovUKCharacterCount({
   code: Question.wants_to_make_changes_needs_help_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
     Condition.Equals(CommonOption.wants_to_make_changes_needs_help),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const thinkingAboutMakingChangesDetails = GovUKCharacterCount({
   code: Question.thinking_about_making_changes_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
     Condition.Equals(CommonOption.thinking_about_making_changes),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const doesNotWantToMakeChangesDetails = GovUKCharacterCount({
   code: Question.does_not_want_to_make_changes_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
     Condition.Equals(CommonOption.does_not_want_to_make_changes),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 const doesNotWantToAnswerChangesDetails = GovUKCharacterCount({
   code: Question.does_not_want_to_answer_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.employment_and_education_changes).match(
     Condition.Equals(CommonOption.does_not_want_to_answer),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+    }),
+  ],
 })
 
 export const employmentAndEducationChanges = GovUKRadioInput({
