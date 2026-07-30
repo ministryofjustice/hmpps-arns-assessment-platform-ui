@@ -20,7 +20,7 @@ export const Question = {
   yes_their_debt_debt_to_others_details: 'yes_their_debt_to_others_details',
   yes_their_debt_formal_debt_details: 'yes_their_debt_formal_debt_details',
   yes_someone_elses_debt_debt_to_others_details: 'yes_someone_elses_debt_to_others_details',
-  yes_someone_elses_debt_formal_debt_details: 'yes_someone_elses_debt_to_others_details',
+  yes_someone_elses_debt_formal_debt_details: 'yes_someone_elses_debt_formal_debt_details',
   finance_changes: 'finance_changes',
   finance_changes_has_made_changes_details: 'finance_changes_has_made_changes_details',
   finance_changes_is_making_changes_details: 'finance_changes_is_making_changes_details',

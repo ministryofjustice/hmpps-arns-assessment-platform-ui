@@ -24,7 +24,7 @@ export const typeOfEmployment = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor('question.type_of_employment.validation'),
+      message: commonContentFor('select_one_option'),
     }),
   ],
 })
@@ -128,7 +128,7 @@ export const currentEmploymentStatus = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor('question.current_employment_status.validation'),
+      message: commonContentFor('select_one_option'),
     }),
   ],
 })

@@ -28,6 +28,7 @@ import { commonContentFor } from '../../../../locales'
 import { contentFor } from '../../locales'
 import { getDisplayTextForItems } from '../../../../../../i18n'
 import { CommonOption } from '../../../../constants/commonOption'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 // --- Employment and Education Summary Group ---
 
@@ -401,7 +402,7 @@ export const employmentStatusSummary = GovUKSummaryList({
 const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.employment_education_strengths_protective_factors_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: and(
     Answer(Question.employment_education_strengths_protective_factors).match(Condition.IsRequired()),
     Answer(Question.employment_education_strengths_protective_factors).match(Condition.Equals(CommonOption.yes)),
@@ -411,16 +412,26 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
       condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_strengths_protective_factors_details.validation'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
+    }),
   ],
 })
 
 const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.employment_education_no_strengths_protective_factors_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: Answer(Question.employment_education_strengths_protective_factors).match(
     Condition.Equals(CommonOption.no),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
+    }),
+  ],
 })
 
 export const strengthsProtectiveFactors = GovUKRadioInput({
@@ -449,7 +460,7 @@ export const strengthsProtectiveFactors = GovUKRadioInput({
 const seriousHarmDetails = GovUKCharacterCount({
   code: Question.employment_education_serious_harm_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: and(
     Answer(Question.employment_education_linked_to_serious_harm).match(Condition.IsRequired()),
     Answer(Question.employment_education_linked_to_serious_harm).match(Condition.Equals(CommonOption.yes)),
@@ -459,14 +470,24 @@ const seriousHarmDetails = GovUKCharacterCount({
       condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_serious_harm_details.validation'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
+    }),
   ],
 })
 
 const noSeriousHarmDetails = GovUKCharacterCount({
   code: Question.employment_education_no_serious_harm_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: Answer(Question.employment_education_linked_to_serious_harm).match(Condition.Equals(CommonOption.no)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
+    }),
+  ],
 })
 
 export const employmentOrEducationLinkedToSeriousHarm = GovUKRadioInput({
@@ -494,7 +515,7 @@ export const employmentOrEducationLinkedToSeriousHarm = GovUKRadioInput({
 const riskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.employment_education_risk_of_reoffending_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1000,
   dependentWhen: and(
     Answer(Question.employment_education_linked_to_reoffending).match(Condition.IsRequired()),
     Answer(Question.employment_education_linked_to_reoffending).match(Condition.Equals(CommonOption.yes)),
@@ -504,14 +525,24 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
       condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_risk_of_reoffending_details.validation'),
     }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
+    }),
   ],
 })
 
 const noRiskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.employment_education_no_risk_of_reoffending_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1000,
   dependentWhen: Answer(Question.employment_education_linked_to_reoffending).match(Condition.Equals(CommonOption.no)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
+    }),
+  ],
 })
 
 export const employmentOrEducationLinkedReoffending = GovUKRadioInput({

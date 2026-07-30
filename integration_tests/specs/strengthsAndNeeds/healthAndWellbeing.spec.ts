@@ -31,8 +31,8 @@ test.describe('Health and wellbeing Page', () => {
             - text: Unknown
           - group /have any diagnosed or documented mental health problems?/:
             - text: /have any diagnosed or documented mental health problems?/
-            - radio "Yes, ongoing - severe and documented over a prolonged period of times"
-            - text: Yes, ongoing - severe and documented over a prolonged period of times
+            - radio "Yes, ongoing - severe and documented over a prolonged period of time"
+            - text: Yes, ongoing - severe and documented over a prolonged period of time
             - radio "Yes, ongoing - duration is not known or there is no link to offending"
             - text: Yes, ongoing - duration is not known or there is no link to offending
             - radio "Yes, in the past"
@@ -144,7 +144,7 @@ test.describe('Health and wellbeing Page', () => {
           - radio "No"
           - text: "No"
         - group "How does Test feel about their future?":
-          - text: How does Test feel about their future? Test must answer this question
+          - text: How does Test feel about their future? Test must answer this question.
           - radio "Optimistic and has a positive outlook about their future"
           - text: Optimistic and has a positive outlook about their future
           - radio "Not sure and thinks their future could get better or worse"

@@ -17,7 +17,7 @@ export const english = {
     [Question.mental_health_problems]: {
       text: 'Does %1 have any diagnosed or documented mental health problems?',
       option: {
-        [Option.yes_ongoing_severe]: 'Yes, ongoing - severe and documented over a prolonged period of times',
+        [Option.yes_ongoing_severe]: 'Yes, ongoing - severe and documented over a prolonged period of time',
         [Option.yes_ongoing_duration_unknown]: 'Yes, ongoing - duration is not known or there is no link to offending',
         [Option.yes_past]: 'Yes, in the past',
       },
@@ -96,7 +96,7 @@ export const english = {
     },
     [Question.feeling_about_future_health_wellbeing]: {
       text: 'How does %1 feel about their future?',
-      hint: '%1 must answer this question',
+      hint: '%1 must answer this question.',
       option: {
         [Option.optimistic_outlook]: 'Optimistic and has a positive outlook about their future',
         [Option.unsure_outlook]: 'Not sure and thinks their future could get better or worse',

@@ -16,6 +16,7 @@ import { contentFor, drugValueToText } from '../../locales'
 import { Option } from '../../constants/option'
 import { commonContentFor } from '../../../../locales'
 import { CommonOption } from '../../../../constants/commonOption'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 export const drugLastUsedField = (drugValue: string | ChainableExpr<PipelineExpr>) =>
   GovUKRadioInput({
@@ -59,7 +60,7 @@ const otherDrugName = GovUKTextInput({
       message: contentFor('question.other_drug_name.text'),
     }),
     validation({
-      condition: not(Self().not.match(Condition.String.HasMaxLength(200))),
+      condition: not(Self().not.match(Condition.String.HasMaxLength(CharacterLimit.c200))),
       message: contentFor('question.other_drug_name.validation'),
     }),
   ],

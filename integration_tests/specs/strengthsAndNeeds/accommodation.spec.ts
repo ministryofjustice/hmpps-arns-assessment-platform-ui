@@ -73,7 +73,7 @@ test.describe('Accommodation Page', () => {
           - radio "No"
           - text: "No"
         - group "Does Test want to make changes to their accommodation?":
-          - text: Does Test want to make changes to their accommodation?
+          - text: Does Test want to make changes to their accommodation? Test must answer this question.
           - radio "I have already made positive changes and want to maintain them"
           - text: I have already made positive changes and want to maintain them
           - radio "I am actively making changes"

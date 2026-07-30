@@ -161,7 +161,7 @@ test.describe('Employment and education Page', () => {
           - radio "Unknown"
           - text: Unknown
         - group "Does Test want to make changes to their employment and education?":
-          - text: Does Test want to make changes to their employment and education?
+          - text: Does Test want to make changes to their employment and education? Test must answer this question.
           - radio "I have already made positive changes and want to maintain them"
           - text: I have already made positive changes and want to maintain them
           - radio "I am actively making changes"

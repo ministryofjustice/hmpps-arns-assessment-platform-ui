@@ -13,14 +13,13 @@ export const english = {
   },
   question: {
     [Question.type_of_employment]: {
-      text: 'Select the type of employment',
+      text: 'What is the type of employment?',
       option: {
         [Option.full_time]: 'Full-time',
         [Option.part_time]: 'Part-time',
         [Option.temporary_or_casual]: 'Temporary or casual',
         [Option.apprenticeship]: 'Apprenticeship',
       },
-      validation: 'Select the type of employment',
     },
     [Question.had_previous_employment_unavailable_for_work]: {
       text: 'Have they been employed before?',
@@ -41,7 +40,6 @@ export const english = {
         [Option.unemployed_actively_looking]: 'Unemployed - actively looking for work',
         [Option.unemployed_not_actively_looking]: 'Unemployed - not actively looking for work',
       },
-      validation: 'Select the type of employment they currently have',
     },
     [Question.employment_history]: {
       text: 'What is %1 employment history?',

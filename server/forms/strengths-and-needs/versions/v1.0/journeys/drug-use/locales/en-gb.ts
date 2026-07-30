@@ -17,7 +17,6 @@ export const english = {
     },
     [Question.drug_last_used]: {
       text: 'When did they last use %1?',
-      hint: 'This includes illegal and prescription drugs.',
       option: {
         [Option.last_six]: 'Used in the last 6 months',
         [Option.more_than_six]: 'Used more than 6 months ago',
@@ -75,16 +74,21 @@ export const english = {
       validation: 'Select when they injected this drug',
     },
     [Question.receiving_treatment]: {
-      text: 'Is %1 receiving treatment for their drug use?',
-      hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
-      validation: "Select if they're receiving treatment for their drug use",
+      text: {
+        notUsedInLastSixMonths: 'Has %1 ever received treatment for their drug use?',
+        usedLastSixMonths: 'Is %1 receiving treatment for their drug use?',
+      },
+      validation: {
+        notUsedInLastSixMonths: 'Select if they have ever received treatment',
+        usedLastSixMonths: "Select if they're receiving treatment for their drug use",
+      },
     },
     [Question.receiving_treatment_yes_details]: {
-      validation: 'Enter details about the treatment they are receiving',
+      validation: 'Give details on their treatment',
     },
     [Question.drugs_reasons_for_use]: {
       text: {
-        default: 'Why did %1 use drugs?',
+        notUsedInLastSixMonths: 'Why did %1 use drugs?',
         usedLastSixMonths: 'Why does %1 use drugs?',
       },
       hint: 'Consider why they started using, their history, and any triggers. Select all that apply.',
@@ -99,12 +103,15 @@ export const english = {
         [Option.self_medication]: 'Self-medication',
       },
       validation: {
-        default: 'Select why they use drugs',
-        usedLastSixMonths: 'Select why they used drugs',
+        notUsedInLastSixMonths: 'Select why they used drugs',
+        usedLastSixMonths: 'Select why they use drugs',
       },
     },
     [Question.drugs_reasons_for_use_details]: {
-      text: 'Details on why %1 uses drugs',
+      text: {
+        notUsedInLastSixMonths: 'Details on why %1 used drugs',
+        usedLastSixMonths: 'Details on why %1 uses drugs',
+      },
     },
     [Question.drugs_affected_their_life]: {
       text: 'How has %1 drug use affected their life?',
@@ -147,6 +154,7 @@ export const english = {
     },
     [Question.drug_use_changes]: {
       text: 'Does %1 want to make changes to their drug use?',
+      hint: '%1 must answer this question.',
       validation: 'Select if they want to make changes to their drug use',
     },
     [Question.drugs_practitioner_analysis_motivated_to_stop]: {
@@ -160,15 +168,25 @@ export const english = {
     },
     [Question.drug_use_practitioner_analysis_strengths_or_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 drug use?',
+      hint: 'Include any strategies, people or support networks that helped.',
       validation: 'Select if there are any strengths or protective factors',
+    },
+    [Question.drug_use_practitioner_analysis_strengths_or_protective_factors_yes_details]: {
+      validation: 'Give details on strengths or protective factors related to their drug use',
     },
     [Question.drug_use_practitioner_analysis_risk_of_serious_harm]: {
       text: 'Is %1 drug use linked to risk of serious harm?',
-      validation: 'Select if drug use is linked to risk of serious harm',
+      validation: 'Select if linked to risk of serious harm',
+    },
+    [Question.drug_use_practitioner_analysis_risk_of_serious_harm_yes_details]: {
+      validation: 'Give details on the risk of serious harm',
     },
     [Question.drug_use_practitioner_analysis_risk_of_reoffending]: {
       text: 'Is %1 drug use linked to risk of reoffending?',
-      validation: 'Select if drug use is linked to risk of reoffending',
+      validation: 'Select if linked to risk of reoffending',
+    },
+    [Question.drug_use_practitioner_analysis_risk_of_reoffending_yes_details]: {
+      validation: 'Give details on the risk of reoffending',
     },
   },
   text: {

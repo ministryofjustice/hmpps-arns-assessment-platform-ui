@@ -5,18 +5,19 @@ import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 // --- Physical health conditions Group ---
 
 const hasHealthConditions = GovUKCharacterCount({
   code: Question.has_health_conditions_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.health_conditions).match(Condition.Equals(Option.yes)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -47,12 +48,12 @@ export const healthConditions = GovUKRadioInput({
 const severeMentalHealthProblemsDetails = GovUKCharacterCount({
   code: Question.severe_mental_health_problems_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.mental_health_problems).match(Condition.Equals(Option.yes_ongoing_severe)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -60,12 +61,12 @@ const severeMentalHealthProblemsDetails = GovUKCharacterCount({
 const ongoingDurationUnknownMentalHealthProblemsDetails = GovUKCharacterCount({
   code: Question.ongoing_duration_unknown_mental_health_problems_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.mental_health_problems).match(Condition.Equals(Option.yes_ongoing_duration_unknown)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -73,12 +74,12 @@ const ongoingDurationUnknownMentalHealthProblemsDetails = GovUKCharacterCount({
 const pastMentalHealthProblemsDetails = GovUKCharacterCount({
   code: Question.past_mental_health_problems_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.mental_health_problems).match(Condition.Equals(Option.yes_past)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })

@@ -109,6 +109,10 @@ export const english = {
       [Option.debt_to_others]: 'Debt to others',
       [Option.formal_debt]: 'Formal debt',
     },
+    hint: {
+      [Option.debt_to_others]: 'Includes things like owing money to family, friends, other prisoners or loan sharks.',
+      [Option.formal_debt]: 'Includes things like credit cards, phone bills or rent arrears.',
+    },
     validation: {
       select_type_of_debt: 'Select type of debt',
     },
