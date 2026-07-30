@@ -1,0 +1,241 @@
+{
+  "mappings": [
+    {
+      "name": "Supervision Package API - X444444 - standard (STD) phase, early engagement complete",
+      "request": {
+        "url": "/supervision-package-api/case/X444444/current-phase",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "phase": {
+            "name": { "code": "STD", "description": "standard" },
+            "startDate": "2026-01-05",
+            "endDate": "2027-01-04"
+          },
+          "earlyEngagement": {
+            "startDate": "2026-01-05",
+            "endDate": "2026-03-01",
+            "weeks": 8,
+            "completed": 8
+          },
+          "currentYear": {
+            "startDate": "2026-01-05",
+            "endDate": "2027-01-04",
+            "isFirstYear": true,
+            "appointments": { "allowance": 20, "scheduled": 3, "completed": 11 }
+          },
+          "inputs": {
+            "date": "2026-07-27",
+            "gender": "Male",
+            "integratedOffenderManagementRedRated": false,
+            "offenderPersonalDisorderPathway": false,
+            "intensiveSupervisionCourt": false,
+            "nationalSecurityDivision": false,
+            "finalThirdEligibility": { "eligible": false, "since": "" },
+            "sentences": [
+              {
+                "eventNumber": "1",
+                "startDate": "2026-01-05",
+                "endDate": "2027-01-04",
+                "supervisionPackage": { "code": "SP1", "description": "Standard supervision" },
+                "type": { "code": "SP", "description": "ORA Community Order", "isCustodial": false },
+                "custody": null,
+                "inBreach": false
+              }
+            ]
+          }
+        }
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - X222222 - no appointments remaining",
+      "request": {
+        "url": "/supervision-package-api/case/X222222/current-phase",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "phase": {
+            "name": { "code": "STD", "description": "standard" },
+            "startDate": "2025-09-01",
+            "endDate": "2026-08-31"
+          },
+          "earlyEngagement": {
+            "startDate": "2025-09-01",
+            "endDate": "2025-10-27",
+            "weeks": 8,
+            "completed": 8
+          },
+          "currentYear": {
+            "startDate": "2025-09-01",
+            "endDate": "2026-08-31",
+            "isFirstYear": true,
+            "appointments": { "allowance": 20, "scheduled": 0, "completed": 20 }
+          },
+          "inputs": {
+            "date": "2026-07-27",
+            "gender": "Male",
+            "integratedOffenderManagementRedRated": false,
+            "offenderPersonalDisorderPathway": false,
+            "intensiveSupervisionCourt": false,
+            "nationalSecurityDivision": false,
+            "finalThirdEligibility": { "eligible": false, "since": "" },
+            "sentences": [
+              {
+                "eventNumber": "1",
+                "startDate": "2025-09-01",
+                "endDate": "2026-08-31",
+                "supervisionPackage": { "code": "SP1", "description": "Standard supervision" },
+                "type": { "code": "SP", "description": "ORA Community Order", "isCustodial": false },
+                "custody": null,
+                "inBreach": false
+              }
+            ]
+          }
+        }
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - X333333 - in breach with OPD pathway",
+      "request": {
+        "url": "/supervision-package-api/case/X333333/current-phase",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "phase": {
+            "name": { "code": "STD", "description": "standard" },
+            "startDate": "2025-11-01",
+            "endDate": "2026-10-31"
+          },
+          "earlyEngagement": {
+            "startDate": "2025-11-01",
+            "endDate": "2025-12-27",
+            "weeks": 8,
+            "completed": 8
+          },
+          "currentYear": {
+            "startDate": "2025-11-01",
+            "endDate": "2026-10-31",
+            "isFirstYear": true,
+            "appointments": { "allowance": 24, "scheduled": 1, "completed": 12 }
+          },
+          "inputs": {
+            "date": "2026-07-27",
+            "gender": "Male",
+            "integratedOffenderManagementRedRated": false,
+            "offenderPersonalDisorderPathway": true,
+            "intensiveSupervisionCourt": false,
+            "nationalSecurityDivision": false,
+            "finalThirdEligibility": { "eligible": false, "since": "" },
+            "sentences": [
+              {
+                "eventNumber": "1",
+                "startDate": "2025-11-01",
+                "endDate": "2026-10-31",
+                "supervisionPackage": { "code": "SP1", "description": "Standard supervision" },
+                "type": { "code": "SP", "description": "ORA Community Order", "isCustodial": false },
+                "custody": null,
+                "inBreach": true
+              }
+            ]
+          }
+        }
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - X666666 - server error (degraded component)",
+      "request": {
+        "url": "/supervision-package-api/case/X666666/current-phase",
+        "method": "GET"
+      },
+      "response": {
+        "status": 500
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - X888888 - not found (person has no supervision package)",
+      "request": {
+        "url": "/supervision-package-api/case/X888888/current-phase",
+        "method": "GET"
+      },
+      "response": {
+        "status": 404
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - X555555 - not calculated yet (pairs with the provisional tier)",
+      "request": {
+        "url": "/supervision-package-api/case/X555555/current-phase",
+        "method": "GET"
+      },
+      "response": {
+        "status": 404
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - default early engagement (fully populated view)",
+      "request": {
+        "urlPattern": "/supervision-package-api/case/[A-Z0-9]+/current-phase",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "phase": {
+            "name": { "code": "INIT", "description": "early engagement" },
+            "startDate": "2026-06-15",
+            "endDate": "2026-08-10"
+          },
+          "earlyEngagement": {
+            "startDate": "2026-06-15",
+            "endDate": "2026-08-10",
+            "weeks": 8,
+            "completed": 3
+          },
+          "currentYear": {
+            "startDate": "2026-06-15",
+            "endDate": "2027-06-14",
+            "isFirstYear": true,
+            "appointments": { "allowance": 24, "scheduled": 2, "completed": 3 }
+          },
+          "inputs": {
+            "date": "2026-07-27",
+            "gender": "Male",
+            "integratedOffenderManagementRedRated": false,
+            "offenderPersonalDisorderPathway": false,
+            "intensiveSupervisionCourt": false,
+            "nationalSecurityDivision": false,
+            "finalThirdEligibility": { "eligible": false, "since": "" },
+            "sentences": [
+              {
+                "eventNumber": "1",
+                "startDate": "2026-06-15",
+                "endDate": "2027-06-14",
+                "supervisionPackage": { "code": "SP1", "description": "Standard supervision" },
+                "type": { "code": "SP", "description": "ORA Community Order", "isCustodial": false },
+                "custody": null,
+                "inBreach": false
+              }
+            ]
+          }
+        }
+      },
+      "priority": 20
+    }
+  ]
+}
