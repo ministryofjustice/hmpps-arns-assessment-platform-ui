@@ -13,7 +13,7 @@ export const startTieringAssessmentStep = step({
       validate: false,
       onAlways: {
         effects: [TieringAssessmentEffects.InitialiseAssessment(), TieringAssessmentEffects.SaveAssessmentData()],
-        next: [redirect({ goto: 'placeholder-uuid-page' })],
+        next: [redirect({ goto: 'current-offence-and-offending-history' })],
       },
     }),
   ],
