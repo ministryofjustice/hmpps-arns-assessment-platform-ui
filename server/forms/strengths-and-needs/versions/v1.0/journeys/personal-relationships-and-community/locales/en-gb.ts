@@ -6,6 +6,7 @@ import { CommonOption } from '../../../constants/commonOption'
 
 const enChildrenDetailsOptionLabel = 'Include the name, age and sex of any children, and their relationship to %1.'
 const enImportantPeopleDetailsOptionLabel = 'Give details about their relationship (optional)'
+const enIntimateRelationshipDetailsHint = 'Consider patterns and quality of any significant relationships.'
 
 export const english = {
   step: {
@@ -63,9 +64,6 @@ export const english = {
           text: 'Friends',
           label: 'Give details about their friendship (optional)',
         },
-        [Option.other]: {
-          text: 'Other',
-        },
       },
     },
     [Question.personal_relationships_community_current_relationship]: {
@@ -91,13 +89,16 @@ export const english = {
         [Option.stable_relationships]: {
           text: 'History of stable, supportive, positive and rewarding relationships',
           hint: 'This includes if they do not have a history of relationships but appear capable of starting and maintaining one.',
+          detailsHint: enIntimateRelationshipDetailsHint,
         },
         [Option.positive_and_negative_relationships]: {
           text: 'History of both positive and negative relationships',
+          detailsHint: enIntimateRelationshipDetailsHint,
         },
         [Option.unstable_relationships]: {
           text: 'History of unstable, unsupportive and destructive relationships',
           hint: 'This includes if they are single and have never had a relationship but would like one.',
+          detailsHint: enIntimateRelationshipDetailsHint,
         },
       },
     },
@@ -120,9 +121,6 @@ export const english = {
         [CommonOption.no]: {
           text: 'No, is not able to manage parenting responsibilities',
         },
-        [CommonOption.unknown]: {
-          text: 'Unknown',
-        },
       },
     },
     [Question.personal_relationships_community_family_relationship]: {
@@ -139,9 +137,6 @@ export const english = {
         [Option.unstable_relationship]: {
           text: 'Unstable and unsupportive relationship',
           hint: 'This includes those who have little or no contact with their family.',
-        },
-        [CommonOption.unknown]: {
-          text: 'Unknown',
         },
       },
     },

@@ -17,7 +17,7 @@ import { personalRelationshipsCommunityAnalysisStep } from './steps/personal-rel
 
 export const personalRelationshipsJourney = journey({
   code: Section.personal_relationships_and_community.code,
-  title: 'Personal relationships and community',
+  title: commonContentFor('sectionTitle.personal-relationships-and-community'),
   path: Section.personal_relationships_and_community.path,
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {

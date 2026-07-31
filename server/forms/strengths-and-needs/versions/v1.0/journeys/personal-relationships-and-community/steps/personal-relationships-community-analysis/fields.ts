@@ -11,7 +11,7 @@ import {
   personalRelationshipsCommunityStrengthsProtectiveFactors,
   personalRelationshipsCommunitySummary,
 } from '../personal-relationships-community-summary/fields'
-import { contentFor, prcShortcut } from '../../locales'
+import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
 
 // -------- Practitioner Analysis Summary Group
@@ -21,7 +21,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
     {
       key: {
         text: contentFor(
-          `${prcShortcut}practitioner_analysis_strengths_or_protective_factors.text`,
+          `question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors.text`,
           CaseData.ForenamePossessive,
         ),
       },
@@ -59,7 +59,10 @@ const practitionerAnalysisSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(`${prcShortcut}practitioner_analysis_risk_of_serious_harm.text`, CaseData.ForenamePossessive),
+        text: contentFor(
+          `question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm.text`,
+          CaseData.ForenamePossessive,
+        ),
       },
       value: {
         blocks: [
@@ -95,7 +98,10 @@ const practitionerAnalysisSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor(`${prcShortcut}practitioner_analysis_risk_of_reoffending.text`, CaseData.ForenamePossessive),
+        text: contentFor(
+          `question.personal_relationships_community_practitioner_analysis_risk_of_reoffending.text`,
+          CaseData.ForenamePossessive,
+        ),
       },
       value: {
         blocks: [

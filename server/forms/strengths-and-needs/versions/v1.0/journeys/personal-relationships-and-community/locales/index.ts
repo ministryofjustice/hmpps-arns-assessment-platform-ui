@@ -6,4 +6,3 @@ const locales: Locales = {
 }
 
 export const contentFor = contentFrom<PersonalRelationshipsAndCommunityLocale>(locales)
-export const prcShortcut = 'question.personal_relationships_community_'

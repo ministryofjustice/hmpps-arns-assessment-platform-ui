@@ -6,20 +6,24 @@ import { CaseData } from '../../../../constants/formVersion'
 import { commonContentFor } from '../../../../locales'
 import { Option } from '../../constants/option'
 import { detailsFactory } from '../../detailsFactory'
+import { CommonOption } from '../../../../constants/commonOption'
 
 // --------------------------- reusable items:
 const currentQContentForShortcut = 'question.personal_relationships_community_important_people'
 
 const importantPeopleDetails = (
   code: string,
-  optionKey: 'CHILD_PARENTAL_RESPONSIBILITIES' | 'OTHER_CHILDREN' | 'FAMILY' | 'FRIENDS',
-  optionValue: string,
+  optionKey:
+    | typeof Option.child_parental_responsibilities
+    | typeof Option.other_children
+    | typeof Option.family
+    | typeof Option.friends,
 ) =>
   detailsFactory({
     code,
     label: contentFor(`${currentQContentForShortcut}.option.${optionKey}.label`),
     dependentWhen: Answer(Question.personal_relationships_community_important_people).match(
-      Condition.Array.Contains(optionValue),
+      Condition.Array.Contains(optionKey),
     ),
   })
 //---------------------------
@@ -36,22 +40,18 @@ const partnerIntimateRelationshipDetails = detailsFactory({
 
 const childParentalResponsibilitiesDetails = importantPeopleDetails(
   Question.personal_relationships_community_important_people_child_parental_responsibilities_details,
-  'CHILD_PARENTAL_RESPONSIBILITIES',
   Option.child_parental_responsibilities,
 )
 const otherChildrenDetails = importantPeopleDetails(
   Question.personal_relationships_community_important_people_other_children_details,
-  'OTHER_CHILDREN',
   Option.other_children,
 )
 const familyDetails = importantPeopleDetails(
   Question.personal_relationships_community_important_people_family_details,
-  'FAMILY',
   Option.family,
 )
 const friendsDetails = importantPeopleDetails(
   Question.personal_relationships_community_important_people_friends_details,
-  'FRIENDS',
   Option.friends,
 )
 
@@ -59,7 +59,7 @@ const otherDetails = detailsFactory({
   code: Question.personal_relationships_community_important_people_other_details,
   label: commonContentFor('required_details'),
   dependentWhen: Answer(Question.personal_relationships_community_important_people).match(
-    Condition.Array.Contains(Option.other),
+    Condition.Array.Contains(CommonOption.other),
   ),
   requiredMessage: commonContentFor('validation.enter_details'),
 })
@@ -93,7 +93,7 @@ export const personalRelationshipsCommunityImportantPeople = GovUKCheckboxInput(
     },
     {
       value: Option.family,
-      text: contentFor(`${currentQContentForShortcut}.option.FAMILY.text`, CaseData.ForenamePossessive),
+      text: contentFor(`${currentQContentForShortcut}.option.FAMILY.text`),
       block: familyDetails,
     },
     {
@@ -102,8 +102,8 @@ export const personalRelationshipsCommunityImportantPeople = GovUKCheckboxInput(
       block: friendsDetails,
     },
     {
-      value: Option.other,
-      text: contentFor(`${currentQContentForShortcut}.option.OTHER.text`, CaseData.ForenamePossessive),
+      value: CommonOption.other,
+      text: commonContentFor('option.OTHER'),
       block: otherDetails,
     },
   ],
