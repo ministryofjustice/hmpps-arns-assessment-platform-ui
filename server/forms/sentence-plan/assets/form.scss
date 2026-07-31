@@ -145,14 +145,14 @@
 // which print-sentence-plan.mjs sets at runtime.
 
 // Keep the service-header bar at the printable width, then inset its contents and the plan itself.
-$print-page-margin: 5mm;
 $print-content-inset: 5mm;
 $print-content-zoom: 0.75;
 // The service-header contents are zoomed, so compensate to produce a 5mm inset on the page.
 $print-scaled-content-inset: 6.667mm;
 
 @page {
-  margin: 12mm $print-page-margin 14mm;
+  // 5mm side margin = the printable width, where the service-header bar and @page boxes sit.
+  margin: 12mm 5mm 14mm;
 
   @top-left {
     content: attr(data-print-plan-title);
@@ -290,8 +290,7 @@ $print-scaled-content-inset: 6.667mm;
   }
 
   #plan-history-accordion {
-    // Hide interactive controls and links that are not useful in print.
-    [data-qa='plan-history-update-agreement-link'],
+    // Hide interactive controls that are not useful in print.
     .govuk-accordion__controls,
     .govuk-accordion__section-toggle {
       display: none !important;
