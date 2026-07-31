@@ -121,7 +121,7 @@ export const changeGoalStep = step({
         effects: [
           SentencePlanEffects.updateActiveGoal(),
           SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL, {
-            planStatus: when(Data('latestAgreementStatus').match(Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES)))
+            planStatus: when(hasPostAgreementStatus)
               .then('POST_AGREE')
               .else('PRE_AGREE'),
           }),
