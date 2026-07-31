@@ -6,7 +6,7 @@ import { dateOfCurrentSupervisionField } from './fields'
 
 export const dateOfCurrentSupervisionStep = step({
   path: '/date-of-current-supervision',
-  title: Format("What date did %1 current supervision in the community begin?", CaseData.ForenamePossessive),
+  title: Format('What date did %1 current supervision in the community begin?', CaseData.ForenamePossessive),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData()],
