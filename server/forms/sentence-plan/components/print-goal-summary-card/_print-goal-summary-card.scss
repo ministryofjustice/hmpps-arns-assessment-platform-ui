@@ -14,6 +14,7 @@
   &__date,
   &__steps-heading,
   &__step-name,
+  &__step-actor,
   &__areas,
   &__no-steps {
     @include govuk-font($size: 19);
@@ -51,7 +52,6 @@
   }
 
   &__step-actor {
-    @include govuk-font($size: 16, $weight: 'bold');
     margin: 0;
   }
 
