@@ -11,14 +11,14 @@ test.describe('Thinking behaviours and attitudes Page', () => {
 
       await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(page, handoverLink, baseURL)
 
-      const personalRelationshipsAndCommunityPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
+      const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
         page,
         'consequences of their actions?',
       )
 
       await expect(page).toHaveTitle(buildPageTitle(sanPageTitles.thinking))
 
-      await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
+      await expect(thinkingBehavioursAndAttitudesPage.mainForm).toMatchAriaSnapshot(`
         - group "Is Test aware of the consequences of their actions?":
           - text: Is Test aware of the consequences of their actions? This includes towards themselves and to others.
           - radio "Yes, is aware of the consequences of their actions"
@@ -514,6 +514,52 @@ test.describe('Thinking behaviours and attitudes Page', () => {
               - /url: thinking-behaviours-sexual-harm
           - button "Go to practitioner analysis"
       `)
+    })
+  })
+
+  test.describe('Validation', () => {
+    test('validation thinking behaviours', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      await strengthsAndNeedsBuilder.fresh().save()
+
+      await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(page, handoverLink, baseURL)
+
+      const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
+        page,
+        'consequences of their actions?',
+      )
+      await thinkingBehavioursAndAttitudesPage.saveAndContinue.click()
+
+      await thinkingBehavioursAndAttitudesPage.errorConsequences.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesAwareOfTheConsequences).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorStableBehaviour.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesShowsStableBehaviour).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorEngagesInOffendingActivities.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesEngagesInProSocialActivities).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorResilientToPeerPressure.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesResilientTowardsPeerPressure).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorAbleToSolveProblems.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesAbleToSolveProblems).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorUnderstandsPeoplesViews.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesUnderstandsPeoplesViews).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorManipulativeOrPredatory.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesHonestAccountNoManipulative).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorManagesTemper.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesAbleToManageTemper).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorUsesViolenceOrAggression.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesDoesNotUseViolence).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorActsOnImpulse.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesConsidersAllAspectsBeforeActing).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorPositiveAttitudeCJStaff.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesHasAPositiveAttitude).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorHostileOrientation.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesConstructiveConversationsAndForgives).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorAcceptsSupervision.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesAcceptsSupervision).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorSupportsCriminalBehaviour.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesDoesNotSupportCriminalBehaviour).toBeFocused()
+      await thinkingBehavioursAndAttitudesPage.errorWantsToMakeChanges.click()
+      await expect(thinkingBehavioursAndAttitudesPage.yesAlreadyMadePositiveChanges).toBeFocused()
     })
   })
 
