@@ -2,7 +2,7 @@ import { GovUKDateInputFull, GovUKRadioInput } from '@ministryofjustice/hmpps-fo
 import { Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
-export const mostRecentOffenceDate = GovUKDateInputFull({
+export const mostRecentOffenceDateField = GovUKDateInputFull({
   code: 'most-recent-offence-date',
   fieldset: {
     legend: {
@@ -28,7 +28,7 @@ export const offenceHistoryField = GovUKRadioInput({
     {
       value: 'true',
       text: 'Yes',
-      block: mostRecentOffenceDate,
+      block: mostRecentOffenceDateField,
     },
 
     { value: 'false', text: 'No' },
