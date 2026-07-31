@@ -8,6 +8,7 @@ import {
   redirect,
   and,
   not,
+  or,
   Post,
   Data,
   Item,
@@ -29,13 +30,26 @@ import {
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
-import {
-  isOasysAccess,
-  isPrintAndShareEnabled,
-  isReadOnlyAccess,
-  isReadWriteAccess,
-  lacksPostAgreementStatus,
-} from '../../../../guards'
+import { hasPostAgreementStatus, isOasysAccess, isPrintAndShareEnabled, isReadOnlyAccess } from '../../../../guards'
+
+/**
+ * True when at least one goal appears in a tab a draft plan can show.
+ * REMOVED is left out because the removed tab only appears after agreement.
+ */
+const hasGoalsInDisplayedTabs = Data('goals')
+  .each(
+    Iterator.Filter(
+      Item().path('status').match(Condition.Array.IsIn(['ACTIVE', 'FUTURE', 'ACHIEVED'])),
+    ),
+  )
+  .pipe(Transformer.Array.Length())
+  .match(Condition.Number.GreaterThan(0))
+
+/**
+ * A draft plan with no goals on show has nothing to print, so the button is hidden.
+ * Once the plan reaches a post-agreement status the button always shows.
+ */
+const showPrintAllGoalsButton = and(isPrintAndShareEnabled, or(hasPostAgreementStatus, hasGoalsInDisplayedTabs))
 
 export const planStep = step({
   path: '/overview',
@@ -45,11 +59,11 @@ export const planStep = step({
       headerPageHeading: Format(`%1 plan`, CaseData.ForenamePossessive),
       currentTab: Query('goalStatusTab'),
       buttons: {
-        showPrintAllGoalsButton: isPrintAndShareEnabled,
+        showPrintAllGoalsButton,
         showReturnToOasysButton: isOasysAccess,
-        showCreateGoalButton: isReadWriteAccess,
+        showCreateGoalButton: not(isReadOnlyAccess),
         // Only show "Agree plan" while still in draft and when the user has edit access.
-        showAgreePlanButton: and(lacksPostAgreementStatus, isReadWriteAccess),
+        showAgreePlanButton: and(not(hasPostAgreementStatus), not(isReadOnlyAccess)),
       },
     },
   },

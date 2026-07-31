@@ -2,7 +2,7 @@ name: Post daily on-call to Slack
 
 on:
   schedule:
-    - cron: '0 9 * * 1-5'
+    - cron: '0 8 * * 1-5'
       timezone: "Europe/London"
   workflow_dispatch: {}
 
@@ -22,10 +22,13 @@ jobs:
         env:
           PAGERDUTY_API_TOKEN: ${{ secrets.PAGERDUTY_API_TOKEN }}
         run: |
+          SINCE=$(TZ=Europe/London date -d "today 09:01" -u +"%Y-%m-%dT%H:%M:%SZ")
+          UNTIL=$(TZ=Europe/London date -d "today 09:02" -u +"%Y-%m-%dT%H:%M:%SZ")
+
           RESPONSE=$(curl -sf \
             -H "Authorization: Token token=$PAGERDUTY_API_TOKEN" \
             -H "Content-Type: application/json" \
-            "https://api.pagerduty.com/oncalls?schedule_ids[]=$PAGERDUTY_SCHEDULE_ID&earliest=true")
+            "https://api.pagerduty.com/oncalls?schedule_ids[]=$PAGERDUTY_SCHEDULE_ID&since=$SINCE&until=$UNTIL")
 
           ON_CALL_NAME=$(echo "$RESPONSE" | jq -r '[.oncalls[]] | sort_by(.escalation_level) | .[0].user.summary // empty')
 

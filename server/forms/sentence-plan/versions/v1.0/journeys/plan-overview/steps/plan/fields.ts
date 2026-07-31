@@ -18,10 +18,12 @@ import { MOJAlert, MOJSubNavigation } from '@ministryofjustice/hmpps-forge/moj-c
 import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
-import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
-import { canAccessSanContent, hasPostAgreementStatus } from '../../../../guards'
-
-const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
+import {
+  canAccessSanContent,
+  hasCouldNotAnswerStatus,
+  hasPostAgreementStatus,
+  isReadOnlyAccess,
+} from '../../../../guards'
 
 const isMissingStepsOnAgreePlan = and(
   Post('action').match(Condition.Equals('agree-plan')),
@@ -40,8 +42,8 @@ const isAchievedGoal = Item().path('status').match(Condition.Equals('ACHIEVED'))
  */
 function buildMoveButtonProps() {
   return {
-    showMoveUp: when(not(or(isReadOnly, Item().path('isFirstInStatus').match(Condition.Equals(true))))),
-    showMoveDown: when(not(or(isReadOnly, Item().path('isLastInStatus').match(Condition.Equals(true))))),
+    showMoveUp: when(not(or(isReadOnlyAccess, Item().path('isFirstInStatus').match(Condition.Equals(true))))),
+    showMoveDown: when(not(or(isReadOnlyAccess, Item().path('isLastInStatus').match(Condition.Equals(true))))),
     moveUpHref: Format('overview?goalUuid=%1&direction=up&status=%2', Item().path('uuid'), Item().path('status')),
     moveDownHref: Format('overview?goalUuid=%1&direction=down&status=%2', Item().path('uuid'), Item().path('status')),
   }
@@ -69,7 +71,7 @@ export const planLastUpdatedMessage = GovUKBody({
   visibleWhen: not(
     or(
       Data('isUpdatedAfterAgreement').not.match(Condition.Equals(true)),
-      and(Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER')), not(isReadOnly)),
+      and(hasCouldNotAnswerStatus, not(isReadOnlyAccess)),
     ),
   ),
   text: Format(
@@ -107,7 +109,7 @@ export const planCreatedMessage = GovUKBody({
 })
 
 export const updateAgreementMessage = GovUKBody({
-  visibleWhen: and(not(isReadOnly), Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))),
+  visibleWhen: and(not(isReadOnlyAccess), hasCouldNotAnswerStatus),
   text: Format(
     '<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a> when you\'ve shared the plan with them.',
     CaseData.Forename,
@@ -208,9 +210,7 @@ export const goalsSection = TemplateWrapper({
                   card: [
                     TemplateWrapper({
                       // Before any agreement status exists, render the draft card variant.
-                      visibleWhen: Data('latestAgreementStatus').not.match(
-                        Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
-                      ),
+                      visibleWhen: not(hasPostAgreementStatus),
                       template: '{{slot:draftCard}}',
                       slots: {
                         draftCard: [
@@ -270,7 +270,7 @@ export const goalsSection = TemplateWrapper({
                                 hidden: isAchievedGoal,
                               },
                             ],
-                            isReadOnly: when(isReadOnly),
+                            isReadOnly: when(isReadOnlyAccess),
                             index: Loop.Index0(),
                             ...buildMoveButtonProps(),
                           }),
@@ -279,9 +279,7 @@ export const goalsSection = TemplateWrapper({
                     }),
                     TemplateWrapper({
                       // Once an agreement status exists (including "could not answer"), use the agreed variant.
-                      visibleWhen: Data('latestAgreementStatus').match(
-                        Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
-                      ),
+                      visibleWhen: hasPostAgreementStatus,
                       template: '{{slot:agreedCard}}',
                       slots: {
                         agreedCard: [
@@ -342,7 +340,7 @@ export const goalsSection = TemplateWrapper({
                                   .else('update-goal-inline-link'),
                               },
                             ],
-                            isReadOnly: when(isReadOnly),
+                            isReadOnly: when(isReadOnlyAccess),
                             index: Loop.Index0(),
                             ...buildMoveButtonProps(),
                           }),
@@ -369,7 +367,7 @@ const hideBlankPlanOverviewContent = or(
 )
 
 export const blankPlanOverviewContentReadOnly = HtmlBlock({
-  visibleWhen: not(or(not(isReadOnly), hideBlankPlanOverviewContent)),
+  visibleWhen: not(or(not(isReadOnlyAccess), hideBlankPlanOverviewContent)),
   content: Format(
     `<div id="blank-plan-content">
       <p class="govuk-body">%1 does not have any goals to work on now.</p>
@@ -379,7 +377,7 @@ export const blankPlanOverviewContentReadOnly = HtmlBlock({
 })
 
 export const blankPlanOverviewContent = HtmlBlock({
-  visibleWhen: not(or(isReadOnly, hideBlankPlanOverviewContent)),
+  visibleWhen: not(or(isReadOnlyAccess, hideBlankPlanOverviewContent)),
   content: Format(
     '<div id="blank-plan-content" class="%1">%2%3</div>',
     when(Post('action').match(Condition.Equals('agree-plan')))

@@ -5,6 +5,7 @@ import {
   Item,
   Iterator,
   not,
+  or,
   Condition,
   Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
@@ -12,6 +13,7 @@ import { CollectionBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge
 import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { PrintGoalSummaryCard } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
+import { hasCouldNotAnswerStatus, hasPostAgreementStatus } from '../../../../guards'
 
 type GoalStatus = 'ACTIVE' | 'FUTURE' | 'ACHIEVED' | 'REMOVED'
 
@@ -20,6 +22,15 @@ const hasLastUpdatedDetails = and(
   Data('lastUpdatedDate').match(Condition.IsRequired()),
   Data('lastUpdatedByName').match(Condition.IsRequired()),
 )
+
+/*
+ * A plan whose agreement question could not be answered is still a draft, even though
+ * COULD_NOT_ANSWER counts as a post-agreement-process status elsewhere.
+ */
+export const draftPlanWatermark = TemplateWrapper({
+  visibleWhen: or(not(hasPostAgreementStatus), hasCouldNotAnswerStatus),
+  template: '<div class="draft-plan-watermark" aria-hidden="true">DRAFT</div>',
+})
 
 export const planLastUpdatedMessage = GovUKBody({
   visibleWhen: hasLastUpdatedDetails,
@@ -87,7 +98,7 @@ const goalCard = () =>
 const goalSection = (heading: string, status: GoalStatus, showWhenEmpty = false) =>
   TemplateWrapper({
     ...(showWhenEmpty ? {} : { visibleWhen: hasGoalsByStatus(status) }),
-    template: `<section class="govuk-!-margin-top-6" aria-labelledby="goal-section-${status.toLowerCase()}">
+    template: `<section class="print-goal-section print-goal-section--${status.toLowerCase()} govuk-!-margin-top-6" aria-labelledby="goal-section-${status.toLowerCase()}">
       <h2 class="govuk-heading-m" id="goal-section-${status.toLowerCase()}">${heading}</h2>
       {{slot:goals}}
     </section>`,

@@ -33,6 +33,7 @@ describe('print goal summary card', () => {
     expect(html).not.toContain('<th')
     expect(html).not.toContain('Who will do this')
     expect(html.indexOf('Find accommodation advice')).toBeLessThan(html.indexOf('Probation practitioner will do this'))
+    expect(html).toContain('<p class="print-goal-summary-card__step-actor">Probation practitioner will do this</p>')
     expect(html).toContain('Area of need: accommodation')
     expect(html).toContain('Also relates to: thinking, behaviours and attitudes')
   })

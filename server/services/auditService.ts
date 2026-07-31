@@ -7,6 +7,12 @@ export enum AuditEvent {
 
   // Plan Overview
   VIEW_PLAN_OVERVIEW = 'VIEW_PLAN_OVERVIEW',
+  /*
+   * Sent both when someone opens the print preview and when they download it as a PDF.
+   * A download carries `exportedAsPdf: true`, because Gotenberg builds the PDF by loading
+   * the preview page.
+   */
+  PRINT_ALL_GOALS = 'PRINT_ALL_GOALS',
 
   // Goal Management - Pre Agree
   VIEW_SELECT_AREA_OF_NEED = 'VIEW_SELECT_AREA_OF_NEED',

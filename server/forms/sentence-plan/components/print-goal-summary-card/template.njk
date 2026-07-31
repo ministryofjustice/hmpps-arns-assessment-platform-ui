@@ -27,7 +27,7 @@
             <li class="print-goal-summary-card__step">
               <div>
                 <p class="print-goal-summary-card__step-name">{{ step.description }}</p>
-                <p class="print-goal-summary-card__step-actor"><strong>{{ step.actor | replace(" (include who in the step)", "") }} will do this</strong></p>
+                <p class="print-goal-summary-card__step-actor">{{ step.actor | replace(" (include who in the step)", "") }} will do this</p>
               </div>
               <div class="print-goal-summary-card__step-status">
                 {{ goalCard.stepStatusTag(step.status) }}

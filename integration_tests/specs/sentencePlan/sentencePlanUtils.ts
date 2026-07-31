@@ -98,6 +98,7 @@ export const sentencePlanPageTitles = {
   aboutPerson: 'About',
   previousVersions: 'Previous versions',
   historicPlan: 'View historic version',
+  printPreview: 'Print preview',
 }
 
 export const sentencePlanServiceName = 'Sentence plan'

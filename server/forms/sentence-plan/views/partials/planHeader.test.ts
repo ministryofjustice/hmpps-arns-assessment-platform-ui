@@ -50,6 +50,7 @@ describe('plan header', () => {
 
   it('renders the read-only print preview actions', () => {
     const html = nunjucksEnv.render(template, {
+      basePath: '/sentence-plan/v1.0',
       data: {
         caseData: {
           name: { forename: 'Joan', surname: 'Smith' },
@@ -61,10 +62,50 @@ describe('plan header', () => {
       buttons: { showExportAsPdfButton: true, showPrintButton: true },
     })
 
-    const exportButton = html.match(/<button[^>]*data-ai-id="export-sentence-plan-pdf-button"[^>]*>/)?.[0]
+    const exportButton = html.match(/<a[^>]*data-ai-id="print-preview-export-pdf-button"[^>]*>/)?.[0]
+    const printButton = html.match(/<button[^>]*data-ai-id="print-preview-print-button"[^>]*>/)?.[0]
 
-    expect(exportButton).toContain('type="button"')
-    expect(exportButton).not.toContain('href=')
-    expect(html).toContain('data-print-sentence-plan')
+    expect(exportButton).toContain('href="/sentence-plan/v1.0/plan/print-preview/pdf"')
+    expect(printButton).toContain('data-print-sentence-plan')
+  })
+
+  it('hides the print button until JavaScript is enabled', () => {
+    const html = nunjucksEnv.render(template, {
+      data: {
+        caseData: {
+          name: { forename: 'Joan', surname: 'Smith' },
+          crn: 'X000000',
+          dateOfBirth: '1990-01-01',
+        },
+      },
+      headerPageHeading: "Joan's plan",
+      buttons: { showExportAsPdfButton: true, showPrintButton: true },
+    })
+
+    const printButton = html.match(/<button[^>]*data-ai-id="print-preview-print-button"[^>]*>/)?.[0]
+    expect(printButton).toContain('js-only')
+  })
+
+  it('renders the data used by repeated print page headers', () => {
+    const html = nunjucksEnv.render(template, {
+      data: {
+        caseData: {
+          name: { forename: 'Joan', surname: 'Smith' },
+          crn: 'X000000',
+          pnc: '00/1000000X',
+          dateOfBirth: '1990-01-01',
+        },
+      },
+      headerPageHeading: "Joan's plan",
+      showPrintPageHeaders: true,
+      buttons: {},
+    })
+
+    expect(html).toContain('data-print-page-header')
+    expect(html).toContain('data-print-plan-title="Joan&#39;s plan"')
+    expect(html).toContain('data-print-person-name="Joan Smith"')
+    expect(html).toContain('data-print-identifiers="CRN: X000000 | PNC: 00/1000000X | Date of birth: 1 January 1990"')
+    expect(html).toContain('class="govuk-width-container plan-header-container--print-preview"')
+    expect(html).toContain('class="plan-header plan-header--print-preview"')
   })
 })

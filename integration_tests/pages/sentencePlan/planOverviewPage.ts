@@ -24,6 +24,8 @@ export default class PlanOverviewPage extends AbstractPage {
 
   readonly agreePlanButton: Locator
 
+  readonly printAllGoalsButton: Locator
+
   readonly updateAgreementLink: Locator
 
   readonly header: Locator
@@ -58,6 +60,7 @@ export default class PlanOverviewPage extends AbstractPage {
     this.updateAgreementLink = page.getByRole('link', { name: /update .+'s agreement/i })
     this.noFutureGoalsMessage = page.getByText(/does not have any future goals/i)
     this.agreePlanButton = page.getByRole('button', { name: /agree plan/i })
+    this.printAllGoalsButton = page.getByRole('button', { name: 'Print all goals' })
     this.header = page.getByTestId('plan-header')
     this.footer = page.locator('footer')
     this.banner = page.getByTestId('hmpps-header')
