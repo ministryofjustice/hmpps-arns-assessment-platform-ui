@@ -79,7 +79,7 @@ export const thinkingBehavioursOffenceRelatedSexualInterest = GovUKRadioInput({
       ),
       value: Option.no_offence_related_sexual_interest,
       hint: contentFor(
-        'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.NO_OFFENCE_RELATED_SEXUAL_INTEREST.text',
+        'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.NO_OFFENCE_RELATED_SEXUAL_INTEREST.hint',
       ),
     },
     {

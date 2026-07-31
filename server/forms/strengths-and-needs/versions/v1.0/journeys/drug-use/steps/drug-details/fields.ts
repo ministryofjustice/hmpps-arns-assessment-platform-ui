@@ -7,6 +7,7 @@ import {
   Format,
   Item,
   Iterator,
+  not,
   PipelineExpr,
   Self,
   Transformer,
@@ -31,6 +32,7 @@ import { commonContentFor } from '../../../../locales'
 import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
 import { fieldCode, fieldCodeString } from '../../constants'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 // --- Conditions ---
 
@@ -69,7 +71,13 @@ export const drugIntakeFrequencyDetails = (drugValue: ChainableExpr<PipelineExpr
   GovUKCharacterCount({
     code: Format(Question.how_often_used_details, drugValue),
     label: commonContentFor('optional_details'),
-    maxLength: 2000,
+    maxLength: CharacterLimit.c2000,
+    validWhen: [
+      validation({
+        condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+        message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+      }),
+    ],
   })
 
 export const usedInLastSixMonthsSection = TemplateWrapper({
@@ -154,7 +162,7 @@ export const usedMoreThanSixMonthsSection = TemplateWrapper({
           classes: 'govuk-label--m',
         },
         hint: contentFor('question.drug_use_more_than_six_months_details.hint'),
-        maxLength: 2000,
+        maxLength: CharacterLimit.c2000,
         dependentWhen: anyDrugUsedMoreThanSix,
         validWhen: [
           validation({
@@ -162,8 +170,8 @@ export const usedMoreThanSixMonthsSection = TemplateWrapper({
             message: contentFor('question.drug_use_more_than_six_months_details.validation'),
           }),
           validation({
-            condition: Self().match(Condition.String.HasMaxLength(2000)),
-            message: commonContentFor('validation.details_must_be_less_than', 2000),
+            condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+            message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
           }),
         ],
       }),
@@ -336,7 +344,7 @@ export const injectedDrugsField = GovUKCheckboxInput({
 const receivingTreatmentDetails = GovUKCharacterCount({
   code: Question.receiving_treatment_yes_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   dependentWhen: Answer(Question.receiving_treatment).match(Condition.Equals(CommonOption.yes)),
   validWhen: [
     validation({
@@ -344,8 +352,8 @@ const receivingTreatmentDetails = GovUKCharacterCount({
       message: contentFor('question.receiving_treatment_yes_details.validation'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -353,11 +361,11 @@ const receivingTreatmentDetails = GovUKCharacterCount({
 const receivingTreatmentNoDetails = GovUKCharacterCount({
   code: Question.receiving_treatment_no_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c2000,
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -366,7 +374,9 @@ export const receivingTreatmentField = GovUKRadioInput({
   code: Question.receiving_treatment,
   fieldset: {
     legend: {
-      text: contentFor('question.receiving_treatment.text', CaseData.Forename),
+      text: when(anyDrugUsedInLastSix)
+        .then(contentFor('question.receiving_treatment.text.usedLastSixMonths', CaseData.Forename))
+        .else(contentFor('question.receiving_treatment.text.notUsedInLastSixMonths', CaseData.Forename)),
       classes: 'govuk-fieldset__legend--m',
     },
   },
@@ -384,8 +394,12 @@ export const receivingTreatmentField = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: contentFor('question.receiving_treatment.validation'),
+      condition: not(and(anyDrugUsedInLastSix, Self().not.match(Condition.IsRequired()))),
+      message: contentFor('question.receiving_treatment.validation.usedLastSixMonths'),
+    }),
+    validation({
+      condition: not(and(not(anyDrugUsedInLastSix), Self().not.match(Condition.IsRequired()))),
+      message: contentFor('question.receiving_treatment.validation.notUsedInLastSixMonths'),
     }),
   ],
 })

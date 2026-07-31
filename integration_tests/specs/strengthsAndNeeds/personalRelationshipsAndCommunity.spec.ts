@@ -65,8 +65,8 @@ test.describe('Personal relationships and community Page', () => {
       await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
         - group "Who are the important people in Test's life?":
           - text: Who are the important people in Test's life? Select all that apply.
-          - checkbox "Partner or someone they're in an intimate relationship with"
-          - text: Partner or someone they're in an intimate relationship with
+          - checkbox "Partner or someone they’re in an intimate relationship with"
+          - text: Partner or someone they’re in an intimate relationship with
           - checkbox "Their children or anyone they have parenting responsibilities for"
           - text: Their children or anyone they have parenting responsibilities for
           - checkbox "Other children"
@@ -310,7 +310,7 @@ test.describe('Personal relationships and community Page', () => {
               - /url: personal-relationships-children-information
           - term: Who are the important people in Test's life?
           - definition:
-            - paragraph: Partner or someone they're in an intimate relationship with
+            - paragraph: Partner or someone they’re in an intimate relationship with
             - paragraph
             - paragraph
             - paragraph

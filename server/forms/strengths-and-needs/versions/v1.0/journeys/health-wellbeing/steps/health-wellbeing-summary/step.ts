@@ -5,7 +5,7 @@ import { Step } from '../../constants/step'
 
 export const healthWellbeingSummaryStep = step({
   path: `/${Step.health_wellbeing_summary.path}`,
-  title: 'Health and Wellbeing Summary',
+  title: 'Health and wellbeing summary',
   blocks: [healthWellbeingSummaryTab],
   onSubmission: [
     submit({

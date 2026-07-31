@@ -25,7 +25,7 @@ export const english = {
     [Section.alcohol_use.code]: 'Alcohol use',
     [Section.drug_use.code]: 'Drug use',
     [Section.employment_and_education.code]: 'Employment and education',
-    [Section.finance.code]: 'Finance',
+    [Section.finance.code]: 'Finances',
     [Section.health_and_wellbeing.code]: 'Health and wellbeing',
   },
   validation: {
@@ -36,7 +36,6 @@ export const english = {
     valid_date_year: 'Date must include a year',
     future_date: 'The date must be in the future',
     enter_details: 'Enter details',
-    details_character_limit: `Details must be %1 characters or less`,
     select_at_least_one_option: 'Select at least one option',
     select_changes: 'Select if they want to make changes to their %1',
     must_answer: '%1 must answer this question.',
