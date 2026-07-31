@@ -8,6 +8,7 @@ import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { CaseData } from '../../../../constants/formVersion'
 import { CommonOption } from '../../../../constants/commonOption'
+import { Gender } from '../../../../../../../shared/constants/gender'
 import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
 
@@ -21,7 +22,7 @@ import { commonContentFor } from '../../../../locales'
 
 const drankInLastThreeMonths = Answer(Question.alcohol_use).match(Condition.Equals(Option.yes_within_last_three_months))
 
-const genderIsMale = CaseData.Gender.match(Condition.Equals('1'))
+const genderIsMale = CaseData.Gender.match(Condition.Equals(Gender.MALE))
 
 export const alcoholBingeDrinkingLegend = when(genderIsMale)
   .then(contentFor('question.alcohol_binge_drinking.text_male', CaseData.Forename))

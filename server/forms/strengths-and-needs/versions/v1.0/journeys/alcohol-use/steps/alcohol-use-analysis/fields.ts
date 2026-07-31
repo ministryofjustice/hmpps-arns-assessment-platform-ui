@@ -44,7 +44,10 @@ const practitionerAnalysisSummary = GovUKSummaryList({
           {
             href: `${Step.alcohol_use_summary.path}#${Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors}`,
             text: commonContentFor('change'),
-            visuallyHiddenText: 'name',
+            visuallyHiddenText: contentFor(
+              'question.alcohol_use_practitioner_analysis_strengths_or_protective_factors.text',
+              CaseData.ForenamePossessive,
+            ),
           },
         ],
       },
@@ -77,7 +80,10 @@ const practitionerAnalysisSummary = GovUKSummaryList({
           {
             href: `${Step.alcohol_use_summary.path}#${Question.alcohol_use_practitioner_analysis_risk_of_serious_harm}`,
             text: commonContentFor('change'),
-            visuallyHiddenText: 'name',
+            visuallyHiddenText: contentFor(
+              'question.alcohol_use_practitioner_analysis_risk_of_serious_harm.text',
+              CaseData.ForenamePossessive,
+            ),
           },
         ],
       },
@@ -110,7 +116,10 @@ const practitionerAnalysisSummary = GovUKSummaryList({
           {
             href: `${Step.alcohol_use_summary.path}#${Question.alcohol_use_practitioner_analysis_risk_of_reoffending}`,
             text: commonContentFor('change'),
-            visuallyHiddenText: 'name',
+            visuallyHiddenText: contentFor(
+              'question.alcohol_use_practitioner_analysis_risk_of_reoffending.text',
+              CaseData.ForenamePossessive,
+            ),
           },
         ],
       },
