@@ -22,7 +22,9 @@
 {% block content %}
   <div class="govuk-grid-row">
     {% if showDowntimeNotificationBanner %}
-      {% include "sentence-plan/views/partials/downtime-banner.njk" %}
+      <div class="policy-downtime-banner">
+        {% include "sentence-plan/views/partials/downtime-banner.njk" %}
+      </div>
     {% endif %}
     <div class="govuk-grid-column-two-thirds">
       {% if backlink %}
