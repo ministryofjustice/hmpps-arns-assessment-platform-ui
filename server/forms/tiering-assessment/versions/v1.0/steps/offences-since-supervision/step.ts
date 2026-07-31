@@ -1,17 +1,30 @@
-import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  Answer,
+  Format,
+  redirect,
+  step,
+  submit,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { uuidSummaryField } from './fields'
+import { offenceHistoryField } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 export const offencesSinceSupervisionStep = step({
   path: '/offences-since-supervision',
-  title: 'Has NAME commited any offences since DATE',
+  title: Format(
+    'Has %1 commited any offences since %2 ?',
+    CaseData.Forename,
+    Answer('date-of-current-supervision').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+  ),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData()],
     }),
   ],
-  blocks: [uuidSummaryField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [offenceHistoryField, GovUKButton({ text: 'Save and continue' })],
   onSubmission: [
     submit({
       validate: true,
