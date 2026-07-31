@@ -90,6 +90,31 @@ test.describe('Print preview', () => {
     await expect(printPreviewPage.draftWatermark).toHaveText('DRAFT')
   })
 
+  test('shows the DRAFT watermark on screen and when printing a plan marked as could not answer', async ({
+    page,
+    createSession,
+    sentencePlanBuilder,
+  }) => {
+    const { sentencePlanId, handoverLink } = await createSession({
+      targetService: TargetService.SENTENCE_PLAN,
+    })
+    await sentencePlanBuilder
+      .extend(sentencePlanId)
+      .withPlanAgreements([{ status: 'COULD_NOT_ANSWER', dateOffset: -oneDay, createdBy: 'Jane Smith' }])
+      .withGoals(currentGoals(1))
+      .save()
+
+    const printPreviewPage = await openPrintPreview(page, handoverLink)
+
+    await expect(printPreviewPage.draftWatermark).toBeVisible()
+    await expect(printPreviewPage.draftWatermark).toHaveText('DRAFT')
+
+    await printPreviewPage.page.emulateMedia({ media: 'print' })
+
+    await expect(printPreviewPage.draftWatermark).toBeVisible()
+    await expect(printPreviewPage.draftWatermark).toHaveText('DRAFT')
+  })
+
   test('does not show the DRAFT watermark on screen or when printing an agreed plan', async ({
     page,
     createSession,
