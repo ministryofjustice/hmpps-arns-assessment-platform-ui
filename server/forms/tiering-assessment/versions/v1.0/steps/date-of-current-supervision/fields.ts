@@ -1,16 +1,17 @@
-import { GovUKSummaryList } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Session } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKDateInputFull } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 
-export const uuidSummaryField = GovUKSummaryList({
-  card: {
-    title: {
-      text: 'Assessment',
-    },
-  },
-  rows: [
-    {
-      key: { text: 'UUID' },
-      value: { text: Session('assessmentUuid') },
-    },
+export const dateOfCurrentSupervisionField = GovUKDateInputFull({
+  code: 'date-of-current-supervision',
+  hint: 'We will fill in this date from NDelius if it is available. Change the date if it is wrong.',
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: 'Date of current supervision is a required field',
+    }),
+    validation({
+      condition: Self().match(Condition.Date.IsValid()),
+      message: 'Please enter a valid date',
+    }),
   ],
 })
