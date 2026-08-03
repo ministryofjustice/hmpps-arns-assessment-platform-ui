@@ -5,11 +5,11 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { personalRelationshipsChildrenInformation } from './fields'
-import { contentFor } from '../../locales'
+import { sectionPageTitle } from '../../../../locales'
 
 export const personalRelationshipsChildrenInformationStep = step({
   path: `/${Step.personal_relationships_children_information.path}`,
-  title: contentFor(`step.personal_relationships_children_information`),
+  title: sectionPageTitle(Section.personal_relationships_and_community),
   reachability: { entryWhen: true },
   view: {
     locals: {

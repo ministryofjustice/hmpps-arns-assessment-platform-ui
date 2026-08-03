@@ -15,11 +15,11 @@ import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
-import { contentFor } from '../../locales'
+import { sectionPageTitle } from '../../../../locales'
 
 export const alcoholUseDetailsStep = step({
   path: `/${Step.alcohol_use_details.path}`,
-  title: contentFor('step.alcohol_use_details'),
+  title: sectionPageTitle(Section.alcohol_use),
   view: {
     locals: {
       backlink: sectionPath(Section.alcohol_use),

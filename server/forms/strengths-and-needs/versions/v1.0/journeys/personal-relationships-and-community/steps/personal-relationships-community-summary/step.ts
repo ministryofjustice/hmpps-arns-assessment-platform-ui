@@ -3,11 +3,11 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { Step } from '../../constants/step'
 import { personalRelationshipsCommunitySummaryTab } from './fields'
-import { contentFor } from '../../locales'
+import { summaryPageTitle } from '../../../../locales'
 
 export const personalRelationshipsCommunitySummaryStep = step({
   path: `/${Step.personal_relationships_community_summary.path}`,
-  title: contentFor('step.personal_relationships_community_summary'),
+  title: summaryPageTitle(Section.personal_relationships_and_community),
   blocks: [personalRelationshipsCommunitySummaryTab],
   onSubmission: [
     submit({

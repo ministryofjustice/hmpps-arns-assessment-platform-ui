@@ -1,10 +1,11 @@
 import { step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { thinkingBehavioursAnalysisSummaryTab } from './fields'
 import { Step } from '../../constants/step'
-import { contentFor } from '../../locales'
+import { analysisPageTitle } from '../../../../locales'
+import { Section } from '../../../../constants/section'
 
 export const thinkingBehavioursAnalysisStep = step({
   path: `/${Step.thinkingBehavioursAnalysis.path}`,
-  title: contentFor('step.thinking_behaviours_analysis'),
+  title: analysisPageTitle(Section.thinking_behaviours_and_attitudes),
   blocks: [thinkingBehavioursAnalysisSummaryTab],
 })

@@ -3,7 +3,7 @@ import { currentAccommodationStep } from './steps/current-accommodation/step'
 import { accommodationSummaryStep } from './steps/accommodation-summary/step'
 import { accommodationAnalysisStep } from './steps/accommodation-analysis/step'
 import { Section } from '../../constants/section'
-import { commonContentFor } from '../../locales'
+import { sectionPageTitle } from '../../locales'
 import { accommodationDetailsStep } from './steps/accommodation-details/step'
 
 /**
@@ -19,12 +19,12 @@ import { accommodationDetailsStep } from './steps/accommodation-details/step'
  */
 export const accommodationJourney = journey({
   code: Section.accommodation.code,
-  title: 'Accommodation', // TODO: commonContentFor('sectionTitle.accommodation')
+  title: sectionPageTitle(Section.accommodation),
   path: Section.accommodation.path,
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {
     locals: {
-      sectionTitle: commonContentFor('sectionTitle.accommodation'),
+      sectionTitle: sectionPageTitle(Section.accommodation),
       sectionStatus: Data(Section.accommodation.statusKey),
     },
   },

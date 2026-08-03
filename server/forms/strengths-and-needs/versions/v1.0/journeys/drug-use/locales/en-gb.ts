@@ -1,14 +1,8 @@
 import { Locale } from '../../../../../i18n'
 import { Question } from '../constants/question'
-import { Step } from '../constants/step'
 import { Option } from '../constants/option'
 
 export const english = {
-  step: {
-    [Step.drug_use.code]: 'Drug use',
-    [Step.drug_use_summary.code]: 'Drug use summary',
-    [Step.drug_use_analysis.code]: 'Drug use analysis',
-  },
   question: {
     [Question.drug_use]: {
       text: 'Has %1 ever misused drugs?',

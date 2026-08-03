@@ -4,7 +4,7 @@ import { thinkingBehavioursSexualHarmStep } from './steps/thinking-behaviours-se
 import { thinkingBehavioursSummaryStep } from './steps/thinking-behaviours-summary/step'
 import { thinkingBehavioursAnalysisStep } from './steps/thinking-behaviours-analysis/step'
 import { Section } from '../../constants/section'
-import { commonContentFor } from '../../locales'
+import { sectionPageTitle } from '../../locales'
 import { thinkingBehavioursRiskOfSexualHarmStep } from './steps/thinking-behaviours-risk-of-sexual-harm/step'
 
 /**
@@ -22,11 +22,11 @@ import { thinkingBehavioursRiskOfSexualHarmStep } from './steps/thinking-behavio
 export const thinkingBehavioursAndAttitudesJourney = journey({
   code: Section.thinking_behaviours_and_attitudes.code,
   path: Section.thinking_behaviours_and_attitudes.path,
-  title: commonContentFor('sectionTitle.thinking-behaviours-and-attitudes'),
+  title: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {
     locals: {
-      sectionTitle: commonContentFor('sectionTitle.thinking-behaviours-and-attitudes'),
+      sectionTitle: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
       sectionStatus: Data(Section.thinking_behaviours_and_attitudes.statusKey),
     },
   },

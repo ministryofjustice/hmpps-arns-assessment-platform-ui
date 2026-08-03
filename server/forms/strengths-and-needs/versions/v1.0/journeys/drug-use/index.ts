@@ -6,6 +6,7 @@ import { drugUseHistoryStep } from './steps/drug-use-history/step'
 import { drugUseSummaryStep } from './steps/drug-use-summary/step'
 import { drugUseAnalysisStep } from './steps/drug-use-analysis/step'
 import { Section } from '../../constants/section'
+import { sectionPageTitle } from '../../locales'
 
 /**
  * Drug Use Journey
@@ -20,13 +21,13 @@ import { Section } from '../../constants/section'
  */
 export const drugUseJourney = journey({
   code: 'drug-use',
-  title: 'Drug use',
+  title: sectionPageTitle(Section.drug_use),
   path: '/drug-use',
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {
     locals: {
-      sectionTitle: 'Drug use',
-      sectionStatus: Data(Section.drug_use.statusKey),
+      sectionTitle: sectionPageTitle(Section.drug_use),
+      sectionStatus: Data('sectionStatus.drug-use'),
     },
   },
   steps: [drugUseStep, addDrugsStep, drugDetailsStep, drugUseHistoryStep, drugUseSummaryStep, drugUseAnalysisStep],
