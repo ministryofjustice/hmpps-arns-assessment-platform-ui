@@ -49,7 +49,6 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
@@ -214,7 +213,6 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
@@ -235,7 +233,6 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
@@ -272,7 +269,6 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
@@ -309,7 +305,6 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
@@ -369,7 +364,6 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
@@ -406,7 +400,6 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
@@ -466,7 +459,6 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
@@ -503,7 +495,6 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`

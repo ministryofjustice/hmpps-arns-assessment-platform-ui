@@ -1,14 +1,7 @@
 import { Question } from '../constants/question'
-import { Step } from '../constants/step'
 import { Option } from '../constants/option'
 
 export const english = {
-  step: {
-    [Step.health_wellbeing.code]: 'Health wellbeing',
-    [Step.physical_mental_health.code]: 'Physical mental health',
-    [Step.health_wellbeing_summary.code]: 'Health and wellbeing summary',
-    [Step.health_wellbeing_analysis.code]: 'Health and wellbeing analysis',
-  },
   question: {
     [Question.health_conditions]: {
       text: 'Does %1 have any physical health conditions?',

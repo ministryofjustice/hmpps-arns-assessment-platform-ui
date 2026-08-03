@@ -3,6 +3,8 @@ import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { healthConditions, mentalHealthProblems } from './fields'
 import { Step } from '../../constants/step'
+import { sectionPageTitle } from '../../../../locales'
+import { Section } from '../../../../constants/section'
 
 const saveButton = block<GovUKButton>({
   variant: 'govukButton',
@@ -13,7 +15,7 @@ const saveButton = block<GovUKButton>({
 
 export const healthWellbeingStep = step({
   path: `/${Step.health_wellbeing.path}`,
-  title: 'Health wellbeing',
+  title: sectionPageTitle(Section.health_and_wellbeing),
   reachability: { entryWhen: true },
   blocks: [healthConditions, mentalHealthProblems, saveButton],
   onSubmission: [

@@ -6,11 +6,8 @@ import { CommonOption } from '../../../constants/commonOption'
 
 export const english = {
   step: {
-    [Step.thinkingBehaviours.code]: 'Thinking, behaviours and attitudes',
+    // Visible page heading on the two sexual-harm pages, distinct from their browser title.
     [Step.thinkingBehavioursSexualHarm.code]: 'Risk of sexual harm',
-    [Step.thinkingBehavioursRiskOfSexualHarm.code]: 'Risk of sexual harm',
-    [Step.thinkingBehavioursSummary.code]: 'Thinking, behaviours and attitudes summary',
-    [Step.thinkingBehavioursAnalysis.code]: 'Thinking, behaviours and attitudes analysis',
   },
   question: {
     [Question.thinking_behaviours_attitudes_consequences]: {

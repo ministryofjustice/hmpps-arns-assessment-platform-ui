@@ -1,16 +1,9 @@
 import { Question } from '../constants/question'
-import { Step } from '../constants/step'
 import { Option } from '../constants/option'
 import { Locale } from '../../../../../i18n'
 import { CommonOption } from '../../../constants/commonOption'
 
 export const english = {
-  step: {
-    [Step.current_employment.code]: 'Current employment',
-    [Step.employed.code]: 'Employed',
-    [Step.employment_education_summary.code]: 'Employment and education summary',
-    [Step.employment_education_analysis.code]: 'Employment and education analysis',
-  },
   question: {
     [Question.type_of_employment]: {
       text: 'What is the type of employment?',

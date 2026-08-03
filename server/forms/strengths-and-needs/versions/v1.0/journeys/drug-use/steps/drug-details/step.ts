@@ -11,6 +11,7 @@ import {
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
+import { sectionPageTitle } from '../../../../locales'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -20,7 +21,7 @@ const saveButton = GovUKButton({
 
 export const drugDetailsStep = step({
   path: `/${Step.drug_details.path}`,
-  title: 'Drug details',
+  title: sectionPageTitle(Section.drug_use),
   view: {
     locals: {
       backlink: sectionPath(Section.drug_use) + Step.add_drugs.path,

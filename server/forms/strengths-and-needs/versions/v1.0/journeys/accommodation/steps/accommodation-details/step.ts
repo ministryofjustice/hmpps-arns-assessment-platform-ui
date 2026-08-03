@@ -13,10 +13,11 @@ import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
+import { sectionPageTitle } from '../../../../locales'
 
 export const accommodationDetailsStep = step({
   path: `/${Step.accommodation_details.path}`,
-  title: 'Settled accommodation', // TODO: contentFor('step.settled_accommodation')
+  title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
       backlink: sectionPath(Section.accommodation),

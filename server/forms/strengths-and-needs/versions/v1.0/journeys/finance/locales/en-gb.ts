@@ -1,15 +1,9 @@
 import { Locale } from '../../../../../i18n'
 import { Question } from '../constants/question'
-import { Step } from '../constants/step'
 import { Option } from '../constants/option'
 import { CommonOption } from '../../../constants/commonOption'
 
 export const english = {
-  step: {
-    [Step.finance.code]: 'Finance',
-    [Step.financeSummary.code]: 'Finance summary',
-    [Step.financeAnalysis.code]: 'Finance analysis',
-  },
   question: {
     [Question.finance_income]: {
       text: 'Where does %1 currently get their money from?',
