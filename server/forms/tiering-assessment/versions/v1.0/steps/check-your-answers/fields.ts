@@ -14,6 +14,7 @@ const currentOffenceAndOffendingHistoryPath = 'current-offence-and-offending-his
 const sexualOffendingPath = 'sexual-offending#%1'
 const dateOfCurrentSupervisionPath = 'date-of-current-supervision#%1'
 const offencesSinceSupervisionPath = 'offences-since-supervision#%1'
+const shouldShowSexualRelatedFields = Answer('has-ever-commited-sexual-offence').match(Condition.Equals('true'))
 export const currentOffenceHeadingField = GovUKHeading({
   text: 'Current offence details',
   size: 'm',
@@ -103,11 +104,13 @@ export const currentOffenceAndOffendingHistorySummaryListField = GovUKSummaryLis
 })
 
 export const sexualHistoryHeadingField = GovUKHeading({
+  visibleWhen: shouldShowSexualRelatedFields,
   text: 'Current and recent sexual offending',
   size: 'm',
 })
 
 export const sexualHistorySummaryListField = GovUKSummaryList({
+  visibleWhen: shouldShowSexualRelatedFields,
   rows: [
     {
       key: { text: Format('Does %1 current offence have a sexual motivation?', CaseData.ForenamePossessive) },
@@ -173,11 +176,13 @@ export const sexualHistorySummaryListField = GovUKSummaryList({
 })
 
 export const directSexualHistoryHeadingField = GovUKHeading({
+  visibleWhen: shouldShowSexualRelatedFields,
   text: 'Direct contact sexual or sexually motivated offending',
   size: 'm',
 })
 
 export const directSexualHistorySummaryListField = GovUKSummaryList({
+  visibleWhen: shouldShowSexualRelatedFields,
   rows: [
     {
       key: {
@@ -217,11 +222,13 @@ export const directSexualHistorySummaryListField = GovUKSummaryList({
 })
 
 export const imagesAndIndirectContactSexualHistoryHeadingField = GovUKHeading({
+  visibleWhen: shouldShowSexualRelatedFields,
   text: 'Images and indirect contact sexual or sexually motivated offending',
   size: 'm',
 })
 
 export const imagesAndIndirectContactSexualHistorySummaryListField = GovUKSummaryList({
+  visibleWhen: shouldShowSexualRelatedFields,
   rows: [
     {
       key: {
