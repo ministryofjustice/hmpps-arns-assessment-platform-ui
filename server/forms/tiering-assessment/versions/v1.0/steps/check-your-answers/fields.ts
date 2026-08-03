@@ -1,5 +1,12 @@
 import { GovUKHeading, GovUKSummaryList } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Answer, Data, Format, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Answer,
+  Condition,
+  Conditional,
+  Data,
+  Format,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 // const startTieringAssessmentPath = 'startTieringAssessment'
@@ -76,7 +83,13 @@ export const currentOffenceAndOffendingHistorySummaryListField = GovUKSummaryLis
     },
     {
       key: { text: Format('Has %1 ever commited a sexual or sexually motivated offence?', CaseData.Forename) },
-      value: { text: Answer('has-ever-commited-sexual-offence') ? 'Yes' : 'No' },
+      value: {
+        text: Conditional({
+          when: Answer('has-ever-commited-sexual-offence').match(Condition.Equals('true')),
+          then: 'Yes',
+          else: 'No',
+        }),
+      },
       actions: {
         items: [
           {
@@ -98,7 +111,13 @@ export const sexualHistorySummaryListField = GovUKSummaryList({
   rows: [
     {
       key: { text: Format('Does %1 current offence have a sexual motivation?', CaseData.ForenamePossessive) },
-      value: { text: Answer('current-offence-sexually-motivated') ? 'Yes' : 'No' },
+      value: {
+        text: Conditional({
+          when: Answer('current-offence-sexually-motivated').match(Condition.Equals('true')),
+          then: 'Yes',
+          else: 'No',
+        }),
+      },
       actions: {
         items: [
           {
@@ -115,7 +134,13 @@ export const sexualHistorySummaryListField = GovUKSummaryList({
           CaseData.ForenamePossessive,
         ),
       },
-      value: { text: Answer('victim-stranger') ? 'Yes' : 'No' },
+      value: {
+        text: Conditional({
+          when: Answer('victim-stranger').match(Condition.Equals('true')),
+          then: 'Yes',
+          else: 'No',
+        }),
+      },
       actions: {
         items: [
           {
@@ -274,7 +299,13 @@ export const offenceSinceSupervisionSummaryListField = GovUKSummaryList({
           Answer('date-of-current-supervision').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
         ),
       },
-      value: { text: Answer('has-commited-offence-since-assessment-date') ? 'Yes' : 'No' },
+      value: {
+        text: Conditional({
+          when: Answer('has-commited-offence-since-assessment-date').match(Condition.Equals('true')),
+          then: 'Yes',
+          else: 'No',
+        }),
+      },
       actions: {
         items: [
           {
