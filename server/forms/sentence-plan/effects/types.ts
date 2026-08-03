@@ -4,6 +4,7 @@ import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/d
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
 import { AssessmentPlatformApiClient, CoordinatorApiClient, DeliusApiClient } from '../../../data'
 import AuditService from '../../../services/auditService'
+import DomainEventsService from '../../../services/domainEventsService'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { SessionDetails } from '../../../interfaces/sessionDetails'
 import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
@@ -472,4 +473,5 @@ export interface SentencePlanEffectsDeps {
   deliusApi: DeliusApiClient
   auditService: AuditService
   featureFlagService: FeatureFlagService
+  domainEventsService: DomainEventsService
 }
