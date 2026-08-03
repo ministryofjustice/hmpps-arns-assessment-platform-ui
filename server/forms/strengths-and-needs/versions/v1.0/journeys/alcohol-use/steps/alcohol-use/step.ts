@@ -6,11 +6,11 @@ import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { CommonOption } from '../../../../constants/commonOption'
-import { contentFor } from '../../locales'
+import { sectionPageTitle } from '../../../../locales'
 
 export const alcoholUseStep = step({
   path: `/${Step.alcohol_use.path}`,
-  title: contentFor('step.alcohol_use'),
+  title: sectionPageTitle(Section.alcohol_use),
   reachability: { entryWhen: true },
   view: {
     locals: {

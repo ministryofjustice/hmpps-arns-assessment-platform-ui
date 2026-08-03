@@ -1,5 +1,4 @@
 import { Locale } from '../../../../../i18n'
-import { Step } from '../constants/step'
 import { Question } from '../constants/question'
 import { Option } from '../constants/option'
 import { CommonOption } from '../../../constants/commonOption'
@@ -9,13 +8,6 @@ const enImportantPeopleDetailsOptionLabel = 'Give details about their relationsh
 const enIntimateRelationshipDetailsHint = 'Consider patterns and quality of any significant relationships.'
 
 export const english = {
-  step: {
-    [Step.personal_relationships_children_information.code]: 'Personal relationships: children information',
-    [Step.personal_relationships.code]: 'Personal relationships',
-    [Step.personal_relationships_community.code]: 'Personal relationships and community',
-    [Step.personal_relationships_community_summary.code]: 'Personal relationships and community summary',
-    [Step.personal_relationships_community_analysis.code]: 'Personal relationships and community analysis',
-  },
   question: {
     [Question.personal_relationships_community_children_details]: {
       text: 'Are there any children in %1 life?',

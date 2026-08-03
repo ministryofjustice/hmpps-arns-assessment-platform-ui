@@ -20,11 +20,11 @@ import {
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
-import { contentFor } from '../../locales'
+import { sectionPageTitle } from '../../../../locales'
 
 export const thinkingBehavioursStep = step({
   path: `/${Step.thinkingBehaviours.path}`,
-  title: contentFor('step.thinking_behaviours'),
+  title: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
   reachability: { entryWhen: true },
   blocks: [
     thinkingBehavioursConsequences,

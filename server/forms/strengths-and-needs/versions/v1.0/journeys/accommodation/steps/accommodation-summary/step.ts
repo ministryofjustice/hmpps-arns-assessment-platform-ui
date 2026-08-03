@@ -3,10 +3,11 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { Step } from '../../constants/step'
 import { accommodationSummaryTab } from './fields'
+import { summaryPageTitle } from '../../../../locales'
 
 export const accommodationSummaryStep = step({
   path: `/${Step.accommodation_summary.path}`,
-  title: 'Accommodation summary', // TODO: contentFor('step.accommodation_summary')
+  title: summaryPageTitle(Section.accommodation),
   blocks: [accommodationSummaryTab],
   onSubmission: [
     submit({

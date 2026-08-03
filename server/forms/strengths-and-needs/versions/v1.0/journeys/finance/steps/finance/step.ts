@@ -11,10 +11,11 @@ import {
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
+import { sectionPageTitle } from '../../../../locales'
 
 export const financeStep = step({
   path: `/${Step.finance.path}`,
-  title: 'Finance', // TODO: contentFor('step.finance')
+  title: sectionPageTitle(Section.finance),
   reachability: { entryWhen: true },
   blocks: [
     financeIncome,

@@ -1,6 +1,6 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { Step } from '../../constants/step'
-import { contentFor } from '../../locales'
+import { sectionPageTitle } from '../../../../locales'
 import { saveButton } from '../../../../constants/buttons'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionStatus } from '../../../../constants/section'
@@ -10,7 +10,7 @@ import { personalRelationshipsCommunityImportantPeople } from './fields'
 
 export const personalRelationshipsStep = step({
   path: `/${Step.personal_relationships.path}`,
-  title: contentFor(`step.personal_relationships`),
+  title: sectionPageTitle(Section.personal_relationships_and_community),
   view: {
     locals: {
       sectionTitleClass,

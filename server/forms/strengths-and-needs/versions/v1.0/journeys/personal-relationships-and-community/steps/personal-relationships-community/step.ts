@@ -2,7 +2,7 @@ import { Answer, Condition, not, or, Post, redirect, step, submit } from '@minis
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
-import { contentFor } from '../../locales'
+import { sectionPageTitle } from '../../../../locales'
 import { sectionPath } from '../../../../constants/path'
 import { saveButton } from '../../../../constants/buttons'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
@@ -11,7 +11,7 @@ import { contentBlocks } from './fields'
 
 export const personalRelationshipsCommunityStep = step({
   path: `/${Step.personal_relationships_community.path}`,
-  title: contentFor(`step.personal_relationships_community`),
+  title: sectionPageTitle(Section.personal_relationships_and_community),
   view: {
     locals: {
       backlink: sectionPath(Section.personal_relationships_and_community) + Step.personal_relationships.path,

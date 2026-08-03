@@ -4,7 +4,7 @@ import { physicalMentalHealthStep } from './steps/physical-mental-health/step'
 import { healthWellbeingSummaryStep } from './steps/health-wellbeing-summary/step'
 import { healthWellbeingAnalysisStep } from './steps/health-wellbeing-analysis/step'
 import { Section } from '../../constants/section'
-import { commonContentFor } from '../../locales'
+import { sectionPageTitle } from '../../locales'
 
 /**
  * Health and wellbeing Journey
@@ -18,12 +18,12 @@ import { commonContentFor } from '../../locales'
  */
 export const healthWellbeingJourney = journey({
   code: Section.health_and_wellbeing.code,
-  title: 'Health and wellbeing',
+  title: sectionPageTitle(Section.health_and_wellbeing),
   path: Section.health_and_wellbeing.path,
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {
     locals: {
-      sectionTitle: commonContentFor('sectionTitle.health-and-wellbeing'),
+      sectionTitle: sectionPageTitle(Section.health_and_wellbeing),
       sectionStatus: Data(Section.health_and_wellbeing.statusKey),
     },
   },

@@ -3,10 +3,11 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { employmentStatusSummaryTab } from './fields'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { Step } from '../../constants/step'
+import { summaryPageTitle } from '../../../../locales'
 
 export const employmentEducationSummaryStep = step({
   path: `/${Step.employment_education_summary.path}`,
-  title: 'Employment and education summary', // TODO: contentFor('step.employment-education-summary')
+  title: summaryPageTitle(Section.employment_and_education),
   blocks: [employmentStatusSummaryTab],
   onSubmission: [
     submit({

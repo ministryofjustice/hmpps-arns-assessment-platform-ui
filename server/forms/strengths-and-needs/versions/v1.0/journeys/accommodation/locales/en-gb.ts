@@ -1,15 +1,8 @@
 import { Locale } from '../../../../../i18n'
 import { Question } from '../constants/question'
-import { Step } from '../constants/step'
 import { Option } from '../constants/option'
 
 export const english = {
-  step: {
-    [Step.current_accommodation.code]: 'Current accommodation',
-    [Step.accommodation_details.code]: 'Accommodation details',
-    [Step.accommodation_summary.code]: 'Accommodation summary',
-    [Step.accommodation_analysis.code]: 'Accommodation analysis',
-  },
   question: {
     [Question.short_term_accommodation_end_date]: {
       text: 'Enter expected end date (optional)',

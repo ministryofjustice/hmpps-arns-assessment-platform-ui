@@ -22,11 +22,11 @@ export const sentencePlanV1URLs = {
 
 // Page titles for san
 export const sanPageTitles = {
-  accommodation: 'Current accommodation',
-  employmentAndEducation: 'Employed',
-  healthAndWellbeing: 'Health wellbeing',
+  accommodation: 'Accommodation',
+  employmentAndEducation: 'Employment and education',
+  healthAndWellbeing: 'Health and wellbeing',
   drugUse: 'Drug use',
-  personal: 'Personal relationships: children information',
+  personal: 'Personal relationships and community',
   alcoholUse: 'Alcohol use',
 }
 

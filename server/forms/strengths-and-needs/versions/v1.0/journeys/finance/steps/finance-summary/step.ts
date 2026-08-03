@@ -3,10 +3,11 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { summaryTab } from './fields'
+import { summaryPageTitle } from '../../../../locales'
 
 export const financeSummaryStep = step({
   path: `/${Step.financeSummary.path}`,
-  title: 'Finance summary', // TODO: contentFor('step.finance_summary')
+  title: summaryPageTitle(Section.finance),
   blocks: [summaryTab],
   onSubmission: [
     submit({

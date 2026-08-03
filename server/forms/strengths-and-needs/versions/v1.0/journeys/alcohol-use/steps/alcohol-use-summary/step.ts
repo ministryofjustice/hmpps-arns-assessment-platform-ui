@@ -3,11 +3,11 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { Step } from '../../constants/step'
 import { alcoholSummaryTab } from './fields'
-import { contentFor } from '../../locales'
+import { summaryPageTitle } from '../../../../locales'
 
 export const alcoholUseSummaryStep = step({
   path: `/${Step.alcohol_use_summary.path}`,
-  title: contentFor('step.alcohol_use_summary'),
+  title: summaryPageTitle(Section.alcohol_use),
   blocks: [alcoholSummaryTab],
   onSubmission: [
     submit({
