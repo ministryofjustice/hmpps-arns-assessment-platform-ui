@@ -1,7 +1,7 @@
 /** Port of oasys/datamapping/v1/RelationshipsTest.kt. */
 
 import { Field, Value } from '../../codes'
-import { Relationships } from '../../v1/relationships'
+import { Relationships } from '../../v1.0/relationships'
 import { Given, testSection } from '../support/given'
 import { PractitionerAnalysisScenarios } from '../support/practitionerAnalysisScenarios'
 

@@ -1,7 +1,7 @@
 /** Port of oasys/datamapping/v1/FinancialManagementTest.kt. */
 
 import { Field, Value } from '../../codes'
-import { FinancialManagement } from '../../v1/financialManagement'
+import { FinancialManagement } from '../../v1.0/financialManagement'
 import { Given, testSection } from '../support/given'
 import { PractitionerAnalysisScenarios } from '../support/practitionerAnalysisScenarios'
 

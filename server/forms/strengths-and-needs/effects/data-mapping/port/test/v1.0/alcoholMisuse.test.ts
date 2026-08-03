@@ -1,7 +1,7 @@
 /** Port of oasys/datamapping/v1/AlcoholMisuseTest.kt. */
 
 import { Field, Value } from '../../codes'
-import { AlcoholMisuse } from '../../v1/alcoholMisuse'
+import { AlcoholMisuse } from '../../v1.0/alcoholMisuse'
 import { Given, testSection } from '../support/given'
 import { PractitionerAnalysisScenarios } from '../support/practitionerAnalysisScenarios'
 

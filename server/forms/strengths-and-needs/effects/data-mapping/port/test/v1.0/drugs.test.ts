@@ -1,7 +1,7 @@
 /** Port of oasys/datamapping/v1/DrugsTest.kt. */
 
 import { Field, Value } from '../../codes'
-import { Drugs } from '../../v1/drugs'
+import { Drugs } from '../../v1.0/drugs'
 import { Given, testSection } from '../support/given'
 import { PractitionerAnalysisScenarios } from '../support/practitionerAnalysisScenarios'
 

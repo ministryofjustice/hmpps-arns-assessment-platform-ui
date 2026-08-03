@@ -2,22 +2,22 @@
 
 import { MappingNotFoundException } from './exceptions'
 import type { SectionMapping } from './common/sectionMapping'
-import { Accommodation } from './v1/accommodation'
-import { AlcoholMisuse } from './v1/alcoholMisuse'
-import { Attitudes } from './v1/attitudes'
-import { Drugs } from './v1/drugs'
-import { Education } from './v1/education'
-import { EmotionalWellbeing } from './v1/emotionalWellbeing'
-import { FinancialManagement } from './v1/financialManagement'
-import { LifestyleAssociates } from './v1/lifestyleAssociates'
-import { NewSections } from './v1/newSections'
-import { OffenceAnalysis } from './v1/offenceAnalysis'
-import { Predictors } from './v1/predictors'
-import { Relationships } from './v1/relationships'
-import { ThinkingBehaviours } from './v1/thinkingBehaviours'
+import { Accommodation } from './v1.0/accommodation'
+import { AlcoholMisuse } from './v1.0/alcoholMisuse'
+import { Attitudes } from './v1.0/attitudes'
+import { Drugs } from './v1.0/drugs'
+import { Education } from './v1.0/education'
+import { EmotionalWellbeing } from './v1.0/emotionalWellbeing'
+import { FinancialManagement } from './v1.0/financialManagement'
+import { LifestyleAssociates } from './v1.0/lifestyleAssociates'
+import { NewSections } from './v1.0/newSections'
+import { OffenceAnalysis } from './v1.0/offenceAnalysis'
+import { Predictors } from './v1.0/predictors'
+import { Relationships } from './v1.0/relationships'
+import { ThinkingBehaviours } from './v1.0/thinkingBehaviours'
 
 const versions: Record<string, SectionMapping[]> = {
-  '1.0': [
+  'v1.0': [
     new Accommodation(),
     new AlcoholMisuse(),
     new Attitudes(),

@@ -2,7 +2,7 @@
 
 import { Field, fieldLower, Value } from '../../codes'
 import { AnswerType, type Answers } from '../../answers'
-import { OffenceAnalysis } from '../../v1/offenceAnalysis'
+import { OffenceAnalysis } from '../../v1.0/offenceAnalysis'
 import { Given, testSection } from '../support/given'
 
 describe('OffenceAnalysis', () => {

@@ -1,7 +1,7 @@
 /** Port of oasys/datamapping/v1/NewSectionsTest.kt. */
 
 import { Field, Value } from '../../codes'
-import { NewSections } from '../../v1/newSections'
+import { NewSections } from '../../v1.0/newSections'
 import { Given, testSection } from '../support/given'
 import { PractitionerAnalysisScenarios } from '../support/practitionerAnalysisScenarios'
 

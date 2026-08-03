@@ -11,4 +11,3 @@ export {
 } from './common/answersProvider'
 export { SectionMapping, type FieldsToMap, type MappingFn } from './common/sectionMapping'
 export { MappingProvider } from './mappingProvider'
-export { getOasysEquivalent } from './dataMappingService'

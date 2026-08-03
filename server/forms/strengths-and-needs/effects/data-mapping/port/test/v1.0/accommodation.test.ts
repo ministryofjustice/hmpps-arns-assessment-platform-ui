@@ -1,7 +1,7 @@
 /** Port of oasys/datamapping/v1/AccommodationTest.kt. */
 
 import { Field, Value } from '../../codes'
-import { Accommodation } from '../../v1/accommodation'
+import { Accommodation } from '../../v1.0/accommodation'
 import { Given, testSection } from '../support/given'
 import { PractitionerAnalysisScenarios } from '../support/practitionerAnalysisScenarios'
 

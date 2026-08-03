@@ -1,7 +1,7 @@
 /** Port of oasys/datamapping/v1/EmotionalWellbeingTest.kt. */
 
 import { Field, Value } from '../../codes'
-import { EmotionalWellbeing } from '../../v1/emotionalWellbeing'
+import { EmotionalWellbeing } from '../../v1.0/emotionalWellbeing'
 import { Given, testSection } from '../support/given'
 import { PractitionerAnalysisScenarios } from '../support/practitionerAnalysisScenarios'
 

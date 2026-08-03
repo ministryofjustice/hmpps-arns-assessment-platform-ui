@@ -1,7 +1,7 @@
 /** Port of oasys/datamapping/v1/LifestyleAssociatesTest.kt. */
 
 import { Field, Value } from '../../codes'
-import { LifestyleAssociates } from '../../v1/lifestyleAssociates'
+import { LifestyleAssociates } from '../../v1.0/lifestyleAssociates'
 import { Given, testSection } from '../support/given'
 import { PractitionerAnalysisScenarios } from '../support/practitionerAnalysisScenarios'
 

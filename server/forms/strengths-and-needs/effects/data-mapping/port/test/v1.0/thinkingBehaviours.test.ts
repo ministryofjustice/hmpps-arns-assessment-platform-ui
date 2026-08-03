@@ -1,7 +1,7 @@
 /** Port of oasys/datamapping/v1/ThinkingBehavioursTest.kt. */
 
 import { Field, Value } from '../../codes'
-import { ThinkingBehaviours } from '../../v1/thinkingBehaviours'
+import { ThinkingBehaviours } from '../../v1.0/thinkingBehaviours'
 import { Given, testSection } from '../support/given'
 import { PractitionerAnalysisScenarios } from '../support/practitionerAnalysisScenarios'
 

@@ -1,7 +1,7 @@
 /** Port of oasys/datamapping/v1/EducationTest.kt. */
 
 import { Field, Value } from '../../codes'
-import { Education } from '../../v1/education'
+import { Education } from '../../v1.0/education'
 import { Given, testSection } from '../support/given'
 import { PractitionerAnalysisScenarios } from '../support/practitionerAnalysisScenarios'
 

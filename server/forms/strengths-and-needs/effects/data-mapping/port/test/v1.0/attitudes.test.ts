@@ -1,7 +1,7 @@
 /** Port of oasys/datamapping/v1/AttitudesTest.kt. */
 
 import { Field, Value } from '../../codes'
-import { Attitudes } from '../../v1/attitudes'
+import { Attitudes } from '../../v1.0/attitudes'
 import { Given, testSection } from '../support/given'
 import { PractitionerAnalysisScenarios } from '../support/practitionerAnalysisScenarios'
 
