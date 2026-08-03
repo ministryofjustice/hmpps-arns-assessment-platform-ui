@@ -2,7 +2,7 @@ import { GovUKHeading, GovUKSummaryList } from '@ministryofjustice/hmpps-forge/g
 import { Answer, Data, Format, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
-const startTieringAssessmentPath = 'startTieringAssessment'
+// const startTieringAssessmentPath = 'startTieringAssessment'
 const currentOffenceAndOffendingHistoryPath = 'current-offence-and-offending-history'
 const sexualOffendingPath = 'sexual-offending'
 const dateOfCurrentSupervisionPath = 'date-of-current-supervision'
@@ -98,7 +98,7 @@ export const sexualHistorySummaryListField = GovUKSummaryList({
   rows: [
     {
       key: { text: Format('Does %1 current offence have a sexual motivation?', CaseData.ForenamePossessive) },
-      value: { text: Answer('date-at-first-sanction') ? 'Yes' : 'No' },
+      value: { text: Answer('current-offence-sexually-motivated') ? 'Yes' : 'No' },
       actions: {
         items: [
           {
@@ -115,7 +115,7 @@ export const sexualHistorySummaryListField = GovUKSummaryList({
           CaseData.ForenamePossessive,
         ),
       },
-      value: { text: Answer('number-of-sanctions-for-all-offences') ? 'Yes' : 'No' },
+      value: { text: Answer('victim-stranger') ? 'Yes' : 'No' },
       actions: {
         items: [
           {
@@ -132,7 +132,9 @@ export const sexualHistorySummaryListField = GovUKSummaryList({
           CaseData.ForenamePossessive,
         ),
       },
-      value: { text: Answer('date-at-first-sanction').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })) },
+      value: {
+        text: Answer('date-of-most-recent-sexual-offence').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+      },
       actions: {
         items: [
           {
@@ -159,7 +161,7 @@ export const directSexualHistorySummaryListField = GovUKSummaryList({
           CaseData.Forename,
         ),
       },
-      value: { text: Answer('date-at-first-sanction') },
+      value: { text: Answer('number-of-contact-sexual-sanctions') },
       actions: {
         items: [
           {
@@ -176,7 +178,7 @@ export const directSexualHistorySummaryListField = GovUKSummaryList({
           CaseData.Forename,
         ),
       },
-      value: { text: Answer('number-of-sanctions-for-all-offences') },
+      value: { text: Answer('number-of-contact-child-sexual-sanctions') },
       actions: {
         items: [
           {
@@ -203,7 +205,7 @@ export const imagesAndIndirectContactSexualHistorySummaryListField = GovUKSummar
           CaseData.Forename,
         ),
       },
-      value: { text: Answer('date-at-first-sanction') },
+      value: { text: Answer('indecent-child-images') },
       actions: {
         items: [
           {
@@ -220,7 +222,7 @@ export const imagesAndIndirectContactSexualHistorySummaryListField = GovUKSummar
           CaseData.Forename,
         ),
       },
-      value: { text: Answer('number-of-sanctions-for-all-offences') },
+      value: { text: Answer('non-contact') },
       actions: {
         items: [
           {
