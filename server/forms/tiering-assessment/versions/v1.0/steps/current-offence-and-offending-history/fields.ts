@@ -7,8 +7,17 @@ import {
   GovUKTextInput,
   GovUKWarningText,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Answer, Condition, Data, Self, Transformer, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Answer,
+  Condition,
+  Data,
+  Format,
+  Self,
+  Transformer,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 export const currentOffenceHeadingField = GovUKHeading({
   text: 'Current offence',
@@ -64,7 +73,7 @@ export const dateAtFirstSanction = GovUKDateInputFull({
   code: 'date-at-first-sanction',
   fieldset: {
     legend: {
-      html: '<h1 class="govuk-fieldset__heading">What was the date of NAME&apos;s first sanction?</h1>',
+      text: Format('What was the date of %1 first sanction?', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -83,7 +92,10 @@ export const dateAtFirstSanction = GovUKDateInputFull({
 
 export const totalSanctionsField = GovUKTextInput({
   code: 'number-of-sanctions-for-all-offences',
-  label: { text: `How many sanctions does NAME have in total for all offences?`, classes: 'govuk-label--s' },
+  label: {
+    text: Format('How many sanctions does %1 have in total for all offences?', CaseData.Forename),
+    classes: 'govuk-label--s',
+  },
   hint: 'Include their current offence',
   classes: 'govuk-input--width-5',
   validWhen: [
@@ -96,7 +108,10 @@ export const totalSanctionsField = GovUKTextInput({
 
 export const totalViolentSanctionsField = GovUKTextInput({
   code: 'number-of-violent-sanctions',
-  label: { text: "How many of NAME's total sanctions involved violent offences?", classes: 'govuk-label--s' },
+  label: {
+    text: Format('How many of %1 total sanctions involved violent offences?', CaseData.ForenamePossessive),
+    classes: 'govuk-label--s',
+  },
   hint: 'Include their current offence',
   classes: 'govuk-input--width-5',
   validWhen: [
@@ -111,7 +126,7 @@ export const sexualOffenceHistoryField = GovUKRadioInput({
   code: 'has-ever-commited-sexual-offence',
   fieldset: {
     legend: {
-      html: '<h1 class="govuk-fieldset__heading">Has NAME ever commited a sexual or sexually motivated offence?</h1>',
+      text: Format('Has %1 ever commited a sexual or sexually motivated offence?', CaseData.Forename),
       classes: 'govuk-fieldset__legend--s',
     },
   },
