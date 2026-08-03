@@ -104,3 +104,10 @@
     baseUrl: footerBaseUrl or "/platform"
   }) }}
 {% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  {% block pageScripts %}
+    <script src="{{ '/assets/js/forms/strengths-and-needs/assets/form.js' | assetMap }}"></script>
+  {% endblock %}
+{% endblock %}
