@@ -10,8 +10,8 @@ export const startTieringAssessmentStep = step({
   blocks: [genderField, dobField, dateOfCurrentConviction, offenceCodeField, GovUKButton({ text: 'Continue' })],
   onSubmission: [
     submit({
-      validate: false,
-      onAlways: {
+      validate: true,
+      onValid: {
         effects: [TieringAssessmentEffects.InitialiseAssessment(), TieringAssessmentEffects.SaveAssessmentData()],
         next: [redirect({ goto: 'current-offence-and-offending-history' })],
       },

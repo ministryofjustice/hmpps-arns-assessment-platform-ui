@@ -86,7 +86,7 @@ export const contactSanctionsField = GovUKTextInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Offence code is a required field',
+      message: 'This is a required field',
     }),
   ],
 })
@@ -134,7 +134,7 @@ export const contactChildSanctionsField = GovUKTextInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Offence code is a required field',
+      message: 'This is a required field',
     }),
   ],
 })
@@ -231,7 +231,7 @@ export const indecentImagesOfChildrenField = GovUKTextInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Offence code is a required field',
+      message: 'This is a required field',
     }),
   ],
 })
@@ -274,7 +274,7 @@ export const nonContactField = GovUKTextInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Offence code is a required field',
+      message: 'This is a required field',
     }),
   ],
 })

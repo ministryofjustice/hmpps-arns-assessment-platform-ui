@@ -3,10 +3,10 @@ import { Answer, Data, Format, Transformer } from '@ministryofjustice/hmpps-forg
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 // const startTieringAssessmentPath = 'startTieringAssessment'
-const currentOffenceAndOffendingHistoryPath = 'current-offence-and-offending-history'
-const sexualOffendingPath = 'sexual-offending'
-const dateOfCurrentSupervisionPath = 'date-of-current-supervision'
-const offencesSinceSupervisionPath = 'offences-since-supervision'
+const currentOffenceAndOffendingHistoryPath = 'current-offence-and-offending-history#%1'
+const sexualOffendingPath = 'sexual-offending#%1'
+const dateOfCurrentSupervisionPath = 'date-of-current-supervision#%1'
+const offencesSinceSupervisionPath = 'offences-since-supervision#%1'
 export const currentOffenceHeadingField = GovUKHeading({
   text: 'Current offence details',
   size: 'm',
@@ -44,7 +44,7 @@ export const currentOffenceAndOffendingHistorySummaryListField = GovUKSummaryLis
       actions: {
         items: [
           {
-            href: currentOffenceAndOffendingHistoryPath,
+            href: Format(currentOffenceAndOffendingHistoryPath, 'date-at-first-sanction'),
             text: 'Change',
           },
         ],
@@ -56,7 +56,7 @@ export const currentOffenceAndOffendingHistorySummaryListField = GovUKSummaryLis
       actions: {
         items: [
           {
-            href: currentOffenceAndOffendingHistoryPath,
+            href: Format(currentOffenceAndOffendingHistoryPath, 'number-of-sanctions-for-all-offences'),
             text: 'Change',
           },
         ],
@@ -68,7 +68,7 @@ export const currentOffenceAndOffendingHistorySummaryListField = GovUKSummaryLis
       actions: {
         items: [
           {
-            href: currentOffenceAndOffendingHistoryPath,
+            href: Format(currentOffenceAndOffendingHistoryPath, 'number-of-violent-sanctions'),
             text: 'Change',
           },
         ],
@@ -80,7 +80,7 @@ export const currentOffenceAndOffendingHistorySummaryListField = GovUKSummaryLis
       actions: {
         items: [
           {
-            href: currentOffenceAndOffendingHistoryPath,
+            href: Format(currentOffenceAndOffendingHistoryPath, 'has-ever-commited-sexual-offence'),
             text: 'Change',
           },
         ],
@@ -102,7 +102,7 @@ export const sexualHistorySummaryListField = GovUKSummaryList({
       actions: {
         items: [
           {
-            href: sexualOffendingPath,
+            href: Format(sexualOffendingPath, 'current-offence-sexually-motivated'),
             text: 'Change',
           },
         ],
@@ -119,7 +119,7 @@ export const sexualHistorySummaryListField = GovUKSummaryList({
       actions: {
         items: [
           {
-            href: sexualOffendingPath,
+            href: Format(sexualOffendingPath, 'victim-stranger'),
             text: 'Change',
           },
         ],
@@ -138,7 +138,7 @@ export const sexualHistorySummaryListField = GovUKSummaryList({
       actions: {
         items: [
           {
-            href: sexualOffendingPath,
+            href: Format(sexualOffendingPath, 'date-of-most-recent-sexual-offence'),
             text: 'Change',
           },
         ],
@@ -165,7 +165,7 @@ export const directSexualHistorySummaryListField = GovUKSummaryList({
       actions: {
         items: [
           {
-            href: sexualOffendingPath,
+            href: Format(sexualOffendingPath, 'number-of-contact-sexual-sanctions'),
             text: 'Change',
           },
         ],
@@ -182,7 +182,7 @@ export const directSexualHistorySummaryListField = GovUKSummaryList({
       actions: {
         items: [
           {
-            href: sexualOffendingPath,
+            href: Format(sexualOffendingPath, 'number-of-contact-child-sexual-sanctions'),
             text: 'Change',
           },
         ],
@@ -209,7 +209,7 @@ export const imagesAndIndirectContactSexualHistorySummaryListField = GovUKSummar
       actions: {
         items: [
           {
-            href: sexualOffendingPath,
+            href: Format(sexualOffendingPath, 'indecent-child-images'),
             text: 'Change',
           },
         ],
@@ -226,7 +226,7 @@ export const imagesAndIndirectContactSexualHistorySummaryListField = GovUKSummar
       actions: {
         items: [
           {
-            href: sexualOffendingPath,
+            href: Format(sexualOffendingPath, 'non-contact'),
             text: 'Change',
           },
         ],
@@ -250,7 +250,7 @@ export const communitySupervisionSummaryListField = GovUKSummaryList({
       actions: {
         items: [
           {
-            href: dateOfCurrentSupervisionPath,
+            href: Format(dateOfCurrentSupervisionPath, 'date-of-current-supervision'),
             text: 'Change',
           },
         ],
@@ -278,7 +278,7 @@ export const offenceSinceSupervisionSummaryListField = GovUKSummaryList({
       actions: {
         items: [
           {
-            href: offencesSinceSupervisionPath,
+            href: Format(offencesSinceSupervisionPath, 'has-commited-offence-since-assessment-date'),
             text: 'Change',
           },
         ],
@@ -290,7 +290,7 @@ export const offenceSinceSupervisionSummaryListField = GovUKSummaryList({
       actions: {
         items: [
           {
-            href: offencesSinceSupervisionPath,
+            href: Format(offencesSinceSupervisionPath, 'most-recent-offence-date'),
             text: 'Change',
           },
         ],

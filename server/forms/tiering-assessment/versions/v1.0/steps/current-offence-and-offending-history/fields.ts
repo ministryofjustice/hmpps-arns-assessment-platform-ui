@@ -101,7 +101,7 @@ export const totalSanctionsField = GovUKTextInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Offence code is a required field',
+      message: 'This is a required field',
     }),
   ],
 })
@@ -117,7 +117,7 @@ export const totalViolentSanctionsField = GovUKTextInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Offence code is a required field',
+      message: 'This is a required field',
     }),
   ],
 })

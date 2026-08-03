@@ -54,7 +54,7 @@ export const offenceCodeField = GovUKTextInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Offence code is a required field',
+      message: 'This is a required field',
     }),
     validation({
       condition: Self().match(Condition.String.MatchesRegex('^\\d{5}$')),

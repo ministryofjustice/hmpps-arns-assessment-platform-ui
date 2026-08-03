@@ -13,7 +13,7 @@ const mostRecentOffenceDateField = GovUKDateInputFull({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Date of most recent offence is a required field',
+      message: 'This is a required field',
     }),
     validation({
       condition: Self().match(Condition.Date.IsValid()),
