@@ -1,7 +1,7 @@
 import { DomainEvent } from '../../../../services/domainEventsService'
 
 interface GoalsEventParams {
-  planUuid: string
+  planUuid?: string
   crn: string
 }
 
@@ -10,7 +10,7 @@ const buildGoalsEvent = (eventType: string, description: string, { planUuid, crn
   version: 1,
   occurredAt: new Date().toISOString(),
   description,
-  additionalInformation: { planUuid },
+  ...(planUuid ? { additionalInformation: { planUuid } } : {}),
   personReference: { identifiers: [{ type: 'CRN', value: crn }] },
 })
 
