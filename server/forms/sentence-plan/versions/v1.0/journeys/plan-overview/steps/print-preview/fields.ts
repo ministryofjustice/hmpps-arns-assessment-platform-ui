@@ -5,6 +5,7 @@ import {
   Item,
   Iterator,
   not,
+  or,
   Condition,
   Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
@@ -12,7 +13,7 @@ import { CollectionBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge
 import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { PrintGoalSummaryCard } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
-import { hasPostAgreementStatus } from '../../../../guards'
+import { hasCouldNotAnswerStatus, hasPostAgreementStatus } from '../../../../guards'
 
 type GoalStatus = 'ACTIVE' | 'FUTURE' | 'ACHIEVED' | 'REMOVED'
 
@@ -22,8 +23,12 @@ const hasLastUpdatedDetails = and(
   Data('lastUpdatedByName').match(Condition.IsRequired()),
 )
 
+/*
+ * A plan whose agreement question could not be answered is still a draft, even though
+ * COULD_NOT_ANSWER counts as a post-agreement-process status elsewhere.
+ */
 export const draftPlanWatermark = TemplateWrapper({
-  visibleWhen: not(hasPostAgreementStatus),
+  visibleWhen: or(not(hasPostAgreementStatus), hasCouldNotAnswerStatus),
   template: '<div class="draft-plan-watermark" aria-hidden="true">DRAFT</div>',
 })
 
