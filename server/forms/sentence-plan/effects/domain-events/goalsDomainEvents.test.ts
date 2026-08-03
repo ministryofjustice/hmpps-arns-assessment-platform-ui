@@ -22,6 +22,18 @@ describe('goalsDomainEvents', () => {
         personReference: { identifiers: [{ type: 'CRN', value: 'X123456' }] },
       })
     })
+
+    it('should build the goals-completed domain event without planUuid', () => {
+      const event = goalsCompletedEvent({ crn: 'X123456' })
+
+      expect(event).toEqual({
+        eventType: 'arns.sentence.plan.goals.completed',
+        version: 1,
+        occurredAt: '2026-07-30T10:00:00.000Z',
+        description: 'No more open goals',
+        personReference: { identifiers: [{ type: 'CRN', value: 'X123456' }] },
+      })
+    })
   })
 
   describe('goalsAddedEvent', () => {
