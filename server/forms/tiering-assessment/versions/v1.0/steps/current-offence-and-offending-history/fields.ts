@@ -12,7 +12,7 @@ import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 
 export const currentOffenceHeadingField = GovUKHeading({
   text: 'Current offence',
-  size: 's',
+  size: 'm',
 })
 
 export const currentOffenceInsetField = GovUKInsetText({
@@ -48,7 +48,7 @@ export const sectionBreakField = HtmlBlock({
 
 export const offenceHistoryHeadingField = GovUKHeading({
   text: 'Offence history',
-  size: 's',
+  size: 'm',
 })
 
 export const historyInsetField = GovUKInsetText({
