@@ -57,16 +57,14 @@ describe('publishGoalsDomainEvent', () => {
 
   describe('publishGoalsCompletedEvent', () => {
     it('should publish the completed event when the changed goal was the last open goal on an agreed plan', async () => {
-      // Arrange
+
       const context = createMockContext({
         latestAgreementStatus: 'AGREED',
         goals: [makeGoal({ uuid: 'changed', status: 'ACHIEVED' }), makeGoal({ uuid: 'other', status: 'REMOVED' })],
       })
 
-      // Act
       await publishGoalsCompletedEvent(deps, context, 'changed')
 
-      // Assert
       expect(deps.domainEventsService.publish).toHaveBeenCalledWith(
         expect.objectContaining({
           eventType: 'arns.sentence.plan.goals.completed',
@@ -77,57 +75,49 @@ describe('publishGoalsDomainEvent', () => {
     })
 
     it('should not publish when the plan is still DRAFT', async () => {
-      // Arrange
+
       const context = createMockContext({
         latestAgreementStatus: 'DRAFT',
         goals: [makeGoal({ uuid: 'changed', status: 'ACHIEVED' })],
       })
 
-      // Act
       await publishGoalsCompletedEvent(deps, context, 'changed')
 
-      // Assert
       expect(deps.domainEventsService.publish).not.toHaveBeenCalled()
     })
 
     it('should not publish when another goal is still open', async () => {
-      // Arrange
+
       const context = createMockContext({
         goals: [makeGoal({ uuid: 'changed', status: 'ACHIEVED' }), makeGoal({ uuid: 'other', status: 'ACTIVE' })],
       })
 
-      // Act
       await publishGoalsCompletedEvent(deps, context, 'changed')
 
-      // Assert
       expect(deps.domainEventsService.publish).not.toHaveBeenCalled()
     })
 
     it('should not publish when the crn is missing', async () => {
-      // Arrange
+
       const context = createMockContext({
         crn: null,
         goals: [makeGoal({ uuid: 'changed', status: 'ACHIEVED' })],
       })
 
-      // Act
       await publishGoalsCompletedEvent(deps, context, 'changed')
 
-      // Assert
       expect(deps.domainEventsService.publish).not.toHaveBeenCalled()
     })
 
     it('should omit planUuid when the plan identifier is not a UUID (MPoP access)', async () => {
-      // Arrange
+
       const context = createMockContext({
         planIdentifier: { type: 'EXTERNAL' },
         goals: [makeGoal({ uuid: 'changed', status: 'ACHIEVED' })],
       })
 
-      // Act
       await publishGoalsCompletedEvent(deps, context, 'changed')
 
-      // Assert
       expect(deps.domainEventsService.publish).toHaveBeenCalledWith(
         expect.not.objectContaining({ additionalInformation: expect.anything() }),
       )
@@ -136,15 +126,13 @@ describe('publishGoalsDomainEvent', () => {
 
   describe('publishGoalsAddedEvent', () => {
     it('should publish the added event when the new goal is the only open goal on an agreed plan', async () => {
-      // Arrange
+
       const context = createMockContext({
         goals: [makeGoal({ uuid: 'new', status: 'ACTIVE' }), makeGoal({ uuid: 'other', status: 'ACHIEVED' })],
       })
 
-      // Act
       await publishGoalsAddedEvent(deps, context, 'new')
 
-      // Assert
       expect(deps.domainEventsService.publish).toHaveBeenCalledWith(
         expect.objectContaining({
           eventType: 'arns.sentence.plan.goals.added',
