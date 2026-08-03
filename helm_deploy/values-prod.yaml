@@ -50,6 +50,10 @@ generic-service:
     minReplicas: 4
     maxReplicas: 8
 
+  namespace_secrets:
+    hmpps-domain-events-topic:
+      SNS_TOPIC_ARN: 'topic_arn'
+
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui
   alertSeverity: hmpps-arns-assessment-platform-prod
