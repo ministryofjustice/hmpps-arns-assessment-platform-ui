@@ -9,7 +9,6 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
-// const startTieringAssessmentPath = 'startTieringAssessment'
 const currentOffenceAndOffendingHistoryPath = 'current-offence-and-offending-history#%1'
 const sexualOffendingPath = 'sexual-offending#%1'
 const dateOfCurrentSupervisionPath = 'date-of-current-supervision#%1'
