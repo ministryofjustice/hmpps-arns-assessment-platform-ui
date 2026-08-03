@@ -39,7 +39,7 @@ export const currentOffenceAndOffendingHistoryHeadingField = GovUKHeading({
 export const currentOffenceAndOffendingHistorySummaryListField = GovUKSummaryList({
   rows: [
     {
-      key: { text: Format('What was the date of %1 first sanction ?', CaseData.ForenamePossessive) },
+      key: { text: Format('What was the date of %1 first sanction?', CaseData.ForenamePossessive) },
       value: { text: Answer('date-at-first-sanction').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })) },
       actions: {
         items: [
@@ -269,7 +269,7 @@ export const offenceSinceSupervisionSummaryListField = GovUKSummaryList({
     {
       key: {
         text: Format(
-          'Has %1 commited any offences since %2 ?',
+          'Has %1 commited any offences since %2?',
           CaseData.Forename,
           Answer('date-of-current-supervision').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
         ),
