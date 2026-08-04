@@ -7,6 +7,18 @@ import { dateOfCurrentSupervisionStep } from './steps/date-of-current-supervisio
 import { offencesSinceSupervisionStep } from './steps/offences-since-supervision/step'
 import { checkYourAnswersStep } from './steps/check-your-answers/step'
 import { reoffendingPredictorScoresStep } from './steps/reoffending-predictor-scores/step'
+import { interviewQuestionStep } from './steps/interview-question/step'
+import { accommodationStep } from './steps/accommodation/step'
+import { employmentStep } from './steps/employment/step'
+import { drugMisuseStep } from './steps/drug-misuse/step'
+import { drugUseStep } from './steps/drug-use/step'
+import { alcoholEverUsedStep } from './steps/alcohol-ever-used/step'
+import { alcoholStep } from './steps/alcohol/step'
+import { bingeDrinkingStep } from './steps/binge-drinking/step'
+import { personalRelationshipsAndCommunityStep } from './steps/personal-relationships-and-community/step'
+import { thinkingAttitudesAndBehavioursStep } from './steps/thinking-attitudes-and-behaviours/step'
+import { offenceAnalysisStep } from './steps/offence-analysis/step'
+import { previousConvictionsStep } from './steps/previous-convictions/step'
 
 export const tieringAssessmentV1Journey = journey({
   code: 'tiering-assessment-v1',
@@ -18,8 +30,21 @@ export const tieringAssessmentV1Journey = journey({
     sexualOffendingStep,
     dateOfCurrentSupervisionStep,
     offencesSinceSupervisionStep,
+    interviewQuestionStep,
+    accommodationStep,
+    employmentStep,
+    drugMisuseStep,
+    drugUseStep,
+    alcoholEverUsedStep,
+    alcoholStep,
+    bingeDrinkingStep,
+    personalRelationshipsAndCommunityStep,
+    thinkingAttitudesAndBehavioursStep,
+    offenceAnalysisStep,
+    previousConvictionsStep,
     checkYourAnswersStep,
     reoffendingPredictorScoresStep,
+
   ],
   onAccess: [
     access({

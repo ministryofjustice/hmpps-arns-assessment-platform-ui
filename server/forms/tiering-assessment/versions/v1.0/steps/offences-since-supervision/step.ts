@@ -30,7 +30,7 @@ export const offencesSinceSupervisionStep = step({
       validate: true,
       onValid: {
         effects: [TieringAssessmentEffects.SaveAssessmentData()],
-        next: [redirect({ goto: 'check-your-answers' })],
+        next: [redirect({ goto: 'interview-question' })],
       },
     }),
   ],
