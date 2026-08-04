@@ -62,3 +62,19 @@ export const offenceCodeField = GovUKTextInput({
     }),
   ],
 })
+
+export const supervisionStatusField = GovUKRadioInput({
+  code: 'supervision-status',
+  label: 'Supervision status',
+  items: [
+    { value: 'CUSTODY', text: 'Custody' },
+    { value: 'COMMUNITY', text: 'Community' },
+    { value: 'REMAND', text: 'Remand' },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: 'Supervision status is a required field',
+    }),
+  ],
+})

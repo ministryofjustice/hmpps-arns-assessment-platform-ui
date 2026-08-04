@@ -17,7 +17,10 @@ export const dateOfCurrentSupervisionStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [TieringAssessmentEffects.SaveAssessmentData()],
+        effects: [
+          TieringAssessmentEffects.CalculateRiskActuarialScores(),
+          TieringAssessmentEffects.SaveAssessmentData(),
+        ],
         next: [redirect({ goto: 'offences-since-supervision' })],
       },
     }),

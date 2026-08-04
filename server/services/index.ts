@@ -2,6 +2,7 @@ import { dataAccess } from '../data'
 import AuditService from './auditService'
 import AssessmentService from './assessmentService'
 import FeatureFlagService from './featureFlagService'
+import { RiskActuarialService } from '../forms/tiering-assessment/effects/RiskActuarialService'
 
 export const services = () => {
   const {
@@ -21,6 +22,7 @@ export const services = () => {
     coordinatorApiClient,
     handoverApiClient,
     riskActuarialApiClient,
+    riskActuarialService: new RiskActuarialService(riskActuarialApiClient),
     preferencesStore,
     auditService: new AuditService(applicationInfo.applicationName),
     assessmentService: new AssessmentService(assessmentPlatformApiClient),

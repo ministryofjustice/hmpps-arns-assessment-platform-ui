@@ -41,10 +41,13 @@ export const currentOffenceAndOffendingHistoryStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [TieringAssessmentEffects.SaveAssessmentData()],
+        effects: [
+          TieringAssessmentEffects.CalculateRiskActuarialScores(),
+          TieringAssessmentEffects.SaveAssessmentData(),
+        ],
         next: [
           redirect({
-            when: Answer('has-ever-commited-sexual-offence').match(Condition.Equals('true')),
+            when: Answer('has-ever-committed-sexual-offence').match(Condition.Equals('true')),
             goto: 'sexual-offending',
           }),
           redirect({ goto: 'date-of-current-supervision' }),
