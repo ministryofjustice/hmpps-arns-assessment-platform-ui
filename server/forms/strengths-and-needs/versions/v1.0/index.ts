@@ -1,4 +1,4 @@
-import { access, Data, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, and, Condition, Data, journey, redirect } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 import { financeJourney } from './journeys/finance'
@@ -44,6 +44,13 @@ export const strengthsAndNeedsV1Journey = journey({
         StrengthsAndNeedsEffects.loadAssessment(),
         StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
+    }),
+    access({
+      when: and(
+        Data('privacyAccepted').not.match(Condition.Equals(true)),
+        Data('sessionDetails.planAccessMode').not.match(Condition.Equals('READ_ONLY')),
+      ),
+      next: [redirect({ goto: '/strengths-and-needs/privacy' })],
     }),
   ],
   children: [

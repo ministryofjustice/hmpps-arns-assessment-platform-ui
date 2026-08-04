@@ -32,6 +32,7 @@ export const english = {
   pageTitle: {
     summary: '%1 summary',
     analysis: '%1 analysis',
+    privacy: 'Close other applications',
   },
   validation: {
     details_must_be_less_than: 'Details must be %1 characters or less',

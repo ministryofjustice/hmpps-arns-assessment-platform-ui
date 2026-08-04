@@ -48,15 +48,17 @@
     <div class="govuk-grid-column-full">
       <div class="govuk-grid-row">
         {# Left sidebar: Section navigation #}
-        <div class="govuk-grid-column-one-quarter">
-          {{ mojSideNavigation({
-            label: "Assessment sections",
-            items: activeSectionNavItems
-          }) }}
-        </div>
+        {% if not hideNavigation %}
+          <div class="govuk-grid-column-one-quarter">
+            {{ mojSideNavigation({
+              label: "Assessment sections",
+              items: activeSectionNavItems
+            }) }}
+          </div>
+        {% endif %}
 
         {# Right content: Form #}
-        <div class="govuk-grid-column-two-thirds">
+        <div class="{{ "govuk-grid-column-full" if hideNavigation else "govuk-grid-column-two-thirds" }}">
           {{ govukErrorSummary({
             titleText: "There is a problem",
             errorList: allValidationErrors | toErrorSummary
