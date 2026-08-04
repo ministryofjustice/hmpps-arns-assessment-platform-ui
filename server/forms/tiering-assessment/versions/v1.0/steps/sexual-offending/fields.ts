@@ -6,8 +6,9 @@ import {
   GovUKRadioInput,
   GovUKTextInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 export const sexualOffendingInsetField = GovUKInsetText({
   text: 'These questions calculate sexual reoffending predictor scores. Use the guidance provided to decide if an offence should be counted. Do not use your professional judgement to reclassify anf offences.',
@@ -22,7 +23,7 @@ export const currentOffenceSexualRadioField = GovUKRadioInput({
   code: 'current-offence-sexually-motivated',
   fieldset: {
     legend: {
-      html: '<h1 class="govuk-fieldset__heading">Does NAME&apos;s current offence have a sexual motivation?</h1>',
+      text: Format('Does %1 current offence have a sexual motivation?', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -43,7 +44,10 @@ export const dateOfMostRecentSexualOffenceField = GovUKDateInputFull({
   code: 'date-of-most-recent-sexual-offence',
   fieldset: {
     legend: {
-      html: '<h1 class="govuk-fieldset__heading">What is the date of NAME&apos;s most recent sanction involving a sexual or sexually motivated offence?</h1>',
+      text: Format(
+        'What is the date of %1 most recent sanction involving a sexual or sexually motivated offence?',
+        CaseData.ForenamePossessive,
+      ),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -71,7 +75,10 @@ export const directContactSexualOffendingHeadingField = GovUKHeading({
 export const contactSanctionsField = GovUKTextInput({
   code: 'number-of-contact-sexual-sanctions',
   label: {
-    text: `How many sanctions does NAME have for contact adult sexual or sexually motivated offences?`,
+    text: Format(
+      'How many sanctions does %1 have for contact adult sexual or sexually motivated offences?',
+      CaseData.Forename,
+    ),
     classes: 'govuk-label--s',
   },
   hint: 'Include their current offence',
@@ -79,7 +86,7 @@ export const contactSanctionsField = GovUKTextInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Offence code is a required field',
+      message: 'This is a required field',
     }),
   ],
 })
@@ -116,7 +123,10 @@ export const contactSexualDetailsField = GovUKDetails({
 export const contactChildSanctionsField = GovUKTextInput({
   code: 'number-of-contact-child-sexual-sanctions',
   label: {
-    text: `How many sanctions does NAME have for direct contact child sexual or sexually motivated offences?`,
+    text: Format(
+      'How many sanctions does %1 have for direct contact child sexual or sexually motivated offences?',
+      CaseData.Forename,
+    ),
     classes: 'govuk-label--s',
   },
   hint: 'Include their current offence',
@@ -124,7 +134,7 @@ export const contactChildSanctionsField = GovUKTextInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Offence code is a required field',
+      message: 'This is a required field',
     }),
   ],
 })
@@ -162,7 +172,10 @@ export const victimStrangerField = GovUKRadioInput({
   code: 'victim-stranger',
   fieldset: {
     legend: {
-      html: '<h1 class="govuk-fieldset__heading">Does NAME&apos;s current offence involve actual or attempted direct contact against a victim who was a stranger?</h1>',
+      text: Format(
+        'Does %1 current offence involve actual or attempted direct contact against a victim who was a stranger?',
+        CaseData.ForenamePossessive,
+      ),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -207,7 +220,10 @@ export const imagesAndIndirectContactHeadingField = GovUKHeading({
 export const indecentImagesOfChildrenField = GovUKTextInput({
   code: 'indecent-child-images',
   label: {
-    text: `How many sanctions does NAME have for indecent child image, or indirect contact child, sexual or sexually motivated offences?`,
+    text: Format(
+      'How many sanctions does %1 have for indecent child image, or indirect contact child, sexual or sexually motivated offences?',
+      CaseData.Forename,
+    ),
     classes: 'govuk-label--s',
   },
   hint: 'Include their current offence',
@@ -215,7 +231,7 @@ export const indecentImagesOfChildrenField = GovUKTextInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Offence code is a required field',
+      message: 'This is a required field',
     }),
   ],
 })
@@ -247,7 +263,10 @@ export const indecentImagesOfChildrenDetailsField = GovUKDetails({
 export const nonContactField = GovUKTextInput({
   code: 'non-contact',
   label: {
-    text: `How many sanctions does NAME have for other non-contact sexual or sexually motivated offences`,
+    text: Format(
+      'How many sanctions does %1 have for other non-contact sexual or sexually motivated offences?',
+      CaseData.Forename,
+    ),
     classes: 'govuk-label--s',
   },
   hint: 'Include their current offence',
@@ -255,7 +274,7 @@ export const nonContactField = GovUKTextInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Offence code is a required field',
+      message: 'This is a required field',
     }),
   ],
 })

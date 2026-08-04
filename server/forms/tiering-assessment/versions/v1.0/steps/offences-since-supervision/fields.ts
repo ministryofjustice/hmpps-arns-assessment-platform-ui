@@ -1,8 +1,8 @@
 import { GovUKDateInputFull, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer, Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
-export const mostRecentOffenceDateField = GovUKDateInputFull({
+const mostRecentOffenceDateField = GovUKDateInputFull({
   code: 'most-recent-offence-date',
   fieldset: {
     legend: {
@@ -10,10 +10,11 @@ export const mostRecentOffenceDateField = GovUKDateInputFull({
       classes: 'govuk-fieldset__legend--s',
     },
   },
+  dependentWhen: Answer('has-commited-offence-since-assessment-date').match(Condition.Equals('true')),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: 'Date of most recent offence is a required field',
+      message: 'This is a required field',
     }),
     validation({
       condition: Self().match(Condition.Date.IsValid()),
