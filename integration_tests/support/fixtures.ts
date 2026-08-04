@@ -95,6 +95,7 @@ const TARGET_SERVICE_CLIENT_IDS: Record<TargetService, string> = {
 
 export interface CreateSessionOptions {
   targetService: TargetService
+  accessMode?: AccessMode
   planAccessMode?: AccessMode
   assessmentType?: AssessmentType
   pnc?: string
@@ -281,6 +282,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
       if (options.planAccessMode) {
         sessionBuilder.withPlanAccessMode(options.planAccessMode)
+      }
+
+      if (options.accessMode) {
+        sessionBuilder.withAccessMode(options.accessMode)
       }
 
       // Handle criminogenic needs data:

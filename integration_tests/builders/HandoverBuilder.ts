@@ -121,6 +121,12 @@ export class HandoverBuilderInstance {
     return this
   }
 
+  withAccessMode(accessMode: AccessMode): this {
+    this.principal.accessMode = accessMode
+
+    return this
+  }
+
   /**
    * Set the return URL for after handover
    */

@@ -25,4 +25,21 @@ test.describe('Strengths and needs privacy screen', () => {
     await page.goto('/strengths-and-needs/v1.0/accommodation/current-accommodation')
     await expect(page).toHaveURL(/current-accommodation/)
   })
+
+  test('is skipped for a read only assessment (regardless of the plan access mode)', async ({
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+  }) => {
+    const { handoverLink } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+      accessMode: 'READ_ONLY',
+      planAccessMode: 'READ_WRITE',
+    })
+    await strengthsAndNeedsBuilder.fresh().save()
+
+    await page.goto(handoverLink)
+
+    await expect(page).toHaveURL(/current-accommodation/)
+  })
 })

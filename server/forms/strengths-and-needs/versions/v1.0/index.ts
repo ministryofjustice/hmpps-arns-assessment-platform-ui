@@ -52,7 +52,7 @@ export const strengthsAndNeedsV1Journey = journey({
     access({
       when: and(
         Data('privacyAccepted').not.match(Condition.Equals(true)),
-        Data('sessionDetails.planAccessMode').not.match(Condition.Equals('READ_ONLY')),
+        Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
       ),
       next: [redirect({ goto: '/strengths-and-needs/privacy' })],
     }),
