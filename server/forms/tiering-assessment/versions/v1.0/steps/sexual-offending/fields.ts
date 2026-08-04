@@ -6,7 +6,7 @@ import {
   GovUKRadioInput,
   GovUKTextInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Format, Self, Transformer, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
@@ -88,6 +88,14 @@ export const contactSanctionsField = GovUKTextInput({
       condition: Self().match(Condition.IsRequired()),
       message: 'This is a required field',
     }),
+    validation({
+      condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
+      message: 'Must be a whole number',
+    }),
+    validation({
+      condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThanOrEqual(0)),
+      message: 'Must be greater than or equal to 0',
+    }),
   ],
 })
 
@@ -135,6 +143,14 @@ export const contactChildSanctionsField = GovUKTextInput({
     validation({
       condition: Self().match(Condition.IsRequired()),
       message: 'This is a required field',
+    }),
+    validation({
+      condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
+      message: 'Must be a whole number',
+    }),
+    validation({
+      condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThanOrEqual(0)),
+      message: 'Must be greater than or equal to 0',
     }),
   ],
 })
@@ -233,6 +249,14 @@ export const indecentImagesOfChildrenField = GovUKTextInput({
       condition: Self().match(Condition.IsRequired()),
       message: 'This is a required field',
     }),
+    validation({
+      condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
+      message: 'Must be a whole number',
+    }),
+    validation({
+      condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThanOrEqual(0)),
+      message: 'Must be greater than or equal to 0',
+    }),
   ],
 })
 
@@ -275,6 +299,14 @@ export const nonContactField = GovUKTextInput({
     validation({
       condition: Self().match(Condition.IsRequired()),
       message: 'This is a required field',
+    }),
+    validation({
+      condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
+      message: 'Must be a whole number',
+    }),
+    validation({
+      condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThanOrEqual(0)),
+      message: 'Must be greater than or equal to 0',
     }),
   ],
 })
