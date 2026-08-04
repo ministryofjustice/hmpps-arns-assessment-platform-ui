@@ -11,6 +11,7 @@ import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
+import { isOasysAccess } from './guards'
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -31,6 +32,9 @@ export const strengthsAndNeedsV1Journey = journey({
         status: Data(section.statusKey),
         text: commonContentFor(`sectionTitle.${section.code}`),
       })),
+      buttons: {
+        showReturnToOasysButton: isOasysAccess,
+      },
     },
   },
   data: {
