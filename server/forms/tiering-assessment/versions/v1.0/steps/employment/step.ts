@@ -16,7 +16,10 @@ export const employmentStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [TieringAssessmentEffects.SaveAssessmentData()],
+        effects: [
+          TieringAssessmentEffects.CalculateRiskActuarialScores(),
+          TieringAssessmentEffects.SaveAssessmentData(),
+        ],
         next: [redirect({ goto: 'drug-misuse' })],
       },
     }),
