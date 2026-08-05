@@ -27,7 +27,7 @@ export const whoAreTheyLivingWithField = GovUKCheckboxInput({
       text: 'Partner',
     },
     {
-      value: 'person under 18 years old',
+      value: 'person-under-18-years-old',
       text: 'Person under 18 years old',
     },
     {
@@ -73,7 +73,7 @@ export const suitabilityOfAccommodationField = GovUKRadioInput({
       text: 'Yes',
     },
     {
-      value: 'yes, with concerns',
+      value: 'yes-with-concerns',
       text: 'Yes, with concerns',
     },
     {
