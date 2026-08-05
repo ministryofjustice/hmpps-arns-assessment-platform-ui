@@ -103,6 +103,14 @@ export const totalSanctionsField = GovUKTextInput({
       condition: Self().match(Condition.IsRequired()),
       message: 'This is a required field',
     }),
+    validation({
+      condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
+      message: 'Must be a whole number',
+    }),
+    validation({
+      condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
+      message: 'Must be greater than 0',
+    }),
   ],
 })
 
@@ -118,6 +126,14 @@ export const totalViolentSanctionsField = GovUKTextInput({
     validation({
       condition: Self().match(Condition.IsRequired()),
       message: 'This is a required field',
+    }),
+    validation({
+      condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
+      message: 'Must be a whole number',
+    }),
+    validation({
+      condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThanOrEqual(0)),
+      message: 'Must be greater than or equal to 0',
     }),
   ],
 })
