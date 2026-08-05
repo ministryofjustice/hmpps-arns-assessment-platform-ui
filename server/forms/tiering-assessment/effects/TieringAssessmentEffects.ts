@@ -11,6 +11,7 @@ export interface TieringAssessmentEffectShape {
   SaveAssessmentData: () => EffectFunctionExpr
   SetAssessmentComplete: () => EffectFunctionExpr
   LoadOffenceCodeDetails: () => EffectFunctionExpr
+  CalculateRiskActuarialScores: () => EffectFunctionExpr
 }
 
 export const { effects: TieringAssessmentEffects, implementations: TieringAssessmentEffectsImplementations } =
@@ -100,4 +101,8 @@ export const { effects: TieringAssessmentEffects, implementations: TieringAssess
 
       }
     },
+    CalculateRiskActuarialScores:
+      (deps: TieringAssessmentEffectsDeps) => async (context: TieringAssessmentEffectContext) => {
+        await deps.riskActuarialService.calculateAndSaveScores(context)
+      },
   })
