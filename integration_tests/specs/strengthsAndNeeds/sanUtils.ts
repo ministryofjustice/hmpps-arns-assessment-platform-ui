@@ -26,7 +26,6 @@ export const sanPageTitles = {
   healthAndWellbeing: 'Health wellbeing',
   drugUse: 'Drug use',
   personal: 'Personal Relationships: Children Information',
-  personal: 'Personal relationships: children information',
   thinking: 'Thinking, behaviours and attitudes',
 }
 

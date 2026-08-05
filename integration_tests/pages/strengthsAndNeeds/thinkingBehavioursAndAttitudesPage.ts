@@ -1,5 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import { navigateToStrengthsAndNeeds, personal, sanFormPath, thinking, v1Path } from 'specs/strengthsAndNeeds/sanUtils'
+import { navigateToStrengthsAndNeeds, sanFormPath, thinking, v1Path } from 'specs/strengthsAndNeeds/sanUtils'
 import AbstractPage from '../abstractPage'
 
 export default class ThinkingBehavioursAndAttitudesPage extends AbstractPage {
