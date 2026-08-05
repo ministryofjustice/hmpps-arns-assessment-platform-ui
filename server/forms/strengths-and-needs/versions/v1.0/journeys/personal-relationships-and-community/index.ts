@@ -1,6 +1,6 @@
 import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { Section } from '../../constants/section'
-import { commonContentFor } from '../../locales'
+import { sectionPageTitle } from '../../locales'
 import { personalRelationshipsChildrenInformationStep } from './steps/personal-relationships-children-information/step'
 import { personalRelationshipsStep } from './steps/personal-relationships/step'
 import { personalRelationshipsCommunityStep } from './steps/personal-relationships-community/step'
@@ -17,12 +17,12 @@ import { personalRelationshipsCommunityAnalysisStep } from './steps/personal-rel
 
 export const personalRelationshipsJourney = journey({
   code: Section.personal_relationships_and_community.code,
-  title: 'Personal relationships and community',
+  title: sectionPageTitle(Section.personal_relationships_and_community),
   path: Section.personal_relationships_and_community.path,
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {
     locals: {
-      sectionTitle: commonContentFor('sectionTitle.personal-relationships-and-community'),
+      sectionTitle: sectionPageTitle(Section.personal_relationships_and_community),
       sectionStatus: Data(Section.personal_relationships_and_community.statusKey),
     },
   },

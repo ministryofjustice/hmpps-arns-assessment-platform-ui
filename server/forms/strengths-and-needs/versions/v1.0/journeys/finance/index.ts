@@ -3,7 +3,7 @@ import { financeStep } from './steps/finance/step'
 import { financeSummaryStep } from './steps/finance-summary/step'
 import { financeAnalysisStep } from './steps/finance-analysis/step'
 import { Section } from '../../constants/section'
-import { commonContentFor } from '../../locales'
+import { sectionPageTitle } from '../../locales'
 
 /**
  * Finance Journey
@@ -17,11 +17,11 @@ import { commonContentFor } from '../../locales'
 export const financeJourney = journey({
   code: Section.finance.code,
   path: Section.finance.path,
-  title: 'Finance', // TODO: commonContentFor('sectionTitle.finance')
+  title: sectionPageTitle(Section.finance),
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {
     locals: {
-      sectionTitle: commonContentFor('sectionTitle.finance'),
+      sectionTitle: sectionPageTitle(Section.finance),
       sectionStatus: Data(Section.finance.statusKey),
     },
   },

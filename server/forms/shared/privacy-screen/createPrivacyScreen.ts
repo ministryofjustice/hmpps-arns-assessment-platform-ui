@@ -61,6 +61,12 @@ export interface PrivacyScreenConfig {
    * (e.g., Data('caseData.name.forename'))
    */
   personForename: ResolvableString
+
+  /**
+   * The page title
+   * (e.g., 'Close other applications')
+   */
+  title: ResolvableString
 }
 
 /**
@@ -99,17 +105,19 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
     basePath,
     headerServiceNameLink,
     personForename,
+    title,
   } = config
 
   return step({
     path: '/privacy',
-    title: 'Close other applications',
+    title,
     reachability: { entryWhen: true },
     view: {
       template,
       locals: {
         basePath,
         hideNavigation: true,
+        hideNavigationLinks: true,
         hidePreviousVersions: true,
         hideBackToTop: true,
         hmppsHeaderServiceNameLink: headerServiceNameLink,

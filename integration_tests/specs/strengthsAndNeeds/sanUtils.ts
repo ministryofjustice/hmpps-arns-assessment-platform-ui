@@ -10,6 +10,7 @@ export const accommodation = '/accommodation'
 export const employment = '/employment-and-education'
 export const health = '/health-and-wellbeing'
 export const drugUse = '/drug-use'
+export const alcohol = '/alcohol-use'
 export const personal = '/personal-relationships-and-community'
 export const thinking = '/thinking-behaviours-and-attitudes'
 
@@ -17,16 +18,18 @@ export const sentencePlanV1URLs = {
   PRIVACY_SCREEN: `${sanFormPath}${privacyStepPath}`,
   ACCOMODATION: sanFormPath + v1Path + accommodation,
   EMPLOYMENT_AND_EDUCATION: sanFormPath + v1Path + employment,
+  ALCOHOL_USE: sanFormPath + v1Path + alcohol,
 }
 
 // Page titles for san
 export const sanPageTitles = {
-  accommodation: 'Current accommodation',
-  employmentAndEducation: 'Employed',
-  healthAndWellbeing: 'Health wellbeing',
+  accommodation: 'Accommodation',
+  employmentAndEducation: 'Employment and education',
+  healthAndWellbeing: 'Health and wellbeing',
   drugUse: 'Drug use',
   personal: 'Personal Relationships: Children Information',
   thinking: 'Thinking, behaviours and attitudes',
+  alcoholUse: 'Alcohol use',
 }
 
 export const sanServiceName = 'Strengths and needs'

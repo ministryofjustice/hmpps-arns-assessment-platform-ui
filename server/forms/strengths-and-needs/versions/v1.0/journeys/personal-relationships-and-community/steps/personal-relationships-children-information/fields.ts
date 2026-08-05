@@ -12,14 +12,16 @@ const currentQContentForShortcut = 'question.personal_relationships_community_ch
 
 const childrenDetails = (
   code: string,
-  optionKey: 'YES_CHILDREN_LIVING_WITH_POP' | 'YES_CHILDREN_NOT_LIVING_WITH_POP' | 'YES_CHILDREN_VISITING',
-  optionValue: string,
+  optionKey:
+    | typeof Option.yes_children_living_with_pop
+    | typeof Option.yes_children_not_living_with_pop
+    | typeof Option.yes_children_visiting,
 ) =>
   detailsFactory({
     code,
     label: contentFor(`${currentQContentForShortcut}.option.${optionKey}.label`, CaseData.Forename),
     dependentWhen: Answer(Question.personal_relationships_community_children_details).match(
-      Condition.Array.Contains(optionValue),
+      Condition.Array.Contains(optionKey),
     ),
     requiredMessage: contentFor(`${currentQContentForShortcut}.option.${optionKey}.validation`),
   })
@@ -27,19 +29,16 @@ const childrenDetails = (
 
 const yesChildrenLivingWithPopDetails = childrenDetails(
   Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
-  'YES_CHILDREN_LIVING_WITH_POP',
   Option.yes_children_living_with_pop,
 )
 
 const yesChildrenNotLivingWithPopDetails = childrenDetails(
   Question.personal_relationships_community_children_details_yes_children_not_living_with_pop_details,
-  'YES_CHILDREN_NOT_LIVING_WITH_POP',
   Option.yes_children_not_living_with_pop,
 )
 
 const yesChildrenVisitingDetails = childrenDetails(
   Question.personal_relationships_community_children_details_yes_children_visiting_details,
-  'YES_CHILDREN_VISITING',
   Option.yes_children_visiting,
 )
 

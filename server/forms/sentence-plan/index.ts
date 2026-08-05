@@ -27,6 +27,7 @@ const privacyScreenStep = createPrivacyScreen({
   basePath: '/sentence-plan/v1.0',
   headerServiceNameLink: '/sentence-plan/v1.0/plan/overview',
   personForename: CaseData.Forename,
+  title: 'Close other applications',
 })
 
 /**

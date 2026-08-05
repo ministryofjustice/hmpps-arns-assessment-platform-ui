@@ -3,10 +3,11 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { drugsSummaryTab } from './fields'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
+import { summaryPageTitle } from '../../../../locales'
 
 export const drugUseSummaryStep = step({
   path: `/${Step.drug_use_summary.path}`,
-  title: 'Drug use summary',
+  title: summaryPageTitle(Section.drug_use),
   onAccess: [
     access({
       effects: [StrengthsAndNeedsEffects.deriveDrugCategories()],

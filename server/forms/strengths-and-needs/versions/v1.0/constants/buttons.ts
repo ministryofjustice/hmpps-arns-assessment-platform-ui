@@ -16,9 +16,9 @@ export const markAsCompleteButton = block<GovUKButton>({
   value: 'save',
 })
 
-export const goToPractitionerAnalysisButton = (sectionSummaryPath: string) =>
+export const goToPractitionerAnalysisButton = (sectionSummaryPath: string, anchor = 'practitioner-analysis') =>
   GovUKLinkButton({
     text: commonContentFor('go_to_practitioner_analysis'),
-    href: `${sectionSummaryPath}#practitioner-analysis`,
+    href: `${sectionSummaryPath}#${anchor}`,
     classes: 'govuk-button--secondary',
   })

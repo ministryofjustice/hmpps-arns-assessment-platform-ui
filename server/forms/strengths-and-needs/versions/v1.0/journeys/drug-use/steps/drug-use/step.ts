@@ -7,6 +7,7 @@ import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { sectionTitleClass } from '../../../../constants/formVersion'
+import { sectionPageTitle } from '../../../../locales'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -16,7 +17,7 @@ const saveButton = GovUKButton({
 
 export const drugUseStep = step({
   path: `/${Step.drug_use.path}`,
-  title: 'Drug use',
+  title: sectionPageTitle(Section.drug_use),
   reachability: { entryWhen: true },
   view: {
     locals: {

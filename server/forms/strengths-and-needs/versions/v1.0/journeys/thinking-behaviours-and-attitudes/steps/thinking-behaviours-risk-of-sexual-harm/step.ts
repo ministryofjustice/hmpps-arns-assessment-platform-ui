@@ -6,13 +6,13 @@ import { Question } from '../../constants/question'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { contentFor } from '../../locales'
-import { commonContentFor } from '../../../../locales'
+import { commonContentFor, sectionPageTitle } from '../../../../locales'
 import { sectionPath } from '../../../../constants/path'
 import { CommonOption } from '../../../../constants/commonOption'
 
 export const thinkingBehavioursRiskOfSexualHarmStep = step({
   path: `/${Step.thinkingBehavioursRiskOfSexualHarm.path}`,
-  title: contentFor('step.thinking_behaviours_risk_of_sexual_harm'),
+  title: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
   view: {
     locals: {
       sectionTitle: contentFor('step.thinking_behaviours_sexual_harm'),

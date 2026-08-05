@@ -1,17 +1,24 @@
 import { GovUKCharacterCount, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Answer,
+  ChainableExpr,
+  Condition,
+  Self,
+  Transformer,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { CommonOption } from '../../../../constants/commonOption'
 import { CaseData } from '../../../../constants/formVersion'
-import { contentFor, prcShortcut } from '../../locales'
+import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
 import { detailsFactory } from '../../detailsFactory'
 import { CharacterLimit } from '../../../../constants/characterLimit'
 
 // --- Reusable helpers ---
 
-const radioDetails = (code: string, parentQuestion: string, optionValue: string, hint?: string) =>
+const radioDetails = (code: string, parentQuestion: string, optionValue: string, hint?: ChainableExpr<string>) =>
   detailsFactory({
     code,
     label: commonContentFor('optional_details'),
@@ -23,8 +30,6 @@ const changesDetails = (code: string, optionValue: string) =>
   radioDetails(code, Question.personal_relationships_community_changes, optionValue)
 
 // --- Current Relationship Status ---
-
-const currentRelationshipContentFor = `${prcShortcut}current_relationship`
 
 const happyRelationshipDetails = radioDetails(
   Question.personal_relationships_community_current_relationship_happy_relationship_details,
@@ -48,112 +53,136 @@ export const currentRelationship = GovUKRadioInput({
   code: Question.personal_relationships_community_current_relationship,
   fieldset: {
     legend: {
-      text: contentFor(`${currentRelationshipContentFor}.text`, CaseData.Forename),
+      text: contentFor('question.personal_relationships_community_current_relationship.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
   items: [
     {
       value: Option.happy_relationship,
-      text: contentFor(`${currentRelationshipContentFor}.option.HAPPY_RELATIONSHIP.text`),
+      text: contentFor('question.personal_relationships_community_current_relationship.option.HAPPY_RELATIONSHIP.text'),
       block: happyRelationshipDetails,
     },
     {
       value: Option.concerns_happy_relationship,
-      text: contentFor(`${currentRelationshipContentFor}.option.CONCERNS_HAPPY_RELATIONSHIP.text`),
+      text: contentFor(
+        'question.personal_relationships_community_current_relationship.option.CONCERNS_HAPPY_RELATIONSHIP.text',
+      ),
       block: concernsRelationshipDetails,
     },
     {
       value: Option.unhappy_relationship,
-      text: contentFor(`${currentRelationshipContentFor}.option.UNHAPPY_RELATIONSHIP.text`),
+      text: contentFor(
+        'question.personal_relationships_community_current_relationship.option.UNHAPPY_RELATIONSHIP.text',
+      ),
       block: unhappyRelationshipDetails,
     },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${currentRelationshipContentFor}.validation`),
+      message: contentFor('question.personal_relationships_community_current_relationship.validation'),
     }),
   ],
 })
 
 // --- Intimate Relationship History ---
 
-const intimateRelationshipContentFor = `${prcShortcut}intimate_relationship`
-
 const stableIntimateDetails = radioDetails(
   Question.personal_relationships_community_intimate_relationship_stable_relationships_details,
   Question.personal_relationships_community_intimate_relationship,
   Option.stable_relationships,
-  'Consider patterns and quality of any significant relationships.',
+  contentFor('question.personal_relationships_community_intimate_relationship.option.STABLE_RELATIONSHIPS.detailsHint'),
 )
 
 const mixedIntimateDetails = radioDetails(
   Question.personal_relationships_community_intimate_relationship_positive_and_negative_relationships_details,
   Question.personal_relationships_community_intimate_relationship,
   Option.positive_and_negative_relationships,
-  'Consider patterns and quality of any significant relationships.',
+  contentFor(
+    'question.personal_relationships_community_intimate_relationship.option.POSITIVE_AND_NEGATIVE_RELATIONSHIPS.detailsHint',
+  ),
 )
 
 const unstableIntimateDetails = radioDetails(
   Question.personal_relationships_community_intimate_relationship_unstable_relationships_details,
   Question.personal_relationships_community_intimate_relationship,
   Option.unstable_relationships,
-  'Consider patterns and quality of any significant relationships.',
+  contentFor(
+    'question.personal_relationships_community_intimate_relationship.option.UNSTABLE_RELATIONSHIPS.detailsHint',
+  ),
 )
 
 export const intimateRelationship = GovUKRadioInput({
   code: Question.personal_relationships_community_intimate_relationship,
   fieldset: {
     legend: {
-      text: contentFor(`${intimateRelationshipContentFor}.text`, CaseData.ForenamePossessive),
+      text: contentFor(
+        'question.personal_relationships_community_intimate_relationship.text',
+        CaseData.ForenamePossessive,
+      ),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: contentFor(`${intimateRelationshipContentFor}.hint`),
+  hint: contentFor('question.personal_relationships_community_intimate_relationship.hint'),
   items: [
     {
       value: Option.stable_relationships,
-      text: contentFor(`${intimateRelationshipContentFor}.option.STABLE_RELATIONSHIPS.text`),
-      hint: { text: contentFor(`${intimateRelationshipContentFor}.option.STABLE_RELATIONSHIPS.hint`) },
+      text: contentFor(
+        'question.personal_relationships_community_intimate_relationship.option.STABLE_RELATIONSHIPS.text',
+      ),
+      hint: {
+        text: contentFor(
+          'question.personal_relationships_community_intimate_relationship.option.STABLE_RELATIONSHIPS.hint',
+        ),
+      },
       block: stableIntimateDetails,
     },
     {
       value: Option.positive_and_negative_relationships,
-      text: contentFor(`${intimateRelationshipContentFor}.option.POSITIVE_AND_NEGATIVE_RELATIONSHIPS.text`),
+      text: contentFor(
+        'question.personal_relationships_community_intimate_relationship.option.POSITIVE_AND_NEGATIVE_RELATIONSHIPS.text',
+      ),
       block: mixedIntimateDetails,
     },
     {
       value: Option.unstable_relationships,
-      text: contentFor(`${intimateRelationshipContentFor}.option.UNSTABLE_RELATIONSHIPS.text`),
-      hint: { text: contentFor(`${intimateRelationshipContentFor}.option.UNSTABLE_RELATIONSHIPS.hint`) },
+      text: contentFor(
+        'question.personal_relationships_community_intimate_relationship.option.UNSTABLE_RELATIONSHIPS.text',
+      ),
+      hint: {
+        text: contentFor(
+          'question.personal_relationships_community_intimate_relationship.option.UNSTABLE_RELATIONSHIPS.hint',
+        ),
+      },
       block: unstableIntimateDetails,
     },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${intimateRelationshipContentFor}.validation`),
+      message: contentFor('question.personal_relationships_community_intimate_relationship.validation'),
     }),
   ],
 })
 
 // --- Challenges in Intimate Relationships ---
 
-const challengesIntimateRelationshipContentFor = `${prcShortcut}challenges_intimate_relationship`
-
 const challengesIntimateRelationship = GovUKCharacterCount({
   code: Question.personal_relationships_community_challenges_intimate_relationship,
   label: {
-    text: contentFor(`${challengesIntimateRelationshipContentFor}.text`, CaseData.Forename),
+    text: contentFor(
+      'question.personal_relationships_community_challenges_intimate_relationship.text',
+      CaseData.Forename,
+    ),
     classes: 'govuk-label--m',
   },
-  hint: contentFor(`${challengesIntimateRelationshipContentFor}.hint`),
+  hint: contentFor('question.personal_relationships_community_challenges_intimate_relationship.hint'),
   maxLength: CharacterLimit.c2000,
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${challengesIntimateRelationshipContentFor}.validation`),
+      message: contentFor('question.personal_relationships_community_challenges_intimate_relationship.validation'),
     }),
     validation({
       condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
@@ -163,8 +192,6 @@ const challengesIntimateRelationship = GovUKCharacterCount({
 })
 
 // --- Parental Responsibilities (conditional on important_people containing CHILD_PARENTAL_RESPONSIBILITIES) ---
-
-const parentalContentFor = `${prcShortcut}parental_responsibilities`
 
 const hasParentalResponsibilities = Answer(Question.personal_relationships_community_important_people).match(
   Condition.Array.Contains(Option.child_parental_responsibilities),
@@ -194,43 +221,41 @@ export const parentalResponsibilities = GovUKRadioInput({
   dependentWhen: hasParentalResponsibilities,
   fieldset: {
     legend: {
-      text: contentFor(`${parentalContentFor}.text`, CaseData.Forename),
+      text: contentFor('question.personal_relationships_community_parental_responsibilities.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: contentFor(`${parentalContentFor}.hint`),
+  hint: contentFor('question.personal_relationships_community_parental_responsibilities.hint'),
   items: [
     {
       value: CommonOption.yes,
-      text: contentFor(`${parentalContentFor}.option.YES.text`),
+      text: contentFor('question.personal_relationships_community_parental_responsibilities.option.YES.text'),
       block: parentalYesDetails,
     },
     {
       value: Option.sometimes,
-      text: contentFor(`${parentalContentFor}.option.SOMETIMES.text`),
+      text: contentFor('question.personal_relationships_community_parental_responsibilities.option.SOMETIMES.text'),
       block: parentalSometimesDetails,
     },
     {
       value: CommonOption.no,
-      text: contentFor(`${parentalContentFor}.option.NO.text`),
+      text: contentFor('question.personal_relationships_community_parental_responsibilities.option.NO.text'),
       block: parentalNoDetails,
     },
     {
       value: CommonOption.unknown,
-      text: contentFor(`${parentalContentFor}.option.UNKNOWN.text`),
+      text: commonContentFor('option.UNKNOWN'),
     },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${parentalContentFor}.validation`),
+      message: contentFor('question.personal_relationships_community_parental_responsibilities.validation'),
     }),
   ],
 })
 
 // --- Family Relationship ---
-
-const familyRelationshipContentFor = `${prcShortcut}family_relationship`
 
 const stableFamilyDetails = radioDetails(
   Question.personal_relationships_community_family_relationship_stable_relationship_details,
@@ -254,44 +279,51 @@ export const familyRelationship = GovUKRadioInput({
   code: Question.personal_relationships_community_family_relationship,
   fieldset: {
     legend: {
-      text: contentFor(`${familyRelationshipContentFor}.text`, CaseData.ForenamePossessive),
+      text: contentFor(
+        'question.personal_relationships_community_family_relationship.text',
+        CaseData.ForenamePossessive,
+      ),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: contentFor(`${familyRelationshipContentFor}.hint`),
+  hint: contentFor('question.personal_relationships_community_family_relationship.hint'),
   items: [
     {
       value: Option.stable_relationship,
-      text: contentFor(`${familyRelationshipContentFor}.option.STABLE_RELATIONSHIP.text`),
+      text: contentFor('question.personal_relationships_community_family_relationship.option.STABLE_RELATIONSHIP.text'),
       block: stableFamilyDetails,
     },
     {
       value: Option.mixed_relationship,
-      text: contentFor(`${familyRelationshipContentFor}.option.MIXED_RELATIONSHIP.text`),
+      text: contentFor('question.personal_relationships_community_family_relationship.option.MIXED_RELATIONSHIP.text'),
       block: mixedFamilyDetails,
     },
     {
       value: Option.unstable_relationship,
-      text: contentFor(`${familyRelationshipContentFor}.option.UNSTABLE_RELATIONSHIP.text`),
-      hint: { text: contentFor(`${familyRelationshipContentFor}.option.UNSTABLE_RELATIONSHIP.hint`) },
+      text: contentFor(
+        'question.personal_relationships_community_family_relationship.option.UNSTABLE_RELATIONSHIP.text',
+      ),
+      hint: {
+        text: contentFor(
+          'question.personal_relationships_community_family_relationship.option.UNSTABLE_RELATIONSHIP.hint',
+        ),
+      },
       block: unstableFamilyDetails,
     },
     {
       value: CommonOption.unknown,
-      text: contentFor(`${familyRelationshipContentFor}.option.UNKNOWN.text`),
+      text: commonContentFor('option.UNKNOWN'),
     },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${familyRelationshipContentFor}.validation`),
+      message: contentFor('question.personal_relationships_community_family_relationship.validation'),
     }),
   ],
 })
 
 // --- Childhood Experience ---
-
-const childhoodContentFor = `${prcShortcut}childhood`
 
 const positiveChildhoodDetails = radioDetails(
   Question.personal_relationships_community_childhood_positive_childhood_details,
@@ -315,40 +347,38 @@ export const childhood = GovUKRadioInput({
   code: Question.personal_relationships_community_childhood,
   fieldset: {
     legend: {
-      text: contentFor(`${childhoodContentFor}.text`, CaseData.ForenamePossessive),
+      text: contentFor('question.personal_relationships_community_childhood.text', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: contentFor(`${childhoodContentFor}.hint`),
+  hint: contentFor('question.personal_relationships_community_childhood.hint'),
   items: [
     {
       value: Option.positive_childhood,
-      text: contentFor(`${childhoodContentFor}.option.POSITIVE_CHILDHOOD.text`),
+      text: contentFor('question.personal_relationships_community_childhood.option.POSITIVE_CHILDHOOD.text'),
       block: positiveChildhoodDetails,
     },
     {
       value: Option.mixed_childhood,
-      text: contentFor(`${childhoodContentFor}.option.MIXED_CHILDHOOD.text`),
+      text: contentFor('question.personal_relationships_community_childhood.option.MIXED_CHILDHOOD.text'),
       block: mixedChildhoodDetails,
     },
     {
       value: Option.negative_childhood,
-      text: contentFor(`${childhoodContentFor}.option.NEGATIVE_CHILDHOOD.text`),
-      hint: { text: contentFor(`${childhoodContentFor}.option.NEGATIVE_CHILDHOOD.hint`) },
+      text: contentFor('question.personal_relationships_community_childhood.option.NEGATIVE_CHILDHOOD.text'),
+      hint: { text: contentFor('question.personal_relationships_community_childhood.option.NEGATIVE_CHILDHOOD.hint') },
       block: negativeChildhoodDetails,
     },
   ],
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${childhoodContentFor}.validation`),
+      message: contentFor('question.personal_relationships_community_childhood.validation'),
     }),
   ],
 })
 
 // --- Childhood Behavioural Problems ---
-
-const childhoodBehaviourContentFor = `${prcShortcut}childhood_behaviour`
 
 const yesChildhoodBehaviourDetails = radioDetails(
   Question.personal_relationships_community_childhood_behaviour_yes_details,
@@ -366,11 +396,11 @@ export const childhoodBehaviour = GovUKRadioInput({
   code: Question.personal_relationships_community_childhood_behaviour,
   fieldset: {
     legend: {
-      text: contentFor(`${childhoodBehaviourContentFor}.text`, CaseData.Forename),
+      text: contentFor('question.personal_relationships_community_childhood_behaviour.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: contentFor(`${childhoodBehaviourContentFor}.hint`),
+  hint: contentFor('question.personal_relationships_community_childhood_behaviour.hint'),
   items: [
     {
       value: CommonOption.yes,
@@ -386,22 +416,20 @@ export const childhoodBehaviour = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor(`${childhoodBehaviourContentFor}.validation`),
+      message: contentFor('question.personal_relationships_community_childhood_behaviour.validation'),
     }),
   ],
 })
 
 // --- Belonging (optional) ---
 
-const belongingContentFor = `${prcShortcut}belonging`
-
 const belonging = GovUKCharacterCount({
   code: Question.personal_relationships_community_belonging,
   label: {
-    text: contentFor(`${belongingContentFor}.text`, CaseData.Forename),
+    text: contentFor('question.personal_relationships_community_belonging.text', CaseData.Forename),
     classes: 'govuk-label--m',
   },
-  hint: contentFor(`${belongingContentFor}.hint`),
+  hint: contentFor('question.personal_relationships_community_belonging.hint'),
   maxLength: CharacterLimit.c2000,
   validWhen: [
     validation({
@@ -412,8 +440,6 @@ const belonging = GovUKCharacterCount({
 })
 
 // --- Changes ---
-
-const changesContentFor = `${prcShortcut}changes`
 
 const hasMadeChangesDetails = changesDetails(
   Question.personal_relationships_community_changes_made_changes_details,
@@ -448,7 +474,7 @@ export const changes = GovUKRadioInput({
   code: Question.personal_relationships_community_changes,
   fieldset: {
     legend: {
-      text: contentFor(`${changesContentFor}.text`, CaseData.Forename),
+      text: contentFor('question.personal_relationships_community_changes.text', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
@@ -496,7 +522,10 @@ export const changes = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: commonContentFor('validation.select_changes', 'personal relationships and community'),
+      message: commonContentFor(
+        'validation.select_changes',
+        commonContentFor('sectionTitle.personal-relationships-and-community').pipe(Transformer.String.ToLowerCase()),
+      ),
     }),
   ],
 })

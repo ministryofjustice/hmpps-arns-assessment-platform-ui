@@ -1,8 +1,9 @@
-import { access, Data, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, and, Condition, Data, journey, redirect } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 import { financeJourney } from './journeys/finance'
 import { drugUseJourney } from './journeys/drug-use'
+import { alcoholUseJourney } from './journeys/alcohol-use'
 import { StrengthsAndNeedsEffects } from '../../effects'
 import { Section } from './constants/section'
 import { basePath, formVersion } from './constants/formVersion'
@@ -10,6 +11,7 @@ import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
+import { isOasysAccess } from './guards'
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -30,6 +32,9 @@ export const strengthsAndNeedsV1Journey = journey({
         status: Data(section.statusKey),
         text: commonContentFor(`sectionTitle.${section.code}`),
       })),
+      buttons: {
+        showReturnToOasysButton: isOasysAccess,
+      },
     },
   },
   data: {
@@ -44,12 +49,20 @@ export const strengthsAndNeedsV1Journey = journey({
         StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
     }),
+    access({
+      when: and(
+        Data('privacyAccepted').not.match(Condition.Equals(true)),
+        Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
+      ),
+      next: [redirect({ goto: '/strengths-and-needs/privacy' })],
+    }),
   ],
   children: [
     accommodationJourney,
     employmentJourney,
-    drugUseJourney,
     financeJourney,
+    drugUseJourney,
+    alcoholUseJourney,
     healthWellbeingJourney,
     personalRelationshipsJourney,
     thinkingBehavioursAndAttitudesJourney,
