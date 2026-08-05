@@ -1,93 +1,15 @@
-import { Answer } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKBody, GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { employmentStatusSummary, strengthsProtectiveFactors } from '../employment-education-summary/fields'
-import { CaseData } from '../../../../constants/formVersion'
-import { Question } from '../../constants/question'
+import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { employmentStatusSummary } from '../employment-education-summary/fields'
+import { employmentEducationSection } from '../../section'
 import { Step } from '../../constants/step'
 import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
-import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
-import { CommonOption } from '../../../../constants/commonOption'
-import { getDisplayTextForItems } from '../../../../../../i18n'
-
-// --- Practitioner Analysis Summary Group ---
-
-const yesNoItems = [
-  { text: commonContentFor('option.YES'), value: CommonOption.yes },
-  { text: commonContentFor('option.NO'), value: CommonOption.no },
-]
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
-    {
-      key: {
-        text: contentFor(
-          'question.employment_education_strengths_protective_factors.text',
-          CaseData.ForenamePossessive,
-        ),
-      },
-      value: {
-        blocks: [
-          getDisplayTextForItems(
-            Question.employment_education_strengths_protective_factors,
-            strengthsProtectiveFactors.items,
-          ),
-          GovUKBody({ text: Answer(Question.employment_education_strengths_protective_factors_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.employment_education_no_strengths_protective_factors_details), size: 's' }),
-        ].flat(),
-      },
-      actions: {
-        items: [
-          {
-            href: `${Step.employment_education_summary.path}#practitioner-analysis`,
-            text: commonContentFor('change'),
-            visuallyHiddenText: 'name',
-          },
-        ],
-      },
-    },
-    {
-      key: {
-        text: contentFor('question.employment_education_linked_to_serious_harm.text', CaseData.ForenamePossessive),
-      },
-      value: {
-        blocks: [
-          getDisplayTextForItems(Question.employment_education_linked_to_serious_harm, yesNoItems),
-          GovUKBody({ text: Answer(Question.employment_education_serious_harm_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.employment_education_no_serious_harm_details), size: 's' }),
-        ].flat(),
-      },
-      actions: {
-        items: [
-          {
-            href: `${Step.employment_education_summary.path}#practitioner-analysis`,
-            text: commonContentFor('change'),
-            visuallyHiddenText: 'name',
-          },
-        ],
-      },
-    },
-    {
-      key: {
-        text: contentFor('question.employment_education_linked_to_reoffending.text', CaseData.ForenamePossessive),
-      },
-      value: {
-        blocks: [
-          getDisplayTextForItems(Question.employment_education_linked_to_reoffending, yesNoItems),
-          GovUKBody({ text: Answer(Question.employment_education_risk_of_reoffending_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.employment_education_no_risk_of_reoffending_details), size: 's' }),
-        ].flat(),
-      },
-      actions: {
-        items: [
-          {
-            href: `${Step.employment_education_summary.path}#practitioner-analysis`,
-            text: commonContentFor('change'),
-            visuallyHiddenText: 'name',
-          },
-        ],
-      },
-    },
+    employmentEducationSection.fields.strengthsOrProtectiveFactors.displayModes.summaryRow,
+    employmentEducationSection.fields.riskOfSeriousHarm.displayModes.summaryRow,
+    employmentEducationSection.fields.riskOfReoffending.displayModes.summaryRow,
   ],
 })
 

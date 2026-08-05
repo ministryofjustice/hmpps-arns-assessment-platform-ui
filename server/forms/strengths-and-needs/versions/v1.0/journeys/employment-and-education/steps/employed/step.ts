@@ -1,17 +1,6 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import {
-  academicQualification,
-  dayToDayCommitments,
-  difficultiesReadingWritingNumeracy,
-  educationExperience,
-  employmentAndEducationChanges,
-  employmentExperience,
-  employmentHistory,
-  employmentSector,
-  jobSkills,
-  professionalQualifications,
-} from './fields'
+import { employmentEducationSection } from '../../section'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
@@ -27,16 +16,16 @@ export const employedEmploymentStep = step({
     },
   },
   blocks: [
-    employmentSector,
-    employmentHistory,
-    dayToDayCommitments,
-    academicQualification,
-    professionalQualifications,
-    jobSkills,
-    difficultiesReadingWritingNumeracy,
-    employmentExperience,
-    educationExperience,
-    employmentAndEducationChanges,
+    employmentEducationSection.fields.employmentSector.displayModes.field,
+    employmentEducationSection.fields.employmentHistory.displayModes.field,
+    employmentEducationSection.fields.dayToDayCommitments.displayModes.field,
+    employmentEducationSection.fields.academicQualification.displayModes.field,
+    employmentEducationSection.fields.professionalQualification.displayModes.field,
+    employmentEducationSection.fields.jobSkills.displayModes.field,
+    employmentEducationSection.fields.difficultiesReadingWritingNumeracy.displayModes.field,
+    employmentEducationSection.fields.employmentExperience.displayModes.field,
+    employmentEducationSection.fields.educationExperience.displayModes.field,
+    employmentEducationSection.fields.changes.displayModes.field,
     saveButton,
   ],
   onSubmission: [
