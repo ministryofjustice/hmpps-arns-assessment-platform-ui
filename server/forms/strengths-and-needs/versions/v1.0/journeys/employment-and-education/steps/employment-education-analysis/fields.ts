@@ -7,10 +7,15 @@ import { Step } from '../../constants/step'
 import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
 import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
-import { linkedToReoffending, linkedToSeriousHarm } from '../../../finance/steps/finance-summary/fields'
+import { CommonOption } from '../../../../constants/commonOption'
 import { getDisplayTextForItems } from '../../../../../../i18n'
 
 // --- Practitioner Analysis Summary Group ---
+
+const yesNoItems = [
+  { text: commonContentFor('option.YES'), value: CommonOption.yes },
+  { text: commonContentFor('option.NO'), value: CommonOption.no },
+]
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
@@ -47,7 +52,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       },
       value: {
         blocks: [
-          getDisplayTextForItems(Question.employment_education_linked_to_serious_harm, linkedToSeriousHarm.items),
+          getDisplayTextForItems(Question.employment_education_linked_to_serious_harm, yesNoItems),
           GovUKBody({ text: Answer(Question.employment_education_serious_harm_details), size: 's' }),
           GovUKBody({ text: Answer(Question.employment_education_no_serious_harm_details), size: 's' }),
         ].flat(),
@@ -68,7 +73,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
       },
       value: {
         blocks: [
-          getDisplayTextForItems(Question.employment_education_linked_to_reoffending, linkedToReoffending.items),
+          getDisplayTextForItems(Question.employment_education_linked_to_reoffending, yesNoItems),
           GovUKBody({ text: Answer(Question.employment_education_risk_of_reoffending_details), size: 's' }),
           GovUKBody({ text: Answer(Question.employment_education_no_risk_of_reoffending_details), size: 's' }),
         ].flat(),

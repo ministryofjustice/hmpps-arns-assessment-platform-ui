@@ -1,13 +1,6 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import {
-  financeBankAccount,
-  financeChanges,
-  financeDebt,
-  financeGambling,
-  financeIncome,
-  financeMoneyManagement,
-} from './fields'
+import { financeSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
@@ -18,12 +11,12 @@ export const financeStep = step({
   title: sectionPageTitle(Section.finance),
   reachability: { entryWhen: true },
   blocks: [
-    financeIncome,
-    financeBankAccount,
-    financeMoneyManagement,
-    financeGambling,
-    financeDebt,
-    financeChanges,
+    financeSection.fields.income.displayModes.field,
+    financeSection.fields.bankAccount.displayModes.field,
+    financeSection.fields.moneyManagement.displayModes.field,
+    financeSection.fields.gambling.displayModes.field,
+    financeSection.fields.debt.displayModes.field,
+    financeSection.fields.changes.displayModes.field,
     saveButton,
   ],
   view: {
