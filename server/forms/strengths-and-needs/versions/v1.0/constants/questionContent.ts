@@ -437,7 +437,13 @@ const revealedAnswerBlocksOf = (content: OptionedQuestionContent): BlockDefiniti
             ...getDisplayTextForItems(revealed.content.code, summaryItemsOf(revealed.content.options), { size: 's' }),
             ...revealedAnswerBlocksOf(revealed.content),
           ]
-        : [GovUKBody({ text: Answer(revealed.content.code), size: 's' })],
+        : [
+            GovUKBody({
+              text: Answer(revealed.content.code),
+              size: 's',
+              visibleWhen: Answer(revealed.content.code).match(Condition.IsRequired()),
+            }),
+          ],
     ),
   )
 
