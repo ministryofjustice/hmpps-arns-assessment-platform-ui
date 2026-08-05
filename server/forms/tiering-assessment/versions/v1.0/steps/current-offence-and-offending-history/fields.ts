@@ -139,7 +139,7 @@ export const totalViolentSanctionsField = GovUKTextInput({
 })
 
 export const sexualOffenceHistoryField = GovUKRadioInput({
-  code: 'has-ever-commited-sexual-offence',
+  code: 'has-ever-committed-sexual-offence',
   fieldset: {
     legend: {
       text: Format('Has %1 ever commited a sexual or sexually motivated offence?', CaseData.Forename),
