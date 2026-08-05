@@ -100,6 +100,9 @@ export interface OptionedQuestionContent extends QuestionContent {
 export interface QuestionOption {
   value: string
   text: ResolvableString
+  // Wording for the summary when the option label alone would lose meaning out
+  // of context (e.g. a bare "Yes" under a differently-worded parent question).
+  summaryText?: ResolvableString
   hint?: ResolvableString
   behaviour?: 'exclusive'
   visibleWhen?: PredicateExpr
@@ -254,19 +257,21 @@ export const radioField =
 /**
  * Projects a revealed question into a radio group shown under its parent
  * option. The legend class is the caller's because a revealed radio usually
- * sits under an option label that already states the question — hence
- * `govuk-visually-hidden` rather than a heading style.
+ * sits under an option label that already states the question — pass
+ * `govuk-visually-hidden` rather than a heading style, or nothing when the
+ * plain legend is wanted.
  */
 export const radioDetails =
-  (options: { legendClasses: string }) => (content: OptionedQuestionContent, parent: ParentOption) =>
+  (options: { legendClasses?: string } = {}) =>
+  (content: OptionedQuestionContent, parent: ParentOption) =>
     GovUKRadioInput(
       definedPropsOf({
         code: content.code,
         fieldset: {
-          legend: {
+          legend: definedPropsOf({
             text: content.text,
             classes: options.legendClasses,
-          },
+          }),
         },
         items: itemsOf(content, option => Answer(content.code).match(Condition.Equals(option.value))),
         dependentWhen: parent.selectedWhen,
@@ -304,6 +309,29 @@ export const checkboxField =
         validWhen: requiredValidationOf(content),
       }),
     )
+
+/**
+ * Projects a revealed question into a checkbox group shown under its parent
+ * option. Rendered without a legend: the parent option's label states the
+ * question, so the content's text exists for the question inventory rather
+ * than the page.
+ */
+export const checkboxDetails = () => (content: OptionedQuestionContent, parent: ParentOption) =>
+  GovUKCheckboxInput(
+    definedPropsOf({
+      code: content.code,
+      multiple: true,
+      hint: content.hint,
+      items: itemsOf(content, option =>
+        and(
+          Answer(content.code).match(Condition.IsRequired()),
+          Answer(content.code).match(Condition.Array.Contains(option.value)),
+        ),
+      ),
+      dependentWhen: parent.selectedWhen,
+      validWhen: requiredValidationOf(content),
+    }),
+  )
 
 /**
  * Projects question content into a standalone character count. Required-ness
@@ -375,13 +403,32 @@ export const summaryRow =
       },
     })
 
+// Option entries as the summary should label them: `summaryText` where declared.
+const summaryItemsOf = (options: QuestionOptionEntry[]) =>
+  options.map(entry => (isQuestionOption(entry) && entry.summaryText ? { ...entry, text: entry.summaryText } : entry))
+
+// The answers beneath a question on the summary, recursively: option labels
+// for optioned reveals (then whatever those options reveal in turn), the
+// verbatim answer otherwise.
+const revealedAnswerBlocksOf = (content: OptionedQuestionContent): BlockDefinition[] =>
+  optionsOf(content).flatMap(option =>
+    revealedQuestionsOf(option).flatMap(revealed =>
+      isOptioned(revealed.content)
+        ? [
+            ...getDisplayTextForItems(revealed.content.code, summaryItemsOf(revealed.content.options), { size: 's' }),
+            ...revealedAnswerBlocksOf(revealed.content),
+          ]
+        : [GovUKBody({ text: Answer(revealed.content.code), size: 's' })],
+    ),
+  )
+
 /**
  * Read-only summary row in the itemised style: every option label rendered
  * as its own conditionally-visible body (single- and multi-select alike),
  * followed by the answers to the questions the options reveal — option
- * labels again for optioned reveals, the verbatim answer otherwise. The
- * change link anchors to the question on its step, and can carry the
- * question text as visually hidden context.
+ * labels again for optioned reveals (recursively, for reveals of reveals),
+ * the verbatim answer otherwise. The change link anchors to the question on
+ * its step, and can carry the question text as visually hidden context.
  */
 export const itemisedSummaryRow =
   (placement: { changePath: string; visibleWhen?: PredicateExpr; changeVisuallyHiddenText?: boolean }) =>
@@ -391,14 +438,8 @@ export const itemisedSummaryRow =
       visibleWhen: placement.visibleWhen,
       value: {
         blocks: [
-          ...getDisplayTextForItems(content.code, content.options),
-          ...optionsOf(content).flatMap(option =>
-            revealedQuestionsOf(option).flatMap(revealed =>
-              isOptioned(revealed.content)
-                ? getDisplayTextForItems(revealed.content.code, revealed.content.options, { size: 's' })
-                : [GovUKBody({ text: Answer(revealed.content.code), size: 's' })],
-            ),
-          ),
+          ...getDisplayTextForItems(content.code, summaryItemsOf(content.options)),
+          ...revealedAnswerBlocksOf(content),
         ],
       },
       actions: {
