@@ -27,7 +27,7 @@ export const sanPageTitles = {
   employmentAndEducation: 'Employment and education',
   healthAndWellbeing: 'Health and wellbeing',
   drugUse: 'Drug use',
-  personal: 'Personal Relationships: Children Information',
+  personal: 'Personal relationships and community',
   thinking: 'Thinking, behaviours and attitudes',
   alcoholUse: 'Alcohol use',
 }
