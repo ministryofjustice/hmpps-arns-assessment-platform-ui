@@ -1,6 +1,6 @@
 import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { uuidSummaryField } from './fields'
+import { currentEmploymentStatusField } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 
 export const employmentStep = step({
@@ -11,7 +11,7 @@ export const employmentStep = step({
       effects: [TieringAssessmentEffects.LoadAssessmentData()],
     }),
   ],
-  blocks: [uuidSummaryField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [currentEmploymentStatusField, GovUKButton({ text: 'Save and continue' })],
   onSubmission: [
     submit({
       validate: true,
