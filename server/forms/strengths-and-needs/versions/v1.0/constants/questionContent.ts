@@ -3,6 +3,8 @@ import {
   Answer,
   ChainableExpr,
   Condition,
+  not,
+  or,
   PipelineExpr,
   PredicateExpr,
   Self,
@@ -13,9 +15,11 @@ import {
   GovUKBody,
   GovUKCharacterCount,
   GovUKCheckboxInput,
+  GovUKDateInputFull,
   GovUKRadioInput,
   GovUKSummaryList,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { StrengthsAndNeedsTransformers } from '../../../transformers'
 
 import { CharacterLimit } from './characterLimit'
 import { CommonOption } from './commonOption'
@@ -103,7 +107,8 @@ export interface QuestionOption {
   // Wording for the summary when the option label alone would lose meaning out
   // of context (e.g. a bare "Yes" under a differently-worded parent question).
   summaryText?: ResolvableString
-  hint?: ResolvableString
+  // The object form renders the hint as HTML instead of escaped text.
+  hint?: ResolvableString | { html: ResolvableString }
   behaviour?: 'exclusive'
   visibleWhen?: PredicateExpr
   reveals?: RevealedQuestion | RevealedQuestion[]
@@ -176,13 +181,21 @@ const revealedBlocksOf = (option: QuestionOption, parent: Omit<ParentOption, 'op
   return blocks.length ? blocks : undefined
 }
 
+const optionHintOf = (hint: QuestionOption['hint']) => {
+  if (!hint) {
+    return undefined
+  }
+
+  return typeof hint === 'object' && 'html' in hint ? hint : { text: hint }
+}
+
 const itemsOf = (content: OptionedQuestionContent, selectedWhen: (option: QuestionOption) => PredicateExpr) =>
   content.options.map(entry =>
     isQuestionOption(entry)
       ? definedPropsOf({
           value: entry.value,
           text: entry.text,
-          hint: entry.hint ? { text: entry.hint } : undefined,
+          hint: optionHintOf(entry.hint),
           behaviour: entry.behaviour,
           visibleWhen: entry.visibleWhen,
           block: revealedBlocksOf(entry, { parentCode: content.code, selectedWhen: selectedWhen(entry) }),
@@ -312,26 +325,32 @@ export const checkboxField =
 
 /**
  * Projects a revealed question into a checkbox group shown under its parent
- * option. Rendered without a legend: the parent option's label states the
- * question, so the content's text exists for the question inventory rather
- * than the page.
+ * option. Rendered without a legend by default — the parent option's label
+ * states the question, so the content's text exists for the question
+ * inventory rather than the page. Pass `legendClasses` (usually
+ * `govuk-visually-hidden`) to render the text as a legend after all.
  */
-export const checkboxDetails = () => (content: OptionedQuestionContent, parent: ParentOption) =>
-  GovUKCheckboxInput(
-    definedPropsOf({
-      code: content.code,
-      multiple: true,
-      hint: content.hint,
-      items: itemsOf(content, option =>
-        and(
-          Answer(content.code).match(Condition.IsRequired()),
-          Answer(content.code).match(Condition.Array.Contains(option.value)),
+export const checkboxDetails =
+  (options: { legendClasses?: string } = {}) =>
+  (content: OptionedQuestionContent, parent: ParentOption) =>
+    GovUKCheckboxInput(
+      definedPropsOf({
+        code: content.code,
+        multiple: true,
+        fieldset: options.legendClasses
+          ? { legend: { text: content.text, classes: options.legendClasses } }
+          : undefined,
+        hint: content.hint,
+        items: itemsOf(content, option =>
+          and(
+            Answer(content.code).match(Condition.IsRequired()),
+            Answer(content.code).match(Condition.Array.Contains(option.value)),
+          ),
         ),
-      ),
-      dependentWhen: parent.selectedWhen,
-      validWhen: requiredValidationOf(content),
-    }),
-  )
+        dependentWhen: parent.selectedWhen,
+        validWhen: requiredValidationOf(content),
+      }),
+    )
 
 /**
  * Projects question content into a standalone character count. Required-ness
@@ -421,6 +440,86 @@ const revealedAnswerBlocksOf = (content: OptionedQuestionContent): BlockDefiniti
         : [GovUKBody({ text: Answer(revealed.content.code), size: 's' })],
     ),
   )
+
+const hasAnyDatePart = () =>
+  and(
+    Self().match(Condition.Object.IsObject()),
+    or(
+      Self().match(Condition.Object.PropertyHasValue('day')),
+      Self().match(Condition.Object.PropertyHasValue('month')),
+      Self().match(Condition.Object.PropertyHasValue('year')),
+    ),
+  )
+
+const hasAllDateParts = () =>
+  and(
+    Self().match(Condition.Object.IsObject()),
+    Self().match(Condition.Object.PropertyHasValue('day')),
+    Self().match(Condition.Object.PropertyHasValue('month')),
+    Self().match(Condition.Object.PropertyHasValue('year')),
+  )
+
+// A date that may be left empty, but once any part is entered must be a
+// complete, valid, future date. Each incomplete part gets its own message
+// anchored to its field.
+const optionalFutureDateValidations = () => [
+  validation({
+    condition: not(and(hasAnyDatePart(), Self().not.match(Condition.Object.PropertyHasValue('day')))),
+    message: commonContentFor('validation.valid_date_day'),
+    details: { field: 'day' },
+  }),
+  validation({
+    condition: not(and(hasAnyDatePart(), Self().not.match(Condition.Object.PropertyHasValue('month')))),
+    message: commonContentFor('validation.valid_date_month'),
+    details: { field: 'month' },
+  }),
+  validation({
+    condition: not(and(hasAnyDatePart(), Self().not.match(Condition.Object.PropertyHasValue('year')))),
+    message: commonContentFor('validation.valid_date_year'),
+    details: { field: 'year' },
+  }),
+  validation({
+    condition: not(hasAllDateParts()),
+    message: commonContentFor('validation.valid_date'),
+  }),
+  validation({
+    condition: not(
+      and(
+        Self().match(Condition.IsRequired()),
+        Self().not.match(Condition.Object.IsObject()),
+        Self().not.match(Condition.Date.IsValid()),
+      ),
+    ),
+    message: commonContentFor('validation.valid_date'),
+  }),
+  validation({
+    condition: not(
+      and(
+        Self().match(Condition.IsRequired()),
+        Self().not.match(Condition.Object.IsObject()),
+        Self().match(Condition.Date.IsValid()),
+        Self().not.match(Condition.Date.IsFutureDate()),
+      ),
+    ),
+    message: commonContentFor('validation.future_date'),
+  }),
+]
+
+/**
+ * Projects a revealed question into a full date input shown under its parent
+ * option. The date is optional, but a started date must be complete, valid,
+ * and in the future; the answer is stored as an ISO date string.
+ */
+export const optionalFutureDateDetails = () => (content: QuestionContent, parent: ParentOption) =>
+  GovUKDateInputFull({
+    code: content.code,
+    fieldset: {
+      legend: { text: content.text },
+    },
+    dependentWhen: parent.selectedWhen,
+    formatters: [StrengthsAndNeedsTransformers.ToISO()],
+    validWhen: optionalFutureDateValidations(),
+  })
 
 /**
  * Read-only summary row in the itemised style: every option label rendered
@@ -519,7 +618,7 @@ export const textSummaryRow =
 export const revealedQuestion = <TContent extends QuestionContent>(definition: {
   content: TContent
   displayModes: { field: (content: TContent, parent: ParentOption) => BlockDefinition }
-}): RevealedQuestion => definition
+}): RevealedQuestion & { content: TContent } => definition
 
 /**
  * Applies each display mode to the question's content. This is what stands in
@@ -712,11 +811,17 @@ export const stableQuestionsOf = (section: SectionDefinition): QuestionContent[]
  * A required free-text reveal: "Give details", with the validation message
  * shown when the revealing option is selected but the details are left empty.
  */
-export const requiredDetails = (content: { code: string; validationMessage: ResolvableString; maxLength?: number }) =>
+export const requiredDetails = (content: {
+  code: string
+  validationMessage: ResolvableString
+  hint?: ResolvableString
+  maxLength?: number
+}) =>
   revealedQuestion({
     content: {
       code: content.code,
       text: commonContentFor('required_details'),
+      hint: content.hint,
       validationMessage: content.validationMessage,
     },
     displayModes: { field: characterCountDetails({ maxLength: content.maxLength ?? CharacterLimit.c2000 }) },
