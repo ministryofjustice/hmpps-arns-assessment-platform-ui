@@ -59,14 +59,14 @@ test.describe('Thinking behaviours and attitudes Page', () => {
           - text: Has limited problem solving skills
           - radio "No, has poor problem solving skills and is unable to identify what steps to take to solve a problem"
           - text: No, has poor problem solving skills and is unable to identify what steps to take to solve a problem
-        - group "Does Test understand other people's views?":
-          - text: Does Test understand other people's views?
-          - radio "Yes, understands other people's views and is able to distinguish between their own feelings and those of others"
-          - text: Yes, understands other people's views and is able to distinguish between their own feelings and those of others
-          - radio "Assumes all views are the same as theirs at first but does consider other people's views to an extent"
-          - text: Assumes all views are the same as theirs at first but does consider other people's views to an extent
-          - radio "No, unable to understand other people's views and distinguish between their own feelings and those of others"
-          - text: No, unable to understand other people's views and distinguish between their own feelings and those of others
+        - group "Does Test understand other people’s views?":
+          - text: Does Test understand other people’s views?
+          - radio "Yes, understands other people’s views and is able to distinguish between their own feelings and those of others"
+          - text: Yes, understands other people’s views and is able to distinguish between their own feelings and those of others
+          - radio "Assumes all views are the same as theirs at first but does consider other people’s views to an extent"
+          - text: Assumes all views are the same as theirs at first but does consider other people’s views to an extent
+          - radio "No, unable to understand other people’s views and distinguish between their own feelings and those of others"
+          - text: No, unable to understand other people’s views and distinguish between their own feelings and those of others
         - group "Does Test show manipulative behaviour or a predatory lifestyle?":
           - text: Does Test show manipulative behaviour or a predatory lifestyle?
           - radio "Generally gives an honest account of their lives and has no history of showing manipulative behaviour or a predatory lifestyle"
@@ -109,8 +109,8 @@ test.describe('Thinking behaviours and attitudes Page', () => {
           - text: No, has a negative attitude and there are safety concerns
         - group "Does Test have hostile orientation to others or to general rules?":
           - text: Does Test have hostile orientation to others or to general rules?
-          - radio "They're able to have constructive conversations when they disagree with others and can forgive past wrongs"
-          - text: They're able to have constructive conversations when they disagree with others and can forgive past wrongs
+          - radio "They’re able to have constructive conversations when they disagree with others and can forgive past wrongs"
+          - text: They’re able to have constructive conversations when they disagree with others and can forgive past wrongs
           - radio "Some evidence of suspicious, angry or vengeful thinking and behaviour"
           - text: Some evidence of suspicious, angry or vengeful thinking and behaviour
           - radio "There is evidence of suspicious, angry and vengeful thinking and behaviour"
@@ -198,11 +198,10 @@ test.describe('Thinking behaviours and attitudes Page', () => {
 
       await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
         - group "Are there any concerns that Test poses a risk of sexual harm to others?":
-          - /children: equal
           - text: Are there any concerns that Test poses a risk of sexual harm to others?
-          - radio "Yes"
-          - text: Yes Information suggests that there is evidence of sexual behaviour that could pose a risk of sexual harm to others
-          - radio "No"
+          - radio "Yes" [checked]
+          - text: Yes Information suggests that there is evidence of sexual behaviour that could pose a risk of sexual harm to others.
+          - radio "No" [disabled]
           - text: "No"
         - button "Save and continue"
       `)
@@ -255,7 +254,7 @@ test.describe('Thinking behaviours and attitudes Page', () => {
           - text: Are there any concerns that Test poses a risk of sexual harm to others?
           - strong: Warning Test does not have any current or previous sexual or sexually motivated offences
           - radio "Yes"
-          - text: Yes Information suggests that there is evidence of sexual behaviour that could pose a risk of sexual harm to others
+          - text: Yes Information suggests that there is evidence of sexual behaviour that could pose a risk of sexual harm to others.
           - radio "No"
           - text: "No"
         - button "Save and continue"
@@ -321,7 +320,7 @@ test.describe('Thinking behaviours and attitudes Page', () => {
           - radio "Shows some evidence of healthy sexual activity including consensual sex but shows behaviour that is recurrent and persistent or an interest in sexual activity that is illegal or harmful"
           - text: Shows some evidence of healthy sexual activity including consensual sex but shows behaviour that is recurrent and persistent or an interest in sexual activity that is illegal or harmful
           - radio "No, they have healthy sexual interests rather than a preference for sexual activity that is illegal or harmful"
-          - text: No, they have healthy sexual interests rather than a preference for sexual activity that is illegal or harmful No, they have healthy sexual interests rather than a preference for sexual activity that is illegal or harmful
+          - text: No, they have healthy sexual interests rather than a preference for sexual activity that is illegal or harmful While offending, they may have engaged in sexual activity that is illegal but their preferred route to meeting their sexual needs is both legal and consensual.
           - radio "Unknown"
           - text: Unknown
         - group "Is there evidence Test finds it easier to seek emotional intimacy with children over adults?":
@@ -421,9 +420,9 @@ test.describe('Thinking behaviours and attitudes Page', () => {
           - definition:
             - link "Change":
               - /url: thinking-behaviours
-          - term: Does Test understand other people's views?
+          - term: Does Test understand other people’s views?
           - definition:
-            - paragraph: Yes, understands other people's views and is able to distinguish between their own feelings and those of others
+            - paragraph: Yes, understands other people’s views and is able to distinguish between their own feelings and those of others
           - definition:
             - link "Change":
               - /url: thinking-behaviours
@@ -459,7 +458,7 @@ test.describe('Thinking behaviours and attitudes Page', () => {
               - /url: thinking-behaviours
           - term: Does Test have hostile orientation to others or to general rules?
           - definition:
-            - paragraph: They're able to have constructive conversations when they disagree with others and can forgive past wrongs
+            - paragraph: They’re able to have constructive conversations when they disagree with others and can forgive past wrongs
           - definition:
             - link "Change":
               - /url: thinking-behaviours

@@ -79,13 +79,13 @@ export default class ThinkingBehavioursAndAttitudesPage extends AbstractPage {
       name: 'Select if they engage in activities that could link to offending',
     })
     this.errorResilientToPeerPressure = page.getByRole('link', {
-      name: "Select if they're resilient towards peer pressure or influence by criminal associates",
+      name: 'Select if they’re resilient towards peer pressure or influence by criminal associates',
     })
     this.errorAbleToSolveProblems = page.getByRole('link', {
       name: 'Select if they are able to solve problems in a positive way',
     })
     this.errorUnderstandsPeoplesViews = page.getByRole('link', {
-      name: "Select if they understand other people's views",
+      name: 'Select if they understand other people’s views',
     })
     this.errorManipulativeOrPredatory = page.getByRole('link', {
       name: 'Select if they show manipulative behaviour or a predatory lifestyle',
@@ -124,7 +124,7 @@ export default class ThinkingBehavioursAndAttitudesPage extends AbstractPage {
       name: 'Yes, is able to solve problems and identify appropriate solutions',
     })
     this.yesUnderstandsPeoplesViews = page.getByRole('radio', {
-      name: "Yes, understands other people's views and is able to distinguish between their own feelings and those of others",
+      name: 'Yes, understands other people’s views and is able to distinguish between their own feelings and those of others',
     })
     this.yesHonestAccountNoManipulative = page.getByRole('radio', {
       name: 'Generally gives an honest account of their lives and has no history of showing manipulative behaviour or a predatory lifestyle',
@@ -138,7 +138,7 @@ export default class ThinkingBehavioursAndAttitudesPage extends AbstractPage {
     })
     this.yesHasAPositiveAttitude = page.getByRole('radio', { name: 'Yes, has a positive attitude' })
     this.yesConstructiveConversationsAndForgives = page.getByRole('radio', {
-      name: "They're able to have constructive conversations when they disagree with others and can forgive past wrongs",
+      name: 'They’re able to have constructive conversations when they disagree with others and can forgive past wrongs',
     })
     this.yesAcceptsSupervision = page.getByRole('radio', {
       name: 'Accepts supervision and has responded well to supervision in the past',
