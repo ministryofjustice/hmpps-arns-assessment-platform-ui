@@ -18,7 +18,7 @@ test.describe('Errors', () => {
     await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible()
   })
 
-  test('Access denied', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+  test('Access denied', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
     const { handoverLink } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
       accessMode: 'READ_ONLY',
