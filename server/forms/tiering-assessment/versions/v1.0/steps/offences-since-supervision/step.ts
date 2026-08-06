@@ -15,7 +15,7 @@ import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 export const offencesSinceSupervisionStep = step({
   path: '/offences-since-supervision',
   title: Format(
-    'Has %1 commited any offences since %2?',
+    'Has %1 committed any offences since %2?',
     CaseData.Forename,
     Answer('date-of-current-supervision').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   ),

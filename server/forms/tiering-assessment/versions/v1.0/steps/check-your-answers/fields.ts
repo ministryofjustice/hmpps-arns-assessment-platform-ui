@@ -13,7 +13,7 @@ const currentOffenceAndOffendingHistoryPath = 'current-offence-and-offending-his
 const sexualOffendingPath = 'sexual-offending#%1'
 const dateOfCurrentSupervisionPath = 'date-of-current-supervision#%1'
 const offencesSinceSupervisionPath = 'offences-since-supervision#%1'
-const shouldShowSexualRelatedFields = Answer('has-ever-commited-sexual-offence').match(Condition.Equals('true'))
+const shouldShowSexualRelatedFields = Answer('has-ever-committed-sexual-offence').match(Condition.Equals('true'))
 export const currentOffenceHeadingField = GovUKHeading({
   text: 'Current offence details',
   size: 'm',
@@ -82,10 +82,10 @@ export const currentOffenceAndOffendingHistorySummaryListField = GovUKSummaryLis
       },
     },
     {
-      key: { text: Format('Has %1 ever commited a sexual or sexually motivated offence?', CaseData.Forename) },
+      key: { text: Format('Has %1 ever committed a sexual or sexually motivated offence?', CaseData.Forename) },
       value: {
         text: Conditional({
-          when: Answer('has-ever-commited-sexual-offence').match(Condition.Equals('true')),
+          when: Answer('has-ever-committed-sexual-offence').match(Condition.Equals('true')),
           then: 'Yes',
           else: 'No',
         }),
@@ -93,7 +93,7 @@ export const currentOffenceAndOffendingHistorySummaryListField = GovUKSummaryLis
       actions: {
         items: [
           {
-            href: Format(currentOffenceAndOffendingHistoryPath, 'has-ever-commited-sexual-offence'),
+            href: Format(currentOffenceAndOffendingHistoryPath, 'has-ever-committed-sexual-offence'),
             text: 'Change',
           },
         ],
@@ -300,14 +300,14 @@ export const offenceSinceSupervisionSummaryListField = GovUKSummaryList({
     {
       key: {
         text: Format(
-          'Has %1 commited any offences since %2?',
+          'Has %1 committed any offences since %2?',
           CaseData.Forename,
           Answer('date-of-current-supervision').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
         ),
       },
       value: {
         text: Conditional({
-          when: Answer('has-commited-offence-since-assessment-date').match(Condition.Equals('true')),
+          when: Answer('has-committed-offence-since-assessment-date').match(Condition.Equals('true')),
           then: 'Yes',
           else: 'No',
         }),
@@ -315,7 +315,7 @@ export const offenceSinceSupervisionSummaryListField = GovUKSummaryList({
       actions: {
         items: [
           {
-            href: Format(offencesSinceSupervisionPath, 'has-commited-offence-since-assessment-date'),
+            href: Format(offencesSinceSupervisionPath, 'has-committed-offence-since-assessment-date'),
             text: 'Change',
           },
         ],
