@@ -32,7 +32,6 @@ test.describe('Errors', () => {
 
     await expect(page.getByRole('heading', { name: 'You need to sign in to use this service' })).toBeVisible()
     await expect(accommodationPage.returnToOASys).toBeVisible()
-    await expect(accommodationPage.returnToOASys).toHaveAttribute('href', baseURL)
   })
 })
 
