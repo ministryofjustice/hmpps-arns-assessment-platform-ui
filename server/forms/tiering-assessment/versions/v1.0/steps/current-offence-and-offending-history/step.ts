@@ -1,4 +1,4 @@
-import { access, Answer, Condition, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, and, Answer, Condition, Format, not, or, Query, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   currentOffenceHeadingField,
   currentOffenceInsetField,
@@ -13,7 +13,10 @@ import {
   totalViolentSanctionsField,
 } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { continueButton, redirectToCheckYourAnswers } from '../../common'
+import { checkYourAnswersQuery, continueButton, returnToAnswersQueryText } from '../../common'
+
+const hasSexualOffenceHistory = Answer('has-ever-committed-sexual-offence').match(Condition.Equals('true'))
+const hasSexualOffencesFieldsPopulated = Answer('current-offence-sexually-motivated').match(Condition.IsRequired())
 
 export const currentOffenceAndOffendingHistoryStep = step({
   path: '/current-offence-and-offending-history',
@@ -46,13 +49,20 @@ export const currentOffenceAndOffendingHistoryStep = step({
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
         next: [
-          redirectToCheckYourAnswers,
           redirect({
-            when: Answer('has-ever-committed-sexual-offence').match(Condition.Equals('true')),
+            when: and(checkYourAnswersQuery, hasSexualOffenceHistory, not(hasSexualOffencesFieldsPopulated)),
+            goto: Format('sexual-offending%1', returnToAnswersQueryText),
+          }),
+          redirect({
+            when: checkYourAnswersQuery,
+            goto: 'check-your-answers',
+          }),
+          redirect({
+            when: hasSexualOffenceHistory,
             goto: 'sexual-offending',
           }),
           redirect({ goto: 'date-of-current-supervision' }),
-        ],
+        ]
       },
     }),
   ],
