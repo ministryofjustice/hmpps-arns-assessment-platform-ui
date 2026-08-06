@@ -80,7 +80,11 @@ export const currentOffenceAndOffendingHistorySummaryListField = GovUKSummaryLis
       actions: {
         items: [
           {
-            href: Format(currentOffenceAndOffendingHistoryPath, returnToAnswersQueryText, '#number-of-violent-sanctions'),
+            href: Format(
+              currentOffenceAndOffendingHistoryPath,
+              returnToAnswersQueryText,
+              '#number-of-violent-sanctions',
+            ),
             text: 'Change',
           },
         ],
