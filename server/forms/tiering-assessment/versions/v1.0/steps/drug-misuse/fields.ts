@@ -4,7 +4,7 @@ import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core
 export const drugMisuseField = GovUKRadioInput({
   code: 'ever-misused-drugs',
   hint: {
-    text: 'This includes illegal and prescriptin drugs.',
+    text: 'This includes illegal and prescription drugs.',
   },
   items: [
     {
