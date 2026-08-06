@@ -1,7 +1,7 @@
 import { RiskActuarialService } from './RiskActuarialService'
 import RiskActuarialApiClient from '../../../data/riskActuarialApiClient'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
-import { RiskScores, SupervisionStatus } from '../../../interfaces/risk-actuarial-api/riskScores'
+import { ProblemLevel, RiskScores, SupervisionStatus } from '../../../interfaces/risk-actuarial-api/riskScores'
 
 describe('RiskActuarialService', () => {
   let service: RiskActuarialService
@@ -170,8 +170,126 @@ describe('RiskActuarialService', () => {
       totalNonContactSexualOffences: 0,
       dateOfMostRecentSexualOffence: '2010-06-20',
       isCurrentOffenceAgainstVictimStranger: true,
+      isUnemployed: null,
+      suitabilityOfAccommodation: null,
     })
 
+    expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-score', '0.45')
+    expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-band', 'MEDIUM')
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-all-reoffending-predictor-errors',
+      JSON.stringify(mockApiStaticResponse.actuarialPredictors.allPredictor.validationErrors),
+    )
+
+    expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-violent-reoffending-predictor-score', '0.12')
+    expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-violent-reoffending-predictor-band', 'LOW')
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-violent-reoffending-predictor-errors',
+      JSON.stringify(mockApiStaticResponse.actuarialPredictors.violentPredictor.validationErrors),
+    )
+
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-direct-contact-sexual-reoffending-predictor-score',
+      '0.02',
+    )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-direct-contact-sexual-reoffending-predictor-band',
+      'LOW',
+    )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-direct-contact-sexual-reoffending-predictor-errors',
+      '[]',
+    )
+
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-indirect-contact-sexual-reoffending-predictor-score',
+      '0.01',
+    )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-indirect-contact-sexual-reoffending-predictor-band',
+      'LOW',
+    )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-indirect-contact-sexual-reoffending-predictor-errors',
+      '[]',
+    )
+
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-serious-violent-reoffending-predictor-score',
+      '0.08',
+    )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-serious-violent-reoffending-predictor-band', 'LOW')
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-serious-violent-reoffending-predictor-errors',
+      JSON.stringify(mockApiStaticResponse.actuarialPredictors.seriousViolentPredictor.validationErrors),
+    )
+
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-combined-serious-reoffending-predictor-score',
+      '0.15',
+    )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-combined-serious-reoffending-predictor-band',
+      'MEDIUM',
+    )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-combined-serious-reoffending-predictor-errors',
+      '[]',
+    )
+  })
+
+  it('should build dynamic input correctly, call API, and save outputs to context', async () => {
+    // TODO add more answers to this as pages are built
+    const answers: Record<string, unknown> = {
+      gender: 'MALE',
+      'date-of-birth': '1990-05-15',
+      'date-at-first-sanction': '2010-06-20',
+      'date-of-current-conviction': '2025-01-10',
+      'date-of-current-supervision': '2025-02-01',
+      'number-of-sanctions-for-all-offences': 5,
+      'offence-code': '05600',
+      'number-of-violent-sanctions': 2,
+      'supervision-status': 'COMMUNITY',
+      'most-recent-offence-date': '2024-11-30',
+      'has-ever-committed-sexual-offence': 'YES',
+      'number-of-contact-sexual-sanctions': 1,
+      'number-of-contact-child-sexual-sanctions': 0,
+      'indecent-child-images': 0,
+      'non-contact': 0,
+      'date-of-most-recent-sexual-offence': '2010-06-20',
+      'victim-stranger': 'true',
+      'suitability-of-accommodation': 'SOME_PROBLEMS',
+      'is-unemployed': 'true',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    // TODO add more expected request values to this as pages are built
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith({
+      gender: 'MALE',
+      dateOfBirth: '1990-05-15',
+      dateOfCurrentConviction: '2025-01-10',
+      dateAtStartOfFollowup: '2025-02-01',
+      totalNumberOfSanctionsForAllOffences: 5,
+      ageAtFirstSanction: 20,
+      currentOffenceCode: '05600',
+      totalNumberOfViolentSanctions: 2,
+      supervisionStatus: 'COMMUNITY' as SupervisionStatus,
+      mostRecentOffenceDate: '2024-11-30',
+      hasEverCommittedSexualOffence: true,
+      totalContactAdultSexualSanctions: 1,
+      totalContactChildSexualSanctions: 0,
+      totalIndecentImageSanctions: 0,
+      totalNonContactSexualOffences: 0,
+      dateOfMostRecentSexualOffence: '2010-06-20',
+      isCurrentOffenceAgainstVictimStranger: true,
+      suitabilityOfAccommodation: 'SOME_PROBLEMS' as ProblemLevel,
+      isUnemployed: true,
+    })
+
+    // TODO responses will change when enough answers provided
     expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-score', '0.45')
     expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-band', 'MEDIUM')
     expect(mockContext.setAnswer).toHaveBeenCalledWith(
@@ -272,6 +390,8 @@ describe('RiskActuarialService', () => {
       totalNonContactSexualOffences: null,
       dateOfMostRecentSexualOffence: null,
       isCurrentOffenceAgainstVictimStranger: null,
+      isUnemployed: null,
+      suitabilityOfAccommodation: null,
     })
   })
 
@@ -292,6 +412,24 @@ describe('RiskActuarialService', () => {
     expect(mockContext.setAnswer).not.toHaveBeenCalledWith(
       'risk-scores-violent-reoffending-predictor-score',
       expect.anything(),
+    )
+  })
+
+  it('should handle unknown values and resolve them as null', async () => {
+    const answers: Record<string, unknown> = {
+      'suitability-of-accommodation': 'unknown',
+      'is-unemployed': 'unknown',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        suitabilityOfAccommodation: null,
+        isUnemployed: null,
+      }),
     )
   })
 })

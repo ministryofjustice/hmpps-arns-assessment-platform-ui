@@ -2,30 +2,30 @@ import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components
 import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 export const currentEmploymentStatusField = GovUKRadioInput({
-  code: 'employment-status',
+  code: 'is-unemployed',
   items: [
     {
-      value: 'employed',
+      value: 'false',
       text: 'Employed',
     },
     {
-      value: 'self-employed',
+      value: 'false',
       text: 'Self-employed',
     },
     {
-      value: 'retired',
+      value: 'false',
       text: 'Retired',
     },
     {
-      value: 'currently-unavailable-for-work',
+      value: 'false',
       text: 'Currently unavailable for work',
     },
     {
-      value: 'unemployed-actively-looking-for-work',
+      value: 'true',
       text: 'Unemployed - actively looking for work',
     },
     {
-      value: 'unemployed-not-actively-looking-for-work',
+      value: 'true',
       text: 'Unemployed - not actively looking for work',
     },
     {

@@ -1,20 +1,32 @@
-import { GovUKSummaryList } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Session } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 
-export const uuidSummaryField = GovUKSummaryList({
-  card: {
-    title: {
-      text: 'Assessment',
-    },
+export const drugMisuseField = GovUKRadioInput({
+  code: 'ever-misused-drugs',
+  hint: {
+    text: 'This includes illegal and prescriptin drugs.',
   },
-  rows: [
+  items: [
     {
-      key: { text: 'UUID' },
-      value: { text: Session('assessmentUuid') },
+      value: 'true',
+      text: 'Yes',
     },
     {
-      key: { text: 'BRANCHING LOGIC STEP' },
-      value: { text: 'check ticket and design for path branching logic on this step' },
+      value: 'false',
+      text: 'No',
     },
+    {
+      divider: 'or',
+    },
+    {
+      value: 'unknown',
+      text: 'Unknown',
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: 'This is a required field',
+    }),
   ],
 })

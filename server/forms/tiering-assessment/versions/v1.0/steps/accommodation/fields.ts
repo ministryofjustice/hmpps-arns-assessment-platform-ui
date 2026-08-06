@@ -69,15 +69,15 @@ export const suitabilityOfAccommodationField = GovUKRadioInput({
   },
   items: [
     {
-      value: 'yes',
+      value: 'NO_PROBLEMS',
       text: 'Yes',
     },
     {
-      value: 'yes-with-concerns',
+      value: 'SOME_PROBLEMS',
       text: 'Yes, with concerns',
     },
     {
-      value: 'no',
+      value: 'SIGNIFICANT_PROBLEMS',
       text: 'No',
     },
     {
