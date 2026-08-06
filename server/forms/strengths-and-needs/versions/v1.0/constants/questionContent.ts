@@ -298,7 +298,7 @@ export const radioDetails =
  * membership rather than equality.
  */
 export const checkboxField =
-  (placement: FieldPlacement = {}) =>
+  (placement: FieldPlacement & { legendClasses?: string } = {}) =>
   (content: OptionedQuestionContent) =>
     GovUKCheckboxInput(
       definedPropsOf({
@@ -307,7 +307,7 @@ export const checkboxField =
         fieldset: {
           legend: {
             text: content.text,
-            classes: 'govuk-fieldset__legend--m',
+            classes: placement.legendClasses ?? 'govuk-fieldset__legend--m',
           },
         },
         hint: content.hint,
