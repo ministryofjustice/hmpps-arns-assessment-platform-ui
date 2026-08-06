@@ -1,6 +1,11 @@
 import RiskActuarialApiClient from '../../../data/riskActuarialApiClient'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
-import { RiskScoreInput, RiskScores, SupervisionStatus } from '../../../interfaces/risk-actuarial-api/riskScores'
+import {
+  ProblemLevel,
+  RiskScoreInput,
+  RiskScores,
+  SupervisionStatus,
+} from '../../../interfaces/risk-actuarial-api/riskScores'
 
 export class RiskActuarialService {
   constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) {}
@@ -33,6 +38,8 @@ export class RiskActuarialService {
       totalNonContactSexualOffences: this.parseNumber(context.getAnswer('non-contact')),
       dateOfMostRecentSexualOffence: this.parseString(context.getAnswer('date-of-most-recent-sexual-offence')),
       isCurrentOffenceAgainstVictimStranger: this.parseBoolean(context.getAnswer('victim-stranger')),
+      suitabilityOfAccommodation: this.parseProblemLevel(context.getAnswer('suitability-of-accommodation')),
+      isUnemployed: this.parseBoolean(context.getAnswer('is-unemployed')),
     }
   }
 
@@ -106,7 +113,8 @@ export class RiskActuarialService {
 
   private parseBoolean(val: unknown): boolean | null {
     if (typeof val === 'boolean') return val
-    if (typeof val === 'string') return val.toLowerCase() === 'true' || val.toUpperCase() === 'YES'
+    if (typeof val === 'string' && val.toLowerCase() !== 'unknown')
+      return val.toLowerCase() === 'true' || val.toUpperCase() === 'YES'
     return null
   }
 
@@ -121,5 +129,12 @@ export class RiskActuarialService {
     const str = String(val).trim()
     if (str === '') return null
     return str as SupervisionStatus
+  }
+
+  private parseProblemLevel(val: unknown): ProblemLevel | null {
+    if (val === undefined || val === null) return null
+    const str = String(val).trim()
+    if (str === '' || str === 'unknown') return null
+    return str as ProblemLevel
   }
 }
