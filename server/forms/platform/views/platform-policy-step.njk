@@ -22,11 +22,11 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-{#      {% if showDowntimeNotificationBanner %}#}
+      {% if showDowntimeNotificationBanner %}
         <div class="policy-downtime-banner">
           {% include "sentence-plan/views/partials/downtime-banner.njk" %}
         </div>
-{#      {% endif %}#}
+      {% endif %}
       {% if backlink %}
         <a href="{{ backlink }}" class="govuk-back-link" data-ai-id="back-link">Back</a>
       {% endif %}
