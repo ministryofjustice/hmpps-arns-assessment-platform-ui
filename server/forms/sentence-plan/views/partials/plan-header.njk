@@ -23,10 +23,14 @@
 
   <div class="govuk-width-container">
     <div class="plan-header{% if showPrintPageHeaders %} plan-header--print-preview{% endif %}" data-qa="plan-header">
+{#      {% if showDowntimeNotificationBanner %}#}
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-two-thirds">
+            {% include "sentence-plan/views/partials/downtime-banner.njk" %}
+          </div>
+        </div>
+{#      {% endif %}#}
       <div class="govuk-grid-row plan-header__subject-details-row">
-        {% if showDowntimeNotificationBanner %}
-          {% include "sentence-plan/views/partials/downtime-banner.njk" %}
-        {% endif %}
           <div class="govuk-grid-column-full plan-header__subject-details">
             <p class="plan-header__subject-details__title">{{ fullName }}</p>
             <dl class="plan-header__subject-details__identifiers">
