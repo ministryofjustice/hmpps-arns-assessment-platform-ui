@@ -104,12 +104,17 @@ export interface OptionedQuestionContent extends QuestionContent {
 export interface QuestionOption {
   value: string
   text: ResolvableString
+  // HTML rendering of the label; the field renders it instead of `text`, while
+  // summaries keep using `text`, so declare both when the markup matters.
+  html?: ResolvableString
   // Wording for the summary when the option label alone would lose meaning out
   // of context (e.g. a bare "Yes" under a differently-worded parent question).
   summaryText?: ResolvableString
   // The object form renders the hint as HTML instead of escaped text.
   hint?: ResolvableString | { html: ResolvableString }
   behaviour?: 'exclusive'
+  // Prevents selecting the option without hiding it (e.g. ruled out by case data).
+  disabled?: PredicateExpr
   visibleWhen?: PredicateExpr
   reveals?: RevealedQuestion | RevealedQuestion[]
 }
@@ -195,8 +200,10 @@ const itemsOf = (content: OptionedQuestionContent, selectedWhen: (option: Questi
       ? definedPropsOf({
           value: entry.value,
           text: entry.text,
+          html: entry.html,
           hint: optionHintOf(entry.hint),
           behaviour: entry.behaviour,
+          disabled: entry.disabled,
           visibleWhen: entry.visibleWhen,
           block: revealedBlocksOf(entry, { parentCode: content.code, selectedWhen: selectedWhen(entry) }),
         })
