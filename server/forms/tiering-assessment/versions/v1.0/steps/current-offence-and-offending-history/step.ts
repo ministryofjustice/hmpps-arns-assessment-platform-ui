@@ -1,5 +1,4 @@
 import { access, Answer, Condition, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import {
   currentOffenceHeadingField,
   currentOffenceInsetField,
@@ -14,6 +13,7 @@ import {
   totalViolentSanctionsField,
 } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
+import { continueButton, redirectToCheckYourAnswers } from '../../common'
 
 export const currentOffenceAndOffendingHistoryStep = step({
   path: '/current-offence-and-offending-history',
@@ -35,7 +35,7 @@ export const currentOffenceAndOffendingHistoryStep = step({
     totalSanctionsField,
     totalViolentSanctionsField,
     sexualOffenceHistoryField,
-    GovUKButton({ text: 'Save and continue' }),
+    continueButton,
   ],
   onSubmission: [
     submit({
@@ -46,6 +46,7 @@ export const currentOffenceAndOffendingHistoryStep = step({
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
         next: [
+          redirectToCheckYourAnswers,
           redirect({
             when: Answer('has-ever-committed-sexual-offence').match(Condition.Equals('true')),
             goto: 'sexual-offending',

@@ -1,8 +1,8 @@
 import { access, Format, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 import { dateOfCurrentSupervisionField } from './fields'
+import { continueButton, redirectToCheckYourAnswers } from '../../common'
 
 export const dateOfCurrentSupervisionStep = step({
   path: '/date-of-current-supervision',
@@ -12,7 +12,7 @@ export const dateOfCurrentSupervisionStep = step({
       effects: [TieringAssessmentEffects.LoadAssessmentData()],
     }),
   ],
-  blocks: [dateOfCurrentSupervisionField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [dateOfCurrentSupervisionField, continueButton],
   onSubmission: [
     submit({
       validate: true,
@@ -21,7 +21,7 @@ export const dateOfCurrentSupervisionStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirect({ goto: 'offences-since-supervision' })],
+        next: [redirectToCheckYourAnswers, redirect({ goto: 'offences-since-supervision' })],
       },
     }),
   ],

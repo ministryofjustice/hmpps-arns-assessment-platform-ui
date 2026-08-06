@@ -1,5 +1,4 @@
 import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import {
   contactChildSanctionsField,
@@ -20,6 +19,7 @@ import {
   victimStrangerDetailsField,
   victimStrangerField,
 } from './fields'
+import { continueButton, redirectToCheckYourAnswers } from '../../common'
 
 export const sexualOffendingStep = step({
   path: '/sexual-offending',
@@ -48,7 +48,7 @@ export const sexualOffendingStep = step({
     indecentImagesOfChildrenDetailsField,
     nonContactField,
     nonContactDetailsField,
-    GovUKButton({ text: 'Save and continue' }),
+    continueButton,
   ],
   onSubmission: [
     submit({
@@ -58,7 +58,7 @@ export const sexualOffendingStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirect({ goto: 'date-of-current-supervision' })],
+       next: [redirectToCheckYourAnswers, redirect({ goto: 'date-of-current-supervision' })],
       },
     }),
   ],
