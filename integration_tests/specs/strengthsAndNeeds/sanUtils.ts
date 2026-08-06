@@ -13,6 +13,7 @@ export const drugUse = '/drug-use'
 export const alcohol = '/alcohol-use'
 export const personal = '/personal-relationships-and-community'
 export const thinking = '/thinking-behaviours-and-attitudes'
+export const finances = '/finances'
 
 export const sentencePlanV1URLs = {
   PRIVACY_SCREEN: `${sanFormPath}${privacyStepPath}`,
@@ -30,6 +31,7 @@ export const sanPageTitles = {
   personal: 'Personal relationships and community',
   thinking: 'Thinking, behaviours and attitudes',
   alcoholUse: 'Alcohol use',
+  finances: 'Finances',
 }
 
 export const sanServiceName = 'Strengths and needs'
