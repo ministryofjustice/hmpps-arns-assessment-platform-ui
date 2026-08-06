@@ -328,6 +328,38 @@ test.describe('Alcohol use Page', () => {
       await expect(summary.getByText('Cut down last year')).toBeVisible()
       await expect(summary.getByText('Stopped drinking spirits')).toBeVisible()
     })
+
+    test('practitioner analysis', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+        subject: { gender: '1' },
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId)
+        .withAnswers([
+          { question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' },
+          { question: 'alcohol_frequency', value: 'MULTIPLE_TIMES_A_MONTH' },
+          { question: 'alcohol_units', value: 'UNITS_3_TO_4' },
+          { question: 'alcohol_binge_drinking', value: 'YES' },
+          { question: 'alcohol_binge_drinking_frequency', value: 'MONTHLY' },
+          { question: 'alcohol_evidence_of_excess_drinking', value: 'YES_WITH_SOME_EVIDENCE' },
+          { question: 'alcohol_past_issues', value: 'YES' },
+          { question: 'alcohol_past_issues_yes_details', value: 'Had issues a few years ago' },
+          { question: 'alcohol_reasons_for_use', value: ['SOCIAL', 'ENJOYMENT'] },
+          { question: 'alcohol_impact_of_use', value: ['RELATIONSHIPS', 'FINANCES'] },
+          { question: 'alcohol_stopped_or_reduced', value: 'YES' },
+          { question: 'alcohol_stopped_or_reduced_yes_details', value: 'Cut down last year' },
+          { question: 'alcohol_use_changes', value: 'HAS_MADE_CHANGES' },
+          { question: 'alcohol_use_changes_made_changes_details', value: 'Stopped drinking spirits' },
+        ])
+        .save()
+
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, 'alcohol-use-summary')
+      const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'Summary')
+
+      await alcoholUsePage.goToPractitionerAnalysis.click()
+      await expect(page.getByText('Are there any strengths or protective factors')).toBeVisible()
+    })
   })
 
   // The binge threshold is gender-based: 8 units for men, 6 for others.

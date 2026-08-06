@@ -618,6 +618,35 @@ test.describe('Employment and education Page', () => {
           - button "Go to practitioner analysis"
       `)
     })
+
+    test('practitioner analysis', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
+          { question: 'had_previous_employment_not_looking_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'day_to_day_commitments', value: ['NONE'] },
+          { question: 'academic_qualification', value: 'NON_OF_THESE' },
+          { question: 'professional_qualification', value: 'NO' },
+          { question: 'job_skills', value: 'NO' },
+          { question: 'difficulties_reading_writing_numeracy', value: ['NO_DIFFICULTIES'] },
+          { question: 'education_experience', value: 'UNKNOWN' },
+          { question: 'employment_and_education_changes', value: 'NOT_PRESENT' },
+        ]).save()
+
+      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
+        page,
+        handoverLink,
+        baseURL,
+        'employment-education-summary',
+      )
+      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'Summary')
+
+      await employmentAndEducationPage.goToPractitionerAnalysis.click()
+      await expect(page.getByText('Are there any strengths or protective factors')).toBeVisible()
+    })
   })
 
   test.describe('Accessibility', () => {

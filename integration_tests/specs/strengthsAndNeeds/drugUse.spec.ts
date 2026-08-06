@@ -328,6 +328,24 @@ test.describe('Drug use Page', () => {
           - button "Go to practitioner analysis"
       `)
     })
+
+    test('practitioner analysis', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'drug_use', value: 'NO' },
+          { question: 'drugs_section_status', value: 'INCOMPLETE' },
+        ]).save()
+
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-summary')
+
+      const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Summary')
+
+      await drugUsePage.goToPractitionerAnalysis.click()
+      await expect(page.getByText('Are there any strengths or protective factors')).toBeVisible()
+    })
   })
 
   test.describe('Accessibility', () => {
