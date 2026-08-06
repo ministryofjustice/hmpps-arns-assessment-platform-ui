@@ -2,7 +2,7 @@ import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
 import { User } from '../../../interfaces/user'
 import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
-import { AssessmentPlatformApiClient, CoordinatorApiClient, DeliusApiClient } from '../../../data'
+import { AssessmentPlatformApiClient, CoordinatorApiClient, ArnsApiClient, DeliusApiClient } from '../../../data'
 import AuditService from '../../../services/auditService'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { SessionDetails } from '../../../interfaces/sessionDetails'
@@ -470,6 +470,7 @@ export type SentencePlanContext = EffectFunctionContext<
 export interface SentencePlanEffectsDeps {
   api: AssessmentPlatformApiClient
   coordinatorApi: CoordinatorApiClient
+  arnsApi: ArnsApiClient
   deliusApi: DeliusApiClient
   auditService: AuditService
   featureFlagService: FeatureFlagService
