@@ -1,6 +1,5 @@
 import { Answer, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { thinkingBehavioursRiskSexualHarm } from './fields'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
 import { Section, SectionStatus } from '../../../../constants/section'
@@ -9,6 +8,7 @@ import { contentFor } from '../../locales'
 import { commonContentFor, sectionPageTitle } from '../../../../locales'
 import { sectionPath } from '../../../../constants/path'
 import { CommonOption } from '../../../../constants/commonOption'
+import { thinkingBehavioursAttitudesSection } from '../../section'
 
 export const thinkingBehavioursRiskOfSexualHarmStep = step({
   path: `/${Step.thinkingBehavioursRiskOfSexualHarm.path}`,
@@ -21,7 +21,7 @@ export const thinkingBehavioursRiskOfSexualHarmStep = step({
       backlink: sectionPath(Section.thinking_behaviours_and_attitudes) + Step.thinkingBehaviours.path,
     },
   },
-  blocks: [thinkingBehavioursRiskSexualHarm, saveButton],
+  blocks: [thinkingBehavioursAttitudesSection.fields.riskSexualHarm.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
