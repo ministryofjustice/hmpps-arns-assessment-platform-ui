@@ -321,7 +321,7 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
         return
       }
 
-      const { logs } = await captureContainerLogs('ui', { since: startedAt })
+      const { logs } = await captureContainerLogs('aap-ui', { since: startedAt })
       const logsPath = testInfo.outputPath('ui-container-logs.txt')
 
       await fs.writeFile(logsPath, logs, 'utf-8')
