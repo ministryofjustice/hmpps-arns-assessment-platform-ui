@@ -35,8 +35,6 @@ export default class ThinkingBehavioursAndAttitudesPage extends AbstractPage {
 
   readonly errorSupportsCriminalBehaviour: Locator
 
-  readonly errorWantsToMakeChanges: Locator
-
   readonly yesAwareOfTheConsequences: Locator
 
   readonly yesShowsStableBehaviour: Locator
@@ -64,8 +62,6 @@ export default class ThinkingBehavioursAndAttitudesPage extends AbstractPage {
   readonly yesAcceptsSupervision: Locator
 
   readonly yesDoesNotSupportCriminalBehaviour: Locator
-
-  readonly yesAlreadyMadePositiveChanges: Locator
 
   private constructor(page: Page) {
     super(page)
@@ -107,9 +103,6 @@ export default class ThinkingBehavioursAndAttitudesPage extends AbstractPage {
     this.errorSupportsCriminalBehaviour = page.getByRole('link', {
       name: 'Select if they support or excuse criminal behaviour',
     })
-    this.errorWantsToMakeChanges = page.getByRole('link', {
-      name: 'Select if they want to make changes to their thinking, behaviours and attitudes',
-    })
     this.yesAwareOfTheConsequences = page.getByRole('radio', {
       name: 'Yes, is aware of the consequences of their actions',
     })
@@ -145,9 +138,6 @@ export default class ThinkingBehavioursAndAttitudesPage extends AbstractPage {
     })
     this.yesDoesNotSupportCriminalBehaviour = page.getByRole('radio', {
       name: 'Does not support or excuse criminal behaviour',
-    })
-    this.yesAlreadyMadePositiveChanges = page.getByRole('radio', {
-      name: 'I have already made positive changes and want to maintain them',
     })
   }
 

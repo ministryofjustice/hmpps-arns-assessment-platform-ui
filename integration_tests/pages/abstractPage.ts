@@ -25,6 +25,12 @@ export default class AbstractPage {
 
   readonly returnToOASys: Locator
 
+  readonly alert: Locator
+
+  readonly errorWantsToMakeChanges: Locator
+
+  readonly yesAlreadyMadePositiveChanges: Locator
+
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
@@ -36,6 +42,13 @@ export default class AbstractPage {
     this.errorEnterDetails = page.getByRole('link', { name: 'Enter details' })
     this.enterDetails = page.getByRole('textbox', { description: 'Enter details' })
     this.returnToOASys = page.getByRole('link', { name: 'Go to the OASys homepage' })
+    this.alert = page.getByRole('alert')
+    this.errorWantsToMakeChanges = page.getByRole('link', {
+      name: 'Select if they want to make changes to their',
+    })
+    this.yesAlreadyMadePositiveChanges = page.getByRole('radio', {
+      name: 'I have already made positive changes and want to maintain them',
+    })
   }
 
   async signOut() {
