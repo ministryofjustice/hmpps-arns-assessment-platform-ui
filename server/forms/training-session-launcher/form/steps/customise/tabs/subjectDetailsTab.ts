@@ -15,7 +15,7 @@ export const subjectDetailsTabContent = [
 
   HtmlBlock({
     content:
-      '<p class="govuk-body">Configure the subject details for this scenario. Check "Randomize" to generate a new value each time the scenario is loaded.</p>',
+      '<p class="govuk-body">Configure the subject details for this scenario. Check "Randomise" to generate a new value each time the scenario is loaded.</p>',
   }),
 
   HtmlBlock({

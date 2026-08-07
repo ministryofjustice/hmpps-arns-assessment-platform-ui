@@ -55,25 +55,6 @@ export interface AccessibleAutocompleteProps {
   showNoOptionsFound?: ResolvableBoolean
 
   /**
-   * Custom CSS classes to add to the dropdown menu (ul element).
-   * @default null
-   */
-  menuClasses?: ResolvableString
-
-  /**
-   * Custom CSS classes to add to the input element.
-   * @default null
-   */
-  inputClasses?: ResolvableString
-
-  /**
-   * Custom CSS classes for the hint element (appears when autoselect is true).
-   * Defaults to inputClasses if not specified.
-   * @default null
-   */
-  hintClasses?: ResolvableString
-
-  /**
    * Highlight the first option when the user types and receives results.
    * Pressing enter will select it.
    * @default false
@@ -105,6 +86,13 @@ export interface AccessibleAutocompleteProps {
    * Note: id, role and onMouseLeave cannot be overridden.
    */
   menuAttributes?: Record<string, ResolvableString>
+
+  /**
+   * CSS classes for the wrapper element. Apply width classes here (e.g.
+   * 'govuk-!-width-two-thirds') so the input and dropdown menu stay aligned —
+   * a width on the input alone leaves the menu overhanging at full width.
+   */
+  classes?: ResolvableString
 }
 
 /**
@@ -133,16 +121,17 @@ export const accessibleAutocomplete = buildNunjucksComponent<AccessibleAutocompl
 
     const defaultValue = fieldBlock.value ?? fieldBlock.defaultValue
 
+    // Width must sit on the wrapper, not the input: a width class on the input alone
+    // leaves the dropdown menu (sized off the wrapper) at full width and overhanging.
+    const wrapperClasses = ['accessible-autocomplete-wrapper', block.classes].filter(Boolean).join(' ')
+
     const wrapperAttrs = [
-      'class="accessible-autocomplete-wrapper"',
+      `class="${wrapperClasses}"`,
       `data-autocomplete-source="${dataId}"`,
       defaultValue !== undefined ? `data-autocomplete-default-value="${defaultValue}"` : '',
       block.dataKeyFrom ? `data-autocomplete-source-key-from="${block.dataKeyFrom}"` : '',
       block.minLength !== undefined ? `data-autocomplete-min-length="${block.minLength}"` : '',
       block.showNoOptionsFound !== undefined ? `data-autocomplete-show-no-options="${block.showNoOptionsFound}"` : '',
-      block.menuClasses !== undefined ? `data-autocomplete-menu-classes="${block.menuClasses}"` : '',
-      block.inputClasses !== undefined ? `data-autocomplete-input-classes="${block.inputClasses}"` : '',
-      block.hintClasses !== undefined ? `data-autocomplete-hint-classes="${block.hintClasses}"` : '',
       block.autoselect !== undefined ? `data-autocomplete-autoselect="${block.autoselect}"` : '',
       block.confirmOnBlur !== undefined ? `data-autocomplete-confirm-on-blur="${block.confirmOnBlur}"` : '',
       block.displayMenu !== undefined ? `data-autocomplete-display-menu="${block.displayMenu}"` : '',

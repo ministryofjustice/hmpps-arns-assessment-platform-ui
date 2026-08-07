@@ -166,7 +166,7 @@ const createAreaAccordionItems = (dataKey: string) =>
           }),
           HtmlBlock({
             content: Format(
-              `<p class="add-goal-link"><a href="goal/new/add-goal/%1">Create %2 goal</a></p>`,
+              `<p class="add-goal-link"><a href="goal/new/select-area-of-need?area=%1">Create %2 goal</a></p>`,
               Item().path('goalRoute'),
               Item().path('title').pipe(Transformer.String.ToLowerCase()),
             ),

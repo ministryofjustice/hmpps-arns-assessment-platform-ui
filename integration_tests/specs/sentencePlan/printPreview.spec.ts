@@ -27,7 +27,7 @@ test.describe('Print preview', () => {
 
     const printPreviewPage = await openPrintPreview(page, handoverLink)
 
-    await expect(page).toHaveURL(/\/plan\/overview(?:\?type=current)?$/)
+    await expect(page).toHaveURL(/\/plan\/overview(?:\?goalStatusTab=current)?$/)
     await expect(printPreviewPage.goalCards).toHaveCount(3)
     expect(await printPreviewPage.getGoalTitles()).toEqual([
       'Find stable housing',
