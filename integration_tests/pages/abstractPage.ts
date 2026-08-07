@@ -29,6 +29,12 @@ export default class AbstractPage {
 
   readonly returnToOASys: Locator
 
+  readonly markComplete: Locator
+
+  readonly linkedToRiskOfReoffending: Locator
+
+  readonly complete: Locator
+
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
@@ -42,6 +48,11 @@ export default class AbstractPage {
     this.goToPractitionerAnalysis = page.getByRole('button', { name: 'Go to practitioner analysis' })
     this.practitionerAnalysis = page.getByRole('link', { name: 'Practitioner analysis' })
     this.returnToOASys = page.getByRole('link', { name: 'Go to the OASys homepage' })
+    this.markComplete = page.getByRole('button', { name: 'Mark as complete' })
+    this.linkedToRiskOfReoffending = page
+      .getByRole('group', { name: 'linked to risk of reoffending?' })
+      .getByLabel('No')
+    this.complete = page.locator('[data-status="COMPLETE"]')
   }
 
   async signOut() {
