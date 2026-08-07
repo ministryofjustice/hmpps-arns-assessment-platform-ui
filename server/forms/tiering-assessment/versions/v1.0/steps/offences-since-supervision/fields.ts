@@ -10,7 +10,7 @@ const mostRecentOffenceDateField = GovUKDateInputFull({
       classes: 'govuk-fieldset__legend--s',
     },
   },
-  dependentWhen: Answer('has-commited-offence-since-assessment-date').match(Condition.Equals('true')),
+  dependentWhen: Answer('has-committed-offence-since-assessment-date').match(Condition.Equals('true')),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
@@ -24,7 +24,7 @@ const mostRecentOffenceDateField = GovUKDateInputFull({
 })
 
 export const offenceHistoryField = GovUKRadioInput({
-  code: 'has-commited-offence-since-assessment-date',
+  code: 'has-committed-offence-since-assessment-date',
   items: [
     {
       value: 'true',

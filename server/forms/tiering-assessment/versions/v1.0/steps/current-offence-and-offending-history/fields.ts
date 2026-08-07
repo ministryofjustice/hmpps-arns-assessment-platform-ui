@@ -142,7 +142,7 @@ export const sexualOffenceHistoryField = GovUKRadioInput({
   code: 'has-ever-committed-sexual-offence',
   fieldset: {
     legend: {
-      text: Format('Has %1 ever commited a sexual or sexually motivated offence?', CaseData.Forename),
+      text: Format('Has %1 ever committed a sexual or sexually motivated offence?', CaseData.Forename),
       classes: 'govuk-fieldset__legend--s',
     },
   },
