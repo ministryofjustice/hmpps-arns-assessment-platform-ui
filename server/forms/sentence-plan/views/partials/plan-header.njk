@@ -24,10 +24,8 @@
   <div class="govuk-width-container">
     <div class="plan-header{% if showPrintPageHeaders %} plan-header--print-preview{% endif %}" data-qa="plan-header">
       {% if showDowntimeNotificationBanner and not showPrintPageHeaders %}
-        <div class="govuk-grid-row">
-          <div class="govuk-grid-column-two-thirds">
-            {% include "sentence-plan/views/partials/downtime-banner.njk" %}
-          </div>
+        <div class="sp-downtime-banner govuk-width-container govuk-!-display-none-print" data-qa="downtime-banner">
+          {% include "sentence-plan/views/partials/downtime-banner.njk" %}
         </div>
       {% endif %}
       <div class="govuk-grid-row plan-header__subject-details-row">

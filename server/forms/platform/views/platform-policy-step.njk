@@ -23,7 +23,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {% if showDowntimeNotificationBanner %}
-        <div class="policy-downtime-banner">
+        <div class="policy-downtime-banner govuk-width-container govuk-!-display-none-print" data-qa="downtime-banner">
           {% include "sentence-plan/views/partials/downtime-banner.njk" %}
         </div>
       {% endif %}
