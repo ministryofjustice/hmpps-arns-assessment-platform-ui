@@ -35,33 +35,35 @@
 
     <div class="govuk-width-container">
       <header class="assessment-header" role="presentation" data-qa="{{ params.dataQa or 'person-header' }}">
-        <div class="govuk-grid-row">
-          <div class="govuk-grid-column-full assessment-header__subject-details">
-            <div class="assessment-header__subject-details__top">
+        <div class="assessment-header__subject-details">
+          <div class="govuk-grid-row assessment-header__subject-details__top">
+            <div class="govuk-grid-column-one-half">
               <dl>
-                  <dt>CRN:</dt>
-                  <dd>{{ person.crn }}</dd>
-                  <dt>PNC:</dt>
-                  <dd>{{ person.pnc | default('Unknown PNC', true) }}</dd>
-                  <dt>Date of birth:</dt>
-                  <dd>{{ person.dateOfBirth | formatSimpleDate }}</dd>
+                <dt>CRN:</dt>
+                <dd>{{ person.crn }}</dd>
+                <dt>PNC:</dt>
+                <dd>{{ person.pnc | default('Unknown PNC', true) }}</dd>
+                <dt>Date of birth:</dt>
+                <dd>{{ person.dateOfBirth | formatSimpleDate }}</dd>
               </dl>
+            </div>
+            <div class="govuk-grid-column-one-half">
               <ul>
-              {% if navigationLinks | length %}
+                {% if navigationLinks | length %}
                   {% for link in navigationLinks %}
                     <li>
                       <a href="{{ link.href }}"
                          class="govuk-link--no-visited-state govuk-!-display-none-print"
-                         {% if link.attributes %}
-                           {% for attrName, attrValue in link.attributes %}
-                             {{ attrName }}="{{ attrValue }}"
-                           {% endfor %}
-                         {% endif %}>
-                        {{ link.text }}
+                      {% if link.attributes %}
+                      {% for attrName, attrValue in link.attributes %}
+                        {{ attrName }}="{{ attrValue }}"
+                      {% endfor %}
+                      {% endif %}>
+                      {{ link.text }}
                       </a>
                     </li>
                   {% endfor %}
-              {% endif %}
+                {% endif %}
               </ul>
             </div>
           </div>
@@ -83,11 +85,9 @@
               </div>
             {% elseif buttonItems | length %}
               <div class="assessment-header__actions govuk-!-display-none-print">
-                <div class="moj-button-group moj-button-group--inline">
-                  {% for button in buttonItems %}
-                    {{ govukButton(button) }}
-                  {% endfor %}
-                </div>
+                {% for button in buttonItems %}
+                  {{ govukButton(button) }}
+                {% endfor %}
               </div>
             {% endif %}
           </div>
