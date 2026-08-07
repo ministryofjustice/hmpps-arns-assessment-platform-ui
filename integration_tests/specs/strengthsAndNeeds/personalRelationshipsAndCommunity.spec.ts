@@ -386,6 +386,122 @@ test.describe('Personal relationships and community Page', () => {
           - button "Go to practitioner analysis"
       `)
     })
+
+    test('practitioner analysis', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+        subject: { gender: '1' },
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'personal_relationships_community_children_details', value: ['YES_CHILDREN_LIVING_WITH_POP'] },
+          {
+            question: 'personal_relationships_community_children_details_yes_children_living_with_pop_details',
+            value: 'test',
+          },
+          { question: 'personal_relationships_community_important_people', value: ['PARTNER_INTIMATE_RELATIONSHIP'] },
+          {
+            question: 'personal_relationships_community_important_people_partner_intimate_relationship_details',
+            value: '',
+          },
+          { question: 'personal_relationships_community_changes', value: 'NOT_PRESENT' },
+          { question: 'personal_relationships_community_belonging', value: '' },
+          { question: 'personal_relationships_community_childhood', value: 'POSITIVE_CHILDHOOD' },
+          { question: 'personal_relationships_community_childhood_behaviour', value: 'YES' },
+          { question: 'personal_relationships_community_family_relationship', value: 'STABLE_RELATIONSHIP' },
+          { question: 'personal_relationships_community_current_relationship', value: 'HAPPY_RELATIONSHIP' },
+          { question: 'personal_relationships_community_intimate_relationship', value: 'STABLE_RELATIONSHIPS' },
+          { question: 'personal_relationships_community_childhood_behaviour_yes_details', value: '' },
+          { question: 'personal_relationships_community_challenges_intimate_relationship', value: 'test' },
+          { question: 'personal_relationships_community_childhood_positive_childhood_details', value: '' },
+          { question: 'personal_relationships_community_current_relationship_happy_relationship_details', value: '' },
+          { question: 'personal_relationships_community_family_relationship_stable_relationship_details', value: '' },
+          {
+            question: 'personal_relationships_community_intimate_relationship_stable_relationships_details',
+            value: '',
+          },
+        ]).save()
+
+      await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+        page,
+        handoverLink,
+        baseURL,
+        'personal-relationships-community-summary',
+      )
+
+      const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
+        page,
+        'Summary',
+      )
+
+      await personalRelationshipsAndCommunityPage.goToPractitionerAnalysis.click()
+      await expect(page.getByText('Are there any strengths or protective factors')).toBeVisible()
+    })
+
+    test('mark complete', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'personal_relationships_community_children_details', value: ['YES_CHILDREN_LIVING_WITH_POP'] },
+          {
+            question: 'personal_relationships_community_children_details_yes_children_living_with_pop_details',
+            value: 'test',
+          },
+          { question: 'personal_relationships_community_important_people', value: ['PARTNER_INTIMATE_RELATIONSHIP'] },
+          {
+            question: 'personal_relationships_community_important_people_partner_intimate_relationship_details',
+            value: '',
+          },
+          { question: 'personal_relationships_community_changes', value: 'NOT_PRESENT' },
+          { question: 'personal_relationships_community_belonging', value: '' },
+          { question: 'personal_relationships_community_childhood', value: 'POSITIVE_CHILDHOOD' },
+          { question: 'personal_relationships_community_childhood_behaviour', value: 'YES' },
+          { question: 'personal_relationships_community_family_relationship', value: 'STABLE_RELATIONSHIP' },
+          { question: 'personal_relationships_community_current_relationship', value: 'HAPPY_RELATIONSHIP' },
+          { question: 'personal_relationships_community_intimate_relationship', value: 'STABLE_RELATIONSHIPS' },
+          { question: 'personal_relationships_community_childhood_behaviour_yes_details', value: '' },
+          { question: 'personal_relationships_community_challenges_intimate_relationship', value: 'test' },
+          { question: 'personal_relationships_community_childhood_positive_childhood_details', value: '' },
+          { question: 'personal_relationships_community_current_relationship_happy_relationship_details', value: '' },
+          { question: 'personal_relationships_community_family_relationship_stable_relationship_details', value: '' },
+          {
+            question: 'personal_relationships_community_intimate_relationship_stable_relationships_details',
+            value: '',
+          },
+          {
+            question: 'personal_relationships_community_practitioner_analysis_strengths_or_protective_factors',
+            value: 'NO',
+          },
+          {
+            question:
+              'personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_no_details',
+            value: '',
+          },
+          { question: 'personal_relationships_community_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
+          {
+            question: 'personal_relationships_community_practitioner_analysis_risk_of_serious_harm_no_details',
+            value: '',
+          },
+        ]).save()
+
+      await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+        page,
+        handoverLink,
+        baseURL,
+        'personal-relationships-community-summary#practitioner-analysis',
+      )
+      const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
+        page,
+        'strengths or protective factors',
+      )
+
+      await personalRelationshipsAndCommunityPage.linkedToRiskOfReoffending.click()
+      await personalRelationshipsAndCommunityPage.markComplete.click()
+      await expect(personalRelationshipsAndCommunityPage.complete).toBeVisible()
+      expect(page.url()).toContain('personal-relationships-community-analysis')
+    })
   })
 
   test.describe('Accessibility', () => {

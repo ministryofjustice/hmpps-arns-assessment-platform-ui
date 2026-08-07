@@ -380,12 +380,9 @@ test.describe('Thinking behaviours and attitudes Page', () => {
         'thinking-behaviours-summary',
       )
 
-      const personalRelationshipsAndCommunityPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
-        page,
-        'Summary',
-      )
+      const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(page, 'Summary')
 
-      await expect(personalRelationshipsAndCommunityPage.summary).toMatchAriaSnapshot(`
+      await expect(thinkingBehavioursAndAttitudesPage.summary).toMatchAriaSnapshot(`
         - tabpanel "Summary":
           - term: Is Test aware of the consequences of their actions?
           - definition:
@@ -513,6 +510,106 @@ test.describe('Thinking behaviours and attitudes Page', () => {
               - /url: thinking-behaviours-sexual-harm
           - button "Go to practitioner analysis"
       `)
+    })
+
+    test('practitioner analysis', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+        sexuallyMotivatedOffenceHistory: 'YES',
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId)
+        .withAnswers([
+          { question: 'thinking_behaviours_attitudes_changes', value: 'NOT_PRESENT' },
+          { question: 'thinking_behaviours_attitudes_supervision', value: 'YES_SUPERVISION' },
+          { question: 'thinking_behaviours_attitudes_consequences', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_peer_pressure', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_peoples_views', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_problem_solving', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_stable_behaviour', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_positive_attitude', value: 'YES_POSITIVE' },
+          { question: 'thinking_behaviours_attitudes_temper_management', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_criminal_behaviour', value: 'NO' },
+          { question: 'thinking_behaviours_attitudes_hostile_orientation', value: 'NO' },
+          { question: 'thinking_behaviours_attitudes_impulsive_behaviour', value: 'NO' },
+          { question: 'thinking_behaviours_attitudes_offending_activities', value: 'NO_OFFENDING_ACTIVITIES' },
+          { question: 'thinking_behaviours_attitudes_peer_pressure_yes_details', value: '' },
+          { question: 'thinking_behaviours_attitudes_violence_controlling_behaviour', value: 'NO_VIOLENCE' },
+          { question: 'thinking_behaviours_attitudes_manipulative_predatory_behaviour', value: 'NO' },
+          { question: 'thinking_behaviours_attitudes_risk_sexual_harm', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_emotional_intimacy', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_sexual_preoccupation', value: 'YES' },
+          {
+            question: 'thinking_behaviours_attitudes_offence_related_sexual_interest',
+            value: 'YES_OFFENCE_RELATED_SEXUAL_INTEREST',
+          },
+        ])
+        .save()
+
+      await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
+        page,
+        handoverLink,
+        baseURL,
+        'thinking-behaviours-summary',
+      )
+
+      const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(page, 'Summary')
+
+      await thinkingBehavioursAndAttitudesPage.goToPractitionerAnalysis.click()
+      await expect(page.getByText('Are there any strengths or protective factors')).toBeVisible()
+    })
+
+    test('mark complete', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId)
+        .withAnswers([
+          { question: 'thinking_behaviours_attitudes_changes', value: 'NOT_PRESENT' },
+          { question: 'thinking_behaviours_attitudes_supervision', value: 'YES_SUPERVISION' },
+          { question: 'thinking_behaviours_attitudes_consequences', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_peer_pressure', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_peoples_views', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_problem_solving', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_stable_behaviour', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_positive_attitude', value: 'YES_POSITIVE' },
+          { question: 'thinking_behaviours_attitudes_temper_management', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_criminal_behaviour', value: 'NO' },
+          { question: 'thinking_behaviours_attitudes_hostile_orientation', value: 'NO' },
+          { question: 'thinking_behaviours_attitudes_impulsive_behaviour', value: 'NO' },
+          { question: 'thinking_behaviours_attitudes_offending_activities', value: 'NO_OFFENDING_ACTIVITIES' },
+          { question: 'thinking_behaviours_attitudes_peer_pressure_yes_details', value: '' },
+          { question: 'thinking_behaviours_attitudes_violence_controlling_behaviour', value: 'NO_VIOLENCE' },
+          { question: 'thinking_behaviours_attitudes_manipulative_predatory_behaviour', value: 'NO' },
+          { question: 'thinking_behaviours_attitudes_risk_sexual_harm', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_emotional_intimacy', value: 'YES' },
+          { question: 'thinking_behaviours_attitudes_sexual_preoccupation', value: 'YES' },
+          {
+            question: 'thinking_behaviours_attitudes_offence_related_sexual_interest',
+            value: 'YES_OFFENCE_RELATED_SEXUAL_INTEREST',
+          },
+          { question: 'thinking_behaviours_attitudes_strengths_protective_factors', value: 'NO' },
+          { question: 'thinking_behaviours_attitudes_no_strengths_protective_factors_details', value: '' },
+          { question: 'thinking_behaviours_attitudes_linked_to_serious_harm', value: 'NO' },
+          { question: 'thinking_behaviours_attitudes_no_serious_harm_details', value: '' },
+        ]).save()
+
+      await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
+        page,
+        handoverLink,
+        baseURL,
+        'thinking-behaviours-summary#practitioner-analysis',
+      )
+      const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
+        page,
+        'strengths or protective factors',
+      )
+
+      await thinkingBehavioursAndAttitudesPage.linkedToRiskOfReoffending.click()
+      await thinkingBehavioursAndAttitudesPage.markComplete.click()
+      await expect(thinkingBehavioursAndAttitudesPage.complete).toBeVisible()
+      expect(page.url()).toContain('thinking-behaviours-analysis')
     })
   })
 
