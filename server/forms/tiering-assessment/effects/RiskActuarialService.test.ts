@@ -1,7 +1,12 @@
 import { RiskActuarialService } from './RiskActuarialService'
 import RiskActuarialApiClient from '../../../data/riskActuarialApiClient'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
-import { ProblemLevel, RiskScores, SupervisionStatus } from '../../../interfaces/risk-actuarial-api/riskScores'
+import {
+  MotivationLevel,
+  ProblemLevel,
+  RiskScores,
+  SupervisionStatus,
+} from '../../../interfaces/risk-actuarial-api/riskScores'
 
 describe('RiskActuarialService', () => {
   let service: RiskActuarialService
@@ -172,6 +177,21 @@ describe('RiskActuarialService', () => {
       isCurrentOffenceAgainstVictimStranger: true,
       isUnemployed: null,
       suitabilityOfAccommodation: null,
+      hasBenzodiazepinesUsage: null,
+      hasCannabisUsage: null,
+      hasPowderCocaineUsage: null,
+      hasCrackCocaineUsage: null,
+      hasHallucinogensUsage: null,
+      hasHeroinUsage: null,
+      hasMethadoneUsage: null,
+      hasMisusedPrescriptionDrugUsage: null,
+      hasOtherOpiateUsage: null,
+      hasSolventsUsage: null,
+      hasSpiceUsage: null,
+      hasSteroidsUsage: null,
+      hasKetamineUsage: null,
+      hasOtherDrugsUsage: null,
+      motivationToTackleDrugMisuse: null,
     })
 
     expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-score', '0.45')
@@ -260,6 +280,21 @@ describe('RiskActuarialService', () => {
       'victim-stranger': 'true',
       'suitability-of-accommodation': 'SOME_PROBLEMS',
       'is-unemployed': 'true',
+      'benzodiazepines-radio': 'true',
+      'cannabis-radio': 'true',
+      'cocaine-hydrochloride-radio': 'true',
+      'crack-or-cocaine-radio': 'true',
+      'hallucinogens-radio': 'true',
+      'heroin-radio': 'true',
+      'methadone-radio': 'true',
+      'misused-prescribed-drugs-radio': 'true',
+      'other-opiate-radio': 'true',
+      'solvents-radio': 'true',
+      'spice-radio': 'true',
+      'steroids-radio': 'true',
+      'ketamine-radio': 'true',
+      'other-drug-radio': 'true',
+      'motivation-to-tackle-drug-misuse': 'PARTIAL_MOTIVATION',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -287,6 +322,21 @@ describe('RiskActuarialService', () => {
       isCurrentOffenceAgainstVictimStranger: true,
       suitabilityOfAccommodation: 'SOME_PROBLEMS' as ProblemLevel,
       isUnemployed: true,
+      hasBenzodiazepinesUsage: true,
+      hasCannabisUsage: true,
+      hasPowderCocaineUsage: true,
+      hasCrackCocaineUsage: true,
+      hasHallucinogensUsage: true,
+      hasHeroinUsage: true,
+      hasMethadoneUsage: true,
+      hasMisusedPrescriptionDrugUsage: true,
+      hasOtherOpiateUsage: true,
+      hasSolventsUsage: true,
+      hasSpiceUsage: true,
+      hasSteroidsUsage: true,
+      hasKetamineUsage: true,
+      hasOtherDrugsUsage: true,
+      motivationToTackleDrugMisuse: 'PARTIAL_MOTIVATION' as MotivationLevel,
     })
 
     // TODO responses will change when enough answers provided
@@ -392,6 +442,21 @@ describe('RiskActuarialService', () => {
       isCurrentOffenceAgainstVictimStranger: null,
       isUnemployed: null,
       suitabilityOfAccommodation: null,
+      hasBenzodiazepinesUsage: null,
+      hasCannabisUsage: null,
+      hasPowderCocaineUsage: null,
+      hasCrackCocaineUsage: null,
+      hasHallucinogensUsage: null,
+      hasHeroinUsage: null,
+      hasMethadoneUsage: null,
+      hasMisusedPrescriptionDrugUsage: null,
+      hasOtherOpiateUsage: null,
+      hasSolventsUsage: null,
+      hasSpiceUsage: null,
+      hasSteroidsUsage: null,
+      hasKetamineUsage: null,
+      hasOtherDrugsUsage: null,
+      motivationToTackleDrugMisuse: null,
     })
   })
 
@@ -419,6 +484,21 @@ describe('RiskActuarialService', () => {
     const answers: Record<string, unknown> = {
       'suitability-of-accommodation': 'unknown',
       'is-unemployed': 'unknown',
+      'benzodiazepines-radio': 'unknown',
+      'cannabis-radio': 'unknown',
+      'cocaine-hydrochloride-radio': 'unknown',
+      'crack-or-cocaine-radio': 'unknown',
+      'hallucinogens-radio': 'unknown',
+      'heroin-radio': 'unknown',
+      'methadone-radio': 'unknown',
+      'misused-prescribed-drugs-radio': 'unknown',
+      'other-opiate-radio': 'unknown',
+      'solvents-radio': 'unknown',
+      'spice-radio': 'unknown',
+      'steroids-radio': 'unknown',
+      'ketamine-radio': 'unknown',
+      'other-drug-radio': 'unknown',
+      'motivation-to-tackle-drug-misuse': 'unknown',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -429,6 +509,21 @@ describe('RiskActuarialService', () => {
       expect.objectContaining({
         suitabilityOfAccommodation: null,
         isUnemployed: null,
+        hasBenzodiazepinesUsage: null,
+        hasCannabisUsage: null,
+        hasPowderCocaineUsage: null,
+        hasCrackCocaineUsage: null,
+        hasHallucinogensUsage: null,
+        hasHeroinUsage: null,
+        hasMethadoneUsage: null,
+        hasMisusedPrescriptionDrugUsage: null,
+        hasOtherOpiateUsage: null,
+        hasSolventsUsage: null,
+        hasSpiceUsage: null,
+        hasSteroidsUsage: null,
+        hasKetamineUsage: null,
+        hasOtherDrugsUsage: null,
+        motivationToTackleDrugMisuse: null,
       }),
     )
   })
