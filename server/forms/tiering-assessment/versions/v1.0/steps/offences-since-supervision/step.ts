@@ -7,10 +7,10 @@ import {
   submit,
   Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { offenceHistoryField } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import { continueButton, redirectToCheckYourAnswers } from '../../common'
 
 export const offencesSinceSupervisionStep = step({
   path: '/offences-since-supervision',
@@ -24,7 +24,7 @@ export const offencesSinceSupervisionStep = step({
       effects: [TieringAssessmentEffects.LoadAssessmentData()],
     }),
   ],
-  blocks: [offenceHistoryField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [offenceHistoryField, continueButton],
   onSubmission: [
     submit({
       validate: true,
@@ -33,7 +33,7 @@ export const offencesSinceSupervisionStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirect({ goto: 'interview-question' })],
+        next: [redirectToCheckYourAnswers, redirect({ goto: 'interview-question' })],
       },
     }),
   ],
