@@ -113,11 +113,7 @@ describe('plan header', () => {
   describe('service downtime banner', () => {
     it('renders the service downtime banner when feature flag is enabled', () => {
       const html = nunjucksEnv.render(template, {
-        basePath: '/sentence-plan/v1.0',
         data: {
-          featureFlags: {
-            downtimeNotificationBanner: true,
-          },
           caseData: {
             name: { forename: 'Joan', surname: 'Smith' },
             crn: 'X000000',
@@ -125,6 +121,7 @@ describe('plan header', () => {
           },
         },
         headerPageHeading: "Joan's plan",
+        downtimeNotificationBanner: true,
       })
 
       expect(html).toContain('govuk-notification-banner__header')
@@ -133,11 +130,7 @@ describe('plan header', () => {
 
     it('does not render the service downtime banner when feature flag is false', () => {
       const html = nunjucksEnv.render(template, {
-        basePath: '/sentence-plan/v1.0',
         data: {
-          featureFlags: {
-            downtimeNotificationBanner: false,
-          },
           caseData: {
             name: { forename: 'Joan', surname: 'Smith' },
             crn: 'X000000',
@@ -145,6 +138,7 @@ describe('plan header', () => {
           },
         },
         headerPageHeading: "Joan's plan",
+        downtimeNotificationBanner: false,
       })
 
       expect(html).not.toContain('govuk-notification-banner__header')
