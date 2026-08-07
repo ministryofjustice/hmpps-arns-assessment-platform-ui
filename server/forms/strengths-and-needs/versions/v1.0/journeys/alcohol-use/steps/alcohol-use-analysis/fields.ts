@@ -1,129 +1,15 @@
-import { Answer } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKBody, GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
-import {
-  alcoholLinkedReoffending,
-  alcoholLinkedToSeriousHarm,
-  alcoholStrengthsProtectiveFactors,
-  alcoholSummary,
-} from '../alcohol-use-summary/fields'
-import { CaseData } from '../../../../constants/formVersion'
-import { Question } from '../../constants/question'
+import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { alcoholSummary } from '../alcohol-use-summary/fields'
+import { alcoholUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
-import { contentFor } from '../../locales'
 import { commonContentFor } from '../../../../locales'
-import { getDisplayTextForItems } from '../../../../../../i18n'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
-    {
-      key: {
-        text: contentFor(
-          'question.alcohol_use_practitioner_analysis_strengths_or_protective_factors.text',
-          CaseData.ForenamePossessive,
-        ),
-      },
-      value: {
-        blocks: [
-          getDisplayTextForItems(
-            Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors,
-            alcoholStrengthsProtectiveFactors.items,
-          ),
-          GovUKBody({
-            text: Answer(Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors_yes_details),
-            size: 's',
-          }),
-          GovUKBody({
-            text: Answer(Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors_no_details),
-            size: 's',
-          }),
-        ].flat(),
-      },
-      actions: {
-        items: [
-          {
-            href: `${Step.alcohol_use_summary.path}#${Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors}`,
-            text: commonContentFor('change'),
-            visuallyHiddenText: contentFor(
-              'question.alcohol_use_practitioner_analysis_strengths_or_protective_factors.text',
-              CaseData.ForenamePossessive,
-            ),
-          },
-        ],
-      },
-    },
-    {
-      key: {
-        text: contentFor(
-          'question.alcohol_use_practitioner_analysis_risk_of_serious_harm.text',
-          CaseData.ForenamePossessive,
-        ),
-      },
-      value: {
-        blocks: [
-          getDisplayTextForItems(
-            Question.alcohol_use_practitioner_analysis_risk_of_serious_harm,
-            alcoholLinkedToSeriousHarm.items,
-          ),
-          GovUKBody({
-            text: Answer(Question.alcohol_use_practitioner_analysis_risk_of_serious_harm_yes_details),
-            size: 's',
-          }),
-          GovUKBody({
-            text: Answer(Question.alcohol_use_practitioner_analysis_risk_of_serious_harm_no_details),
-            size: 's',
-          }),
-        ].flat(),
-      },
-      actions: {
-        items: [
-          {
-            href: `${Step.alcohol_use_summary.path}#${Question.alcohol_use_practitioner_analysis_risk_of_serious_harm}`,
-            text: commonContentFor('change'),
-            visuallyHiddenText: contentFor(
-              'question.alcohol_use_practitioner_analysis_risk_of_serious_harm.text',
-              CaseData.ForenamePossessive,
-            ),
-          },
-        ],
-      },
-    },
-    {
-      key: {
-        text: contentFor(
-          'question.alcohol_use_practitioner_analysis_risk_of_reoffending.text',
-          CaseData.ForenamePossessive,
-        ),
-      },
-      value: {
-        blocks: [
-          getDisplayTextForItems(
-            Question.alcohol_use_practitioner_analysis_risk_of_reoffending,
-            alcoholLinkedReoffending.items,
-          ),
-          GovUKBody({
-            text: Answer(Question.alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details),
-            size: 's',
-          }),
-          GovUKBody({
-            text: Answer(Question.alcohol_use_practitioner_analysis_risk_of_reoffending_no_details),
-            size: 's',
-          }),
-        ].flat(),
-      },
-      actions: {
-        items: [
-          {
-            href: `${Step.alcohol_use_summary.path}#${Question.alcohol_use_practitioner_analysis_risk_of_reoffending}`,
-            text: commonContentFor('change'),
-            visuallyHiddenText: contentFor(
-              'question.alcohol_use_practitioner_analysis_risk_of_reoffending.text',
-              CaseData.ForenamePossessive,
-            ),
-          },
-        ],
-      },
-    },
+    alcoholUseSection.fields.strengthsOrProtectiveFactors.displayModes.summaryRow,
+    alcoholUseSection.fields.riskOfSeriousHarm.displayModes.summaryRow,
+    alcoholUseSection.fields.riskOfReoffending.displayModes.summaryRow,
   ],
 })
 

@@ -132,8 +132,10 @@ export const english = {
         [CommonOption.no]:
           'They’re able to have constructive conversations when they disagree with others and can forgive past wrongs',
         [Option.some]: 'Some evidence of suspicious, angry or vengeful thinking and behaviour',
-        [CommonOption.yes]:
-          'There is evidence of suspicious, angry <strong>and</strong> vengeful thinking and behaviour',
+        [CommonOption.yes]: {
+          text: 'There is evidence of suspicious, angry and vengeful thinking and behaviour',
+          html: 'There is evidence of suspicious, angry <strong>and</strong> vengeful thinking and behaviour',
+        },
       },
       validation: 'Select if they have hostile orientation to others or to general rules',
     },

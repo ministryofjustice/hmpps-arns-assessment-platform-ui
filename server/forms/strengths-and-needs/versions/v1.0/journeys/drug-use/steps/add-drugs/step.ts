@@ -1,7 +1,7 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { selectMisusedDrugs } from './fields'
+import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { sectionPath } from '../../../../constants/path'
 import { Section, SectionStatus } from '../../../../constants/section'
@@ -22,7 +22,7 @@ export const addDrugsStep = step({
     },
   },
   cleardownFieldCodes: ['^trip_*$'],
-  blocks: [selectMisusedDrugs, saveButton],
+  blocks: [drugUseSection.fields.selectMisusedDrugs.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
