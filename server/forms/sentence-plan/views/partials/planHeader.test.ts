@@ -121,7 +121,7 @@ describe('plan header', () => {
           },
         },
         featureFlags: {
-          downtimeNotificationBanner: true
+          downtimeNotificationBanner: true,
         },
         headerPageHeading: "Joan's plan",
         showPrintPageHeaders: false,
@@ -140,7 +140,7 @@ describe('plan header', () => {
             dateOfBirth: '1990-01-01',
           },
           featureFlags: {
-            downtimeNotificationBanner: false
+            downtimeNotificationBanner: false,
           },
         },
         headerPageHeading: "Joan's plan",
