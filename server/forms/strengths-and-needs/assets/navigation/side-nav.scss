@@ -1,0 +1,43 @@
+//<div class="govuk-grid-row">
+//  <div class="govuk-grid-column-one-third">
+//    <nav class="moj-side-navigation" aria-label="Side navigation">
+//      <ul class="moj-side-navigation__list">
+//        <li class="moj-side-navigation__item moj-side-navigation__item--active" data-status="COMPLETE">
+//          <a href="#1" aria-current="location">Nav item 1</a>
+//        </li>
+//        <li class="moj-side-navigation__item">
+//          <a href="#2">Nav item 2</a>
+//        </li>
+//        <li class="moj-side-navigation__item">
+//          <a href="#3">Nav item 3</a>
+//        </li>
+//      </ul>
+//    </nav>
+//  </div>
+//</div>
+
+.moj-side-navigation {
+  &__item[data-status="COMPLETE"] {
+    position: relative;
+
+    &:after {
+      position: absolute;
+      right: 6px;
+      top: 7px;
+      content: '✓';
+      display: block;
+      line-height: 20px;
+      font-size: 14px;
+      border-radius: 50%;
+      background-color: #1d70b8;
+      color: #ffffff;
+      padding: 3px;
+      width: 19px;
+      height: 19px;
+    }
+
+    a {
+      padding-right: 38px !important;
+    }
+  }
+}

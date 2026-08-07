@@ -1,0 +1,77 @@
+@import 'govuk-frontend/dist/govuk/base';
+
+@import 'navigation/side-nav';
+
+.page-sub-heading {
+  @include govuk-font($size: 24);
+  margin-bottom: -5px;
+}
+
+.assessment-header {
+  @include govuk-font(19);
+  margin-top: govuk-spacing(3);
+
+  &__actions {
+    float: right;
+  }
+
+  &__subject-details {
+    width: 100%;
+    margin-bottom: 15px;
+    color: #505A5F;
+
+    &__name {
+      @include govuk-font($size: 24, $weight: bold);
+      margin-right: govuk-spacing(3);
+      margin-bottom: 0;
+    }
+
+    & * {
+      display: inline;
+      margin: 0;
+    }
+
+    & .govuk-link {
+      text-align: right;
+    }
+
+    &__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      width: 100%;
+
+      & dd, & dt {
+        margin-left: 0;
+        @include govuk-font(16);
+      }
+
+      & * dd {
+        border-right: 1px solid gray;
+        padding-right: govuk-spacing(1);
+
+        &:last-of-type {
+          border: none;
+        }
+      }
+
+      & dt {
+        padding-right: govuk-spacing(1);
+      }
+
+      & dd {
+        padding-left: govuk-spacing(0);
+      }
+
+      & a {
+        padding-left: govuk-spacing(1);
+      }
+    }
+
+    &__bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+  }
+}

@@ -1,0 +1,586 @@
+import { validation, Self, Answer, Condition, and, or } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKCharacterCount, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { StrengthsAndNeedsConditions } from '../../../../../../conditions'
+import { CaseData } from '../../../../constants/formVersion'
+import { contentFor } from '../../locales'
+import { Question } from '../../constants/question'
+import { commonContentFor } from '../../../../locales'
+import { Option } from '../../constants/option'
+import { CommonOption } from '../../../../constants/commonOption'
+import { CharacterLimit } from '../../../../constants/characterLimit'
+
+const toDetailsField =
+  (parent: string) =>
+  ({ code, option, mandatory = false }: { code: string; option: string; mandatory?: boolean }) =>
+    GovUKCharacterCount({
+      code,
+      label: mandatory ? commonContentFor('required_details') : commonContentFor('optional_details'),
+      maxLength: CharacterLimit.c2000,
+      dependentWhen: and(
+        Answer(parent).match(Condition.IsRequired()),
+        or(
+          and(
+            Answer(parent).match(StrengthsAndNeedsConditions.IsArray()),
+            Answer(parent).match(Condition.Array.Contains(option)),
+          ),
+          and(
+            Answer(parent).not.match(StrengthsAndNeedsConditions.IsArray()),
+            Answer(parent).match(Condition.Equals(option)),
+          ),
+        ),
+      ),
+      validWhen: [
+        validation({
+          condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+          message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
+        }),
+      ],
+    })
+
+const thinkingBehavioursPeerPressureYesDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
+  option: CommonOption.yes,
+  code: Question.thinking_behaviours_attitudes_peer_pressure_yes_details,
+  mandatory: false,
+})
+
+const thinkingBehavioursPeerPressureSomeDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
+  option: Option.some,
+  code: Question.thinking_behaviours_attitudes_peer_pressure_some_details,
+  mandatory: false,
+})
+
+const thinkingBehavioursPeerPressureNoDetails = toDetailsField(Question.thinking_behaviours_attitudes_peer_pressure)({
+  option: CommonOption.no,
+  code: Question.thinking_behaviours_attitudes_peer_pressure_no_details,
+  mandatory: false,
+})
+
+export const thinkingBehavioursConsequences = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_consequences,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_consequences.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  hint: contentFor('question.thinking_behaviours_attitudes_consequences.hint'),
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_consequences.option.YES'),
+      value: CommonOption.yes,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_consequences.option.SOMETIMES'),
+      value: Option.sometimes,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_consequences.option.NO'),
+      value: CommonOption.no,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_consequences.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursStableBehaviour = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_stable_behaviour,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  hint: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.hint'),
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.option.YES'),
+      value: CommonOption.yes,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.option.SOMETIMES'),
+      value: Option.sometimes,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.option.NO'),
+      value: CommonOption.no,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursOffendingActivities = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_offending_activities,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_offending_activities.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_offending_activities.option.NO_OFFENDING_ACTIVITIES'),
+      value: Option.no_offending_activities,
+    },
+    {
+      text: contentFor(
+        'question.thinking_behaviours_attitudes_offending_activities.option.SOMETIMES_OFFENDING_ACTIVITIES',
+      ),
+      value: Option.sometimes_offending_activities,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_offending_activities.option.YES_OFFENDING_ACTIVITIES'),
+      value: Option.yes_offending_activities,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_offending_activities.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursPeerPressure = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_peer_pressure,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.YES'),
+      value: CommonOption.yes,
+      block: [thinkingBehavioursPeerPressureYesDetails],
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.SOME'),
+      value: Option.some,
+      block: [thinkingBehavioursPeerPressureSomeDetails],
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.NO'),
+      value: CommonOption.no,
+      block: [thinkingBehavioursPeerPressureNoDetails],
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_peer_pressure.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursProblemSolving = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_problem_solving,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_problem_solving.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_problem_solving.option.YES'),
+      value: CommonOption.yes,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_problem_solving.option.LIMITED_PROBLEM_SOLVING'),
+      value: Option.limited_problem_solving,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_problem_solving.option.NO'),
+      value: CommonOption.no,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_problem_solving.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursPeoplesViews = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_peoples_views,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_peoples_views.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_peoples_views.option.YES'),
+      value: CommonOption.yes,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_peoples_views.option.SOMETIMES'),
+      value: Option.sometimes,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_peoples_views.option.NO'),
+      value: CommonOption.no,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_peoples_views.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursManipulativePredatoryBehaviour = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour,
+  fieldset: {
+    legend: {
+      text: contentFor(
+        'question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.text',
+        CaseData.Forename,
+      ),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.NO'),
+      value: CommonOption.no,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.SOME'),
+      value: Option.some,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.YES'),
+      value: CommonOption.yes,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursTemperManagement = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_temper_management,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_temper_management.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.YES'),
+      value: CommonOption.yes,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.SOMETIMES'),
+      value: Option.sometimes,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.NO.text'),
+      hint: contentFor('question.thinking_behaviours_attitudes_temper_management.option.NO.hint'),
+      value: CommonOption.no,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_temper_management.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursViolenceControllingBehaviour = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_violence_controlling_behaviour,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_violence_controlling_behaviour.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_violence_controlling_behaviour.option.NO_VIOLENCE'),
+      value: Option.no_violence,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_violence_controlling_behaviour.option.SOMETIMES'),
+      value: Option.sometimes,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_violence_controlling_behaviour.option.YES_VIOLENCE'),
+      value: Option.yes_violence,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_violence_controlling_behaviour.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursImpulsiveBehaviour = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_impulsive_behaviour,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.option.NO'),
+      value: CommonOption.no,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.option.SOMETIMES'),
+      value: Option.sometimes,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.option.YES'),
+      value: CommonOption.yes,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursPositiveAttitude = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_positive_attitude,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_positive_attitude.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_positive_attitude.option.YES_POSITIVE'),
+      value: Option.yes_positive,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_positive_attitude.option.NEGATIVE_ATTITUDE_NO_CONCERNS'),
+      value: Option.negative_attitude_no_concerns,
+    },
+    {
+      text: contentFor(
+        'question.thinking_behaviours_attitudes_positive_attitude.option.NEGATIVE_ATTITUDE_AND_CONCERNS',
+      ),
+      value: Option.negative_attitude_and_concerns,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_positive_attitude.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursHostileOrientation = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_hostile_orientation,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.NO'),
+      value: CommonOption.no,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.SOME'),
+      value: Option.some,
+    },
+    {
+      text: 'There is evidence of suspicious, angry and vengeful thinking and behaviour',
+      html: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.YES'),
+      value: CommonOption.yes,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursSupervision = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_supervision,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_supervision.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_supervision.option.YES_SUPERVISION'),
+      value: Option.yes_supervision,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_supervision.option.UNSURE_SUPERVISION'),
+      value: Option.unsure_supervision,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_supervision.option.NO_SUPERVISION'),
+      value: Option.no_supervision,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_supervision.validation'),
+    }),
+  ],
+})
+
+export const thinkingBehavioursCriminalBehaviour = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_criminal_behaviour,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.option.NO'),
+      value: CommonOption.no,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.option.SOMETIMES'),
+      value: Option.sometimes,
+    },
+    {
+      text: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.option.YES'),
+      value: CommonOption.yes,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.validation'),
+    }),
+  ],
+})
+
+const [
+  hasMadePositiveChangesDetails,
+  isActivelyMakingChangesDetails,
+  wantsToMakeChangesKnowsHowDetails,
+  wantsToMakeChangesNeedsHelpDetails,
+  thinkingAboutMakingChangesDetails,
+  doesNotWantToMakeChangesDetails,
+  doesNotWantToAnswerChangesDetails,
+] = [
+  {
+    option: CommonOption.has_made_changes,
+    code: Question.thinking_behaviours_attitudes_changes_has_made_changes_details,
+  },
+  {
+    option: CommonOption.is_making_changes,
+    code: Question.thinking_behaviours_attitudes_changes_is_making_changes_details,
+  },
+  {
+    option: CommonOption.wants_to_make_changes_knows_how_to,
+    code: Question.thinking_behaviours_attitudes_changes_wants_to_make_changes_knows_how_to_details,
+  },
+  {
+    option: CommonOption.wants_to_make_changes_needs_help,
+    code: Question.thinking_behaviours_attitudes_changes_wants_to_make_changes_needs_help_details,
+  },
+  {
+    option: CommonOption.thinking_about_making_changes,
+    code: Question.thinking_behaviours_attitudes_changes_thinking_about_making_changes_details,
+  },
+  {
+    option: CommonOption.does_not_want_to_make_changes,
+    code: Question.thinking_behaviours_attitudes_changes_does_not_want_to_make_changes_details,
+  },
+  {
+    option: CommonOption.does_not_want_to_answer,
+    code: Question.thinking_behaviours_attitudes_changes_does_not_want_to_answer_details,
+  },
+].map(toDetailsField(Question.thinking_behaviours_attitudes_changes))
+
+export const thinkingBehavioursChanges = GovUKRadioInput({
+  code: Question.thinking_behaviours_attitudes_changes,
+  fieldset: {
+    legend: {
+      text: contentFor('question.thinking_behaviours_attitudes_changes.text', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  hint: contentFor('question.thinking_behaviours_attitudes_changes.hint', CaseData.Forename),
+  items: [
+    {
+      value: CommonOption.has_made_changes,
+      text: commonContentFor('option.HAS_MADE_CHANGES'),
+      block: hasMadePositiveChangesDetails,
+    },
+    {
+      value: CommonOption.is_making_changes,
+      text: commonContentFor('option.IS_MAKING_CHANGES'),
+      block: isActivelyMakingChangesDetails,
+    },
+    {
+      value: CommonOption.wants_to_make_changes_knows_how_to,
+      text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
+      block: wantsToMakeChangesKnowsHowDetails,
+    },
+    {
+      value: CommonOption.wants_to_make_changes_needs_help,
+      text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
+      block: wantsToMakeChangesNeedsHelpDetails,
+    },
+    {
+      value: CommonOption.thinking_about_making_changes,
+      text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
+      block: thinkingAboutMakingChangesDetails,
+    },
+    {
+      value: CommonOption.does_not_want_to_make_changes,
+      text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
+      block: doesNotWantToMakeChangesDetails,
+    },
+    {
+      value: CommonOption.does_not_want_to_answer,
+      text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'),
+      block: doesNotWantToAnswerChangesDetails,
+    },
+    { divider: commonContentFor('or') },
+    { value: CommonOption.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },
+    { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: contentFor('question.thinking_behaviours_attitudes_changes.validation'),
+    }),
+  ],
+})

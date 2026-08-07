@@ -3,7 +3,7 @@ name: Post daily on-call to Slack
 on:
   schedule:
     - cron: '0 8 * * 1-5'
-      timezone: "Europe/London"
+      timezone: 'Europe/London'
   workflow_dispatch: {}
 
 permissions:

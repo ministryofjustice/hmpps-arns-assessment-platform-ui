@@ -149,6 +149,9 @@ export default {
     sentencePlan: {
       enabled: get('FORM_SENTENCE_PLAN_ENABLED', 'true') === 'true',
     },
+    strengthsAndNeeds: {
+      enabled: get('FORM_STRENGTHS_AND_NEEDS_ENABLED', 'true') === 'true',
+    },
     trainingSessionLauncher: {
       enabled: get('FORM_TRAINING_SESSION_LAUNCHER_ENABLED', 'false') === 'true',
     },

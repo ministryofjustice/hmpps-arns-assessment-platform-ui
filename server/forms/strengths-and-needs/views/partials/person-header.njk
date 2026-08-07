@@ -1,0 +1,113 @@
+{%- from "shared/views/partials/person-header.njk" import appPersonHeader -%}
+{%- from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions -%}
+{%- from "moj/components/alert/macro.njk" import mojAlert -%}
+{%- from "govuk/components/button/macro.njk" import govukButton -%}
+
+{% if data.caseData %}
+  {% set person = data.caseData %}
+  {% set buttonItems = [] %}
+  {% set navigationLinks = [] %}
+
+  {% if buttons.showReturnToOasysButton %}
+    {% set buttonItems = buttonItems.concat([{
+      text: 'Return to OASys',
+      href: data.sessionDetails.oasysRedirectUrl,
+      classes: "govuk-button--secondary govuk-!-display-none-print",
+      type: 'button'
+    }]) %}
+  {% endif %}
+
+  {% if not hideNavigationLinks %}
+    {% set navigationLinks = navigationLinks.concat([
+      {
+        text: 'View previous versions',
+        href: basePath + '/previous-versions'
+      },
+      {
+        text: 'View all answers',
+        href: basePath + '/view-all-answers'
+      }
+    ]) %}
+  {% endif %}
+
+  {% if person %}
+    {% set fullName = params.fullName or (person.name.forename + ' ' + person.name.surname if person.name else 'Unknown') %}
+
+    <div class="govuk-width-container">
+      <header class="assessment-header" role="presentation" data-qa="{{ params.dataQa or 'person-header' }}">
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-full assessment-header__subject-details">
+            <div class="assessment-header__subject-details__top">
+              <dl>
+                  <dt>CRN:</dt>
+                  <dd>{{ person.crn }}</dd>
+                  <dt>PNC:</dt>
+                  <dd>{{ person.pnc | default('Unknown PNC', true) }}</dd>
+                  <dt>Date of birth:</dt>
+                  <dd>{{ person.dateOfBirth | formatSimpleDate }}</dd>
+              </dl>
+              <ul>
+              {% if navigationLinks | length %}
+                  {% for link in navigationLinks %}
+                    <li>
+                      <a href="{{ link.href }}"
+                         class="govuk-link--no-visited-state govuk-!-display-none-print"
+                         {% if link.attributes %}
+                           {% for attrName, attrValue in link.attributes %}
+                             {{ attrName }}="{{ attrValue }}"
+                           {% endfor %}
+                         {% endif %}>
+                        {{ link.text }}
+                      </a>
+                    </li>
+                  {% endfor %}
+              {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-one-half">
+            <p class="assessment-header__subject-details__name">{{ fullName }}</p>
+          </div>
+          <div class="govuk-grid-column-one-half">
+            {% if params.headerPageHeading %}
+              <div class="assessment-header__actions">
+                {{ mojPageHeaderActions({
+                  heading: {
+                    text: params.headerPageHeading,
+                    classes: "govuk-heading-l govuk-!-margin-bottom-0"
+                  },
+                  items: buttonItems
+                }) }}
+              </div>
+            {% elseif buttonItems | length %}
+              <div class="assessment-header__actions govuk-!-display-none-print">
+                <div class="moj-button-group moj-button-group--inline">
+                  {% for button in buttonItems %}
+                    {{ govukButton(button) }}
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if params.alert %}
+          <div class="assessment-header__previous-version-date-banner">
+            <div class="govuk-grid-row">
+              <div class="govuk-grid-column-full">
+                {{ mojAlert({
+                  variant: "information",
+                  title: params.alert.title,
+                  dismissible: false,
+                  html: '<span class="moj-alert__heading">' ~ params.alert.message ~ '</span>'
+                }) }}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </header>
+    </div>
+  {% endif %}
+{% endif %}
