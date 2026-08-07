@@ -139,12 +139,11 @@ describe('plan header', () => {
             crn: 'X000000',
             dateOfBirth: '1990-01-01',
           },
-          featureFlags: {
-            downtimeNotificationBanner: false,
-          },
+        },
+        featureFlags: {
+          downtimeNotificationBanner: false,
         },
         headerPageHeading: "Joan's plan",
-        downtimeNotificationBanner: false,
       })
 
       expect(html).not.toContain('govuk-notification-banner__header')
