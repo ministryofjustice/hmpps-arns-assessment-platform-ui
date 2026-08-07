@@ -27,6 +27,8 @@ export default class AbstractPage {
 
   readonly practitionerAnalysis: Locator
 
+  readonly returnToOASys: Locator
+
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
@@ -39,6 +41,7 @@ export default class AbstractPage {
     this.enterDetails = page.getByRole('textbox', { description: 'Enter details' })
     this.goToPractitionerAnalysis = page.getByRole('button', { name: 'Go to practitioner analysis' })
     this.practitionerAnalysis = page.getByRole('link', { name: 'Practitioner analysis' })
+    this.returnToOASys = page.getByRole('link', { name: 'Go to the OASys homepage' })
   }
 
   async signOut() {
