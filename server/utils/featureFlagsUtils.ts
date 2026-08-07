@@ -17,6 +17,11 @@ export const BooleanFeatureFlags = {
     nunjucksKey: 'printAndShareEnabled',
     fallbackState: false,
   },
+  DOWNTIME_NOTIFICATION_BANNER: {
+    fliptKey: 'sp-downtime-notification-banner',
+    nunjucksKey: 'downtimeNotificationBanner',
+    fallbackState: false,
+  },
 }
 
 export interface FeatureFlagConfig {
