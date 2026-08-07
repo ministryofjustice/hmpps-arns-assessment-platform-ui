@@ -10,6 +10,17 @@ test.describe('Health', () => {
       expect(payload.status).toBe('UP')
     })
 
+    test('Health check excludes the feature-flagged supervision package APIs', async ({ page }) => {
+      const response = await page.request.get('/health')
+      const payload = await response.json()
+
+      // These back one feature-flagged page that degrades without them, so their
+      // outages must not make this service report itself down. See setUpHealthChecks.
+      expect(Object.keys(payload.components)).not.toContain('tierApi')
+      expect(Object.keys(payload.components)).not.toContain('supervisionPackageApi')
+      expect(Object.keys(payload.components)).not.toContain('masApi')
+    })
+
     test('Ping is accessible and status is UP', async ({ page }) => {
       const response = await page.request.get('/ping')
       const payload = await response.json()

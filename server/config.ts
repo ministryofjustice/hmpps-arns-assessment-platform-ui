@@ -140,6 +140,36 @@ export default {
       },
       agent: new AgentConfig(Number(get('COORDINATOR_API_TIMEOUT_RESPONSE', 10000))),
     },
+    // HMPPS Tier — supplies the tier score and its status tag on the supervision package page
+    tierApi: {
+      url: get('TIER_API_URL', 'http://localhost:9091', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('TIER_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('TIER_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('TIER_API_TIMEOUT_RESPONSE', 5000))),
+    },
+    // Supervision Packages — supplies the phase, appointment allowance and sentence details
+    supervisionPackageApi: {
+      url: get('SUPERVISION_PACKAGE_API_URL', 'http://localhost:9091', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('SUPERVISION_PACKAGE_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('SUPERVISION_PACKAGE_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('SUPERVISION_PACKAGE_API_TIMEOUT_RESPONSE', 5000))),
+    },
+    // Manage a Supervision (MAS) — supplies the next appointment on the supervision package page
+    masApi: {
+      url: get('MAS_API_URL', 'http://localhost:9091', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('MAS_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('MAS_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('MAS_API_TIMEOUT_RESPONSE', 10000))),
+    },
   },
   sanUrl: get('SAN_URL', 'http://localhost:3000', requiredInProduction),
   sqs: {
