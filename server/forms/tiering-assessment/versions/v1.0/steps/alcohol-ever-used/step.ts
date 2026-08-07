@@ -1,6 +1,6 @@
-import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {access, Answer, Condition, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { uuidSummaryField } from './fields'
+import { alcoholEverUsedField } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 
 export const alcoholEverUsedStep = step({
@@ -11,13 +11,22 @@ export const alcoholEverUsedStep = step({
       effects: [TieringAssessmentEffects.LoadAssessmentData()],
     }),
   ],
-  blocks: [uuidSummaryField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [alcoholEverUsedField, GovUKButton({ text: 'Save and continue' })],
   onSubmission: [
     submit({
       validate: true,
       onValid: {
-        effects: [TieringAssessmentEffects.SaveAssessmentData()],
-        next: [redirect({ goto: 'alcohol' })],
+        effects: [
+          TieringAssessmentEffects.CalculateRiskActuarialScores(),
+          TieringAssessmentEffects.SaveAssessmentData(),
+        ],
+        next: [
+          redirect({
+            when: Answer('is-current-alcohol-use-a-problem').match(Condition.Equals('true')),
+            goto: 'alcohol',
+          }),
+          redirect({ goto: 'binge-drinking' })
+        ],
       },
     }),
   ],
