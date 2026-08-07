@@ -172,6 +172,7 @@ describe('RiskActuarialService', () => {
       isCurrentOffenceAgainstVictimStranger: true,
       isUnemployed: null,
       suitabilityOfAccommodation: null,
+      currentAlcoholUseProblems: null,
     })
 
     expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-score', '0.45')
@@ -260,6 +261,8 @@ describe('RiskActuarialService', () => {
       'victim-stranger': 'true',
       'suitability-of-accommodation': 'SOME_PROBLEMS',
       'is-unemployed': 'true',
+      'is-current-alcohol-use-a-problem': 'true',
+      'current-alcohol-use-problems': 'SOME_PROBLEMS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -287,6 +290,7 @@ describe('RiskActuarialService', () => {
       isCurrentOffenceAgainstVictimStranger: true,
       suitabilityOfAccommodation: 'SOME_PROBLEMS' as ProblemLevel,
       isUnemployed: true,
+      currentAlcoholUseProblems: 'SOME_PROBLEMS' as ProblemLevel,
     })
 
     // TODO responses will change when enough answers provided
@@ -392,6 +396,7 @@ describe('RiskActuarialService', () => {
       isCurrentOffenceAgainstVictimStranger: null,
       isUnemployed: null,
       suitabilityOfAccommodation: null,
+      currentAlcoholUseProblems: null,
     })
   })
 
@@ -429,6 +434,55 @@ describe('RiskActuarialService', () => {
       expect.objectContaining({
         suitabilityOfAccommodation: null,
         isUnemployed: null,
+      }),
+    )
+  })
+
+  it('should return null if "is-current-alcohol-use-a-problem" resolves to null', async () => {
+    const answers: Record<string, unknown> = {
+      'is-current-alcohol-use-a-problem': 'unknown',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentAlcoholUseProblems: null,
+      }),
+    )
+  })
+
+  it('should return "NO_PROBLEMS" if "is-current-alcohol-use-a-problem" is false', async () => {
+    const answers: Record<string, unknown> = {
+      'is-current-alcohol-use-a-problem': 'false',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentAlcoholUseProblems: 'NO_PROBLEMS',
+      }),
+    )
+  })
+
+  it('should return the parsed problem level if "is-current-alcohol-use-a-problem" is true', async () => {
+    const answers: Record<string, unknown> = {
+      'is-current-alcohol-use-a-problem': 'true',
+      'current-alcohol-use-problems': 'SIGNIFICANT_PROBLEMS',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentAlcoholUseProblems: 'SIGNIFICANT_PROBLEMS',
       }),
     )
   })

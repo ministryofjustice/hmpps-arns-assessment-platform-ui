@@ -40,7 +40,17 @@ export class RiskActuarialService {
       isCurrentOffenceAgainstVictimStranger: this.parseBoolean(context.getAnswer('victim-stranger')),
       suitabilityOfAccommodation: this.parseProblemLevel(context.getAnswer('suitability-of-accommodation')),
       isUnemployed: this.parseBoolean(context.getAnswer('is-unemployed')),
+      currentAlcoholUseProblems: this.getCurrentAlcoholUseProblems(context),
     }
+  }
+
+  private getCurrentAlcoholUseProblems(context: TieringAssessmentEffectContext): ProblemLevel | null {
+    const isProblem = this.parseBoolean(context.getAnswer('is-current-alcohol-use-a-problem'))
+
+    if (isProblem === null) return null
+    if (!isProblem) return 'NO_PROBLEMS'
+
+    return this.parseProblemLevel(context.getAnswer('current-alcohol-use-problems'))
   }
 
   private saveScoresToContext(context: TieringAssessmentEffectContext, riskScores: RiskScores): void {
