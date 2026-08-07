@@ -23,6 +23,8 @@ export default class AbstractPage {
 
   readonly enterDetails: Locator
 
+  readonly returnToOASys: Locator
+
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
@@ -33,6 +35,7 @@ export default class AbstractPage {
     this.summary = page.getByRole('tabpanel', { name: 'Summary' })
     this.errorEnterDetails = page.getByRole('link', { name: 'Enter details' })
     this.enterDetails = page.getByRole('textbox', { description: 'Enter details' })
+    this.returnToOASys = page.getByRole('link', { name: 'Go to the OASys homepage' })
   }
 
   async signOut() {
