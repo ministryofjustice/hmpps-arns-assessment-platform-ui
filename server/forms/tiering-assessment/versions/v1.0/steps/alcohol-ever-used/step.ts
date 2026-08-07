@@ -1,4 +1,4 @@
-import {access, Answer, Condition, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, Answer, Condition, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { alcoholEverUsedField } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
@@ -25,7 +25,7 @@ export const alcoholEverUsedStep = step({
             when: Answer('is-current-alcohol-use-a-problem').match(Condition.Equals('true')),
             goto: 'alcohol',
           }),
-          redirect({ goto: 'binge-drinking' })
+          redirect({ goto: 'binge-drinking' }),
         ],
       },
     }),

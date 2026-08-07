@@ -45,12 +45,12 @@ export class RiskActuarialService {
   }
 
   private getCurrentAlcoholUseProblems(context: TieringAssessmentEffectContext): ProblemLevel | null {
-    const isProblem = this.parseBoolean(context.getAnswer('is-current-alcohol-use-a-problem'));
+    const isProblem = this.parseBoolean(context.getAnswer('is-current-alcohol-use-a-problem'))
 
-    if (isProblem === null) return null;
-    if (!isProblem) return 'NO_PROBLEMS';
+    if (isProblem === null) return null
+    if (!isProblem) return 'NO_PROBLEMS'
 
-    return this.parseProblemLevel(context.getAnswer('current-alcohol-use-problems'));
+    return this.parseProblemLevel(context.getAnswer('current-alcohol-use-problems'))
   }
 
   private saveScoresToContext(context: TieringAssessmentEffectContext, riskScores: RiskScores): void {
