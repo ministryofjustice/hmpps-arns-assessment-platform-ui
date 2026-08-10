@@ -197,6 +197,76 @@ test.describe('Health and wellbeing Page', () => {
       `)
     })
 
+    test('shows no physical mental health questions', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+      baseURL,
+    }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'health_conditions', value: 'NO' },
+          { question: 'mental_health_problems', value: 'NO' },
+        ]).save()
+
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'physical-mental-health')
+
+      const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any illness affecting the brain')
+
+      await expect(healthAndWellbeingPage.mainSection).toMatchAriaSnapshot(`
+        - link "Back"
+        - heading "Health and wellbeing" [level=1]
+        - strong: Incomplete
+        - group "Has Test had a head injury or any illness affecting the brain?"
+        - group "Does Test have any neurodiverse conditions?"
+        - group "Does Test have any conditions or disabilities that impact their ability to learn? (optional)"
+        - group "Is Test able to cope with day-to-day life?"
+        - group "What is Test's attitude towards themselves?"
+        - group "Has Test ever self-harmed?"
+        - group "Has Test ever attempted suicide or had suicidal thoughts?"
+        - group "How does Test feel about their future?"
+        - group "What’s helped Test during periods of good health and wellbeing? (optional)"
+        - group "Does Test want to make changes to their health and wellbeing?"
+        - button "Save and continue"
+      `)
+    })
+  })
+
+  test.describe('Validation', () => {
+    test('validation physical health and mental health', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+      baseURL,
+    }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      await strengthsAndNeedsBuilder.fresh().save()
+
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL)
+
+      const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any physical health conditions')
+
+      await expect(page).toHaveTitle(buildPageTitle(sanPageTitles.healthAndWellbeing))
+
+      await healthAndWellbeingPage.saveAndContinue.click()
+
+      await expect(healthAndWellbeingPage.alert).toMatchAriaSnapshot(`
+        - alert:
+          - heading "There is a problem" [level=2]
+          - list:
+            - /children: equal
+            - listitem:
+              - link "Select if they have any physical health conditions":
+                - /url: "#health_conditions"
+            - listitem:
+              - link "Select if they have any diagnosed or documented mental health problems":
+                - /url: "#mental_health_problems"
+      `)
+    })
+
     test('validation give details option', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
       const { handoverLink, sanAssessmentId } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
@@ -240,7 +310,7 @@ test.describe('Health and wellbeing Page', () => {
       expect(await healthAndWellbeingPage.giveDetailsCharacterError('300')).toBeVisible()
     })
 
-    test('shows no physical mental health questions', async ({
+    test('validation physical mental health questions', async ({
       page,
       createSession,
       strengthsAndNeedsBuilder,
@@ -251,30 +321,73 @@ test.describe('Health and wellbeing Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'health_conditions', value: 'NO' },
-          { question: 'mental_health_problems', value: 'NO' },
+          { question: 'health_conditions', value: 'YES' },
+          { question: 'has_health_conditions_details', value: '' },
+          { question: 'mental_health_problems', value: 'YES_ONGOING_SEVERE' },
+          { question: 'severe_mental_health_problems_details', value: '' },
         ]).save()
 
       await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'physical-mental-health')
 
-      const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any illness affecting the brain')
+      const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(
+        page,
+        'physical health conditions (optional)',
+      )
 
-      await expect(healthAndWellbeingPage.mainSection).toMatchAriaSnapshot(`
-        - link "Back"
-        - heading "Health and wellbeing" [level=1]
-        - strong: Incomplete
-        - group "Has Test had a head injury or any illness affecting the brain?"
-        - group "Does Test have any neurodiverse conditions?"
-        - group "Does Test have any conditions or disabilities that impact their ability to learn? (optional)"
-        - group "Is Test able to cope with day-to-day life?"
-        - group "What is Test's attitude towards themselves?"
-        - group "Has Test ever self-harmed?"
-        - group "Has Test ever attempted suicide or had suicidal thoughts?"
-        - group "How does Test feel about their future?"
-        - group "What’s helped Test during periods of good health and wellbeing? (optional)"
-        - group "Does Test want to make changes to their health and wellbeing?"
-        - button "Save and continue"
+      await healthAndWellbeingPage.saveAndContinue.click()
+
+      await expect(healthAndWellbeingPage.alert).toMatchAriaSnapshot(`
+        - alert:
+          - heading "There is a problem" [level=2]
+          - list:
+            - /children: equal
+            - listitem:
+              - link "Select if they are currently having psychiatric treatment":
+                - /url: "#psychiatric_treatment"
+            - listitem:
+              - link "Select if they have had a head injury or any illness affecting the brain":
+                - /url: "#head_injuries"
+            - listitem:
+              - link "Select if they have any neurodiverse conditions":
+                - /url: "#neurodiverse_conditions"
+            - listitem:
+              - link "Select if they are able to cope with day-to-day life":
+                - /url: "#cope_with_day_to_day_life"
+            - listitem:
+              - link "Select their attitude towards themselves":
+                - /url: "#attitude_towards_self"
+            - listitem:
+              - link "Select if they have ever self-harmed":
+                - /url: "#self_harm"
+            - listitem:
+              - link "Select if they have ever attempted suicide or had suicidal thoughts":
+                - /url: "#suicidal_tendencies"
+            - listitem:
+              - link "Select how optimistic they are about their future":
+                - /url: "#feeling_about_future_health_wellbeing"
+            - listitem:
+              - link "Select if they want to make changes to their health and wellbeing":
+                - /url: "#changes_to_health_wellbeing"
       `)
+
+      await healthAndWellbeingPage.errorWantsToMakeChanges.click()
+      await expect(healthAndWellbeingPage.yesAlreadyMadePositiveChanges).toBeFocused()
+      await healthAndWellbeingPage.selectIfTheyAreCurrently.click()
+      await expect(healthAndWellbeingPage.isCurrentlyHaving).toBeFocused()
+      await healthAndWellbeingPage.selectIfTheyHaveAny.click()
+      await expect(healthAndWellbeingPage.haveAnyNeurodiverse).toBeFocused()
+      await healthAndWellbeingPage.selectIfTheyHaveHad.click()
+      await expect(healthAndWellbeingPage.hadAHeadInjury).toBeFocused()
+      await healthAndWellbeingPage.selectIfTheyAreAbleTo.click()
+      await expect(healthAndWellbeingPage.yesAbleToCope).toBeFocused()
+      await healthAndWellbeingPage.selectTheirAttitude.click()
+      await expect(healthAndWellbeingPage.positiveAndResonably).toBeFocused()
+      await healthAndWellbeingPage.selectIfAttempted.click()
+      await expect(healthAndWellbeingPage.hasEverAttempted).toBeFocused()
+      await healthAndWellbeingPage.selectIfTheyHaveEver.click()
+      await expect(healthAndWellbeingPage.hasSelfHarmed).toBeFocused()
+      await healthAndWellbeingPage.selectHowOptimistic.click()
+      await expect(healthAndWellbeingPage.optimistic).toBeFocused()
     })
   })
 
