@@ -1,6 +1,8 @@
 import {
   access,
   Answer,
+  Condition,
+  Conditional,
   Format,
   redirect,
   step,
@@ -17,7 +19,11 @@ export const offencesSinceSupervisionStep = step({
   title: Format(
     'Has %1 committed any offences since %2?',
     CaseData.Forename,
-    Answer('date-of-current-supervision-field').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+    Conditional({
+      when: Answer('date-of-current-supervision-field').match(Condition.Date.IsValid()),
+      then: Answer('date-of-current-supervision-field').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+      else: 'date of current supervision',
+    }),
   ),
   onAccess: [
     access({
