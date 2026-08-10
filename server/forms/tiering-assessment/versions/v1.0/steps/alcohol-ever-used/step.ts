@@ -22,10 +22,14 @@ export const alcoholEverUsedStep = step({
         ],
         next: [
           redirect({
-            when: Answer('is-current-alcohol-use-a-problem').match(Condition.Equals('true')),
+            when: Answer('has-ever-drunk-alcohol').match(Condition.Equals('YES_IN_LAST_THREE_MONTHS')),
             goto: 'alcohol',
           }),
-          redirect({ goto: 'binge-drinking' }),
+          redirect({
+            when: Answer('has-ever-drunk-alcohol').match(Condition.Equals('YES_NOT_IN_LAST_THREE_MONTHS')),
+            goto: 'binge-drinking',
+          }),
+          redirect({ goto: 'personal-relationships-and-community' }),
         ],
       },
     }),

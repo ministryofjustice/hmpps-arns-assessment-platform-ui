@@ -61,10 +61,10 @@ export class RiskActuarialService {
   }
 
   private getCurrentAlcoholUseProblems(context: TieringAssessmentEffectContext): ProblemLevel | null {
-    const isProblem = this.parseBoolean(context.getAnswer('is-current-alcohol-use-a-problem'))
+    const hasEverDrunkAlcohol = this.parseString(context.getAnswer('has-ever-drunk-alcohol'))
 
-    if (isProblem === null) return null
-    if (!isProblem) return 'NO_PROBLEMS'
+    if (hasEverDrunkAlcohol === null || hasEverDrunkAlcohol === 'unknown') return null
+    if (hasEverDrunkAlcohol === 'YES_NOT_IN_LAST_THREE_MONTHS' || hasEverDrunkAlcohol === 'NO') return 'NO_PROBLEMS'
 
     return this.parseProblemLevel(context.getAnswer('current-alcohol-use-problems'))
   }

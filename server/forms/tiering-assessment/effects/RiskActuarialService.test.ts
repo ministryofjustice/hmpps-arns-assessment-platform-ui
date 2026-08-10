@@ -296,7 +296,7 @@ describe('RiskActuarialService', () => {
       'ketamine-radio': 'true',
       'other-drug-radio': 'true',
       'motivation-to-tackle-drug-misuse': 'PARTIAL_MOTIVATION',
-      'is-current-alcohol-use-a-problem': 'true',
+      'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-problems': 'SOME_PROBLEMS',
     }
 
@@ -504,7 +504,7 @@ describe('RiskActuarialService', () => {
       'ketamine-radio': 'unknown',
       'other-drug-radio': 'unknown',
       'motivation-to-tackle-drug-misuse': 'unknown',
-      'is-current-alcohol-use-a-problem': 'unknown',
+      'has-ever-drunk-alcohol': 'unknown',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -535,9 +535,10 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return null if "is-current-alcohol-use-a-problem" resolves to null', async () => {
+  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS', async () => {
     const answers: Record<string, unknown> = {
-      'is-current-alcohol-use-a-problem': 'unknown',
+      'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
+      'current-alcohol-use-problems': 'SIGNIFICANT_PROBLEMS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -546,14 +547,14 @@ describe('RiskActuarialService', () => {
 
     expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
       expect.objectContaining({
-        currentAlcoholUseProblems: null,
+        currentAlcoholUseProblems: 'SIGNIFICANT_PROBLEMS',
       }),
     )
   })
 
-  it('should return "NO_PROBLEMS" if "is-current-alcohol-use-a-problem" is false', async () => {
+  it('should return "NO_PROBLEMS" if "has-ever-drunk-alcohol" is YES_NOT_IN_LAST_THREE_MONTHS', async () => {
     const answers: Record<string, unknown> = {
-      'is-current-alcohol-use-a-problem': 'false',
+      'has-ever-drunk-alcohol': 'YES_NOT_IN_LAST_THREE_MONTHS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -567,10 +568,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "is-current-alcohol-use-a-problem" is true', async () => {
+  it('should return "NO_PROBLEMS" if "has-ever-drunk-alcohol" is NO', async () => {
     const answers: Record<string, unknown> = {
-      'is-current-alcohol-use-a-problem': 'true',
-      'current-alcohol-use-problems': 'SIGNIFICANT_PROBLEMS',
+      'has-ever-drunk-alcohol': 'NO',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -579,7 +579,7 @@ describe('RiskActuarialService', () => {
 
     expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
       expect.objectContaining({
-        currentAlcoholUseProblems: 'SIGNIFICANT_PROBLEMS',
+        currentAlcoholUseProblems: 'NO_PROBLEMS',
       }),
     )
   })
