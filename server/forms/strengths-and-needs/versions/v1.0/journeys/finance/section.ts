@@ -9,6 +9,7 @@ import {
   itemisedSummaryRow,
   optionalDetails,
   question,
+  QuestionFormat,
   radioDetails,
   radioField,
   requiredDetails,
@@ -24,6 +25,7 @@ import { Option } from './constants/option'
 const overReliantOnFamilyOrFriendsRevealed = revealedQuestion({
   content: {
     code: Question.finance_income_family_or_friends_details,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.finance_income_family_or_friends_details.text', CaseData.Forename),
     options: [
       {
@@ -56,6 +58,7 @@ const typeOfDebtRevealed = (content: {
   revealedQuestion({
     content: {
       code: content.code,
+      format: QuestionFormat.CHECKBOX,
       text: content.text,
       hint: commonContentFor('select_all_that_apply'),
       options: [
@@ -84,6 +87,7 @@ const typeOfDebtRevealed = (content: {
 const income = question({
   content: {
     code: Question.finance_income,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.finance_income.text', CaseData.Forename),
     hint: commonContentFor('select_all_that_apply'),
     options: [
@@ -133,6 +137,7 @@ const income = question({
 const bankAccount = question({
   content: {
     code: Question.finance_bank_account,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.finance_bank_account.text', CaseData.Forename),
     options: [...yesNo(), { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') }],
     validationMessage: contentFor('question.finance_bank_account.validation'),
@@ -146,6 +151,7 @@ const bankAccount = question({
 const moneyManagement = question({
   content: {
     code: Question.finance_money_management,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.finance_money_management.text', CaseData.Forename),
     hint: contentFor('question.finance_money_management.hint'),
     options: [
@@ -181,6 +187,7 @@ const moneyManagement = question({
 const gambling = question({
   content: {
     code: Question.finance_gambling,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.finance_gambling.text', CaseData.Forename),
     hint: commonContentFor('select_all_that_apply'),
     options: [
@@ -214,6 +221,7 @@ const gambling = question({
 const debt = question({
   content: {
     code: Question.finance_debt,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.finance_debt.text', CaseData.Forename),
     options: [
       {
@@ -256,6 +264,7 @@ const debt = question({
 const changes = question({
   content: {
     code: Question.finance_changes,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.finance_changes.text', CaseData.Forename),
     hint: contentFor('question.finance_changes.hint', CaseData.Forename),
     options: [
@@ -309,6 +318,7 @@ const changes = question({
 const strengthsOrProtectiveFactors = question({
   content: {
     code: Question.finance_strengths_protective_factors,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.finance_strengths_protective_factors.text', CaseData.ForenamePossessive),
     hint: contentFor('question.finance_strengths_protective_factors.hint'),
     options: yesNo({
@@ -336,6 +346,7 @@ const strengthsOrProtectiveFactors = question({
 const riskOfSeriousHarm = question({
   content: {
     code: Question.finance_linked_to_serious_harm,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.finance_linked_to_serious_harm.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({
@@ -359,6 +370,7 @@ const riskOfSeriousHarm = question({
 const riskOfReoffending = question({
   content: {
     code: Question.finance_linked_to_reoffending,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.finance_linked_to_reoffending.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({

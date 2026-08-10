@@ -11,6 +11,7 @@ import {
   itemisedSummaryRow,
   optionalDetails,
   question,
+  QuestionFormat,
   radioField,
   requiredDetails,
   revealedQuestion,
@@ -39,6 +40,7 @@ const childrenDetailsRevealed = (content: {
   revealedQuestion({
     content: {
       code: content.code,
+      format: QuestionFormat.TEXT,
       text: content.text,
       validationMessage: content.validationMessage,
     },
@@ -49,13 +51,14 @@ const childrenDetailsRevealed = (content: {
 // under their own code, with an option-specific label.
 const importantPersonDetailsRevealed = (content: { code: string; text: ResolvableString }) =>
   revealedQuestion({
-    content: { code: content.code, text: content.text },
+    content: { code: content.code, format: QuestionFormat.TEXT, text: content.text },
     displayModes: { field: characterCountDetails({ maxLength: CharacterLimit.c2000 }) },
   })
 
 const childrenDetails = question({
   content: {
     code: Question.personal_relationships_community_children_details,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.personal_relationships_community_children_details.text', CaseData.ForenamePossessive),
     hint: {
       html: contentFor('question.personal_relationships_community_children_details.hint', CaseData.Forename),
@@ -130,6 +133,7 @@ const childrenDetails = question({
 const importantPeople = question({
   content: {
     code: Question.personal_relationships_community_important_people,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.personal_relationships_community_important_people.text', CaseData.ForenamePossessive),
     hint: commonContentFor('select_all_that_apply'),
     options: [
@@ -201,6 +205,7 @@ const importantPeople = question({
 const currentRelationship = question({
   content: {
     code: Question.personal_relationships_community_current_relationship,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.personal_relationships_community_current_relationship.text', CaseData.Forename),
     options: [
       {
@@ -242,6 +247,7 @@ const currentRelationship = question({
 const intimateRelationship = question({
   content: {
     code: Question.personal_relationships_community_intimate_relationship,
+    format: QuestionFormat.RADIO,
     text: contentFor(
       'question.personal_relationships_community_intimate_relationship.text',
       CaseData.ForenamePossessive,
@@ -302,6 +308,7 @@ const intimateRelationship = question({
 const challengesIntimateRelationship = question({
   content: {
     code: Question.personal_relationships_community_challenges_intimate_relationship,
+    format: QuestionFormat.TEXT,
     text: contentFor(
       'question.personal_relationships_community_challenges_intimate_relationship.text',
       CaseData.Forename,
@@ -325,6 +332,7 @@ const challengesIntimateRelationship = question({
 const parentalResponsibilities = question({
   content: {
     code: Question.personal_relationships_community_parental_responsibilities,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.personal_relationships_community_parental_responsibilities.text', CaseData.Forename),
     hint: contentFor('question.personal_relationships_community_parental_responsibilities.hint'),
     options: [
@@ -365,6 +373,7 @@ const parentalResponsibilities = question({
 const familyRelationship = question({
   content: {
     code: Question.personal_relationships_community_family_relationship,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.personal_relationships_community_family_relationship.text', CaseData.ForenamePossessive),
     hint: contentFor('question.personal_relationships_community_family_relationship.hint'),
     options: [
@@ -411,6 +420,7 @@ const familyRelationship = question({
 const childhood = question({
   content: {
     code: Question.personal_relationships_community_childhood,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.personal_relationships_community_childhood.text', CaseData.ForenamePossessive),
     hint: contentFor('question.personal_relationships_community_childhood.hint'),
     options: [
@@ -448,6 +458,7 @@ const childhood = question({
 const childhoodBehaviour = question({
   content: {
     code: Question.personal_relationships_community_childhood_behaviour,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.personal_relationships_community_childhood_behaviour.text', CaseData.Forename),
     hint: contentFor('question.personal_relationships_community_childhood_behaviour.hint'),
     options: yesNo({
@@ -465,6 +476,7 @@ const childhoodBehaviour = question({
 const belonging = question({
   content: {
     code: Question.personal_relationships_community_belonging,
+    format: QuestionFormat.TEXT,
     text: contentFor('question.personal_relationships_community_belonging.text', CaseData.Forename),
     hint: contentFor('question.personal_relationships_community_belonging.hint'),
   },
@@ -480,6 +492,7 @@ const belonging = question({
 const changes = question({
   content: {
     code: Question.personal_relationships_community_changes,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.personal_relationships_community_changes.text', CaseData.Forename),
     hint: commonContentFor('validation.must_answer', CaseData.Forename),
     options: [
@@ -546,6 +559,7 @@ const changes = question({
 const strengthsOrProtectiveFactors = question({
   content: {
     code: Question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors,
+    format: QuestionFormat.RADIO,
     text: contentFor(
       'question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors.text',
       CaseData.ForenamePossessive,
@@ -582,6 +596,7 @@ const strengthsOrProtectiveFactors = question({
 const riskOfSeriousHarm = question({
   content: {
     code: Question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm,
+    format: QuestionFormat.RADIO,
     text: contentFor(
       'question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm.text',
       CaseData.ForenamePossessive,
@@ -615,6 +630,7 @@ const riskOfSeriousHarm = question({
 const riskOfReoffending = question({
   content: {
     code: Question.personal_relationships_community_practitioner_analysis_risk_of_reoffending,
+    format: QuestionFormat.RADIO,
     text: contentFor(
       'question.personal_relationships_community_practitioner_analysis_risk_of_reoffending.text',
       CaseData.ForenamePossessive,

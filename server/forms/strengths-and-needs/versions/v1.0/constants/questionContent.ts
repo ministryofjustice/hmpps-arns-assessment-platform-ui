@@ -61,6 +61,7 @@ import { getDisplayTextForItems } from '../../../i18n'
  *     likesTea: question({
  *       content: {
  *         code: Question.likes_tea,
+ *         format: QuestionFormat.RADIO,
  *         text: contentFor('question.likes_tea.text', CaseData.Forename),
  *         options: [
  *           {
@@ -84,6 +85,13 @@ import { getDisplayTextForItems } from '../../../i18n'
  * // In the summary:  rows: [mySection.fields.likesTea.displayModes.summaryRow]
  */
 
+export enum QuestionFormat {
+  RADIO = 'RADIO',
+  CHECKBOX = 'CHECKBOX',
+  TEXT = 'TEXT',
+  DATE = 'DATE',
+}
+
 /**
  * Canonical content for a question: what it asks, how its answers are labelled,
  * and how invalid input is described. Declared once per question, then projected
@@ -91,6 +99,8 @@ import { getDisplayTextForItems } from '../../../i18n'
  */
 export interface QuestionContent {
   code: string
+  // The input kind the question renders as.
+  format: QuestionFormat
   text: ResolvableString
   // The object form renders the hint as HTML instead of escaped text.
   hint?: ResolvableString | { html: ResolvableString }
@@ -621,6 +631,7 @@ export const textSummaryRow =
  *   reveals: revealedQuestion({
  *     content: {
  *       code: Question.my_question_yes_details,
+ *       format: QuestionFormat.TEXT,
  *       text: commonContentFor('required_details'),
  *       validationMessage: contentFor('question.my_question_yes_details.validation'),
  *     },
@@ -644,7 +655,12 @@ export const revealedQuestion = <TContent extends QuestionContent>(definition: {
  *
  * @example
  * const myQuestion = question({
- *   content: { code: Question.my_question, text: contentFor('question.my_question.text'), options: [...] },
+ *   content: {
+ *     code: Question.my_question,
+ *     format: QuestionFormat.RADIO,
+ *     text: contentFor('question.my_question.text'),
+ *     options: [...],
+ *   },
  *   displayModes: {
  *     field: radioField({ dependentWhen: applies, visibleWhen: applies }),
  *     summaryRow: itemisedSummaryRow({ changePath: Step.my_step.path, visibleWhen: applies }),
@@ -673,6 +689,8 @@ export const question = <
  */
 export interface QuestionTemplateContent {
   code: (instanceValue: string) => string
+  // The input kind every instance of the template renders as.
+  format: QuestionFormat
 
   /**
    * Expression twin of `code` for templates rendered over a runtime collection,
@@ -692,6 +710,8 @@ export interface QuestionTemplateContent {
  */
 export interface TemplateProjectionContent {
   code: ResolvableString
+  // The input kind the question renders as.
+  format: QuestionFormat
   text: ResolvableString
   hint?: ResolvableString
   options: QuestionOptionEntry[]
@@ -714,6 +734,7 @@ export interface TemplateProjectionContent {
  * const drugLastUsed = questionTemplate({
  *   content: {
  *     code: drugValue => fieldCodeString(Question.drug_last_used, drugValue),
+ *     format: QuestionFormat.RADIO,
  *     codeOver: drugValue => Format(Question.drug_last_used_value, drugValue),
  *     text: drugValue => contentFor('question.drug_last_used.text', drugValueToText(drugValue)),
  *     options: [...],
@@ -747,6 +768,7 @@ export const questionTemplate = (definition: {
 
     return {
       code: codeOver(instanceParam),
+      format: template.format,
       text: template.text(instanceParam),
       hint: template.hint,
       options: template.options ?? [],
@@ -766,6 +788,7 @@ export const questionTemplate = (definition: {
 
       const content: OptionedQuestionContent = {
         code: template.code(instanceValue),
+        format: template.format,
         text: template.text(instanceValue),
         hint: template.hint,
         options: template.options ?? [],
@@ -833,6 +856,7 @@ export const requiredDetails = (content: {
   revealedQuestion({
     content: {
       code: content.code,
+      format: QuestionFormat.TEXT,
       text: commonContentFor('required_details'),
       hint: content.hint,
       validationMessage: content.validationMessage,
@@ -843,7 +867,12 @@ export const requiredDetails = (content: {
 /** An optional free-text reveal: "Give details (optional)". */
 export const optionalDetails = (content: { code: string; hint?: ResolvableString; maxLength?: number }) =>
   revealedQuestion({
-    content: { code: content.code, text: commonContentFor('optional_details'), hint: content.hint },
+    content: {
+      code: content.code,
+      format: QuestionFormat.TEXT,
+      text: commonContentFor('optional_details'),
+      hint: content.hint,
+    },
     displayModes: { field: characterCountDetails({ maxLength: content.maxLength ?? CharacterLimit.c2000 }) },
   })
 

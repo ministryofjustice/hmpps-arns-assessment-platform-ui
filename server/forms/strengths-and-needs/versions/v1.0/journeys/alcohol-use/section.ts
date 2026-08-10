@@ -9,6 +9,7 @@ import {
   itemisedSummaryRow,
   optionalDetails,
   question,
+  QuestionFormat,
   radioField,
   requiredDetails,
   requiredValidationOf,
@@ -31,6 +32,7 @@ const genderIsMale = CaseData.Gender.match(Condition.Equals(Gender.MALE))
 const bingeDrinkingFrequencyRevealed = revealedQuestion({
   content: {
     code: Question.alcohol_binge_drinking_frequency,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.alcohol_binge_drinking_frequency.text'),
     options: [
       {
@@ -65,6 +67,7 @@ const bingeDrinkingFrequencyRevealed = revealedQuestion({
 const alcoholUse = question({
   content: {
     code: Question.alcohol_use,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.alcohol_use.text', CaseData.Forename),
     options: [
       {
@@ -88,6 +91,7 @@ const alcoholUse = question({
 const frequency = question({
   content: {
     code: Question.alcohol_frequency,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.alcohol_frequency.text', CaseData.Forename),
     options: [
       {
@@ -124,6 +128,7 @@ const frequency = question({
 const units = question({
   content: {
     code: Question.alcohol_units,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.alcohol_units.text', CaseData.Forename),
     hint: { html: contentFor('question.alcohol_units.hint') },
     options: [
@@ -150,6 +155,7 @@ const units = question({
 const bingeDrinking = question({
   content: {
     code: Question.alcohol_binge_drinking,
+    format: QuestionFormat.RADIO,
     text: when(genderIsMale)
       .then(contentFor('question.alcohol_binge_drinking.text_male', CaseData.Forename))
       .else(contentFor('question.alcohol_binge_drinking.text_other', CaseData.Forename)),
@@ -176,6 +182,7 @@ const bingeDrinking = question({
 const evidenceOfExcessDrinking = question({
   content: {
     code: Question.alcohol_evidence_of_excess_drinking,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.alcohol_evidence_of_excess_drinking.text', CaseData.Forename),
     options: [
       {
@@ -207,6 +214,7 @@ const evidenceOfExcessDrinking = question({
 const pastIssues = question({
   content: {
     code: Question.alcohol_past_issues,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.alcohol_past_issues.text', CaseData.Forename),
     options: [
       {
@@ -233,6 +241,7 @@ const pastIssues = question({
 const reasonsForUse = question({
   content: {
     code: Question.alcohol_reasons_for_use,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.alcohol_reasons_for_use.text', CaseData.Forename),
     hint: commonContentFor('select_all_that_apply'),
     options: [
@@ -280,6 +289,7 @@ const reasonsForUse = question({
 const impactOfUse = question({
   content: {
     code: Question.alcohol_impact_of_use,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.alcohol_impact_of_use.text', CaseData.Forename),
     hint: commonContentFor('select_all_that_apply'),
     options: [
@@ -341,6 +351,7 @@ const impactOfUse = question({
 const stoppedOrReduced = question({
   content: {
     code: Question.alcohol_stopped_or_reduced,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.alcohol_stopped_or_reduced.text', CaseData.Forename),
     hint: contentFor('question.alcohol_stopped_or_reduced.hint'),
     options: [
@@ -368,6 +379,7 @@ const stoppedOrReduced = question({
 const changes = question({
   content: {
     code: Question.alcohol_use_changes,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.alcohol_use_changes.text', CaseData.Forename),
     options: [
       {
@@ -423,6 +435,7 @@ const changes = question({
 const strengthsOrProtectiveFactors = question({
   content: {
     code: Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors,
+    format: QuestionFormat.RADIO,
     text: contentFor(
       'question.alcohol_use_practitioner_analysis_strengths_or_protective_factors.text',
       CaseData.ForenamePossessive,
@@ -455,6 +468,7 @@ const strengthsOrProtectiveFactors = question({
 const riskOfSeriousHarm = question({
   content: {
     code: Question.alcohol_use_practitioner_analysis_risk_of_serious_harm,
+    format: QuestionFormat.RADIO,
     text: contentFor(
       'question.alcohol_use_practitioner_analysis_risk_of_serious_harm.text',
       CaseData.ForenamePossessive,
@@ -482,6 +496,7 @@ const riskOfSeriousHarm = question({
 const riskOfReoffending = question({
   content: {
     code: Question.alcohol_use_practitioner_analysis_risk_of_reoffending,
+    format: QuestionFormat.RADIO,
     text: contentFor(
       'question.alcohol_use_practitioner_analysis_risk_of_reoffending.text',
       CaseData.ForenamePossessive,

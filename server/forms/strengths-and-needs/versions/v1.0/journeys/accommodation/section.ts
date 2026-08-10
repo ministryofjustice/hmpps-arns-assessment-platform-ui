@@ -13,6 +13,7 @@ import {
   optionalDetails,
   optionalFutureDateDetails,
   question,
+  QuestionFormat,
   radioDetails,
   radioField,
   requiredDetails,
@@ -35,23 +36,36 @@ const noAccommodation = Answer(Question.current_accommodation).match(Condition.E
 const hasAccommodation = not(noAccommodation)
 
 const approvedPremisesEndDateRevealed = revealedQuestion({
-  content: { code: Question.approved_premises_end_date, text: contentFor('question.approved_premises_end_date.text') },
+  content: {
+    code: Question.approved_premises_end_date,
+    format: QuestionFormat.DATE,
+    text: contentFor('question.approved_premises_end_date.text'),
+  },
   displayModes: { field: optionalFutureDateDetails() },
 })
 
 const cas2EndDateRevealed = revealedQuestion({
-  content: { code: Question.cas2_end_date, text: contentFor('question.cas2_end_date.text') },
+  content: {
+    code: Question.cas2_end_date,
+    format: QuestionFormat.DATE,
+    text: contentFor('question.cas2_end_date.text'),
+  },
   displayModes: { field: optionalFutureDateDetails() },
 })
 
 const cas3EndDateRevealed = revealedQuestion({
-  content: { code: Question.cas3_end_date, text: contentFor('question.cas3_end_date.text') },
+  content: {
+    code: Question.cas3_end_date,
+    format: QuestionFormat.DATE,
+    text: contentFor('question.cas3_end_date.text'),
+  },
   displayModes: { field: optionalFutureDateDetails() },
 })
 
 const immigrationEndDateRevealed = revealedQuestion({
   content: {
     code: Question.immigration_accommodation_end_date,
+    format: QuestionFormat.DATE,
     text: contentFor('question.immigration_accommodation_end_date.text'),
   },
   displayModes: { field: optionalFutureDateDetails() },
@@ -60,6 +74,7 @@ const immigrationEndDateRevealed = revealedQuestion({
 const shortTermEndDateRevealed = revealedQuestion({
   content: {
     code: Question.short_term_accommodation_end_date,
+    format: QuestionFormat.DATE,
     text: contentFor('question.short_term_accommodation_end_date.text'),
   },
   displayModes: { field: optionalFutureDateDetails() },
@@ -68,6 +83,7 @@ const shortTermEndDateRevealed = revealedQuestion({
 const typeOfSettledAccommodationRevealed = revealedQuestion({
   content: {
     code: Question.type_of_settled_accommodation,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.type_of_settled_accommodation.text'),
     options: [
       { value: Option.homeowner, text: contentFor('question.type_of_settled_accommodation.option.HOMEOWNER') },
@@ -98,6 +114,7 @@ const typeOfSettledAccommodationRevealed = revealedQuestion({
 const typeOfTemporaryAccommodationRevealed = revealedQuestion({
   content: {
     code: Question.type_of_temporary_accommodation,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.type_of_temporary_accommodation.text'),
     options: [
       {
@@ -137,6 +154,7 @@ const typeOfTemporaryAccommodationRevealed = revealedQuestion({
 const typeOfNoAccommodationRevealed = revealedQuestion({
   content: {
     code: Question.type_of_no_accommodation,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.type_of_no_accommodation.text'),
     options: [
       { value: Option.campsite, text: contentFor('question.type_of_no_accommodation.option.CAMPSITE') },
@@ -165,6 +183,7 @@ const temporaryAccommodationEndDates = [
 const currentAccommodation = question({
   content: {
     code: Question.current_accommodation,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.current_accommodation.text', CaseData.Forename),
     options: [
       {
@@ -243,6 +262,7 @@ const livingWithApplies = or(
 const livingWith = question({
   content: {
     code: Question.living_with,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.living_with.text', CaseData.Forename),
     hint: commonContentFor('select_all_that_apply'),
     options: [
@@ -280,6 +300,7 @@ const livingWith = question({
 const noAccommodationReason = question({
   content: {
     code: Question.no_accommodation_reason,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.no_accommodation_reason.text', CaseData.Forename),
     hint: { html: contentFor('question.no_accommodation_reason.hint') },
     options: [
@@ -315,6 +336,7 @@ const noAccommodationReason = question({
 const pastAccommodationDetails = question({
   content: {
     code: Question.past_accommodation_details,
+    format: QuestionFormat.TEXT,
     text: contentFor('question.past_accommodation_details.text', CaseData.Forename),
   },
   displayModes: {
@@ -333,11 +355,13 @@ const pastAccommodationDetails = question({
 const suitableHousingLocation = question({
   content: {
     code: Question.suitable_housing_location,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.suitable_housing_location.text', CaseData.ForenamePossessive),
     options: yesNo({
       no: revealedQuestion({
         content: {
           code: Question.suitable_housing_location_concerns,
+          format: QuestionFormat.CHECKBOX,
           text: contentFor('question.suitable_housing_location_concerns.text'),
           hint: commonContentFor('select_all_that_apply_optional'),
           options: [
@@ -391,6 +415,7 @@ const housingConcernsRevealed = (content: { code: string; text: ResolvableString
   revealedQuestion({
     content: {
       code: content.code,
+      format: QuestionFormat.CHECKBOX,
       text: content.text,
       hint: commonContentFor('select_all_that_apply_optional'),
       options: [
@@ -419,6 +444,7 @@ const housingConcernsRevealed = (content: { code: string; text: ResolvableString
 const suitableHousing = question({
   content: {
     code: Question.suitable_housing,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.suitable_housing.text', CaseData.ForenamePossessive),
     hint: contentFor('question.suitable_housing.hint'),
     options: [
@@ -456,6 +482,7 @@ const suitableHousing = question({
 const futureAccommodationTypeRevealed = revealedQuestion({
   content: {
     code: Question.future_accommodation_type,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.future_accommodation_type.text'),
     options: [
       {
@@ -509,6 +536,7 @@ const suitableHousingPlannedApplies = or(temporaryAccommodation, noAccommodation
 const suitableHousingPlanned = question({
   content: {
     code: Question.suitable_housing_planned,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.suitable_housing_planned.text', CaseData.Forename),
     options: [
       { value: CommonOption.yes, text: commonContentFor('option.YES'), reveals: futureAccommodationTypeRevealed },
@@ -529,6 +557,7 @@ const suitableHousingPlanned = question({
 const changes = question({
   content: {
     code: Question.accommodation_changes,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.accommodation_changes.text', CaseData.Forename),
     hint: contentFor('question.accommodation_changes.hint', CaseData.Forename),
     options: [
@@ -582,6 +611,7 @@ const changes = question({
 const strengthsOrProtectiveFactors = question({
   content: {
     code: Question.accommodation_strengths_protective_factors,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.accommodation_strengths_protective_factors.text', CaseData.ForenamePossessive),
     hint: contentFor('question.accommodation_strengths_protective_factors.hint'),
     options: yesNo({
@@ -609,6 +639,7 @@ const strengthsOrProtectiveFactors = question({
 const riskOfSeriousHarm = question({
   content: {
     code: Question.accommodation_linked_to_serious_harm,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.accommodation_linked_to_serious_harm.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({
@@ -632,6 +663,7 @@ const riskOfSeriousHarm = question({
 const riskOfReoffending = question({
   content: {
     code: Question.accommodation_linked_to_reoffending,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.accommodation_linked_to_reoffending.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({

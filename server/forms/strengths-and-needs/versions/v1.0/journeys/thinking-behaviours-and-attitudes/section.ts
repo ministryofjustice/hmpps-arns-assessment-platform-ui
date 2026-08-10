@@ -7,6 +7,7 @@ import {
   itemisedSummaryRow,
   optionalDetails,
   question,
+  QuestionFormat,
   radioField,
   requiredDetails,
   yesNo,
@@ -26,6 +27,7 @@ const riskOfSexualHarmConfirmed = Answer(Question.thinking_behaviours_attitudes_
 const consequences = question({
   content: {
     code: Question.thinking_behaviours_attitudes_consequences,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_consequences.text', CaseData.Forename),
     hint: contentFor('question.thinking_behaviours_attitudes_consequences.hint'),
     options: [
@@ -53,6 +55,7 @@ const consequences = question({
 const stableBehaviour = question({
   content: {
     code: Question.thinking_behaviours_attitudes_stable_behaviour,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.text', CaseData.Forename),
     hint: contentFor('question.thinking_behaviours_attitudes_stable_behaviour.hint'),
     options: [
@@ -80,6 +83,7 @@ const stableBehaviour = question({
 const offendingActivities = question({
   content: {
     code: Question.thinking_behaviours_attitudes_offending_activities,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_offending_activities.text', CaseData.Forename),
     options: [
       {
@@ -108,6 +112,7 @@ const offendingActivities = question({
 const peerPressure = question({
   content: {
     code: Question.thinking_behaviours_attitudes_peer_pressure,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.text', CaseData.Forename),
     options: [
       {
@@ -137,6 +142,7 @@ const peerPressure = question({
 const problemSolving = question({
   content: {
     code: Question.thinking_behaviours_attitudes_problem_solving,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_problem_solving.text', CaseData.Forename),
     options: [
       {
@@ -163,6 +169,7 @@ const problemSolving = question({
 const peoplesViews = question({
   content: {
     code: Question.thinking_behaviours_attitudes_peoples_views,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_peoples_views.text', CaseData.Forename),
     options: [
       {
@@ -189,6 +196,7 @@ const peoplesViews = question({
 const manipulativePredatoryBehaviour = question({
   content: {
     code: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.text', CaseData.Forename),
     options: [
       {
@@ -215,6 +223,7 @@ const manipulativePredatoryBehaviour = question({
 const temperManagement = question({
   content: {
     code: Question.thinking_behaviours_attitudes_temper_management,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_temper_management.text', CaseData.Forename),
     options: [
       {
@@ -242,6 +251,7 @@ const temperManagement = question({
 const violenceControllingBehaviour = question({
   content: {
     code: Question.thinking_behaviours_attitudes_violence_controlling_behaviour,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_violence_controlling_behaviour.text', CaseData.Forename),
     options: [
       {
@@ -268,6 +278,7 @@ const violenceControllingBehaviour = question({
 const impulsiveBehaviour = question({
   content: {
     code: Question.thinking_behaviours_attitudes_impulsive_behaviour,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_impulsive_behaviour.text', CaseData.Forename),
     options: [
       {
@@ -294,6 +305,7 @@ const impulsiveBehaviour = question({
 const positiveAttitude = question({
   content: {
     code: Question.thinking_behaviours_attitudes_positive_attitude,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_positive_attitude.text', CaseData.Forename),
     options: [
       {
@@ -324,6 +336,7 @@ const positiveAttitude = question({
 const hostileOrientation = question({
   content: {
     code: Question.thinking_behaviours_attitudes_hostile_orientation,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.text', CaseData.Forename),
     options: [
       {
@@ -351,6 +364,7 @@ const hostileOrientation = question({
 const supervision = question({
   content: {
     code: Question.thinking_behaviours_attitudes_supervision,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_supervision.text', CaseData.Forename),
     options: [
       {
@@ -377,6 +391,7 @@ const supervision = question({
 const criminalBehaviour = question({
   content: {
     code: Question.thinking_behaviours_attitudes_criminal_behaviour,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_criminal_behaviour.text', CaseData.Forename),
     options: [
       {
@@ -403,6 +418,7 @@ const criminalBehaviour = question({
 const changes = question({
   content: {
     code: Question.thinking_behaviours_attitudes_changes,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_changes.text', CaseData.Forename),
     hint: contentFor('question.thinking_behaviours_attitudes_changes.hint', CaseData.Forename),
     options: [
@@ -466,6 +482,7 @@ const changes = question({
 const riskSexualHarm = question({
   content: {
     code: Question.thinking_behaviours_attitudes_risk_sexual_harm,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.text', CaseData.Forename),
     // The warning only shows when case data records no sexual or sexually
     // motivated offence history; with such a history the question is asked
@@ -498,6 +515,7 @@ const riskSexualHarm = question({
 const sexualPreoccupation = question({
   content: {
     code: Question.thinking_behaviours_attitudes_sexual_preoccupation,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.text', CaseData.Forename),
     options: [
       {
@@ -529,6 +547,7 @@ const sexualPreoccupation = question({
 const offenceRelatedSexualInterest = question({
   content: {
     code: Question.thinking_behaviours_attitudes_offence_related_sexual_interest,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_offence_related_sexual_interest.text', CaseData.Forename),
     options: [
       {
@@ -571,6 +590,7 @@ const offenceRelatedSexualInterest = question({
 const emotionalIntimacy = question({
   content: {
     code: Question.thinking_behaviours_attitudes_emotional_intimacy,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.text', CaseData.Forename),
     options: [
       {
@@ -601,6 +621,7 @@ const emotionalIntimacy = question({
 const strengthsOrProtectiveFactors = question({
   content: {
     code: Question.thinking_behaviours_attitudes_strengths_protective_factors,
+    format: QuestionFormat.RADIO,
     text: contentFor(
       'question.thinking_behaviours_attitudes_strengths_protective_factors.text',
       CaseData.ForenamePossessive,
@@ -633,6 +654,7 @@ const strengthsOrProtectiveFactors = question({
 const linkedToSeriousHarm = question({
   content: {
     code: Question.thinking_behaviours_attitudes_linked_to_serious_harm,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_linked_to_serious_harm.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({
@@ -659,6 +681,7 @@ const linkedToSeriousHarm = question({
 const linkedToReoffending = question({
   content: {
     code: Question.thinking_behaviours_attitudes_linked_to_reoffending,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_linked_to_reoffending.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({

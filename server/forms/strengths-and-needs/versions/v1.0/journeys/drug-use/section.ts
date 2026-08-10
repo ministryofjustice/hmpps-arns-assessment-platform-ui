@@ -27,6 +27,7 @@ import {
   checkboxSummaryRow,
   optionalDetails,
   question,
+  QuestionFormat,
   questionTemplate,
   radioDetails,
   radioField,
@@ -80,6 +81,7 @@ const lastUsedSummaryLabels = [
 export const drugLastUsed = questionTemplate({
   content: {
     code: drugValue => fieldCodeString(Question.drug_last_used, drugValue),
+    format: QuestionFormat.RADIO,
     codeOver: drugValue => Format(Question.drug_last_used_value, drugValue),
     text: drugValue => contentFor('question.drug_last_used.text', drugValueToText(drugValue)),
     options: [
@@ -105,6 +107,7 @@ export const drugLastUsed = questionTemplate({
 export const drugHowOftenUsed = questionTemplate({
   content: {
     code: drugValue => fieldCodeString(Question.how_often_used, drugValue),
+    format: QuestionFormat.RADIO,
     codeOver: drugValue => Format(Question.how_often_used_value, drugValue),
     text: () => contentFor('question.how_often_used.text', CaseData.Forename),
     options: [
@@ -145,6 +148,7 @@ export const drugHowOftenUsed = questionTemplate({
 export const drugHowOftenUsedDetails = questionTemplate({
   content: {
     code: drugValue => Question.how_often_used_details.replace('%1', drugValue.toLowerCase()),
+    format: QuestionFormat.TEXT,
     codeOver: drugValue => Format(Question.how_often_used_details, drugValue),
     text: () => commonContentFor('optional_details'),
   },
@@ -177,6 +181,7 @@ export const drugHowOftenUsedDetails = questionTemplate({
 export const drugsInjectedMonths = questionTemplate({
   content: {
     code: drugValue => fieldCodeString(Question.drugs_injected, drugValue),
+    format: QuestionFormat.CHECKBOX,
     text: () => contentFor('question.drugs_injected_months.text', CaseData.Forename),
     hint: commonContentFor('select_one_or_both'),
     options: [
@@ -215,6 +220,7 @@ export const drugsInjectedMonths = questionTemplate({
 const otherDrugNameRevealed = revealedQuestion({
   content: {
     code: Question.other_drug_name,
+    format: QuestionFormat.TEXT,
     text: contentFor('question.other_drug_name.text'),
     hint: contentFor('question.other_drug_name.hint'),
     validationMessage: contentFor('question.other_drug_name.text'),
@@ -253,6 +259,7 @@ const injectedDrugOption = (drugValue: string, text: ResolvableString) => ({
 const drugUse = question({
   content: {
     code: Question.drug_use,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.drug_use.text', CaseData.Forename),
     hint: contentFor('question.drug_use.hint'),
     options: [
@@ -270,6 +277,7 @@ const drugUse = question({
 const selectMisusedDrugs = question({
   content: {
     code: Question.select_misused_drugs,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.select_misused_drugs.text', CaseData.Forename),
     hint: contentFor('question.select_misused_drugs.hint'),
     options: [
@@ -339,6 +347,7 @@ const selectMisusedDrugs = question({
 const moreThanSixMonthsDetails = question({
   content: {
     code: Question.drug_use_more_than_six_months_details,
+    format: QuestionFormat.TEXT,
     text: contentFor('question.drug_use_more_than_six_months_details.text', CaseData.ForenamePossessive),
     hint: contentFor('question.drug_use_more_than_six_months_details.hint'),
     validationMessage: contentFor('question.drug_use_more_than_six_months_details.validation'),
@@ -358,6 +367,7 @@ const moreThanSixMonthsDetails = question({
 const drugsInjected = question({
   content: {
     code: Question.drugs_injected,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.drugs_injected.text', CaseData.Forename),
     hint: commonContentFor('select_all_that_apply'),
     options: [
@@ -384,6 +394,7 @@ const drugsInjected = question({
 const receivingTreatment = question({
   content: {
     code: Question.receiving_treatment,
+    format: QuestionFormat.RADIO,
     text: when(anyDrugUsedInLastSix)
       .then(contentFor('question.receiving_treatment.text.usedLastSixMonths', CaseData.Forename))
       .else(contentFor('question.receiving_treatment.text.notUsedInLastSixMonths', CaseData.Forename)),
@@ -410,6 +421,7 @@ const receivingTreatment = question({
 const reasonsForUse = question({
   content: {
     code: Question.drugs_reasons_for_use,
+    format: QuestionFormat.CHECKBOX,
     text: when(anyDrugUsedInLastSixMonths)
       .then(contentFor('question.drugs_reasons_for_use.text.usedLastSixMonths', CaseData.Forename))
       .else(contentFor('question.drugs_reasons_for_use.text.notUsedInLastSixMonths', CaseData.Forename)),
@@ -459,6 +471,7 @@ const reasonsForUse = question({
 const reasonsForUseDetails = question({
   content: {
     code: Question.drugs_reasons_for_use_details,
+    format: QuestionFormat.TEXT,
     text: when(anyDrugUsedInLastSixMonths)
       .then(contentFor('question.drugs_reasons_for_use_details.text.usedLastSixMonths', CaseData.Forename))
       .else(contentFor('question.drugs_reasons_for_use_details.text.notUsedInLastSixMonths', CaseData.Forename)),
@@ -478,6 +491,7 @@ const reasonsForUseDetails = question({
 const affectedTheirLife = question({
   content: {
     code: Question.drugs_affected_their_life,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.drugs_affected_their_life.text', CaseData.ForenamePossessive),
     hint: commonContentFor('select_all_that_apply'),
     options: [
@@ -526,6 +540,7 @@ const affectedTheirLife = question({
 const affectedTheirLifeDetails = question({
   content: {
     code: Question.drugs_affected_their_life_details,
+    format: QuestionFormat.TEXT,
     text: contentFor('question.drugs_affected_their_life_details.text', CaseData.ForenamePossessive),
   },
   displayModes: {
@@ -543,6 +558,7 @@ const affectedTheirLifeDetails = question({
 const anythingHelpedStopOrReduce = question({
   content: {
     code: Question.drugs_anything_helped_stop_or_reduce_use,
+    format: QuestionFormat.TEXT,
     text: contentFor('question.drugs_anything_helped_stop_or_reduce_use.text', CaseData.Forename),
     hint: contentFor('question.drugs_anything_helped_stop_or_reduce_use.hint'),
   },
@@ -562,6 +578,7 @@ const anythingHelpedStopOrReduce = question({
 const whatCouldHelpNotUseInFuture = question({
   content: {
     code: Question.drugs_what_could_help_not_use_drugs_in_future,
+    format: QuestionFormat.TEXT,
     text: Format('What could help %1 not use drugs in the future? (optional)', CaseData.Forename),
   },
   displayModes: {
@@ -580,6 +597,7 @@ const whatCouldHelpNotUseInFuture = question({
 const drugUseChanges = question({
   content: {
     code: Question.drug_use_changes,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.drug_use_changes.text', CaseData.Forename),
     hint: contentFor('question.drug_use_changes.hint', CaseData.Forename),
     options: [
@@ -636,6 +654,7 @@ const drugUseChanges = question({
 const motivatedToStop = question({
   content: {
     code: Question.drugs_practitioner_analysis_motivated_to_stop,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.drugs_practitioner_analysis_motivated_to_stop.text', CaseData.Forename),
     options: [
       {
@@ -669,6 +688,7 @@ const motivatedToStop = question({
 const strengthsOrProtectiveFactors = question({
   content: {
     code: Question.drug_use_practitioner_analysis_strengths_or_protective_factors,
+    format: QuestionFormat.RADIO,
     text: contentFor(
       'question.drug_use_practitioner_analysis_strengths_or_protective_factors.text',
       CaseData.ForenamePossessive,
@@ -700,6 +720,7 @@ const strengthsOrProtectiveFactors = question({
 const riskOfSeriousHarm = question({
   content: {
     code: Question.drug_use_practitioner_analysis_risk_of_serious_harm,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.drug_use_practitioner_analysis_risk_of_serious_harm.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({
@@ -727,6 +748,7 @@ const riskOfSeriousHarm = question({
 const riskOfReoffending = question({
   content: {
     code: Question.drug_use_practitioner_analysis_risk_of_reoffending,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.drug_use_practitioner_analysis_risk_of_reoffending.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({

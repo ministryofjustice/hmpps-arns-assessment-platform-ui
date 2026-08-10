@@ -8,6 +8,7 @@ import {
   itemisedSummaryRow,
   optionalDetails,
   question,
+  QuestionFormat,
   radioField,
   requiredDetails,
   textSummaryRow,
@@ -33,6 +34,7 @@ const mayHaveMentalHealthProblems = not(
 const healthConditions = question({
   content: {
     code: Question.health_conditions,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.health_conditions.text', CaseData.Forename),
     options: [
       {
@@ -54,6 +56,7 @@ const healthConditions = question({
 const mentalHealthProblems = question({
   content: {
     code: Question.mental_health_problems,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.mental_health_problems.text', CaseData.Forename),
     options: [
       {
@@ -85,6 +88,7 @@ const mentalHealthProblems = question({
 const prescribedPhysicalHealthMedicationsTreatments = question({
   content: {
     code: Question.prescribed_physical_health_medications_treatments,
+    format: QuestionFormat.TEXT,
     text: contentFor('question.prescribed_physical_health_medications_treatments.text', CaseData.Forename),
   },
   displayModes: {
@@ -103,6 +107,7 @@ const prescribedPhysicalHealthMedicationsTreatments = question({
 const prescribedMentalHealthMedicationsTreatments = question({
   content: {
     code: Question.prescribed_mental_health_medications_treatments,
+    format: QuestionFormat.TEXT,
     text: contentFor('question.prescribed_mental_health_medications_treatments.text', CaseData.Forename),
   },
   displayModes: {
@@ -121,6 +126,7 @@ const prescribedMentalHealthMedicationsTreatments = question({
 const psychiatricTreatment = question({
   content: {
     code: Question.psychiatric_treatment,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.psychiatric_treatment.text', CaseData.Forename),
     options: [
       { value: Option.yes, text: commonContentFor('option.YES') },
@@ -142,6 +148,7 @@ const psychiatricTreatment = question({
 const headInjuries = question({
   content: {
     code: Question.head_injuries,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.head_injuries.text', CaseData.Forename),
     hint: { html: contentFor('question.head_injuries.hint') },
     options: [
@@ -163,6 +170,7 @@ const headInjuries = question({
 const neurodiverseConditions = question({
   content: {
     code: Question.neurodiverse_conditions,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.neurodiverse_conditions.text', CaseData.Forename),
     hint: contentFor('question.neurodiverse_conditions.hint'),
     options: [
@@ -185,6 +193,7 @@ const neurodiverseConditions = question({
 const impactOnLearningAbilities = question({
   content: {
     code: Question.impact_on_learning_abilities,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.impact_on_learning_abilities.text', CaseData.Forename),
     hint: contentFor('question.impact_on_learning_abilities.hint'),
     options: [
@@ -213,6 +222,7 @@ const impactOnLearningAbilities = question({
 const copeWithDayToDayLife = question({
   content: {
     code: Question.cope_with_day_to_day_life,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.cope_with_day_to_day_life.text', CaseData.Forename),
     options: [
       {
@@ -239,6 +249,7 @@ const copeWithDayToDayLife = question({
 const attitudeTowardsSelf = question({
   content: {
     code: Question.attitude_towards_self,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.attitude_towards_self.text', CaseData.ForenamePossessive),
     options: [
       {
@@ -266,6 +277,7 @@ const attitudeTowardsSelf = question({
 const selfHarm = question({
   content: {
     code: Question.self_harm,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.self_harm.text', CaseData.Forename),
     hint: contentFor('question.self_harm.hint'),
     options: yesNo({
@@ -285,6 +297,7 @@ const selfHarm = question({
 const suicidalTendencies = question({
   content: {
     code: Question.suicidal_tendencies,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.suicidal_tendencies.text', CaseData.Forename),
     hint: contentFor('question.suicidal_tendencies.hint'),
     options: yesNo({
@@ -304,6 +317,7 @@ const suicidalTendencies = question({
 const feelingsAboutFuture = question({
   content: {
     code: Question.feeling_about_future_health_wellbeing,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.feeling_about_future_health_wellbeing.text', CaseData.Forename),
     hint: contentFor('question.feeling_about_future_health_wellbeing.hint', CaseData.Forename),
     options: [
@@ -343,6 +357,7 @@ const feelingsAboutFuture = question({
 const helpedDuringPeriodsGoodHealthWellbeing = question({
   content: {
     code: Question.helped_during_periods_good_health_wellbeing,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.helped_during_periods_good_health_wellbeing.text', CaseData.Forename),
     hint: { html: contentFor('question.helped_during_periods_good_health_wellbeing.hint') },
     options: [
@@ -393,6 +408,7 @@ const helpedDuringPeriodsGoodHealthWellbeing = question({
 const changes = question({
   content: {
     code: Question.changes_to_health_wellbeing,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.changes_to_health_wellbeing.text', CaseData.Forename),
     hint: contentFor('question.changes_to_health_wellbeing.hint', CaseData.Forename),
     options: [
@@ -446,6 +462,7 @@ const changes = question({
 const strengthsOrProtectiveFactors = question({
   content: {
     code: Question.strengths_protective_factors_health_wellbeing,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.strengths_protective_factors_health_wellbeing.text', CaseData.ForenamePossessive),
     hint: contentFor('question.strengths_protective_factors_health_wellbeing.hint'),
     options: yesNo({
@@ -473,6 +490,7 @@ const strengthsOrProtectiveFactors = question({
 const riskOfSeriousHarm = question({
   content: {
     code: Question.serious_harm_health_wellbeing,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.serious_harm_health_wellbeing.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({
@@ -499,6 +517,7 @@ const riskOfSeriousHarm = question({
 const riskOfReoffending = question({
   content: {
     code: Question.risk_of_reoffending_health_wellbeing,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.risk_of_reoffending_health_wellbeing.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({

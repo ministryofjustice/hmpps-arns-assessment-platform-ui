@@ -10,6 +10,7 @@ import {
   itemisedSummaryRow,
   optionalDetails,
   question,
+  QuestionFormat,
   radioDetails,
   radioField,
   requiredDetails,
@@ -49,6 +50,7 @@ const isEmployedOrSelfEmployed = or(
 const typeOfEmploymentRevealed = revealedQuestion({
   content: {
     code: Question.type_of_employment,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.type_of_employment.text'),
     options: [
       { value: Option.full_time, text: contentFor('question.type_of_employment.option.FULL_TIME') },
@@ -70,6 +72,7 @@ const hadPreviousEmploymentRevealed = (content: { code: string; text: Resolvable
   revealedQuestion({
     content: {
       code: content.code,
+      format: QuestionFormat.RADIO,
       text: content.text,
       options: [
         { value: Option.yes_has_been_employed_before, text: contentFor('option.YES_HAS_BEEN_EMPLOYED_BEFORE') },
@@ -83,6 +86,7 @@ const hadPreviousEmploymentRevealed = (content: { code: string; text: Resolvable
 const currentEmploymentStatus = question({
   content: {
     code: Question.current_employment_status,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.current_employment_status.text', CaseData.ForenamePossessive),
     options: [
       {
@@ -143,6 +147,7 @@ const currentEmploymentStatus = question({
 const employmentSector = question({
   content: {
     code: Question.employment_sector,
+    format: QuestionFormat.TEXT,
     text: contentFor('question.employment_sector.text', CaseData.Forename),
   },
   displayModes: {
@@ -164,6 +169,7 @@ const employmentSector = question({
 const employmentHistory = question({
   content: {
     code: Question.employment_history,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.employment_history.text', CaseData.ForenamePossessive),
     hint: contentFor('question.employment_history.hint'),
     options: [
@@ -212,6 +218,7 @@ const employmentHistory = question({
 const dayToDayCommitments = question({
   content: {
     code: Question.day_to_day_commitments,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.day_to_day_commitments.text', CaseData.Forename),
     hint: contentFor('question.day_to_day_commitments.hint'),
     options: [
@@ -251,6 +258,7 @@ const dayToDayCommitments = question({
 const academicQualification = question({
   content: {
     code: Question.academic_qualification,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.academic_qualification.text', CaseData.Forename),
     options: [
       {
@@ -313,6 +321,7 @@ const academicQualification = question({
 const professionalQualification = question({
   content: {
     code: Question.professional_qualification,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.professional_qualification.text', CaseData.Forename),
     options: [
       {
@@ -339,6 +348,7 @@ const professionalQualification = question({
 const jobSkills = question({
   content: {
     code: Question.job_skills,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.job_skills.text', CaseData.Forename),
     options: [
       {
@@ -377,6 +387,7 @@ const difficultyLevelRevealed = (content: {
   revealedQuestion({
     content: {
       code: content.code,
+      format: QuestionFormat.RADIO,
       text: content.text,
       options: [
         { value: Option.significant_difficulties, text: contentFor('option.SIGNIFICANT_DIFFICULTIES') },
@@ -390,6 +401,7 @@ const difficultyLevelRevealed = (content: {
 const difficultiesReadingWritingNumeracy = question({
   content: {
     code: Question.difficulties_reading_writing_numeracy,
+    format: QuestionFormat.CHECKBOX,
     text: contentFor('question.difficulties_reading_writing_numeracy.text', CaseData.Forename),
     hint: contentFor('question.difficulties_reading_writing_numeracy.hint'),
     options: [
@@ -475,6 +487,7 @@ const experienceOptions = (detailsCodes: {
 const employmentExperience = question({
   content: {
     code: Question.employment_experience,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.employment_experience.text', CaseData.ForenamePossessive),
     options: experienceOptions({
       positive: Question.positive_employment_experience_details,
@@ -494,6 +507,7 @@ const employmentExperience = question({
 const educationExperience = question({
   content: {
     code: Question.education_experience,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.education_experience.text', CaseData.ForenamePossessive),
     options: experienceOptions({
       positive: Question.positive_education_experience_details,
@@ -513,6 +527,7 @@ const educationExperience = question({
 const changes = question({
   content: {
     code: Question.employment_and_education_changes,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.employment_and_education_changes.text', CaseData.Forename),
     hint: contentFor('question.employment_and_education_changes.hint', CaseData.Forename),
     options: [
@@ -566,6 +581,7 @@ const changes = question({
 const strengthsOrProtectiveFactors = question({
   content: {
     code: Question.employment_education_strengths_protective_factors,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.employment_education_strengths_protective_factors.text', CaseData.ForenamePossessive),
     hint: contentFor('question.employment_education_strengths_protective_factors.hint'),
     options: yesNo({
@@ -593,6 +609,7 @@ const strengthsOrProtectiveFactors = question({
 const riskOfSeriousHarm = question({
   content: {
     code: Question.employment_education_linked_to_serious_harm,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.employment_education_linked_to_serious_harm.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({
@@ -619,6 +636,7 @@ const riskOfSeriousHarm = question({
 const riskOfReoffending = question({
   content: {
     code: Question.employment_education_linked_to_reoffending,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.employment_education_linked_to_reoffending.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({
