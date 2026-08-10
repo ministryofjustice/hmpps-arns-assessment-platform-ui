@@ -22,7 +22,7 @@ export const offencesSinceSupervisionStep = step({
     Conditional({
       when: Answer('date-of-current-supervision-field').match(Condition.Date.IsValid()),
       then: Answer('date-of-current-supervision-field').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
-      else: 'date of current supervision',
+      else: 'the date of current supervision',
     }),
   ),
   onAccess: [
