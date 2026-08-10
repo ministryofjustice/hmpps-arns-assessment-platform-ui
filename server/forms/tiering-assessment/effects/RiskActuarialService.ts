@@ -56,7 +56,17 @@ export class RiskActuarialService {
       hasKetamineUsage: this.parseBoolean(context.getAnswer('ketamine-radio')),
       hasOtherDrugsUsage: this.parseBoolean(context.getAnswer('other-drug-radio')),
       motivationToTackleDrugMisuse: this.parseMotivationLevel(context.getAnswer('motivation-to-tackle-drug-misuse')),
+      currentAlcoholUseProblems: this.getCurrentAlcoholUseProblems(context),
     }
+  }
+
+  private getCurrentAlcoholUseProblems(context: TieringAssessmentEffectContext): ProblemLevel | null {
+    const isProblem = this.parseBoolean(context.getAnswer('is-current-alcohol-use-a-problem'))
+
+    if (isProblem === null) return null
+    if (!isProblem) return 'NO_PROBLEMS'
+
+    return this.parseProblemLevel(context.getAnswer('current-alcohol-use-problems'))
   }
 
   private saveScoresToContext(context: TieringAssessmentEffectContext, riskScores: RiskScores): void {
