@@ -24,7 +24,7 @@ export default class AccommodationPage extends AbstractPage {
 
   readonly selectIfTheAccommodation: Locator
 
-  readonly yesWithConcerns: Locator
+  readonly yesAccommodationSuitable: Locator
 
   private constructor(page: Page) {
     super(page)
@@ -39,7 +39,9 @@ export default class AccommodationPage extends AbstractPage {
     this.selectIfTheLocation = page.getByRole('link', { name: 'Select if the location of the' })
     this.isTheLocationOf = page.getByRole('group', { name: 'Is the location of' }).getByLabel('Yes')
     this.selectIfTheAccommodation = page.getByRole('link', { name: 'Select if the accommodation' })
-    this.yesWithConcerns = page.getByRole('radio', { name: 'Yes, with concerns' })
+    this.yesAccommodationSuitable = page
+      .getByRole('group', { name: "Is Test's accommodation" })
+      .getByLabel('Yes', { exact: true })
   }
 
   static async verifyOnPage(page: Page, pageHeading: string): Promise<AccommodationPage> {

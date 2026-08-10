@@ -283,6 +283,8 @@ test.describe('Accommodation Page', () => {
       await expect(accommodationPage.family).toBeFocused()
       await accommodationPage.selectIfTheLocation.click()
       await expect(accommodationPage.isTheLocationOf).toBeFocused()
+      await accommodationPage.selectIfTheAccommodation.click()
+      await expect(accommodationPage.yesAccommodationSuitable).toBeFocused()
       await accommodationPage.errorWantsToMakeChanges.click()
       await expect(accommodationPage.yesAlreadyMadePositiveChanges).toBeFocused()
     })
