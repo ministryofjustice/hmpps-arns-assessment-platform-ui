@@ -2,7 +2,6 @@ import { InternalServerError } from 'http-errors'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { buildAnswerDelta } from './answerDelta'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
-import { formConfigFromJourney } from '../data-mapping/formConfigFactory';
 
 export const saveAndClearStaleAnswers =
   (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
@@ -36,5 +35,9 @@ export const saveAndClearStaleAnswers =
       user,
       added: wrapAll(delta.added),
       removed: delta.removed,
-    }, { type: 'GenerateOasysMappings', formConfig: formConfigFromJourney() })
+      hooks: [{
+        type: 'UpdateOasysDataMapping',
+        formConfig: null, // TODO: add form config
+      }],
+    })
   }

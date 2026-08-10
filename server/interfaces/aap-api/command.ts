@@ -1,6 +1,7 @@
 import { User } from '../user'
 import { Answers, Properties, PropertyKeys, QuestionCodes } from './dataModel'
 import { Identifiers } from './identifier'
+import { Hooks } from './hook'
 
 interface CommandTimeline {
   type: string
@@ -10,6 +11,7 @@ interface CommandTimeline {
 export interface Command {
   type: string
   timeline?: CommandTimeline
+  hooks?: Hooks[]
   user: User
   assessmentUuid: string
 }
@@ -22,11 +24,6 @@ export interface CreateAssessmentCommand {
   properties?: Properties
   timeline?: CommandTimeline
   user: User
-}
-
-export interface GroupCommand extends Command {
-  type: 'GroupCommand'
-  commands: Commands[]
 }
 
 export interface UpdateAssessmentAnswersCommand extends Command {
@@ -94,7 +91,6 @@ export type Commands =
   | AddCollectionItemCommand
   | CreateAssessmentCommand
   | CreateCollectionCommand
-  | GroupCommand
   | RemoveCollectionItemCommand
   | ReorderCollectionItemCommand
   | RollBackAssessmentAnswersCommand

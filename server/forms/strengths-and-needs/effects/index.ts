@@ -10,7 +10,7 @@ import { StrengthsAndNeedsEffectsDeps } from './types'
 import { setSectionProgress } from './assessment/setSectionProgress'
 import { saveAndClearStaleAnswers } from './assessment/saveAndClearStaleAnswers'
 import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
-import { persistOasysEquivalent } from './data-mapping/persistOasysEquivalent';
+import { persistOasysEquivalent } from './assessment/persistOasysEquivalent'
 
 type EffectShapesFromFactories<TFactories> = {
   [K in keyof TFactories]: TFactories[K] extends (deps: infer _Deps) => infer Evaluator
