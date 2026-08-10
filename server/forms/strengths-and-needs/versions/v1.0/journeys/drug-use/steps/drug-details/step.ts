@@ -1,13 +1,8 @@
 import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import {
-  injectedDrugsField,
-  receivingTreatmentField,
-  sectionDivider,
-  usedInLastSixMonthsSection,
-  usedMoreThanSixMonthsSection,
-} from './fields'
+import { sectionDivider, usedInLastSixMonthsSection, usedMoreThanSixMonthsSection } from './fields'
+import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
@@ -36,8 +31,8 @@ export const drugDetailsStep = step({
     usedInLastSixMonthsSection,
     sectionDivider,
     usedMoreThanSixMonthsSection,
-    injectedDrugsField,
-    receivingTreatmentField,
+    drugUseSection.fields.drugsInjected.displayModes.field,
+    drugUseSection.fields.receivingTreatment.displayModes.field,
     saveButton,
   ],
   onSubmission: [

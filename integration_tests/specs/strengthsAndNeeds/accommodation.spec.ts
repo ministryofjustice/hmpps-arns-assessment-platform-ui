@@ -233,25 +233,25 @@ test.describe('Accommodation Page', () => {
             - paragraph: Family
           - definition:
             - link "Change":
-              - /url: accommodation-details
+              - /url: accommodation-details#living_with
           - term: Is the location of Test's accommodation suitable?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: accommodation-details
+              - /url: accommodation-details#suitable_housing_location
           - term: Is Test's accommodation suitable?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: accommodation-details
+              - /url: accommodation-details#suitable_housing
           - term: Does Test want to make changes to their accommodation?
           - definition:
             - paragraph: Test is not present
           - definition:
             - link "Change":
-              - /url: accommodation-details
+              - /url: accommodation-details#accommodation_changes
           - button "Go to practitioner analysis"
       `)
     })

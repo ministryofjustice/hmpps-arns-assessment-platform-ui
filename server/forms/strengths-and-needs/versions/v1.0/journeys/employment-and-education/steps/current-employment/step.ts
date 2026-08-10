@@ -1,6 +1,6 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { currentEmploymentStatus } from './fields'
+import { employmentEducationSection } from '../../section'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
@@ -16,7 +16,7 @@ export const currentEmploymentStep = step({
       sectionTitleClass,
     },
   },
-  blocks: [currentEmploymentStatus, saveButton],
+  blocks: [employmentEducationSection.fields.currentEmploymentStatus.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

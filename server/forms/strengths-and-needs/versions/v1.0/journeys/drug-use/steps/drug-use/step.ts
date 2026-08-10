@@ -1,7 +1,7 @@
 import { step, submit, redirect, Post, Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { drugUse } from './fields'
+import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
@@ -24,7 +24,7 @@ export const drugUseStep = step({
       sectionTitleClass,
     },
   },
-  blocks: [drugUse, saveButton],
+  blocks: [drugUseSection.fields.drugUse.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

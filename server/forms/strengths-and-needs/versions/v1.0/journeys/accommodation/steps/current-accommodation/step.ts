@@ -1,6 +1,6 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { currentAccommodation } from './fields'
+import { accommodationSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
@@ -16,7 +16,7 @@ export const currentAccommodationStep = step({
       sectionTitleClass,
     },
   },
-  blocks: [currentAccommodation, saveButton],
+  blocks: [accommodationSection.fields.currentAccommodation.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
