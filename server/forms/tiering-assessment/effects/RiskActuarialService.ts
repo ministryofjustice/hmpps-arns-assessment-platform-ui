@@ -1,6 +1,7 @@
 import RiskActuarialApiClient from '../../../data/riskActuarialApiClient'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
 import {
+  MotivationLevel,
   ProblemLevel,
   RiskScoreInput,
   RiskScores,
@@ -40,6 +41,21 @@ export class RiskActuarialService {
       isCurrentOffenceAgainstVictimStranger: this.parseBoolean(context.getAnswer('victim-stranger')),
       suitabilityOfAccommodation: this.parseProblemLevel(context.getAnswer('suitability-of-accommodation')),
       isUnemployed: this.parseBoolean(context.getAnswer('is-unemployed')),
+      hasBenzodiazepinesUsage: this.parseBoolean(context.getAnswer('benzodiazepines-radio')),
+      hasCannabisUsage: this.parseBoolean(context.getAnswer('cannabis-radio')),
+      hasPowderCocaineUsage: this.parseBoolean(context.getAnswer('cocaine-hydrochloride-radio')),
+      hasCrackCocaineUsage: this.parseBoolean(context.getAnswer('crack-or-cocaine-radio')),
+      hasHallucinogensUsage: this.parseBoolean(context.getAnswer('hallucinogens-radio')),
+      hasHeroinUsage: this.parseBoolean(context.getAnswer('heroin-radio')),
+      hasMethadoneUsage: this.parseBoolean(context.getAnswer('methadone-radio')),
+      hasMisusedPrescriptionDrugUsage: this.parseBoolean(context.getAnswer('misused-prescribed-drugs-radio')),
+      hasOtherOpiateUsage: this.parseBoolean(context.getAnswer('other-opiate-radio')),
+      hasSolventsUsage: this.parseBoolean(context.getAnswer('solvents-radio')),
+      hasSpiceUsage: this.parseBoolean(context.getAnswer('spice-radio')),
+      hasSteroidsUsage: this.parseBoolean(context.getAnswer('steroids-radio')),
+      hasKetamineUsage: this.parseBoolean(context.getAnswer('ketamine-radio')),
+      hasOtherDrugsUsage: this.parseBoolean(context.getAnswer('other-drug-radio')),
+      motivationToTackleDrugMisuse: this.parseMotivationLevel(context.getAnswer('motivation-to-tackle-drug-misuse')),
       currentAlcoholUseProblems: this.getCurrentAlcoholUseProblems(context),
     }
   }
@@ -146,5 +162,12 @@ export class RiskActuarialService {
     const str = String(val).trim()
     if (str === '' || str === 'unknown') return null
     return str as ProblemLevel
+  }
+
+  private parseMotivationLevel(val: unknown): MotivationLevel | null {
+    if (val === undefined || val === null) return null
+    const str = String(val).trim()
+    if (str === '' || str === 'unknown') return null
+    return str as MotivationLevel
   }
 }

@@ -17,7 +17,7 @@ export const offencesSinceSupervisionStep = step({
   title: Format(
     'Has %1 committed any offences since %2?',
     CaseData.Forename,
-    Answer('date-of-current-supervision').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+    Answer('date-of-current-supervision-field').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   ),
   onAccess: [
     access({
