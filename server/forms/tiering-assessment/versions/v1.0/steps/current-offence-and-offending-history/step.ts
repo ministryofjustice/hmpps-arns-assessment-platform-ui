@@ -1,6 +1,7 @@
 import {
   access,
   and,
+  not,
   Answer,
   Condition,
   Format,
@@ -58,7 +59,7 @@ export const currentOffenceAndOffendingHistoryStep = step({
         ],
         next: [
           redirect({
-            when: and(checkYourAnswersQuery, hasSexualOffenceHistory),
+            when: and(checkYourAnswersQuery, hasSexualOffenceHistory, not(Answer('current-offence-sexually-motivated').match(Condition.IsRequired()))),
             goto: Format('sexual-offending%1', returnToAnswersQueryText),
           }),
           redirect({

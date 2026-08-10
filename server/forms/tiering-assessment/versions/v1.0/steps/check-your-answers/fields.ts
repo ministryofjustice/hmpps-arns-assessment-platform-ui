@@ -331,7 +331,7 @@ export const offenceSinceSupervisionSummaryListField = GovUKSummaryList({
             href: Format(
               offencesSinceSupervisionPath,
               returnToAnswersQueryText,
-              '#has-commited-offence-since-assessment-date',
+              '#has-committed-offence-since-assessment-date',
             ),
             text: 'Change',
           },
@@ -339,7 +339,7 @@ export const offenceSinceSupervisionSummaryListField = GovUKSummaryList({
       },
     },
     {
-      visibleWhen: Answer('has-commited-offence-since-assessment-date').match(Condition.Equals('true')),
+      visibleWhen: Answer('has-committed-offence-since-assessment-date').match(Condition.Equals('true')),
       key: { text: Format('What is the date of %1 most recent offence?', CaseData.ForenamePossessive) },
       value: { text: Answer('most-recent-offence-date').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })) },
       actions: {
