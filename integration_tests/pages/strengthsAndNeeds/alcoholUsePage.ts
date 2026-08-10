@@ -17,6 +17,38 @@ export default class AlcoholUsePage extends AbstractPage {
 
   readonly selectOneOption: Locator
 
+  readonly selectHowOftenTheyDrunk: Locator
+
+  readonly onceAMonth: Locator
+
+  readonly selectHowManyUnitsOf: Locator
+
+  readonly oneToTwoUnits: Locator
+
+  readonly selectIfTheyHadEightOrMore: Locator
+
+  readonly hasHadEightOrMore: Locator
+
+  readonly selectIfTheresEvidence: Locator
+
+  readonly noEvidenceOfBingeDrinking: Locator
+
+  readonly selectIfTheyHaveAnyPast: Locator
+
+  readonly haveAnyPast: Locator
+
+  readonly selectWhyTheyDrink: Locator
+
+  readonly culturalAndReligious: Locator
+
+  readonly selectTheImpactOf: Locator
+
+  readonly behavioural: Locator
+
+  readonly selectIfAnythingHasHelped: Locator
+
+  readonly hasAnythingHelped: Locator
+
   private constructor(page: Page) {
     super(page)
     this.incomplete = page.getByText('Incomplete')
@@ -26,6 +58,22 @@ export default class AlcoholUsePage extends AbstractPage {
     this.yesNotInLastThreeMonths = page.getByLabel('Yes, but not in the last 3 months')
     this.no = page.getByLabel('No', { exact: true })
     this.selectOneOption = page.getByRole('link', { name: 'Select if they have ever drunk alcohol' })
+    this.selectHowOftenTheyDrunk = page.getByRole('link', { name: 'Select how often they drunk' })
+    this.onceAMonth = page.getByRole('radio', { name: 'Once a month or less' })
+    this.selectHowManyUnitsOf = page.getByRole('link', { name: 'Select how many units of' })
+    this.oneToTwoUnits = page.getByRole('radio', { name: 'to 2 units' })
+    this.selectIfTheyHadEightOrMore = page.getByRole('link', { name: 'Select if they had 8 or more' })
+    this.hasHadEightOrMore = page.getByRole('group', { name: 'Has Test had 8 or more units' }).getByLabel('Yes')
+    this.selectIfTheresEvidence = page.getByRole('link', { name: "Select if there's evidence of" })
+    this.noEvidenceOfBingeDrinking = page.getByRole('radio', { name: 'No evidence of binge drinking' })
+    this.selectIfTheyHaveAnyPast = page.getByRole('link', { name: 'Select if they have any past' })
+    this.haveAnyPast = page.getByRole('group', { name: 'have any past' }).getByLabel('Yes')
+    this.selectWhyTheyDrink = page.getByRole('link', { name: 'Select why they drink alcohol' })
+    this.culturalAndReligious = page.getByRole('checkbox', { name: 'Cultural or religious practice' })
+    this.selectTheImpactOf = page.getByRole('link', { name: 'Select the impact of them' })
+    this.behavioural = page.getByRole('checkbox', { name: 'Behavioural' })
+    this.selectIfAnythingHasHelped = page.getByRole('link', { name: 'Select if anything has helped' })
+    this.hasAnythingHelped = page.getByRole('group', { name: 'Has anything helped' }).getByLabel('Yes')
   }
 
   /**
