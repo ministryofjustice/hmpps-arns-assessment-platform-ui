@@ -2,18 +2,18 @@ import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components
 import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 export const alcoholEverUsedField = GovUKRadioInput({
-  code: 'is-current-alcohol-use-a-problem',
+  code: 'has-ever-drunk-alcohol',
   items: [
     {
-      value: 'true',
+      value: 'YES_IN_LAST_THREE_MONTHS',
       text: 'Yes, including in the last 3 months',
     },
     {
-      value: 'false',
+      value: 'YES_NOT_IN_LAST_THREE_MONTHS',
       text: 'Yes, but not in the last 3 months',
     },
     {
-      value: 'false',
+      value: 'NO',
       text: 'No',
     },
     {
