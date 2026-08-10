@@ -4,7 +4,7 @@ import { saveButton } from '../../../../constants/buttons'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { sectionTitleClass } from '../../../../constants/formVersion'
-import { personalRelationshipsChildrenInformation } from './fields'
+import { personalRelationshipsCommunitySection } from '../../section'
 import { sectionPageTitle } from '../../../../locales'
 
 export const personalRelationshipsChildrenInformationStep = step({
@@ -16,7 +16,7 @@ export const personalRelationshipsChildrenInformationStep = step({
       sectionTitleClass,
     },
   },
-  blocks: [personalRelationshipsChildrenInformation, saveButton],
+  blocks: [personalRelationshipsCommunitySection.fields.childrenDetails.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

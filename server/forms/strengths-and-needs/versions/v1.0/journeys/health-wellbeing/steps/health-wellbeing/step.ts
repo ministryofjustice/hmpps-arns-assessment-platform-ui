@@ -1,23 +1,20 @@
-import { block, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { healthConditions, mentalHealthProblems } from './fields'
+import { healthWellbeingSection } from '../../section'
+import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
+import { Section, SectionStatus } from '../../../../constants/section'
 import { sectionPageTitle } from '../../../../locales'
-import { Section } from '../../../../constants/section'
-
-const saveButton = block<GovUKButton>({
-  variant: 'govukButton',
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
 
 export const healthWellbeingStep = step({
   path: `/${Step.health_wellbeing.path}`,
   title: sectionPageTitle(Section.health_and_wellbeing),
   reachability: { entryWhen: true },
-  blocks: [healthConditions, mentalHealthProblems, saveButton],
+  blocks: [
+    healthWellbeingSection.fields.healthConditions.displayModes.field,
+    healthWellbeingSection.fields.mentalHealthProblems.displayModes.field,
+    saveButton,
+  ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -25,11 +22,11 @@ export const healthWellbeingStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress('health_section_status', 'INCOMPLETE'),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing.statusKey, SectionStatus.incomplete),
         ],
         next: [
           redirect({
-            goto: 'physical-mental-health',
+            goto: Step.physical_mental_health.path,
           }),
         ],
       },

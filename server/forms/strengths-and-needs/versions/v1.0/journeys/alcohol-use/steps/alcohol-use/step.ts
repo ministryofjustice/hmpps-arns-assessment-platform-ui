@@ -1,6 +1,6 @@
 import { Answer, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { alcoholUse } from './fields'
+import { alcoholUseSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
@@ -17,7 +17,7 @@ export const alcoholUseStep = step({
       sectionTitleClass: 'govuk-body-l',
     },
   },
-  blocks: [alcoholUse, saveButton],
+  blocks: [alcoholUseSection.fields.alcoholUse.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

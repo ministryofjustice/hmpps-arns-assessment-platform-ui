@@ -6,7 +6,7 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
 import { sectionTitleClass } from '../../../../constants/formVersion'
-import { personalRelationshipsCommunityImportantPeople } from './fields'
+import { personalRelationshipsCommunitySection } from '../../section'
 
 export const personalRelationshipsStep = step({
   path: `/${Step.personal_relationships.path}`,
@@ -17,7 +17,7 @@ export const personalRelationshipsStep = step({
       backlink: sectionPath(Section.personal_relationships_and_community),
     },
   },
-  blocks: [personalRelationshipsCommunityImportantPeople, saveButton],
+  blocks: [personalRelationshipsCommunitySection.fields.importantPeople.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

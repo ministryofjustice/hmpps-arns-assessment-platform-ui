@@ -1,14 +1,6 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import {
-  accommodationChanges,
-  livingWith,
-  noAccommodationReason,
-  pastAccommodationDetails,
-  suitableHousing,
-  suitableHousingLocation,
-  suitableHousingPlanned,
-} from './fields'
+import { accommodationSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
@@ -24,13 +16,13 @@ export const accommodationDetailsStep = step({
     },
   },
   blocks: [
-    livingWith,
-    noAccommodationReason,
-    pastAccommodationDetails,
-    suitableHousingLocation,
-    suitableHousing,
-    suitableHousingPlanned,
-    accommodationChanges,
+    accommodationSection.fields.livingWith.displayModes.field,
+    accommodationSection.fields.noAccommodationReason.displayModes.field,
+    accommodationSection.fields.pastAccommodationDetails.displayModes.field,
+    accommodationSection.fields.suitableHousingLocation.displayModes.field,
+    accommodationSection.fields.suitableHousing.displayModes.field,
+    accommodationSection.fields.suitableHousingPlanned.displayModes.field,
+    accommodationSection.fields.changes.displayModes.field,
     saveButton,
   ],
   onSubmission: [

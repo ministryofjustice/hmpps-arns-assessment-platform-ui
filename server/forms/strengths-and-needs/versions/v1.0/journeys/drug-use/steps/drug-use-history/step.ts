@@ -1,15 +1,7 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import {
-  drugsAffectedTheirLife,
-  drugsAffectedTheirLifeDetails,
-  drugsAnythingHelpedStopOrReduceUse,
-  drugsReasonsForUse,
-  drugsReasonsForUseDetails,
-  drugsWhatCouldHelpNotUseDrugsInFuture,
-  drugUseChanges,
-} from './fields'
+import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
@@ -30,13 +22,13 @@ export const drugUseHistoryStep = step({
     },
   },
   blocks: [
-    drugsReasonsForUse,
-    drugsReasonsForUseDetails,
-    drugsAffectedTheirLife,
-    drugsAffectedTheirLifeDetails,
-    drugsAnythingHelpedStopOrReduceUse,
-    drugsWhatCouldHelpNotUseDrugsInFuture,
-    drugUseChanges,
+    drugUseSection.fields.reasonsForUse.displayModes.field,
+    drugUseSection.fields.reasonsForUseDetails.displayModes.field,
+    drugUseSection.fields.affectedTheirLife.displayModes.field,
+    drugUseSection.fields.affectedTheirLifeDetails.displayModes.field,
+    drugUseSection.fields.anythingHelpedStopOrReduce.displayModes.field,
+    drugUseSection.fields.whatCouldHelpNotUseInFuture.displayModes.field,
+    drugUseSection.fields.drugUseChanges.displayModes.field,
     saveButton,
   ],
   onSubmission: [
