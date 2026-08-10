@@ -504,6 +504,7 @@ describe('RiskActuarialService', () => {
       'ketamine-radio': 'unknown',
       'other-drug-radio': 'unknown',
       'motivation-to-tackle-drug-misuse': 'unknown',
+      'is-current-alcohol-use-a-problem': 'unknown',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -529,6 +530,7 @@ describe('RiskActuarialService', () => {
         hasKetamineUsage: null,
         hasOtherDrugsUsage: null,
         motivationToTackleDrugMisuse: null,
+        currentAlcoholUseProblems: null,
       }),
     )
   })
