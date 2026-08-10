@@ -48,15 +48,17 @@
     <div class="govuk-grid-column-full">
       <div class="govuk-grid-row">
         {# Left sidebar: Section navigation #}
-        <div class="govuk-grid-column-one-quarter">
-          {{ mojSideNavigation({
-            label: "Assessment sections",
-            items: activeSectionNavItems
-          }) }}
-        </div>
+        {% if not hideNavigation %}
+          <div class="govuk-grid-column-one-quarter">
+            {{ mojSideNavigation({
+              label: "Assessment sections",
+              items: activeSectionNavItems
+            }) }}
+          </div>
+        {% endif %}
 
         {# Right content: Form #}
-        <div class="govuk-grid-column-two-thirds">
+        <div class="{{ "govuk-grid-column-full" if hideNavigation else "govuk-grid-column-two-thirds" }}">
           {{ govukErrorSummary({
             titleText: "There is a problem",
             errorList: allValidationErrors | toErrorSummary
@@ -72,7 +74,7 @@
                 {% if pageSubHeading %}
                   <p class="page-sub-heading">{{ pageSubHeading }}</p>
                 {% endif %}
-                <span class="{{ sectionTitleClass | default("govuk-heading-l") }}">{{ sectionTitle }}</span>
+                <h1 class="{{ sectionTitleClass | default("govuk-heading-l") }}">{{ sectionTitle }}</h1>
               </div>
               {% if sectionStatus %}
                 <div class="govuk-grid-column-one-quarter govuk-!-text-align-right">
@@ -103,4 +105,11 @@
   {{ pdsFooter({
     baseUrl: footerBaseUrl or "/platform"
   }) }}
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  {% block pageScripts %}
+    <script src="{{ '/assets/js/forms/strengths-and-needs/assets/form.js' | assetMap }}"></script>
+  {% endblock %}
 {% endblock %}

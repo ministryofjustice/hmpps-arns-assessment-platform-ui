@@ -2,10 +2,12 @@ import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpp
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { healthWellbeingSummaryTab } from './fields'
 import { Step } from '../../constants/step'
+import { summaryPageTitle } from '../../../../locales'
+import { Section } from '../../../../constants/section'
 
 export const healthWellbeingSummaryStep = step({
   path: `/${Step.health_wellbeing_summary.path}`,
-  title: 'Health and Wellbeing Summary',
+  title: summaryPageTitle(Section.health_and_wellbeing),
   blocks: [healthWellbeingSummaryTab],
   onSubmission: [
     submit({

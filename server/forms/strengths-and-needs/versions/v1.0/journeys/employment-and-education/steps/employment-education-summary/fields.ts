@@ -28,6 +28,7 @@ import { commonContentFor } from '../../../../locales'
 import { contentFor } from '../../locales'
 import { getDisplayTextForItems } from '../../../../../../i18n'
 import { CommonOption } from '../../../../constants/commonOption'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 // --- Employment and Education Summary Group ---
 
@@ -46,7 +47,7 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.employment_sector.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.employment_sector.text', CaseData.Forename) },
       value: {
         blocks: [GovUKBody({ text: Answer(Question.employment_sector) })],
       },
@@ -66,10 +67,30 @@ export const employmentStatusSummary = GovUKSummaryList({
       value: {
         blocks: [
           getDisplayTextForItems(Question.employment_history, employmentHistory.items),
-          GovUKBody({ text: Answer(Question.continuous_employment_history_employment_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.changes_often_employment_history_employment_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.unstable_employment_history_employment_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.unknown_employment_history_employment_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.continuous_employment_history_employment_details),
+            size: 's',
+            visibleWhen: Answer(Question.continuous_employment_history_employment_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.changes_often_employment_history_employment_details),
+            size: 's',
+            visibleWhen: Answer(Question.changes_often_employment_history_employment_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.unstable_employment_history_employment_details),
+            size: 's',
+            visibleWhen: Answer(Question.unstable_employment_history_employment_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.unknown_employment_history_employment_details),
+            size: 's',
+            visibleWhen: Answer(Question.unknown_employment_history_employment_details).match(Condition.IsRequired()),
+          }),
         ].flat(),
       },
       actions: {
@@ -88,20 +109,28 @@ export const employmentStatusSummary = GovUKSummaryList({
       ),
     },
     {
-      key: { text: contentFor('question.day_to_day_commitments.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.day_to_day_commitments.text', CaseData.Forename) },
       value: {
         blocks: [
           GovUKBody({
             text: contentFor('question.day_to_day_commitments.option.CARING'),
             visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.caring)),
           }),
-          GovUKBody({ text: Answer(Question.day_to_day_caring_responsibilities_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.day_to_day_caring_responsibilities_details),
+            size: 's',
+            visibleWhen: Answer(Question.day_to_day_caring_responsibilities_details).match(Condition.IsRequired()),
+          }),
 
           GovUKBody({
             text: contentFor('question.day_to_day_commitments.option.CHILDREN'),
             visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.children)),
           }),
-          GovUKBody({ text: Answer(Question.day_to_day_child_responsibilities_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.day_to_day_child_responsibilities_details),
+            size: 's',
+            visibleWhen: Answer(Question.day_to_day_child_responsibilities_details).match(Condition.IsRequired()),
+          }),
 
           GovUKBody({
             text: contentFor('question.day_to_day_commitments.option.STUDYING'),
@@ -112,13 +141,23 @@ export const employmentStatusSummary = GovUKSummaryList({
             text: contentFor('question.day_to_day_commitments.option.VOLUNTEERING'),
             visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(Option.volunteering)),
           }),
-          GovUKBody({ text: Answer(Question.day_to_day_volunteering_responsibilities_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.day_to_day_volunteering_responsibilities_details),
+            size: 's',
+            visibleWhen: Answer(Question.day_to_day_volunteering_responsibilities_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
 
           GovUKBody({
             text: commonContentFor('option.OTHER'),
             visibleWhen: Answer(Question.day_to_day_commitments).match(Condition.Array.Contains(CommonOption.other)),
           }),
-          GovUKBody({ text: Answer(Question.day_to_day_other_commitments_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.day_to_day_other_commitments_details),
+            size: 's',
+            visibleWhen: Answer(Question.day_to_day_other_commitments_details).match(Condition.IsRequired()),
+          }),
 
           GovUKBody({
             text: commonContentFor('option.UNKNOWN'),
@@ -136,7 +175,7 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.academic_qualification.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.academic_qualification.text', CaseData.Forename) },
       value: {
         blocks: getDisplayTextForItems(Question.academic_qualification, academicQualification.items),
       },
@@ -145,11 +184,15 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.professional_qualification.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.professional_qualification.text', CaseData.Forename) },
       value: {
         blocks: [
           getDisplayTextForItems(Question.professional_qualification, professionalQualifications.items),
-          GovUKBody({ text: Answer(Question.professional_qualification_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.professional_qualification_details),
+            size: 's',
+            visibleWhen: Answer(Question.professional_qualification_details).match(Condition.IsRequired()),
+          }),
         ].flat(),
       },
       actions: {
@@ -157,12 +200,20 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.job_skills.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.job_skills.text', CaseData.Forename) },
       value: {
         blocks: [
           getDisplayTextForItems(Question.job_skills, jobSkills.items),
-          GovUKBody({ text: Answer(Question.has_job_skills_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.some_job_skills_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.has_job_skills_details),
+            size: 's',
+            visibleWhen: Answer(Question.has_job_skills_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.some_job_skills_details),
+            size: 's',
+            visibleWhen: Answer(Question.some_job_skills_details).match(Condition.IsRequired()),
+          }),
         ].flat(),
       },
       actions: {
@@ -171,7 +222,7 @@ export const employmentStatusSummary = GovUKSummaryList({
     },
     {
       key: {
-        text: contentFor('question.difficulties_reading_writing_numeracy.text', CaseData.ForenamePossessive),
+        text: contentFor('question.difficulties_reading_writing_numeracy.text', CaseData.Forename),
       },
       value: {
         blocks: [
@@ -216,11 +267,33 @@ export const employmentStatusSummary = GovUKSummaryList({
       value: {
         blocks: [
           getDisplayTextForItems(Question.employment_experience, employmentExperience.items),
-          GovUKBody({ text: Answer(Question.positive_employment_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.mostly_positive_employment_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.positive_and_negative_employment_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.mostly_negative_employment_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.negative_employment_experience_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.positive_employment_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.positive_employment_experience_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.mostly_positive_employment_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.mostly_positive_employment_experience_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.positive_and_negative_employment_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.positive_and_negative_employment_experience_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.mostly_negative_employment_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.mostly_negative_employment_experience_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.negative_employment_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.negative_employment_experience_details).match(Condition.IsRequired()),
+          }),
         ].flat(),
       },
       actions: {
@@ -245,11 +318,33 @@ export const employmentStatusSummary = GovUKSummaryList({
       value: {
         blocks: [
           getDisplayTextForItems(Question.education_experience, educationExperience.items),
-          GovUKBody({ text: Answer(Question.positive_education_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.mostly_positive_education_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.positive_and_negative_education_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.mostly_negative_education_experience_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.negative_education_experience_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.positive_education_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.positive_education_experience_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.mostly_positive_education_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.mostly_positive_education_experience_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.positive_and_negative_education_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.positive_and_negative_education_experience_details).match(
+              Condition.IsRequired(),
+            ),
+          }),
+          GovUKBody({
+            text: Answer(Question.mostly_negative_education_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.mostly_negative_education_experience_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.negative_education_experience_details),
+            size: 's',
+            visibleWhen: Answer(Question.negative_education_experience_details).match(Condition.IsRequired()),
+          }),
         ].flat(),
       },
       actions: {
@@ -257,16 +352,40 @@ export const employmentStatusSummary = GovUKSummaryList({
       },
     },
     {
-      key: { text: contentFor('question.employment_and_education_changes.text', CaseData.ForenamePossessive) },
+      key: { text: contentFor('question.employment_and_education_changes.text', CaseData.Forename) },
       value: {
         blocks: [
           getDisplayTextForItems(Question.employment_and_education_changes, employmentAndEducationChanges.items),
-          GovUKBody({ text: Answer(Question.has_made_positive_changes_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.actively_making_changes_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.wants_to_make_changes_needs_help_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.thinking_about_making_changes_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.does_not_want_to_make_changes_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.does_not_want_to_answer_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.has_made_positive_changes_details),
+            size: 's',
+            visibleWhen: Answer(Question.has_made_positive_changes_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.actively_making_changes_details),
+            size: 's',
+            visibleWhen: Answer(Question.actively_making_changes_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.wants_to_make_changes_needs_help_details),
+            size: 's',
+            visibleWhen: Answer(Question.wants_to_make_changes_needs_help_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.thinking_about_making_changes_details),
+            size: 's',
+            visibleWhen: Answer(Question.thinking_about_making_changes_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.does_not_want_to_make_changes_details),
+            size: 's',
+            visibleWhen: Answer(Question.does_not_want_to_make_changes_details).match(Condition.IsRequired()),
+          }),
+          GovUKBody({
+            text: Answer(Question.does_not_want_to_answer_details),
+            size: 's',
+            visibleWhen: Answer(Question.does_not_want_to_answer_details).match(Condition.IsRequired()),
+          }),
         ].flat(),
       },
       actions: {
@@ -283,15 +402,19 @@ export const employmentStatusSummary = GovUKSummaryList({
 const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.employment_education_strengths_protective_factors_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: and(
     Answer(Question.employment_education_strengths_protective_factors).match(Condition.IsRequired()),
     Answer(Question.employment_education_strengths_protective_factors).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_strengths_protective_factors_details.validation'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -299,10 +422,16 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
 const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.employment_education_no_strengths_protective_factors_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: Answer(Question.employment_education_strengths_protective_factors).match(
     Condition.Equals(CommonOption.no),
   ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
+    }),
+  ],
 })
 
 export const strengthsProtectiveFactors = GovUKRadioInput({
@@ -320,7 +449,7 @@ export const strengthsProtectiveFactors = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_strengths_protective_factors.validation'),
     }),
   ],
@@ -331,15 +460,19 @@ export const strengthsProtectiveFactors = GovUKRadioInput({
 const seriousHarmDetails = GovUKCharacterCount({
   code: Question.employment_education_serious_harm_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: and(
     Answer(Question.employment_education_linked_to_serious_harm).match(Condition.IsRequired()),
     Answer(Question.employment_education_linked_to_serious_harm).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_serious_harm_details.validation'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -347,8 +480,14 @@ const seriousHarmDetails = GovUKCharacterCount({
 const noSeriousHarmDetails = GovUKCharacterCount({
   code: Question.employment_education_no_serious_harm_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: Answer(Question.employment_education_linked_to_serious_harm).match(Condition.Equals(CommonOption.no)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
+    }),
+  ],
 })
 
 export const employmentOrEducationLinkedToSeriousHarm = GovUKRadioInput({
@@ -365,7 +504,7 @@ export const employmentOrEducationLinkedToSeriousHarm = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_linked_to_serious_harm.validation'),
     }),
   ],
@@ -376,15 +515,19 @@ export const employmentOrEducationLinkedToSeriousHarm = GovUKRadioInput({
 const riskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.employment_education_risk_of_reoffending_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1000,
   dependentWhen: and(
     Answer(Question.employment_education_linked_to_reoffending).match(Condition.IsRequired()),
     Answer(Question.employment_education_linked_to_reoffending).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_risk_of_reoffending_details.validation'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
     }),
   ],
 })
@@ -392,8 +535,14 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
 const noRiskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.employment_education_no_risk_of_reoffending_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1000,
   dependentWhen: Answer(Question.employment_education_linked_to_reoffending).match(Condition.Equals(CommonOption.no)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
+    }),
+  ],
 })
 
 export const employmentOrEducationLinkedReoffending = GovUKRadioInput({
@@ -410,7 +559,7 @@ export const employmentOrEducationLinkedReoffending = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.employment_education_linked_to_reoffending.validation'),
     }),
   ],

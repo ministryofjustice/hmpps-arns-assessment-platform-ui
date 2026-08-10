@@ -19,6 +19,7 @@ import {
 import { Step } from '../../constants/step'
 import { sectionPath } from '../../../../constants/path'
 import { Section } from '../../../../constants/section'
+import { sectionPageTitle } from '../../../../locales'
 
 const saveButton = block<GovUKButton>({
   variant: 'govukButton',
@@ -29,7 +30,7 @@ const saveButton = block<GovUKButton>({
 
 export const physicalMentalHealthStep = step({
   path: `/${Step.physical_mental_health.path}`,
-  title: 'Physical mental health',
+  title: sectionPageTitle(Section.health_and_wellbeing),
   view: {
     locals: {
       backlink: sectionPath(Section.health_and_wellbeing),

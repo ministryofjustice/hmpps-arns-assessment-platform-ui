@@ -1,4 +1,4 @@
-import { Condition, not, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 import { CaseData } from '../../../../constants/formVersion'
@@ -22,7 +22,7 @@ export const drugUse = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.drug_use.validation'),
     }),
   ],

@@ -47,6 +47,7 @@ export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsCont
 
   session.sessionDetails = {
     accessType: accessDetails.accessType,
+    accessMode: accessDetails.accessMode,
     planAccessMode: accessDetails.planAccessMode,
     oasysRedirectUrl: accessDetails.oasysRedirectUrl,
     assessmentIdentifier,

@@ -28,6 +28,7 @@ import {
   suitableHousingLocation,
   suitableHousingPlanned,
 } from '../accommodation-details/fields'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 // --- Accommodation Summary Group ---
 
@@ -133,7 +134,11 @@ export const accommodationSummary = GovUKSummaryList({
               Answer(Question.living_with).match(Condition.Array.Contains(Option.partner)),
             ),
           }),
-          GovUKBody({ text: Answer(Question.living_with_partner_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.living_with_partner_details),
+            size: 's',
+            visibleWhen: Answer(Question.living_with_partner_details).match(Condition.IsRequired()),
+          }),
           GovUKBody({
             text: contentFor('question.living_with.option.PERSON_UNDER_18'),
             visibleWhen: and(
@@ -148,7 +153,11 @@ export const accommodationSummary = GovUKSummaryList({
               Answer(Question.living_with).match(Condition.Array.Contains(CommonOption.other)),
             ),
           }),
-          GovUKBody({ text: Answer(Question.living_with_other_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.living_with_other_details),
+            size: 's',
+            visibleWhen: Answer(Question.living_with_other_details).match(Condition.IsRequired()),
+          }),
           GovUKBody({
             text: commonContentFor('option.UNKNOWN'),
             visibleWhen: and(
@@ -171,7 +180,7 @@ export const accommodationSummary = GovUKSummaryList({
       visibleWhen: Answer(Question.living_with).match(Condition.IsRequired()),
     },
     {
-      key: { text: contentFor('question.suitable_housing_location.text', CaseData.Forename) },
+      key: { text: contentFor('question.suitable_housing_location.text', CaseData.ForenamePossessive) },
       value: {
         blocks: [
           GovUKBody({
@@ -234,7 +243,11 @@ export const accommodationSummary = GovUKSummaryList({
             ),
             size: 's',
           }),
-          GovUKBody({ text: Answer(Question.suitable_housing_location_concerns_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.suitable_housing_location_concerns_details),
+            size: 's',
+            visibleWhen: Answer(Question.suitable_housing_location_concerns_details).match(Condition.IsRequired()),
+          }),
         ],
       },
       actions: {
@@ -243,7 +256,7 @@ export const accommodationSummary = GovUKSummaryList({
       visibleWhen: not(Answer(Question.current_accommodation).match(Condition.Equals(Option.no_accommodation))),
     },
     {
-      key: { text: contentFor('question.suitable_housing.text', CaseData.Forename) },
+      key: { text: contentFor('question.suitable_housing.text', CaseData.ForenamePossessive) },
       value: {
         blocks: [
           GovUKBody({
@@ -408,7 +421,11 @@ export const accommodationSummary = GovUKSummaryList({
               Answer(Question.no_accommodation_reason).match(Condition.Array.Contains(CommonOption.other)),
             ),
           }),
-          GovUKBody({ text: Answer(Question.no_accommodation_reason_other_details), size: 's' }),
+          GovUKBody({
+            text: Answer(Question.no_accommodation_reason_other_details),
+            size: 's',
+            visibleWhen: Answer(Question.no_accommodation_reason_other_details).match(Condition.IsRequired()),
+          }),
         ],
       },
       actions: {
@@ -516,19 +533,19 @@ export const accommodationSummary = GovUKSummaryList({
 const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.accommodation_strengths_protective_factors_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: and(
     Answer(Question.accommodation_strengths_protective_factors).match(Condition.IsRequired()),
     Answer(Question.accommodation_strengths_protective_factors).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_strengths_protective_factors_details.validation'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -536,12 +553,12 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
 const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.accommodation_no_strengths_protective_factors_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: Answer(Question.accommodation_strengths_protective_factors).match(Condition.Equals(CommonOption.no)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -561,12 +578,12 @@ export const accommodationStrengthsProtectiveFactors = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_strengths_protective_factors.validation'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
 })
@@ -576,19 +593,19 @@ export const accommodationStrengthsProtectiveFactors = GovUKRadioInput({
 const seriousHarmDetails = GovUKCharacterCount({
   code: Question.accommodation_serious_harm_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: and(
     Answer(Question.accommodation_linked_to_serious_harm).match(Condition.IsRequired()),
     Answer(Question.accommodation_linked_to_serious_harm).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_serious_harm_details.validation'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -596,12 +613,12 @@ const seriousHarmDetails = GovUKCharacterCount({
 const noSeriousHarmDetails = GovUKCharacterCount({
   code: Question.accommodation_no_serious_harm_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: Answer(Question.accommodation_linked_to_serious_harm).match(Condition.Equals(CommonOption.no)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -620,7 +637,7 @@ export const accommodationLinkedToSeriousHarm = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_linked_to_serious_harm.validation'),
     }),
   ],
@@ -631,19 +648,19 @@ export const accommodationLinkedToSeriousHarm = GovUKRadioInput({
 const riskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.accommodation_risk_of_reoffending_details,
   label: commonContentFor('required_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1000,
   dependentWhen: and(
     Answer(Question.accommodation_linked_to_reoffending).match(Condition.IsRequired()),
     Answer(Question.accommodation_linked_to_reoffending).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_risk_of_reoffending_details.validation'),
     }),
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
     }),
   ],
 })
@@ -651,12 +668,12 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
 const noRiskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.accommodation_no_risk_of_reoffending_details,
   label: commonContentFor('optional_details'),
-  maxLength: 2000,
+  maxLength: CharacterLimit.c1000,
   dependentWhen: Answer(Question.accommodation_linked_to_reoffending).match(Condition.Equals(CommonOption.no)),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: commonContentFor('validation.details_must_be_less_than', 2000),
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
     }),
   ],
 })
@@ -675,7 +692,7 @@ export const accommodationLinkedReoffending = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.accommodation_linked_to_reoffending.validation'),
     }),
   ],

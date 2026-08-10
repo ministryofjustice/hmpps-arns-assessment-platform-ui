@@ -6,11 +6,8 @@ import { CommonOption } from '../../../constants/commonOption'
 
 export const english = {
   step: {
-    [Step.thinkingBehaviours.code]: 'Thinking, behaviours and attitudes',
+    // Visible page heading on the two sexual-harm pages, distinct from their browser title.
     [Step.thinkingBehavioursSexualHarm.code]: 'Risk of sexual harm',
-    [Step.thinkingBehavioursRiskOfSexualHarm.code]: 'Risk of sexual harm',
-    [Step.thinkingBehavioursSummary.code]: 'Thinking, behaviours and attitudes Summary',
-    [Step.thinkingBehavioursAnalysis.code]: 'Thinking, behaviours and attitudes Analysis',
   },
   question: {
     [Question.thinking_behaviours_attitudes_consequences]: {
@@ -53,7 +50,7 @@ export const english = {
         [CommonOption.no]:
           'No, constantly peer pressured or influenced by criminal associates which is linked to their offending',
       },
-      validation: "Select if they're resilient towards peer pressure or influence by criminal associates",
+      validation: 'Select if they’re resilient towards peer pressure or influence by criminal associates',
     },
     [Question.thinking_behaviours_attitudes_problem_solving]: {
       text: 'Is %1 able to solve problems in a positive way?',
@@ -66,16 +63,16 @@ export const english = {
       validation: 'Select if they are able to solve problems in a positive way',
     },
     [Question.thinking_behaviours_attitudes_peoples_views]: {
-      text: "Does %1 understand other people's views?",
+      text: 'Does %1 understand other people’s views?',
       option: {
         [CommonOption.yes]:
-          "Yes, understands other people's views and is able to distinguish between their own feelings and those of others",
+          'Yes, understands other people’s views and is able to distinguish between their own feelings and those of others',
         [Option.sometimes]:
-          "Assumes all views are the same as theirs at first but does consider other people's views to an extent",
+          'Assumes all views are the same as theirs at first but does consider other people’s views to an extent',
         [CommonOption.no]:
-          "No, unable to understand other people's views and distinguish between their own feelings and those of others",
+          'No, unable to understand other people’s views and distinguish between their own feelings and those of others',
       },
-      validation: "Select if they understand other people's views",
+      validation: 'Select if they understand other people’s views',
     },
     [Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour]: {
       text: 'Does %1 show manipulative behaviour or a predatory lifestyle?',
@@ -133,7 +130,7 @@ export const english = {
       text: 'Does %1 have hostile orientation to others or to general rules?',
       option: {
         [CommonOption.no]:
-          "They're able to have constructive conversations when they disagree with others and can forgive past wrongs",
+          'They’re able to have constructive conversations when they disagree with others and can forgive past wrongs',
         [Option.some]: 'Some evidence of suspicious, angry or vengeful thinking and behaviour',
         [CommonOption.yes]:
           'There is evidence of suspicious, angry <strong>and</strong> vengeful thinking and behaviour',
@@ -172,7 +169,7 @@ export const english = {
       `,
       option: {
         [CommonOption.yes]: {
-          hint: 'Information suggests that there is evidence of sexual behaviour that could pose a risk of sexual harm to others',
+          hint: 'Information suggests that there is evidence of sexual behaviour that could pose a risk of sexual harm to others.',
         },
       },
       validation: 'Select if there are any concerns they are a risk of sexual harm',
@@ -189,7 +186,7 @@ export const english = {
           hint: 'This includes behaviours like masturbating regularly, having casual sex or using pornography to meet their needs in a healthy way.',
         },
       },
-      validation: "Select if there's evidence of sexual preoccupation",
+      validation: 'Select if there’s evidence of sexual preoccupation',
     },
     [Question.thinking_behaviours_attitudes_offence_related_sexual_interest]: {
       text: 'Is there evidence %1 has offence-related sexual interests?',

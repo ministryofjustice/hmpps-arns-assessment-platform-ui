@@ -5,6 +5,7 @@ import { selectMisusedDrugs } from './fields'
 import { Step } from '../../constants/step'
 import { sectionPath } from '../../../../constants/path'
 import { Section, SectionStatus } from '../../../../constants/section'
+import { sectionPageTitle } from '../../../../locales'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -14,7 +15,7 @@ const saveButton = GovUKButton({
 
 export const addDrugsStep = step({
   path: `/${Step.add_drugs.path}`,
-  title: 'Add drugs',
+  title: sectionPageTitle(Section.drug_use),
   view: {
     locals: {
       backlink: sectionPath(Section.drug_use),
@@ -25,7 +26,7 @@ export const addDrugsStep = step({
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
-      validate: true,
+      validate: { groups: ['default', 'drugs'] },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),

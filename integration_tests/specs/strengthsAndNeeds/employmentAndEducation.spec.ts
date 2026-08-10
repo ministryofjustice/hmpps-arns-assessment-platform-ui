@@ -49,10 +49,10 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
+        - heading "Employment and education" [level=1]
         - text: What job sector does Test work in? (optional)
         - textbox "What job sector does Test work in? (optional)"
         - text: You can enter up to 2000 characters You have 2,000 characters remaining
@@ -66,8 +66,8 @@ test.describe('Employment and education Page', () => {
           - text: Unstable employment history with regular periods of unemployment
           - radio "Unknown"
           - text: Unknown
-        - group "Does Test have any day-to-day commitments?":
-          - text: Does Test have any day-to-day commitments? Select all that apply.
+        - group "Does Test have any additional day-to-day commitments?":
+          - text: Does Test have any additional day-to-day commitments? Select all that apply.
           - checkbox "Caring responsibilities"
           - text: Caring responsibilities
           - checkbox "Child responsibilities"
@@ -85,23 +85,23 @@ test.describe('Employment and education Page', () => {
         - group "Select the highest level of academic qualification Test has completed":
           - text: Select the highest level of academic qualification Test has completed
           - radio "Entry level"
-          - text: Entry level For example, entry level diploma
+          - text: Entry level For example, entry level diploma.
           - radio "Level 1"
-          - text: Level 1 For example, GCSE grades 3, 2, 1 or grades D, E, F, G
+          - text: Level 1 For example, GCSE grades 3, 2, 1 or grades D, E, F, G.
           - radio "Level 2"
-          - text: Level 2 For example, GCSE grades 9, 8, 7, 6, 5, 4 or grades A*, A, B, C
+          - text: Level 2 For example, GCSE grades 9, 8, 7, 6, 5, 4 or grades A*, A, B, C.
           - radio "Level 3"
-          - text: Level 3 For example, A level
+          - text: Level 3 For example, A level.
           - radio "Level 4"
-          - text: Level 4 For example, higher apprenticeship
+          - text: Level 4 For example, higher apprenticeship.
           - radio "Level 5"
-          - text: Level 5 For example, foundation degree
+          - text: Level 5 For example, foundation degree.
           - radio "Level 6"
-          - text: Level 6 For example, degree with honours
+          - text: Level 6 For example, degree with honours.
           - radio "Level 7"
-          - text: Level 7 For example, master's degree
+          - text: Level 7 For example, master’s degree.
           - radio "Level 8"
-          - text: Level 8 For example, doctorate or
+          - text: Level 8 For example, doctorate. or
           - radio "None of these"
           - text: None of these
           - radio "Unknown"
@@ -114,8 +114,8 @@ test.describe('Employment and education Page', () => {
           - text: No or
           - radio "Unknown"
           - text: Unknown
-        - group "Does Test's have any skills that could help them in a job or to get a job?":
-          - text: Does Test's have any skills that could help them in a job or to get a job?
+        - group "Does Test have any skills that could help them in a job or to get a job?":
+          - text: Does Test have any skills that could help them in a job or to get a job?
           - radio "Yes"
           - text: Yes This includes any completed training, qualifications, work experience or transferable skills.
           - radio "Some skills"
@@ -161,7 +161,7 @@ test.describe('Employment and education Page', () => {
           - radio "Unknown"
           - text: Unknown
         - group "Does Test want to make changes to their employment and education?":
-          - text: Does Test want to make changes to their employment and education?
+          - text: Does Test want to make changes to their employment and education? Test must answer this question.
           - radio "I have already made positive changes and want to maintain them"
           - text: I have already made positive changes and want to maintain them
           - radio "I am actively making changes"
@@ -213,11 +213,10 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - text: What job sector does Test work in? (optional)
         - textbox "What job sector does Test work in? (optional)"
@@ -234,19 +233,17 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "What is Test's employment history?"
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -272,19 +269,17 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "What is Test's employment history?"
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -310,18 +305,16 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
@@ -371,19 +364,17 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "What is Test's employment history?"
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -409,18 +400,16 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
@@ -470,19 +459,17 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "What is Test's employment history?"
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -508,18 +495,16 @@ test.describe('Employment and education Page', () => {
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
@@ -588,7 +573,7 @@ test.describe('Employment and education Page', () => {
           - definition:
             - link "Change":
               - /url: current-employment
-          - term: Does Test have any day-to-day commitments?
+          - term: Does Test have any additional day-to-day commitments?
           - definition:
             - paragraph: None
           - definition:

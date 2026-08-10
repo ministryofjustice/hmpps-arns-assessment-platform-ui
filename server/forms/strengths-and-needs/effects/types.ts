@@ -21,6 +21,7 @@ export interface StrengthsAndNeedsSession {
   accessDetails?: AccessSessionDetails
   sessionDetails?: StrengthsAndNeedsSessionDetails
   handoverContext?: HandoverContext
+  privacyAccepted?: boolean
 }
 
 /**
@@ -29,6 +30,8 @@ export interface StrengthsAndNeedsSession {
 export interface StrengthsAndNeedsData {
   caseData?: CaseDetails
   sessionDetails?: StrengthsAndNeedsSessionDetails
+  accessDetails?: AccessSessionDetails
+  privacyAccepted?: boolean
   assessment?: AssessmentVersionQueryResult
   assessmentUuid?: string
   [key: string]: unknown

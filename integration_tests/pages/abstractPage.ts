@@ -19,6 +19,12 @@ export default class AbstractPage {
 
   readonly summary: Locator
 
+  readonly errorEnterDetails: Locator
+
+  readonly enterDetails: Locator
+
+  readonly returnToOASys: Locator
+
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
@@ -27,6 +33,9 @@ export default class AbstractPage {
     this.accountType = page.locator('.arns-common-header__menu-toggle-label, .arns-common-header__oasys-account-label')
     this.saveAndContinue = page.getByRole('button', { name: 'Save and continue' })
     this.summary = page.getByRole('tabpanel', { name: 'Summary' })
+    this.errorEnterDetails = page.getByRole('link', { name: 'Enter details' })
+    this.enterDetails = page.getByRole('textbox', { description: 'Enter details' })
+    this.returnToOASys = page.getByRole('link', { name: 'Go to the OASys homepage' })
   }
 
   async signOut() {

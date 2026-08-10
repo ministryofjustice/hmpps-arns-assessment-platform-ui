@@ -1,4 +1,4 @@
-import { and, Answer, Condition, not, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
   GovUKCharacterCount,
@@ -24,8 +24,7 @@ import { Step } from '../../constants/step'
 import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
 import { CommonOption } from '../../../../constants/commonOption'
 import { contentFor } from '../../locales'
-
-const PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT = 1425
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 const createSummaryRowFor = (parent: string, items: any) => (option: string) =>
   getDisplayTextForSpecificItem(parent, items, option)
@@ -201,15 +200,19 @@ export const financeSummary = GovUKSummaryList({
 const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.finance_strengths_protective_factors_details,
   label: commonContentFor('required_details'),
-  maxLength: PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: and(
     Answer(Question.finance_strengths_protective_factors).match(Condition.IsRequired()),
-    Answer(Question.finance_strengths_protective_factors_details).match(Condition.Equals(CommonOption.yes)),
+    Answer(Question.finance_strengths_protective_factors).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.finance_strengths_protective_factors_details.validation'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -217,8 +220,14 @@ const strengthsProtectiveFactorsDetails = GovUKCharacterCount({
 const noStrengthsProtectiveFactorsDetails = GovUKCharacterCount({
   code: Question.finance_no_strengths_protective_factors_details,
   label: commonContentFor('optional_details'),
-  maxLength: PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: Answer(Question.finance_strengths_protective_factors).match(Condition.Equals(CommonOption.no)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
+    }),
+  ],
 })
 
 export const strengthsOrProtectiveFactors = GovUKRadioInput({
@@ -236,7 +245,7 @@ export const strengthsOrProtectiveFactors = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.finance_strengths_protective_factors.validation'),
     }),
   ],
@@ -245,15 +254,19 @@ export const strengthsOrProtectiveFactors = GovUKRadioInput({
 const seriousHarmDetails = GovUKCharacterCount({
   code: Question.finance_serious_harm_details,
   label: commonContentFor('required_details'),
-  maxLength: PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: and(
     Answer(Question.finance_linked_to_serious_harm).match(Condition.IsRequired()),
     Answer(Question.finance_linked_to_serious_harm).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.finance_serious_harm_details.validation'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
     }),
   ],
 })
@@ -261,8 +274,14 @@ const seriousHarmDetails = GovUKCharacterCount({
 const noSeriousHarmDetails = GovUKCharacterCount({
   code: Question.finance_no_serious_harm_details,
   label: commonContentFor('optional_details'),
-  maxLength: PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT,
+  maxLength: CharacterLimit.c1425,
   dependentWhen: Answer(Question.finance_linked_to_serious_harm).match(Condition.Equals(CommonOption.no)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1425)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1425),
+    }),
+  ],
 })
 
 export const linkedToSeriousHarm = GovUKRadioInput({
@@ -279,7 +298,7 @@ export const linkedToSeriousHarm = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.finance_linked_to_serious_harm.validation'),
     }),
   ],
@@ -288,15 +307,19 @@ export const linkedToSeriousHarm = GovUKRadioInput({
 const riskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.finance_risk_of_reoffending_details,
   label: commonContentFor('required_details'),
-  maxLength: PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT,
+  maxLength: CharacterLimit.c1000,
   dependentWhen: and(
     Answer(Question.finance_linked_to_reoffending).match(Condition.IsRequired()),
     Answer(Question.finance_linked_to_reoffending).match(Condition.Equals(CommonOption.yes)),
   ),
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.finance_risk_of_reoffending_details.validation'),
+    }),
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
     }),
   ],
 })
@@ -304,8 +327,14 @@ const riskOfReoffendingDetails = GovUKCharacterCount({
 const noRiskOfReoffendingDetails = GovUKCharacterCount({
   code: Question.finance_no_risk_of_reoffending_details,
   label: commonContentFor('optional_details'),
-  maxLength: PRACTITIONER_ANALYSIS_DETAILS_CHARACTER_LIMIT,
+  maxLength: CharacterLimit.c1000,
   dependentWhen: Answer(Question.finance_linked_to_reoffending).match(Condition.Equals(CommonOption.no)),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c1000)),
+      message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c1000),
+    }),
+  ],
 })
 
 export const linkedToReoffending = GovUKRadioInput({
@@ -322,7 +351,7 @@ export const linkedToReoffending = GovUKRadioInput({
   ],
   validWhen: [
     validation({
-      condition: not(Self().not.match(Condition.IsRequired())),
+      condition: Self().match(Condition.IsRequired()),
       message: contentFor('question.finance_linked_to_reoffending.validation'),
     }),
   ],

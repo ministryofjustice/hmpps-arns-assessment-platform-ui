@@ -4,14 +4,16 @@ import { currentEmploymentStatus } from './fields'
 import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
+import { sectionTitleClass } from '../../../../constants/formVersion'
+import { sectionPageTitle } from '../../../../locales'
 
 export const currentEmploymentStep = step({
   path: `/${Step.current_employment.path}`,
-  title: 'Employed', // TODO: contentFor('step.current_employment')
+  title: sectionPageTitle(Section.employment_and_education),
   reachability: { entryWhen: true },
   view: {
     locals: {
-      sectionTitleClass: 'govuk-body-l',
+      sectionTitleClass,
     },
   },
   blocks: [currentEmploymentStatus, saveButton],

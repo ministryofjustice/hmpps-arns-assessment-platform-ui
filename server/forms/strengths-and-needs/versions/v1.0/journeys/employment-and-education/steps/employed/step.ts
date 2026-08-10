@@ -16,10 +16,11 @@ import { Section, SectionStatus } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { sectionPath } from '../../../../constants/path'
+import { sectionPageTitle } from '../../../../locales'
 
 export const employedEmploymentStep = step({
   path: `/${Step.employed.path}`,
-  title: 'Employed', // TODO: contentFor('step.employed')
+  title: sectionPageTitle(Section.employment_and_education),
   view: {
     locals: {
       backlink: sectionPath(Section.employment_and_education),
