@@ -7,7 +7,7 @@ import { sectionPath } from '../../../../constants/path'
 import { saveButton } from '../../../../constants/buttons'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionStatus } from '../../../../constants/section'
-import { contentBlocks } from './fields'
+import { personalRelationshipsCommunitySection } from '../../section'
 
 export const personalRelationshipsCommunityStep = step({
   path: `/${Step.personal_relationships_community.path}`,
@@ -17,7 +17,18 @@ export const personalRelationshipsCommunityStep = step({
       backlink: sectionPath(Section.personal_relationships_and_community) + Step.personal_relationships.path,
     },
   },
-  blocks: [...contentBlocks, saveButton],
+  blocks: [
+    personalRelationshipsCommunitySection.fields.currentRelationship.displayModes.field,
+    personalRelationshipsCommunitySection.fields.intimateRelationship.displayModes.field,
+    personalRelationshipsCommunitySection.fields.challengesIntimateRelationship.displayModes.field,
+    personalRelationshipsCommunitySection.fields.parentalResponsibilities.displayModes.field,
+    personalRelationshipsCommunitySection.fields.familyRelationship.displayModes.field,
+    personalRelationshipsCommunitySection.fields.childhood.displayModes.field,
+    personalRelationshipsCommunitySection.fields.childhoodBehaviour.displayModes.field,
+    personalRelationshipsCommunitySection.fields.belonging.displayModes.field,
+    personalRelationshipsCommunitySection.fields.changes.displayModes.field,
+    saveButton,
+  ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
