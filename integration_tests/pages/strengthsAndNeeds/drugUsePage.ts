@@ -11,14 +11,11 @@ export default class DrugUsePage extends AbstractPage {
 
   readonly selectWhichDrugs: Locator
 
-  readonly yes: Locator
-
   private constructor(page: Page) {
     super(page)
     this.mainSection = page.getByTestId('main-form')
     this.selectIfEverMisusedDrugs = page.getByRole('link', { name: 'Select if they’ve ever misused drugs' })
     this.selectWhichDrugs = page.getByRole('link', { name: 'Select which drugs they’ve misused' })
-    this.yes = page.getByLabel('Yes')
     this.form = page.locator('form')
   }
 

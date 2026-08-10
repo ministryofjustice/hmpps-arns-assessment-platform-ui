@@ -13,8 +13,6 @@ export default class FinancesPage extends AbstractPage {
 
   readonly carersAllowance: Locator
 
-  readonly yes: Locator
-
   readonly ableToManageTheirMoney: Locator
 
   readonly selectIfAffectedByGambling: Locator
@@ -31,7 +29,6 @@ export default class FinancesPage extends AbstractPage {
     this.selectWhereTheyCurrently = page.getByRole('link', { name: 'Select where they currently get their money from' })
     this.carersAllowance = page.getByRole('checkbox', { name: 'Carer’s allowance' })
     this.selectIfHaveOwn = page.getByRole('link', { name: 'Select if they have their own personal' })
-    this.yes = page.getByRole('radio', { name: 'Yes' })
     this.selectHowGoodTheyAreAtManaging = page.getByRole('link', { name: 'Select how good they are at managing' })
     this.ableToManageTheirMoney = page.getByRole('radio', { name: 'Able to manage their money well and is a strength' })
     this.selectIfAffectedByGambling = page.getByRole('link', { name: 'Select if they are affected by gambling' })
