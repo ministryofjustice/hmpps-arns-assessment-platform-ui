@@ -177,7 +177,7 @@ export const drugsAnythingHelpedStopOrReduceUse = GovUKCharacterCount({
   visibleWhen: anyDrugUsedInLastSixMonths,
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      condition: or(not(anyDrugUsedInLastSixMonths), Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000))),
       message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
@@ -193,7 +193,7 @@ export const drugsWhatCouldHelpNotUseDrugsInFuture = GovUKCharacterCount({
   visibleWhen: not(anyDrugUsedInLastSixMonths),
   validWhen: [
     validation({
-      condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+      condition: or(anyDrugUsedInLastSixMonths, Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000))),
       message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
     }),
   ],
