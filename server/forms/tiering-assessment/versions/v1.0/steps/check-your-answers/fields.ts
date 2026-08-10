@@ -290,11 +290,11 @@ export const communitySupervisionSummaryListField = GovUKSummaryList({
       key: {
         text: Format('What date did %1 current supervision in the community begin?', CaseData.ForenamePossessive),
       },
-      value: { text: Answer('date-of-current-supervision') },
+      value: { text: Answer('date-of-current-supervision-field') },
       actions: {
         items: [
           {
-            href: Format(dateOfCurrentSupervisionPath, returnToAnswersQueryText, '#date-of-current-supervision'),
+            href: Format(dateOfCurrentSupervisionPath, returnToAnswersQueryText, '#date-of-current-supervision-field'),
             text: 'Change',
           },
         ],
@@ -315,7 +315,7 @@ export const offenceSinceSupervisionSummaryListField = GovUKSummaryList({
         text: Format(
           'Has %1 committed any offences since %2?',
           CaseData.Forename,
-          Answer('date-of-current-supervision').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+          Answer('date-of-current-supervision-field').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
         ),
       },
       value: {
