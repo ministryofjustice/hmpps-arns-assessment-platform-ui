@@ -23,7 +23,7 @@ const versionRedirectStep = step({
   ],
 })
 
-const strengthsAndNeedsRootJourney = journey({
+export const strengthsAndNeedsRootJourney = journey({
   code: 'strengths-and-needs',
   title: commonContentFor('strengths_and_needs'),
   path: '/strengths-and-needs',

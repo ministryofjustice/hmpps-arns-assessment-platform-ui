@@ -2,6 +2,7 @@ import { InternalServerError } from 'http-errors'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { buildAnswerDelta } from './answerDelta'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { formConfigFromJourney } from '../data-mapping/formConfigFactory';
 
 export const saveCurrentStepAnswers =
   (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
@@ -28,5 +29,11 @@ export const saveCurrentStepAnswers =
       user,
       added: wrapAll(delta.added),
       removed: delta.removed,
+      hooks: [
+        {
+          type: 'UpdateOasysDataMapping',
+          formConfig: formConfigFromJourney(null),
+        },
+      ],
     })
   }

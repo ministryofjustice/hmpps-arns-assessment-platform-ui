@@ -3,27 +3,32 @@ import { getOasysEquivalent } from './port/dataMappingService'
 import { answersFromAssessment } from './answersFactory'
 import { formConfigFromJourney } from './formConfigFactory'
 import { formVersion } from '../../versions/v1.0/constants/formVersion'
-import { strengthsAndNeedsV1Journey } from '../../versions/v1.0'
-import { JourneyDefinition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { InternalServerError } from 'http-errors'
+import { strengthsAndNeedsRootJourney } from '../../index'
+import { wrapAll } from '../../../../data/aap-api/wrappers'
 
 export const persistOasysEquivalent = (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
-  const journeys: Record<string, JourneyDefinition> = {
-    'v1.0': strengthsAndNeedsV1Journey,
-  }
+  const user = context.getState('user')
+  const assessment = await deps.api.executeQuery({
+    type: 'AssessmentVersionQuery',
+    user,
+    assessmentIdentifier: context.getSession().sessionDetails.assessmentIdentifier,
+  })
 
-  const assessment = context.getData('assessment')
   const version = assessment.formVersion || formVersion
-  const journey = journeys[version]
-
+  const journey = strengthsAndNeedsRootJourney.children.find((it) => it.data['formVersion'] === version)
   if (!journey) {
     throw new InternalServerError(`No journey defined for version ${version}`)
   }
 
-  const oasysEquivalent = getOasysEquivalent(
-    answersFromAssessment(assessment),
-    formConfigFromJourney(journey),
-  )
+  const formConfig = formConfigFromJourney(journey)
+  const oasysEquivalent = getOasysEquivalent(answersFromAssessment(assessment, formConfig), formConfig)
 
-  // TODO: persist oasysEquivalent
+  await deps.api.executeCommand({
+    type: 'UpdateAssessmentPropertiesCommand',
+    assessmentUuid: assessment.assessmentUuid,
+    user,
+    added: wrapAll({ 'oasys_equivalent': JSON.stringify(oasysEquivalent) }),
+    removed: [],
+  })
 }

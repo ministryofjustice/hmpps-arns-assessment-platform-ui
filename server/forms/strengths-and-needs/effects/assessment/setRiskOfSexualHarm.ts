@@ -33,7 +33,6 @@ export const setRiskOfSexualHarm =
       await deps.api.executeCommands(updateAnswers, updateProperties)
 
       const { answers, properties, ...rest } = context.getData('assessment')
-
       context.setData('assessment', {
         ...rest,
         answers: { ...answers, ...updateAnswers.added },

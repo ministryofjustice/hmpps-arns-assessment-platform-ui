@@ -40,6 +40,7 @@ export const accommodationDetailsStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation.statusKey, SectionStatus.incomplete),
+          StrengthsAndNeedsEffects.persistOasysEquivalent(),
         ],
         next: [redirect({ goto: Step.accommodation_summary.path })],
       },
