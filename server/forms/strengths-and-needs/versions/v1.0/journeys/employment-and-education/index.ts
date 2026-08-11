@@ -1,10 +1,10 @@
-import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { currentEmploymentStep } from './steps/current-employment/step'
 import { employedEmploymentStep } from './steps/employed/step'
 import { employmentEducationSummaryStep } from './steps/employment-education-summary/step'
 import { employmentEducationAnalysisStep } from './steps/employment-education-analysis/step'
 import { Section } from '../../constants/section'
-import { sectionPageTitle } from '../../locales'
+import { sectionPageTitle, sectionStatusTag } from '../../locales'
 
 /**
  * Employment Journey
@@ -24,7 +24,7 @@ export const employmentJourney = journey({
   view: {
     locals: {
       sectionTitle: sectionPageTitle(Section.employment_and_education),
-      sectionStatus: Data(Section.employment_and_education.statusKey),
+      sectionStatusTag: sectionStatusTag(Section.employment_and_education),
     },
   },
   steps: [

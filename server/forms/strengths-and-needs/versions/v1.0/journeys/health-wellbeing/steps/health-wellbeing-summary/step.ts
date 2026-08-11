@@ -3,7 +3,7 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { healthWellbeingSummaryTab } from './fields'
 import { Step } from '../../constants/step'
 import { summaryPageTitle } from '../../../../locales'
-import { Section } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 
 export const healthWellbeingSummaryStep = step({
   path: `/${Step.health_wellbeing_summary.path}`,
@@ -16,9 +16,9 @@ export const healthWellbeingSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress('health_section_status', 'COMPLETE'),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.yes),
         ],
-        next: [redirect({ goto: 'health-wellbeing-analysis' })],
+        next: [redirect({ goto: Step.health_wellbeing_analysis.path })],
       },
     }),
   ],

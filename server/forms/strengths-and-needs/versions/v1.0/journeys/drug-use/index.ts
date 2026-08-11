@@ -1,4 +1,4 @@
-import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { drugUseStep } from './steps/drug-use/step'
 import { addDrugsStep } from './steps/add-drugs/step'
 import { drugDetailsStep } from './steps/drug-details/step'
@@ -6,7 +6,7 @@ import { drugUseHistoryStep } from './steps/drug-use-history/step'
 import { drugUseSummaryStep } from './steps/drug-use-summary/step'
 import { drugUseAnalysisStep } from './steps/drug-use-analysis/step'
 import { Section } from '../../constants/section'
-import { sectionPageTitle } from '../../locales'
+import { sectionPageTitle, sectionStatusTag } from '../../locales'
 
 /**
  * Drug Use Journey
@@ -20,14 +20,14 @@ import { sectionPageTitle } from '../../locales'
  * drug-use → (NO) → drug-use-summary → drug-use-analysis
  */
 export const drugUseJourney = journey({
-  code: 'drug-use',
+  code: Section.drug_use.code,
   title: sectionPageTitle(Section.drug_use),
-  path: '/drug-use',
+  path: Section.drug_use.path,
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
   view: {
     locals: {
       sectionTitle: sectionPageTitle(Section.drug_use),
-      sectionStatus: Data('sectionStatus.drug-use'),
+      sectionStatusTag: sectionStatusTag(Section.drug_use),
     },
   },
   steps: [drugUseStep, addDrugsStep, drugDetailsStep, drugUseHistoryStep, drugUseSummaryStep, drugUseAnalysisStep],

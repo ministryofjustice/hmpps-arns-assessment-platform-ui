@@ -1,6 +1,6 @@
 import { step, submit, redirect, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { Step } from '../../constants/step'
 import { personalRelationshipsCommunitySummaryTab } from './fields'
 import { summaryPageTitle } from '../../../../locales'
@@ -17,8 +17,8 @@ export const personalRelationshipsCommunitySummaryStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(
-            Section.personal_relationships_and_community.statusKey,
-            SectionStatus.complete,
+            Section.personal_relationships_and_community,
+            SectionComplete.yes,
           ),
         ],
         next: [redirect({ goto: Step.personal_relationships_community_analysis.path })],

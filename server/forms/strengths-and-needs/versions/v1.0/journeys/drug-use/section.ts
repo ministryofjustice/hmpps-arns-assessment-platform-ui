@@ -106,17 +106,17 @@ export const drugLastUsed = questionTemplate({
 
 export const drugHowOftenUsed = questionTemplate({
   content: {
-    code: drugValue => fieldCodeString(Question.how_often_used, drugValue),
+    code: drugValue => fieldCodeString(Question.how_often_used_last_six_months, drugValue),
     format: QuestionFormat.RADIO,
     codeOver: drugValue => Format(Question.how_often_used_value, drugValue),
-    text: () => contentFor('question.how_often_used.text', CaseData.Forename),
+    text: () => contentFor('question.how_often_used_last_six_months.text', CaseData.Forename),
     options: [
-      { value: Option.daily, text: contentFor('question.how_often_used.option.DAILY') },
-      { value: Option.weekly, text: contentFor('question.how_often_used.option.WEEKLY') },
-      { value: Option.monthly, text: contentFor('question.how_often_used.option.MONTHLY') },
-      { value: Option.occasionally, text: contentFor('question.how_often_used.option.OCCASIONALLY') },
+      { value: Option.daily, text: contentFor('question.how_often_used_last_six_months.option.DAILY') },
+      { value: Option.weekly, text: contentFor('question.how_often_used_last_six_months.option.WEEKLY') },
+      { value: Option.monthly, text: contentFor('question.how_often_used_last_six_months.option.MONTHLY') },
+      { value: Option.occasionally, text: contentFor('question.how_often_used_last_six_months.option.OCCASIONALLY') },
     ],
-    validationMessage: contentFor('question.how_often_used.validation'),
+    validationMessage: contentFor('question.how_often_used_last_six_months.validation'),
   },
   displayModes: {
     collectionField: content =>
@@ -332,9 +332,9 @@ const selectMisusedDrugs = question({
       },
       { value: Option.spice, text: contentFor('option.SPICE'), reveals: drugLastUsed.instance(Option.spice) },
       {
-        value: CommonOption.other,
+        value: Option.other_drug,
         text: commonContentFor('option.OTHER'),
-        reveals: [otherDrugNameRevealed, drugLastUsed.instance(CommonOption.other)],
+        reveals: [otherDrugNameRevealed, drugLastUsed.instance(Option.other_drug)],
       },
     ],
     validationMessage: contentFor('question.select_misused_drugs.validation'),
@@ -346,11 +346,11 @@ const selectMisusedDrugs = question({
 
 const moreThanSixMonthsDetails = question({
   content: {
-    code: Question.drug_use_more_than_six_months_details,
+    code: Question.not_used_in_last_six_months_details,
     format: QuestionFormat.TEXT,
-    text: contentFor('question.drug_use_more_than_six_months_details.text', CaseData.ForenamePossessive),
-    hint: contentFor('question.drug_use_more_than_six_months_details.hint'),
-    validationMessage: contentFor('question.drug_use_more_than_six_months_details.validation'),
+    text: contentFor('question.not_used_in_last_six_months_details.text', CaseData.ForenamePossessive),
+    hint: contentFor('question.not_used_in_last_six_months_details.hint'),
+    validationMessage: contentFor('question.not_used_in_last_six_months_details.validation'),
   },
   displayModes: {
     field: characterCountField({
@@ -359,7 +359,7 @@ const moreThanSixMonthsDetails = question({
     }),
     summaryRow: textSummaryRow({
       changeHref: Step.drug_details.path,
-      visibleWhen: Answer(Question.drug_use_more_than_six_months_details).match(Condition.IsRequired()),
+      visibleWhen: Answer(Question.not_used_in_last_six_months_details).match(Condition.IsRequired()),
     }),
   },
 })
@@ -382,7 +382,7 @@ const drugsInjected = question({
       injectedDrugOption(Option.misused_prescribed_drugs, contentFor('option.MISUSED_PRESCRIBED_DRUGS')),
       injectedDrugOption(Option.other_opiates, contentFor('option.OTHER_OPIATES')),
       injectedDrugOption(Option.steroids, contentFor('option.STEROIDS')),
-      injectedDrugOption(CommonOption.other, Answer(Question.other_drug_name)),
+      injectedDrugOption(Option.other_drug, Answer(Question.other_drug_name)),
     ],
     validationMessage: contentFor('question.drugs_injected.validation', CaseData.Forename),
   },
@@ -393,21 +393,21 @@ const drugsInjected = question({
 
 const receivingTreatment = question({
   content: {
-    code: Question.receiving_treatment,
+    code: Question.drugs_is_receiving_treatment,
     format: QuestionFormat.RADIO,
     text: when(anyDrugUsedInLastSix)
-      .then(contentFor('question.receiving_treatment.text.usedLastSixMonths', CaseData.Forename))
-      .else(contentFor('question.receiving_treatment.text.notUsedInLastSixMonths', CaseData.Forename)),
+      .then(contentFor('question.drugs_is_receiving_treatment.text.usedLastSixMonths', CaseData.Forename))
+      .else(contentFor('question.drugs_is_receiving_treatment.text.notUsedInLastSixMonths', CaseData.Forename)),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.receiving_treatment_yes_details,
-        validationMessage: contentFor('question.receiving_treatment_yes_details.validation'),
+        code: Question.drugs_is_receiving_treatment_yes_details,
+        validationMessage: contentFor('question.drugs_is_receiving_treatment_yes_details.validation'),
       }),
-      no: optionalDetails({ code: Question.receiving_treatment_no_details }),
+      no: optionalDetails({ code: Question.drugs_is_receiving_treatment_no_details }),
     }),
     validationMessage: when(anyDrugUsedInLastSix)
-      .then(contentFor('question.receiving_treatment.validation.usedLastSixMonths'))
-      .else(contentFor('question.receiving_treatment.validation.notUsedInLastSixMonths')),
+      .then(contentFor('question.drugs_is_receiving_treatment.validation.usedLastSixMonths'))
+      .else(contentFor('question.drugs_is_receiving_treatment.validation.notUsedInLastSixMonths')),
   },
   displayModes: {
     field: radioField(),
@@ -602,39 +602,39 @@ const drugUseChanges = question({
     hint: contentFor('question.drug_use_changes.hint', CaseData.Forename),
     options: [
       {
-        value: CommonOption.has_made_changes,
-        text: commonContentFor('option.HAS_MADE_CHANGES'),
-        reveals: optionalDetails({ code: Question.has_made_positive_changes_drugs_details }),
+        value: CommonOption.made_changes,
+        text: commonContentFor('option.MADE_CHANGES'),
+        reveals: optionalDetails({ code: Question.drug_use_changes_made_changes_details }),
       },
       {
-        value: CommonOption.is_making_changes,
-        text: commonContentFor('option.IS_MAKING_CHANGES'),
-        reveals: optionalDetails({ code: Question.actively_making_changes_drugs_details }),
+        value: CommonOption.making_changes,
+        text: commonContentFor('option.MAKING_CHANGES'),
+        reveals: optionalDetails({ code: Question.drug_use_changes_making_changes_details }),
       },
       {
-        value: CommonOption.wants_to_make_changes_knows_how_to,
-        text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
-        reveals: optionalDetails({ code: Question.wants_to_make_changes_knows_how_to_drugs_details }),
+        value: CommonOption.want_to_make_changes,
+        text: commonContentFor('option.WANT_TO_MAKE_CHANGES'),
+        reveals: optionalDetails({ code: Question.drug_use_changes_want_to_make_changes_details }),
       },
       {
-        value: CommonOption.wants_to_make_changes_needs_help,
-        text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
-        reveals: optionalDetails({ code: Question.wants_to_make_changes_needs_help_drugs_details }),
+        value: CommonOption.needs_help_to_make_changes,
+        text: commonContentFor('option.NEEDS_HELP_TO_MAKE_CHANGES'),
+        reveals: optionalDetails({ code: Question.drug_use_changes_needs_help_to_make_changes_details }),
       },
       {
         value: CommonOption.thinking_about_making_changes,
         text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
-        reveals: optionalDetails({ code: Question.thinking_about_making_changes_drugs_details }),
+        reveals: optionalDetails({ code: Question.drug_use_changes_thinking_about_making_changes_details }),
       },
       {
         value: CommonOption.does_not_want_to_make_changes,
         text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
-        reveals: optionalDetails({ code: Question.does_not_want_to_make_changes_drugs_details }),
+        reveals: optionalDetails({ code: Question.drug_use_changes_does_not_want_to_make_changes_details }),
       },
       {
         value: CommonOption.does_not_want_to_answer,
         text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'),
-        reveals: optionalDetails({ code: Question.does_not_want_to_answer_drugs_details }),
+        reveals: optionalDetails({ code: Question.drug_use_changes_does_not_want_to_answer_details }),
       },
       { divider: commonContentFor('or') },
       { value: CommonOption.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },

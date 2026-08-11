@@ -29,7 +29,7 @@ export const strengthsAndNeedsV1Journey = journey({
       basePath,
       sectionNavItems: Object.values(Section).map(section => ({
         ...section,
-        status: Data(section.statusKey),
+        complete: Data(section.statusKey),
         text: commonContentFor(`sectionTitle.${section.code}`),
       })),
       buttons: {
