@@ -19,6 +19,6 @@ export const setSectionProgress =
       user,
       added: wrapAll({ [code]: status }),
       removed: [],
-      hooks: [new UpdateOasysDataMappingHook(context.getData('formConfig'))],
+      hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
     })
   }

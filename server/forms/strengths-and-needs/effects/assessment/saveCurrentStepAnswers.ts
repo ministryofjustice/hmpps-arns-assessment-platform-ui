@@ -29,6 +29,6 @@ export const saveCurrentStepAnswers =
       user,
       added: wrapAll(delta.added),
       removed: delta.removed,
-      hooks: [new UpdateOasysDataMappingHook(context.getData('formConfig'))],
+      hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
     })
   }

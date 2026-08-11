@@ -10,7 +10,6 @@ import { StrengthsAndNeedsEffectsDeps } from './types'
 import { setSectionProgress } from './assessment/setSectionProgress'
 import { saveAndClearStaleAnswers } from './assessment/saveAndClearStaleAnswers'
 import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
-import { createFormConfig } from './assessment/createFormConfig'
 
 type EffectShapesFromFactories<TFactories> = {
   [K in keyof TFactories]: TFactories[K] extends (deps: infer _Deps) => infer Evaluator
@@ -30,7 +29,6 @@ const strengthsAndNeedsEffectFactories = {
   deriveDrugCategories,
   setSectionProgress,
   setRiskOfSexualHarm,
-  createFormConfig,
 }
 
 export const { effects: StrengthsAndNeedsEffects, implementations: StrengthsAndNeedsEffectImplementations } =

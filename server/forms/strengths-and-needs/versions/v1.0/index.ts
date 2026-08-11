@@ -22,6 +22,7 @@ import { healthWellbeingSection } from './journeys/health-wellbeing/section'
 import { personalRelationshipsCommunitySection } from './journeys/personal-relationships-and-community/section'
 import { thinkingBehavioursAttitudesSection } from './journeys/thinking-behaviours-and-attitudes/section'
 import { StrengthsAndNeedsTransformers } from '../../transformers'
+import { FormConfig } from '../../constants/formConfig'
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -49,7 +50,7 @@ export const strengthsAndNeedsV1Journey = journey({
   },
   data: {
     formVersion,
-    sections: [
+    formConfig: new FormConfig(formVersion, [
       accommodationSection,
       alcoholUseSection,
       drugUseSection,
@@ -58,7 +59,7 @@ export const strengthsAndNeedsV1Journey = journey({
       healthWellbeingSection,
       personalRelationshipsCommunitySection,
       thinkingBehavioursAttitudesSection,
-    ],
+    ]),
   },
   onAccess: [
     access({
@@ -66,7 +67,6 @@ export const strengthsAndNeedsV1Journey = journey({
         StrengthsAndNeedsEffects.initializeSessionFromAccess(),
         StrengthsAndNeedsEffects.loadSessionData(),
         StrengthsAndNeedsEffects.loadAssessment(),
-        StrengthsAndNeedsEffects.createFormConfig(),
         StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
     }),
