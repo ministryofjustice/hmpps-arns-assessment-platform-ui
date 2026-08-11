@@ -35,6 +35,12 @@ export default class AbstractPage {
 
   readonly complete: Locator
 
+  readonly alert: Locator
+
+  readonly errorWantsToMakeChanges: Locator
+
+  readonly yesAlreadyMadePositiveChanges: Locator
+
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
@@ -53,6 +59,13 @@ export default class AbstractPage {
       .getByRole('group', { name: 'linked to risk of reoffending?' })
       .getByLabel('No')
     this.complete = page.locator('[data-status="COMPLETE"]')
+    this.alert = page.getByRole('alert')
+    this.errorWantsToMakeChanges = page.getByRole('link', {
+      name: 'Select if they want to make changes to their',
+    })
+    this.yesAlreadyMadePositiveChanges = page.getByRole('radio', {
+      name: 'I have already made positive changes and want to maintain them',
+    })
   }
 
   async signOut() {
