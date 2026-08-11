@@ -11,12 +11,17 @@ import { areasOfNeed, subAreasOfNeed } from '../forms/sentence-plan/versions/v1.
 import { AreaOfNeed } from '../forms/sentence-plan/effects/types'
 
 /**
- * Converts boolean from handover to LinkedIndicator format.
- * Linked indicators come from handover (OASys).
+ * Converts a needs-data boolean (handover for OASys, ARNS for MPoP) to LinkedIndicator format.
  */
 function toLinkedIndicator(value: boolean | null | undefined): LinkedIndicator {
   if (value === true) return 'YES'
   if (value === false) return 'NO'
+  return null
+}
+
+function toLinkedIndicatorFromSanValue(value: string): LinkedIndicator {
+  if (value === 'YES') return 'YES'
+  if (value === 'NO') return 'NO'
   return null
 }
 
@@ -97,10 +102,18 @@ function processAssessmentArea(
   const sectionCompleteValue = getAssessmentValue(sanAssessmentData, `${assessmentKey}_section_complete`)
   const isAssessmentSectionComplete = sectionCompleteValue === 'YES'
 
-  // Linked indicators come from handover (OASys)
+  // Linked indicators come from the needs data (handover for OASys, ARNS for MPoP).
   const linkedToHarm = toLinkedIndicator(crimNeedsArea?.linkedToHarm)
   const linkedToReoffending = toLinkedIndicator(crimNeedsArea?.linkedToReoffending)
-  const linkedToStrengthsOrProtectiveFactors = toLinkedIndicator(crimNeedsArea?.linkedToStrengthsOrProtectiveFactors)
+  // ARNS (MPoP) returns needs data without a strengths indicator, so when needs data is present but
+  // strengths is absent, fall back to the coordinator's SAN answer (which carries it for both cohorts).
+  // With no needs data at all, indicators stay null as before.
+  const strengthsFromCoordinator = toLinkedIndicatorFromSanValue(
+    getAssessmentValue(sanAssessmentData, `${assessmentKey}_practitioner_analysis_strengths_or_protective_factors`),
+  )
+  const linkedToStrengthsOrProtectiveFactors = crimNeedsArea
+    ? (toLinkedIndicator(crimNeedsArea.linkedToStrengthsOrProtectiveFactors) ?? strengthsFromCoordinator)
+    : null
 
   // Details come from coordinator API (sanAssessmentData), keyed by the linked indicator value
   const riskOfSeriousHarmDetails = getLinkedDetails(
@@ -150,7 +163,7 @@ function processAssessmentArea(
     }
   }
 
-  // Score comes from handover (OASys) only
+  // Score comes from the needs data only (handover for OASys, ARNS for MPoP)
   const score = clampScore(crimNeedsArea?.score, upperBound)
 
   // High scoring: main area score > threshold or sub-area exceeds its threshold
