@@ -1,7 +1,12 @@
 import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { uuidSummaryField } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
+import {
+  impulsivityProblemsField,
+  proCriminalAttitudesField,
+  regularOffendingActivitiesField,
+  temperControlField,
+} from './fields'
 
 export const thinkingAttitudesAndBehavioursStep = step({
   path: '/thinking-attitudes-and-behaviours',
@@ -11,7 +16,13 @@ export const thinkingAttitudesAndBehavioursStep = step({
       effects: [TieringAssessmentEffects.LoadAssessmentData()],
     }),
   ],
-  blocks: [uuidSummaryField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [
+    regularOffendingActivitiesField,
+    temperControlField,
+    impulsivityProblemsField,
+    proCriminalAttitudesField,
+    GovUKButton({ text: 'Save and continue' }),
+  ],
   onSubmission: [
     submit({
       validate: true,

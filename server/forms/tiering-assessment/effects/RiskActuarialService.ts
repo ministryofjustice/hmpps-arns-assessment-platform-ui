@@ -57,6 +57,10 @@ export class RiskActuarialService {
       hasOtherDrugsUsage: this.parseBoolean(context.getAnswer('other-drug-radio')),
       motivationToTackleDrugMisuse: this.parseMotivationLevel(context.getAnswer('motivation-to-tackle-drug-misuse')),
       currentAlcoholUseProblems: this.getCurrentAlcoholUseProblems(context),
+      regularOffendingActivities: this.parseProblemLevel(context.getAnswer('regular-offending-activities')),
+      temperControl: this.parseProblemLevel(context.getAnswer('temper-control')),
+      impulsivityProblems: this.parseProblemLevel(context.getAnswer('impulsivity-problems')),
+      proCriminalAttitudes: this.parseProblemLevel(context.getAnswer('pro-criminal-attitudes')),
     }
   }
 
