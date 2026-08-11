@@ -1,6 +1,7 @@
 import RiskActuarialApiClient from '../../../data/riskActuarialApiClient'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
 import {
+  CurrentRelationshipStatus,
   MotivationLevel,
   ProblemLevel,
   RiskScoreInput,
@@ -57,11 +58,29 @@ export class RiskActuarialService {
       hasOtherDrugsUsage: this.parseBoolean(context.getAnswer('other-drug-radio')),
       motivationToTackleDrugMisuse: this.parseMotivationLevel(context.getAnswer('motivation-to-tackle-drug-misuse')),
       currentAlcoholUseProblems: this.getCurrentAlcoholUseProblems(context),
+      excessiveAlcoholUse: this.parseProblemLevel(context.getAnswer('binge-drinking')),
+      currentRelationshipStatus: this.getCurrentRelationshipStatus(context),
+      currentRelationshipWithPartner: this.parseProblemLevel(context.getAnswer('relationship-satisfaction')),
       regularOffendingActivities: this.parseProblemLevel(context.getAnswer('regular-offending-activities')),
       temperControl: this.parseProblemLevel(context.getAnswer('temper-control')),
       impulsivityProblems: this.parseProblemLevel(context.getAnswer('impulsivity-problems')),
       proCriminalAttitudes: this.parseProblemLevel(context.getAnswer('pro-criminal-attitudes')),
     }
+  }
+
+  private getCurrentRelationshipStatus(context: TieringAssessmentEffectContext): CurrentRelationshipStatus | null {
+    const whoLivingWith = this.parseString(context.getAnswer('who-are-they-living-with'))
+    const importantRelationships = this.parseString(context.getAnswer('important-relationships'))
+
+    const isInvalid = (val: string | null) => val === null || val === 'unknown'
+
+    if (isInvalid(whoLivingWith) || isInvalid(importantRelationships)) {
+      return null
+    }
+
+    if (whoLivingWith.toLowerCase().includes('partner')) return 'IN_RELATIONSHIP_LIVING_TOGETHER'
+    if (importantRelationships.toLowerCase().includes('partner')) return 'IN_RELATIONSHIP_NOT_LIVING_TOGETHER'
+    return 'NOT_IN_RELATIONSHIP'
   }
 
   private getCurrentAlcoholUseProblems(context: TieringAssessmentEffectContext): ProblemLevel | null {
