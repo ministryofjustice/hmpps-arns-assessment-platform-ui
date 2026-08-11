@@ -24,9 +24,9 @@ import { Option } from './constants/option'
 
 const overReliantOnFamilyOrFriendsRevealed = revealedQuestion({
   content: {
-    code: Question.finance_income_family_or_friends_details,
+    code: Question.family_or_friends_details,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.finance_income_family_or_friends_details.text', CaseData.Forename),
+    text: contentFor('question.family_or_friends_details.text', CaseData.Forename),
     options: [
       {
         value: CommonOption.yes,
@@ -44,7 +44,7 @@ const overReliantOnFamilyOrFriendsRevealed = revealedQuestion({
         summaryText: contentFor('question.finance_income.summary.option.UNKNOWN'),
       },
     ],
-    validationMessage: contentFor('question.finance_income_family_or_friends_details.validation'),
+    validationMessage: contentFor('question.family_or_friends_details.validation'),
   },
   displayModes: { field: radioDetails() },
 })
@@ -106,7 +106,7 @@ const income = question({
       { value: Option.offending, text: contentFor('question.finance_income.option.OFFENDING') },
       { value: Option.pension, text: contentFor('question.finance_income.option.PENSION') },
       { value: Option.student_loan, text: contentFor('question.finance_income.option.STUDENT_LOAN') },
-      { value: Option.undeclared, text: contentFor('question.finance_income.option.UNDECLARED') },
+      { value: Option.undeclared, text: contentFor('question.finance_income.option.Undeclared') },
       {
         value: Option.work_related_benefits,
         text: contentFor('question.finance_income.option.WORK_RELATED_BENEFITS.text'),
@@ -228,20 +228,20 @@ const debt = question({
         value: Option.yes_their_debt,
         text: contentFor('question.finance_debt.option.YES_THEIR_DEBT'),
         reveals: typeOfDebtRevealed({
-          code: Question.finance_debt_yes_their_debt,
+          code: Question.yes_type_of_debt,
           text: contentFor('question.finance_debt.option.YES_THEIR_DEBT'),
-          debtToOthersDetailsCode: Question.yes_their_debt_debt_to_others_details,
-          formalDebtDetailsCode: Question.yes_their_debt_formal_debt_details,
+          debtToOthersDetailsCode: Question.yes_type_of_debt_debt_to_others_details,
+          formalDebtDetailsCode: Question.yes_type_of_debt_formal_debt_details,
         }),
       },
       {
         value: Option.yes_someone_elses_debt,
         text: contentFor('question.finance_debt.option.YES_SOMEONE_ELSES_DEBT'),
         reveals: typeOfDebtRevealed({
-          code: Question.finance_debt_yes_someone_elses_debt,
+          code: Question.yes_someone_elses_type_of_debt,
           text: contentFor('question.finance_debt.option.YES_SOMEONE_ELSES_DEBT'),
-          debtToOthersDetailsCode: Question.yes_someone_elses_debt_debt_to_others_details,
-          formalDebtDetailsCode: Question.yes_someone_elses_debt_formal_debt_details,
+          debtToOthersDetailsCode: Question.yes_someone_elses_type_of_debt_debt_to_others_details,
+          formalDebtDetailsCode: Question.yes_someone_elses_type_of_debt_formal_debt_details,
         }),
       },
       { divider: commonContentFor('or') },
@@ -269,24 +269,24 @@ const changes = question({
     hint: contentFor('question.finance_changes.hint', CaseData.Forename),
     options: [
       {
-        value: CommonOption.has_made_changes,
-        text: commonContentFor('option.HAS_MADE_CHANGES'),
-        reveals: optionalDetails({ code: Question.finance_changes_has_made_changes_details }),
+        value: CommonOption.made_changes,
+        text: commonContentFor('option.MADE_CHANGES'),
+        reveals: optionalDetails({ code: Question.finance_changes_made_changes_details }),
       },
       {
-        value: CommonOption.is_making_changes,
-        text: commonContentFor('option.IS_MAKING_CHANGES'),
-        reveals: optionalDetails({ code: Question.finance_changes_is_making_changes_details }),
+        value: CommonOption.making_changes,
+        text: commonContentFor('option.MAKING_CHANGES'),
+        reveals: optionalDetails({ code: Question.finance_changes_making_changes_details }),
       },
       {
-        value: CommonOption.wants_to_make_changes_knows_how_to,
-        text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
-        reveals: optionalDetails({ code: Question.finance_changes_wants_to_make_changes_knows_how_to_details }),
+        value: CommonOption.want_to_make_changes,
+        text: commonContentFor('option.WANT_TO_MAKE_CHANGES'),
+        reveals: optionalDetails({ code: Question.finance_changes_want_to_make_changes_details }),
       },
       {
-        value: CommonOption.wants_to_make_changes_needs_help,
-        text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
-        reveals: optionalDetails({ code: Question.finance_changes_wants_to_make_changes_needs_help_details }),
+        value: CommonOption.needs_help_to_make_changes,
+        text: commonContentFor('option.NEEDS_HELP_TO_MAKE_CHANGES'),
+        reveals: optionalDetails({ code: Question.finance_changes_needs_help_to_make_changes_details }),
       },
       {
         value: CommonOption.thinking_about_making_changes,
@@ -317,22 +317,27 @@ const changes = question({
 
 const strengthsOrProtectiveFactors = question({
   content: {
-    code: Question.finance_strengths_protective_factors,
+    code: Question.finance_practitioner_analysis_strengths_or_protective_factors,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.finance_strengths_protective_factors.text', CaseData.ForenamePossessive),
-    hint: contentFor('question.finance_strengths_protective_factors.hint'),
+    text: contentFor(
+      'question.finance_practitioner_analysis_strengths_or_protective_factors.text',
+      CaseData.ForenamePossessive,
+    ),
+    hint: contentFor('question.finance_practitioner_analysis_strengths_or_protective_factors.hint'),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.finance_strengths_protective_factors_details,
-        validationMessage: contentFor('question.finance_strengths_protective_factors_details.validation'),
+        code: Question.finance_practitioner_analysis_strengths_or_protective_factors_yes_details,
+        validationMessage: contentFor(
+          'question.finance_practitioner_analysis_strengths_or_protective_factors_yes_details.validation',
+        ),
         maxLength: CharacterLimit.c1425,
       }),
       no: optionalDetails({
-        code: Question.finance_no_strengths_protective_factors_details,
+        code: Question.finance_practitioner_analysis_strengths_or_protective_factors_no_details,
         maxLength: CharacterLimit.c1425,
       }),
     }),
-    validationMessage: contentFor('question.finance_strengths_protective_factors.validation'),
+    validationMessage: contentFor('question.finance_practitioner_analysis_strengths_or_protective_factors.validation'),
   },
   displayModes: {
     field: radioField(),
@@ -345,18 +350,23 @@ const strengthsOrProtectiveFactors = question({
 
 const riskOfSeriousHarm = question({
   content: {
-    code: Question.finance_linked_to_serious_harm,
+    code: Question.finance_practitioner_analysis_risk_of_serious_harm,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.finance_linked_to_serious_harm.text', CaseData.ForenamePossessive),
+    text: contentFor('question.finance_practitioner_analysis_risk_of_serious_harm.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.finance_serious_harm_details,
-        validationMessage: contentFor('question.finance_serious_harm_details.validation'),
+        code: Question.finance_practitioner_analysis_risk_of_serious_harm_yes_details,
+        validationMessage: contentFor(
+          'question.finance_practitioner_analysis_risk_of_serious_harm_yes_details.validation',
+        ),
         maxLength: CharacterLimit.c1425,
       }),
-      no: optionalDetails({ code: Question.finance_no_serious_harm_details, maxLength: CharacterLimit.c1425 }),
+      no: optionalDetails({
+        code: Question.finance_practitioner_analysis_risk_of_serious_harm_no_details,
+        maxLength: CharacterLimit.c1425,
+      }),
     }),
-    validationMessage: contentFor('question.finance_linked_to_serious_harm.validation'),
+    validationMessage: contentFor('question.finance_practitioner_analysis_risk_of_serious_harm.validation'),
   },
   displayModes: {
     field: radioField(),
@@ -369,18 +379,23 @@ const riskOfSeriousHarm = question({
 
 const riskOfReoffending = question({
   content: {
-    code: Question.finance_linked_to_reoffending,
+    code: Question.finance_practitioner_analysis_risk_of_reoffending,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.finance_linked_to_reoffending.text', CaseData.ForenamePossessive),
+    text: contentFor('question.finance_practitioner_analysis_risk_of_reoffending.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.finance_risk_of_reoffending_details,
-        validationMessage: contentFor('question.finance_risk_of_reoffending_details.validation'),
+        code: Question.finance_practitioner_analysis_risk_of_reoffending_yes_details,
+        validationMessage: contentFor(
+          'question.finance_practitioner_analysis_risk_of_reoffending_yes_details.validation',
+        ),
         maxLength: CharacterLimit.c1000,
       }),
-      no: optionalDetails({ code: Question.finance_no_risk_of_reoffending_details, maxLength: CharacterLimit.c1000 }),
+      no: optionalDetails({
+        code: Question.finance_practitioner_analysis_risk_of_reoffending_no_details,
+        maxLength: CharacterLimit.c1000,
+      }),
     }),
-    validationMessage: contentFor('question.finance_linked_to_reoffending.validation'),
+    validationMessage: contentFor('question.finance_practitioner_analysis_risk_of_reoffending.validation'),
   },
   displayModes: {
     field: radioField(),

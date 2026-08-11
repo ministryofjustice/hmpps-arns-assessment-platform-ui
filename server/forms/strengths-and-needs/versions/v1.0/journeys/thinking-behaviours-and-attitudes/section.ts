@@ -423,27 +423,27 @@ const changes = question({
     hint: contentFor('question.thinking_behaviours_attitudes_changes.hint', CaseData.Forename),
     options: [
       {
-        value: CommonOption.has_made_changes,
-        text: commonContentFor('option.HAS_MADE_CHANGES'),
-        reveals: optionalDetails({ code: Question.thinking_behaviours_attitudes_changes_has_made_changes_details }),
+        value: CommonOption.made_changes,
+        text: commonContentFor('option.MADE_CHANGES'),
+        reveals: optionalDetails({ code: Question.thinking_behaviours_attitudes_changes_made_changes_details }),
       },
       {
-        value: CommonOption.is_making_changes,
-        text: commonContentFor('option.IS_MAKING_CHANGES'),
-        reveals: optionalDetails({ code: Question.thinking_behaviours_attitudes_changes_is_making_changes_details }),
+        value: CommonOption.making_changes,
+        text: commonContentFor('option.MAKING_CHANGES'),
+        reveals: optionalDetails({ code: Question.thinking_behaviours_attitudes_changes_making_changes_details }),
       },
       {
-        value: CommonOption.wants_to_make_changes_knows_how_to,
-        text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
+        value: CommonOption.want_to_make_changes,
+        text: commonContentFor('option.WANT_TO_MAKE_CHANGES'),
         reveals: optionalDetails({
-          code: Question.thinking_behaviours_attitudes_changes_wants_to_make_changes_knows_how_to_details,
+          code: Question.thinking_behaviours_attitudes_changes_want_to_make_changes_details,
         }),
       },
       {
-        value: CommonOption.wants_to_make_changes_needs_help,
-        text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
+        value: CommonOption.needs_help_to_make_changes,
+        text: commonContentFor('option.NEEDS_HELP_TO_MAKE_CHANGES'),
         reveals: optionalDetails({
-          code: Question.thinking_behaviours_attitudes_changes_wants_to_make_changes_needs_help_details,
+          code: Question.thinking_behaviours_attitudes_changes_needs_help_to_make_changes_details,
         }),
       },
       {
@@ -620,27 +620,31 @@ const emotionalIntimacy = question({
 
 const strengthsOrProtectiveFactors = question({
   content: {
-    code: Question.thinking_behaviours_attitudes_strengths_protective_factors,
+    code: Question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors,
     format: QuestionFormat.RADIO,
     text: contentFor(
-      'question.thinking_behaviours_attitudes_strengths_protective_factors.text',
+      'question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors.text',
       CaseData.ForenamePossessive,
     ),
-    hint: contentFor('question.thinking_behaviours_attitudes_strengths_protective_factors.hint'),
+    hint: contentFor(
+      'question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors.hint',
+    ),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.thinking_behaviours_attitudes_strengths_protective_factors_details,
+        code: Question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors_yes_details,
         validationMessage: contentFor(
-          'question.thinking_behaviours_attitudes_strengths_protective_factors_details.validation',
+          'question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors_yes_details.validation',
         ),
         maxLength: CharacterLimit.c1425,
       }),
       no: optionalDetails({
-        code: Question.thinking_behaviours_attitudes_no_strengths_protective_factors_details,
+        code: Question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors_no_details,
         maxLength: CharacterLimit.c1425,
       }),
     }),
-    validationMessage: contentFor('question.thinking_behaviours_attitudes_strengths_protective_factors.validation'),
+    validationMessage: contentFor(
+      'question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors.validation',
+    ),
   },
   displayModes: {
     field: radioField(),
@@ -653,21 +657,28 @@ const strengthsOrProtectiveFactors = question({
 
 const linkedToSeriousHarm = question({
   content: {
-    code: Question.thinking_behaviours_attitudes_linked_to_serious_harm,
+    code: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.thinking_behaviours_attitudes_linked_to_serious_harm.text', CaseData.ForenamePossessive),
+    text: contentFor(
+      'question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm.text',
+      CaseData.ForenamePossessive,
+    ),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.thinking_behaviours_attitudes_serious_harm_details,
-        validationMessage: contentFor('question.thinking_behaviours_attitudes_serious_harm_details.validation'),
+        code: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details,
+        validationMessage: contentFor(
+          'question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details.validation',
+        ),
         maxLength: CharacterLimit.c1425,
       }),
       no: optionalDetails({
-        code: Question.thinking_behaviours_attitudes_no_serious_harm_details,
+        code: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_no_details,
         maxLength: CharacterLimit.c1425,
       }),
     }),
-    validationMessage: contentFor('question.thinking_behaviours_attitudes_linked_to_serious_harm.validation'),
+    validationMessage: contentFor(
+      'question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm.validation',
+    ),
   },
   displayModes: {
     field: radioField(),
@@ -680,21 +691,28 @@ const linkedToSeriousHarm = question({
 
 const linkedToReoffending = question({
   content: {
-    code: Question.thinking_behaviours_attitudes_linked_to_reoffending,
+    code: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.thinking_behaviours_attitudes_linked_to_reoffending.text', CaseData.ForenamePossessive),
+    text: contentFor(
+      'question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending.text',
+      CaseData.ForenamePossessive,
+    ),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.thinking_behaviours_attitudes_risk_of_reoffending_details,
-        validationMessage: contentFor('question.thinking_behaviours_attitudes_risk_of_reoffending_details.validation'),
+        code: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details,
+        validationMessage: contentFor(
+          'question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details.validation',
+        ),
         maxLength: CharacterLimit.c1000,
       }),
       no: optionalDetails({
-        code: Question.thinking_behaviours_attitudes_no_risk_of_reoffending_details,
+        code: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_no_details,
         maxLength: CharacterLimit.c1000,
       }),
     }),
-    validationMessage: contentFor('question.thinking_behaviours_attitudes_linked_to_reoffending.validation'),
+    validationMessage: contentFor(
+      'question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending.validation',
+    ),
   },
   displayModes: {
     field: radioField(),
