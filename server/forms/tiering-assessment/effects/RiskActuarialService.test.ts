@@ -2,6 +2,7 @@ import { RiskActuarialService } from './RiskActuarialService'
 import RiskActuarialApiClient from '../../../data/riskActuarialApiClient'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
 import {
+  CurrentRelationshipStatus,
   MotivationLevel,
   ProblemLevel,
   RiskScores,
@@ -194,6 +195,8 @@ describe('RiskActuarialService', () => {
       motivationToTackleDrugMisuse: null,
       currentAlcoholUseProblems: null,
       excessiveAlcoholUse: null,
+      currentRelationshipStatus: null,
+      currentRelationshipWithPartner: null,
     })
 
     expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-score', '0.45')
@@ -300,6 +303,9 @@ describe('RiskActuarialService', () => {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-problems': 'SOME_PROBLEMS',
       'binge-drinking': 'SIGNIFICANT_PROBLEMS',
+      'who-are-they-living-with': 'partner',
+      'important-relationships': 'partner',
+      'relationship-satisfaction': 'SOME_PROBLEMS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -344,6 +350,8 @@ describe('RiskActuarialService', () => {
       motivationToTackleDrugMisuse: 'PARTIAL_MOTIVATION' as MotivationLevel,
       currentAlcoholUseProblems: 'SOME_PROBLEMS' as ProblemLevel,
       excessiveAlcoholUse: 'SIGNIFICANT_PROBLEMS' as ProblemLevel,
+      currentRelationshipStatus: 'IN_RELATIONSHIP_LIVING_TOGETHER' as CurrentRelationshipStatus,
+      currentRelationshipWithPartner: 'SOME_PROBLEMS' as ProblemLevel,
     })
 
     // TODO responses will change when enough answers provided
@@ -466,6 +474,8 @@ describe('RiskActuarialService', () => {
       motivationToTackleDrugMisuse: null,
       currentAlcoholUseProblems: null,
       excessiveAlcoholUse: null,
+      currentRelationshipStatus: null,
+      currentRelationshipWithPartner: null,
     })
   })
 
@@ -510,6 +520,9 @@ describe('RiskActuarialService', () => {
       'motivation-to-tackle-drug-misuse': 'unknown',
       'has-ever-drunk-alcohol': 'unknown',
       'binge-drinking': 'unknown',
+      'who-are-they-living-with': 'unknown',
+      'important-relationships': 'unknown',
+      'relationship-satisfaction': 'unknown',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -537,6 +550,76 @@ describe('RiskActuarialService', () => {
         motivationToTackleDrugMisuse: null,
         currentAlcoholUseProblems: null,
         excessiveAlcoholUse: null,
+        currentRelationshipStatus: null,
+        currentRelationshipWithPartner: null,
+      }),
+    )
+  })
+
+  it('should parse IN_RELATIONSHIP_LIVING_TOGETHER for currentRelationshipStatus if "who-are-they-living-with" and "important-relationships" include "partner"', async () => {
+    const answers: Record<string, unknown> = {
+      'who-are-they-living-with': 'partner,family',
+      'important-relationships': 'partner,family',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentRelationshipStatus: 'IN_RELATIONSHIP_LIVING_TOGETHER',
+      }),
+    )
+  })
+
+  it('should parse IN_RELATIONSHIP_NOT_LIVING_TOGETHER for currentRelationshipStatus if "who-are-they-living-with" not include "partner" and "important-relationships" include "partner"', async () => {
+    const answers: Record<string, unknown> = {
+      'who-are-they-living-with': 'friends,family',
+      'important-relationships': 'partner,family',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentRelationshipStatus: 'IN_RELATIONSHIP_NOT_LIVING_TOGETHER',
+      }),
+    )
+  })
+
+  it('should parse NOT_IN_RELATIONSHIP for currentRelationshipStatus if "who-are-they-living-with" and "important-relationships" not include "partner"', async () => {
+    const answers: Record<string, unknown> = {
+      'who-are-they-living-with': 'friends,family',
+      'important-relationships': 'friends,family',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentRelationshipStatus: 'NOT_IN_RELATIONSHIP',
+      }),
+    )
+  })
+
+  it('should parse null for currentRelationshipStatus if "who-are-they-living-with" and "important-relationships" are null', async () => {
+    const answers: Record<string, unknown> = {
+      'who-are-they-living-with': null,
+      'important-relationships': null,
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentRelationshipStatus: null,
       }),
     )
   })
