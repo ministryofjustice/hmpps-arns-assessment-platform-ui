@@ -35,7 +35,7 @@ export const employedEmploymentStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education.statusKey, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
         ],
         next: [redirect({ goto: Step.employment_education_summary.path })],
       },

@@ -25,7 +25,7 @@ export const alcoholUseStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use.statusKey, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.no),
         ],
         next: [
           redirect({

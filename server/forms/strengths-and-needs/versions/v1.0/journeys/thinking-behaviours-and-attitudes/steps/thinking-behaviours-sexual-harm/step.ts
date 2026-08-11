@@ -31,10 +31,7 @@ export const thinkingBehavioursSexualHarmStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(
-            Section.thinking_behaviours_and_attitudes.statusKey,
-            SectionComplete.no,
-          ),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
         ],
         next: [
           redirect({

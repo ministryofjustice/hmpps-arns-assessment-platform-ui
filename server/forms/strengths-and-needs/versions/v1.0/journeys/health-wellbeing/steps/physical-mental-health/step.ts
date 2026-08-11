@@ -38,7 +38,7 @@ export const physicalMentalHealthStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing.statusKey, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.no),
         ],
         next: [
           redirect({

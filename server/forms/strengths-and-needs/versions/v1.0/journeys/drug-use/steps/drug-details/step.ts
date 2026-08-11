@@ -42,7 +42,7 @@ export const drugDetailsStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use.statusKey, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
         ],
         next: [
           redirect({

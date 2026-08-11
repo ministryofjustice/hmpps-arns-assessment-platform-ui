@@ -16,7 +16,7 @@ export const alcoholUseSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use.statusKey, SectionComplete.yes),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.yes),
         ],
         next: [redirect({ goto: `${Step.alcohol_use_analysis.path}#practitioner-analysis-summary` })],
       },

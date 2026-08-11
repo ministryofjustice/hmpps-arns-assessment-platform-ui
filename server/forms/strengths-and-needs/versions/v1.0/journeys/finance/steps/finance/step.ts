@@ -29,7 +29,7 @@ export const financeStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.finance.statusKey, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.finance, SectionComplete.no),
         ],
         next: [
           redirect({

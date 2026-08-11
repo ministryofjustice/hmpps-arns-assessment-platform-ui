@@ -16,10 +16,7 @@ export const thinkingBehavioursSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(
-            Section.thinking_behaviours_and_attitudes.statusKey,
-            SectionComplete.yes,
-          ),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.yes),
         ],
         next: [redirect({ goto: Step.thinkingBehavioursAnalysis.path })],
       },

@@ -25,10 +25,7 @@ export const personalRelationshipsStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(
-            Section.personal_relationships_and_community.statusKey,
-            SectionComplete.no,
-          ),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
         ],
         next: [
           redirect({

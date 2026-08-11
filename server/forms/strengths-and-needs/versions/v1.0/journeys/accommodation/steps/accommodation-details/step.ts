@@ -32,7 +32,7 @@ export const accommodationDetailsStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation.statusKey, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
         ],
         next: [redirect({ goto: Step.accommodation_summary.path })],
       },

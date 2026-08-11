@@ -16,7 +16,7 @@ export const accommodationSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation.statusKey, SectionComplete.yes),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.yes),
         ],
         next: [redirect({ goto: Step.accommodation_analysis.path })],
       },

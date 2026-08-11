@@ -16,7 +16,7 @@ export const financeSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.finance.statusKey, SectionComplete.yes),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.finance, SectionComplete.yes),
         ],
         next: [redirect({ goto: Step.financeAnalysis.path })],
       },

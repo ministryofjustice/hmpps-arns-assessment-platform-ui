@@ -21,7 +21,7 @@ export const drugUseSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use.statusKey, SectionComplete.yes),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.yes),
         ],
         next: [redirect({ goto: Step.drug_use_analysis.path })],
       },
