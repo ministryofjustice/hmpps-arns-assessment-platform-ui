@@ -293,6 +293,60 @@ test.describe('Drug use Page', () => {
         - button "Save and continue"
       `)
     })
+
+    test('validation drug use history questions', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+      baseURL,
+    }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'drug_use', value: 'YES' },
+          { question: 'drugs_section_status', value: 'INCOMPLETE' },
+          { question: 'select_misused_drugs', value: ['AMPHETAMINES', 'BENZODIAZEPINES'] },
+          { question: 'drug_last_used_amphetamines', value: 'LAST_SIX' },
+          { question: 'drug_last_used_benzodiazepines', value: 'MORE_THAN_SIX' },
+          { question: 'drugs_injected', value: ['NONE'] },
+          { question: 'receiving_treatment', value: 'YES' },
+          { question: 'how_often_used_amphetamines', value: 'DAILY' },
+          { question: 'receiving_treatment_no_details', value: '' },
+          { question: 'how_often_used_amphetamines_details', value: 'test' },
+          { question: 'drug_use_more_than_six_months_details', value: 'test' },
+          { question: 'receiving_treatment_yes_details', value: 'test' },
+        ]).save()
+
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-history')
+
+      const drugUsePage = await DrugUsePage.verifyOnPage(page, 'use drugs?')
+
+      await drugUsePage.saveAndContinue.click()
+      await expect(drugUsePage.alert).toMatchAriaSnapshot(`
+        - alert:
+          - heading "There is a problem" [level=2]
+          - list:
+            - /children: equal
+            - listitem:
+              - link "Select why they use drugs":
+                - /url: "#drugs_reasons_for_use"
+            - listitem:
+              - link "Select how their drug use has affected their life":
+                - /url: "#drugs_affected_their_life"
+            - listitem:
+              - link "Select if they want to make changes to their drug use":
+                - /url: "#drug_use_changes"
+      `)
+
+      await drugUsePage.selectWhyTheyUseDrugs.click()
+      await expect(drugUsePage.culturalOrReligiousPractice).toBeFocused()
+      await drugUsePage.selectHowTheirDrugUse.click()
+      await expect(drugUsePage.behaviour).toBeFocused()
+      await drugUsePage.errorWantsToMakeChanges.click()
+      await expect(drugUsePage.yesAlreadyMadePositiveChanges).toBeFocused()
+    })
   })
 
   test.describe('Summary', () => {
@@ -327,6 +381,48 @@ test.describe('Drug use Page', () => {
           - heading [level=2]
           - button "Go to practitioner analysis"
       `)
+    })
+
+    test('practitioner analysis', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'drug_use', value: 'NO' },
+          { question: 'drugs_section_status', value: 'INCOMPLETE' },
+        ]).save()
+
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-summary')
+
+      const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Summary')
+
+      await drugUsePage.goToPractitionerAnalysis.click()
+      await expect(page.getByText('Are there any strengths or protective factors')).toBeVisible()
+    })
+
+    test('mark complete', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'drug_use', value: 'NO' },
+          { question: 'drugs_section_status', value: 'INCOMPLETE' },
+          { question: 'drug_use_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
+          { question: 'drug_use_practitioner_analysis_strengths_or_protective_factors_no_details', value: '' },
+          { question: 'drug_use_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
+          { question: 'drug_use_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
+        ]).save()
+
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-summary#practitioner-analysis')
+
+      const drugUsePage = await DrugUsePage.verifyOnPage(page, 'strengths or protective factors')
+
+      await drugUsePage.linkedToRiskOfReoffending.click()
+      await drugUsePage.markComplete.click()
+      await expect(drugUsePage.complete).toBeVisible()
+      expect(page.url()).toContain('drug-use-analysis')
     })
   })
 

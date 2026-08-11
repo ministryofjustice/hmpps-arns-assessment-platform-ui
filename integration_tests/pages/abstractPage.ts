@@ -23,7 +23,23 @@ export default class AbstractPage {
 
   readonly enterDetails: Locator
 
+  readonly goToPractitionerAnalysis: Locator
+
+  readonly practitionerAnalysis: Locator
+
   readonly returnToOASys: Locator
+
+  readonly markComplete: Locator
+
+  readonly linkedToRiskOfReoffending: Locator
+
+  readonly complete: Locator
+
+  readonly alert: Locator
+
+  readonly errorWantsToMakeChanges: Locator
+
+  readonly yesAlreadyMadePositiveChanges: Locator
 
   protected constructor(page: Page) {
     this.page = page
@@ -35,7 +51,21 @@ export default class AbstractPage {
     this.summary = page.getByRole('tabpanel', { name: 'Summary' })
     this.errorEnterDetails = page.getByRole('link', { name: 'Enter details' })
     this.enterDetails = page.getByRole('textbox', { description: 'Enter details' })
+    this.goToPractitionerAnalysis = page.getByRole('button', { name: 'Go to practitioner analysis' })
+    this.practitionerAnalysis = page.getByRole('link', { name: 'Practitioner analysis' })
     this.returnToOASys = page.getByRole('link', { name: 'Go to the OASys homepage' })
+    this.markComplete = page.getByRole('button', { name: 'Mark as complete' })
+    this.linkedToRiskOfReoffending = page
+      .getByRole('group', { name: 'linked to risk of reoffending?' })
+      .getByLabel('No')
+    this.complete = page.locator('[data-status="COMPLETE"]')
+    this.alert = page.getByRole('alert')
+    this.errorWantsToMakeChanges = page.getByRole('link', {
+      name: 'Select if they want to make changes to their',
+    })
+    this.yesAlreadyMadePositiveChanges = page.getByRole('radio', {
+      name: 'I have already made positive changes and want to maintain them',
+    })
   }
 
   async signOut() {

@@ -20,7 +20,10 @@ export const accommodationPractitionerAnalysisSummaryTab = GovUKTabs({
       id: 'summary-analysis',
       label: commonContentFor('summary'),
       panel: {
-        blocks: [accommodationSummary, goToPractitionerAnalysisButton(Step.accommodation_analysis.path)],
+        blocks: [
+          accommodationSummary,
+          goToPractitionerAnalysisButton(Step.accommodation_analysis.path, 'practitioner-analysis-summary'),
+        ],
       },
     },
     {

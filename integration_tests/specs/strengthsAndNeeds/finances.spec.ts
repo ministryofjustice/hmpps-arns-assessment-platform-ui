@@ -155,8 +155,6 @@ test.describe('Finances Page', () => {
           - term: Where does Test currently get their money from?
           - definition:
             - paragraph: Carer’s allowance
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
               - /url: finance#finance_income
@@ -169,48 +167,81 @@ test.describe('Finances Page', () => {
           - term: How good is Test at managing their money?
           - definition:
             - paragraph: Able to manage their money well and is a strength
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
               - /url: finance#finance_money_management
           - term: Is Test affected by gambling?
           - definition:
             - paragraph: Yes, their own gambling
-            - paragraph
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
               - /url: finance#finance_gambling
           - term: Is Test affected by debt?
           - definition:
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
             - paragraph: "No"
-            - paragraph
           - definition:
             - link "Change":
               - /url: finance#finance_debt
           - term: Does Test want to make changes to their finances?
           - definition:
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
             - paragraph: Test is not present
           - definition:
             - link "Change":
               - /url: finance#finance_changes
           - button "Go to practitioner analysis"
       `)
+    })
+
+    test('practitioner analysis', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'finance_income', value: ['CARERS_ALLOWANCE'] },
+          { question: 'finance_bank_account', value: 'YES' },
+          { question: 'finance_money_management', value: 'GOOD' },
+          { question: 'finance_money_management_good_details', value: '' },
+          { question: 'finance_gambling', value: ['YES_THEIR_GAMBLING'] },
+          { question: 'finance_gambling_yes_their_gambling_details', value: '' },
+          { question: 'finance_debt', value: ['NO'] },
+          { question: 'finance_changes', value: 'NOT_PRESENT' },
+        ]).save()
+
+      await FinancesPage.navigateToFinances(page, handoverLink, baseURL, 'finance-summary')
+      const financesPage = await FinancesPage.verifyOnPage(page, 'Summary')
+
+      await financesPage.goToPractitionerAnalysis.click()
+      await expect(page.getByText('Are there any strengths or protective factors')).toBeVisible()
+    })
+
+    test('mark complete', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'finance_income', value: ['CARERS_ALLOWANCE'] },
+          { question: 'finance_bank_account', value: 'YES' },
+          { question: 'finance_money_management', value: 'GOOD' },
+          { question: 'finance_money_management_good_details', value: '' },
+          { question: 'finance_gambling', value: ['YES_THEIR_GAMBLING'] },
+          { question: 'finance_gambling_yes_their_gambling_details', value: '' },
+          { question: 'finance_debt', value: ['NO'] },
+          { question: 'finance_changes', value: 'NOT_PRESENT' },
+          { question: 'finance_strengths_protective_factors', value: 'NO' },
+          { question: 'finance_no_strengths_protective_factors_details', value: '' },
+          { question: 'finance_linked_to_serious_harm', value: 'NO' },
+          { question: 'finance_no_serious_harm_details', value: '' },
+        ]).save()
+
+      await FinancesPage.navigateToFinances(page, handoverLink, baseURL, 'finance-summary#practitioner-analysis')
+      const financesPage = await FinancesPage.verifyOnPage(page, 'strengths or protective factors')
+
+      await financesPage.linkedToRiskOfReoffending.click()
+      await financesPage.markComplete.click()
+      await expect(financesPage.complete).toBeVisible()
+      expect(page.url()).toContain('finance-analysis')
     })
   })
 
