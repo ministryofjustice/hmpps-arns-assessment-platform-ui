@@ -35,7 +35,7 @@ export const english = {
         },
       },
     },
-    [Question.finance_income_family_or_friends_details]: {
+    [Question.family_or_friends_details]: {
       text: 'Is %1 over reliant on family or friends for money?',
       validation: 'Select if they are over reliant on family or friends for money',
     },
@@ -75,26 +75,26 @@ export const english = {
       hint: '%1 must answer this question.',
       validation: 'Select if they want to make changes to their finances',
     },
-    [Question.finance_strengths_protective_factors]: {
+    [Question.finance_practitioner_analysis_strengths_or_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 finances?',
       hint: 'Include any strategies, people or support networks that helped.',
       validation: 'Select if there are any strengths or protective factors',
     },
-    [Question.finance_strengths_protective_factors_details]: {
+    [Question.finance_practitioner_analysis_strengths_or_protective_factors_yes_details]: {
       validation: 'Give details on strengths or protective factors related to their finances',
     },
-    [Question.finance_linked_to_serious_harm]: {
+    [Question.finance_practitioner_analysis_risk_of_serious_harm]: {
       text: 'Are %1 finances linked to risk of serious harm?',
       validation: 'Select if linked to risk of serious harm',
     },
-    [Question.finance_serious_harm_details]: {
+    [Question.finance_practitioner_analysis_risk_of_serious_harm_yes_details]: {
       validation: 'Give details on the risk of serious harm',
     },
-    [Question.finance_linked_to_reoffending]: {
+    [Question.finance_practitioner_analysis_risk_of_reoffending]: {
       text: 'Are %1 finances linked to risk of reoffending?',
       validation: 'Select if linked to risk of reoffending',
     },
-    [Question.finance_risk_of_reoffending_details]: {
+    [Question.finance_practitioner_analysis_risk_of_reoffending_yes_details]: {
       validation: 'Give details on the risk of reoffending',
     },
   },

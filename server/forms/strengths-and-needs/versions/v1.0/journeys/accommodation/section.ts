@@ -393,7 +393,7 @@ const suitableHousingLocation = question({
               value: CommonOption.other,
               text: commonContentFor('option.OTHER'),
               reveals: requiredDetails({
-                code: Question.suitable_housing_location_concerns_details,
+                code: Question.suitable_housing_location_concerns_other_details,
                 validationMessage: commonContentFor('validation.enter_details'),
               }),
             },
@@ -459,7 +459,7 @@ const suitableHousing = question({
         reveals: housingConcernsRevealed({
           code: Question.suitable_housing_concerns,
           text: contentFor('question.suitable_housing_concerns.text'),
-          otherDetailsCode: Question.suitable_housing_concerns_details,
+          otherDetailsCode: Question.suitable_housing_concerns_other_details,
         }),
       },
       {
@@ -468,7 +468,7 @@ const suitableHousing = question({
         reveals: housingConcernsRevealed({
           code: Question.unsuitable_housing_concerns,
           text: contentFor('question.unsuitable_housing_concerns.text'),
-          otherDetailsCode: Question.unsuitable_housing_concerns_details,
+          otherDetailsCode: Question.unsuitable_housing_concerns_other_details,
         }),
       },
     ],
@@ -566,39 +566,39 @@ const changes = question({
     hint: contentFor('question.accommodation_changes.hint', CaseData.Forename),
     options: [
       {
-        value: CommonOption.has_made_changes,
-        text: commonContentFor('option.HAS_MADE_CHANGES'),
-        reveals: optionalDetails({ code: Question.has_made_positive_changes_accommodation_details }),
+        value: CommonOption.made_changes,
+        text: commonContentFor('option.MADE_CHANGES'),
+        reveals: optionalDetails({ code: Question.accommodation_changes_made_changes_details }),
       },
       {
-        value: CommonOption.is_making_changes,
-        text: commonContentFor('option.IS_MAKING_CHANGES'),
-        reveals: optionalDetails({ code: Question.actively_making_changes_accommodation_details }),
+        value: CommonOption.making_changes,
+        text: commonContentFor('option.MAKING_CHANGES'),
+        reveals: optionalDetails({ code: Question.accommodation_changes_making_changes_details }),
       },
       {
-        value: CommonOption.wants_to_make_changes_knows_how_to,
-        text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
-        reveals: optionalDetails({ code: Question.wants_to_make_changes_knows_how_to_accommodation_details }),
+        value: CommonOption.want_to_make_changes,
+        text: commonContentFor('option.WANT_TO_MAKE_CHANGES'),
+        reveals: optionalDetails({ code: Question.accommodation_changes_want_to_make_changes_details }),
       },
       {
-        value: CommonOption.wants_to_make_changes_needs_help,
-        text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
-        reveals: optionalDetails({ code: Question.wants_to_make_changes_needs_help_accommodation_details }),
+        value: CommonOption.needs_help_to_make_changes,
+        text: commonContentFor('option.NEEDS_HELP_TO_MAKE_CHANGES'),
+        reveals: optionalDetails({ code: Question.accommodation_changes_needs_help_to_make_changes_details }),
       },
       {
         value: CommonOption.thinking_about_making_changes,
         text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
-        reveals: optionalDetails({ code: Question.thinking_about_making_changes_accommodation_details }),
+        reveals: optionalDetails({ code: Question.accommodation_changes_thinking_about_making_changes_details }),
       },
       {
         value: CommonOption.does_not_want_to_make_changes,
         text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
-        reveals: optionalDetails({ code: Question.does_not_want_to_make_changes_accommodation_details }),
+        reveals: optionalDetails({ code: Question.accommodation_changes_does_not_want_to_make_changes_details }),
       },
       {
         value: CommonOption.does_not_want_to_answer,
         text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'),
-        reveals: optionalDetails({ code: Question.does_not_want_to_answer_accommodation_details }),
+        reveals: optionalDetails({ code: Question.accommodation_changes_does_not_want_to_answer_details }),
       },
       { divider: commonContentFor('or') },
       { value: CommonOption.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },
@@ -614,22 +614,29 @@ const changes = question({
 
 const strengthsOrProtectiveFactors = question({
   content: {
-    code: Question.accommodation_strengths_protective_factors,
+    code: Question.accommodation_practitioner_analysis_strengths_or_protective_factors,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.accommodation_strengths_protective_factors.text', CaseData.ForenamePossessive),
-    hint: contentFor('question.accommodation_strengths_protective_factors.hint'),
+    text: contentFor(
+      'question.accommodation_practitioner_analysis_strengths_or_protective_factors.text',
+      CaseData.ForenamePossessive,
+    ),
+    hint: contentFor('question.accommodation_practitioner_analysis_strengths_or_protective_factors.hint'),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.accommodation_strengths_protective_factors_details,
-        validationMessage: contentFor('question.accommodation_strengths_protective_factors_details.validation'),
+        code: Question.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details,
+        validationMessage: contentFor(
+          'question.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details.validation',
+        ),
         maxLength: CharacterLimit.c1425,
       }),
       no: optionalDetails({
-        code: Question.accommodation_no_strengths_protective_factors_details,
+        code: Question.accommodation_practitioner_analysis_strengths_or_protective_factors_no_details,
         maxLength: CharacterLimit.c1425,
       }),
     }),
-    validationMessage: contentFor('question.accommodation_strengths_protective_factors.validation'),
+    validationMessage: contentFor(
+      'question.accommodation_practitioner_analysis_strengths_or_protective_factors.validation',
+    ),
   },
   displayModes: {
     field: radioField(),
@@ -642,18 +649,26 @@ const strengthsOrProtectiveFactors = question({
 
 const riskOfSeriousHarm = question({
   content: {
-    code: Question.accommodation_linked_to_serious_harm,
+    code: Question.accommodation_practitioner_analysis_risk_of_serious_harm,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.accommodation_linked_to_serious_harm.text', CaseData.ForenamePossessive),
+    text: contentFor(
+      'question.accommodation_practitioner_analysis_risk_of_serious_harm.text',
+      CaseData.ForenamePossessive,
+    ),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.accommodation_serious_harm_details,
-        validationMessage: contentFor('question.accommodation_serious_harm_details.validation'),
+        code: Question.accommodation_practitioner_analysis_risk_of_serious_harm_yes_details,
+        validationMessage: contentFor(
+          'question.accommodation_practitioner_analysis_risk_of_serious_harm_yes_details.validation',
+        ),
         maxLength: CharacterLimit.c1425,
       }),
-      no: optionalDetails({ code: Question.accommodation_no_serious_harm_details, maxLength: CharacterLimit.c1425 }),
+      no: optionalDetails({
+        code: Question.accommodation_practitioner_analysis_risk_of_serious_harm_no_details,
+        maxLength: CharacterLimit.c1425,
+      }),
     }),
-    validationMessage: contentFor('question.accommodation_linked_to_serious_harm.validation'),
+    validationMessage: contentFor('question.accommodation_practitioner_analysis_risk_of_serious_harm.validation'),
   },
   displayModes: {
     field: radioField(),
@@ -666,21 +681,26 @@ const riskOfSeriousHarm = question({
 
 const riskOfReoffending = question({
   content: {
-    code: Question.accommodation_linked_to_reoffending,
+    code: Question.accommodation_practitioner_analysis_risk_of_reoffending,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.accommodation_linked_to_reoffending.text', CaseData.ForenamePossessive),
+    text: contentFor(
+      'question.accommodation_practitioner_analysis_risk_of_reoffending.text',
+      CaseData.ForenamePossessive,
+    ),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.accommodation_risk_of_reoffending_details,
-        validationMessage: contentFor('question.accommodation_risk_of_reoffending_details.validation'),
+        code: Question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details,
+        validationMessage: contentFor(
+          'question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details.validation',
+        ),
         maxLength: CharacterLimit.c1000,
       }),
       no: optionalDetails({
-        code: Question.accommodation_no_risk_of_reoffending_details,
+        code: Question.accommodation_practitioner_analysis_risk_of_reoffending_no_details,
         maxLength: CharacterLimit.c1000,
       }),
     }),
-    validationMessage: contentFor('question.accommodation_linked_to_reoffending.validation'),
+    validationMessage: contentFor('question.accommodation_practitioner_analysis_risk_of_reoffending.validation'),
   },
   displayModes: {
     field: radioField(),

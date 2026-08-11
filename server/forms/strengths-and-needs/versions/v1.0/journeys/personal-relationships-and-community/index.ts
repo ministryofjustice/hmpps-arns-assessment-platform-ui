@@ -1,6 +1,6 @@
-import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { Section } from '../../constants/section'
-import { sectionPageTitle } from '../../locales'
+import { sectionPageTitle, sectionStatusTag } from '../../locales'
 import { personalRelationshipsChildrenInformationStep } from './steps/personal-relationships-children-information/step'
 import { personalRelationshipsStep } from './steps/personal-relationships/step'
 import { personalRelationshipsCommunityStep } from './steps/personal-relationships-community/step'
@@ -23,7 +23,7 @@ export const personalRelationshipsJourney = journey({
   view: {
     locals: {
       sectionTitle: sectionPageTitle(Section.personal_relationships_and_community),
-      sectionStatus: Data(Section.personal_relationships_and_community.statusKey),
+      sectionStatusTag: sectionStatusTag(Section.personal_relationships_and_community),
     },
   },
   steps: [

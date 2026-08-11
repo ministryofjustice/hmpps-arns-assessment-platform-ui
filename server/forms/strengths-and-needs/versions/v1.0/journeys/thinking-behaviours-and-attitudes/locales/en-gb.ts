@@ -224,26 +224,26 @@ export const english = {
       hint: '%1 must answer this question.',
       validation: 'Select if they want to make changes to their thinking, behaviours and attitudes',
     },
-    [Question.thinking_behaviours_attitudes_strengths_protective_factors]: {
+    [Question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 thinking, behaviours and attitudes?',
       hint: 'Include any strategies, people or support networks that helped.',
       validation: 'Select if there are any strengths or protective factors',
     },
-    [Question.thinking_behaviours_attitudes_strengths_protective_factors_details]: {
+    [Question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors_yes_details]: {
       validation: 'Give details on strengths or protective factors related to their thinking, behaviours and attitudes',
     },
-    [Question.thinking_behaviours_attitudes_linked_to_serious_harm]: {
+    [Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm]: {
       text: 'Are %1 thinking, behaviours and attitudes linked to risk of serious harm?',
       validation: 'Select if linked to risk of serious harm',
     },
-    [Question.thinking_behaviours_attitudes_serious_harm_details]: {
+    [Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details]: {
       validation: 'Give details on the risk of serious harm',
     },
-    [Question.thinking_behaviours_attitudes_linked_to_reoffending]: {
+    [Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending]: {
       text: 'Are %1 thinking, behaviours and attitudes linked to risk of reoffending?',
       validation: 'Select if linked to risk of reoffending',
     },
-    [Question.thinking_behaviours_attitudes_risk_of_reoffending_details]: {
+    [Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details]: {
       validation: 'Give details on the risk of reoffending',
     },
   },

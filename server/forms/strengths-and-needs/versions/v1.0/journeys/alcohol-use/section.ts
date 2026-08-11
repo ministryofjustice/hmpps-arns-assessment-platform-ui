@@ -382,23 +382,23 @@ const changes = question({
     text: contentFor('question.alcohol_use_changes.text', CaseData.Forename),
     options: [
       {
-        value: CommonOption.has_made_changes,
-        text: commonContentFor('option.HAS_MADE_CHANGES'),
+        value: CommonOption.made_changes,
+        text: commonContentFor('option.MADE_CHANGES'),
         reveals: optionalDetails({ code: Question.alcohol_use_changes_made_changes_details }),
       },
       {
-        value: CommonOption.is_making_changes,
-        text: commonContentFor('option.IS_MAKING_CHANGES'),
+        value: CommonOption.making_changes,
+        text: commonContentFor('option.MAKING_CHANGES'),
         reveals: optionalDetails({ code: Question.alcohol_use_changes_making_changes_details }),
       },
       {
-        value: CommonOption.wants_to_make_changes_knows_how_to,
-        text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
+        value: CommonOption.want_to_make_changes,
+        text: commonContentFor('option.WANT_TO_MAKE_CHANGES'),
         reveals: optionalDetails({ code: Question.alcohol_use_changes_want_to_make_changes_details }),
       },
       {
-        value: CommonOption.wants_to_make_changes_needs_help,
-        text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
+        value: CommonOption.needs_help_to_make_changes,
+        text: commonContentFor('option.NEEDS_HELP_TO_MAKE_CHANGES'),
         reveals: optionalDetails({ code: Question.alcohol_use_changes_needs_help_to_make_changes_details }),
       },
       {

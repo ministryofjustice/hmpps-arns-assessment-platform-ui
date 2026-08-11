@@ -1,10 +1,10 @@
-import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { thinkingBehavioursStep } from './steps/thinking-behaviours/step'
 import { thinkingBehavioursSexualHarmStep } from './steps/thinking-behaviours-sexual-harm/step'
 import { thinkingBehavioursSummaryStep } from './steps/thinking-behaviours-summary/step'
 import { thinkingBehavioursAnalysisStep } from './steps/thinking-behaviours-analysis/step'
 import { Section } from '../../constants/section'
-import { sectionPageTitle } from '../../locales'
+import { sectionPageTitle, sectionStatusTag } from '../../locales'
 import { thinkingBehavioursRiskOfSexualHarmStep } from './steps/thinking-behaviours-risk-of-sexual-harm/step'
 
 /**
@@ -27,7 +27,7 @@ export const thinkingBehavioursAndAttitudesJourney = journey({
   view: {
     locals: {
       sectionTitle: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
-      sectionStatus: Data(Section.thinking_behaviours_and_attitudes.statusKey),
+      sectionStatusTag: sectionStatusTag(Section.thinking_behaviours_and_attitudes),
     },
   },
   steps: [

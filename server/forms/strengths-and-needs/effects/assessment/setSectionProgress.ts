@@ -1,23 +1,25 @@
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { SectionStatus } from '../../versions/v1.0/constants/section'
+import { Section, SectionComplete } from '../../versions/v1.0/constants/section'
 import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
-
-type SectionProgressStatus = (typeof SectionStatus)[keyof typeof SectionStatus]
 
 export const setSectionProgress =
   (deps: StrengthsAndNeedsEffectsDeps) =>
-  async (context: StrengthsAndNeedsContext, code: string, status: SectionProgressStatus) => {
+  async (
+    context: StrengthsAndNeedsContext,
+    section: (typeof Section)[keyof typeof Section],
+    status: SectionComplete,
+  ) => {
     const user = context.getState('user')
     const assessmentUuid = context.getData('assessmentUuid')
 
-    context.setData(code, status)
+    context.setData(section.statusKey, status)
 
     await deps.api.executeCommand({
       type: 'UpdateAssessmentPropertiesCommand',
       assessmentUuid,
       user,
-      added: wrapAll({ [code]: status }),
+      added: wrapAll({ [section.statusKey]: status }),
       removed: [],
       hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
     })

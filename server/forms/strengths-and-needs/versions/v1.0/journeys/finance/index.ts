@@ -1,9 +1,9 @@
-import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { financeStep } from './steps/finance/step'
 import { financeSummaryStep } from './steps/finance-summary/step'
 import { financeAnalysisStep } from './steps/finance-analysis/step'
 import { Section } from '../../constants/section'
-import { sectionPageTitle } from '../../locales'
+import { sectionPageTitle, sectionStatusTag } from '../../locales'
 
 /**
  * Finance Journey
@@ -22,7 +22,7 @@ export const financeJourney = journey({
   view: {
     locals: {
       sectionTitle: sectionPageTitle(Section.finance),
-      sectionStatus: Data(Section.finance.statusKey),
+      sectionStatusTag: sectionStatusTag(Section.finance),
     },
   },
   steps: [financeStep, financeSummaryStep, financeAnalysisStep],

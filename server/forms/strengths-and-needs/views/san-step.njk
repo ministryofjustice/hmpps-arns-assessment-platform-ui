@@ -40,7 +40,7 @@
       text: item.text,
       href: item.sideNavHref,
       active: item.code == currentSectionCode,
-      attributes: {"data-status": item.status}
+      attributes: {"data-complete": item.complete}
     }]) %}
   {% endfor %}
 
@@ -76,13 +76,9 @@
                 {% endif %}
                 <h1 class="{{ sectionTitleClass | default("govuk-heading-l") }}">{{ sectionTitle }}</h1>
               </div>
-              {% if sectionStatus %}
+              {% if sectionStatusTag %}
                 <div class="govuk-grid-column-one-quarter govuk-!-text-align-right">
-                  {% if sectionStatus == 'COMPLETE' %}
-                    {{ govukTag({ text: "Complete", classes: "" }) }}
-                  {% else %}
-                    {{ govukTag({ text: "Incomplete", classes: "govuk-tag--grey" }) }}
-                  {% endif %}
+                  {{ govukTag({ text: sectionStatusTag.text, classes: sectionStatusTag.classes"" }) }}
                 </div>
               {% endif %}
             </div>

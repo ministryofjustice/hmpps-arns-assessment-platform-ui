@@ -34,36 +34,30 @@ import {
 // been employed before (or their employment status implies it).
 const hasBeenEmployed = not(
   or(
-    Answer(Question.had_previous_employment_unavailable_for_work).match(
-      Condition.Equals(Option.no_has_never_been_employed),
-    ),
-    Answer(Question.had_previous_employment_actively_looking_for_work).match(
-      Condition.Equals(Option.no_has_never_been_employed),
-    ),
-    Answer(Question.had_previous_employment_not_looking_for_work).match(
-      Condition.Equals(Option.no_has_never_been_employed),
-    ),
+    Answer(Question.has_been_employed_unavailable_for_work).match(Condition.Equals(CommonOption.no)),
+    Answer(Question.has_been_employed_actively_seeking).match(Condition.Equals(CommonOption.no)),
+    Answer(Question.has_been_employed_not_actively_seeking).match(Condition.Equals(CommonOption.no)),
   ),
 )
 
 const isEmployedOrSelfEmployed = or(
-  Answer(Question.current_employment_status).match(Condition.Equals(Option.employed)),
-  Answer(Question.current_employment_status).match(Condition.Equals(Option.self_employed)),
+  Answer(Question.employment_status).match(Condition.Equals(Option.employed)),
+  Answer(Question.employment_status).match(Condition.Equals(Option.self_employed)),
 )
 
 const typeOfEmploymentRevealed = revealedQuestion({
   content: {
-    code: Question.type_of_employment,
+    code: Question.employment_type,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.type_of_employment.text'),
+    text: contentFor('question.employment_type.text'),
     options: [
-      { value: Option.full_time, text: contentFor('question.type_of_employment.option.FULL_TIME') },
-      { value: Option.part_time, text: contentFor('question.type_of_employment.option.PART_TIME') },
+      { value: Option.full_time, text: contentFor('question.employment_type.option.FULL_TIME') },
+      { value: Option.part_time, text: contentFor('question.employment_type.option.PART_TIME') },
       {
         value: Option.temporary_or_casual,
-        text: contentFor('question.type_of_employment.option.TEMPORARY_OR_CASUAL'),
+        text: contentFor('question.employment_type.option.TEMPORARY_OR_CASUAL'),
       },
-      { value: Option.apprenticeship, text: contentFor('question.type_of_employment.option.APPRENTICESHIP') },
+      { value: Option.apprenticeship, text: contentFor('question.employment_type.option.APPRENTICESHIP') },
     ],
     validationMessage: commonContentFor('select_one_option'),
   },
@@ -72,15 +66,20 @@ const typeOfEmploymentRevealed = revealedQuestion({
 
 // The three unemployed statuses ask the same "employed before?" question under
 // different codes, depending on which status revealed it.
-const hadPreviousEmploymentRevealed = (content: { code: string; text: ResolvableString }) =>
+type HasBeenEmployedQuestion =
+  | typeof Question.has_been_employed_actively_seeking
+  | typeof Question.has_been_employed_not_actively_seeking
+  | typeof Question.has_been_employed_unavailable_for_work
+
+const hadPreviousEmploymentRevealed = (content: { code: HasBeenEmployedQuestion; text: ResolvableString }) =>
   revealedQuestion({
     content: {
       code: content.code,
       format: QuestionFormat.RADIO,
       text: content.text,
       options: [
-        { value: Option.yes_has_been_employed_before, text: contentFor('option.YES_HAS_BEEN_EMPLOYED_BEFORE') },
-        { value: Option.no_has_never_been_employed, text: contentFor('option.NO_HAS_NEVER_BEEN_EMPLOYED') },
+        { value: CommonOption.yes, text: contentFor(`question.${content.code}.option.YES`) },
+        { value: CommonOption.no, text: contentFor(`question.${content.code}.option.NO`) },
       ],
       validationMessage: commonContentFor('select_one_option'),
     },
@@ -89,39 +88,39 @@ const hadPreviousEmploymentRevealed = (content: { code: string; text: Resolvable
 
 const currentEmploymentStatus = question({
   content: {
-    code: Question.current_employment_status,
+    code: Question.employment_status,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.current_employment_status.text', CaseData.ForenamePossessive),
+    text: contentFor('question.employment_status.text', CaseData.ForenamePossessive),
     options: [
       {
         value: Option.employed,
-        text: contentFor('question.current_employment_status.option.EMPLOYED'),
+        text: contentFor('question.employment_status.option.EMPLOYED'),
         reveals: typeOfEmploymentRevealed,
       },
-      { value: Option.self_employed, text: contentFor('question.current_employment_status.option.SELF_EMPLOYED') },
-      { value: Option.retired, text: contentFor('question.current_employment_status.option.RETIRED') },
+      { value: Option.self_employed, text: contentFor('question.employment_status.option.SELF_EMPLOYED') },
+      { value: Option.retired, text: contentFor('question.employment_status.option.RETIRED') },
       {
         value: Option.currently_unavailable_for_work,
-        text: contentFor('question.current_employment_status.option.CURRENTLY_UNAVAILABLE_FOR_WORK'),
+        text: contentFor('question.employment_status.option.CURRENTLY_UNAVAILABLE_FOR_WORK'),
         reveals: hadPreviousEmploymentRevealed({
-          code: Question.had_previous_employment_unavailable_for_work,
-          text: contentFor('question.had_previous_employment_unavailable_for_work.text'),
+          code: Question.has_been_employed_unavailable_for_work,
+          text: contentFor('question.has_been_employed_unavailable_for_work.text'),
         }),
       },
       {
-        value: Option.unemployed_actively_looking,
-        text: contentFor('question.current_employment_status.option.UNEMPLOYED_ACTIVELY_LOOKING'),
+        value: Option.unemployed_looking_for_work,
+        text: contentFor('question.employment_status.option.UNEMPLOYED_LOOKING_FOR_WORK'),
         reveals: hadPreviousEmploymentRevealed({
-          code: Question.had_previous_employment_actively_looking_for_work,
-          text: contentFor('question.had_previous_employment_actively_looking_for_work.text'),
+          code: Question.has_been_employed_actively_seeking,
+          text: contentFor('question.has_been_employed_actively_seeking.text'),
         }),
       },
       {
-        value: Option.unemployed_not_actively_looking,
-        text: contentFor('question.current_employment_status.option.UNEMPLOYED_NOT_ACTIVELY_LOOKING'),
+        value: Option.unemployed_not_looking_for_work,
+        text: contentFor('question.employment_status.option.UNEMPLOYED_NOT_LOOKING_FOR_WORK'),
         reveals: hadPreviousEmploymentRevealed({
-          code: Question.had_previous_employment_not_looking_for_work,
-          text: contentFor('question.had_previous_employment_not_looking_for_work.text'),
+          code: Question.has_been_employed_not_actively_seeking,
+          text: contentFor('question.has_been_employed_not_actively_seeking.text'),
         }),
       },
     ],
@@ -136,7 +135,7 @@ const currentEmploymentStatus = question({
       value: {
         blocks: [
           ...getDisplayTextForItems(content.code, content.options),
-          ...getDisplayTextForItems(Question.type_of_employment, typeOfEmploymentRevealed.content.options, {
+          ...getDisplayTextForItems(Question.employment_type, typeOfEmploymentRevealed.content.options, {
             size: 's',
           }),
         ],
@@ -150,9 +149,9 @@ const currentEmploymentStatus = question({
 
 const employmentSector = question({
   content: {
-    code: Question.employment_sector,
+    code: Question.employment_area,
     format: QuestionFormat.TEXT,
-    text: contentFor('question.employment_sector.text', CaseData.Forename),
+    text: contentFor('question.employment_area.text', CaseData.Forename),
   },
   displayModes: {
     field: characterCountField({
@@ -164,7 +163,7 @@ const employmentSector = question({
       changeHref: Step.employed.path,
       visibleWhen: and(
         isEmployedOrSelfEmployed,
-        Answer(Question.employment_sector).match(Condition.String.HasMinLength(1)),
+        Answer(Question.employment_area).match(Condition.String.HasMinLength(1)),
       ),
     }),
   },
@@ -182,32 +181,32 @@ const employmentHistory = question({
         text: contentFor('question.employment_history.option.STABLE.text'),
         hint: contentFor('question.employment_history.option.STABLE.hint'),
         reveals: optionalDetails({
-          code: Question.continuous_employment_history_employment_details,
-          hint: contentFor('question.continuous_employment_history_employment_details.hint'),
+          code: Question.employment_history_stable_details,
+          hint: contentFor('question.employment_history_stable_details.hint'),
         }),
       },
       {
         value: Option.periods_of_instability,
         text: contentFor('question.employment_history.option.PERIODS_OF_INSTABILITY'),
         reveals: optionalDetails({
-          code: Question.changes_often_employment_history_employment_details,
-          hint: contentFor('question.changes_often_employment_history_employment_details.hint'),
+          code: Question.employment_history_periods_of_instability_details,
+          hint: contentFor('question.employment_history_periods_of_instability_details.hint'),
         }),
       },
       {
         value: Option.unstable,
         text: contentFor('question.employment_history.option.UNSTABLE'),
         reveals: optionalDetails({
-          code: Question.unstable_employment_history_employment_details,
-          hint: contentFor('question.unstable_employment_history_employment_details.hint'),
+          code: Question.employment_history_unstable_details,
+          hint: contentFor('question.employment_history_unstable_details.hint'),
         }),
       },
       {
         value: CommonOption.unknown,
         text: commonContentFor('option.UNKNOWN'),
         reveals: optionalDetails({
-          code: Question.unknown_employment_history_employment_details,
-          hint: contentFor('question.unknown_employment_history_employment_details.hint'),
+          code: Question.employment_history_unknown_details,
+          hint: contentFor('question.employment_history_unknown_details.hint'),
         }),
       },
     ],
@@ -221,37 +220,37 @@ const employmentHistory = question({
 
 const dayToDayCommitments = question({
   content: {
-    code: Question.day_to_day_commitments,
+    code: Question.employment_other_responsibilities,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.day_to_day_commitments.text', CaseData.Forename),
-    hint: contentFor('question.day_to_day_commitments.hint'),
+    text: contentFor('question.employment_other_responsibilities.text', CaseData.Forename),
+    hint: contentFor('question.employment_other_responsibilities.hint'),
     options: [
       {
-        value: Option.caring,
-        text: contentFor('question.day_to_day_commitments.option.CARING'),
-        reveals: optionalDetails({ code: Question.day_to_day_caring_responsibilities_details }),
+        value: Option.carer,
+        text: contentFor('question.employment_other_responsibilities.option.CARER'),
+        reveals: optionalDetails({ code: Question.employment_other_responsibilities_carer_details }),
       },
       {
-        value: Option.children,
-        text: contentFor('question.day_to_day_commitments.option.CHILDREN'),
-        reveals: optionalDetails({ code: Question.day_to_day_child_responsibilities_details }),
+        value: Option.child,
+        text: contentFor('question.employment_other_responsibilities.option.CHILD'),
+        reveals: optionalDetails({ code: Question.employment_other_responsibilities_child_details }),
       },
-      { value: Option.studying, text: contentFor('question.day_to_day_commitments.option.STUDYING') },
+      { value: Option.studying, text: contentFor('question.employment_other_responsibilities.option.STUDYING') },
       {
-        value: Option.volunteering,
-        text: contentFor('question.day_to_day_commitments.option.VOLUNTEERING'),
-        reveals: optionalDetails({ code: Question.day_to_day_volunteering_responsibilities_details }),
+        value: Option.volunteer,
+        text: contentFor('question.employment_other_responsibilities.option.VOLUNTEER'),
+        reveals: optionalDetails({ code: Question.employment_other_responsibilities_volunteer_details }),
       },
       {
         value: CommonOption.other,
         text: commonContentFor('option.OTHER'),
-        reveals: optionalDetails({ code: Question.day_to_day_other_commitments_details }),
+        reveals: optionalDetails({ code: Question.employment_other_responsibilities_other_details }),
       },
       { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
       { divider: commonContentFor('or') },
       { value: CommonOption.none, text: commonContentFor('option.NONE'), behaviour: 'exclusive' as const },
     ],
-    validationMessage: contentFor('question.day_to_day_commitments.validation'),
+    validationMessage: contentFor('question.employment_other_responsibilities.validation'),
   },
   displayModes: {
     field: checkboxField(),
@@ -261,60 +260,60 @@ const dayToDayCommitments = question({
 
 const academicQualification = question({
   content: {
-    code: Question.academic_qualification,
+    code: Question.education_highest_level_completed,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.academic_qualification.text', CaseData.Forename),
+    text: contentFor('question.education_highest_level_completed.text', CaseData.Forename),
     options: [
       {
         value: Option.entry_level,
-        text: contentFor('question.academic_qualification.option.ENTRY_LEVEL.text'),
-        hint: contentFor('question.academic_qualification.option.ENTRY_LEVEL.hint'),
+        text: contentFor('question.education_highest_level_completed.option.ENTRY_LEVEL.text'),
+        hint: contentFor('question.education_highest_level_completed.option.ENTRY_LEVEL.hint'),
       },
       {
         value: Option.level_1,
-        text: contentFor('question.academic_qualification.option.LEVEL_1.text'),
-        hint: contentFor('question.academic_qualification.option.LEVEL_1.hint'),
+        text: contentFor('question.education_highest_level_completed.option.LEVEL_1.text'),
+        hint: contentFor('question.education_highest_level_completed.option.LEVEL_1.hint'),
       },
       {
         value: Option.level_2,
-        text: contentFor('question.academic_qualification.option.LEVEL_2.text'),
-        hint: contentFor('question.academic_qualification.option.LEVEL_2.hint'),
+        text: contentFor('question.education_highest_level_completed.option.LEVEL_2.text'),
+        hint: contentFor('question.education_highest_level_completed.option.LEVEL_2.hint'),
       },
       {
         value: Option.level_3,
-        text: contentFor('question.academic_qualification.option.LEVEL_3.text'),
-        hint: contentFor('question.academic_qualification.option.LEVEL_3.hint'),
+        text: contentFor('question.education_highest_level_completed.option.LEVEL_3.text'),
+        hint: contentFor('question.education_highest_level_completed.option.LEVEL_3.hint'),
       },
       {
         value: Option.level_4,
-        text: contentFor('question.academic_qualification.option.LEVEL_4.text'),
-        hint: contentFor('question.academic_qualification.option.LEVEL_4.hint'),
+        text: contentFor('question.education_highest_level_completed.option.LEVEL_4.text'),
+        hint: contentFor('question.education_highest_level_completed.option.LEVEL_4.hint'),
       },
       {
         value: Option.level_5,
-        text: contentFor('question.academic_qualification.option.LEVEL_5.text'),
-        hint: contentFor('question.academic_qualification.option.LEVEL_5.hint'),
+        text: contentFor('question.education_highest_level_completed.option.LEVEL_5.text'),
+        hint: contentFor('question.education_highest_level_completed.option.LEVEL_5.hint'),
       },
       {
         value: Option.level_6,
-        text: contentFor('question.academic_qualification.option.LEVEL_6.text'),
-        hint: contentFor('question.academic_qualification.option.LEVEL_6.hint'),
+        text: contentFor('question.education_highest_level_completed.option.LEVEL_6.text'),
+        hint: contentFor('question.education_highest_level_completed.option.LEVEL_6.hint'),
       },
       {
         value: Option.level_7,
-        text: contentFor('question.academic_qualification.option.LEVEL_7.text'),
-        hint: contentFor('question.academic_qualification.option.LEVEL_7.hint'),
+        text: contentFor('question.education_highest_level_completed.option.LEVEL_7.text'),
+        hint: contentFor('question.education_highest_level_completed.option.LEVEL_7.hint'),
       },
       {
         value: Option.level_8,
-        text: contentFor('question.academic_qualification.option.LEVEL_8.text'),
-        hint: contentFor('question.academic_qualification.option.LEVEL_8.hint'),
+        text: contentFor('question.education_highest_level_completed.option.LEVEL_8.text'),
+        hint: contentFor('question.education_highest_level_completed.option.LEVEL_8.hint'),
       },
       { divider: commonContentFor('or') },
-      { value: CommonOption.non_of_these, text: commonContentFor('option.NON_OF_THESE') },
-      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+      { value: CommonOption.none_of_these, text: commonContentFor('option.NONE_OF_THESE') },
+      { value: Option.not_sure, text: commonContentFor('option.UNKNOWN') },
     ],
-    validationMessage: contentFor('question.academic_qualification.validation'),
+    validationMessage: contentFor('question.education_highest_level_completed.validation'),
   },
   displayModes: {
     field: radioField(),
@@ -324,24 +323,26 @@ const academicQualification = question({
 
 const professionalQualification = question({
   content: {
-    code: Question.professional_qualification,
+    code: Question.education_professional_or_vocational_qualifications,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.professional_qualification.text', CaseData.Forename),
+    text: contentFor('question.education_professional_or_vocational_qualifications.text', CaseData.Forename),
     options: [
       {
         value: CommonOption.yes,
         text: commonContentFor('option.YES'),
         reveals: requiredDetails({
-          code: Question.professional_qualification_details,
-          validationMessage: contentFor('question.professional_qualification_details.validation'),
+          code: Question.education_professional_or_vocational_qualifications_yes_details,
+          validationMessage: contentFor(
+            'question.education_professional_or_vocational_qualifications_yes_details.validation',
+          ),
           maxLength: CharacterLimit.c400,
         }),
       },
       { value: CommonOption.no, text: commonContentFor('option.NO') },
       { divider: commonContentFor('or') },
-      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+      { value: Option.not_sure, text: commonContentFor('option.UNKNOWN') },
     ],
-    validationMessage: contentFor('question.professional_qualification.validation'),
+    validationMessage: contentFor('question.education_professional_or_vocational_qualifications.validation'),
   },
   displayModes: {
     field: radioField(),
@@ -351,29 +352,29 @@ const professionalQualification = question({
 
 const jobSkills = question({
   content: {
-    code: Question.job_skills,
+    code: Question.education_transferable_skills,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.job_skills.text', CaseData.Forename),
+    text: contentFor('question.education_transferable_skills.text', CaseData.Forename),
     options: [
       {
         value: CommonOption.yes,
         text: commonContentFor('option.YES'),
-        hint: contentFor('question.job_skills.option.YES.hint'),
-        reveals: optionalDetails({ code: Question.has_job_skills_details }),
+        hint: contentFor('question.education_transferable_skills.option.YES.hint'),
+        reveals: optionalDetails({ code: Question.education_transferable_skills_yes_details }),
       },
       {
-        value: Option.some_skills,
-        text: contentFor('question.job_skills.option.SOME_SKILLS.text'),
-        hint: contentFor('question.job_skills.option.SOME_SKILLS.hint'),
-        reveals: optionalDetails({ code: Question.some_job_skills_details }),
+        value: Option.yes_some_skills,
+        text: contentFor('question.education_transferable_skills.option.YES_SOME_SKILLS.text'),
+        hint: contentFor('question.education_transferable_skills.option.YES_SOME_SKILLS.hint'),
+        reveals: optionalDetails({ code: Question.education_transferable_skills_yes_some_skills_details }),
       },
       {
         value: CommonOption.no,
         text: commonContentFor('option.NO'),
-        hint: contentFor('question.job_skills.option.NO.hint'),
+        hint: contentFor('question.education_transferable_skills.option.NO.hint'),
       },
     ],
-    validationMessage: contentFor('question.job_skills.validation'),
+    validationMessage: contentFor('question.education_transferable_skills.validation'),
   },
   displayModes: {
     field: radioField(),
@@ -404,46 +405,46 @@ const difficultyLevelRevealed = (content: {
 
 const difficultiesReadingWritingNumeracy = question({
   content: {
-    code: Question.difficulties_reading_writing_numeracy,
+    code: Question.education_difficulties,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.difficulties_reading_writing_numeracy.text', CaseData.Forename),
-    hint: contentFor('question.difficulties_reading_writing_numeracy.hint'),
+    text: contentFor('question.education_difficulties.text', CaseData.Forename),
+    hint: contentFor('question.education_difficulties.hint'),
     options: [
       {
-        value: Option.yes_reading,
-        text: contentFor('question.difficulties_reading_writing_numeracy.option.YES_READING'),
+        value: Option.reading,
+        text: contentFor('question.education_difficulties.option.READING'),
         reveals: difficultyLevelRevealed({
-          code: Question.reading_difficulty_level,
-          text: contentFor('question.reading_difficulty_level.text'),
-          validationMessage: contentFor('question.reading_difficulty_level.validation'),
+          code: Question.education_difficulties_reading_severity,
+          text: contentFor('question.education_difficulties_reading_severity.text'),
+          validationMessage: contentFor('question.education_difficulties_reading_severity.validation'),
         }),
       },
       {
-        value: Option.yes_writing,
-        text: contentFor('question.difficulties_reading_writing_numeracy.option.YES_WRITING'),
+        value: Option.writing,
+        text: contentFor('question.education_difficulties.option.WRITING'),
         reveals: difficultyLevelRevealed({
-          code: Question.writing_difficulty_level,
-          text: contentFor('question.writing_difficulty_level.text'),
-          validationMessage: contentFor('question.writing_difficulty_level.validation'),
+          code: Question.education_difficulties_writing_severity,
+          text: contentFor('question.education_difficulties_writing_severity.text'),
+          validationMessage: contentFor('question.education_difficulties_writing_severity.validation'),
         }),
       },
       {
-        value: Option.yes_numeracy,
-        text: contentFor('question.difficulties_reading_writing_numeracy.option.YES_NUMERACY'),
+        value: Option.numeracy,
+        text: contentFor('question.education_difficulties.option.NUMERACY'),
         reveals: difficultyLevelRevealed({
-          code: Question.numeracy_difficulty_level,
-          text: contentFor('question.numeracy_difficulty_level.text'),
-          validationMessage: contentFor('question.numeracy_difficulty_level.validation'),
+          code: Question.education_difficulties_numeracy_severity,
+          text: contentFor('question.education_difficulties_numeracy_severity.text'),
+          validationMessage: contentFor('question.education_difficulties_numeracy_severity.validation'),
         }),
       },
       { divider: commonContentFor('or') },
       {
-        value: Option.no_difficulties,
-        text: contentFor('question.difficulties_reading_writing_numeracy.option.NO_DIFFICULTIES'),
+        value: CommonOption.none,
+        text: contentFor('question.education_difficulties.option.NONE'),
         behaviour: 'exclusive' as const,
       },
     ],
-    validationMessage: contentFor('question.difficulties_reading_writing_numeracy.validation'),
+    validationMessage: contentFor('question.education_difficulties.validation'),
   },
   displayModes: {
     field: checkboxField(),
@@ -494,11 +495,11 @@ const employmentExperience = question({
     format: QuestionFormat.RADIO,
     text: contentFor('question.employment_experience.text', CaseData.ForenamePossessive),
     options: experienceOptions({
-      positive: Question.positive_employment_experience_details,
-      mostlyPositive: Question.mostly_positive_employment_experience_details,
-      positiveAndNegative: Question.positive_and_negative_employment_experience_details,
-      mostlyNegative: Question.mostly_negative_employment_experience_details,
-      negative: Question.negative_employment_experience_details,
+      positive: Question.employment_experience_positive_details,
+      mostlyPositive: Question.employment_experience_mostly_positive_details,
+      positiveAndNegative: Question.employment_experience_positive_and_negative_details,
+      mostlyNegative: Question.employment_experience_mostly_negative_details,
+      negative: Question.employment_experience_negative_details,
     }),
     validationMessage: contentFor('question.employment_experience.validation'),
   },
@@ -514,11 +515,11 @@ const educationExperience = question({
     format: QuestionFormat.RADIO,
     text: contentFor('question.education_experience.text', CaseData.ForenamePossessive),
     options: experienceOptions({
-      positive: Question.positive_education_experience_details,
-      mostlyPositive: Question.mostly_positive_education_experience_details,
-      positiveAndNegative: Question.positive_and_negative_education_experience_details,
-      mostlyNegative: Question.mostly_negative_education_experience_details,
-      negative: Question.negative_education_experience_details,
+      positive: Question.education_experience_positive_details,
+      mostlyPositive: Question.education_experience_mostly_positive_details,
+      positiveAndNegative: Question.education_experience_positive_and_negative_details,
+      mostlyNegative: Question.education_experience_mostly_negative_details,
+      negative: Question.education_experience_negative_details,
     }),
     validationMessage: contentFor('question.education_experience.validation'),
   },
@@ -530,51 +531,51 @@ const educationExperience = question({
 
 const changes = question({
   content: {
-    code: Question.employment_and_education_changes,
+    code: Question.employment_education_changes,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.employment_and_education_changes.text', CaseData.Forename),
-    hint: contentFor('question.employment_and_education_changes.hint', CaseData.Forename),
+    text: contentFor('question.employment_education_changes.text', CaseData.Forename),
+    hint: contentFor('question.employment_education_changes.hint', CaseData.Forename),
     options: [
       {
-        value: CommonOption.has_made_changes,
-        text: commonContentFor('option.HAS_MADE_CHANGES'),
-        reveals: optionalDetails({ code: Question.has_made_positive_changes_details }),
+        value: CommonOption.made_changes,
+        text: commonContentFor('option.MADE_CHANGES'),
+        reveals: optionalDetails({ code: Question.employment_education_changes_made_changes_details }),
       },
       {
-        value: CommonOption.is_making_changes,
-        text: commonContentFor('option.IS_MAKING_CHANGES'),
-        reveals: optionalDetails({ code: Question.actively_making_changes_details }),
+        value: CommonOption.making_changes,
+        text: commonContentFor('option.MAKING_CHANGES'),
+        reveals: optionalDetails({ code: Question.employment_education_changes_making_changes_details }),
       },
       {
-        value: CommonOption.wants_to_make_changes_knows_how_to,
-        text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_KNOWS_HOW_TO'),
-        reveals: optionalDetails({ code: Question.wants_to_make_changes_knows_how_to_details }),
+        value: CommonOption.want_to_make_changes,
+        text: commonContentFor('option.WANT_TO_MAKE_CHANGES'),
+        reveals: optionalDetails({ code: Question.employment_education_changes_want_to_make_changes_details }),
       },
       {
-        value: CommonOption.wants_to_make_changes_needs_help,
-        text: commonContentFor('option.WANTS_TO_MAKE_CHANGES_NEEDS_HELP'),
-        reveals: optionalDetails({ code: Question.wants_to_make_changes_needs_help_details }),
+        value: CommonOption.needs_help_to_make_changes,
+        text: commonContentFor('option.NEEDS_HELP_TO_MAKE_CHANGES'),
+        reveals: optionalDetails({ code: Question.employment_education_changes_needs_help_to_make_changes_details }),
       },
       {
         value: CommonOption.thinking_about_making_changes,
         text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
-        reveals: optionalDetails({ code: Question.thinking_about_making_changes_details }),
+        reveals: optionalDetails({ code: Question.employment_education_changes_thinking_about_making_changes_details }),
       },
       {
         value: CommonOption.does_not_want_to_make_changes,
         text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
-        reveals: optionalDetails({ code: Question.does_not_want_to_make_changes_details }),
+        reveals: optionalDetails({ code: Question.employment_education_changes_does_not_want_to_make_changes_details }),
       },
       {
         value: CommonOption.does_not_want_to_answer,
         text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'),
-        reveals: optionalDetails({ code: Question.does_not_want_to_answer_details }),
+        reveals: optionalDetails({ code: Question.employment_education_changes_does_not_want_to_answer_details }),
       },
       { divider: commonContentFor('or') },
       { value: CommonOption.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },
       { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
     ],
-    validationMessage: contentFor('question.employment_and_education_changes.validation'),
+    validationMessage: contentFor('question.employment_education_changes.validation'),
   },
   displayModes: {
     field: radioField(),
@@ -584,22 +585,29 @@ const changes = question({
 
 const strengthsOrProtectiveFactors = question({
   content: {
-    code: Question.employment_education_strengths_protective_factors,
+    code: Question.employment_education_practitioner_analysis_strengths_or_protective_factors,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.employment_education_strengths_protective_factors.text', CaseData.ForenamePossessive),
-    hint: contentFor('question.employment_education_strengths_protective_factors.hint'),
+    text: contentFor(
+      'question.employment_education_practitioner_analysis_strengths_or_protective_factors.text',
+      CaseData.ForenamePossessive,
+    ),
+    hint: contentFor('question.employment_education_practitioner_analysis_strengths_or_protective_factors.hint'),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.employment_education_strengths_protective_factors_details,
-        validationMessage: contentFor('question.employment_education_strengths_protective_factors_details.validation'),
+        code: Question.employment_education_practitioner_analysis_strengths_or_protective_factors_yes_details,
+        validationMessage: contentFor(
+          'question.employment_education_practitioner_analysis_strengths_or_protective_factors_yes_details.validation',
+        ),
         maxLength: CharacterLimit.c1425,
       }),
       no: optionalDetails({
-        code: Question.employment_education_no_strengths_protective_factors_details,
+        code: Question.employment_education_practitioner_analysis_strengths_or_protective_factors_no_details,
         maxLength: CharacterLimit.c1425,
       }),
     }),
-    validationMessage: contentFor('question.employment_education_strengths_protective_factors.validation'),
+    validationMessage: contentFor(
+      'question.employment_education_practitioner_analysis_strengths_or_protective_factors.validation',
+    ),
   },
   displayModes: {
     field: radioField(),
@@ -612,21 +620,28 @@ const strengthsOrProtectiveFactors = question({
 
 const riskOfSeriousHarm = question({
   content: {
-    code: Question.employment_education_linked_to_serious_harm,
+    code: Question.employment_education_practitioner_analysis_risk_of_serious_harm,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.employment_education_linked_to_serious_harm.text', CaseData.ForenamePossessive),
+    text: contentFor(
+      'question.employment_education_practitioner_analysis_risk_of_serious_harm.text',
+      CaseData.ForenamePossessive,
+    ),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.employment_education_serious_harm_details,
-        validationMessage: contentFor('question.employment_education_serious_harm_details.validation'),
+        code: Question.employment_education_practitioner_analysis_risk_of_serious_harm_yes_details,
+        validationMessage: contentFor(
+          'question.employment_education_practitioner_analysis_risk_of_serious_harm_yes_details.validation',
+        ),
         maxLength: CharacterLimit.c1425,
       }),
       no: optionalDetails({
-        code: Question.employment_education_no_serious_harm_details,
+        code: Question.employment_education_practitioner_analysis_risk_of_serious_harm_no_details,
         maxLength: CharacterLimit.c1425,
       }),
     }),
-    validationMessage: contentFor('question.employment_education_linked_to_serious_harm.validation'),
+    validationMessage: contentFor(
+      'question.employment_education_practitioner_analysis_risk_of_serious_harm.validation',
+    ),
   },
   displayModes: {
     field: radioField(),
@@ -639,21 +654,26 @@ const riskOfSeriousHarm = question({
 
 const riskOfReoffending = question({
   content: {
-    code: Question.employment_education_linked_to_reoffending,
+    code: Question.employment_education_practitioner_analysis_risk_of_reoffending,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.employment_education_linked_to_reoffending.text', CaseData.ForenamePossessive),
+    text: contentFor(
+      'question.employment_education_practitioner_analysis_risk_of_reoffending.text',
+      CaseData.ForenamePossessive,
+    ),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.employment_education_risk_of_reoffending_details,
-        validationMessage: contentFor('question.employment_education_risk_of_reoffending_details.validation'),
+        code: Question.employment_education_practitioner_analysis_risk_of_reoffending_yes_details,
+        validationMessage: contentFor(
+          'question.employment_education_practitioner_analysis_risk_of_reoffending_yes_details.validation',
+        ),
         maxLength: CharacterLimit.c1000,
       }),
       no: optionalDetails({
-        code: Question.employment_education_no_risk_of_reoffending_details,
+        code: Question.employment_education_practitioner_analysis_risk_of_reoffending_no_details,
         maxLength: CharacterLimit.c1000,
       }),
     }),
-    validationMessage: contentFor('question.employment_education_linked_to_reoffending.validation'),
+    validationMessage: contentFor('question.employment_education_practitioner_analysis_risk_of_reoffending.validation'),
   },
   displayModes: {
     field: radioField(),

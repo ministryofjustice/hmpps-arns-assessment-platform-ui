@@ -17,6 +17,7 @@ export const Option = {
   solvents: 'SOLVENTS',
   steroids: 'STEROIDS',
   spice: 'SPICE',
+  other_drug: 'OTHER_DRUG',
   daily: 'DAILY',
   weekly: 'WEEKLY',
   monthly: 'MONTHLY',
