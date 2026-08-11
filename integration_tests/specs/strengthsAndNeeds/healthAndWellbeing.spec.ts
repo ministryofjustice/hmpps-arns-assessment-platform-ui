@@ -377,6 +377,79 @@ test.describe('Health and wellbeing Page', () => {
           - button "Go to practitioner analysis"
       `)
     })
+
+    test('practitioner analysis', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+        subject: { gender: '1' },
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'health_conditions', value: 'NO' },
+          { question: 'mental_health_problems', value: 'NO' },
+          { question: 'head_injuries', value: 'NO' },
+          { question: 'neurodiverse_conditions', value: 'NO' },
+          { question: 'neurodiverse_conditions_details', value: '' },
+          { question: 'impact_on_learning_abilities', value: 'NO_LEARNING_ABILITIES_IMPACT' },
+          { question: 'learning_abilities_impacted_significantly_details', value: '' },
+          { question: 'learning_abilities_impacted_slightly_details', value: '' },
+          { question: 'cope_with_day_to_day_life', value: 'NOT_ABLE_TO_COPE' },
+          { question: 'attitude_towards_self', value: 'NEGATIVE_UNHAPPY' },
+          { question: 'self_harm', value: 'NO' },
+          { question: 'suicidal_tendencies', value: 'NO' },
+          { question: 'feeling_about_future_health_wellbeing', value: 'NOT_OPTIMISTIC_OUTLOOK' },
+          { question: 'helped_during_periods_good_health_wellbeing', value: [] },
+          { question: 'changes_to_health_wellbeing', value: 'NOT_PRESENT' },
+        ]).save()
+
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'health-wellbeing-summary')
+
+      const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'Summary')
+
+      await healthAndWellbeingPage.goToPractitionerAnalysis.click()
+      await expect(page.getByText('Are there any strengths or protective factors')).toBeVisible()
+    })
+
+    test('mark complete', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'health_conditions', value: 'NO' },
+          { question: 'mental_health_problems', value: 'NO' },
+          { question: 'head_injuries', value: 'NO' },
+          { question: 'neurodiverse_conditions', value: 'NO' },
+          { question: 'neurodiverse_conditions_details', value: '' },
+          { question: 'impact_on_learning_abilities', value: 'NO_LEARNING_ABILITIES_IMPACT' },
+          { question: 'learning_abilities_impacted_significantly_details', value: '' },
+          { question: 'learning_abilities_impacted_slightly_details', value: '' },
+          { question: 'cope_with_day_to_day_life', value: 'NOT_ABLE_TO_COPE' },
+          { question: 'attitude_towards_self', value: 'NEGATIVE_UNHAPPY' },
+          { question: 'self_harm', value: 'NO' },
+          { question: 'suicidal_tendencies', value: 'NO' },
+          { question: 'feeling_about_future_health_wellbeing', value: 'NOT_OPTIMISTIC_OUTLOOK' },
+          { question: 'helped_during_periods_good_health_wellbeing', value: [] },
+          { question: 'changes_to_health_wellbeing', value: 'NOT_PRESENT' },
+          { question: 'strengths_protective_factors_health_wellbeing', value: 'NO' },
+          { question: 'no_strengths_protective_factors_health_wellbeing_details', value: '' },
+          { question: 'serious_harm_health_wellbeing', value: 'NO' },
+          { question: 'no_serious_harm_health_wellbeing_details', value: '' },
+        ]).save()
+
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
+        page,
+        handoverLink,
+        baseURL,
+        'health-wellbeing-summary#practitioner-analysis',
+      )
+      const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'strengths or protective factors')
+
+      await healthAndWellbeingPage.linkedToRiskOfReoffending.click()
+      await healthAndWellbeingPage.markComplete.click()
+      await expect(healthAndWellbeingPage.complete).toBeVisible()
+      expect(page.url()).toContain('health-wellbeing-analysis')
+    })
   })
 
   test.describe('Accessibility', () => {
