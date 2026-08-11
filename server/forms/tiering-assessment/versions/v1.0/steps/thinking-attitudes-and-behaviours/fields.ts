@@ -1,11 +1,12 @@
 import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 export const regularOffendingActivitiesField = GovUKRadioInput({
   code: 'regular-offending-activities',
   fieldset: {
     legend: {
-      text: 'Does Name engage in activities that could link to offending?',
+      text: Format('Does %1 engage in activities that could link to offending?', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -42,7 +43,7 @@ export const temperControlField = GovUKRadioInput({
   code: 'temper-control',
   fieldset: {
     legend: {
-      text: 'Is Name able to manage their temper?',
+      text: Format('Is %1 able to manage their temper?', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -80,7 +81,7 @@ export const impulsivityProblemsField = GovUKRadioInput({
   code: 'impulsivity-problems',
   fieldset: {
     legend: {
-      text: 'Does Name act on impulse?',
+      text: Format('Does %1 act on impulse?', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -117,7 +118,7 @@ export const proCriminalAttitudesField = GovUKRadioInput({
   code: 'pro-criminal-attitudes',
   fieldset: {
     legend: {
-      text: 'Does Name support or excuse criminal behaviour?',
+      text: Format('Does %1 support or excuse criminal behaviour?', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--s',
     },
   },
