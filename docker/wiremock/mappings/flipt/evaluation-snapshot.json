@@ -49,6 +49,17 @@
           "rollouts": []
         },
         {
+          "key": "sp-downtime-notification-banner",
+          "name": "sp-downtime-notification-banner",
+          "description": "Matches the application fallback",
+          "enabled": false,
+          "type": "BOOLEAN_FLAG_TYPE",
+          "createdAt": "2026-01-01T00:00:00Z",
+          "updatedAt": "2026-01-01T00:00:00Z",
+          "rules": [],
+          "rollouts": []
+        },
+        {
           "key": "sp-enable-mpop-assessment-info",
           "name": "sp-enable-mpop-assessment-info",
           "description": "Matches the application fallback",

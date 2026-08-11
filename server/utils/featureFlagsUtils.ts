@@ -22,6 +22,11 @@ export const BooleanFeatureFlags = {
     nunjucksKey: 'mpopAssessmentInfoEnabled',
     fallbackState: false,
   },
+  DOWNTIME_NOTIFICATION_BANNER: {
+    fliptKey: 'sp-downtime-notification-banner',
+    nunjucksKey: 'downtimeNotificationBanner',
+    fallbackState: false,
+  },
 }
 
 export interface FeatureFlagConfig {
