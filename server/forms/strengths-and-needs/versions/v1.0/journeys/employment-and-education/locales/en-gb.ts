@@ -16,12 +16,24 @@ export const english = {
     },
     [Question.has_been_employed_unavailable_for_work]: {
       text: 'Have they been employed before?',
+      option: {
+        [CommonOption.yes]: 'Yes, has been employed before',
+        [CommonOption.no]: 'No, has never been employed',
+      },
     },
     [Question.has_been_employed_actively_seeking]: {
       text: 'Have they been employed before?',
+      option: {
+        [CommonOption.yes]: 'Yes, has been employed before',
+        [CommonOption.no]: 'No, has never been employed',
+      },
     },
     [Question.has_been_employed_not_actively_seeking]: {
       text: 'Have they been employed before?',
+      option: {
+        [CommonOption.yes]: 'Yes, has been employed before',
+        [CommonOption.no]: 'No, has never been employed',
+      },
     },
     [Question.employment_status]: {
       text: 'What is %1 current employment status?',
@@ -138,7 +150,7 @@ export const english = {
         [Option.reading]: 'Yes, with reading',
         [Option.writing]: 'Yes, with writing',
         [Option.numeracy]: 'Yes, with numeracy',
-        [Option.none]: 'No difficulties',
+        [CommonOption.none]: 'No difficulties',
       },
       validation: `Select if they have difficulties with reading, writing or numeracy, or select 'No difficulties'`,
     },
@@ -198,8 +210,6 @@ export const english = {
     },
   },
   option: {
-    [Option.yes]: 'Yes, has been employed before',
-    [Option.no]: 'No, has never been employed',
     [Option.positive]: 'Positive',
     [Option.mostly_positive]: 'Mostly positive',
     [Option.positive_and_negative]: 'Positive and negative',

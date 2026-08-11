@@ -10,8 +10,6 @@ export const Option = {
   part_time: 'PART_TIME',
   temporary_or_casual: 'TEMPORARY_OR_CASUAL',
   apprenticeship: 'APPRENTICESHIP',
-  yes: 'YES',
-  no: 'NO',
   stable: 'STABLE',
   periods_of_instability: 'PERIODS_OF_INSTABILITY',
   unstable: 'UNSTABLE',
@@ -40,5 +38,4 @@ export const Option = {
   reading: 'READING',
   writing: 'WRITING',
   numeracy: 'NUMERACY',
-  none: 'NONE',
 } as const

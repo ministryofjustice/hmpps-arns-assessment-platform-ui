@@ -19,17 +19,18 @@ import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { Step } from './constants/step'
 import { Option } from './constants/option'
+import { CommonOption } from '../../constants/commonOption'
 
 // The physical treatment question only applies once physical health conditions
 // are confirmed; the mental treatment questions apply unless mental health
 // problems are ruled out (or unknown).
 const hasPhysicalHealthConditions = Answer(Question.health_wellbeing_physical_health_condition).match(
-  Condition.Equals(Option.yes),
+  Condition.Equals(CommonOption.yes),
 )
 const mayHaveMentalHealthProblems = not(
   or(
-    Answer(Question.health_wellbeing_mental_health_condition).match(Condition.Equals(Option.no)),
-    Answer(Question.health_wellbeing_mental_health_condition).match(Condition.Equals(Option.unknown)),
+    Answer(Question.health_wellbeing_mental_health_condition).match(Condition.Equals(CommonOption.no)),
+    Answer(Question.health_wellbeing_mental_health_condition).match(Condition.Equals(CommonOption.unknown)),
   ),
 )
 
@@ -40,12 +41,12 @@ const healthConditions = question({
     text: contentFor('question.health_wellbeing_physical_health_condition.text', CaseData.Forename),
     options: [
       {
-        value: Option.yes,
+        value: CommonOption.yes,
         text: commonContentFor('option.YES'),
         reveals: optionalDetails({ code: Question.health_wellbeing_physical_health_condition_yes_details }),
       },
-      { value: Option.no, text: commonContentFor('option.NO') },
-      { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
+      { value: CommonOption.no, text: commonContentFor('option.NO') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],
     validationMessage: contentFor('question.health_wellbeing_physical_health_condition.validation'),
   },
@@ -78,8 +79,8 @@ const mentalHealthProblems = question({
         text: contentFor('question.health_wellbeing_mental_health_condition.option.YES_IN_THE_PAST'),
         reveals: optionalDetails({ code: Question.health_wellbeing_mental_health_condition_yes_in_the_past_details }),
       },
-      { value: Option.no, text: commonContentFor('option.NO') },
-      { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
+      { value: CommonOption.no, text: commonContentFor('option.NO') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],
     validationMessage: contentFor('question.health_wellbeing_mental_health_condition.validation'),
   },
@@ -137,13 +138,13 @@ const psychiatricTreatment = question({
     format: QuestionFormat.RADIO,
     text: contentFor('question.health_wellbeing_psychiatric_treatment.text', CaseData.Forename),
     options: [
-      { value: Option.yes, text: commonContentFor('option.YES') },
+      { value: CommonOption.yes, text: commonContentFor('option.YES') },
       {
         value: Option.pending_treatment,
         text: contentFor('question.health_wellbeing_psychiatric_treatment.option.PENDING_TREATMENT'),
       },
-      { value: Option.no, text: commonContentFor('option.NO') },
-      { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
+      { value: CommonOption.no, text: commonContentFor('option.NO') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],
     validationMessage: contentFor('question.health_wellbeing_psychiatric_treatment.validation'),
   },
@@ -163,9 +164,9 @@ const headInjuries = question({
     text: contentFor('question.health_wellbeing_head_injury_or_illness.text', CaseData.Forename),
     hint: { html: contentFor('question.health_wellbeing_head_injury_or_illness.hint') },
     options: [
-      { value: Option.yes, text: commonContentFor('option.YES') },
-      { value: Option.no, text: commonContentFor('option.NO') },
-      { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
+      { value: CommonOption.yes, text: commonContentFor('option.YES') },
+      { value: CommonOption.no, text: commonContentFor('option.NO') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],
     validationMessage: contentFor('question.health_wellbeing_head_injury_or_illness.validation'),
   },
@@ -186,12 +187,12 @@ const neurodiverseConditions = question({
     hint: contentFor('question.health_wellbeing_neurodiverse_conditions.hint'),
     options: [
       {
-        value: Option.yes,
+        value: CommonOption.yes,
         text: commonContentFor('option.YES'),
         reveals: optionalDetails({ code: Question.health_wellbeing_neurodiverse_conditions_yes_details }),
       },
-      { value: Option.no, text: commonContentFor('option.NO') },
-      { value: Option.unknown, text: commonContentFor('option.UNKNOWN') },
+      { value: CommonOption.no, text: commonContentFor('option.NO') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],
     validationMessage: contentFor('question.health_wellbeing_neurodiverse_conditions.validation'),
   },
@@ -223,7 +224,7 @@ const impactOnLearningAbilities = question({
         }),
       },
       {
-        value: Option.no,
+        value: CommonOption.no,
         text: contentFor('question.health_wellbeing_learning_difficulties.option.NO'),
       },
     ],
@@ -241,7 +242,7 @@ const copeWithDayToDayLife = question({
     text: contentFor('question.health_wellbeing_coping_day_to_day_life.text', CaseData.Forename),
     options: [
       {
-        value: Option.yes,
+        value: CommonOption.yes,
         text: contentFor('question.health_wellbeing_coping_day_to_day_life.option.YES'),
       },
       {
@@ -249,7 +250,7 @@ const copeWithDayToDayLife = question({
         text: contentFor('question.health_wellbeing_coping_day_to_day_life.option.YES_SOME_DIFFICULTIES'),
       },
       {
-        value: Option.no,
+        value: CommonOption.no,
         text: contentFor('question.health_wellbeing_coping_day_to_day_life.option.NO'),
       },
     ],
@@ -350,12 +351,12 @@ const feelingsAboutFuture = question({
       },
       { divider: commonContentFor('or') },
       {
-        value: Option.does_not_want_to_answer,
+        value: CommonOption.does_not_want_to_answer,
         text: contentFor('question.health_wellbeing_outlook.option.DOES_NOT_WANT_TO_ANSWER', CaseData.Forename),
       },
       {
-        value: Option.not_present,
-        text: contentFor('question.health_wellbeing_outlook.option.NOT_PRESENT', CaseData.Forename),
+        value: CommonOption.not_present,
+        text: commonContentFor('option.NOT_PRESENT', CaseData.Forename),
       },
     ],
     validationMessage: contentFor('question.health_wellbeing_outlook.validation'),
@@ -399,8 +400,8 @@ const helpedDuringPeriodsGoodHealthWellbeing = question({
         text: contentFor('question.health_wellbeing_positive_factors.option.RELATIONSHIPS'),
       },
       {
-        value: Option.other,
-        text: contentFor('question.health_wellbeing_positive_factors.option.OTHER'),
+        value: CommonOption.other,
+        text: commonContentFor('option.OTHER'),
         reveals: requiredDetails({
           code: Question.health_wellbeing_positive_factors_other_details,
           validationMessage: contentFor('validation.risk_of_serious_harm_details'),
@@ -425,43 +426,43 @@ const changes = question({
     hint: contentFor('question.health_wellbeing_changes.hint', CaseData.Forename),
     options: [
       {
-        value: Option.made_changes,
-        text: contentFor('question.health_wellbeing_changes.option.MADE_CHANGES'),
+        value: CommonOption.made_changes,
+        text: commonContentFor('option.MADE_CHANGES'),
         reveals: optionalDetails({ code: Question.health_wellbeing_changes_made_changes_details }),
       },
       {
-        value: Option.making_changes,
-        text: contentFor('question.health_wellbeing_changes.option.MAKING_CHANGES'),
+        value: CommonOption.making_changes,
+        text: commonContentFor('option.MAKING_CHANGES'),
         reveals: optionalDetails({ code: Question.health_wellbeing_changes_making_changes_details }),
       },
       {
-        value: Option.want_to_make_changes,
-        text: contentFor('question.health_wellbeing_changes.option.WANT_TO_MAKE_CHANGES'),
+        value: CommonOption.want_to_make_changes,
+        text: commonContentFor('option.WANT_TO_MAKE_CHANGES'),
         reveals: optionalDetails({ code: Question.health_wellbeing_changes_want_to_make_changes_details }),
       },
       {
-        value: Option.needs_help_to_make_changes,
-        text: contentFor('question.health_wellbeing_changes.option.NEEDS_HELP_TO_MAKE_CHANGES'),
+        value: CommonOption.needs_help_to_make_changes,
+        text: commonContentFor('option.NEEDS_HELP_TO_MAKE_CHANGES'),
         reveals: optionalDetails({ code: Question.health_wellbeing_changes_needs_help_to_make_changes_details }),
       },
       {
-        value: Option.thinking_about_making_changes,
-        text: contentFor('question.health_wellbeing_changes.option.THINKING_ABOUT_MAKING_CHANGES'),
+        value: CommonOption.thinking_about_making_changes,
+        text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
         reveals: optionalDetails({ code: Question.health_wellbeing_changes_thinking_about_making_changes_details }),
       },
       {
-        value: Option.does_not_want_to_make_changes,
-        text: contentFor('question.health_wellbeing_changes.option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
+        value: CommonOption.does_not_want_to_make_changes,
+        text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
         reveals: optionalDetails({ code: Question.health_wellbeing_changes_does_not_want_to_make_changes_details }),
       },
       {
-        value: Option.does_not_want_to_answer,
-        text: contentFor('question.health_wellbeing_changes.option.DOES_NOT_WANT_TO_ANSWER'),
+        value: CommonOption.does_not_want_to_answer,
+        text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'),
         reveals: optionalDetails({ code: Question.health_wellbeing_changes_does_not_want_to_answer_details }),
       },
       { divider: commonContentFor('or') },
-      { value: Option.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },
-      { value: Option.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
+      { value: CommonOption.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },
+      { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
     ],
     validationMessage: contentFor('question.health_wellbeing_changes.validation'),
   },

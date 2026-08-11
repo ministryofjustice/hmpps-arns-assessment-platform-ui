@@ -30,9 +30,9 @@ import { Option } from './constants/option'
 // been employed before (or their employment status implies it).
 const hasBeenEmployed = not(
   or(
-    Answer(Question.has_been_employed_unavailable_for_work).match(Condition.Equals(Option.no)),
-    Answer(Question.has_been_employed_actively_seeking).match(Condition.Equals(Option.no)),
-    Answer(Question.has_been_employed_not_actively_seeking).match(Condition.Equals(Option.no)),
+    Answer(Question.has_been_employed_unavailable_for_work).match(Condition.Equals(CommonOption.no)),
+    Answer(Question.has_been_employed_actively_seeking).match(Condition.Equals(CommonOption.no)),
+    Answer(Question.has_been_employed_not_actively_seeking).match(Condition.Equals(CommonOption.no)),
   ),
 )
 
@@ -62,15 +62,20 @@ const typeOfEmploymentRevealed = revealedQuestion({
 
 // The three unemployed statuses ask the same "employed before?" question under
 // different codes, depending on which status revealed it.
-const hadPreviousEmploymentRevealed = (content: { code: string; text: ResolvableString }) =>
+type HasBeenEmployedQuestion =
+  | typeof Question.has_been_employed_actively_seeking
+  | typeof Question.has_been_employed_not_actively_seeking
+  | typeof Question.has_been_employed_unavailable_for_work
+
+const hadPreviousEmploymentRevealed = (content: { code: HasBeenEmployedQuestion; text: ResolvableString }) =>
   revealedQuestion({
     content: {
       code: content.code,
       format: QuestionFormat.RADIO,
       text: content.text,
       options: [
-        { value: Option.yes, text: contentFor('option.YES') },
-        { value: Option.no, text: contentFor('option.NO') },
+        { value: CommonOption.yes, text: contentFor(`question.${content.code}.option.YES`) },
+        { value: CommonOption.no, text: contentFor(`question.${content.code}.option.NO`) },
       ],
       validationMessage: commonContentFor('select_one_option'),
     },
@@ -430,7 +435,7 @@ const difficultiesReadingWritingNumeracy = question({
       },
       { divider: commonContentFor('or') },
       {
-        value: Option.none,
+        value: CommonOption.none,
         text: contentFor('question.education_difficulties.option.NONE'),
         behaviour: 'exclusive' as const,
       },

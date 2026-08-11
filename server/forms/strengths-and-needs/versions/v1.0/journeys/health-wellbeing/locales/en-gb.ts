@@ -1,5 +1,6 @@
 import { Question } from '../constants/question'
 import { Option } from '../constants/option'
+import { CommonOption } from '../../../constants/commonOption'
 
 export const english = {
   question: {
@@ -54,15 +55,15 @@ export const english = {
       option: {
         [Option.yes_significant_difficulties]: 'Yes, their ability to learn is significantly impacted',
         [Option.yes_some_difficulties]: 'Yes, their ability to learn is slightly impacted',
-        [Option.no]: 'No, they do not have any conditions or disabilities that impact their ability to learn',
+        [CommonOption.no]: 'No, they do not have any conditions or disabilities that impact their ability to learn',
       },
     },
     [Question.health_wellbeing_coping_day_to_day_life]: {
       text: 'Is %1 able to cope with day-to-day life?',
       option: {
-        [Option.yes]: 'Yes, able to cope well',
+        [CommonOption.yes]: 'Yes, able to cope well',
         [Option.yes_some_difficulties]: 'Has some difficulties coping',
-        [Option.no]: 'Not able to cope',
+        [CommonOption.no]: 'Not able to cope',
       },
       validation: 'Select if they are able to cope with day-to-day life',
     },
@@ -95,8 +96,7 @@ export const english = {
         [Option.optimistic]: 'Optimistic and has a positive outlook about their future',
         [Option.not_sure]: 'Not sure and thinks their future could get better or worse',
         [Option.not_optimistic]: 'Not optimistic and thinks their future will not get better or may get worse',
-        [Option.does_not_want_to_answer]: '%1 does not want to answer',
-        [Option.not_present]: '%1 is not present',
+        [CommonOption.does_not_want_to_answer]: '%1 does not want to answer',
       },
       validation: 'Select how optimistic they are about their future',
     },
@@ -111,21 +111,11 @@ export const english = {
         [Option.medication_or_treatment]: 'Medication and treatment',
         [Option.money]: 'Money',
         [Option.relationships]: 'Relationships',
-        [Option.other]: 'Other',
       },
     },
     [Question.health_wellbeing_changes]: {
       text: 'Does %1 want to make changes to their health and wellbeing?',
       hint: '%1 must answer this question.',
-      option: {
-        [Option.made_changes]: 'I have already made positive changes and want to maintain them',
-        [Option.making_changes]: 'I am actively making changes',
-        [Option.want_to_make_changes]: 'I want to make changes and know how to',
-        [Option.needs_help_to_make_changes]: 'I want to make changes but need help',
-        [Option.thinking_about_making_changes]: 'I am thinking about making changes',
-        [Option.does_not_want_to_make_changes]: 'I do not want to make changes',
-        [Option.does_not_want_to_answer]: 'I do not want to answer',
-      },
       validation: 'Select if they want to make changes to their health and wellbeing',
     },
     [Question.health_wellbeing_practitioner_analysis_strengths_or_protective_factors_yes_details]: {
