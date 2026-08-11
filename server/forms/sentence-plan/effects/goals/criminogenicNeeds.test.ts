@@ -58,7 +58,9 @@ describe('criminogenicNeeds', () => {
         user: undefined,
       })
 
-      await expect(resolveCriminogenicNeedsData(deps, context, 'X123456')).rejects.toThrow('missing user token')
+      await expect(resolveCriminogenicNeedsData(deps, context, 'X123456')).rejects.toThrow(
+        'Cannot load criminogenic needs for MPoP user: missing user token',
+      )
       expect(getCriminogenicNeeds).not.toHaveBeenCalled()
     })
 
@@ -70,7 +72,9 @@ describe('criminogenicNeeds', () => {
         user: { token: 'user-token' },
       })
 
-      await expect(resolveCriminogenicNeedsData(deps, context, undefined)).rejects.toThrow('missing crn')
+      await expect(resolveCriminogenicNeedsData(deps, context, undefined)).rejects.toThrow(
+        'Cannot load criminogenic needs for MPoP user: missing crn',
+      )
       expect(getCriminogenicNeeds).not.toHaveBeenCalled()
     })
 

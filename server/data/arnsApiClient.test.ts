@@ -35,7 +35,6 @@ describe('ArnsApiClient', () => {
 
   describe('getCriminogenicNeeds()', () => {
     it('should fetch criminogenic needs by CRN with the user token', async () => {
-      // Arrange
       const crn = 'X123456'
       const userToken = 'user-jwt-token'
       const expectedNeeds: AssessmentNeedsDto = {
@@ -47,10 +46,8 @@ describe('ArnsApiClient', () => {
 
       mockGet.mockResolvedValue(expectedNeeds)
 
-      // Act
       const result = await client.getCriminogenicNeeds(crn, userToken)
 
-      // Assert
       expect(result).toEqual(expectedNeeds)
       expect(mockGet).toHaveBeenCalledWith({ path: `/needs/crn/${crn}` }, asUser(userToken))
     })

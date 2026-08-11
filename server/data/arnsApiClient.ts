@@ -10,11 +10,8 @@ export default class ArnsApiClient extends RestClient {
   }
 
   /**
-   * Get criminogenic needs for a CRN from the assessment-controller endpoint.
-   *
-   * Called with the user's own token (pass-through) rather than a system token: this
-   * endpoint enforces limited-access-offender (LAO) checks against the actual user, so a
-   * 403 means the user may not view this case and is a data state to surface, not a failure.
+   * Uses the user's own token (not a system token) so the endpoint's limited-access-offender checks
+   * run against the actual user — a 403 is an expected "cannot view this case" state, not an error.
    */
   async getCriminogenicNeeds(crn: string, token: string): Promise<AssessmentNeedsDto> {
     return this.get({ path: `/needs/crn/${crn}` }, asUser(token))
