@@ -7,6 +7,22 @@
   margin-bottom: -5px;
 }
 
+.summary-answer-list {
+  margin-bottom: govuk-spacing(2);
+
+  .govuk-summary-list__key,
+  .govuk-summary-list__value {
+    @include govuk-font(16);
+    padding-top: 0;
+    padding-bottom: govuk-spacing(1);
+  }
+
+  .govuk-summary-list__key {
+    width: 8em;
+    font-weight: bold;
+  }
+}
+
 .assessment-header {
   @include govuk-font(19);
   margin-top: govuk-spacing(3);
@@ -27,7 +43,7 @@
     margin-left: govuk-spacing(-3);
     margin-right: govuk-spacing(-3);
     margin-bottom: 15px;
-    color: #505A5F;
+    color: #505a5f;
 
     &__name {
       @include govuk-font($size: 24, $weight: bold);
@@ -57,7 +73,9 @@
         display: flex;
       }
 
-      & dd, & dt, & li {
+      & dd,
+      & dt,
+      & li {
         display: inline;
         margin-left: 0;
         @include govuk-font(16);
