@@ -1,9 +1,9 @@
 import { basePath } from './formVersion'
 
-export const SectionComplete = {
-  yes: 'YES',
-  no: 'NO',
-} as const
+export enum SectionComplete {
+  yes = 'YES',
+  no = 'NO',
+}
 
 export const Section = {
   accommodation: {

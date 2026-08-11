@@ -2,11 +2,9 @@ import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { SectionComplete } from '../../versions/v1.0/constants/section'
 
-type SectionCompleteStatus = (typeof SectionComplete)[keyof typeof SectionComplete]
-
 export const setSectionProgress =
   (deps: StrengthsAndNeedsEffectsDeps) =>
-  async (context: StrengthsAndNeedsContext, sectionStatusKey: string, status: SectionCompleteStatus) => {
+  async (context: StrengthsAndNeedsContext, sectionStatusKey: string, status: SectionComplete) => {
     const user = context.getState('user')
     const assessmentUuid = context.getData('assessmentUuid')
 

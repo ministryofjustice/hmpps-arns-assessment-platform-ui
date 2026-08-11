@@ -1,4 +1,4 @@
-import { Section } from '../constants/section'
+import { Section, SectionComplete } from '../constants/section'
 import { CommonOption } from '../constants/commonOption'
 import { Locale } from '../../../i18n'
 
@@ -27,6 +27,10 @@ export const english = {
     [Section.employment_and_education.code]: 'Employment and education',
     [Section.finance.code]: 'Finances',
     [Section.health_and_wellbeing.code]: 'Health and wellbeing',
+  },
+  sectionComplete: {
+    [SectionComplete.yes]: 'Complete',
+    [SectionComplete.no]: 'Incomplete',
   },
   // Page titles derive from sectionTitle above, so a section is named in one place.
   pageTitle: {

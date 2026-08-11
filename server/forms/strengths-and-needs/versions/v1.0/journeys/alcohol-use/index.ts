@@ -1,10 +1,10 @@
-import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { alcoholUseStep } from './steps/alcohol-use/step'
 import { alcoholUseDetailsStep } from './steps/alcohol-use-details/step'
 import { alcoholUseSummaryStep } from './steps/alcohol-use-summary/step'
 import { alcoholUseAnalysisStep } from './steps/alcohol-use-analysis/step'
 import { Section } from '../../constants/section'
-import { sectionPageTitle } from '../../locales'
+import { sectionPageTitle, sectionStatusTag } from '../../locales'
 
 export const alcoholUseJourney = journey({
   code: Section.alcohol_use.code,
@@ -14,7 +14,7 @@ export const alcoholUseJourney = journey({
   view: {
     locals: {
       sectionTitle: sectionPageTitle(Section.alcohol_use),
-      sectionStatus: Data(Section.alcohol_use.statusKey),
+      sectionStatusTag: sectionStatusTag(Section.alcohol_use),
     },
   },
   steps: [alcoholUseStep, alcoholUseDetailsStep, alcoholUseSummaryStep, alcoholUseAnalysisStep],
