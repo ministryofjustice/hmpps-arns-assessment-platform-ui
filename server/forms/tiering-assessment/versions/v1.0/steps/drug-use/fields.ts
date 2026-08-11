@@ -18,7 +18,7 @@ export const drugLastUsedField = (drugValue: string) =>
       { value: 'true', text: 'Used in the last 6 months' },
       { value: 'false', text: 'Used more than 6 months ago' },
       { divider: 'or' },
-      { value: 'unknow', text: 'Unknown' },
+      { value: 'unknown', text: 'Unknown' },
     ],
     validWhen: [
       validation({
@@ -167,7 +167,7 @@ export const motivationToStopMisuseField = GovUKRadioInput({
     { value: 'PARTIAL_MOTIVATION', text: 'Shows some motivation to stop or reduce' },
     { value: 'FULL_MOTIVATION', text: 'Motivated to stop or reduce' },
     { divider: 'or' },
-    { value: 'unknow', text: 'Unknown' },
+    { value: 'unknown', text: 'Unknown' },
   ],
   validWhen: [
     validation({
