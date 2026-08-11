@@ -1,4 +1,5 @@
-import { access, and, Condition, Data, journey, redirect } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, and, Condition, Data, journey, redirect, step } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 import { financeJourney } from './journeys/finance'
@@ -12,6 +13,15 @@ import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
 import { isOasysAccess } from './guards'
+import { accommodationSection } from './journeys/accommodation/section'
+import { alcoholUseSection } from './journeys/alcohol-use/section'
+import { drugUseSection } from './journeys/drug-use/section'
+import { employmentEducationSection } from './journeys/employment-and-education/section'
+import { financeSection } from './journeys/finance/section'
+import { healthWellbeingSection } from './journeys/health-wellbeing/section'
+import { personalRelationshipsCommunitySection } from './journeys/personal-relationships-and-community/section'
+import { thinkingBehavioursAttitudesSection } from './journeys/thinking-behaviours-and-attitudes/section'
+import { StrengthsAndNeedsTransformers } from '../../transformers'
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -39,6 +49,16 @@ export const strengthsAndNeedsV1Journey = journey({
   },
   data: {
     formVersion,
+    sections: [
+      accommodationSection,
+      alcoholUseSection,
+      drugUseSection,
+      employmentEducationSection,
+      financeSection,
+      healthWellbeingSection,
+      personalRelationshipsCommunitySection,
+      thinkingBehavioursAttitudesSection,
+    ],
   },
   onAccess: [
     access({
@@ -46,6 +66,7 @@ export const strengthsAndNeedsV1Journey = journey({
         StrengthsAndNeedsEffects.initializeSessionFromAccess(),
         StrengthsAndNeedsEffects.loadSessionData(),
         StrengthsAndNeedsEffects.loadAssessment(),
+        StrengthsAndNeedsEffects.createFormConfig(),
         StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
     }),
@@ -55,6 +76,19 @@ export const strengthsAndNeedsV1Journey = journey({
         Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
       ),
       next: [redirect({ goto: '/strengths-and-needs/privacy' })],
+    }),
+  ],
+  steps: [
+    step({
+      path: `/config`,
+      title: 'Config',
+      reachability: { entryWhen: true },
+      blocks: [
+        HtmlBlock({
+          tag: 'pre',
+          content: Data('formConfig').pipe(StrengthsAndNeedsTransformers.JsonStringify()),
+        }),
+      ],
     }),
   ],
   children: [

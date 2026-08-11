@@ -19,25 +19,18 @@ import {
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 
 import { CaseData } from '../../constants/formVersion'
-import { CharacterLimit } from '../../constants/characterLimit'
 import { CommonOption } from '../../constants/commonOption'
 import {
-  characterCountField,
   checkboxField,
-  checkboxSummaryRow,
-  optionalDetails,
   question,
   QuestionFormat,
   questionTemplate,
   radioDetails,
   radioField,
-  requiredDetails,
   requiredValidationOf,
   revealedQuestion,
-  summaryRow,
-  textSummaryRow,
-  yesNo,
-} from '../../constants/questionContent'
+
+} from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { SANGenerators } from '../../../../generators'
 import { contentFor, drugValueToText } from './locales'
@@ -45,6 +38,17 @@ import { Question } from './constants/question'
 import { Step } from './constants/step'
 import { Option } from './constants/option'
 import { drugsList, fieldCodeString } from './constants'
+import { Section } from '../../constants/section'
+import { CharacterLimit } from '../../../../constants/characterLimit'
+import {
+  characterCountField,
+  checkboxSummaryRow,
+  optionalDetails,
+  requiredDetails,
+  summaryRow,
+  textSummaryRow,
+  yesNo,
+} from '../../constants/questionContent'
 
 const anyDrugUsedInLastSix = Data('drugsUsedInLastSix').match(Condition.IsRequired())
 const anyDrugUsedMoreThanSix = Data('drugsUsedMoreThanSix').match(Condition.IsRequired())
@@ -774,6 +778,7 @@ const riskOfReoffending = question({
 })
 
 export const drugUseSection = {
+  code: Section.drug_use.code,
   fields: {
     drugUse,
     selectMisusedDrugs,

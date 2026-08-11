@@ -1,7 +1,7 @@
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { SectionStatus } from '../../versions/v1.0/constants/section'
-import { formConfigFromJourney } from '../data-mapping/formConfigFactory';
+import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
 
 type SectionProgressStatus = (typeof SectionStatus)[keyof typeof SectionStatus]
 
@@ -19,11 +19,6 @@ export const setSectionProgress =
       user,
       added: wrapAll({ [code]: status }),
       removed: [],
-      hooks: [
-        {
-          type: 'UpdateOasysDataMapping',
-          formConfig: formConfigFromJourney(null),
-        },
-      ],
+      hooks: [new UpdateOasysDataMappingHook(context.getData('formConfig'))],
     })
   }

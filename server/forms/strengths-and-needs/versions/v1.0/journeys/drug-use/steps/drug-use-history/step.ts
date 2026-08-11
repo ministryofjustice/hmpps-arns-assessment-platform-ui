@@ -39,7 +39,6 @@ export const drugUseHistoryStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use.statusKey, SectionStatus.incomplete),
-          StrengthsAndNeedsEffects.persistOasysEquivalent(),
         ],
         next: [redirect({ goto: 'drug-use-summary' })],
       },

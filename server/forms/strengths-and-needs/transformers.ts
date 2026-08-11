@@ -11,6 +11,7 @@ export const {
   {
     ContentFor: (language: string, locales: Locales, path: string, ...replacements: string[]) => string
     ToISO: (value: any) => string
+    JsonStringify: (value: any) => string
   },
   StrengthsAndNeedsEffectsDeps
 >({
@@ -51,4 +52,5 @@ export const {
 
     return value
   },
+  JsonStringify: () => (value: unknown) => JSON.stringify(value, null, 2),
 })

@@ -10,7 +10,7 @@ import { StrengthsAndNeedsEffectsDeps } from './types'
 import { setSectionProgress } from './assessment/setSectionProgress'
 import { saveAndClearStaleAnswers } from './assessment/saveAndClearStaleAnswers'
 import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
-import { persistOasysEquivalent } from './assessment/persistOasysEquivalent'
+import { createFormConfig } from './assessment/createFormConfig'
 
 type EffectShapesFromFactories<TFactories> = {
   [K in keyof TFactories]: TFactories[K] extends (deps: infer _Deps) => infer Evaluator
@@ -30,14 +30,8 @@ const strengthsAndNeedsEffectFactories = {
   deriveDrugCategories,
   setSectionProgress,
   setRiskOfSexualHarm,
-  persistOasysEquivalent,
+  createFormConfig,
 }
-
-// TODO: Implement additional effects for:
-// - loadSectionData: Load section answers from the assessment platform API
-// - saveSectionData: Save section answers to the assessment platform API
-// - setSectionComplete: Mark a section as complete
-// - setSectionIncomplete: Mark a section as incomplete
 
 export const { effects: StrengthsAndNeedsEffects, implementations: StrengthsAndNeedsEffectImplementations } =
   defineEffectFunctions<

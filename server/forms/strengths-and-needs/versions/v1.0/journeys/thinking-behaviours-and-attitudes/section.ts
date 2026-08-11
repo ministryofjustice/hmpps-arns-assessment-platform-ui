@@ -1,22 +1,21 @@
 import { Answer, Condition, Data, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 import { CaseData } from '../../constants/formVersion'
-import { CharacterLimit } from '../../constants/characterLimit'
 import { CommonOption } from '../../constants/commonOption'
 import {
-  itemisedSummaryRow,
-  optionalDetails,
   question,
   QuestionFormat,
   radioField,
-  requiredDetails,
-  yesNo,
-} from '../../constants/questionContent'
+
+} from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { Step } from './constants/step'
 import { Option } from './constants/option'
+import { Section } from '../../constants/section'
+import { CharacterLimit } from '../../../../constants/characterLimit'
+import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../../constants/questionContent'
 
 // The three sexual harm questions are only asked (and summarised) once a risk
 // of sexual harm to others has been confirmed.
@@ -706,6 +705,7 @@ const linkedToReoffending = question({
 })
 
 export const thinkingBehavioursAttitudesSection = {
+  code: Section.thinking_behaviours_and_attitudes.code,
   fields: {
     consequences,
     stableBehaviour,

@@ -1,17 +1,20 @@
 import { User } from '../user'
 import { Answers, Properties, PropertyKeys, QuestionCodes } from './dataModel'
 import { Identifiers } from './identifier'
-import { Hooks } from './hook'
 
 interface CommandTimeline {
   type: string
   data: Record<string, any>
 }
 
+export interface Hook {
+  type: string
+}
+
 export interface Command {
   type: string
   timeline?: CommandTimeline
-  hooks?: Hooks[]
+  hooks?: Hook[]
   user: User
   assessmentUuid: string
 }

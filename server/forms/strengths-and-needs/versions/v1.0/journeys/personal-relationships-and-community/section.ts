@@ -2,27 +2,31 @@ import { Answer, Condition, Transformer } from '@ministryofjustice/hmpps-forge/c
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 
 import { CaseData } from '../../constants/formVersion'
-import { CharacterLimit } from '../../constants/characterLimit'
 import { CommonOption } from '../../constants/commonOption'
 import {
-  characterCountDetails,
-  characterCountField,
   checkboxField,
-  itemisedSummaryRow,
-  optionalDetails,
   question,
   QuestionFormat,
   radioField,
-  requiredDetails,
   revealedQuestion,
-  textSummaryRow,
-  yesNo,
-} from '../../constants/questionContent'
+
+} from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { Step } from './constants/step'
 import { Option } from './constants/option'
+import { Section } from '../../constants/section'
+import { CharacterLimit } from '../../../../constants/characterLimit'
+import {
+  characterCountDetails,
+  characterCountField,
+  itemisedSummaryRow,
+  optionalDetails,
+  requiredDetails,
+  textSummaryRow,
+  yesNo,
+} from '../../constants/questionContent'
 
 // The parenting responsibilities question only applies once we know the person
 // has children or parenting responsibilities.
@@ -662,6 +666,7 @@ const riskOfReoffending = question({
 })
 
 export const personalRelationshipsCommunitySection = {
+  code: Section.personal_relationships_and_community.code,
   fields: {
     childrenDetails,
     importantPeople,

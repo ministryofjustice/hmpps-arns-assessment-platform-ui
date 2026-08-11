@@ -1,26 +1,25 @@
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 
 import { CaseData } from '../../constants/formVersion'
-import { CharacterLimit } from '../../constants/characterLimit'
 import { CommonOption } from '../../constants/commonOption'
 import {
   checkboxDetails,
   checkboxField,
-  itemisedSummaryRow,
-  optionalDetails,
   question,
   QuestionFormat,
   radioDetails,
   radioField,
-  requiredDetails,
   revealedQuestion,
-  yesNo,
-} from '../../constants/questionContent'
+
+} from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { Step } from './constants/step'
 import { Option } from './constants/option'
+import { Section } from '../../constants/section'
+import { CharacterLimit } from '../../../../constants/characterLimit'
+import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../../constants/questionContent'
 
 const overReliantOnFamilyOrFriendsRevealed = revealedQuestion({
   content: {
@@ -392,6 +391,7 @@ const riskOfReoffending = question({
 })
 
 export const financeSection = {
+  code: Section.finance.code,
   fields: {
     income,
     bankAccount,

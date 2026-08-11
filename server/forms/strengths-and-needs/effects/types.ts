@@ -6,6 +6,7 @@ import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessSessionDetails } from '../../access/effects/types'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { AssessmentPlatformApiClient } from '../../../data'
+import { FormConfig } from './assessment/createFormConfig'
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers
@@ -34,6 +35,7 @@ export interface StrengthsAndNeedsData {
   privacyAccepted?: boolean
   assessment?: AssessmentVersionQueryResult
   assessmentUuid?: string
+  formConfig?: FormConfig
   [key: string]: unknown
 }
 
