@@ -649,43 +649,43 @@ test.describe('Employment and education Page', () => {
             - paragraph: None
           - definition:
             - link "Change":
-              - /url: employed
+              - /url: employed#day_to_day_commitments
           - term: Select the highest level of academic qualification Test has completed
           - definition:
             - paragraph: None of these
           - definition:
             - link "Change":
-              - /url: employed
+              - /url: employed#academic_qualification
           - term: Does Test have any professional or vocational qualifications?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: employed
+              - /url: employed#professional_qualification
           - term: Does Test have any skills that could help them in a job or to get a job?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: employed
+              - /url: employed#job_skills
           - term: Does Test have difficulties with reading, writing or numeracy?
           - definition:
             - paragraph: No difficulties
           - definition:
             - link "Change":
-              - /url: employed
+              - /url: employed#difficulties_reading_writing_numeracy
           - term: What is Test's experience of education?
           - definition:
             - paragraph: Unknown
           - definition:
             - link "Change":
-              - /url: employed
+              - /url: employed#education_experience
           - term: Does Test want to make changes to their employment and education?
           - definition:
             - paragraph: Test is not present
           - definition:
             - link "Change":
-              - /url: employed
+              - /url: employed#employment_and_education_changes
           - button "Go to practitioner analysis"
       `)
     })

@@ -11,12 +11,24 @@ export default class DrugUsePage extends AbstractPage {
 
   readonly selectWhichDrugs: Locator
 
+  readonly selectWhyTheyUseDrugs: Locator
+
+  readonly culturalOrReligiousPractice: Locator
+
+  readonly selectHowTheirDrugUse: Locator
+
+  readonly behaviour: Locator
+
   private constructor(page: Page) {
     super(page)
     this.mainSection = page.getByTestId('main-form')
     this.selectIfEverMisusedDrugs = page.getByRole('link', { name: 'Select if they’ve ever misused drugs' })
     this.selectWhichDrugs = page.getByRole('link', { name: 'Select which drugs they’ve misused' })
     this.form = page.locator('form')
+    this.selectWhyTheyUseDrugs = page.getByRole('link', { name: 'Select why they use drugs' })
+    this.culturalOrReligiousPractice = page.getByRole('checkbox', { name: 'Cultural or religious practice' })
+    this.selectHowTheirDrugUse = page.getByRole('link', { name: 'Select how their drug use has affected their life' })
+    this.behaviour = page.getByRole('checkbox', { name: 'Behaviour' })
   }
 
   /**

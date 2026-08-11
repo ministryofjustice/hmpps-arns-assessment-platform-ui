@@ -426,67 +426,67 @@ test.describe('Health and wellbeing Page', () => {
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: health-wellbeing
+              - /url: health-wellbeing#health_conditions
           - term: Does Test have any diagnosed or documented mental health problems?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: health-wellbeing
+              - /url: health-wellbeing#mental_health_problems
           - term: Has Test had a head injury or any illness affecting the brain?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: physical-mental-health
+              - /url: physical-mental-health#head_injuries
           - term: Does Test have any neurodiverse conditions?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: physical-mental-health
+              - /url: physical-mental-health#neurodiverse_conditions
           - term: Does Test have any conditions or disabilities that impact their ability to learn? (optional)
           - definition:
             - paragraph: No, they do not have any conditions or disabilities that impact their ability to learn
           - definition:
             - link "Change":
-              - /url: physical-mental-health
+              - /url: physical-mental-health#impact_on_learning_abilities
           - term: Is Test able to cope with day-to-day life?
           - definition:
             - paragraph: Not able to cope
           - definition:
             - link "Change":
-              - /url: physical-mental-health
+              - /url: physical-mental-health#cope_with_day_to_day_life
           - term: What is Test's attitude towards themselves?
           - definition:
             - paragraph: Negative self-image and unhappy
           - definition:
             - link "Change":
-              - /url: physical-mental-health
+              - /url: physical-mental-health#attitude_towards_self
           - term: Has Test ever self-harmed?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: physical-mental-health
+              - /url: physical-mental-health#self_harm
           - term: Has Test ever attempted suicide or had suicidal thoughts?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: physical-mental-health
+              - /url: physical-mental-health#suicidal_tendencies
           - term: How does Test feel about their future?
           - definition:
             - paragraph: Not optimistic and thinks their future will not get better or may get worse
           - definition:
             - link "Change":
-              - /url: physical-mental-health
+              - /url: physical-mental-health#feeling_about_future_health_wellbeing
           - term: Does Test want to make changes to their health and wellbeing?
           - definition:
             - paragraph: Test is not present
           - definition:
             - link "Change":
-              - /url: physical-mental-health
+              - /url: physical-mental-health#changes_to_health_wellbeing
           - button "Go to practitioner analysis"
       `)
     })

@@ -1,4 +1,3 @@
-import { ChainableExpr, PipelineExpr, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { Option } from './constants/option'
 import { CommonOption } from '../../constants/commonOption'
 
@@ -27,5 +26,3 @@ export const drugsList: Drug[] = [
 ]
 
 export const fieldCodeString = (prefix: string, drugValue: string) => `${prefix}_${drugValue.toLowerCase()}`
-export const fieldCode = (prefix: string, drugValue: ChainableExpr<PipelineExpr>) =>
-  `${prefix}_${drugValue.pipe(Transformer.String.ToLowerCase())}`

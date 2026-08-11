@@ -409,41 +409,27 @@ test.describe('Personal relationships and community Page', () => {
           - definition:
             - paragraph: Yes, children that live with them
             - paragraph: test
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
-              - /url: personal-relationships-children-information
+              - /url: personal-relationships-children-information#personal_relationships_community_children_details
           - term: Who are the important people in Test's life?
           - definition:
             - paragraph: Partner or someone they’re in an intimate relationship with
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
-              - /url: personal-relationships
+              - /url: personal-relationships#personal_relationships_community_important_people
           - term: Is Test happy with their current relationship status?
           - definition:
             - paragraph: Happy and positive about their relationship status or their relationship is likely to act as a protective factor
-            - paragraph
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
-              - /url: personal-relationships-community
+              - /url: personal-relationships-community#personal_relationships_community_current_relationship
           - term: What is Test's history of intimate relationships?
           - definition:
             - paragraph: History of stable, supportive, positive and rewarding relationships
-            - paragraph
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
-              - /url: personal-relationships-community
+              - /url: personal-relationships-community#personal_relationships_community_intimate_relationship
           - term: Is Test able to resolve any challenges in their intimate relationships?
           - definition:
             - paragraph: test
@@ -453,42 +439,27 @@ test.describe('Personal relationships and community Page', () => {
           - term: What is Test's current relationship like with their family?
           - definition:
             - paragraph: Stable, supportive, positive and rewarding relationship
-            - paragraph
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
-              - /url: personal-relationships-community
+              - /url: personal-relationships-community#personal_relationships_community_family_relationship
           - term: What was Test's experience of their childhood?
           - definition:
             - paragraph: Positive experience
-            - paragraph
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
-              - /url: personal-relationships-community
+              - /url: personal-relationships-community#personal_relationships_community_childhood
           - term: Did Test have any childhood behavioural problems?
           - definition:
             - paragraph: "Yes"
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
-              - /url: personal-relationships-community
+              - /url: personal-relationships-community#personal_relationships_community_childhood_behaviour
           - term: Does Test want to make changes to their personal relationships and community?
           - definition:
             - paragraph: Test is not present
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
-              - /url: personal-relationships-community
+              - /url: personal-relationships-community#personal_relationships_community_changes
           - button "Go to practitioner analysis"
       `)
     })

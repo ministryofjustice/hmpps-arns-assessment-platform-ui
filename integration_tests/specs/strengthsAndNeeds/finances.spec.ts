@@ -183,60 +183,39 @@ test.describe('Finances Page', () => {
           - term: Where does Test currently get their money from?
           - definition:
             - paragraph: Carer’s allowance
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
-              - /url: finance
+              - /url: finance#finance_income
           - term: Does Test have their own bank account?
           - definition:
             - paragraph: "Yes"
           - definition:
             - link "Change":
-              - /url: finance
+              - /url: finance#finance_bank_account
           - term: How good is Test at managing their money?
           - definition:
             - paragraph: Able to manage their money well and is a strength
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
-              - /url: finance
+              - /url: finance#finance_money_management
           - term: Is Test affected by gambling?
           - definition:
             - paragraph: Yes, their own gambling
-            - paragraph
-            - paragraph
-            - paragraph
           - definition:
             - link "Change":
-              - /url: finance
+              - /url: finance#finance_gambling
           - term: Is Test affected by debt?
           - definition:
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
             - paragraph: "No"
-            - paragraph
           - definition:
             - link "Change":
-              - /url: finance
+              - /url: finance#finance_debt
           - term: Does Test want to make changes to their finances?
           - definition:
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
-            - paragraph
             - paragraph: Test is not present
           - definition:
             - link "Change":
-              - /url: finance
+              - /url: finance#finance_changes
           - button "Go to practitioner analysis"
       `)
     })

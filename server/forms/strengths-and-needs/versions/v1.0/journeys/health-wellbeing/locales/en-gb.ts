@@ -45,6 +45,7 @@ export const english = {
     },
     [Question.neurodiverse_conditions]: {
       text: 'Does %1 have any neurodiverse conditions?',
+      hint: 'Include diagnosis and neurodiverse characteristics.',
       validation: 'Select if they have any neurodiverse conditions',
     },
     [Question.impact_on_learning_abilities]: {
@@ -80,6 +81,7 @@ export const english = {
     },
     [Question.self_harm]: {
       text: 'Has %1 ever self-harmed?',
+      hint: 'Consider what factors or circumstances are associated and if it’s recurring.',
       validation: 'Select if they have ever self-harmed',
     },
     [Question.suicidal_tendencies]: {
