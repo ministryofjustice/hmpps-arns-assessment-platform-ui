@@ -2,7 +2,7 @@ import { GovUKDateInputFull } from '@ministryofjustice/hmpps-forge/govuk-compone
 import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 export const dateOfCurrentSupervisionField = GovUKDateInputFull({
-  code: 'date-of-current-supervision-field',
+  code: 'date-of-current-supervision',
   hint: 'We will fill in this date from NDelius if it is available. Change the date if it is wrong.',
   validWhen: [
     validation({

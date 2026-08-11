@@ -13,6 +13,7 @@ export interface TieringAssessmentEffectShape {
   LoadOffenceCodeDetails: () => EffectFunctionExpr
   CalculateRiskActuarialScores: () => EffectFunctionExpr
   LoadForename: () => EffectFunctionExpr
+  TransformRiskData: () => EffectFunctionExpr
 }
 
 export const { effects: TieringAssessmentEffects, implementations: TieringAssessmentEffectsImplementations } =
@@ -115,5 +116,8 @@ export const { effects: TieringAssessmentEffects, implementations: TieringAssess
           },
         })
       }
+    },
+    TransformRiskData: (deps: TieringAssessmentEffectsDeps) => async (context: TieringAssessmentEffectContext) => {
+      context.setData('riskData', deps.riskActuarialService.createV2AssessmentRiskData(context))
     },
   })
