@@ -2,7 +2,7 @@ import { Answer, Condition, Post, redirect, step, submit } from '@ministryofjust
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { contentFor } from '../../locales'
 import { commonContentFor, sectionPageTitle } from '../../../../locales'
@@ -31,7 +31,7 @@ export const thinkingBehavioursRiskOfSexualHarmStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(
             Section.thinking_behaviours_and_attitudes.statusKey,
-            SectionStatus.incomplete,
+            SectionComplete.no,
           ),
         ],
         next: [

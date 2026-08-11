@@ -3,7 +3,7 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { alcoholUseSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
 
@@ -34,7 +34,7 @@ export const alcoholUseDetailsStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use.statusKey, SectionStatus.incomplete),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use.statusKey, SectionComplete.no),
         ],
         next: [redirect({ goto: Step.alcohol_use_summary.path })],
       },

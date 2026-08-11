@@ -4,7 +4,7 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { sectionPath } from '../../../../constants/path'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPageTitle } from '../../../../locales'
 
 const saveButton = GovUKButton({
@@ -30,7 +30,7 @@ export const addDrugsStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use.statusKey, SectionStatus.incomplete),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use.statusKey, SectionComplete.no),
         ],
         next: [redirect({ goto: Step.drug_details.path })],
       },

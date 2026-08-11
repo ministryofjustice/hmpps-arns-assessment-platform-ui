@@ -1,6 +1,6 @@
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { Section, SectionStatus } from '../../versions/v1.0/constants/section'
+import { Section, SectionComplete } from '../../versions/v1.0/constants/section'
 import { Question } from '../../versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/question'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { CommonOption } from '../../versions/v1.0/constants/commonOption'
@@ -26,7 +26,7 @@ export const setRiskOfSexualHarm =
         type: 'UpdateAssessmentPropertiesCommand',
         assessmentUuid,
         user,
-        added: wrapAll({ [Section.thinking_behaviours_and_attitudes.statusKey]: SectionStatus.incomplete }),
+        added: wrapAll({ [Section.thinking_behaviours_and_attitudes.statusKey]: SectionComplete.no }),
         removed: [],
       }
 
@@ -40,6 +40,6 @@ export const setRiskOfSexualHarm =
         properties: { ...properties, ...updateProperties.added },
       })
       context.setAnswer(Question.thinking_behaviours_attitudes_risk_sexual_harm, CommonOption.yes)
-      context.setData(Section.thinking_behaviours_and_attitudes.statusKey, SectionStatus.incomplete)
+      context.setData(Section.thinking_behaviours_and_attitudes.statusKey, SectionComplete.no)
     }
   }

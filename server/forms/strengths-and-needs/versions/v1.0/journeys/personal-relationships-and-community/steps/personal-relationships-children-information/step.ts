@@ -2,7 +2,7 @@ import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpp
 import { Step } from '../../constants/step'
 import { saveButton } from '../../../../constants/buttons'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { personalRelationshipsCommunitySection } from '../../section'
 import { sectionPageTitle } from '../../../../locales'
@@ -26,7 +26,7 @@ export const personalRelationshipsChildrenInformationStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(
             Section.personal_relationships_and_community.statusKey,
-            SectionStatus.incomplete,
+            SectionComplete.no,
           ),
         ],
         next: [

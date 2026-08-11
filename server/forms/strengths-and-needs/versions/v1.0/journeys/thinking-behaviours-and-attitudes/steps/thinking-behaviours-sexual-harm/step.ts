@@ -1,7 +1,7 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { contentFor } from '../../locales'
 import { commonContentFor, sectionPageTitle } from '../../../../locales'
@@ -33,7 +33,7 @@ export const thinkingBehavioursSexualHarmStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(
             Section.thinking_behaviours_and_attitudes.statusKey,
-            SectionStatus.incomplete,
+            SectionComplete.no,
           ),
         ],
         next: [

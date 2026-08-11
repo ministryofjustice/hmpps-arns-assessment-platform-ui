@@ -1,22 +1,22 @@
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { SectionStatus } from '../../versions/v1.0/constants/section'
+import { SectionComplete } from '../../versions/v1.0/constants/section'
 
-type SectionProgressStatus = (typeof SectionStatus)[keyof typeof SectionStatus]
+type SectionCompleteStatus = (typeof SectionComplete)[keyof typeof SectionComplete]
 
 export const setSectionProgress =
   (deps: StrengthsAndNeedsEffectsDeps) =>
-  async (context: StrengthsAndNeedsContext, code: string, status: SectionProgressStatus) => {
+  async (context: StrengthsAndNeedsContext, sectionStatusKey: string, status: SectionCompleteStatus) => {
     const user = context.getState('user')
     const assessmentUuid = context.getData('assessmentUuid')
 
-    context.setData(code, status)
+    context.setData(sectionStatusKey, status)
 
     await deps.api.executeCommand({
       type: 'UpdateAssessmentPropertiesCommand',
       assessmentUuid,
       user,
-      added: wrapAll({ [code]: status }),
+      added: wrapAll({ [sectionStatusKey]: status }),
       removed: [],
     })
   }

@@ -1,6 +1,6 @@
 import { step, submit, redirect, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { Step } from '../../constants/step'
 import { accommodationSummaryTab } from './fields'
 import { summaryPageTitle } from '../../../../locales'
@@ -16,7 +16,7 @@ export const accommodationSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation.statusKey, SectionStatus.complete),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation.statusKey, SectionComplete.yes),
         ],
         next: [redirect({ goto: Step.accommodation_analysis.path })],
       },
