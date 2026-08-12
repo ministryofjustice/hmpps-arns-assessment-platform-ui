@@ -4,7 +4,7 @@ import {
   ResolvableString,
   FieldBlockDefinition,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { jsxComponent, raw } from '@ministryofjustice/hmpps-forge/jsx-components'
 import { scenarioFieldSchema, ScenarioFieldKey } from '../../scenarios'
 
 /**
@@ -71,7 +71,7 @@ function getFieldLabel(fieldKey: string): string {
  * For text inputs/selects: Shows a checkbox toggle suffix
  * For radios/checkboxes: Injects a "Random" option into the options list
  */
-export const RandomizableField = nunjucksComponent<RandomizableField>('randomizableField', {
+export const RandomizableField = jsxComponent<RandomizableField>('randomizableField', {
   render: props => {
     const fieldBlock = props.field.block as FieldBlockDefinition
     const fieldVariant = String(fieldBlock.variant ?? '')
@@ -87,59 +87,59 @@ export const RandomizableField = nunjucksComponent<RandomizableField>('randomiza
 
     const isRadioType = RADIO_VARIANTS.includes(fieldVariant)
 
-    const wrapperAttrs = [
-      'class="randomizable-field"',
-      `data-field-key="${fieldKey}"`,
-      `data-field-code="${fieldCode}"`,
-      `data-field-type="${isRadioType ? 'radio' : 'text'}"`,
-      `data-randomize-label="${randomizeLabel}"`,
-      `data-field-label="${fieldLabel}"`,
-      isRandomized ? 'data-randomized="true"' : '',
-    ]
-      .filter(Boolean)
-      .join(' ')
+    const wrapperAttributes = {
+      class: 'randomizable-field',
+      'data-field-key': fieldKey,
+      'data-field-code': fieldCode,
+      'data-field-type': isRadioType ? 'radio' : 'text',
+      'data-randomize-label': randomizeLabel,
+      'data-field-label': fieldLabel,
+      'data-randomized': isRandomized ? 'true' : undefined,
+    }
 
-    const hiddenValue = isRandomized ? 'true' : 'false'
+    const hiddenInput = (
+      <input
+        type="hidden"
+        name={randomizeInputName}
+        value={isRandomized ? 'true' : 'false'}
+        class="randomizable-field__hidden"
+      />
+    )
 
     // For radio/checkbox fields, the client JS will inject the "Random" option
     if (isRadioType) {
-      return `
-<randomizable-field-wrapper ${wrapperAttrs}>
-  ${props.field.html}
-  <input type="hidden" name="${randomizeInputName}" value="${hiddenValue}" class="randomizable-field__hidden">
-</randomizable-field-wrapper>
-`.trim()
+      return <randomizable-field-wrapper {...wrapperAttributes}>
+        {raw(props.field.html)}
+        {hiddenInput}
+      </randomizable-field-wrapper>
     }
 
     // For text/select fields, use the checkbox suffix approach
     const checkboxId = `${fieldKey}-randomize-checkbox`
-    const checkboxChecked = isRandomized ? 'checked' : ''
 
-    return `
-<randomizable-field-wrapper ${wrapperAttrs}>
-  <div class="randomizable-field__input-wrapper">
-    ${props.field.html}
-    <div class="randomizable-field__suffix">
-      <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
-        <div class="govuk-checkboxes__item">
-          <input
-            class="govuk-checkboxes__input randomizable-field__checkbox"
-            id="${checkboxId}"
-            name="${randomizeInputName}_checkbox"
-            type="checkbox"
-            value="true"
-            aria-label="${ariaLabel}"
-            ${checkboxChecked}
-          >
-          <label class="govuk-label govuk-checkboxes__label" for="${checkboxId}">
-            ${randomizeLabel}
-          </label>
+    return <randomizable-field-wrapper {...wrapperAttributes}>
+      <div class="randomizable-field__input-wrapper">
+        {raw(props.field.html)}
+        <div class="randomizable-field__suffix">
+          <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item">
+              <input
+                class="govuk-checkboxes__input randomizable-field__checkbox"
+                id={checkboxId}
+                name={`${randomizeInputName}_checkbox`}
+                type="checkbox"
+                value="true"
+                aria-label={ariaLabel}
+                checked={isRandomized}
+              />
+              <label class="govuk-label govuk-checkboxes__label" for={checkboxId}>
+                {randomizeLabel}
+              </label>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  <input type="hidden" name="${randomizeInputName}" value="${hiddenValue}" class="randomizable-field__hidden">
-</randomizable-field-wrapper>
-`.trim()
+      {hiddenInput}
+    </randomizable-field-wrapper>
   },
 })

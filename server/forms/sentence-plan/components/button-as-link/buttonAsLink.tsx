@@ -1,9 +1,5 @@
-import {
-  component,
-  BlockDefinition,
-  ResolvableBoolean,
-  ResolvableString,
-} from '@ministryofjustice/hmpps-forge/core/components'
+import { BlockDefinition, ResolvableBoolean, ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
+import { jsxComponent } from '@ministryofjustice/hmpps-forge/jsx-components'
 
 /**
  * Button styled as a link component.
@@ -49,39 +45,23 @@ export interface ButtonAsLink extends BlockDefinition {
   attributes?: Record<string, string>
 }
 
-function escapeHtml(str: string): string {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-}
-
-export const ButtonAsLink = component<ButtonAsLink>('buttonAsLink', {
+export const ButtonAsLink = jsxComponent<ButtonAsLink>('buttonAsLink', {
   render: props => {
     const classes = ['button-as-link', props.classes].filter(Boolean).join(' ')
-    const type = props.buttonType ?? 'submit'
 
-    const attrs: string[] = [`type="${type}"`, `class="${escapeHtml(classes)}"`]
+    // Evaluation widens the literal prop types, so pin the type back to the union
+    const buttonType = (props.buttonType as ButtonAsLink['buttonType']) ?? 'submit'
 
-    if (props.id) {
-      attrs.push(`id="${escapeHtml(props.id)}"`)
-    }
-
-    if (props.name) {
-      attrs.push(`name="${escapeHtml(props.name)}"`)
-    }
-
-    if (props.value) {
-      attrs.push(`value="${escapeHtml(props.value)}"`)
-    }
-
-    if (props.disabled) {
-      attrs.push('disabled')
-    }
-
-    if (props.attributes) {
-      Object.entries(props.attributes).forEach(([key, value]) => {
-        attrs.push(`${escapeHtml(key)}="${escapeHtml(String(value))}"`)
-      })
-    }
-
-    return `<button ${attrs.join(' ')}>${escapeHtml(props.text)}</button>`
+    return <button
+        type={buttonType}
+        class={classes}
+        id={props.id}
+        name={props.name}
+        value={props.value}
+        disabled={Boolean(props.disabled)}
+        {...props.attributes}
+      >
+        {props.text}
+      </button>
   },
 })

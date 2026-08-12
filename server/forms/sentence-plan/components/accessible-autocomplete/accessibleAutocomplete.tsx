@@ -6,7 +6,7 @@ import {
   ResolvableString,
   FieldBlockDefinition,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { jsxComponent, raw } from '@ministryofjustice/hmpps-forge/jsx-components'
 
 /**
  * Accessible Autocomplete wrapper component.
@@ -101,20 +101,21 @@ export interface AccessibleAutocomplete extends BlockDefinition {
   classes?: ResolvableString
 }
 
+/** The client JS reads these as literal "true"/"false" strings, so undefined must stay omitted */
+const asFlag = (value: unknown): string | undefined => (value === undefined ? undefined : String(value))
+
 /**
  * Renders the AccessibleAutocomplete wrapper component.
  *
  * Outputs:
  * 1. A script tag with type="application/json" containing the autocomplete data
- * 2. A wrapper div with data attributes around the field's HTML
+ * 2. A wrapper element with data attributes around the field's HTML
  */
-export const AccessibleAutocomplete = nunjucksComponent<AccessibleAutocomplete>('accessibleAutocomplete', {
+export const AccessibleAutocomplete = jsxComponent<AccessibleAutocomplete>('accessibleAutocomplete', {
   render: props => {
     const fieldBlock = props.field.block as FieldBlockDefinition & { value?: unknown; defaultValue?: unknown }
     const fieldCode = fieldBlock.code ?? 'autocomplete-field'
     const dataId = `autocomplete-data-${fieldCode}`
-
-    const dataScript = `<script type="application/json" id="${dataId}" data-qa="${dataId}">${JSON.stringify(props.data)}</script>`
 
     const defaultValue = fieldBlock.value ?? fieldBlock.defaultValue
 
@@ -122,24 +123,27 @@ export const AccessibleAutocomplete = nunjucksComponent<AccessibleAutocomplete>(
     // leaves the dropdown menu (sized off the wrapper) at full width and overhanging.
     const wrapperClasses = ['accessible-autocomplete-wrapper', props.classes].filter(Boolean).join(' ')
 
-    const wrapperAttrs = [
-      `class="${wrapperClasses}"`,
-      `data-autocomplete-source="${dataId}"`,
-      defaultValue !== undefined ? `data-autocomplete-default-value="${defaultValue}"` : '',
-      props.dataKeyFrom ? `data-autocomplete-source-key-from="${props.dataKeyFrom}"` : '',
-      props.minLength !== undefined ? `data-autocomplete-min-length="${props.minLength}"` : '',
-      props.showNoOptionsFound !== undefined ? `data-autocomplete-show-no-options="${props.showNoOptionsFound}"` : '',
-      props.autoselect !== undefined ? `data-autocomplete-autoselect="${props.autoselect}"` : '',
-      props.confirmOnBlur !== undefined ? `data-autocomplete-confirm-on-blur="${props.confirmOnBlur}"` : '',
-      props.displayMenu !== undefined ? `data-autocomplete-display-menu="${props.displayMenu}"` : '',
-      props.showAllValues !== undefined ? `data-autocomplete-show-all-values="${props.showAllValues}"` : '',
-      props.menuAttributes !== undefined
-        ? `data-autocomplete-menu-attributes='${JSON.stringify(props.menuAttributes)}'`
-        : '',
-    ]
-      .filter(Boolean)
-      .join(' ')
-
-    return `${dataScript}\n<accessible-autocomplete-wrapper ${wrapperAttrs}>\n${props.field.html}\n</accessible-autocomplete-wrapper>`
+    return <>
+      <script type="application/json" id={dataId} data-qa={dataId}>
+        {raw(JSON.stringify(props.data))}
+      </script>
+      <accessible-autocomplete-wrapper
+        class={wrapperClasses}
+        data-autocomplete-source={dataId}
+        data-autocomplete-default-value={asFlag(defaultValue)}
+        data-autocomplete-source-key-from={props.dataKeyFrom || undefined}
+        data-autocomplete-min-length={asFlag(props.minLength)}
+        data-autocomplete-show-no-options={asFlag(props.showNoOptionsFound)}
+        data-autocomplete-autoselect={asFlag(props.autoselect)}
+        data-autocomplete-confirm-on-blur={asFlag(props.confirmOnBlur)}
+        data-autocomplete-display-menu={asFlag(props.displayMenu)}
+        data-autocomplete-show-all-values={asFlag(props.showAllValues)}
+        data-autocomplete-menu-attributes={
+          props.menuAttributes !== undefined ? JSON.stringify(props.menuAttributes) : undefined
+        }
+      >
+        {raw(props.field.html)}
+      </accessible-autocomplete-wrapper>
+    </>
   },
 })

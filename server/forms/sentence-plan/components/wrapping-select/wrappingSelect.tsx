@@ -1,5 +1,5 @@
 import { BlockDefinition, FieldBlockDefinition } from '@ministryofjustice/hmpps-forge/core/components'
-import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { jsxComponent, raw } from '@ministryofjustice/hmpps-forge/jsx-components'
 
 /**
  * Wraps a GovUKSelectInput with a custom ARIA combobox so long option labels can
@@ -26,8 +26,6 @@ export interface WrappingSelect extends BlockDefinition {
   field: FieldBlockDefinition
 }
 
-export const WrappingSelect = nunjucksComponent<WrappingSelect>('wrappingSelect', {
-  render: props => {
-    return `<wrapping-select-wrapper class="wrapping-select">\n${props.field.html}\n</wrapping-select-wrapper>`
-  },
+export const WrappingSelect = jsxComponent<WrappingSelect>('wrappingSelect', {
+  render: props => <wrapping-select-wrapper class="wrapping-select">{raw(props.field.html)}</wrapping-select-wrapper>,
 })
