@@ -61,6 +61,10 @@ export class RiskActuarialService {
       excessiveAlcoholUse: this.parseProblemLevel(context.getAnswer('binge-drinking')),
       currentRelationshipStatus: this.getCurrentRelationshipStatus(context),
       currentRelationshipWithPartner: this.parseProblemLevel(context.getAnswer('relationship-satisfaction')),
+      regularOffendingActivities: this.parseProblemLevel(context.getAnswer('regular-offending-activities')),
+      temperControl: this.parseProblemLevel(context.getAnswer('temper-control')),
+      impulsivityProblems: this.parseProblemLevel(context.getAnswer('impulsivity-problems')),
+      proCriminalAttitudes: this.parseProblemLevel(context.getAnswer('pro-criminal-attitudes')),
     }
   }
 
