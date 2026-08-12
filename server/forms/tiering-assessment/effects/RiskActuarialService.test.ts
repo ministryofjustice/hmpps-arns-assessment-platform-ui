@@ -665,7 +665,7 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and current-alcohol-use-problems is null', async () => {
+  it('should return null if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and current-alcohol-use-problems is null', async () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': null,
@@ -683,7 +683,7 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and units-of-alcohol is null', async () => {
+  it('should return null if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and units-of-alcohol is null', async () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 4,

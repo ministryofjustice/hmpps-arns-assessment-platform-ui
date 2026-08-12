@@ -67,12 +67,12 @@ export const bingeDrinkingField = GovUKRadioInput({
     {
       value: 'SOME_PROBLEMS',
       text: 'Some evidence of binge drinking or excessive alcohol use',
-      hint: 'There is a pattern of alcohol use but has not caused any serious problems',
+      hint: 'There is a pattern of alcohol use but has not caused any serious problems.',
     },
     {
       value: 'SIGNIFICANT_PROBLEMS',
       text: 'Evidence of binge drinking or excessive alcohol use',
-      hint: 'There is a detrimental effect on other areas of their life and is often directly related to offending',
+      hint: 'There is a detrimental effect on other areas of their life and is often directly related to offending.',
     },
     { divider: 'or' },
     { value: null, text: 'Unknown' },
@@ -97,7 +97,7 @@ export const alcoholUnitsTable = GovUKDetails({
   </thead>
   <tbody class="govuk-table__body">
     <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Single small shot of spirits (25ml, ABV 40%) For example, whisky or vodka</td>
+      <td class="govuk-table__cell">Single small shot of spirits (25ml, ABV 40%) For example, whisky or vodka.</td>
       <td class="govuk-table__cell">1 unit</td>
     </tr>
     <tr class="govuk-table__row">
