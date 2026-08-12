@@ -65,7 +65,7 @@
       {% include "sentence-plan/components/custom-sentence-plan-footer/customSentencePlanFooter.njk" %}
     {% else %}
       {{ pdsFooter({
-        baseUrl: footerBaseUrl or "/platform"
+        baseUrl: footerBaseUrl or basePath or "/platform"
       }) }}
     {% endif %}
   {% endblock %}

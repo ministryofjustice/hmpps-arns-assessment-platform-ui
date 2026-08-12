@@ -67,6 +67,11 @@ export interface PrivacyScreenConfig {
    * (e.g., 'Close other applications')
    */
   title: ResolvableString
+
+  /**
+   * Url for the feedback form
+   */
+  feedbackUrl: string
 }
 
 /**
@@ -124,6 +129,7 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
         backlink: when(Data('accessDetails.accessType').match(Condition.Equals('OASYS')))
           .then(Data('accessDetails.oasysRedirectUrl'))
           .else(null),
+        feedbackUrl: config.feedbackUrl,
       },
     },
     blocks: [createFormContent(personForename)],
