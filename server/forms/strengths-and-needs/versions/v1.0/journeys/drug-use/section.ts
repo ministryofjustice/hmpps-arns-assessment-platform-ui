@@ -774,7 +774,7 @@ const riskOfReoffending = question({
 })
 
 export const drugUseSection = {
-  fields: {
+  questions: {
     drugUse,
     selectMisusedDrugs,
     moreThanSixMonthsDetails,
@@ -787,6 +787,8 @@ export const drugUseSection = {
     anythingHelpedStopOrReduce,
     whatCouldHelpNotUseInFuture,
     drugUseChanges,
+  },
+  practitionerAnalysis: {
     motivatedToStop,
     strengthsOrProtectiveFactors,
     riskOfSeriousHarm,

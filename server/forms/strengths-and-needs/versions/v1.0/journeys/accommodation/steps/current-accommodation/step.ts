@@ -16,7 +16,7 @@ export const currentAccommodationStep = step({
       sectionTitleClass,
     },
   },
-  blocks: [accommodationSection.fields.currentAccommodation.displayModes.field, saveButton],
+  blocks: [accommodationSection.questions.currentAccommodation.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

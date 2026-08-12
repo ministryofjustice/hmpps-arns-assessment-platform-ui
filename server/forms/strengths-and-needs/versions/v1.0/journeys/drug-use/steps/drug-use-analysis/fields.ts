@@ -15,10 +15,10 @@ import { drugUseSection } from '../../section'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
-    drugUseSection.fields.motivatedToStop.displayModes.summaryRow,
-    drugUseSection.fields.strengthsOrProtectiveFactors.displayModes.summaryRow,
-    drugUseSection.fields.riskOfSeriousHarm.displayModes.summaryRow,
-    drugUseSection.fields.riskOfReoffending.displayModes.summaryRow,
+    drugUseSection.practitionerAnalysis.motivatedToStop.displayModes.summaryRow,
+    drugUseSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.summaryRow,
+    drugUseSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.summaryRow,
+    drugUseSection.practitionerAnalysis.riskOfReoffending.displayModes.summaryRow,
   ],
 })
 

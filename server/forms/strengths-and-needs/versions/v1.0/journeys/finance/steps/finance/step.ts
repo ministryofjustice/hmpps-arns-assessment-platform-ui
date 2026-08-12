@@ -11,12 +11,12 @@ export const financeStep = step({
   title: sectionPageTitle(Section.finance),
   reachability: { entryWhen: true },
   blocks: [
-    financeSection.fields.income.displayModes.field,
-    financeSection.fields.bankAccount.displayModes.field,
-    financeSection.fields.moneyManagement.displayModes.field,
-    financeSection.fields.gambling.displayModes.field,
-    financeSection.fields.debt.displayModes.field,
-    financeSection.fields.changes.displayModes.field,
+    financeSection.questions.income.displayModes.field,
+    financeSection.questions.bankAccount.displayModes.field,
+    financeSection.questions.moneyManagement.displayModes.field,
+    financeSection.questions.gambling.displayModes.field,
+    financeSection.questions.debt.displayModes.field,
+    financeSection.questions.changes.displayModes.field,
     saveButton,
   ],
   view: {

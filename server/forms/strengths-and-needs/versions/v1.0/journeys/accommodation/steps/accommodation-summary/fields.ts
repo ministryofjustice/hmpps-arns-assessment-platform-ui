@@ -6,14 +6,14 @@ import { commonContentFor } from '../../../../locales'
 
 export const accommodationSummary = GovUKSummaryList({
   rows: [
-    accommodationSection.fields.currentAccommodation.displayModes.summaryRow,
-    accommodationSection.fields.livingWith.displayModes.summaryRow,
-    accommodationSection.fields.suitableHousingLocation.displayModes.summaryRow,
-    accommodationSection.fields.suitableHousing.displayModes.summaryRow,
-    accommodationSection.fields.noAccommodationReason.displayModes.summaryRow,
-    accommodationSection.fields.pastAccommodationDetails.displayModes.summaryRow,
-    accommodationSection.fields.suitableHousingPlanned.displayModes.summaryRow,
-    accommodationSection.fields.changes.displayModes.summaryRow,
+    accommodationSection.questions.currentAccommodation.displayModes.summaryRow,
+    accommodationSection.questions.livingWith.displayModes.summaryRow,
+    accommodationSection.questions.suitableHousingLocation.displayModes.summaryRow,
+    accommodationSection.questions.suitableHousing.displayModes.summaryRow,
+    accommodationSection.questions.noAccommodationReason.displayModes.summaryRow,
+    accommodationSection.questions.pastAccommodationDetails.displayModes.summaryRow,
+    accommodationSection.questions.suitableHousingPlanned.displayModes.summaryRow,
+    accommodationSection.questions.changes.displayModes.summaryRow,
   ],
 })
 
@@ -32,9 +32,9 @@ export const accommodationSummaryTab = GovUKTabs({
       label: commonContentFor('practitioner_analysis'),
       panel: {
         blocks: [
-          accommodationSection.fields.strengthsOrProtectiveFactors.displayModes.field,
-          accommodationSection.fields.riskOfSeriousHarm.displayModes.field,
-          accommodationSection.fields.riskOfReoffending.displayModes.field,
+          accommodationSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
+          accommodationSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
+          accommodationSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
           markAsCompleteButton,
         ],
       },
