@@ -81,11 +81,13 @@ export class RiskActuarialService {
 
   private getCurrentAlcoholUseProblems(context: TieringAssessmentEffectContext): ProblemLevel | null {
     const hasEverDrunkAlcohol = this.parseString(context.getAnswer('has-ever-drunk-alcohol'))
+    const currentAlcoholUseFrequency = this.parseNumber(context.getAnswer('current-alcohol-use-frequency'))
+    const unitsOfAlcohol = this.parseNumber(context.getAnswer('units-of-alcohol'))
 
     if (hasEverDrunkAlcohol === null || hasEverDrunkAlcohol === 'unknown') return null
     if (hasEverDrunkAlcohol === 'YES_NOT_IN_LAST_THREE_MONTHS' || hasEverDrunkAlcohol === 'NO') return 'NO_PROBLEMS'
 
-    return this.currentAlcoholUseToProblemLevel(this.parseNumber(context.getAnswer('current-alcohol-use-frequency')))
+    return this.currentAlcoholUseAndUnitsToProblemLevel(currentAlcoholUseFrequency, unitsOfAlcohol)
   }
 
   private saveScoresToContext(context: TieringAssessmentEffectContext, riskScores: RiskScores): void {
@@ -190,18 +192,18 @@ export class RiskActuarialService {
     return str as MotivationLevel
   }
 
-  private currentAlcoholUseToProblemLevel(frequency: number | null): ProblemLevel | null {
-    if (frequency === null) {
+  private currentAlcoholUseAndUnitsToProblemLevel(
+    frequency: number | null,
+    unitsOfAlcohol: number | null,
+  ): ProblemLevel | null {
+    if (frequency === null || unitsOfAlcohol === null) {
       return null
     }
 
-    if (frequency < 3) {
-      return this.parseProblemLevel('NO_PROBLEMS')
-    }
-    if (frequency === 3) {
-      return this.parseProblemLevel('SOME_PROBLEMS')
-    }
-    return this.parseProblemLevel('SIGNIFICANT_PROBLEMS')
+    const alcoholSummary = frequency + unitsOfAlcohol
 
+    if (alcoholSummary <= 4) return this.parseProblemLevel('NO_PROBLEMS')
+    if (alcoholSummary <= 7) return this.parseProblemLevel('SOME_PROBLEMS')
+    return this.parseProblemLevel('SIGNIFICANT_PROBLEMS')
   }
 }
