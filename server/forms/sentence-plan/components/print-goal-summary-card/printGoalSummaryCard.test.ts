@@ -1,7 +1,7 @@
 import nunjucks from 'nunjucks'
 import { StructureType } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { EvaluatedBlock } from '@ministryofjustice/hmpps-forge/core/components'
-import { PrintGoalSummaryCardDefinition, printGoalSummaryCard } from './printGoalSummaryCard'
+import { PrintGoalSummaryCard } from './printGoalSummaryCard'
 
 const nunjucksEnv = nunjucks.configure(
   ['server/views', 'server/forms', 'node_modules/govuk-frontend/dist/', 'node_modules/@ministryofjustice/frontend/'],
@@ -10,7 +10,7 @@ const nunjucksEnv = nunjucks.configure(
 
 describe('print goal summary card', () => {
   it('renders the print-only goal and step layout', async () => {
-    const html = await printGoalSummaryCard.render(
+    const html = await PrintGoalSummaryCard.render(
       {
         type: StructureType.BLOCK,
         variant: 'printGoalSummaryCard',
@@ -23,7 +23,7 @@ describe('print goal summary card', () => {
           { actor: 'Probation practitioner', description: 'Find accommodation advice', status: 'COMPLETED' },
           { actor: 'Joan', description: 'Follow the approved premises rules', status: 'IN_PROGRESS' },
         ],
-      } as EvaluatedBlock<PrintGoalSummaryCardDefinition>,
+      } as EvaluatedBlock<PrintGoalSummaryCard>,
       nunjucksEnv,
     )
 

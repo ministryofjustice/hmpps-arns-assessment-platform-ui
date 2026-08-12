@@ -1,18 +1,30 @@
-import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   BlockDefinition,
   ResolvableBoolean,
   ResolvableString,
-  EvaluatedBlock,
   FieldBlockDefinition,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import { scenarioFieldSchema, ScenarioFieldKey } from '../../scenarios'
 
 /**
- * Props for the RandomizableField component.
+ * RandomizableField wrapper around a form field.
+ *
+ * When the randomize checkbox is checked:
+ * - The field input is disabled (visually and functionally)
+ * - The hidden input value is set to "true"
+ * - The field will use a random value when the scenario is loaded
+ *
+ * @example
+ * ```typescript
+ * RandomizableField({
+ *   field: GovUKTextInput({ code: 'givenName', label: 'Given name' }),
+ *   fieldKey: 'givenName',
+ *   randomize: true,
+ * })
+ * ```
  */
-export interface RandomizableFieldProps {
+export interface RandomizableField extends BlockDefinition {
   /**
    * The field to wrap with randomization controls.
    * Can be any field type (text input, select, etc.)
@@ -40,23 +52,10 @@ export interface RandomizableFieldProps {
 }
 
 /**
- * RandomizableField component interface.
- */
-export interface RandomizableField extends BlockDefinition, RandomizableFieldProps {
-  variant: 'randomizableField'
-}
-
-/**
  * Field variants that should use the "Random" option approach instead of suffix toggle
  */
 const RADIO_VARIANTS = ['govukRadioInput', 'govukCheckboxes']
 
-/**
- * Renders the RandomizableField wrapper component.
- *
- * For text inputs/selects: Shows a checkbox toggle suffix
- * For radios/checkboxes: Injects a "Random" option into the options list
- */
 /**
  * Get the accessible label for a field from the schema
  */
@@ -66,16 +65,21 @@ function getFieldLabel(fieldKey: string): string {
   return schemaEntry?.label ?? fieldKey
 }
 
-export const randomizableField = buildNunjucksComponent<RandomizableField>(
-  'randomizableField',
-  (block: EvaluatedBlock<RandomizableField>): string => {
-    const fieldBlock = block.field.block as FieldBlockDefinition
+/**
+ * Renders the RandomizableField wrapper component.
+ *
+ * For text inputs/selects: Shows a checkbox toggle suffix
+ * For radios/checkboxes: Injects a "Random" option into the options list
+ */
+export const RandomizableField = nunjucksComponent<RandomizableField>('randomizableField', {
+  render: props => {
+    const fieldBlock = props.field.block as FieldBlockDefinition
     const fieldVariant = String(fieldBlock.variant ?? '')
     const fieldCode = String(fieldBlock.code ?? 'field')
-    const fieldKey = String(block.fieldKey ?? fieldCode)
+    const fieldKey = String(props.fieldKey ?? fieldCode)
     const randomizeInputName = `${fieldKey}_randomize`
-    const isRandomized = block.randomize === true
-    const randomizeLabel = String(block.randomizeLabel ?? 'Random')
+    const isRandomized = props.randomize === true
+    const randomizeLabel = String(props.randomizeLabel ?? 'Random')
 
     // Get accessible label from schema for aria-label
     const fieldLabel = getFieldLabel(fieldKey)
@@ -101,7 +105,7 @@ export const randomizableField = buildNunjucksComponent<RandomizableField>(
     if (isRadioType) {
       return `
 <randomizable-field-wrapper ${wrapperAttrs}>
-  ${block.field.html}
+  ${props.field.html}
   <input type="hidden" name="${randomizeInputName}" value="${hiddenValue}" class="randomizable-field__hidden">
 </randomizable-field-wrapper>
 `.trim()
@@ -114,7 +118,7 @@ export const randomizableField = buildNunjucksComponent<RandomizableField>(
     return `
 <randomizable-field-wrapper ${wrapperAttrs}>
   <div class="randomizable-field__input-wrapper">
-    ${block.field.html}
+    ${props.field.html}
     <div class="randomizable-field__suffix">
       <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
         <div class="govuk-checkboxes__item">
@@ -138,25 +142,4 @@ export const randomizableField = buildNunjucksComponent<RandomizableField>(
 </randomizable-field-wrapper>
 `.trim()
   },
-)
-
-/**
- * Creates a randomizable field wrapper around a form field.
- *
- * When the randomize checkbox is checked:
- * - The field input is disabled (visually and functionally)
- * - The hidden input value is set to "true"
- * - The field will use a random value when the scenario is loaded
- *
- * @example
- * ```typescript
- * RandomizableField({
- *   field: GovUKTextInput({ code: 'givenName', label: 'Given name' }),
- *   fieldKey: 'givenName',
- *   randomize: true,
- * })
- * ```
- */
-export function RandomizableField(props: RandomizableFieldProps): RandomizableField {
-  return blockBuilder<RandomizableField>({ ...props, variant: 'randomizableField' })
-}
+})
