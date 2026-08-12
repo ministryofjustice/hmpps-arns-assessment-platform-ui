@@ -1,7 +1,7 @@
 import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { alcoholFrequencyLastThreeMonthsField, signsOfBingeDrinkingField, unitsOfAlcoholTypicalDrinkingDayField } from './fields'
+import { currentAlcoholUseFrequencyField } from './fields'
+import { bingeDrinkingField, continueButton } from '../../common'
 
 export const alcoholStep = step({
   path: '/alcohol',
@@ -11,7 +11,7 @@ export const alcoholStep = step({
       effects: [TieringAssessmentEffects.LoadAssessmentData()],
     }),
   ],
-  blocks: [alcoholFrequencyLastThreeMonthsField, unitsOfAlcoholTypicalDrinkingDayField, signsOfBingeDrinkingField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [currentAlcoholUseFrequencyField, bingeDrinkingField, continueButton],
   onSubmission: [
     submit({
       validate: true,

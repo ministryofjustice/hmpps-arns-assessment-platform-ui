@@ -301,7 +301,7 @@ describe('RiskActuarialService', () => {
       'other-drug-radio': 'true',
       'motivation-to-tackle-drug-misuse': 'PARTIAL_MOTIVATION',
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
-      'current-alcohol-use-problems': 'SOME_PROBLEMS',
+      'current-alcohol-use-frequency': '3',
       'binge-drinking': 'SIGNIFICANT_PROBLEMS',
       'who-are-they-living-with': 'partner',
       'important-relationships': 'partner',
@@ -624,10 +624,26 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS', async () => {
+  it('should return "NO_PROBLEMS" if "has-ever-drunk-alcohol" is YES_NOT_IN_LAST_THREE_MONTHS', async () => {
+    const answers: Record<string, unknown> = {
+      'has-ever-drunk-alcohol': 'YES_NOT_IN_LAST_THREE_MONTHS',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentAlcoholUseProblems: 'NO_PROBLEMS',
+      }),
+    )
+  })
+
+  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and current-alcohol-use-problems > 3', async () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
-      'current-alcohol-use-problems': 'SIGNIFICANT_PROBLEMS',
+      'current-alcohol-use-frequency': '4',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -641,9 +657,27 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return "NO_PROBLEMS" if "has-ever-drunk-alcohol" is YES_NOT_IN_LAST_THREE_MONTHS', async () => {
+  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and current-alcohol-use-problems === 3', async () => {
     const answers: Record<string, unknown> = {
-      'has-ever-drunk-alcohol': 'YES_NOT_IN_LAST_THREE_MONTHS',
+      'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
+      'current-alcohol-use-frequency': '3',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentAlcoholUseProblems: 'SOME_PROBLEMS',
+      }),
+    )
+  })
+
+  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and current-alcohol-use-problems < 3', async () => {
+    const answers: Record<string, unknown> = {
+      'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
+      'current-alcohol-use-frequency': '2',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -653,6 +687,40 @@ describe('RiskActuarialService', () => {
     expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
       expect.objectContaining({
         currentAlcoholUseProblems: 'NO_PROBLEMS',
+      }),
+    )
+  })
+
+  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and current-alcohol-use-problems < 3', async () => {
+    const answers: Record<string, unknown> = {
+      'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
+      'current-alcohol-use-frequency': '2',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentAlcoholUseProblems: 'NO_PROBLEMS',
+      }),
+    )
+  })
+
+  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and current-alcohol-use-problems is null', async () => {
+    const answers: Record<string, unknown> = {
+      'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
+      'current-alcohol-use-frequency': 'null',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentAlcoholUseProblems: null,
       }),
     )
   })
