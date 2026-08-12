@@ -1,6 +1,6 @@
 import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { currentAlcoholUseFrequencyField, bingeDrinkingField, unitsOfAlcoholField } from './fields'
+import { currentAlcoholUseFrequencyField, bingeDrinkingField, unitsOfAlcoholField, alcoholUnitsTable } from './fields'
 import { continueButton } from '../../common'
 
 export const alcoholStep = step({
@@ -11,7 +11,7 @@ export const alcoholStep = step({
       effects: [TieringAssessmentEffects.LoadAssessmentData()],
     }),
   ],
-  blocks: [currentAlcoholUseFrequencyField, unitsOfAlcoholField, bingeDrinkingField, continueButton],
+  blocks: [currentAlcoholUseFrequencyField, unitsOfAlcoholField, alcoholUnitsTable, bingeDrinkingField, continueButton],
   onSubmission: [
     submit({
       validate: true,
