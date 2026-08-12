@@ -50,7 +50,7 @@ describe('criminogenicNeeds', () => {
       expect(result).toBe(mapped)
     })
 
-    it('should throw when the MPoP user has no token', async () => {
+    it('should throw an error when the MPoP user has no token', async () => {
       const getCriminogenicNeeds = jest.fn()
       const deps = createMockDeps(getCriminogenicNeeds)
       const context = createMockContext({
@@ -64,7 +64,7 @@ describe('criminogenicNeeds', () => {
       expect(getCriminogenicNeeds).not.toHaveBeenCalled()
     })
 
-    it('should throw when the MPoP user has no crn', async () => {
+    it('should throw an error when the MPoP user has no crn', async () => {
       const getCriminogenicNeeds = jest.fn()
       const deps = createMockDeps(getCriminogenicNeeds)
       const context = createMockContext({
