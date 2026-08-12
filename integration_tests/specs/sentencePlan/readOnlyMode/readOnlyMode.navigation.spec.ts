@@ -72,11 +72,11 @@ test.describe('READ_ONLY Access Mode', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       // Should be on current tab by default
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       // Switch to future tab
       await planOverviewPage.clickFutureGoalsTab()
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       const goalTitle = await planOverviewPage.getGoalCardTitle(0)
       expect(goalTitle).toContain('Future Goal')
@@ -149,7 +149,7 @@ test.describe('READ_ONLY Access Mode', () => {
       await restrictedUrls.reduce(async (previousNavigation, url) => {
         await previousNavigation
         await page.goto(url)
-        await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
+        await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=current`)
       }, Promise.resolve())
     })
 

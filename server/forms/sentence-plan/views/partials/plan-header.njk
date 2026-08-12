@@ -1,6 +1,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
+{% set showDowntimeNotificationBanner = featureFlags.downtimeNotificationBanner %}
+
 {% if hidePlanHeader %}
   <div class="govuk-width-container">
     <div class="plan-header" style="padding: 0; min-height: 1px;"></div>
@@ -21,6 +23,11 @@
 
   <div class="govuk-width-container">
     <div class="plan-header{% if showPrintPageHeaders %} plan-header--print-preview{% endif %}" data-qa="plan-header">
+      {% if showDowntimeNotificationBanner and not showPrintPageHeaders %}
+        <div class="sp-downtime-banner govuk-width-container govuk-!-display-none-print" data-qa="downtime-banner">
+          {% include "sentence-plan/views/partials/downtime-banner.njk" %}
+        </div>
+      {% endif %}
       <div class="govuk-grid-row plan-header__subject-details-row">
           <div class="govuk-grid-column-full plan-header__subject-details">
             <p class="plan-header__subject-details__title">{{ fullName }}</p>
@@ -121,7 +128,7 @@
                     }) }}
                   {% endif %}
                   {% if buttons.showCreateGoalButton %}
-                    {% set createGoalHref = basePath + '/goal/new/add-goal/accommodation' + ('?type=' + currentTab if currentTab else '') %}
+                    {% set createGoalHref = basePath + '/goal/new/select-area-of-need' + ('?goalStatusTab=' + currentTab if currentTab and currentTab != 'current' else '') %}
                     {{ govukButton({
                       text: 'Create goal',
                       href: createGoalHref,

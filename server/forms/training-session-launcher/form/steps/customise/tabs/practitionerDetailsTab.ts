@@ -16,7 +16,7 @@ export const practitionerDetailsTabContent = [
     content: `
       <p class="govuk-body">
         These details identify the practitioner accessing the training session.
-        Check "Randomize" to generate a new value each time the scenario is loaded.
+        Check "Randomise" to generate a new value each time the scenario is loaded.
       </p>
     `,
   }),
