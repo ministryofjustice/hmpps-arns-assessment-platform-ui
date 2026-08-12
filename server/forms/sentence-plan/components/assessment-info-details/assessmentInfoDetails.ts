@@ -3,10 +3,11 @@ import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-n
 import {
   BasicBlockProps,
   BlockDefinition,
+  ResolvableObject,
   ResolvableString,
   EvaluatedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { ChainableRef, ChainableScopedRef, block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   AssessmentArea,
   LinkedIndicator,
@@ -17,7 +18,7 @@ export interface AssessmentInfoDetailsProps extends BasicBlockProps {
   personName: ResolvableString
   areaName: ResolvableString
   // assessment data: can be static, a Data() reference, or an Item() scoped reference
-  assessmentData: AssessmentArea | null | ChainableRef | ChainableScopedRef
+  assessmentData: ResolvableObject<AssessmentArea> | null
   status: ResolvableString
   fullWidth?: boolean
   // when true (default), wraps content in a govuk details component.

@@ -1,7 +1,8 @@
-import { block as blockBuilder, ChainableRef } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   BlockDefinition,
   ResolvableBoolean,
+  ResolvableObject,
   ResolvableString,
   EvaluatedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
@@ -15,7 +16,7 @@ import config from '../../../../config'
  */
 export interface PreviousVersionsProps {
   personName: ResolvableString
-  previousVersions: PreviousVersionsResponse | ChainableRef
+  previousVersions: ResolvableObject<PreviousVersionsResponse>
   showAssessmentColumn?: ResolvableBoolean
 }
 

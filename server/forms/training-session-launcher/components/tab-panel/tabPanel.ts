@@ -1,11 +1,12 @@
 import type nunjucks from 'nunjucks'
 import {
   BlockDefinition,
+  ResolvableArray,
   ResolvableString,
   EvaluatedBlock,
   RenderedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { ChainableExpr, ChainableIterable, ChainableRef, block } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { block } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 
 /**
@@ -39,7 +40,7 @@ export interface TabPanelProps {
    * Array of selectable items.
    * Can be a static array or a Data reference with Iterator.Map
    */
-  items: TabPanelItem[] | ChainableRef | ChainableExpr<TabPanelItem[]> | ChainableIterable
+  items: ResolvableArray<TabPanelItem>
 
   /** ID of the initially selected item (defaults to first item) */
   defaultSelected?: ResolvableString
