@@ -23,11 +23,6 @@
     }
   }
 
-  &__actions {
-    display: flex;
-    justify-content: flex-end;
-  }
-
   &__subject-details {
     margin-left: govuk-spacing(-3);
     margin-right: govuk-spacing(-3);
@@ -86,6 +81,7 @@
       }
 
       & a {
+        @include govuk-font(19);
         padding-left: govuk-spacing(1);
       }
     }
@@ -94,6 +90,15 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
+
+      &__actions {
+        display: flex;
+        justify-content: flex-end;
+
+        & a {
+          margin-bottom: govuk-spacing(3);
+        }
+      }
     }
   }
 }

@@ -68,13 +68,13 @@
             </div>
           </div>
         </div>
-        <div class="govuk-grid-row">
+        <div class="govuk-grid-row assessment-header__subject-details__bottom">
           <div class="govuk-grid-column-one-half">
             <p class="assessment-header__subject-details__name">{{ fullName }}</p>
           </div>
           <div class="govuk-grid-column-one-half">
             {% if params.headerPageHeading %}
-              <div class="assessment-header__actions">
+              <div class="assessment-header__subject-details__bottom__actions">
                 {{ mojPageHeaderActions({
                   heading: {
                     text: params.headerPageHeading,
@@ -84,7 +84,7 @@
                 }) }}
               </div>
             {% elseif buttonItems | length %}
-              <div class="assessment-header__actions govuk-!-display-none-print">
+              <div class="assessment-header__subject-details__bottom__actions govuk-!-display-none-print">
                 {% for button in buttonItems %}
                   {{ govukButton(button) }}
                 {% endfor %}
@@ -109,5 +109,7 @@
         {% endif %}
       </header>
     </div>
+
+    <hr class="govuk-section-break govuk-section-break--visible form-header__hr">
   {% endif %}
 {% endif %}
