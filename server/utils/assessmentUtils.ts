@@ -20,9 +20,7 @@ function toLinkedIndicator(value: boolean | null | undefined): LinkedIndicator {
 }
 
 function toLinkedIndicatorFromSanValue(value: string): LinkedIndicator {
-  if (value === 'YES') return 'YES'
-  if (value === 'NO') return 'NO'
-  return null
+  return value === 'YES' || value === 'NO' ? value : null
 }
 
 function getAssessmentValue(sanAssessmentData: SanAssessmentData, key: string): string {
