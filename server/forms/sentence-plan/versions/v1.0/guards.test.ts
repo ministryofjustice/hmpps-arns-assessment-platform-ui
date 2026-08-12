@@ -1,4 +1,11 @@
-import { access, EffectRegistry, journey, not, step } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  createForgePackage,
+  EffectRegistry,
+  journey,
+  not,
+  step,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { ForgeTestHarness } from '@ministryofjustice/hmpps-forge/core/testing'
 import { GOTENBERG_RENDER_HEADER, GOTENBERG_RENDER_HEADER_VALUE } from '../../../../data/gotenbergClient'
 import { isPdfRenderRequest } from './guards'
@@ -37,7 +44,9 @@ describe('guards', () => {
         ],
       })
 
-      return new ForgeTestHarness().registerPackage({ journey: testJourney, functions: registry }).createClient()
+      return new ForgeTestHarness()
+        .registerPackage(createForgePackage({ journey: testJourney, functions: registry }))
+        .createClient()
     }
 
     beforeEach(() => {
