@@ -3,7 +3,7 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { accommodationSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPageTitle } from '../../../../locales'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 
@@ -24,7 +24,7 @@ export const currentAccommodationStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation.statusKey, SectionStatus.incomplete),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
         ],
         next: [
           redirect({

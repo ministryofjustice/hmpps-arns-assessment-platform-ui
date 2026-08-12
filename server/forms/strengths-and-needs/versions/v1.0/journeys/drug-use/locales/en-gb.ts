@@ -35,7 +35,7 @@ export const english = {
       },
       validation: 'Select which drugs they’ve misused',
     },
-    [Question.how_often_used]: {
+    [Question.how_often_used_last_six_months]: {
       text: 'How often is %1 using this drug?',
       summaryText: 'How to record frequency',
       summaryHtml:
@@ -51,7 +51,7 @@ export const english = {
       },
       validation: 'Select how often they’re using this drug',
     },
-    [Question.drug_use_more_than_six_months_details]: {
+    [Question.not_used_in_last_six_months_details]: {
       text: 'Give details about %1 use of these drugs',
       hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
       validation: 'Enter details about their use of these drugs',
@@ -67,7 +67,7 @@ export const english = {
       hint: 'Select one or both.',
       validation: 'Select when they injected this drug',
     },
-    [Question.receiving_treatment]: {
+    [Question.drugs_is_receiving_treatment]: {
       text: {
         notUsedInLastSixMonths: 'Has %1 ever received treatment for their drug use?',
         usedLastSixMonths: 'Is %1 receiving treatment for their drug use?',
@@ -77,7 +77,7 @@ export const english = {
         usedLastSixMonths: 'Select if they’re receiving treatment for their drug use',
       },
     },
-    [Question.receiving_treatment_yes_details]: {
+    [Question.drugs_is_receiving_treatment_yes_details]: {
       validation: 'Give details on their treatment',
     },
     [Question.drugs_reasons_for_use]: {

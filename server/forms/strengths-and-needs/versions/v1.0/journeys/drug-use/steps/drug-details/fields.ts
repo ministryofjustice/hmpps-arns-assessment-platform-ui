@@ -33,8 +33,8 @@ export const usedInLastSixMonthsSection = TemplateWrapper({
   slots: {
     content: [
       GovUKDetails({
-        summaryText: contentFor('question.how_often_used.summaryText'),
-        html: contentFor('question.how_often_used.summaryHtml'),
+        summaryText: contentFor('question.how_often_used_last_six_months.summaryText'),
+        html: contentFor('question.how_often_used_last_six_months.summaryHtml'),
       }),
       CollectionBlock({
         collection: Data('drugsUsedInLastSix').each(

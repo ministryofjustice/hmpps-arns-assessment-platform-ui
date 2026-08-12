@@ -2,7 +2,7 @@ import { access, Condition, Post, redirect, step, submit } from '@ministryofjust
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { drugsSummaryTab } from './fields'
 import { Step } from '../../constants/step'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { summaryPageTitle } from '../../../../locales'
 
 export const drugUseSummaryStep = step({
@@ -21,7 +21,7 @@ export const drugUseSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use.statusKey, SectionStatus.complete),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.yes),
         ],
         next: [redirect({ goto: Step.drug_use_analysis.path })],
       },

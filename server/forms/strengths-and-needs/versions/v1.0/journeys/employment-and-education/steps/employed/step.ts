@@ -1,7 +1,7 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { employmentEducationSection } from '../../section'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { sectionPath } from '../../../../constants/path'
@@ -35,10 +35,7 @@ export const employedEmploymentStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(
-            Section.employment_and_education.statusKey,
-            SectionStatus.incomplete,
-          ),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
         ],
         next: [redirect({ goto: Step.employment_education_summary.path })],
       },

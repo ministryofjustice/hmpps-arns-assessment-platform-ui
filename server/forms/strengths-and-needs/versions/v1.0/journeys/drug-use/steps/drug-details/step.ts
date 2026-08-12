@@ -4,7 +4,7 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { sectionDivider, usedInLastSixMonthsSection, usedMoreThanSixMonthsSection } from './fields'
 import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
 
@@ -42,7 +42,7 @@ export const drugDetailsStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use.statusKey, SectionStatus.incomplete),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
         ],
         next: [
           redirect({

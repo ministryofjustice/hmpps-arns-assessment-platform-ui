@@ -165,26 +165,26 @@ export const english = {
     [Question.past_accommodation_details]: {
       text: `What’s helped %1 stay in accommodation in the past? (optional)`,
     },
-    [Question.accommodation_strengths_protective_factors]: {
+    [Question.accommodation_practitioner_analysis_strengths_or_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 accommodation?',
       hint: 'Include any strategies, people or support networks that helped.',
       validation: 'Select if there are any strengths or protective factors',
     },
-    [Question.accommodation_strengths_protective_factors_details]: {
+    [Question.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details]: {
       validation: 'Give details on strengths or protective factors related to their accommodation',
     },
-    [Question.accommodation_linked_to_serious_harm]: {
+    [Question.accommodation_practitioner_analysis_risk_of_serious_harm]: {
       text: 'Is %1 accommodation linked to risk of serious harm?',
       validation: 'Select if linked to risk of serious harm',
     },
-    [Question.accommodation_serious_harm_details]: {
+    [Question.accommodation_practitioner_analysis_risk_of_serious_harm_yes_details]: {
       validation: 'Give details on the risk of serious harm',
     },
-    [Question.accommodation_linked_to_reoffending]: {
+    [Question.accommodation_practitioner_analysis_risk_of_reoffending]: {
       text: 'Is %1 accommodation linked to risk of reoffending?',
       validation: 'Select if linked to risk of reoffending',
     },
-    [Question.accommodation_risk_of_reoffending_details]: {
+    [Question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details]: {
       validation: 'Give details on the risk of reoffending',
     },
     [Question.living_with_partner_details]: {

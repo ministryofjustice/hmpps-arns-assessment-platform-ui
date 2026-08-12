@@ -1,7 +1,7 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { sectionPageTitle } from '../../../../locales'
 import { thinkingBehavioursAttitudesSection } from '../../section'
@@ -35,10 +35,7 @@ export const thinkingBehavioursStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(
-            Section.thinking_behaviours_and_attitudes.statusKey,
-            SectionStatus.incomplete,
-          ),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
         ],
         next: [
           redirect({
