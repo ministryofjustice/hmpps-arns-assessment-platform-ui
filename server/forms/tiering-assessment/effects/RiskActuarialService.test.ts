@@ -197,6 +197,10 @@ describe('RiskActuarialService', () => {
       excessiveAlcoholUse: null,
       currentRelationshipStatus: null,
       currentRelationshipWithPartner: null,
+      regularOffendingActivities: null,
+      temperControl: null,
+      impulsivityProblems: null,
+      proCriminalAttitudes: null,
     })
 
     expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-score', '0.45')
@@ -306,6 +310,10 @@ describe('RiskActuarialService', () => {
       'who-are-they-living-with': 'partner',
       'important-relationships': 'partner',
       'relationship-satisfaction': 'SOME_PROBLEMS',
+      'regular-offending-activities': 'NO_PROBLEMS',
+      'temper-control': 'SOME_PROBLEMS',
+      'impulsivity-problems': 'NO_PROBLEMS',
+      'pro-criminal-attitudes': 'SIGNIFICANT_PROBLEMS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -352,6 +360,10 @@ describe('RiskActuarialService', () => {
       excessiveAlcoholUse: 'SIGNIFICANT_PROBLEMS' as ProblemLevel,
       currentRelationshipStatus: 'IN_RELATIONSHIP_LIVING_TOGETHER' as CurrentRelationshipStatus,
       currentRelationshipWithPartner: 'SOME_PROBLEMS' as ProblemLevel,
+      regularOffendingActivities: 'NO_PROBLEMS' as ProblemLevel,
+      temperControl: 'SOME_PROBLEMS' as ProblemLevel,
+      impulsivityProblems: 'NO_PROBLEMS' as ProblemLevel,
+      proCriminalAttitudes: 'SIGNIFICANT_PROBLEMS' as ProblemLevel,
     })
 
     // TODO responses will change when enough answers provided
@@ -476,6 +488,10 @@ describe('RiskActuarialService', () => {
       excessiveAlcoholUse: null,
       currentRelationshipStatus: null,
       currentRelationshipWithPartner: null,
+      regularOffendingActivities: null,
+      temperControl: null,
+      impulsivityProblems: null,
+      proCriminalAttitudes: null,
     })
   })
 
@@ -523,6 +539,10 @@ describe('RiskActuarialService', () => {
       'who-are-they-living-with': 'unknown',
       'important-relationships': 'unknown',
       'relationship-satisfaction': 'unknown',
+      'regular-offending-activities': 'unknown',
+      'temper-control': 'unknown',
+      'impulsivity-problems': 'unknown',
+      'pro-criminal-attitudes': 'unknown',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -552,6 +572,10 @@ describe('RiskActuarialService', () => {
         excessiveAlcoholUse: null,
         currentRelationshipStatus: null,
         currentRelationshipWithPartner: null,
+        regularOffendingActivities: null,
+        temperControl: null,
+        impulsivityProblems: null,
+        proCriminalAttitudes: null,
       }),
     )
   })
