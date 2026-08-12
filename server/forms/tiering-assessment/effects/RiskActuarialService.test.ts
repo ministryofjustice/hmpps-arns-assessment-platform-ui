@@ -645,7 +645,7 @@ describe('RiskActuarialService', () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': null,
-      'units-of-alcohol': 4
+      'units-of-alcohol': 4,
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -663,7 +663,7 @@ describe('RiskActuarialService', () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 4,
-      'units-of-alcohol': null
+      'units-of-alcohol': null,
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -681,7 +681,7 @@ describe('RiskActuarialService', () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 3,
-      'units-of-alcohol': 1
+      'units-of-alcohol': 1,
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -699,7 +699,7 @@ describe('RiskActuarialService', () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 3,
-      'units-of-alcohol': 4
+      'units-of-alcohol': 4,
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -717,7 +717,7 @@ describe('RiskActuarialService', () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 4,
-      'units-of-alcohol': 4
+      'units-of-alcohol': 4,
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
