@@ -41,13 +41,13 @@
 
       {% set assessmentVersionLink %}
         {% if version.assessmentVersion %}
-          <a href="{{ params.sanUrl }}/view-previous-version/{{ version.assessmentVersion.uuid }}" class="govuk-link" rel="noreferrer noopener" target="_blank">View<span class="govuk-visually-hidden"> assessment from {{ version.assessmentVersion.updatedAt }} (opens in new tab) </span></a>
+          <a href="{{ params.sanUrl }}/view-previous-version/{{ version.assessmentVersion.uuid }}" class="govuk-link" rel="noreferrer noopener" target="_blank" data-qa="assessment-link">View<span class="govuk-visually-hidden"> assessment from {{ version.assessmentVersion.updatedAt }} (opens in new tab) </span></a>
         {% endif %}
       {% endset %}
 
       {% set planVersionLink %}
         {% if version.planVersion %}
-          <a href="view-historic/{{ version.planVersion.version }}?type=current" class="govuk-link" data-ai-id="previous-version-sp-view-link" rel="noreferrer noopener" target="_blank">View<span class="govuk-visually-hidden"> plan from {{ version.planVersion.updatedAt }} (opens in new tab) </span></a>
+          <a href="view-historic/{{ version.planVersion.version }}?type=current" class="govuk-link" data-ai-id="previous-version-sp-view-link" rel="noreferrer noopener" target="_blank" data-qa="plan-link">View<span class="govuk-visually-hidden"> plan from {{ version.planVersion.updatedAt }} (opens in new tab) </span></a>
         {% endif %}
       {% endset %}
 
@@ -91,7 +91,8 @@
       firstCellIsHeader: false,
       classes: tableClasses,
       head: tableHeaders,
-      rows: tableRows })
+      rows: tableRows,
+      attributes: { "data-qa": "previous-versions-table" } })
     }}
   </div>
 {% endmacro %}
