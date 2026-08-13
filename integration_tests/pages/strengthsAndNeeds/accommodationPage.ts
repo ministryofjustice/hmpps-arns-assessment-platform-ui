@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
+import StrengthsAndNeedsPage from './strengthsAndNeedsPage'
 
-export default class AccommodationPage extends AbstractPage {
+export default class AccommodationPage extends StrengthsAndNeedsPage {
   readonly incomplete: Locator
 
   readonly whatTypeOfAccommodation: Locator

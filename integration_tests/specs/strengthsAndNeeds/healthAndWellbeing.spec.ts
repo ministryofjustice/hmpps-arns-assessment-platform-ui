@@ -56,10 +56,10 @@ test.describe('Health and wellbeing Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'health_conditions', value: 'YES' },
-          { question: 'has_health_conditions_details', value: '' },
-          { question: 'mental_health_problems', value: 'YES_ONGOING_SEVERE' },
-          { question: 'severe_mental_health_problems_details', value: '' },
+          { question: 'health_wellbeing_physical_health_condition', value: 'YES' },
+          { question: 'health_wellbeing_physical_health_condition_yes_details', value: '' },
+          { question: 'health_wellbeing_mental_health_condition', value: 'YES_ONGOING_SEVERE' },
+          { question: 'health_wellbeing_mental_health_condition_yes_ongoing_severe_details', value: '' },
         ]).save()
 
       await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'physical-mental-health')
@@ -203,32 +203,32 @@ test.describe('Health and wellbeing Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'health_conditions', value: 'YES' },
+          { question: 'health_wellbeing_physical_health_condition', value: 'YES' },
           {
-            question: 'has_health_conditions_details',
-            value: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-            Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, 
-            when an unknown printer took a galley of type and scrambled it to make a type 
-            specimen book. It has survived not only five centuries, but also the leap into 
-            electronic typesetting, remaining essentially unchanged. It was popularised in 
-            the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
-            and more recently with desktop publishing software like Aldus PageMaker including 
-            versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and 
-            typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever 
-            since the 1500s, when an unknown printer took a galley of type and scrambled it to 
-            make a type specimen book. It has survived not only five centuries, but also the leap 
-            into electronic typesetting, remaining essentially unchanged. It was popularised in the 
-            1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more 
-            recently with desktop publishing software like Aldus PageMaker including versions of 
-            Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-            Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an 
-            unknown printer took a galley of type and scrambled it to make a type specimen book. 
-            It has survived not only five centuries, but also the leap into electronic typesetting, 
-            remaining essentially unchanged. It was popularised in the 1960s with the release of 
-            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing 
-            software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply 
-            dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s 
-            standard dummy text ever since the 1500s, when an unknown printer took a galley of type 
+            question: 'health_wellbeing_physical_health_condition_yes_details',
+            value: `Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s,
+            when an unknown printer took a galley of type and scrambled it to make a type
+            specimen book. It has survived not only five centuries, but also the leap into
+            electronic typesetting, remaining essentially unchanged. It was popularised in
+            the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including
+            versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and
+            typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever
+            since the 1500s, when an unknown printer took a galley of type and scrambled it to
+            make a type specimen book. It has survived not only five centuries, but also the leap
+            into electronic typesetting, remaining essentially unchanged. It was popularised in the
+            1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more
+            recently with desktop publishing software like Aldus PageMaker including versions of
+            Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an
+            unknown printer took a galley of type and scrambled it to make a type specimen book.
+            It has survived not only five centuries, but also the leap into electronic typesetting,
+            remaining essentially unchanged. It was popularised in the 1960s with the release of
+            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing
+            software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply
+            dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s
+            standard dummy text ever since the 1500s, when an unknown printer took a galley of type
             and scrambled it to make a type specimen book. It has survived not only five.`,
           },
         ]).save()
@@ -237,7 +237,7 @@ test.describe('Health and wellbeing Page', () => {
 
       const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any physical health conditions')
 
-      expect(await healthAndWellbeingPage.giveDetailsCharacterError('300')).toBeVisible()
+      expect(await healthAndWellbeingPage.giveDetailsCharacterError('277')).toBeVisible()
     })
 
     test('shows no physical mental health questions', async ({
@@ -251,8 +251,8 @@ test.describe('Health and wellbeing Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'health_conditions', value: 'NO' },
-          { question: 'mental_health_problems', value: 'NO' },
+          { question: 'health_wellbeing_physical_health_condition', value: 'NO' },
+          { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
         ]).save()
 
       await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'physical-mental-health')
@@ -285,21 +285,21 @@ test.describe('Health and wellbeing Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'health_conditions', value: 'NO' },
-          { question: 'mental_health_problems', value: 'NO' },
-          { question: 'head_injuries', value: 'NO' },
-          { question: 'neurodiverse_conditions', value: 'NO' },
-          { question: 'neurodiverse_conditions_details', value: '' },
-          { question: 'impact_on_learning_abilities', value: 'NO_LEARNING_ABILITIES_IMPACT' },
-          { question: 'learning_abilities_impacted_significantly_details', value: '' },
-          { question: 'learning_abilities_impacted_slightly_details', value: '' },
-          { question: 'cope_with_day_to_day_life', value: 'NOT_ABLE_TO_COPE' },
-          { question: 'attitude_towards_self', value: 'NEGATIVE_UNHAPPY' },
-          { question: 'self_harm', value: 'NO' },
-          { question: 'suicidal_tendencies', value: 'NO' },
-          { question: 'feeling_about_future_health_wellbeing', value: 'NOT_OPTIMISTIC_OUTLOOK' },
-          { question: 'helped_during_periods_good_health_wellbeing', value: [] },
-          { question: 'changes_to_health_wellbeing', value: 'NOT_PRESENT' },
+          { question: 'health_wellbeing_physical_health_condition', value: 'NO' },
+          { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
+          { question: 'health_wellbeing_head_injury_or_illness', value: 'NO' },
+          { question: 'health_wellbeing_neurodiverse_conditions', value: 'YES' },
+          { question: 'health_wellbeing_neurodiverse_conditions_yes_details', value: 'details' },
+          { question: 'health_wellbeing_learning_difficulties', value: 'NO' },
+          { question: 'health_wellbeing_learning_difficulties_yes_significant_difficulties_details', value: '' },
+          { question: 'health_wellbeing_learning_difficulties_yes_some_difficulties_details', value: '' },
+          { question: 'health_wellbeing_coping_day_to_day_life', value: 'NO' },
+          { question: 'health_wellbeing_attitude_towards_self', value: 'NEGATIVE' },
+          { question: 'health_wellbeing_self_harmed', value: 'NO' },
+          { question: 'health_wellbeing_attempted_suicide_or_suicidal_thoughts', value: 'NO' },
+          { question: 'health_wellbeing_outlook', value: 'NOT_OPTIMISTIC' },
+          { question: 'health_wellbeing_positive_factors', value: [] },
+          { question: 'health_wellbeing_changes', value: 'NOT_PRESENT' },
         ]).save()
 
       await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'health-wellbeing-summary')
@@ -313,67 +313,68 @@ test.describe('Health and wellbeing Page', () => {
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: health-wellbeing#health_conditions
+              - /url: health-wellbeing#health_wellbeing_physical_health_condition
           - term: Does Test have any diagnosed or documented mental health problems?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: health-wellbeing#mental_health_problems
+              - /url: health-wellbeing#health_wellbeing_mental_health_condition
           - term: Has Test had a head injury or any illness affecting the brain?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: physical-mental-health#head_injuries
+              - /url: physical-mental-health#health_wellbeing_head_injury_or_illness
           - term: Does Test have any neurodiverse conditions?
           - definition:
-            - paragraph: "No"
+            - paragraph: "Yes"
+            - paragraph: "details"
           - definition:
             - link "Change":
-              - /url: physical-mental-health#neurodiverse_conditions
+              - /url: physical-mental-health#health_wellbeing_neurodiverse_conditions
           - term: Does Test have any conditions or disabilities that impact their ability to learn? (optional)
           - definition:
             - paragraph: No, they do not have any conditions or disabilities that impact their ability to learn
           - definition:
             - link "Change":
-              - /url: physical-mental-health#impact_on_learning_abilities
+              - /url: physical-mental-health#health_wellbeing_learning_difficulties
           - term: Is Test able to cope with day-to-day life?
           - definition:
             - paragraph: Not able to cope
           - definition:
             - link "Change":
-              - /url: physical-mental-health#cope_with_day_to_day_life
+              - /url: physical-mental-health#health_wellbeing_coping_day_to_day_life
           - term: What is Test's attitude towards themselves?
           - definition:
             - paragraph: Negative self-image and unhappy
           - definition:
             - link "Change":
-              - /url: physical-mental-health#attitude_towards_self
+              - /url: physical-mental-health#health_wellbeing_attitude_towards_self
           - term: Has Test ever self-harmed?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: physical-mental-health#self_harm
+              - /url: physical-mental-health#health_wellbeing_self_harmed
           - term: Has Test ever attempted suicide or had suicidal thoughts?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: physical-mental-health#suicidal_tendencies
+              - /url: physical-mental-health#health_wellbeing_attempted_suicide_or_suicidal_thoughts
           - term: How does Test feel about their future?
           - definition:
             - paragraph: Not optimistic and thinks their future will not get better or may get worse
           - definition:
             - link "Change":
-              - /url: physical-mental-health#feeling_about_future_health_wellbeing
+              - /url: physical-mental-health#health_wellbeing_outlook
           - term: Does Test want to make changes to their health and wellbeing?
           - definition:
             - paragraph: Test is not present
           - definition:
             - link "Change":
-              - /url: physical-mental-health#changes_to_health_wellbeing
+              - /url: physical-mental-health#health_wellbeing_changes
           - button "Go to practitioner analysis"
       `)
     })
@@ -385,21 +386,21 @@ test.describe('Health and wellbeing Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'health_conditions', value: 'NO' },
-          { question: 'mental_health_problems', value: 'NO' },
-          { question: 'head_injuries', value: 'NO' },
-          { question: 'neurodiverse_conditions', value: 'NO' },
-          { question: 'neurodiverse_conditions_details', value: '' },
-          { question: 'impact_on_learning_abilities', value: 'NO_LEARNING_ABILITIES_IMPACT' },
-          { question: 'learning_abilities_impacted_significantly_details', value: '' },
-          { question: 'learning_abilities_impacted_slightly_details', value: '' },
-          { question: 'cope_with_day_to_day_life', value: 'NOT_ABLE_TO_COPE' },
-          { question: 'attitude_towards_self', value: 'NEGATIVE_UNHAPPY' },
-          { question: 'self_harm', value: 'NO' },
-          { question: 'suicidal_tendencies', value: 'NO' },
-          { question: 'feeling_about_future_health_wellbeing', value: 'NOT_OPTIMISTIC_OUTLOOK' },
-          { question: 'helped_during_periods_good_health_wellbeing', value: [] },
-          { question: 'changes_to_health_wellbeing', value: 'NOT_PRESENT' },
+          { question: 'health_wellbeing_physical_health_condition', value: 'NO' },
+          { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
+          { question: 'health_wellbeing_head_injury_or_illness', value: 'NO' },
+          { question: 'health_wellbeing_neurodiverse_conditions', value: 'YES' },
+          { question: 'health_wellbeing_neurodiverse_conditions_yes_details', value: '' },
+          { question: 'health_wellbeing_learning_difficulties', value: 'NO' },
+          { question: 'health_wellbeing_learning_difficulties_yes_significant_difficulties_details', value: '' },
+          { question: 'health_wellbeing_learning_difficulties_yes_some_difficulties_details', value: '' },
+          { question: 'health_wellbeing_coping_day_to_day_life', value: 'NOT' },
+          { question: 'health_wellbeing_attitude_towards_self', value: 'NEGATIVE_UNHAPPY' },
+          { question: 'health_wellbeing_self_harmed', value: 'NO' },
+          { question: 'health_wellbeing_attempted_suicide_or_suicidal_thoughts', value: 'NO' },
+          { question: 'health_wellbeing_outlook', value: 'NOT_OPTIMISTIC' },
+          { question: 'health_wellbeing_positive_factors', value: [] },
+          { question: 'health_wellbeing_changes', value: 'NOT_PRESENT' },
         ]).save()
 
       await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'health-wellbeing-summary')
@@ -416,25 +417,25 @@ test.describe('Health and wellbeing Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'health_conditions', value: 'NO' },
-          { question: 'mental_health_problems', value: 'NO' },
-          { question: 'head_injuries', value: 'NO' },
-          { question: 'neurodiverse_conditions', value: 'NO' },
-          { question: 'neurodiverse_conditions_details', value: '' },
-          { question: 'impact_on_learning_abilities', value: 'NO_LEARNING_ABILITIES_IMPACT' },
-          { question: 'learning_abilities_impacted_significantly_details', value: '' },
-          { question: 'learning_abilities_impacted_slightly_details', value: '' },
-          { question: 'cope_with_day_to_day_life', value: 'NOT_ABLE_TO_COPE' },
-          { question: 'attitude_towards_self', value: 'NEGATIVE_UNHAPPY' },
-          { question: 'self_harm', value: 'NO' },
-          { question: 'suicidal_tendencies', value: 'NO' },
-          { question: 'feeling_about_future_health_wellbeing', value: 'NOT_OPTIMISTIC_OUTLOOK' },
-          { question: 'helped_during_periods_good_health_wellbeing', value: [] },
-          { question: 'changes_to_health_wellbeing', value: 'NOT_PRESENT' },
-          { question: 'strengths_protective_factors_health_wellbeing', value: 'NO' },
-          { question: 'no_strengths_protective_factors_health_wellbeing_details', value: '' },
-          { question: 'serious_harm_health_wellbeing', value: 'NO' },
-          { question: 'no_serious_harm_health_wellbeing_details', value: '' },
+          { question: 'health_wellbeing_physical_health_condition', value: 'NO' },
+          { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
+          { question: 'health_wellbeing_head_injury_or_illness', value: 'NO' },
+          { question: 'health_wellbeing_neurodiverse_conditions', value: 'NO' },
+          { question: 'health_wellbeing_neurodiverse_conditions_yes_details', value: 'details' },
+          { question: 'health_wellbeing_learning_difficulties', value: 'NO_LEARNING_ABILITIES_IMPACT' },
+          { question: 'health_wellbeing_learning_difficulties_yes_significant_difficulties_details', value: '' },
+          { question: 'health_wellbeing_learning_difficulties_yes_some_difficulties_details', value: '' },
+          { question: 'health_wellbeing_coping_day_to_day_life', value: 'NOT' },
+          { question: 'health_wellbeing_attitude_towards_self', value: 'NEGATIVE_UNHAPPY' },
+          { question: 'health_wellbeing_self_harmed', value: 'NO' },
+          { question: 'health_wellbeing_attempted_suicide_or_suicidal_thoughts', value: 'NO' },
+          { question: 'health_wellbeing_outlook', value: 'NOT_OPTIMISTIC' },
+          { question: 'health_wellbeing_positive_factors', value: [] },
+          { question: 'health_wellbeing_changes', value: 'NOT_PRESENT' },
+          { question: 'health_wellbeing_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
+          { question: 'health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
+          { question: 'health_wellbeing_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
+          { question: 'health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
         ]).save()
 
       await HealthAndWellbeingPage.navigateToHealthAndWellbeing(

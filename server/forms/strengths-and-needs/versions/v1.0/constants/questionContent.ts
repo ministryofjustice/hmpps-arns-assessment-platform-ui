@@ -98,6 +98,7 @@ export enum QuestionFormat {
  * into each rendering surface by a display mode.
  */
 export interface QuestionContent {
+  id?: string
   code: string
   // The input kind the question renders as.
   format: QuestionFormat

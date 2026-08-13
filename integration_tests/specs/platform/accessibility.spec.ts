@@ -9,7 +9,7 @@ test.describe('Accessibility page', () => {
     await page.goto(accessibilityPageUrl)
     await expect(page).toHaveURL(accessibilityPageUrl)
 
-    await checkHeaderVisibility(page, 1, 'Accessibility statement for Assess and plan: Sentence plan')
+    await checkHeaderVisibility(page, 1, 'Accessibility statement for Assess and plan')
     await checkHeaderVisibility(page, 2, 'How accessible this website is')
     await checkHeaderVisibility(page, 2, 'Feedback and contact information')
     await checkHeaderVisibility(page, 3, 'Enforcement procedure')
