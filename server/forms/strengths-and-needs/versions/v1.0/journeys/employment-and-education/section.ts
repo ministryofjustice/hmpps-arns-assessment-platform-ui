@@ -28,7 +28,17 @@ import { Option } from './constants/option'
 
 // The history and experience questions only apply once we know the person has
 // been employed before (or their employment status implies it).
-const hasBeenEmployed = Answer(Question.has_been_employed).match(Condition.Equals(CommonOption.yes))
+const hasBeenEmployed = or(
+  Answer(Question.employment_status).match(Condition.Equals(Option.employed)),
+  Answer(Question.has_been_employed_not_actively_seeking).match(Condition.Equals(CommonOption.yes)),
+  Answer(Question.has_been_employed_actively_seeking).match(Condition.Equals(CommonOption.yes)),
+  Answer(Question.has_been_employed_unavailable_for_work).match(Condition.Equals(CommonOption.yes)),
+)
+
+const hasBeenEmployedOrRetired = or(
+  hasBeenEmployed,
+  Answer(Question.employment_status).match(Condition.Equals(Option.retired)),
+)
 
 const isEmployedOrSelfEmployed = or(
   Answer(Question.employment_status).match(Condition.Equals(Option.employed)),
@@ -54,19 +64,25 @@ const typeOfEmploymentRevealed = revealedQuestion({
   displayModes: { field: radioDetails({ legendClasses: 'govuk-visually-hidden' }) },
 })
 
-const hadPreviousEmploymentRevealed = revealedQuestion({
-  content: {
-    code: Question.has_been_employed,
-    format: QuestionFormat.RADIO,
-    text: contentFor('question.has_been_employed.text'),
-    options: [
-      { value: CommonOption.yes, text: contentFor(`question.has_been_employed.option.YES`) },
-      { value: CommonOption.no, text: contentFor(`question.has_been_employed.option.NO`) },
-    ],
-    validationMessage: commonContentFor('select_one_option'),
-  },
-  displayModes: { field: radioDetails() },
-})
+/*
+  TODO: this question shares a code in private beta, however looks like we're limited in forge,
+        we'll need to figure out if and how we support this, if not we need to update the migration
+        to handle this change
+*/
+const createPreviousEmploymentRevealed = (code: string) =>
+  revealedQuestion({
+    content: {
+      code,
+      format: QuestionFormat.RADIO,
+      text: contentFor('question.has_been_employed.text'),
+      options: [
+        { value: CommonOption.yes, text: contentFor(`question.has_been_employed.option.YES`) },
+        { value: CommonOption.no, text: contentFor(`question.has_been_employed.option.NO`) },
+      ],
+      validationMessage: commonContentFor('select_one_option'),
+    },
+    displayModes: { field: radioDetails() },
+  })
 
 const currentEmploymentStatus = question({
   content: {
@@ -84,17 +100,17 @@ const currentEmploymentStatus = question({
       {
         value: Option.currently_unavailable_for_work,
         text: contentFor('question.employment_status.option.CURRENTLY_UNAVAILABLE_FOR_WORK'),
-        reveals: hadPreviousEmploymentRevealed,
+        reveals: createPreviousEmploymentRevealed(Question.has_been_employed_unavailable_for_work),
       },
       {
         value: Option.unemployed_looking_for_work,
         text: contentFor('question.employment_status.option.UNEMPLOYED_LOOKING_FOR_WORK'),
-        reveals: hadPreviousEmploymentRevealed,
+        reveals: createPreviousEmploymentRevealed(Question.has_been_employed_actively_seeking),
       },
       {
         value: Option.unemployed_not_looking_for_work,
         text: contentFor('question.employment_status.option.UNEMPLOYED_NOT_LOOKING_FOR_WORK'),
-        reveals: hadPreviousEmploymentRevealed,
+        reveals: createPreviousEmploymentRevealed(Question.has_been_employed_not_actively_seeking),
       },
     ],
     validationMessage: commonContentFor('select_one_option'),
@@ -186,8 +202,8 @@ const employmentHistory = question({
     validationMessage: contentFor('question.employment_history.validation'),
   },
   displayModes: {
-    field: radioField({ dependentWhen: hasBeenEmployed, visibleWhen: hasBeenEmployed }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path, visibleWhen: hasBeenEmployed }),
+    field: radioField({ dependentWhen: hasBeenEmployedOrRetired, visibleWhen: hasBeenEmployedOrRetired }),
+    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path, visibleWhen: hasBeenEmployedOrRetired }),
   },
 })
 

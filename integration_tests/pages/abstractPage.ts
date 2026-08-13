@@ -33,8 +33,6 @@ export default class AbstractPage {
 
   readonly linkedToRiskOfReoffending: Locator
 
-  readonly complete: Locator
-
   readonly alert: Locator
 
   readonly errorWantsToMakeChanges: Locator
@@ -58,7 +56,6 @@ export default class AbstractPage {
     this.linkedToRiskOfReoffending = page
       .getByRole('group', { name: 'linked to risk of reoffending?' })
       .getByLabel('No')
-    this.complete = page.locator('[data-status="COMPLETE"]')
     this.alert = page.getByRole('alert')
     this.errorWantsToMakeChanges = page.getByRole('link', {
       name: 'Select if they want to make changes to their',

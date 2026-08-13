@@ -43,8 +43,8 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'EMPLOYED' },
-          { question: 'type_of_employment', value: 'FULL_TIME' },
+          { question: 'employment_status', value: 'EMPLOYED' },
+          { question: 'employment_type', value: 'FULL_TIME' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -52,7 +52,10 @@ test.describe('Employment and education Page', () => {
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
+        - link "Back":
+          - /url: /strengths-and-needs/v1.0/employment-and-education/
         - heading "Employment and education" [level=1]
+        - strong: Incomplete
         - text: What job sector does Test work in? (optional)
         - textbox "What job sector does Test work in? (optional)"
         - text: You can enter up to 2000 characters You have 2,000 characters remaining
@@ -189,7 +192,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'EMPLOYED' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'EMPLOYED' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
 
@@ -209,7 +212,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'SELF_EMPLOYED' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'SELF_EMPLOYED' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
@@ -229,7 +232,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'RETIRED' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'RETIRED' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
@@ -237,15 +240,12 @@ test.describe('Employment and education Page', () => {
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
         - link "Back"
-        - heading "Employment and education" [level=1]
-        - strong: Incomplete
         - group "What is Test's employment history?"
         - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
         - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
-        - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
         - button "Save and continue"
@@ -263,8 +263,8 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
-          { question: 'had_previous_employment_unavailable_for_work', value: 'YES_HAS_BEEN_EMPLOYED_BEFORE' },
+          { question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
+          { question: 'has_been_employed_unavailable_for_work', value: 'YES' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -299,8 +299,8 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
-          { question: 'had_previous_employment_unavailable_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
+          { question: 'has_been_employed_unavailable_for_work', value: 'NO' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -332,7 +332,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
 
@@ -358,8 +358,8 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' },
-          { question: 'had_previous_employment_actively_looking_for_work', value: 'YES_HAS_BEEN_EMPLOYED_BEFORE' },
+          { question: 'employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' },
+          { question: 'has_been_employed_actively_seeking', value: 'YES' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -394,8 +394,8 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' },
-          { question: 'had_previous_employment_actively_looking_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'employment_status', value: 'UNEMPLOYED_LOOKING_FOR_WORK' },
+          { question: 'has_been_employed_actively_seeking', value: 'NO' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -427,7 +427,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'UNEMPLOYED_LOOKING_FOR_WORK' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
 
@@ -453,8 +453,8 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
-          { question: 'had_previous_employment_not_looking_for_work', value: 'YES_HAS_BEEN_EMPLOYED_BEFORE' },
+          { question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' },
+          { question: 'has_been_employed_not_actively_seeking', value: 'YES' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -489,8 +489,8 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
-          { question: 'had_previous_employment_not_looking_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' },
+          { question: 'has_been_employed_not_actively_seeking', value: 'NO' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -522,7 +522,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
 
@@ -545,15 +545,15 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
-          { question: 'had_previous_employment_not_looking_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
-          { question: 'day_to_day_commitments', value: ['NONE'] },
-          { question: 'academic_qualification', value: 'NON_OF_THESE' },
-          { question: 'professional_qualification', value: 'NO' },
-          { question: 'job_skills', value: 'NO' },
-          { question: 'difficulties_reading_writing_numeracy', value: ['NO_DIFFICULTIES'] },
+          { question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' },
+          { question: 'has_been_employed_not_actively_seeking', value: 'NO' },
+          { question: 'employment_other_responsibilities', value: ['NONE'] },
+          { question: 'education_highest_level_completed', value: 'NONE_OF_THESE' },
+          { question: 'education_professional_or_vocational_qualifications', value: 'NO' },
+          { question: 'education_transferable_skills', value: 'NO' },
+          { question: 'education_difficulties', value: ['NONE'] },
           { question: 'education_experience', value: 'UNKNOWN' },
-          { question: 'employment_and_education_changes', value: 'NOT_PRESENT' },
+          { question: 'employment_education_changes', value: 'NOT_PRESENT' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
@@ -578,31 +578,31 @@ test.describe('Employment and education Page', () => {
             - paragraph: None
           - definition:
             - link "Change":
-              - /url: employed#day_to_day_commitments
+              - /url: employed#employment_other_responsibilities
           - term: Select the highest level of academic qualification Test has completed
           - definition:
             - paragraph: None of these
           - definition:
             - link "Change":
-              - /url: employed#academic_qualification
+              - /url: employed#education_highest_level_completed
           - term: Does Test have any professional or vocational qualifications?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: employed#professional_qualification
+              - /url: employed#education_professional_or_vocational_qualifications
           - term: Does Test have any skills that could help them in a job or to get a job?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change":
-              - /url: employed#job_skills
+              - /url: employed#education_transferable_skills
           - term: Does Test have difficulties with reading, writing or numeracy?
           - definition:
             - paragraph: No difficulties
           - definition:
             - link "Change":
-              - /url: employed#difficulties_reading_writing_numeracy
+              - /url: employed#education_difficulties
           - term: What is Test's experience of education?
           - definition:
             - paragraph: Unknown
@@ -614,7 +614,7 @@ test.describe('Employment and education Page', () => {
             - paragraph: Test is not present
           - definition:
             - link "Change":
-              - /url: employed#employment_and_education_changes
+              - /url: employed#employment_education_changes
           - button "Go to practitioner analysis"
       `)
     })
@@ -625,15 +625,15 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
-          { question: 'had_previous_employment_not_looking_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
-          { question: 'day_to_day_commitments', value: ['NONE'] },
-          { question: 'academic_qualification', value: 'NON_OF_THESE' },
-          { question: 'professional_qualification', value: 'NO' },
-          { question: 'job_skills', value: 'NO' },
-          { question: 'difficulties_reading_writing_numeracy', value: ['NO_DIFFICULTIES'] },
+          { question: 'employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
+          { question: 'has_been_employed_not_actively_seeking', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'employment_other_responsibilities', value: ['NONE'] },
+          { question: 'education_highest_level_completed', value: 'NON_OF_THESE' },
+          { question: 'education_professional_or_vocational_qualifications', value: 'NO' },
+          { question: 'education_transferable_skills', value: 'NO' },
+          { question: 'education_difficulties', value: ['NO_DIFFICULTIES'] },
           { question: 'education_experience', value: 'UNKNOWN' },
-          { question: 'employment_and_education_changes', value: 'NOT_PRESENT' },
+          { question: 'employment_education_changes', value: 'NOT_PRESENT' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
@@ -654,19 +654,22 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
-          { question: 'had_previous_employment_not_looking_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
-          { question: 'day_to_day_commitments', value: ['NONE'] },
-          { question: 'academic_qualification', value: 'NON_OF_THESE' },
-          { question: 'professional_qualification', value: 'NO' },
-          { question: 'job_skills', value: 'NO' },
-          { question: 'difficulties_reading_writing_numeracy', value: ['NO_DIFFICULTIES'] },
+          { question: 'employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
+          { question: 'employment_history', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'employment_other_responsibilities', value: ['NONE'] },
+          { question: 'education_highest_level_completed', value: 'NON_OF_THESE' },
+          { question: 'education_professional_or_vocational_qualifications', value: 'NO' },
+          { question: 'education_transferable_skills', value: 'NO' },
+          { question: 'education_difficulties', value: ['NO_DIFFICULTIES'] },
           { question: 'education_experience', value: 'UNKNOWN' },
-          { question: 'employment_and_education_changes', value: 'NOT_PRESENT' },
-          { question: 'employment_education_strengths_protective_factors', value: 'NO' },
-          { question: 'employment_education_no_strengths_protective_factors_details', value: '' },
-          { question: 'employment_education_linked_to_serious_harm', value: 'NO' },
-          { question: 'employment_education_no_serious_harm_details', value: '' },
+          { question: 'employment_education_changes', value: 'NOT_PRESENT' },
+          { question: 'employment_education_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
+          {
+            question: 'employment_education_practitioner_analysis_strengths_or_protective_factors_no_details',
+            value: '',
+          },
+          { question: 'employment_education_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
+          { question: 'employment_education_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(

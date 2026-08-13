@@ -5,17 +5,17 @@ import { buildPageTitle, checkAccessibility, navigateToStrengthsAndNeeds, sanPag
 
 test.describe('Accommodation Page', () => {
   test.describe('Questions', () => {
-    test('shows accomodation type', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+    test('shows accommodation type', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
       await strengthsAndNeedsBuilder.fresh().save()
 
       await navigateToStrengthsAndNeeds(page, handoverLink)
 
-      const accomodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
+      const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
 
       await expect(page).toHaveTitle(buildPageTitle(sanPageTitles.accommodation))
 
-      await expect(accomodationPage.whatTypeOfAccommodation).toMatchAriaSnapshot(`
+      await expect(accommodationPage.whatTypeOfAccommodation).toMatchAriaSnapshot(`
           - group /What type of accommodation does/:
             - text: /What type of accommodation does/
             - radio "Settled"
@@ -294,10 +294,10 @@ test.describe('Accommodation Page', () => {
           { question: 'suitable_housing', value: 'NO' },
           { question: 'unsuitable_housing_concerns', value: [] },
           { question: 'accommodation_changes', value: 'NOT_PRESENT' },
-          { question: 'accommodation_strengths_protective_factors', value: 'NO' },
-          { question: 'accommodation_no_strengths_protective_factors_details', value: '' },
-          { question: 'accommodation_linked_to_serious_harm', value: 'NO' },
-          { question: 'accommodation_no_serious_harm_details', value: '' },
+          { question: 'accommodation_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
+          { question: 'accommodation_practitioner_analysis_strengths_or_protective_factors_details', value: '' },
+          { question: 'accommodation_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
+          { question: 'accommodation_practitioner_analysis_risk_of_serious_harm_details', value: '' },
         ])
         .save()
 

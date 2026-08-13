@@ -229,10 +229,10 @@ test.describe('Finances Page', () => {
           { question: 'finance_gambling_yes_their_gambling_details', value: '' },
           { question: 'finance_debt', value: ['NO'] },
           { question: 'finance_changes', value: 'NOT_PRESENT' },
-          { question: 'finance_strengths_protective_factors', value: 'NO' },
-          { question: 'finance_no_strengths_protective_factors_details', value: '' },
-          { question: 'finance_linked_to_serious_harm', value: 'NO' },
-          { question: 'finance_no_serious_harm_details', value: '' },
+          { question: 'finance_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
+          { question: 'finance_practitioner_analysis_strengths_or_protective_factors_no_details', value: '' },
+          { question: 'finance_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
+          { question: 'finance_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
         ]).save()
 
       await FinancesPage.navigateToFinances(page, handoverLink, baseURL, 'finance-summary#practitioner-analysis')
