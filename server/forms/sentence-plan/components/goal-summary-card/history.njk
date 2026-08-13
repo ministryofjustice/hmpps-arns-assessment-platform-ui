@@ -32,7 +32,7 @@
 
       {% if params.actions.length > 0 %}
         {% if params.actions.length == 1 %}
-          <div class="govuk-summary-card__actions govuk-!-display-none-print">
+          <div class="govuk-summary-card__actions govuk-!-display-none-print" data-ai-id="plan-history-summary-card-view-goal-link">
             {{ goalCard.actionLink(params.actions[0], params.goalTitle) | trim }}
           </div>
         {% else %}
@@ -48,7 +48,6 @@
     </div>
 
     <div class="govuk-summary-card__content">
-
       <div class="goal-summary-card__info">
         <div class="goal-date-and-notes">
           {% if params.goalStatus == 'FUTURE' %}
@@ -97,7 +96,6 @@
           <br>Also relates to: {{ params.relatedAreasText | lower }}
         {% endif %}
       </p>
-
     </div>
   </div>
 </div>
