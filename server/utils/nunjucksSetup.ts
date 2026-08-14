@@ -15,8 +15,6 @@ export default function nunjucksSetup(app?: express.Express) {
     app.locals.applicationName = 'Assess and plan'
     app.locals.environmentName = config.environmentName
     app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
-    app.locals.feedbackFormUrl = config.feedbackFormUrl
-    app.locals.nationalRolloutFeedbackUrl = config.nationalRolloutFeedbackUrl
     app.locals.serviceNowFormUrl = config.serviceNowFormUrl
     app.locals.oasysUrl = config.oasysUrl
     app.locals.mpopUrl = config.mpopUrl

@@ -184,7 +184,7 @@ export default {
   ingressUrl,
   logLevel: get('LOG_LEVEL', 'info'),
   environmentName: get('ENVIRONMENT_NAME', ''),
-  feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
+  privateBetaFeedbackUrl: get('PRIVATE_BETA_FEEDBACK_URL', '#'),
   nationalRolloutFeedbackUrl: get('NATIONAL_ROLLOUT_FEEDBACK_URL', '#'),
   serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#service-now-link', requiredInProduction),
   oasysUrl: get('OASYS_URL', 'http://localhost:3000/training-session-launcher/sessions', requiredInProduction),

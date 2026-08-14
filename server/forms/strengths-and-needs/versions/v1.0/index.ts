@@ -12,6 +12,10 @@ import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
 import { isOasysAccess } from './guards'
+import config from '../../../../config'
+import { createPlatformPages, notAPlatformPage } from '../../../platform'
+
+const feedbackUrl = config.privateBetaFeedbackUrl
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -23,6 +27,7 @@ export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
   title: commonContentFor('strengths_and_needs'),
   path: `/${formVersion}`,
+  steps: createPlatformPages({ baseUrl: basePath, feedbackUrl }),
   view: {
     template: 'strengths-and-needs/views/san-step',
     locals: {
@@ -35,6 +40,7 @@ export const strengthsAndNeedsV1Journey = journey({
       buttons: {
         showReturnToOasysButton: isOasysAccess,
       },
+      feedbackUrl,
     },
   },
   data: {
@@ -51,6 +57,7 @@ export const strengthsAndNeedsV1Journey = journey({
     }),
     access({
       when: and(
+        notAPlatformPage,
         Data('privacyAccepted').not.match(Condition.Equals(true)),
         Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
       ),

@@ -20,6 +20,10 @@ import {
   redirectIfMergedMpopPlan,
   redirectToPrivacyUnlessAccepted,
 } from './guards'
+import config from '../../../../config'
+import { createPlatformPages } from '../../../platform'
+
+const feedbackUrl = config.nationalRolloutFeedbackUrl
 
 /**
  * Sentence Plan v1.0 Journey
@@ -38,11 +42,11 @@ export const sentencePlanV1Journey = journey({
   view: {
     template: 'sentence-plan/views/sentence-plan-step',
     locals: {
-      footerBaseUrl: '/platform',
       basePath: sentencePlanBasePath,
       hmppsHeaderServiceNameLink: sentencePlanOverviewPath,
       showAboutTab: canAccessSanContent,
       showPlanHistoryTab: hasPostAgreementStatus,
+      feedbackUrl,
     },
   },
   data: {
@@ -81,6 +85,6 @@ export const sentencePlanV1Journey = journey({
     // READ_ONLY users skip privacy and go straight to overview; edit users must accept privacy first.
     redirectToPrivacyUnlessAccepted(),
   ],
-  steps: [aboutPersonStep],
+  steps: [aboutPersonStep, ...createPlatformPages({ baseUrl: sentencePlanBasePath, feedbackUrl })],
   children: [planOverviewJourney, goalManagementJourney],
 })
