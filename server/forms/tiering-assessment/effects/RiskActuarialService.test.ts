@@ -702,6 +702,22 @@ describe('RiskActuarialService', () => {
     )
   })
 
+  it('should return null if "has-ever-drunk-alcohol" is YES_NOT_LAST_THREE_MONTHS', async () => {
+    const answers: Record<string, unknown> = {
+      'has-ever-drunk-alcohol': 'YES_NOT_LAST_THREE_MONTHS',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentAlcoholUseProblems: null,
+      }),
+    )
+  })
+
   it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-frequency and units-of-alcohol <= 4', async () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
