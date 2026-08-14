@@ -307,7 +307,7 @@ describe('RiskActuarialService', () => {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 3,
       'units-of-alcohol': 2,
-      'binge-drinking': 'SIGNIFICANT_PROBLEMS',
+      'alcohol-use-binge-drinking': 'SIGNIFICANT_PROBLEMS',
       'who-are-they-living-with': 'partner',
       'important-relationships': 'partner',
       'relationship-satisfaction': 'SOME_PROBLEMS',
@@ -536,6 +536,7 @@ describe('RiskActuarialService', () => {
       'other-drug-radio': 'unknown',
       'motivation-to-tackle-drug-misuse': 'unknown',
       'has-ever-drunk-alcohol': 'unknown',
+      'alcohol-use-binge-drinking': 'unknown',
       'binge-drinking': 'unknown',
       'who-are-they-living-with': 'unknown',
       'important-relationships': 'unknown',
@@ -668,7 +669,7 @@ describe('RiskActuarialService', () => {
   it('should return null if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and current-alcohol-use-problems is null', async () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
-      'current-alcohol-use-frequency': null,
+      'current-alcohol-use-frequency': 'unknown',
       'units-of-alcohol': 4,
     }
 
@@ -767,6 +768,24 @@ describe('RiskActuarialService', () => {
     expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
       expect.objectContaining({
         currentAlcoholUseProblems: 'NO_PROBLEMS',
+      }),
+    )
+  })
+
+  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_NOT_LAST_THREE_MONTHS and binge-drinking is set', async () => {
+    const answers: Record<string, unknown> = {
+      'has-ever-drunk-alcohol': 'YES_NOT_LAST_THREE_MONTHS',
+      'alcohol-use-binge-drinking': 'NO_PROBLEMS', // Practically will never happen, just checking the if functionality
+      'binge-drinking': 'SIGNIFICANT_PROBLEMS',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        excessiveAlcoholUse: 'SIGNIFICANT_PROBLEMS',
       }),
     )
   })

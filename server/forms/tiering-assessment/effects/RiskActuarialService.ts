@@ -58,7 +58,7 @@ export class RiskActuarialService {
       hasOtherDrugsUsage: this.parseBoolean(context.getAnswer('other-drug-radio')),
       motivationToTackleDrugMisuse: this.parseMotivationLevel(context.getAnswer('motivation-to-tackle-drug-misuse')),
       currentAlcoholUseProblems: this.getCurrentAlcoholUseProblems(context),
-      excessiveAlcoholUse: this.parseProblemLevel(context.getAnswer('binge-drinking')),
+      excessiveAlcoholUse: this.getExcessiveAlcoholUseProblems(context),
       currentRelationshipStatus: this.getCurrentRelationshipStatus(context),
       currentRelationshipWithPartner: this.parseProblemLevel(context.getAnswer('relationship-satisfaction')),
       regularOffendingActivities: this.parseProblemLevel(context.getAnswer('regular-offending-activities')),
@@ -92,6 +92,16 @@ export class RiskActuarialService {
     if (hasEverDrunkAlcohol === 'YES_NOT_IN_LAST_THREE_MONTHS' || hasEverDrunkAlcohol === 'NO') return 'NO_PROBLEMS'
 
     return this.currentAlcoholUseAndUnitsToProblemLevel(currentAlcoholUseFrequency, unitsOfAlcohol)
+  }
+
+  private getExcessiveAlcoholUseProblems(context: TieringAssessmentEffectContext): ProblemLevel | null {
+    const hasEverDrunkAlcohol = this.parseString(context.getAnswer('has-ever-drunk-alcohol'))
+
+    return this.parseProblemLevel(
+      hasEverDrunkAlcohol === 'YES_IN_LAST_THREE_MONTHS'
+        ? context.getAnswer('alcohol-use-binge-drinking')
+        : context.getAnswer('binge-drinking'),
+    )
   }
 
   private saveScoresToContext(context: TieringAssessmentEffectContext, riskScores: RiskScores): void {
@@ -170,7 +180,7 @@ export class RiskActuarialService {
   }
 
   private parseNumber(val: unknown): number | null {
-    if (val === undefined || val === null || val === '') return null
+    if (val === undefined || val === null || val === '' || val === 'unknown') return null
     const num: number = Number(val)
     return Number.isNaN(num) ? null : num
   }
