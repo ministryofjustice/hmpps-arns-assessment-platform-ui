@@ -38,7 +38,6 @@ generic-service:
     ARNS_API_URL: 'https://assess-risks-and-needs.hmpps.service.justice.gov.uk'
     TIER_API_URL: 'https://hmpps-tier.hmpps.service.justice.gov.uk'
     SUPERVISION_PACKAGE_API_URL: 'https://supervision-packages-api.hmpps.service.justice.gov.uk'
-    MAS_API_URL: 'https://manage-supervision-and-delius.hmpps.service.justice.gov.uk'
     SAN_URL: 'https://strengths-based-needs-assessments.hmpps.service.justice.gov.uk'
     OASYS_URL: 'https://oasys.service.justice.gov.uk'
     MPOP_URL: 'https://manage-people-on-probation.hmpps.service.justice.gov.uk'

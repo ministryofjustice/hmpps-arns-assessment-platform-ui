@@ -18,7 +18,6 @@ test.describe('Health', () => {
       // outages must not make this service report itself down. See setUpHealthChecks.
       expect(Object.keys(payload.components)).not.toContain('tierApi')
       expect(Object.keys(payload.components)).not.toContain('supervisionPackageApi')
-      expect(Object.keys(payload.components)).not.toContain('masApi')
     })
 
     test('Ping is accessible and status is UP', async ({ page }) => {

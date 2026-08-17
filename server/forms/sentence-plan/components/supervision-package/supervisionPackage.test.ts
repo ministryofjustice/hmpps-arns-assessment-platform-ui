@@ -3,8 +3,10 @@ import { buildParams, SupervisionPackageBlock } from './supervisionPackage'
 import { SupervisionPackageDetails, TierCalculation } from '../../effects/types'
 
 const supervisionPackageDetails = {
-  phase: {
-    name: { code: 'STD', description: 'standard' },
+  currentPhase: {
+    supervisionPackage: { code: 'STD', description: 'Standard' },
+    phase: { code: 'P1', description: 'Phase 1' },
+    eventNumber: '1',
     startDate: '2026-01-05',
     endDate: '2027-01-04',
   },
@@ -12,24 +14,34 @@ const supervisionPackageDetails = {
   currentYear: {
     startDate: '2026-01-05',
     endDate: '2027-01-04',
+    proRataFromDate: '2026-01-05',
     isFirstYear: true,
     appointments: { allowance: 20, scheduled: 3, completed: 11 },
   },
-} as SupervisionPackageDetails
+  nextAppointment: {
+    id: 1,
+    date: '2026-08-12',
+    startTime: '10:30',
+    type: { code: 'OFF', description: 'Office visit' },
+    description: 'planned office visit',
+  },
+  createdAt: '2026-01-05T09:00:00Z',
+  updatedAt: '2026-08-01T09:00:00Z',
+  context: {},
+} as unknown as SupervisionPackageDetails
 
 function createBlock(overrides: Partial<SupervisionPackageBlock> = {}) {
   return {
     variant: 'supervisionPackage',
-    forename: 'Buster',
+    crn: 'X123456',
     tierCalculation: undefined,
     supervisionPackageDetails: undefined,
-    nextAppointment: undefined,
     ...overrides,
   } as unknown as EvaluatedBlock<SupervisionPackageBlock>
 }
 
 describe('buildParams()', () => {
-  it('should spread supervision package details over the tier props when data is loaded', () => {
+  it('should spread the supervision package frontend context over the tier props when data is loaded', () => {
     // Arrange
     const tierCalculation = { tierScore: 'B2', provisional: false, tag: { text: null, color: null } } as TierCalculation
     const block = createBlock({ tierCalculation, supervisionPackageDetails })
@@ -41,25 +53,26 @@ describe('buildParams()', () => {
     expect(params).toEqual({
       tierScore: 'B2',
       tag: { text: null, color: null },
-      forename: 'Buster',
-      nextAppointment: undefined,
-      phase: supervisionPackageDetails.phase,
+      crn: 'X123456',
+      currentPhase: supervisionPackageDetails.currentPhase,
       earlyEngagement: supervisionPackageDetails.earlyEngagement,
       currentYear: supervisionPackageDetails.currentYear,
+      nextAppointment: supervisionPackageDetails.nextAppointment,
+      createdAt: supervisionPackageDetails.createdAt,
+      updatedAt: supervisionPackageDetails.updatedAt,
+      context: supervisionPackageDetails.context,
     })
   })
 
-  it('should pass the next appointment through to the component', () => {
+  it('should pass the next appointment through as part of the package context', () => {
     // Arrange
-    // TODO: Drop href when MPoP make it optional — see effects/types.ts NextAppointment.
-    const nextAppointment = { description: 'planned office visit', date: '2026-08-12T10:30:00Z', href: '#' }
-    const block = createBlock({ nextAppointment })
+    const block = createBlock({ supervisionPackageDetails })
 
     // Act
     const params = buildParams(block)
 
     // Assert
-    expect(params.nextAppointment).toEqual(nextAppointment)
+    expect(params.nextAppointment).toEqual(supervisionPackageDetails.nextAppointment)
   })
 
   it('should omit the tier score when the calculation is MISSING', () => {
@@ -79,7 +92,7 @@ describe('buildParams()', () => {
     expect(params.tag).toEqual({ text: 'Missing', color: 'red' })
   })
 
-  it('should return only the forename when no data is loaded', () => {
+  it('should return only the tier and crn props when no package data is loaded', () => {
     // Arrange
     const block = createBlock()
 
@@ -87,6 +100,6 @@ describe('buildParams()', () => {
     const params = buildParams(block)
 
     // Assert
-    expect(params).toEqual({ tierScore: undefined, tag: undefined, forename: 'Buster' })
+    expect(params).toEqual({ tierScore: undefined, tag: undefined, crn: 'X123456' })
   })
 })

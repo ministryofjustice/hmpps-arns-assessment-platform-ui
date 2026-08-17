@@ -1,11 +1,5 @@
 import { loadSupervisionPackage } from './loadSupervisionPackage'
-import type {
-  PersonScheduleResponse,
-  SentencePlanContext,
-  SentencePlanEffectsDeps,
-  SupervisionPackageDetails,
-  TierCalculation,
-} from '../types'
+import type { SentencePlanContext, SentencePlanEffectsDeps, SupervisionPackageDetails, TierCalculation } from '../types'
 
 jest.mock('../../../../../logger', () => ({
   info: jest.fn(),
@@ -15,12 +9,32 @@ jest.mock('../../../../../logger', () => ({
 const mockLogger = jest.requireMock('../../../../../logger')
 
 const supervisionPackageDetails = {
-  phase: {
-    name: { code: 'STD', description: 'standard' },
+  currentPhase: {
+    supervisionPackage: { code: 'STD', description: 'Standard' },
+    phase: { code: 'P1', description: 'Phase 1' },
+    eventNumber: '1',
     startDate: '2026-01-05',
     endDate: '2027-01-04',
   },
-} as SupervisionPackageDetails
+  earlyEngagement: { startDate: '2026-01-05', endDate: '2026-03-01', weeks: 8, completed: 8 },
+  currentYear: {
+    startDate: '2026-01-05',
+    endDate: '2027-01-04',
+    proRataFromDate: '2026-01-05',
+    isFirstYear: true,
+    appointments: { allowance: 20, scheduled: 3, completed: 11 },
+  },
+  nextAppointment: {
+    id: 1,
+    date: '2026-08-12',
+    startTime: '10:30',
+    type: { code: 'OFF', description: 'Office visit' },
+    description: 'planned office visit',
+  },
+  createdAt: '2026-01-05T09:00:00Z',
+  updatedAt: '2026-08-01T09:00:00Z',
+  context: {},
+} as unknown as SupervisionPackageDetails
 
 const tierCalculation = {
   tierScore: 'B2',
@@ -47,24 +61,11 @@ function createMockContext(crn: string | null = 'X123456') {
   } as unknown as SentencePlanContext
 }
 
-const personScheduleWithAppointment: PersonScheduleResponse = {
-  personSchedule: {
-    personSchedule: {
-      appointments: [{ id: '10001', type: 'planned office visit', startDateTime: '2026-08-12T10:30:00Z' }],
-    },
-  },
-  httpStatus: 200,
-  error: null,
-} as PersonScheduleResponse
-
 function createMockDeps(): SentencePlanEffectsDeps {
   return {
     mpopComponents: {
-      getSupervisionPackage: jest
-        .fn()
-        .mockResolvedValue({ supervisionPackage: supervisionPackageDetails, httpStatus: 200, error: null }),
+      getSupervisionPackageFrontendContext: jest.fn().mockResolvedValue(supervisionPackageDetails),
       getTierDetails: jest.fn().mockResolvedValue({ calculation: tierCalculation, httpStatus: 200, error: null }),
-      getPersonSchedule: jest.fn().mockResolvedValue(personScheduleWithAppointment),
     },
   } as unknown as SentencePlanEffectsDeps
 }
@@ -86,20 +87,16 @@ describe('loadSupervisionPackage', () => {
     await loadSupervisionPackage(deps)(context)
 
     // Assert
-    expect(deps.mpopComponents.getSupervisionPackage).toHaveBeenCalledWith(expect.anything(), 'X123456')
+    expect(deps.mpopComponents.getSupervisionPackageFrontendContext).toHaveBeenCalledWith(expect.anything(), 'X123456')
     expect(deps.mpopComponents.getTierDetails).toHaveBeenCalledWith(expect.anything(), 'X123456')
     expect(context.setData).toHaveBeenCalledWith('supervisionPackageDetails', supervisionPackageDetails)
     expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
   })
 
-  it('should leave package details unset when the person has no package yet', async () => {
+  it('should leave package details unset and log at info when the person has no package yet', async () => {
     // Arrange
     const context = createMockContext()
-    ;(deps.mpopComponents.getSupervisionPackage as jest.Mock).mockResolvedValue({
-      supervisionPackage: null,
-      httpStatus: 404,
-      error: null,
-    })
+    ;(deps.mpopComponents.getSupervisionPackageFrontendContext as jest.Mock).mockResolvedValue(null)
 
     // Act
     await loadSupervisionPackage(deps)(context)
@@ -107,22 +104,10 @@ describe('loadSupervisionPackage', () => {
     // Assert
     expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageDetails', expect.anything())
     expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
-  })
-
-  it('should leave package details unset when the supervision package API fails', async () => {
-    // Arrange
-    const context = createMockContext()
-    ;(deps.mpopComponents.getSupervisionPackage as jest.Mock).mockResolvedValue({
-      supervisionPackage: null,
-      httpStatus: 500,
-      error: new Error('500 Internal Server Error'),
-    })
-
-    // Act
-    await loadSupervisionPackage(deps)(context)
-
-    // Assert
-    expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageDetails', expect.anything())
+    expect(mockLogger.info).toHaveBeenCalledWith(
+      { crn: 'X123456' },
+      'No supervision package for this person yet, rendering the provisional state',
+    )
   })
 
   it('should still set the unavailable tier calculation when the tier API fails', async () => {
@@ -139,12 +124,18 @@ describe('loadSupervisionPackage', () => {
 
     // Assert
     expect(context.setData).toHaveBeenCalledWith('tierCalculation', unavailableTierCalculation)
+    expect(mockLogger.error).toHaveBeenCalledWith(
+      { crn: 'X123456', httpStatus: 500 },
+      'Failed to fetch tier details from MPoP Components API',
+    )
   })
 
   it('should not throw when the client rejects', async () => {
     // Arrange
     const context = createMockContext()
-    ;(deps.mpopComponents.getSupervisionPackage as jest.Mock).mockRejectedValue(new Error('connection refused'))
+    ;(deps.mpopComponents.getSupervisionPackageFrontendContext as jest.Mock).mockRejectedValue(
+      new Error('connection refused'),
+    )
 
     // Act
     await loadSupervisionPackage(deps)(context)
@@ -153,70 +144,12 @@ describe('loadSupervisionPackage', () => {
     expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageDetails', expect.anything())
   })
 
-  it('should set the next appointment from the first upcoming schedule entry', async () => {
+  it('should log at info rather than error when the person has no tier or package', async () => {
     // Arrange
     const context = createMockContext()
-
-    // Act
-    await loadSupervisionPackage(deps)(context)
-
-    // Assert
-    expect(deps.mpopComponents.getPersonSchedule).toHaveBeenCalledWith(expect.anything(), 'X123456')
-    expect(context.setData).toHaveBeenCalledWith('nextAppointment', {
-      description: 'planned office visit',
-      date: '2026-08-12T10:30:00Z',
-      // TODO: Drop when MPoP make href optional — see effects/types.ts NextAppointment.
-      href: '#',
-    })
-  })
-
-  it('should not set a next appointment when the schedule is empty', async () => {
-    // Arrange
-    const context = createMockContext()
-    ;(deps.mpopComponents.getPersonSchedule as jest.Mock).mockResolvedValue({
-      personSchedule: { personSchedule: { appointments: [] } },
-      httpStatus: 200,
-      error: null,
-    })
-
-    // Act
-    await loadSupervisionPackage(deps)(context)
-
-    // Assert
-    expect(context.setData).not.toHaveBeenCalledWith('nextAppointment', expect.anything())
-  })
-
-  it('should leave the next appointment unset when the appointments API fails', async () => {
-    // Arrange
-    const context = createMockContext()
-    ;(deps.mpopComponents.getPersonSchedule as jest.Mock).mockResolvedValue({
-      personSchedule: null,
-      httpStatus: 500,
-      error: new Error('500 Internal Server Error'),
-    })
-
-    // Act
-    await loadSupervisionPackage(deps)(context)
-
-    // Assert
-    expect(context.setData).not.toHaveBeenCalledWith('nextAppointment', expect.anything())
-  })
-
-  it('should log at info rather than error when a person has no tier, package or appointment', async () => {
-    // Arrange
-    const context = createMockContext()
-    ;(deps.mpopComponents.getSupervisionPackage as jest.Mock).mockResolvedValue({
-      supervisionPackage: null,
-      httpStatus: 404,
-      error: null,
-    })
+    ;(deps.mpopComponents.getSupervisionPackageFrontendContext as jest.Mock).mockResolvedValue(null)
     ;(deps.mpopComponents.getTierDetails as jest.Mock).mockResolvedValue({
       calculation: unavailableTierCalculation,
-      httpStatus: 404,
-      error: null,
-    })
-    ;(deps.mpopComponents.getPersonSchedule as jest.Mock).mockResolvedValue({
-      personSchedule: null,
       httpStatus: 404,
       error: null,
     })
@@ -226,26 +159,7 @@ describe('loadSupervisionPackage', () => {
 
     // Assert
     expect(mockLogger.error).not.toHaveBeenCalled()
-    expect(mockLogger.info).toHaveBeenCalledTimes(3)
-  })
-
-  it('should log at error when an API genuinely fails', async () => {
-    // Arrange
-    const context = createMockContext()
-    ;(deps.mpopComponents.getPersonSchedule as jest.Mock).mockResolvedValue({
-      personSchedule: null,
-      httpStatus: 500,
-      error: new Error('500 Internal Server Error'),
-    })
-
-    // Act
-    await loadSupervisionPackage(deps)(context)
-
-    // Assert
-    expect(mockLogger.error).toHaveBeenCalledWith(
-      { crn: 'X123456', httpStatus: 500 },
-      'Failed to fetch next appointment from MPoP Components API',
-    )
+    expect(mockLogger.info).toHaveBeenCalledTimes(2)
   })
 
   it('should not call the APIs when CRN is missing from the session', async () => {
@@ -256,6 +170,6 @@ describe('loadSupervisionPackage', () => {
     await loadSupervisionPackage(deps)(context)
 
     // Assert
-    expect(deps.mpopComponents.getSupervisionPackage).not.toHaveBeenCalled()
+    expect(deps.mpopComponents.getSupervisionPackageFrontendContext).not.toHaveBeenCalled()
   })
 })

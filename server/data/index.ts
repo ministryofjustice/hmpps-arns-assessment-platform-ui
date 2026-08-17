@@ -36,7 +36,6 @@ export const dataAccess = () => {
       hmppsAuthClient,
       {
         ...config.apis.tierApi,
-        masApiConfig: config.apis.masApi,
         supervisionPackageApiConfig: config.apis.supervisionPackageApi,
       },
       logger,

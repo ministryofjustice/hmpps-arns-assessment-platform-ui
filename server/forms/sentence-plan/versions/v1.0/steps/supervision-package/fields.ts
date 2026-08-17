@@ -3,8 +3,7 @@ import { SupervisionPackage } from '../../../../components'
 import { CaseData } from '../../constants'
 
 export const supervisionPackageSection = SupervisionPackage({
-  forename: CaseData.Forename,
+  crn: CaseData.Crn,
   tierCalculation: Data('tierCalculation'),
   supervisionPackageDetails: Data('supervisionPackageDetails'),
-  nextAppointment: Data('nextAppointment'),
 })

@@ -8,7 +8,7 @@ import { checkAccessibility, navigateToSentencePlan, sentencePlanV1URLs } from '
  * engagement package (the component's richest view — progress bar, appointment
  * allowance, guidance), a confirmed B2 tier and one upcoming appointment. The named
  * CRNs below are overrides for specific variations — see the mappings in
- * docker/wiremock/mappings/{supervision-package-api,tier-api,mas-api}.
+ * docker/wiremock/mappings/{supervision-package-api,tier-api}.
  */
 const CRN_IN_STANDARD_PHASE = 'X444444'
 const CRN_WITHOUT_PACKAGE = 'X888888'
@@ -47,7 +47,9 @@ test.describe('Supervision package', () => {
     await page.goto(sentencePlanV1URLs.SUPERVISION_PACKAGE)
 
     await expect(page.getByRole('heading', { name: 'Next appointment' })).toBeVisible()
-    await expect(page.getByRole('link', { name: /Planned office visit: 12 August 2026/ })).toBeVisible()
+    // No next-appointment href is passed (the arrange-appointment journey lives in MPoP),
+    // so the component renders the appointment as text rather than a link.
+    await expect(page.getByText(/Planned office visit: 12 August 2026/i)).toBeVisible()
   })
 
   test('shows the standard stage when early engagement is complete', async ({ page, createSession }) => {

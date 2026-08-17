@@ -2,7 +2,13 @@ import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
 import { User } from '../../../interfaces/user'
 import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
-import { AssessmentPlatformApiClient, CoordinatorApiClient, DeliusApiClient, MPoPComponents, ArnsApiClient } from '../../../data'
+import {
+  AssessmentPlatformApiClient,
+  CoordinatorApiClient,
+  DeliusApiClient,
+  MPoPComponents,
+  ArnsApiClient,
+} from '../../../data'
 import AuditService from '../../../services/auditService'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { SessionDetails } from '../../../interfaces/sessionDetails'
@@ -225,39 +231,19 @@ export interface GoalUpdatedHistoryEntry extends GoalEventContext {
 }
 
 /**
- * Response and payload types for the MPoP components client.
- * Derived from the client methods because the library does not export its data
- * types directly — deriving keeps them in sync with the installed version.
+ * Response and payload types for the MPoP components client, derived from the
+ * client methods because the library does not export its data types directly —
+ * deriving keeps them in sync with the installed version.
+ *
+ * The frontend-context call bundles the phase, appointment allowance and next
+ * appointment in one response, so a single derived type covers the whole
+ * supervision package. The method can return null (no package yet), so unwrap it.
  */
-export type SupervisionPackageResponse = Awaited<ReturnType<MPoPComponents['getSupervisionPackage']>>
-export type SupervisionPackageDetails = NonNullable<SupervisionPackageResponse['supervisionPackage']>
+export type SupervisionPackageDetails = NonNullable<
+  Awaited<ReturnType<MPoPComponents['getSupervisionPackageFrontendContext']>>
+>
 export type TierDetailsResponse = Awaited<ReturnType<MPoPComponents['getTierDetails']>>
 export type TierCalculation = TierDetailsResponse['calculation']
-export type PersonScheduleResponse = Awaited<ReturnType<MPoPComponents['getPersonSchedule']>>
-
-/**
- * Next appointment as the MPoP component expects it.
- *
- * See loadSupervisionPackage for why `href` is currently a placeholder, and
- * why it cannot simply be omitted or left empty.
- *
- * TODO: Once MPoP release a version where the component's `href` is optional, this
- * whole placeholder can go. Five places need changing together:
- *   1. Drop `href` from this interface.
- *   2. loadSupervisionPackage.ts — drop `href: '#'` from the setData call and its comment.
- *   3. loadSupervisionPackage.test.ts — drop `href` from the expected nextAppointment.
- *   4. supervisionPackage.test.ts — drop `href` from the nextAppointment fixture.
- *   5. supervisionPackage.spec.ts (e2e) — the appointment stops being a link, so
- *      getByRole('link', ...) becomes a plain getByText, and the accessibility check
- *      can drop its `link-name`/`link-in-text-block` exclusions if any were needed.
- * The MAS API wiring (config, mocks, helm URLs) all stays — it supplies the appointment
- * itself, not the link.
- */
-export interface NextAppointment {
-  description: string
-  date: string
-  href: string
-}
 
 export type AreaOfNeed = (typeof areasOfNeed)[number]
 
@@ -420,9 +406,9 @@ export interface SentencePlanData extends Record<string, unknown> {
   privacyAccepted?: boolean
 
   // Supervision package page (from MPoP components client)
+  // supervisionPackageDetails now bundles the next appointment inside the frontend context
   supervisionPackageDetails: SupervisionPackageDetails | undefined
   tierCalculation: TierCalculation | undefined
-  nextAppointment: NextAppointment | undefined
 
   // all assessment areas grouped by scoring category (for about page; from coordinator API)
   allAssessmentAreas: AssessmentArea[]
