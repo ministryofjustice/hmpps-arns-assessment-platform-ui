@@ -8,4 +8,5 @@ export interface User {
   id: string
   name: string
   authSource: AuthSource
+  token?: string
 }

@@ -39,8 +39,17 @@ export const updatePlanAgreementQuestion = GovUKRadioInput({
   },
   hint: Format('%1 must answer this question.', CaseData.Forename),
   items: [
-    { value: 'yes', text: 'Yes, I agree' },
-    { value: 'no', text: 'No, I do not agree', block: detailsForNoField },
+    {
+      value: 'yes',
+      text: 'Yes, I agree',
+      attributes: { 'data-ai-id': 'update-agree-plan-agree-plan-radio-yes' },
+    },
+    {
+      value: 'no',
+      text: 'No, I do not agree',
+      attributes: { 'data-ai-id': 'update-agree-plan-agree-plan-radio-no' },
+      block: detailsForNoField,
+    },
   ],
   validWhen: [
     validation({
@@ -54,14 +63,12 @@ const saveButton = GovUKButton({
   text: 'Save',
   name: 'action',
   value: 'save',
-  attributes: {
-    'data-ai-id': 'update-agree-plan-save-button',
-  },
+  attributes: { 'data-ai-id': 'update-agree-plan-save-button' },
 })
 
 const goBackLink = HtmlBlock({
   content: Format(
-    '<a href="overview?goalStatusTab=current" class="govuk-link govuk-link--no-visited-state">Go back to %1\'s plan</a>',
+    '<a href="overview?goalStatusTab=current" class="govuk-link govuk-link--no-visited-state" data-ai-id="update-agree-plan-back-to-plan-link">Go back to %1\'s plan</a>',
     CaseData.Forename,
   ),
 })
