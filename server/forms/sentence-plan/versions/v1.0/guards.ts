@@ -5,6 +5,7 @@ import {
   Item,
   Iterator,
   not,
+  or,
   redirect,
   Condition,
   Request,
@@ -29,6 +30,8 @@ export const isOasysAccess = Data('sessionDetails.accessType').match(Condition.E
 export const isReadOnlyAccess = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
 export const isPrintAndShareEnabled = Data('featureFlags.printAndShareEnabled').match(Condition.Equals(true))
+
+export const isMpopAssessmentInfoEnabled = Data('featureFlags.mpopAssessmentInfoEnabled').match(Condition.Equals(true))
 
 /**
  * True when Gotenberg is loading this page to build a PDF, rather than a person viewing it.
@@ -130,10 +133,10 @@ export const isMpopAccess = Data('sessionDetails.accessType').match(Condition.Eq
 
 /**
  * True when the user can access SAN-specific content.
- * Requires both a SAN_SP assessment AND non-MPoP access, because MPoP users
- * cannot reach the SAN data APIs needed to populate this content.
+ * Requires a SAN_SP assessment AND either non-MPoP access (i.e. OASys),
+ * or MPoP access with the assessment-info feature flag enabled.
  */
-export const canAccessSanContent = and(isSanSpAssessment, not(isMpopAccess))
+export const canAccessSanContent = and(isSanSpAssessment, or(not(isMpopAccess), isMpopAssessmentInfoEnabled))
 
 /**
  * Redirect users unless they can access SAN content.
