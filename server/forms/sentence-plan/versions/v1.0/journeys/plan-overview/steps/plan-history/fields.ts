@@ -173,6 +173,7 @@ const goalSummaryCardForHistory = GoalSummaryCardHistory({
       href: when(Item().path('currentGoalStatus').match(Condition.Array.IsIn(INACTIVE_GOAL_STATUSES)))
         .then(Format('../goal/%1/view-inactive-goal', Item().path('goalUuid')))
         .else(Format('../goal/%1/update-goal-steps', Item().path('goalUuid'))),
+      dataAiId: "plan-history-summary-card-view-goal-link",
       hidden: when(isReadOnlyAccess),
     },
   ],
@@ -186,7 +187,6 @@ const agreementContentBlock = HtmlBlock({
 export const agreementHistory = GovUKAccordion({
   id: 'plan-history-accordion',
   rememberExpanded: false,
-  attributes: { 'data-ai-id': 'plan-history-accordion-show-all-sections' },
   items: Data('planHistoryEntries').each(
     Iterator.Map({
       heading: {

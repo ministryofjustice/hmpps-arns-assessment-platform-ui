@@ -32,7 +32,7 @@
 
       {% if params.actions.length > 0 %}
         {% if params.actions.length == 1 %}
-          <div class="govuk-summary-card__actions govuk-!-display-none-print" data-ai-id="plan-history-summary-card-view-goal-link">
+          <div class="govuk-summary-card__actions govuk-!-display-none-print">
             {{ goalCard.actionLink(params.actions[0], params.goalTitle) | trim }}
           </div>
         {% else %}
