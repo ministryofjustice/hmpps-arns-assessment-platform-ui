@@ -9,9 +9,9 @@ const areasOfNeedThresholdsAndUpperBounds = Object.fromEntries(
 describe('assessmentUtils', () => {
   // Note: The SAN assessment data keys (e.g. accommodation_practitioner_analysis_risk_of_serious_harm)
   // come from SAN via the coordinator API, representing raw form answers. Each value is an AnswerDto
-  // with a `value` property. We don't use the YES/NO indicator values from these keys - instead we get
-  // linked indicators from the handover service (criminogenic needs data, which IS from OASys).
-  // We only use these SAN keys for the _details text.
+  // with a `value` property. Linked indicators normally come from the needs data (handover for OASys,
+  // ARNS for MPoP), and these SAN keys are used for the _details text. The exception is strengths,
+  // which falls back to the SAN strengths key when the needs data omits it (the ARNS/MPoP case).
   const createSanAssessmentData = (overrides: Partial<SanAssessmentData> = {}): SanAssessmentData => ({
     accommodation_section_complete: { value: 'YES' },
     accommodation_practitioner_analysis_risk_of_serious_harm: { value: 'YES' },
@@ -116,6 +116,26 @@ describe('assessmentUtils', () => {
       expect(accommodationArea.linkedToStrengthsOrProtectiveFactors).toBeNull()
       // Section complete still comes from SAN assessment data
       expect(accommodationArea.isAssessmentSectionComplete).toBe(true)
+    })
+
+    it('should source the strengths indicator from the coordinator when the needs data omits it (MPoP/ARNS)', () => {
+      const sanAssessmentData = createSanAssessmentData()
+      const crimNeeds = createCriminogenicNeedsData({
+        accommodation: {
+          linkedToHarm: true,
+          linkedToReoffending: false,
+          linkedToStrengthsOrProtectiveFactors: null,
+          score: 4,
+        },
+      })
+
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
+
+      // ARNS provides harm/reoffending but not strengths, so strengths falls back to the coordinator's SAN answer
+      expect(accommodationArea.linkedToHarm).toBe('YES')
+      expect(accommodationArea.linkedToStrengthsOrProtectiveFactors).toBe('YES')
+      expect(accommodationArea.strengthsOrProtectiveFactorsDetails).toBe('Has stable housing history')
     })
 
     it('should handle incomplete sections', () => {

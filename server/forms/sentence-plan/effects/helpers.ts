@@ -7,6 +7,7 @@ export const canAccessSanInfo = (context: SentencePlanContext): boolean => {
   const sessionDetails = context.getSession().sessionDetails
   const isSanSp = assessment && 'flags' in assessment && assessment.flags?.includes('SAN_BETA')
   const isMpop = sessionDetails?.accessType === 'HMPPS_AUTH'
+  const isMpopAssessmentInfoEnabled = context.getData('featureFlags')?.mpopAssessmentInfoEnabled === true
 
-  return Boolean(isSanSp && !isMpop)
+  return Boolean(isSanSp && (!isMpop || isMpopAssessmentInfoEnabled))
 }
