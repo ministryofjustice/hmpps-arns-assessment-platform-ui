@@ -16,8 +16,11 @@ export const alcoholStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [TieringAssessmentEffects.SaveAssessmentData()],
-        next: [redirect({ goto: 'binge-drinking' })],
+        effects: [
+          TieringAssessmentEffects.CalculateRiskActuarialScores(),
+          TieringAssessmentEffects.SaveAssessmentData(),
+        ],
+        next: [redirect({ goto: 'personal-relationships-and-community' })],
       },
     }),
   ],
