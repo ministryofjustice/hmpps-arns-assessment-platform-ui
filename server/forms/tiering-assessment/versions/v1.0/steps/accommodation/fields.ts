@@ -1,5 +1,6 @@
 import { GovUKCheckboxInput, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 export const whoAreTheyLivingWithField = GovUKCheckboxInput({
   code: 'who-are-they-living-with',
@@ -9,7 +10,7 @@ export const whoAreTheyLivingWithField = GovUKCheckboxInput({
   },
   fieldset: {
     legend: {
-      text: 'Who is Name living with?',
+      text: Format('Who is %1 living with?', CaseData.Forename),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -51,7 +52,7 @@ export const whoAreTheyLivingWithField = GovUKCheckboxInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: "Select who NAME is living with, or select 'Alone' or 'Unknown'",
+      message: Format("Select who %1 is living with, or select 'Alone' or 'Unknown'", CaseData.Forename),
     }),
   ],
 })
@@ -63,7 +64,7 @@ export const suitabilityOfAccommodationField = GovUKRadioInput({
   },
   fieldset: {
     legend: {
-      text: "Is NAME's accommodation suitable?",
+      text: Format('Is %1 accommodation suitable?', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--s',
     },
   },

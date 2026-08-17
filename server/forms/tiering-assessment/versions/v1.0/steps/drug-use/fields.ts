@@ -1,5 +1,6 @@
-import { and, Answer, Condition, not, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, Format, not, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKCheckboxInput, GovUKRadioInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 export const drugLastUsedField = (drugValue: string) =>
   GovUKRadioInput({
@@ -55,7 +56,7 @@ export const whatDrugsMisusedField = GovUKCheckboxInput({
   multiple: true,
   fieldset: {
     legend: {
-      text: 'Which drugs has NAME misused?',
+      text: Format('Which drugs has %1 misused?', CaseData.Forename),
       classes: 'govuk-fieldset__legend--m',
     },
   },
@@ -158,7 +159,7 @@ export const motivationToStopMisuseField = GovUKRadioInput({
   code: 'motivation-to-tackle-drug-misuse',
   fieldset: {
     legend: {
-      text: 'Does NAME seem motivated to stop or reduce their drug use?',
+      text: Format('Does %1 seem motivated to stop or reduce their drug use?', CaseData.Forename),
       classes: 'govuk-fieldset__legend--s',
     },
   },

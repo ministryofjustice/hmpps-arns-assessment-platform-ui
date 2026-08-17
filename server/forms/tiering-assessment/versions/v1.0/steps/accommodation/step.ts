@@ -8,7 +8,7 @@ export const accommodationStep = step({
   title: 'Accommodation',
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
     }),
   ],
   blocks: [whoAreTheyLivingWithField, suitabilityOfAccommodationField, GovUKButton({ text: 'Save and continue' })],

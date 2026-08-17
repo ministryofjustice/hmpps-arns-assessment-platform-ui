@@ -1,5 +1,6 @@
 import { GovUKCheckboxInput, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 export const importantRelationshipsField = GovUKCheckboxInput({
   code: 'important-relationships',
@@ -9,7 +10,7 @@ export const importantRelationshipsField = GovUKCheckboxInput({
   },
   fieldset: {
     legend: {
-      text: "Who are the important people in NAME's life",
+      text: Format('Who are the important people in %1 life?', CaseData.ForenamePossessive),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -50,7 +51,10 @@ export const importantRelationshipsField = GovUKCheckboxInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: "Select who the important people in NAME's life are, or select 'Unknown'",
+      message: Format(
+        "Select who the important people in %1 life are, or select 'Unknown'",
+        CaseData.ForenamePossessive,
+      ),
     }),
   ],
 })
@@ -59,7 +63,7 @@ export const relationshipSatisfactionField = GovUKRadioInput({
   code: 'relationship-satisfaction',
   fieldset: {
     legend: {
-      text: 'Is NAME happy with their current relationship status?',
+      text: Format('Is %1 happy with their current relationship status?', CaseData.Forename),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -87,7 +91,10 @@ export const relationshipSatisfactionField = GovUKRadioInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: "Select whether NAME is happy with their current relationship status, or select 'Unknown'",
+      message: Format(
+        "Select whether %1 is happy with their current relationship status, or select 'Unknown'",
+        CaseData.Forename,
+      ),
     }),
   ],
 })

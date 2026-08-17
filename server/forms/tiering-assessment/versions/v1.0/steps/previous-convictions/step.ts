@@ -1,14 +1,15 @@
-import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, Format, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { uuidSummaryField } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 export const previousConvictionsStep = step({
   path: '/previous-convictions',
-  title: 'Has NAME previously been convicted of any of these offences?',
+  title: Format('Has %1 previously been convicted of any of these offences?', CaseData.Forename),
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
     }),
   ],
   blocks: [uuidSummaryField, GovUKButton({ text: 'Save and continue' })],

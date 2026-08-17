@@ -32,7 +32,11 @@ export const currentOffenceAndOffendingHistoryStep = step({
   title: 'Current offence and offending history',
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadOffenceCodeDetails()],
+      effects: [
+        TieringAssessmentEffects.LoadAssessmentData(),
+        TieringAssessmentEffects.LoadOffenceCodeDetails(),
+        TieringAssessmentEffects.LoadForename(),
+      ],
     }),
   ],
   blocks: [
