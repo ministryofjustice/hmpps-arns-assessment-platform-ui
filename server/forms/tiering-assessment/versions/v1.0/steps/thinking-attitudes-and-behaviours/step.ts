@@ -2,9 +2,13 @@ import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/c
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import {
+  impulsivityProblemsDetailsField,
   impulsivityProblemsField,
+  proCriminalAttitudesDetailsField,
   proCriminalAttitudesField,
+  regularOffendingActivitiesDetailsField,
   regularOffendingActivitiesField,
+  temperControlDetailsField,
   temperControlField,
 } from './fields'
 
@@ -18,9 +22,13 @@ export const thinkingAttitudesAndBehavioursStep = step({
   ],
   blocks: [
     regularOffendingActivitiesField,
+    regularOffendingActivitiesDetailsField,
     temperControlField,
+    temperControlDetailsField,
     impulsivityProblemsField,
+    impulsivityProblemsDetailsField,
     proCriminalAttitudesField,
+    proCriminalAttitudesDetailsField,
     GovUKButton({ text: 'Save and continue' }),
   ],
   onSubmission: [
