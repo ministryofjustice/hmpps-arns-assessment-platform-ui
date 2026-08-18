@@ -16,7 +16,7 @@ export const currentAlcoholUseFrequencyField = GovUKRadioInput({
     { value: '3', text: '2 to 3 times a week' },
     { value: '4', text: 'More than 4 times a week' },
     { divider: 'or' },
-    { value: null, text: 'Unknown' },
+    { value: 'unknown', text: 'Unknown' },
   ],
   validWhen: [
     validation({
@@ -41,7 +41,7 @@ export const unitsOfAlcoholField = GovUKRadioInput({
     { value: '3', text: '7 to 9 units' },
     { value: '4', text: '10 or more units' },
     { divider: 'or' },
-    { value: null, text: 'Unknown' },
+    { value: 'unknown', text: 'Unknown' },
   ],
   validWhen: [
     validation({
@@ -52,7 +52,7 @@ export const unitsOfAlcoholField = GovUKRadioInput({
 })
 
 export const bingeDrinkingField = GovUKRadioInput({
-  code: 'binge-drinking',
+  code: 'alcohol-use-binge-drinking',
   fieldset: {
     legend: {
       text: Format(
@@ -75,7 +75,7 @@ export const bingeDrinkingField = GovUKRadioInput({
       hint: 'There is a detrimental effect on other areas of their life and is often directly related to offending.',
     },
     { divider: 'or' },
-    { value: null, text: 'Unknown' },
+    { value: 'unknown', text: 'Unknown' },
   ],
   validWhen: [
     validation({
@@ -117,7 +117,7 @@ export const alcoholUnitsTable = GovUKDetails({
       <td class="govuk-table__cell">2.4 units</td>
     </tr>
     <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Print of lower-strength lager/beer/cider (ABV 3.6%)</td>
+      <td class="govuk-table__cell">Pint of lower-strength lager/beer/cider (ABV 3.6%)</td>
       <td class="govuk-table__cell">2 units</td>
     </tr>
     <tr class="govuk-table__row">
@@ -125,7 +125,7 @@ export const alcoholUnitsTable = GovUKDetails({
       <td class="govuk-table__cell">2.1 units</td>
     </tr>
     <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Print of higher-strength lager/beer/cider (ABV 5.2%)</td>
+      <td class="govuk-table__cell">Pint of higher-strength lager/beer/cider (ABV 5.2%)</td>
       <td class="govuk-table__cell">3 units</td>
     </tr>
     <tr class="govuk-table__row">

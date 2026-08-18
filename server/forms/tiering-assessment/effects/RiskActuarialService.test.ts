@@ -307,7 +307,7 @@ describe('RiskActuarialService', () => {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 3,
       'units-of-alcohol': 2,
-      'binge-drinking': 'SIGNIFICANT_PROBLEMS',
+      'alcohol-use-binge-drinking': 'SIGNIFICANT_PROBLEMS',
       'who-are-they-living-with': 'partner',
       'important-relationships': 'partner',
       'relationship-satisfaction': 'SOME_PROBLEMS',
@@ -536,6 +536,7 @@ describe('RiskActuarialService', () => {
       'other-drug-radio': 'unknown',
       'motivation-to-tackle-drug-misuse': 'unknown',
       'has-ever-drunk-alcohol': 'unknown',
+      'alcohol-use-binge-drinking': 'unknown',
       'binge-drinking': 'unknown',
       'who-are-they-living-with': 'unknown',
       'important-relationships': 'unknown',
@@ -665,10 +666,10 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return null if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and current-alcohol-use-problems is null', async () => {
+  it('should return null if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and current-alcohol-use-frequency is unknown', async () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
-      'current-alcohol-use-frequency': null,
+      'current-alcohol-use-frequency': 'unknown',
       'units-of-alcohol': 4,
     }
 
@@ -683,11 +684,11 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return null if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and units-of-alcohol is null', async () => {
+  it('should return null if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and units-of-alcohol is unknown', async () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 4,
-      'units-of-alcohol': null,
+      'units-of-alcohol': 'unknown',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -701,7 +702,23 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-problems and units-of-alcohol <= 4', async () => {
+  it('should return null if "has-ever-drunk-alcohol" is YES_NOT_LAST_THREE_MONTHS', async () => {
+    const answers: Record<string, unknown> = {
+      'has-ever-drunk-alcohol': 'YES_NOT_LAST_THREE_MONTHS',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currentAlcoholUseProblems: null,
+      }),
+    )
+  })
+
+  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-frequency and units-of-alcohol <= 4', async () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 3,
@@ -719,7 +736,7 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-problems and units-of-alcohol <= 7', async () => {
+  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-frequency and units-of-alcohol <= 7', async () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 3,
@@ -737,7 +754,7 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-problems and units-of-alcohol => 8', async () => {
+  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-frequency and units-of-alcohol => 8', async () => {
     const answers: Record<string, unknown> = {
       'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 4,
@@ -767,6 +784,24 @@ describe('RiskActuarialService', () => {
     expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
       expect.objectContaining({
         currentAlcoholUseProblems: 'NO_PROBLEMS',
+      }),
+    )
+  })
+
+  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_NOT_LAST_THREE_MONTHS and binge-drinking is set', async () => {
+    const answers: Record<string, unknown> = {
+      'has-ever-drunk-alcohol': 'YES_NOT_LAST_THREE_MONTHS',
+      'alcohol-use-binge-drinking': 'NO_PROBLEMS', // Practically will never happen, just checking the if functionality
+      'binge-drinking': 'SIGNIFICANT_PROBLEMS',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        excessiveAlcoholUse: 'SIGNIFICANT_PROBLEMS',
       }),
     )
   })
