@@ -202,6 +202,8 @@ describe('RiskActuarialService', () => {
       impulsivityProblems: null,
       proCriminalAttitudes: null,
       previousConvictions: null,
+      didOffenceInvolveCarryingOrUsingWeapon: null,
+      evidenceOfDomesticAbuse: null,
     })
 
     expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-score', '0.45')
@@ -317,6 +319,8 @@ describe('RiskActuarialService', () => {
       'impulsivity-problems': 'NO_PROBLEMS',
       'pro-criminal-attitudes': 'SIGNIFICANT_PROBLEMS',
       'previous-convictions': ['FIREARMS', 'ROBBERY', 'WEAPON'],
+      'offence-elements': 'domestic-abuse,excessive-violence-or-sadistic-violence,weapon',
+      'evidence-of-domestic-abuse': 'true',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -368,6 +372,8 @@ describe('RiskActuarialService', () => {
       impulsivityProblems: 'NO_PROBLEMS' as ProblemLevel,
       proCriminalAttitudes: 'SIGNIFICANT_PROBLEMS' as ProblemLevel,
       previousConvictions: ['FIREARMS', 'ROBBERY', 'WEAPON'],
+      didOffenceInvolveCarryingOrUsingWeapon: true,
+      evidenceOfDomesticAbuse: true,
     })
 
     // TODO responses will change when enough answers provided
@@ -497,6 +503,8 @@ describe('RiskActuarialService', () => {
       impulsivityProblems: null,
       proCriminalAttitudes: null,
       previousConvictions: null,
+      didOffenceInvolveCarryingOrUsingWeapon: null,
+      evidenceOfDomesticAbuse: null,
     })
   })
 
@@ -589,7 +597,7 @@ describe('RiskActuarialService', () => {
   it('should parse IN_RELATIONSHIP_LIVING_TOGETHER for currentRelationshipStatus if "who-are-they-living-with" and "important-relationships" include "partner"', async () => {
     const answers: Record<string, unknown> = {
       'who-are-they-living-with': 'partner,family',
-      'important-relationships': 'partner,family',
+      'important-relationships': 'partner,family-members',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])

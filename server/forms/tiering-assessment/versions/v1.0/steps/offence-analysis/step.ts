@@ -1,7 +1,7 @@
 import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { uuidSummaryField } from './fields'
+import { evidenceOfDomesticAbuseField, offenceElementsField } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
+import { continueButton } from '../../common'
 
 export const offenceAnalysisStep = step({
   path: '/offence-analysis',
@@ -11,12 +11,15 @@ export const offenceAnalysisStep = step({
       effects: [TieringAssessmentEffects.LoadAssessmentData()],
     }),
   ],
-  blocks: [uuidSummaryField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [offenceElementsField, evidenceOfDomesticAbuseField, continueButton],
   onSubmission: [
     submit({
       validate: true,
       onValid: {
-        effects: [TieringAssessmentEffects.SaveAssessmentData()],
+        effects: [
+          TieringAssessmentEffects.CalculateRiskActuarialScores(),
+          TieringAssessmentEffects.SaveAssessmentData(),
+        ],
         next: [redirect({ goto: 'previous-convictions' })],
       },
     }),
