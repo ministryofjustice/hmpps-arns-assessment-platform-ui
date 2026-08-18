@@ -111,7 +111,7 @@ export const planCreatedMessage = GovUKBody({
 export const updateAgreementMessage = GovUKBody({
   visibleWhen: and(not(isReadOnlyAccess), hasCouldNotAnswerStatus),
   text: Format(
-    '<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a> when you\'ve shared the plan with them.',
+    '<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state" data-ai-id="plan-overview-update-plan-agreement">Update %1\'s agreement</a> when you\'ve shared the plan with them.',
     CaseData.Forename,
   ),
 })
