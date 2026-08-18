@@ -2,7 +2,7 @@ import RiskActuarialApiClient from '../../../data/riskActuarialApiClient'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
 import {
   CurrentRelationshipStatus,
-  MotivationLevel,
+  MotivationLevel, PreviousConviction,
   ProblemLevel,
   RiskScoreInput,
   RiskScores,
@@ -65,6 +65,7 @@ export class RiskActuarialService {
       temperControl: this.parseProblemLevel(context.getAnswer('temper-control')),
       impulsivityProblems: this.parseProblemLevel(context.getAnswer('impulsivity-problems')),
       proCriminalAttitudes: this.parseProblemLevel(context.getAnswer('pro-criminal-attitudes')),
+      previousConvictions: this.parsePreviousConvictions(this.parseString(context.getAnswer('previous-convictions'))),
     }
   }
 
@@ -219,5 +220,26 @@ export class RiskActuarialService {
     if (alcoholSummary <= 4) return this.parseProblemLevel('NO_PROBLEMS')
     if (alcoholSummary <= 7) return this.parseProblemLevel('SOME_PROBLEMS')
     return this.parseProblemLevel('SIGNIFICANT_PROBLEMS')
+  }
+
+  private parsePreviousConvictions(previousConvictions: string): PreviousConviction[]  {
+    if (previousConvictions === undefined || previousConvictions === null || previousConvictions.trim() === '') return null
+
+    const validPreviousConvictions = new Set<string>([
+      'HOMICIDE',
+      'WOUNDING_GBH',
+      'KIDNAPPING',
+      'FIREARMS',
+      'ROBBERY',
+      'AGGRAVATED_BURGLARY',
+      'WEAPON',
+      'CRIMINAL_DAMAGE',
+      'ARSON',
+    ])
+
+    return previousConvictions
+      .split(',')
+      .map((item) => item.trim())
+      .filter((item): item is PreviousConviction => validPreviousConvictions.has(item))
   }
 }

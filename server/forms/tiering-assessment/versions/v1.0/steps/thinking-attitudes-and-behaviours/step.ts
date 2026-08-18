@@ -27,7 +27,10 @@ export const thinkingAttitudesAndBehavioursStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [TieringAssessmentEffects.SaveAssessmentData()],
+        effects: [
+          TieringAssessmentEffects.CalculateRiskActuarialScores(),
+          TieringAssessmentEffects.SaveAssessmentData()
+        ],
         next: [redirect({ goto: 'offence-analysis' })],
       },
     }),
