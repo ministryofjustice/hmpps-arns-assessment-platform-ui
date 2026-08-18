@@ -6,8 +6,8 @@ import {commonContentFor} from '../../../../locales'
 import {contentFor} from '../../locales'
 import {CommonOption} from '../../../../constants/commonOption'
 
-export const offenceCommitedAgainst = GovUKRadioInput({
-  code: Question.offence_analysis_how_many_involved,
+export const offenceAnalysisWhoWasTheOffenceCommittedAgainst = GovUKRadioInput({
+  code: Question.offence_analysis_who_was_the_victim,
   fieldset: {
     legend: {
       text: contentFor('question.offence_analysis_commited_against.text'),
@@ -22,42 +22,42 @@ export const offenceCommitedAgainst = GovUKRadioInput({
     },
     {
       value: Option.one,
-      text: contentFor('question.offence_analysis_how_many_involved.option.ONE'),
+      text: contentFor('question.offence_analysis_who_was_the_victim.option.ONE'),
     },
     {
       value: Option.two,
-      text: contentFor('question.offence_analysis_how_many_involved.option.TWO'),
+      text: contentFor('question.offence_analysis_who_was_the_victim.option.TWO'),
     },
     {
       value: Option.three,
-      text: contentFor('question.offence_analysis_how_many_involved.option.THREE'),
+      text: contentFor('question.offence_analysis_who_was_the_victim.option.THREE'),
     },
     {
       value: Option.four,
-      text: contentFor('question.offence_analysis_how_many_involved.option.FOUR'),
+      text: contentFor('question.offence_analysis_who_was_the_victim.option.FOUR'),
     },
     {
       value: Option.five,
-      text: contentFor('question.offence_analysis_how_many_involved.option.FIVE'),
+      text: contentFor('question.offence_analysis_who_was_the_victim.option.FIVE'),
     },
     {
       value: Option.six_to_ten,
-      text: contentFor('question.offence_analysis_how_many_involved.option.SIX_TO_10'),
+      text: contentFor('question.offence_analysis_who_was_the_victim.option.SIX_TO_10'),
     },
     {
       value: Option.eleven_to_fifteen,
-      text: contentFor('question.offence_analysis_how_many_involved.option.ELEVEN_TO_15'),
+      text: contentFor('question.offence_analysis_who_was_the_victim.option.ELEVEN_TO_15'),
     },
     {
       value: Option.more_than_fifteen,
-      text: contentFor('question.offence_analysis_how_many_involved.option.MORE_THAN_15'),
+      text: contentFor('question.offence_analysis_who_was_the_victim.option.MORE_THAN_15'),
     },
   ],
   dependentWhen: Answer(Question.offence_analysis_commited_against).match(Condition.Array.Contains(CommonOption.other)),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor('question.offence_analysis_how_many_involved.validation'),
+      message: contentFor('question.offence_analysis_who_was_the_victim.validation'),
     }),
   ],
 })

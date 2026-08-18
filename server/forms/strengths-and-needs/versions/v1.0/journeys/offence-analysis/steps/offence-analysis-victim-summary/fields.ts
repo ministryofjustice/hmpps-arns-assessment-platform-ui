@@ -92,5 +92,5 @@ export const victimCards = CollectionBlock({
 
     ),
   ),
-  fallback: [GovUKInsetText({ text: 'You have not added any emergency contacts yet.' })],
+  fallback: [GovUKInsetText({ text: 'There are no victims.' })],
 })

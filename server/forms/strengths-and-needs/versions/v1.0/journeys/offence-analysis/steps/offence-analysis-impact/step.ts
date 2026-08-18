@@ -1,7 +1,13 @@
 import {Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {GovUKButton} from '@ministryofjustice/hmpps-forge/govuk-components'
 import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {offenceImpactOnVictims,} from './fields'
+import {
+  offenceAnalysisAcceptResponsibility,
+  offenceAnalysisEscalation,
+  offenceAnalysisLeader, offenceAnalysisPerpetratorOfDomesticAbuse,
+  offenceAnalysisRisk, offenceAnalysisVictimOfDomesticAbuse,
+  offenceImpactOnVictims, patternsOfOffending,
+} from './fields'
 import {Step} from '../../constants/step'
 import {Section, SectionStatus} from '../../../../constants/section'
 
@@ -16,7 +22,14 @@ export const offenceAnalysisImpactStep = step({
   title: 'Offence analysis impact',
   reachability: { entryWhen: true },
   blocks: [
+    offenceAnalysisLeader,
     offenceImpactOnVictims,
+    offenceAnalysisAcceptResponsibility,
+    offenceAnalysisEscalation,
+    offenceAnalysisPerpetratorOfDomesticAbuse,
+    offenceAnalysisVictimOfDomesticAbuse,
+    patternsOfOffending,
+    offenceAnalysisRisk,
     saveButton,
   ],
   onSubmission: [
@@ -30,7 +43,7 @@ export const offenceAnalysisImpactStep = step({
         ],
         next: [
           redirect({
-            goto: Step.offence_analysis_victim_summary.path,
+            goto: Step.offence_analysis_summary.path,
           }),
         ],
       },

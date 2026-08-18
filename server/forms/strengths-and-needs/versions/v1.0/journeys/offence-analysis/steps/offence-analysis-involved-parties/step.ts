@@ -1,7 +1,7 @@
 import {Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {GovUKButton} from '@ministryofjustice/hmpps-forge/govuk-components'
 import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {offenceCommitedAgainst,} from './fields'
+import {offenceAnalysisWhoWasTheOffenceCommittedAgainst,} from './fields'
 import {Step} from '../../constants/step'
 import {Section, SectionStatus} from '../../../../constants/section'
 
@@ -16,7 +16,7 @@ export const offenceAnalysisInvolvedPartiesStep = step({
   title: 'Offence analysis Involved Parties',
   reachability: { entryWhen: true },
   blocks: [
-    offenceCommitedAgainst,
+    offenceAnalysisWhoWasTheOffenceCommittedAgainst,
     saveButton,
   ],
   onSubmission: [

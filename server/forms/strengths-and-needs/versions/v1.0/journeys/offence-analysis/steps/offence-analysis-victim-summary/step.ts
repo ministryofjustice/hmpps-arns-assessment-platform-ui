@@ -27,8 +27,8 @@ const continueButton = GovUKButton({
   value: 'continue',
 })
 
-const collectionCode = 'victims'
-const collectionName = 'OFFENCE_ANALYSIS_VICTIM'
+export const collectionCode = 'victims'
+export const collectionName = 'OFFENCE_ANALYSIS_VICTIM'
 
 export const offenceAnalysisVictimSummaryStep = step({
   path: `/${Step.offence_analysis_victim_summary.path}`,
@@ -42,20 +42,18 @@ export const offenceAnalysisVictimSummaryStep = step({
   ],
   onSubmission: [
     submit({
-      when: and(
-        Answer(Question.offence_analysis_commited_against).match(Condition.Array.Contains(CommonOption.other)),
-        Post('action').match(Condition.Equals('continue'))
-      ),
-      validate: true,
-      onValid: {
-        next: [redirect({ goto: Step.offence_analysis_involved_parties.path })],
-      },
-    }),
-    submit({
       when: Post('action').match(Condition.Equals('continue')),
       validate: true,
       onValid: {
-        next: [redirect({ goto: Step.offence_analysis_impact.path })],
+        next: [
+          redirect(
+            {
+              when: Answer(Question.offence_analysis_commited_against).match(Condition.Array.Contains(CommonOption.other)),
+              goto: Step.offence_analysis_involved_parties.path
+            },
+            ),
+          redirect({ goto: Step.offence_analysis_impact.path }),
+        ],
       },
     }),
     submit({
@@ -63,14 +61,6 @@ export const offenceAnalysisVictimSummaryStep = step({
       validate: true,
       onValid: {
         next: [redirect({ goto: Step.offence_analysis_victim.path })],
-      },
-    }),
-    submit({
-      when: Post('delete').match(Condition.IsRequired()),
-      validate: true,
-      onValid: {
-        effects: [StrengthsAndNeedsEffects.removeItemFromCollection(collectionName, Post('delete'))],
-        next: [redirect({ goto: Step.offence_analysis_victim_summary.path })],
       },
     }),
   ],

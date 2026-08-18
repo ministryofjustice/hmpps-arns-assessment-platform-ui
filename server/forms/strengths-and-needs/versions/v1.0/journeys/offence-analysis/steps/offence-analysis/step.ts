@@ -1,4 +1,4 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {Answer, Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
@@ -10,6 +10,8 @@ import {
 } from './fields'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
+import {Question} from "../../constants/question";
+import {Option} from "../../constants/option";
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -40,7 +42,11 @@ export const offenceAnalysisStep = step({
         ],
         next: [
           redirect({
+            when: Answer(Question.offence_analysis_commited_against).match(Condition.Array.Contains(Option.one_or_more_people)),
             goto: Step.offence_analysis_victim.path,
+          }),
+          redirect({
+            goto: Step.offence_analysis_involved_parties.path,
           }),
         ],
       },
