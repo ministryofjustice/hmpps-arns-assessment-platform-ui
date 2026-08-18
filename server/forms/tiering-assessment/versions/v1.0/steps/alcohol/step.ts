@@ -8,10 +8,7 @@ export const alcoholStep = step({
   title: 'Alcohol',
   onAccess: [
     access({
-      effects: [
-        TieringAssessmentEffects.LoadAssessmentData(),
-        TieringAssessmentEffects.LoadForename()
-      ],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
     }),
   ],
   blocks: [currentAlcoholUseFrequencyField, unitsOfAlcoholField, alcoholUnitsTable, bingeDrinkingField, continueButton],
