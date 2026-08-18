@@ -4,7 +4,7 @@ import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentE
 
 export const reoffendingPredictorScoresStep = step({
   path: '/reoffending-predictor-scores',
-  title: 'Reoffening Predictor scores',
+  title: 'Reoffending Predictor scores',
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData()],

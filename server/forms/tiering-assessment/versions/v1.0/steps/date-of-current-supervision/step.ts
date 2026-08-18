@@ -9,7 +9,7 @@ export const dateOfCurrentSupervisionStep = step({
   title: Format('What date did %1 current supervision in the community begin?', CaseData.ForenamePossessive),
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
     }),
   ],
   blocks: [dateOfCurrentSupervisionField, continueButton],

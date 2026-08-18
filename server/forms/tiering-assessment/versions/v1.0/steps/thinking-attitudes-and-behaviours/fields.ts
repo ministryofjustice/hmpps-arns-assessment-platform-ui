@@ -6,7 +6,7 @@ export const regularOffendingActivitiesField = GovUKRadioInput({
   code: 'regular-offending-activities',
   fieldset: {
     legend: {
-      text: Format('Does %1 engage in activities that could link to offending?', CaseData.ForenamePossessive),
+      text: Format('Does %1 engage in activities that could link to offending?', CaseData.Forename),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -43,7 +43,7 @@ export const temperControlField = GovUKRadioInput({
   code: 'temper-control',
   fieldset: {
     legend: {
-      text: Format('Is %1 able to manage their temper?', CaseData.ForenamePossessive),
+      text: Format('Is %1 able to manage their temper?', CaseData.Forename),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -81,7 +81,7 @@ export const impulsivityProblemsField = GovUKRadioInput({
   code: 'impulsivity-problems',
   fieldset: {
     legend: {
-      text: Format('Does %1 act on impulse?', CaseData.ForenamePossessive),
+      text: Format('Does %1 act on impulse?', CaseData.Forename),
       classes: 'govuk-fieldset__legend--s',
     },
   },
@@ -118,7 +118,7 @@ export const proCriminalAttitudesField = GovUKRadioInput({
   code: 'pro-criminal-attitudes',
   fieldset: {
     legend: {
-      text: Format('Does %1 support or excuse criminal behaviour?', CaseData.ForenamePossessive),
+      text: Format('Does %1 support or excuse criminal behaviour?', CaseData.Forename),
       classes: 'govuk-fieldset__legend--s',
     },
   },

@@ -1,6 +1,13 @@
 import { redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { dateOfCurrentConviction, dobField, genderField, offenceCodeField, supervisionStatusField } from './fields'
+import {
+  dateOfCurrentConviction,
+  dobField,
+  forenameField,
+  genderField,
+  offenceCodeField,
+  supervisionStatusField,
+} from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 
 export const startTieringAssessmentStep = step({
@@ -8,6 +15,7 @@ export const startTieringAssessmentStep = step({
   title: 'Tiering Assessment Setup',
   reachability: { entryWhen: true },
   blocks: [
+    forenameField,
     genderField,
     dobField,
     dateOfCurrentConviction,

@@ -1,6 +1,23 @@
 import { GovUKDateInputFull, GovUKRadioInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 
+export const forenameField = GovUKTextInput({
+  code: 'forename',
+  label: 'Forename',
+  classes: 'govuk-input--width-5',
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: 'This is a required field',
+    }),
+    validation({
+      condition: Self().match(Condition.String.MatchesRegex('^[A-Z][a-z]*(-[A-Z][a-z]*)*$')),
+      message:
+        'Forename must start with a capital letter and contain only letters and single hyphens (e.g., John or Anne-Marie)',
+    }),
+  ],
+})
+
 export const genderField = GovUKRadioInput({
   code: 'gender',
   label: 'Gender',

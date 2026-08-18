@@ -8,7 +8,7 @@ export const drugUseStep = step({
   title: 'Drug use',
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
     }),
   ],
   blocks: [whatDrugsMisusedField, motivationToStopMisuseField, GovUKButton({ text: 'Save and continue' })],
