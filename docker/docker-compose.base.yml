@@ -66,6 +66,7 @@ services:
     image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:latest
     depends_on:
       - postgres
+      - localstack
     networks:
       - hmpps
     healthcheck:
@@ -85,6 +86,8 @@ services:
       APP_STRATEGIES_PLAN: false
       CLIENT_ID: hmpps-assess-risks-and-needs-oastub-ui
       CLIENT_SECRET: clientsecret
+      HMPPS_SQS_PROVIDER: localstack
+      HMPPS_SQS_LOCALSTACK_URL: http://localstack:4566
 
   arns-handover:
     image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:latest

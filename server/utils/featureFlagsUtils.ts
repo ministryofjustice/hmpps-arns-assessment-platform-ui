@@ -17,6 +17,11 @@ export const BooleanFeatureFlags = {
     nunjucksKey: 'printAndShareEnabled',
     fallbackState: false,
   },
+  ENABLE_MPOP_ASSESSMENT_INFO: {
+    fliptKey: 'sp-enable-mpop-assessment-info',
+    nunjucksKey: 'mpopAssessmentInfoEnabled',
+    fallbackState: false,
+  },
   DOWNTIME_NOTIFICATION_BANNER: {
     fliptKey: 'sp-downtime-notification-banner',
     nunjucksKey: 'downtimeNotificationBanner',
