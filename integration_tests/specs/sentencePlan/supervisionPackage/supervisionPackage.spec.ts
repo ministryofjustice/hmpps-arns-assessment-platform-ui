@@ -49,7 +49,7 @@ test.describe('Supervision package', () => {
     await expect(page.getByRole('heading', { name: 'Next appointment' })).toBeVisible()
     // No next-appointment href is passed (the arrange-appointment journey lives in MPoP),
     // so the component renders the appointment as text rather than a link.
-    await expect(page.getByText(/Planned office visit: 12 August 2026/i)).toBeVisible()
+    await expect(page.getByText(/Planned office visit:.*12 Aug/i)).toBeVisible()
   })
 
   test('shows the standard stage when early engagement is complete', async ({ page, createSession }) => {
@@ -79,7 +79,7 @@ test.describe('Supervision package', () => {
     await page.goto(sentencePlanV1URLs.SUPERVISION_PACKAGE)
 
     await expect(page.getByText('In breach', { exact: true })).toBeVisible()
-    await expect(page.getByText('Offender personality disorder')).toBeVisible()
+    await expect(page.getByText('Offender personality disorder', { exact: true })).toBeVisible()
   })
 
   test('shows the package but an unavailable tier when only the tier API fails', async ({ page, createSession }) => {
@@ -129,23 +129,30 @@ test.describe('Supervision package', () => {
     await expect(planOverviewPage.pageHeading).toHaveText('Supervision package')
   })
 
-  test('shows the provisional state when the tier is not confirmed and the package is not calculated', async ({
-    page,
-    createSession,
-  }) => {
+  // TODO: Restore the degraded-state assertions (provisional/unavailable tier + "No appointments
+  // scheduled") once MPoP finalises the no-stage state. Lib 0.0.13 intentionally renders the
+  // component blank unless the person is in one of the 3 supervision stages (early engagement /
+  // standard / final third) - so with no package (or a failing package API) it currently shows
+  // nothing. Luca (MPoP) confirmed this is deliberate-for-now while they design those cases.
+  // Until then these just check the page still loads without the package content. The toBeHidden()
+  // assertions act as a tripwire - they'll fail once MPoP renders something, prompting us to
+  // restore the proper assertions. See SP2-2516.
+  test('renders no supervision component when the package is not calculated yet', async ({ page, createSession }) => {
     const { handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
       crn: CRN_WITH_PROVISIONAL_TIER,
     })
     await navigateToSentencePlan(page, handoverLink)
 
-    await PlanOverviewPage.verifyOnPage(page)
+    const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
     await page.goto(sentencePlanV1URLs.SUPERVISION_PACKAGE)
 
-    await expect(page.getByText('Provisional')).toBeVisible()
+    await expect(planOverviewPage.pageHeading).toHaveText('Supervision package')
+    await expect(page.getByText('Provisional')).toBeHidden()
   })
 
-  // Matches MPoP: a failing API degrades silently rather than showing an error.
+  // Matches MPoP: a failing API degrades silently rather than showing an error. The page must
+  // still load; the component is currently blank (see the TODO on the test above).
   test('degrades silently when the supervision package and tier APIs fail', async ({ page, createSession }) => {
     const { handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
@@ -163,7 +170,6 @@ test.describe('Supervision package', () => {
     await supervisionPackageLink.click()
 
     await expect(planOverviewPage.pageHeading).toHaveText('Supervision package')
-    await expect(page.getByText('Unavailable', { exact: true })).toBeVisible()
-    await expect(page.getByText('No appointments scheduled')).toBeVisible()
+    await expect(page.getByText('Unavailable', { exact: true })).toBeHidden()
   })
 })
