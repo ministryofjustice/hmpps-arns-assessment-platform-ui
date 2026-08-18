@@ -91,9 +91,10 @@ describe('loadSupervisionPackage', () => {
     expect(deps.mpopComponents.getTierDetails).toHaveBeenCalledWith(expect.anything(), 'X123456')
     expect(context.setData).toHaveBeenCalledWith('supervisionPackageDetails', supervisionPackageDetails)
     expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
+    expect(context.setData).toHaveBeenCalledWith('supervisionPackageStatus', 'success')
   })
 
-  it('should leave package details unset and log at info when the person has no package yet', async () => {
+  it('should set an unavailable status and log at info when the person has no package yet', async () => {
     // Arrange
     const context = createMockContext()
     ;(deps.mpopComponents.getSupervisionPackageFrontendContext as jest.Mock).mockResolvedValue(null)
@@ -103,11 +104,9 @@ describe('loadSupervisionPackage', () => {
 
     // Assert
     expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageDetails', expect.anything())
+    expect(context.setData).toHaveBeenCalledWith('supervisionPackageStatus', 'unavailable')
     expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
-    expect(mockLogger.info).toHaveBeenCalledWith(
-      { crn: 'X123456' },
-      'No supervision package for this person yet, rendering the provisional state',
-    )
+    expect(mockLogger.info).toHaveBeenCalledWith({ crn: 'X123456' }, 'No supervision package for this person yet')
   })
 
   it('should still set the unavailable tier calculation when the tier API fails', async () => {
@@ -130,7 +129,7 @@ describe('loadSupervisionPackage', () => {
     )
   })
 
-  it('should not throw when the client rejects', async () => {
+  it('should set an error status (and not throw) when the package client rejects', async () => {
     // Arrange
     const context = createMockContext()
     ;(deps.mpopComponents.getSupervisionPackageFrontendContext as jest.Mock).mockRejectedValue(
@@ -142,6 +141,9 @@ describe('loadSupervisionPackage', () => {
 
     // Assert
     expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageDetails', expect.anything())
+    expect(context.setData).toHaveBeenCalledWith('supervisionPackageStatus', 'error')
+    // Tier is settled independently, so a package failure does not lose the tier
+    expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
   })
 
   it('should log at info rather than error when the person has no tier or package', async () => {

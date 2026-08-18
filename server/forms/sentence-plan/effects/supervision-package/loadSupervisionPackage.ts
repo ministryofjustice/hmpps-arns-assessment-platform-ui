@@ -1,6 +1,6 @@
 import { asSystem } from '@ministryofjustice/hmpps-rest-client'
 import logger from '../../../../../logger'
-import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
+import { SentencePlanContext, SentencePlanEffectsDeps, SupervisionPackageStatus } from '../types'
 
 /**
  * A 404 means the person has no confirmed tier yet — a normal state the component
@@ -24,11 +24,11 @@ const logTierOutcome = (crn: string, httpStatus: number) => {
 /**
  * Loads the supervision package and tier for the person in session.
  *
- * The supervision package frontend context bundles the phase, appointment
- * allowance and next appointment in a single call; a null response is the normal
- * "no package yet" state the component renders as provisional. Tier comes from a
- * separate call. The two are independent, so one failing never blocks the other,
- * and nothing here surfaces an error to the user.
+ * The two calls are independent (settled separately) so a tier failure never blocks
+ * the package — the component renders with an 'Unavailable' tier. The package call's
+ * outcome is recorded as a status that drives the tab: a package object → 'success',
+ * null (404 → no package yet) → 'unavailable' (tab hidden), a thrown error
+ * (500/503) → 'error' (tab shown with an error message).
  */
 export const loadSupervisionPackage = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const crn = context.getSession().caseDetails?.crn
@@ -39,21 +39,32 @@ export const loadSupervisionPackage = (deps: SentencePlanEffectsDeps) => async (
     return
   }
 
-  try {
-    const [supervisionPackage, tierDetailsResponse] = await Promise.all([
-      deps.mpopComponents.getSupervisionPackageFrontendContext(asSystem(), crn),
-      deps.mpopComponents.getTierDetails(asSystem(), crn),
-    ])
+  const [packageResult, tierResult] = await Promise.allSettled([
+    deps.mpopComponents.getSupervisionPackageFrontendContext(asSystem(), crn),
+    deps.mpopComponents.getTierDetails(asSystem(), crn),
+  ])
 
-    logTierOutcome(crn, tierDetailsResponse.httpStatus)
-    context.setData('tierCalculation', tierDetailsResponse.calculation)
-
-    if (supervisionPackage) {
-      context.setData('supervisionPackageDetails', supervisionPackage)
-    } else {
-      logger.info({ crn }, 'No supervision package for this person yet, rendering the provisional state')
-    }
-  } catch (error) {
-    logger.error({ err: error, crn }, 'Failed to load supervision package data')
+  // Tier is secondary — a failure never sets the package status; the component shows an
+  // 'Unavailable' tier and carries on.
+  if (tierResult.status === 'fulfilled') {
+    logTierOutcome(crn, tierResult.value.httpStatus)
+    context.setData('tierCalculation', tierResult.value.calculation)
+  } else {
+    logger.error({ err: tierResult.reason, crn }, 'Failed to fetch tier details from MPoP Components API')
   }
+
+  let status: SupervisionPackageStatus
+
+  if (packageResult.status === 'rejected') {
+    status = 'error'
+    logger.error({ err: packageResult.reason, crn }, 'Failed to load supervision package')
+  } else if (packageResult.value) {
+    status = 'success'
+    context.setData('supervisionPackageDetails', packageResult.value)
+  } else {
+    status = 'unavailable'
+    logger.info({ crn }, 'No supervision package for this person yet')
+  }
+
+  context.setData('supervisionPackageStatus', status)
 }

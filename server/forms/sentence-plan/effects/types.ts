@@ -242,6 +242,8 @@ export interface GoalUpdatedHistoryEntry extends GoalEventContext {
 export type SupervisionPackageDetails = NonNullable<
   Awaited<ReturnType<MPoPComponents['getSupervisionPackageFrontendContext']>>
 >
+
+export type SupervisionPackageStatus = 'success' | 'unavailable' | 'error'
 export type TierDetailsResponse = Awaited<ReturnType<MPoPComponents['getTierDetails']>>
 export type TierCalculation = TierDetailsResponse['calculation']
 
@@ -408,6 +410,7 @@ export interface SentencePlanData extends Record<string, unknown> {
   // Supervision package page (from MPoP components client)
   // supervisionPackageDetails now bundles the next appointment inside the frontend context
   supervisionPackageDetails: SupervisionPackageDetails | undefined
+  supervisionPackageStatus: SupervisionPackageStatus | undefined
   tierCalculation: TierCalculation | undefined
 
   // all assessment areas grouped by scoring category (for about page; from coordinator API)

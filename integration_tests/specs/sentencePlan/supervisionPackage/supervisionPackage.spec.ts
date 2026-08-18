@@ -110,7 +110,7 @@ test.describe('Supervision package', () => {
     await expect(page.getByText('No appointments scheduled')).toBeVisible()
   })
 
-  test('still shows the tab when the person has no supervision package yet', async ({ page, createSession }) => {
+  test('hides the tab when the person has no supervision package (AC3)', async ({ page, createSession }) => {
     const { handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
       crn: CRN_WITHOUT_PACKAGE,
@@ -118,26 +118,15 @@ test.describe('Supervision package', () => {
     await navigateToSentencePlan(page, handoverLink)
 
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-    const supervisionPackageLink = planOverviewPage.primaryNavigation.getByRole('link', {
-      name: 'Supervision package',
-    })
 
-    await expect(supervisionPackageLink).toBeVisible()
-
-    await supervisionPackageLink.click()
-
-    await expect(planOverviewPage.pageHeading).toHaveText('Supervision package')
+    // No package (404) is "not displayable", so the tab is hidden entirely.
+    await expect(planOverviewPage.primaryNavigation.getByRole('link', { name: 'Supervision package' })).toBeHidden()
   })
 
-  // TODO: Restore the degraded-state assertions (provisional/unavailable tier + "No appointments
-  // scheduled") once MPoP finalises the no-stage state. Lib 0.0.13 intentionally renders the
-  // component blank unless the person is in one of the 3 supervision stages (early engagement /
-  // standard / final third) - so with no package (or a failing package API) it currently shows
-  // nothing. Luca (MPoP) confirmed this is deliberate-for-now while they design those cases.
-  // Until then these just check the page still loads without the package content. The toBeHidden()
-  // assertions act as a tripwire - they'll fail once MPoP renders something, prompting us to
-  // restore the proper assertions. See SP2-2516.
-  test('renders no supervision component when the package is not calculated yet', async ({ page, createSession }) => {
+  test('hides the tab and redirects when the package is not in a renderable phase (AC3)', async ({
+    page,
+    createSession,
+  }) => {
     const { handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
       crn: CRN_WITH_PROVISIONAL_TIER,
@@ -145,15 +134,18 @@ test.describe('Supervision package', () => {
     await navigateToSentencePlan(page, handoverLink)
 
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-    await page.goto(sentencePlanV1URLs.SUPERVISION_PACKAGE)
+    await expect(planOverviewPage.primaryNavigation.getByRole('link', { name: 'Supervision package' })).toBeHidden()
 
-    await expect(planOverviewPage.pageHeading).toHaveText('Supervision package')
-    await expect(page.getByText('Provisional')).toBeHidden()
+    // Direct navigation is blocked too — it redirects to the plan overview, so the
+    // supervision package heading is not shown.
+    await page.goto(sentencePlanV1URLs.SUPERVISION_PACKAGE)
+    await expect(page.getByRole('heading', { name: 'Supervision package' })).toBeHidden()
   })
 
-  // Matches MPoP: a failing API degrades silently rather than showing an error. The page must
-  // still load; the component is currently blank (see the TODO on the test above).
-  test('degrades silently when the supervision package and tier APIs fail', async ({ page, createSession }) => {
+  test('shows the tab and an error message when the supervision package API fails (AC4)', async ({
+    page,
+    createSession,
+  }) => {
     const { handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
       crn: CRN_WITH_FAILING_APIS,
@@ -165,11 +157,12 @@ test.describe('Supervision package', () => {
       name: 'Supervision package',
     })
 
+    // A 500/503 is "not available" — the tab stays visible so the user can reach the error.
     await expect(supervisionPackageLink).toBeVisible()
 
     await supervisionPackageLink.click()
 
     await expect(planOverviewPage.pageHeading).toHaveText('Supervision package')
-    await expect(page.getByText('Unavailable', { exact: true })).toBeHidden()
+    await expect(page.getByText(/currently unavailable while the package is being recalculated/i)).toBeVisible()
   })
 })

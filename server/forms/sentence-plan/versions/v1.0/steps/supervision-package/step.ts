@@ -2,10 +2,10 @@ import { step, access, not } from '@ministryofjustice/hmpps-forge/core/authoring
 import {
   isOasysAccess,
   isReadOnlyAccess,
-  redirectToOverviewUnlessSupervisionPackageEnabled,
+  redirectToOverviewUnlessSupervisionPackageAccessible,
   redirectToPrivacyUnlessAccepted,
 } from '../../guards'
-import { supervisionPackageSection } from './fields'
+import { supervisionPackageSection, supervisionPackageErrorMessage } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../effects'
 
 export const supervisionPackageStep = step({
@@ -20,15 +20,12 @@ export const supervisionPackageStep = step({
       },
     },
   },
-  blocks: [supervisionPackageSection],
+  blocks: [supervisionPackageSection, supervisionPackageErrorMessage],
   onAccess: [
     redirectToPrivacyUnlessAccepted(),
-    redirectToOverviewUnlessSupervisionPackageEnabled(),
+    redirectToOverviewUnlessSupervisionPackageAccessible(),
     access({
-      effects: [
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_SUPERVISION_PACKAGE),
-        SentencePlanEffects.loadSupervisionPackage(),
-      ],
+      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_SUPERVISION_PACKAGE)],
     }),
   ],
 })
