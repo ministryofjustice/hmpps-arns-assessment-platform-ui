@@ -62,7 +62,7 @@ export const english = {
           hint: 'For example, a business or the wider community.',
         },
       },
-      validation: 'Select who the victim is',
+      validation: 'Select who the offence was committed against',
     },
     [Question.offence_analysis_victim_type]: {
       text: 'Who is the victim?',
@@ -164,7 +164,7 @@ export const english = {
       text: 'Explain why there is no risk of reoffending',
     },
     [Question.offence_analysis_who_was_the_victim]: {
-      text: "How many other people were involved with committing the current index offence(s)?",
+      text: 'How many other people were involved with committing the current index offence(s)?',
       option: {
         [Option.one]: '1',
         [Option.two]: '2',
@@ -179,30 +179,31 @@ export const english = {
     },
     [Question.offence_analysis_impact_on_victims]: {
       text: 'Does %1 recognise the impact on the victims or wider community?',
-      validation: 'Select if they recognise the impact on the victim or consequences for others and the wider community',
+      validation:
+        'Select if they recognise the impact on the victim or consequences for others and the wider community',
     },
     [Question.offence_analysis_leader]: {
       text: 'Was %1 the leader of the current index offence(s)?',
-      validation: 'Select if they were the leader'
+      validation: 'Select if they were the leader',
     },
     [Question.offence_analysis_accept_responsibility]: {
       text: 'Does %1 accept responsibility for the current index offence(s)?',
-      validation: 'Select if they accept responsibility for the current offence(s)'
+      validation: 'Select if they accept responsibility for the current offence(s)',
     },
     [Question.offence_analysis_escalation]: {
       text: 'Is there an escalation in seriousness from previous offending?',
-      validation: 'Select if the current offence(s) are an escalation in seriousness from previous offending'
+      validation: 'Select if the current offence(s) are an escalation in seriousness from previous offending',
     },
     [Question.offence_analysis_perpetrator_of_domestic_abuse]: {
       text: 'Is there evidence that %1 has ever been a perpetrator of domestic abuse?',
-      validation: 'Select if there is any evidence that they have ever been perpetrator of domestic abuse'
+      validation: 'Select if there is any evidence that they have ever been perpetrator of domestic abuse',
     },
     [Question.offence_analysis_perpetrator_of_domestic_abuse_type]: {
       text: 'Who was this committed against?',
     },
     [Question.offence_analysis_victim_of_domestic_abuse]: {
       text: 'Is there evidence that %1 has ever been a victim of domestic abuse?',
-      validation: 'Select if there is any evidence that they have ever been perpetrator of domestic abuse'
+      validation: 'Select if there is any evidence that they have ever been perpetrator of domestic abuse',
     },
     [Question.offence_analysis_victim_of_domestic_abuse_type]: {
       text: 'Who was this committed by?',
@@ -216,7 +217,7 @@ export const english = {
       validation: 'Select if the offence is linked to risk of serious harm, risks to the individual or other risks',
     },
   },
-  option:{
+  option: {
     [Option.none]: 'None',
     [Option.family_member]: 'Family member',
     [Option.intimate_partner]: 'Intimate partner',
@@ -226,7 +227,7 @@ export const english = {
   victim_card_title: '%1 victim',
   validation: {
     select_an_option: 'Select an option',
-  }
+  },
 }
 
 export type OffenceAnalysisLocale = typeof english
