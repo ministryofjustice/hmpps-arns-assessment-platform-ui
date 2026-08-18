@@ -106,82 +106,76 @@ const accordionNames = {
   'plan-history-accordion': 'Plan history',
 }
 
+const accordionConfigs = [
+  // About page
+  {
+    selector: '.about-page-accordion .govuk-accordion',
+    showAllId: 'san-info-accordion',
+    sectionId: 'san-info-area-of-need-accordion',
+  },
+  // Plan History page
+  {
+    selector: '#plan-history-accordion',
+    showAllId: 'plan-history-accordion-show-all',
+    sectionId: 'plan-history-accordion-content',
+  },
+]
+
+function setAttribute(element, name, value) {
+  if (value) {
+    element.setAttribute(name, value)
+  }
+}
+
+function initialiseAccordion(accordion, config) {
+  const accordionId = accordion.id
+  const accordionName = accordionNames[accordionId] || accordionId
+
+  const showAllButton = accordion.querySelector('.govuk-accordion__show-all')
+
+  if (showAllButton) {
+    showAllButton.setAttribute('data-ai-id', config.showAllId)
+    showAllButton.setAttribute('data-ai-accordionname', accordionName)
+    showAllButton.setAttribute('data-ai-controltype', 'AccordionHeader')
+    showAllButton.setAttribute('data-ai-action', 'Expand all')
+
+    showAllButton.addEventListener('click', () => {
+      const isExpanded = showAllButton.getAttribute('aria-expanded') === 'true'
+
+      showAllButton.setAttribute('data-ai-action', isExpanded ? 'Expand all' : 'Collapse all')
+    })
+  }
+
+  accordion.querySelectorAll('.govuk-accordion__section')
+    .forEach((section, index) => {
+      const button = section.querySelector('.govuk-accordion__section-button')
+
+      if (!button) return
+
+      const itemName = button.querySelector('.govuk-accordion__section-heading-text-focus')?.textContent?.trim()
+
+      button.setAttribute('data-ai-id', config.sectionId)
+      button.setAttribute('data-ai-accordionname', accordionName)
+      button.setAttribute('data-ai-itemname', itemName)
+      button.setAttribute('data-ai-index', String(index + 1))
+      button.setAttribute('data-ai-controltype', 'Item')
+      button.setAttribute('data-ai-action', 'Expand')
+
+      button.addEventListener('click', () => {
+        const isExpanded = button.getAttribute('aria-expanded') === 'true'
+
+        button.setAttribute('data-ai-action', isExpanded ? 'Expand' : 'Collapse')
+      })
+    })
+}
+
 export function initAccordionTelemetry() {
   if (!connectionString) return
 
-  // About page accordion: Show all/Hide all sections
-  document.querySelectorAll('.about-page-accordion .govuk-accordion__show-all').forEach(button => {
-    const accordionId = button.closest('.govuk-accordion')?.id
-    const accordionName = accordionNames[accordionId] || accordionId
-
-    button.setAttribute('data-ai-id', 'san-info-accordion')
-    button.setAttribute('data-ai-accordionname', accordionName)
-    button.setAttribute('data-ai-controltype', 'AccordionHeader')
-    button.setAttribute('data-ai-action', 'Expand all')
-
-    button.addEventListener('click', () => {
-      const isExpanded = button.getAttribute('aria-expanded') === 'true'
-      button.setAttribute('data-ai-action', isExpanded ? 'Expand all' : 'Collapse all')
-    })
-  })
-
-  // About page accordion: individual sections
-  document.querySelectorAll('.about-page-accordion .govuk-accordion__section').forEach((section, index) => {
-    const button = section.querySelector('.govuk-accordion__section-button')
-    if (!button) return
-
-    const accordionId = section.closest('.govuk-accordion')?.id
-    const accordionName = accordionNames[accordionId] || accordionId
-    const itemName = button.querySelector('.govuk-accordion__section-heading-text-focus')?.textContent?.trim()
-
-    button.setAttribute('data-ai-id', 'san-info-area-of-need-accordion')
-    button.setAttribute('data-ai-accordionname', accordionName)
-    button.setAttribute('data-ai-itemname', itemName)
-    button.setAttribute('data-ai-index', String(index + 1))
-    button.setAttribute('data-ai-controltype', 'Item')
-    button.setAttribute('data-ai-action', 'Expand')
-
-    button.addEventListener('click', () => {
-      const isExpanded = button.getAttribute('aria-expanded') === 'true'
-      button.setAttribute('data-ai-action', isExpanded ? 'Expand' : 'Collapse')
-    })
-  })
-
-  // Plan History page accordion: Show all/Hide all sections
-  document.querySelectorAll('#plan-history-accordion .govuk-accordion__show-all').forEach(button => {
-    const accordionId = button.closest('.govuk-accordion')?.id
-    const accordionName = accordionNames[accordionId] || accordionId
-
-    button.setAttribute('data-ai-id', 'plan-history-accordion-show-all')
-    button.setAttribute('data-ai-accordionname', accordionName)
-    button.setAttribute('data-ai-controltype', 'AccordionHeader')
-    button.setAttribute('data-ai-action', 'Expand all')
-
-    button.addEventListener('click', () => {
-      const isExpanded = button.getAttribute('aria-expanded') === 'true'
-      button.setAttribute('data-ai-action', isExpanded ? 'Expand all' : 'Collapse all')
-    })
-  })
-
-  // Plan History page accordion: individual sections
-  document.querySelectorAll('#plan-history-accordion .govuk-accordion__section').forEach((section, index) => {
-    const button = section.querySelector('.govuk-accordion__section-button')
-    if (!button) return
-
-    const accordionId = section.closest('.govuk-accordion')?.id
-    const accordionName = accordionNames[accordionId] || accordionId
-    const itemName = button.querySelector('.govuk-accordion__section-heading-text-focus')?.textContent?.trim()
-
-    button.setAttribute('data-ai-id', 'plan-history-accordion-show-content')
-    button.setAttribute('data-ai-accordionname', accordionName)
-    button.setAttribute('data-ai-itemname', itemName)
-    button.setAttribute('data-ai-index', String(index + 1))
-    button.setAttribute('data-ai-controltype', 'Item')
-    button.setAttribute('data-ai-action', 'Expand')
-
-    button.addEventListener('click', () => {
-      const isExpanded = button.getAttribute('aria-expanded') === 'true'
-      button.setAttribute('data-ai-action', isExpanded ? 'Expand' : 'Collapse')
-    })
+  accordionConfigs.forEach(config => {
+    document.querySelectorAll(config.selector)
+      .forEach(accordion => {
+        initialiseAccordion(accordion, config)
+      })
   })
 }
