@@ -2,7 +2,7 @@ import { access, Format, redirect, step, submit } from '@ministryofjustice/hmpps
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
-import { previousConvictionsField } from "./fields";
+import { previousConvictionsField } from './fields'
 
 export const previousConvictionsStep = step({
   path: '/previous-convictions',
@@ -19,7 +19,7 @@ export const previousConvictionsStep = step({
       onValid: {
         effects: [
           TieringAssessmentEffects.SaveAssessmentData(),
-          TieringAssessmentEffects.CalculateRiskActuarialScores()
+          TieringAssessmentEffects.CalculateRiskActuarialScores(),
         ],
         next: [redirect({ goto: 'check-your-answers' })],
       },

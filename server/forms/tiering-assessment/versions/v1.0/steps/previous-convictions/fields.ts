@@ -1,6 +1,6 @@
 import { GovUKCheckboxInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { CaseData } from "../../../../../sentence-plan/versions/v1.0/constants";
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 export const previousConvictionsField = GovUKCheckboxInput({
   code: 'previous-convictions',
@@ -11,7 +11,7 @@ export const previousConvictionsField = GovUKCheckboxInput({
   items: [
     {
       value: 'HOMICIDE',
-      text: "Murder, attempted murder, threat or conspiracy to murder or manslaughter",
+      text: 'Murder, attempted murder, threat or conspiracy to murder or manslaughter',
     },
     {
       value: 'WOUNDING_GBH',
@@ -81,10 +81,7 @@ export const previousConvictionsField = GovUKCheckboxInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: Format(
-        "Select all that apply, or select 'None of these offences'.",
-        CaseData.ForenamePossessive,
-      ),
+      message: Format("Select all that apply, or select 'None of these offences'.", CaseData.ForenamePossessive),
     }),
   ],
 })

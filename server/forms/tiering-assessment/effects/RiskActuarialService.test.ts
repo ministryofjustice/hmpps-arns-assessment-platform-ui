@@ -821,7 +821,7 @@ describe('RiskActuarialService', () => {
 
     expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
       expect.objectContaining({
-        previousConvictions: null
+        previousConvictions: null,
       }),
     )
   })
@@ -837,16 +837,15 @@ describe('RiskActuarialService', () => {
 
     expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
       expect.objectContaining({
-        previousConvictions: [
-          'CRIMINAL_DAMAGE'
-          ]
+        previousConvictions: ['CRIMINAL_DAMAGE'],
       }),
     )
   })
 
   it('should parse multiple valid convictions', async () => {
     const answers: Record<string, unknown> = {
-      'previous-convictions': 'HOMICIDE,WOUNDING_GBH,KIDNAPPING,FIREARMS,ROBBERY,AGGRAVATED_BURGLARY,WEAPON,CRIMINAL_DAMAGE,ARSON',
+      'previous-convictions':
+        'HOMICIDE,WOUNDING_GBH,KIDNAPPING,FIREARMS,ROBBERY,AGGRAVATED_BURGLARY,WEAPON,CRIMINAL_DAMAGE,ARSON',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -881,10 +880,7 @@ describe('RiskActuarialService', () => {
 
     expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
       expect.objectContaining({
-        previousConvictions: [
-          'KIDNAPPING',
-          'WEAPON',
-        ],
+        previousConvictions: ['KIDNAPPING', 'WEAPON'],
       }),
     )
   })

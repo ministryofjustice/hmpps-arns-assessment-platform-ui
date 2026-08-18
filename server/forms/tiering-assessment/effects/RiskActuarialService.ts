@@ -2,7 +2,8 @@ import RiskActuarialApiClient from '../../../data/riskActuarialApiClient'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
 import {
   CurrentRelationshipStatus,
-  MotivationLevel, PreviousConviction,
+  MotivationLevel,
+  PreviousConviction,
   ProblemLevel,
   RiskScoreInput,
   RiskScores,
@@ -222,8 +223,9 @@ export class RiskActuarialService {
     return this.parseProblemLevel('SIGNIFICANT_PROBLEMS')
   }
 
-  private parsePreviousConvictions(previousConvictions: string): PreviousConviction[]  {
-    if (previousConvictions === undefined || previousConvictions === null || previousConvictions.trim() === '') return null
+  private parsePreviousConvictions(previousConvictions: string): PreviousConviction[] {
+    if (previousConvictions === undefined || previousConvictions === null || previousConvictions.trim() === '')
+      return null
 
     const validPreviousConvictions = new Set<string>([
       'HOMICIDE',
@@ -239,7 +241,7 @@ export class RiskActuarialService {
 
     return previousConvictions
       .split(',')
-      .map((item) => item.trim())
+      .map(item => item.trim())
       .filter((item): item is PreviousConviction => validPreviousConvictions.has(item))
   }
 }

@@ -22,7 +22,7 @@ export const bingeDrinkingStep = step({
       onValid: {
         effects: [
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
-          TieringAssessmentEffects.SaveAssessmentData()
+          TieringAssessmentEffects.SaveAssessmentData(),
         ],
         next: [redirect({ goto: 'personal-relationships-and-community' })],
       },
