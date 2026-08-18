@@ -121,12 +121,6 @@ const accordionConfigs = [
   },
 ]
 
-function setAttribute(element, name, value) {
-  if (value) {
-    element.setAttribute(name, value)
-  }
-}
-
 function initialiseAccordion(accordion, config) {
   const accordionId = accordion.id
   const accordionName = accordionNames[accordionId] || accordionId
@@ -156,7 +150,7 @@ function initialiseAccordion(accordion, config) {
 
       button.setAttribute('data-ai-id', config.sectionId)
       button.setAttribute('data-ai-accordionname', accordionName)
-      button.setAttribute('data-ai-itemname', itemName)
+      if (itemName) button.setAttribute('data-ai-itemname', itemName)
       button.setAttribute('data-ai-index', String(index + 1))
       button.setAttribute('data-ai-controltype', 'Item')
       button.setAttribute('data-ai-action', 'Expand')
