@@ -971,4 +971,97 @@ describe('RiskActuarialService', () => {
       }),
     )
   })
+  it('should return true if "offence-elements" contains "weapon"', async () => {
+    const answers: Record<string, unknown> = {
+      'offence-elements': 'arson,weapon',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        didOffenceInvolveCarryingOrUsingWeapon: true,
+      }),
+    )
+  })
+  it('should return false if "offence-elements" does not contain "weapon"', async () => {
+    const answers: Record<string, unknown> = {
+      'offence-elements': 'arson,hatred-of-identifiable-group',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        didOffenceInvolveCarryingOrUsingWeapon: false,
+      }),
+    )
+  })
+  it('should return true if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "intimate-partner"', async () => {
+    const answers: Record<string, unknown> = {
+      'evidence-of-domestic-abuse': 'true',
+      'domestic-abuse-against': 'intimate-partner'
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        evidenceOfDomesticAbuse: true,
+      }),
+    )
+  })
+  it('should return true if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "family-member-and-intimate-partner"', async () => {
+    const answers: Record<string, unknown> = {
+      'evidence-of-domestic-abuse': 'true',
+      'domestic-abuse-against': 'family-member-and-intimate-partner'
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        evidenceOfDomesticAbuse: true,
+      }),
+    )
+  })
+  it('should return false if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "family-member"', async () => {
+    const answers: Record<string, unknown> = {
+      'evidence-of-domestic-abuse': 'true',
+      'domestic-abuse-against': 'family-member'
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        evidenceOfDomesticAbuse: false,
+      }),
+    )
+  })
+  it('should return false if "evidence-of-domestic-abuse" is false', async () => {
+    const answers: Record<string, unknown> = {
+      'evidence-of-domestic-abuse': 'false'
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        evidenceOfDomesticAbuse: false,
+      }),
+    )
+  })
 })
