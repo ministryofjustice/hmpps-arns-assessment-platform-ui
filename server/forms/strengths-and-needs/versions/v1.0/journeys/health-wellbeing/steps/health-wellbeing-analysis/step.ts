@@ -8,4 +8,5 @@ export const healthWellbeingAnalysisStep = step({
   path: `/${Step.health_wellbeing_analysis.path}`,
   title: analysisPageTitle(Section.health_and_wellbeing),
   blocks: [healthWellbeingAnalysisSummaryTab],
+  reachability: { entryWhen: true },
 })

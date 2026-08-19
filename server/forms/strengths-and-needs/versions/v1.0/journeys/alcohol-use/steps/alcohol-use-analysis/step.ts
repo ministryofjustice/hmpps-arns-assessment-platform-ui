@@ -8,4 +8,5 @@ export const alcoholUseAnalysisStep = step({
   path: `/${Step.alcohol_use_analysis.path}`,
   title: analysisPageTitle(Section.alcohol_use),
   blocks: [alcoholPractitionerAnalysisSummaryTab],
+  reachability: { entryWhen: true },
 })

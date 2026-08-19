@@ -8,4 +8,5 @@ export const financeAnalysisStep = step({
   path: `/${Step.financeAnalysis.path}`,
   title: analysisPageTitle(Section.finance),
   blocks: [financePractitionerAnalysisSummaryTab],
+  reachability: { entryWhen: true },
 })

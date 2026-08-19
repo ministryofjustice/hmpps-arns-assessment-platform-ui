@@ -3,7 +3,7 @@ import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
 import { StrengthsAndNeedsContext } from '../types'
 import { Section, SectionComplete } from '../../versions/v1.0/constants/section'
 
-const SAN_ASSESSMENT_TYPE = 'SAN_SP'
+const SAN_ASSESSMENT_TYPE = 'STRENGTHS_AND_NEEDS'
 
 export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsContext) => {
   const session = context.getSession()

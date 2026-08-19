@@ -1,5 +1,4 @@
 import { step, submit, redirect, Post, Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
@@ -8,17 +7,11 @@ import { CommonOption } from '../../../../constants/commonOption'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { sectionPageTitle } from '../../../../locales'
-
-const saveButton = GovUKButton({
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { saveButton } from '../../../../constants/buttons'
 
 export const drugUseStep = step({
   path: `/${Step.drug_use.path}`,
   title: sectionPageTitle(Section.drug_use),
-  reachability: { entryWhen: true },
   view: {
     locals: {
       sectionTitleClass,
