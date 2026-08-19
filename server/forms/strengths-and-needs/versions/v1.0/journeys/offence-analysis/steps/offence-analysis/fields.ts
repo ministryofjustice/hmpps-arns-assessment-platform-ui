@@ -153,7 +153,7 @@ export const whyOffenceHappened = GovUKCharacterCount({
 const motivationsOtherDetails = GovUKCharacterCount({
   code: 'offence_analysis_motivations_other_details',
   label: commonContentFor('required_details'),
-  maxLength: 200,
+  maxLength: 128,
   dependentWhen: Answer(Question.offence_analysis_motivations).match(Condition.Array.Contains(CommonOption.other)),
   validWhen: [
     validation({

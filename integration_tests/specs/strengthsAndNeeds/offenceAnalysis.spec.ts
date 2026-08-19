@@ -184,6 +184,68 @@ test.describe('Offence Analysis Page', () => {
         - button "Save and continue"
       `)
     })
+
+    test('shows other people', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          {
+            question: 'offence_analysis_index_offence_description',
+            value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+          },
+          {
+            question: 'offence_analysis_offence_elements',
+            value: ['ARSON'],
+          },
+          {
+            question: 'offence_analysis_why_offence_happened',
+            value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+          },
+          {
+            question: 'offence_analysis_motivations',
+            value: ['ADDICTIONS_PERCEIVED_NEEDS'],
+          },
+          {
+            question: 'offence_analysis_commited_against',
+            value: ['OTHER'],
+          },
+        ]).save()
+
+      await OffenceAnalysisPage.navigateToOffenceAnalysis(
+        page,
+        handoverLink,
+        baseURL,
+        'offence-analysis-involved-parties',
+      )
+
+      const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'How many other people')
+
+      expect(offenceAnalysisPage.mainSection).toMatchAriaSnapshot(`
+        - group "How many other people were involved with committing the current index offence(s)?":
+          - text: How many other people were involved with committing the current index offence(s)? Select all that apply.
+          - radio "None"
+          - text: None
+          - radio "1"
+          - text: "1"
+          - radio "2"
+          - text: "2"
+          - radio "3"
+          - text: "3"
+          - radio "4"
+          - text: "4"
+          - radio "5"
+          - text: "5"
+          - radio "6 to 10"
+          - text: 6 to 10
+          - radio "11 to 15"
+          - text: 11 to 15
+          - radio "More than 15"
+          - text: More than 15
+        - button "Save and continue"
+      `)
+    })
   })
 
   test.describe('Validation', () => {
@@ -246,6 +308,40 @@ test.describe('Offence Analysis Page', () => {
       const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Enter a brief description of')
 
       expect(await offenceAnalysisPage.giveDetailsCharacterError('883')).toBeVisible()
+    })
+
+    test('validation other options', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          {
+            question: 'offence_analysis_commited_against',
+            value: ['OTHER'],
+          },
+          {
+            question: 'offence_analysis_motivations',
+            value: ['OTHER'],
+          },
+        ]).save()
+
+      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL)
+
+      const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Enter a brief description of')
+
+      await expect(offenceAnalysisPage.mainSection).toMatchAriaSnapshot(`
+        - group "Did the current index offence(s) involve any of the following motivations?":
+          - checkbox "Other" [checked] [expanded]
+          - text: Other Give details
+          - textbox "Give details"
+          - text: You can enter up to 128 characters You have 128 characters remaining
+        - group "Who was the offence committed against?":
+          - checkbox "Other" [checked] [expanded]
+          - text: Other For example, a business or the wider community. Give details
+          - textbox "Give details"
+          - text: You can enter up to 2000 characters You have 2,000 characters remaining
+      `)
     })
 
     test('validation offence(s) committed', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
