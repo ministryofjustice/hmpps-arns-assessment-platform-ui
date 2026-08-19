@@ -21,8 +21,8 @@ const domesticAbuseAgainstField = GovUKRadioInput({
       text: 'Intimate partner',
     },
     {
-      value: 'intimate-partner-and-family-member',
-      text: 'Intimate partner and family member',
+      value: 'family-member-and-intimate-partner',
+      text: 'Family member and intimate partner',
     },
   ],
   validWhen: [
@@ -93,7 +93,7 @@ export const offenceElementsField = GovUKCheckboxInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: "Select who NAME is living with, or select 'Alone' or 'Unknown'",
+      message: 'This is a required field',
     }),
   ],
 })
@@ -106,10 +106,6 @@ export const evidenceOfDomesticAbuseField = GovUKRadioInput({
       classes: 'govuk-fieldset__legend--s',
     },
   },
-  dependentWhen: or(
-    Answer('offence-elements').match(Condition.Array.Contains('domestic-abuse')),
-    Answer('offence-elements').match(Condition.Array.Contains('excessive-violence-or-sadistic-violence')),
-  ),
   items: [
     {
       value: 'true',

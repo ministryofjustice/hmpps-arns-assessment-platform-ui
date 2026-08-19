@@ -10,9 +10,10 @@ import {
   RiskScores,
   SupervisionStatus,
 } from '../../../interfaces/risk-actuarial-api/riskScores'
+import logger from '../../../../logger'
 
 export class RiskActuarialService {
-  constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) {}
+  constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) { }
 
   async calculateAndSaveScores(context: TieringAssessmentEffectContext): Promise<void> {
     const input: RiskScoreInput = this.buildRiskScoreInput(context)
@@ -69,7 +70,7 @@ export class RiskActuarialService {
       proCriminalAttitudes: this.parseProblemLevel(context.getAnswer('pro-criminal-attitudes')),
       previousConvictions: this.parsePreviousConvictions(context.getAnswer('previous-convictions') as string[]),
       didOffenceInvolveCarryingOrUsingWeapon: this.getDidOffenceInvolveCarryingOrUsingWeapon(context),
-      evidenceOfDomesticAbuse: this.parseBoolean(context.getAnswer('evidence-of-domestic-abuse')),
+      evidenceOfDomesticAbuse: this.getEvidenceOfDomesticAbuse(context)
     }
   }
 
@@ -115,6 +116,16 @@ export class RiskActuarialService {
       return null
     }
     return !!offenceElements.toLowerCase().includes('weapon')
+  }
+
+  private getEvidenceOfDomesticAbuse(context: TieringAssessmentEffectContext): boolean | null {
+    const evidenceOfDomesticAbuse = this.parseBoolean(context.getAnswer('evidence-of-domestic-abuse'))
+    const domesticAbuseAgainst = this.parseString(context.getAnswer('domestic-abuse-against'))
+
+    if (evidenceOfDomesticAbuse === null) return null;
+    if (!evidenceOfDomesticAbuse) return false;
+
+    return domesticAbuseAgainst === 'family-member-and-intimate-partner' || domesticAbuseAgainst === 'intimate-partner'
   }
 
   private saveScoresToContext(context: TieringAssessmentEffectContext, riskScores: RiskScores): void {
