@@ -1,5 +1,5 @@
 import { GovUKCheckboxInput, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Answer, Condition, Format, or, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer, Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 const domesticAbuseAgainstField = GovUKRadioInput({

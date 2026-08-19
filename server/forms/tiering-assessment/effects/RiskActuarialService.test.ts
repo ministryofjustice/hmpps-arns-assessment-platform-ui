@@ -321,7 +321,7 @@ describe('RiskActuarialService', () => {
       'previous-convictions': ['FIREARMS', 'ROBBERY', 'WEAPON'],
       'offence-elements': 'domestic-abuse,excessive-violence-or-sadistic-violence,weapon',
       'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'intimate-partner'
+      'domestic-abuse-against': 'intimate-partner',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -911,7 +911,7 @@ describe('RiskActuarialService', () => {
   it('should return true if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "intimate-partner"', async () => {
     const answers: Record<string, unknown> = {
       'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'intimate-partner'
+      'domestic-abuse-against': 'intimate-partner',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -927,7 +927,7 @@ describe('RiskActuarialService', () => {
   it('should return true if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "family-member-and-intimate-partner"', async () => {
     const answers: Record<string, unknown> = {
       'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'family-member-and-intimate-partner'
+      'domestic-abuse-against': 'family-member-and-intimate-partner',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -943,7 +943,7 @@ describe('RiskActuarialService', () => {
   it('should return false if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "family-member"', async () => {
     const answers: Record<string, unknown> = {
       'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'family-member'
+      'domestic-abuse-against': 'family-member',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -958,7 +958,7 @@ describe('RiskActuarialService', () => {
   })
   it('should return false if "evidence-of-domestic-abuse" is false', async () => {
     const answers: Record<string, unknown> = {
-      'evidence-of-domestic-abuse': 'false'
+      'evidence-of-domestic-abuse': 'false',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -1004,7 +1004,7 @@ describe('RiskActuarialService', () => {
   it('should return true if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "intimate-partner"', async () => {
     const answers: Record<string, unknown> = {
       'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'intimate-partner'
+      'domestic-abuse-against': 'intimate-partner',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -1020,7 +1020,7 @@ describe('RiskActuarialService', () => {
   it('should return true if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "family-member-and-intimate-partner"', async () => {
     const answers: Record<string, unknown> = {
       'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'family-member-and-intimate-partner'
+      'domestic-abuse-against': 'family-member-and-intimate-partner',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -1036,7 +1036,7 @@ describe('RiskActuarialService', () => {
   it('should return false if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "family-member"', async () => {
     const answers: Record<string, unknown> = {
       'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'family-member'
+      'domestic-abuse-against': 'family-member',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -1051,7 +1051,7 @@ describe('RiskActuarialService', () => {
   })
   it('should return false if "evidence-of-domestic-abuse" is false', async () => {
     const answers: Record<string, unknown> = {
-      'evidence-of-domestic-abuse': 'false'
+      'evidence-of-domestic-abuse': 'false',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
