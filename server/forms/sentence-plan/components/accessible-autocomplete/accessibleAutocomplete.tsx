@@ -1,20 +1,26 @@
-import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   BlockDefinition,
   ResolvableArray,
   ResolvableBoolean,
   ResolvableNumber,
   ResolvableString,
-  EvaluatedBlock,
   FieldBlockDefinition,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { jsxComponent, raw } from '@ministryofjustice/hmpps-forge/jsx-components'
 
 /**
- * Props for the AccessibleAutocomplete component.
+ * Accessible Autocomplete wrapper component.
+ *
  * @see https://github.com/alphagov/accessible-autocomplete
+ * @example
+ * ```typescript
+ * AccessibleAutocomplete({
+ *   field: GovUKTextInput({ code: 'goal', label: 'Select a goal' }),
+ *   data: Data('goals'),
+ * })
+ * ```
  */
-export interface AccessibleAutocompleteProps {
+export interface AccessibleAutocomplete extends BlockDefinition {
   /**
    * The field to enhance with autocomplete behaviour.
    * Typically a GovUKTextInput, but can be any field type.
@@ -95,69 +101,49 @@ export interface AccessibleAutocompleteProps {
   classes?: ResolvableString
 }
 
-/**
- * Accessible Autocomplete wrapper component.
- * Full interface including form-engine discriminator properties.
- */
-export interface AccessibleAutocomplete extends BlockDefinition, AccessibleAutocompleteProps {
-  variant: 'accessibleAutocomplete'
-}
+/** The client JS reads these as literal "true"/"false" strings, so undefined must stay omitted */
+const asFlag = (value: unknown): string | undefined => (value === undefined ? undefined : String(value))
 
 /**
  * Renders the AccessibleAutocomplete wrapper component.
  *
  * Outputs:
  * 1. A script tag with type="application/json" containing the autocomplete data
- * 2. A wrapper div with data attributes around the field's HTML
+ * 2. A wrapper element with data attributes around the field's HTML
  */
-export const accessibleAutocomplete = buildNunjucksComponent<AccessibleAutocomplete>(
-  'accessibleAutocomplete',
-  (block: EvaluatedBlock<AccessibleAutocomplete>): string => {
-    const fieldBlock = block.field.block as FieldBlockDefinition & { value?: unknown; defaultValue?: unknown }
+export const AccessibleAutocomplete = jsxComponent<AccessibleAutocomplete>('accessibleAutocomplete', {
+  render: props => {
+    const fieldBlock = props.field.block as FieldBlockDefinition & { value?: unknown; defaultValue?: unknown }
     const fieldCode = fieldBlock.code ?? 'autocomplete-field'
     const dataId = `autocomplete-data-${fieldCode}`
-
-    const dataScript = `<script type="application/json" id="${dataId}" data-qa="${dataId}">${JSON.stringify(block.data)}</script>`
 
     const defaultValue = fieldBlock.value ?? fieldBlock.defaultValue
 
     // Width must sit on the wrapper, not the input: a width class on the input alone
     // leaves the dropdown menu (sized off the wrapper) at full width and overhanging.
-    const wrapperClasses = ['accessible-autocomplete-wrapper', block.classes].filter(Boolean).join(' ')
+    const wrapperClasses = ['accessible-autocomplete-wrapper', props.classes].filter(Boolean).join(' ')
 
-    const wrapperAttrs = [
-      `class="${wrapperClasses}"`,
-      `data-autocomplete-source="${dataId}"`,
-      defaultValue !== undefined ? `data-autocomplete-default-value="${defaultValue}"` : '',
-      block.dataKeyFrom ? `data-autocomplete-source-key-from="${block.dataKeyFrom}"` : '',
-      block.minLength !== undefined ? `data-autocomplete-min-length="${block.minLength}"` : '',
-      block.showNoOptionsFound !== undefined ? `data-autocomplete-show-no-options="${block.showNoOptionsFound}"` : '',
-      block.autoselect !== undefined ? `data-autocomplete-autoselect="${block.autoselect}"` : '',
-      block.confirmOnBlur !== undefined ? `data-autocomplete-confirm-on-blur="${block.confirmOnBlur}"` : '',
-      block.displayMenu !== undefined ? `data-autocomplete-display-menu="${block.displayMenu}"` : '',
-      block.showAllValues !== undefined ? `data-autocomplete-show-all-values="${block.showAllValues}"` : '',
-      block.menuAttributes !== undefined
-        ? `data-autocomplete-menu-attributes='${JSON.stringify(block.menuAttributes)}'`
-        : '',
-    ]
-      .filter(Boolean)
-      .join(' ')
-
-    return `${dataScript}\n<accessible-autocomplete-wrapper ${wrapperAttrs}>\n${block.field.html}\n</accessible-autocomplete-wrapper>`
+    return <>
+      <script type="application/json" id={dataId} data-qa={dataId}>
+        {raw(JSON.stringify(props.data))}
+      </script>
+      <accessible-autocomplete-wrapper
+        class={wrapperClasses}
+        data-autocomplete-source={dataId}
+        data-autocomplete-default-value={asFlag(defaultValue)}
+        data-autocomplete-source-key-from={props.dataKeyFrom || undefined}
+        data-autocomplete-min-length={asFlag(props.minLength)}
+        data-autocomplete-show-no-options={asFlag(props.showNoOptionsFound)}
+        data-autocomplete-autoselect={asFlag(props.autoselect)}
+        data-autocomplete-confirm-on-blur={asFlag(props.confirmOnBlur)}
+        data-autocomplete-display-menu={asFlag(props.displayMenu)}
+        data-autocomplete-show-all-values={asFlag(props.showAllValues)}
+        data-autocomplete-menu-attributes={
+          props.menuAttributes !== undefined ? JSON.stringify(props.menuAttributes) : undefined
+        }
+      >
+        {raw(props.field.html)}
+      </accessible-autocomplete-wrapper>
+    </>
   },
-)
-
-/**
- * Creates an accessible autocomplete wrapper around a field.
- *
- * @example
- * ```typescript
- * AccessibleAutocomplete({
- *   field: GovUKTextInput({ code: 'goal', label: 'Select a goal' }),
- *   data: Data('goals'),
- * })
- * ```
- */
-export function AccessibleAutocomplete(props: AccessibleAutocompleteProps): AccessibleAutocomplete {
-  return blockBuilder<AccessibleAutocomplete>({ ...props, variant: 'accessibleAutocomplete' })
-}
+})
