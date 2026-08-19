@@ -1,10 +1,10 @@
 import { access, EffectRegistry, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { ForgeTestHarness } from '@ministryofjustice/hmpps-forge/core/testing'
 import { govukComponents } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { StrengthsAndNeedsEffectImplementations } from '../../../../effects'
-import { StrengthsAndNeedsGeneratorImplementations } from '../../../../generators'
-import { strengthsAndNeedsTransformerImplementations } from '../../../../transformers'
-import { strengthsAndNeedsConditionImplementations } from '../../../../conditions'
+import { sanEffects } from '../../../../effects'
+import { sanGenerators } from '../../../../generators'
+import { sanTransformers } from '../../../../transformers'
+import { sanConditions } from '../../../../conditions'
 import { setViewAllAnswersBacklink } from '../../../../effects/session/setViewAllAnswersBacklink'
 import { Section, SectionComplete } from '../../constants/section'
 import { basePath } from '../../constants/formVersion'
@@ -21,12 +21,7 @@ const renderPage = async (answers: Record<string, unknown> = {}, data: Record<st
 
   const client = new ForgeTestHarness()
     .registerGlobalComponents(govukComponents)
-    .registerGlobalFunctions({
-      ...StrengthsAndNeedsEffectImplementations,
-      ...StrengthsAndNeedsGeneratorImplementations,
-      ...strengthsAndNeedsTransformerImplementations,
-      ...strengthsAndNeedsConditionImplementations,
-    })
+    .registerGlobalFunctions([sanEffects, sanGenerators, sanTransformers, sanConditions])
     .registerPackage({
       journey: journey({
         code: 'strengths-and-needs-v1',
@@ -35,7 +30,7 @@ const renderPage = async (answers: Record<string, unknown> = {}, data: Record<st
         onAccess: [access({ effects: [seed()] })],
         steps: [viewAllAnswersStep],
       }),
-      functions: registry,
+      forgePackage: true,
     })
     .createClient()
 

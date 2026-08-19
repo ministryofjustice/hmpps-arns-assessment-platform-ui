@@ -1,12 +1,4 @@
-import {
-  and,
-  Answer,
-  ChainableExpr,
-  Condition,
-  or,
-  PipelineExpr,
-  Request,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, ChainableExpr, Condition, or, Request } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsTransformers } from '../transformers'
 import { StrengthsAndNeedsConditions } from '../conditions'
@@ -25,7 +17,7 @@ export type Locale<T> = {
 
 export const contentFrom =
   <T>(locales: Locales) =>
-  (code: Paths<T>, ...replacements: any[]): ChainableExpr<PipelineExpr> =>
+  (code: Paths<T>, ...replacements: any[]): ChainableExpr =>
     Request.Headers('accept-language').pipe(StrengthsAndNeedsTransformers.ContentFor(locales, code, ...replacements))
 
 export const getDisplayTextForItems = (fieldCode: string, items: any[], options: { size?: 's' | 'l' } = {}) =>
