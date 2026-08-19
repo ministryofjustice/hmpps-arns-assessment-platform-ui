@@ -23,6 +23,7 @@ import { Section } from '../../constants/section'
 import { CharacterLimit } from '../../../../constants/characterLimit'
 import {
   characterCountField,
+  createSummaryRowActions,
   itemisedSummaryRow,
   optionalDetails,
   requiredDetails,
@@ -127,9 +128,7 @@ const currentEmploymentStatus = question({
           }),
         ],
       },
-      actions: {
-        items: [{ href: Step.current_employment.path, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(Step.current_employment.path),
     }),
   },
 })

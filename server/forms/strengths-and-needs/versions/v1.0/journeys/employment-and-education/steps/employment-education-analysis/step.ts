@@ -8,4 +8,5 @@ export const employmentEducationAnalysisStep = step({
   path: `/${Step.employment_education_analysis.path}`,
   title: analysisPageTitle(Section.employment_and_education),
   blocks: [employmentStatusAnalysisSummaryTab],
+  reachability: { entryWhen: true },
 })

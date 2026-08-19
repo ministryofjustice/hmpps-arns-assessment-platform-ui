@@ -15,4 +15,5 @@ export const drugUseAnalysisStep = step({
   ],
   // TODO: Add template for read-only analysis display
   blocks: [drugsSummaryAnalysisTab],
+  reachability: { entryWhen: true },
 })

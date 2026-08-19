@@ -7,6 +7,7 @@ import {
   PredicateExpr,
   Self,
   validation,
+  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKBody, GovUKCharacterCount, GovUKDateInputFull } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CommonOption } from './commonOption'
@@ -35,6 +36,7 @@ import {
 import { StrengthsAndNeedsTransformers } from '../../../transformers'
 import { getDisplayTextForItems } from '../../../i18n'
 import { SANGenerators } from '../../../generators'
+import { isEditMode } from '../guards'
 
 const characterCountValidationsOf = (content: QuestionContent, maxLength: number) => [
   ...(requiredValidationOf(content) ?? []),
@@ -81,6 +83,14 @@ export const characterCountDetails =
         validWhen: characterCountValidationsOf(content, options.maxLength),
       }),
     )
+
+/**
+ * Creates actions for a summary row that are to be displayed when in edit mode
+ */
+export const createSummaryRowActions = (changeRef: ResolvableString) =>
+  when(isEditMode)
+    .then({ items: [{ href: changeRef, text: commonContentFor('change') }] })
+    .else({})
 
 /**
  * A required free-text reveal: "Give details", with the validation message
@@ -210,9 +220,7 @@ export const summaryRow =
           ),
         ],
       },
-      actions: {
-        items: [{ href: placement.changeHref, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(placement.changeHref),
     })
 
 /**
@@ -235,15 +243,17 @@ export const itemisedSummaryRow =
           ...revealedAnswerBlocksOf(content),
         ],
       },
-      actions: {
-        items: [
-          definedPropsOf({
-            href: `${placement.changePath}#${content.code}`,
-            text: commonContentFor('change'),
-            visuallyHiddenText: placement.changeVisuallyHiddenText ? content.text : undefined,
-          }),
-        ],
-      },
+      actions: when(isEditMode)
+        .then({
+          items: [
+            definedPropsOf({
+              href: `${placement.changePath}#${content.code}`,
+              text: commonContentFor('change'),
+              visuallyHiddenText: placement.changeVisuallyHiddenText ? content.text : undefined,
+            }),
+          ],
+        })
+        .else({}),
     })
 
 /**
@@ -267,9 +277,7 @@ export const checkboxSummaryRow =
           }),
         ),
       },
-      actions: {
-        items: [{ href: placement.changeHref, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(placement.changeHref),
     })
 
 /** Read-only summary row for a free-text question: the answer, verbatim. */
@@ -282,7 +290,5 @@ export const textSummaryRow =
       value: {
         blocks: [GovUKBody({ text: Answer(content.code) })],
       },
-      actions: {
-        items: [{ href: placement.changeHref, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(placement.changeHref),
     })

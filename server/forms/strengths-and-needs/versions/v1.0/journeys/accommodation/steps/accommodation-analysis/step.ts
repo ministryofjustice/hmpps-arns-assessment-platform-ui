@@ -8,4 +8,5 @@ export const accommodationAnalysisStep = step({
   path: `/${Step.accommodation_analysis.path}`,
   title: analysisPageTitle(Section.accommodation),
   blocks: [accommodationPractitionerAnalysisSummaryTab],
+  reachability: { entryWhen: true },
 })
