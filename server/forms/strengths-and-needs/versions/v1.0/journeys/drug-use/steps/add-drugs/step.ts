@@ -22,7 +22,7 @@ export const addDrugsStep = step({
     },
   },
   cleardownFieldCodes: ['^trip_*$'],
-  blocks: [drugUseSection.fields.selectMisusedDrugs.displayModes.field, saveButton],
+  blocks: [drugUseSection.questions.selectMisusedDrugs.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

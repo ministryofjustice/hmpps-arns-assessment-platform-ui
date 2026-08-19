@@ -724,7 +724,7 @@ const linkedToReoffending = question({
 })
 
 export const thinkingBehavioursAttitudesSection = {
-  fields: {
+  questions: {
     consequences,
     stableBehaviour,
     offendingActivities,
@@ -744,6 +744,8 @@ export const thinkingBehavioursAttitudesSection = {
     sexualPreoccupation,
     offenceRelatedSexualInterest,
     emotionalIntimacy,
+  },
+  practitionerAnalysis: {
     strengthsOrProtectiveFactors,
     linkedToSeriousHarm,
     linkedToReoffending,

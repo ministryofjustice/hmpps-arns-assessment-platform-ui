@@ -6,16 +6,16 @@ import { commonContentFor } from '../../../../locales'
 
 export const alcoholSummary = GovUKSummaryList({
   rows: [
-    alcoholUseSection.fields.alcoholUse.displayModes.summaryRow,
-    alcoholUseSection.fields.frequency.displayModes.summaryRow,
-    alcoholUseSection.fields.units.displayModes.summaryRow,
-    alcoholUseSection.fields.bingeDrinking.displayModes.summaryRow,
-    alcoholUseSection.fields.evidenceOfExcessDrinking.displayModes.summaryRow,
-    alcoholUseSection.fields.pastIssues.displayModes.summaryRow,
-    alcoholUseSection.fields.reasonsForUse.displayModes.summaryRow,
-    alcoholUseSection.fields.impactOfUse.displayModes.summaryRow,
-    alcoholUseSection.fields.stoppedOrReduced.displayModes.summaryRow,
-    alcoholUseSection.fields.changes.displayModes.summaryRow,
+    alcoholUseSection.questions.alcoholUse.displayModes.summaryRow,
+    alcoholUseSection.questions.frequency.displayModes.summaryRow,
+    alcoholUseSection.questions.units.displayModes.summaryRow,
+    alcoholUseSection.questions.bingeDrinking.displayModes.summaryRow,
+    alcoholUseSection.questions.evidenceOfExcessDrinking.displayModes.summaryRow,
+    alcoholUseSection.questions.pastIssues.displayModes.summaryRow,
+    alcoholUseSection.questions.reasonsForUse.displayModes.summaryRow,
+    alcoholUseSection.questions.impactOfUse.displayModes.summaryRow,
+    alcoholUseSection.questions.stoppedOrReduced.displayModes.summaryRow,
+    alcoholUseSection.questions.changes.displayModes.summaryRow,
   ],
 })
 
@@ -34,9 +34,9 @@ export const alcoholSummaryTab = GovUKTabs({
       label: commonContentFor('practitioner_analysis'),
       panel: {
         blocks: [
-          alcoholUseSection.fields.strengthsOrProtectiveFactors.displayModes.field,
-          alcoholUseSection.fields.riskOfSeriousHarm.displayModes.field,
-          alcoholUseSection.fields.riskOfReoffending.displayModes.field,
+          alcoholUseSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
+          alcoholUseSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
+          alcoholUseSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
           markAsCompleteButton,
         ],
       },

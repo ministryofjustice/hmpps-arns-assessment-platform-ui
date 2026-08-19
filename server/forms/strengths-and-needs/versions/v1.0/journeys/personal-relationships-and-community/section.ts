@@ -662,7 +662,7 @@ const riskOfReoffending = question({
 })
 
 export const personalRelationshipsCommunitySection = {
-  fields: {
+  questions: {
     childrenDetails,
     importantPeople,
     currentRelationship,
@@ -674,6 +674,8 @@ export const personalRelationshipsCommunitySection = {
     childhoodBehaviour,
     belonging,
     changes,
+  },
+  practitionerAnalysis: {
     strengthsOrProtectiveFactors,
     riskOfSeriousHarm,
     riskOfReoffending,

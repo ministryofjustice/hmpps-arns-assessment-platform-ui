@@ -674,7 +674,7 @@ const riskOfReoffending = question({
 })
 
 export const employmentEducationSection = {
-  fields: {
+  questions: {
     currentEmploymentStatus,
     employmentSector,
     employmentHistory,
@@ -686,6 +686,8 @@ export const employmentEducationSection = {
     employmentExperience,
     educationExperience,
     changes,
+  },
+  practitionerAnalysis: {
     strengthsOrProtectiveFactors,
     riskOfSeriousHarm,
     riskOfReoffending,

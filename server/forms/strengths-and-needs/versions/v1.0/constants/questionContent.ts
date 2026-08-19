@@ -57,7 +57,7 @@ import { getDisplayTextForItems } from '../../../i18n'
  *
  * @example
  * export const mySection = {
- *   fields: {
+ *   questions: {
  *     likesTea: question({
  *       content: {
  *         code: Question.likes_tea,
@@ -81,8 +81,8 @@ import { getDisplayTextForItems } from '../../../i18n'
  *   },
  * }
  *
- * // In the step:  blocks: [mySection.fields.likesTea.displayModes.field, saveButton]
- * // In the summary:  rows: [mySection.fields.likesTea.displayModes.summaryRow]
+ * // In the step:  blocks: [mySection.questions.likesTea.displayModes.field, saveButton]
+ * // In the summary:  rows: [mySection.questions.likesTea.displayModes.summaryRow]
  */
 
 export enum QuestionFormat {
@@ -819,8 +819,11 @@ export const questionTemplate = (definition: {
   }
 }
 
+type SectionFields = Record<string, { content: QuestionContent }>
+
 export interface SectionDefinition {
-  fields: Record<string, { content: QuestionContent }>
+  questions: SectionFields
+  practitionerAnalysis: SectionFields
 }
 
 const isOptioned = (content: QuestionContent): content is OptionedQuestionContent => 'options' in content
@@ -842,7 +845,9 @@ const withRevealedQuestions = (content: QuestionContent): QuestionContent[] => [
  * collections) live outside it.
  */
 export const stableQuestionsOf = (section: SectionDefinition): QuestionContent[] =>
-  Object.values(section.fields).flatMap(field => withRevealedQuestions(field.content))
+  [...Object.values(section.questions), ...Object.values(section.practitionerAnalysis)].flatMap(field =>
+    withRevealedQuestions(field.content),
+  )
 
 /**
  * A required free-text reveal: "Give details", with the validation message

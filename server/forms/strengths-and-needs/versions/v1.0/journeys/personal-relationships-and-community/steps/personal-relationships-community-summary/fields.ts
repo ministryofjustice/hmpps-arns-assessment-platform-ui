@@ -6,17 +6,17 @@ import { commonContentFor } from '../../../../locales'
 
 export const personalRelationshipsCommunitySummary = GovUKSummaryList({
   rows: [
-    personalRelationshipsCommunitySection.fields.childrenDetails.displayModes.summaryRow,
-    personalRelationshipsCommunitySection.fields.importantPeople.displayModes.summaryRow,
-    personalRelationshipsCommunitySection.fields.currentRelationship.displayModes.summaryRow,
-    personalRelationshipsCommunitySection.fields.intimateRelationship.displayModes.summaryRow,
-    personalRelationshipsCommunitySection.fields.challengesIntimateRelationship.displayModes.summaryRow,
-    personalRelationshipsCommunitySection.fields.parentalResponsibilities.displayModes.summaryRow,
-    personalRelationshipsCommunitySection.fields.familyRelationship.displayModes.summaryRow,
-    personalRelationshipsCommunitySection.fields.childhood.displayModes.summaryRow,
-    personalRelationshipsCommunitySection.fields.childhoodBehaviour.displayModes.summaryRow,
-    personalRelationshipsCommunitySection.fields.belonging.displayModes.summaryRow,
-    personalRelationshipsCommunitySection.fields.changes.displayModes.summaryRow,
+    personalRelationshipsCommunitySection.questions.childrenDetails.displayModes.summaryRow,
+    personalRelationshipsCommunitySection.questions.importantPeople.displayModes.summaryRow,
+    personalRelationshipsCommunitySection.questions.currentRelationship.displayModes.summaryRow,
+    personalRelationshipsCommunitySection.questions.intimateRelationship.displayModes.summaryRow,
+    personalRelationshipsCommunitySection.questions.challengesIntimateRelationship.displayModes.summaryRow,
+    personalRelationshipsCommunitySection.questions.parentalResponsibilities.displayModes.summaryRow,
+    personalRelationshipsCommunitySection.questions.familyRelationship.displayModes.summaryRow,
+    personalRelationshipsCommunitySection.questions.childhood.displayModes.summaryRow,
+    personalRelationshipsCommunitySection.questions.childhoodBehaviour.displayModes.summaryRow,
+    personalRelationshipsCommunitySection.questions.belonging.displayModes.summaryRow,
+    personalRelationshipsCommunitySection.questions.changes.displayModes.summaryRow,
   ],
 })
 
@@ -38,9 +38,9 @@ export const personalRelationshipsCommunitySummaryTab = GovUKTabs({
       label: commonContentFor('practitioner_analysis'),
       panel: {
         blocks: [
-          personalRelationshipsCommunitySection.fields.strengthsOrProtectiveFactors.displayModes.field,
-          personalRelationshipsCommunitySection.fields.riskOfSeriousHarm.displayModes.field,
-          personalRelationshipsCommunitySection.fields.riskOfReoffending.displayModes.field,
+          personalRelationshipsCommunitySection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
+          personalRelationshipsCommunitySection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
+          personalRelationshipsCommunitySection.practitionerAnalysis.riskOfReoffending.displayModes.field,
           markAsCompleteButton,
         ],
       },

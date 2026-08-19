@@ -6,12 +6,12 @@ import { commonContentFor } from '../../../../locales'
 
 export const financeSummary = GovUKSummaryList({
   rows: [
-    financeSection.fields.income.displayModes.summaryRow,
-    financeSection.fields.bankAccount.displayModes.summaryRow,
-    financeSection.fields.moneyManagement.displayModes.summaryRow,
-    financeSection.fields.gambling.displayModes.summaryRow,
-    financeSection.fields.debt.displayModes.summaryRow,
-    financeSection.fields.changes.displayModes.summaryRow,
+    financeSection.questions.income.displayModes.summaryRow,
+    financeSection.questions.bankAccount.displayModes.summaryRow,
+    financeSection.questions.moneyManagement.displayModes.summaryRow,
+    financeSection.questions.gambling.displayModes.summaryRow,
+    financeSection.questions.debt.displayModes.summaryRow,
+    financeSection.questions.changes.displayModes.summaryRow,
   ],
 })
 
@@ -28,9 +28,9 @@ export const summaryTab = GovUKTabs({
       label: commonContentFor('practitioner_analysis'),
       panel: {
         blocks: [
-          financeSection.fields.strengthsOrProtectiveFactors.displayModes.field,
-          financeSection.fields.riskOfSeriousHarm.displayModes.field,
-          financeSection.fields.riskOfReoffending.displayModes.field,
+          financeSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
+          financeSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
+          financeSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
           markAsCompleteButton,
         ],
       },

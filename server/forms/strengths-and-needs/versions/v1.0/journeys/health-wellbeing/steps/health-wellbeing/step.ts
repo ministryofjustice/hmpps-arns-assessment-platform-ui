@@ -11,8 +11,8 @@ export const healthWellbeingStep = step({
   title: sectionPageTitle(Section.health_and_wellbeing),
   reachability: { entryWhen: true },
   blocks: [
-    healthWellbeingSection.fields.healthConditions.displayModes.field,
-    healthWellbeingSection.fields.mentalHealthProblems.displayModes.field,
+    healthWellbeingSection.questions.healthConditions.displayModes.field,
+    healthWellbeingSection.questions.mentalHealthProblems.displayModes.field,
     saveButton,
   ],
   onSubmission: [

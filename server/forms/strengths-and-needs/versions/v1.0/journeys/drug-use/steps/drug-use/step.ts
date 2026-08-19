@@ -24,7 +24,7 @@ export const drugUseStep = step({
       sectionTitleClass,
     },
   },
-  blocks: [drugUseSection.fields.drugUse.displayModes.field, saveButton],
+  blocks: [drugUseSection.questions.drugUse.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
