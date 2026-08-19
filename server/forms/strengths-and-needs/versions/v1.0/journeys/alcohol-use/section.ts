@@ -522,7 +522,7 @@ const riskOfReoffending = question({
 
 export const alcoholUseSection = {
   code: Section.alcohol_use.code,
-  fields: {
+  questions: {
     alcoholUse,
     frequency,
     units,
@@ -533,6 +533,8 @@ export const alcoholUseSection = {
     impactOfUse,
     stoppedOrReduced,
     changes,
+  },
+  practitionerAnalysis: {
     strengthsOrProtectiveFactors,
     riskOfSeriousHarm,
     riskOfReoffending,

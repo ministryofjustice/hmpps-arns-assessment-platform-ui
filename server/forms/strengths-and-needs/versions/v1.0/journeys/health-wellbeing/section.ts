@@ -577,7 +577,7 @@ const riskOfReoffending = question({
 
 export const healthWellbeingSection = {
   code: Section.health_and_wellbeing.code,
-  fields: {
+  questions: {
     healthConditions,
     mentalHealthProblems,
     prescribedPhysicalHealthMedicationsTreatments,
@@ -593,6 +593,8 @@ export const healthWellbeingSection = {
     feelingsAboutFuture,
     helpedDuringPeriodsGoodHealthWellbeing,
     changes,
+  },
+  practitionerAnalysis: {
     strengthsOrProtectiveFactors,
     riskOfSeriousHarm,
     riskOfReoffending,

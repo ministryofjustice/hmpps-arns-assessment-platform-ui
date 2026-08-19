@@ -23,6 +23,10 @@ import { personalRelationshipsCommunitySection } from './journeys/personal-relat
 import { thinkingBehavioursAttitudesSection } from './journeys/thinking-behaviours-and-attitudes/section'
 import { StrengthsAndNeedsTransformers } from '../../transformers'
 import { FormConfig } from '../../constants/formConfig'
+import config from '../../../../config'
+import { createPlatformPages, notAPlatformPage } from '../../../platform'
+
+const feedbackUrl = config.privateBetaFeedbackUrl
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -46,6 +50,7 @@ export const strengthsAndNeedsV1Journey = journey({
       buttons: {
         showReturnToOasysButton: isOasysAccess,
       },
+      feedbackUrl,
     },
   },
   data: {
@@ -72,6 +77,7 @@ export const strengthsAndNeedsV1Journey = journey({
     }),
     access({
       when: and(
+        notAPlatformPage,
         Data('privacyAccepted').not.match(Condition.Equals(true)),
         Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
       ),
@@ -79,6 +85,7 @@ export const strengthsAndNeedsV1Journey = journey({
     }),
   ],
   steps: [
+    ...createPlatformPages({ baseUrl: basePath, feedbackUrl }),
     step({
       path: `/config`,
       title: 'Config',

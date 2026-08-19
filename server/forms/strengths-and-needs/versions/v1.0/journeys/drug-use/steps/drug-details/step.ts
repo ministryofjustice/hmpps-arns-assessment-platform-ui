@@ -31,8 +31,8 @@ export const drugDetailsStep = step({
     usedInLastSixMonthsSection,
     sectionDivider,
     usedMoreThanSixMonthsSection,
-    drugUseSection.fields.drugsInjected.displayModes.field,
-    drugUseSection.fields.receivingTreatment.displayModes.field,
+    drugUseSection.questions.drugsInjected.displayModes.field,
+    drugUseSection.questions.receivingTreatment.displayModes.field,
     saveButton,
   ],
   onSubmission: [

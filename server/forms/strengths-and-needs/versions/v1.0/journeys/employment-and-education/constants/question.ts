@@ -2,6 +2,7 @@ export const Question = {
   employment_status: 'employment_status',
   employment_type: 'employment_type',
   employment_other_responsibilities: 'employment_other_responsibilities',
+  has_been_employed: 'has_been_employed',
   has_been_employed_unavailable_for_work: 'has_been_employed_unavailable_for_work',
   has_been_employed_actively_seeking: 'has_been_employed_actively_seeking',
   has_been_employed_not_actively_seeking: 'has_been_employed_not_actively_seeking',

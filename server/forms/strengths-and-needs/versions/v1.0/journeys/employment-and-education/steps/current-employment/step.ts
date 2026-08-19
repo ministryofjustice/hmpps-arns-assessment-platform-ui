@@ -16,7 +16,7 @@ export const currentEmploymentStep = step({
       sectionTitleClass,
     },
   },
-  blocks: [employmentEducationSection.fields.currentEmploymentStatus.displayModes.field, saveButton],
+  blocks: [employmentEducationSection.questions.currentEmploymentStatus.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

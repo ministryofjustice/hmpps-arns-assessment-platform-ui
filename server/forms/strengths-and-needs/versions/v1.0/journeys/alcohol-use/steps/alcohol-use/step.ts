@@ -17,7 +17,7 @@ export const alcoholUseStep = step({
       sectionTitleClass: 'govuk-body-l',
     },
   },
-  blocks: [alcoholUseSection.fields.alcoholUse.displayModes.field, saveButton],
+  blocks: [alcoholUseSection.questions.alcoholUse.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

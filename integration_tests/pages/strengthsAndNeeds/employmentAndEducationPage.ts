@@ -1,8 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import { employment, navigateToStrengthsAndNeeds, sanFormPath, v1Path } from 'specs/strengthsAndNeeds/sanUtils'
-import AbstractPage from '../abstractPage'
+import StrengthsAndNeedsPage from './strengthsAndNeedsPage'
 
-export default class EmploymentAndEducationPage extends AbstractPage {
+export default class EmploymentAndEducationPage extends StrengthsAndNeedsPage {
   readonly incomplete: Locator
 
   readonly currentEmploymentStatus: Locator
@@ -29,7 +29,7 @@ export default class EmploymentAndEducationPage extends AbstractPage {
   }
 
   /**
-   * Navigates to a employment and education via handover link and handles the privacy screen.
+   * Navigates to an employment and education via handover link and handles the privacy screen.
    */
   static async navigateToEmploymentAndEducation(
     page: Page,

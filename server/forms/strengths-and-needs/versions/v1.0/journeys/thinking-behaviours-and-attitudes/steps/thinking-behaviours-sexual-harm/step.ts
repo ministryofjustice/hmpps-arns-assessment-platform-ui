@@ -19,9 +19,9 @@ export const thinkingBehavioursSexualHarmStep = step({
     },
   },
   blocks: [
-    thinkingBehavioursAttitudesSection.fields.sexualPreoccupation.displayModes.field,
-    thinkingBehavioursAttitudesSection.fields.offenceRelatedSexualInterest.displayModes.field,
-    thinkingBehavioursAttitudesSection.fields.emotionalIntimacy.displayModes.field,
+    thinkingBehavioursAttitudesSection.questions.sexualPreoccupation.displayModes.field,
+    thinkingBehavioursAttitudesSection.questions.offenceRelatedSexualInterest.displayModes.field,
+    thinkingBehavioursAttitudesSection.questions.emotionalIntimacy.displayModes.field,
     saveButton,
   ],
   onSubmission: [

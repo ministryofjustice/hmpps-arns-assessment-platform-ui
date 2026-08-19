@@ -17,7 +17,7 @@ export const personalRelationshipsStep = step({
       backlink: sectionPath(Section.personal_relationships_and_community),
     },
   },
-  blocks: [personalRelationshipsCommunitySection.fields.importantPeople.displayModes.field, saveButton],
+  blocks: [personalRelationshipsCommunitySection.questions.importantPeople.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

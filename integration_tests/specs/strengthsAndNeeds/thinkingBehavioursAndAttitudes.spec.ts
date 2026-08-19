@@ -579,10 +579,19 @@ test.describe('Thinking behaviours and attitudes Page', () => {
             question: 'thinking_behaviours_attitudes_offence_related_sexual_interest',
             value: 'YES_OFFENCE_RELATED_SEXUAL_INTEREST',
           },
-          { question: 'thinking_behaviours_attitudes_strengths_protective_factors', value: 'NO' },
-          { question: 'thinking_behaviours_attitudes_no_strengths_protective_factors_details', value: '' },
-          { question: 'thinking_behaviours_attitudes_linked_to_serious_harm', value: 'NO' },
-          { question: 'thinking_behaviours_attitudes_no_serious_harm_details', value: '' },
+          {
+            question: 'thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors',
+            value: 'NO',
+          },
+          {
+            question: 'thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors_no_details',
+            value: '',
+          },
+          { question: 'thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
+          {
+            question: 'thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_no_details',
+            value: '',
+          },
         ]).save()
 
       await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(

@@ -713,7 +713,7 @@ const riskOfReoffending = question({
 
 export const accommodationSection = {
   code: Section.accommodation.code,
-  fields: {
+  questions: {
     currentAccommodation,
     livingWith,
     noAccommodationReason,
@@ -722,6 +722,8 @@ export const accommodationSection = {
     suitableHousing,
     suitableHousingPlanned,
     changes,
+  },
+  practitionerAnalysis: {
     strengthsOrProtectiveFactors,
     riskOfSeriousHarm,
     riskOfReoffending,

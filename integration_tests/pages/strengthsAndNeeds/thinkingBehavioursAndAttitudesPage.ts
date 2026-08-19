@@ -1,8 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import { navigateToStrengthsAndNeeds, sanFormPath, thinking, v1Path } from 'specs/strengthsAndNeeds/sanUtils'
-import AbstractPage from '../abstractPage'
+import StrengthsAndNeedsPage from './strengthsAndNeedsPage'
 
-export default class ThinkingBehavioursAndAttitudesPage extends AbstractPage {
+export default class ThinkingBehavioursAndAttitudesPage extends StrengthsAndNeedsPage {
   readonly mainForm: Locator
 
   readonly no: Locator

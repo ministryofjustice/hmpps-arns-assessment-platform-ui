@@ -21,6 +21,7 @@ const privacyScreenStep = createPrivacyScreen({
   headerServiceNameLink: Section.accommodation.sideNavHref,
   personForename: CaseData.Forename,
   title: commonContentFor('pageTitle.privacy'),
+  feedbackUrl: config.privateBetaFeedbackUrl,
 })
 
 const versionRedirectStep = step({

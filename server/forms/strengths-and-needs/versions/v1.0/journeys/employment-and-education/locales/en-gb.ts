@@ -14,21 +14,7 @@ export const english = {
         [Option.apprenticeship]: 'Apprenticeship',
       },
     },
-    [Question.has_been_employed_unavailable_for_work]: {
-      text: 'Have they been employed before?',
-      option: {
-        [CommonOption.yes]: 'Yes, has been employed before',
-        [CommonOption.no]: 'No, has never been employed',
-      },
-    },
-    [Question.has_been_employed_actively_seeking]: {
-      text: 'Have they been employed before?',
-      option: {
-        [CommonOption.yes]: 'Yes, has been employed before',
-        [CommonOption.no]: 'No, has never been employed',
-      },
-    },
-    [Question.has_been_employed_not_actively_seeking]: {
+    [Question.has_been_employed]: {
       text: 'Have they been employed before?',
       option: {
         [CommonOption.yes]: 'Yes, has been employed before',

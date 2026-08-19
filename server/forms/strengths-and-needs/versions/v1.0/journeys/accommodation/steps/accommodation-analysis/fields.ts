@@ -7,9 +7,9 @@ import { commonContentFor } from '../../../../locales'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
-    accommodationSection.fields.strengthsOrProtectiveFactors.displayModes.summaryRow,
-    accommodationSection.fields.riskOfSeriousHarm.displayModes.summaryRow,
-    accommodationSection.fields.riskOfReoffending.displayModes.summaryRow,
+    accommodationSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.summaryRow,
+    accommodationSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.summaryRow,
+    accommodationSection.practitionerAnalysis.riskOfReoffending.displayModes.summaryRow,
   ],
 })
 

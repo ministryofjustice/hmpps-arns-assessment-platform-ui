@@ -21,7 +21,7 @@ export const thinkingBehavioursRiskOfSexualHarmStep = step({
       backlink: sectionPath(Section.thinking_behaviours_and_attitudes) + Step.thinkingBehaviours.path,
     },
   },
-  blocks: [thinkingBehavioursAttitudesSection.fields.riskSexualHarm.displayModes.field, saveButton],
+  blocks: [thinkingBehavioursAttitudesSection.questions.riskSexualHarm.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

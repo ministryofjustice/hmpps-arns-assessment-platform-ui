@@ -1,4 +1,4 @@
-import { and, Answer, Condition, not, or } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 
 import { CaseData } from '../../constants/formVersion'
@@ -32,12 +32,16 @@ import {
 
 // The history and experience questions only apply once we know the person has
 // been employed before (or their employment status implies it).
-const hasBeenEmployed = not(
-  or(
-    Answer(Question.has_been_employed_unavailable_for_work).match(Condition.Equals(CommonOption.no)),
-    Answer(Question.has_been_employed_actively_seeking).match(Condition.Equals(CommonOption.no)),
-    Answer(Question.has_been_employed_not_actively_seeking).match(Condition.Equals(CommonOption.no)),
-  ),
+const hasBeenEmployed = or(
+  Answer(Question.employment_status).match(Condition.Equals(Option.employed)),
+  Answer(Question.has_been_employed_not_actively_seeking).match(Condition.Equals(CommonOption.yes)),
+  Answer(Question.has_been_employed_actively_seeking).match(Condition.Equals(CommonOption.yes)),
+  Answer(Question.has_been_employed_unavailable_for_work).match(Condition.Equals(CommonOption.yes)),
+)
+
+const hasBeenEmployedOrRetired = or(
+  hasBeenEmployed,
+  Answer(Question.employment_status).match(Condition.Equals(Option.retired)),
 )
 
 const isEmployedOrSelfEmployed = or(
@@ -64,22 +68,20 @@ const typeOfEmploymentRevealed = revealedQuestion({
   displayModes: { field: radioDetails({ legendClasses: 'govuk-visually-hidden' }) },
 })
 
-// The three unemployed statuses ask the same "employed before?" question under
-// different codes, depending on which status revealed it.
-type HasBeenEmployedQuestion =
-  | typeof Question.has_been_employed_actively_seeking
-  | typeof Question.has_been_employed_not_actively_seeking
-  | typeof Question.has_been_employed_unavailable_for_work
-
-const hadPreviousEmploymentRevealed = (content: { code: HasBeenEmployedQuestion; text: ResolvableString }) =>
+/*
+  TODO: this question shares a code in private beta, however looks like we're limited in forge,
+        we'll need to figure out if and how we support this, if not we need to update the migration
+        to handle this change
+*/
+const createPreviousEmploymentRevealed = (code: string) =>
   revealedQuestion({
     content: {
-      code: content.code,
+      code,
       format: QuestionFormat.RADIO,
-      text: content.text,
+      text: contentFor('question.has_been_employed.text'),
       options: [
-        { value: CommonOption.yes, text: contentFor(`question.${content.code}.option.YES`) },
-        { value: CommonOption.no, text: contentFor(`question.${content.code}.option.NO`) },
+        { value: CommonOption.yes, text: contentFor(`question.has_been_employed.option.YES`) },
+        { value: CommonOption.no, text: contentFor(`question.has_been_employed.option.NO`) },
       ],
       validationMessage: commonContentFor('select_one_option'),
     },
@@ -102,26 +104,17 @@ const currentEmploymentStatus = question({
       {
         value: Option.currently_unavailable_for_work,
         text: contentFor('question.employment_status.option.CURRENTLY_UNAVAILABLE_FOR_WORK'),
-        reveals: hadPreviousEmploymentRevealed({
-          code: Question.has_been_employed_unavailable_for_work,
-          text: contentFor('question.has_been_employed_unavailable_for_work.text'),
-        }),
+        reveals: createPreviousEmploymentRevealed(Question.has_been_employed_unavailable_for_work),
       },
       {
         value: Option.unemployed_looking_for_work,
         text: contentFor('question.employment_status.option.UNEMPLOYED_LOOKING_FOR_WORK'),
-        reveals: hadPreviousEmploymentRevealed({
-          code: Question.has_been_employed_actively_seeking,
-          text: contentFor('question.has_been_employed_actively_seeking.text'),
-        }),
+        reveals: createPreviousEmploymentRevealed(Question.has_been_employed_actively_seeking),
       },
       {
         value: Option.unemployed_not_looking_for_work,
         text: contentFor('question.employment_status.option.UNEMPLOYED_NOT_LOOKING_FOR_WORK'),
-        reveals: hadPreviousEmploymentRevealed({
-          code: Question.has_been_employed_not_actively_seeking,
-          text: contentFor('question.has_been_employed_not_actively_seeking.text'),
-        }),
+        reveals: createPreviousEmploymentRevealed(Question.has_been_employed_not_actively_seeking),
       },
     ],
     validationMessage: commonContentFor('select_one_option'),
@@ -213,8 +206,8 @@ const employmentHistory = question({
     validationMessage: contentFor('question.employment_history.validation'),
   },
   displayModes: {
-    field: radioField({ dependentWhen: hasBeenEmployed, visibleWhen: hasBeenEmployed }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path, visibleWhen: hasBeenEmployed }),
+    field: radioField({ dependentWhen: hasBeenEmployedOrRetired, visibleWhen: hasBeenEmployedOrRetired }),
+    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path, visibleWhen: hasBeenEmployedOrRetired }),
   },
 })
 
@@ -686,7 +679,7 @@ const riskOfReoffending = question({
 
 export const employmentEducationSection = {
   code: Section.employment_and_education.code,
-  fields: {
+  questions: {
     currentEmploymentStatus,
     employmentSector,
     employmentHistory,
@@ -698,6 +691,8 @@ export const employmentEducationSection = {
     employmentExperience,
     educationExperience,
     changes,
+  },
+  practitionerAnalysis: {
     strengthsOrProtectiveFactors,
     riskOfSeriousHarm,
     riskOfReoffending,
