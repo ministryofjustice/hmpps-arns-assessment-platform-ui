@@ -200,7 +200,6 @@ export const drugsInjectedMonths = questionTemplate({
     field: (content, parent) =>
       GovUKCheckboxInput({
         code: content.code,
-        multiple: true,
         fieldset: {
           legend: {
             text: content.text,
