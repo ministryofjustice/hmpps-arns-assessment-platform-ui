@@ -3,6 +3,8 @@ import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffec
 import {
   CurrentRelationshipStatus,
   MotivationLevel,
+  PREVIOUS_CONVICTIONS,
+  PreviousConviction,
   ProblemLevel,
   RiskScoreInput,
   RiskScores,
@@ -65,6 +67,7 @@ export class RiskActuarialService {
       temperControl: this.parseProblemLevel(context.getAnswer('temper-control')),
       impulsivityProblems: this.parseProblemLevel(context.getAnswer('impulsivity-problems')),
       proCriminalAttitudes: this.parseProblemLevel(context.getAnswer('pro-criminal-attitudes')),
+      previousConvictions: this.parsePreviousConvictions(context.getAnswer('previous-convictions') as string[]),
     }
   }
 
@@ -219,5 +222,14 @@ export class RiskActuarialService {
     if (alcoholSummary <= 4) return this.parseProblemLevel('NO_PROBLEMS')
     if (alcoholSummary <= 7) return this.parseProblemLevel('SOME_PROBLEMS')
     return this.parseProblemLevel('SIGNIFICANT_PROBLEMS')
+  }
+
+  private parsePreviousConvictions(previousConvictions: string[] | undefined | null): PreviousConviction[] | null {
+    if (previousConvictions === undefined || previousConvictions === null) return null
+
+    const validPreviousConvictions: PreviousConviction[] = previousConvictions
+      .filter((item): item is PreviousConviction => (PREVIOUS_CONVICTIONS as readonly string[]).includes(item))
+
+    return validPreviousConvictions.length > 0 ? validPreviousConvictions : null
   }
 }

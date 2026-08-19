@@ -124,15 +124,15 @@ export const proCriminalAttitudesField = GovUKRadioInput({
   },
   items: [
     {
-      value: 'YES_IN_LAST_THREE_MONTHS',
+      value: 'NO_PROBLEMS',
       text: 'Does not support or excuse criminal behaviour',
     },
     {
-      value: 'YES_NOT_IN_LAST_THREE_MONTHS',
+      value: 'SOME_PROBLEMS',
       text: 'Sometimes supports or excuses criminal behaviour',
     },
     {
-      value: 'NO',
+      value: 'SIGNIFICANT_PROBLEMS',
       text: 'Supports or excuses criminal behaviour or their pattern of behaviour and other evidence indicates this is an issue',
     },
     {

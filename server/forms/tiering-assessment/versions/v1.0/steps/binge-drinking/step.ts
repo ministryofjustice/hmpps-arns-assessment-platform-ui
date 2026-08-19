@@ -20,7 +20,10 @@ export const bingeDrinkingStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [TieringAssessmentEffects.SaveAssessmentData()],
+        effects: [
+          TieringAssessmentEffects.CalculateRiskActuarialScores(),
+          TieringAssessmentEffects.SaveAssessmentData(),
+        ],
         next: [redirect({ goto: 'personal-relationships-and-community' })],
       },
     }),

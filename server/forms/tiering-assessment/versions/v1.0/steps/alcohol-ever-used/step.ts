@@ -25,10 +25,7 @@ export const alcoholEverUsedStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [
-          TieringAssessmentEffects.CalculateRiskActuarialScores(),
-          TieringAssessmentEffects.SaveAssessmentData(),
-        ],
+        effects: [TieringAssessmentEffects.SaveAssessmentData()],
         next: [
           redirect({
             when: Answer('has-ever-drunk-alcohol').match(Condition.Equals('YES_IN_LAST_THREE_MONTHS')),
