@@ -7,7 +7,6 @@ import {
   Format,
   Item,
   Iterator,
-  PipelineExpr,
   Transformer,
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
@@ -28,7 +27,7 @@ export const drugsSummaryPartOne = GovUKSummaryList({
   rows: [drugUseSection.questions.drugUse.displayModes.summaryRow],
 })
 
-export const drugsSummaryCards = (drugValue: ChainableExpr<PipelineExpr>) => {
+export const drugsSummaryCards = (drugValue: ChainableExpr) => {
   const drugValueLower = drugValue.pipe(Transformer.String.ToLowerCase())
 
   return GovUKSummaryList({
