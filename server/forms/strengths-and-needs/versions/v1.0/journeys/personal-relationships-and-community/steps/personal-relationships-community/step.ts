@@ -1,0 +1,63 @@
+import { Answer, Condition, not, or, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Step } from '../../constants/step'
+import { Question } from '../../constants/question'
+import { Option } from '../../constants/option'
+import { sectionPageTitle } from '../../../../locales'
+import { sectionPath } from '../../../../constants/path'
+import { saveButton } from '../../../../constants/buttons'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { Section, SectionComplete } from '../../../../constants/section'
+import { personalRelationshipsCommunitySection } from '../../section'
+
+export const personalRelationshipsCommunityStep = step({
+  path: `/${Step.personal_relationships_community.path}`,
+  title: sectionPageTitle(Section.personal_relationships_and_community),
+  view: {
+    locals: {
+      backlink: sectionPath(Section.personal_relationships_and_community) + Step.personal_relationships.path,
+    },
+  },
+  blocks: [
+    personalRelationshipsCommunitySection.questions.currentRelationship.displayModes.field,
+    personalRelationshipsCommunitySection.questions.intimateRelationship.displayModes.field,
+    personalRelationshipsCommunitySection.questions.challengesIntimateRelationship.displayModes.field,
+    personalRelationshipsCommunitySection.questions.parentalResponsibilities.displayModes.field,
+    personalRelationshipsCommunitySection.questions.familyRelationship.displayModes.field,
+    personalRelationshipsCommunitySection.questions.childhood.displayModes.field,
+    personalRelationshipsCommunitySection.questions.childhoodBehaviour.displayModes.field,
+    personalRelationshipsCommunitySection.questions.belonging.displayModes.field,
+    personalRelationshipsCommunitySection.questions.changes.displayModes.field,
+    saveButton,
+  ],
+  onSubmission: [
+    submit({
+      when: Post('action').match(Condition.Equals('save')),
+      validate: true,
+      onValid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
+        ],
+        next: [
+          redirect({
+            // allow redirect only if either (makes summary page unreachable unless):
+            // > child_parental_responsibilities ticked (then this page would have required parenting responsibilities Q user can't bypass
+            // OR
+            // > parenting_responsibilities Q doesn't exist on this page (means child_parental_responsibilities wasn't ticked on important_people Q)
+            when: or(
+              Answer(Question.personal_relationships_community_important_people).match(
+                Condition.Array.Contains(Option.child_parental_responsibilities),
+              ),
+              not(
+                Answer(Question.personal_relationships_community_parental_responsibilities).match(
+                  Condition.IsRequired(),
+                ),
+              ),
+            ),
+            goto: Step.personal_relationships_community_summary.path,
+          }),
+        ],
+      },
+    }),
+  ],
+})

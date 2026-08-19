@@ -1,0 +1,73 @@
+export const Question = {
+  employment_status: 'employment_status',
+  employment_type: 'employment_type',
+  employment_other_responsibilities: 'employment_other_responsibilities',
+  has_been_employed: 'has_been_employed',
+  has_been_employed_unavailable_for_work: 'has_been_employed_unavailable_for_work',
+  has_been_employed_actively_seeking: 'has_been_employed_actively_seeking',
+  has_been_employed_not_actively_seeking: 'has_been_employed_not_actively_seeking',
+  employment_history: 'employment_history',
+  employment_area: 'employment_area',
+  employment_history_stable_details: 'employment_history_stable_details',
+  employment_history_periods_of_instability_details: 'employment_history_periods_of_instability_details',
+  employment_history_unstable_details: 'employment_history_unstable_details',
+  employment_history_unknown_details: 'employment_history_unknown_details',
+  employment_other_responsibilities_carer_details: 'employment_other_responsibilities_carer_details',
+  employment_other_responsibilities_volunteer_details: 'employment_other_responsibilities_volunteer_details',
+  employment_education_changes: 'employment_education_changes',
+  employment_education_changes_does_not_want_to_answer_details:
+    'employment_education_changes_does_not_want_to_answer_details',
+  employment_education_changes_does_not_want_to_make_changes_details:
+    'employment_education_changes_does_not_want_to_make_changes_details',
+  employment_education_changes_thinking_about_making_changes_details:
+    'employment_education_changes_thinking_about_making_changes_details',
+  employment_education_changes_needs_help_to_make_changes_details:
+    'employment_education_changes_needs_help_to_make_changes_details',
+  employment_education_changes_want_to_make_changes_details:
+    'employment_education_changes_want_to_make_changes_details',
+  employment_education_changes_making_changes_details: 'employment_education_changes_making_changes_details',
+  employment_education_changes_made_changes_details: 'employment_education_changes_made_changes_details',
+  education_experience: 'education_experience',
+  education_experience_negative_details: 'education_experience_negative_details',
+  education_experience_mostly_negative_details: 'education_experience_mostly_negative_details',
+  education_experience_positive_and_negative_details: 'education_experience_positive_and_negative_details',
+  education_experience_mostly_positive_details: 'education_experience_mostly_positive_details',
+  education_experience_positive_details: 'education_experience_positive_details',
+  employment_experience: 'employment_experience',
+  employment_experience_negative_details: 'employment_experience_negative_details',
+  employment_experience_mostly_negative_details: 'employment_experience_mostly_negative_details',
+  employment_experience_positive_and_negative_details: 'employment_experience_positive_and_negative_details',
+  employment_experience_mostly_positive_details: 'employment_experience_mostly_positive_details',
+  employment_experience_positive_details: 'employment_experience_positive_details',
+  education_difficulties: 'education_difficulties',
+  education_difficulties_numeracy_severity: 'education_difficulties_numeracy_severity',
+  education_difficulties_writing_severity: 'education_difficulties_writing_severity',
+  education_difficulties_reading_severity: 'education_difficulties_reading_severity',
+  education_transferable_skills: 'education_transferable_skills',
+  education_transferable_skills_yes_some_skills_details: 'education_transferable_skills_yes_some_skills_details',
+  education_transferable_skills_yes_details: 'education_transferable_skills_yes_details',
+  education_professional_or_vocational_qualifications: 'education_professional_or_vocational_qualifications',
+  education_professional_or_vocational_qualifications_yes_details:
+    'education_professional_or_vocational_qualifications_yes_details',
+  education_highest_level_completed: 'education_highest_level_completed',
+  employment_other_responsibilities_other_details: 'employment_other_responsibilities_other_details',
+  employment_other_responsibilities_child_details: 'employment_other_responsibilities_child_details',
+  employment_education_practitioner_analysis_strengths_or_protective_factors:
+    'employment_education_practitioner_analysis_strengths_or_protective_factors',
+  employment_education_practitioner_analysis_risk_of_serious_harm:
+    'employment_education_practitioner_analysis_risk_of_serious_harm',
+  employment_education_practitioner_analysis_risk_of_reoffending:
+    'employment_education_practitioner_analysis_risk_of_reoffending',
+  employment_education_practitioner_analysis_risk_of_reoffending_yes_details:
+    'employment_education_practitioner_analysis_risk_of_reoffending_yes_details',
+  employment_education_practitioner_analysis_risk_of_reoffending_no_details:
+    'employment_education_practitioner_analysis_risk_of_reoffending_no_details',
+  employment_education_practitioner_analysis_risk_of_serious_harm_no_details:
+    'employment_education_practitioner_analysis_risk_of_serious_harm_no_details',
+  employment_education_practitioner_analysis_risk_of_serious_harm_yes_details:
+    'employment_education_practitioner_analysis_risk_of_serious_harm_yes_details',
+  employment_education_practitioner_analysis_strengths_or_protective_factors_yes_details:
+    'employment_education_practitioner_analysis_strengths_or_protective_factors_yes_details',
+  employment_education_practitioner_analysis_strengths_or_protective_factors_no_details:
+    'employment_education_practitioner_analysis_strengths_or_protective_factors_no_details',
+} as const

@@ -1,0 +1,78 @@
+import { access, and, Condition, Data, journey, redirect } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { accommodationJourney } from './journeys/accommodation'
+import { employmentJourney } from './journeys/employment-and-education'
+import { financeJourney } from './journeys/finance'
+import { drugUseJourney } from './journeys/drug-use'
+import { alcoholUseJourney } from './journeys/alcohol-use'
+import { StrengthsAndNeedsEffects } from '../../effects'
+import { Section } from './constants/section'
+import { basePath, formVersion } from './constants/formVersion'
+import { commonContentFor } from './locales'
+import { healthWellbeingJourney } from './journeys/health-wellbeing'
+import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
+import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
+import { isOasysAccess } from './guards'
+import config from '../../../../config'
+import { createPlatformPages, notAPlatformPage } from '../../../platform'
+import { viewAllAnswersStep } from './steps/view-all-answers/step'
+
+const feedbackUrl = config.privateBetaFeedbackUrl
+
+/**
+ * Strengths and Needs v1.0 Journey
+ *
+ * Contains all section journeys for the SAN assessment.
+ * Sets the SAN template and section navigation for all child journeys.
+ */
+export const strengthsAndNeedsV1Journey = journey({
+  code: 'strengths-and-needs-v1',
+  title: commonContentFor('strengths_and_needs'),
+  path: `/${formVersion}`,
+  steps: [...createPlatformPages({ baseUrl: basePath, feedbackUrl }), viewAllAnswersStep],
+  view: {
+    template: 'strengths-and-needs/views/san-step',
+    locals: {
+      basePath,
+      sectionNavItems: Object.values(Section).map(section => ({
+        ...section,
+        complete: Data(section.statusKey),
+        text: commonContentFor(`sectionTitle.${section.code}`),
+      })),
+      buttons: {
+        showReturnToOasysButton: isOasysAccess,
+      },
+      feedbackUrl,
+    },
+  },
+  data: {
+    formVersion,
+  },
+  onAccess: [
+    access({
+      effects: [
+        StrengthsAndNeedsEffects.initializeSessionFromAccess(),
+        StrengthsAndNeedsEffects.loadSessionData(),
+        StrengthsAndNeedsEffects.loadAssessment(),
+        StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
+      ],
+    }),
+    access({
+      when: and(
+        notAPlatformPage,
+        Data('privacyAccepted').not.match(Condition.Equals(true)),
+        Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
+      ),
+      next: [redirect({ goto: '/strengths-and-needs/privacy' })],
+    }),
+  ],
+  children: [
+    accommodationJourney,
+    employmentJourney,
+    financeJourney,
+    drugUseJourney,
+    alcoholUseJourney,
+    healthWellbeingJourney,
+    personalRelationshipsJourney,
+    thinkingBehavioursAndAttitudesJourney,
+  ],
+})

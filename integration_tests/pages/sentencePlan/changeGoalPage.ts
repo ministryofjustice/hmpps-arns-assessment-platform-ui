@@ -1,5 +1,4 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
 import {
   AssessmentInfoHelper,
   CanStartNowHelper,
@@ -7,8 +6,9 @@ import {
   TargetDateHelper,
   type TargetDateOption,
 } from '../helpers'
+import SentencePlanPage from './sentencePlanPage'
 
-export default class ChangeGoalPage extends AbstractPage {
+export default class ChangeGoalPage extends SentencePlanPage {
   readonly header: Locator
 
   readonly goalTitleAutocomplete: Locator

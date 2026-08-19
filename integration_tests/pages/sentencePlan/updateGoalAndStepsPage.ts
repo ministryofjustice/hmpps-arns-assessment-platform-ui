@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
+import SentencePlanPage from './sentencePlanPage'
 
-export default class UpdateGoalAndStepsPage extends AbstractPage {
+export default class UpdateGoalAndStepsPage extends SentencePlanPage {
   readonly pageHeading: Locator
 
   readonly goalContextInset: Locator
