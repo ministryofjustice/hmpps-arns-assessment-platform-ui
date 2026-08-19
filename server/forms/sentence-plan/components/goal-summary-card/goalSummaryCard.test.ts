@@ -7,9 +7,6 @@ import {
   GoalSummaryCardHistory,
   GoalAction,
   GoalStep,
-  goalSummaryCardAgreed,
-  goalSummaryCardDraft,
-  goalSummaryCardHistory,
 } from './goalSummaryCard'
 
 const nunjucksEnv = nunjucks.configure(
@@ -35,7 +32,7 @@ describe('goal summary card', () => {
   }
 
   it('renders capitalised area of need labels on agreed cards', async () => {
-    const html = await goalSummaryCardAgreed.render(
+    const html = await GoalSummaryCardAgreed.render(
       {
         ...baseBlock,
         variant: 'goalSummaryCardAgreed',
@@ -48,7 +45,7 @@ describe('goal summary card', () => {
   })
 
   it('renders capitalised area of need labels on draft cards', async () => {
-    const html = await goalSummaryCardDraft.render(
+    const html = await GoalSummaryCardDraft.render(
       {
         ...baseBlock,
         variant: 'goalSummaryCardDraft',
@@ -61,7 +58,7 @@ describe('goal summary card', () => {
   })
 
   it('renders capitalised area of need labels on history cards', async () => {
-    const html = await goalSummaryCardHistory.render(
+    const html = await GoalSummaryCardHistory.render(
       {
         ...baseBlock,
         variant: 'goalSummaryCardHistory',
@@ -74,7 +71,7 @@ describe('goal summary card', () => {
   })
 
   it('uses "X of Y" wording for agreed card step counters', async () => {
-    const html = await goalSummaryCardAgreed.render(
+    const html = await GoalSummaryCardAgreed.render(
       {
         ...baseBlock,
         variant: 'goalSummaryCardAgreed',
@@ -90,7 +87,7 @@ describe('goal summary card', () => {
   })
 
   it('uses "step completed" wording when there is one step on agreed cards', async () => {
-    const html = await goalSummaryCardAgreed.render(
+    const html = await GoalSummaryCardAgreed.render(
       {
         ...baseBlock,
         variant: 'goalSummaryCardAgreed',
@@ -103,7 +100,7 @@ describe('goal summary card', () => {
   })
 
   it('uses "step completed" wording when there is one step on history cards', async () => {
-    const html = await goalSummaryCardHistory.render(
+    const html = await GoalSummaryCardHistory.render(
       {
         ...baseBlock,
         variant: 'goalSummaryCardHistory',
@@ -124,7 +121,7 @@ describe('goal summary card', () => {
       ] as GoalAction[],
     } as EvaluatedBlock<GoalSummaryCardAgreed>
 
-    const html = await goalSummaryCardAgreed.render(block, nunjucksEnv)
+    const html = await GoalSummaryCardAgreed.render(block, nunjucksEnv)
 
     expect(html).toContain('data-ai-id="update-goal-inline-link"')
   })

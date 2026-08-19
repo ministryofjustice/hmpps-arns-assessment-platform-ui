@@ -1,5 +1,5 @@
 import type nunjucks from 'nunjucks'
-import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import {
   BasicBlockProps,
   BlockDefinition,
@@ -7,9 +7,8 @@ import {
   ResolvableBoolean,
   ResolvableNumber,
   ResolvableString,
-  EvaluatedBlock,
+  ResolvedPropsOf,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 /**
  * A step within a goal.
@@ -142,9 +141,7 @@ export interface GoalSummaryCardProps extends BasicBlockProps {
  *
  * Use this variant when the plan has been agreed (status is AGREED).
  */
-export interface GoalSummaryCardAgreed extends BlockDefinition, GoalSummaryCardProps {
-  variant: 'goalSummaryCardAgreed'
-}
+export interface GoalSummaryCardAgreed extends BlockDefinition, GoalSummaryCardProps {}
 
 /**
  * Goal Summary Card (Draft) component interface.
@@ -154,9 +151,7 @@ export interface GoalSummaryCardAgreed extends BlockDefinition, GoalSummaryCardP
  *
  * Use this variant when the plan is in DRAFT status.
  */
-export interface GoalSummaryCardDraft extends BlockDefinition, GoalSummaryCardProps {
-  variant: 'goalSummaryCardDraft'
-}
+export interface GoalSummaryCardDraft extends BlockDefinition, GoalSummaryCardProps {}
 
 /**
  * Goal Summary Card (History) component interface.
@@ -165,28 +160,26 @@ export interface GoalSummaryCardDraft extends BlockDefinition, GoalSummaryCardPr
  * inline (no collapsible wrapper), the step counter uses "X of Y" wording,
  * and FUTURE-status goals display a "This is a future goal" line.
  */
-export interface GoalSummaryCardHistory extends BlockDefinition, GoalSummaryCardProps {
-  variant: 'goalSummaryCardHistory'
-}
+export interface GoalSummaryCardHistory extends BlockDefinition, GoalSummaryCardProps {}
 
 type GoalSummaryCardBlock = GoalSummaryCardAgreed | GoalSummaryCardDraft | GoalSummaryCardHistory
 
 /**
  * Builds the template parameters for goal summary card rendering.
  */
-function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
-  const steps = (block.steps ?? []) as GoalStep[]
-  const notes = (block.notes ?? []) as GoalNote[]
-  const actions = ((block.actions ?? []) as GoalAction[]).filter(action => !action.hidden)
-  const buttons = (block.buttons ?? []) as GoalButton[]
-  const relatedAreasOfNeed = (block.relatedAreasOfNeed ?? []) as string[]
+function buildParams(props: ResolvedPropsOf<GoalSummaryCardBlock>) {
+  const steps = (props.steps ?? []) as GoalStep[]
+  const notes = (props.notes ?? []) as GoalNote[]
+  const actions = ((props.actions ?? []) as GoalAction[]).filter(action => !action.hidden)
+  const buttons = (props.buttons ?? []) as GoalButton[]
+  const relatedAreasOfNeed = (props.relatedAreasOfNeed ?? []) as string[]
 
   const completedCount = steps.filter(step => step.status === 'COMPLETED').length
 
   // Find the first REMOVED note if goal was removed
   let removedNote: string | undefined
 
-  if (block.goalStatus === 'REMOVED' && notes.length > 0) {
+  if (props.goalStatus === 'REMOVED' && notes.length > 0) {
     const removedNoteObj = notes.find(note => note.type === 'REMOVED')
     removedNote = removedNoteObj?.note as string | undefined
   }
@@ -194,12 +187,12 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
   const relatedAreasText = relatedAreasOfNeed.length > 0 ? [...relatedAreasOfNeed].sort().join('; ') : undefined
 
   return {
-    goalTitle: block.goalTitle,
-    goalStatus: block.goalStatus,
-    goalUuid: block.goalUuid,
-    targetDate: block.targetDate,
-    statusDate: block.statusDate,
-    areaOfNeed: block.areaOfNeed,
+    goalTitle: props.goalTitle,
+    goalStatus: props.goalStatus,
+    goalUuid: props.goalUuid,
+    targetDate: props.targetDate,
+    statusDate: props.statusDate,
+    areaOfNeed: props.areaOfNeed,
     relatedAreasText,
     steps,
     stepsCount: steps.length,
@@ -207,15 +200,15 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
     notes,
     removedNote,
     actions,
-    isReadOnly: block.isReadOnly,
+    isReadOnly: props.isReadOnly,
     buttons,
-    errorMessage: block.errorMessage,
-    index: block.index,
-    classes: block.classes,
-    showMoveUp: block.showMoveUp,
-    showMoveDown: block.showMoveDown,
-    moveUpHref: block.moveUpHref,
-    moveDownHref: block.moveDownHref,
+    errorMessage: props.errorMessage,
+    index: props.index,
+    classes: props.classes,
+    showMoveUp: props.showMoveUp,
+    showMoveDown: props.showMoveDown,
+    moveUpHref: props.moveUpHref,
+    moveDownHref: props.moveDownHref,
   }
 }
 
@@ -223,97 +216,36 @@ function buildParams(block: EvaluatedBlock<GoalSummaryCardBlock>) {
  * Creates a renderer function for the goal summary card variants.
  */
 function createRenderer(templatePath: string) {
-  return (block: EvaluatedBlock<GoalSummaryCardBlock>, nunjucksEnv: nunjucks.Environment): string => {
-    const params = buildParams(block)
+  return (props: ResolvedPropsOf<GoalSummaryCardBlock>, nunjucksEnv: nunjucks.Environment): string => {
+    const params = buildParams(props)
+
     return nunjucksEnv.render(templatePath, { params })
   }
 }
 
 /**
- * Goal Summary Card (Agreed) component.
- * Shows step counter and collapsible details for agreed plans.
- */
-export const goalSummaryCardAgreed = buildNunjucksComponent<GoalSummaryCardAgreed>(
-  'goalSummaryCardAgreed',
-  createRenderer('sentence-plan/components/goal-summary-card/agreed.njk'),
-)
-
-/**
- * Goal Summary Card (Draft) component.
- * Shows steps directly without collapsible wrapper for draft plans.
- */
-export const goalSummaryCardDraft = buildNunjucksComponent<GoalSummaryCardDraft>(
-  'goalSummaryCardDraft',
-  createRenderer('sentence-plan/components/goal-summary-card/draft.njk'),
-)
-
-/**
- * Goal Summary Card (History) component.
- * Read-only variant for the Plan History accordion: inline steps and "X of Y" counter.
- */
-export const goalSummaryCardHistory = buildNunjucksComponent<GoalSummaryCardHistory>(
-  'goalSummaryCardHistory',
-  createRenderer('sentence-plan/components/goal-summary-card/history.njk'),
-)
-
-/**
- * Creates a Goal Summary Card for agreed plans.
- *
+ * Goal Summary Card for agreed plans.
  * Shows step counter and collapsible details element containing the steps table.
  * Use this variant when the plan status is AGREED.
- *
- * @example
- * ```typescript
- * GoalSummaryCardAgreed({
- *   goalTitle: 'I will find accommodation that is more suitable for me',
- *   goalStatus: 'ACTIVE',
- *   targetDate: '4 June 2026',
- *   areaOfNeed: 'Accommodation',
- *   steps: [
- *     { actor: 'Tom', description: 'Build the form-engine', status: 'IN_PROGRESS' },
- *   ],
- *   actions: [
- *     { text: 'Change goal', href: '/goal/123/edit' },
- *   ],
- * })
- * ```
  */
-export function GoalSummaryCardAgreed(props: GoalSummaryCardProps): GoalSummaryCardAgreed {
-  return blockBuilder<GoalSummaryCardAgreed>({ ...props, variant: 'goalSummaryCardAgreed' })
-}
+export const GoalSummaryCardAgreed = nunjucksComponent<GoalSummaryCardAgreed>('goalSummaryCardAgreed', {
+  render: createRenderer('sentence-plan/components/goal-summary-card/agreed.njk'),
+})
 
 /**
- * Creates a Goal Summary Card for draft plans.
- *
+ * Goal Summary Card for draft plans.
  * Shows steps table directly without a collapsible wrapper or step counter.
  * Use this variant when the plan status is DRAFT.
- *
- * @example
- * ```typescript
- * GoalSummaryCardDraft({
- *   goalTitle: 'I will find accommodation that is more suitable for me',
- *   goalStatus: 'ACTIVE',
- *   targetDate: '4 June 2026',
- *   areaOfNeed: 'Accommodation',
- *   steps: [
- *     { actor: 'Tom', description: 'Build the form-engine', status: 'IN_PROGRESS' },
- *   ],
- *   actions: [
- *     { text: 'Change goal', href: '/goal/123/edit' },
- *   ],
- * })
- * ```
  */
-export function GoalSummaryCardDraft(props: GoalSummaryCardProps): GoalSummaryCardDraft {
-  return blockBuilder<GoalSummaryCardDraft>({ ...props, variant: 'goalSummaryCardDraft' })
-}
+export const GoalSummaryCardDraft = nunjucksComponent<GoalSummaryCardDraft>('goalSummaryCardDraft', {
+  render: createRenderer('sentence-plan/components/goal-summary-card/draft.njk'),
+})
 
 /**
- * Creates a Goal Summary Card for the Plan History accordion.
- *
+ * Goal Summary Card for the Plan History accordion.
  * Steps are shown inline and the counter reads "X of Y steps completed".
  * For FUTURE-status goals the card includes a "This is a future goal" line.
  */
-export function GoalSummaryCardHistory(props: GoalSummaryCardProps): GoalSummaryCardHistory {
-  return blockBuilder<GoalSummaryCardHistory>({ ...props, variant: 'goalSummaryCardHistory' })
-}
+export const GoalSummaryCardHistory = nunjucksComponent<GoalSummaryCardHistory>('goalSummaryCardHistory', {
+  render: createRenderer('sentence-plan/components/goal-summary-card/history.njk'),
+})
