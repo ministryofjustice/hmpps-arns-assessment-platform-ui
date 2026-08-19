@@ -25,7 +25,7 @@ import { CharacterLimit } from './characterLimit'
 import { CommonOption } from './commonOption'
 import { commonContentFor } from '../locales'
 import { SANGenerators } from '../../../generators'
-import { getDisplayTextForItems } from '../../../i18n'
+import { getDisplayTextForItems, getDisplayTextForSpecificItem } from '../../../i18n'
 
 /**
  * Content-first question authoring.
@@ -444,6 +444,32 @@ export const summaryRow =
 const summaryItemsOf = (options: QuestionOptionEntry[]) =>
   options.map(entry => (isQuestionOption(entry) && entry.summaryText ? { ...entry, text: entry.summaryText } : entry))
 
+// The answer as a summary should read it. Currently just formatting dates.
+const answerTextOf = (content: QuestionContent) => {
+  if (content.format === QuestionFormat.DATE) {
+    return SANGenerators.getFormatterDateFromIso(Answer(content.code))
+  }
+
+  return Answer(content.code)
+}
+
+const isAnswered = (content: QuestionContent) => Answer(content.code).match(Condition.IsRequired())
+
+// True once the question has been answered
+const answeredWithin = (content: QuestionContent) => or(questionsWithin(content).map(isAnswered))
+
+// A question's answer, and the answers to everything its options revealed.
+const answerBlocksOf = (content: QuestionContent, size?: 's'): BlockDefinition[] => {
+  if (!isOptioned(content)) {
+    return [GovUKBody({ text: answerTextOf(content), size, visibleWhen: answeredWithin(content) })]
+  }
+
+  return optionsOf(content).flatMap(option => [
+    ...getDisplayTextForSpecificItem(content.code, summaryItemsOf(content.options), option.value, { size }),
+    ...revealedQuestionsOf(option).flatMap(revealed => answerBlocksOf(revealed.content, 's')),
+  ])
+}
+
 // The answers beneath a question on the summary, recursively: option labels
 // for optioned reveals (then whatever those options reveal in turn), the
 // verbatim answer otherwise.
@@ -818,13 +844,20 @@ export const questionTemplate = (definition: {
     },
   }
 }
-
 type SectionFields = Record<string, { content: QuestionContent }>
 
 export interface SectionDefinition {
   questions: SectionFields
   practitionerAnalysis: SectionFields
 }
+
+export const questionsWithin = (content: QuestionContent): QuestionContent[] => withRevealedQuestions(content)
+
+export const answerRow = (content: QuestionContent): SummaryRow => ({
+  key: { html: content.text },
+  visibleWhen: answeredWithin(content),
+  value: { blocks: answerBlocksOf(content) },
+})
 
 const isOptioned = (content: QuestionContent): content is OptionedQuestionContent => 'options' in content
 
