@@ -8,6 +8,7 @@ import AssessmentPlatformApiClient from './assessmentPlatformApiClient'
 import DeliusApiClient from './deliusApiClient'
 import HandoverApiClient from './handoverApiClient'
 import CoordinatorApiClient from './coordinatorApiClient'
+import ArnsApiClient from './arnsApiClient'
 import AssessmentCacheStore from './assessmentCacheStore'
 import PreferencesStore from './preferencesStore'
 import GotenbergClient from './gotenbergClient'
@@ -30,6 +31,7 @@ export const dataAccess = () => {
     deliusApiClient: new DeliusApiClient(hmppsAuthClient),
     handoverApiClient: new HandoverApiClient(hmppsAuthClient),
     coordinatorApiClient: new CoordinatorApiClient(hmppsAuthClient),
+    arnsApiClient: new ArnsApiClient(hmppsAuthClient),
     gotenbergClient: new GotenbergClient(config.apis.gotenberg),
     assessmentCacheStore,
     preferencesStore: new PreferencesStore(),
@@ -45,6 +47,7 @@ export {
   HandoverApiClient,
   DeliusApiClient,
   CoordinatorApiClient,
+  ArnsApiClient,
   GotenbergClient,
   PreferencesStore,
 }

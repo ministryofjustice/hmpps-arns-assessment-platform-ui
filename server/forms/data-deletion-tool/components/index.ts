@@ -1,3 +1,3 @@
-import { outdent } from './outdent/outdent'
+import { Outdent } from './outdent/outdent'
 
-export const dataDeletionToolComponents = [outdent]
+export const dataDeletionToolComponents = [Outdent]

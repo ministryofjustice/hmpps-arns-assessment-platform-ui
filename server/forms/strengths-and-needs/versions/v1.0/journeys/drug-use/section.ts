@@ -11,9 +11,11 @@ import {
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
+  GovUKBody,
   GovUKCharacterCount,
   GovUKCheckboxInput,
   GovUKRadioInput,
+  GovUKSummaryList,
   GovUKTextInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
@@ -46,6 +48,7 @@ import {
   optionalDetails,
   requiredDetails,
   summaryRow,
+  SummaryRow,
   textSummaryRow,
   yesNo,
 } from '../../constants/questionContent'
@@ -278,6 +281,48 @@ const drugUse = question({
   },
 })
 
+// "Other" is a placeholder on the drug list; the real name was typed in.
+const drugName = (drugValue: string) => {
+  if (drugValue === Option.other_drug) {
+    return Answer(Question.other_drug_name)
+  }
+
+  return drugValueToText(drugValue)
+}
+
+/**
+ * Every drug named, with what was said about it.
+ * The view all answers page has to gather them.
+ */
+const drugAnswers = (drugValue: string) => {
+  const named = (label: ResolvableString, code: string, answer: ResolvableString): SummaryRow => ({
+    key: { text: label },
+    value: { blocks: [GovUKBody({ text: answer, size: 's' })] },
+    visibleWhen: Answer(code).match(Condition.IsRequired()),
+  })
+
+  const lastUsed = fieldCodeString(Question.drug_last_used, drugValue)
+  const howOften = fieldCodeString(Question.how_often_used_last_six_months, drugValue)
+  const details = Question.how_often_used_details.replace('%1', drugValue.toLowerCase())
+
+  return GovUKSummaryList({
+    classes: 'govuk-summary-list--no-border summary-answer-list',
+    rows: [
+      named(
+        contentFor('text.lastUsed.text'),
+        lastUsed,
+        SANGenerators.getTextFromListDefinition(drugLastUsed.options, Answer(lastUsed)),
+      ),
+      named(
+        contentFor('text.howOften.text'),
+        howOften,
+        SANGenerators.getTextFromListDefinition(drugHowOftenUsed.options, Answer(howOften)),
+      ),
+      named(contentFor('text.howOftenDetails.text'), details, Answer(details)),
+    ],
+  })
+}
+
 const selectMisusedDrugs = question({
   content: {
     code: Question.select_misused_drugs,
@@ -345,6 +390,21 @@ const selectMisusedDrugs = question({
   },
   displayModes: {
     field: checkboxField(),
+    // Each drug chosen, followed by the answers given about that drug.
+    answerRow: (content): SummaryRow => ({
+      key: { html: content.text },
+      visibleWhen: Answer(content.code).match(Condition.IsRequired()),
+      value: {
+        blocks: drugsList.flatMap(drug => {
+          const chosen = Answer(content.code).match(Condition.Array.Contains(drug.value))
+
+          return [
+            GovUKBody({ text: drugName(drug.value), visibleWhen: chosen }),
+            { ...drugAnswers(drug.value), visibleWhen: chosen },
+          ]
+        }),
+      },
+    }),
   },
 })
 

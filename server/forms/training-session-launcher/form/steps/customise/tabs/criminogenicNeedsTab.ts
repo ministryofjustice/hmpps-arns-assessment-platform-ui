@@ -133,7 +133,7 @@ export const criminogenicNeedsTabContent = [
       <p class="govuk-body">
         Configure the criminogenic needs scores and flags for this scenario.
         Click on each section to expand and edit the values.
-        Check "Randomize" to generate a new value each time the scenario is loaded.
+        Check "Randomise" to generate a new value each time the scenario is loaded.
       </p>
     `,
   }),

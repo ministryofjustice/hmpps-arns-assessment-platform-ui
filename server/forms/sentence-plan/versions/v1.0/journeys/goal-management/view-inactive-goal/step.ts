@@ -34,8 +34,8 @@ export const viewInactiveGoalStep = step({
         .then('../../plan/plan-history')
         .else(
           when(Data('activeGoal.status').match(Condition.Equals('ACHIEVED')))
-            .then('../../plan/overview?type=achieved')
-            .else('../../plan/overview?type=removed'),
+            .then('../../plan/overview?goalStatusTab=achieved')
+            .else('../../plan/overview?goalStatusTab=removed'),
         ),
       dynamicTitle: Format('View %1 goal', Data('activeGoal.status').pipe(Transformer.String.ToLowerCase())),
     },

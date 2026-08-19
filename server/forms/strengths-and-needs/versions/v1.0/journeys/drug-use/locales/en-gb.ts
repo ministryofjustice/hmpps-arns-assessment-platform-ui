@@ -186,6 +186,7 @@ export const english = {
   text: {
     lastUsed: { text: 'Last used' },
     howOften: { text: 'How often' },
+    howOftenDetails: { text: 'Details' },
     injected: { text: 'Injected' },
     more_information: 'More information',
   },

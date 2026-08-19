@@ -25,6 +25,7 @@ import { StrengthsAndNeedsTransformers } from '../../transformers'
 import { FormConfig } from '../../constants/formConfig'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
+import { viewAllAnswersStep } from './steps/view-all-answers/step'
 
 const feedbackUrl = config.privateBetaFeedbackUrl
 
@@ -86,6 +87,7 @@ export const strengthsAndNeedsV1Journey = journey({
   ],
   steps: [
     ...createPlatformPages({ baseUrl: basePath, feedbackUrl }),
+    viewAllAnswersStep,
     step({
       path: `/config`,
       title: 'Config',

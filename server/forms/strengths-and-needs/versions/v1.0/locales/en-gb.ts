@@ -17,6 +17,11 @@ export const english = {
   go_to_practitioner_analysis: 'Go to practitioner analysis',
   summary: 'Summary',
   practitioner_analysis: 'Practitioner analysis',
+  all_answers_heading: '%1 strengths and needs',
+  status: {
+    complete: 'Complete',
+    incomplete: 'Incomplete',
+  },
   sectionTitle: {
     [Section.accommodation.code]: 'Accommodation',
     [Section.offence_analysis.code]: 'Offence analysis',
@@ -37,6 +42,7 @@ export const english = {
     summary: '%1 summary',
     analysis: '%1 analysis',
     privacy: 'Close other applications',
+    view_all_answers: 'View all answers',
   },
   validation: {
     details_must_be_less_than: 'Details must be %1 characters or less',

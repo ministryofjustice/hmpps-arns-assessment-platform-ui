@@ -6,6 +6,7 @@ import { saveCurrentStepAnswers } from './assessment/saveCurrentStepAnswers'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
 import { setPrivacyAccepted } from './session/setPrivacyAccepted'
+import { setViewAllAnswersBacklink } from './session/setViewAllAnswersBacklink'
 import { StrengthsAndNeedsEffectsDeps } from './types'
 import { setSectionProgress } from './assessment/setSectionProgress'
 import { saveAndClearStaleAnswers } from './assessment/saveAndClearStaleAnswers'
@@ -23,6 +24,7 @@ const strengthsAndNeedsEffectFactories = {
   initializeSessionFromAccess,
   loadSessionData,
   setPrivacyAccepted,
+  setViewAllAnswersBacklink,
   loadAssessment,
   saveCurrentStepAnswers,
   saveAndClearStaleAnswers,
