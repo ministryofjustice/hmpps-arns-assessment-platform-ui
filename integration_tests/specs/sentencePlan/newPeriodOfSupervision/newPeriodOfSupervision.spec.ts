@@ -80,6 +80,23 @@ test.describe('New period of supervision', () => {
 
       await expect(planOverviewPage.removedGoalsTab).not.toBeVisible()
     })
+
+    test('Print all goals button is NOT displayed in draft state', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+
+      // Auto-removed goals only reappear once the plan is agreed, so there is nothing to print yet
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(autoRemovedGoals(3)).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      await expect(planOverviewPage.printAllGoalsButton).toHaveCount(0)
+    })
   })
 
   test.describe('After agreement', () => {
@@ -139,7 +156,7 @@ test.describe('New period of supervision', () => {
 
       // Navigate to removed goals tab
       await planOverviewPage.removedGoalsTab.click()
-      await expect(page).toHaveURL(/type=removed/)
+      await expect(page).toHaveURL(/goalStatusTab=removed/)
 
       // Verify auto-removed goals are displayed
       const goalCount = await planOverviewPage.getGoalCount()
@@ -175,7 +192,7 @@ test.describe('New period of supervision', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.removedGoalsTab.click()
-      await expect(page).toHaveURL(/type=removed/)
+      await expect(page).toHaveURL(/goalStatusTab=removed/)
 
       // Removed goals should show "View details" not "Update"
       const hasViewDetails = await planOverviewPage.goalCardHasViewDetailsLink(0)

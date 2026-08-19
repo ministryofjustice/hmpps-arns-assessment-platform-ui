@@ -66,6 +66,7 @@ services:
     image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:aap-san
     depends_on:
       - postgres
+      - localstack
     networks:
       - hmpps
     healthcheck:
@@ -88,6 +89,8 @@ services:
       CLIENT_SECRET: clientsecret
       PLAN_TYPE: AAP_PLAN
       ASSESSMENT_TYPE: AAP_SAN
+      HMPPS_SQS_PROVIDER: localstack
+      HMPPS_SQS_LOCALSTACK_URL: http://localstack:4566
 
   arns-handover:
     image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:latest

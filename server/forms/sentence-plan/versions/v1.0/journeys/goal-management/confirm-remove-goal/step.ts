@@ -50,7 +50,7 @@ export const removeGoalStep = step({
           }),
         ],
         // Redirect to plan overview with "Removed goals" tab active
-        next: [redirect({ goto: '../../plan/overview?type=removed' })],
+        next: [redirect({ goto: '../../plan/overview?goalStatusTab=removed' })],
       },
     }),
   ],
