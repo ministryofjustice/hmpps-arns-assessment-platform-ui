@@ -1,11 +1,11 @@
-import {Answer, Condition, Self, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKCharacterCount, GovUKRadioInput,} from '@ministryofjustice/hmpps-forge/govuk-components'
-import {Question} from '../../constants/question'
-import {commonContentFor} from '../../../../locales'
-import {contentFor} from '../../locales'
-import {CommonOption} from '../../../../constants/commonOption'
-import {CaseData} from "../../../../constants/formVersion";
-import {Option} from "../../constants/option";
+import { Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKCharacterCount, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Question } from '../../constants/question'
+import { commonContentFor } from '../../../../locales'
+import { contentFor } from '../../locales'
+import { CommonOption } from '../../../../constants/commonOption'
+import { CaseData } from '../../../../constants/formVersion'
+import { Option } from '../../constants/option'
 
 // Leader of current index offence group
 
@@ -13,9 +13,7 @@ const offenceAnalysisLeaderDetails = GovUKCharacterCount({
   code: Question.offence_analysis_leader_details,
   label: commonContentFor('required_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.offence_analysis_leader).match(
-    Condition.Equals(CommonOption.yes),
-  ),
+  dependentWhen: Answer(Question.offence_analysis_leader).match(Condition.Equals(CommonOption.yes)),
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(4000)),
@@ -32,15 +30,13 @@ const noOffenceAnalysisLeaderDetails = GovUKCharacterCount({
   code: Question.no_offence_analysis_leader_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.offence_analysis_leader).match(
-    Condition.Equals(CommonOption.no),
-  ),
+  dependentWhen: Answer(Question.offence_analysis_leader).match(Condition.Equals(CommonOption.no)),
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(4000)),
       message: commonContentFor('validation.details_must_be_less_than', 4000),
     }),
-  ]
+  ],
 })
 
 export const offenceAnalysisLeader = GovUKRadioInput({
@@ -55,12 +51,12 @@ export const offenceAnalysisLeader = GovUKRadioInput({
     {
       value: CommonOption.yes,
       text: commonContentFor('option.YES'),
-      block: offenceAnalysisLeaderDetails
+      block: offenceAnalysisLeaderDetails,
     },
     {
       value: CommonOption.no,
       text: commonContentFor('option.NO'),
-      block: noOffenceAnalysisLeaderDetails
+      block: noOffenceAnalysisLeaderDetails,
     },
   ],
   validWhen: [
@@ -77,9 +73,7 @@ const offenceAnalysisOnVictimsDetails = GovUKCharacterCount({
   code: Question.offence_analysis_impact_on_victims_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.offence_analysis_impact_on_victims).match(
-    Condition.Equals(CommonOption.yes),
-  ),
+  dependentWhen: Answer(Question.offence_analysis_impact_on_victims).match(Condition.Equals(CommonOption.yes)),
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
@@ -92,9 +86,7 @@ const offenceAnalysisNoImpactOnVictimsDetails = GovUKCharacterCount({
   code: Question.no_offence_analysis_impact_on_victims_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.offence_analysis_impact_on_victims).match(
-    Condition.Equals(CommonOption.no),
-  ),
+  dependentWhen: Answer(Question.offence_analysis_impact_on_victims).match(Condition.Equals(CommonOption.no)),
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
@@ -115,12 +107,12 @@ export const offenceImpactOnVictims = GovUKRadioInput({
     {
       value: CommonOption.yes,
       text: commonContentFor('option.YES'),
-      block: offenceAnalysisOnVictimsDetails
+      block: offenceAnalysisOnVictimsDetails,
     },
     {
       value: CommonOption.no,
       text: commonContentFor('option.NO'),
-      block: offenceAnalysisNoImpactOnVictimsDetails
+      block: offenceAnalysisNoImpactOnVictimsDetails,
     },
   ],
   validWhen: [
@@ -137,9 +129,7 @@ const offenceAnalysisAcceptResponsibilityDetails = GovUKCharacterCount({
   code: Question.offence_analysis_accept_responsibility_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.offence_analysis_accept_responsibility).match(
-    Condition.Equals(CommonOption.yes),
-  ),
+  dependentWhen: Answer(Question.offence_analysis_accept_responsibility).match(Condition.Equals(CommonOption.yes)),
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
@@ -152,9 +142,7 @@ const noOffenceAnalysisAcceptResponsibilityDetails = GovUKCharacterCount({
   code: Question.no_offence_analysis_accept_responsibility_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.offence_analysis_accept_responsibility).match(
-    Condition.Equals(CommonOption.no),
-  ),
+  dependentWhen: Answer(Question.offence_analysis_accept_responsibility).match(Condition.Equals(CommonOption.no)),
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
@@ -175,12 +163,12 @@ export const offenceAnalysisAcceptResponsibility = GovUKRadioInput({
     {
       value: CommonOption.yes,
       text: commonContentFor('option.YES'),
-      block: offenceAnalysisAcceptResponsibilityDetails
+      block: offenceAnalysisAcceptResponsibilityDetails,
     },
     {
       value: CommonOption.no,
       text: commonContentFor('option.NO'),
-      block: noOffenceAnalysisAcceptResponsibilityDetails
+      block: noOffenceAnalysisAcceptResponsibilityDetails,
     },
   ],
   validWhen: [
@@ -197,9 +185,7 @@ const offenceAnalysisEscalationDetails = GovUKCharacterCount({
   code: Question.offence_analysis_escalation_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.offence_analysis_escalation).match(
-    Condition.Equals(CommonOption.yes),
-  ),
+  dependentWhen: Answer(Question.offence_analysis_escalation).match(Condition.Equals(CommonOption.yes)),
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
@@ -212,9 +198,7 @@ const noOffenceAnalysisEscalationDetails = GovUKCharacterCount({
   code: Question.no_offence_analysis_escalation_details,
   label: commonContentFor('optional_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.offence_analysis_escalation).match(
-    Condition.Equals(CommonOption.no),
-  ),
+  dependentWhen: Answer(Question.offence_analysis_escalation).match(Condition.Equals(CommonOption.no)),
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
@@ -235,12 +219,12 @@ export const offenceAnalysisEscalation = GovUKRadioInput({
     {
       value: CommonOption.yes,
       text: commonContentFor('option.YES'),
-      block: offenceAnalysisEscalationDetails
+      block: offenceAnalysisEscalationDetails,
     },
     {
       value: CommonOption.no,
       text: commonContentFor('option.NO'),
-      block: noOffenceAnalysisEscalationDetails
+      block: noOffenceAnalysisEscalationDetails,
     },
     {
       value: CommonOption.not_applicable,
@@ -271,7 +255,7 @@ const offenceAnalysisPerpetratorOfDomesticAbuseTypeFamilyMemberDetails = GovUKCh
     }),
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: commonContentFor('validation.enter_details')
+      message: commonContentFor('validation.enter_details'),
     }),
   ],
 })
@@ -290,7 +274,7 @@ const offenceAnalysisPerpetratorOfDomesticAbuseTypeIntimatePartnerDetails = GovU
     }),
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: commonContentFor('validation.enter_details')
+      message: commonContentFor('validation.enter_details'),
     }),
   ],
 })
@@ -309,7 +293,7 @@ const offenceAnalysisPerpetratorOfDomesticAbuseTypeFamilyMemberAndPartnerDetails
     }),
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: commonContentFor('validation.enter_details')
+      message: commonContentFor('validation.enter_details'),
     }),
   ],
 })
@@ -320,24 +304,27 @@ export const offenceAnalysisPerpetratorOfDomesticAbuseType = GovUKRadioInput({
     legend: {
       text: contentFor('question.offence_analysis_perpetrator_of_domestic_abuse_type.text'),
     },
-  },items: [
+  },
+  items: [
     {
       value: Option.family_member,
       text: contentFor('option.FAMILY_MEMBER'),
-      block: offenceAnalysisPerpetratorOfDomesticAbuseTypeFamilyMemberDetails
+      block: offenceAnalysisPerpetratorOfDomesticAbuseTypeFamilyMemberDetails,
     },
     {
       value: Option.intimate_partner,
       text: contentFor('option.INTIMATE_PARTNER'),
-      block: offenceAnalysisPerpetratorOfDomesticAbuseTypeIntimatePartnerDetails
+      block: offenceAnalysisPerpetratorOfDomesticAbuseTypeIntimatePartnerDetails,
     },
     {
       value: Option.family_member_and_intimate_partner,
       text: contentFor('option.FAMILY_MEMBER_AND_INTIMATE_PARTNER'),
-      block: offenceAnalysisPerpetratorOfDomesticAbuseTypeFamilyMemberAndPartnerDetails
+      block: offenceAnalysisPerpetratorOfDomesticAbuseTypeFamilyMemberAndPartnerDetails,
     },
   ],
-  dependentWhen: Answer(Question.offence_analysis_perpetrator_of_domestic_abuse).match(Condition.Equals(CommonOption.yes)),
+  dependentWhen: Answer(Question.offence_analysis_perpetrator_of_domestic_abuse).match(
+    Condition.Equals(CommonOption.yes),
+  ),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
@@ -358,7 +345,7 @@ export const offenceAnalysisPerpetratorOfDomesticAbuse = GovUKRadioInput({
     {
       value: CommonOption.yes,
       text: commonContentFor('option.YES'),
-      block: offenceAnalysisPerpetratorOfDomesticAbuseType
+      block: offenceAnalysisPerpetratorOfDomesticAbuseType,
     },
     {
       value: CommonOption.no,
@@ -389,7 +376,7 @@ const offenceAnalysisVictimOfDomesticAbuseTypeFamilyMemberDetails = GovUKCharact
     }),
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: commonContentFor('validation.enter_details')
+      message: commonContentFor('validation.enter_details'),
     }),
   ],
 })
@@ -408,7 +395,7 @@ const offenceAnalysisVictimOfDomesticAbuseTypeIntimatePartnerDetails = GovUKChar
     }),
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: commonContentFor('validation.enter_details')
+      message: commonContentFor('validation.enter_details'),
     }),
   ],
 })
@@ -427,7 +414,7 @@ const offenceAnalysisVictimOfDomesticAbuseTypeFamilyMemberAndPartnerDetails = Go
     }),
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: commonContentFor('validation.enter_details')
+      message: commonContentFor('validation.enter_details'),
     }),
   ],
 })
@@ -438,21 +425,22 @@ export const offenceAnalysisVictimOfDomesticAbuseType = GovUKRadioInput({
     legend: {
       text: contentFor('question.offence_analysis_victim_of_domestic_abuse_type.text'),
     },
-  },items: [
+  },
+  items: [
     {
       value: Option.family_member,
       text: contentFor('option.FAMILY_MEMBER'),
-      block: offenceAnalysisVictimOfDomesticAbuseTypeFamilyMemberDetails
+      block: offenceAnalysisVictimOfDomesticAbuseTypeFamilyMemberDetails,
     },
     {
       value: Option.intimate_partner,
       text: contentFor('option.INTIMATE_PARTNER'),
-      block: offenceAnalysisVictimOfDomesticAbuseTypeIntimatePartnerDetails
+      block: offenceAnalysisVictimOfDomesticAbuseTypeIntimatePartnerDetails,
     },
     {
       value: Option.family_member_and_intimate_partner,
       text: contentFor('option.FAMILY_MEMBER_AND_INTIMATE_PARTNER'),
-      block: offenceAnalysisVictimOfDomesticAbuseTypeFamilyMemberAndPartnerDetails
+      block: offenceAnalysisVictimOfDomesticAbuseTypeFamilyMemberAndPartnerDetails,
     },
   ],
   dependentWhen: Answer(Question.offence_analysis_victim_of_domestic_abuse).match(Condition.Equals(CommonOption.yes)),
@@ -476,7 +464,7 @@ export const offenceAnalysisVictimOfDomesticAbuse = GovUKRadioInput({
     {
       value: CommonOption.yes,
       text: commonContentFor('option.YES'),
-      block: offenceAnalysisVictimOfDomesticAbuseType
+      block: offenceAnalysisVictimOfDomesticAbuseType,
     },
     {
       value: CommonOption.no,
@@ -519,9 +507,7 @@ const offenceAnalysisRiskDetails = GovUKCharacterCount({
   code: Question.offence_analysis_risk_details,
   label: commonContentFor('required_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.offence_analysis_risk).match(
-    Condition.Equals(CommonOption.yes),
-  ),
+  dependentWhen: Answer(Question.offence_analysis_risk).match(Condition.Equals(CommonOption.yes)),
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(4000)),
@@ -529,7 +515,7 @@ const offenceAnalysisRiskDetails = GovUKCharacterCount({
     }),
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: commonContentFor('validation.enter_details')
+      message: commonContentFor('validation.enter_details'),
     }),
   ],
 })
@@ -538,9 +524,7 @@ const noOffenceAnalysisRiskDetails = GovUKCharacterCount({
   code: Question.no_offence_analysis_risk_details,
   label: commonContentFor('required_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.offence_analysis_risk).match(
-    Condition.Equals(CommonOption.no),
-  ),
+  dependentWhen: Answer(Question.offence_analysis_risk).match(Condition.Equals(CommonOption.no)),
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(4000)),
@@ -548,7 +532,7 @@ const noOffenceAnalysisRiskDetails = GovUKCharacterCount({
     }),
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: commonContentFor('validation.enter_details')
+      message: commonContentFor('validation.enter_details'),
     }),
   ],
 })
@@ -565,12 +549,12 @@ export const offenceAnalysisRisk = GovUKRadioInput({
     {
       value: CommonOption.yes,
       text: commonContentFor('option.YES'),
-      block: offenceAnalysisRiskDetails
+      block: offenceAnalysisRiskDetails,
     },
     {
       value: CommonOption.no,
       text: commonContentFor('option.NO'),
-      block: noOffenceAnalysisRiskDetails
+      block: noOffenceAnalysisRiskDetails,
     },
   ],
   validWhen: [

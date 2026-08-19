@@ -1,4 +1,13 @@
-import { Data, Format, Item, Iterator, Loop, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Answer,
+  Condition,
+  Data,
+  Format,
+  Item,
+  Iterator,
+  Loop,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKInsetText, GovUKSummaryList } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CollectionBlock, HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { Question } from '../../constants/question'
@@ -8,6 +17,7 @@ import { victimAge, victimEthnicity, victimSex, victimType } from '../offence-an
 import { Step } from '../../constants/step'
 import { Modal } from '../../../../../../components/modal/modalComponent'
 import { commonContentFor } from '../../../../locales'
+import { Option } from '../../constants/option'
 
 export const victimCards = CollectionBlock({
   collection: Data('victims').each(
@@ -92,5 +102,8 @@ export const victimCards = CollectionBlock({
 
     ),
   ),
-  fallback: [GovUKInsetText({ text: 'There are no victims.' })],
+  fallback: [GovUKInsetText({ text: contentFor('fallback.there_are_no_victims') })],
+  visibleWhen: Answer(Question.offence_analysis_commited_against).match(
+    Condition.Array.Contains(Option.one_or_more_people),
+  ),
 })

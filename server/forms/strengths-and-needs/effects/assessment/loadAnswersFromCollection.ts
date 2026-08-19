@@ -1,10 +1,7 @@
-import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
-import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { Answers } from '../../../../interfaces/aap-api/dataModel'
+import { StrengthsAndNeedsContext } from '../types'
 
 export const loadAnswersFromCollection =
-  (deps: StrengthsAndNeedsEffectsDeps) =>
-  async (context: StrengthsAndNeedsContext, collectionCode: string, collectionName: string) => {
+  () => async (context: StrengthsAndNeedsContext, collectionCode: string, collectionName: string) => {
     const assessment = context.getData('assessment')
     const collections = assessment.collections
     context.setData(

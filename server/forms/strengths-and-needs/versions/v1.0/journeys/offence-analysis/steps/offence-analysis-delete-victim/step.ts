@@ -8,18 +8,11 @@ import {
   submit,
   Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
 import { victimAge, victimEthnicity, victimSex, victimType } from '../offence-analysis-victim/fields'
-import { loadItemFromCollection } from '../../../../../../effects/assessment/loadItemFromCollection'
-
-const saveButton = GovUKButton({
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { saveButton } from '../../../../constants/buttons'
 
 const collectionCode = 'victims'
 const collectionName = 'OFFENCE_ANALYSIS_VICTIM'

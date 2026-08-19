@@ -1,4 +1,4 @@
-import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
+import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import config from '../config'
 import logger from '../../logger'
@@ -25,7 +25,6 @@ export default class AssessmentPlatformApiClient extends RestClient {
    * Throws if the command fails.
    */
   async executeCommand<T extends Commands>(command: T): Promise<CommandResultFor<T>> {
-    const x = JSON.stringify(command)
     const [result] = await this.executeCommands(command)
     return result
   }

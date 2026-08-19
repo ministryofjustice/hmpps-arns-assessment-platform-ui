@@ -1,15 +1,9 @@
 import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { victimAge, victimEthnicity, victimSex, victimType } from './fields'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
-
-const saveButton = GovUKButton({
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { saveButton } from '../../../../constants/buttons'
 
 const collectionName = 'victims'
 const collectionCode = 'OFFENCE_ANALYSIS_VICTIM'

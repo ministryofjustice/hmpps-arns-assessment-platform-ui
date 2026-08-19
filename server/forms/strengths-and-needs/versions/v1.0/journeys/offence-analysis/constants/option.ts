@@ -79,9 +79,9 @@ export const Option = {
   three: 'THREE',
   four: 'FOUR',
   five: 'FIVE',
-  six_to_ten: "SIX_TO_10",
-  eleven_to_fifteen: "ELEVEN_TO_15",
-  more_than_fifteen: "MORE_THAN_15",
+  six_to_ten: 'SIX_TO_10',
+  eleven_to_fifteen: 'ELEVEN_TO_15',
+  more_than_fifteen: 'MORE_THAN_15',
 
   // Domestic abuse type
   family_member: 'FAMILY_MEMBER',

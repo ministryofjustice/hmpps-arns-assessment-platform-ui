@@ -16,7 +16,7 @@ export const updateItemFromCollection =
     const assessment = context.getData('assessment')
     const collections = assessment.collections
 
-    const item = collections.find(collection => collection.name === collectionName).items.at(itemIndex.stringToNumber() - 1)
+    const item = collections.find(collection => collection.name === collectionName).items.at(itemIndex)
 
     const items: Record<string, unknown> = {}
 

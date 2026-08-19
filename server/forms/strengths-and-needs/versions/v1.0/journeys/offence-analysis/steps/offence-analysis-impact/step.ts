@@ -1,21 +1,18 @@
-import {Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKButton} from '@ministryofjustice/hmpps-forge/govuk-components'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
   offenceAnalysisAcceptResponsibility,
   offenceAnalysisEscalation,
-  offenceAnalysisLeader, offenceAnalysisPerpetratorOfDomesticAbuse,
-  offenceAnalysisRisk, offenceAnalysisVictimOfDomesticAbuse,
-  offenceImpactOnVictims, patternsOfOffending,
+  offenceAnalysisLeader,
+  offenceAnalysisPerpetratorOfDomesticAbuse,
+  offenceAnalysisRisk,
+  offenceAnalysisVictimOfDomesticAbuse,
+  offenceImpactOnVictims,
+  patternsOfOffending,
 } from './fields'
-import {Step} from '../../constants/step'
-import {Section, SectionStatus} from '../../../../constants/section'
-
-const saveButton = GovUKButton({
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { Step } from '../../constants/step'
+import { Section, SectionStatus } from '../../../../constants/section'
+import { markAsCompleteButton } from '../../../../constants/buttons'
 
 export const offenceAnalysisImpactStep = step({
   path: `/${Step.offence_analysis_impact.path}`,
@@ -30,7 +27,7 @@ export const offenceAnalysisImpactStep = step({
     offenceAnalysisVictimOfDomesticAbuse,
     patternsOfOffending,
     offenceAnalysisRisk,
-    saveButton,
+    markAsCompleteButton,
   ],
   onSubmission: [
     submit({

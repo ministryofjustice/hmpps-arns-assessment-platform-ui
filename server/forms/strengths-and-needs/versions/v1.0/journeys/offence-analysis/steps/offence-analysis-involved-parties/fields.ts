@@ -1,10 +1,10 @@
-import {Answer, Condition, Self, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {GovUKRadioInput,} from '@ministryofjustice/hmpps-forge/govuk-components'
-import {Question} from '../../constants/question'
-import {Option} from '../../constants/option'
-import {commonContentFor} from '../../../../locales'
-import {contentFor} from '../../locales'
-import {CommonOption} from '../../../../constants/commonOption'
+import { Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Question } from '../../constants/question'
+import { Option } from '../../constants/option'
+import { commonContentFor } from '../../../../locales'
+import { contentFor } from '../../locales'
+import { CommonOption } from '../../../../constants/commonOption'
 
 export const offenceAnalysisWhoWasTheOffenceCommittedAgainst = GovUKRadioInput({
   code: Question.offence_analysis_who_was_the_victim,

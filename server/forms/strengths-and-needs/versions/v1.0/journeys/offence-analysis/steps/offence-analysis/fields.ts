@@ -13,9 +13,9 @@ import { CommonOption } from '../../../../constants/commonOption'
 // --- Index Offence Description ---
 
 export const indexOffenceDescription = GovUKCharacterCount({
-  code: Question.offence_analysis_index_offence_description,
+  code: Question.offence_analysis_description_of_offence,
   label: {
-    text: contentFor('question.offence_analysis_index_offence_description.text'),
+    text: contentFor('question.offence_analysis_description_of_offence.text'),
     classes: 'govuk-fieldset__legend--m',
   },
   maxLength: 4000,
@@ -34,10 +34,10 @@ export const indexOffenceDescription = GovUKCharacterCount({
 // --- Offence Elements ---
 
 const victimTargetedDetails = GovUKCharacterCount({
-  code: Question.offence_analysis_victim_targeted_details,
+  code: Question.offence_victim_details,
   label: commonContentFor('required_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.offence_analysis_offence_elements).match(
+  dependentWhen: Answer(Question.offence_analysis_elements).match(
     Condition.Array.Contains(Option.victim_targeted),
   ),
   validWhen: [
@@ -53,63 +53,63 @@ const victimTargetedDetails = GovUKCharacterCount({
 })
 
 const weaponDetails = GovUKTextInput({
-  code: Question.offence_analysis_weapon_details,
+  code: Question.offence_weapon_details,
   label: {
-    text: contentFor('question.offence_analysis_weapon_details.text'),
+    text: contentFor('question.offence_weapon_details.text'),
   },
-  dependentWhen: Answer(Question.offence_analysis_offence_elements).match(Condition.Array.Contains(Option.weapon)),
+  dependentWhen: Answer(Question.offence_analysis_elements).match(Condition.Array.Contains(Option.weapon)),
   validWhen: [
     validation({
       condition: Self().match(Condition.String.HasMaxLength(2000)),
-      message: contentFor('question.offence_analysis_weapon_details.validation'),
+      message: contentFor('question.offence_weapon_details.validation'),
     }),
   ],
 })
 
 export const offenceElements = GovUKCheckboxInput({
-  code: Question.offence_analysis_offence_elements,
+  code: Question.offence_analysis_elements,
   multiple: true,
   fieldset: {
     legend: {
-      text: contentFor('question.offence_analysis_offence_elements.text'),
+      text: contentFor('question.offence_analysis_elements.text'),
       classes: 'govuk-fieldset__legend--m',
     },
   },
-  hint: contentFor('question.offence_analysis_offence_elements.hint'),
+  hint: contentFor('question.offence_analysis_elements.hint'),
   items: [
-    { value: Option.arson, text: contentFor('question.offence_analysis_offence_elements.option.ARSON') },
+    { value: Option.arson, text: contentFor('question.offence_analysis_elements.option.ARSON') },
     {
       value: Option.domestic_abuse,
-      text: contentFor('question.offence_analysis_offence_elements.option.DOMESTIC_ABUSE'),
+      text: contentFor('question.offence_analysis_elements.option.DOMESTIC_ABUSE'),
     },
     {
       value: Option.excessive_violence_sadistic,
-      text: contentFor('question.offence_analysis_offence_elements.option.EXCESSIVE_VIOLENCE_SADISTIC'),
+      text: contentFor('question.offence_analysis_elements.option.EXCESSIVE_VIOLENCE_SADISTIC'),
     },
     {
       value: Option.hatred_identifiable_groups,
-      text: contentFor('question.offence_analysis_offence_elements.option.HATRED_IDENTIFIABLE_GROUPS'),
+      text: contentFor('question.offence_analysis_elements.option.HATRED_IDENTIFIABLE_GROUPS'),
     },
     {
       value: Option.physical_damage_property,
-      text: contentFor('question.offence_analysis_offence_elements.option.PHYSICAL_DAMAGE_PROPERTY'),
+      text: contentFor('question.offence_analysis_elements.option.PHYSICAL_DAMAGE_PROPERTY'),
     },
     {
       value: Option.sexual_element,
-      text: contentFor('question.offence_analysis_offence_elements.option.SEXUAL_ELEMENT'),
+      text: contentFor('question.offence_analysis_elements.option.SEXUAL_ELEMENT'),
     },
     {
       value: Option.victim_targeted,
-      text: contentFor('question.offence_analysis_offence_elements.option.VICTIM_TARGETED'),
+      text: contentFor('question.offence_analysis_elements.option.VICTIM_TARGETED'),
       block: victimTargetedDetails,
     },
     {
       value: Option.violence_threat_coercion,
-      text: contentFor('question.offence_analysis_offence_elements.option.VIOLENCE_THREAT_COERCION'),
+      text: contentFor('question.offence_analysis_elements.option.VIOLENCE_THREAT_COERCION'),
     },
     {
       value: Option.weapon,
-      text: contentFor('question.offence_analysis_offence_elements.option.WEAPON'),
+      text: contentFor('question.offence_analysis_elements.option.WEAPON'),
       block: weaponDetails,
     },
     { divider: 'or' },
@@ -122,7 +122,7 @@ export const offenceElements = GovUKCheckboxInput({
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
-      message: contentFor('question.offence_analysis_offence_elements.validation'),
+      message: contentFor('question.offence_analysis_elements.validation'),
     }),
   ],
 })
@@ -151,7 +151,7 @@ export const whyOffenceHappened = GovUKCharacterCount({
 // --- Motivations ---
 
 const motivationsOtherDetails = GovUKCharacterCount({
-  code: 'offence_analysis_motivations_other_details',
+  code: Question.offence_analysis_motivations_other_details,
   label: commonContentFor('required_details'),
   maxLength: 200,
   dependentWhen: Answer(Question.offence_analysis_motivations).match(Condition.Array.Contains(CommonOption.other)),

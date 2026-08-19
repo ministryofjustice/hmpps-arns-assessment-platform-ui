@@ -1,24 +1,12 @@
 import type { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
 import { User } from '../../../interfaces/user'
-import {
-  CommandResult,
-  CreateAssessmentCommandResult,
-  CreateCollectionCommandResult,
-} from '../../../interfaces/aap-api/commandResult'
-import {
-  CreateAssessmentCommand,
-  CreateCollectionCommand,
-  UpdateAssessmentAnswersCommand,
-  UpdateAssessmentPropertiesCommand,
-} from '../../../interfaces/aap-api/command'
-import { AssessmentVersionQuery } from '../../../interfaces/aap-api/query'
 import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryResult'
 import { AssessmentIdentifiers } from '../../../interfaces/aap-api/identifier'
 import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessSessionDetails } from '../../access/effects/types'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { AssessmentPlatformApiClient } from '../../../data'
-import { Collection, CollectionItem } from '../../../interfaces/aap-api/dataModel'
+import { CollectionItem } from '../../../interfaces/aap-api/dataModel'
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers

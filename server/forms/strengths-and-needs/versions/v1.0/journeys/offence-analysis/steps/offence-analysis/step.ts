@@ -1,5 +1,13 @@
-import {Answer, Condition, Post, redirect, step, submit} from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import {
+  access,
+  and,
+  Answer,
+  Condition,
+  Post,
+  redirect,
+  step,
+  submit,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import {
   indexOffenceDescription,
@@ -10,14 +18,10 @@ import {
 } from './fields'
 import { Step } from '../../constants/step'
 import { Section, SectionStatus } from '../../../../constants/section'
-import {Question} from "../../constants/question";
-import {Option} from "../../constants/option";
-
-const saveButton = GovUKButton({
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { Question } from '../../constants/question'
+import { Option } from '../../constants/option'
+import { collectionCode, collectionName } from '../../constants/constants'
+import { saveButton } from '../../../../constants/buttons'
 
 export const offenceAnalysisStep = step({
   path: `/${Step.offence_analysis.path}`,
@@ -31,9 +35,17 @@ export const offenceAnalysisStep = step({
     offenceCommitedAgainst,
     saveButton,
   ],
+  onAccess: [
+    access({
+      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(collectionCode, collectionName)],
+    }),
+  ],
   onSubmission: [
     submit({
-      when: Post('action').match(Condition.Equals('save')),
+      when: and(
+        Answer(Question.offence_analysis_commited_against).match(Condition.Array.Contains(Option.one_or_more_people)),
+        Post('action').match(Condition.Equals('save')),
+      ),
       validate: true,
       onValid: {
         effects: [
@@ -42,9 +54,21 @@ export const offenceAnalysisStep = step({
         ],
         next: [
           redirect({
-            when: Answer(Question.offence_analysis_commited_against).match(Condition.Array.Contains(Option.one_or_more_people)),
             goto: Step.offence_analysis_victim.path,
           }),
+        ],
+      },
+    }),
+    submit({
+      when: Post('action').match(Condition.Equals('save')),
+      validate: true,
+      onValid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis.statusKey, SectionStatus.incomplete),
+          StrengthsAndNeedsEffects.emptyCollection(collectionName),
+        ],
+        next: [
           redirect({
             goto: Step.offence_analysis_involved_parties.path,
           }),

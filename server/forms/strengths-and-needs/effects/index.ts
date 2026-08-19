@@ -13,6 +13,7 @@ import { loadAnswersFromCollection } from './assessment/loadAnswersFromCollectio
 import { loadItemFromCollection } from './assessment/loadItemFromCollection'
 import { updateItemFromCollection } from './assessment/updateItemFromCollection'
 import { removeItemFromCollection } from './assessment/removeItemFromCollection'
+import { emptyCollection } from './assessment/emptyCollection'
 
 type EffectShapesFromFactories<TFactories> = {
   [K in keyof TFactories]: TFactories[K] extends (deps: infer _Deps) => infer Evaluator
@@ -31,6 +32,7 @@ const strengthsAndNeedsEffectFactories = {
   addItemToCollection,
   updateItemFromCollection,
   removeItemFromCollection,
+  emptyCollection,
   loadItemFromCollection,
   loadAnswersFromCollection,
   deriveDrugCategories,

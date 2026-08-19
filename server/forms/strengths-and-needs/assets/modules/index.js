@@ -1,7 +1,7 @@
 import '../../components/modal/modal'
-;
 
-(function (global) {
+/* eslint-disable */
+;(function (global) {
 
   var GOVUK = global.GOVUK || {}
   GOVUK.Modules = GOVUK.Modules || {}
