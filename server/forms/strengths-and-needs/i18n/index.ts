@@ -50,5 +50,5 @@ export const getDisplayTextForItem = (
         Answer(fieldCode).match(Condition.Equals(item.value)),
       ),
     ),
-    size: options.size,
+    ...(options.size && { size: options.size }),
   })

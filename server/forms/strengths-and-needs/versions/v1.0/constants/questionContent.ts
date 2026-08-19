@@ -460,7 +460,13 @@ const answeredWithin = (content: QuestionContent) => or(questionsWithin(content)
 // A question's answer, and the answers to everything its options revealed.
 const answerBlocksOf = (content: QuestionContent, size?: 's'): BlockDefinition[] => {
   if (!isOptioned(content)) {
-    return [GovUKBody({ text: answerTextOf(content), size, visibleWhen: answeredWithin(content) })]
+    return [
+      GovUKBody({
+        text: answerTextOf(content),
+        visibleWhen: answeredWithin(content),
+        ...(size && { size }),
+      }),
+    ]
   }
 
   return optionsOf(content).flatMap(option => [
