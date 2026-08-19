@@ -31,7 +31,7 @@ import {
   radioField,
   requiredValidationOf,
   revealedQuestion,
-
+  SummaryRow,
 } from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { SANGenerators } from '../../../../generators'
@@ -48,7 +48,6 @@ import {
   optionalDetails,
   requiredDetails,
   summaryRow,
-  SummaryRow,
   textSummaryRow,
   yesNo,
 } from '../../constants/questionContent'
@@ -204,7 +203,6 @@ export const drugsInjectedMonths = questionTemplate({
     field: (content, parent) =>
       GovUKCheckboxInput({
         code: content.code,
-        multiple: true,
         fieldset: {
           legend: {
             text: content.text,

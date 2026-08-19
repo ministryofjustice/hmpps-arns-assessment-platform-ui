@@ -1,4 +1,4 @@
-import { isOptioned, isQuestionOption, QuestionContent, QuestionFormat, stableQuestionsOf } from './questionContent'
+import { isOptioned, isQuestionOption, QuestionFormat, SectionDefinition, stableQuestionsOf } from './questionContent'
 
 interface FormConfigOption {
   value?: string
@@ -11,21 +11,12 @@ interface FormConfigField {
   section?: string
 }
 
-interface Question {
-  content: QuestionContent
-}
-
-interface Section {
-  code: string
-  fields: Record<string, Question>
-}
-
 export class FormConfig {
   version: string
 
   fields: Record<string, FormConfigField>
 
-  constructor(version: string, sections: Section[]) {
+  constructor(version: string, sections: SectionDefinition[]) {
     this.version = version
     this.fields = {}
 

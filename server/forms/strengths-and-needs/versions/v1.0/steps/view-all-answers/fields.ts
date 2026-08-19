@@ -1,7 +1,7 @@
 import { Answer, Condition, Data, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { BlockDefinition, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKHeading, GovUKSummaryList, GovUKTag } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { answerRow, questionsWithin } from '../../constants/questionContent'
+import { answerRow, questionsWithin } from '../../../../constants/questionContent'
 import { Section, SectionComplete } from '../../constants/section'
 import { commonContentFor } from '../../locales'
 import { analysisOf, Answerable, questionsOf, viewAllAnswersSections, ViewAllAnswersSection } from './sections'
