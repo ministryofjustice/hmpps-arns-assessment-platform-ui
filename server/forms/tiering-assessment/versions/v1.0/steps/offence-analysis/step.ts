@@ -8,7 +8,7 @@ export const offenceAnalysisStep = step({
   title: 'Offence analysis',
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
     }),
   ],
   blocks: [offenceElementsField, evidenceOfDomesticAbuseField, continueButton],
