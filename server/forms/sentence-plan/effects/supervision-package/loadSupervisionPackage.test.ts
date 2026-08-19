@@ -91,10 +91,9 @@ describe('loadSupervisionPackage', () => {
     expect(deps.mpopComponents.getTierDetails).toHaveBeenCalledWith(expect.anything(), 'X123456')
     expect(context.setData).toHaveBeenCalledWith('supervisionPackageDetails', supervisionPackageDetails)
     expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
-    expect(context.setData).toHaveBeenCalledWith('supervisionPackageStatus', 'success')
   })
 
-  it('should set an unavailable status and log at info when the person has no package yet', async () => {
+  it('should leave package details unset and log at info when the person has no package yet', async () => {
     // Arrange
     const context = createMockContext()
     ;(deps.mpopComponents.getSupervisionPackageFrontendContext as jest.Mock).mockResolvedValue(null)
@@ -104,7 +103,7 @@ describe('loadSupervisionPackage', () => {
 
     // Assert
     expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageDetails', expect.anything())
-    expect(context.setData).toHaveBeenCalledWith('supervisionPackageStatus', 'unavailable')
+    expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageError', expect.anything())
     expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
     expect(mockLogger.info).toHaveBeenCalledWith({ crn: 'X123456' }, 'No supervision package for this person yet')
   })
@@ -141,7 +140,7 @@ describe('loadSupervisionPackage', () => {
 
     // Assert
     expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageDetails', expect.anything())
-    expect(context.setData).toHaveBeenCalledWith('supervisionPackageStatus', 'error')
+    expect(context.setData).toHaveBeenCalledWith('supervisionPackageError', true)
     // Tier is settled independently, so a package failure does not lose the tier
     expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
   })

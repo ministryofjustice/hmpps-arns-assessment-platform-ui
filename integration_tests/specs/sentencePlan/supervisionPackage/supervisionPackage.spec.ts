@@ -163,6 +163,6 @@ test.describe('Supervision package', () => {
     await supervisionPackageLink.click()
 
     await expect(planOverviewPage.pageHeading).toHaveText('Supervision package')
-    await expect(page.getByText(/currently unavailable while the package is being recalculated/i)).toBeVisible()
+    await expect(page.getByText(/problem getting the supervision package information/i)).toBeVisible()
   })
 })

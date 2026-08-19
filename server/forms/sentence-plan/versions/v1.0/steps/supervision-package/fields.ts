@@ -11,12 +11,9 @@ export const supervisionPackageSection = SupervisionPackage({
   supervisionPackageDetails: Data('supervisionPackageDetails'),
 })
 
-/**
- * Shown when the supervision package could not be loaded (currently the 500/503 error path).
- * The page is only reachable when the package can be displayed OR it errored, so the component
- * and this message are the two mutually exclusive states of the page.
- */
+// Shown on a load failure (500/503). We use our own message because MPoP's "unavailable"
+// component needs case context we don't have when the call fails.
 export const supervisionPackageErrorMessage = GovUKWarningText({
   visibleWhen: hasSupervisionPackageError,
-  text: 'Supervision package information is currently unavailable while the package is being recalculated.',
+  text: 'There is a problem getting the supervision package information. Reload the page or try again later.',
 })

@@ -54,7 +54,7 @@ export const canDisplaySupervisionPackage = and(isSupervisionPackageEnabled, isS
  * True when loading the supervision package failed (500/503). Drives showing an error message
  * rather than hiding the tab.
  */
-export const hasSupervisionPackageError = Data('supervisionPackageStatus').match(Condition.Equals('error'))
+export const hasSupervisionPackageError = Data('supervisionPackageError').match(Condition.Equals(true))
 
 /**
  * True when the tab should be reachable: the component can be displayed, OR there was an error

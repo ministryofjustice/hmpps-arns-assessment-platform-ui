@@ -243,7 +243,6 @@ export type SupervisionPackageDetails = NonNullable<
   Awaited<ReturnType<MPoPComponents['getSupervisionPackageFrontendContext']>>
 >
 
-export type SupervisionPackageStatus = 'success' | 'unavailable' | 'error'
 export type TierDetailsResponse = Awaited<ReturnType<MPoPComponents['getTierDetails']>>
 export type TierCalculation = TierDetailsResponse['calculation']
 
@@ -408,9 +407,10 @@ export interface SentencePlanData extends Record<string, unknown> {
   privacyAccepted?: boolean
 
   // Supervision package page (from MPoP components client)
-  // supervisionPackageDetails now bundles the next appointment inside the frontend context
   supervisionPackageDetails: SupervisionPackageDetails | undefined
-  supervisionPackageStatus: SupervisionPackageStatus | undefined
+  // True when loading the supervision package failed (500/503) — drives the error message.
+  // Unset otherwise; a missing package or non-renderable phase hides the tab via the phase check.
+  supervisionPackageError: boolean | undefined
   tierCalculation: TierCalculation | undefined
 
   // all assessment areas grouped by scoring category (for about page; from coordinator API)

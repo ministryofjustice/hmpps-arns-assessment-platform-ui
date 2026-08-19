@@ -1,6 +1,6 @@
 import { asSystem } from '@ministryofjustice/hmpps-rest-client'
 import logger from '../../../../../logger'
-import { SentencePlanContext, SentencePlanEffectsDeps, SupervisionPackageStatus } from '../types'
+import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 
 /**
  * A 404 means the person has no confirmed tier yet — a normal state the component
@@ -53,18 +53,14 @@ export const loadSupervisionPackage = (deps: SentencePlanEffectsDeps) => async (
     logger.error({ err: tierResult.reason, crn }, 'Failed to fetch tier details from MPoP Components API')
   }
 
-  let status: SupervisionPackageStatus
-
+  // Only a failure needs to be recorded (it drives the error message). A missing package or a
+  // non-renderable phase hides the tab via the phase check, so nothing is needed for those.
   if (packageResult.status === 'rejected') {
-    status = 'error'
+    context.setData('supervisionPackageError', true)
     logger.error({ err: packageResult.reason, crn }, 'Failed to load supervision package')
   } else if (packageResult.value) {
-    status = 'success'
     context.setData('supervisionPackageDetails', packageResult.value)
   } else {
-    status = 'unavailable'
     logger.info({ crn }, 'No supervision package for this person yet')
   }
-
-  context.setData('supervisionPackageStatus', status)
 }
