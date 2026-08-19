@@ -173,6 +173,17 @@ describe('view all answers', () => {
     ])
   })
 
+  it('shows a custom drug under the name it was given', async () => {
+    const result = await renderPage({
+      drug_use: 'YES',
+      select_misused_drugs: ['OTHER_DRUG'],
+      other_drug_name: 'Ketamine',
+      drug_last_used_other_drug: 'LAST_SIX',
+    })
+
+    expect(bodyText(result)).toContain('Ketamine')
+  })
+
   it('shows a date as it reads rather than as it is stored', async () => {
     const result = await renderPage({
       current_accommodation: 'TEMPORARY',

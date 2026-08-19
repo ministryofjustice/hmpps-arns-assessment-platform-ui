@@ -279,7 +279,7 @@ const drugUse = question({
 
 // "Other" is a placeholder on the drug list; the real name was typed in.
 const drugName = (drugValue: string) => {
-  if (drugValue === CommonOption.other) {
+  if (drugValue === Option.other_drug) {
     return Answer(Question.other_drug_name)
   }
 
