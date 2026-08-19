@@ -3,6 +3,7 @@ import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffec
 import {
   CurrentRelationshipStatus,
   MotivationLevel,
+  PREVIOUS_CONVICTIONS,
   PreviousConviction,
   ProblemLevel,
   RiskScoreInput,
@@ -66,7 +67,7 @@ export class RiskActuarialService {
       temperControl: this.parseProblemLevel(context.getAnswer('temper-control')),
       impulsivityProblems: this.parseProblemLevel(context.getAnswer('impulsivity-problems')),
       proCriminalAttitudes: this.parseProblemLevel(context.getAnswer('pro-criminal-attitudes')),
-      previousConvictions: this.parsePreviousConvictions(this.parseString(context.getAnswer('previous-convictions'))),
+      previousConvictions: this.parsePreviousConvictions(context.getAnswer('previous-convictions') as string[]),
     }
   }
 
@@ -223,25 +224,12 @@ export class RiskActuarialService {
     return this.parseProblemLevel('SIGNIFICANT_PROBLEMS')
   }
 
-  private parsePreviousConvictions(previousConvictions: string): PreviousConviction[] {
-    if (previousConvictions === undefined || previousConvictions === null || previousConvictions.trim() === '')
-      return null
+  private parsePreviousConvictions(previousConvictions: string[] | undefined | null): PreviousConviction[] | null {
+    if (previousConvictions === undefined || previousConvictions === null) return null
 
-    const validPreviousConvictions = new Set<string>([
-      'HOMICIDE',
-      'WOUNDING_GBH',
-      'KIDNAPPING',
-      'FIREARMS',
-      'ROBBERY',
-      'AGGRAVATED_BURGLARY',
-      'WEAPON',
-      'CRIMINAL_DAMAGE',
-      'ARSON',
-    ])
+    const validPreviousConvictions: PreviousConviction[] = previousConvictions
+      .filter((item): item is PreviousConviction => (PREVIOUS_CONVICTIONS as readonly string[]).includes(item))
 
-    return previousConvictions
-      .split(',')
-      .map(item => item.trim())
-      .filter((item): item is PreviousConviction => validPreviousConvictions.has(item))
+    return validPreviousConvictions.length > 0 ? validPreviousConvictions : null
   }
 }

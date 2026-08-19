@@ -6,16 +6,18 @@ export type CurrentRelationshipStatus =
   | 'NOT_IN_RELATIONSHIP'
   | 'IN_RELATIONSHIP_LIVING_TOGETHER'
   | 'IN_RELATIONSHIP_NOT_LIVING_TOGETHER'
-export type PreviousConviction =
-  | 'HOMICIDE'
-  | 'WOUNDING_GBH'
-  | 'KIDNAPPING'
-  | 'FIREARMS'
-  | 'ROBBERY'
-  | 'AGGRAVATED_BURGLARY'
-  | 'WEAPON'
-  | 'CRIMINAL_DAMAGE'
-  | 'ARSON'
+export const PREVIOUS_CONVICTIONS = [
+  'HOMICIDE',
+  'WOUNDING_GBH',
+  'KIDNAPPING',
+  'FIREARMS',
+  'ROBBERY',
+  'AGGRAVATED_BURGLARY',
+  'WEAPON',
+  'CRIMINAL_DAMAGE',
+  'ARSON',
+] as const
+export type PreviousConviction = (typeof PREVIOUS_CONVICTIONS)[number]
 export type SupervisionStatus = 'CUSTODY' | 'COMMUNITY' | 'REMAND'
 
 export interface RiskScores {

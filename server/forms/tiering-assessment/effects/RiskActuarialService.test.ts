@@ -316,7 +316,7 @@ describe('RiskActuarialService', () => {
       'temper-control': 'SOME_PROBLEMS',
       'impulsivity-problems': 'NO_PROBLEMS',
       'pro-criminal-attitudes': 'SIGNIFICANT_PROBLEMS',
-      'previous-convictions': 'FIREARMS,ROBBERY,WEAPON',
+      'previous-convictions': ['FIREARMS', 'ROBBERY', 'WEAPON'],
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -810,25 +810,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should correctly parse a empty valid conviction', async () => {
-    const answers: Record<string, unknown> = {
-      'previous-convictions': '',
-    }
-
-    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
-
-    await service.calculateAndSaveScores(mockContext)
-
-    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
-      expect.objectContaining({
-        previousConvictions: null,
-      }),
-    )
-  })
-
   it('should correctly parse a single valid conviction', async () => {
     const answers: Record<string, unknown> = {
-      'previous-convictions': 'CRIMINAL_DAMAGE',
+      'previous-convictions': ['CRIMINAL_DAMAGE'],
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -844,8 +828,17 @@ describe('RiskActuarialService', () => {
 
   it('should parse multiple valid convictions', async () => {
     const answers: Record<string, unknown> = {
-      'previous-convictions':
-        'HOMICIDE,WOUNDING_GBH,KIDNAPPING,FIREARMS,ROBBERY,AGGRAVATED_BURGLARY,WEAPON,CRIMINAL_DAMAGE,ARSON',
+      'previous-convictions': [
+        'HOMICIDE',
+        'WOUNDING_GBH',
+        'KIDNAPPING',
+        'FIREARMS',
+        'ROBBERY',
+        'AGGRAVATED_BURGLARY',
+        'WEAPON',
+        'CRIMINAL_DAMAGE',
+        'ARSON',
+      ],
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -869,9 +862,15 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should ignore consecutive or trailing empty comma segments', async () => {
+  it('should ignore invalid previous convictions', async () => {
     const answers: Record<string, unknown> = {
-      'previous-convictions': ',KIDNAPPING,,WEAPON,,',
+      'previous-convictions': [
+        'WOUNDING_GBH',
+        'RAPE_OR_SERIOUS_SEXUAL_OFFENCE',
+        'WEAPON',
+        'KIDNAPPING',
+        'OTHER_SERIOUS_OFFENCE',
+      ],
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -880,7 +879,23 @@ describe('RiskActuarialService', () => {
 
     expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
       expect.objectContaining({
-        previousConvictions: ['KIDNAPPING', 'WEAPON'],
+        previousConvictions: ['WOUNDING_GBH', 'WEAPON', 'KIDNAPPING'],
+      }),
+    )
+  })
+
+  it('should correctly parse null for a list of invalid previous convictions', async () => {
+    const answers: Record<string, unknown> = {
+      'previous-convictions': ['SEXUAL_OFFENCE_AGAINST_CHILD', 'RACIAL_OFFENCE'],
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        previousConvictions: null,
       }),
     )
   })

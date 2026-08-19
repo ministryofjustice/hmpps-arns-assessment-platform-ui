@@ -18,15 +18,15 @@ export const previousConvictionsField = GovUKCheckboxInput({
       text: 'Wounding or GBH',
     },
     {
-      value: '',
+      value: 'RAPE_OR_SERIOUS_SEXUAL_OFFENCE',
       text: 'Rape or serious sexual offence against an adult',
     },
     {
-      value: '',
+      value: 'SEXUAL_OFFENCE_AGAINST_CHILD',
       text: 'Any sexual offence against a child',
     },
     {
-      value: '',
+      value: 'OTHER_OFFENCE_AGAINST_CHILD',
       text: 'Any other offence against a child',
     },
     {
@@ -46,7 +46,7 @@ export const previousConvictionsField = GovUKCheckboxInput({
       text: 'Arson',
     },
     {
-      value: '',
+      value: 'RACIAL_OFFENCE',
       text: 'Racially motivated or racially aggravated offence',
     },
     {
@@ -58,11 +58,11 @@ export const previousConvictionsField = GovUKCheckboxInput({
       text: 'Robbery',
     },
     {
-      value: '',
+      value: 'OTHER_SERIOUS_OFFENCE',
       text: 'Any other serious offence (for example, blackmail, harassment, stalking, indecent images of children, child neglect or abduction)',
     },
     {
-      value: '',
+      value: 'OFFENCE_COMMITTED_IN_CUSTODY',
       text: 'Any offence committed in custody',
     },
     {
@@ -73,7 +73,7 @@ export const previousConvictionsField = GovUKCheckboxInput({
       divider: 'or',
     },
     {
-      value: '',
+      value: 'NA',
       text: 'None of these offences',
       behaviour: 'exclusive',
     },
