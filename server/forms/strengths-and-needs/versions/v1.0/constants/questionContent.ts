@@ -5,7 +5,6 @@ import {
   Condition,
   not,
   or,
-  PipelineExpr,
   PredicateExpr,
   Self,
   validation,
@@ -723,8 +722,8 @@ export interface QuestionTemplateContent {
    * Expression twin of `code` for templates rendered over a runtime collection,
    * where the parameter is a collection item rather than a literal value.
    */
-  codeOver?: (instanceParam: ChainableExpr<PipelineExpr>) => ResolvableString
-  text: (instanceParam: string | ChainableExpr<PipelineExpr>) => ResolvableString
+  codeOver?: (instanceParam: ChainableExpr) => ResolvableString
+  text: (instanceParam: string | ChainableExpr) => ResolvableString
   hint?: ResolvableString
   options?: QuestionOptionEntry[]
   validationMessage?: ResolvableString
@@ -786,7 +785,7 @@ export const questionTemplate = (definition: {
   }
 }) => {
   const { content: template, displayModes } = definition
-  const projectionContentOf = (instanceParam: ChainableExpr<PipelineExpr>): TemplateProjectionContent => {
+  const projectionContentOf = (instanceParam: ChainableExpr): TemplateProjectionContent => {
     const { codeOver } = template
 
     if (!codeOver) {
@@ -824,7 +823,7 @@ export const questionTemplate = (definition: {
 
       return { content, displayModes: { field } }
     },
-    over: (instanceParam: ChainableExpr<PipelineExpr>): BlockDefinition => {
+    over: (instanceParam: ChainableExpr): BlockDefinition => {
       const { collectionField } = displayModes
 
       if (!collectionField) {
@@ -833,7 +832,7 @@ export const questionTemplate = (definition: {
 
       return collectionField(projectionContentOf(instanceParam))
     },
-    summaryRowOver: (instanceParam: ChainableExpr<PipelineExpr>): SummaryRow => {
+    summaryRowOver: (instanceParam: ChainableExpr): SummaryRow => {
       const { collectionSummaryRow } = displayModes
 
       if (!collectionSummaryRow) {
