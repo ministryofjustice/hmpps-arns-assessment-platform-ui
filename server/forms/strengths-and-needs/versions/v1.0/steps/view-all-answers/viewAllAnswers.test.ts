@@ -6,7 +6,7 @@ import { StrengthsAndNeedsGeneratorImplementations } from '../../../../generator
 import { strengthsAndNeedsTransformerImplementations } from '../../../../transformers'
 import { strengthsAndNeedsConditionImplementations } from '../../../../conditions'
 import { setViewAllAnswersBacklink } from '../../../../effects/session/setViewAllAnswersBacklink'
-import { Section, SectionStatus } from '../../constants/section'
+import { Section, SectionComplete } from '../../constants/section'
 import { basePath } from '../../constants/formVersion'
 import { viewAllAnswersStep } from './step'
 
@@ -103,7 +103,7 @@ describe('view all answers', () => {
   it('shows a status against every section, complete only once the section is', async () => {
     expect(tags(await renderPage())).toEqual(Array(9).fill('Incomplete'))
 
-    const complete = await renderPage({}, { [Section.alcohol_use.statusKey]: SectionStatus.complete })
+    const complete = await renderPage({}, { [Section.alcohol_use.statusKey]: SectionComplete.yes })
     expect(tags(complete).filter(tag => tag === 'Complete')).toHaveLength(1)
   })
 
@@ -148,8 +148,8 @@ describe('view all answers', () => {
       drug_use: 'YES',
       select_misused_drugs: ['CANNABIS', 'HEROIN'],
       drug_last_used_cannabis: 'LAST_SIX',
-      how_often_used_cannabis: 'DAILY',
-      how_often_used_cannabis_details: 'Most evenings.',
+      how_often_used_last_six_months_cannabis: 'DAILY',
+      how_often_used_last_six_months_cannabis_details: 'Most evenings.',
       drug_last_used_heroin: 'MORE_THAN_SIX',
     })
 

@@ -2,7 +2,7 @@ import { Answer, Condition, Data, or } from '@ministryofjustice/hmpps-forge/core
 import { BlockDefinition, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKHeading, GovUKSummaryList, GovUKTag } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { answerRow, questionsWithin } from '../../constants/questionContent'
-import { Section, SectionStatus } from '../../constants/section'
+import { Section, SectionComplete } from '../../constants/section'
 import { commonContentFor } from '../../locales'
 import { analysisOf, Answerable, questionsOf, viewAllAnswersSections, ViewAllAnswersSection } from './sections'
 
@@ -27,12 +27,12 @@ const sectionHeader = (section: SectionDefinition) =>
       status: [
         GovUKTag({
           text: commonContentFor('status.complete'),
-          visibleWhen: Data(section.statusKey).match(Condition.Equals(SectionStatus.complete)),
+          visibleWhen: Data(section.statusKey).match(Condition.Equals(SectionComplete.yes)),
         }),
         GovUKTag({
           text: commonContentFor('status.incomplete'),
           classes: 'govuk-tag--grey',
-          visibleWhen: Data(section.statusKey).not.match(Condition.Equals(SectionStatus.complete)),
+          visibleWhen: Data(section.statusKey).not.match(Condition.Equals(SectionComplete.yes)),
         }),
       ],
     },

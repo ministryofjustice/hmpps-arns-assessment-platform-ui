@@ -1,4 +1,5 @@
 import { expect, Page } from '@playwright/test'
+import { Section, SectionComplete } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../support/fixtures'
 import { checkAccessibility, navigateToStrengthsAndNeeds } from './sanUtils'
 
@@ -79,9 +80,9 @@ const finance: Answer[] = [
   { question: 'finance_gambling_yes_their_gambling_details', value: details('their gambling') },
   // Two levels of reveal: radio -> checkbox -> details.
   { question: 'finance_debt', value: 'YES_THEIR_DEBT' },
-  { question: 'finance_debt_yes_their_debt', value: ['DEBT_TO_OTHERS', 'FORMAL_DEBT'] },
-  { question: 'yes_their_debt_to_others_details', value: details('debt to others') },
-  { question: 'yes_their_debt_formal_debt_details', value: details('formal debt') },
+  { question: 'yes_type_of_debt', value: ['DEBT_TO_OTHERS', 'FORMAL_DEBT'] },
+  { question: 'yes_type_of_debt_debt_to_others_details', value: details('debt to others') },
+  { question: 'yes_type_of_debt_formal_debt_details', value: details('formal debt') },
   { question: 'finance_changes', value: 'THINKING_ABOUT_MAKING_CHANGES' },
   { question: 'finance_changes_thinking_about_making_changes_details', value: details('thinking about it') },
   // Analysis left deliberately partial.
@@ -99,10 +100,10 @@ const drugUse: Answer[] = [
   { question: 'other_drug_name', value: 'Ketamine' },
   { question: 'drug_last_used_other', value: 'LAST_SIX' },
   // Asked once per drug on a later step, so they read under the drug itself.
-  { question: 'how_often_used_cannabis', value: 'DAILY' },
-  { question: 'how_often_used_cannabis_details', value: details('cannabis frequency') },
-  { question: 'how_often_used_cocaine', value: 'OCCASIONALLY' },
-  { question: 'how_often_used_other', value: 'WEEKLY' },
+  { question: 'how_often_used_last_six_months_cannabis', value: 'DAILY' },
+  { question: 'how_often_used_last_six_months_cannabis_details', value: details('cannabis frequency') },
+  { question: 'how_often_used_last_six_months_cocaine', value: 'OCCASIONALLY' },
+  { question: 'how_often_used_last_six_months_other', value: 'WEEKLY' },
   { question: 'drug_use_more_than_six_months_details', value: details('used more than six months ago') },
   // Cocaine is injectable but not injected; heroin was, before the last 6 months.
   { question: 'drugs_injected', value: ['HEROIN', 'OTHER'] },
@@ -295,15 +296,15 @@ const thinking: Answer[] = [
 ]
 
 const statuses: Record<string, string> = {
-  accommodation_section_status: 'COMPLETE',
-  employment_section_status: 'COMPLETE',
-  finance_section_status: 'INCOMPLETE',
-  drugs_section_status: 'COMPLETE',
-  alcohol_section_status: 'COMPLETE',
-  health_section_status: 'INCOMPLETE',
-  relationship_section_status: 'COMPLETE',
-  thinking_behaviour_section_status: 'COMPLETE',
-  offences_section_status: 'INCOMPLETE',
+  [Section.accommodation.statusKey]: SectionComplete.yes,
+  [Section.employment_and_education.statusKey]: SectionComplete.yes,
+  [Section.finance.statusKey]: SectionComplete.no,
+  [Section.drug_use.statusKey]: SectionComplete.yes,
+  [Section.alcohol_use.statusKey]: SectionComplete.yes,
+  [Section.health_and_wellbeing.statusKey]: SectionComplete.no,
+  [Section.personal_relationships_and_community.statusKey]: SectionComplete.yes,
+  [Section.thinking_behaviours_and_attitudes.statusKey]: SectionComplete.yes,
+  [Section.offence_analysis.statusKey]: SectionComplete.no,
 }
 
 const viewAllAnswersPath = '/strengths-and-needs/v1.0/view-all-answers'

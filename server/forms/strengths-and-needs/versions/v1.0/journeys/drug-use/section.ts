@@ -298,7 +298,7 @@ const drugAnswers = (drugValue: string) => {
   })
 
   const lastUsed = fieldCodeString(Question.drug_last_used, drugValue)
-  const howOften = fieldCodeString(Question.how_often_used, drugValue)
+  const howOften = fieldCodeString(Question.how_often_used_last_six_months, drugValue)
   const details = Question.how_often_used_details.replace('%1', drugValue.toLowerCase())
 
   return GovUKSummaryList({
