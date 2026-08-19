@@ -1,15 +1,15 @@
 import { access, createForgePackage, journey, redirect, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { strengthsAndNeedsV1Journey } from './versions/v1.0'
-import { StrengthsAndNeedsEffectImplementations, StrengthsAndNeedsEffects } from './effects'
+import { sanEffects, StrengthsAndNeedsEffects } from './effects'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import config from '../../config'
-import { StrengthsAndNeedsGeneratorImplementations } from './generators'
-import { strengthsAndNeedsTransformerImplementations } from './transformers'
-import { strengthsAndNeedsConditionImplementations } from './conditions'
+import { sanTransformers } from './transformers'
+import { sanConditions } from './conditions'
 import { Section } from './versions/v1.0/constants/section'
 import { commonContentFor } from './versions/v1.0/locales'
 import { createPrivacyScreen } from '../shared'
 import { basePath, CaseData } from './versions/v1.0/constants/formVersion'
+import { sanGenerators } from './generators'
 
 const privacyScreenStep = createPrivacyScreen({
   loadEffects: [StrengthsAndNeedsEffects.loadSessionData()],
@@ -38,7 +38,7 @@ const versionRedirectStep = step({
   ],
 })
 
-const strengthsAndNeedsRootJourney = journey({
+export const strengthsAndNeedsRootJourney = journey({
   code: 'strengths-and-needs',
   title: commonContentFor('strengths_and_needs'),
   path: '/strengths-and-needs',
@@ -52,10 +52,5 @@ const strengthsAndNeedsRootJourney = journey({
 export default createForgePackage<StrengthsAndNeedsEffectsDeps>({
   enabled: config.forms.strengthsAndNeeds.enabled,
   journey: strengthsAndNeedsRootJourney,
-  functions: {
-    ...StrengthsAndNeedsEffectImplementations,
-    ...StrengthsAndNeedsGeneratorImplementations,
-    ...strengthsAndNeedsTransformerImplementations,
-    ...strengthsAndNeedsConditionImplementations,
-  },
+  functions: [sanEffects, sanGenerators, sanTransformers, sanConditions],
 })

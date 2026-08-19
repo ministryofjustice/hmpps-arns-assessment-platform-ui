@@ -2,29 +2,33 @@ import { and, Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 
 import { CaseData } from '../../constants/formVersion'
-import { CharacterLimit } from '../../constants/characterLimit'
 import { CommonOption } from '../../constants/commonOption'
 import {
-  characterCountField,
   checkboxField,
-  itemisedSummaryRow,
-  optionalDetails,
   question,
   QuestionFormat,
   radioDetails,
   radioField,
-  requiredDetails,
   revealedQuestion,
   SummaryRow,
-  textSummaryRow,
-  yesNo,
-} from '../../constants/questionContent'
+
+} from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { getDisplayTextForItems } from '../../../../i18n'
 import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { Step } from './constants/step'
 import { Option } from './constants/option'
+import { Section } from '../../constants/section'
+import { CharacterLimit } from '../../../../constants/characterLimit'
+import {
+  characterCountField,
+  itemisedSummaryRow,
+  optionalDetails,
+  requiredDetails,
+  textSummaryRow,
+  yesNo,
+} from '../../constants/questionContent'
 
 // The history and experience questions only apply once we know the person has
 // been employed before (or their employment status implies it).
@@ -674,6 +678,7 @@ const riskOfReoffending = question({
 })
 
 export const employmentEducationSection = {
+  code: Section.employment_and_education.code,
   questions: {
     currentEmploymentStatus,
     employmentSector,
