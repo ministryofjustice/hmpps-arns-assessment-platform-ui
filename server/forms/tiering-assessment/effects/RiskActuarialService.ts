@@ -68,6 +68,8 @@ export class RiskActuarialService {
       impulsivityProblems: this.parseProblemLevel(context.getAnswer('impulsivity-problems')),
       proCriminalAttitudes: this.parseProblemLevel(context.getAnswer('pro-criminal-attitudes')),
       previousConvictions: this.parsePreviousConvictions(context.getAnswer('previous-convictions') as string[]),
+      didOffenceInvolveCarryingOrUsingWeapon: this.getDidOffenceInvolveCarryingOrUsingWeapon(context),
+      evidenceOfDomesticAbuse: this.getEvidenceOfDomesticAbuse(context),
     }
   }
 
@@ -105,6 +107,24 @@ export class RiskActuarialService {
         ? context.getAnswer('alcohol-use-binge-drinking')
         : context.getAnswer('binge-drinking'),
     )
+  }
+
+  private getDidOffenceInvolveCarryingOrUsingWeapon(context: TieringAssessmentEffectContext): boolean | null {
+    const offenceElements = this.parseString(context.getAnswer('offence-elements'))
+    if (offenceElements == null) {
+      return null
+    }
+    return !!offenceElements.toLowerCase().includes('weapon')
+  }
+
+  private getEvidenceOfDomesticAbuse(context: TieringAssessmentEffectContext): boolean | null {
+    const evidenceOfDomesticAbuse = this.parseBoolean(context.getAnswer('evidence-of-domestic-abuse'))
+    const domesticAbuseAgainst = this.parseString(context.getAnswer('domestic-abuse-against'))
+
+    if (evidenceOfDomesticAbuse === null) return null
+    if (!evidenceOfDomesticAbuse) return false
+
+    return domesticAbuseAgainst === 'family-member-and-intimate-partner' || domesticAbuseAgainst === 'intimate-partner'
   }
 
   private saveScoresToContext(context: TieringAssessmentEffectContext, riskScores: RiskScores): void {
@@ -170,7 +190,7 @@ export class RiskActuarialService {
   }
 
   private parseString(val: unknown): string | null {
-    if (val === undefined || val === null) return null
+    if (val === undefined || val === null || val === 'unknown') return null
     const str: string = String(val).trim()
     return str === '' ? null : str
   }

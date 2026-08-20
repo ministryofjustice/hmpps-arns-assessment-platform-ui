@@ -16,7 +16,7 @@ export const whoAreTheyLivingWithField = GovUKCheckboxInput({
   },
   items: [
     {
-      value: 'Family',
+      value: 'family',
       text: 'Family',
     },
     {
