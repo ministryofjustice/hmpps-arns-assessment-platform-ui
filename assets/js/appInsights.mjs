@@ -142,23 +142,23 @@ function initialiseAccordion(accordion, config) {
 
   accordion.querySelectorAll('.govuk-accordion__section')
     .forEach((section, index) => {
-      const button = section.querySelector('.govuk-accordion__section-button')
+      const showSectionbutton = section.querySelector('.govuk-accordion__section-button')
 
-      if (!button) return
+      if (!showSectionbutton) return
 
-      const itemName = button.querySelector('.govuk-accordion__section-heading-text-focus')?.textContent?.trim()
+      const itemName = showSectionbutton.querySelector('.govuk-accordion__section-heading-text-focus')?.textContent?.trim()
 
-      button.setAttribute('data-ai-id', config.sectionId)
-      button.setAttribute('data-ai-accordionname', accordionName)
-      if (itemName) button.setAttribute('data-ai-itemname', itemName)
-      button.setAttribute('data-ai-index', String(index + 1))
-      button.setAttribute('data-ai-controltype', 'Item')
-      button.setAttribute('data-ai-action', 'Expand')
+      showSectionbutton.setAttribute('data-ai-id', config.sectionId)
+      showSectionbutton.setAttribute('data-ai-accordionname', accordionName)
+      if (itemName) showSectionbutton.setAttribute('data-ai-itemname', itemName)
+      showSectionbutton.setAttribute('data-ai-index', String(index + 1))
+      showSectionbutton.setAttribute('data-ai-controltype', 'Item')
+      showSectionbutton.setAttribute('data-ai-action', 'Expand')
 
-      button.addEventListener('click', () => {
-        const isExpanded = button.getAttribute('aria-expanded') === 'true'
+      showSectionbutton.addEventListener('click', () => {
+        const isExpanded = showSectionbutton.getAttribute('aria-expanded') === 'true'
 
-        button.setAttribute('data-ai-action', isExpanded ? 'Expand' : 'Collapse')
+        showSectionbutton.setAttribute('data-ai-action', isExpanded ? 'Expand' : 'Collapse')
       })
     })
 }
