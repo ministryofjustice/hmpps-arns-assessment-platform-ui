@@ -1,41 +1,33 @@
-import { block as blockBuilder, ChainableRef } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   BlockDefinition,
   ResolvableBoolean,
+  ResolvableObject,
   ResolvableString,
-  EvaluatedBlock,
+  ResolvedPropsOf,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
-import type nunjucks from 'nunjucks'
+import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import { PreviousVersionsResponse } from '../../../../interfaces/coordinator-api/previousVersions'
 import config from '../../../../config'
-
-/**
- * Props for the PreviousVersions component
- */
-export interface PreviousVersionsProps {
-  personName: ResolvableString
-  previousVersions: PreviousVersionsResponse | ChainableRef
-  showAssessmentColumn?: ResolvableBoolean
-}
 
 /**
  * Previous versions list component.
  *
  * Renders a table listing previous versions of SAN and Sentence Plan.
  */
-export interface PreviousVersions extends BlockDefinition, PreviousVersionsProps {
-  variant: 'previousVersions'
+export interface PreviousVersions extends BlockDefinition {
+  personName: ResolvableString
+  previousVersions: ResolvableObject<PreviousVersionsResponse>
+  showAssessmentColumn?: ResolvableBoolean
 }
 
 /**
  * Builds the template parameters for previous versions rendering.
  */
-function buildParams(block: EvaluatedBlock<PreviousVersions>) {
+function buildParams(props: ResolvedPropsOf<PreviousVersions>) {
   return {
-    personName: block.personName,
-    versions: block.previousVersions,
-    showAssessmentColumn: block.showAssessmentColumn ?? true,
+    personName: props.personName,
+    versions: props.previousVersions,
+    showAssessmentColumn: props.showAssessmentColumn ?? true,
     sanUrl: config.sanUrl,
     tables: {
       allVersions: {
@@ -62,18 +54,10 @@ function buildParams(block: EvaluatedBlock<PreviousVersions>) {
   }
 }
 
-export const previousVersions = buildNunjucksComponent<PreviousVersions>(
-  'previousVersions',
-  (block: EvaluatedBlock<PreviousVersions>, nunjucksEnv: nunjucks.Environment): string => {
-    const params = buildParams(block)
+export const PreviousVersions = nunjucksComponent<PreviousVersions>('previousVersions', {
+  render: (props, nunjucksEnv) => {
+    const params = buildParams(props)
+
     return nunjucksEnv.render('sentence-plan/components/previous-versions/table.njk', { params })
   },
-)
-
-/**
- * Creates a previous versions list/table.
- * @see PreviousVersions
- */
-export function PreviousVersions(props: PreviousVersionsProps): PreviousVersions {
-  return blockBuilder<PreviousVersions>({ ...props, variant: 'previousVersions' })
-}
+})
