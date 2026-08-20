@@ -1,0 +1,159 @@
+@use 'sass:math';
+
+@media screen {
+  .pdf-cover-page {
+    display: none;
+  }
+}
+
+@media print {
+  .pdf-header,
+  .pdf-footer,
+  .govuk-back-link {
+    display: none;
+  }
+
+  .pdf-table,
+  .pdf-chart,
+  .pdf-avoid-break {
+    break-inside: avoid;
+  }
+
+  h1,
+  h2 {
+    break-after: avoid-page;
+  }
+
+  .govuk-template {
+    background: none;
+  }
+}
+
+.pdf-cover-page {
+  break-after: page;
+  page-break-after: always;
+
+  &__logo {
+    margin-right: govuk-spacing(6);
+    margin-top: 150px;
+  }
+
+  &__title {
+    margin-top: govuk-spacing(4);
+    margin-bottom: govuk-spacing(6);
+    padding-right: govuk-spacing(3);
+    width: 327px;
+    border-bottom: 1px solid govuk-colour('dark-grey');
+  }
+
+  &__heading {
+    margin-top: 0;
+    margin-bottom: govuk-spacing(3);
+    font-size: 36px;
+    font-family: Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  &__subheading {
+    font-size: 12px;
+    margin-bottom: 0;
+    margin-top: govuk-spacing(8);
+  }
+
+  &__details p {
+    font-size: 10px;
+    line-height: 16px;
+    margin-bottom: 0;
+  }
+
+  &__body {
+    margin-top: govuk-spacing(9);
+  }
+}
+
+.pdf-header {
+  width: 100%;
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  padding-bottom: govuk-spacing(2);
+  margin-bottom: govuk-spacing(6);
+  border-bottom: 1px solid govuk-colour('black');
+
+  @media print {
+    display: flex;
+  }
+
+  &__left {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  &__right {
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+
+  &__logo {
+    svg {
+      width: 33px;
+      height: 27px;
+      top: -2px;
+    }
+  }
+
+  &__title {
+    span {
+      display: block;
+      width: 100%;
+      font-size: 9px;
+    }
+
+    span:first-of-type {
+      font-weight: bold;
+    }
+  }
+
+  .govuk-tag {
+    font-size: 12px;
+  }
+}
+
+.pdf-body {
+  &__heading {
+    font-size: 2.5rem;
+    margin: 60px 0 40px;
+
+    @media print {
+      font-size: 24px;
+      margin-bottom: govuk-spacing(3);
+    }
+
+    & + .summary-section-header > .summary-section-header__title {
+      margin-top: govuk-spacing(1);
+    }
+  }
+
+  .summary-list__actions,
+  .collection-summary-list__actions {
+    * {
+      display: none;
+    }
+  }
+}
+
+.pdf-footer {
+  font-weight: bold;
+
+  strong {
+    color: govuk-colour('red');
+  }
+}
+
+.pdf-section-break--bold {
+  width: 1220px;
+  background-color: govuk-colour('black');
+  height: 2px;
+}

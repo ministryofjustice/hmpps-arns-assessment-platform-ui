@@ -4,6 +4,7 @@ import express from 'express'
 import fs from 'fs'
 import { ValidationResult } from '@ministryofjustice/hmpps-forge/core/framework'
 import { formatDate, initialiseName, possessive } from './utils'
+import { DateTime } from 'luxon'
 import config from '../config'
 import logger from '../../logger'
 
@@ -111,9 +112,15 @@ export default function nunjucksSetup(app?: express.Express) {
     return true
   }
 
+  const displayDateForToday = (today: DateTime = DateTime.now()) => {
+    return today.toFormat('dd MMMM y')
+  }
+
   njkEnv.addFilter('mapNavItem', mapNavItem)
 
   njkEnv.addFilter('isDeepestActive', isDeepestActive)
+
+  njkEnv.addGlobal('displayDateForToday', displayDateForToday)
 
   njkEnv.addFilter('toErrorSummary', (errors: ValidationResult[]) =>
     errors.map(error => ({
