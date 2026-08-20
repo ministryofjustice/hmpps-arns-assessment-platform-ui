@@ -1,5 +1,5 @@
-import { EvaluatedBlock } from '@ministryofjustice/hmpps-forge/core/components'
-import { buildParams, SupervisionPackageBlock } from './supervisionPackage'
+import { ResolvedPropsOf } from '@ministryofjustice/hmpps-forge/core/components'
+import { buildParams, SupervisionPackage } from './supervisionPackage'
 import { SupervisionPackageDetails, TierCalculation } from '../../effects/types'
 
 const supervisionPackageDetails = {
@@ -30,14 +30,14 @@ const supervisionPackageDetails = {
   context: {},
 } as unknown as SupervisionPackageDetails
 
-function createBlock(overrides: Partial<SupervisionPackageBlock> = {}) {
+function createBlock(overrides: Partial<SupervisionPackage> = {}) {
   return {
     variant: 'supervisionPackage',
     crn: 'X123456',
     tierCalculation: undefined,
     supervisionPackageDetails: undefined,
     ...overrides,
-  } as unknown as EvaluatedBlock<SupervisionPackageBlock>
+  } as unknown as ResolvedPropsOf<SupervisionPackage>
 }
 
 describe('buildParams()', () => {

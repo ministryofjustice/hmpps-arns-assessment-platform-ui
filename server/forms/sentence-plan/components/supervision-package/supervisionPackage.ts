@@ -1,16 +1,17 @@
-import type nunjucks from 'nunjucks'
-import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import {
-  BasicBlockProps,
   BlockDefinition,
   ResolvableObject,
   ResolvableString,
-  EvaluatedBlock,
+  ResolvedPropsOf,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { SupervisionPackageDetails, TierCalculation } from '../../effects/types'
 
-export interface SupervisionPackageProps extends BasicBlockProps {
+/**
+ * Renders the MPoP-built supervision package component
+ * from @ministryofjustice/hmpps-mpop-frontend-components-lib.
+ */
+export interface SupervisionPackage extends BlockDefinition {
   /** Person's CRN - the template uses it to build MPoP-side links */
   crn: ResolvableString
 
@@ -19,10 +20,6 @@ export interface SupervisionPackageProps extends BasicBlockProps {
 
   /** Supervision package details loaded by the loadSupervisionPackage effect, or a Data() reference to them */
   supervisionPackageDetails: ResolvableObject<SupervisionPackageDetails> | undefined
-}
-
-export interface SupervisionPackageBlock extends BlockDefinition, SupervisionPackageProps {
-  variant: 'supervisionPackage'
 }
 
 /**
@@ -35,36 +32,22 @@ export interface SupervisionPackageBlock extends BlockDefinition, SupervisionPac
  * would send practitioners out of this service. With no next-appointment href
  * the appointment renders as plain text rather than a link.
  */
-export function buildParams(block: EvaluatedBlock<SupervisionPackageBlock>) {
-  const tierCalculation = block.tierCalculation as TierCalculation | undefined
-  const supervisionPackageDetails = block.supervisionPackageDetails as SupervisionPackageDetails | undefined
+export function buildParams(props: ResolvedPropsOf<SupervisionPackage>) {
+  const tierCalculation = props.tierCalculation as TierCalculation | undefined
+  const supervisionPackageDetails = props.supervisionPackageDetails as SupervisionPackageDetails | undefined
 
   return {
     tierScore: tierCalculation && tierCalculation.tierScore !== 'MISSING' ? tierCalculation.tierScore : undefined,
     tag: tierCalculation?.tag,
-    crn: block.crn,
+    crn: props.crn,
     ...(supervisionPackageDetails ?? {}),
   }
 }
 
-function renderSupervisionPackage(
-  block: EvaluatedBlock<SupervisionPackageBlock>,
-  nunjucksEnv: nunjucks.Environment,
-): string {
-  const params = buildParams(block)
+export const SupervisionPackage = nunjucksComponent<SupervisionPackage>('supervisionPackage', {
+  render: (props, nunjucksEnv) => {
+    const params = buildParams(props)
 
-  return nunjucksEnv.render('mpop/components/supervision-package/template.njk', { params })
-}
-
-export const supervisionPackage = buildNunjucksComponent<SupervisionPackageBlock>(
-  'supervisionPackage',
-  renderSupervisionPackage,
-)
-
-/**
- * Renders the MPoP-built supervision package component
- * from @ministryofjustice/hmpps-mpop-frontend-components-lib.
- */
-export function SupervisionPackage(props: SupervisionPackageProps): SupervisionPackageBlock {
-  return blockBuilder<SupervisionPackageBlock>({ ...props, variant: 'supervisionPackage' })
-}
+    return nunjucksEnv.render('mpop/components/supervision-package/template.njk', { params })
+  },
+})
