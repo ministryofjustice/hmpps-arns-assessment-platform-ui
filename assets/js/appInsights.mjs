@@ -146,7 +146,9 @@ function initialiseAccordion(accordion, config) {
 
       if (!showSectionbutton) return
 
-      const itemName = showSectionbutton.querySelector('.govuk-accordion__section-heading-text-focus')?.textContent?.trim()
+      const itemName = showSectionbutton
+        .querySelector('.govuk-accordion__section-heading-text-focus')
+        ?.textContent?.trim()
 
       showSectionbutton.setAttribute('data-ai-id', config.sectionId)
       showSectionbutton.setAttribute('data-ai-accordionname', accordionName)
