@@ -49,7 +49,10 @@ describe('ArnsApiClient', () => {
       const result = await client.getCriminogenicNeeds(crn, userToken)
 
       expect(result).toEqual(expectedNeeds)
-      expect(mockGet).toHaveBeenCalledWith({ path: `/needs/crn/${crn}` }, asUser(userToken))
+      expect(mockGet).toHaveBeenCalledWith(
+        { path: `/needs/crn/${crn}`, query: { excludeIncomplete: false } },
+        asUser(userToken),
+      )
     })
   })
 })
