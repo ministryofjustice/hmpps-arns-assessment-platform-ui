@@ -27,7 +27,7 @@ export const drugMisuseStep = step({
       onValid: {
         effects: [
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
-          TieringAssessmentEffects.SaveAssessmentData()
+          TieringAssessmentEffects.SaveAssessmentData(),
         ],
         next: [
           redirect({
