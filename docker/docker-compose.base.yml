@@ -123,7 +123,7 @@ services:
       CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in
 
   gotenberg:
-    image: gotenberg/gotenberg:8.34.0
+    image: gotenberg/gotenberg:8.36.0
     networks:
       - hmpps
     extra_hosts:
