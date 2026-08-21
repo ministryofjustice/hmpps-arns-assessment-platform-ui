@@ -7,7 +7,8 @@ import {
   or,
   PredicateExpr,
   Self,
-  validation, when,
+  validation,
+  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { BlockDefinition, ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import {
