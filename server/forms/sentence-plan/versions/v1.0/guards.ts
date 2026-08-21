@@ -31,6 +31,41 @@ export const isReadOnlyAccess = Data('sessionDetails.planAccessMode').match(Cond
 
 export const isPrintAndShareEnabled = Data('featureFlags.printAndShareEnabled').match(Condition.Equals(true))
 
+export const isSupervisionPackageEnabled = Data('featureFlags.supervisionPackageEnabled').match(Condition.Equals(true))
+
+/**
+ * MPoP only displays the supervision package component for three supervision phases:
+ * INIT (Early Engagement), STD (Standard Supervision) and FTHRD (Final Third). All other
+ * phases — in custody (SENT), SPNA, no package yet, etc. — render nothing, so we hide the
+ * tab for them too (an allowlist, so new non-renderable phases need no change here).
+ * TODO: add the 4th "In flight" phase code once MPoP finalise it.
+ */
+export const isSupervisionPackageDisplayable = Data('supervisionPackageDetails.currentPhase.phase.code').match(
+  Condition.Array.IsIn(['INIT', 'STD', 'FTHRD']),
+)
+
+/**
+ * True when the feature is enabled AND the case is in a phase MPoP renders the component for.
+ * Drives whether the component itself is rendered on the page.
+ */
+export const canDisplaySupervisionPackage = and(isSupervisionPackageEnabled, isSupervisionPackageDisplayable)
+
+/**
+ * True when loading the supervision package failed (500/503). Drives showing an error message
+ * rather than hiding the tab.
+ */
+export const hasSupervisionPackageError = Data('supervisionPackageError').match(Condition.Equals(true))
+
+/**
+ * True when the tab should be reachable: the component can be displayed, OR there was an error
+ * (so the user can see the error message). A missing package or non-renderable phase is neither,
+ * so the tab hides.
+ */
+export const canAccessSupervisionPackage = and(
+  isSupervisionPackageEnabled,
+  or(isSupervisionPackageDisplayable, hasSupervisionPackageError),
+)
+
 export const isMpopAssessmentInfoEnabled = Data('featureFlags.mpopAssessmentInfoEnabled').match(Condition.Equals(true))
 
 /**
@@ -64,6 +99,12 @@ export const redirectToOverviewIfReadOnly = () =>
 export const redirectToOverviewUnlessPrintAndShareEnabled = () =>
   access({
     when: not(isPrintAndShareEnabled),
+    next: [redirect({ goto: sentencePlanOverviewPath })],
+  })
+
+export const redirectToOverviewUnlessSupervisionPackageAccessible = () =>
+  access({
+    when: not(canAccessSupervisionPackage),
     next: [redirect({ goto: sentencePlanOverviewPath })],
   })
 
