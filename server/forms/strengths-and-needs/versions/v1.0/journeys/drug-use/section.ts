@@ -27,6 +27,7 @@ import {
   characterCountField,
   checkboxField,
   checkboxSummaryRow,
+  createSummaryRowActions,
   optionalDetails,
   question,
   QuestionFormat,
@@ -100,9 +101,7 @@ export const drugLastUsed = questionTemplate({
       value: {
         text: SANGenerators.getTextFromListDefinition(lastUsedSummaryLabels, Answer(content.code)),
       },
-      actions: {
-        items: [{ href: Step.add_drugs.path, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(Step.add_drugs.path),
     }),
   },
 })
@@ -140,10 +139,8 @@ export const drugHowOftenUsed = questionTemplate({
       value: {
         text: SANGenerators.getTextFromListDefinition(content.options, Answer(content.code)),
       },
-      actions: {
-        items: [{ href: Step.drug_details.path, text: commonContentFor('change') }],
-      },
       visibleWhen: Answer(content.code).match(Condition.IsRequired()),
+      actions: createSummaryRowActions(Step.drug_details.path),
     }),
   },
 })
@@ -174,9 +171,7 @@ export const drugHowOftenUsedDetails = questionTemplate({
         text: Answer(content.code),
       },
       visibleWhen: Answer(content.code).match(Condition.IsRequired()),
-      actions: {
-        items: [{ href: Step.drug_details.path, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(Step.drug_details.path),
     }),
   },
 })

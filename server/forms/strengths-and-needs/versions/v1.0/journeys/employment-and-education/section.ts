@@ -7,6 +7,7 @@ import { CommonOption } from '../../constants/commonOption'
 import {
   characterCountField,
   checkboxField,
+  createSummaryRowActions,
   itemisedSummaryRow,
   optionalDetails,
   question,
@@ -129,9 +130,7 @@ const currentEmploymentStatus = question({
           }),
         ],
       },
-      actions: {
-        items: [{ href: Step.current_employment.path, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(Step.current_employment.path),
     }),
   },
 })
