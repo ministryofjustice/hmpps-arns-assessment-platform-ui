@@ -49,6 +49,17 @@
           "rollouts": []
         },
         {
+          "key": "sp-enable-supervision-package",
+          "name": "sp-enable-supervision-package",
+          "description": "Enabled so supervision package journey is always testable",
+          "enabled": true,
+          "type": "BOOLEAN_FLAG_TYPE",
+          "createdAt": "2026-01-01T00:00:00Z",
+          "updatedAt": "2026-01-01T00:00:00Z",
+          "rules": [],
+          "rollouts": []
+        },
+        {
           "key": "sp-downtime-notification-banner",
           "name": "sp-downtime-notification-banner",
           "description": "Matches the application fallback",

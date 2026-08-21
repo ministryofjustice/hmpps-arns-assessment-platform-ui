@@ -2,7 +2,13 @@ import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
 import { User } from '../../../interfaces/user'
 import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
-import { AssessmentPlatformApiClient, CoordinatorApiClient, ArnsApiClient, DeliusApiClient } from '../../../data'
+import {
+  AssessmentPlatformApiClient,
+  CoordinatorApiClient,
+  DeliusApiClient,
+  MPoPComponents,
+  ArnsApiClient,
+} from '../../../data'
 import AuditService from '../../../services/auditService'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { SessionDetails } from '../../../interfaces/sessionDetails'
@@ -224,6 +230,22 @@ export interface GoalUpdatedHistoryEntry extends GoalEventContext {
   notes?: string
 }
 
+/**
+ * Response and payload types for the MPoP components client, derived from the
+ * client methods because the library does not export its data types directly —
+ * deriving keeps them in sync with the installed version.
+ *
+ * The frontend-context call bundles the phase, appointment allowance and next
+ * appointment in one response, so a single derived type covers the whole
+ * supervision package. The method can return null (no package yet), so unwrap it.
+ */
+export type SupervisionPackageDetails = NonNullable<
+  Awaited<ReturnType<MPoPComponents['getSupervisionPackageFrontendContext']>>
+>
+
+export type TierDetailsResponse = Awaited<ReturnType<MPoPComponents['getTierDetails']>>
+export type TierCalculation = TierDetailsResponse['calculation']
+
 export type AreaOfNeed = (typeof areasOfNeed)[number]
 
 export type { AreaOfNeedSlug }
@@ -384,6 +406,13 @@ export interface SentencePlanData extends Record<string, unknown> {
   // Privacy screen state copied from the Express session
   privacyAccepted?: boolean
 
+  // Supervision package page (from MPoP components client)
+  supervisionPackageDetails: SupervisionPackageDetails | undefined
+  // True when loading the supervision package failed (500/503) — drives the error message.
+  // Unset otherwise; a missing package or non-renderable phase hides the tab via the phase check.
+  supervisionPackageError: boolean | undefined
+  tierCalculation: TierCalculation | undefined
+
   // all assessment areas grouped by scoring category (for about page; from coordinator API)
   allAssessmentAreas: AssessmentArea[]
   highScoringAreas: AssessmentArea[]
@@ -472,6 +501,7 @@ export interface SentencePlanEffectsDeps {
   coordinatorApi: CoordinatorApiClient
   arnsApi: ArnsApiClient
   deliusApi: DeliusApiClient
+  mpopComponents: MPoPComponents
   auditService: AuditService
   featureFlagService: FeatureFlagService
 }

@@ -9,6 +9,7 @@ import {
 import { PreviousVersions } from './previous-versions/previousVersions'
 import { PrintGoalSummaryCard } from './print-goal-summary-card/printGoalSummaryCard'
 import { WrappingSelect } from './wrapping-select/wrappingSelect'
+import { SupervisionPackage } from './supervision-package/supervisionPackage'
 
 export { AccessibleAutocomplete } from './accessible-autocomplete/accessibleAutocomplete'
 export { AssessmentInfoDetails } from './assessment-info-details/assessmentInfoDetails'
@@ -20,6 +21,7 @@ export {
 } from './goal-summary-card/goalSummaryCard'
 export { WrappingSelect } from './wrapping-select/wrappingSelect'
 export { PrintGoalSummaryCard } from './print-goal-summary-card/printGoalSummaryCard'
+export { SupervisionPackage } from './supervision-package/supervisionPackage'
 
 export const sentencePlanComponents = [
   AccessibleAutocomplete,
@@ -30,5 +32,6 @@ export const sentencePlanComponents = [
   GoalSummaryCardHistory,
   PrintGoalSummaryCard,
   PreviousVersions,
+  SupervisionPackage,
   WrappingSelect,
 ]
