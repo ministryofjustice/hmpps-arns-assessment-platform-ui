@@ -1,4 +1,4 @@
-import { convertToTitleCase, formatDate, initialiseName, possessive } from './utils'
+import { convertToTitleCase, formatDate, initialiseName, possessive, replaceUnderscoresWithSpaces } from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -71,5 +71,17 @@ describe('formatDate', () => {
   it('returns simple format for valid date with default format', () => {
     // @ts-expect-error we expect a linting error here, the second argument is intentionally invalid
     expect(formatDate('1990-01-01', 'unknown')).toBe('1 January 1990')
+  })
+})
+
+describe('replace underscores with space', () => {
+  it.each([
+    [null, null, null],
+    ['empty string', '', ''],
+    ['Single case', 'single_case', 'single case'],
+    ['Multiple cases per string', 'multiple_cases_per_string', 'multiple cases per string'],
+    ['Leading and trailing underscores', '_leading_and_trailing_underscores_', ' leading and trailing underscores '],
+  ])('%s replaceUnderscoresWithSpace(%s, %s)', (_: string, a: string, expected: string) => {
+    expect(replaceUnderscoresWithSpaces(a)).toEqual(expected)
   })
 })

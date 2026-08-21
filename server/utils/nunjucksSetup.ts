@@ -3,6 +3,7 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
 import { ValidationResult } from '@ministryofjustice/hmpps-forge/core/framework'
+import { arnsNunjucksSetup } from '@ministryofjustice/hmpps-arns-frontend-components-lib'
 import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -61,6 +62,7 @@ export default function nunjucksSetup(app?: express.Express) {
       'node_modules/@ministryofjustice/hmpps-forge/dist/moj-components/',
       'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
+      'node_modules/@ministryofjustice/hmpps-arns-frontend-components-lib/dist/',
     ],
     {
       autoescape: true,
@@ -74,6 +76,8 @@ export default function nunjucksSetup(app?: express.Express) {
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('json', (obj, spaces = 2) => JSON.stringify(obj, null, spaces))
   njkEnv.addFilter('formatSimpleDate', date => formatDate(date, 'simple'))
+
+  arnsNunjucksSetup(njkEnv)
 
   // Map navigation data structure (path → url) for nav-list-item macro
   interface NavItem {

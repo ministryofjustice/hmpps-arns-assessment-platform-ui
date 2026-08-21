@@ -1,3 +1,5 @@
+import { RiskData } from '@ministryofjustice/hmpps-arns-frontend-components-lib/dist/types/RiskData'
+import { Predictor } from '@ministryofjustice/hmpps-arns-frontend-components-lib/dist/types/Predictor'
 import RiskActuarialApiClient from '../../../data/riskActuarialApiClient'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
 import {
@@ -10,6 +12,7 @@ import {
   RiskScores,
   SupervisionStatus,
 } from '../../../interfaces/risk-actuarial-api/riskScores'
+import { convertToTitleCase, replaceUnderscoresWithSpaces } from '../../../utils/utils'
 
 export class RiskActuarialService {
   constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) {}
@@ -160,6 +163,7 @@ export class RiskActuarialService {
     predictors.forEach(({ prefix, predictor }) => {
       setIfDefined(`${prefix}-score`, predictor?.output?.score)
       setIfDefined(`${prefix}-band`, predictor?.output?.band)
+      setIfDefined(`${prefix}-type`, predictor?.type)
       setIfDefined(`${prefix}-errors`, predictor?.validationErrors)
     })
 
@@ -172,9 +176,91 @@ export class RiskActuarialService {
       riskScores.actuarialPredictors?.seriousPredictor?.output?.band,
     )
     setIfDefined(
+      `risk-scores-combined-serious-reoffending-predictor-type`,
+      riskScores.actuarialPredictors?.seriousPredictor?.type,
+    )
+    setIfDefined(
       'risk-scores-combined-serious-reoffending-predictor-errors',
       riskScores.actuarialPredictors?.seriousPredictor?.validationErrors,
     )
+  }
+
+  private predictorRiskData(
+    predictorName: string,
+    predictorPrefix: string,
+    assessmentDate: string,
+    context: TieringAssessmentEffectContext,
+  ): Predictor {
+    return {
+      name: predictorName,
+      band: replaceUnderscoresWithSpaces(context.getAnswer(`${predictorPrefix}-band`) as string),
+      score: context.getAnswer(`${predictorPrefix}-score`) as number,
+      staticOrDynamic: convertToTitleCase(context.getAnswer(`${predictorPrefix}-type`) as string),
+      completedDate: assessmentDate,
+    }
+  }
+
+  createV2AssessmentRiskData(context: TieringAssessmentEffectContext): RiskData {
+    const date = new Date()
+    const assessmentDate = new Intl.DateTimeFormat('en-GB', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    }).format(date)
+    const assessmentTime: string = date.toLocaleTimeString('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    })
+    const assessmentDateTime = `${assessmentDate} at ${assessmentTime}`
+
+    return {
+      httpStatus: 200,
+      assessments: [
+        {
+          outputVersion: '2',
+          completedDate: assessmentDate,
+          completedDateTime: assessmentDateTime,
+          assessmentType: 'Tiering',
+          allReoffendingPredictor: this.predictorRiskData(
+            'All reoffending predictor',
+            'risk-scores-all-reoffending-predictor',
+            assessmentDate,
+            context,
+          ),
+          violentReoffendingPredictor: this.predictorRiskData(
+            'Violent reoffending predictor',
+            'risk-scores-violent-reoffending-predictor',
+            assessmentDate,
+            context,
+          ),
+          seriousViolentReoffendingPredictor: this.predictorRiskData(
+            'Serious violent reoffending predictor',
+            'risk-scores-serious-violent-reoffending-predictor',
+            assessmentDate,
+            context,
+          ),
+          directContactSexualReoffendingPredictor: this.predictorRiskData(
+            'Direct contact \u2013 sexual reoffending predictor',
+            'risk-scores-direct-contact-sexual-reoffending-predictor',
+            assessmentDate,
+            context,
+          ),
+          indirectImageContactSexualReoffendingPredictor: this.predictorRiskData(
+            'Images and indirect contact \u2013 sexual reoffending predictor',
+            'risk-scores-indirect-contact-sexual-reoffending-predictor',
+            assessmentDate,
+            context,
+          ),
+          combinedSeriousReoffendingPredictor: this.predictorRiskData(
+            'Combined serious reoffending predictor',
+            'risk-scores-combined-serious-reoffending-predictor',
+            assessmentDate,
+            context,
+          ),
+        },
+      ],
+    }
   }
 
   private calculateAgeAtDate(dob?: string, targetDate?: string): number | null {

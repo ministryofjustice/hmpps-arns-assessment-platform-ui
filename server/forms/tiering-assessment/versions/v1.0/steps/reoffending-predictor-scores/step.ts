@@ -1,14 +1,15 @@
 import { access, step } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { uuidSummaryField } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
+import { buttonGroup, scores } from './fields'
+import { backToTopLink } from '../../common'
 
 export const reoffendingPredictorScoresStep = step({
   path: '/reoffending-predictor-scores',
   title: 'Reoffending Predictor scores',
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.TransformRiskData()],
     }),
   ],
-  blocks: [uuidSummaryField],
+  blocks: [scores, backToTopLink, buttonGroup],
 })
