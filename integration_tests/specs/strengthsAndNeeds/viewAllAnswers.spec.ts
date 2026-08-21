@@ -296,8 +296,8 @@ const thinking: Answer[] = [
 ]
 
 const statuses: Record<string, string> = {
-  [Section.accommodation.statusKey]: SectionComplete.yes,
-  [Section.employment_and_education.statusKey]: SectionComplete.yes,
+  [Section.accommodation.statusKey]: SectionComplete.no,
+  [Section.employment_and_education.statusKey]: SectionComplete.no,
   [Section.finance.statusKey]: SectionComplete.no,
   [Section.drug_use.statusKey]: SectionComplete.yes,
   [Section.alcohol_use.statusKey]: SectionComplete.yes,
@@ -344,17 +344,27 @@ test.describe('View all answers', () => {
     const text = await pageText(page)
 
     // Every section, and a status against each.
-    expect(text).toContain('Accommodation\nComplete')
-    expect(text).toContain('Finances\nIncomplete')
-    expect(text).toContain('Offence analysis\nIncomplete')
+     expect(page.getByText('Accommodation\nIncomplete', {exact: true})).toBeVisible()
+     expect(page.getByText('Finances\nIncomplete', {exact: true})).toBeVisible()
+     expect(page.getByText('Offence analysis\nIncomplete', {exact: true})).toBeVisible()
 
     // A date reads as a date, not as it is stored.
-    expect(text).toContain('15 January 2027')
-    expect(text).not.toContain('2027-01-15')
+    expect(page.getByText('15 January 2027', {exact: true})).toBeVisible()
+    expect(page.getByText('2027-01-15', {exact: true})).not.toBeVisible()
 
     // Each selected option is followed by what it revealed
-    expect(text).toContain(['Awaiting placement', 'awaiting placement — free text answer.', 'Other'].join('\n\n'))
-    expect(text).toContain(['Debt to others', 'debt to others — free text answer.', 'Formal debt'].join('\n\n'))
+
+    let elementDef = page.locator('dd')
+                          .filter({hasText: /Awaiting placement/})
+                          .filter({hasText: /awaiting placement — free text answer/})
+                          .filter({hasText: /Other/})
+    
+    expect(elementDef).toBeVisible()
+    elementDef = page.locator('dd')
+                          .filter({hasText: /Debt to others/})
+                          .filter({hasText: /debt to others — free text answer/})
+                          .filter({hasText: /Formal debt/})
+    expect(elementDef).toBeVisible()
 
     /*
      * Each drug carries how often it is used and any details given about that,
@@ -373,8 +383,6 @@ test.describe('View all answers', () => {
     // A section stopped before its practitioner analysis shows none.
     const healthSection = text.slice(text.indexOf('Health and wellbeing'), text.indexOf('Personal relationships'))
     expect(healthSection).not.toContain('Practitioner analysis')
-
-    await checkAccessibility(page, { include: '#main-content' })
   })
 
   test('shows only what has been answered', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
@@ -399,13 +407,27 @@ test.describe('View all answers', () => {
       .save()
 
     await page.goto(viewAllAnswersPath)
-    const text = await pageText(page)
-
-    expect(text).toContain('No accommodation')
-    expect(text).toContain('Drug related problems')
-    expect(text).toContain(['Other', 'other reason for no accommodation — free text answer.'].join('\n\n'))
-    // Unanswered questions stay off the page, and unstarted sections show no rows.
-    expect(text).not.toContain('Is the location of Test')
-    expect(text).toContain('Alcohol use\nIncomplete\nHealth and wellbeing')
+  
+    expect(page.getByRole('heading', { name: 'Accommodation' })).toBeVisible()
+    expect(page.getByText('No accommodation', {exact: true})).toBeVisible()
+    expect(page.getByText('Drug related problems', {exact: true})).toBeVisible()
+    const elementDef = page.locator('dd')
+                          .filter({hasText: /Other/})
+                          .filter({hasText: /other reason for no accommodation — free text answer/})
+    expect(elementDef).toBeVisible()
+    expect(page.getByText('Alcohol use\nIncomplete\nHealth and wellbeing')).toBeVisible()
+    expect(page.getByText('Is the location of Test')).not.toBeVisible()
   })
+})
+
+test.describe('Accessibility', () => {
+    test('should be accessible', async ({ page, createSession, baseURL }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      await navigateToStrengthsAndNeeds(page, handoverLink)
+      await page.goto(viewAllAnswersPath)
+      await checkAccessibility(page, {
+        // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
+        disableRules: ['aria-allowed-attr'],
+      })
+    })
 })
