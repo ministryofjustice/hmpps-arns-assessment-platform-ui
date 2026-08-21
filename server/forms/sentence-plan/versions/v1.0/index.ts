@@ -11,12 +11,15 @@ import {
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
+import { supervisionPackageStep } from './steps/supervision-package/step'
 import { actorLabels, areasOfNeed, formVersion, sentencePlanBasePath, sentencePlanOverviewPath } from './constants'
 import { SentencePlanEffects } from '../../effects'
 import { NAV_KEY_PATTERNS } from '../../effects/navigation'
 import {
   canAccessSanContent,
+  canAccessSupervisionPackage,
   hasPostAgreementStatus,
+  isSupervisionPackageEnabled,
   redirectIfMergedMpopPlan,
   redirectToPrivacyUnlessAccepted,
 } from './guards'
@@ -43,6 +46,7 @@ export const sentencePlanV1Journey = journey({
       hmppsHeaderServiceNameLink: sentencePlanOverviewPath,
       showAboutTab: canAccessSanContent,
       showPlanHistoryTab: hasPostAgreementStatus,
+      showSupervisionPackageTab: canAccessSupervisionPackage,
     },
   },
   data: {
@@ -80,7 +84,14 @@ export const sentencePlanV1Journey = journey({
     redirectIfMergedMpopPlan(),
     // READ_ONLY users skip privacy and go straight to overview; edit users must accept privacy first.
     redirectToPrivacyUnlessAccepted(),
+    // Load the supervision package (only when the feature is on) so the nav can decide, on every
+    // page, whether to show the Supervision package tab based on the case's supervision phase.
+    // Runs after the redirects so it is skipped for redirected requests (e.g. privacy not accepted).
+    access({
+      when: isSupervisionPackageEnabled,
+      effects: [SentencePlanEffects.loadSupervisionPackage()],
+    }),
   ],
-  steps: [aboutPersonStep],
+  steps: [aboutPersonStep, supervisionPackageStep],
   children: [planOverviewJourney, goalManagementJourney],
 })

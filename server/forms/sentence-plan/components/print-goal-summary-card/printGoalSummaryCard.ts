@@ -1,13 +1,10 @@
-import type nunjucks from 'nunjucks'
-import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import {
-  BasicBlockProps,
   BlockDefinition,
-  EvaluatedBlock,
   ResolvableArray,
   ResolvableString,
+  ResolvedPropsOf,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 interface PrintGoalStep {
   actor: ResolvableString
@@ -15,7 +12,7 @@ interface PrintGoalStep {
   status: ResolvableString
 }
 
-export interface PrintGoalSummaryCardProps extends BasicBlockProps {
+export interface PrintGoalSummaryCard extends BlockDefinition {
   goalTitle: ResolvableString
   goalStatus: ResolvableString
   targetDate?: ResolvableString
@@ -25,34 +22,25 @@ export interface PrintGoalSummaryCardProps extends BasicBlockProps {
   steps?: ResolvableArray<PrintGoalStep>
 }
 
-export interface PrintGoalSummaryCardDefinition extends BlockDefinition, PrintGoalSummaryCardProps {
-  variant: 'printGoalSummaryCard'
-}
-
-function buildParams(block: EvaluatedBlock<PrintGoalSummaryCardDefinition>) {
-  const steps = (block.steps ?? []) as PrintGoalStep[]
-  const relatedAreasOfNeed = (block.relatedAreasOfNeed ?? []) as string[]
+function buildParams(props: ResolvedPropsOf<PrintGoalSummaryCard>) {
+  const steps = (props.steps ?? []) as PrintGoalStep[]
+  const relatedAreasOfNeed = (props.relatedAreasOfNeed ?? []) as string[]
 
   return {
-    goalTitle: block.goalTitle,
-    goalStatus: block.goalStatus,
-    targetDate: block.targetDate,
-    statusDate: block.statusDate,
-    areaOfNeed: block.areaOfNeed,
+    goalTitle: props.goalTitle,
+    goalStatus: props.goalStatus,
+    targetDate: props.targetDate,
+    statusDate: props.statusDate,
+    areaOfNeed: props.areaOfNeed,
     relatedAreasText: relatedAreasOfNeed.length ? [...relatedAreasOfNeed].sort().join('; ') : undefined,
     steps,
     completedCount: steps.filter(step => step.status === 'COMPLETED').length,
   }
 }
 
-export const printGoalSummaryCard = buildNunjucksComponent<PrintGoalSummaryCardDefinition>(
-  'printGoalSummaryCard',
-  (block: EvaluatedBlock<PrintGoalSummaryCardDefinition>, nunjucksEnv: nunjucks.Environment): string =>
+export const PrintGoalSummaryCard = nunjucksComponent<PrintGoalSummaryCard>('printGoalSummaryCard', {
+  render: (props, nunjucksEnv) =>
     nunjucksEnv.render('sentence-plan/components/print-goal-summary-card/template.njk', {
-      params: buildParams(block),
+      params: buildParams(props),
     }),
-)
-
-export function PrintGoalSummaryCard(props: PrintGoalSummaryCardProps): PrintGoalSummaryCardDefinition {
-  return blockBuilder<PrintGoalSummaryCardDefinition>({ ...props, variant: 'printGoalSummaryCard' })
-}
+})

@@ -98,6 +98,11 @@ export interface CreateSessionOptions {
   assessmentType?: AssessmentType
   pnc?: string
   /**
+   * Defaults to a randomly generated CRN. Set it to target a specific wiremock
+   * scenario, such as docker/wiremock/mappings/supervision-package-api.
+   */
+  crn?: string
+  /**
    * Criminogenic needs data from OASys (via handover).
    * Provides linked indicators (YES/NO) and scores for assessment areas.
    * Defaults to all areas having YES for all indicators with typical scores.
@@ -256,6 +261,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
         builder.withAssessmentType(options.assessmentType)
       }
 
+      if (options.crn) {
+        builder.withCrn(options.crn)
+      }
+
       const association = await builder.save()
 
       const sessionBuilder = handoverBuilder.forAssociation(association)
@@ -321,7 +330,7 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
         return
       }
 
-      const { logs } = await captureContainerLogs('ui', { since: startedAt })
+      const { logs } = await captureContainerLogs('aap-ui', { since: startedAt })
       const logsPath = testInfo.outputPath('ui-container-logs.txt')
 
       await fs.writeFile(logsPath, logs, 'utf-8')

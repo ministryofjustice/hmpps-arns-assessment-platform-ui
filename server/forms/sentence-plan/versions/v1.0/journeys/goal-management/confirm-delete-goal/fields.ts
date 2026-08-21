@@ -15,10 +15,10 @@ export const pageHeading = GovUKHeading({ text: 'Confirm you want to delete this
 
 export const introText = [
   GovUKBody({
-    text: Format("Delete this goal if you've made a mistake. It will not be saved to %1's plan.", CaseData.Forename),
+    text: Format("Delete this goal if it’s not needed. It will not be saved to %1's plan.", CaseData.Forename),
   }),
   GovUKBody({
-    text: 'Alternatively, you can <a href="change-goal" class="govuk-link">change the goal</a> instead.',
+    text: 'Alternatively, you can <a href="change-goal" class="govuk-link">update the goal</a> instead.',
   }),
 ]
 
@@ -50,8 +50,8 @@ export const cancelLink = GovUKBody({
   text: Format(
     '<a href="%1" class="govuk-link" data-ai-id="confirm-delete-goal-cancel-link">Do not delete goal</a>',
     when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
-      .then('../../plan/overview?type=future')
-      .else('../../plan/overview?type=current'),
+      .then('../../plan/overview?goalStatusTab=future')
+      .else('../../plan/overview?goalStatusTab=current'),
   ),
 })
 

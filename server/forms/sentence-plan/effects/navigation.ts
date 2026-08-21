@@ -17,9 +17,11 @@ export const Nav = {
   VIEW_HISTORIC: 'view-historic',
   UPDATE_AGREE_PLAN: 'update-agree-plan',
   AGREE_PLAN: 'agree-plan',
+  SELECT_AREA_OF_NEED: 'select-area-of-need',
   ADD_GOAL: 'add-goal',
   ADD_STEPS: 'add-steps',
   CHANGE_GOAL: 'change-goal',
+  CHANGE_AREA_OF_NEED: 'change-area-of-need',
   UPDATE_GOAL_STEPS: 'update-goal-steps',
   CONFIRM_DELETE_GOAL: 'confirm-delete-goal',
   CONFIRM_ACHIEVED_GOAL: 'confirm-achieved-goal',
@@ -28,6 +30,7 @@ export const Nav = {
   CONFIRM_READD_GOAL: 'confirm-readd-goal',
   VIEW_INACTIVE_GOAL: 'view-inactive-goal',
   ABOUT: 'about',
+  SUPERVISION_PACKAGE: 'supervision-package',
 } as const
 
 export type NavigationReferrer = (typeof Nav)[keyof typeof Nav]
@@ -47,9 +50,11 @@ export const NAV_KEY_PATTERNS: Record<NavigationReferrer, string> = {
   [Nav.VIEW_HISTORIC]: '/view-historic/',
   [Nav.UPDATE_AGREE_PLAN]: '/update-agree-plan',
   [Nav.AGREE_PLAN]: '/agree-plan',
+  [Nav.SELECT_AREA_OF_NEED]: '/select-area-of-need',
   [Nav.ADD_GOAL]: '/add-goal/',
   [Nav.ADD_STEPS]: '/add-steps',
   [Nav.CHANGE_GOAL]: '/change-goal',
+  [Nav.CHANGE_AREA_OF_NEED]: '/change-area-of-need',
   [Nav.UPDATE_GOAL_STEPS]: '/update-goal-steps',
   [Nav.CONFIRM_DELETE_GOAL]: '/confirm-delete-goal',
   [Nav.CONFIRM_ACHIEVED_GOAL]: '/confirm-achieved-goal',
@@ -58,4 +63,5 @@ export const NAV_KEY_PATTERNS: Record<NavigationReferrer, string> = {
   [Nav.CONFIRM_READD_GOAL]: '/confirm-readd-goal',
   [Nav.VIEW_INACTIVE_GOAL]: '/view-inactive-goal',
   [Nav.ABOUT]: '/about-person',
+  [Nav.SUPERVISION_PACKAGE]: '/supervision-package',
 }

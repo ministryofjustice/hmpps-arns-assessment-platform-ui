@@ -45,7 +45,7 @@ test.describe('Remove goal journey', () => {
       await removePage.clickConfirm()
 
       // Should redirect to plan overview with removed tab selected
-      await expect(page).toHaveURL(/plan\/overview.*type=removed/)
+      await expect(page).toHaveURL(/plan\/overview.*goalStatusTab=removed/)
     })
 
     test('can access confirm remove goal page when plan has updated agreement status (UPDATED_AGREED/UPDATED_DO_NOT_AGREE))', async ({
@@ -247,7 +247,7 @@ test.describe('Remove goal journey', () => {
       await removePage.clickConfirm()
 
       // Should be on removed tab now
-      await expect(page).toHaveURL(/type=removed/)
+      await expect(page).toHaveURL(/goalStatusTab=removed/)
 
       // Verify the goal appears in the removed goals list
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -302,7 +302,7 @@ test.describe('Remove goal journey', () => {
       await removePage.clickConfirm()
 
       // Navigate to current goals tab
-      await page.goto('/sentence-plan/v1.0/plan/overview?type=current')
+      await page.goto('/sentence-plan/v1.0/plan/overview?goalStatusTab=current')
 
       // Verify only 1 goal remains in current goals
       planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
