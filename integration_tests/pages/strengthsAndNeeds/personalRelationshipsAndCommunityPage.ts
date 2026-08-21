@@ -17,6 +17,26 @@ export default class PersonalRelationshipsAndCommunityPage extends StrengthsAndN
 
   readonly enterDetailsChildrenThatVisit: Locator
 
+  readonly selectIfTheyAreHappy: Locator
+
+  readonly happyAndPositive: Locator
+
+  readonly selectTheirHistory: Locator
+
+  readonly historyOfStable: Locator
+
+  readonly isAbleToResolve: Locator
+
+  readonly selectWhatTheirCurrent: Locator
+
+  readonly stableSupportive: Locator
+
+  readonly selectTheirExperience: Locator
+
+  readonly positiveExperience: Locator
+
+  readonly selectIfTheyHadChildhood: Locator
+
   private constructor(page: Page) {
     super(page)
     this.mainForm = page.getByTestId('main-form')
@@ -36,6 +56,19 @@ export default class PersonalRelationshipsAndCommunityPage extends StrengthsAndN
     this.enterDetailsChildrenThatVisit = page.getByRole('textbox', {
       description: 'Enter details of any children that visit them regularly',
     })
+    this.selectIfTheyAreHappy = page.getByRole('link', { name: 'Select if they are happy with' })
+    this.happyAndPositive = page.getByRole('radio', { name: 'Happy and positive about' })
+    this.selectTheirHistory = page.getByRole('link', { name: 'Select their history of' })
+    this.historyOfStable = page.getByRole('radio', { name: 'History of stable, supportive' })
+    this.isAbleToResolve = page.getByRole('textbox', { name: 'Is Test able to resolve any' })
+    this.selectWhatTheirCurrent = page.getByRole('link', { name: 'Select what their current' })
+    this.stableSupportive = page.getByRole('radio', {
+      name: 'Stable, supportive, positive and rewarding relationship',
+      exact: true,
+    })
+    this.selectTheirExperience = page.getByRole('link', { name: 'Select their experience of' })
+    this.positiveExperience = page.getByRole('radio', { name: 'Positive experience' })
+    this.selectIfTheyHadChildhood = page.getByRole('link', { name: 'Select if they had childhood' })
   }
 
   /**
