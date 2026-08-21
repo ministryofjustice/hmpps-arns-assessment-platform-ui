@@ -23,7 +23,7 @@ export const currentAccommodationStep = step({
       validate: true,
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentAccommodationStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
         ],
         next: [
