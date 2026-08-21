@@ -25,7 +25,10 @@ export const drugMisuseStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [TieringAssessmentEffects.SaveAssessmentData()],
+        effects: [
+          TieringAssessmentEffects.CalculateRiskActuarialScores(),
+          TieringAssessmentEffects.SaveAssessmentData()
+        ],
         next: [
           redirect({
             when: Answer('ever-misused-drugs').match(Condition.Equals('true')),
