@@ -70,6 +70,7 @@ export default function createApp(services: Services): express.Application {
       mpopComponents: services.mpopComponents,
       auditService: services.auditService,
       featureFlagService: services.featureFlagService,
+      domainEventsService: services.domainEventsService,
     })
 
   // Setup middleware

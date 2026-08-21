@@ -165,6 +165,10 @@ export default {
   sqs: {
     audit: auditConfig(),
   },
+  sns: {
+    region: get('SNS_REGION', 'eu-west-2'),
+    topicArn: get('SNS_TOPIC_ARN', ''),
+  },
   forms: {
     sentencePlan: {
       enabled: get('FORM_SENTENCE_PLAN_ENABLED', 'true') === 'true',
