@@ -181,7 +181,7 @@ export const stepRows = HtmlBlock({
                   items: actorLabelOptions,
                   defaultValue: Item().path('actor'),
                   attributes: {
-                    'data-ai-id': Format('add-steps-step-actor-dropdown-%1', Loop.Index0()),
+                    'data-ai-id': Format('add-update-steps-step-actor-dropdown-%1', Loop.Index0()),
                   },
                   validWhen: [
                     validation({
@@ -233,7 +233,7 @@ export const stepRows = HtmlBlock({
                   items: stepStatusOptions,
                   defaultValue: Item().path('status'),
                   attributes: {
-                    'data-ai-id': Format('add-steps-step-status-dropdown-%1', Loop.Index0()),
+                    'data-ai-id': Format('add-update-steps-step-status-dropdown-%1', Loop.Index0()),
                   },
                   validWhen: [
                     validation({
@@ -255,8 +255,8 @@ export const stepRows = HtmlBlock({
                 classes: 'govuk-!-margin-bottom-0',
                 attributes: {
                   'data-ai-id': when(isSingleStep)
-                    .then('add-steps-clear-step-link')
-                    .else(Format('add-steps-remove-step-link-%1', Loop.Index0())),
+                    .then('add-update-steps-clear-step-link')
+                    .else(Format('add-update-steps-remove-step-link-%1', Loop.Index0())),
                 },
               }),
             ],
