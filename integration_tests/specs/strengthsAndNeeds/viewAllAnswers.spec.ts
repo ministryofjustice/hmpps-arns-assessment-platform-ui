@@ -341,8 +341,6 @@ test.describe('View all answers', () => {
     await navigateToStrengthsAndNeeds(page, handoverLink, '/strengths-and-needs/')
     await page.goto(viewAllAnswersPath)
 
-    const text = await pageText(page)
-
     // Every section, and a status against each.
     expect(page.getByText('Accommodation\nIncomplete', { exact: true })).toBeVisible()
     expect(page.getByText('Finances\nIncomplete', { exact: true })).toBeVisible()
@@ -432,7 +430,7 @@ test.describe('View all answers', () => {
 })
 
 test.describe('Accessibility', () => {
-  test('should be accessible', async ({ page, createSession, baseURL }) => {
+  test('should be accessible', async ({ page, createSession }) => {
     const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.goto(viewAllAnswersPath)
