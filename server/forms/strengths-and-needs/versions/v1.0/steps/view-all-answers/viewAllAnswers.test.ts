@@ -1,6 +1,7 @@
 import { access, EffectRegistry, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { ForgeTestHarness } from '@ministryofjustice/hmpps-forge/core/testing'
-import { govukComponents } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { ForgeTestHarness, TestRenderResult } from '@ministryofjustice/hmpps-forge/core/testing'
+import { GovUKBody, govukComponents, GovUKHeading, GovUKTag } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { sanEffects } from '../../../../effects'
 import { sanGenerators } from '../../../../generators'
 import { sanTransformers } from '../../../../transformers'
@@ -9,19 +10,24 @@ import { setViewAllAnswersBacklink } from '../../../../effects/session/setViewAl
 import { Section, SectionComplete } from '../../constants/section'
 import { basePath } from '../../constants/formVersion'
 import { viewAllAnswersStep } from './step'
+import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../../../../effects/types'
+import { CaseDetails } from '../../../../../../interfaces/delius-api/caseDetails'
 
 /** Renders the real step with the given answers, seeded straight into the assessment. */
-const renderPage = async (answers: Record<string, unknown> = {}, data: Record<string, unknown> = {}) => {
-  const registry = new EffectRegistry()
-  const seed = registry.register('Seed', () => async (context: any) => {
-    context.setData('caseData', { name: { forename: 'Sam' } })
+const renderPage = async (
+  answers: Record<string, unknown> = {},
+  data: Record<string, unknown> = {},
+): Promise<TestRenderResult> => {
+  const testEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
+  const seed = testEffects.register('Seed', () => async (context: StrengthsAndNeedsContext) => {
+    context.setData('caseData', { name: { forename: 'Sam' } } as unknown as CaseDetails)
     Object.entries(answers).forEach(([code, value]) => context.setAnswer(code, value))
     Object.entries(data).forEach(([code, value]) => context.setData(code, value))
   })
 
   const client = new ForgeTestHarness()
     .registerGlobalComponents(govukComponents)
-    .registerGlobalFunctions([sanEffects, sanGenerators, sanTransformers, sanConditions])
+    .registerGlobalFunctions([testEffects, sanEffects, sanGenerators, sanTransformers, sanConditions])
     .registerPackage({
       journey: journey({
         code: 'strengths-and-needs-v1',
@@ -34,12 +40,10 @@ const renderPage = async (answers: Record<string, unknown> = {}, data: Record<st
     })
     .createClient()
 
-  const result: any = await client.get(`${basePath}/view-all-answers`, {
+  return (await client.get(`${basePath}/view-all-answers`, {
     session: {},
     headers: { 'accept-language': 'en-gb' },
-  })
-
-  return result
+  })) as TestRenderResult
 }
 
 /** Everything on screen, with anything hidden by `visibleWhen` left out. */
@@ -58,15 +62,36 @@ const visible = (node: any, found: any[] = []): any[] => {
   return found
 }
 
-const textsOf = (result: any, match: (block: any) => boolean) =>
+const findBlocksOfType = (result: TestRenderResult, match: (block: any) => boolean) =>
   visible(result.context.blocks)
     .filter(match)
-    .map(block => String(block.text ?? block.content))
 
-const headings = (result: any, tag: string) => textsOf(result, b => b.variant === 'html' && b.tag === tag)
-const rows = (result: any) => textsOf(result, b => b.variant === 'row')
-const tags = (result: any) => textsOf(result, b => b.variant === 'govukTag')
-const bodyText = (result: any) => textsOf(result, b => b.variant === 'html' && b.tag === 'p')
+const extractText = (block: any) => String(block.text ?? block.content)
+
+const isGovUKHeading = (block: HtmlBlock): block is HtmlBlock & GovUKHeading => block.variant === 'govukHeading'
+
+const isGovUKTag = (block: HtmlBlock): block is HtmlBlock & GovUKTag => block.variant === 'govukTag'
+
+const isGovUKBody = (block: HtmlBlock): block is HtmlBlock & GovUKBody => block.variant === 'govukBody'
+
+const isRow = (block: HtmlBlock): block is HtmlBlock => block.variant === 'row'
+
+const headings = (result: TestRenderResult, level: number) =>
+  findBlocksOfType(result, isGovUKHeading)
+    .filter(block => block.level === level)
+    .map(extractText)
+
+const rows = (result: TestRenderResult) =>
+  findBlocksOfType(result, isRow)
+    .map(extractText)
+
+const tags = (result: TestRenderResult) =>
+  findBlocksOfType(result, isGovUKTag)
+    .map(extractText)
+
+const bodyText = (result: TestRenderResult) =>
+  findBlocksOfType(result, isGovUKBody)
+    .map(extractText)
 
 describe('view all answers', () => {
   it('can be reached whatever state the assessment is in', async () => {
@@ -77,7 +102,7 @@ describe('view all answers', () => {
   })
 
   it('lists every section, including offence analysis, before any is started', async () => {
-    expect(headings(await renderPage(), 'h2')).toEqual([
+    expect(headings(await renderPage(), 2)).toEqual([
       'Accommodation',
       'Employment and education',
       'Finances',
@@ -195,7 +220,7 @@ describe('view all answers', () => {
       alcohol_use_practitioner_analysis_risk_of_serious_harm: 'YES',
     })
 
-    expect(headings(result, 'h3')).toEqual(['Summary', 'Practitioner analysis'])
+    expect(headings(result, 3)).toEqual(['Summary', 'Practitioner analysis'])
   })
 
   describe('back link tests', () => {
