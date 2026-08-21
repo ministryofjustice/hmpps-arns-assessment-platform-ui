@@ -10,6 +10,7 @@ import {
   ArnsApiClient,
 } from '../../../data'
 import AuditService from '../../../services/auditService'
+import DomainEventsService from '../../../services/domainEventsService'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { SessionDetails } from '../../../interfaces/sessionDetails'
 import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
@@ -504,4 +505,5 @@ export interface SentencePlanEffectsDeps {
   mpopComponents: MPoPComponents
   auditService: AuditService
   featureFlagService: FeatureFlagService
+  domainEventsService: DomainEventsService
 }
