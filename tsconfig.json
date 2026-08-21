@@ -12,6 +12,8 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "@ministryofjustice/hmpps-forge/jsx-components",
     "typeRoots": ["./server/@types", "./node_modules/@types"]
   },
   "exclude": [
@@ -23,5 +25,5 @@
     "eslint.config.mjs",
     "packages"
   ],
-  "include": ["**/*.js", "**/*.ts"]
+  "include": ["**/*.js", "**/*.ts", "**/*.tsx"]
 }

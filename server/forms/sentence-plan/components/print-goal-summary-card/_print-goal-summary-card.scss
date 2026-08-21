@@ -53,6 +53,13 @@
   &__step-actor {
     @include govuk-font($size: 16, $weight: 'bold');
     margin: 0;
+    color: $govuk-secondary-text-colour;
+
+    // The GOV.UK scale prints both 16px and 19px at 14pt, so keep the design's
+    // size difference by scaling 14pt down by the same 16/19 ratio.
+    @include govuk-media-query($media-type: print) {
+      font-size: 12pt;
+    }
   }
 
   &__step-status {

@@ -16,7 +16,7 @@ export const personalRelationshipsChildrenInformationStep = step({
       sectionTitleClass,
     },
   },
-  blocks: [personalRelationshipsCommunitySection.fields.childrenDetails.displayModes.field, saveButton],
+  blocks: [personalRelationshipsCommunitySection.questions.childrenDetails.displayModes.field, saveButton],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

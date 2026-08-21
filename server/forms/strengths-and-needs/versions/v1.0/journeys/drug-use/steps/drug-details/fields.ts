@@ -51,7 +51,7 @@ export const usedInLastSixMonthsSection = TemplateWrapper({
                   .then(Answer(Question.other_drug_name).pipe(Transformer.String.EscapeHtml()))
                   .else(
                     SANGenerators.getTextFromListDefinition(
-                      drugUseSection.fields.selectMisusedDrugs.content.options,
+                      drugUseSection.questions.selectMisusedDrugs.content.options,
                       Item().path('value').pipe(Transformer.String.EscapeHtml()),
                     ),
                   ),
@@ -94,7 +94,7 @@ export const usedMoreThanSixMonthsSection = TemplateWrapper({
                   .then(Answer(Question.other_drug_name).pipe(Transformer.String.EscapeHtml()))
                   .else(
                     SANGenerators.getTextFromListDefinition(
-                      drugUseSection.fields.selectMisusedDrugs.content.options,
+                      drugUseSection.questions.selectMisusedDrugs.content.options,
                       Item().path('value').pipe(Transformer.String.EscapeHtml()),
                     ).pipe(Transformer.String.ToLowerCase()),
                   ),
@@ -103,7 +103,7 @@ export const usedMoreThanSixMonthsSection = TemplateWrapper({
             .pipe(Transformer.Array.Join(', ')),
         ),
       }),
-      drugUseSection.fields.moreThanSixMonthsDetails.displayModes.field,
+      drugUseSection.questions.moreThanSixMonthsDetails.displayModes.field,
     ],
   },
   visibleWhen: anyDrugUsedMoreThanSix,

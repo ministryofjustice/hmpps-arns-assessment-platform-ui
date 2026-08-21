@@ -1,8 +1,8 @@
 import logger from '../../../../../logger'
 import { transformAssessmentData } from '../../../../utils/assessmentUtils'
-import { mapHandoverToCriminogenicNeeds } from '../../../../utils/handoverApiMapper'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { canAccessSanInfo } from '../helpers'
+import { resolveCriminogenicNeedsData } from './criminogenicNeeds'
 
 export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   if (!canAccessSanInfo(context)) {
@@ -16,6 +16,7 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
   const session = context.getSession()
   const handoverCriminogenicNeeds = session.handoverContext?.criminogenicNeedsData
   const crn = session.caseDetails?.crn
+  const isMpop = session.sessionDetails?.accessType === 'HMPPS_AUTH'
 
   if (!assessmentUuid || !currentAreaOfNeed) {
     logger.error(
@@ -32,7 +33,7 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
     return
   }
 
-  if (!handoverCriminogenicNeeds) {
+  if (!isMpop && !handoverCriminogenicNeeds) {
     logger.error(
       { assessmentUuid, crn, areaOfNeed: currentAreaOfNeed.slug },
       'Cannot load area assessment info: missing handover criminogenic needs data',
@@ -46,7 +47,7 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
     const entityAssessment = await deps.coordinatorApi.getEntityAssessment(assessmentUuid)
     const sanAssessmentData = entityAssessment.sanAssessmentData
 
-    const criminogenicNeedsData = mapHandoverToCriminogenicNeeds(handoverCriminogenicNeeds)
+    const criminogenicNeedsData = await resolveCriminogenicNeedsData(deps, context, crn)
     const areas = transformAssessmentData(sanAssessmentData, criminogenicNeedsData)
 
     // goalRoute now matches slug directly in the unified areasOfNeed config

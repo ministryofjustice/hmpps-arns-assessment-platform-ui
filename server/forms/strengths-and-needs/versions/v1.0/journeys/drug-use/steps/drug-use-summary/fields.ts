@@ -7,7 +7,6 @@ import {
   Format,
   Item,
   Iterator,
-  PipelineExpr,
   Transformer,
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
@@ -25,10 +24,10 @@ import { CommonOption } from '../../../../constants/commonOption'
 import { contentFor } from '../../locales'
 
 export const drugsSummaryPartOne = GovUKSummaryList({
-  rows: [drugUseSection.fields.drugUse.displayModes.summaryRow],
+  rows: [drugUseSection.questions.drugUse.displayModes.summaryRow],
 })
 
-export const drugsSummaryCards = (drugValue: ChainableExpr<PipelineExpr>) => {
+export const drugsSummaryCards = (drugValue: ChainableExpr) => {
   const drugValueLower = drugValue.pipe(Transformer.String.ToLowerCase())
 
   return GovUKSummaryList({
@@ -38,7 +37,7 @@ export const drugsSummaryCards = (drugValue: ChainableExpr<PipelineExpr>) => {
           .then(Answer(Question.other_drug_name))
           .else(
             SANGenerators.getTextFromListDefinition(
-              drugUseSection.fields.selectMisusedDrugs.content.options,
+              drugUseSection.questions.selectMisusedDrugs.content.options,
               drugValue,
             ),
           ),
@@ -152,19 +151,19 @@ export const moreInformationHeading = GovUKHeading({
 })
 
 export const drugsSummaryPartTwo = GovUKSummaryList({
-  rows: [drugUseSection.fields.moreThanSixMonthsDetails.displayModes.summaryRow],
+  rows: [drugUseSection.questions.moreThanSixMonthsDetails.displayModes.summaryRow],
 })
 
 export const drugsSummaryPartThree = GovUKSummaryList({
   rows: [
-    drugUseSection.fields.receivingTreatment.displayModes.summaryRow,
-    drugUseSection.fields.reasonsForUse.displayModes.summaryRow,
-    drugUseSection.fields.reasonsForUseDetails.displayModes.summaryRow,
-    drugUseSection.fields.affectedTheirLife.displayModes.summaryRow,
-    drugUseSection.fields.affectedTheirLifeDetails.displayModes.summaryRow,
-    drugUseSection.fields.anythingHelpedStopOrReduce.displayModes.summaryRow,
-    drugUseSection.fields.whatCouldHelpNotUseInFuture.displayModes.summaryRow,
-    drugUseSection.fields.drugUseChanges.displayModes.summaryRow,
+    drugUseSection.questions.receivingTreatment.displayModes.summaryRow,
+    drugUseSection.questions.reasonsForUse.displayModes.summaryRow,
+    drugUseSection.questions.reasonsForUseDetails.displayModes.summaryRow,
+    drugUseSection.questions.affectedTheirLife.displayModes.summaryRow,
+    drugUseSection.questions.affectedTheirLifeDetails.displayModes.summaryRow,
+    drugUseSection.questions.anythingHelpedStopOrReduce.displayModes.summaryRow,
+    drugUseSection.questions.whatCouldHelpNotUseInFuture.displayModes.summaryRow,
+    drugUseSection.questions.drugUseChanges.displayModes.summaryRow,
   ],
 })
 
@@ -191,10 +190,10 @@ export const drugsSummaryTab = GovUKTabs({
       label: commonContentFor('practitioner_analysis'),
       panel: {
         blocks: [
-          drugUseSection.fields.motivatedToStop.displayModes.field,
-          drugUseSection.fields.strengthsOrProtectiveFactors.displayModes.field,
-          drugUseSection.fields.riskOfSeriousHarm.displayModes.field,
-          drugUseSection.fields.riskOfReoffending.displayModes.field,
+          drugUseSection.practitionerAnalysis.motivatedToStop.displayModes.field,
+          drugUseSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
+          drugUseSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
+          drugUseSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
           markAsCompleteButton,
         ],
       },

@@ -6,17 +6,17 @@ import { commonContentFor } from '../../../../locales'
 
 export const employmentStatusSummary = GovUKSummaryList({
   rows: [
-    employmentEducationSection.fields.currentEmploymentStatus.displayModes.summaryRow,
-    employmentEducationSection.fields.employmentSector.displayModes.summaryRow,
-    employmentEducationSection.fields.employmentHistory.displayModes.summaryRow,
-    employmentEducationSection.fields.dayToDayCommitments.displayModes.summaryRow,
-    employmentEducationSection.fields.academicQualification.displayModes.summaryRow,
-    employmentEducationSection.fields.professionalQualification.displayModes.summaryRow,
-    employmentEducationSection.fields.jobSkills.displayModes.summaryRow,
-    employmentEducationSection.fields.difficultiesReadingWritingNumeracy.displayModes.summaryRow,
-    employmentEducationSection.fields.employmentExperience.displayModes.summaryRow,
-    employmentEducationSection.fields.educationExperience.displayModes.summaryRow,
-    employmentEducationSection.fields.changes.displayModes.summaryRow,
+    employmentEducationSection.questions.currentEmploymentStatus.displayModes.summaryRow,
+    employmentEducationSection.questions.employmentSector.displayModes.summaryRow,
+    employmentEducationSection.questions.employmentHistory.displayModes.summaryRow,
+    employmentEducationSection.questions.dayToDayCommitments.displayModes.summaryRow,
+    employmentEducationSection.questions.academicQualification.displayModes.summaryRow,
+    employmentEducationSection.questions.professionalQualification.displayModes.summaryRow,
+    employmentEducationSection.questions.jobSkills.displayModes.summaryRow,
+    employmentEducationSection.questions.difficultiesReadingWritingNumeracy.displayModes.summaryRow,
+    employmentEducationSection.questions.employmentExperience.displayModes.summaryRow,
+    employmentEducationSection.questions.educationExperience.displayModes.summaryRow,
+    employmentEducationSection.questions.changes.displayModes.summaryRow,
   ],
 })
 
@@ -35,9 +35,9 @@ export const employmentStatusSummaryTab = GovUKTabs({
       label: commonContentFor('practitioner_analysis'),
       panel: {
         blocks: [
-          employmentEducationSection.fields.strengthsOrProtectiveFactors.displayModes.field,
-          employmentEducationSection.fields.riskOfSeriousHarm.displayModes.field,
-          employmentEducationSection.fields.riskOfReoffending.displayModes.field,
+          employmentEducationSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
+          employmentEducationSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
+          employmentEducationSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
           markAsCompleteButton,
         ],
       },

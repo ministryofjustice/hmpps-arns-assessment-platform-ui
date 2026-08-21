@@ -5,7 +5,6 @@ import {
   Condition,
   not,
   or,
-  PipelineExpr,
   PredicateExpr,
   Self,
   validation,
@@ -25,7 +24,7 @@ import { CharacterLimit } from './characterLimit'
 import { CommonOption } from './commonOption'
 import { commonContentFor } from '../locales'
 import { SANGenerators } from '../../../generators'
-import { getDisplayTextForItems } from '../../../i18n'
+import { getDisplayTextForItems, getDisplayTextForSpecificItem } from '../../../i18n'
 
 /**
  * Content-first question authoring.
@@ -57,7 +56,7 @@ import { getDisplayTextForItems } from '../../../i18n'
  *
  * @example
  * export const mySection = {
- *   fields: {
+ *   questions: {
  *     likesTea: question({
  *       content: {
  *         code: Question.likes_tea,
@@ -81,8 +80,8 @@ import { getDisplayTextForItems } from '../../../i18n'
  *   },
  * }
  *
- * // In the step:  blocks: [mySection.fields.likesTea.displayModes.field, saveButton]
- * // In the summary:  rows: [mySection.fields.likesTea.displayModes.summaryRow]
+ * // In the step:  blocks: [mySection.questions.likesTea.displayModes.field, saveButton]
+ * // In the summary:  rows: [mySection.questions.likesTea.displayModes.summaryRow]
  */
 
 export enum QuestionFormat {
@@ -98,6 +97,7 @@ export enum QuestionFormat {
  * into each rendering surface by a display mode.
  */
 export interface QuestionContent {
+  id?: string
   code: string
   // The input kind the question renders as.
   format: QuestionFormat
@@ -443,6 +443,38 @@ export const summaryRow =
 const summaryItemsOf = (options: QuestionOptionEntry[]) =>
   options.map(entry => (isQuestionOption(entry) && entry.summaryText ? { ...entry, text: entry.summaryText } : entry))
 
+// The answer as a summary should read it. Currently just formatting dates.
+const answerTextOf = (content: QuestionContent) => {
+  if (content.format === QuestionFormat.DATE) {
+    return SANGenerators.getFormatterDateFromIso(Answer(content.code))
+  }
+
+  return Answer(content.code)
+}
+
+const isAnswered = (content: QuestionContent) => Answer(content.code).match(Condition.IsRequired())
+
+// True once the question has been answered
+const answeredWithin = (content: QuestionContent) => or(questionsWithin(content).map(isAnswered))
+
+// A question's answer, and the answers to everything its options revealed.
+const answerBlocksOf = (content: QuestionContent, size?: 's'): BlockDefinition[] => {
+  if (!isOptioned(content)) {
+    return [
+      GovUKBody({
+        text: answerTextOf(content),
+        visibleWhen: answeredWithin(content),
+        ...(size && { size }),
+      }),
+    ]
+  }
+
+  return optionsOf(content).flatMap(option => [
+    ...getDisplayTextForSpecificItem(content.code, summaryItemsOf(content.options), option.value, { size }),
+    ...revealedQuestionsOf(option).flatMap(revealed => answerBlocksOf(revealed.content, 's')),
+  ])
+}
+
 // The answers beneath a question on the summary, recursively: option labels
 // for optioned reveals (then whatever those options reveal in turn), the
 // verbatim answer otherwise.
@@ -696,8 +728,8 @@ export interface QuestionTemplateContent {
    * Expression twin of `code` for templates rendered over a runtime collection,
    * where the parameter is a collection item rather than a literal value.
    */
-  codeOver?: (instanceParam: ChainableExpr<PipelineExpr>) => ResolvableString
-  text: (instanceParam: string | ChainableExpr<PipelineExpr>) => ResolvableString
+  codeOver?: (instanceParam: ChainableExpr) => ResolvableString
+  text: (instanceParam: string | ChainableExpr) => ResolvableString
   hint?: ResolvableString
   options?: QuestionOptionEntry[]
   validationMessage?: ResolvableString
@@ -759,7 +791,7 @@ export const questionTemplate = (definition: {
   }
 }) => {
   const { content: template, displayModes } = definition
-  const projectionContentOf = (instanceParam: ChainableExpr<PipelineExpr>): TemplateProjectionContent => {
+  const projectionContentOf = (instanceParam: ChainableExpr): TemplateProjectionContent => {
     const { codeOver } = template
 
     if (!codeOver) {
@@ -797,7 +829,7 @@ export const questionTemplate = (definition: {
 
       return { content, displayModes: { field } }
     },
-    over: (instanceParam: ChainableExpr<PipelineExpr>): BlockDefinition => {
+    over: (instanceParam: ChainableExpr): BlockDefinition => {
       const { collectionField } = displayModes
 
       if (!collectionField) {
@@ -806,7 +838,7 @@ export const questionTemplate = (definition: {
 
       return collectionField(projectionContentOf(instanceParam))
     },
-    summaryRowOver: (instanceParam: ChainableExpr<PipelineExpr>): SummaryRow => {
+    summaryRowOver: (instanceParam: ChainableExpr): SummaryRow => {
       const { collectionSummaryRow } = displayModes
 
       if (!collectionSummaryRow) {
@@ -817,10 +849,20 @@ export const questionTemplate = (definition: {
     },
   }
 }
+type SectionFields = Record<string, { content: QuestionContent }>
 
 export interface SectionDefinition {
-  fields: Record<string, { content: QuestionContent }>
+  questions: SectionFields
+  practitionerAnalysis: SectionFields
 }
+
+export const questionsWithin = (content: QuestionContent): QuestionContent[] => withRevealedQuestions(content)
+
+export const answerRow = (content: QuestionContent): SummaryRow => ({
+  key: { html: content.text },
+  visibleWhen: answeredWithin(content),
+  value: { blocks: answerBlocksOf(content) },
+})
 
 const isOptioned = (content: QuestionContent): content is OptionedQuestionContent => 'options' in content
 
@@ -841,7 +883,9 @@ const withRevealedQuestions = (content: QuestionContent): QuestionContent[] => [
  * collections) live outside it.
  */
 export const stableQuestionsOf = (section: SectionDefinition): QuestionContent[] =>
-  Object.values(section.fields).flatMap(field => withRevealedQuestions(field.content))
+  [...Object.values(section.questions), ...Object.values(section.practitionerAnalysis)].flatMap(field =>
+    withRevealedQuestions(field.content),
+  )
 
 /**
  * A required free-text reveal: "Give details", with the validation message

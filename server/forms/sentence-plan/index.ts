@@ -28,6 +28,7 @@ const privacyScreenStep = createPrivacyScreen({
   headerServiceNameLink: '/sentence-plan/v1.0/plan/overview',
   personForename: CaseData.Forename,
   title: 'Close other applications',
+  feedbackUrl: config.nationalRolloutFeedbackUrl,
 })
 
 /**

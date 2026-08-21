@@ -213,12 +213,12 @@ test.describe('Drug use Page', () => {
           { question: 'drug_last_used_amphetamines', value: 'LAST_SIX' },
           { question: 'drug_last_used_benzodiazepines', value: 'MORE_THAN_SIX' },
           { question: 'drugs_injected', value: ['NONE'] },
-          { question: 'receiving_treatment', value: 'YES' },
-          { question: 'how_often_used_amphetamines', value: 'DAILY' },
-          { question: 'receiving_treatment_no_details', value: '' },
-          { question: 'how_often_used_amphetamines_details', value: 'test' },
+          { question: 'drugs_is_receiving_treatment', value: 'YES' },
+          { question: 'how_often_used_last_six_months_amphetamines', value: 'DAILY' },
+          { question: 'drugs_is_receiving_treatment_no_details', value: '' },
+          { question: 'how_often_used_last_six_months_amphetamines_details', value: 'test' },
           { question: 'drug_use_more_than_six_months_details', value: 'test' },
-          { question: 'receiving_treatment_yes_details', value: 'test' },
+          { question: 'drugs_is_receiving_treatment_yes_details', value: 'test' },
         ]).save()
 
       await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-history')
@@ -311,12 +311,12 @@ test.describe('Drug use Page', () => {
           { question: 'drug_last_used_amphetamines', value: 'LAST_SIX' },
           { question: 'drug_last_used_benzodiazepines', value: 'MORE_THAN_SIX' },
           { question: 'drugs_injected', value: ['NONE'] },
-          { question: 'receiving_treatment', value: 'YES' },
-          { question: 'how_often_used_amphetamines', value: 'DAILY' },
-          { question: 'receiving_treatment_no_details', value: '' },
-          { question: 'how_often_used_amphetamines_details', value: 'test' },
+          { question: 'drugs_is_receiving_treatment', value: 'YES' },
+          { question: 'how_often_used_last_six_months_amphetamines', value: 'DAILY' },
+          { question: 'drugs_is_receiving_treatment_no_details', value: '' },
+          { question: 'how_often_used_last_six_months_amphetamines_details', value: 'test' },
           { question: 'drug_use_more_than_six_months_details', value: 'test' },
-          { question: 'receiving_treatment_yes_details', value: 'test' },
+          { question: 'drugs_is_receiving_treatment_yes_details', value: 'test' },
         ]).save()
 
       await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-history')

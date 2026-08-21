@@ -66,6 +66,7 @@ services:
     image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:aap-san
     depends_on:
       - postgres
+      - localstack
     networks:
       - hmpps
     healthcheck:
@@ -88,6 +89,8 @@ services:
       CLIENT_SECRET: clientsecret
       PLAN_TYPE: AAP_PLAN
       ASSESSMENT_TYPE: AAP_SAN
+      HMPPS_SQS_PROVIDER: localstack
+      HMPPS_SQS_LOCALSTACK_URL: http://localstack:4566
 
   arns-handover:
     image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:latest
@@ -204,8 +207,8 @@ services:
       FORM_DATA_DELETION_TOOL_ENABLED: true
       CACHE_REDIS_HOST: redis
       SERVICE_NOW_FORM_URL: '#service-now-link'
-      NATIONAL_ROLLOUT_FEEDBACK_URL: national-rollout-feedback-url
-      FEEDBACK_FORM_URL: private-beta-feedback-url
+      NATIONAL_ROLLOUT_FEEDBACK_URL: '#national-rollout-feedback-url'
+      PRIVATE_BETA_FEEDBACK_URL: '#private-beta-feedback-url'
       OASYS_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
       MPOP_URL: 'http://aap-ui:3000/sign-in'
 

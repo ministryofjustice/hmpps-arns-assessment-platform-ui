@@ -407,13 +407,15 @@ const riskOfReoffending = question({
 })
 
 export const financeSection = {
-  fields: {
+  questions: {
     income,
     bankAccount,
     moneyManagement,
     gambling,
     debt,
     changes,
+  },
+  practitionerAnalysis: {
     strengthsOrProtectiveFactors,
     riskOfSeriousHarm,
     riskOfReoffending,

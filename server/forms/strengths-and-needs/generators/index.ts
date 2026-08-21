@@ -1,26 +1,13 @@
-import {
-  ChainableExpr,
-  defineGeneratorFunctions,
-  GeneratorBuilder,
-  GeneratorFunctionExpr,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
-import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
+import { GeneratorRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { getTextFromListDefinition } from './getTextFromListDefinition'
 import { getFormatterDateFromIso } from './getFormatterDateFromIso'
 import { getDrugValueLower } from './getDrugValueLower'
+import { StrengthsAndNeedsEffectsDeps } from '../effects/types'
 
-export interface SANGeneratorShape {
-  getTextFromListDefinition: (
-    items: any[] | ChainableExpr<any[]>,
-    value: string | ResolvableString,
-  ) => GeneratorBuilder<ResolvableString[]>
-  getFormatterDateFromIso: (value: any | ChainableExpr<any>) => GeneratorFunctionExpr
-  getDrugValueLower: (value: string | ChainableExpr<any>) => GeneratorBuilder<ResolvableString[]>
+export const sanGenerators = new GeneratorRegistry<StrengthsAndNeedsEffectsDeps>()
+
+export const SANGenerators = {
+  getTextFromListDefinition: sanGenerators.register('getTextFromListDefinition', getTextFromListDefinition),
+  getFormatterDateFromIso: sanGenerators.register('getFormatterDateFromIso', getFormatterDateFromIso),
+  getDrugValueLower: sanGenerators.register('getDrugValueLower', getDrugValueLower),
 }
-
-export const { generators: SANGenerators, implementations: StrengthsAndNeedsGeneratorImplementations } =
-  defineGeneratorFunctions<SANGeneratorShape, unknown>({
-    getTextFromListDefinition,
-    getFormatterDateFromIso,
-    getDrugValueLower,
-  })
