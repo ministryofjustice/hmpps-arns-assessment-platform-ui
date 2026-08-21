@@ -12,6 +12,7 @@ import { saveButton } from '../../../../constants/buttons'
 export const drugUseStep = step({
   path: `/${Step.drug_use.path}`,
   title: sectionPageTitle(Section.drug_use),
+  reachability: { entryWhen: true },
   view: {
     locals: {
       sectionTitleClass,
