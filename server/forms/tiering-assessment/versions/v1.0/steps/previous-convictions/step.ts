@@ -18,8 +18,8 @@ export const previousConvictionsStep = step({
       validate: true,
       onValid: {
         effects: [
-          TieringAssessmentEffects.SaveAssessmentData(),
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
+          TieringAssessmentEffects.SaveAssessmentData(),
         ],
         next: [redirect({ goto: 'check-your-answers' })],
       },
