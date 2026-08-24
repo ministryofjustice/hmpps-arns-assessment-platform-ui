@@ -410,8 +410,12 @@ test.describe('View all answers', () => {
   })
 
   test.describe('View all answers print view', () => {
-    test('shows the print cover page and header only when printing', async ({ page, createSession, strengthsAndNeedsBuilder,}) => {
-      const {handoverLink} = await createSession({targetService: TargetService.STRENGTHS_AND_NEEDS})
+    test('shows the print cover page and header only when printing', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+    }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
       await strengthsAndNeedsBuilder.fresh().save()
 
       await navigateToStrengthsAndNeeds(page, handoverLink)
@@ -424,12 +428,8 @@ test.describe('View all answers', () => {
       await expect(coverPage).toBeHidden()
       await expect(printHeader).toBeHidden()
 
-      await page.emulateMedia({media: 'print'})
-
-      await page.screenshot({
-        path: 'test_results/print-media.png',
-        fullPage: true,
-      })
+      // Unfortunately this is not reflected in the Playwright UI
+      await page.emulateMedia({ media: 'print' })
 
       // Printing produces a report cover containing the practitioner attribution and
       // classification header, while retaining the assessment content after the cover.
