@@ -15,7 +15,7 @@ import {
 import { convertToTitleCase, replaceUnderscoresWithSpaces } from '../../../utils/utils'
 
 export class RiskActuarialService {
-  constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) { }
+  constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) {}
 
   async calculateAndSaveScores(context: TieringAssessmentEffectContext): Promise<void> {
     const input: RiskScoreInput = this.buildRiskScoreInput(context)

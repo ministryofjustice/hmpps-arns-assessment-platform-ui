@@ -231,7 +231,7 @@ export class RiskActuarialApiBuilderInstance {
     return this
   }
 
-    withHasCurrentDrugMisuse(hasCurrentDrugMisuse: boolean): this {
+  withHasCurrentDrugMisuse(hasCurrentDrugMisuse: boolean): this {
     this.hasCurrentDrugMisuse = hasCurrentDrugMisuse
 
     return this
