@@ -114,11 +114,11 @@ export class RiskActuarialService {
   }
 
   private getDidOffenceInvolveCarryingOrUsingWeapon(context: TieringAssessmentEffectContext): boolean | null {
-    const offenceElements = this.parseString(context.getAnswer('offence-elements'))
-    if (offenceElements == null) {
+    const offenceElements: string[] = context.getAnswer('offence-elements') as string[]
+    if (offenceElements == null || offenceElements.length === 0) {
       return null
     }
-    return !!offenceElements.toLowerCase().includes('weapon')
+    return offenceElements.includes('weapon') || offenceElements.includes('violent-or-threat-of-violence-with-a-weapon')
   }
 
   private getEvidenceOfDomesticAbuse(context: TieringAssessmentEffectContext): boolean | null {

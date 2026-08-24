@@ -1069,6 +1069,21 @@ describe('RiskActuarialService', () => {
       }),
     )
   })
+  it('should return true if "offence-elements" contains "weapon"', async () => {
+    const answers: Record<string, unknown> = {
+      'offence-elements': 'arson,weapon,violent-or-threat-of-violence-with-a-weapon',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        didOffenceInvolveCarryingOrUsingWeapon: true,
+      }),
+    )
+  })
   it('should return false if "offence-elements" does not contain "weapon"', async () => {
     const answers: Record<string, unknown> = {
       'offence-elements': 'arson,hatred-of-identifiable-group',
