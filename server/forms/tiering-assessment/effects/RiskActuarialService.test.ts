@@ -1,3 +1,4 @@
+import { AssessmentV2 } from '@ministryofjustice/hmpps-arns-frontend-components-lib/dist/types/AssessmentV2'
 import { RiskActuarialService } from './RiskActuarialService'
 import RiskActuarialApiClient from '../../../data/riskActuarialApiClient'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
@@ -18,6 +19,7 @@ describe('RiskActuarialService', () => {
     actuarialPredictors: {
       allPredictor: {
         output: { score: 0.45, band: 'MEDIUM' },
+        type: 'STATIC',
         validationErrors: [
           {
             type: 'MISSING_DYNAMIC_INPUT',
@@ -43,6 +45,7 @@ describe('RiskActuarialService', () => {
       },
       violentPredictor: {
         output: { score: 0.12, band: 'LOW' },
+        type: 'STATIC',
         validationErrors: [
           {
             type: 'MISSING_DYNAMIC_INPUT',
@@ -69,6 +72,7 @@ describe('RiskActuarialService', () => {
       },
       directContactSexualPredictor: {
         output: { score: 0.02, band: 'LOW' },
+        type: 'DYNAMIC',
         validationErrors: [],
         algorithm: '',
         modelVersion: '',
@@ -77,6 +81,7 @@ describe('RiskActuarialService', () => {
       },
       indirectContactSexualPredictor: {
         output: { score: 0.01, band: 'LOW' },
+        type: 'DYNAMIC',
         validationErrors: [],
         algorithm: '',
         modelVersion: '',
@@ -85,6 +90,7 @@ describe('RiskActuarialService', () => {
       },
       seriousViolentPredictor: {
         output: { score: 0.08, band: 'LOW' },
+        type: 'STATIC',
         validationErrors: [
           {
             type: 'MISSING_DYNAMIC_INPUT',
@@ -111,6 +117,7 @@ describe('RiskActuarialService', () => {
           band: 'MEDIUM',
           componentScores: undefined,
         },
+        type: 'COMBINED',
         validationErrors: [],
         algorithm: '',
         modelVersion: '',
@@ -120,7 +127,12 @@ describe('RiskActuarialService', () => {
     },
   }
 
+  const mockDate = new Date('2026-08-21T10:30:00.000Z')
+
   beforeEach(() => {
+    jest.useFakeTimers()
+    jest.setSystemTime(mockDate)
+
     mockApiClient = {
       getRiskScores: jest.fn().mockResolvedValue(mockApiStaticResponse),
     } as unknown as jest.Mocked<RiskActuarialApiClient>
@@ -387,6 +399,7 @@ describe('RiskActuarialService', () => {
       'risk-scores-all-reoffending-predictor-errors',
       JSON.stringify(mockApiStaticResponse.actuarialPredictors.allPredictor.validationErrors),
     )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-type', 'STATIC')
 
     expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-violent-reoffending-predictor-score', '0.12')
     expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-violent-reoffending-predictor-band', 'LOW')
@@ -394,6 +407,7 @@ describe('RiskActuarialService', () => {
       'risk-scores-violent-reoffending-predictor-errors',
       JSON.stringify(mockApiStaticResponse.actuarialPredictors.violentPredictor.validationErrors),
     )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith('risk-scores-violent-reoffending-predictor-type', 'STATIC')
 
     expect(mockContext.setAnswer).toHaveBeenCalledWith(
       'risk-scores-direct-contact-sexual-reoffending-predictor-score',
@@ -406,6 +420,10 @@ describe('RiskActuarialService', () => {
     expect(mockContext.setAnswer).toHaveBeenCalledWith(
       'risk-scores-direct-contact-sexual-reoffending-predictor-errors',
       '[]',
+    )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-direct-contact-sexual-reoffending-predictor-type',
+      'DYNAMIC',
     )
 
     expect(mockContext.setAnswer).toHaveBeenCalledWith(
@@ -420,6 +438,10 @@ describe('RiskActuarialService', () => {
       'risk-scores-indirect-contact-sexual-reoffending-predictor-errors',
       '[]',
     )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-indirect-contact-sexual-reoffending-predictor-type',
+      'DYNAMIC',
+    )
 
     expect(mockContext.setAnswer).toHaveBeenCalledWith(
       'risk-scores-serious-violent-reoffending-predictor-score',
@@ -429,6 +451,10 @@ describe('RiskActuarialService', () => {
     expect(mockContext.setAnswer).toHaveBeenCalledWith(
       'risk-scores-serious-violent-reoffending-predictor-errors',
       JSON.stringify(mockApiStaticResponse.actuarialPredictors.seriousViolentPredictor.validationErrors),
+    )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-serious-violent-reoffending-predictor-type',
+      'STATIC',
     )
 
     expect(mockContext.setAnswer).toHaveBeenCalledWith(
@@ -443,6 +469,57 @@ describe('RiskActuarialService', () => {
       'risk-scores-combined-serious-reoffending-predictor-errors',
       '[]',
     )
+    expect(mockContext.setAnswer).toHaveBeenCalledWith(
+      'risk-scores-combined-serious-reoffending-predictor-type',
+      'COMBINED',
+    )
+  })
+
+  it('should produce RiskData when RiskScores set in context', async () => {
+    mockContext.getAnswer.mockImplementation((key: string) => {
+      if (key.endsWith('-band')) return 'VERY_HIGH'
+      if (key.endsWith('-score')) return 12.34
+      if (key.endsWith('-type')) return 'STATIC'
+      return null
+    })
+
+    const assessment = service.createV2AssessmentRiskData(mockContext).assessments[0] as AssessmentV2
+    expect(assessment.assessmentType).toBe('Tiering')
+    expect(assessment.outputVersion).toBe('2')
+    expect(assessment.completedDate).toBe('21 August 2026')
+    expect(assessment.completedDateTime).toMatch(/^21 August 2026 at \d{2}:\d{2}$/)
+
+    expect(assessment.allReoffendingPredictor).toEqual({
+      name: 'All reoffending predictor',
+      band: 'VERY HIGH',
+      score: 12.34,
+      staticOrDynamic: 'Static',
+      completedDate: '21 August 2026',
+    })
+
+    expect(mockContext.getAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-band')
+    expect(mockContext.getAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-score')
+    expect(mockContext.getAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-type')
+  })
+
+  it('should produce RiskData when RiskScores set to null in context', async () => {
+    mockContext.getAnswer.mockImplementation(() => {
+      return null
+    })
+
+    const assessment = service.createV2AssessmentRiskData(mockContext).assessments[0] as AssessmentV2
+
+    expect(assessment.allReoffendingPredictor).toEqual({
+      name: 'All reoffending predictor',
+      band: null,
+      score: null,
+      staticOrDynamic: '',
+      completedDate: '21 August 2026',
+    })
+
+    expect(mockContext.getAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-band')
+    expect(mockContext.getAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-score')
+    expect(mockContext.getAnswer).toHaveBeenCalledWith('risk-scores-all-reoffending-predictor-type')
   })
 
   it('should calculate age correctly when birthday has not occurred yet in target year', async () => {

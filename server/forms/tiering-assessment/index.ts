@@ -3,6 +3,7 @@ import { TieringAssessmentEffectsImplementations } from './effects/TieringAssess
 import { TieringAssessmentFunctions } from './functions/TieringAssessmentFunctions'
 import { TieringAssessmentEffectsDeps } from './@types/TieringAssessmentEffectsDeps'
 import { tieringAssessmentV1Journey } from './versions/v1.0'
+import { detailedRiskPredictorScores } from './components/predictorScoresComponent'
 
 const tieringAssessmentJourney = journey({
   code: 'tiering-assessment',
@@ -18,4 +19,5 @@ export default createForgePackage<TieringAssessmentEffectsDeps>({
     ...TieringAssessmentFunctions.implementations,
   },
   journey: tieringAssessmentJourney,
+  components: [detailedRiskPredictorScores],
 })

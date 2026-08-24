@@ -53,3 +53,6 @@ export const formatDate = (date: string, format: 'iso' | 'simple') => {
       })
   }
 }
+
+export const replaceUnderscoresWithSpaces = (str: string): string =>
+  str?.includes('_') ? str.replaceAll('_', ' ') : str

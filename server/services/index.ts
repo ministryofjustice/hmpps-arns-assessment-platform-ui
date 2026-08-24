@@ -12,6 +12,7 @@ export const services = () => {
     handoverApiClient,
     deliusApiClient,
     riskActuarialApiClient,
+    arnsComponents,
     preferencesStore,
   } = dataAccess()
 
@@ -23,6 +24,7 @@ export const services = () => {
     handoverApiClient,
     riskActuarialApiClient,
     riskActuarialService: new RiskActuarialService(riskActuarialApiClient),
+    arnsComponents,
     preferencesStore,
     auditService: new AuditService(applicationInfo.applicationName),
     assessmentService: new AssessmentService(assessmentPlatformApiClient),

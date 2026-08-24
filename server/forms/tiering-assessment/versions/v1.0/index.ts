@@ -44,7 +44,6 @@ export const tieringAssessmentV1Journey = journey({
     previousConvictionsStep,
     checkYourAnswersStep,
     reoffendingPredictorScoresStep,
-
   ],
   onAccess: [
     access({

@@ -1,4 +1,5 @@
 import { AuthenticationClient, InMemoryTokenStore, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
+import { ArnsComponents } from '@ministryofjustice/hmpps-arns-frontend-components-lib'
 import applicationInfoSupplier from '../applicationInfo'
 
 import { createRedisClient } from './redisClient'
@@ -31,6 +32,7 @@ export const dataAccess = () => {
     handoverApiClient: new HandoverApiClient(hmppsAuthClient),
     coordinatorApiClient: new CoordinatorApiClient(hmppsAuthClient),
     riskActuarialApiClient: new RiskActuarialApiClient(hmppsAuthClient),
+    arnsComponents: new ArnsComponents(hmppsAuthClient, config.apis.arnsApi, logger),
     assessmentCacheStore,
     preferencesStore: new PreferencesStore(),
   }
@@ -45,5 +47,6 @@ export {
   HandoverApiClient,
   DeliusApiClient,
   CoordinatorApiClient,
+  ArnsComponents,
   PreferencesStore,
 }

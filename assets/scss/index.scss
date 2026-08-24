@@ -6,6 +6,7 @@ $govuk-page-width: $moj-page-width;
 
 @import 'govuk-frontend/dist/govuk/index';
 @import '@ministryofjustice/frontend/moj/all';
+@import "@ministryofjustice/hmpps-arns-frontend-components-lib/dist/all";
 @import 'accessible-autocomplete/dist/accessible-autocomplete.min.css';
 @import '../../server/forms/sentence-plan/components/accessible-autocomplete/accessible-autocomplete';
 @import '@ministryofjustice/hmpps-forge/dist/moj-components/all';
