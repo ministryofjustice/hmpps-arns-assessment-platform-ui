@@ -12,7 +12,7 @@ export const bingeDrinkingStep = step({
   ),
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
   blocks: [bingeDrinkingField, GovUKButton({ text: 'Save and continue' })],

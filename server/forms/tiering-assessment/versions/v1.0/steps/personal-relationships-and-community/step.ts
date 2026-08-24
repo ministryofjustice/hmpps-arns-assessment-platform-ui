@@ -8,7 +8,7 @@ export const personalRelationshipsAndCommunityStep = step({
   title: 'Personal relationships and community',
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
   blocks: [importantRelationshipsField, relationshipSatisfactionField, GovUKButton({ text: 'Save and continue' })],

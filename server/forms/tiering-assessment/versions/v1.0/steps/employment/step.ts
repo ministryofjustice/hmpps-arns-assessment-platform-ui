@@ -9,7 +9,7 @@ export const employmentStep = step({
   title: Format('What is %1 current employment status?', CaseData.ForenamePossessive),
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
   blocks: [currentEmploymentStatusField, GovUKButton({ text: 'Save and continue' })],

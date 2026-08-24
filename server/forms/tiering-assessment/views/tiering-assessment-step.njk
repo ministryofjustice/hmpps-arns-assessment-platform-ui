@@ -1,0 +1,49 @@
+{%- extends "partials/layout.njk" -%}
+{%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+{%- from "moj/components/side-navigation/macro.njk" import mojSideNavigation -%}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+
+{% set allValidationErrors = fieldValidationErrors.concat(domainValidationErrors) %}
+{% set pageTitle = step.title %}
+{% set backlink = previousPageUrl %}
+
+{% block head %}
+  {{ super() }}
+  {% block pageStylesheets %}
+    <link rel="stylesheet" href="{{ '/assets/css/forms/tiering-assessment/assets/form.css' | assetMap }}">
+  {% endblock %}
+{% endblock %}
+
+{% block govukHeader %}
+  {{ super() }}
+  {% include "sentence-plan/views/partials/phase-banner.njk" %}
+  <hr class="govuk-section-break govuk-section-break--visible form-header__hr">
+  {% include "tiering-assessment/views/partials/person-header.njk" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form method="post" novalidate data-qa="main-form">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% for block in blocks %}
+          {{ block | safe }}
+        {% endfor %}
+      </form>
+    </div>
+  </div>
+{% endblock %}
+
+{% block govukFooter %}
+  {{ pdsFooter({
+    baseUrl: footerBaseUrl or "/platform"
+  }) }}
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  {% block pageScripts %}
+    <script src="{{ '/assets/js/forms/tiering-assessment/assets/form.js' | assetMap }}"></script>
+  {% endblock %}
+{% endblock %}
