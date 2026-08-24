@@ -83,6 +83,7 @@ export interface RiskScoreInput {
   temperControl?: ProblemLevel
   proCriminalAttitudes?: ProblemLevel
   regularOffendingActivities?: ProblemLevel
+  hasCurrentDrugMisuse?: boolean
   motivationToTackleDrugMisuse?: MotivationLevel
   impulsivityProblems?: ProblemLevel
   supervisionStatus?: SupervisionStatus

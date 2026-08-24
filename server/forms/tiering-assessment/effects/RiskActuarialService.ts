@@ -58,6 +58,7 @@ export class RiskActuarialService {
       hasSteroidsUsage: this.parseBoolean(context.getAnswer('steroids-radio')),
       hasKetamineUsage: this.parseBoolean(context.getAnswer('ketamine-radio')),
       hasOtherDrugsUsage: this.parseBoolean(context.getAnswer('other-drug-radio')),
+      hasCurrentDrugMisuse: this.parseBoolean(context.getAnswer('ever-misused-drugs')),
       motivationToTackleDrugMisuse: this.parseMotivationLevel(context.getAnswer('motivation-to-tackle-drug-misuse')),
       currentAlcoholUseProblems: this.getCurrentAlcoholUseProblems(context),
       excessiveAlcoholUse: this.getExcessiveAlcoholUseProblems(context),
