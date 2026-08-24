@@ -71,6 +71,8 @@ export class RiskActuarialApiBuilderInstance {
 
   private regularOffendingActivities: ProblemLevel
 
+  private hasCurrentDrugMisuse: boolean
+
   private motivationToTackleDrugMisuse: MotivationLevel
 
   private impulsivityProblems: ProblemLevel
@@ -225,6 +227,12 @@ export class RiskActuarialApiBuilderInstance {
 
   withRegularOffendingActivities(regularOffendingActivities: ProblemLevel): this {
     this.regularOffendingActivities = regularOffendingActivities
+
+    return this
+  }
+
+    withHasCurrentDrugMisuse(hasCurrentDrugMisuse: boolean): this {
+    this.hasCurrentDrugMisuse = hasCurrentDrugMisuse
 
     return this
   }
@@ -458,6 +466,7 @@ export class RiskActuarialApiBuilderInstance {
         dateOfMostRecentSexualOffence: this.dateOfMostRecentSexualOffence,
         isCurrentOffenceAgainstVictimStranger: this.isCurrentOffenceAgainstVictimStranger,
         regularOffendingActivities: this.regularOffendingActivities,
+        hasCurrentDrugMisuse: this.hasCurrentDrugMisuse,
         motivationToTackleDrugMisuse: this.motivationToTackleDrugMisuse,
         currentRelationshipStatus: this.currentRelationshipStatus,
         hasHeroinUsage: this.hasHeroinUsage,

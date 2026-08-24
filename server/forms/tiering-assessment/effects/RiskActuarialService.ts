@@ -15,7 +15,7 @@ import {
 import { convertToTitleCase, replaceUnderscoresWithSpaces } from '../../../utils/utils'
 
 export class RiskActuarialService {
-  constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) {}
+  constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) { }
 
   async calculateAndSaveScores(context: TieringAssessmentEffectContext): Promise<void> {
     const input: RiskScoreInput = this.buildRiskScoreInput(context)
@@ -114,11 +114,11 @@ export class RiskActuarialService {
   }
 
   private getDidOffenceInvolveCarryingOrUsingWeapon(context: TieringAssessmentEffectContext): boolean | null {
-    const offenceElements = this.parseString(context.getAnswer('offence-elements'))
-    if (offenceElements == null) {
+    const offenceElements: string[] = context.getAnswer('offence-elements') as string[]
+    if (offenceElements == null || offenceElements.length === 0) {
       return null
     }
-    return !!offenceElements.toLowerCase().includes('weapon')
+    return offenceElements.includes('weapon') || offenceElements.includes('violent-or-threat-of-violence-with-a-weapon')
   }
 
   private getEvidenceOfDomesticAbuse(context: TieringAssessmentEffectContext): boolean | null {

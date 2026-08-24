@@ -36,10 +36,11 @@ test.describe('Risk Actuarial API', () => {
       .withTotalIndecentImageSanctions(5)
       .withDateOfMostRecentSexualOffence('1994-01-01')
       .withRegularOffendingActivities('SOME_PROBLEMS')
+      .withHasCurrentDrugMisuse(true)
       .withMotivationToTackleDrugMisuse('FULL_MOTIVATION')
       .withCurrentRelationshipStatus('NOT_IN_RELATIONSHIP')
       .withHasHeroinUsage(false)
-      .withHasMethadoneUsage(false)
+      .withHasMethadoneUsage(true)
       .withHasOtherOpiateUsage(false)
       .withHasCrackCocaineUsage(false)
       .withHasPowderCocaineUsage(false)
@@ -108,7 +109,7 @@ test.describe('Risk Actuarial API', () => {
           thresholdsVersion: '1.0',
           output: {
             band: 'LOW',
-            score: 25.43,
+            score: 26.54,
           },
           featureValues: {
             twoYearInterceptWeight: 1.81687448362791,
@@ -137,7 +138,7 @@ test.describe('Risk Actuarial API', () => {
             bingeDrinkingProblemsWeight: 0.0,
             impulsivityProblemsWeight: 0.0,
             temperControlWeight: 0.0,
-            methadoneUsageWeight: 0.0,
+            methadoneUsageWeight: 0.057690684554484,
             otherOpiateUsageWeight: 0.0,
             crackCocaineUsageWeight: 0.0,
             powderCocaineUsageWeight: 0.0,
@@ -146,7 +147,7 @@ test.describe('Risk Actuarial API', () => {
             cannabisUsageWeight: 0.0,
             steroidUsageWeight: 0.0,
             otherDrugUsageWeight: 0.0,
-            totalWeight: -1.075980825095911,
+            totalWeight: -1.018290140541427,
           },
           validationErrors: [],
         },
