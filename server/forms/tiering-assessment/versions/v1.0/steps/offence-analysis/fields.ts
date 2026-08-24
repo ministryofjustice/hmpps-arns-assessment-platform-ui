@@ -86,8 +86,9 @@ export const offenceElementsField = GovUKCheckboxInput({
       divider: 'or',
     },
     {
-      value: 'unknown',
+      value: 'NA',
       text: 'None of these elements',
+      behaviour: 'exclusive',
     },
   ],
   validWhen: [
