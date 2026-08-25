@@ -90,6 +90,7 @@ export enum QuestionFormat {
  */
 export interface QuestionContent {
   code: string
+  idPrefix?: string
   // The input kind the question renders as.
   format: QuestionFormat
   text: ResolvableString
@@ -254,6 +255,7 @@ export const radioField =
     GovUKRadioInput(
       definedPropsOf({
         code: content.code,
+        idPrefix: content.idPrefix,
         fieldset: {
           legend: {
             text: content.text,
@@ -281,6 +283,7 @@ export const radioDetails =
     GovUKRadioInput(
       definedPropsOf({
         code: content.code,
+        idPrefix: content.idPrefix,
         fieldset: {
           legend: definedPropsOf({
             text: content.text,

@@ -66,9 +66,10 @@ const typeOfEmploymentRevealed = revealedQuestion({
   displayModes: { field: radioDetails({ legendClasses: 'govuk-visually-hidden' }) },
 })
 
-const hasBeenEmployedRevealed = revealedQuestion({
+const createHasBeenEmployedRevealed = (variant: string) => revealedQuestion({
   content: {
     code: Question.has_been_employed,
+    idPrefix: `${Question.has_been_employed}_${variant.toLowerCase()}`,
     format: QuestionFormat.RADIO,
     text: contentFor('question.has_been_employed.text'),
     options: [
@@ -96,17 +97,17 @@ const currentEmploymentStatus = question({
       {
         value: Option.currently_unavailable_for_work,
         text: contentFor('question.employment_status.option.CURRENTLY_UNAVAILABLE_FOR_WORK'),
-        reveals: hasBeenEmployedRevealed,
+        reveals: createHasBeenEmployedRevealed(Option.currently_unavailable_for_work),
       },
       {
         value: Option.unemployed_looking_for_work,
         text: contentFor('question.employment_status.option.UNEMPLOYED_LOOKING_FOR_WORK'),
-        reveals: hasBeenEmployedRevealed,
+        reveals: createHasBeenEmployedRevealed(Option.unemployed_looking_for_work),
       },
       {
         value: Option.unemployed_not_looking_for_work,
         text: contentFor('question.employment_status.option.UNEMPLOYED_NOT_LOOKING_FOR_WORK'),
-        reveals: hasBeenEmployedRevealed,
+        reveals: createHasBeenEmployedRevealed(Option.unemployed_not_looking_for_work),
       },
     ],
     validationMessage: commonContentFor('select_one_option'),

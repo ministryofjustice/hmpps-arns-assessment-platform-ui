@@ -6,6 +6,7 @@ import { ValidationResult } from '@ministryofjustice/hmpps-forge/core/framework'
 import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
 import logger from '../../logger'
+import { registerForgeGovUKComponentsGlobals } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 export default function nunjucksSetup(app?: express.Express) {
   if (app) {
@@ -159,6 +160,8 @@ export default function nunjucksSetup(app?: express.Express) {
       )
     },
   )
+
+  registerForgeGovUKComponentsGlobals(njkEnv)
 
   return njkEnv
 }
