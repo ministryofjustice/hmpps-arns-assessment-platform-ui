@@ -588,9 +588,22 @@ export const questionTemplate = (definition: {
     }
   }
 
+  const contentOf = (instanceValue: string): OptionedQuestionContent => ({
+    code: template.code(instanceValue),
+    format: template.format,
+    text: template.text(instanceValue),
+    hint: template.hint,
+    options: template.options ?? [],
+    validationMessage: template.validationMessage,
+  })
+
   return {
     codeOf: template.code,
     options: template.options ?? [],
+    // Content for one instance without requiring a `field` display mode —
+    // for templates only ever rendered via `over()`, used to register their
+    // per-instance codes as stable questions (e.g. for `stableQuestionsOf`).
+    contentOf,
     instance: (instanceValue: string): RevealedQuestion => {
       const { field } = displayModes
 
@@ -598,16 +611,7 @@ export const questionTemplate = (definition: {
         throw new Error(`Question template '${template.code(instanceValue)}' has no field display mode`)
       }
 
-      const content: OptionedQuestionContent = {
-        code: template.code(instanceValue),
-        format: template.format,
-        text: template.text(instanceValue),
-        hint: template.hint,
-        options: template.options ?? [],
-        validationMessage: template.validationMessage,
-      }
-
-      return { content, displayModes: { field } }
+      return { content: contentOf(instanceValue), displayModes: { field } }
     },
     over: (instanceParam: ChainableExpr): BlockDefinition => {
       const { collectionField } = displayModes
@@ -636,6 +640,12 @@ export interface SectionDefinition {
   code: string
   questions: SectionFields
   practitionerAnalysis: SectionFields
+  // Per-instance content for templates rendered via a runtime collection
+  // (`questionTemplate(...).over(...)`) rather than a static option reveal —
+  // e.g. one entry per drug. Not read by view-all-answers (which renders
+  // those instances itself, grouped under the drug they belong to); included
+  // only so `stableQuestionsOf` has a complete inventory of stable codes.
+  collectionQuestions?: SectionFields
 }
 
 export const questionsWithin = (content: QuestionContent): QuestionContent[] => withRevealedQuestions(content)
@@ -665,6 +675,8 @@ const withRevealedQuestions = (content: QuestionContent): QuestionContent[] => [
  * collections) live outside it.
  */
 export const stableQuestionsOf = (section: SectionDefinition): QuestionContent[] =>
-  [...Object.values(section.questions), ...Object.values(section.practitionerAnalysis)].flatMap(field =>
-    withRevealedQuestions(field.content),
-  )
+  [
+    ...Object.values(section.questions),
+    ...Object.values(section.practitionerAnalysis),
+    ...Object.values(section.collectionQuestions ?? {}),
+  ].flatMap(field => withRevealedQuestions(field.content))

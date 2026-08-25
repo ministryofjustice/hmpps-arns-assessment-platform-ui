@@ -835,6 +835,18 @@ const riskOfReoffending = question({
   },
 })
 
+// `drugHowOftenUsed`/`drugHowOftenUsedDetails` are rendered per drug via
+// `.over()` against the runtime `drugsUsedInLastSix` collection rather than a
+// static option reveal, so `stableQuestionsOf` can't discover their instances
+// by walking reveals. Register one content entry per drug explicitly so they
+// still show up as stable questions (e.g. for FormConfig).
+const drugCollectionQuestions = Object.fromEntries(
+  drugsList.flatMap(drug => [
+    [drugHowOftenUsed.codeOf(drug.value), { content: drugHowOftenUsed.contentOf(drug.value) }],
+    [drugHowOftenUsedDetails.codeOf(drug.value), { content: drugHowOftenUsedDetails.contentOf(drug.value) }],
+  ]),
+)
+
 export const drugUseSection = {
   code: Section.drug_use.code,
   questions: {
@@ -857,4 +869,5 @@ export const drugUseSection = {
     riskOfSeriousHarm,
     riskOfReoffending,
   },
+  collectionQuestions: drugCollectionQuestions,
 }

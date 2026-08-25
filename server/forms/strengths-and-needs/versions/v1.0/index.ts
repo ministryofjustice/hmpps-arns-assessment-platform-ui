@@ -16,6 +16,7 @@ import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
 import { configStep } from '../configStep'
+import { formConfigsByVersion } from '../../constants/formConfigRegistry';
 
 const feedbackUrl = config.privateBetaFeedbackUrl
 
@@ -46,6 +47,7 @@ export const strengthsAndNeedsV1Journey = journey({
   },
   data: {
     formVersion,
+    formConfig: formConfigsByVersion[formVersion],
   },
   onAccess: [
     access({
