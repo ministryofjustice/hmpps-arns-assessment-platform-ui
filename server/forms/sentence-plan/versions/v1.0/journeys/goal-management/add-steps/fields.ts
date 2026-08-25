@@ -86,6 +86,8 @@ const areaBlockContent = when(Data('activeGoal.relatedAreasOfNeedLabels').match(
 
 const goalBlockContent = Format('<p>Goal: %1</p>', Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()))
 
+const isSingleStep = Data('activeGoalStepsEdited').pipe(Transformer.Array.Length()).match(Condition.Equals(1))
+
 export const goalContextInsetText = GovUKInsetText({
   classes: 'govuk-!-margin-top-2',
   blocks: [HtmlBlock({ content: areaBlockContent }), HtmlBlock({ content: goalBlockContent })],
@@ -241,12 +243,15 @@ export const stepRows = HtmlBlock({
             width: 'one-sixth',
             blocks: [
               ButtonAsLink({
-                text: when(Data('activeGoalStepsEdited').pipe(Transformer.Array.Length()).match(Condition.Equals(1)))
-                  .then('Clear')
-                  .else('Remove'),
+                text: when(isSingleStep).then('Clear').else('Remove'),
                 name: 'action',
                 value: Format('remove_%1', Loop.Index0()),
                 classes: 'govuk-!-margin-bottom-0',
+                attributes: {
+                  'data-ai-id': when(isSingleStep)
+                    .then('add-update-steps-clear-step-link')
+                    .else(Format('add-update-steps-remove-step-link-%1', Loop.Index0())),
+                },
               }),
             ],
           },
