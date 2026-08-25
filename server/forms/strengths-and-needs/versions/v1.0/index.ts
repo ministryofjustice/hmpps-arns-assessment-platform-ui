@@ -1,5 +1,4 @@
-import { access, and, Condition, Data, journey, redirect, step } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { access, and, Condition, Data, journey, redirect } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 import { financeJourney } from './journeys/finance'
@@ -21,11 +20,11 @@ import { financeSection } from './journeys/finance/section'
 import { healthWellbeingSection } from './journeys/health-wellbeing/section'
 import { personalRelationshipsCommunitySection } from './journeys/personal-relationships-and-community/section'
 import { thinkingBehavioursAttitudesSection } from './journeys/thinking-behaviours-and-attitudes/section'
-import { StrengthsAndNeedsTransformers } from '../../transformers'
 import { FormConfig } from '../../constants/formConfig'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
+import { configStep } from '../configStep'
 
 const feedbackUrl = config.privateBetaFeedbackUrl
 
@@ -85,21 +84,7 @@ export const strengthsAndNeedsV1Journey = journey({
       next: [redirect({ goto: '/strengths-and-needs/privacy' })],
     }),
   ],
-  steps: [
-    ...createPlatformPages({ baseUrl: basePath, feedbackUrl }),
-    viewAllAnswersStep,
-    step({
-      path: `/config`,
-      title: 'Config',
-      reachability: { entryWhen: true },
-      blocks: [
-        HtmlBlock({
-          tag: 'pre',
-          content: Data('formConfig').pipe(StrengthsAndNeedsTransformers.JsonStringify()),
-        }),
-      ],
-    }),
-  ],
+  steps: [...createPlatformPages({ baseUrl: basePath, feedbackUrl }), viewAllAnswersStep, configStep],
   children: [
     accommodationJourney,
     employmentJourney,
