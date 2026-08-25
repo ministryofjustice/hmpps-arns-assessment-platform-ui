@@ -180,9 +180,6 @@ export const stepRows = HtmlBlock({
                   describedBy: stepActorHintId,
                   items: actorLabelOptions,
                   defaultValue: Item().path('actor'),
-                  attributes: {
-                    'data-ai-id': Format('add-update-steps-step-actor-dropdown-%1', Loop.Index0()),
-                  },
                   validWhen: [
                     validation({
                       condition: Self().match(Condition.IsRequired()),
@@ -232,9 +229,6 @@ export const stepRows = HtmlBlock({
                   describedBy: stepStatusHintId,
                   items: stepStatusOptions,
                   defaultValue: Item().path('status'),
-                  attributes: {
-                    'data-ai-id': Format('add-update-steps-step-status-dropdown-%1', Loop.Index0()),
-                  },
                   validWhen: [
                     validation({
                       condition: Self().match(Condition.IsRequired()),
