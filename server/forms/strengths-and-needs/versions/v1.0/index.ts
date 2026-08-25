@@ -16,7 +16,7 @@ import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
 import { configStep } from '../configStep'
-import { formConfigsByVersion } from '../../constants/formConfigRegistry';
+import { formConfigsByVersion } from '../../constants/formConfigRegistry'
 
 const feedbackUrl = config.privateBetaFeedbackUrl
 
