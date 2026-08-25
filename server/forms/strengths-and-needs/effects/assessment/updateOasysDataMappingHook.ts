@@ -2,8 +2,8 @@ import { InternalServerError } from 'http-errors'
 import { Hook } from '../../../../interfaces/aap-api/command'
 import { AssessmentVersionQueryResult } from '../../../../interfaces/aap-api/queryResult'
 import { latestVersion } from '../../constants/formVersion'
-import { strengthsAndNeedsRootJourney } from '../../index'
 import { FormConfig } from '../../constants/formConfig'
+import { formConfigsByVersion } from '../../constants/formConfigRegistry'
 
 export class UpdateOasysDataMappingHook implements Hook {
   type = 'UpdateOasysDataMapping'
@@ -12,12 +12,12 @@ export class UpdateOasysDataMappingHook implements Hook {
 
   constructor(assessment: AssessmentVersionQueryResult) {
     const version = assessment.formVersion || latestVersion
-    const journey = strengthsAndNeedsRootJourney.children.find(it => it.data.formVersion === version)
+    const formConfig = formConfigsByVersion[version]
 
-    if (!journey || !journey.data.formConfig) {
+    if (!formConfig) {
       throw new InternalServerError(`No formConfig defined for version ${version}`)
     }
 
-    this.formConfig = journey.data.formConfig as FormConfig
+    this.formConfig = formConfig
   }
 }

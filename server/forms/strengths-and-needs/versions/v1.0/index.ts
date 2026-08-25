@@ -12,15 +12,6 @@ import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
 import { isOasysAccess } from './guards'
-import { accommodationSection } from './journeys/accommodation/section'
-import { alcoholUseSection } from './journeys/alcohol-use/section'
-import { drugUseSection } from './journeys/drug-use/section'
-import { employmentEducationSection } from './journeys/employment-and-education/section'
-import { financeSection } from './journeys/finance/section'
-import { healthWellbeingSection } from './journeys/health-wellbeing/section'
-import { personalRelationshipsCommunitySection } from './journeys/personal-relationships-and-community/section'
-import { thinkingBehavioursAttitudesSection } from './journeys/thinking-behaviours-and-attitudes/section'
-import { FormConfig } from '../../constants/formConfig'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
@@ -55,16 +46,6 @@ export const strengthsAndNeedsV1Journey = journey({
   },
   data: {
     formVersion,
-    formConfig: new FormConfig(formVersion, [
-      accommodationSection,
-      alcoholUseSection,
-      drugUseSection,
-      employmentEducationSection,
-      financeSection,
-      healthWellbeingSection,
-      personalRelationshipsCommunitySection,
-      thinkingBehavioursAttitudesSection,
-    ]),
   },
   onAccess: [
     access({
