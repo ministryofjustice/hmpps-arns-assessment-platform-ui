@@ -29,8 +29,8 @@ test.describe('About Page: incomplete assessment state', () => {
       await setupAboutPage(page, session, sentencePlanBuilder)
     })
 
-    test.describe('Warning Banner', () => {
-      test('displays incomplete assessment warning banner', async ({ page }) => {
+    test.describe('Warning Alert', () => {
+      test('displays incomplete assessment warning alert', async ({ page }) => {
         const aboutPage = await AboutPage.verifyOnPage(page)
         await expect(aboutPage.incompleteAssessmentWarning).toBeVisible()
       })
