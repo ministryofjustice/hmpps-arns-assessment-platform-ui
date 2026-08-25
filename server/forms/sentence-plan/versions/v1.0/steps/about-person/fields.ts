@@ -12,7 +12,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKAccordion, GovUKTable, GovUKWarningText } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
+import { MOJAlert } from '@ministryofjustice/hmpps-forge/moj-components'
 import { CaseData, sentencePlanOverviewPath } from '../../constants'
 import { AssessmentInfoDetails } from '../../../../components'
 import { SentencePlanTransformers } from '../../../../transformers'
@@ -38,7 +38,7 @@ export const sentenceInformationMissingAndAssessmentErrorMessage = HtmlBlock({
   ),
 })
 
-export const incompleteAssessmentWarning = MOJBanner({
+export const incompleteAssessmentWarning = MOJAlert({
   visibleWhen: not(
     or(
       hasAssessmentDataFailedToLoad,
@@ -46,11 +46,10 @@ export const incompleteAssessmentWarning = MOJBanner({
       Data('isAssessmentComplete').match(Condition.Equals(true)),
     ),
   ),
-  bannerType: 'warning',
-  html: `
-     <h2 class='govuk-heading-m'>Some areas have incomplete information</h2>
-     <p class="govuk-body">This means the areas have not been marked as complete in the assessment, but you can still see the latest information available.</p>
-  `,
+  alertVariant: 'warning',
+  title: 'Some areas are incomplete',
+  showTitleAsHeading: true,
+  text: 'Some areas in the assessment have not been marked as complete. You can still see the latest information.',
   attributes: { 'data-qa': 'incomplete-assessment-warning' },
 })
 
