@@ -4,12 +4,12 @@ import { accommodationSection } from '../accommodation/section'
 
 type SectionDefinitionOf = (typeof Section)[keyof typeof Section]
 
-export interface ViewAllAnswersSection {
+export interface CheckYourAnswersSection {
   section: SectionDefinitionOf
   config?: SectionDefinition
 }
 
-export const viewAllAnswersSections: ViewAllAnswersSection[] = [
+export const checkYourAnswersSections: CheckYourAnswersSection[] = [
   { section: Section.accommodation, config: accommodationSection },
 ]
 
@@ -20,4 +20,4 @@ export interface Answerable {
 
 const fieldsOf = (fields: SectionDefinition[keyof SectionDefinition] = {}): Answerable[] => Object.values(fields)
 
-export const questionsOf = ({ config }: ViewAllAnswersSection): Answerable[] => fieldsOf(config?.questions)
+export const questionsOf = ({ config }: CheckYourAnswersSection): Answerable[] => fieldsOf(config?.questions)

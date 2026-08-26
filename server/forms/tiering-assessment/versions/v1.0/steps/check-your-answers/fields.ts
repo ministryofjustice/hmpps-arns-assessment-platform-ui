@@ -2,7 +2,7 @@ import { Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/autho
 import { BlockDefinition, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKHeading, GovUKSummaryList } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { commonContentFor } from '../../locales'
-import { Answerable, questionsOf, viewAllAnswersSections, ViewAllAnswersSection } from './sections'
+import { Answerable, questionsOf, checkYourAnswersSections, CheckYourAnswersSection } from './sections'
 import { Section } from '../../constants/section'
 import { answerRow, questionsWithin } from '../../constants/questionContent'
 
@@ -40,7 +40,7 @@ const groupHeading = (text: ReturnType<typeof commonContentFor>, fields: Answera
 const answersFor = (fields: Answerable[]) =>
   GovUKSummaryList({ rows: fields.map(field => field.displayModes?.answerRow ?? answerRow(field.content)) })
 
-const blocksFor = (entry: ViewAllAnswersSection): BlockDefinition[] => {
+const blocksFor = (entry: CheckYourAnswersSection): BlockDefinition[] => {
   const questions = questionsOf(entry)
 
   if (questions.length === 0) {
@@ -54,9 +54,9 @@ const blocksFor = (entry: ViewAllAnswersSection): BlockDefinition[] => {
   ] as BlockDefinition[]
 }
 
-export const viewAllAnswersBlocks: BlockDefinition[] = [
+export const checkYourAnswersBlock: BlockDefinition[] = [
   TemplateWrapper({
     template: '<div class="govuk-!-margin-bottom-9">{{slot:sections}}</div>',
-    slots: { sections: viewAllAnswersSections.flatMap(blocksFor) },
+    slots: { sections: checkYourAnswersSections.flatMap(blocksFor) },
   }),
 ]

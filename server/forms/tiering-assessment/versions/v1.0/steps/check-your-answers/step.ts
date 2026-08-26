@@ -1,6 +1,6 @@
 import { access, Data, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { commonContentFor } from '../../locales'
-import { viewAllAnswersBlocks } from './fields'
+import { checkYourAnswersBlock } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
@@ -28,5 +28,5 @@ export const checkYourAnswersStep = step({
       backlink: Data('viewAllAnswersBacklink'),
     },
   },
-  blocks: viewAllAnswersBlocks,
+  blocks: checkYourAnswersBlock,
 })
