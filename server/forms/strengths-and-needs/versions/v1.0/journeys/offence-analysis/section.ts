@@ -82,16 +82,16 @@ const offenceElements = question({
         text: contentFor('question.offence_analysis_elements.option.DOMESTIC_ABUSE'),
       },
       {
-        value: Option.excessive_violence_sadistic,
-        text: contentFor('question.offence_analysis_elements.option.EXCESSIVE_VIOLENCE_SADISTIC'),
+        value: Option.excessive_or_sadistic_violence,
+        text: contentFor('question.offence_analysis_elements.option.EXCESSIVE_OR_SADISTIC_VIOLENCE'),
       },
       {
-        value: Option.hatred_identifiable_groups,
-        text: contentFor('question.offence_analysis_elements.option.HATRED_IDENTIFIABLE_GROUPS'),
+        value: Option.hatred_of_identifiable_groups,
+        text: contentFor('question.offence_analysis_elements.option.HATRED_OF_IDENTIFIABLE_GROUPS'),
       },
       {
-        value: Option.physical_damage_property,
-        text: contentFor('question.offence_analysis_elements.option.PHYSICAL_DAMAGE_PROPERTY'),
+        value: Option.physical_damage_to_property,
+        text: contentFor('question.offence_analysis_elements.option.PHYSICAL_DAMAGE_TO_PROPERTY'),
       },
       {
         value: Option.sexual_element,
@@ -101,14 +101,14 @@ const offenceElements = question({
         value: Option.victim_targeted,
         text: contentFor('question.offence_analysis_elements.option.VICTIM_TARGETED'),
         reveals: requiredDetails({
-          code: Question.offence_victim_details,
+          code: Question.offence_analysis_elements_victim_targeted_details,
           validationMessage: commonContentFor('validation.enter_details'),
           maxLength: 2000,
         }),
       },
       {
-        value: Option.violence_threat_coercion,
-        text: contentFor('question.offence_analysis_elements.option.VIOLENCE_THREAT_COERCION'),
+        value: Option.violence_or_coercion,
+        text: contentFor('question.offence_analysis_elements.option.VIOLENCE_OR_COERCION'),
       },
       {
         value: Option.weapon,
@@ -117,7 +117,7 @@ const offenceElements = question({
       },
       { divider: 'or' },
       {
-        value: Option.none,
+        value: CommonOption.none,
         text: commonContentFor('option.NONE'),
         behaviour: 'exclusive' as const,
       },
@@ -134,9 +134,9 @@ const offenceElements = question({
 
 const whyOffenceHappened = question({
   content: {
-    code: Question.offence_analysis_why_offence_happened,
+    code: Question.offence_analysis_reason,
     format: QuestionFormat.TEXT,
-    text: contentFor('question.offence_analysis_why_offence_happened.text'),
+    text: contentFor('question.offence_analysis_reason.text'),
     validationMessage: commonContentFor('validation.enter_details'),
   },
   displayModes: {
@@ -155,28 +155,28 @@ const motivations = question({
     hint: contentFor('question.offence_analysis_motivations.hint'),
     options: [
       {
-        value: Option.addictions_perceived_needs,
-        text: contentFor('question.offence_analysis_motivations.option.ADDICTIONS_PERCEIVED_NEEDS'),
+        value: Option.addictions_or_perceived_needs,
+        text: contentFor('question.offence_analysis_motivations.option.ADDICTIONS_OR_PERCEIVED_NEEDS'),
       },
       {
-        value: Option.pressurised_led_by_others,
-        text: contentFor('question.offence_analysis_motivations.option.PRESSURISED_LED_BY_OTHERS'),
+        value: Option.pressurised_by_others,
+        text: contentFor('question.offence_analysis_motivations.option.PRESSURISED_BY_OTHERS'),
       },
       {
-        value: Option.emotional_state_christy,
-        text: contentFor('question.offence_analysis_motivations.option.EMOTIONAL_STATE_CHRISTY'),
+        value: Option.emotional_state,
+        text: contentFor('question.offence_analysis_motivations.option.EMOTIONAL_STATE', CaseData.Forename),
       },
       {
         value: Option.financial_motivation,
         text: contentFor('question.offence_analysis_motivations.option.FINANCIAL_MOTIVATION'),
       },
       {
-        value: Option.hatred_identifiable_groups,
-        text: contentFor('question.offence_analysis_motivations.option.HATRED_IDENTIFIABLE_GROUPS'),
+        value: Option.hatred_of_identifiable_groups,
+        text: contentFor('question.offence_analysis_motivations.option.HATRED_OF_IDENTIFIABLE_GROUPS'),
       },
       {
-        value: Option.seeking_exerting_power,
-        text: contentFor('question.offence_analysis_motivations.option.SEEKING_EXERTING_POWER'),
+        value: Option.seeking_or_exerting_power,
+        text: contentFor('question.offence_analysis_motivations.option.SEEKING_OR_EXERTING_POWER'),
       },
       {
         value: Option.sexual_motivation,
@@ -208,7 +208,7 @@ const motivations = question({
 // 2000). Pre-existing behaviour, not changed here.
 const offenceCommitedAgainstOtherDetailsRevealed = revealedQuestion({
   content: {
-    code: Question.offence_analysis_commited_against_other_details,
+    code: Question.offence_analysis_who_was_the_victim_other_details,
     format: QuestionFormat.TEXT,
     text: commonContentFor('required_details'),
   },
@@ -235,23 +235,23 @@ const offenceCommitedAgainstOtherDetailsRevealed = revealedQuestion({
 
 const offenceCommitedAgainst = question({
   content: {
-    code: Question.offence_analysis_commited_against,
+    code: Question.offence_analysis_who_was_the_victim,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.offence_analysis_commited_against.text'),
+    text: contentFor('question.offence_analysis_who_was_the_victim.text'),
     hint: commonContentFor('select_all_that_apply'),
     options: [
       {
-        value: Option.one_or_more_people,
-        text: contentFor('question.offence_analysis_commited_against.option.ONE_OR_MORE_PEOPLE'),
+        value: Option.one_or_more_person,
+        text: contentFor('question.offence_analysis_who_was_the_victim.option.ONE_OR_MORE_PERSON'),
       },
       {
         value: CommonOption.other,
         text: commonContentFor('option.OTHER'),
-        hint: contentFor('question.offence_analysis_commited_against.option.OTHER.hint'),
+        hint: contentFor('question.offence_analysis_who_was_the_victim.option.OTHER.hint'),
         reveals: offenceCommitedAgainstOtherDetailsRevealed,
       },
     ],
-    validationMessage: contentFor('question.offence_analysis_commited_against.validation'),
+    validationMessage: contentFor('question.offence_analysis_who_was_the_victim.validation'),
   },
   displayModes: {
     field: checkboxField(),
@@ -263,35 +263,35 @@ const offenceCommitedAgainst = question({
 
 const offenceAnalysisWhoWasTheOffenceCommittedAgainst = question({
   content: {
-    code: Question.offence_analysis_who_was_the_victim,
+    code: Question.offence_analysis_how_many_involved,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.offence_analysis_commited_against.text'),
+    text: contentFor('question.offence_analysis_who_was_the_victim.text'),
     hint: commonContentFor('select_all_that_apply'),
     options: [
-      { value: Option.none, text: contentFor('option.NONE') },
-      { value: Option.one, text: contentFor('question.offence_analysis_who_was_the_victim.option.ONE') },
-      { value: Option.two, text: contentFor('question.offence_analysis_who_was_the_victim.option.TWO') },
-      { value: Option.three, text: contentFor('question.offence_analysis_who_was_the_victim.option.THREE') },
-      { value: Option.four, text: contentFor('question.offence_analysis_who_was_the_victim.option.FOUR') },
-      { value: Option.five, text: contentFor('question.offence_analysis_who_was_the_victim.option.FIVE') },
+      { value: CommonOption.none, text: commonContentFor('option.NONE') },
+      { value: Option.one, text: contentFor('question.offence_analysis_how_many_involved.option.ONE') },
+      { value: Option.two, text: contentFor('question.offence_analysis_how_many_involved.option.TWO') },
+      { value: Option.three, text: contentFor('question.offence_analysis_how_many_involved.option.THREE') },
+      { value: Option.four, text: contentFor('question.offence_analysis_how_many_involved.option.FOUR') },
+      { value: Option.five, text: contentFor('question.offence_analysis_how_many_involved.option.FIVE') },
       {
         value: Option.six_to_ten,
-        text: contentFor('question.offence_analysis_who_was_the_victim.option.SIX_TO_10'),
+        text: contentFor('question.offence_analysis_how_many_involved.option.SIX_TO_10'),
       },
       {
         value: Option.eleven_to_fifteen,
-        text: contentFor('question.offence_analysis_who_was_the_victim.option.ELEVEN_TO_15'),
+        text: contentFor('question.offence_analysis_how_many_involved.option.ELEVEN_TO_15'),
       },
       {
         value: Option.more_than_fifteen,
-        text: contentFor('question.offence_analysis_who_was_the_victim.option.MORE_THAN_15'),
+        text: contentFor('question.offence_analysis_how_many_involved.option.MORE_THAN_15'),
       },
     ],
-    validationMessage: contentFor('question.offence_analysis_who_was_the_victim.validation'),
+    validationMessage: contentFor('question.offence_analysis_how_many_involved.validation'),
   },
   displayModes: {
     field: radioField({
-      dependentWhen: Answer(Question.offence_analysis_commited_against).match(
+      dependentWhen: Answer(Question.offence_analysis_who_was_the_victim).match(
         Condition.Array.Contains(CommonOption.other),
       ),
     }),
@@ -311,7 +311,7 @@ const offenceAnalysisLeader = question({
       // up to 2000 characters but validation checks up to 4000.
       yes: revealedQuestion({
         content: {
-          code: Question.offence_analysis_leader_details,
+          code: Question.offence_analysis_leader_yes_details,
           format: QuestionFormat.TEXT,
           text: commonContentFor('required_details'),
         },
@@ -337,7 +337,7 @@ const offenceAnalysisLeader = question({
       }),
       no: revealedQuestion({
         content: {
-          code: Question.no_offence_analysis_leader_details,
+          code: Question.offence_analysis_leader_no_details,
           format: QuestionFormat.TEXT,
           text: commonContentFor('optional_details'),
         },
@@ -375,11 +375,11 @@ const offenceImpactOnVictims = question({
     text: contentFor('question.offence_analysis_impact_on_victims.text', CaseData.Forename),
     options: yesNo({
       yes: optionalDetails({
-        code: Question.offence_analysis_impact_on_victims_details,
+        code: Question.offence_analysis_impact_on_victims_yes_details,
         maxLength: 2000,
       }),
       no: optionalDetails({
-        code: Question.no_offence_analysis_impact_on_victims_details,
+        code: Question.offence_analysis_impact_on_victims_no_details,
         maxLength: 2000,
       }),
     }),
@@ -400,11 +400,11 @@ const offenceAnalysisAcceptResponsibility = question({
     text: contentFor('question.offence_analysis_accept_responsibility.text', CaseData.Forename),
     options: yesNo({
       yes: optionalDetails({
-        code: Question.offence_analysis_accept_responsibility_details,
+        code: Question.offence_analysis_accept_responsibility_yes_details,
         maxLength: 2000,
       }),
       no: optionalDetails({
-        code: Question.no_offence_analysis_accept_responsibility_details,
+        code: Question.offence_analysis_accept_responsibility_no_details,
         maxLength: 2000,
       }),
     }),
@@ -427,12 +427,12 @@ const offenceAnalysisEscalation = question({
       {
         value: CommonOption.yes,
         text: commonContentFor('option.YES'),
-        reveals: optionalDetails({ code: Question.offence_analysis_escalation_details, maxLength: 2000 }),
+        reveals: optionalDetails({ code: Question.offence_analysis_escalation_yes_details, maxLength: 2000 }),
       },
       {
         value: CommonOption.no,
         text: commonContentFor('option.NO'),
-        reveals: optionalDetails({ code: Question.no_offence_analysis_escalation_details, maxLength: 2000 }),
+        reveals: optionalDetails({ code: Question.offence_analysis_escalation_no_details, maxLength: 2000 }),
       },
       { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
     ],
@@ -474,7 +474,7 @@ const offenceAnalysisPerpetratorOfDomesticAbuseTypeRevealed = revealedQuestion({
         value: Option.family_member_and_intimate_partner,
         text: contentFor('option.FAMILY_MEMBER_AND_INTIMATE_PARTNER'),
         reveals: requiredDetails({
-          code: Question.offence_analysis_perpetrator_of_domestic_abuse_type_family_member_and_partner_details,
+          code: Question.offence_analysis_perpetrator_of_domestic_abuse_type_family_member_and_intimate_partner_details,
           validationMessage: commonContentFor('validation.enter_details'),
           maxLength: 2000,
         }),
@@ -536,7 +536,7 @@ const offenceAnalysisVictimOfDomesticAbuseTypeRevealed = revealedQuestion({
         value: Option.family_member_and_intimate_partner,
         text: contentFor('option.FAMILY_MEMBER_AND_INTIMATE_PARTNER'),
         reveals: requiredDetails({
-          code: Question.offence_analysis_victim_of_domestic_abuse_type_family_member_and_partner_details,
+          code: Question.offence_analysis_victim_of_domestic_abuse_type_family_member_and_intimate_partner_details,
           validationMessage: commonContentFor('validation.enter_details'),
           maxLength: 2000,
         }),
@@ -618,7 +618,7 @@ const offenceAnalysisRisk = question({
         text: commonContentFor('option.YES'),
         reveals: revealedQuestion({
           content: {
-            code: Question.offence_analysis_risk_details,
+            code: Question.offence_analysis_risk_yes_details,
             format: QuestionFormat.TEXT,
             text: commonContentFor('required_details'),
           },
@@ -630,7 +630,7 @@ const offenceAnalysisRisk = question({
         text: commonContentFor('option.NO'),
         reveals: revealedQuestion({
           content: {
-            code: Question.no_offence_analysis_risk_details,
+            code: Question.offence_analysis_risk_no_details,
             format: QuestionFormat.TEXT,
             text: commonContentFor('required_details'),
           },
@@ -650,44 +650,57 @@ const offenceAnalysisRisk = question({
 
 const victimType = question({
   content: {
-    code: Question.offence_analysis_victim_type,
+    code: Question.offence_analysis_victim_relationship,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.offence_analysis_victim_type.text'),
+    text: contentFor('question.offence_analysis_victim_relationship.text'),
     options: [
-      { value: Option.stranger, text: contentFor('question.offence_analysis_victim_type.option.STRANGER') },
+      { value: Option.stranger, text: contentFor('question.offence_analysis_victim_relationship.option.STRANGER') },
       {
         value: Option.criminal_justice_staff,
-        text: contentFor('question.offence_analysis_victim_type.option.CRIMINAL_JUSTICE_STAFF'),
+        text: contentFor('question.offence_analysis_victim_relationship.option.CRIMINAL_JUSTICE_STAFF'),
       },
       {
-        value: Option.parent_or_step_parent,
+        value: Option.pop_parent_or_step_parent,
         text: contentFor(
-          'question.offence_analysis_victim_type.option.PARENT_OR_STEP_PARENT',
+          'question.offence_analysis_victim_relationship.option.POP_PARENT_OR_STEP_PARENT',
           CaseData.ForenamePossessive,
         ),
       },
       {
-        value: Option.partner,
-        text: contentFor('question.offence_analysis_victim_type.option.PARTNER', CaseData.ForenamePossessive),
-      },
-      {
-        value: Option.ex_partner,
-        text: contentFor('question.offence_analysis_victim_type.option.EX_PARTNER', CaseData.ForenamePossessive),
-      },
-      {
-        value: Option.child_or_step_child,
+        value: Option.pop_partner,
         text: contentFor(
-          'question.offence_analysis_victim_type.option.CHILD_OR_STEP_CHILD',
+          'question.offence_analysis_victim_relationship.option.POP_PARTNER',
+          CaseData.ForenamePossessive,
+        ),
+      },
+      {
+        value: Option.pop_ex_partner,
+        text: contentFor(
+          'question.offence_analysis_victim_relationship.option.POP_EX_PARTNER',
+          CaseData.ForenamePossessive,
+        ),
+      },
+      {
+        value: Option.pop_child_or_step_child,
+        text: contentFor(
+          'question.offence_analysis_victim_relationship.option.POP_CHILD_OR_STEP_CHILD',
           CaseData.ForenamePossessive,
         ),
       },
       {
         value: Option.other_family_member,
-        text: contentFor('question.offence_analysis_victim_type.option.OTHER_FAMILY_MEMBER'),
+        text: contentFor('question.offence_analysis_victim_relationship.option.OTHER_FAMILY_MEMBER'),
       },
-      { value: CommonOption.other, text: commonContentFor('option.OTHER') },
+      {
+        value: CommonOption.other,
+        text: commonContentFor('option.OTHER'),
+        reveals: optionalDetails({
+          code: Question.offence_analysis_victim_relationship_other_details,
+          maxLength: 2000,
+        }),
+      },
     ],
-    validationMessage: contentFor('question.offence_analysis_victim_type.validation'),
+    validationMessage: contentFor('question.offence_analysis_victim_relationship.validation'),
   },
   displayModes: { field: radioField() },
 })
@@ -698,19 +711,43 @@ const victimAge = question({
     format: QuestionFormat.RADIO,
     text: contentFor('question.offence_analysis_victim_age.text'),
     options: [
-      { value: Option.age_0_to_4, text: contentFor('question.offence_analysis_victim_age.option.AGE_0_TO_4') },
-      { value: Option.age_5_to_11, text: contentFor('question.offence_analysis_victim_age.option.AGE_5_TO_11') },
-      { value: Option.age_12_to_15, text: contentFor('question.offence_analysis_victim_age.option.AGE_12_TO_15') },
-      { value: Option.age_16_to_17, text: contentFor('question.offence_analysis_victim_age.option.AGE_16_TO_17') },
-      { value: Option.age_18_to_20, text: contentFor('question.offence_analysis_victim_age.option.AGE_18_TO_20') },
-      { value: Option.age_21_to_25, text: contentFor('question.offence_analysis_victim_age.option.AGE_21_TO_25') },
-      { value: Option.age_26_to_49, text: contentFor('question.offence_analysis_victim_age.option.AGE_26_TO_49') },
-      { value: Option.age_50_to_64, text: contentFor('question.offence_analysis_victim_age.option.AGE_50_TO_64') },
+      {
+        value: Option.age_0_to_4_years,
+        text: contentFor('question.offence_analysis_victim_age.option.AGE_0_TO_4_YEARS'),
+      },
+      {
+        value: Option.age_5_to_11_years,
+        text: contentFor('question.offence_analysis_victim_age.option.AGE_5_TO_11_YEARS'),
+      },
+      {
+        value: Option.age_12_to_15_years,
+        text: contentFor('question.offence_analysis_victim_age.option.AGE_12_TO_15_YEARS'),
+      },
+      {
+        value: Option.age_16_to_17_years,
+        text: contentFor('question.offence_analysis_victim_age.option.AGE_16_TO_17_YEARS'),
+      },
+      {
+        value: Option.age_18_to_20_years,
+        text: contentFor('question.offence_analysis_victim_age.option.AGE_18_TO_20_YEARS'),
+      },
+      {
+        value: Option.age_21_to_25_years,
+        text: contentFor('question.offence_analysis_victim_age.option.AGE_21_TO_25_YEARS'),
+      },
+      {
+        value: Option.age_26_to_49_years,
+        text: contentFor('question.offence_analysis_victim_age.option.AGE_26_TO_49_YEARS'),
+      },
+      {
+        value: Option.age_50_to_64_years,
+        text: contentFor('question.offence_analysis_victim_age.option.AGE_50_TO_64_YEARS'),
+      },
       {
         value: Option.age_65_and_over,
         text: contentFor('question.offence_analysis_victim_age.option.AGE_65_AND_OVER'),
       },
-      { value: Option.age_unknown, text: contentFor('question.offence_analysis_victim_age.option.AGE_UNKNOWN') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],
     validationMessage: contentFor('question.offence_analysis_victim_age.validation'),
   },
@@ -726,7 +763,7 @@ const victimSex = question({
       { value: Option.male, text: contentFor('question.offence_analysis_victim_sex.option.MALE') },
       { value: Option.female, text: contentFor('question.offence_analysis_victim_sex.option.FEMALE') },
       { value: Option.intersex, text: contentFor('question.offence_analysis_victim_sex.option.INTERSEX') },
-      { value: Option.sex_unknown, text: contentFor('question.offence_analysis_victim_sex.option.SEX_UNKNOWN') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],
     validationMessage: contentFor('question.offence_analysis_victim_sex.validation'),
   },
@@ -741,84 +778,80 @@ const victimSex = question({
 const victimEthnicitySelectItems = [
   {
     value: '',
-    text: contentFor('question.offence_analysis_victim_ethnicity.option_label'),
+    text: contentFor('question.offence_analysis_victim_race.option_label'),
     disabled: true,
     selected: true,
   },
   { text: 'Select the victim’s ethnicity', value: '' },
   {
     text: contentFor(
-      'question.offence_analysis_victim_ethnicity.option.WHITE_ENGLISH_WELSH_SCOTTISH_NORTHERN_IRISH_OR_BRITISH',
+      'question.offence_analysis_victim_race.option.WHITE_ENGLISH_WELSH_SCOTTISH_NORTHERN_IRISH_OR_BRITISH',
     ),
     value: Option.white_english_welsh_scottish_northern_irish_or_british,
   },
-  { text: contentFor('question.offence_analysis_victim_ethnicity.option.WHITE_IRISH'), value: Option.white_irish },
+  { text: contentFor('question.offence_analysis_victim_race.option.WHITE_IRISH'), value: Option.white_irish },
   {
-    text: contentFor('question.offence_analysis_victim_ethnicity.option.WHITE_GYPSY_OR_IRISH_TRAVELLER'),
+    text: contentFor('question.offence_analysis_victim_race.option.WHITE_GYPSY_OR_IRISH_TRAVELLER'),
     value: Option.white_gypsy_or_irish_traveller,
   },
-  { text: contentFor('question.offence_analysis_victim_ethnicity.option.WHITE_ROMA'), value: Option.white_roma },
+  { text: contentFor('question.offence_analysis_victim_race.option.WHITE_ROMA'), value: Option.white_roma },
   {
-    text: contentFor('question.offence_analysis_victim_ethnicity.option.WHITE_ANY_OTHER_WHITE_BACKGROUND'),
+    text: contentFor('question.offence_analysis_victim_race.option.WHITE_ANY_OTHER_WHITE_BACKGROUND'),
     value: Option.white_any_other_white_background,
   },
   {
-    text: contentFor('question.offence_analysis_victim_ethnicity.option.MIXED_WHITE_AND_BLACK_CARIBBEAN'),
+    text: contentFor('question.offence_analysis_victim_race.option.MIXED_WHITE_AND_BLACK_CARIBBEAN'),
     value: Option.mixed_white_and_black_caribbean,
   },
   {
-    text: contentFor('question.offence_analysis_victim_ethnicity.option.MIXED_WHITE_AND_BLACK_AFRICAN'),
+    text: contentFor('question.offence_analysis_victim_race.option.MIXED_WHITE_AND_BLACK_AFRICAN'),
     value: Option.mixed_white_and_black_african,
   },
   {
-    text: contentFor('question.offence_analysis_victim_ethnicity.option.MIXED_WHITE_AND_ASIAN'),
+    text: contentFor('question.offence_analysis_victim_race.option.MIXED_WHITE_AND_ASIAN'),
     value: Option.mixed_white_and_asian,
   },
   {
     text: contentFor(
-      'question.offence_analysis_victim_ethnicity.option.MIXED_ANY_OTHER_MIXED_OR_MULTIPLE_ETHNIC_BACKGROUND_BACKGROUND',
+      'question.offence_analysis_victim_race.option.MIXED_ANY_OTHER_MIXED_OR_MULTIPLE_ETHNIC_BACKGROUND_BACKGROUND',
     ),
     value: Option.mixed_any_other_mixed_or_multiple_ethnic_background_background,
   },
   {
-    text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_INDIAN'),
+    text: contentFor('question.offence_analysis_victim_race.option.ASIAN_OR_ASIAN_BRITISH_INDIAN'),
     value: Option.asian_or_asian_british_indian,
   },
   {
-    text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_PAKISTANI'),
+    text: contentFor('question.offence_analysis_victim_race.option.ASIAN_OR_ASIAN_BRITISH_PAKISTANI'),
     value: Option.asian_or_asian_british_pakistani,
   },
   {
-    text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_BANGLADESHI'),
+    text: contentFor('question.offence_analysis_victim_race.option.ASIAN_OR_ASIAN_BRITISH_BANGLADESHI'),
     value: Option.asian_or_asian_british_bangladeshi,
   },
   {
-    text: contentFor('question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_CHINESE'),
+    text: contentFor('question.offence_analysis_victim_race.option.ASIAN_OR_ASIAN_BRITISH_CHINESE'),
     value: Option.asian_or_asian_british_chinese,
   },
   {
-    text: contentFor(
-      'question.offence_analysis_victim_ethnicity.option.ASIAN_OR_ASIAN_BRITISH_ANY_OTHER_ASIAN_BACKGROUND',
-    ),
+    text: contentFor('question.offence_analysis_victim_race.option.ASIAN_OR_ASIAN_BRITISH_ANY_OTHER_ASIAN_BACKGROUND'),
     value: Option.asian_or_asian_british_any_other_asian_background,
   },
   {
-    text: contentFor('question.offence_analysis_victim_ethnicity.option.BLACK_OR_BLACK_BRITISH_CARIBBEAN'),
+    text: contentFor('question.offence_analysis_victim_race.option.BLACK_OR_BLACK_BRITISH_CARIBBEAN'),
     value: Option.black_or_black_british_caribbean,
   },
   {
-    text: contentFor('question.offence_analysis_victim_ethnicity.option.BLACK_OR_BLACK_BRITISH_AFRICAN'),
+    text: contentFor('question.offence_analysis_victim_race.option.BLACK_OR_BLACK_BRITISH_AFRICAN'),
     value: Option.black_or_black_british_african,
   },
   {
-    text: contentFor(
-      'question.offence_analysis_victim_ethnicity.option.BLACK_OR_BLACK_BRITISH_ANY_OTHER_BLACK_BACKGROUND',
-    ),
+    text: contentFor('question.offence_analysis_victim_race.option.BLACK_OR_BLACK_BRITISH_ANY_OTHER_BLACK_BACKGROUND'),
     value: Option.black_or_black_british_any_other_black_background,
   },
-  { text: contentFor('question.offence_analysis_victim_ethnicity.option.ARAB'), value: Option.arab },
+  { text: contentFor('question.offence_analysis_victim_race.option.ARAB'), value: Option.arab },
   {
-    text: contentFor('question.offence_analysis_victim_ethnicity.option.ANY_OTHER_ETHNIC_GROUP'),
+    text: contentFor('question.offence_analysis_victim_race.option.ANY_OTHER_ETHNIC_GROUP'),
     value: Option.any_other_ethnic_group,
   },
   { text: commonContentFor('option.UNKNOWN'), value: CommonOption.unknown },
@@ -826,10 +859,10 @@ const victimEthnicitySelectItems = [
 
 const victimEthnicity = question({
   content: {
-    code: Question.offence_analysis_victim_ethnicity,
+    code: Question.offence_analysis_victim_race,
     format: QuestionFormat.SELECT,
-    text: contentFor('question.offence_analysis_victim_ethnicity.text'),
-    validationMessage: contentFor('question.offence_analysis_victim_ethnicity.validation'),
+    text: contentFor('question.offence_analysis_victim_race.text'),
+    validationMessage: contentFor('question.offence_analysis_victim_race.validation'),
     // Deduped for FormConfig — see the comment on `victimEthnicitySelectItems` above.
     options: victimEthnicitySelectItems
       .filter((item, index, all) => item.value !== '' || all.findIndex(other => other.value === '') === index)

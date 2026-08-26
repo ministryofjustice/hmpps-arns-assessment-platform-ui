@@ -21,12 +21,12 @@ export const english = {
       option: {
         [Option.arson]: 'Arson',
         [Option.domestic_abuse]: 'Domestic abuse',
-        [Option.excessive_violence_sadistic]: 'Excessive violence or sadistic violence',
-        [Option.hatred_identifiable_groups]: 'Hatred of identifiable groups',
-        [Option.physical_damage_property]: 'Physical damage to property',
+        [Option.excessive_or_sadistic_violence]: 'Excessive violence or sadistic violence',
+        [Option.hatred_of_identifiable_groups]: 'Hatred of identifiable groups',
+        [Option.physical_damage_to_property]: 'Physical damage to property',
         [Option.sexual_element]: 'Sexual element',
         [Option.victim_targeted]: 'Victim targeted',
-        [Option.violence_threat_coercion]: 'Violence, or threat of violence or coercion',
+        [Option.violence_or_coercion]: 'Violence, or threat of violence or coercion',
         [Option.weapon]: 'Weapon',
       },
       validation: 'Select if the offence(s) had any of the elements',
@@ -35,7 +35,7 @@ export const english = {
       text: 'What was the weapon? (optional)',
       validation: 'Weapon details must be 2000 characters or less',
     },
-    [Question.offence_analysis_why_offence_happened]: {
+    [Question.offence_analysis_reason]: {
       text: 'Why did the current index offence(s) happen?',
       validation: 'Enter why the current index offence(s) happened',
     },
@@ -43,36 +43,36 @@ export const english = {
       text: 'Did the current index offence(s) involve any of the following motivations?',
       hint: 'Select all that apply.',
       option: {
-        [Option.addictions_perceived_needs]: 'Addictions or perceived needs',
-        [Option.pressurised_led_by_others]: 'Being pressurised or led into offending by others',
-        [Option.emotional_state_christy]: 'Emotional state of Christy',
+        [Option.addictions_or_perceived_needs]: 'Addictions or perceived needs',
+        [Option.pressurised_by_others]: 'Being pressurised or led into offending by others',
+        [Option.emotional_state]: 'Emotional state of %1',
         [Option.financial_motivation]: 'Financial motivation',
-        [Option.hatred_identifiable_groups]: 'Hatred of identifiable groups',
-        [Option.seeking_exerting_power]: 'Seeking or exerting power',
+        [Option.hatred_of_identifiable_groups]: 'Hatred of identifiable groups',
+        [Option.seeking_or_exerting_power]: 'Seeking or exerting power',
         [Option.sexual_motivation]: 'Sexual motivation',
         [Option.thrill_seeking]: 'Thrill seeking',
       },
       validation: 'Select if the offence(s) involved any of the following motivations',
     },
-    [Question.offence_analysis_commited_against]: {
+    [Question.offence_analysis_who_was_the_victim]: {
       text: 'Who was the offence committed against?',
       option: {
-        [Option.one_or_more_people]: 'One or more people',
+        [Option.one_or_more_person]: 'One or more people',
         [CommonOption.other]: {
           hint: 'For example, a business or the wider community.',
         },
       },
       validation: 'Select who the victim is',
     },
-    [Question.offence_analysis_victim_type]: {
+    [Question.offence_analysis_victim_relationship]: {
       text: 'Who is the victim?',
       option: {
         [Option.stranger]: 'A stranger',
         [Option.criminal_justice_staff]: 'Criminal justice staff',
-        [Option.parent_or_step_parent]: '%1 parent or step-parent',
-        [Option.partner]: '%1 partner',
-        [Option.ex_partner]: '%1 ex-partner',
-        [Option.child_or_step_child]: '%1 child or step-child',
+        [Option.pop_parent_or_step_parent]: '%1 parent or step-parent',
+        [Option.pop_partner]: '%1 partner',
+        [Option.pop_ex_partner]: '%1 ex-partner',
+        [Option.pop_child_or_step_child]: '%1 child or step-child',
         [Option.other_family_member]: 'Other family member',
       },
       validation: 'Select who the victim is',
@@ -80,16 +80,15 @@ export const english = {
     [Question.offence_analysis_victim_age]: {
       text: "What is the victim's approximate age?",
       option: {
-        [Option.age_0_to_4]: '0 to 4 years',
-        [Option.age_5_to_11]: '5 to 11 years',
-        [Option.age_12_to_15]: '12 to 15 years',
-        [Option.age_16_to_17]: '16 to 17 years',
-        [Option.age_18_to_20]: '18 to 20 years',
-        [Option.age_21_to_25]: '21 to 25 years',
-        [Option.age_26_to_49]: '26 to 49 years',
-        [Option.age_50_to_64]: '50 to 64 years',
+        [Option.age_0_to_4_years]: '0 to 4 years',
+        [Option.age_5_to_11_years]: '5 to 11 years',
+        [Option.age_12_to_15_years]: '12 to 15 years',
+        [Option.age_16_to_17_years]: '16 to 17 years',
+        [Option.age_18_to_20_years]: '18 to 20 years',
+        [Option.age_21_to_25_years]: '21 to 25 years',
+        [Option.age_26_to_49_years]: '26 to 49 years',
+        [Option.age_50_to_64_years]: '50 to 64 years',
         [Option.age_65_and_over]: '65 years and over',
-        [Option.age_unknown]: 'Unknown',
       },
       validation: 'Select approximate age',
     },
@@ -99,11 +98,10 @@ export const english = {
         [Option.male]: 'Male',
         [Option.female]: 'Female',
         [Option.intersex]: 'Intersex',
-        [Option.sex_unknown]: 'Unknown',
       },
       validation: 'Select sex',
     },
-    [Question.offence_analysis_victim_ethnicity]: {
+    [Question.offence_analysis_victim_race]: {
       text: "What is the victim's ethnicity?",
       option_label: "Select the victim's ethnicity",
       option: {
@@ -133,37 +131,7 @@ export const english = {
       },
       validation: "Select the victim's ethnicity",
     },
-    [Question.offence_analysis_strengths_protective_factors]: {
-      text: 'Are there any strengths or protective factors?',
-      validation: 'Select whether there are strengths or protective factors',
-    },
-    [Question.offence_analysis_strengths_protective_factors_yes_details]: {
-      text: 'Describe the strengths or protective factors',
-    },
-    [Question.offence_analysis_strengths_protective_factors_no_details]: {
-      text: 'Explain why there are no strengths or protective factors',
-    },
-    [Question.offence_analysis_risk_of_serious_harm]: {
-      text: 'Is there a risk of serious harm?',
-      validation: 'Select whether there is a risk of serious harm',
-    },
-    [Question.offence_analysis_risk_of_serious_harm_yes_details]: {
-      text: 'Describe the risk of serious harm',
-    },
-    [Question.offence_analysis_risk_of_serious_harm_no_details]: {
-      text: 'Explain why there is no risk of serious harm',
-    },
-    [Question.offence_analysis_risk_of_reoffending]: {
-      text: 'Is there a risk of reoffending?',
-      validation: 'Select whether there is a risk of reoffending',
-    },
-    [Question.offence_analysis_risk_of_reoffending_yes_details]: {
-      text: 'Describe the risk of reoffending',
-    },
-    [Question.offence_analysis_risk_of_reoffending_no_details]: {
-      text: 'Explain why there is no risk of reoffending',
-    },
-    [Question.offence_analysis_who_was_the_victim]: {
+    [Question.offence_analysis_how_many_involved]: {
       text: 'How many other people were involved with committing the current index offence(s)?',
       option: {
         [Option.one]: '1',
@@ -218,7 +186,6 @@ export const english = {
     },
   },
   option: {
-    [Option.none]: 'None',
     [Option.family_member]: 'Family member',
     [Option.intimate_partner]: 'Intimate partner',
     [Option.family_member_and_intimate_partner]: 'Family member and intimate partner',

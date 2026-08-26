@@ -37,7 +37,7 @@ export const offenceAnalysisStep = step({
   onSubmission: [
     submit({
       when: and(
-        Answer(Question.offence_analysis_commited_against).match(Condition.Array.Contains(Option.one_or_more_people)),
+        Answer(Question.offence_analysis_who_was_the_victim).match(Condition.Array.Contains(Option.one_or_more_person)),
         Post('action').match(Condition.Equals('save')),
       ),
       validate: true,

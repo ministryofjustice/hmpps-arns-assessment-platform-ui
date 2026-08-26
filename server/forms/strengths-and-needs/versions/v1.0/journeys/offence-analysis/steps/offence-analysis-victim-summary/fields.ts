@@ -58,12 +58,12 @@ export const victimCards = CollectionBlock({
             },
             rows: [
               {
-                key: { text: contentFor('question.offence_analysis_victim_type.text') },
+                key: { text: contentFor('question.offence_analysis_victim_relationship.text') },
                 value: {
                   text: SANGenerators.getTextFromListDefinition(
                     victimQuestions.victimType.content.options,
                     Item().path('answers')
-                      .path(Question.offence_analysis_victim_type)
+                      .path(Question.offence_analysis_victim_relationship)
                       .path('value'),
                   ),
                 },
@@ -87,11 +87,11 @@ export const victimCards = CollectionBlock({
                 },
               },
               {
-                key: { text: contentFor('question.offence_analysis_victim_ethnicity.text') },
+                key: { text: contentFor('question.offence_analysis_victim_race.text') },
                 value: {
                   text: SANGenerators.getTextFromListDefinition(
                     victimQuestions.victimEthnicity.content.options,
-                    Item().path('answers').path(Question.offence_analysis_victim_ethnicity).path('value'),
+                    Item().path('answers').path(Question.offence_analysis_victim_race).path('value'),
                   ),
                 },
               },
@@ -103,7 +103,7 @@ export const victimCards = CollectionBlock({
     ),
   ),
   fallback: [GovUKInsetText({ text: contentFor('fallback.there_are_no_victims') })],
-  visibleWhen: Answer(Question.offence_analysis_commited_against).match(
-    Condition.Array.Contains(Option.one_or_more_people),
+  visibleWhen: Answer(Question.offence_analysis_who_was_the_victim).match(
+    Condition.Array.Contains(Option.one_or_more_person),
   ),
 })

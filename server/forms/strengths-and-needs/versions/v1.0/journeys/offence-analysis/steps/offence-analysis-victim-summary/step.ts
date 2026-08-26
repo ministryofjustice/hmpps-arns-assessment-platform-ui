@@ -53,7 +53,7 @@ export const offenceAnalysisVictimSummaryStep = step({
       onValid: {
         next: [
           redirect({
-            when: Answer(Question.offence_analysis_commited_against).match(
+            when: Answer(Question.offence_analysis_who_was_the_victim).match(
               Condition.Array.Contains(CommonOption.other),
             ),
             goto: Step.offence_analysis_involved_parties.path,
