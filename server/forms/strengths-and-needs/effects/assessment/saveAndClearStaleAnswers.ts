@@ -2,6 +2,7 @@ import { InternalServerError } from 'http-errors'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { buildAnswerDelta } from './answerDelta'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
 
 export const saveAndClearStaleAnswers =
   (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
@@ -35,5 +36,6 @@ export const saveAndClearStaleAnswers =
       user,
       added: wrapAll(delta.added),
       removed: delta.removed,
+      hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
     })
   }

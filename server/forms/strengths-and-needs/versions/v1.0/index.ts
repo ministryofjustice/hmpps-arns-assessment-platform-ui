@@ -15,6 +15,8 @@ import { isOasysAccess } from './guards'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
+import { configStep } from '../configStep'
+import { formConfigsByVersion } from '../../constants/formConfigRegistry'
 
 const feedbackUrl = config.privateBetaFeedbackUrl
 
@@ -28,7 +30,6 @@ export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
   title: commonContentFor('strengths_and_needs'),
   path: `/${formVersion}`,
-  steps: [...createPlatformPages({ baseUrl: basePath, feedbackUrl }), viewAllAnswersStep],
   view: {
     template: 'strengths-and-needs/views/san-step',
     locals: {
@@ -46,6 +47,7 @@ export const strengthsAndNeedsV1Journey = journey({
   },
   data: {
     formVersion,
+    formConfig: formConfigsByVersion[formVersion],
   },
   onAccess: [
     access({
@@ -65,6 +67,7 @@ export const strengthsAndNeedsV1Journey = journey({
       next: [redirect({ goto: '/strengths-and-needs/privacy' })],
     }),
   ],
+  steps: [...createPlatformPages({ baseUrl: basePath, feedbackUrl }), viewAllAnswersStep, configStep],
   children: [
     accommodationJourney,
     employmentJourney,
