@@ -4,7 +4,6 @@ import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 export const whoAreTheyLivingWithField = GovUKCheckboxInput({
   code: 'who-are-they-living-with',
-  multiple: true,
   hint: {
     text: 'Select all that apply.',
   },
@@ -28,8 +27,8 @@ export const whoAreTheyLivingWithField = GovUKCheckboxInput({
       text: 'Partner',
     },
     {
-      value: 'person-under-18-years-old',
-      text: 'Person under 18 years old',
+      value: 'person-under-18-years-oldz',
+      text: 'Person under 18 years olda',
     },
     {
       value: 'other',

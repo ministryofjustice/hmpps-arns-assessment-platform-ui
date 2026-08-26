@@ -1,17 +1,30 @@
 import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { suitabilityOfAccommodationField, whoAreTheyLivingWithField } from './fields'
+import { continueButton } from '../../common'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
+import { accommodationSection } from './section'
+import { sectionPageTitle } from '../../locales'
+import { Section } from '../../constants/section'
+import { Step } from './constants/step'
+import { sectionPath } from '../../constants/path'
 
 export const accommodationStep = step({
-  path: '/accommodation',
-  title: 'Accommodation',
+  path: `/${Step.accommodation.path}`,
+  title: sectionPageTitle(Section.accommodation),
+  view: {
+    locals: {
+      backlink: sectionPath(Section.accommodation),
+    },
+  },
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
-  blocks: [whoAreTheyLivingWithField, suitabilityOfAccommodationField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [
+    accommodationSection.questions.whoAreTheyLivingWithQuestion.displayModes.field,
+    accommodationSection.questions.suitabilityOfAccommodationQuestion.displayModes.field,
+    continueButton,
+  ],
   onSubmission: [
     submit({
       validate: true,

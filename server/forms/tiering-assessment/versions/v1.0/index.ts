@@ -5,10 +5,8 @@ import { currentOffenceAndOffendingHistoryStep } from './steps/current-offence-a
 import { sexualOffendingStep } from './steps/sexual-offending/step'
 import { dateOfCurrentSupervisionStep } from './steps/date-of-current-supervision/step'
 import { offencesSinceSupervisionStep } from './steps/offences-since-supervision/step'
-import { checkYourAnswersStep } from './steps/check-your-answers/step'
 import { reoffendingPredictorScoresStep } from './steps/reoffending-predictor-scores/step'
 import { interviewQuestionStep } from './steps/interview-question/step'
-import { accommodationStep } from './steps/accommodation/step'
 import { employmentStep } from './steps/employment/step'
 import { drugMisuseStep } from './steps/drug-misuse/step'
 import { drugUseStep } from './steps/drug-use/step'
@@ -19,6 +17,8 @@ import { personalRelationshipsAndCommunityStep } from './steps/personal-relation
 import { thinkingAttitudesAndBehavioursStep } from './steps/thinking-attitudes-and-behaviours/step'
 import { offenceAnalysisStep } from './steps/offence-analysis/step'
 import { previousConvictionsStep } from './steps/previous-convictions/step'
+import { accommodationStep } from './steps/accommodation/step'
+import { checkYourAnswersStep } from './steps/view-all-answers/step'
 
 export const tieringAssessmentV1Journey = journey({
   code: 'tiering-assessment-v1',

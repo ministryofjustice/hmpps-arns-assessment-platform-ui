@@ -4,7 +4,6 @@ import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 export const importantRelationshipsField = GovUKCheckboxInput({
   code: 'important-relationships',
-  multiple: true,
   hint: {
     text: 'Select all that apply.',
   },

@@ -4,7 +4,6 @@ import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
 export const previousConvictionsField = GovUKCheckboxInput({
   code: 'previous-convictions',
-  multiple: true,
   hint: {
     text: "Select all that apply, or select 'None of these offences'.",
   },

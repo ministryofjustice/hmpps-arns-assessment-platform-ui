@@ -35,7 +35,6 @@ const domesticAbuseAgainstField = GovUKRadioInput({
 
 export const offenceElementsField = GovUKCheckboxInput({
   code: 'offence-elements',
-  multiple: true,
   hint: {
     text: 'Select all that apply.',
   },

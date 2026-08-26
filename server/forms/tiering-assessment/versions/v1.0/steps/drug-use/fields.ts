@@ -53,7 +53,6 @@ const otherDrugName = GovUKTextInput({
 
 export const whatDrugsMisusedField = GovUKCheckboxInput({
   code: 'drug-misuse',
-  multiple: true,
   fieldset: {
     legend: {
       text: Format('Which drugs has %1 misused?', CaseData.Forename),

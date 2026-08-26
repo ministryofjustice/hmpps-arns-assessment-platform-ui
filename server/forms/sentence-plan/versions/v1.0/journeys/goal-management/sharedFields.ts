@@ -17,7 +17,6 @@ import { CaseData } from '../../constants'
 
 export const relatedAreasOfNeed = GovUKCheckboxInput({
   code: 'related_areas_of_need',
-  multiple: true,
   hint: {
     text: 'Select all that apply.',
   },
