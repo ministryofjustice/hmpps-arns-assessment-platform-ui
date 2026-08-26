@@ -653,7 +653,7 @@ type SectionFields = Record<string, { content: QuestionContent }>
  * which collection they belong to.
  */
 export interface CollectionDefinition {
-  code: string
+  name: string
   questions: SectionFields
 }
 
@@ -707,8 +707,8 @@ export const stableQuestionsOf = (section: SectionDefinition): QuestionContent[]
  * Every question asked once per item of a section's collections (e.g. once
  * per victim), tagged with the collection they belong to.
  */
-export const collectionsOf = (section: SectionDefinition): { code: string; questions: QuestionContent[] }[] =>
+export const collectionsOf = (section: SectionDefinition): { name: string; questions: QuestionContent[] }[] =>
   (section.collections ?? []).map(collectionDef => ({
-    code: collectionDef.code,
+    name: collectionDef.name,
     questions: Object.values(collectionDef.questions).flatMap(field => withRevealedQuestions(field.content)),
   }))

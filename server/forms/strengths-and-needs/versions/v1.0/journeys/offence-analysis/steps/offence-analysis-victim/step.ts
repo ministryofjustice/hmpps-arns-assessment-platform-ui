@@ -3,7 +3,7 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { victimQuestions } from '../../section'
 import { Step } from '../../constants/step'
 import { saveButton } from '../../../../constants/buttons'
-import { collectionCode, collectionName, VICTIM_FIELD_CODES } from '../../constants/constants'
+import { victimsCollection } from '../../constants/collections'
 
 export const offenceAnalysisVictimStep = step({
   path: `/${Step.offence_analysis_victim.path}`,
@@ -18,7 +18,7 @@ export const offenceAnalysisVictimStep = step({
   ],
   onAccess: [
     access({
-      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(collectionCode, collectionName)],
+      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(victimsCollection)],
     }),
   ],
   onSubmission: [
@@ -26,7 +26,7 @@ export const offenceAnalysisVictimStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [StrengthsAndNeedsEffects.addItemToCollection(collectionCode, collectionName, VICTIM_FIELD_CODES)],
+        effects: [StrengthsAndNeedsEffects.addItemToCollection(victimsCollection)],
         next: [redirect({ goto: Step.offence_analysis_victim_summary.path })],
       },
     }),

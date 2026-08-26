@@ -49,7 +49,7 @@ export class FormConfig {
             code: content.code,
             type: content.format,
             section: section.code,
-            collection: collectionDef.code,
+            collection: collectionDef.name,
             ...(isOptioned(content)
               ? { options: content.options.filter(isQuestionOption).map(({ value }) => ({ value })) }
               : {}),

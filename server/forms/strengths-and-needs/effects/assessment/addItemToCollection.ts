@@ -1,30 +1,31 @@
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
+import { Collection } from '../../constants/collection'
 
 export const addItemToCollection =
-  (deps: StrengthsAndNeedsEffectsDeps) =>
-  async (context: StrengthsAndNeedsContext, collectionName: string, collectionCode: string, fieldCodes: string[]) => {
+  (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext, collection: Collection) => {
     const user = context.getState('user')
     const assessmentUuid = context.getData('assessmentUuid')
 
-    // Get or create OFFENCE_ANALYSIS_VICTIM collection
-    let victimCollectionUuid = context.getData('victimCollectionUuid')
+    // Get or create the collection
+    let collectionUuid = (context.getData('collectionUuids') ?? {})[collection.name]
 
-    if (!victimCollectionUuid) {
+    if (!collectionUuid) {
       const createResult = await deps.api.executeCommand({
         type: 'CreateCollectionCommand',
-        name: collectionCode,
+        name: collection.name,
         assessmentUuid,
         user,
       })
 
-      victimCollectionUuid = createResult.collectionUuid
+      collectionUuid = createResult.collectionUuid
+      collection.storeUuid(collectionUuid, context)
     }
 
     const items: Record<string, unknown> = {}
 
     // Get form answers
-    for (const code of fieldCodes) {
+    for (const code of collection.fields) {
       const value = context.getAnswer(code)
 
       if (value !== undefined) {
@@ -32,20 +33,19 @@ export const addItemToCollection =
       }
     }
 
-    const collection = (context.getAnswer(collectionName) ?? []) as unknown[]
-    context.setAnswer(collectionName, [...collection, items])
+    const collectionAnswer = (context.getAnswer(collection.name) ?? []) as unknown[]
+    context.setAnswer(collection.name, [...collectionAnswer, items])
 
-    for (const code of fieldCodes) {
+    for (const code of collection.fields) {
       context.setAnswer(code, undefined)
     }
 
     await deps.api.executeCommand({
       type: 'AddCollectionItemCommand',
-      collectionUuid: victimCollectionUuid,
+      collectionUuid,
       properties: {},
       answers: wrapAll(items),
       assessmentUuid,
       user,
     })
-
   }

@@ -18,9 +18,10 @@ import { Step } from '../../constants/step'
 import { Modal } from '../../../../../../components/modal/modalComponent'
 import { commonContentFor } from '../../../../locales'
 import { Option } from '../../constants/option'
+import { victimsCollection } from '../../constants/collections'
 
 export const victimCards = CollectionBlock({
-  collection: Data('victims').each(
+  collection: Data(victimsCollection.name).each(
     Iterator.Map(
       HtmlBlock({
         content: [

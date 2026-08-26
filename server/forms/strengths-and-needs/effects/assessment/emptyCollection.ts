@@ -1,7 +1,8 @@
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { Collection } from '../../constants/collection'
 
 export const emptyCollection =
-  (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext, collectionName: string) => {
+  (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext, collection: Collection) => {
     const user = context.getState('user')
     const assessmentUuid = context.getData('assessmentUuid')
 
@@ -9,7 +10,7 @@ export const emptyCollection =
     const collections = assessment.collections
 
     collections
-      .find(collection => collection.name === collectionName)
+      .find(it => it.name === collection.name)
       .items.forEach(async item => {
         if (item) {
           await deps.api.executeCommand({

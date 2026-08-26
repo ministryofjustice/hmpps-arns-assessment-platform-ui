@@ -6,7 +6,6 @@ import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessSessionDetails } from '../../access/effects/types'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { AssessmentPlatformApiClient } from '../../../data'
-import { CollectionItem } from '../../../interfaces/aap-api/dataModel'
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers
@@ -36,8 +35,7 @@ export interface StrengthsAndNeedsData {
   privacyAccepted?: boolean
   assessment?: AssessmentVersionQueryResult
   assessmentUuid?: string
-  victimCollectionUuid?: string
-  victims?: CollectionItem[]
+  collectionUuids?: Record<string, string>
   [key: string]: unknown
 }
 

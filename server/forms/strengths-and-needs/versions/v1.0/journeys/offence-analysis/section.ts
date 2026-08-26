@@ -24,9 +24,9 @@ import { Section } from '../../constants/section'
 import { Question } from './constants/question'
 import { Option } from './constants/option'
 import { Step } from './constants/step'
-import { collectionName } from './constants/constants'
 import { commonContentFor } from '../../locales'
 import { contentFor } from './locales'
+import { victimsCollection } from './constants/collections'
 
 // --- Index Offence Description ---
 
@@ -912,7 +912,7 @@ export const offenceAnalysisSection = {
   practitionerAnalysis: {},
   collections: [
     {
-      code: collectionName,
+      name: victimsCollection.name,
       questions: victimQuestions,
     },
   ],

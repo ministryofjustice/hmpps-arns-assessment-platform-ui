@@ -12,7 +12,7 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
 import { victimQuestions } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
-import { collectionCode, collectionName, VICTIM_FIELD_CODES } from '../../constants/constants'
+import { victimsCollection } from '../../constants/collections'
 
 export const offenceAnalysisEditVictimStep = step({
   path: `/${Step.offence_analysis_victim_edit.templatePath}`,
@@ -28,10 +28,9 @@ export const offenceAnalysisEditVictimStep = step({
   onAccess: [
     access({
       effects: [
-        StrengthsAndNeedsEffects.loadAnswersFromCollection(collectionCode, collectionName),
+        StrengthsAndNeedsEffects.loadAnswersFromCollection(victimsCollection),
         StrengthsAndNeedsEffects.loadItemFromCollection(
-          VICTIM_FIELD_CODES,
-          collectionName,
+          victimsCollection,
           Params('itemId').pipe(Transformer.String.ToInt()),
         ),
       ],
@@ -44,9 +43,7 @@ export const offenceAnalysisEditVictimStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.updateItemFromCollection(
-            collectionCode,
-            collectionName,
-            VICTIM_FIELD_CODES,
+            victimsCollection,
             Params('itemId').pipe(Transformer.String.ToInt()),
           ),
         ],

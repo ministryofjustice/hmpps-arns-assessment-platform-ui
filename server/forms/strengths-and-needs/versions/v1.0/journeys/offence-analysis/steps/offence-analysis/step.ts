@@ -14,8 +14,8 @@ import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
-import { collectionCode, collectionName } from '../../constants/constants'
 import { saveButton } from '../../../../constants/buttons'
+import { victimsCollection } from '../../constants/collections'
 
 export const offenceAnalysisStep = step({
   path: `/${Step.offence_analysis.path}`,
@@ -31,7 +31,7 @@ export const offenceAnalysisStep = step({
   ],
   onAccess: [
     access({
-      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(collectionCode, collectionName)],
+      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(victimsCollection)],
     }),
   ],
   onSubmission: [
@@ -60,7 +60,7 @@ export const offenceAnalysisStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
-          StrengthsAndNeedsEffects.emptyCollection(collectionName),
+          StrengthsAndNeedsEffects.emptyCollection(victimsCollection),
         ],
         next: [
           redirect({

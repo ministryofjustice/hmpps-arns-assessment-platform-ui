@@ -15,7 +15,7 @@ import { Step } from '../../constants/step'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
-import { collectionCode, collectionName } from '../../constants/constants'
+import { victimsCollection } from '../../constants/collections'
 import { contentFor } from '../../locales'
 
 const addAnotherButton = GovUKButton({
@@ -37,12 +37,12 @@ export const offenceAnalysisVictimSummaryStep = step({
   blocks: [victimCards, addAnotherButton, continueButton],
   onAccess: [
     access({
-      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(collectionCode, collectionName)],
+      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(victimsCollection)],
     }),
   ],
   validWhen: [
     validation({
-      condition: Data('victims').match(Condition.IsRequired()),
+      condition: Data(victimsCollection.name).match(Condition.IsRequired()),
       message: contentFor('validation.add_one_or_more_victims'),
     }),
   ],
@@ -73,7 +73,7 @@ export const offenceAnalysisVictimSummaryStep = step({
       when: Post('delete').match(Condition.IsRequired()),
       validate: true,
       onValid: {
-        effects: [StrengthsAndNeedsEffects.removeItemFromCollection(collectionName, Post('delete'))],
+        effects: [StrengthsAndNeedsEffects.removeItemFromCollection(victimsCollection, Post('delete'))],
         next: [redirect({ goto: Step.offence_analysis_victim_summary.path })],
       },
     }),
