@@ -23,6 +23,7 @@ export const english = {
         [CommonOption.some_problems]: 'Yes, with concerns',
         [CommonOption.significant_problems]: 'No',
       },
+      hint: 'This includes things like safety or having appropriate amenities.',
       validation: 'This is a required field',
     },
   },

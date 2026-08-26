@@ -46,6 +46,7 @@ export const suitabilityOfAccommodationQuestion = question({
     code: Question.suitability_of_accommodation,
     format: QuestionFormat.RADIO,
     text: contentFor('question.suitability_of_accommodation.text', CaseData.ForenamePossessive),
+    hint: contentFor('question.suitability_of_accommodation.hint'),
     options: [
       {
         value: CommonOption.no_problems,
