@@ -66,20 +66,21 @@ const typeOfEmploymentRevealed = revealedQuestion({
   displayModes: { field: radioDetails({ legendClasses: 'govuk-visually-hidden' }) },
 })
 
-const createHasBeenEmployedRevealed = (variant: string) => revealedQuestion({
-  content: {
-    code: Question.has_been_employed,
-    idPrefix: `${Question.has_been_employed}_${variant.toLowerCase()}`,
-    format: QuestionFormat.RADIO,
-    text: contentFor('question.has_been_employed.text'),
-    options: [
-      { value: CommonOption.yes, text: contentFor(`question.has_been_employed.option.YES`) },
-      { value: CommonOption.no, text: contentFor(`question.has_been_employed.option.NO`) },
-    ],
-    validationMessage: commonContentFor('select_one_option'),
-  },
-  displayModes: { field: radioDetails() },
-})
+const createHasBeenEmployedRevealed = (variant: string) =>
+  revealedQuestion({
+    content: {
+      code: Question.has_been_employed,
+      idPrefix: `${Question.has_been_employed}_${variant.toLowerCase()}`,
+      format: QuestionFormat.RADIO,
+      text: contentFor('question.has_been_employed.text'),
+      options: [
+        { value: CommonOption.yes, text: contentFor(`question.has_been_employed.option.YES`) },
+        { value: CommonOption.no, text: contentFor(`question.has_been_employed.option.NO`) },
+      ],
+      validationMessage: commonContentFor('select_one_option'),
+    },
+    displayModes: { field: radioDetails() },
+  })
 
 const currentEmploymentStatus = question({
   content: {

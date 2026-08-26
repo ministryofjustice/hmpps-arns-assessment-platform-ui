@@ -3,10 +3,10 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
 import { ValidationResult } from '@ministryofjustice/hmpps-forge/core/framework'
+import { registerForgeGovUKComponentsGlobals } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
 import logger from '../../logger'
-import { registerForgeGovUKComponentsGlobals } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 export default function nunjucksSetup(app?: express.Express) {
   if (app) {
