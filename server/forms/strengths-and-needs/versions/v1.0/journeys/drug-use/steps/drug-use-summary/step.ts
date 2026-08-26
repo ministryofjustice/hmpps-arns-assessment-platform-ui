@@ -1,6 +1,6 @@
 import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { drugsSummaryTab } from './fields'
+import { summaryTab } from './fields'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { summaryPageTitle } from '../../../../locales'
@@ -13,7 +13,7 @@ export const drugUseSummaryStep = step({
       effects: [StrengthsAndNeedsEffects.deriveDrugCategories()],
     }),
   ],
-  blocks: [drugsSummaryTab],
+  blocks: [summaryTab],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -23,7 +23,7 @@ export const drugUseSummaryStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.yes),
         ],
-        next: [redirect({ goto: Step.drug_use_analysis.path })],
+        next: [redirect({ goto: `${Step.drug_use_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

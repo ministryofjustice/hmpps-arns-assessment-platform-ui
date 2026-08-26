@@ -1,7 +1,6 @@
 import { and, Answer, Condition, not, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
-
 import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
 import {
@@ -25,6 +24,7 @@ import { Section } from '../../constants/section'
 import { CharacterLimit } from '../../../../constants/characterLimit'
 import {
   characterCountField,
+  createSummaryRowActions,
   itemisedSummaryRow,
   optionalDetails,
   optionalFutureDateDetails,
@@ -250,9 +250,7 @@ const currentAccommodation = question({
           ),
         ],
       },
-      actions: {
-        items: [{ href: Step.current_accommodation.path, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(Step.current_accommodation.path),
     }),
   },
 })
@@ -296,7 +294,6 @@ const livingWith = question({
     field: checkboxField({ dependentWhen: livingWithApplies, visibleWhen: livingWithApplies }),
     summaryRow: itemisedSummaryRow({
       changePath: Step.accommodation_details.path,
-      visibleWhen: Answer(Question.living_with).match(Condition.IsRequired()),
     }),
   },
 })

@@ -38,7 +38,7 @@ const sectionHeader = (section: SectionDefinition) =>
     },
   })
 
-const anyAnswered = (fields: Answerable[]) =>
+export const anyAnswered = (fields: Answerable[]) =>
   or(
     fields
       .flatMap(field => questionsWithin(field.content))
@@ -48,7 +48,7 @@ const anyAnswered = (fields: Answerable[]) =>
 const groupHeading = (text: ReturnType<typeof commonContentFor>, fields: Answerable[]) =>
   GovUKHeading({ text, size: 'm', level: 3, visibleWhen: anyAnswered(fields) })
 
-const answersFor = (fields: Answerable[]) =>
+export const answersFor = (fields: Answerable[]) =>
   GovUKSummaryList({ rows: fields.map(field => field.displayModes?.answerRow ?? answerRow(field.content)) })
 
 const blocksFor = (entry: ViewAllAnswersSection): BlockDefinition[] => {

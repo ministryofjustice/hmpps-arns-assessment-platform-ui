@@ -21,7 +21,7 @@ export const personalRelationshipsCommunitySummaryStep = step({
             SectionComplete.yes,
           ),
         ],
-        next: [redirect({ goto: Step.personal_relationships_community_analysis.path })],
+        next: [redirect({ goto: `${Step.personal_relationships_community_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

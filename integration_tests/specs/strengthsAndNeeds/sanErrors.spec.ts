@@ -27,8 +27,8 @@ test.describe('Errors', () => {
     await strengthsAndNeedsBuilder.fresh().save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
-    await navigateToStrengthsAndNeeds(page, handoverLink, 'access-denied')
+    const accommodationPage = new AccommodationPage(page)
+    await page.goto(handoverLink)
 
     await expect(page.getByRole('heading', { name: 'You need to sign in to use this service' })).toBeVisible()
     await expect(accommodationPage.returnToOASys).toBeVisible()

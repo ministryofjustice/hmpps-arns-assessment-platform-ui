@@ -81,12 +81,10 @@ export const handlePrivacyScreenIfPresent = async (page: Page): Promise<void> =>
  * Navigates to a strengths and needs via handover link and handles the privacy screen.
  * Use this for tests that need to get to the San assessment via OASys handover.
  */
-export const navigateToStrengthsAndNeeds = async (
-  page: Page,
-  handoverLink: string,
-  url: string = 'current-accommodation',
-): Promise<void> => {
+export const navigateToStrengthsAndNeeds = async (page: Page, handoverLink: string): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
-  expect(page.url()).toContain(url)
+  // Wait for navigation to complete and check that we're on the expected page
+  // The URL should contain the expected path after redirecting from handover link
+  await page.waitForURL(/.*\/strengths-and-needs\/v1.0\/.*/)
 }

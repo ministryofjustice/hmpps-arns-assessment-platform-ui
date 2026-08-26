@@ -4,6 +4,7 @@ import { drugsSummaryAnalysisTab } from './fields'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { analysisPageTitle } from '../../../../locales'
 import { Section } from '../../../../constants/section'
+import { isReadOnlyMode } from '../../../../guards'
 
 export const drugUseAnalysisStep = step({
   path: `/${Step.drug_use_analysis.path}`,
@@ -15,4 +16,5 @@ export const drugUseAnalysisStep = step({
   ],
   // TODO: Add template for read-only analysis display
   blocks: [drugsSummaryAnalysisTab],
+  reachability: { entryWhen: isReadOnlyMode },
 })
