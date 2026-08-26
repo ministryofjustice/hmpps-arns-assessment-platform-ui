@@ -37,9 +37,7 @@ const victimTargetedDetails = GovUKCharacterCount({
   code: Question.offence_victim_details,
   label: commonContentFor('required_details'),
   maxLength: 2000,
-  dependentWhen: Answer(Question.offence_analysis_elements).match(
-    Condition.Array.Contains(Option.victim_targeted),
-  ),
+  dependentWhen: Answer(Question.offence_analysis_elements).match(Condition.Array.Contains(Option.victim_targeted)),
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),

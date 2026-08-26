@@ -40,9 +40,7 @@ export const offenceAnalysisSummary = GovUKSummaryList({
         blocks: [
           GovUKBody({
             text: contentFor('question.offence_analysis_elements.option.ARSON'),
-            visibleWhen: Answer(Question.offence_analysis_elements).match(
-              Condition.Array.Contains(Option.arson),
-            ),
+            visibleWhen: Answer(Question.offence_analysis_elements).match(Condition.Array.Contains(Option.arson)),
           }),
           GovUKBody({
             text: contentFor('question.offence_analysis_elements.option.DOMESTIC_ABUSE'),
@@ -92,9 +90,7 @@ export const offenceAnalysisSummary = GovUKSummaryList({
           }),
           GovUKBody({
             text: contentFor('question.offence_analysis_elements.option.WEAPON'),
-            visibleWhen: Answer(Question.offence_analysis_elements).match(
-              Condition.Array.Contains(Option.weapon),
-            ),
+            visibleWhen: Answer(Question.offence_analysis_elements).match(Condition.Array.Contains(Option.weapon)),
           }),
           GovUKBody({
             text: Answer(Question.offence_weapon_details),
@@ -102,9 +98,7 @@ export const offenceAnalysisSummary = GovUKSummaryList({
           }),
           GovUKBody({
             text: commonContentFor('option.NONE'),
-            visibleWhen: Answer(Question.offence_analysis_elements).match(
-              Condition.Array.Contains(CommonOption.none),
-            ),
+            visibleWhen: Answer(Question.offence_analysis_elements).match(Condition.Array.Contains(CommonOption.none)),
           }),
         ],
       },
