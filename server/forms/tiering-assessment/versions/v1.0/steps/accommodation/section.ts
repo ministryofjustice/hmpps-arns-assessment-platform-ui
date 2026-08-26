@@ -26,12 +26,12 @@ const whoAreTheyLivingWithQuestion = question({
       { value: Option.person_under_18, text: contentFor('question.who_are_they_living_with.option.PERSON_UNDER_18') },
       { value: CommonOption.other, text: commonContentFor('option.OTHER') },
       { divider: commonContentFor('or') },
-      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN'), behaviour: 'exclusive' as const },
       {
         value: Option.alone,
         text: contentFor('question.who_are_they_living_with.option.ALONE'),
         behaviour: 'exclusive' as const,
       },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN'), behaviour: 'exclusive' as const },
     ],
     validationMessage: contentFor('question.who_are_they_living_with.validation', CaseData.Forename),
   },
