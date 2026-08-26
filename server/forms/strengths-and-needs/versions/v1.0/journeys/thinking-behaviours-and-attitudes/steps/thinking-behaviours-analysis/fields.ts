@@ -4,8 +4,10 @@ import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
 import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { thinkingBehavioursAttitudesSection } from '../../section'
 import { commonContentFor } from '../../../../locales'
-import { questions, summaryPanel } from '../thinking-behaviours-summary/fields'
+import { questions, summary } from '../thinking-behaviours-summary/fields'
 import { anyAnswered } from '../../../../steps/view-all-answers/fields'
+import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
+import { Step } from '../../constants/step'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
@@ -14,6 +16,8 @@ const practitionerAnalysisSummary = GovUKSummaryList({
     thinkingBehavioursAttitudesSection.practitionerAnalysis.linkedToReoffending.displayModes.summaryRow,
   ],
 })
+
+const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.thinkingBehavioursAnalysis.path)]
 
 export const thinkingBehavioursAnalysisSummaryTab = HtmlBlock({
   content: [

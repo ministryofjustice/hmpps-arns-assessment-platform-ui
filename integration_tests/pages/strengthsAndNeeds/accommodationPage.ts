@@ -14,7 +14,7 @@ export default class AccommodationPage extends StrengthsAndNeedsPage {
 
   readonly campsite: Locator
 
-  private constructor(page: Page) {
+  constructor(page: Page) {
     super(page)
     this.incomplete = page.getByText('Incomplete')
     this.whatTypeOfAccommodation = page.getByTestId('main-form')

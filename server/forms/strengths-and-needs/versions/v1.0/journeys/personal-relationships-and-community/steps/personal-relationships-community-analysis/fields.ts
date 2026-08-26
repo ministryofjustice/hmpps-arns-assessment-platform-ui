@@ -6,7 +6,9 @@ import { questions } from '../personal-relationships-community-summary/fields'
 import { personalRelationshipsCommunitySection } from '../../section'
 import { commonContentFor } from '../../../../locales'
 import { anyAnswered } from '../../../../steps/view-all-answers/fields'
-import { summaryPanel } from '../../../finance/steps/finance-summary/fields'
+import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
+import { summary } from '../../../health-wellbeing/steps/health-wellbeing-summary/fields'
+import { Step } from '../../../health-wellbeing/constants/step'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
@@ -15,6 +17,8 @@ const practitionerAnalysisSummary = GovUKSummaryList({
     personalRelationshipsCommunitySection.practitionerAnalysis.riskOfReoffending.displayModes.summaryRow,
   ],
 })
+
+const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.health_wellbeing_analysis.path)]
 
 export const personalRelationshipsCommunityPractitionerAnalysisSummaryTab = HtmlBlock({
   content: [
@@ -36,7 +40,9 @@ export const personalRelationshipsCommunityPractitionerAnalysisSummaryTab = Html
         {
           id: 'practitioner-analysis',
           label: commonContentFor('practitioner_analysis'),
-          panel: { blocks: [practitionerAnalysisSummary] },
+          panel: {
+            blocks: [practitionerAnalysisSummary],
+          },
         },
       ],
       visibleWhen: anyAnswered(questions),

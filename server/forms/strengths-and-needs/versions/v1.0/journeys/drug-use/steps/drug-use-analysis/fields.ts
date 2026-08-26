@@ -5,7 +5,9 @@ import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { drugUseSection } from '../../section'
 import { commonContentFor } from '../../../../locales'
 import { anyAnswered } from '../../../../steps/view-all-answers/fields'
-import { questions, summaryPanel } from '../drug-use-summary/fields'
+import { questions, summary } from '../drug-use-summary/fields'
+import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
+import { Step } from '../../constants/step'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
@@ -14,6 +16,8 @@ const practitionerAnalysisSummary = GovUKSummaryList({
     drugUseSection.practitionerAnalysis.riskOfReoffending.displayModes.summaryRow,
   ],
 })
+
+const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.drug_use_analysis.path)]
 
 export const drugsSummaryAnalysisTab = HtmlBlock({
   content: [

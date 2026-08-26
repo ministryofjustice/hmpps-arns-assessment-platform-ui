@@ -18,7 +18,7 @@ export const financeSummaryStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.finance, SectionComplete.yes),
         ],
-        next: [redirect({ goto: Step.financeAnalysis.path })],
+        next: [redirect({ goto: `${Step.financeAnalysis.path}#practitioner-analysis` })],
       },
     }),
   ],

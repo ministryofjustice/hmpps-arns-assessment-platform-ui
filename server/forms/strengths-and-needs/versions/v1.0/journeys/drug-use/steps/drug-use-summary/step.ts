@@ -23,7 +23,7 @@ export const drugUseSummaryStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.yes),
         ],
-        next: [redirect({ goto: Step.drug_use_analysis.path })],
+        next: [redirect({ goto: `${Step.drug_use_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

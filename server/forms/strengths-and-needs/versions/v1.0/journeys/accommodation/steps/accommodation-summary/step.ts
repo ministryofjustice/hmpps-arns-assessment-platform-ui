@@ -18,7 +18,7 @@ export const accommodationSummaryStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.yes),
         ],
-        next: [redirect({ goto: Step.accommodation_analysis.path })],
+        next: [redirect({ goto: `${Step.accommodation_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

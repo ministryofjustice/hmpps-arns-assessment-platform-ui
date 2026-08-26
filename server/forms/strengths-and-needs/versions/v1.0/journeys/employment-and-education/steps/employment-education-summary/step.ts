@@ -18,7 +18,7 @@ export const employmentEducationSummaryStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.yes),
         ],
-        next: [redirect({ goto: Step.employment_education_analysis.path })],
+        next: [redirect({ goto: `${Step.employment_education_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

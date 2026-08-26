@@ -31,7 +31,7 @@ export const summary = GovUKSummaryList({
   ],
 })
 
-export const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.employment_education_summary.path)]
+const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.employment_education_summary.path)]
 
 export const summaryTab = HtmlBlock({
   content: [

@@ -187,7 +187,7 @@ export const summary = HtmlBlock({
   ],
 })
 
-export const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.drug_use_analysis.path)]
+const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.drug_use_summary.path)]
 
 export const summaryTab = HtmlBlock({
   content: [
