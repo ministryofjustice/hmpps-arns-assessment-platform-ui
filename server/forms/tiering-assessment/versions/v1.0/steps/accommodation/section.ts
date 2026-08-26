@@ -18,7 +18,7 @@ const whoAreTheyLivingWithQuestion = question({
     code: Question.who_are_they_living_with,
     format: QuestionFormat.CHECKBOX,
     text: contentFor('question.who_are_they_living_with.text', CaseData.Forename),
-    hint: commonContentFor('select_all_that_apply_optional'),
+    hint: commonContentFor('select_all_that_apply'),
     options: [
       { value: Option.family, text: contentFor('question.who_are_they_living_with.option.FAMILY') },
       { value: Option.friends, text: contentFor('question.who_are_they_living_with.option.FRIENDS') },
@@ -45,7 +45,7 @@ export const suitabilityOfAccommodationQuestion = question({
   content: {
     code: Question.suitability_of_accommodation,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.suitability_of_accommodation.text', CaseData.Forename),
+    text: contentFor('question.suitability_of_accommodation.text', CaseData.ForenamePossessive),
     options: [
       {
         value: CommonOption.no_problems,

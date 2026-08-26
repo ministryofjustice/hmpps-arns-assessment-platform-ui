@@ -18,7 +18,7 @@ import { thinkingAttitudesAndBehavioursStep } from './steps/thinking-attitudes-a
 import { offenceAnalysisStep } from './steps/offence-analysis/step'
 import { previousConvictionsStep } from './steps/previous-convictions/step'
 import { accommodationStep } from './steps/accommodation/step'
-import { checkYourAnswersStep } from './steps/view-all-answers/step'
+import { checkYourAnswersStep } from './steps/check-your-answers/step'
 
 export const tieringAssessmentV1Journey = journey({
   code: 'tiering-assessment-v1',

@@ -1,26 +1,16 @@
-import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { access, Data, step } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { commonContentFor } from '../../locales'
+import { viewAllAnswersBlocks } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import {
-  communitySupervisionHeadingField,
-  communitySupervisionSummaryListField,
-  currentOffenceAndOffendingHistoryHeadingField,
-  currentOffenceAndOffendingHistorySummaryListField,
-  currentOffenceHeadingField,
-  currentOffenceSummaryListField,
-  directSexualHistoryHeadingField,
-  directSexualHistorySummaryListField,
-  imagesAndIndirectContactSexualHistoryHeadingField,
-  imagesAndIndirectContactSexualHistorySummaryListField,
-  offenceSinceSupervisionHeadingField,
-  offenceSinceSupervisionSummaryListField,
-  sexualHistoryHeadingField,
-  sexualHistorySummaryListField,
-} from './fields'
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
+/**
+ * Every answer given so far across every section.
+ */
 export const checkYourAnswersStep = step({
   path: '/check-your-answers',
-  title: 'Check your answers',
+  title: commonContentFor('pageTitle.check_your_answers'),
+  reachability: { entryWhen: true },
   onAccess: [
     access({
       effects: [
@@ -30,30 +20,13 @@ export const checkYourAnswersStep = step({
       ],
     }),
   ],
-  blocks: [
-    currentOffenceHeadingField,
-    currentOffenceSummaryListField,
-    currentOffenceAndOffendingHistoryHeadingField,
-    currentOffenceAndOffendingHistorySummaryListField,
-    sexualHistoryHeadingField,
-    sexualHistorySummaryListField,
-    directSexualHistoryHeadingField,
-    directSexualHistorySummaryListField,
-    imagesAndIndirectContactSexualHistoryHeadingField,
-    imagesAndIndirectContactSexualHistorySummaryListField,
-    communitySupervisionHeadingField,
-    communitySupervisionSummaryListField,
-    offenceSinceSupervisionHeadingField,
-    offenceSinceSupervisionSummaryListField,
-    GovUKButton({ text: 'View reoffending predictors scores' }),
-  ],
-  onSubmission: [
-    submit({
-      validate: false,
-      onAlways: {
-        effects: [TieringAssessmentEffects.CalculateRiskActuarialScores()],
-        next: [redirect({ goto: 'reoffending-predictor-scores' })],
-      },
-    }),
-  ],
+  view: {
+    locals: {
+      hideNavigation: true,
+      hideNavigationLinks: true,
+      sectionTitle: commonContentFor('all_answers_heading', CaseData.ForenamePossessive),
+      backlink: Data('viewAllAnswersBacklink'),
+    },
+  },
+  blocks: viewAllAnswersBlocks,
 })
