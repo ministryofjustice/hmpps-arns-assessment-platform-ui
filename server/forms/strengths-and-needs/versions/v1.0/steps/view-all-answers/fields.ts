@@ -59,7 +59,7 @@ const blocksFor = (entry: ViewAllAnswersSection): BlockDefinition[] => {
     return [
       TemplateWrapper({
         template: '<div class="pdf-avoid-break">{{slot:content}}</div>',
-        slots: { content: [sectionHeader(entry.section)],},
+        slots: { content: [sectionHeader(entry.section)] },
       }),
     ]
   }
