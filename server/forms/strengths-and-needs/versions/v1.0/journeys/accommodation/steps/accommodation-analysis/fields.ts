@@ -1,9 +1,11 @@
 import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { accommodationSummary } from '../accommodation-summary/fields'
-import { accommodationSection } from '../../section'
-import { Step } from '../../constants/step'
-import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
+import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { commonContentFor } from '../../../../locales'
+import { anyAnswered } from '../../../../steps/view-all-answers/fields'
+import { accommodationSection } from '../../section'
+import { questions, summaryPanel } from '../accommodation-summary/fields'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
@@ -13,23 +15,28 @@ const practitionerAnalysisSummary = GovUKSummaryList({
   ],
 })
 
-export const accommodationPractitionerAnalysisSummaryTab = GovUKTabs({
-  id: 'final-accommodation-practitioner-analysis',
-  items: [
-    {
-      id: 'summary-analysis',
-      label: commonContentFor('summary'),
-      panel: {
-        blocks: [
-          accommodationSummary,
-          goToPractitionerAnalysisButton(Step.accommodation_analysis.path, 'practitioner-analysis-summary'),
-        ],
-      },
-    },
-    {
-      id: 'practitioner-analysis-summary',
-      label: commonContentFor('practitioner_analysis'),
-      panel: { blocks: [practitionerAnalysisSummary] },
-    },
+export const accommodationPractitionerAnalysisSummaryTab = HtmlBlock({
+  content: [
+    MOJBanner({
+      bannerType: 'information',
+      text: 'This section has not been started',
+      visibleWhen: not(anyAnswered(questions)),
+    }),
+    GovUKTabs({
+      id: 'summaries',
+      items: [
+        {
+          id: 'summary',
+          label: commonContentFor('summary'),
+          panel: { blocks: summaryPanel },
+        },
+        {
+          id: 'practitioner-analysis',
+          label: commonContentFor('practitioner_analysis'),
+          panel: { blocks: [practitionerAnalysisSummary] },
+        },
+      ],
+      visibleWhen: anyAnswered(questions),
+    }),
   ],
 })

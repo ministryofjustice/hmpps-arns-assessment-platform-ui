@@ -2,13 +2,13 @@ import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpp
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { Step } from '../../constants/step'
-import { alcoholSummaryTab } from './fields'
+import { summaryTab } from './fields'
 import { summaryPageTitle } from '../../../../locales'
 
 export const alcoholUseSummaryStep = step({
   path: `/${Step.alcohol_use_summary.path}`,
   title: summaryPageTitle(Section.alcohol_use),
-  blocks: [alcoholSummaryTab],
+  blocks: [summaryTab],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
