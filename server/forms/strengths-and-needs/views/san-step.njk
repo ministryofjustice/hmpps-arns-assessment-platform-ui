@@ -61,10 +61,13 @@
 
         {# Right content: Form #}
         <div class="{{ "govuk-grid-column-full" if hideNavigation else "govuk-grid-column-three-quarters" }}">
-          {{ govukErrorSummary({
-            titleText: "There is a problem",
-            errorList: allValidationErrors | toErrorSummary
-          }) if allValidationErrors.length }}
+          {% set errorList = getErrorSummaryList() %}
+          {% if errorList.length %}
+            {{ govukErrorSummary({
+              titleText: "There is a problem",
+              errorList: errorList
+            }) }}
+          {% endif %}
 
           {% if backlink %}
             <a href="{{ backlink }}" class="govuk-back-link">Back</a>

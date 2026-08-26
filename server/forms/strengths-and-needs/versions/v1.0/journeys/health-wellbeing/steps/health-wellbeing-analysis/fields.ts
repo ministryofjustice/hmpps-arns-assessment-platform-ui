@@ -1,9 +1,13 @@
 import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { healthWellbeingSummary } from '../health-wellbeing-summary/fields'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
+import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { questions, summary } from '../health-wellbeing-summary/fields'
 import { healthWellbeingSection } from '../../section'
-import { Step } from '../../constants/step'
-import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
 import { commonContentFor } from '../../../../locales'
+import { anyAnswered } from '../../../../steps/view-all-answers/fields'
+import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
+import { Step } from '../../constants/step'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
@@ -13,20 +17,32 @@ const practitionerAnalysisSummary = GovUKSummaryList({
   ],
 })
 
-export const healthWellbeingAnalysisSummaryTab = GovUKTabs({
-  id: 'summaries',
-  items: [
-    {
-      id: 'summary',
-      label: commonContentFor('summary'),
-      panel: {
-        blocks: [healthWellbeingSummary, goToPractitionerAnalysisButton(Step.health_wellbeing_analysis.path)],
-      },
-    },
-    {
-      id: 'practitioner-analysis',
-      label: commonContentFor('practitioner_analysis'),
-      panel: { blocks: [practitionerAnalysisSummary] },
-    },
+const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.health_wellbeing_analysis.path)]
+
+export const healthWellbeingAnalysisSummaryTab = HtmlBlock({
+  content: [
+    MOJBanner({
+      bannerType: 'information',
+      text: commonContentFor('section_has_not_been_started'),
+      visibleWhen: not(anyAnswered(questions)),
+    }),
+    GovUKTabs({
+      id: 'summaries',
+      items: [
+        {
+          id: 'summary',
+          label: commonContentFor('summary'),
+          panel: {
+            blocks: summaryPanel,
+          },
+        },
+        {
+          id: 'practitioner-analysis',
+          label: commonContentFor('practitioner_analysis'),
+          panel: { blocks: [practitionerAnalysisSummary] },
+        },
+      ],
+      visibleWhen: anyAnswered(questions),
+    }),
   ],
 })

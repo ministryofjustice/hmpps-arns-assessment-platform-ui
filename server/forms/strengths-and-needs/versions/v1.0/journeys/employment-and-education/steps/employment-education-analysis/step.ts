@@ -3,9 +3,11 @@ import { employmentStatusAnalysisSummaryTab } from './fields'
 import { Step } from '../../constants/step'
 import { analysisPageTitle } from '../../../../locales'
 import { Section } from '../../../../constants/section'
+import { isReadOnlyMode } from '../../../../guards'
 
 export const employmentEducationAnalysisStep = step({
   path: `/${Step.employment_education_analysis.path}`,
   title: analysisPageTitle(Section.employment_and_education),
   blocks: [employmentStatusAnalysisSummaryTab],
+  reachability: { entryWhen: isReadOnlyMode },
 })

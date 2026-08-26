@@ -1,4 +1,4 @@
-import { Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { drugUseStep } from './steps/drug-use/step'
 import { addDrugsStep } from './steps/add-drugs/step'
 import { drugDetailsStep } from './steps/drug-details/step'
@@ -7,6 +7,8 @@ import { drugUseSummaryStep } from './steps/drug-use-summary/step'
 import { drugUseAnalysisStep } from './steps/drug-use-analysis/step'
 import { Section } from '../../constants/section'
 import { sectionPageTitle, sectionStatusTag } from '../../locales'
+import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
+import { Step } from './constants/step'
 
 /**
  * Drug Use Journey
@@ -23,7 +25,8 @@ export const drugUseJourney = journey({
   code: Section.drug_use.code,
   title: sectionPageTitle(Section.drug_use),
   path: Section.drug_use.path,
-  reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
+  reachability: { resumeWhen: and(Query('resume').match(Condition.Equals('true')), isEditMode) },
+  onAccess: [redirectToAnalysisIfReadOnly(Section.drug_use.path, Step.drug_use_analysis.path)],
   view: {
     locals: {
       sectionTitle: sectionPageTitle(Section.drug_use),

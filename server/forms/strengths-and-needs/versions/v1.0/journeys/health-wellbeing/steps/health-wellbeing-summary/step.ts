@@ -18,7 +18,7 @@ export const healthWellbeingSummaryStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.yes),
         ],
-        next: [redirect({ goto: Step.health_wellbeing_analysis.path })],
+        next: [redirect({ goto: `${Step.health_wellbeing_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

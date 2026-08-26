@@ -1,7 +1,7 @@
 import { Answer, Condition, Data, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { BlockDefinition, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKHeading, GovUKSummaryList, GovUKTag } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { answerRow, questionsWithin } from '../../constants/questionContent'
+import { answerRow, questionsWithin } from '../../../../constants/questionContent'
 import { Section, SectionComplete } from '../../constants/section'
 import { commonContentFor } from '../../locales'
 import { analysisOf, Answerable, questionsOf, viewAllAnswersSections, ViewAllAnswersSection } from './sections'
@@ -38,7 +38,7 @@ const sectionHeader = (section: SectionDefinition) =>
     },
   })
 
-const anyAnswered = (fields: Answerable[]) =>
+export const anyAnswered = (fields: Answerable[]) =>
   or(
     fields
       .flatMap(field => questionsWithin(field.content))
@@ -48,7 +48,7 @@ const anyAnswered = (fields: Answerable[]) =>
 const groupHeading = (text: ReturnType<typeof commonContentFor>, fields: Answerable[]) =>
   GovUKHeading({ text, size: 'm', level: 3, visibleWhen: anyAnswered(fields) })
 
-const answersFor = (fields: Answerable[]) =>
+export const answersFor = (fields: Answerable[]) =>
   GovUKSummaryList({ rows: fields.map(field => field.displayModes?.answerRow ?? answerRow(field.content)) })
 
 const blocksFor = (entry: ViewAllAnswersSection): BlockDefinition[] => {
