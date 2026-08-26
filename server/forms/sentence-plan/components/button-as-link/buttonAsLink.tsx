@@ -42,7 +42,7 @@ export interface ButtonAsLink extends BlockDefinition {
   id?: ResolvableString
 
   /** Custom HTML attributes */
-  attributes?: Record<string, string>
+  attributes?: Record<string, ResolvableString>
 }
 
 export const ButtonAsLink = jsxComponent<ButtonAsLink>('buttonAsLink', {
