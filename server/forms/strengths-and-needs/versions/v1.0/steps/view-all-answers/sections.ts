@@ -30,7 +30,7 @@ export const viewAllAnswersSections: ViewAllAnswersSection[] = [
 
 export interface Answerable {
   content: QuestionContent
-  displayModes?: { answerRow?: SummaryRow }
+  displayModes?: { summaryRow?: SummaryRow }
 }
 
 const fieldsOf = (fields: SectionDefinition[keyof SectionDefinition] = {}): Answerable[] => Object.values(fields)

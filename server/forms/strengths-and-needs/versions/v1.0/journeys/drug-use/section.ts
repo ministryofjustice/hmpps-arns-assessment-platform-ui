@@ -52,6 +52,7 @@ import {
   textSummaryRow,
   yesNo,
 } from '../../constants/questionContent'
+import { isEditMode } from '../../guards'
 
 const anyDrugUsedInLastSix = Data('drugsUsedInLastSix').match(Condition.IsRequired())
 const anyDrugUsedMoreThanSix = Data('drugsUsedMoreThanSix').match(Condition.IsRequired())
@@ -384,7 +385,7 @@ const selectMisusedDrugs = question({
   displayModes: {
     field: checkboxField(),
     // Each drug chosen, followed by the answers given about that drug.
-    answerRow: (content): SummaryRow => ({
+    summaryRow: (content): SummaryRow => ({
       key: { html: content.text },
       visibleWhen: Answer(content.code).match(Condition.IsRequired()),
       value: {
@@ -470,7 +471,7 @@ const receivingTreatment = question({
     field: radioField(),
     summaryRow: summaryRow({
       changeHref: Step.drug_details.path,
-      visibleWhen: Answer(Question.drugs_reasons_for_use).match(Condition.IsRequired()),
+      visibleWhen: and(isEditMode, Answer(Question.drugs_reasons_for_use).match(Condition.IsRequired())),
     }),
   },
 })
