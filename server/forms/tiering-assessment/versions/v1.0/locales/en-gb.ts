@@ -17,7 +17,7 @@ export const english = {
     check_your_answers: 'Check your answers',
   },
   validation: {
-    this_is_a_required_field: 'This is a required field'
+    this_is_a_required_field: 'This is a required field',
   },
   option: {
     [CommonOption.yes]: 'Yes',
