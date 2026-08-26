@@ -47,20 +47,20 @@ export class RiskActuarialService {
       isCurrentOffenceAgainstVictimStranger: this.parseBoolean(context.getAnswer('victim-stranger')),
       suitabilityOfAccommodation: this.parseProblemLevel(context.getAnswer('suitability-of-accommodation')),
       isUnemployed: this.parseBoolean(context.getAnswer('is-unemployed')),
-      hasBenzodiazepinesUsage: this.parseBoolean(context.getAnswer('benzodiazepines-radio')),
-      hasCannabisUsage: this.parseBoolean(context.getAnswer('cannabis-radio')),
-      hasPowderCocaineUsage: this.parseBoolean(context.getAnswer('cocaine-hydrochloride-radio')),
-      hasCrackCocaineUsage: this.parseBoolean(context.getAnswer('crack-or-cocaine-radio')),
-      hasHallucinogensUsage: this.parseBoolean(context.getAnswer('hallucinogens-radio')),
-      hasHeroinUsage: this.parseBoolean(context.getAnswer('heroin-radio')),
-      hasMethadoneUsage: this.parseBoolean(context.getAnswer('methadone-radio')),
-      hasMisusedPrescriptionDrugUsage: this.parseBoolean(context.getAnswer('misused-prescribed-drugs-radio')),
-      hasOtherOpiateUsage: this.parseBoolean(context.getAnswer('other-opiate-radio')),
-      hasSolventsUsage: this.parseBoolean(context.getAnswer('solvents-radio')),
-      hasSpiceUsage: this.parseBoolean(context.getAnswer('spice-radio')),
-      hasSteroidsUsage: this.parseBoolean(context.getAnswer('steroids-radio')),
-      hasKetamineUsage: this.parseBoolean(context.getAnswer('ketamine-radio')),
-      hasOtherDrugsUsage: this.parseBoolean(context.getAnswer('other-drug-radio')),
+      hasBenzodiazepinesUsage: this.parseDrugCheckbox('benzodiazepines', context),
+      hasCannabisUsage: this.parseDrugCheckbox('cannabis', context),
+      hasPowderCocaineUsage: this.parseDrugCheckbox('cocaine-hydrochloride', context),
+      hasCrackCocaineUsage: this.parseDrugCheckbox('crack-or-cocaine', context),
+      hasHallucinogensUsage: this.parseDrugCheckbox('hallucinogens', context),
+      hasHeroinUsage: this.parseDrugCheckbox('heroin', context),
+      hasMethadoneUsage: this.parseDrugCheckbox('methadone', context),
+      hasMisusedPrescriptionDrugUsage: this.parseDrugCheckbox('misused-prescribed-drugs', context),
+      hasOtherOpiateUsage: this.parseDrugCheckbox('other-opiates', context),
+      hasSolventsUsage: this.parseDrugCheckbox('solvents', context),
+      hasSpiceUsage: this.parseDrugCheckbox('spice', context),
+      hasSteroidsUsage: this.parseDrugCheckbox('steroids', context),
+      hasKetamineUsage: this.parseDrugCheckbox('ketamine', context),
+      hasOtherDrugsUsage: this.parseDrugCheckbox('other-drug', context),
       hasCurrentDrugMisuse: this.parseBoolean(context.getAnswer('ever-misused-drugs')),
       motivationToTackleDrugMisuse: this.parseMotivationLevel(context.getAnswer('motivation-to-tackle-drug-misuse')),
       currentAlcoholUseProblems: this.getCurrentAlcoholUseProblems(context),
@@ -280,6 +280,17 @@ export class RiskActuarialService {
     if (val === undefined || val === null || val === 'unknown') return null
     const str: string = String(val).trim()
     return str === '' ? null : str
+  }
+
+  private parseDrugCheckbox(val: string, context: TieringAssessmentEffectContext): boolean | null {
+    const drugAnswers = context.getAnswer('drug-misuse') as string[] | null | undefined
+
+    if (!drugAnswers) return null
+    if (!drugAnswers.includes(val)) return false
+
+    const radioAnswer = context.getAnswer(`${val}-radio`)
+
+    return this.parseBoolean(radioAnswer)
   }
 
   private parseBoolean(val: unknown): boolean | null {

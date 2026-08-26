@@ -23,7 +23,11 @@ export const checkYourAnswersStep = step({
   title: 'Check your answers',
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
+      effects: [
+        TieringAssessmentEffects.LoadAssessmentData(),
+        TieringAssessmentEffects.LoadOffenceCodeDetails(),
+        TieringAssessmentEffects.LoadCaseData(),
+      ],
     }),
   ],
   blocks: [
