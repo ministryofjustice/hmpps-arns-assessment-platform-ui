@@ -56,21 +56,33 @@ const blocksFor = (entry: ViewAllAnswersSection): BlockDefinition[] => {
   const analysis = analysisOf(entry)
 
   if (questions.length === 0 && analysis.length === 0) {
-    return [sectionHeader(entry.section)]
+    return [
+      TemplateWrapper({
+        template: '<div class="pdf-avoid-break">{{slot:content}}</div>',
+        slots: { content: [sectionHeader(entry.section)],},
+      }),
+    ]
   }
 
   return [
-    sectionHeader(entry.section),
-    groupHeading(commonContentFor('summary'), questions),
-    answersFor(questions),
-    groupHeading(commonContentFor('practitioner_analysis'), analysis),
-    answersFor(analysis),
-  ] as BlockDefinition[]
+    TemplateWrapper({
+      template: '<div class="pdf-avoid-break">{{slot:content}}</div>',
+      slots: {
+        content: [
+          sectionHeader(entry.section),
+          groupHeading(commonContentFor('summary'), questions),
+          answersFor(questions),
+          groupHeading(commonContentFor('practitioner_analysis'), analysis),
+          answersFor(analysis),
+        ],
+      },
+    }),
+  ]
 }
 
 export const viewAllAnswersBlocks: BlockDefinition[] = [
   TemplateWrapper({
-    template: '<div class="govuk-!-margin-bottom-9">{{slot:sections}}</div>',
+    template: '<div class="govuk-!-margin-bottom-9 pdf-body">{{slot:sections}}</div>',
     slots: { sections: viewAllAnswersSections.flatMap(blocksFor) },
   }),
 ]

@@ -11,8 +11,6 @@
     display: none;
   }
 
-  .pdf-table,
-  .pdf-chart,
   .pdf-avoid-break {
     break-inside: avoid;
   }
@@ -128,10 +126,10 @@
       font-size: 24px;
       margin-bottom: govuk-spacing(3);
     }
+  }
 
-    & + .summary-section-header > .summary-section-header__title {
-      margin-top: govuk-spacing(1);
-    }
+  .govuk-heading-l {
+    margin-top: govuk-spacing(1);
   }
 
   .summary-list__actions,
@@ -142,16 +140,8 @@
   }
 }
 
-.pdf-footer {
-  font-weight: bold;
-
-  strong {
-    color: govuk-colour('red');
+@media print {
+  .pdf-body .govuk-summary-list__key {
+    background-color: govuk-colour('black', $variant: 'tint-95');
   }
-}
-
-.pdf-section-break--bold {
-  width: 1220px;
-  background-color: govuk-colour('black');
-  height: 2px;
 }
