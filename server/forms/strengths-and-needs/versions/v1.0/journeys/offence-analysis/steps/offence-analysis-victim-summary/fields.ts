@@ -13,7 +13,7 @@ import { CollectionBlock, HtmlBlock } from '@ministryofjustice/hmpps-forge/core/
 import { Question } from '../../constants/question'
 import { contentFor } from '../../locales'
 import { SANGenerators } from '../../../../../../generators'
-import { victimAge, victimEthnicity, victimSex, victimType } from '../offence-analysis-victim/fields'
+import { victimQuestions } from '../../section'
 import { Step } from '../../constants/step'
 import { Modal } from '../../../../../../components/modal/modalComponent'
 import { commonContentFor } from '../../../../locales'
@@ -61,7 +61,7 @@ export const victimCards = CollectionBlock({
                 key: { text: contentFor('question.offence_analysis_victim_type.text') },
                 value: {
                   text: SANGenerators.getTextFromListDefinition(
-                    victimType.items,
+                    victimQuestions.victimType.content.options,
                     Item().path('answers')
                       .path(Question.offence_analysis_victim_type)
                       .path('value'),
@@ -72,7 +72,7 @@ export const victimCards = CollectionBlock({
                 key: { text: contentFor('question.offence_analysis_victim_age.text') },
                 value: {
                   text: SANGenerators.getTextFromListDefinition(
-                    victimAge.items,
+                    victimQuestions.victimAge.content.options,
                     Item().path('answers').path(Question.offence_analysis_victim_age).path('value'),
                   ),
                 },
@@ -81,7 +81,7 @@ export const victimCards = CollectionBlock({
                 key: { text: contentFor('question.offence_analysis_victim_sex.text') },
                 value: {
                   text: SANGenerators.getTextFromListDefinition(
-                    victimSex.items,
+                    victimQuestions.victimSex.content.options,
                     Item().path('answers').path(Question.offence_analysis_victim_sex).path('value'),
                   ),
                 },
@@ -90,7 +90,7 @@ export const victimCards = CollectionBlock({
                 key: { text: contentFor('question.offence_analysis_victim_ethnicity.text') },
                 value: {
                   text: SANGenerators.getTextFromListDefinition(
-                    victimEthnicity.items,
+                    victimQuestions.victimEthnicity.content.options,
                     Item().path('answers').path(Question.offence_analysis_victim_ethnicity).path('value'),
                   ),
                 },

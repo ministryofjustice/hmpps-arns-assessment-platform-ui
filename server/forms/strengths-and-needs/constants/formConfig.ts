@@ -1,4 +1,11 @@
-import { isOptioned, isQuestionOption, QuestionFormat, SectionDefinition, stableQuestionsOf } from './questionContent'
+import {
+  collectionsOf,
+  isOptioned,
+  isQuestionOption,
+  QuestionFormat,
+  SectionDefinition,
+  stableQuestionsOf,
+} from './questionContent'
 
 interface FormConfigOption {
   value?: string
@@ -9,6 +16,10 @@ interface FormConfigField {
   options?: FormConfigOption[]
   type?: QuestionFormat
   section?: string
+  // Set instead of/alongside `section` when the field belongs to a
+  // repeatable item collection (e.g. victims) rather than being asked once
+  // per assessment.
+  collection?: string
 }
 
 export class FormConfig {
@@ -30,6 +41,20 @@ export class FormConfig {
             ? { options: content.options.filter(isQuestionOption).map(({ value }) => ({ value })) }
             : {}),
         }
+      })
+
+      collectionsOf(section).forEach(collectionDef => {
+        collectionDef.questions.forEach(content => {
+          this.fields[content.code] = {
+            code: content.code,
+            type: content.format,
+            section: section.code,
+            collection: collectionDef.code,
+            ...(isOptioned(content)
+              ? { options: content.options.filter(isQuestionOption).map(({ value }) => ({ value })) }
+              : {}),
+          }
+        })
       })
     })
   }

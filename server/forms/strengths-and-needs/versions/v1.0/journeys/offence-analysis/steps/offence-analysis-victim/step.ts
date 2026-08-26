@@ -1,28 +1,24 @@
 import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { victimAge, victimEthnicity, victimSex, victimType } from './fields'
+import { victimQuestions } from '../../section'
 import { Step } from '../../constants/step'
-import { Question } from '../../constants/question'
 import { saveButton } from '../../../../constants/buttons'
-
-const collectionName = 'victims'
-const collectionCode = 'OFFENCE_ANALYSIS_VICTIM'
-
-const VICTIM_FIELD_CODES = [
-  Question.offence_analysis_victim_type,
-  Question.offence_analysis_victim_age,
-  Question.offence_analysis_victim_sex,
-  Question.offence_analysis_victim_ethnicity,
-]
+import { collectionCode, collectionName, VICTIM_FIELD_CODES } from '../../constants/constants'
 
 export const offenceAnalysisVictimStep = step({
   path: `/${Step.offence_analysis_victim.path}`,
   title: 'Add victim',
   reachability: { entryWhen: true },
-  blocks: [victimType, victimAge, victimSex, victimEthnicity, saveButton],
+  blocks: [
+    victimQuestions.victimType.displayModes.field,
+    victimQuestions.victimAge.displayModes.field,
+    victimQuestions.victimSex.displayModes.field,
+    victimQuestions.victimEthnicity.displayModes.field,
+    saveButton,
+  ],
   onAccess: [
     access({
-      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection('victims', 'OFFENCE_ANALYSIS_VICTIM')],
+      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(collectionCode, collectionName)],
     }),
   ],
   onSubmission: [
@@ -30,7 +26,7 @@ export const offenceAnalysisVictimStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [StrengthsAndNeedsEffects.addItemToCollection(collectionName, collectionCode, VICTIM_FIELD_CODES)],
+        effects: [StrengthsAndNeedsEffects.addItemToCollection(collectionCode, collectionName, VICTIM_FIELD_CODES)],
         next: [redirect({ goto: Step.offence_analysis_victim_summary.path })],
       },
     }),

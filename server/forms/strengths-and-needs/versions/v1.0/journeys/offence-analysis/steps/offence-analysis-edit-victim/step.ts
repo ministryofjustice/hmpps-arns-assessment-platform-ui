@@ -10,7 +10,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
-import { victimAge, victimEthnicity, victimSex, victimType } from '../offence-analysis-victim/fields'
+import { victimQuestions } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { collectionCode, collectionName, VICTIM_FIELD_CODES } from '../../constants/constants'
 
@@ -18,7 +18,13 @@ export const offenceAnalysisEditVictimStep = step({
   path: `/${Step.offence_analysis_victim_edit.templatePath}`,
   title: 'Add victim',
   reachability: { entryWhen: true },
-  blocks: [victimType, victimAge, victimSex, victimEthnicity, saveButton],
+  blocks: [
+    victimQuestions.victimType.displayModes.field,
+    victimQuestions.victimAge.displayModes.field,
+    victimQuestions.victimSex.displayModes.field,
+    victimQuestions.victimEthnicity.displayModes.field,
+    saveButton,
+  ],
   onAccess: [
     access({
       effects: [

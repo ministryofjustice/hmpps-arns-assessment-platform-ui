@@ -8,6 +8,7 @@ import { financeSection } from '../journeys/finance/section'
 import { healthWellbeingSection } from '../journeys/health-wellbeing/section'
 import { personalRelationshipsCommunitySection } from '../journeys/personal-relationships-and-community/section'
 import { thinkingBehavioursAttitudesSection } from '../journeys/thinking-behaviours-and-attitudes/section'
+import { offenceAnalysisSection } from '../journeys/offence-analysis/section'
 
 /**
  * Built independently of the journey/effects module graph so it can be
@@ -24,5 +25,6 @@ export const v1FormConfig = {
     healthWellbeingSection,
     personalRelationshipsCommunitySection,
     thinkingBehavioursAttitudesSection,
+    offenceAnalysisSection,
   ]),
 }

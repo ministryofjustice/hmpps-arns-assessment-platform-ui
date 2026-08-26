@@ -9,15 +9,9 @@ import {
   submit,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import {
-  indexOffenceDescription,
-  motivations,
-  offenceCommitedAgainst,
-  offenceElements,
-  whyOffenceHappened,
-} from './fields'
+import { offenceAnalysisSection } from '../../section'
 import { Step } from '../../constants/step'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { collectionCode, collectionName } from '../../constants/constants'
@@ -28,11 +22,11 @@ export const offenceAnalysisStep = step({
   title: 'Offence analysis',
   reachability: { entryWhen: true },
   blocks: [
-    indexOffenceDescription,
-    offenceElements,
-    whyOffenceHappened,
-    motivations,
-    offenceCommitedAgainst,
+    offenceAnalysisSection.questions.indexOffenceDescription.displayModes.field,
+    offenceAnalysisSection.questions.offenceElements.displayModes.field,
+    offenceAnalysisSection.questions.whyOffenceHappened.displayModes.field,
+    offenceAnalysisSection.questions.motivations.displayModes.field,
+    offenceAnalysisSection.questions.offenceCommitedAgainst.displayModes.field,
     saveButton,
   ],
   onAccess: [
@@ -50,7 +44,7 @@ export const offenceAnalysisStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis.statusKey, SectionStatus.incomplete),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
         ],
         next: [
           redirect({
@@ -65,7 +59,7 @@ export const offenceAnalysisStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis.statusKey, SectionStatus.incomplete),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
           StrengthsAndNeedsEffects.emptyCollection(collectionName),
         ],
         next: [

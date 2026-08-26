@@ -51,6 +51,9 @@ const groupHeading = (text: ReturnType<typeof commonContentFor>, fields: Answera
 export const answersFor = (fields: Answerable[]) =>
   GovUKSummaryList({ rows: fields.map(field => field.displayModes?.answerRow ?? answerRow(field.content)) })
 
+const groupBlocks = (text: ReturnType<typeof commonContentFor>, fields: Answerable[]): BlockDefinition[] =>
+  fields.length === 0 ? [] : [groupHeading(text, fields), answersFor(fields)]
+
 const blocksFor = (entry: ViewAllAnswersSection): BlockDefinition[] => {
   const questions = questionsOf(entry)
   const analysis = analysisOf(entry)
@@ -61,10 +64,8 @@ const blocksFor = (entry: ViewAllAnswersSection): BlockDefinition[] => {
 
   return [
     sectionHeader(entry.section),
-    groupHeading(commonContentFor('summary'), questions),
-    answersFor(questions),
-    groupHeading(commonContentFor('practitioner_analysis'), analysis),
-    answersFor(analysis),
+    ...groupBlocks(commonContentFor('summary'), questions),
+    ...groupBlocks(commonContentFor('practitioner_analysis'), analysis),
   ] as BlockDefinition[]
 }
 

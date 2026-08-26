@@ -10,25 +10,21 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
-import { Question } from '../../constants/question'
-import { victimAge, victimEthnicity, victimSex, victimType } from '../offence-analysis-victim/fields'
+import { victimQuestions } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
-
-const collectionCode = 'victims'
-const collectionName = 'OFFENCE_ANALYSIS_VICTIM'
-
-const VICTIM_FIELD_CODES = [
-  Question.offence_analysis_victim_type,
-  Question.offence_analysis_victim_age,
-  Question.offence_analysis_victim_sex,
-  Question.offence_analysis_victim_ethnicity,
-]
+import { collectionCode, collectionName, VICTIM_FIELD_CODES } from '../../constants/constants'
 
 export const offenceAnalysisDeleteVictimStep = step({
   path: `/${Step.offence_analysis_victim_delete.templatePath}`,
   title: 'Add victim',
   reachability: { entryWhen: true },
-  blocks: [victimType, victimAge, victimSex, victimEthnicity, saveButton],
+  blocks: [
+    victimQuestions.victimType.displayModes.field,
+    victimQuestions.victimAge.displayModes.field,
+    victimQuestions.victimSex.displayModes.field,
+    victimQuestions.victimEthnicity.displayModes.field,
+    saveButton,
+  ],
   onAccess: [
     access({
       effects: [
