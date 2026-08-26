@@ -6,4 +6,4 @@
  */
 
 import '../components/change-link-deep-link/change-link-deep-link.mjs'
-import '../components/restore-repeated-field-selection/restore-repeated-field-selection.mjs'
+import '../components/sync-repeated-field-selection/sync-repeated-field-selection.mjs'
