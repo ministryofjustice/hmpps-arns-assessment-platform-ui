@@ -23,11 +23,9 @@ export const english = {
         [Option.person_under_18]: 'Person under 18 years old',
         [Option.alone]: 'Alone',
       },
-      validation: `Select who they are living with, or select 'Alone'`,
+      validation: `Select who %1 is living with, or select 'Alone' or 'Unknown'`,
     },
   },
-  expected_end_date: 'Expected end date:',
-  not_provided: 'Not provided',
 } as const
 
 export type AccommodationLocale = Locale<typeof english>

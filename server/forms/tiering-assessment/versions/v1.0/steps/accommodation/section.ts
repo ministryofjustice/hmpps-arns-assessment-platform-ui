@@ -33,7 +33,7 @@ const whoAreTheyLivingWithQuestion = question({
         behaviour: 'exclusive' as const,
       },
     ],
-    validationMessage: contentFor('question.who_are_they_living_with.validation'),
+    validationMessage: contentFor('question.who_are_they_living_with.validation', CaseData.Forename),
   },
   displayModes: {
     field: checkboxField(),
@@ -62,7 +62,7 @@ export const suitabilityOfAccommodationQuestion = question({
       { divider: commonContentFor('or') },
       { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],
-    validationMessage: contentFor('question.suitability_of_accommodation.validation'),
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
   displayModes: {
     field: radioField(),
