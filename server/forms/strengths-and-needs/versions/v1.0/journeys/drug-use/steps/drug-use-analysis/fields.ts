@@ -23,7 +23,7 @@ export const drugsSummaryAnalysisTab = HtmlBlock({
   content: [
     MOJBanner({
       bannerType: 'information',
-      text: 'This section has not been started',
+      text: commonContentFor('section_has_not_been_started'),
       visibleWhen: not(anyAnswered(questions)),
     }),
     GovUKTabs({
