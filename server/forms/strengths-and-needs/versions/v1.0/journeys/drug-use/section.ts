@@ -385,7 +385,7 @@ const selectMisusedDrugs = question({
   displayModes: {
     field: checkboxField(),
     // Each drug chosen, followed by the answers given about that drug.
-    summaryRow: (content): SummaryRow => ({
+    answerRow: (content): SummaryRow => ({
       key: { html: content.text },
       visibleWhen: Answer(content.code).match(Condition.IsRequired()),
       value: {
