@@ -52,6 +52,7 @@ import {
   textSummaryRow,
   yesNo,
 } from '../../constants/questionContent'
+import { isEditMode } from '../../guards'
 
 const anyDrugUsedInLastSix = Data('drugsUsedInLastSix').match(Condition.IsRequired())
 const anyDrugUsedMoreThanSix = Data('drugsUsedMoreThanSix').match(Condition.IsRequired())
@@ -470,7 +471,7 @@ const receivingTreatment = question({
     field: radioField(),
     summaryRow: summaryRow({
       changeHref: Step.drug_details.path,
-      visibleWhen: Answer(Question.drugs_reasons_for_use).match(Condition.IsRequired()),
+      visibleWhen: and(isEditMode, Answer(Question.drugs_reasons_for_use).match(Condition.IsRequired())),
     }),
   },
 })
