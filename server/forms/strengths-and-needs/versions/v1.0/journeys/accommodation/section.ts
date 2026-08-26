@@ -23,7 +23,8 @@ import { Option } from './constants/option'
 import { Section } from '../../constants/section'
 import { CharacterLimit } from '../../../../constants/characterLimit'
 import {
-  characterCountField, createSummaryRowActions,
+  characterCountField,
+  createSummaryRowActions,
   itemisedSummaryRow,
   optionalDetails,
   optionalFutureDateDetails,

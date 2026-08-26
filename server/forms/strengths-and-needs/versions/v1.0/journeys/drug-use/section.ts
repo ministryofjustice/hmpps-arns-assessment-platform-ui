@@ -44,7 +44,8 @@ import { Section } from '../../constants/section'
 import { CharacterLimit } from '../../../../constants/characterLimit'
 import {
   characterCountField,
-  checkboxSummaryRow, createSummaryRowActions,
+  checkboxSummaryRow,
+  createSummaryRowActions,
   optionalDetails,
   requiredDetails,
   summaryRow,
