@@ -1,54 +1,34 @@
-import { block, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import {
-  attitudeTowardsSelf,
-  changesToHealthWellbeing,
-  copeWithDayToDayLife,
-  feelingsAboutFuture,
-  headInjuries,
-  helpedDuringPeriodsGoodHealthWellbeing,
-  impactOnLearningAbilities,
-  neurodiverseConditions,
-  prescribedMentalHealthMedicationsTreatments,
-  prescribedPhysicalHealthMedicationsTreatments,
-  psychiatricTreatment,
-  selfHarm,
-  suicidalTendencies,
-} from './fields'
+import { healthWellbeingSection } from '../../section'
+import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
-import { Section } from '../../../../constants/section'
-
-const saveButton = block<GovUKButton>({
-  variant: 'govukButton',
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { sectionPageTitle } from '../../../../locales'
 
 export const physicalMentalHealthStep = step({
   path: `/${Step.physical_mental_health.path}`,
-  title: 'Physical mental health',
+  title: sectionPageTitle(Section.health_and_wellbeing),
   view: {
     locals: {
       backlink: sectionPath(Section.health_and_wellbeing),
     },
   },
   blocks: [
-    prescribedPhysicalHealthMedicationsTreatments,
-    prescribedMentalHealthMedicationsTreatments,
-    psychiatricTreatment,
-    headInjuries,
-    neurodiverseConditions,
-    impactOnLearningAbilities,
-    copeWithDayToDayLife,
-    attitudeTowardsSelf,
-    selfHarm,
-    suicidalTendencies,
-    feelingsAboutFuture,
-    helpedDuringPeriodsGoodHealthWellbeing,
-    changesToHealthWellbeing,
+    healthWellbeingSection.questions.prescribedPhysicalHealthMedicationsTreatments.displayModes.field,
+    healthWellbeingSection.questions.prescribedMentalHealthMedicationsTreatments.displayModes.field,
+    healthWellbeingSection.questions.psychiatricTreatment.displayModes.field,
+    healthWellbeingSection.questions.headInjuries.displayModes.field,
+    healthWellbeingSection.questions.neurodiverseConditions.displayModes.field,
+    healthWellbeingSection.questions.impactOnLearningAbilities.displayModes.field,
+    healthWellbeingSection.questions.copeWithDayToDayLife.displayModes.field,
+    healthWellbeingSection.questions.attitudeTowardsSelf.displayModes.field,
+    healthWellbeingSection.questions.selfHarm.displayModes.field,
+    healthWellbeingSection.questions.suicidalTendencies.displayModes.field,
+    healthWellbeingSection.questions.feelingsAboutFuture.displayModes.field,
+    healthWellbeingSection.questions.helpedDuringPeriodsGoodHealthWellbeing.displayModes.field,
+    healthWellbeingSection.questions.changes.displayModes.field,
     saveButton,
   ],
   onSubmission: [
@@ -58,11 +38,11 @@ export const physicalMentalHealthStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress('health_section_status', 'INCOMPLETE'),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.no),
         ],
         next: [
           redirect({
-            goto: 'health-wellbeing-summary',
+            goto: Step.health_wellbeing_summary.path,
           }),
         ],
       },

@@ -5,11 +5,14 @@ import {
   Item,
   Iterator,
   not,
+  or,
   redirect,
   Condition,
+  Request,
   Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
+import { GOTENBERG_RENDER_HEADER, GOTENBERG_RENDER_HEADER_VALUE } from '../../../../data/gotenbergClient'
 import { sentencePlanOverviewPath } from './constants'
 
 /**
@@ -26,20 +29,25 @@ export const isOasysAccess = Data('sessionDetails.accessType').match(Condition.E
 
 export const isReadOnlyAccess = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
-export const isReadWriteAccess = Data('sessionDetails.planAccessMode').not.match(Condition.Equals('READ_ONLY'))
+export const isPrintAndShareEnabled = Data('featureFlags.printAndShareEnabled').match(Condition.Equals(true))
+
+export const isMpopAssessmentInfoEnabled = Data('featureFlags.mpopAssessmentInfoEnabled').match(Condition.Equals(true))
+
+/**
+ * True when Gotenberg is loading this page to build a PDF, rather than a person viewing it.
+ *
+ * This only picks which label the audit event gets, never whether one is sent. A faked header
+ * can mislabel an event but cannot remove it.
+ */
+export const isPdfRenderRequest = Request.Headers(GOTENBERG_RENDER_HEADER).match(
+  Condition.Equals(GOTENBERG_RENDER_HEADER_VALUE),
+)
 
 export const hasPostAgreementStatus = Data('latestAgreementStatus').match(
   Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
 )
 
-export const lacksPostAgreementStatus = Data('latestAgreementStatus').not.match(
-  Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
-)
-
 export const hasCouldNotAnswerStatus = Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))
-
-export const lacksCouldNotAnswerStatus = Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER'))
-export const isCouldNotAnswerStatus = Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))
 
 /**
  * Redirect users with READ_ONLY access to plan overview.
@@ -51,11 +59,20 @@ export const redirectToOverviewIfReadOnly = () =>
   })
 
 /**
+ * Redirect users to plan overview when print and share is disabled.
+ */
+export const redirectToOverviewUnlessPrintAndShareEnabled = () =>
+  access({
+    when: not(isPrintAndShareEnabled),
+    next: [redirect({ goto: sentencePlanOverviewPath })],
+  })
+
+/**
  * Redirect users unless plan status is in post-agreement states.
  */
 export const redirectIfNotPostAgreement = (goto: string) =>
   access({
-    when: lacksPostAgreementStatus,
+    when: not(hasPostAgreementStatus),
     next: [redirect({ goto })],
   })
 
@@ -100,7 +117,7 @@ export const redirectUnlessAllStepsCompleted = (goto: string) =>
  */
 export const redirectUnlessCouldNotAnswer = (goto: string) =>
   access({
-    when: lacksCouldNotAnswerStatus,
+    when: not(hasCouldNotAnswerStatus),
     next: [redirect({ goto })],
   })
 
@@ -116,10 +133,10 @@ export const isMpopAccess = Data('sessionDetails.accessType').match(Condition.Eq
 
 /**
  * True when the user can access SAN-specific content.
- * Requires both a SAN_SP assessment AND non-MPoP access, because MPoP users
- * cannot reach the SAN data APIs needed to populate this content.
+ * Requires a SAN_SP assessment AND either non-MPoP access (i.e. OASys),
+ * or MPoP access with the assessment-info feature flag enabled.
  */
-export const canAccessSanContent = and(isSanSpAssessment, not(isMpopAccess))
+export const canAccessSanContent = and(isSanSpAssessment, or(not(isMpopAccess), isMpopAssessmentInfoEnabled))
 
 /**
  * Redirect users unless they can access SAN content.
@@ -153,6 +170,6 @@ export const redirectIfMergedMpopPlan = () =>
  */
 export const redirectToPrivacyUnlessAccepted = () =>
   access({
-    when: and(Data('privacyAccepted').not.match(Condition.Equals(true)), isReadWriteAccess),
+    when: and(Data('privacyAccepted').not.match(Condition.Equals(true)), not(isReadOnlyAccess)),
     next: [redirect({ goto: '/sentence-plan/privacy' })],
   })

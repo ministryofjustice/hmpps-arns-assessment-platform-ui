@@ -22,6 +22,7 @@ export interface StrengthsAndNeedsSession {
   accessDetails?: AccessSessionDetails
   sessionDetails?: StrengthsAndNeedsSessionDetails
   handoverContext?: HandoverContext
+  privacyAccepted?: boolean
   patternDrafts?: Record<string, Record<string, unknown>>
 }
 
@@ -29,11 +30,13 @@ export interface StrengthsAndNeedsSession {
  * Data context for SAN effects.
  */
 export interface StrengthsAndNeedsData {
-  victimCollectionUuid: string
   caseData?: CaseDetails
   sessionDetails?: StrengthsAndNeedsSessionDetails
+  accessDetails?: AccessSessionDetails
+  privacyAccepted?: boolean
   assessment?: AssessmentVersionQueryResult
   assessmentUuid?: string
+  victimCollectionUuid?: string
   victims?: CollectionItem[]
   [key: string]: unknown
 }

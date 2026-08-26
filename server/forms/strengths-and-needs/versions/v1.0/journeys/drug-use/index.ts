@@ -1,10 +1,14 @@
-import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { drugUseStep } from './steps/drug-use/step'
 import { addDrugsStep } from './steps/add-drugs/step'
 import { drugDetailsStep } from './steps/drug-details/step'
 import { drugUseHistoryStep } from './steps/drug-use-history/step'
 import { drugUseSummaryStep } from './steps/drug-use-summary/step'
 import { drugUseAnalysisStep } from './steps/drug-use-analysis/step'
+import { Section } from '../../constants/section'
+import { sectionPageTitle, sectionStatusTag } from '../../locales'
+import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
+import { Step } from './constants/step'
 
 /**
  * Drug Use Journey
@@ -18,14 +22,15 @@ import { drugUseAnalysisStep } from './steps/drug-use-analysis/step'
  * drug-use → (NO) → drug-use-summary → drug-use-analysis
  */
 export const drugUseJourney = journey({
-  code: 'drug-use',
-  title: 'Drug use',
-  path: '/drug-use',
-  reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
+  code: Section.drug_use.code,
+  title: sectionPageTitle(Section.drug_use),
+  path: Section.drug_use.path,
+  reachability: { resumeWhen: and(Query('resume').match(Condition.Equals('true')), isEditMode) },
+  onAccess: [redirectToAnalysisIfReadOnly(Section.drug_use.path, Step.drug_use_analysis.path)],
   view: {
     locals: {
-      sectionTitle: 'Drug use',
-      sectionStatus: Data('sectionStatus.drug-use'),
+      sectionTitle: sectionPageTitle(Section.drug_use),
+      sectionStatusTag: sectionStatusTag(Section.drug_use),
     },
   },
   steps: [drugUseStep, addDrugsStep, drugDetailsStep, drugUseHistoryStep, drugUseSummaryStep, drugUseAnalysisStep],

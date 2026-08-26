@@ -1,15 +1,8 @@
 import { Locale } from '../../../../../i18n'
 import { Question } from '../constants/question'
-import { Step } from '../constants/step'
 import { Option } from '../constants/option'
 
 export const english = {
-  step: {
-    [Step.current_accommodation.code]: 'Current accommodation',
-    [Step.accommodation_details.code]: 'Accommodation details',
-    [Step.accommodation_summary.code]: 'Accommodation summary',
-    [Step.accommodation_analysis.code]: 'Accommodation analysis',
-  },
   question: {
     [Question.short_term_accommodation_end_date]: {
       text: 'Enter expected end date (optional)',
@@ -104,7 +97,7 @@ export const english = {
       },
     },
     [Question.suitable_housing_location]: {
-      text: `Is the location of %1's accommodation suitable?`,
+      text: 'Is the location of %1 accommodation suitable?',
       validation: 'Select if the location of the accommodation is suitable',
     },
     [Question.suitable_housing_concerns]: {
@@ -122,7 +115,7 @@ export const english = {
       text: 'What are the concerns?',
     },
     [Question.suitable_housing]: {
-      text: `Is %1's accommodation suitable?`,
+      text: 'Is %1 accommodation suitable?',
       hint: 'This includes things like safety or having appropriate amenities.',
       option: {
         [Option.yes_with_concerns]: 'Yes, with concerns',
@@ -131,6 +124,7 @@ export const english = {
     },
     [Question.accommodation_changes]: {
       text: 'Does %1 want to make changes to their accommodation?',
+      hint: '%1 must answer this question.',
       validation: 'Select if they want to make changes to their accommodation',
     },
     [Question.suitable_housing_planned]: {
@@ -169,28 +163,28 @@ export const english = {
       validation: 'Select why they have no accommodation',
     },
     [Question.past_accommodation_details]: {
-      text: `What's helped %1 stay in accommodation in the past? (optional)`,
+      text: `What’s helped %1 stay in accommodation in the past? (optional)`,
     },
-    [Question.accommodation_strengths_protective_factors]: {
+    [Question.accommodation_practitioner_analysis_strengths_or_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 accommodation?',
       hint: 'Include any strategies, people or support networks that helped.',
       validation: 'Select if there are any strengths or protective factors',
     },
-    [Question.accommodation_strengths_protective_factors_details]: {
+    [Question.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details]: {
       validation: 'Give details on strengths or protective factors related to their accommodation',
     },
-    [Question.accommodation_linked_to_serious_harm]: {
+    [Question.accommodation_practitioner_analysis_risk_of_serious_harm]: {
       text: 'Is %1 accommodation linked to risk of serious harm?',
       validation: 'Select if linked to risk of serious harm',
     },
-    [Question.accommodation_serious_harm_details]: {
+    [Question.accommodation_practitioner_analysis_risk_of_serious_harm_yes_details]: {
       validation: 'Give details on the risk of serious harm',
     },
-    [Question.accommodation_linked_to_reoffending]: {
+    [Question.accommodation_practitioner_analysis_risk_of_reoffending]: {
       text: 'Is %1 accommodation linked to risk of reoffending?',
       validation: 'Select if linked to risk of reoffending',
     },
-    [Question.accommodation_risk_of_reoffending_details]: {
+    [Question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details]: {
       validation: 'Give details on the risk of reoffending',
     },
     [Question.living_with_partner_details]: {

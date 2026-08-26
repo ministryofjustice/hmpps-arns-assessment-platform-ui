@@ -1,14 +1,25 @@
-import { access, Data, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, and, Condition, Data, journey, redirect, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 import { financeJourney } from './journeys/finance'
 import { drugUseJourney } from './journeys/drug-use'
+import { alcoholUseJourney } from './journeys/alcohol-use'
 import { StrengthsAndNeedsEffects } from '../../effects'
 import { Section } from './constants/section'
 import { basePath, formVersion } from './constants/formVersion'
 import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
+import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
+import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
 import { offenceAnalysisJourney } from './journeys/offence-analysis'
+import { isEditMode, isOasysAccess } from './guards'
+import config from '../../../../config'
+import { createPlatformPages, notAPlatformPage } from '../../../platform'
+import { viewAllAnswersStep } from './steps/view-all-answers/step'
+import { configStep } from '../configStep'
+import { formConfigsByVersion } from '../../constants/formConfigRegistry'
+
+const feedbackUrl = config.privateBetaFeedbackUrl
 
 /**
  * Strengths and Needs v1.0 Journey
@@ -18,7 +29,7 @@ import { offenceAnalysisJourney } from './journeys/offence-analysis'
  */
 export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
-  title: 'Strengths and needs', // TODO: commonContentFor('strengths_and_needs'),
+  title: commonContentFor('strengths_and_needs'),
   path: `/${formVersion}`,
   view: {
     template: 'strengths-and-needs/views/san-step',
@@ -26,13 +37,22 @@ export const strengthsAndNeedsV1Journey = journey({
       basePath,
       sectionNavItems: Object.values(Section).map(section => ({
         ...section,
-        status: Data(section.statusKey),
+        complete: Data(section.statusKey),
         text: commonContentFor(`sectionTitle.${section.code}`),
+        // Override sideNavHref for read-only mode to point to analysis step
+        sideNavHref: when(isEditMode)
+          .then(`${section.sideNavHref}?resume=true`)
+          .else(section.sideNavHref),
       })),
+      buttons: {
+        showReturnToOasysButton: isOasysAccess,
+      },
+      feedbackUrl,
     },
   },
   data: {
     formVersion,
+    formConfig: formConfigsByVersion[formVersion],
   },
   onAccess: [
     access({
@@ -40,15 +60,25 @@ export const strengthsAndNeedsV1Journey = journey({
         StrengthsAndNeedsEffects.initializeSessionFromAccess(),
         StrengthsAndNeedsEffects.loadSessionData(),
         StrengthsAndNeedsEffects.loadAssessment(),
+        StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
     }),
+    // Only redirect to privacy screen for non-read-only users who haven't accepted privacy
+    access({
+      when: and(notAPlatformPage, Data('privacyAccepted').not.match(Condition.Equals(true)), isEditMode),
+      next: [redirect({ goto: '/strengths-and-needs/privacy' })],
+    }),
   ],
+  steps: [...createPlatformPages({ baseUrl: basePath, feedbackUrl }), viewAllAnswersStep, configStep],
   children: [
     accommodationJourney,
     employmentJourney,
-    drugUseJourney,
     financeJourney,
+    drugUseJourney,
+    alcoholUseJourney,
     healthWellbeingJourney,
+    personalRelationshipsJourney,
+    thinkingBehavioursAndAttitudesJourney,
     offenceAnalysisJourney,
   ],
 })

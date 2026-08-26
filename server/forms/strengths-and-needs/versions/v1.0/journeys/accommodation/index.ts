@@ -1,10 +1,13 @@
-import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { currentAccommodationStep } from './steps/current-accommodation/step'
 import { accommodationSummaryStep } from './steps/accommodation-summary/step'
 import { accommodationAnalysisStep } from './steps/accommodation-analysis/step'
 import { Section } from '../../constants/section'
-import { commonContentFor } from '../../locales'
+import { sectionPageTitle, sectionStatusTag } from '../../locales'
 import { accommodationDetailsStep } from './steps/accommodation-details/step'
+import { StrengthsAndNeedsEffects } from '../../../../effects'
+import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
+import { Step } from './constants/step'
 
 /**
  * Accommodation Journey
@@ -19,13 +22,19 @@ import { accommodationDetailsStep } from './steps/accommodation-details/step'
  */
 export const accommodationJourney = journey({
   code: Section.accommodation.code,
-  title: 'Accommodation', // TODO: commonContentFor('sectionTitle.accommodation')
+  title: sectionPageTitle(Section.accommodation),
   path: Section.accommodation.path,
-  reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
+  reachability: { resumeWhen: and(Query('resume').match(Condition.Equals('true')), isEditMode) },
+  onAccess: [
+    redirectToAnalysisIfReadOnly(Section.accommodation.path, Step.accommodation_analysis.path),
+    access({
+      effects: [StrengthsAndNeedsEffects.setRiskOfSexualHarm()],
+    }),
+  ],
   view: {
     locals: {
-      sectionTitle: commonContentFor('sectionTitle.accommodation'),
-      sectionStatus: Data(Section.accommodation.statusKey),
+      sectionTitle: sectionPageTitle(Section.accommodation),
+      sectionStatusTag: sectionStatusTag(Section.accommodation),
     },
   },
   steps: [currentAccommodationStep, accommodationDetailsStep, accommodationSummaryStep, accommodationAnalysisStep],

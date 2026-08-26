@@ -1,41 +1,28 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import {
-  drugsAffectedTheirLife,
-  drugsAffectedTheirLifeDetails,
-  drugsAnythingHelpedStopOrReduceUse,
-  drugsReasonsForUse,
-  drugsReasonsForUseDetails,
-  drugsWhatCouldHelpNotUseDrugsInFuture,
-  drugUseChanges,
-} from './fields'
+import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
-
-const saveButton = GovUKButton({
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { sectionPageTitle } from '../../../../locales'
+import { saveButton } from '../../../../constants/buttons'
 
 export const drugUseHistoryStep = step({
   path: `/${Step.drug_use_history.path}`,
-  title: 'Drug use background',
+  title: sectionPageTitle(Section.drug_use),
   view: {
     locals: {
       backlink: sectionPath(Section.drug_use) + Step.drug_details.path,
     },
   },
   blocks: [
-    drugsReasonsForUse,
-    drugsReasonsForUseDetails,
-    drugsAffectedTheirLife,
-    drugsAffectedTheirLifeDetails,
-    drugsAnythingHelpedStopOrReduceUse,
-    drugsWhatCouldHelpNotUseDrugsInFuture,
-    drugUseChanges,
+    drugUseSection.questions.reasonsForUse.displayModes.field,
+    drugUseSection.questions.reasonsForUseDetails.displayModes.field,
+    drugUseSection.questions.affectedTheirLife.displayModes.field,
+    drugUseSection.questions.affectedTheirLifeDetails.displayModes.field,
+    drugUseSection.questions.anythingHelpedStopOrReduce.displayModes.field,
+    drugUseSection.questions.whatCouldHelpNotUseInFuture.displayModes.field,
+    drugUseSection.questions.drugUseChanges.displayModes.field,
     saveButton,
   ],
   onSubmission: [
@@ -45,7 +32,7 @@ export const drugUseHistoryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use.statusKey, SectionStatus.incomplete),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
         ],
         next: [redirect({ goto: 'drug-use-summary' })],
       },

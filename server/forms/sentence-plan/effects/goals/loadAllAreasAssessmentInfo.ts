@@ -1,9 +1,9 @@
 import logger from '../../../../../logger'
 import { transformAssessmentData } from '../../../../utils/assessmentUtils'
-import { mapHandoverToCriminogenicNeeds } from '../../../../utils/handoverApiMapper'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { AssessmentArea } from '../../../../interfaces/coordinator-api/entityAssessment'
 import { canAccessSanInfo } from '../helpers'
+import { resolveCriminogenicNeedsData } from './criminogenicNeeds'
 
 // Loads assessment information for ALL areas of need and groups them by scoring category.
 
@@ -25,6 +25,7 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
   const assessmentUuid = context.getData('assessmentUuid')
   const session = context.getSession()
   const handoverCriminogenicNeeds = session.handoverContext?.criminogenicNeedsData
+  const isMpop = session.sessionDetails?.accessType === 'HMPPS_AUTH'
   const crn = session.caseDetails?.crn
 
   if (!assessmentUuid) {
@@ -33,7 +34,7 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
     return
   }
 
-  if (!handoverCriminogenicNeeds) {
+  if (!isMpop && !handoverCriminogenicNeeds) {
     logger.error(
       { assessmentUuid, crn },
       'Cannot load all areas assessment info: missing handover criminogenic needs data',
@@ -46,7 +47,7 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
     const entityAssessment = await deps.coordinatorApi.getEntityAssessment(assessmentUuid)
     const sanAssessmentData = entityAssessment.sanAssessmentData
 
-    const criminogenicNeedsData = mapHandoverToCriminogenicNeeds(handoverCriminogenicNeeds)
+    const criminogenicNeedsData = await resolveCriminogenicNeedsData(deps, context, crn)
     const allAreas = transformAssessmentData(sanAssessmentData, criminogenicNeedsData)
 
     // group areas by scoring category

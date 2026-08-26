@@ -1,33 +1,27 @@
-import type nunjucks from 'nunjucks'
-import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import {
-  BasicBlockProps,
   BlockDefinition,
+  ResolvableObject,
   ResolvableString,
-  EvaluatedBlock,
+  ResolvedPropsOf,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { ChainableRef, ChainableScopedRef, block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   AssessmentArea,
   LinkedIndicator,
   MotivationLevel,
 } from '../../../../interfaces/coordinator-api/entityAssessment'
 
-export interface AssessmentInfoDetailsProps extends BasicBlockProps {
+export interface AssessmentInfoDetails extends BlockDefinition {
   personName: ResolvableString
   areaName: ResolvableString
   // assessment data: can be static, a Data() reference, or an Item() scoped reference
-  assessmentData: AssessmentArea | null | ChainableRef | ChainableScopedRef
+  assessmentData: ResolvableObject<AssessmentArea> | null
   status: ResolvableString
   fullWidth?: boolean
   // when true (default), wraps content in a govuk details component.
   // - can be set to false so that content rendered directly without the collapsible wrapper
   // (useful when embedding inside other expandable containers like accordions)
   showAsDetails?: boolean
-}
-
-export interface AssessmentInfoDetailsBlock extends BlockDefinition, AssessmentInfoDetailsProps {
-  variant: 'assessmentInfoDetails'
 }
 
 /**
@@ -83,8 +77,8 @@ export function hasAnyData(data: AssessmentArea | null): boolean {
 /**
  * Builds the template parameters for rendering.
  */
-export function buildParams(block: EvaluatedBlock<AssessmentInfoDetailsBlock>) {
-  const { personName, areaName, assessmentData, status, fullWidth, showAsDetails = true } = block
+export function buildParams(props: ResolvedPropsOf<AssessmentInfoDetails>) {
+  const { personName, areaName, assessmentData, status, fullWidth, showAsDetails = true } = props
   const data = assessmentData as AssessmentArea | null
 
   const isError = status === 'error'
@@ -168,19 +162,10 @@ export function buildParams(block: EvaluatedBlock<AssessmentInfoDetailsBlock>) {
   }
 }
 
-function renderAssessmentInfoDetails(
-  block: EvaluatedBlock<AssessmentInfoDetailsBlock>,
-  nunjucksEnv: nunjucks.Environment,
-): string {
-  const params = buildParams(block)
-  return nunjucksEnv.render('sentence-plan/components/assessment-info-details/assessmentInfoDetails.njk', { params })
-}
+export const AssessmentInfoDetails = nunjucksComponent<AssessmentInfoDetails>('assessmentInfoDetails', {
+  render: (props, nunjucksEnv) => {
+    const params = buildParams(props)
 
-export const assessmentInfoDetails = buildNunjucksComponent<AssessmentInfoDetailsBlock>(
-  'assessmentInfoDetails',
-  renderAssessmentInfoDetails,
-)
-
-export function AssessmentInfoDetails(props: AssessmentInfoDetailsProps): AssessmentInfoDetailsBlock {
-  return blockBuilder<AssessmentInfoDetailsBlock>({ ...props, variant: 'assessmentInfoDetails' })
-}
+    return nunjucksEnv.render('sentence-plan/components/assessment-info-details/assessmentInfoDetails.njk', { params })
+  },
+})

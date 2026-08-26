@@ -34,6 +34,7 @@ import platformPoliciesFormPackage from './forms/platform'
 import sentencePlanFormPackage from './forms/sentence-plan'
 import strengthsAndNeedsFormPackage from './forms/strengths-and-needs'
 import trainingSessionLauncher from './forms/training-session-launcher'
+import dataDeletionTool from './forms/data-deletion-tool'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -55,6 +56,9 @@ export default function createApp(services: Services): express.Application {
       handoverApiClient: services.handoverApiClient,
       preferencesStore: services.preferencesStore,
     })
+    .registerPackage(dataDeletionTool, {
+      api: services.assessmentPlatformApiClient,
+    })
     .registerPackage(platformPoliciesFormPackage)
     .registerPackage(accessFormPackage, {
       deliusApi: services.deliusApiClient,
@@ -66,6 +70,7 @@ export default function createApp(services: Services): express.Application {
     .registerPackage(sentencePlanFormPackage, {
       api: services.assessmentPlatformApiClient,
       coordinatorApi: services.coordinatorApiClient,
+      arnsApi: services.arnsApiClient,
       deliusApi: services.deliusApiClient,
       auditService: services.auditService,
       featureFlagService: services.featureFlagService,
@@ -83,6 +88,7 @@ export default function createApp(services: Services): express.Application {
     setUpAuthentication({
       bypassPaths: [
         '/training-session-launcher',
+        '/data-deletion-tool',
         '/platform',
         // Allow access to session timeout page even with expired session
         // so we can show the "information deleted" message and re-auth link
@@ -108,7 +114,7 @@ export default function createApp(services: Services): express.Application {
   })
 
   // Mount routes
-  app.use(routes())
+  app.use(routes(services))
   app.use(createExpressRouter(formEngine, { nunjucksEnv, defaultTemplate: 'partials/form-step' }))
 
   app.use((req, _res, next) => {

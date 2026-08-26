@@ -1,0 +1,76 @@
+{
+  "name": "Flipt evaluation snapshot",
+  "request": {
+    "method": "GET",
+    "urlPattern": "/flipt/internal/v1/evaluation/snapshot/namespace/.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "ETag": "\"aap-ui-e2e-snapshot\""
+    },
+    "jsonBody": {
+      "namespace": {
+        "key": "hmpps-arns-assessment-platform"
+      },
+      "flags": [
+        {
+          "key": "sp-enable-print-and-share",
+          "name": "sp-enable-print-and-share",
+          "description": "Enabled so print and share journeys are always testable",
+          "enabled": true,
+          "type": "BOOLEAN_FLAG_TYPE",
+          "createdAt": "2026-01-01T00:00:00Z",
+          "updatedAt": "2026-01-01T00:00:00Z",
+          "rules": [],
+          "rollouts": []
+        },
+        {
+          "key": "sp-enable-smart-survey-in-private-beta",
+          "name": "sp-enable-smart-survey-in-private-beta",
+          "description": "Matches the application fallback",
+          "enabled": false,
+          "type": "BOOLEAN_FLAG_TYPE",
+          "createdAt": "2026-01-01T00:00:00Z",
+          "updatedAt": "2026-01-01T00:00:00Z",
+          "rules": [],
+          "rollouts": []
+        },
+        {
+          "key": "sp-enable-smart-survey-in-national-rollout",
+          "name": "sp-enable-smart-survey-in-national-rollout",
+          "description": "Matches the application fallback",
+          "enabled": false,
+          "type": "BOOLEAN_FLAG_TYPE",
+          "createdAt": "2026-01-01T00:00:00Z",
+          "updatedAt": "2026-01-01T00:00:00Z",
+          "rules": [],
+          "rollouts": []
+        },
+        {
+          "key": "sp-downtime-notification-banner",
+          "name": "sp-downtime-notification-banner",
+          "description": "Matches the application fallback",
+          "enabled": false,
+          "type": "BOOLEAN_FLAG_TYPE",
+          "createdAt": "2026-01-01T00:00:00Z",
+          "updatedAt": "2026-01-01T00:00:00Z",
+          "rules": [],
+          "rollouts": []
+        },
+        {
+          "key": "sp-enable-mpop-assessment-info",
+          "name": "sp-enable-mpop-assessment-info",
+          "description": "Matches the application fallback",
+          "enabled": false,
+          "type": "BOOLEAN_FLAG_TYPE",
+          "createdAt": "2026-01-01T00:00:00Z",
+          "updatedAt": "2026-01-01T00:00:00Z",
+          "rules": [],
+          "rollouts": []
+        }
+      ]
+    }
+  }
+}

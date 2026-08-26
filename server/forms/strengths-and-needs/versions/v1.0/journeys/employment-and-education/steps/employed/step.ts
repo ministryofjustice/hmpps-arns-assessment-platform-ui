@@ -1,41 +1,31 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import {
-  academicQualification,
-  dayToDayCommitments,
-  difficultiesReadingWritingNumeracy,
-  educationExperience,
-  employmentAndEducationChanges,
-  employmentExperience,
-  employmentHistory,
-  employmentSector,
-  jobSkills,
-  professionalQualifications,
-} from './fields'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { employmentEducationSection } from '../../section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { sectionPath } from '../../../../constants/path'
+import { sectionPageTitle } from '../../../../locales'
 
 export const employedEmploymentStep = step({
   path: `/${Step.employed.path}`,
-  title: 'Employed', // TODO: contentFor('step.employed')
+  title: sectionPageTitle(Section.employment_and_education),
   view: {
     locals: {
       backlink: sectionPath(Section.employment_and_education),
     },
   },
   blocks: [
-    employmentSector,
-    employmentHistory,
-    dayToDayCommitments,
-    academicQualification,
-    professionalQualifications,
-    jobSkills,
-    difficultiesReadingWritingNumeracy,
-    employmentExperience,
-    educationExperience,
-    employmentAndEducationChanges,
+    employmentEducationSection.questions.employmentSector.displayModes.field,
+    employmentEducationSection.questions.employmentHistory.displayModes.field,
+    employmentEducationSection.questions.dayToDayCommitments.displayModes.field,
+    employmentEducationSection.questions.academicQualification.displayModes.field,
+    employmentEducationSection.questions.professionalQualification.displayModes.field,
+    employmentEducationSection.questions.jobSkills.displayModes.field,
+    employmentEducationSection.questions.difficultiesReadingWritingNumeracy.displayModes.field,
+    employmentEducationSection.questions.employmentExperience.displayModes.field,
+    employmentEducationSection.questions.educationExperience.displayModes.field,
+    employmentEducationSection.questions.changes.displayModes.field,
     saveButton,
   ],
   onSubmission: [
@@ -45,10 +35,7 @@ export const employedEmploymentStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(
-            Section.employment_and_education.statusKey,
-            SectionStatus.incomplete,
-          ),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
         ],
         next: [redirect({ goto: Step.employment_education_summary.path })],
       },

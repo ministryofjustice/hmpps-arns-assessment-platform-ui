@@ -1,6 +1,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
+{% set showDowntimeNotificationBanner = featureFlags.downtimeNotificationBanner %}
+
 {% if hidePlanHeader %}
   <div class="govuk-width-container">
     <div class="plan-header" style="padding: 0; min-height: 1px;"></div>
@@ -9,9 +11,24 @@
   {% set person = data.caseData %}
   {% set fullName = person.name.forename + ' ' + person.name.surname if person.name else 'Unknown' %}
 
+  {% if showPrintPageHeaders %}
+    <div
+      hidden
+      data-print-page-header
+      data-print-plan-title="{{ headerPageHeading }}"
+      data-print-person-name="{{ fullName }}"
+      data-print-identifiers="CRN: {{ person.crn }} | PNC: {{ person.pnc | default('Unknown PNC', true) }} | Date of birth: {{ person.dateOfBirth | formatSimpleDate }}"
+    ></div>
+  {% endif %}
+
   <div class="govuk-width-container">
-    <div class="plan-header" data-qa="plan-header">
-      <div class="govuk-grid-row">
+    <div class="plan-header{% if showPrintPageHeaders %} plan-header--print-preview{% endif %}" data-qa="plan-header">
+      {% if showDowntimeNotificationBanner and not showPrintPageHeaders %}
+        <div class="sp-downtime-banner govuk-width-container govuk-!-display-none-print" data-qa="downtime-banner">
+          {% include "sentence-plan/views/partials/downtime-banner.njk" %}
+        </div>
+      {% endif %}
+      <div class="govuk-grid-row plan-header__subject-details-row">
           <div class="govuk-grid-column-full plan-header__subject-details">
             <p class="plan-header__subject-details__title">{{ fullName }}</p>
             <dl class="plan-header__subject-details__identifiers">
@@ -56,7 +73,7 @@
         </div>
       {% endif %}
 
-      {% set hasButtons = buttons.showReturnToOasysButton or buttons.showCreateGoalButton or buttons.showAgreePlanButton %}
+      {% set hasButtons = buttons.showPrintAllGoalsButton or buttons.showExportAsPdfButton or buttons.showPrintButton or buttons.showReturnToOasysButton or buttons.showCreateGoalButton or buttons.showAgreePlanButton %}
       {% if headerPageHeading or hasButtons %}
         <div class="plan-header__header-actions">
           <div class="moj-page-header-actions">
@@ -66,6 +83,40 @@
             {% if hasButtons %}
               <div class="moj-page-header-actions__actions">
                 <div class="moj-button-group moj-button-group--inline">
+                  {% if buttons.showPrintAllGoalsButton %}
+                    {{ govukButton({
+                      text: 'Print all goals',
+                      href: basePath + '/plan/print-preview',
+                      classes: "govuk-button--secondary govuk-!-display-none-print",
+                      attributes: {
+                        "data-ai-id": "print-all-goals-button",
+                        "target": "_blank",
+                        "rel": "noopener"
+                      }
+                    }) }}
+                  {% endif %}
+                  {% if buttons.showExportAsPdfButton %}
+                    {{ govukButton({
+                      text: 'Export as PDF',
+                      href: basePath + '/plan/print-preview/pdf',
+                      classes: 'govuk-button--secondary govuk-!-display-none-print',
+                      attributes: {
+                        'data-ai-id': 'print-preview-export-pdf-button'
+                      }
+                    }) }}
+                  {% endif %}
+                  {% if buttons.showPrintButton %}
+                    {# Requires JavaScript (window.print). Hidden until GOV.UK adds `js-enabled` to <body>; a <noscript> message in the main content replaces it. #}
+                    {{ govukButton({
+                      text: 'Print',
+                      type: 'button',
+                      classes: 'govuk-!-display-none-print js-only',
+                      attributes: {
+                        'data-ai-id': 'print-preview-print-button',
+                        'data-print-sentence-plan': ''
+                      }
+                    }) }}
+                  {% endif %}
                   {% if buttons.showReturnToOasysButton %}
                     {{ govukButton({
                       text: 'Return to OASys',
@@ -77,7 +128,7 @@
                     }) }}
                   {% endif %}
                   {% if buttons.showCreateGoalButton %}
-                    {% set createGoalHref = basePath + '/goal/new/add-goal/accommodation' + ('?type=' + currentTab if currentTab else '') %}
+                    {% set createGoalHref = basePath + '/goal/new/select-area-of-need' + ('?goalStatusTab=' + currentTab if currentTab and currentTab != 'current' else '') %}
                     {{ govukButton({
                       text: 'Create goal',
                       href: createGoalHref,

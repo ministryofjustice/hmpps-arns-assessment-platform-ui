@@ -8,6 +8,7 @@ import {
   redirect,
   and,
   not,
+  or,
   Post,
   Data,
   Item,
@@ -29,7 +30,26 @@ import {
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
-import { isOasysAccess, isReadOnlyAccess, isReadWriteAccess, lacksPostAgreementStatus } from '../../../../guards'
+import { hasPostAgreementStatus, isOasysAccess, isPrintAndShareEnabled, isReadOnlyAccess } from '../../../../guards'
+
+/**
+ * True when at least one goal appears in a tab a draft plan can show.
+ * REMOVED is left out because the removed tab only appears after agreement.
+ */
+const hasGoalsInDisplayedTabs = Data('goals')
+  .each(
+    Iterator.Filter(
+      Item().path('status').match(Condition.Array.IsIn(['ACTIVE', 'FUTURE', 'ACHIEVED'])),
+    ),
+  )
+  .pipe(Transformer.Array.Length())
+  .match(Condition.Number.GreaterThan(0))
+
+/**
+ * A draft plan with no goals on show has nothing to print, so the button is hidden.
+ * Once the plan reaches a post-agreement status the button always shows.
+ */
+const showPrintAllGoalsButton = and(isPrintAndShareEnabled, or(hasPostAgreementStatus, hasGoalsInDisplayedTabs))
 
 export const planStep = step({
   path: '/overview',
@@ -37,12 +57,13 @@ export const planStep = step({
   view: {
     locals: {
       headerPageHeading: Format(`%1 plan`, CaseData.ForenamePossessive),
-      currentTab: Query('type'),
+      currentTab: Query('goalStatusTab'),
       buttons: {
+        showPrintAllGoalsButton,
         showReturnToOasysButton: isOasysAccess,
-        showCreateGoalButton: isReadWriteAccess,
+        showCreateGoalButton: not(isReadOnlyAccess),
         // Only show "Agree plan" while still in draft and when the user has edit access.
-        showAgreePlanButton: and(lacksPostAgreementStatus, isReadWriteAccess),
+        showAgreePlanButton: and(not(hasPostAgreementStatus), not(isReadOnlyAccess)),
       },
     },
   },
@@ -85,10 +106,13 @@ export const planStep = step({
       when: and(Query('goalUuid').match(Condition.IsRequired()), not(isReadOnlyAccess)),
       effects: [SentencePlanEffects.reorderGoal()],
       next: [
-        redirect({ when: Query('status').match(Condition.Equals('FUTURE')), goto: 'overview?type=future' }),
-        redirect({ when: Query('status').match(Condition.Equals('ACHIEVED')), goto: 'overview?type=achieved' }),
-        redirect({ when: Query('status').match(Condition.Equals('REMOVED')), goto: 'overview?type=removed' }),
-        redirect({ goto: 'overview?type=current' }),
+        redirect({ when: Query('status').match(Condition.Equals('FUTURE')), goto: 'overview?goalStatusTab=future' }),
+        redirect({
+          when: Query('status').match(Condition.Equals('ACHIEVED')),
+          goto: 'overview?goalStatusTab=achieved',
+        }),
+        redirect({ when: Query('status').match(Condition.Equals('REMOVED')), goto: 'overview?goalStatusTab=removed' }),
+        redirect({ goto: 'overview?goalStatusTab=current' }),
       ],
     }),
     access({
@@ -96,12 +120,12 @@ export const planStep = step({
         SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.derivePlanLastUpdated(),
         SentencePlanEffects.loadNotifications('plan-overview'),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('type') }),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') }),
       ],
       next: [
         redirect({
-          when: Query('type').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
-          goto: 'overview?type=current',
+          when: Query('goalStatusTab').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
+          goto: 'overview?goalStatusTab=current',
         }),
       ],
     }),

@@ -34,7 +34,7 @@ export const viewHistoricStep = step({
       hideFooter: true,
       disableHeaderLink: true,
       headerPageHeading: Format(`%1's plan`, CaseData.Forename),
-      currentTab: Query('type'),
+      currentTab: Query('goalStatusTab'),
       buttons: {
         showReturnToOasysButton: and(isOasysAccess, Data('navigationReferrer').not.match(Condition.IsRequired())),
         showCreateGoalButton: false,
@@ -73,8 +73,8 @@ export const viewHistoricStep = step({
       ],
       next: [
         redirect({
-          when: Query('type').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
-          goto: Format('view-historic/%1?type=current', Params('timestamp')),
+          when: Query('goalStatusTab').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
+          goto: Format('view-historic/%1?goalStatusTab=current', Params('timestamp')),
         }),
       ],
     }),

@@ -71,9 +71,9 @@ export const confirmAddGoalStep = step({
         next: [
           redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
-            goto: '../../plan/overview?type=future',
+            goto: '../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),

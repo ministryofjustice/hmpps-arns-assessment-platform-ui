@@ -1,35 +1,28 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import {
-  accommodationChanges,
-  livingWith,
-  noAccommodationReason,
-  pastAccommodationDetails,
-  suitableHousing,
-  suitableHousingLocation,
-  suitableHousingPlanned,
-} from './fields'
+import { accommodationSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
+import { sectionPageTitle } from '../../../../locales'
 
 export const accommodationDetailsStep = step({
   path: `/${Step.accommodation_details.path}`,
-  title: 'Settled accommodation', // TODO: contentFor('step.settled_accommodation')
+  title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
       backlink: sectionPath(Section.accommodation),
     },
   },
   blocks: [
-    livingWith,
-    noAccommodationReason,
-    pastAccommodationDetails,
-    suitableHousingLocation,
-    suitableHousing,
-    suitableHousingPlanned,
-    accommodationChanges,
+    accommodationSection.questions.livingWith.displayModes.field,
+    accommodationSection.questions.noAccommodationReason.displayModes.field,
+    accommodationSection.questions.pastAccommodationDetails.displayModes.field,
+    accommodationSection.questions.suitableHousingLocation.displayModes.field,
+    accommodationSection.questions.suitableHousing.displayModes.field,
+    accommodationSection.questions.suitableHousingPlanned.displayModes.field,
+    accommodationSection.questions.changes.displayModes.field,
     saveButton,
   ],
   onSubmission: [
@@ -39,7 +32,7 @@ export const accommodationDetailsStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation.statusKey, SectionStatus.incomplete),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
         ],
         next: [redirect({ goto: Step.accommodation_summary.path })],
       },

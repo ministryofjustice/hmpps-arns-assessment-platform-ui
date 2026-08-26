@@ -43,16 +43,19 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'EMPLOYED' },
-          { question: 'type_of_employment', value: 'FULL_TIME' },
+          { question: 'employment_status', value: 'EMPLOYED' },
+          { question: 'employment_type', value: 'FULL_TIME' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
+        - link "Back":
+          - /url: /strengths-and-needs/v1.0/employment-and-education/
+        - heading "Employment and education" [level=1]
+        - strong: Incomplete
         - text: What job sector does Test work in? (optional)
         - textbox "What job sector does Test work in? (optional)"
         - text: You can enter up to 2000 characters You have 2,000 characters remaining
@@ -66,8 +69,8 @@ test.describe('Employment and education Page', () => {
           - text: Unstable employment history with regular periods of unemployment
           - radio "Unknown"
           - text: Unknown
-        - group "Does Test have any day-to-day commitments?":
-          - text: Does Test have any day-to-day commitments? Select all that apply.
+        - group "Does Test have any additional day-to-day commitments?":
+          - text: Does Test have any additional day-to-day commitments? Select all that apply.
           - checkbox "Caring responsibilities"
           - text: Caring responsibilities
           - checkbox "Child responsibilities"
@@ -85,23 +88,23 @@ test.describe('Employment and education Page', () => {
         - group "Select the highest level of academic qualification Test has completed":
           - text: Select the highest level of academic qualification Test has completed
           - radio "Entry level"
-          - text: Entry level For example, entry level diploma
+          - text: Entry level For example, entry level diploma.
           - radio "Level 1"
-          - text: Level 1 For example, GCSE grades 3, 2, 1 or grades D, E, F, G
+          - text: Level 1 For example, GCSE grades 3, 2, 1 or grades D, E, F, G.
           - radio "Level 2"
-          - text: Level 2 For example, GCSE grades 9, 8, 7, 6, 5, 4 or grades A*, A, B, C
+          - text: Level 2 For example, GCSE grades 9, 8, 7, 6, 5, 4 or grades A*, A, B, C.
           - radio "Level 3"
-          - text: Level 3 For example, A level
+          - text: Level 3 For example, A level.
           - radio "Level 4"
-          - text: Level 4 For example, higher apprenticeship
+          - text: Level 4 For example, higher apprenticeship.
           - radio "Level 5"
-          - text: Level 5 For example, foundation degree
+          - text: Level 5 For example, foundation degree.
           - radio "Level 6"
-          - text: Level 6 For example, degree with honours
+          - text: Level 6 For example, degree with honours.
           - radio "Level 7"
-          - text: Level 7 For example, master's degree
+          - text: Level 7 For example, master’s degree.
           - radio "Level 8"
-          - text: Level 8 For example, doctorate or
+          - text: Level 8 For example, doctorate. or
           - radio "None of these"
           - text: None of these
           - radio "Unknown"
@@ -114,8 +117,8 @@ test.describe('Employment and education Page', () => {
           - text: No or
           - radio "Unknown"
           - text: Unknown
-        - group "Does Test's have any skills that could help them in a job or to get a job?":
-          - text: Does Test's have any skills that could help them in a job or to get a job?
+        - group "Does Test have any skills that could help them in a job or to get a job?":
+          - text: Does Test have any skills that could help them in a job or to get a job?
           - radio "Yes"
           - text: Yes This includes any completed training, qualifications, work experience or transferable skills.
           - radio "Some skills"
@@ -161,7 +164,7 @@ test.describe('Employment and education Page', () => {
           - radio "Unknown"
           - text: Unknown
         - group "Does Test want to make changes to their employment and education?":
-          - text: Does Test want to make changes to their employment and education?
+          - text: Does Test want to make changes to their employment and education? Test must answer this question.
           - radio "I have already made positive changes and want to maintain them"
           - text: I have already made positive changes and want to maintain them
           - radio "I am actively making changes"
@@ -189,7 +192,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'EMPLOYED' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'EMPLOYED' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
 
@@ -209,15 +212,14 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'SELF_EMPLOYED' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'SELF_EMPLOYED' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - text: What job sector does Test work in? (optional)
         - textbox "What job sector does Test work in? (optional)"
@@ -230,25 +232,20 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'RETIRED' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'RETIRED' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
-        - strong: Incomplete
         - group "What is Test's employment history?"
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
-        - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
         - button "Save and continue"
@@ -266,25 +263,23 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
-          { question: 'had_previous_employment_unavailable_for_work', value: 'YES_HAS_BEEN_EMPLOYED_BEFORE' },
+          { question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
+          { question: 'has_been_employed', value: 'YES' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "What is Test's employment history?"
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -304,24 +299,22 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
-          { question: 'had_previous_employment_unavailable_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
+          { question: 'has_been_employed', value: 'NO' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
@@ -339,7 +332,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
 
@@ -365,25 +358,23 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' },
-          { question: 'had_previous_employment_actively_looking_for_work', value: 'YES_HAS_BEEN_EMPLOYED_BEFORE' },
+          { question: 'employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' },
+          { question: 'has_been_employed', value: 'YES' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "What is Test's employment history?"
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -403,24 +394,22 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' },
-          { question: 'had_previous_employment_actively_looking_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'employment_status', value: 'UNEMPLOYED_LOOKING_FOR_WORK' },
+          { question: 'has_been_employed', value: 'NO' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
@@ -438,7 +427,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'UNEMPLOYED_LOOKING_FOR_WORK' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
 
@@ -464,25 +453,23 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
-          { question: 'had_previous_employment_not_looking_for_work', value: 'YES_HAS_BEEN_EMPLOYED_BEFORE' },
+          { question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' },
+          { question: 'has_been_employed', value: 'YES' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
         - group "What is Test's employment history?"
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's overall experience of employment?"
         - group "What is Test's experience of education?"
@@ -502,24 +489,22 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
-          { question: 'had_previous_employment_not_looking_for_work', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' },
+          { question: 'has_been_employed', value: 'NO' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
 
-      expect(page.url()).toContain(sanPageTitles.employmentAndEducation.toLowerCase())
       const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
       await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-        - /children: equal
         - link "Back"
-        - text: Employment and education
+        - heading "Employment and education" [level=1]
         - strong: Incomplete
-        - group "Does Test have any day-to-day commitments?"
+        - group "Does Test have any additional day-to-day commitments?"
         - group "Select the highest level of academic qualification Test has completed"
         - group "Does Test have any professional or vocational qualifications?"
-        - group "Does Test's have any skills that could help them in a job or to get a job?"
+        - group "Does Test have any skills that could help them in a job or to get a job?"
         - group "Does Test have difficulties with reading, writing or numeracy?"
         - group "What is Test's experience of education?"
         - group "Does Test want to make changes to their employment and education?"
@@ -537,7 +522,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
 
@@ -550,6 +535,159 @@ test.describe('Employment and education Page', () => {
       await employmentAndEducationPage.selectOneOption.click()
 
       await expect(employmentAndEducationPage.yesHasBeenEmployedBefore).toBeFocused()
+    })
+  })
+
+  test.describe('Summary', () => {
+    test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' },
+          { question: 'has_been_employed', value: 'NO' },
+          { question: 'employment_other_responsibilities', value: ['NONE'] },
+          { question: 'education_highest_level_completed', value: 'NONE_OF_THESE' },
+          { question: 'education_professional_or_vocational_qualifications', value: 'NO' },
+          { question: 'education_transferable_skills', value: 'NO' },
+          { question: 'education_difficulties', value: ['NONE'] },
+          { question: 'education_experience', value: 'UNKNOWN' },
+          { question: 'employment_education_changes', value: 'NOT_PRESENT' },
+        ]).save()
+
+      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
+        page,
+        handoverLink,
+        baseURL,
+        'employment-education-summary',
+      )
+
+      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'Summary')
+
+      await expect(employmentAndEducationPage.summary).toMatchAriaSnapshot(`
+        - tabpanel "Summary":
+          - term: What is Test's current employment status?
+          - definition:
+            - paragraph: Unemployed - not actively looking for work
+          - definition:
+            - link "Change":
+              - /url: current-employment
+          - term: Does Test have any additional day-to-day commitments?
+          - definition:
+            - paragraph: None
+          - definition:
+            - link "Change":
+              - /url: employed#employment_other_responsibilities
+          - term: Select the highest level of academic qualification Test has completed
+          - definition:
+            - paragraph: None of these
+          - definition:
+            - link "Change":
+              - /url: employed#education_highest_level_completed
+          - term: Does Test have any professional or vocational qualifications?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: employed#education_professional_or_vocational_qualifications
+          - term: Does Test have any skills that could help them in a job or to get a job?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change":
+              - /url: employed#education_transferable_skills
+          - term: Does Test have difficulties with reading, writing or numeracy?
+          - definition:
+            - paragraph: No difficulties
+          - definition:
+            - link "Change":
+              - /url: employed#education_difficulties
+          - term: What is Test's experience of education?
+          - definition:
+            - paragraph: Unknown
+          - definition:
+            - link "Change":
+              - /url: employed#education_experience
+          - term: Does Test want to make changes to their employment and education?
+          - definition:
+            - paragraph: Test is not present
+          - definition:
+            - link "Change":
+              - /url: employed#employment_education_changes
+          - button "Go to practitioner analysis"
+      `)
+    })
+
+    test('practitioner analysis', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
+          { question: 'has_been_employed', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'employment_other_responsibilities', value: ['NONE'] },
+          { question: 'education_highest_level_completed', value: 'NON_OF_THESE' },
+          { question: 'education_professional_or_vocational_qualifications', value: 'NO' },
+          { question: 'education_transferable_skills', value: 'NO' },
+          { question: 'education_difficulties', value: ['NO_DIFFICULTIES'] },
+          { question: 'education_experience', value: 'UNKNOWN' },
+          { question: 'employment_education_changes', value: 'NOT_PRESENT' },
+        ]).save()
+
+      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
+        page,
+        handoverLink,
+        baseURL,
+        'employment-education-summary',
+      )
+      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'Summary')
+
+      await employmentAndEducationPage.goToPractitionerAnalysis.click()
+      await expect(page.getByText('Are there any strengths or protective factors')).toBeVisible()
+    })
+
+    test('mark complete', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
+          { question: 'employment_history', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'employment_other_responsibilities', value: ['NONE'] },
+          { question: 'education_highest_level_completed', value: 'NON_OF_THESE' },
+          { question: 'education_professional_or_vocational_qualifications', value: 'NO' },
+          { question: 'education_transferable_skills', value: 'NO' },
+          { question: 'education_difficulties', value: ['NO_DIFFICULTIES'] },
+          { question: 'education_experience', value: 'UNKNOWN' },
+          { question: 'employment_education_changes', value: 'NOT_PRESENT' },
+          { question: 'employment_education_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
+          {
+            question: 'employment_education_practitioner_analysis_strengths_or_protective_factors_no_details',
+            value: '',
+          },
+          { question: 'employment_education_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
+          { question: 'employment_education_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
+        ]).save()
+
+      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
+        page,
+        handoverLink,
+        baseURL,
+        'employment-education-summary#practitioner-analysis',
+      )
+
+      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(
+        page,
+        'strengths or protective factors',
+      )
+
+      await employmentAndEducationPage.linkedToRiskOfReoffending.click()
+      await employmentAndEducationPage.markComplete.click()
+      await expect(employmentAndEducationPage.complete).toBeVisible()
+      expect(page.url()).toContain('employment-education-analysis')
     })
   })
 

@@ -12,7 +12,7 @@ import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKAccordion, GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { GoalSummaryCardHistory } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
-import { isCouldNotAnswerStatus, isReadOnlyAccess } from '../../../../guards'
+import { hasCouldNotAnswerStatus, isReadOnlyAccess } from '../../../../guards'
 
 const GOAL_EVENT_TYPES = ['goal_created', 'goal_achieved', 'goal_removed', 'goal_readded', 'goal_updated']
 const INACTIVE_GOAL_STATUSES = ['ACHIEVED', 'REMOVED']
@@ -89,13 +89,13 @@ const agreementContentHtml = Format(
     .else(''),
 
   // update agreement link for COULD_NOT_ANSWER events (hidden in read-only):
-  when(isCouldNotAnswerStatus)
+  when(hasCouldNotAnswerStatus)
     .then(
       when(isReadOnlyAccess)
         .then('')
         .else(
           Format(
-            `<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state" data-qa="plan-history-update-agreement-link">Update %1 agreement</a></p>`,
+            `<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print" data-qa="plan-history-update-agreement-link">Update %1 agreement</a></p>`,
             CaseData.ForenamePossessive,
           ),
         ),

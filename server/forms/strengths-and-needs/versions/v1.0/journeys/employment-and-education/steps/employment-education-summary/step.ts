@@ -1,13 +1,14 @@
 import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { employmentStatusSummaryTab } from './fields'
-import { Section, SectionStatus } from '../../../../constants/section'
+import { summaryTab } from './fields'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { Step } from '../../constants/step'
+import { summaryPageTitle } from '../../../../locales'
 
 export const employmentEducationSummaryStep = step({
   path: `/${Step.employment_education_summary.path}`,
-  title: 'Employment and Education Summary', // TODO: contentFor('step.employment-education-summary')
-  blocks: [employmentStatusSummaryTab],
+  title: summaryPageTitle(Section.employment_and_education),
+  blocks: [summaryTab],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -15,12 +16,9 @@ export const employmentEducationSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(
-            Section.employment_and_education.statusKey,
-            SectionStatus.complete,
-          ),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.yes),
         ],
-        next: [redirect({ goto: Step.employment_education_analysis.path })],
+        next: [redirect({ goto: `${Step.employment_education_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

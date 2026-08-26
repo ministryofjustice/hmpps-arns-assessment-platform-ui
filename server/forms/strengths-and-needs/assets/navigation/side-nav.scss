@@ -2,7 +2,7 @@
 //  <div class="govuk-grid-column-one-third">
 //    <nav class="moj-side-navigation" aria-label="Side navigation">
 //      <ul class="moj-side-navigation__list">
-//        <li class="moj-side-navigation__item moj-side-navigation__item--active" data-status="COMPLETE">
+//        <li class="moj-side-navigation__item moj-side-navigation__item--active" data-complete="YES">
 //          <a href="#1" aria-current="location">Nav item 1</a>
 //        </li>
 //        <li class="moj-side-navigation__item">
@@ -17,7 +17,7 @@
 //</div>
 
 .moj-side-navigation {
-  &__item[data-status="COMPLETE"] {
+  &__item[data-complete="YES"] {
     position: relative;
 
     &:after {

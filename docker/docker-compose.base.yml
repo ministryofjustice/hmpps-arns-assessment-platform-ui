@@ -66,6 +66,7 @@ services:
     image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-coordinator-api:aap-san
     depends_on:
       - postgres
+      - localstack
     networks:
       - hmpps
     healthcheck:
@@ -86,6 +87,10 @@ services:
       APP_STRATEGIES_ASSESSMENT: false
       CLIENT_ID: hmpps-assess-risks-and-needs-oastub-ui
       CLIENT_SECRET: clientsecret
+      PLAN_TYPE: AAP_PLAN
+      ASSESSMENT_TYPE: AAP_SAN
+      HMPPS_SQS_PROVIDER: localstack
+      HMPPS_SQS_LOCALSTACK_URL: http://localstack:4566
 
   arns-handover:
     image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:latest
@@ -120,6 +125,25 @@ services:
       CLIENT_SAN_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/handover/callback
       CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in/handover?service=strengths-and-needs
 
+  gotenberg:
+    image: gotenberg/gotenberg:8.34.0
+    networks:
+      - hmpps
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - '3001:3000'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+      interval: 5s
+      retries: 20
+    command:
+      - gotenberg
+      - --chromium-clear-cookies
+      - --libreoffice-disable-routes
+      - --webhook-disable
+      - --prometheus-disable-collect
+
   aap-ui:
     image: ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui:${APP_VERSION:-local}
     networks:
@@ -128,6 +152,7 @@ services:
       - redis
       - localstack
       - wiremock
+      - gotenberg
     build:
       context: ../
       target: production
@@ -149,6 +174,8 @@ services:
       REDIS_HOST: redis
       SESSION_SECRET: somesecretvalue
       INGRESS_URL: http://localhost:3000
+      GOTENBERG_API_URL: http://gotenberg:3000
+      GOTENBERG_RENDER_URL: http://aap-ui:3000
       NO_HTTPS: true
       AUTH_CODE_CLIENT_ID: hmpps-arns-assessment-platform-ui
       AUTH_CODE_CLIENT_SECRET: clientsecret
@@ -162,6 +189,7 @@ services:
       COORDINATOR_API_URL: http://wiremock:8080/coordinator-api
       DELIUS_API_URL: http://wiremock:8080/delius
       ARNS_API_URL: http://wiremock:8080/arns-api
+      FEATURE_FLAG_URL: http://wiremock:8080/flipt
       SAN_URL: http://localhost:3000
       HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080/handover
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
@@ -176,10 +204,11 @@ services:
       AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
       NODE_CLUSTER_ENABLED: true
       FORM_TRAINING_SESSION_LAUNCHER_ENABLED: true
+      FORM_DATA_DELETION_TOOL_ENABLED: true
       CACHE_REDIS_HOST: redis
       SERVICE_NOW_FORM_URL: '#service-now-link'
-      NATIONAL_ROLLOUT_FEEDBACK_URL: national-rollout-feedback-url
-      FEEDBACK_FORM_URL: private-beta-feedback-url
+      NATIONAL_ROLLOUT_FEEDBACK_URL: '#national-rollout-feedback-url'
+      PRIVATE_BETA_FEEDBACK_URL: '#private-beta-feedback-url'
       OASYS_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
       MPOP_URL: 'http://aap-ui:3000/sign-in'
 

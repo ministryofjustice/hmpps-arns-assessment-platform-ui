@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
+import StrengthsAndNeedsPage from './strengthsAndNeedsPage'
 
-export default class AccommodationPage extends AbstractPage {
+export default class AccommodationPage extends StrengthsAndNeedsPage {
   readonly incomplete: Locator
 
   readonly whatTypeOfAccommodation: Locator
@@ -14,7 +14,7 @@ export default class AccommodationPage extends AbstractPage {
 
   readonly campsite: Locator
 
-  private constructor(page: Page) {
+  constructor(page: Page) {
     super(page)
     this.incomplete = page.getByText('Incomplete')
     this.whatTypeOfAccommodation = page.getByTestId('main-form')

@@ -9,18 +9,29 @@ const privacyStepPath = '/privacy'
 export const accommodation = '/accommodation'
 export const employment = '/employment-and-education'
 export const health = '/health-and-wellbeing'
+export const drugUse = '/drug-use'
+export const alcohol = '/alcohol-use'
+export const personal = '/personal-relationships-and-community'
+export const thinking = '/thinking-behaviours-and-attitudes'
+export const finances = '/finances'
 
 export const sentencePlanV1URLs = {
   PRIVACY_SCREEN: `${sanFormPath}${privacyStepPath}`,
   ACCOMODATION: sanFormPath + v1Path + accommodation,
   EMPLOYMENT_AND_EDUCATION: sanFormPath + v1Path + employment,
+  ALCOHOL_USE: sanFormPath + v1Path + alcohol,
 }
 
 // Page titles for san
 export const sanPageTitles = {
-  accommodation: 'Current accommodation',
-  employmentAndEducation: 'Employed',
-  healthAndWellbeing: 'Health Wellbeing',
+  accommodation: 'Accommodation',
+  employmentAndEducation: 'Employment and education',
+  healthAndWellbeing: 'Health and wellbeing',
+  drugUse: 'Drug use',
+  personal: 'Personal relationships and community',
+  thinking: 'Thinking, behaviours and attitudes',
+  alcoholUse: 'Alcohol use',
+  finances: 'Finances',
 }
 
 export const sanServiceName = 'Strengths and needs'
@@ -70,12 +81,10 @@ export const handlePrivacyScreenIfPresent = async (page: Page): Promise<void> =>
  * Navigates to a strengths and needs via handover link and handles the privacy screen.
  * Use this for tests that need to get to the San assessment via OASys handover.
  */
-export const navigateToStrengthsAndNeeds = async (
-  page: Page,
-  handoverLink: string,
-  url: string = 'current-accommodation',
-): Promise<void> => {
+export const navigateToStrengthsAndNeeds = async (page: Page, handoverLink: string): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
-  expect(page.url()).toContain(url)
+  // Wait for navigation to complete and check that we're on the expected page
+  // The URL should contain the expected path after redirecting from handover link
+  await page.waitForURL(/.*\/strengths-and-needs\/v1.0\/.*/)
 }

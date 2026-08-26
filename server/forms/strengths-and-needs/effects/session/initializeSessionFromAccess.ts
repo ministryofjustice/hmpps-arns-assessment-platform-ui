@@ -1,7 +1,7 @@
 import { InternalServerError } from 'http-errors'
 import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
 import { StrengthsAndNeedsContext } from '../types'
-import { Section, SectionStatus } from '../../versions/v1.0/constants/section'
+import { Section, SectionComplete } from '../../versions/v1.0/constants/section'
 
 const SAN_ASSESSMENT_TYPE = 'SAN_SP'
 
@@ -38,15 +38,16 @@ export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsCont
   }
 
   Object.values(Section).forEach(section => {
-    const status = context.getData(section.statusKey) ?? SectionStatus.incomplete
+    const status = context.getData(section.statusKey) ?? SectionComplete.no
 
-    if (status === SectionStatus.incomplete) {
+    if (status === SectionComplete.no) {
       context.setData(section.statusKey, status)
     }
   })
 
   session.sessionDetails = {
     accessType: accessDetails.accessType,
+    accessMode: accessDetails.accessMode,
     planAccessMode: accessDetails.planAccessMode,
     oasysRedirectUrl: accessDetails.oasysRedirectUrl,
     assessmentIdentifier,
