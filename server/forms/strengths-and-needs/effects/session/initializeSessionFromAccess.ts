@@ -1,12 +1,12 @@
 import { InternalServerError } from 'http-errors'
 import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
-import { StrengthsAndNeedsContext } from '../types'
+import { StrengthsAndNeedsContext, StrengthsAndNeedsSession } from '../types'
 import { Section, SectionComplete } from '../../versions/v1.0/constants/section'
 
 const SAN_ASSESSMENT_TYPE = 'SAN_SP'
 
 export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsContext) => {
-  const session = context.getSession()
+  const session: StrengthsAndNeedsSession = context.getSession()
 
   if (!session.accessDetails) {
     throw new InternalServerError('Access details not found - ensure access ran first')
@@ -45,12 +45,16 @@ export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsCont
     }
   })
 
+  const assessmentVersion = handoverContext?.assessmentContext?.assessmentVersion
+
+  context.setData('assessmentVersion', assessmentVersion)
+
   session.sessionDetails = {
     accessType: accessDetails.accessType,
     accessMode: accessDetails.accessMode,
     planAccessMode: accessDetails.planAccessMode,
     oasysRedirectUrl: accessDetails.oasysRedirectUrl,
     assessmentIdentifier,
-    assessmentVersion: handoverContext?.assessmentContext?.assessmentVersion,
+    assessmentVersion,
   }
 }
