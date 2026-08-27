@@ -51,8 +51,21 @@ export const isRelatedToOtherAreas = GovUKRadioInput({
     },
   },
   items: [
-    { value: 'yes', text: 'Yes', block: relatedAreasOfNeed },
-    { value: 'no', text: 'No' },
+    {
+      value: 'yes',
+      text: 'Yes',
+      block: relatedAreasOfNeed,
+      attributes: {
+        'data-ai-id': 'is-related-to-other-areas-yes-radio',
+      },
+    },
+    {
+      value: 'no',
+      text: 'No',
+      attributes: {
+        'data-ai-id': 'is-related-to-other-areas-no-radio',
+      },
+    },
   ],
   validWhen: [
     validation({
@@ -147,8 +160,21 @@ export const canStartNow = GovUKRadioInput({
     },
   },
   items: [
-    { value: 'yes', text: 'Yes', block: targetDateOption },
-    { value: 'no', text: 'No, it is a future goal' },
+    {
+      value: 'yes',
+      text: 'Yes',
+      block: targetDateOption,
+      attributes: {
+        'data-ai-id': 'can-start-now-yes-radio',
+      },
+    },
+    {
+      value: 'no',
+      text: 'No, it is a future goal',
+      attributes: {
+        'data-ai-id': 'can-start-now-no-radio',
+      },
+    },
   ],
   validWhen: [
     validation({
