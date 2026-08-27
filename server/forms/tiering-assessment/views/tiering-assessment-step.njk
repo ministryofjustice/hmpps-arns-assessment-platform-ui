@@ -1,7 +1,4 @@
 {%- extends "partials/layout.njk" -%}
-{%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
-{%- from "govuk/components/tag/macro.njk" import govukTag -%}
-{%- from "moj/components/side-navigation/macro.njk" import mojSideNavigation -%}
 {%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 
 {% set allValidationErrors = fieldValidationErrors.concat(domainValidationErrors) %}
