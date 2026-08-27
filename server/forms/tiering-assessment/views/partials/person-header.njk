@@ -1,0 +1,51 @@
+{%- from "shared/views/partials/person-header.njk" import appPersonHeader -%}
+{%- from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions -%}
+{%- from "moj/components/alert/macro.njk" import mojAlert -%}
+{%- from "govuk/components/button/macro.njk" import govukButton -%}
+
+{% if data.caseData %}
+  {% set person = data.caseData %}
+
+  {% if person %}
+    {% set fullName = params.fullName or (person.name.forename + ' ' + person.name.surname if person.name else 'Unknown') %}
+
+      <header class="govuk-width-container" role="presentation" data-qa="{{ params.dataQa or 'tiering-assessment-header' }}">
+
+        <a href="{{ backlink }}" class="govuk-back-link govuk-!-margin-bottom-4 govuk-!-margin-top-4">Back</a>
+
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: allValidationErrors | toErrorSummary
+        }) if allValidationErrors.length }}
+
+        <div class="person-case-details">
+          <p class="person-case-details__name">{{ fullName }}</p>
+          <dl class="person-case-details__list">
+            <dt class="person-case-details__key">CRN:</dt>
+            <dd class="person-case-details__value">{{ person.crn }}</dd>
+            <dt class="person-case-details__key">PNC:</dt>
+            <dd class="person-case-details__value">{{ person.pnc | default('Unknown PNC', true) }}</dd>
+            <dt class="person-case-details__key">Date of birth:</dt>
+            <dd class="person-case-details__value">{{ person.dateOfBirth | formatSimpleDate }}</dd>
+          </dl>
+        </div>
+
+        <p class="assessment-type">Reoffending predictors</p>
+
+        <div class="assessment-page-title">
+          <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">
+            {{ pageTitle }}
+          </h1>
+          <div class="assessment-page-title__actions govuk-!-display-none-print">
+            {{ govukButton({
+              text: 'Return to OASys',
+              href: '',
+              classes: "govuk-button--secondary govuk-!-margin-bottom-0",
+              type: 'button'
+            }) }}
+          </div>
+        </div>
+
+      </header>
+  {% endif %}
+{% endif %}

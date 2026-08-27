@@ -27,7 +27,7 @@ export const offencesSinceSupervisionStep = step({
   ),
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
   blocks: [offenceHistoryField, continueButton],

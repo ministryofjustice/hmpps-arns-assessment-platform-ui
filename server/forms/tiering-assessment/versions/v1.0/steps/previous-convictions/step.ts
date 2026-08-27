@@ -9,7 +9,7 @@ export const previousConvictionsStep = step({
   title: Format('Has %1 previously been convicted of any of these offences?', CaseData.Forename),
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
   blocks: [previousConvictionsField, GovUKButton({ text: 'Save and continue' })],

@@ -12,7 +12,7 @@ export interface TieringAssessmentEffectShape {
   SetAssessmentComplete: () => EffectFunctionExpr
   LoadOffenceCodeDetails: () => EffectFunctionExpr
   CalculateRiskActuarialScores: () => EffectFunctionExpr
-  LoadForename: () => EffectFunctionExpr
+  LoadCaseData: () => EffectFunctionExpr
   TransformRiskData: () => EffectFunctionExpr
 }
 
@@ -107,13 +107,18 @@ export const { effects: TieringAssessmentEffects, implementations: TieringAssess
       (deps: TieringAssessmentEffectsDeps) => async (context: TieringAssessmentEffectContext) => {
         await deps.riskActuarialService.calculateAndSaveScores(context)
       },
-    LoadForename: () => async (context: TieringAssessmentEffectContext) => {
+    LoadCaseData: () => async (context: TieringAssessmentEffectContext) => {
       const forename: string = context.getAnswer('forename') as string
       if (forename) {
         context.setData('caseData', {
           name: {
             forename,
+            surname: 'Smith',
+            fullName: `${forename} Smith`,
           },
+          crn: 'X123456',
+          pnc: '01/23456789A',
+          dateOfBirth: '1980-01-15',
         })
       }
     },

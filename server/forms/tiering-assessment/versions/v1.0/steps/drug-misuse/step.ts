@@ -17,7 +17,7 @@ export const drugMisuseStep = step({
   title: Format('Has %1 ever misused drugs?', CaseData.Forename),
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
   blocks: [drugMisuseField, GovUKButton({ text: 'Save and continue' })],

@@ -1,0 +1,86 @@
+@import 'govuk-frontend/dist/govuk/base';
+
+.summary-answer-list {
+  margin-bottom: govuk-spacing(2);
+
+  .govuk-summary-list__key,
+  .govuk-summary-list__value {
+    @include govuk-font(16);
+    padding-top: 0;
+    padding-bottom: govuk-spacing(1);
+  }
+
+  .govuk-summary-list__key {
+    width: 8em;
+    font-weight: bold;
+  }
+}
+
+.person-case-details {
+  @include govuk-font(19);
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-bottom: govuk-spacing(8);
+  color: #505a5f;
+
+  &__name {
+    @include govuk-font($size: 24, $weight: bold);
+    margin: 0 govuk-spacing(3) 0 0;
+    color: #0b0c0c;
+  }
+
+  &__list {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    margin: 0;
+  }
+
+  &__key,
+  &__value {
+    display: inline;
+    margin: 0;
+  }
+
+  &__key {
+    padding-right: govuk-spacing(1);
+  }
+
+  &__value {
+    padding-right: govuk-spacing(2);
+
+    &:not(:last-of-type) {
+      border-right: 1px solid #505a5f;
+      margin-right: govuk-spacing(2);
+    }
+  }
+}
+
+.assessment-type {
+  @include govuk-font($size: 24);
+  color: #505a5f;
+  margin-bottom: govuk-spacing(1);
+}
+
+.assessment-page-title {
+  display: flex;
+  flex-direction: column;
+  gap: govuk-spacing(3);
+  margin-bottom: govuk-spacing(8);
+
+  @include govuk-media-query($from: tablet) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  &__actions {
+    flex-shrink: 0;
+    margin-top: govuk-spacing(1);
+
+    .govuk-button {
+      margin: 0;
+    }
+  }
+}

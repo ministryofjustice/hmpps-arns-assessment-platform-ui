@@ -17,7 +17,7 @@ export const interviewQuestionStep = step({
   title: Format('Have you done an interview with %1?', CaseData.Forename),
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
   blocks: [interviewQuestionField, GovUKButton({ text: 'Save and continue' })],

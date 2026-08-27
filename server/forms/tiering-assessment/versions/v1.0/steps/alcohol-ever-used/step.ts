@@ -17,7 +17,7 @@ export const alcoholEverUsedStep = step({
   title: Format('Has %1 ever drunk alcohol?', CaseData.Forename),
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
   blocks: [alcoholEverUsedField, GovUKButton({ text: 'Save and continue' })],

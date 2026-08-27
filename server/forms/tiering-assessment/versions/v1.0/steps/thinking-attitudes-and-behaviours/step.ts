@@ -13,7 +13,7 @@ export const thinkingAttitudesAndBehavioursStep = step({
   title: 'Thinking, attitudes and behaviours',
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadForename()],
+      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
   blocks: [

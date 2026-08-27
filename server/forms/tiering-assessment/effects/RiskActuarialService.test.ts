@@ -305,6 +305,24 @@ describe('RiskActuarialService', () => {
       'victim-stranger': 'true',
       'suitability-of-accommodation': 'SOME_PROBLEMS',
       'is-unemployed': 'true',
+      'drug-misuse': [
+        'amphetamines',
+        'benzodiazepines',
+        'cannabis',
+        'cocaine-hydrochloride',
+        'crack-or-cocaine',
+        'ecstasy',
+        'hallucinogens',
+        'heroin',
+        'ketamine',
+        'methadone',
+        'misused-prescribed-drugs',
+        'other-opiates',
+        'solvents',
+        'spice',
+        'steroids',
+        'other-drug',
+      ],
       'benzodiazepines-radio': 'true',
       'cannabis-radio': 'true',
       'cocaine-hydrochloride-radio': 'true',
@@ -313,7 +331,7 @@ describe('RiskActuarialService', () => {
       'heroin-radio': 'true',
       'methadone-radio': 'true',
       'misused-prescribed-drugs-radio': 'true',
-      'other-opiate-radio': 'true',
+      'other-opiates-radio': 'true',
       'solvents-radio': 'true',
       'spice-radio': 'true',
       'steroids-radio': 'true',
@@ -1162,4 +1180,37 @@ describe('RiskActuarialService', () => {
       }),
     )
   })
+
+  it('should return false for items not found in drug-misuse checkbox, but follow boolean or null logic for selected items with radio selected', async () => {
+    const answers: Record<string, unknown> = {
+      'drug-misuse': ['benzodiazepines', 'cannabis', 'cocaine-hydrochloride'],
+      'benzodiazepines-radio': true,
+      'cannabis-radio': false,
+      'cocaine-hydrochloride-radio': 'unknown',
+    }
+
+    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        hasBenzodiazepinesUsage: true,
+        hasCannabisUsage: false,
+        hasPowderCocaineUsage: null,
+        hasCrackCocaineUsage: false,
+        hasHallucinogensUsage: false,
+        hasHeroinUsage: false,
+        hasMethadoneUsage: false,
+        hasMisusedPrescriptionDrugUsage: false,
+        hasOtherOpiateUsage: false,
+        hasSolventsUsage: false,
+        hasSpiceUsage: false,
+        hasSteroidsUsage: false,
+        hasKetamineUsage: false,
+        hasOtherDrugsUsage: false,
+      }),
+    )
+  })
+
 })

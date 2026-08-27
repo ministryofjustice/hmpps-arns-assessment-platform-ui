@@ -35,7 +35,7 @@ export const currentOffenceAndOffendingHistoryStep = step({
       effects: [
         TieringAssessmentEffects.LoadAssessmentData(),
         TieringAssessmentEffects.LoadOffenceCodeDetails(),
-        TieringAssessmentEffects.LoadForename(),
+        TieringAssessmentEffects.LoadCaseData(),
       ],
     }),
   ],

@@ -8,7 +8,11 @@ export const reoffendingPredictorScoresStep = step({
   title: 'Reoffending Predictor scores',
   onAccess: [
     access({
-      effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.TransformRiskData()],
+      effects: [
+        TieringAssessmentEffects.LoadAssessmentData(),
+        TieringAssessmentEffects.TransformRiskData(),
+        TieringAssessmentEffects.LoadCaseData(),
+      ],
     }),
   ],
   blocks: [scores, backToTopLink, buttonGroup],

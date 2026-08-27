@@ -24,6 +24,9 @@ export const tieringAssessmentV1Journey = journey({
   code: 'tiering-assessment-v1',
   title: 'Tiering Assessment',
   path: '/v1.0',
+  view: {
+    template: 'tiering-assessment/views/tiering-assessment-step',
+  },
   steps: [
     startTieringAssessmentStep,
     currentOffenceAndOffendingHistoryStep,
