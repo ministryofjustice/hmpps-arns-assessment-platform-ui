@@ -6,7 +6,7 @@ import {
   GovUKRadioInput,
   GovUKTextInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Condition, Format, Self, Transformer, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Condition, Format, Self, Transformer, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
@@ -93,7 +93,10 @@ export const contactSanctionsField = GovUKTextInput({
       message: 'Must be a whole number',
     }),
     validation({
-      condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThanOrEqual(0)),
+      condition: and(
+        Self().match(Condition.IsRequired()),
+        Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
+      ),
       message: 'Must be greater than or equal to 0',
     }),
   ],
@@ -149,7 +152,10 @@ export const contactChildSanctionsField = GovUKTextInput({
       message: 'Must be a whole number',
     }),
     validation({
-      condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThanOrEqual(0)),
+      condition: and(
+        Self().match(Condition.IsRequired()),
+        Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
+      ),
       message: 'Must be greater than or equal to 0',
     }),
   ],
@@ -254,7 +260,10 @@ export const indecentImagesOfChildrenField = GovUKTextInput({
       message: 'Must be a whole number',
     }),
     validation({
-      condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThanOrEqual(0)),
+      condition: and(
+        Self().match(Condition.IsRequired()),
+        Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
+      ),
       message: 'Must be greater than or equal to 0',
     }),
   ],
@@ -305,7 +314,10 @@ export const nonContactField = GovUKTextInput({
       message: 'Must be a whole number',
     }),
     validation({
-      condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThanOrEqual(0)),
+      condition: and(
+        Self().match(Condition.IsRequired()),
+        Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
+      ),
       message: 'Must be greater than or equal to 0',
     }),
   ],

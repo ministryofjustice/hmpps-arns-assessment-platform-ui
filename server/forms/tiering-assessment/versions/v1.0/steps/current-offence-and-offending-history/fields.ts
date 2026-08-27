@@ -8,6 +8,7 @@ import {
   GovUKWarningText,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import {
+  and,
   Answer,
   Condition,
   Data,
@@ -108,7 +109,10 @@ export const totalSanctionsField = GovUKTextInput({
       message: 'Must be a whole number',
     }),
     validation({
-      condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
+      condition: and(
+        Self().match(Condition.IsRequired()),
+        Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
+      ),
       message: 'Must be greater than 0',
     }),
   ],
@@ -132,7 +136,10 @@ export const totalViolentSanctionsField = GovUKTextInput({
       message: 'Must be a whole number',
     }),
     validation({
-      condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThanOrEqual(0)),
+      condition: and(
+        Self().match(Condition.IsRequired()),
+        Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
+      ),
       message: 'Must be greater than or equal to 0',
     }),
   ],
