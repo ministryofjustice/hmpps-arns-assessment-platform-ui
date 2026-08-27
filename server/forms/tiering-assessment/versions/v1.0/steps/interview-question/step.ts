@@ -11,6 +11,7 @@ import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { interviewQuestionField } from './fields'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import { Step } from '../accommodation/constants/step'
 
 export const interviewQuestionStep = step({
   path: '/interview-question',
@@ -29,7 +30,7 @@ export const interviewQuestionStep = step({
         next: [
           redirect({
             when: Answer('have-you-done-an-interview').match(Condition.Equals('true')),
-            goto: 'accommodation',
+            goto: Step.accommodation.path,
           }),
           redirect({ goto: 'check-your-answers' }),
         ],
