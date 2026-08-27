@@ -1,7 +1,5 @@
-{%- from "shared/views/partials/person-header.njk" import appPersonHeader -%}
-{%- from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions -%}
-{%- from "moj/components/alert/macro.njk" import mojAlert -%}
 {%- from "govuk/components/button/macro.njk" import govukButton -%}
+{%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
 
 {% if data.caseData %}
   {% set person = data.caseData %}
