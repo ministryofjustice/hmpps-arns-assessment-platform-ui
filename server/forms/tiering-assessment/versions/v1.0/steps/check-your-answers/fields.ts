@@ -4,7 +4,7 @@ import { GovUKHeading, GovUKSummaryList } from '@ministryofjustice/hmpps-forge/g
 import { commonContentFor } from '../../locales'
 import { Answerable, questionsOf, checkYourAnswersSections, CheckYourAnswersSection } from './sections'
 import { Section } from '../../constants/section'
-import { answerRow, questionsWithin } from '../../constants/questionContent'
+import { answerRow, questionsWithin } from '../../../../constants/questionContent'
 
 type SectionDefinition = (typeof Section)[keyof typeof Section]
 

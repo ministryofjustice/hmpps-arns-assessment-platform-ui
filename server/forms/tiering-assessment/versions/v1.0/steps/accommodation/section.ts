@@ -2,16 +2,17 @@ import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { Option } from './constants/option'
 import { Step } from './constants/step'
+import { commonContentFor } from '../../locales'
+import { CommonOption } from '../../constants/commonOption'
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import { Section } from '../../constants/section'
 import {
   checkboxField,
   itemisedSummaryRow,
   question,
   QuestionFormat,
   radioField,
-} from '../../constants/questionContent'
-import { commonContentFor } from '../../locales'
-import { CommonOption } from '../../constants/commonOption'
-import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+} from '../../../../constants/questionContent'
 
 const whoAreTheyLivingWithQuestion = question({
   content: {
@@ -72,6 +73,7 @@ export const suitabilityOfAccommodationQuestion = question({
 })
 
 export const accommodationSection = {
+  code: Section.accommodation.code,
   questions: {
     whoAreTheyLivingWithQuestion,
     suitabilityOfAccommodationQuestion,

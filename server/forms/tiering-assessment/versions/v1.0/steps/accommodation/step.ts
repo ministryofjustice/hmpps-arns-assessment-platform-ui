@@ -10,11 +10,6 @@ import { sectionPath } from '../../constants/path'
 export const accommodationStep = step({
   path: `/${Step.accommodation.path}`,
   title: sectionPageTitle(Section.accommodation),
-  view: {
-    locals: {
-      backlink: sectionPath(Section.accommodation),
-    },
-  },
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
