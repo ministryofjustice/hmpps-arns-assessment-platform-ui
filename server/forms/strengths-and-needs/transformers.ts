@@ -1,8 +1,19 @@
 import { TransformerRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { DateTime } from 'luxon'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import { Language, Locales } from './i18n'
 
 const DEFAULT_LANGUAGE = 'en-gb'
+
+const ordinalSuffix = (day: number): string => {
+  const remainderTen = day % 10
+  const remainderHundred = day % 100
+
+  if (remainderTen === 1 && remainderHundred !== 11) return 'st'
+  if (remainderTen === 2 && remainderHundred !== 12) return 'nd'
+  if (remainderTen === 3 && remainderHundred !== 13) return 'rd'
+  return 'th'
+}
 
 export const sanTransformers = new TransformerRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -49,4 +60,19 @@ export const StrengthsAndNeedsTransformers = {
   }),
 
   JsonStringify: sanTransformers.register('JsonStringify', () => (value: unknown) => JSON.stringify(value, null, 2)),
+
+  FormatAssessmentVersion: sanTransformers.register('FormatAssessmentVersion', () => (value: unknown) => {
+    if (typeof value !== 'number' || value <= 0) {
+      return ''
+    }
+
+    const dateTime = DateTime.fromMillis(value)
+
+    if (!dateTime.isValid) {
+      return ''
+    }
+
+    const day = dateTime.day
+    return `${dateTime.toFormat('cccc')} ${day}${ordinalSuffix(day)} ${dateTime.toFormat('LLLL')} ${dateTime.toFormat('yyyy')} ${dateTime.toFormat('h:mm')}${dateTime.toFormat('a').toLowerCase()}`
+  }),
 }

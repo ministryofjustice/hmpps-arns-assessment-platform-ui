@@ -42,6 +42,7 @@ export interface DisplayScenario {
   pnc: string
   oasysAssessmentPk: string
   sentencePlanVersion: string
+  sanAssessmentVersion: string
 
   // For display
   displayNeeds: DisplayNeed[]
@@ -146,7 +147,7 @@ export interface ServiceOption {
 /**
  * Display version of a session with formatted values
  */
-export type DisplaySession = Omit<Session, 'sentencePlanVersion'> & {
+export type DisplaySession = Omit<Session, 'sentencePlanVersion' | 'sanAssessmentVersion'> & {
   scenarioName: string
   displayNeeds: DisplayNeed[]
   givenName: string
@@ -158,6 +159,7 @@ export type DisplaySession = Omit<Session, 'sentencePlanVersion'> & {
   pnc: string
   oasysAssessmentPk: string
   sentencePlanVersion: string
+  sanAssessmentVersion: string
   availableServices: ServiceOption[]
 }
 

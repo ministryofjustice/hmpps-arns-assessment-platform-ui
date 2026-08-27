@@ -17,6 +17,7 @@ import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
 import { configStep } from '../configStep'
 import { formConfigsByVersion } from '../../constants/formConfigRegistry'
+import { StrengthsAndNeedsTransformers } from '../../transformers'
 
 const feedbackUrl = config.privateBetaFeedbackUrl
 
@@ -34,6 +35,7 @@ export const strengthsAndNeedsV1Journey = journey({
     template: 'strengths-and-needs/views/san-step',
     locals: {
       basePath,
+      assessmentVersionDate: Data('assessmentVersion').pipe(StrengthsAndNeedsTransformers.FormatAssessmentVersion()),
       sectionNavItems: Object.values(Section).map(section => ({
         ...section,
         complete: Data(section.statusKey),

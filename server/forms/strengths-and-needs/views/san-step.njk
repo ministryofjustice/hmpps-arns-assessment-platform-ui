@@ -3,6 +3,7 @@
 {%- from "govuk/components/tag/macro.njk" import govukTag -%}
 {%- from "moj/components/side-navigation/macro.njk" import mojSideNavigation -%}
 {%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+{%- from "moj/components/alert/macro.njk" import mojAlert -%}
 
 {% set fullPageTitle = (dynamicTitle or step.title) + ' - Strengths and needs' %}
 {% set pageTitleWithError = 'Error: ' + fullPageTitle %}
@@ -45,6 +46,16 @@
   {% endfor %}
 
   <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% if assessmentVersionDate %}
+        {{ mojAlert({
+          variant: "information",
+          title: "Assessment version date",
+          dismissable: false,
+          html: '<span class="moj-alert__heading">This version is from ' + assessmentVersionDate + '</span>'
+        }) }}
+      {% endif %}
+    </div>
     <div class="govuk-grid-column-full">
       <div class="govuk-grid-row">
         {# Left sidebar: Section navigation #}
