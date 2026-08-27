@@ -17,10 +17,8 @@ import { personalRelationshipsAndCommunityStep } from './steps/personal-relation
 import { thinkingAttitudesAndBehavioursStep } from './steps/thinking-attitudes-and-behaviours/step'
 import { offenceAnalysisStep } from './steps/offence-analysis/step'
 import { previousConvictionsStep } from './steps/previous-convictions/step'
-import { accommodationStep } from './steps/accommodation-old/step'
-// import { accommodationStep } from './steps/accommodation/step'
-import { checkYourAnswersStep } from './steps/check-your-answers-old/step'
-// import { checkYourAnswersStep } from './steps/check-your-answers/step'
+import { accommodationStep } from './steps/accommodation/step'
+import { checkYourAnswersStep } from './steps/check-your-answers/step'
 
 export const tieringAssessmentV1Journey = journey({
   code: 'tiering-assessment-v1',
