@@ -31,6 +31,12 @@ export const relatedAreasOfNeed = GovUKCheckboxInput({
     Iterator.Map({
       value: Item().path('slug'),
       text: Item().path('text'),
+      attributes: {
+        'data-ai-id': Format(
+          'related-area-of-need-%1-checkbox',
+          Item().path('slug'),
+        ),
+      },
     }),
   ),
   validWhen: [
