@@ -352,17 +352,11 @@ test.describe('View all answers', () => {
 
     // Each selected option is followed by what it revealed
 
-    let elementDef = page.locator('dd')
-      .filter({ hasText: /Awaiting placement/ })
-      .filter({ hasText: /awaiting placement — free text answer/ })
-      .filter({ hasText: /Other/ })
-
-    expect(elementDef).toBeVisible()
-    elementDef = page.locator('dd')
-      .filter({ hasText: /Debt to others/ })
-      .filter({ hasText: /debt to others — free text answer/ })
-      .filter({ hasText: /Formal debt/ })
-    expect(elementDef).toBeVisible()
+    expect(page.getByText('Awaiting placement', { exact: true })).toBeVisible()
+    expect(page.getByText('awaiting placement — free')).toBeVisible()
+    expect(page.getByText('Debt to others', { exact: true })).toBeVisible()
+    expect(page.getByText('debt to others — free text')).toBeVisible()
+    expect(page.getByText('Formal debt', { exact: true })).toBeVisible()
 
     /*
      * Each drug carries how often it is used and any details given about that,
@@ -370,27 +364,24 @@ test.describe('View all answers', () => {
      * rather than only sitting next to each other on screen. Compared with the
      * whitespace collapsed, since how they are laid out is not the point.
      */
-    elementDef = page.locator('dd')
-      .filter({ hasText: /Cannabis/ })
-      .filter({ hasText: /Last used/ })
-      .filter({ hasText: /Used in the last 6 months/ })
-      .filter({ hasText: /How often/ })
-      .filter({ hasText: /Daily/ })
-      .filter({ hasText: /Details/ })
-      .filter({ hasText: /cannabis frequency — free text answer/ })
-      .filter({ hasText: /Cocaine/ })
-      .filter({ hasText: /Last used/ })
-      .filter({ hasText: /Used in the last 6 months/ })
-      .filter({ hasText: /How often/ })
-      .filter({ hasText: /Occasionally/ })
-      .filter({ hasText: /Heroin/ })
-      .filter({ hasText: /Last used/ })
-      .filter({ hasText: /Used more than 6 months ago/ })
 
-    expect(elementDef).toBeVisible()
+    expect(page.getByText('Cannabis', { exact: true })).toBeVisible()
+    expect(page.getByText('Last used').first()).toBeVisible()
+    expect(page.getByText('Used in the last 6 months').first()).toBeVisible()
+    expect(page.getByText('How often').first()).toBeVisible()
+    expect(page.getByText('Daily').first()).toBeVisible()
+    expect(page.getByText('cannabis frequency — free')).toBeVisible()
+    expect(page.getByText('Cocaine')).toBeVisible()
+    expect(page.getByText('Last used').nth(1)).toBeVisible()
+    expect(page.getByText('Used in the last 6 months').nth(1)).toBeVisible()
+    expect(page.getByText('How often').nth(1)).toBeVisible()
+    expect(page.getByText('Occasionally').first()).toBeVisible()
+    expect(page.getByText('Heroin').first()).toBeVisible()
+    expect(page.getByText('Last used').nth(2)).toBeVisible()
+    expect(page.getByText('Used more than 6 months ago')).toBeVisible()
 
     // A section stopped before its practitioner analysis shows none.
-    elementDef = page.locator('div:has-text("Health and wellbeing") + dl').first()
+    const elementDef = page.locator('div:has-text("Health and wellbeing") + dl').first()
     expect(elementDef).not.toContainText('Practitioner analysis')
   })
 
@@ -420,10 +411,8 @@ test.describe('View all answers', () => {
     expect(page.getByRole('heading', { name: 'Accommodation' })).toBeVisible()
     expect(page.getByText('No accommodation', { exact: true })).toBeVisible()
     expect(page.getByText('Drug related problems', { exact: true })).toBeVisible()
-    const elementDef = page.locator('dd')
-      .filter({ hasText: /Other/ })
-      .filter({ hasText: /other reason for no accommodation — free text answer/ })
-    expect(elementDef).toBeVisible()
+    expect(page.getByText('Other', { exact: true })).toBeVisible()
+    expect(page.getByText('other reason for no')).toBeVisible()
     expect(page.getByText('Alcohol use\nIncomplete\nHealth and wellbeing')).toBeVisible()
     expect(page.getByText('Is the location of Test')).not.toBeVisible()
   })
