@@ -5,6 +5,7 @@ import { answerRow, questionsWithin } from '../../../../constants/questionConten
 import { Section, SectionComplete } from '../../constants/section'
 import { commonContentFor } from '../../locales'
 import { analysisOf, Answerable, questionsOf, viewAllAnswersSections, ViewAllAnswersSection } from './sections'
+import { CaseData } from '../../constants/formVersion'
 
 type SectionDefinition = (typeof Section)[keyof typeof Section]
 
@@ -51,31 +52,37 @@ const groupHeading = (text: ReturnType<typeof commonContentFor>, fields: Answera
 export const answersFor = (fields: Answerable[]) =>
   GovUKSummaryList({ rows: fields.map(field => field.displayModes?.answerRow ?? answerRow(field.content)) })
 
-const blocksFor = (entry: ViewAllAnswersSection): BlockDefinition[] => {
+const blocksFor = (entry: ViewAllAnswersSection, includePageTitle = false): BlockDefinition[] => {
   const questions = questionsOf(entry)
   const analysis = analysisOf(entry)
 
-  if (questions.length === 0 && analysis.length === 0) {
-    return [
-      TemplateWrapper({
-        template: '<div class="pdf-avoid-break">{{slot:content}}</div>',
-        slots: { content: [sectionHeader(entry.section)] },
-      }),
-    ]
+  const content: BlockDefinition[] = [
+    ...(includePageTitle
+      ? [
+          GovUKHeading({
+            text: commonContentFor('all_answers_heading', CaseData.ForenamePossessive),
+            size: 'l',
+            level: 1,
+            classes: 'pdf-body__heading',
+          }),
+        ]
+      : []),
+    sectionHeader(entry.section),
+  ]
+
+  if (questions.length > 0 || analysis.length > 0) {
+    content.push(
+      groupHeading(commonContentFor('summary'), questions),
+      answersFor(questions),
+      groupHeading(commonContentFor('practitioner_analysis'), analysis),
+      answersFor(analysis),
+    )
   }
 
   return [
     TemplateWrapper({
       template: '<div class="pdf-avoid-break">{{slot:content}}</div>',
-      slots: {
-        content: [
-          sectionHeader(entry.section),
-          groupHeading(commonContentFor('summary'), questions),
-          answersFor(questions),
-          groupHeading(commonContentFor('practitioner_analysis'), analysis),
-          answersFor(analysis),
-        ],
-      },
+      slots: { content },
     }),
   ]
 }
@@ -83,6 +90,8 @@ const blocksFor = (entry: ViewAllAnswersSection): BlockDefinition[] => {
 export const viewAllAnswersBlocks: BlockDefinition[] = [
   TemplateWrapper({
     template: '<div class="govuk-!-margin-bottom-9 pdf-body">{{slot:sections}}</div>',
-    slots: { sections: viewAllAnswersSections.flatMap(blocksFor) },
+    slots: {
+      sections: viewAllAnswersSections.flatMap((section, index) => blocksFor(section, index === 0)),
+    },
   }),
 ]
