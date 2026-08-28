@@ -95,6 +95,8 @@ export enum QuestionFormat {
  * and how invalid input is described. Declared once per question, then projected
  * into each rendering surface by a display mode.
  */
+
+// Tiering-assessment added isPageHeading
 export interface QuestionContent {
   code: string
   idPrefix?: string
@@ -104,6 +106,7 @@ export interface QuestionContent {
   // The object form renders the hint as HTML instead of escaped text.
   hint?: ResolvableString | { html: ResolvableString }
   validationMessage?: ResolvableString
+  isPageHeading?: boolean
 }
 
 export interface OptionedQuestionContent extends QuestionContent {
@@ -264,7 +267,11 @@ export const textField =
     GovUKTextInput(
       definedPropsOf({
         code: content.code,
-        label: placement.label ?? { text: content.text, classes: 'govuk-label--m' },
+        label: placement.label ?? {
+          text: content.text,
+          classes: content.isPageHeading ? 'govuk-fieldset__legend--l' : 'govuk-fieldset__legend--s',
+          isPageHeading: content.isPageHeading ?? false,
+        },
         hint: content.hint,
         classes: 'govuk-input--width-5',
         dependentWhen: placement.dependentWhen,
@@ -280,7 +287,11 @@ export const dateField =
     GovUKDateInputFull({
       code: content.code,
       fieldset: {
-        legend: { text: content.text },
+        legend: {
+          text: content.text,
+          classes: content.isPageHeading ? 'govuk-fieldset__legend--l' : 'govuk-fieldset__legend--s',
+          isPageHeading: content.isPageHeading ?? false,
+        },
       },
       formatters: [StrengthsAndNeedsTransformers.ToISO()],
       validWhen: placement.customValidations,

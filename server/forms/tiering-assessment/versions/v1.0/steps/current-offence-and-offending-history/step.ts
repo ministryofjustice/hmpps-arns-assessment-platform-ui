@@ -25,7 +25,7 @@ import {
   sectionBreakQuestion,
 } from './section'
 
-const hasSexualOffenceHistory = Answer('has-ever-committed-sexual-offence').match(Condition.Equals('true'))
+const hasSexualOffenceHistory = Answer('has_ever_committed_sexual_offence').match(Condition.Equals('YES'))
 
 export const currentOffenceAndOffendingHistoryStep = step({
   path: `/${Step.current_offence_and_offending_history.path}`,

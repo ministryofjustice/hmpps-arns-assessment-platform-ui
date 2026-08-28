@@ -12,6 +12,7 @@ export const english = {
   sectionTitle: {
     [Section.accommodation.code]: 'Accommodation',
     [Section.current_offence_and_offending_history.code]: 'Current offence and offending history',
+    [Section.date_of_current_supervision.code]: 'Date of current supervision',
   },
   // Page titles derive from sectionTitle above, so a section is named in one place.
   pageTitle: {
@@ -19,6 +20,9 @@ export const english = {
   },
   validation: {
     this_is_a_required_field: 'This is a required field',
+    valid_date: 'Please enter a valid date',
+    whole_number: 'Must be a whole number',
+    greater_than_zero: 'Must be greater than 0',
   },
   option: {
     [CommonOption.yes]: 'Yes',

@@ -3,7 +3,6 @@ import {
   and,
   Answer,
   Condition,
-  Format,
   or,
   redirect,
   step,
@@ -11,19 +10,24 @@ import {
   Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
-import { dateOfCurrentSupervisionField } from './fields'
 import { continueButton, redirectToCheckYourAnswers } from '../../common'
+import { dateOfCurrentSupervisionSection } from './section'
+import { sectionPageTitle } from '../../locales'
+import { Step } from './constants/step'
+import { Section } from '../../constants/section'
 
 export const dateOfCurrentSupervisionStep = step({
-  path: '/date-of-current-supervision',
-  title: Format('What date did %1 current supervision in the community begin?', CaseData.ForenamePossessive),
+  path: `/${Step.date_of_current_supervision.path}`,
+  title: sectionPageTitle(Section.date_of_current_supervision),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
-  blocks: [dateOfCurrentSupervisionField, continueButton],
+  blocks: [
+    dateOfCurrentSupervisionSection.questions.dateOfCurrentSupervisionQuestion.displayModes.field,
+    continueButton,
+  ],
   onSubmission: [
     submit({
       validate: true,
@@ -38,8 +42,8 @@ export const dateOfCurrentSupervisionStep = step({
             when: and(
               Answer('gender').match(Condition.Equals('MALE')),
               Answer('supervision-status').not.match(Condition.Equals('CUSTODY')),
-              Answer('date-of-current-supervision').not.match(Condition.Date.IsFutureDate()),
-              Answer('has-ever-committed-sexual-offence').match(Condition.Equals('true')),
+              Answer('date_of_current_supervision').not.match(Condition.Date.IsFutureDate()),
+              Answer('has_ever_committed_sexual_offence').match(Condition.Equals('YES')),
               or(
                 and(
                   Answer('number-of-contact-sexual-sanctions').match(Condition.IsRequired()),

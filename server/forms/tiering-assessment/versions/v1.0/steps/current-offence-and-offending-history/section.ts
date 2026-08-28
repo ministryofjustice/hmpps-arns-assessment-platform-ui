@@ -93,12 +93,8 @@ const dateAtFirstSanctionQuestion = question({
     field: dateField({
       customValidations: [
         validation({
-          condition: Self().match(Condition.IsRequired()),
-          message: 'Date at first sanction is a required field',
-        }),
-        validation({
           condition: Self().match(Condition.Date.IsValid()),
-          message: 'Please enter a valid date',
+          message: commonContentFor('validation.valid_date'),
         }),
       ],
     }),
@@ -118,14 +114,14 @@ const totalSanctionsQuestion = question({
       customValidations: [
         validation({
           condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
-          message: 'Must be a whole number',
+          message: commonContentFor('validation.whole_number'),
         }),
         validation({
           condition: and(
             Self().match(Condition.IsRequired()),
             Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
           ),
-          message: 'Must be greater than 0',
+          message: commonContentFor('validation.greater_than_zero'),
         }),
       ],
     }),
@@ -148,14 +144,14 @@ const totalViolentSanctionsQuestion = question({
       customValidations: [
         validation({
           condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
-          message: 'Must be a whole number',
+          message: commonContentFor('validation.whole_number'),
         }),
         validation({
           condition: and(
             Self().match(Condition.IsRequired()),
             Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
           ),
-          message: 'Must be greater than or equal to 0',
+          message: commonContentFor('validation.greater_than_zero'),
         }),
       ],
     }),
@@ -185,7 +181,7 @@ export const sexualOffenceHistoryQuestion = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.current_offence_and_offending_history.path }),
+    summaryRow: itemisedSummaryRow({ changePath: Step.has_ever_committed_sexual_offence.path }),
   },
 })
 

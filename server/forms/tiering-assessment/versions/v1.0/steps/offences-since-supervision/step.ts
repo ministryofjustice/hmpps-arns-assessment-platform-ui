@@ -20,8 +20,8 @@ export const offencesSinceSupervisionStep = step({
     'Has %1 committed any offences since %2?',
     CaseData.Forename,
     Conditional({
-      when: Answer('date-of-current-supervision-field').match(Condition.Date.IsValid()),
-      then: Answer('date-of-current-supervision-field').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+      when: Answer('date_of_current_supervision-field').match(Condition.Date.IsValid()),
+      then: Answer('date_of_current_supervision-field').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
       else: 'the date of current supervision',
     }),
   ),
