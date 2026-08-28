@@ -55,16 +55,10 @@ export const isRelatedToOtherAreas = GovUKRadioInput({
       value: 'yes',
       text: 'Yes',
       block: relatedAreasOfNeed,
-      attributes: {
-        'data-ai-id': 'is-related-to-other-areas-yes-radio',
-      },
     },
     {
       value: 'no',
       text: 'No',
-      attributes: {
-        'data-ai-id': 'is-related-to-other-areas-no-radio',
-      },
     },
   ],
   validWhen: [
