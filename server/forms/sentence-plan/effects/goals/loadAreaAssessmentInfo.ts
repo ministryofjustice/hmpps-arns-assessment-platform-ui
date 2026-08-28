@@ -14,7 +14,6 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
   const assessmentUuid = context.getData('assessmentUuid')
   const currentAreaOfNeed = context.getData('currentAreaOfNeed')
   const session = context.getSession()
-  const handoverCriminogenicNeeds = session.handoverContext?.criminogenicNeedsData
   const crn = session.caseDetails?.crn
   const isMpop = session.sessionDetails?.accessType === 'HMPPS_AUTH'
 
@@ -33,13 +32,11 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
     return
   }
 
-  if (!isMpop && !handoverCriminogenicNeeds) {
-    logger.error(
-      { assessmentUuid, crn, areaOfNeed: currentAreaOfNeed.slug },
-      'Cannot load area assessment info: missing handover criminogenic needs data',
-    )
+  // OASys users' needs come from the ARNS integration endpoint keyed by the handover CRN; the
+  // ~10% with no CRN get no assessment info (the eligibility guard hides the expander for them).
+  if (!isMpop && !crn) {
     context.setData('currentAreaAssessment', null)
-    context.setData('currentAreaAssessmentStatus', 'error')
+    context.setData('currentAreaAssessmentStatus', 'unavailable')
     return
   }
 

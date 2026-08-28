@@ -62,9 +62,25 @@ describe('loadAreaAssessmentInfo', () => {
     expect(context.setData).toHaveBeenCalledWith('currentAreaAssessmentStatus', 'success')
   })
 
-  it('should set the error state for OASys users when handover criminogenic needs data is missing', async () => {
+  it('should set the unavailable state for OASys users with no CRN', async () => {
     mockCanAccessSanInfo.mockReturnValue(true)
     const getEntityAssessment = jest.fn()
+    const deps = createMockDeps(getEntityAssessment)
+    const context = createMockContext({
+      data: { assessmentUuid: 'assessment-uuid', currentAreaOfNeed: { slug: 'accommodation' } },
+      session: { sessionDetails: { accessType: 'OASYS' }, caseDetails: {} },
+    })
+
+    await loadAreaAssessmentInfo(deps)(context)
+
+    expect(getEntityAssessment).not.toHaveBeenCalled()
+    expect(context.setData).toHaveBeenCalledWith('currentAreaAssessmentStatus', 'unavailable')
+  })
+
+  it('should load area assessment info for OASys users with a CRN', async () => {
+    mockCanAccessSanInfo.mockReturnValue(true)
+    mockTransformAssessmentData.mockReturnValue([{ goalRoute: 'accommodation' }])
+    const getEntityAssessment = jest.fn().mockResolvedValue({ sanAssessmentData: {} })
     const deps = createMockDeps(getEntityAssessment)
     const context = createMockContext({
       data: { assessmentUuid: 'assessment-uuid', currentAreaOfNeed: { slug: 'accommodation' } },
@@ -73,8 +89,9 @@ describe('loadAreaAssessmentInfo', () => {
 
     await loadAreaAssessmentInfo(deps)(context)
 
-    expect(getEntityAssessment).not.toHaveBeenCalled()
-    expect(context.setData).toHaveBeenCalledWith('currentAreaAssessmentStatus', 'error')
+    expect(getEntityAssessment).toHaveBeenCalledWith('assessment-uuid')
+    expect(mockResolveCriminogenicNeedsData).toHaveBeenCalledWith(deps, context, 'X123456')
+    expect(context.setData).toHaveBeenCalledWith('currentAreaAssessmentStatus', 'success')
   })
 
   it('should set the error state when resolving criminogenic needs fails', async () => {
