@@ -149,7 +149,7 @@ describe('RiskActuarialService', () => {
     const answers: Record<string, unknown> = {
       gender: 'MALE',
       'date-of-birth': '1990-05-15',
-      'date-at-first-sanction': '2010-06-20',
+      date_at_first_sanction: '2010-06-20',
       'date-of-current-conviction': '2025-01-10',
       'date-of-current-supervision': '2025-02-01',
       'number-of-sanctions-for-all-offences': 5,
@@ -288,7 +288,7 @@ describe('RiskActuarialService', () => {
     const answers: Record<string, unknown> = {
       gender: 'MALE',
       'date-of-birth': '1990-05-15',
-      'date-at-first-sanction': '2010-06-20',
+      date_at_first_sanction: '2010-06-20',
       'date-of-current-conviction': '2025-01-10',
       'date-of-current-supervision': '2025-02-01',
       'number-of-sanctions-for-all-offences': 5,
@@ -303,7 +303,7 @@ describe('RiskActuarialService', () => {
       'non-contact': 0,
       'date-of-most-recent-sexual-offence': '2010-06-20',
       'victim-stranger': 'true',
-      'suitability-of-accommodation': 'SOME_PROBLEMS',
+      suitability_of_accommodation: 'SOME_PROBLEMS',
       'is-unemployed': 'true',
       'drug-misuse': [
         'amphetamines',
@@ -343,7 +343,7 @@ describe('RiskActuarialService', () => {
       'current-alcohol-use-frequency': 3,
       'units-of-alcohol': 2,
       'alcohol-use-binge-drinking': 'SIGNIFICANT_PROBLEMS',
-      'who-are-they-living-with': 'partner',
+      who_are_they_living_with: 'partner',
       'important-relationships': 'partner',
       'relationship-satisfaction': 'SOME_PROBLEMS',
       'regular-offending-activities': 'NO_PROBLEMS',
@@ -543,7 +543,7 @@ describe('RiskActuarialService', () => {
   it('should calculate age correctly when birthday has not occurred yet in target year', async () => {
     const answers: Record<string, unknown> = {
       'date-of-birth': '1990-10-25',
-      'date-at-first-sanction': '2010-06-20',
+      date_at_first_sanction: '2010-06-20',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -630,7 +630,7 @@ describe('RiskActuarialService', () => {
 
   it('should handle unknown values and resolve them as null', async () => {
     const answers: Record<string, unknown> = {
-      'suitability-of-accommodation': 'unknown',
+      suitability_of_accommodation: 'unknown',
       'is-unemployed': 'unknown',
       'benzodiazepines-radio': 'unknown',
       'cannabis-radio': 'unknown',
@@ -651,7 +651,7 @@ describe('RiskActuarialService', () => {
       'has-ever-drunk-alcohol': 'unknown',
       'alcohol-use-binge-drinking': 'unknown',
       'binge-drinking': 'unknown',
-      'who-are-they-living-with': 'unknown',
+      who_are_they_living_with: 'unknown',
       'important-relationships': 'unknown',
       'relationship-satisfaction': 'unknown',
       'regular-offending-activities': 'unknown',
@@ -696,9 +696,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should parse IN_RELATIONSHIP_LIVING_TOGETHER for currentRelationshipStatus if "who-are-they-living-with" and "important-relationships" include "partner"', async () => {
+  it('should parse IN_RELATIONSHIP_LIVING_TOGETHER for currentRelationshipStatus if "who_are_they_living_with" and "important-relationships" include "partner"', async () => {
     const answers: Record<string, unknown> = {
-      'who-are-they-living-with': 'partner,family',
+      who_are_they_living_with: 'partner,family',
       'important-relationships': 'partner,family-members',
     }
 
@@ -713,9 +713,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should parse IN_RELATIONSHIP_NOT_LIVING_TOGETHER for currentRelationshipStatus if "who-are-they-living-with" not include "partner" and "important-relationships" include "partner"', async () => {
+  it('should parse IN_RELATIONSHIP_NOT_LIVING_TOGETHER for currentRelationshipStatus if "who_are_they_living_with" not include "partner" and "important-relationships" include "partner"', async () => {
     const answers: Record<string, unknown> = {
-      'who-are-they-living-with': 'friends,family',
+      who_are_they_living_with: 'friends,family',
       'important-relationships': 'partner,family',
     }
 
@@ -730,9 +730,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should parse NOT_IN_RELATIONSHIP for currentRelationshipStatus if "who-are-they-living-with" and "important-relationships" not include "partner"', async () => {
+  it('should parse NOT_IN_RELATIONSHIP for currentRelationshipStatus if "who_are_they_living_with" and "important-relationships" not include "partner"', async () => {
     const answers: Record<string, unknown> = {
-      'who-are-they-living-with': 'friends,family',
+      who_are_they_living_with: 'friends,family',
       'important-relationships': 'friends,family',
     }
 
@@ -747,9 +747,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should parse null for currentRelationshipStatus if "who-are-they-living-with" and "important-relationships" are null', async () => {
+  it('should parse null for currentRelationshipStatus if "who_are_they_living_with" and "important-relationships" are null', async () => {
     const answers: Record<string, unknown> = {
-      'who-are-they-living-with': null,
+      who_are_they_living_with: null,
       'important-relationships': null,
     }
 

@@ -9,8 +9,5 @@ import { formVersion } from './formVersion'
  * circular dependency back through the form's effects.
  */
 export const v1FormConfig = {
-  [formVersion]: new FormConfig(formVersion, [
-    currentOffenceAndOffendingHistorySection,
-    accommodationSection,
-  ]),
+  [formVersion]: new FormConfig(formVersion, [currentOffenceAndOffendingHistorySection, accommodationSection]),
 }

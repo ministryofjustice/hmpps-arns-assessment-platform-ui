@@ -7,7 +7,7 @@ export const english = {
   save_and_continue: 'Save and continue',
   or: 'or',
   change: 'Change',
-  summary: 'Summary',
+  summary: '',
   all_answers_heading: 'Tiering Assessment',
   sectionTitle: {
     [Section.accommodation.code]: 'Accommodation',

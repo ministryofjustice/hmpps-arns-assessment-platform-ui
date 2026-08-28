@@ -25,7 +25,7 @@ export class RiskActuarialService {
 
   private buildRiskScoreInput(context: TieringAssessmentEffectContext): RiskScoreInput {
     const dob = this.parseString(context.getAnswer('date-of-birth'))
-    const dateAtFirstSanction = this.parseString(context.getAnswer('date-at-first-sanction'))
+    const dateAtFirstSanction = this.parseString(context.getAnswer('date_at_first_sanction'))
 
     return {
       gender: this.parseString(context.getAnswer('gender')),
@@ -45,7 +45,7 @@ export class RiskActuarialService {
       totalNonContactSexualOffences: this.parseNumber(context.getAnswer('non-contact')),
       dateOfMostRecentSexualOffence: this.parseString(context.getAnswer('date-of-most-recent-sexual-offence')),
       isCurrentOffenceAgainstVictimStranger: this.parseBoolean(context.getAnswer('victim-stranger')),
-      suitabilityOfAccommodation: this.parseProblemLevel(context.getAnswer('suitability-of-accommodation')),
+      suitabilityOfAccommodation: this.parseProblemLevel(context.getAnswer('suitability_of_accommodation')),
       isUnemployed: this.parseBoolean(context.getAnswer('is-unemployed')),
       hasBenzodiazepinesUsage: this.parseDrugCheckbox('benzodiazepines', context),
       hasCannabisUsage: this.parseDrugCheckbox('cannabis', context),
@@ -78,16 +78,16 @@ export class RiskActuarialService {
   }
 
   private getCurrentRelationshipStatus(context: TieringAssessmentEffectContext): CurrentRelationshipStatus | null {
-    const whoLivingWith = this.parseString(context.getAnswer('who-are-they-living-with'))
+    const whoAreTheyLivingWith = this.parseString(context.getAnswer('who_are_they_living_with'))
     const importantRelationships = this.parseString(context.getAnswer('important-relationships'))
 
     const isInvalid = (val: string | null) => val === null || val === 'unknown'
 
-    if (isInvalid(whoLivingWith) || isInvalid(importantRelationships)) {
+    if (isInvalid(whoAreTheyLivingWith) || isInvalid(importantRelationships)) {
       return null
     }
 
-    if (whoLivingWith.toLowerCase().includes('partner')) return 'IN_RELATIONSHIP_LIVING_TOGETHER'
+    if (whoAreTheyLivingWith.toLowerCase().includes('partner')) return 'IN_RELATIONSHIP_LIVING_TOGETHER'
     if (importantRelationships.toLowerCase().includes('partner')) return 'IN_RELATIONSHIP_NOT_LIVING_TOGETHER'
     return 'NOT_IN_RELATIONSHIP'
   }

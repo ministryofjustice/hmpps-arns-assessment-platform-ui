@@ -5,7 +5,6 @@ import { accommodationSection } from './section'
 import { sectionPageTitle } from '../../locales'
 import { Section } from '../../constants/section'
 import { Step } from './constants/step'
-import { sectionPath } from '../../constants/path'
 
 export const accommodationStep = step({
   path: `/${Step.accommodation.path}`,

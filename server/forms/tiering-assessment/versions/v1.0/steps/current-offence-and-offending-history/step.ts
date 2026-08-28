@@ -1,10 +1,29 @@
-import { access, and, Answer, Condition, Format, not, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  and,
+  Answer,
+  Condition,
+  Format,
+  not,
+  redirect,
+  step,
+  submit,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { checkYourAnswersQuery, continueButton, returnToAnswersQueryText } from '../../common'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { sectionPageTitle } from '../../locales'
 import { Section } from '../../constants/section'
 import { Step } from './constants/step'
-import { currentOffenceAndOffendingHistorySection } from './section'
+import {
+  currentOffenceAndOffendingHistorySection,
+  currentOffenceHeadingQuestion,
+  currentOffenceInsetQuestion,
+  currentOffenceSummaryListQuestion,
+  currentOffenceWarningQuestion,
+  historyInsetQuestion,
+  offenceHistoryHeadingQuestion,
+  sectionBreakQuestion,
+} from './section'
 
 const hasSexualOffenceHistory = Answer('has-ever-committed-sexual-offence').match(Condition.Equals('true'))
 
@@ -21,14 +40,14 @@ export const currentOffenceAndOffendingHistoryStep = step({
     }),
   ],
   blocks: [
-    // currentOffenceAndOffendingHistorySection.questions.currentOffenceHeadingQuestion.displayModes.field,
-    // currentOffenceAndOffendingHistorySection.questions.currentOffenceInsetQuestion.displayModes.field,
-    // currentOffenceAndOffendingHistorySection.questions.currentOffenceSummaryListQuestion.displayModes.field,
-    // currentOffenceAndOffendingHistorySection.questions.currentOffenceWarningQuestion.displayModes.field,
-    // currentOffenceAndOffendingHistorySection.questions.sectionBreakQuestion.displayModes.field,
-    // currentOffenceAndOffendingHistorySection.questions.offenceHistoryHeadingQuestion.displayModes.field,
-    // currentOffenceAndOffendingHistorySection.questions.historyInsetQuestion.displayModes.field,
-    // currentOffenceAndOffendingHistorySection.questions.dateAtFirstSanction.displayModes.field,
+    currentOffenceHeadingQuestion,
+    currentOffenceInsetQuestion,
+    currentOffenceSummaryListQuestion,
+    currentOffenceWarningQuestion,
+    sectionBreakQuestion,
+    offenceHistoryHeadingQuestion,
+    historyInsetQuestion,
+    currentOffenceAndOffendingHistorySection.questions.dateAtFirstSanctionQuestion.displayModes.field,
     currentOffenceAndOffendingHistorySection.questions.totalSanctionsQuestion.displayModes.field,
     currentOffenceAndOffendingHistorySection.questions.totalViolentSanctionsQuestion.displayModes.field,
     currentOffenceAndOffendingHistorySection.questions.sexualOffenceHistoryQuestion.displayModes.field,

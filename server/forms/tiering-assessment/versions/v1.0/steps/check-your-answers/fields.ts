@@ -13,7 +13,6 @@ const sectionHeader = (section: SectionDefinition) =>
     template:
       '<div class="govuk-grid-row govuk-!-margin-top-8">' +
       '<div class="govuk-grid-column-three-quarters">{{slot:heading}}</div>' +
-      '<div class="govuk-grid-column-one-quarter govuk-!-text-align-right">{{slot:status}}</div>' +
       '</div>',
     slots: {
       heading: [

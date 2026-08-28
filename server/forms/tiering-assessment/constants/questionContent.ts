@@ -14,6 +14,7 @@ import { BlockDefinition, ResolvableString } from '@ministryofjustice/hmpps-forg
 import {
   GovUKBody,
   GovUKCheckboxInput,
+  GovUKDateInputFull,
   GovUKRadioInput,
   GovUKSummaryList,
   GovUKTextInput,
@@ -22,6 +23,7 @@ import { getDisplayTextForItems, getDisplayTextForSpecificItem } from '../i18n'
 import { SANGenerators } from '../generators'
 import { commonContentFor } from '../versions/v1.0/locales'
 import { checkYourAnswersQuery } from '../versions/v1.0/common'
+import { StrengthsAndNeedsTransformers } from '../transformers/transformers'
 
 /**
  * Content-first question authoring.
@@ -206,36 +208,37 @@ export const itemsOf = (content: OptionedQuestionContent, selectedWhen: (option:
   content.options.map(entry =>
     isQuestionOption(entry)
       ? definedPropsOf({
-        value: entry.value,
-        text: entry.text,
-        html: entry.html,
-        hint: optionHintOf(entry.hint),
-        behaviour: entry.behaviour,
-        disabled: entry.disabled,
-        visibleWhen: entry.visibleWhen,
-        block: revealedBlocksOf(entry, { parentCode: content.code, selectedWhen: selectedWhen(entry) }),
-      })
+          value: entry.value,
+          text: entry.text,
+          html: entry.html,
+          hint: optionHintOf(entry.hint),
+          behaviour: entry.behaviour,
+          disabled: entry.disabled,
+          visibleWhen: entry.visibleWhen,
+          block: revealedBlocksOf(entry, { parentCode: content.code, selectedWhen: selectedWhen(entry) }),
+        })
       : entry,
   )
 
 /** Exported for bespoke template projections that hand-write their own component props. */
+/** Updated by tiering-assessment */
 export const requiredValidationOf = (
   validationMessage?: ResolvableString,
-  customValidation?: ValidationExpr[]
+  customValidations?: ValidationExpr[],
 ): ValidationExpr[] | undefined => {
-  const required = validationMessage
+  const isRequiredValidation = validationMessage
     ? [
         validation({
           condition: Self().match(Condition.IsRequired()),
           message: validationMessage,
         }),
       ]
-    : [];
+    : []
 
-  const combined = [...required, ...(customValidation ?? [])];
+  const allValidations = [...isRequiredValidation, ...(customValidations ?? [])]
 
-  return combined.length > 0 ? combined : undefined;
-};
+  return allValidations.length > 0 ? allValidations : undefined
+}
 
 export const createSummaryRowActions = (changeRef: ResolvableString) =>
   when(checkYourAnswersQuery)
@@ -244,19 +247,20 @@ export const createSummaryRowActions = (changeRef: ResolvableString) =>
 
 export const textSummaryRow =
   (placement: SummaryRowPlacement) =>
-    (content: QuestionContent): SummaryRow =>
-      definedPropsOf({
-        key: { html: content.text },
-        visibleWhen: placement.visibleWhen,
-        value: {
-          blocks: [GovUKBody({ text: Answer(content.code) })],
-        },
-        actions: createSummaryRowActions(placement.changeHref),
-      })
+  (content: QuestionContent): SummaryRow =>
+    definedPropsOf({
+      key: { html: content.text },
+      visibleWhen: placement.visibleWhen,
+      value: {
+        blocks: [GovUKBody({ text: Answer(content.code) })],
+      },
+      actions: createSummaryRowActions(placement.changeHref),
+    })
 
+// This is created for tiering-assessment
 export const textField =
-  (placement: FieldPlacement & { label?: ResolvableString, customValidation?: ValidationExpr[] } = {}) => 
-    (content: QuestionContent) =>
+  (placement: FieldPlacement & { label?: ResolvableString; customValidations?: ValidationExpr[] } = {}) =>
+  (content: QuestionContent) =>
     GovUKTextInput(
       definedPropsOf({
         code: content.code,
@@ -264,9 +268,22 @@ export const textField =
         hint: content.hint,
         dependentWhen: placement.dependentWhen,
         visibleWhen: placement.visibleWhen,
-        validWhen: requiredValidationOf(content.validationMessage, placement.customValidation)
+        validWhen: requiredValidationOf(content.validationMessage, placement.customValidations),
       }),
     )
+
+// Independent dateField This is created for tiering-assessment
+export const dateField =
+  (placement: FieldPlacement & { customValidations?: ValidationExpr[] } = {}) =>
+  (content: QuestionContent) =>
+    GovUKDateInputFull({
+      code: content.code,
+      fieldset: {
+        legend: { text: content.text },
+      },
+      formatters: [StrengthsAndNeedsTransformers.ToISO()],
+      validWhen: placement.customValidations,
+    })
 
 /**
  * The display mode functions: shared projections from question content to
@@ -295,24 +312,24 @@ export const textField =
  */
 export const radioField =
   (placement: FieldPlacement & { legendClasses?: string } = {}) =>
-    (content: OptionedQuestionContent) =>
-      GovUKRadioInput(
-        definedPropsOf({
-          code: content.code,
-          idPrefix: content.idPrefix,
-          fieldset: {
-            legend: {
-              text: content.text,
-              classes: placement.legendClasses ?? 'govuk-fieldset__legend--m',
-            },
+  (content: OptionedQuestionContent) =>
+    GovUKRadioInput(
+      definedPropsOf({
+        code: content.code,
+        idPrefix: content.idPrefix,
+        fieldset: {
+          legend: {
+            text: content.text,
+            classes: placement.legendClasses ?? 'govuk-fieldset__legend--m',
           },
-          hint: content.hint,
-          items: itemsOf(content, option => Answer(content.code).match(Condition.Equals(option.value))),
-          dependentWhen: placement.dependentWhen,
-          visibleWhen: placement.visibleWhen,
-          validWhen: requiredValidationOf(content.validationMessage),
-        }),
-      )
+        },
+        hint: content.hint,
+        items: itemsOf(content, option => Answer(content.code).match(Condition.Equals(option.value))),
+        dependentWhen: placement.dependentWhen,
+        visibleWhen: placement.visibleWhen,
+        validWhen: requiredValidationOf(content.validationMessage),
+      }),
+    )
 
 /**
  * Projects a revealed question into a radio group shown under its parent
@@ -323,22 +340,22 @@ export const radioField =
  */
 export const radioDetails =
   (options: { legendClasses?: string } = {}) =>
-    (content: OptionedQuestionContent, parent: ParentOption) =>
-      GovUKRadioInput(
-        definedPropsOf({
-          code: content.code,
-          idPrefix: content.idPrefix,
-          fieldset: {
-            legend: definedPropsOf({
-              text: content.text,
-              classes: options.legendClasses,
-            }),
-          },
-          items: itemsOf(content, option => Answer(content.code).match(Condition.Equals(option.value))),
-          dependentWhen: parent.selectedWhen,
-          validWhen: requiredValidationOf(content.validationMessage),
-        }),
-      )
+  (content: OptionedQuestionContent, parent: ParentOption) =>
+    GovUKRadioInput(
+      definedPropsOf({
+        code: content.code,
+        idPrefix: content.idPrefix,
+        fieldset: {
+          legend: definedPropsOf({
+            text: content.text,
+            classes: options.legendClasses,
+          }),
+        },
+        items: itemsOf(content, option => Answer(content.code).match(Condition.Equals(option.value))),
+        dependentWhen: parent.selectedWhen,
+        validWhen: requiredValidationOf(content.validationMessage),
+      }),
+    )
 
 /**
  * Projects question content into an editable checkbox group (multi-select).
@@ -347,29 +364,29 @@ export const radioDetails =
  */
 export const checkboxField =
   (placement: FieldPlacement & { legendClasses?: string } = {}) =>
-    (content: OptionedQuestionContent) =>
-      GovUKCheckboxInput(
-        definedPropsOf({
-          code: content.code,
-          multiple: true,
-          fieldset: {
-            legend: {
-              text: content.text,
-              classes: placement.legendClasses ?? 'govuk-fieldset__legend--m',
-            },
+  (content: OptionedQuestionContent) =>
+    GovUKCheckboxInput(
+      definedPropsOf({
+        code: content.code,
+        multiple: true,
+        fieldset: {
+          legend: {
+            text: content.text,
+            classes: placement.legendClasses ?? 'govuk-fieldset__legend--m',
           },
-          hint: content.hint,
-          items: itemsOf(content, option =>
-            and(
-              Answer(content.code).match(Condition.IsRequired()),
-              Answer(content.code).match(Condition.Array.Contains(option.value)),
-            ),
+        },
+        hint: content.hint,
+        items: itemsOf(content, option =>
+          and(
+            Answer(content.code).match(Condition.IsRequired()),
+            Answer(content.code).match(Condition.Array.Contains(option.value)),
           ),
-          dependentWhen: placement.dependentWhen,
-          visibleWhen: placement.visibleWhen,
-          validWhen: requiredValidationOf(content.validationMessage),
-        }),
-      )
+        ),
+        dependentWhen: placement.dependentWhen,
+        visibleWhen: placement.visibleWhen,
+        validWhen: requiredValidationOf(content.validationMessage),
+      }),
+    )
 
 /**
  * Projects a revealed question into a checkbox group shown under its parent
@@ -380,25 +397,25 @@ export const checkboxField =
  */
 export const checkboxDetails =
   (options: { legendClasses?: string } = {}) =>
-    (content: OptionedQuestionContent, parent: ParentOption) =>
-      GovUKCheckboxInput(
-        definedPropsOf({
-          code: content.code,
-          multiple: true,
-          fieldset: options.legendClasses
-            ? { legend: { text: content.text, classes: options.legendClasses } }
-            : undefined,
-          hint: content.hint,
-          items: itemsOf(content, option =>
-            and(
-              Answer(content.code).match(Condition.IsRequired()),
-              Answer(content.code).match(Condition.Array.Contains(option.value)),
-            ),
+  (content: OptionedQuestionContent, parent: ParentOption) =>
+    GovUKCheckboxInput(
+      definedPropsOf({
+        code: content.code,
+        multiple: true,
+        fieldset: options.legendClasses
+          ? { legend: { text: content.text, classes: options.legendClasses } }
+          : undefined,
+        hint: content.hint,
+        items: itemsOf(content, option =>
+          and(
+            Answer(content.code).match(Condition.IsRequired()),
+            Answer(content.code).match(Condition.Array.Contains(option.value)),
           ),
-          dependentWhen: parent.selectedWhen,
-          validWhen: requiredValidationOf(content.validationMessage),
-        }),
-      )
+        ),
+        dependentWhen: parent.selectedWhen,
+        validWhen: requiredValidationOf(content.validationMessage),
+      }),
+    )
 
 // Option entries as the summary should label them: `summaryText` where declared.
 export const summaryItemsOf = (options: QuestionOptionEntry[]) =>
@@ -444,16 +461,16 @@ export const revealedAnswerBlocksOf = (content: OptionedQuestionContent): BlockD
     revealedQuestionsOf(option).flatMap(revealed =>
       isOptioned(revealed.content)
         ? [
-          ...getDisplayTextForItems(revealed.content.code, summaryItemsOf(revealed.content.options), { size: 's' }),
-          ...revealedAnswerBlocksOf(revealed.content),
-        ]
+            ...getDisplayTextForItems(revealed.content.code, summaryItemsOf(revealed.content.options), { size: 's' }),
+            ...revealedAnswerBlocksOf(revealed.content),
+          ]
         : [
-          GovUKBody({
-            text: Answer(revealed.content.code),
-            size: 's',
-            visibleWhen: Answer(revealed.content.code).match(Condition.IsRequired()),
-          }),
-        ],
+            GovUKBody({
+              text: Answer(revealed.content.code),
+              size: 's',
+              visibleWhen: Answer(revealed.content.code).match(Condition.IsRequired()),
+            }),
+          ],
     ),
   )
 
@@ -702,8 +719,8 @@ const withRevealedQuestions = (content: QuestionContent): QuestionContent[] => [
   content,
   ...(isOptioned(content)
     ? optionsOf(content).flatMap(option =>
-      revealedQuestionsOf(option).flatMap(revealed => withRevealedQuestions(revealed.content)),
-    )
+        revealedQuestionsOf(option).flatMap(revealed => withRevealedQuestions(revealed.content)),
+      )
     : []),
 ]
 
@@ -715,11 +732,9 @@ const withRevealedQuestions = (content: QuestionContent): QuestionContent[] => [
  * collections) live outside it.
  */
 export const stableQuestionsOf = (section: SectionDefinition): QuestionContent[] =>
-  [
-    ...Object.values(section.questions),
-  ].flatMap(field => withRevealedQuestions(field.content))
+  [...Object.values(section.questions)].flatMap(field => withRevealedQuestions(field.content))
 
-  export const itemisedSummaryRow =
+export const itemisedSummaryRow =
   (placement: { changePath: string; visibleWhen?: PredicateExpr; changeVisuallyHiddenText?: boolean }) =>
   (content: OptionedQuestionContent): SummaryRow =>
     definedPropsOf({

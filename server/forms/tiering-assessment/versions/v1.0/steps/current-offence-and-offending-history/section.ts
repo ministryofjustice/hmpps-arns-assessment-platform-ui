@@ -1,17 +1,14 @@
 import {
-  GovUKDateInputFull,
   GovUKHeading,
   GovUKInsetText,
-  GovUKRadioInput,
   GovUKSummaryList,
-  GovUKTextInput,
   GovUKWarningText,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import {
+  and,
   Answer,
   Condition,
   Data,
-  Format,
   Self,
   Transformer,
   validation,
@@ -23,31 +20,38 @@ import { Question } from './constants/question'
 import { CommonOption } from '../../constants/commonOption'
 import { commonContentFor } from '../../locales'
 import { Step } from './constants/step'
-import { CharacterLimit } from '../../constants/characterLimit'
-import { question, QuestionFormat, radioField, textField, textSummaryRow } from '../../../../constants/questionContent'
+import {
+  dateField,
+  itemisedSummaryRow,
+  question,
+  QuestionFormat,
+  radioField,
+  textField,
+  textSummaryRow,
+} from '../../../../constants/questionContent'
 import { Section } from '../../constants/section'
 
 export const currentOffenceHeadingQuestion = GovUKHeading({
-  text: 'Current offence',
+  text: contentFor('current_offence'),
   size: 'm',
 })
 
 export const currentOffenceInsetQuestion = GovUKInsetText({
-  text: 'This information comes from NDelius',
+  text: contentFor('current_offence_inset_question'),
 })
 
 export const currentOffenceSummaryListQuestion = GovUKSummaryList({
   rows: [
     {
-      key: { text: 'Offence name' },
+      key: { text: contentFor('offence_name') },
       value: { text: Data('offence-description') },
     },
     {
-      key: { text: 'Offence code' },
+      key: { text: contentFor('offence_code') },
       value: { text: Answer('offence-code') },
     },
     {
-      key: { text: 'Date of current conviction' },
+      key: { text: contentFor('date_of_current_conviction') },
       value: {
         text: Answer('date-of-current-conviction').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
       },
@@ -77,80 +81,84 @@ export const historyInsetQuestion = GovUKInsetText({
     '</ul>',
 })
 
-export const dateAtFirstSanction = GovUKDateInputFull({
-  code: 'date-at-first-sanction',
-  fieldset: {
-    legend: {
-      text: Format('What was the date of %1 first sanction?', CaseData.ForenamePossessive),
-      classes: 'govuk-fieldset__legend--s',
-    },
+const dateAtFirstSanctionQuestion = question({
+  content: {
+    code: Question.date_at_first_sanction,
+    format: QuestionFormat.DATE,
+    text: contentFor('question.date_at_first_sanction.text', CaseData.ForenamePossessive),
+    hint: contentFor('question.date_at_first_sanction.hint'),
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
-  hint: 'We will fill in this date from NDelius if it is available. Change the date if it is wrong.',
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: 'Date at first sanction is a required field',
+  displayModes: {
+    field: dateField({
+      customValidations: [
+        validation({
+          condition: Self().match(Condition.IsRequired()),
+          message: 'Date at first sanction is a required field',
+        }),
+        validation({
+          condition: Self().match(Condition.Date.IsValid()),
+          message: 'Please enter a valid date',
+        }),
+      ],
     }),
-    validation({
-      condition: Self().match(Condition.Date.IsValid()),
-      message: 'Please enter a valid date',
-    }),
-  ],
+  },
 })
 
-
-// validWhen: [
-//     validation({
-//       condition: Self().match(Condition.IsRequired()),
-//       message: 'This is a required field',
-//     }),
-//     validation({
-//       condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
-//       message: 'Must be a whole number',
-//     }),
-//     validation({
-//       condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
-//       message: 'Must be greater than 0',
-//     }),
-//   ],
 const totalSanctionsQuestion = question({
   content: {
     code: Question.number_of_sanctions_for_all_offences,
     format: QuestionFormat.TEXT,
     text: contentFor('question.number_of_sanctions_for_all_offences.text', CaseData.Forename),
     hint: contentFor('question.number_of_sanctions_for_all_offences.hint'),
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
   displayModes: {
-    field: textField(),
+    field: textField({
+      customValidations: [
+        validation({
+          condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
+          message: 'Must be a whole number',
+        }),
+        validation({
+          condition: and(
+            Self().match(Condition.IsRequired()),
+            Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
+          ),
+          message: 'Must be greater than 0',
+        }),
+      ],
+    }),
     summaryRow: textSummaryRow({
       changeHref: Step.number_of_sanctions_for_all_offences.path,
     }),
   },
 })
 
-  //validWhen: [
-  //   validation({
-  //     condition: Self().match(Condition.IsRequired()),
-  //     message: 'This is a required field',
-  //   }),
-  //   validation({
-  //     condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
-  //     message: 'Must be a whole number',
-  //   }),
-  //   validation({
-  //     condition: Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThanOrEqual(0)),
-  //     message: 'Must be greater than or equal to 0',
-  //   }),
-  // ],
 const totalViolentSanctionsQuestion = question({
   content: {
     code: Question.number_of_violent_sanctions,
     format: QuestionFormat.TEXT,
     text: contentFor('question.number_of_violent_sanctions.text', CaseData.ForenamePossessive),
     hint: contentFor('question.number_of_violent_sanctions.hint', CaseData.Forename),
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
   displayModes: {
-    field: textField(),
+    field: textField({
+      customValidations: [
+        validation({
+          condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
+          message: 'Must be a whole number',
+        }),
+        validation({
+          condition: and(
+            Self().match(Condition.IsRequired()),
+            Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
+          ),
+          message: 'Must be greater than or equal to 0',
+        }),
+      ],
+    }),
     summaryRow: textSummaryRow({
       changeHref: Step.number_of_violent_sanctions.path,
     }),
@@ -176,23 +184,15 @@ export const sexualOffenceHistoryQuestion = question({
     validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
   displayModes: {
-    field: textField(),
-    summaryRow: textSummaryRow({ changeHref: Step.current_offence_and_offending_history.path }),
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({ changePath: Step.current_offence_and_offending_history.path }),
   },
 })
-
 
 export const currentOffenceAndOffendingHistorySection = {
   code: Section.current_offence_and_offending_history.code,
   questions: {
-    // currentOffenceHeadingQuestion,
-    // currentOffenceInsetQuestion,
-    // currentOffenceSummaryListQuestion,
-    // currentOffenceWarningQuestion,
-    // sectionBreakQuestion,
-    // offenceHistoryHeadingQuestion,
-    // historyInsetQuestion,
-    // dateAtFirstSanction,
+    dateAtFirstSanctionQuestion,
     totalSanctionsQuestion,
     totalViolentSanctionsQuestion,
     sexualOffenceHistoryQuestion,
