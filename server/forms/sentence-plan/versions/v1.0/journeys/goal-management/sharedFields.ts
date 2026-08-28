@@ -86,6 +86,9 @@ export const customTargetDate = MOJDatePicker({
   // Set a minimum date of today in the DD/MM/YYYY format
   minDate: Generator.Date.Today().pipe(Transformer.Date.Format('DD/MM/YYYY')),
   formatters: [Transformer.String.ToISODate()],
+  attributes: {
+    'data-ai-id': 'custom-target-date-selection',
+  },
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
