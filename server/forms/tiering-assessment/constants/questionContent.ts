@@ -266,6 +266,7 @@ export const textField =
         code: content.code,
         label: placement.label ?? { text: content.text, classes: 'govuk-label--m' },
         hint: content.hint,
+        classes: 'govuk-input--width-5',
         dependentWhen: placement.dependentWhen,
         visibleWhen: placement.visibleWhen,
         validWhen: requiredValidationOf(content.validationMessage, placement.customValidations),

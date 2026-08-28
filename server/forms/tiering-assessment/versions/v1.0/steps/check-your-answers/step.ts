@@ -3,6 +3,10 @@ import { commonContentFor } from '../../locales'
 import { checkYourAnswersBlock } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import {
+  currentOffenceHeadingQuestion,
+  currentOffenceSummaryListQuestion,
+} from '../current-offence-and-offending-history/section'
 
 /**
  * Every answer given so far across every section.
@@ -28,5 +32,5 @@ export const checkYourAnswersStep = step({
       backlink: Data('viewAllAnswersBacklink'),
     },
   },
-  blocks: checkYourAnswersBlock,
+  blocks: [currentOffenceHeadingQuestion, currentOffenceSummaryListQuestion, ...checkYourAnswersBlock],
 })
