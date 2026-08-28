@@ -1,14 +1,15 @@
 import { CriminogenicNeedsData } from '../../../../interfaces/coordinator-api/entityAssessment'
-import { mapHandoverToCriminogenicNeeds } from '../../../../utils/handoverApiMapper'
 import { mapArnsNeedsToCriminogenicNeeds } from '../../../../utils/arnsApiMapper'
+import { mapArnsIntegrationNeedsToCriminogenicNeeds } from '../../../../utils/arnsIntegrationMapper'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 
 /**
  * Resolves criminogenic needs from the correct source for the current user.
  *
- * MPoP users have no handover context, so their needs come from the ARNS API
- * (called with the user's own token so the endpoint's LAO checks run against them).
- * OASys users keep using the handover-supplied data. Both map to the same
+ * MPoP users log in with their own token, so their needs come from the ARNS assessment
+ * endpoint (called as the user, so its limited-access-offender checks run against them).
+ * OASys users have no user token, so their needs come from the ARNS integration endpoint
+ * (called with a system token) keyed by the handover-supplied CRN. Both map to the same
  * CriminogenicNeedsData shape, so callers stay source-agnostic.
  */
 export const resolveCriminogenicNeedsData = async (
@@ -31,6 +32,15 @@ export const resolveCriminogenicNeedsData = async (
     return mapArnsNeedsToCriminogenicNeeds(needs)
   }
 
-  const handoverCriminogenicNeeds = context.getSession().handoverContext?.criminogenicNeedsData
-  return mapHandoverToCriminogenicNeeds(handoverCriminogenicNeeds)
+  // The CRN must come from the handover session, never a route param, so a practitioner can only
+  // pull the case OASys authorised.
+  const handoverCrn = context.getSession().handoverContext?.subject?.crn
+  if (!handoverCrn) {
+    // ~10% of OASys users have no CRN; the assessment-info eligibility guard hides the About page
+    // for them. Return null defensively so callers stay on the "no data" path.
+    return null
+  }
+
+  const needs = await deps.arnsApi.getCriminogenicNeedsDetails(handoverCrn)
+  return mapArnsIntegrationNeedsToCriminogenicNeeds(needs)
 }

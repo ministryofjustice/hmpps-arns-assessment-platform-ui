@@ -1,18 +1,26 @@
 import { resolveCriminogenicNeedsData } from './criminogenicNeeds'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { mapArnsNeedsToCriminogenicNeeds } from '../../../../utils/arnsApiMapper'
-import { mapHandoverToCriminogenicNeeds } from '../../../../utils/handoverApiMapper'
+import { mapArnsIntegrationNeedsToCriminogenicNeeds } from '../../../../utils/arnsIntegrationMapper'
 import { CriminogenicNeedsData } from '../../../../interfaces/coordinator-api/entityAssessment'
 import { AssessmentNeedsDto } from '../../../../interfaces/arns-api/assessmentNeeds'
+import { AssessmentNeedsDetailsDto } from '../../../../interfaces/arns-api/assessmentNeedsDetails'
 
 jest.mock('../../../../utils/arnsApiMapper')
-jest.mock('../../../../utils/handoverApiMapper')
+jest.mock('../../../../utils/arnsIntegrationMapper')
 
 const mockMapArns = mapArnsNeedsToCriminogenicNeeds as jest.Mock
-const mockMapHandover = mapHandoverToCriminogenicNeeds as jest.Mock
+const mockMapArnsIntegration = mapArnsIntegrationNeedsToCriminogenicNeeds as jest.Mock
 
-const createMockDeps = (getCriminogenicNeeds = jest.fn()): SentencePlanEffectsDeps =>
-  ({ arnsApi: { getCriminogenicNeeds } }) as unknown as SentencePlanEffectsDeps
+const createMockDeps = (
+  overrides: { getCriminogenicNeeds?: jest.Mock; getCriminogenicNeedsDetails?: jest.Mock } = {},
+): SentencePlanEffectsDeps =>
+  ({
+    arnsApi: {
+      getCriminogenicNeeds: overrides.getCriminogenicNeeds ?? jest.fn(),
+      getCriminogenicNeedsDetails: overrides.getCriminogenicNeedsDetails ?? jest.fn(),
+    },
+  }) as unknown as SentencePlanEffectsDeps
 
 const createMockContext = (
   overrides: {
@@ -31,12 +39,12 @@ describe('criminogenicNeeds', () => {
       jest.clearAllMocks()
     })
 
-    it('should fetch from the ARNS API with the user token and map the result for MPoP users', async () => {
+    it('should fetch from the ARNS assessment endpoint with the user token and map the result for MPoP users', async () => {
       const arnsDto = { identifiedNeeds: [] } as unknown as AssessmentNeedsDto
       const mapped = {} as CriminogenicNeedsData
       const getCriminogenicNeeds = jest.fn().mockResolvedValue(arnsDto)
       mockMapArns.mockReturnValue(mapped)
-      const deps = createMockDeps(getCriminogenicNeeds)
+      const deps = createMockDeps({ getCriminogenicNeeds })
       const context = createMockContext({
         session: { sessionDetails: { accessType: 'HMPPS_AUTH' } },
         user: { token: 'user-token' },
@@ -46,13 +54,13 @@ describe('criminogenicNeeds', () => {
 
       expect(getCriminogenicNeeds).toHaveBeenCalledWith('X123456', 'user-token')
       expect(mockMapArns).toHaveBeenCalledWith(arnsDto)
-      expect(mockMapHandover).not.toHaveBeenCalled()
+      expect(mockMapArnsIntegration).not.toHaveBeenCalled()
       expect(result).toBe(mapped)
     })
 
     it('should throw an error when the MPoP user has no token', async () => {
       const getCriminogenicNeeds = jest.fn()
-      const deps = createMockDeps(getCriminogenicNeeds)
+      const deps = createMockDeps({ getCriminogenicNeeds })
       const context = createMockContext({
         session: { sessionDetails: { accessType: 'HMPPS_AUTH' } },
         user: undefined,
@@ -66,7 +74,7 @@ describe('criminogenicNeeds', () => {
 
     it('should throw an error when the MPoP user has no crn', async () => {
       const getCriminogenicNeeds = jest.fn()
-      const deps = createMockDeps(getCriminogenicNeeds)
+      const deps = createMockDeps({ getCriminogenicNeeds })
       const context = createMockContext({
         session: { sessionDetails: { accessType: 'HMPPS_AUTH' } },
         user: { token: 'user-token' },
@@ -78,24 +86,41 @@ describe('criminogenicNeeds', () => {
       expect(getCriminogenicNeeds).not.toHaveBeenCalled()
     })
 
-    it('should map handover data and not call the ARNS API for OASys users', async () => {
-      const handoverNeeds = { accommodation: { accOtherWeightedScore: '4' } }
+    it('should fetch from the ARNS integration endpoint with the handover CRN and map the result for OASys users', async () => {
+      const detailsDto = { needs: [] } as unknown as AssessmentNeedsDetailsDto
       const mapped = {} as CriminogenicNeedsData
-      mockMapHandover.mockReturnValue(mapped)
-      const getCriminogenicNeeds = jest.fn()
-      const deps = createMockDeps(getCriminogenicNeeds)
+      const getCriminogenicNeedsDetails = jest.fn().mockResolvedValue(detailsDto)
+      mockMapArnsIntegration.mockReturnValue(mapped)
+      const deps = createMockDeps({ getCriminogenicNeedsDetails })
       const context = createMockContext({
         session: {
           sessionDetails: { accessType: 'OASYS' },
-          handoverContext: { criminogenicNeedsData: handoverNeeds },
+          handoverContext: { subject: { crn: 'X654321' } },
         },
+      })
+
+      // A different CRN is passed in to prove the handover CRN is used
+      const result = await resolveCriminogenicNeedsData(deps, context, 'route-param-crn')
+
+      // Assert
+      expect(getCriminogenicNeedsDetails).toHaveBeenCalledWith('X654321')
+      expect(mockMapArnsIntegration).toHaveBeenCalledWith(detailsDto)
+      expect(mockMapArns).not.toHaveBeenCalled()
+      expect(result).toBe(mapped)
+    })
+
+    it('should return null without calling the API when an OASys session has no handover CRN', async () => {
+      const getCriminogenicNeedsDetails = jest.fn()
+      const deps = createMockDeps({ getCriminogenicNeedsDetails })
+      const context = createMockContext({
+        session: { sessionDetails: { accessType: 'OASYS' }, handoverContext: { subject: {} } },
       })
 
       const result = await resolveCriminogenicNeedsData(deps, context, 'X123456')
 
-      expect(mockMapHandover).toHaveBeenCalledWith(handoverNeeds)
-      expect(getCriminogenicNeeds).not.toHaveBeenCalled()
-      expect(result).toBe(mapped)
+      expect(result).toBeNull()
+      expect(getCriminogenicNeedsDetails).not.toHaveBeenCalled()
+      expect(mockMapArnsIntegration).not.toHaveBeenCalled()
     })
   })
 })
