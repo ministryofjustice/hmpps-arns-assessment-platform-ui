@@ -5,16 +5,10 @@ import { accommodationSection } from './section'
 import { sectionPageTitle } from '../../locales'
 import { Section } from '../../constants/section'
 import { Step } from './constants/step'
-import { sectionPath } from '../../constants/path'
 
 export const accommodationStep = step({
   path: `/${Step.accommodation.path}`,
   title: sectionPageTitle(Section.accommodation),
-  view: {
-    locals: {
-      backlink: sectionPath(Section.accommodation),
-    },
-  },
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],

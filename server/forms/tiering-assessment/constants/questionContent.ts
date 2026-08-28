@@ -7,19 +7,23 @@ import {
   PredicateExpr,
   Self,
   validation,
+  ValidationExpr,
+  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { BlockDefinition, ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import {
   GovUKBody,
   GovUKCheckboxInput,
+  GovUKDateInputFull,
   GovUKRadioInput,
   GovUKSummaryList,
+  GovUKTextInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-
-import { CommonOption } from './commonOption'
-import { commonContentFor } from '../locales'
-import { SANGenerators } from '../../../generators'
-import { getDisplayTextForItems, getDisplayTextForSpecificItem } from '../../../i18n'
+import { getDisplayTextForItems, getDisplayTextForSpecificItem } from '../i18n'
+import { SANGenerators } from '../generators'
+import { commonContentFor } from '../versions/v1.0/locales'
+import { checkYourAnswersQuery } from '../versions/v1.0/common'
+import { StrengthsAndNeedsTransformers } from '../transformers/transformers'
 
 /**
  * Content-first question authoring.
@@ -92,8 +96,8 @@ export enum QuestionFormat {
  * into each rendering surface by a display mode.
  */
 export interface QuestionContent {
-  id?: string
   code: string
+  idPrefix?: string
   // The input kind the question renders as.
   format: QuestionFormat
   text: ResolvableString
@@ -149,7 +153,7 @@ export interface ParentOption {
  * A question conditionally revealed by one of its parent's options. Its display
  * modes are applied by the parent's projection, which supplies the parent
  * context — so `dependentWhen` wiring is derived from position rather than
- * hand-written.
+ * handwritten.
  */
 export interface RevealedQuestion {
   content: QuestionContent
@@ -163,27 +167,28 @@ export interface RevealedQuestion {
 export type SummaryRow = GovUKSummaryList['rows'][number]
 
 /** Placement of a field within its surrounding step, orthogonal to its content. */
-interface FieldPlacement {
+export interface FieldPlacement {
   dependentWhen?: PredicateExpr
   visibleWhen?: PredicateExpr
 }
 
-interface SummaryRowPlacement {
+export interface SummaryRowPlacement {
   changeHref: string
   visibleWhen?: PredicateExpr
 }
 
 // The forge serialiser rejects explicit `undefined` values, so optional
 // projection props must be omitted entirely rather than set to undefined.
-const definedPropsOf = <TProps extends object>(props: TProps): TProps =>
+export const definedPropsOf = <TProps extends object>(props: TProps): TProps =>
   Object.fromEntries(Object.entries(props).filter(([, value]) => value !== undefined)) as TProps
 
-const optionsOf = (content: OptionedQuestionContent): QuestionOption[] => content.options.filter(isQuestionOption)
+export const optionsOf = (content: OptionedQuestionContent): QuestionOption[] =>
+  content.options.filter(isQuestionOption)
 
-const revealedQuestionsOf = (option: QuestionOption): RevealedQuestion[] =>
+export const revealedQuestionsOf = (option: QuestionOption): RevealedQuestion[] =>
   option.reveals ? [option.reveals].flat() : []
 
-const revealedBlocksOf = (option: QuestionOption, parent: Omit<ParentOption, 'optionValue'>) => {
+export const revealedBlocksOf = (option: QuestionOption, parent: Omit<ParentOption, 'optionValue'>) => {
   const blocks = revealedQuestionsOf(option).map(revealed =>
     revealed.displayModes.field(revealed.content, { ...parent, optionValue: option.value }),
   )
@@ -191,7 +196,7 @@ const revealedBlocksOf = (option: QuestionOption, parent: Omit<ParentOption, 'op
   return blocks.length ? blocks : undefined
 }
 
-const optionHintOf = (hint: QuestionOption['hint']) => {
+export const optionHintOf = (hint: QuestionOption['hint']) => {
   if (!hint) {
     return undefined
   }
@@ -199,7 +204,7 @@ const optionHintOf = (hint: QuestionOption['hint']) => {
   return typeof hint === 'object' && 'html' in hint ? hint : { text: hint }
 }
 
-const itemsOf = (content: OptionedQuestionContent, selectedWhen: (option: QuestionOption) => PredicateExpr) =>
+export const itemsOf = (content: OptionedQuestionContent, selectedWhen: (option: QuestionOption) => PredicateExpr) =>
   content.options.map(entry =>
     isQuestionOption(entry)
       ? definedPropsOf({
@@ -216,15 +221,70 @@ const itemsOf = (content: OptionedQuestionContent, selectedWhen: (option: Questi
   )
 
 /** Exported for bespoke template projections that hand-write their own component props. */
-export const requiredValidationOf = (content: { validationMessage?: ResolvableString }) =>
-  content.validationMessage
+/** Updated by tiering-assessment */
+export const requiredValidationOf = (
+  validationMessage?: ResolvableString,
+  customValidations?: ValidationExpr[],
+): ValidationExpr[] | undefined => {
+  const isRequiredValidation = validationMessage
     ? [
         validation({
           condition: Self().match(Condition.IsRequired()),
-          message: content.validationMessage,
+          message: validationMessage,
         }),
       ]
-    : undefined
+    : []
+
+  const allValidations = [...isRequiredValidation, ...(customValidations ?? [])]
+
+  return allValidations.length > 0 ? allValidations : undefined
+}
+
+export const createSummaryRowActions = (changeRef: ResolvableString) =>
+  when(checkYourAnswersQuery)
+    .then({ items: [{ href: changeRef, text: commonContentFor('change') }] })
+    .else({})
+
+export const textSummaryRow =
+  (placement: SummaryRowPlacement) =>
+  (content: QuestionContent): SummaryRow =>
+    definedPropsOf({
+      key: { html: content.text },
+      visibleWhen: placement.visibleWhen,
+      value: {
+        blocks: [GovUKBody({ text: Answer(content.code) })],
+      },
+      actions: createSummaryRowActions(placement.changeHref),
+    })
+
+// This is created for tiering-assessment
+export const textField =
+  (placement: FieldPlacement & { label?: ResolvableString; customValidations?: ValidationExpr[] } = {}) =>
+  (content: QuestionContent) =>
+    GovUKTextInput(
+      definedPropsOf({
+        code: content.code,
+        label: placement.label ?? { text: content.text, classes: 'govuk-label--m' },
+        hint: content.hint,
+        classes: 'govuk-input--width-5',
+        dependentWhen: placement.dependentWhen,
+        visibleWhen: placement.visibleWhen,
+        validWhen: requiredValidationOf(content.validationMessage, placement.customValidations),
+      }),
+    )
+
+// Independent dateField This is created for tiering-assessment
+export const dateField =
+  (placement: FieldPlacement & { customValidations?: ValidationExpr[] } = {}) =>
+  (content: QuestionContent) =>
+    GovUKDateInputFull({
+      code: content.code,
+      fieldset: {
+        legend: { text: content.text },
+      },
+      formatters: [StrengthsAndNeedsTransformers.ToISO()],
+      validWhen: placement.customValidations,
+    })
 
 /**
  * The display mode functions: shared projections from question content to
@@ -257,6 +317,7 @@ export const radioField =
     GovUKRadioInput(
       definedPropsOf({
         code: content.code,
+        idPrefix: content.idPrefix,
         fieldset: {
           legend: {
             text: content.text,
@@ -267,7 +328,7 @@ export const radioField =
         items: itemsOf(content, option => Answer(content.code).match(Condition.Equals(option.value))),
         dependentWhen: placement.dependentWhen,
         visibleWhen: placement.visibleWhen,
-        validWhen: requiredValidationOf(content),
+        validWhen: requiredValidationOf(content.validationMessage),
       }),
     )
 
@@ -284,6 +345,7 @@ export const radioDetails =
     GovUKRadioInput(
       definedPropsOf({
         code: content.code,
+        idPrefix: content.idPrefix,
         fieldset: {
           legend: definedPropsOf({
             text: content.text,
@@ -292,7 +354,7 @@ export const radioDetails =
         },
         items: itemsOf(content, option => Answer(content.code).match(Condition.Equals(option.value))),
         dependentWhen: parent.selectedWhen,
-        validWhen: requiredValidationOf(content),
+        validWhen: requiredValidationOf(content.validationMessage),
       }),
     )
 
@@ -323,7 +385,7 @@ export const checkboxField =
         ),
         dependentWhen: placement.dependentWhen,
         visibleWhen: placement.visibleWhen,
-        validWhen: requiredValidationOf(content),
+        validWhen: requiredValidationOf(content.validationMessage),
       }),
     )
 
@@ -352,44 +414,12 @@ export const checkboxDetails =
           ),
         ),
         dependentWhen: parent.selectedWhen,
-        validWhen: requiredValidationOf(content),
+        validWhen: requiredValidationOf(content.validationMessage),
       }),
     )
 
-/**
- * Projects question content into a read-only summary row: the stored answer
- * mapped back to its option label, followed by the answers to any revealed
- * questions the options carry, each shown only while its option is selected.
- */
-export const summaryRow =
-  (placement: SummaryRowPlacement) =>
-  (content: OptionedQuestionContent): SummaryRow =>
-    definedPropsOf({
-      key: { html: content.text },
-      visibleWhen: placement.visibleWhen,
-      value: {
-        blocks: [
-          GovUKBody({
-            text: SANGenerators.getTextFromListDefinition(content.options, Answer(content.code)),
-          }),
-          ...optionsOf(content).flatMap(option =>
-            revealedQuestionsOf(option).map(revealed =>
-              GovUKBody({
-                text: Answer(revealed.content.code),
-                size: 's',
-                visibleWhen: Answer(content.code).match(Condition.Equals(option.value)),
-              }),
-            ),
-          ),
-        ],
-      },
-      actions: {
-        items: [{ href: placement.changeHref, text: commonContentFor('change') }],
-      },
-    })
-
 // Option entries as the summary should label them: `summaryText` where declared.
-const summaryItemsOf = (options: QuestionOptionEntry[]) =>
+export const summaryItemsOf = (options: QuestionOptionEntry[]) =>
   options.map(entry => (isQuestionOption(entry) && entry.summaryText ? { ...entry, text: entry.summaryText } : entry))
 
 // The answer as a summary should read it. Currently just formatting dates.
@@ -427,7 +457,7 @@ const answerBlocksOf = (content: QuestionContent, size?: 's'): BlockDefinition[]
 // The answers beneath a question on the summary, recursively: option labels
 // for optioned reveals (then whatever those options reveal in turn), the
 // verbatim answer otherwise.
-const revealedAnswerBlocksOf = (content: OptionedQuestionContent): BlockDefinition[] =>
+export const revealedAnswerBlocksOf = (content: OptionedQuestionContent): BlockDefinition[] =>
   optionsOf(content).flatMap(option =>
     revealedQuestionsOf(option).flatMap(revealed =>
       isOptioned(revealed.content)
@@ -445,77 +475,23 @@ const revealedAnswerBlocksOf = (content: OptionedQuestionContent): BlockDefiniti
     ),
   )
 
-/**
- * Read-only summary row in the itemised style: every option label rendered
- * as its own conditionally-visible body (single- and multi-select alike),
- * followed by the answers to the questions the options reveal — option
- * labels again for optioned reveals (recursively, for reveals of reveals),
- * the verbatim answer otherwise. The change link anchors to the question on
- * its step, and can carry the question text as visually hidden context.
- */
-export const itemisedSummaryRow =
-  (placement: { changePath: string; visibleWhen?: PredicateExpr; changeVisuallyHiddenText?: boolean }) =>
-  (content: OptionedQuestionContent): SummaryRow =>
-    definedPropsOf({
-      key: { text: content.text },
-      visibleWhen: placement.visibleWhen,
-      value: {
-        blocks: [
-          ...getDisplayTextForItems(content.code, summaryItemsOf(content.options)),
-          ...revealedAnswerBlocksOf(content),
-        ],
-      },
-      actions: {
-        items: [
-          definedPropsOf({
-            href: `${placement.changePath}#${content.code}`,
-            text: commonContentFor('change'),
-            visuallyHiddenText: placement.changeVisuallyHiddenText ? content.text : undefined,
-          }),
-        ],
-      },
-    })
+export const hasAnyDatePart = () =>
+  and(
+    Self().match(Condition.Object.IsObject()),
+    or(
+      Self().match(Condition.Object.PropertyHasValue('day')),
+      Self().match(Condition.Object.PropertyHasValue('month')),
+      Self().match(Condition.Object.PropertyHasValue('year')),
+    ),
+  )
 
-/**
- * Read-only summary row for a multi-select question: one line per selected
- * option, using each option's own label.
- */
-export const checkboxSummaryRow =
-  (placement: SummaryRowPlacement) =>
-  (content: OptionedQuestionContent): SummaryRow =>
-    definedPropsOf({
-      key: { html: content.text },
-      visibleWhen: placement.visibleWhen,
-      value: {
-        blocks: optionsOf(content).map(option =>
-          GovUKBody({
-            text: option.text,
-            visibleWhen: and(
-              Answer(content.code).match(Condition.IsRequired()),
-              Answer(content.code).match(Condition.Array.Contains(option.value)),
-            ),
-          }),
-        ),
-      },
-      actions: {
-        items: [{ href: placement.changeHref, text: commonContentFor('change') }],
-      },
-    })
-
-/** Read-only summary row for a free-text question: the answer, verbatim. */
-export const textSummaryRow =
-  (placement: SummaryRowPlacement) =>
-  (content: QuestionContent): SummaryRow =>
-    definedPropsOf({
-      key: { html: content.text },
-      visibleWhen: placement.visibleWhen,
-      value: {
-        blocks: [GovUKBody({ text: Answer(content.code) })],
-      },
-      actions: {
-        items: [{ href: placement.changeHref, text: commonContentFor('change') }],
-      },
-    })
+export const hasAllDateParts = () =>
+  and(
+    Self().match(Condition.Object.IsObject()),
+    Self().match(Condition.Object.PropertyHasValue('day')),
+    Self().match(Condition.Object.PropertyHasValue('month')),
+    Self().match(Condition.Object.PropertyHasValue('year')),
+  )
 
 /**
  * Declares a question revealed by a parent option. Unlike `question` it
@@ -677,9 +653,22 @@ export const questionTemplate = (definition: {
     }
   }
 
+  const contentOf = (instanceValue: string): OptionedQuestionContent => ({
+    code: template.code(instanceValue),
+    format: template.format,
+    text: template.text(instanceValue),
+    hint: template.hint,
+    options: template.options ?? [],
+    validationMessage: template.validationMessage,
+  })
+
   return {
     codeOf: template.code,
     options: template.options ?? [],
+    // Content for one instance without requiring a `field` display mode —
+    // for templates only ever rendered via `over()`, used to register their
+    // per-instance codes as stable questions (e.g. for `stableQuestionsOf`).
+    contentOf,
     instance: (instanceValue: string): RevealedQuestion => {
       const { field } = displayModes
 
@@ -687,16 +676,7 @@ export const questionTemplate = (definition: {
         throw new Error(`Question template '${template.code(instanceValue)}' has no field display mode`)
       }
 
-      const content: OptionedQuestionContent = {
-        code: template.code(instanceValue),
-        format: template.format,
-        text: template.text(instanceValue),
-        hint: template.hint,
-        options: template.options ?? [],
-        validationMessage: template.validationMessage,
-      }
-
-      return { content, displayModes: { field } }
+      return { content: contentOf(instanceValue), displayModes: { field } }
     },
     over: (instanceParam: ChainableExpr): BlockDefinition => {
       const { collectionField } = displayModes
@@ -718,9 +698,11 @@ export const questionTemplate = (definition: {
     },
   }
 }
+
 type SectionFields = Record<string, { content: QuestionContent }>
 
 export interface SectionDefinition {
+  code: string
   questions: SectionFields
 }
 
@@ -732,7 +714,7 @@ export const answerRow = (content: QuestionContent): SummaryRow => ({
   value: { blocks: answerBlocksOf(content) },
 })
 
-const isOptioned = (content: QuestionContent): content is OptionedQuestionContent => 'options' in content
+export const isOptioned = (content: QuestionContent): content is OptionedQuestionContent => 'options' in content
 
 const withRevealedQuestions = (content: QuestionContent): QuestionContent[] => [
   content,
@@ -750,13 +732,30 @@ const withRevealedQuestions = (content: QuestionContent): QuestionContent[] => [
  * question codes; only data-parameterized questions (codes built from runtime
  * collections) live outside it.
  */
-// export const stableQuestionsOf = (section: SectionDefinition): QuestionContent[] =>
-//   [...Object.values(section.questions), ...Object.values(section.practitionerAnalysis)].flatMap(field =>
-//     withRevealedQuestions(field.content),
-//   )
+export const stableQuestionsOf = (section: SectionDefinition): QuestionContent[] =>
+  [...Object.values(section.questions)].flatMap(field => withRevealedQuestions(field.content))
 
-/** The standard yes/no options, each optionally revealing a follow-up question. */
-export const yesNo = (reveals: { yes?: RevealedQuestion; no?: RevealedQuestion } = {}): QuestionOption[] => [
-  { value: CommonOption.yes, text: commonContentFor('option.YES'), reveals: reveals.yes },
-  { value: CommonOption.no, text: commonContentFor('option.NO'), reveals: reveals.no },
-]
+export const itemisedSummaryRow =
+  (placement: { changePath: string; visibleWhen?: PredicateExpr; changeVisuallyHiddenText?: boolean }) =>
+  (content: OptionedQuestionContent): SummaryRow =>
+    definedPropsOf({
+      key: { text: content.text },
+      visibleWhen: placement.visibleWhen,
+      value: {
+        blocks: [
+          ...getDisplayTextForItems(content.code, summaryItemsOf(content.options)),
+          ...revealedAnswerBlocksOf(content),
+        ],
+      },
+      actions: when(checkYourAnswersQuery)
+        .then({
+          items: [
+            definedPropsOf({
+              href: `${placement.changePath}#${content.code}`,
+              text: commonContentFor('change'),
+              visuallyHiddenText: placement.changeVisuallyHiddenText ? content.text : undefined,
+            }),
+          ],
+        })
+        .else({}),
+    })

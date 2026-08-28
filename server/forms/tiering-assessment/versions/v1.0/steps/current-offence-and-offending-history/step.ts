@@ -1,35 +1,35 @@
 import {
   access,
   and,
-  not,
   Answer,
   Condition,
   Format,
+  not,
   redirect,
   step,
   submit,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import {
-  currentOffenceHeadingField,
-  currentOffenceInsetField,
-  currentOffenceSummaryListField,
-  currentOffenceWarningField,
-  dateAtFirstSanction,
-  historyInsetField,
-  offenceHistoryHeadingField,
-  sectionBreakField,
-  sexualOffenceHistoryField,
-  totalSanctionsField,
-  totalViolentSanctionsField,
-} from './fields'
-import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { checkYourAnswersQuery, continueButton, returnToAnswersQueryText } from '../../common'
+import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
+import { sectionPageTitle } from '../../locales'
+import { Section } from '../../constants/section'
+import { Step } from './constants/step'
+import {
+  currentOffenceAndOffendingHistorySection,
+  currentOffenceHeadingQuestion,
+  currentOffenceInsetQuestion,
+  currentOffenceSummaryListQuestion,
+  currentOffenceWarningQuestion,
+  historyInsetQuestion,
+  offenceHistoryHeadingQuestion,
+  sectionBreakQuestion,
+} from './section'
 
 const hasSexualOffenceHistory = Answer('has-ever-committed-sexual-offence').match(Condition.Equals('true'))
 
 export const currentOffenceAndOffendingHistoryStep = step({
-  path: '/current-offence-and-offending-history',
-  title: 'Current offence and offending history',
+  path: `/${Step.current_offence_and_offending_history.path}`,
+  title: sectionPageTitle(Section.current_offence_and_offending_history),
   onAccess: [
     access({
       effects: [
@@ -40,17 +40,17 @@ export const currentOffenceAndOffendingHistoryStep = step({
     }),
   ],
   blocks: [
-    currentOffenceHeadingField,
-    currentOffenceInsetField,
-    currentOffenceSummaryListField,
-    currentOffenceWarningField,
-    sectionBreakField,
-    offenceHistoryHeadingField,
-    historyInsetField,
-    dateAtFirstSanction,
-    totalSanctionsField,
-    totalViolentSanctionsField,
-    sexualOffenceHistoryField,
+    currentOffenceHeadingQuestion,
+    currentOffenceInsetQuestion,
+    currentOffenceSummaryListQuestion,
+    currentOffenceWarningQuestion,
+    sectionBreakQuestion,
+    offenceHistoryHeadingQuestion,
+    historyInsetQuestion,
+    currentOffenceAndOffendingHistorySection.questions.dateAtFirstSanctionQuestion.displayModes.field,
+    currentOffenceAndOffendingHistorySection.questions.totalSanctionsQuestion.displayModes.field,
+    currentOffenceAndOffendingHistorySection.questions.totalViolentSanctionsQuestion.displayModes.field,
+    currentOffenceAndOffendingHistorySection.questions.sexualOffenceHistoryQuestion.displayModes.field,
     continueButton,
   ],
   onSubmission: [

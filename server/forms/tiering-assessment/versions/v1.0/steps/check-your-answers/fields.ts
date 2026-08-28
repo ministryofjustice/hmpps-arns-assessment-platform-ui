@@ -4,7 +4,7 @@ import { GovUKHeading, GovUKSummaryList } from '@ministryofjustice/hmpps-forge/g
 import { commonContentFor } from '../../locales'
 import { Answerable, questionsOf, checkYourAnswersSections, CheckYourAnswersSection } from './sections'
 import { Section } from '../../constants/section'
-import { answerRow, questionsWithin } from '../../constants/questionContent'
+import { answerRow, questionsWithin } from '../../../../constants/questionContent'
 
 type SectionDefinition = (typeof Section)[keyof typeof Section]
 
@@ -13,7 +13,6 @@ const sectionHeader = (section: SectionDefinition) =>
     template:
       '<div class="govuk-grid-row govuk-!-margin-top-8">' +
       '<div class="govuk-grid-column-three-quarters">{{slot:heading}}</div>' +
-      '<div class="govuk-grid-column-one-quarter govuk-!-text-align-right">{{slot:status}}</div>' +
       '</div>',
     slots: {
       heading: [

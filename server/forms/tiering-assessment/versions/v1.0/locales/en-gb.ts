@@ -7,10 +7,11 @@ export const english = {
   save_and_continue: 'Save and continue',
   or: 'or',
   change: 'Change',
-  summary: 'Summary',
+  summary: '',
   all_answers_heading: 'Tiering Assessment',
   sectionTitle: {
     [Section.accommodation.code]: 'Accommodation',
+    [Section.current_offence_and_offending_history.code]: 'Current offence and offending history',
   },
   // Page titles derive from sectionTitle above, so a section is named in one place.
   pageTitle: {
