@@ -41,13 +41,24 @@ export const dateOfCurrentSupervisionStep = step({
               Answer('date-of-current-supervision').not.match(Condition.Date.IsFutureDate()),
               Answer('has-ever-committed-sexual-offence').match(Condition.Equals('true')),
               or(
-                Answer('number-of-contact-sexual-sanctions')
-                  .pipe(Transformer.String.ToInt())
-                  .match(Condition.Number.GreaterThan(0)),
-                Answer('number-of-contact-child-sexual-sanctions')
-                  .pipe(Transformer.String.ToInt())
-                  .match(Condition.Number.GreaterThan(0)),
-                Answer('non-contact').pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
+                and(
+                  Answer('number-of-contact-sexual-sanctions').match(Condition.IsRequired()),
+                  Answer('number-of-contact-sexual-sanctions')
+                    .pipe(Transformer.String.ToInt())
+                    .match(Condition.Number.GreaterThan(0)),
+                ),
+                and(
+                  Answer('number-of-contact-child-sexual-sanctions').match(Condition.IsRequired()),
+                  Answer('number-of-contact-child-sexual-sanctions')
+                    .pipe(Transformer.String.ToInt())
+                    .match(Condition.Number.GreaterThan(0)),
+                ),
+                and(
+                  Answer('non-contact').match(Condition.IsRequired()),
+                  Answer('non-contact')
+                    .pipe(Transformer.String.ToInt())
+                    .match(Condition.Number.GreaterThan(0)),
+                ),
               ),
             ),
             goto: 'offences-since-supervision',
