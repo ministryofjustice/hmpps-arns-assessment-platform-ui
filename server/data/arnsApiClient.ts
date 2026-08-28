@@ -27,6 +27,6 @@ export default class ArnsApiClient extends RestClient {
    * from the handover session, never a route param. Uses the integration endpoint.
    */
   async getCriminogenicNeedsDetails(crn: string): Promise<AssessmentNeedsDetailsDto> {
-    return this.get({ path: `/needs/${crn}` }, asSystem())
+    return this.get({ path: `/needs/${crn}`, query: { excludeIncomplete: false } }, asSystem())
   }
 }
