@@ -32,10 +32,7 @@ export const relatedAreasOfNeed = GovUKCheckboxInput({
       value: Item().path('slug'),
       text: Item().path('text'),
       attributes: {
-        'data-ai-id': Format(
-          'related-area-of-need-%1-checkbox',
-          Item().path('slug'),
-        ),
+        'data-ai-id': Format('related-area-of-need-%1-checkbox', Item().path('slug')),
       },
     }),
   ),
@@ -128,7 +125,7 @@ export const targetDateOption = GovUKRadioInput({
         Generator.Date.Today().pipe(Transformer.Date.AddMonths(3), Transformer.Date.ToUKLongDate()),
       ),
       attributes: {
-        "data-ai-id": "target-date-option-3-months-radio"
+        'data-ai-id': 'target-date-option-3-months-radio',
       },
     },
     {
@@ -138,7 +135,7 @@ export const targetDateOption = GovUKRadioInput({
         Generator.Date.Today().pipe(Transformer.Date.AddMonths(6), Transformer.Date.ToUKLongDate()),
       ),
       attributes: {
-        "data-ai-id": "target-date-option-6-months-radio"
+        'data-ai-id': 'target-date-option-6-months-radio',
       },
     },
     {
@@ -148,7 +145,7 @@ export const targetDateOption = GovUKRadioInput({
         Generator.Date.Today().pipe(Transformer.Date.AddMonths(12), Transformer.Date.ToUKLongDate()),
       ),
       attributes: {
-        "data-ai-id": "target-date-option-12-months-radio"
+        'data-ai-id': 'target-date-option-12-months-radio',
       },
     },
     { divider: 'or' },
@@ -156,9 +153,9 @@ export const targetDateOption = GovUKRadioInput({
       value: 'set_another_date',
       text: 'Set another date',
       attributes: {
-        "data-ai-id": "target-date-option-set-another-date-radio"
+        'data-ai-id': 'target-date-option-set-another-date-radio',
       },
-      block: customTargetDate
+      block: customTargetDate,
     },
   ],
   validWhen: [
