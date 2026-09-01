@@ -187,26 +187,6 @@ test.describe('Employment and education Page', () => {
       `)
     })
 
-    test('validation employed option', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-      const { handoverLink, sanAssessmentId } = await createSession({
-        targetService: TargetService.STRENGTHS_AND_NEEDS,
-      })
-      await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'EMPLOYED' }]).save()
-
-      await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
-
-      const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(
-        page,
-        'current employment status',
-      )
-
-      await employmentAndEducationPage.saveAndContinue.click()
-      await employmentAndEducationPage.selectTypeOfEmployment.click()
-
-      await expect(employmentAndEducationPage.fullTime).toBeFocused()
-    })
-
     test('shows self-employed questions', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
       const { handoverLink, sanAssessmentId } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
@@ -519,7 +499,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'EMPLOYED' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'EMPLOYED' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
 
@@ -544,7 +524,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
 
@@ -569,7 +549,7 @@ test.describe('Employment and education Page', () => {
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId).withAnswers([{ question: 'current_employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' }]).save()
+        .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'UNEMPLOYED_LOOKING_FOR_WORK' }]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL)
 
@@ -615,8 +595,8 @@ test.describe('Employment and education Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'current_employment_status', value: 'EMPLOYED' },
-          { question: 'type_of_employment', value: 'FULL_TIME' },
+          { question: 'employment_status', value: 'EMPLOYED' },
+          { question: 'employment_type', value: 'FULL_TIME' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -634,19 +614,19 @@ test.describe('Employment and education Page', () => {
                 - /url: "#employment_history"
             - listitem:
               - link "Select if they have any additional day-to-day commitments, or select 'None'":
-                - /url: "#day_to_day_commitments"
+                - /url: "#employment_other_responsibilities"
             - listitem:
               - link "Select the highest level of academic qualification completed":
-                - /url: "#academic_qualification"
+                - /url: "#education_highest_level_completed"
             - listitem:
               - link "Select if they have any professional or vocational qualifications":
-                - /url: "#professional_qualification"
+                - /url: "#education_professional_or_vocational_qualifications"
             - listitem:
               - link "Select if they have any skills that could help them in a job or to get a job":
-                - /url: "#job_skills"
+                - /url: "#education_transferable_skills"
             - listitem:
               - link "Select if they have difficulties with reading, writing or numeracy, or select 'No difficulties'":
-                - /url: "#difficulties_reading_writing_numeracy"
+                - /url: "#education_difficulties"
             - listitem:
               - link "Select their overall experience of employment":
                 - /url: "#employment_experience"
@@ -655,7 +635,7 @@ test.describe('Employment and education Page', () => {
                 - /url: "#education_experience"
             - listitem:
               - link "Select if they want to make changes to their employment and education":
-                - /url: "#employment_and_education_changes"
+                - /url: "#employment_education_changes"
       `)
 
       await employmentAndEducationPage.selectTheirEmploymentHistory.click()

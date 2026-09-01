@@ -208,8 +208,8 @@ test.describe('Health and wellbeing Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'health_conditions', value: 'NO' },
-          { question: 'mental_health_problems', value: 'NO' },
+          { question: 'health_wellbeing_physical_health_condition', value: 'NO' },
+          { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
         ]).save()
 
       await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'physical-mental-health')
@@ -260,10 +260,10 @@ test.describe('Health and wellbeing Page', () => {
             - /children: equal
             - listitem:
               - link "Select if they have any physical health conditions":
-                - /url: "#health_conditions"
+                - /url: "#health_wellbeing_physical_health_condition"
             - listitem:
               - link "Select if they have any diagnosed or documented mental health problems":
-                - /url: "#mental_health_problems"
+                - /url: "#health_wellbeing_mental_health_condition"
       `)
     })
 
@@ -321,12 +321,10 @@ test.describe('Health and wellbeing Page', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
-          { question: 'health_conditions', value: 'YES' },
-          { question: 'has_health_conditions_details', value: '' },
-          { question: 'mental_health_problems', value: 'YES_ONGOING_SEVERE' },
-          { question: 'severe_mental_health_problems_details', value: '' },
-          { question: 'health_wellbeing_physical_health_condition', value: 'NO' },
-          { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
+          { question: 'health_wellbeing_physical_health_condition', value: 'YES' },
+          { question: 'health_wellbeing_physical_health_condition_yes_details', value: '' },
+          { question: 'health_wellbeing_mental_health_condition', value: 'YES_ONGOING_SEVERE' },
+          { question: 'health_wellbeing_mental_health_condition_yes_ongoing_severe_details', value: '' },
         ]).save()
 
       await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'physical-mental-health')
@@ -345,31 +343,31 @@ test.describe('Health and wellbeing Page', () => {
             - /children: equal
             - listitem:
               - link "Select if they are currently having psychiatric treatment":
-                - /url: "#psychiatric_treatment"
+                - /url: "#health_wellbeing_psychiatric_treatment"
             - listitem:
               - link "Select if they have had a head injury or any illness affecting the brain":
-                - /url: "#head_injuries"
+                - /url: "#health_wellbeing_head_injury_or_illness"
             - listitem:
               - link "Select if they have any neurodiverse conditions":
-                - /url: "#neurodiverse_conditions"
+                - /url: "#health_wellbeing_neurodiverse_conditions"
             - listitem:
               - link "Select if they are able to cope with day-to-day life":
-                - /url: "#cope_with_day_to_day_life"
+                - /url: "#health_wellbeing_coping_day_to_day_life"
             - listitem:
               - link "Select their attitude towards themselves":
-                - /url: "#attitude_towards_self"
+                - /url: "#health_wellbeing_attitude_towards_self"
             - listitem:
               - link "Select if they have ever self-harmed":
-                - /url: "#self_harm"
+                - /url: "#health_wellbeing_self_harmed"
             - listitem:
               - link "Select if they have ever attempted suicide or had suicidal thoughts":
-                - /url: "#suicidal_tendencies"
+                - /url: "#health_wellbeing_attempted_suicide_or_suicidal_thoughts"
             - listitem:
               - link "Select how optimistic they are about their future":
-                - /url: "#feeling_about_future_health_wellbeing"
+                - /url: "#health_wellbeing_outlook"
             - listitem:
               - link "Select if they want to make changes to their health and wellbeing":
-                - /url: "#changes_to_health_wellbeing"
+                - /url: "#health_wellbeing_changes"
       `)
 
       await healthAndWellbeingPage.errorWantsToMakeChanges.click()
