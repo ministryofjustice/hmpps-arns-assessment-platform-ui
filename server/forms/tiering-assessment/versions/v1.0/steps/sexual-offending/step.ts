@@ -58,7 +58,7 @@ export const sexualOffendingStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirectToCheckYourAnswers, redirect({ goto: 'date-of-current-supervision' })],
+        next: [redirectToCheckYourAnswers, redirect({ goto: 'date_of_current_supervision' })],
       },
     }),
   ],

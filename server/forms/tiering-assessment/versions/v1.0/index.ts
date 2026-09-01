@@ -3,7 +3,6 @@ import { TieringAssessmentEffects } from '../../effects/TieringAssessmentEffects
 import { startTieringAssessmentStep } from './steps/start-tiering-assessment/step'
 import { currentOffenceAndOffendingHistoryStep } from './steps/current-offence-and-offending-history/step'
 import { sexualOffendingStep } from './steps/sexual-offending/step'
-import { dateOfCurrentSupervisionStep } from './steps/date-of-current-supervision/step'
 import { offencesSinceSupervisionStep } from './steps/offences-since-supervision/step'
 import { reoffendingPredictorScoresStep } from './steps/reoffending-predictor-scores/step'
 import { interviewQuestionStep } from './steps/interview-question/step'
@@ -19,6 +18,7 @@ import { offenceAnalysisStep } from './steps/offence-analysis/step'
 import { previousConvictionsStep } from './steps/previous-convictions/step'
 import { accommodationStep } from './steps/accommodation/step'
 import { checkYourAnswersStep } from './steps/check-your-answers/step'
+import { dateOfCurrentSupervisionStep } from './steps/date-of-current-supervision/step'
 
 export const tieringAssessmentV1Journey = journey({
   code: 'tiering-assessment-v1',

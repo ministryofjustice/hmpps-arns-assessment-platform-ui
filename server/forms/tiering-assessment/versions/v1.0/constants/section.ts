@@ -7,4 +7,8 @@ export const Section = {
     code: 'current_offence_and_offending_history',
     path: '/current-offence-and-offending-history',
   },
+  date_of_current_supervision: {
+    code: 'date_of_current_supervision',
+    path: '/date_of_current_supervision',
+  },
 } as const
