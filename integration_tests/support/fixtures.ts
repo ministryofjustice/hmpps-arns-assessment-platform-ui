@@ -19,6 +19,7 @@ import { HandoverBuilder } from '../builders/HandoverBuilder'
 import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
 import { AuditQueueClient } from './AuditQueueClient'
 import { captureContainerLogs } from './DockerLogCapture'
+import arnsApi, { criminogenicNeedsToArnsDetails } from '../mockApis/arnsApi'
 
 /**
  * Default criminogenic needs data for E2E tests.
@@ -281,8 +282,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
       // - If explicitly null, don't set any data (for testing missing data scenarios)
       // - If provided, use the provided data
       // - Otherwise use defaults so tests work without explicit setup
-      if (options.criminogenicNeedsData !== null) {
-        const criminogenicNeeds = options.criminogenicNeedsData ?? defaultCriminogenicNeedsData
+      const criminogenicNeeds =
+        options.criminogenicNeedsData === null ? null : (options.criminogenicNeedsData ?? defaultCriminogenicNeedsData)
+
+      if (criminogenicNeeds) {
         sessionBuilder.withCriminogenicNeeds(criminogenicNeeds)
       }
 
@@ -291,6 +294,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
       }
 
       const session = await sessionBuilder.save()
+
+      // The app sources criminogenic needs for OASys users from the ARNS integration endpoint
+      // (SP2-2676), not the handover context, so stub it from the same test data.
+      await arnsApi.stubGetCriminogenicNeedsDetails(session.crn, criminogenicNeedsToArnsDetails(criminogenicNeeds))
 
       const clientId = TARGET_SERVICE_CLIENT_IDS[options.targetService]
       const url = new URL(session.handoverLink)

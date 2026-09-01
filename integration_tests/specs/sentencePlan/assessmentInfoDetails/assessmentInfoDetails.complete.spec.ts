@@ -88,6 +88,7 @@ test.describe('Assessment Info Details - Complete Section', () => {
 
     const customSanAssessmentData: SanAssessmentData = {
       drug_use_section_complete: { value: 'YES' },
+      drug_use_practitioner_analysis_strengths_or_protective_factors: { value: 'NO' },
       // No motivation - person didn't have to answer
     }
 

@@ -4,6 +4,7 @@ import { test } from '../../../support/fixtures'
 import AboutPage from '../../../pages/sentencePlan/aboutPage'
 import { navigateToAboutPage } from '../sentencePlanUtils'
 import coordinatorApi from '../../../mockApis/coordinatorApi'
+import arnsApi, { criminogenicNeedsToArnsDetails } from '../../../mockApis/arnsApi'
 import { createAssessmentData } from '../../../builders/AssessmentDataFactories'
 
 const defaultCriminogenicNeedsData: CriminogenicNeedsData = {
@@ -65,6 +66,10 @@ test.describe('About Page: error states', () => {
         .withCriminogenicNeeds(defaultCriminogenicNeedsData)
         .save()
 
+      await arnsApi.stubGetCriminogenicNeedsDetails(
+        'NOTFOUND',
+        criminogenicNeedsToArnsDetails(defaultCriminogenicNeedsData),
+      )
       await sentencePlanBuilder.extend(association.sentencePlanId).save()
       await coordinatorApi.stubGetEntityAssessment(association.sentencePlanId, {
         sanAssessmentData: createAssessmentData('complete'),
