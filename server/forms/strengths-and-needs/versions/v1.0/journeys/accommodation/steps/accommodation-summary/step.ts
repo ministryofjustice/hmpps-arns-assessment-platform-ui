@@ -2,13 +2,13 @@ import { step, submit, redirect, Post, Condition } from '@ministryofjustice/hmpp
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { Step } from '../../constants/step'
-import { accommodationSummaryTab } from './fields'
+import { summaryTab } from './fields'
 import { summaryPageTitle } from '../../../../locales'
 
 export const accommodationSummaryStep = step({
   path: `/${Step.accommodation_summary.path}`,
   title: summaryPageTitle(Section.accommodation),
-  blocks: [accommodationSummaryTab],
+  blocks: [summaryTab],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -18,7 +18,7 @@ export const accommodationSummaryStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.yes),
         ],
-        next: [redirect({ goto: Step.accommodation_analysis.path })],
+        next: [redirect({ goto: `${Step.accommodation_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

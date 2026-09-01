@@ -1,24 +1,28 @@
 import { Answer, Condition, not, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 import { CaseData } from '../../constants/formVersion'
-import { CharacterLimit } from '../../constants/characterLimit'
 import {
-  characterCountField,
   checkboxField,
-  itemisedSummaryRow,
-  optionalDetails,
   question,
   QuestionFormat,
   radioField,
-  requiredDetails,
-  textSummaryRow,
-  yesNo,
-} from '../../constants/questionContent'
+
+} from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { Step } from './constants/step'
 import { Option } from './constants/option'
+import { Section } from '../../constants/section'
+import { CharacterLimit } from '../../../../constants/characterLimit'
+import {
+  characterCountField,
+  itemisedSummaryRow,
+  optionalDetails,
+  requiredDetails,
+  textSummaryRow,
+  yesNo,
+} from '../../constants/questionContent'
 import { CommonOption } from '../../constants/commonOption'
 
 // The physical treatment question only applies once physical health conditions
@@ -572,6 +576,7 @@ const riskOfReoffending = question({
 })
 
 export const healthWellbeingSection = {
+  code: Section.health_and_wellbeing.code,
   questions: {
     healthConditions,
     mentalHealthProblems,

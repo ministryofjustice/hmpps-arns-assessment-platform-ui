@@ -73,6 +73,7 @@ export const english = {
     [CommonOption.unknown]: 'Unknown',
     [CommonOption.none]: 'None',
   },
+  section_has_not_been_started: 'This section has not been started',
 } as const
 
 export type CommonLocale = Locale<typeof english>

@@ -7,21 +7,31 @@ import {
   Format,
   Item,
   Iterator,
+  not,
   Transformer,
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKBody, GovUKHeading, GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
-
-import { CollectionBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
+import { CollectionBlock, HtmlBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
+import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
 import { commonContentFor } from '../../../../locales'
 import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
+import { drugHowOftenUsed, drugHowOftenUsedDetails, drugLastUsed, drugUseSection } from '../../section'
+import { questionsOf } from '../../../../steps/view-all-answers/sections'
+import { anyAnswered } from '../../../../steps/view-all-answers/fields'
+import { Section } from '../../../../constants/section'
+import { CommonOption } from '../../../../constants/commonOption'
 import { Question } from '../../constants/question'
 import { SANGenerators } from '../../../../../../generators'
-import { drugHowOftenUsed, drugHowOftenUsedDetails, drugLastUsed, drugUseSection } from '../../section'
-import { Option } from '../../constants/option'
-import { CommonOption } from '../../../../constants/commonOption'
 import { contentFor } from '../../locales'
+import { Option } from '../../constants/option'
+import { createSummaryRowActions } from '../../../../constants/questionContent'
+
+export const questions = questionsOf({
+  section: Section.drug_use,
+  config: drugUseSection,
+})
 
 export const drugsSummaryPartOne = GovUKSummaryList({
   rows: [drugUseSection.questions.drugUse.displayModes.summaryRow],
@@ -42,9 +52,7 @@ export const drugsSummaryCards = (drugValue: ChainableExpr) => {
             ),
           ),
       },
-      actions: {
-        items: [{ href: Step.add_drugs.path, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(Step.add_drugs.path),
     },
     rows: [
       drugLastUsed.summaryRowOver(drugValueLower),
@@ -99,9 +107,7 @@ export const drugsSummaryCards = (drugValue: ChainableExpr) => {
             }),
           ],
         },
-        actions: {
-          items: [{ href: Step.drug_details.path, text: commonContentFor('change') }],
-        },
+        actions: createSummaryRowActions(Step.drug_details.path),
         visibleWhen: and(
           Data('injectableSelectedDrugs').match(Condition.IsRequired()),
           Answer(Question.drugs_injected).match(Condition.Array.Contains(drugValue)),
@@ -167,36 +173,50 @@ export const drugsSummaryPartThree = GovUKSummaryList({
   ],
 })
 
-export const drugsSummaryTab = GovUKTabs({
-  id: 'summaries',
-  items: [
-    {
-      id: 'summary',
-      label: commonContentFor('summary'),
-      panel: {
-        blocks: [
-          drugsSummaryPartOne,
-          usedInLastSixMonthsSummarySection,
-          notUsedInLastSixMonthsSummarySection,
-          drugsSummaryPartTwo,
-          moreInformationHeading,
-          drugsSummaryPartThree,
-          goToPractitionerAnalysisButton(Step.drug_use_summary.path),
-        ],
-      },
-    },
-    {
-      id: 'practitioner-analysis',
-      label: commonContentFor('practitioner_analysis'),
-      panel: {
-        blocks: [
-          drugUseSection.practitionerAnalysis.motivatedToStop.displayModes.field,
-          drugUseSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
-          drugUseSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
-          drugUseSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
-          markAsCompleteButton,
-        ],
-      },
-    },
+export const summary = HtmlBlock({
+  content: [
+    drugsSummaryPartOne,
+    usedInLastSixMonthsSummarySection,
+    notUsedInLastSixMonthsSummarySection,
+    moreInformationHeading,
+    drugsSummaryPartTwo,
+    drugsSummaryPartThree,
+  ],
+})
+
+const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.drug_use_summary.path)]
+
+export const summaryTab = HtmlBlock({
+  content: [
+    MOJBanner({
+      bannerType: 'information',
+      text: commonContentFor('section_has_not_been_started'),
+      visibleWhen: not(anyAnswered(questions)),
+    }),
+    GovUKTabs({
+      id: 'summaries',
+      items: [
+        {
+          id: 'summary',
+          label: commonContentFor('summary'),
+          panel: {
+            blocks: summaryPanel,
+          },
+        },
+        {
+          id: 'practitioner-analysis',
+          label: commonContentFor('practitioner_analysis'),
+          panel: {
+            blocks: [
+              drugUseSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
+              drugUseSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
+              drugUseSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
+              markAsCompleteButton,
+            ],
+          },
+        },
+      ],
+      visibleWhen: anyAnswered(questions),
+    }),
   ],
 })

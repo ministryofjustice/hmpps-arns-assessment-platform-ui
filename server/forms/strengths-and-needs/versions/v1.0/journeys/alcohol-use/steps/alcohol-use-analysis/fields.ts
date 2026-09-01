@@ -1,9 +1,13 @@
 import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { alcoholSummary } from '../alcohol-use-summary/fields'
-import { alcoholUseSection } from '../../section'
-import { Step } from '../../constants/step'
-import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
+import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { commonContentFor } from '../../../../locales'
+import { alcoholUseSection } from '../../section'
+import { anyAnswered } from '../../../../steps/view-all-answers/fields'
+import { questions, summary } from '../alcohol-use-summary/fields'
+import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
+import { Step } from '../../constants/step'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
@@ -13,23 +17,32 @@ const practitionerAnalysisSummary = GovUKSummaryList({
   ],
 })
 
-export const alcoholPractitionerAnalysisSummaryTab = GovUKTabs({
-  id: 'final-alcohol-practitioner-analysis',
-  items: [
-    {
-      id: 'summary-analysis',
-      label: commonContentFor('summary'),
-      panel: {
-        blocks: [
-          alcoholSummary,
-          goToPractitionerAnalysisButton(Step.alcohol_use_analysis.path, 'practitioner-analysis-summary'),
-        ],
-      },
-    },
-    {
-      id: 'practitioner-analysis-summary',
-      label: commonContentFor('practitioner_analysis'),
-      panel: { blocks: [practitionerAnalysisSummary] },
-    },
+export const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.alcohol_use_analysis.path)]
+
+export const alcoholPractitionerAnalysisSummaryTab = HtmlBlock({
+  content: [
+    MOJBanner({
+      bannerType: 'information',
+      text: commonContentFor('section_has_not_been_started'),
+      visibleWhen: not(anyAnswered(questions)),
+    }),
+    GovUKTabs({
+      id: 'summaries',
+      items: [
+        {
+          id: 'summary',
+          label: commonContentFor('summary'),
+          panel: {
+            blocks: summaryPanel,
+          },
+        },
+        {
+          id: 'practitioner-analysis',
+          label: commonContentFor('practitioner_analysis'),
+          panel: { blocks: [practitionerAnalysisSummary] },
+        },
+      ],
+      visibleWhen: anyAnswered(questions),
+    }),
   ],
 })

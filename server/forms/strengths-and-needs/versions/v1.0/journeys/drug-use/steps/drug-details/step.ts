@@ -1,5 +1,4 @@
 import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { sectionDivider, usedInLastSixMonthsSection, usedMoreThanSixMonthsSection } from './fields'
 import { drugUseSection } from '../../section'
@@ -7,12 +6,7 @@ import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
-
-const saveButton = GovUKButton({
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { saveButton } from '../../../../constants/buttons'
 
 export const drugDetailsStep = step({
   path: `/${Step.drug_details.path}`,

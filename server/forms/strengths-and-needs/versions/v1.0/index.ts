@@ -1,4 +1,4 @@
-import { access, and, Condition, Data, journey, redirect } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, and, Condition, Data, journey, redirect, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 import { financeJourney } from './journeys/finance'
@@ -11,10 +11,12 @@ import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
-import { isOasysAccess } from './guards'
+import { isEditMode, isOasysAccess } from './guards'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
+import { configStep } from '../configStep'
+import { formConfigsByVersion } from '../../constants/formConfigRegistry'
 
 const feedbackUrl = config.privateBetaFeedbackUrl
 
@@ -28,7 +30,6 @@ export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
   title: commonContentFor('strengths_and_needs'),
   path: `/${formVersion}`,
-  steps: [...createPlatformPages({ baseUrl: basePath, feedbackUrl }), viewAllAnswersStep],
   view: {
     template: 'strengths-and-needs/views/san-step',
     locals: {
@@ -37,6 +38,10 @@ export const strengthsAndNeedsV1Journey = journey({
         ...section,
         complete: Data(section.statusKey),
         text: commonContentFor(`sectionTitle.${section.code}`),
+        // Override sideNavHref for read-only mode to point to analysis step
+        sideNavHref: when(isEditMode)
+          .then(`${section.sideNavHref}?resume=true`)
+          .else(section.sideNavHref),
       })),
       buttons: {
         showReturnToOasysButton: isOasysAccess,
@@ -46,6 +51,7 @@ export const strengthsAndNeedsV1Journey = journey({
   },
   data: {
     formVersion,
+    formConfig: formConfigsByVersion[formVersion],
   },
   onAccess: [
     access({
@@ -56,15 +62,13 @@ export const strengthsAndNeedsV1Journey = journey({
         StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
     }),
+    // Only redirect to privacy screen for non-read-only users who haven't accepted privacy
     access({
-      when: and(
-        notAPlatformPage,
-        Data('privacyAccepted').not.match(Condition.Equals(true)),
-        Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
-      ),
+      when: and(notAPlatformPage, Data('privacyAccepted').not.match(Condition.Equals(true)), isEditMode),
       next: [redirect({ goto: '/strengths-and-needs/privacy' })],
     }),
   ],
+  steps: [...createPlatformPages({ baseUrl: basePath, feedbackUrl }), viewAllAnswersStep, configStep],
   children: [
     accommodationJourney,
     employmentJourney,

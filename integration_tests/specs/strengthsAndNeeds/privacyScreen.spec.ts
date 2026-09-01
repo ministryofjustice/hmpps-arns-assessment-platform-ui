@@ -40,6 +40,6 @@ test.describe('Strengths and needs privacy screen', () => {
 
     await page.goto(handoverLink)
 
-    await expect(page).toHaveURL(/current-accommodation/)
+    await expect(page).toHaveURL(/accommodation-analysis/)
   })
 })

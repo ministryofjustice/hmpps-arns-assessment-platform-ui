@@ -18,7 +18,7 @@ export const thinkingBehavioursSummaryStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.yes),
         ],
-        next: [redirect({ goto: Step.thinkingBehavioursAnalysis.path })],
+        next: [redirect({ goto: `${Step.thinkingBehavioursAnalysis.path}#practitioner-analysis` })],
       },
     }),
   ],

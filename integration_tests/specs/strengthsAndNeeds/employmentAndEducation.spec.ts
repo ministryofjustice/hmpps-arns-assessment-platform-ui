@@ -264,7 +264,7 @@ test.describe('Employment and education Page', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
           { question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
-          { question: 'has_been_employed_unavailable_for_work', value: 'YES' },
+          { question: 'has_been_employed', value: 'YES' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -300,7 +300,7 @@ test.describe('Employment and education Page', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
           { question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
-          { question: 'has_been_employed_unavailable_for_work', value: 'NO' },
+          { question: 'has_been_employed', value: 'NO' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -359,7 +359,7 @@ test.describe('Employment and education Page', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
           { question: 'employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' },
-          { question: 'has_been_employed_actively_seeking', value: 'YES' },
+          { question: 'has_been_employed', value: 'YES' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -395,7 +395,7 @@ test.describe('Employment and education Page', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
           { question: 'employment_status', value: 'UNEMPLOYED_LOOKING_FOR_WORK' },
-          { question: 'has_been_employed_actively_seeking', value: 'NO' },
+          { question: 'has_been_employed', value: 'NO' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -454,7 +454,7 @@ test.describe('Employment and education Page', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
           { question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' },
-          { question: 'has_been_employed_not_actively_seeking', value: 'YES' },
+          { question: 'has_been_employed', value: 'YES' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -490,7 +490,7 @@ test.describe('Employment and education Page', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
           { question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' },
-          { question: 'has_been_employed_not_actively_seeking', value: 'NO' },
+          { question: 'has_been_employed', value: 'NO' },
         ]).save()
 
       await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, 'employed')
@@ -687,7 +687,7 @@ test.describe('Employment and education Page', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
           { question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' },
-          { question: 'has_been_employed_not_actively_seeking', value: 'NO' },
+          { question: 'has_been_employed', value: 'NO' },
           { question: 'employment_other_responsibilities', value: ['NONE'] },
           { question: 'education_highest_level_completed', value: 'NONE_OF_THESE' },
           { question: 'education_professional_or_vocational_qualifications', value: 'NO' },
@@ -767,7 +767,7 @@ test.describe('Employment and education Page', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
           { question: 'employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
-          { question: 'has_been_employed_not_actively_seeking', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
+          { question: 'has_been_employed', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
           { question: 'employment_other_responsibilities', value: ['NONE'] },
           { question: 'education_highest_level_completed', value: 'NON_OF_THESE' },
           { question: 'education_professional_or_vocational_qualifications', value: 'NO' },

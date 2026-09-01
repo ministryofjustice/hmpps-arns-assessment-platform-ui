@@ -1,33 +1,37 @@
 import { and, Answer, Condition, not, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
-
 import { CaseData } from '../../constants/formVersion'
-import { CharacterLimit } from '../../constants/characterLimit'
 import { CommonOption } from '../../constants/commonOption'
 import {
   checkboxDetails,
   checkboxField,
-  characterCountField,
-  itemisedSummaryRow,
-  optionalDetails,
-  optionalFutureDateDetails,
   question,
   QuestionFormat,
   radioDetails,
   radioField,
-  requiredDetails,
   revealedQuestion,
   SummaryRow,
-  textSummaryRow,
-  yesNo,
-} from '../../constants/questionContent'
+
+} from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { SANGenerators } from '../../../../generators'
 import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { Step } from './constants/step'
 import { Option } from './constants/option'
+import { Section } from '../../constants/section'
+import { CharacterLimit } from '../../../../constants/characterLimit'
+import {
+  characterCountField,
+  createSummaryRowActions,
+  itemisedSummaryRow,
+  optionalDetails,
+  optionalFutureDateDetails,
+  requiredDetails,
+  textSummaryRow,
+  yesNo,
+} from '../../constants/questionContent'
 
 // The details questions all hang off the accommodation kind chosen up front.
 const settledAccommodation = Answer(Question.current_accommodation).match(Condition.Equals(Option.settled))
@@ -246,9 +250,7 @@ const currentAccommodation = question({
           ),
         ],
       },
-      actions: {
-        items: [{ href: Step.current_accommodation.path, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(Step.current_accommodation.path),
     }),
   },
 })
@@ -292,7 +294,6 @@ const livingWith = question({
     field: checkboxField({ dependentWhen: livingWithApplies, visibleWhen: livingWithApplies }),
     summaryRow: itemisedSummaryRow({
       changePath: Step.accommodation_details.path,
-      visibleWhen: Answer(Question.living_with).match(Condition.IsRequired()),
     }),
   },
 })
@@ -708,6 +709,7 @@ const riskOfReoffending = question({
 })
 
 export const accommodationSection = {
+  code: Section.accommodation.code,
   questions: {
     currentAccommodation,
     livingWith,
