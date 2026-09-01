@@ -262,18 +262,24 @@ export const textSummaryRow =
 
 // This is created for tiering-assessment
 export const textField =
-  (placement: FieldPlacement & { label?: ResolvableString; customValidations?: ValidationExpr[] } = {}) =>
+  (
+    placement: FieldPlacement & {
+      label?: ResolvableString
+      labelClasses?: ResolvableString
+      inputClasses?: ResolvableString
+      customValidations?: ValidationExpr[]
+    } = {},
+  ) =>
   (content: QuestionContent) =>
     GovUKTextInput(
       definedPropsOf({
         code: content.code,
-        label: placement.label ?? {
+        label: {
           text: content.text,
-          classes: content.isPageHeading ? 'govuk-fieldset__legend--l' : 'govuk-fieldset__legend--s',
-          isPageHeading: content.isPageHeading ?? false,
+          classes: placement.labelClasses ?? 'govuk-label--m',
         },
         hint: content.hint,
-        classes: 'govuk-input--width-5',
+        classes: placement.inputClasses,
         dependentWhen: placement.dependentWhen,
         visibleWhen: placement.visibleWhen,
         validWhen: requiredValidationOf(content.validationMessage, placement.customValidations),
@@ -282,14 +288,14 @@ export const textField =
 
 // Independent dateField This is created for tiering-assessment
 export const dateField =
-  (placement: FieldPlacement & { customValidations?: ValidationExpr[] } = {}) =>
+  (placement: FieldPlacement & { legendClasses?: ResolvableString; customValidations?: ValidationExpr[] } = {}) =>
   (content: QuestionContent) =>
     GovUKDateInputFull({
       code: content.code,
       fieldset: {
         legend: {
           text: content.text,
-          classes: content.isPageHeading ? 'govuk-fieldset__legend--l' : 'govuk-fieldset__legend--s',
+          classes: placement.legendClasses ?? 'govuk-fieldset__legend--m',
           isPageHeading: content.isPageHeading ?? false,
         },
       },
@@ -323,7 +329,7 @@ export const dateField =
  * revealed questions have them projected into their conditional reveal block.
  */
 export const radioField =
-  (placement: FieldPlacement & { legendClasses?: string } = {}) =>
+  (placement: FieldPlacement & { legendClasses?: string; inputClasses?: string } = {}) =>
   (content: OptionedQuestionContent) =>
     GovUKRadioInput(
       definedPropsOf({
@@ -335,6 +341,7 @@ export const radioField =
             classes: placement.legendClasses ?? 'govuk-fieldset__legend--m',
           },
         },
+        classes: placement.inputClasses,
         hint: content.hint,
         items: itemsOf(content, option => Answer(content.code).match(Condition.Equals(option.value))),
         dependentWhen: placement.dependentWhen,

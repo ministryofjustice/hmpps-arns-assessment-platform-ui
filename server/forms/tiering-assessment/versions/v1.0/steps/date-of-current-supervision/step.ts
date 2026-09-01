@@ -46,20 +46,20 @@ export const dateOfCurrentSupervisionStep = step({
               Answer('has_ever_committed_sexual_offence').match(Condition.Equals('YES')),
               or(
                 and(
-                  Answer('number-of-contact-sexual-sanctions').match(Condition.IsRequired()),
-                  Answer('number-of-contact-sexual-sanctions')
+                  Answer('number_of_contact_sexual_sanctions').match(Condition.IsRequired()),
+                  Answer('number_of_contact_sexual_sanctions')
                     .pipe(Transformer.String.ToInt())
                     .match(Condition.Number.GreaterThan(0)),
                 ),
                 and(
-                  Answer('number-of-contact-child-sexual-sanctions').match(Condition.IsRequired()),
-                  Answer('number-of-contact-child-sexual-sanctions')
+                  Answer('number_of_contact_child_sexual_sanctions').match(Condition.IsRequired()),
+                  Answer('number_of_contact_child_sexual_sanctions')
                     .pipe(Transformer.String.ToInt())
                     .match(Condition.Number.GreaterThan(0)),
                 ),
                 and(
-                  Answer('non-contact').match(Condition.IsRequired()),
-                  Answer('non-contact')
+                  Answer('non_contact').match(Condition.IsRequired()),
+                  Answer('non_contact')
                     .pipe(Transformer.String.ToInt())
                     .match(Condition.Number.GreaterThan(0)),
                 ),

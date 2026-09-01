@@ -18,6 +18,7 @@ export interface TieringAssessmentEffectShape {
   CalculateRiskActuarialScores: () => EffectFunctionExpr
   LoadCaseData: () => EffectFunctionExpr
   TransformRiskData: () => EffectFunctionExpr
+
 }
 
 export const TieringAssessmentEffectsImplementations = defineEffectFunctions<

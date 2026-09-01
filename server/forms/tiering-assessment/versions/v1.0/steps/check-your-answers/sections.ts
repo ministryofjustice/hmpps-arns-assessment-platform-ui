@@ -3,6 +3,7 @@ import { Section } from '../../constants/section'
 import { accommodationSection } from '../accommodation/section'
 import { currentOffenceAndOffendingHistorySection } from '../current-offence-and-offending-history/section'
 import { dateOfCurrentSupervisionSection } from '../date-of-current-supervision/section'
+import { sexualOffendingFields } from '../sexual-offending/fields'
 
 type SectionDefinitionOf = (typeof Section)[keyof typeof Section]
 
@@ -13,6 +14,7 @@ export interface CheckYourAnswersSection {
 
 export const checkYourAnswersSections: CheckYourAnswersSection[] = [
   { section: Section.current_offence_and_offending_history, config: currentOffenceAndOffendingHistorySection },
+  { section: Section.sexual_offending, config: sexualOffendingFields },
   { section: Section.date_of_current_supervision, config: dateOfCurrentSupervisionSection },
   { section: Section.accommodation, config: accommodationSection },
 ]

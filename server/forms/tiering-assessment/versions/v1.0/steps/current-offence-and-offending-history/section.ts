@@ -111,17 +111,18 @@ const totalSanctionsQuestion = question({
   },
   displayModes: {
     field: textField({
+      inputClasses: 'govuk-input--width-5',
       customValidations: [
         validation({
           condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
-          message: commonContentFor('validation.whole_number'),
+          message: commonContentFor('validation.number.not_whole_number'),
         }),
         validation({
           condition: and(
             Self().match(Condition.IsRequired()),
             Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
           ),
-          message: commonContentFor('validation.greater_than_zero'),
+          message: commonContentFor('validation.number.greater_than_zero'),
         }),
       ],
     }),
@@ -141,17 +142,18 @@ const totalViolentSanctionsQuestion = question({
   },
   displayModes: {
     field: textField({
+      inputClasses: 'govuk-input--width-5',
       customValidations: [
         validation({
           condition: Self().match(Condition.String.MatchesRegex('^-?\\d+$')),
-          message: commonContentFor('validation.whole_number'),
+          message: commonContentFor('validation.number.not_whole_number'),
         }),
         validation({
           condition: and(
             Self().match(Condition.IsRequired()),
-            Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThan(0)),
+            Self().pipe(Transformer.String.ToInt()).match(Condition.Number.GreaterThanOrEqual(0)),
           ),
-          message: commonContentFor('validation.greater_than_zero'),
+          message: commonContentFor('validation.number.greater_or_equal_zero'),
         }),
       ],
     }),
@@ -180,7 +182,7 @@ export const sexualOffenceHistoryQuestion = question({
     validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ inputClasses: 'govuk-radios--inline' }),
     summaryRow: itemisedSummaryRow({ changePath: Step.has_ever_committed_sexual_offence.path }),
   },
 })
