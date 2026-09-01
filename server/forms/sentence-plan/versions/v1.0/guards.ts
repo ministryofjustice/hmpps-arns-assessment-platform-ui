@@ -186,8 +186,9 @@ export const hasCrn = Data('caseData.crn').match(Condition.IsRequired())
 export const canAccessSanContent = and(isSanSpAssessment, hasCrn, or(not(isMpopAccess), isMpopAssessmentInfoEnabled))
 
 /**
- * Redirect users unless they can access SAN content.
- * Blocks both non-SAN_SP assessments and MPoP users.
+ * Redirect users unless they can access SAN content (see canAccessSanContent):
+ * blocks non-SAN_SP assessments, cases with no CRN, and MPoP users without the
+ * assessment-info feature flag.
  */
 export const redirectUnlessSanSp = (goto: string) =>
   access({

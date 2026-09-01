@@ -115,6 +115,11 @@ export interface CreateSessionOptions {
    * When set, indicates the user is accessing a previous version of the plan.
    */
   planVersion?: number
+  /**
+   * Send the handover with no subject CRN (~10% of real OASys handovers).
+   * The About page and assessment-info expanders are hidden for these users.
+   */
+  noCrn?: boolean
 }
 
 export interface SessionFixture {
@@ -270,6 +275,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
       const sessionBuilder = handoverBuilder.forAssociation(association)
 
+      if (options.noCrn) {
+        sessionBuilder.withoutCrn()
+      }
+
       if (options.pnc) {
         sessionBuilder.withSubjectPNC(options.pnc)
       }
@@ -296,8 +305,11 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
       const session = await sessionBuilder.save()
 
       // The app sources criminogenic needs for OASys users from the ARNS integration endpoint
-      // (SP2-2676), not the handover context, so stub it from the same test data.
-      await arnsApi.stubGetCriminogenicNeedsDetails(session.crn, criminogenicNeedsToArnsDetails(criminogenicNeeds))
+      // (SP2-2676), not the handover context, so stub it from the same test data. Skipped when
+      // there is no CRN - the app never reaches the ARNS call for that cohort.
+      if (!options.noCrn) {
+        await arnsApi.stubGetCriminogenicNeedsDetails(session.crn, criminogenicNeedsToArnsDetails(criminogenicNeeds))
+      }
 
       const clientId = TARGET_SERVICE_CLIENT_IDS[options.targetService]
       const url = new URL(session.handoverLink)
