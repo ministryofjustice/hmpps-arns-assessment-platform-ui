@@ -1,29 +1,26 @@
 import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import {
-  contactChildSanctionsField,
   contactChildSexualDetailsField,
-  contactSanctionsField,
   contactSexualDetailsField,
   currentAndRecentSexualOffendingHeadingField,
-  currentOffenceSexualRadioField,
-  dateOfMostRecentSexualOffenceField,
   directContactSexualOffendingHeadingField,
   imagesAndIndirectContactHeadingField,
   indecentImagesOfChildrenDetailsField,
-  indecentImagesOfChildrenField,
   nonContactDetailsField,
-  nonContactField,
   sectionBreakField,
   sexualOffendingInsetField,
+  sexualOffendingFields,
   victimStrangerDetailsField,
-  victimStrangerField,
 } from './fields'
 import { continueButton, redirectToCheckYourAnswers } from '../../common'
+import { sectionPageTitle } from '../../locales'
+import { Section } from '../../constants/section'
+import { Step } from './constants/step'
 
 export const sexualOffendingStep = step({
-  path: '/sexual-offending',
-  title: 'Sexual offending',
+  path: `${Step.sexual_offending.path}`,
+  title: sectionPageTitle(Section.sexual_offending),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
@@ -32,21 +29,21 @@ export const sexualOffendingStep = step({
   blocks: [
     sexualOffendingInsetField,
     currentAndRecentSexualOffendingHeadingField,
-    currentOffenceSexualRadioField,
-    dateOfMostRecentSexualOffenceField,
+    sexualOffendingFields.questions.currentOffenceSexualRadioQuestion.displayModes.field,
+    sexualOffendingFields.questions.dateOfMostRecentSexualOffenceQuestion.displayModes.field,
     sectionBreakField,
     directContactSexualOffendingHeadingField,
-    contactSanctionsField,
+    sexualOffendingFields.questions.contactSanctionsQuestion.displayModes.field,
     contactSexualDetailsField,
-    contactChildSanctionsField,
+    sexualOffendingFields.questions.contactChildSanctionsQuestion.displayModes.field,
     contactChildSexualDetailsField,
-    victimStrangerField,
+    sexualOffendingFields.questions.victimStrangerQuestion.displayModes.field,
     victimStrangerDetailsField,
     sectionBreakField,
     imagesAndIndirectContactHeadingField,
-    indecentImagesOfChildrenField,
+    sexualOffendingFields.questions.indecentImagesOfChildrenQuestion.displayModes.field,
     indecentImagesOfChildrenDetailsField,
-    nonContactField,
+    sexualOffendingFields.questions.nonContactQuestion.displayModes.field,
     nonContactDetailsField,
     continueButton,
   ],
