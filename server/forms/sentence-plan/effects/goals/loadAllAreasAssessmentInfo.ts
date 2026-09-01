@@ -45,6 +45,12 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
     const sanAssessmentData = entityAssessment.sanAssessmentData
 
     const criminogenicNeedsData = await resolveCriminogenicNeedsData(deps, context, crn)
+    if (!criminogenicNeedsData) {
+      logger.error({ assessmentUuid, crn }, 'Cannot load all areas assessment info: ARNS API returned no needs data')
+      setErrorState(context)
+      return
+    }
+
     const allAreas = transformAssessmentData(sanAssessmentData, criminogenicNeedsData)
 
     // group areas by scoring category

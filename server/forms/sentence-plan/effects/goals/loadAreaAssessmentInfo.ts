@@ -45,6 +45,16 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
     const sanAssessmentData = entityAssessment.sanAssessmentData
 
     const criminogenicNeedsData = await resolveCriminogenicNeedsData(deps, context, crn)
+    if (!criminogenicNeedsData) {
+      logger.error(
+        { assessmentUuid, crn, areaOfNeed: currentAreaOfNeed.slug },
+        'Cannot load area assessment info: ARNS API returned no needs data',
+      )
+      context.setData('currentAreaAssessment', null)
+      context.setData('currentAreaAssessmentStatus', 'error')
+      return
+    }
+
     const areas = transformAssessmentData(sanAssessmentData, criminogenicNeedsData)
 
     // goalRoute now matches slug directly in the unified areasOfNeed config
