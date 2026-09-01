@@ -17,7 +17,7 @@ describe('canAccessSanInfo()', () => {
   it('should return true when assessment has SAN_BETA flag and access is not MPoP', () => {
     const context = createMockContext({
       data: { assessment: { flags: ['SAN_BETA'] } },
-      session: { sessionDetails: { accessType: 'OASYS' } },
+      session: { sessionDetails: { accessType: 'OASYS' }, caseDetails: { crn: 'X123456' } },
     })
 
     expect(canAccessSanInfo(context)).toBe(true)
@@ -47,7 +47,7 @@ describe('canAccessSanInfo()', () => {
         assessment: { flags: ['SAN_BETA'] },
         featureFlags: { mpopAssessmentInfoEnabled: true },
       },
-      session: { sessionDetails: { accessType: 'HMPPS_AUTH' } },
+      session: { sessionDetails: { accessType: 'HMPPS_AUTH' }, caseDetails: { crn: 'X123456' } },
     })
 
     expect(canAccessSanInfo(context)).toBe(true)
@@ -73,9 +73,19 @@ describe('canAccessSanInfo()', () => {
   it('should return true when sessionDetails is undefined', () => {
     const context = createMockContext({
       data: { assessment: { flags: ['SAN_BETA'] } },
+      session: { caseDetails: { crn: 'X123456' } },
     })
 
     expect(canAccessSanInfo(context)).toBe(true)
+  })
+
+  it('should return false when the case has no CRN', () => {
+    const context = createMockContext({
+      data: { assessment: { flags: ['SAN_BETA'] } },
+      session: { sessionDetails: { accessType: 'OASYS' }, caseDetails: {} },
+    })
+
+    expect(canAccessSanInfo(context)).toBe(false)
   })
 
   it('should return false when both SAN_BETA is missing and access is MPoP', () => {
