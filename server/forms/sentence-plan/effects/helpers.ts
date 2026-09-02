@@ -1,13 +1,14 @@
 import { SentencePlanContext } from './types'
 
-// Requires both a SAN_SP assessment (SAN_BETA flag) AND non-MPoP access,
-// because MPoP users cannot reach the SAN data APIs needed to populate this content.
+// A CRN is required because the ARNS needs endpoints are keyed by it. Mirrors canAccessSanContent
+// in guards.ts.
 export const canAccessSanInfo = (context: SentencePlanContext): boolean => {
   const assessment = context.getData('assessment')
-  const sessionDetails = context.getSession().sessionDetails
+  const session = context.getSession()
   const isSanSp = assessment && 'flags' in assessment && assessment.flags?.includes('SAN_BETA')
-  const isMpop = sessionDetails?.accessType === 'HMPPS_AUTH'
+  const isMpop = session.sessionDetails?.accessType === 'HMPPS_AUTH'
   const isMpopAssessmentInfoEnabled = context.getData('featureFlags')?.mpopAssessmentInfoEnabled === true
+  const hasCrn = Boolean(session.caseDetails?.crn)
 
-  return Boolean(isSanSp && (!isMpop || isMpopAssessmentInfoEnabled))
+  return Boolean(isSanSp && hasCrn && (!isMpop || isMpopAssessmentInfoEnabled))
 }

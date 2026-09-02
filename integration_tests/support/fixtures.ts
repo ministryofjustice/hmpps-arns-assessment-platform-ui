@@ -25,6 +25,7 @@ import { HandoverBuilder } from '../builders/HandoverBuilder'
 import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
 import { AuditQueueClient } from './AuditQueueClient'
 import { captureContainerLogs } from './DockerLogCapture'
+import arnsApi, { criminogenicNeedsToArnsDetails } from '../mockApis/arnsApi'
 
 /**
  * Default criminogenic needs data for E2E tests.
@@ -35,53 +36,44 @@ const defaultCriminogenicNeedsData: CriminogenicNeedsData = {
   accommodation: {
     accLinkedToHarm: 'YES',
     accLinkedToReoffending: 'YES',
-    accStrengths: 'YES',
     accOtherWeightedScore: '6',
   },
   educationTrainingEmployability: {
     eteLinkedToHarm: 'YES',
     eteLinkedToReoffending: 'YES',
-    eteStrengths: 'YES',
     eteOtherWeightedScore: '4',
   },
   finance: {
     financeLinkedToHarm: 'YES',
     financeLinkedToReoffending: 'YES',
-    financeStrengths: 'YES',
   },
   drugMisuse: {
     drugLinkedToHarm: 'YES',
     drugLinkedToReoffending: 'YES',
-    drugStrengths: 'YES',
     drugOtherWeightedScore: '6',
   },
   alcoholMisuse: {
     alcoholLinkedToHarm: 'YES',
     alcoholLinkedToReoffending: 'YES',
-    alcoholStrengths: 'YES',
     alcoholOtherWeightedScore: '4',
   },
   healthAndWellbeing: {
     emoLinkedToHarm: 'YES',
     emoLinkedToReoffending: 'YES',
-    emoStrengths: 'YES',
   },
   personalRelationshipsAndCommunity: {
     relLinkedToHarm: 'YES',
     relLinkedToReoffending: 'YES',
-    relStrengths: 'YES',
     relOtherWeightedScore: '6',
   },
   thinkingBehaviourAndAttitudes: {
     thinkLinkedToHarm: 'YES',
     thinkLinkedToReoffending: 'YES',
-    thinkStrengths: 'YES',
     thinkOtherWeightedScore: '8',
   },
   lifestyleAndAssociates: {
     lifestyleLinkedToHarm: 'YES',
     lifestyleLinkedToReoffending: 'YES',
-    lifestyleStrengths: 'YES',
     lifestyleOtherWeightedScore: '4',
   },
 }
@@ -105,6 +97,11 @@ export interface CreateSessionOptions {
   assessmentType?: AssessmentType
   pnc?: string
   /**
+   * Defaults to a randomly generated CRN. Set it to target a specific wiremock
+   * scenario, such as docker/wiremock/mappings/supervision-package-api.
+   */
+  crn?: string
+  /**
    * Criminogenic needs data from OASys (via handover).
    * Provides linked indicators (YES/NO) and scores for assessment areas.
    * Defaults to all areas having YES for all indicators with typical scores.
@@ -116,6 +113,11 @@ export interface CreateSessionOptions {
    * When set, indicates the user is accessing a previous version of the plan.
    */
   planVersion?: number
+  /**
+   * Send the handover with no subject CRN (~10% of real OASys handovers).
+   * The About page and assessment-info expanders are hidden for these users.
+   */
+  noCrn?: boolean
   sexuallyMotivatedOffenceHistory?: YesNoNull
   /**
    * Overrides for the handover subject details (person on probation).
@@ -274,9 +276,17 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
         builder.withAssessmentType(options.assessmentType)
       }
 
+      if (options.crn) {
+        builder.withCrn(options.crn)
+      }
+
       const association = await builder.save()
 
       const sessionBuilder = handoverBuilder.forAssociation(association)
+
+      if (options.noCrn) {
+        sessionBuilder.withoutCrn()
+      }
 
       if (options.subject) {
         sessionBuilder.withSubject(options.subject)
@@ -298,8 +308,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
       // - If explicitly null, don't set any data (for testing missing data scenarios)
       // - If provided, use the provided data
       // - Otherwise use defaults so tests work without explicit setup
-      if (options.criminogenicNeedsData !== null) {
-        const criminogenicNeeds = options.criminogenicNeedsData ?? defaultCriminogenicNeedsData
+      const criminogenicNeeds =
+        options.criminogenicNeedsData === null ? null : (options.criminogenicNeedsData ?? defaultCriminogenicNeedsData)
+
+      if (criminogenicNeeds) {
         sessionBuilder.withCriminogenicNeeds(criminogenicNeeds)
       }
 
@@ -312,6 +324,9 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
       }
 
       const session = await sessionBuilder.save()
+
+      // OASys users' needs come from the ARNS integration endpoint, so stub it from the same test data.
+      await arnsApi.stubGetCriminogenicNeedsDetails(session.crn, criminogenicNeedsToArnsDetails(criminogenicNeeds))
 
       const clientId = TARGET_SERVICE_CLIENT_IDS[options.targetService]
       const url = new URL(session.handoverLink)

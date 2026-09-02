@@ -31,6 +31,9 @@ export const relatedAreasOfNeed = GovUKCheckboxInput({
     Iterator.Map({
       value: Item().path('slug'),
       text: Item().path('text'),
+      attributes: {
+        'data-ai-id': Format('related-area-of-need-%1-checkbox', Item().path('slug')),
+      },
     }),
   ),
   validWhen: [
@@ -51,8 +54,15 @@ export const isRelatedToOtherAreas = GovUKRadioInput({
     },
   },
   items: [
-    { value: 'yes', text: 'Yes', block: relatedAreasOfNeed },
-    { value: 'no', text: 'No' },
+    {
+      value: 'yes',
+      text: 'Yes',
+      block: relatedAreasOfNeed,
+    },
+    {
+      value: 'no',
+      text: 'No',
+    },
   ],
   validWhen: [
     validation({
@@ -73,6 +83,9 @@ export const customTargetDate = MOJDatePicker({
   // Set a minimum date of today in the DD/MM/YYYY format
   minDate: Generator.Date.Today().pipe(Transformer.Date.Format('DD/MM/YYYY')),
   formatters: [Transformer.String.ToISODate()],
+  attributes: {
+    'data-ai-id': 'custom-target-date-selection',
+  },
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
@@ -111,6 +124,9 @@ export const targetDateOption = GovUKRadioInput({
         'In 3 months (%1)',
         Generator.Date.Today().pipe(Transformer.Date.AddMonths(3), Transformer.Date.ToUKLongDate()),
       ),
+      attributes: {
+        'data-ai-id': 'target-date-option-3-months-radio',
+      },
     },
     {
       value: 'date_in_6_months',
@@ -118,6 +134,9 @@ export const targetDateOption = GovUKRadioInput({
         'In 6 months (%1)',
         Generator.Date.Today().pipe(Transformer.Date.AddMonths(6), Transformer.Date.ToUKLongDate()),
       ),
+      attributes: {
+        'data-ai-id': 'target-date-option-6-months-radio',
+      },
     },
     {
       value: 'date_in_12_months',
@@ -125,9 +144,19 @@ export const targetDateOption = GovUKRadioInput({
         'In 12 months (%1)',
         Generator.Date.Today().pipe(Transformer.Date.AddMonths(12), Transformer.Date.ToUKLongDate()),
       ),
+      attributes: {
+        'data-ai-id': 'target-date-option-12-months-radio',
+      },
     },
     { divider: 'or' },
-    { value: 'set_another_date', text: 'Set another date', block: customTargetDate },
+    {
+      value: 'set_another_date',
+      text: 'Set another date',
+      attributes: {
+        'data-ai-id': 'target-date-option-set-another-date-radio',
+      },
+      block: customTargetDate,
+    },
   ],
   validWhen: [
     validation({
@@ -147,8 +176,21 @@ export const canStartNow = GovUKRadioInput({
     },
   },
   items: [
-    { value: 'yes', text: 'Yes', block: targetDateOption },
-    { value: 'no', text: 'No, it is a future goal' },
+    {
+      value: 'yes',
+      text: 'Yes',
+      block: targetDateOption,
+      attributes: {
+        'data-ai-id': 'can-start-now-yes-radio',
+      },
+    },
+    {
+      value: 'no',
+      text: 'No, it is a future goal',
+      attributes: {
+        'data-ai-id': 'can-start-now-no-radio',
+      },
+    },
   ],
   validWhen: [
     validation({
