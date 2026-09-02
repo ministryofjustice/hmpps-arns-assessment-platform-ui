@@ -381,8 +381,8 @@ test.describe('View all answers', () => {
     expect(page.getByText('Used more than 6 months ago')).toBeVisible()
 
     // A section stopped before its practitioner analysis shows none.
-    const elementDef = page.locator('div:has-text("Health and wellbeing") + dl').first()
-    expect(elementDef).not.toContainText('Practitioner analysis')
+    const textHealthAndWellbeing = page.locator('div:has-text("Health and wellbeing") + dl').first()
+    expect(textHealthAndWellbeing).not.toContainText('Practitioner analysis')
   })
 
   test('shows only what has been answered', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
