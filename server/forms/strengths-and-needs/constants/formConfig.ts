@@ -6,6 +6,7 @@ import {
   SectionDefinition,
   stableQuestionsOf,
 } from './questionContent'
+import { SectionComplete } from '../versions/v1.0/constants/section'
 
 interface FormConfigOption {
   value?: string
@@ -27,7 +28,7 @@ export class FormConfig {
 
   fields: Record<string, FormConfigField>
 
-  constructor(version: string, sections: SectionDefinition[]) {
+  constructor(version: string, sections: SectionDefinition[], sectionStatusKeys: string[]) {
     this.version = version
     this.fields = {}
 
@@ -56,6 +57,14 @@ export class FormConfig {
           }
         })
       })
+    })
+
+    sectionStatusKeys.forEach(sectionStatusKey => {
+      this.fields[sectionStatusKey] = {
+        code: sectionStatusKey,
+        type: QuestionFormat.RADIO,
+        options: Object.values(SectionComplete).map(value => ({ value })),
+      }
     })
   }
 }
