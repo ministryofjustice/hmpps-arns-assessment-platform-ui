@@ -17,24 +17,20 @@ import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
 import { victimsCollection } from '../../constants/collections'
 import { contentFor } from '../../locales'
+import { saveButton } from '../../../../constants/buttons'
 
 const addAnotherButton = GovUKButton({
   text: 'Add another victim',
   name: 'action',
   value: 'add_another',
-})
-
-const continueButton = GovUKButton({
-  text: 'Continue',
-  name: 'action',
-  value: 'continue',
+  classes: 'govuk-button--secondary',
 })
 
 export const offenceAnalysisVictimSummaryStep = step({
   path: `/${Step.offence_analysis_victim_summary.path}`,
   title: 'Victims summary',
   reachability: { entryWhen: true },
-  blocks: [victimCards, addAnotherButton, continueButton],
+  blocks: [victimCards, saveButton, addAnotherButton],
   onAccess: [
     access({
       effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(victimsCollection)],
@@ -48,7 +44,7 @@ export const offenceAnalysisVictimSummaryStep = step({
   ],
   onSubmission: [
     submit({
-      when: Post('action').match(Condition.Equals('continue')),
+      when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
         next: [

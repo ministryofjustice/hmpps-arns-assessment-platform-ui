@@ -27,7 +27,7 @@ export const offenceAnalysisImpactStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.yes),
         ],
         next: [
           redirect({

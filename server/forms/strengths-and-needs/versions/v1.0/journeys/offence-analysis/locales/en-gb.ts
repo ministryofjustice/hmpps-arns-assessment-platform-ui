@@ -62,7 +62,7 @@ export const english = {
           hint: 'For example, a business or the wider community.',
         },
       },
-      validation: 'Select who the victim is',
+      validation: 'Select who the offence was committed against',
     },
     [Question.offence_analysis_victim_relationship]: {
       text: 'Who is the victim?',
@@ -171,7 +171,7 @@ export const english = {
     },
     [Question.offence_analysis_victim_of_domestic_abuse]: {
       text: 'Is there evidence that %1 has ever been a victim of domestic abuse?',
-      validation: 'Select if there is any evidence that they have ever been perpetrator of domestic abuse',
+      validation: 'Select if there is evidence that they have ever been victim of domestic abuse',
     },
     [Question.offence_analysis_victim_of_domestic_abuse_type]: {
       text: 'Who was this committed by?',

@@ -8,7 +8,7 @@ import {
   Loop,
   Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKInsetText, GovUKSummaryList } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { GovUKBody, GovUKInsetText, GovUKSummaryList } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CollectionBlock, HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { Question } from '../../constants/question'
 import { contentFor } from '../../locales'
@@ -43,7 +43,6 @@ export const victimCards = CollectionBlock({
                   {
                     href: Format(Step.offence_analysis_victim_edit.path, Loop.Index0()),
                     text: 'Change',
-                    visuallyHiddenText: Item().path('contactName'),
                   },
                   {
                     href: '#',
@@ -52,7 +51,6 @@ export const victimCards = CollectionBlock({
                       'data-toggle': 'modal',
                       'data-target': Loop.Index(),
                     },
-                    visuallyHiddenText: Item().path('contactName'),
                   },
                 ],
               },
@@ -61,12 +59,22 @@ export const victimCards = CollectionBlock({
               {
                 key: { text: contentFor('question.offence_analysis_victim_relationship.text') },
                 value: {
-                  text: SANGenerators.getTextFromListDefinition(
-                    victimQuestions.victimType.content.options,
-                    Item().path('answers')
-                      .path(Question.offence_analysis_victim_relationship)
-                      .path('value'),
-                  ),
+                  blocks: [
+                    GovUKBody({
+                      text: SANGenerators.getTextFromListDefinition(
+                        victimQuestions.victimType.content.options,
+                        Item().path('answers')
+                          .path(Question.offence_analysis_victim_relationship)
+                          .path('value'),
+                      ),
+                    }),
+                    GovUKBody({
+                      text: Item().path('answers')
+                        .path(Question.offence_analysis_victim_relationship_other_details)
+                        .path('value'),
+                      size: 's',
+                    }),
+                  ],
                 },
               },
               {

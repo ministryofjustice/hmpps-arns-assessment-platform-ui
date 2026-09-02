@@ -1,6 +1,6 @@
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { Collection } from '../../constants/collection'
+import { Collection, storeCollectionUuid } from '../../constants/collection'
 
 export const addItemToCollection =
   (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext, collection: Collection) => {
@@ -19,7 +19,7 @@ export const addItemToCollection =
       })
 
       collectionUuid = createResult.collectionUuid
-      collection.storeUuid(collectionUuid, context)
+      storeCollectionUuid(collection.name, collectionUuid, context)
     }
 
     const items: Record<string, unknown> = {}

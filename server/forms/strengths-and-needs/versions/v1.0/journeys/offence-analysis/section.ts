@@ -265,8 +265,7 @@ const offenceAnalysisWhoWasTheOffenceCommittedAgainst = question({
   content: {
     code: Question.offence_analysis_how_many_involved,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.offence_analysis_who_was_the_victim.text'),
-    hint: commonContentFor('select_all_that_apply'),
+    text: contentFor('question.offence_analysis_how_many_involved.text'),
     options: [
       { value: CommonOption.none, text: commonContentFor('option.NONE') },
       { value: Option.one, text: contentFor('question.offence_analysis_how_many_involved.option.ONE') },

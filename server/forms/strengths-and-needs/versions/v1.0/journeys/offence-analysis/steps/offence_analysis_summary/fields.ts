@@ -3,12 +3,6 @@ import { commonContentFor } from '../../../../locales'
 import { offenceAnalysisSection } from '../../section'
 import { victimCards } from '../offence-analysis-victim-summary/fields'
 
-// Every question the section can ask, each with its own row — the original
-// hand-rolled summary omitted `offenceAnalysisAcceptResponsibility` and
-// `offenceAnalysisEscalation` entirely, and its "impact on victims" row
-// accidentally showed the victim-of-domestic-abuse *type* answer instead of
-// the victim-of-domestic-abuse question itself. Using each question's own
-// `summaryRow` fixes both by construction.
 export const offenceAnalysisSummary = GovUKSummaryList({
   rows: [
     offenceAnalysisSection.questions.indexOffenceDescription.displayModes.summaryRow,
