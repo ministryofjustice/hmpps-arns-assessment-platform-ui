@@ -11,4 +11,8 @@ export const Section = {
     code: 'date_of_current_supervision',
     path: '/date_of_current_supervision',
   },
+  sexual_offending: {
+    code: 'sexual_offending',
+    path: '/sexual-offending',
+  },
 } as const
