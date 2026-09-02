@@ -43,6 +43,7 @@ export const english = {
     analysis: '%1 analysis',
     privacy: 'Close other applications',
     view_all_answers: 'View all answers',
+    previous_versions: 'Previous versions',
   },
   validation: {
     details_must_be_less_than: 'Details must be %1 characters or less',

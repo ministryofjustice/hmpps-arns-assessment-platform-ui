@@ -66,6 +66,7 @@ export default function createApp(services: Services): express.Application {
     })
     .registerPackage(strengthsAndNeedsFormPackage, {
       api: services.assessmentPlatformApiClient,
+      coordinatorApi: services.coordinatorApiClient,
     })
     .registerPackage(sentencePlanFormPackage, {
       api: services.assessmentPlatformApiClient,

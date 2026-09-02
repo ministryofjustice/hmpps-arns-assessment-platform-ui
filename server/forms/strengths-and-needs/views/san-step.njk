@@ -47,7 +47,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      {% if assessmentVersionDate %}
+      {% if assessmentVersionDate and not hidePreviousVersionNotification %}
         {{ mojAlert({
           variant: "information",
           title: "Assessment version date",

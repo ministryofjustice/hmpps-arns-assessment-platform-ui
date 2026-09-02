@@ -120,3 +120,16 @@
     }
   }
 }
+
+.button-as-link {
+  @include govuk-link-common;
+  @include govuk-font-size(19, $line-height: 1.6, $important: false);
+
+  background: none;
+  color: govuk-functional-colour(link);
+  border: none;
+  cursor: pointer;
+  outline: inherit;
+  padding: 0;
+  margin-bottom: 0;
+}

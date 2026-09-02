@@ -15,6 +15,7 @@ import { isEditMode, isOasysAccess } from './guards'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
+import { previousVersionsStep } from './steps/previous-versions/step'
 import { configStep } from '../configStep'
 import { formConfigsByVersion } from '../../constants/formConfigRegistry'
 import { StrengthsAndNeedsTransformers } from '../../transformers'
@@ -35,7 +36,9 @@ export const strengthsAndNeedsV1Journey = journey({
     template: 'strengths-and-needs/views/san-step',
     locals: {
       basePath,
-      assessmentVersionDate: Data('assessmentVersion').pipe(StrengthsAndNeedsTransformers.FormatAssessmentVersion()),
+      assessmentVersionDate: Data('sessionDetails.assessmentVersion').pipe(
+        StrengthsAndNeedsTransformers.FormatFullDateTime(),
+      ),
       sectionNavItems: Object.values(Section).map(section => ({
         ...section,
         complete: Data(section.statusKey),
@@ -70,7 +73,12 @@ export const strengthsAndNeedsV1Journey = journey({
       next: [redirect({ goto: '/strengths-and-needs/privacy' })],
     }),
   ],
-  steps: [...createPlatformPages({ baseUrl: basePath, feedbackUrl }), viewAllAnswersStep, configStep],
+  steps: [
+    ...createPlatformPages({ baseUrl: basePath, feedbackUrl }),
+    viewAllAnswersStep,
+    previousVersionsStep,
+    configStep,
+  ],
   children: [
     accommodationJourney,
     employmentJourney,
