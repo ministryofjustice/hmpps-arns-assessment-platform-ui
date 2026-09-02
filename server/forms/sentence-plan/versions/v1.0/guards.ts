@@ -173,15 +173,18 @@ export const isSanSpAssessment = Data('assessment.flags').match(Condition.Array.
 export const isMpopAccess = Data('sessionDetails.accessType').match(Condition.Equals('HMPPS_AUTH'))
 
 /**
- * True when the user can access SAN-specific content.
- * Requires a SAN_SP assessment AND either non-MPoP access (i.e. OASys),
- * or MPoP access with the assessment-info feature flag enabled.
+ * True when the case has a CRN. Required because the ARNS needs endpoints are keyed by it, and
+ * some OASys handovers arrive without one.
  */
-export const canAccessSanContent = and(isSanSpAssessment, or(not(isMpopAccess), isMpopAssessmentInfoEnabled))
+export const hasCrn = Data('caseData.crn').match(Condition.IsRequired())
 
 /**
- * Redirect users unless they can access SAN content.
- * Blocks both non-SAN_SP assessments and MPoP users.
+ * True when the user can access SAN-specific content.
+ */
+export const canAccessSanContent = and(isSanSpAssessment, hasCrn, or(not(isMpopAccess), isMpopAssessmentInfoEnabled))
+
+/**
+ * Redirect users who cannot access SAN content (see canAccessSanContent).
  */
 export const redirectUnlessSanSp = (goto: string) =>
   access({

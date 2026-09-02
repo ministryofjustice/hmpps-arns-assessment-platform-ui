@@ -19,9 +19,9 @@ const emptyNeedArea = (): CriminogenicNeedArea => ({
 })
 
 /**
- * Produces the same CriminogenicNeedsData shape as mapHandoverToCriminogenicNeeds, so
- * transformAssessmentData works identically for ARNS (MPoP) and handover (OASys) sources.
- * SAN has no finance/health-and-wellbeing sections and no strengths indicator, so those stay null.
+ * Maps the ARNS assessment endpoint response (MPoP) to the CriminogenicNeedsData shape consumed
+ * by transformAssessmentData. SAN has no finance/health-and-wellbeing sections and no strengths
+ * indicator, so those stay null.
  */
 export function mapArnsNeedsToCriminogenicNeeds(dto: AssessmentNeedsDto | undefined): CriminogenicNeedsData | null {
   if (!dto) {
