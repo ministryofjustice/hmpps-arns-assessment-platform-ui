@@ -1,6 +1,7 @@
 import { EffectRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { deriveDrugCategories } from './assessment/deriveDrugCategories'
 import { loadAssessment } from './assessment/loadAssessment'
+import { loadPreviousVersions } from './assessment/loadPreviousVersions'
 import { saveCurrentStepAnswers } from './assessment/saveCurrentStepAnswers'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
@@ -16,6 +17,7 @@ import { updateItemFromCollection } from './assessment/updateItemFromCollection'
 import { removeItemFromCollection } from './assessment/removeItemFromCollection'
 import { emptyCollection } from './assessment/emptyCollection'
 import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
+import { selectPreviousVersion } from './assessment/selectPreviousVersion'
 import { sendAuditEvent } from './audit/sendAuditEvent'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
@@ -26,9 +28,11 @@ export const StrengthsAndNeedsEffects = {
   setPrivacyAccepted: sanEffects.register('setPrivacyAccepted', setPrivacyAccepted),
   setViewAllAnswersBacklink: sanEffects.register('setViewAllAnswersBacklink', setViewAllAnswersBacklink),
   loadAssessment: sanEffects.register('loadAssessment', loadAssessment),
+  loadPreviousVersions: sanEffects.register('loadPreviousVersions', loadPreviousVersions),
   saveCurrentStepAnswers: sanEffects.register('saveCurrentStepAnswers', saveCurrentStepAnswers),
   saveAndClearStaleAnswers: sanEffects.register('saveAndClearStaleAnswers', saveAndClearStaleAnswers),
   deriveDrugCategories: sanEffects.register('deriveDrugCategories', deriveDrugCategories),
+  selectPreviousVersion: sanEffects.register('selectPreviousVersion', selectPreviousVersion),
   setSectionProgress: sanEffects.register('setSectionProgress', setSectionProgress),
   addItemToCollection: sanEffects.register('addItemToCollection', addItemToCollection),
   updateItemFromCollection: sanEffects.register('updateItemFromCollection', updateItemFromCollection),

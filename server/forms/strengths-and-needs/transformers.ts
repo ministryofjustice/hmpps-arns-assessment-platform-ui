@@ -61,7 +61,7 @@ export const StrengthsAndNeedsTransformers = {
 
   JsonStringify: sanTransformers.register('JsonStringify', () => (value: unknown) => JSON.stringify(value, null, 2)),
 
-  FormatAssessmentVersion: sanTransformers.register('FormatAssessmentVersion', () => (value: unknown) => {
+  FormatFullDateTime: sanTransformers.register('FormatFullDateTime', () => (value: unknown) => {
     if (typeof value !== 'number' || value <= 0) {
       return ''
     }
@@ -74,5 +74,20 @@ export const StrengthsAndNeedsTransformers = {
 
     const day = dateTime.day
     return `${dateTime.toFormat('cccc')} ${day}${ordinalSuffix(day)} ${dateTime.toFormat('LLLL')} ${dateTime.toFormat('yyyy')} ${dateTime.toFormat('h:mm')}${dateTime.toFormat('a').toLowerCase()}`
+  }),
+
+  FormatDate: sanTransformers.register('FormatDate', () => (value: unknown) => {
+    if (typeof value !== 'number' || value <= 0) {
+      return ''
+    }
+
+    const dateTime = DateTime.fromMillis(value)
+
+    if (!dateTime.isValid) {
+      return ''
+    }
+
+    const day = dateTime.day
+    return `${day}${ordinalSuffix(day)} ${dateTime.toFormat('LLLL')} ${dateTime.toFormat('yyyy')}`
   }),
 }

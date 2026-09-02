@@ -45,7 +45,12 @@ export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsCont
     }
   })
 
-  const assessmentVersion = handoverContext?.assessmentContext?.assessmentVersion
+  // This effect runs on every access to the SAN journey (not just the initial handover),
+  // so it must not clobber an assessment version that was previously selected via the
+  // previous-versions page and persisted onto the session by `loadAssessment`. Only fall
+  // back to the session's existing value when the handover context doesn't carry one.
+  const assessmentVersion =
+    handoverContext?.assessmentContext?.assessmentVersion ?? session.sessionDetails?.assessmentVersion
 
   context.setData('assessmentVersion', assessmentVersion)
 

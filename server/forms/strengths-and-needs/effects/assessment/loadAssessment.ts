@@ -1,5 +1,6 @@
 import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import { InternalServerError } from 'http-errors'
+import { DateTime } from 'luxon'
 import { unwrapAll } from '../../../../data/aap-api/wrappers'
 import { AssessmentVersionQuery } from '../../../../interfaces/aap-api/query'
 import { QueryError } from '../../../../errors/aap-api/QueryError'
@@ -40,6 +41,19 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
     type: 'AssessmentVersionQuery',
     user,
     assessmentIdentifier: sessionDetails.assessmentIdentifier,
+  }
+
+  // Check if a version was set in session (from previous-versions page)
+  const versionTimestamp = session.versionOverride ?? sessionDetails.assessmentVersion
+
+  // If a version timestamp is set, convert it to ISO string for the query
+  if (versionTimestamp && versionTimestamp > 0) {
+    session.versionOverride = versionTimestamp
+    query.timestamp = DateTime.fromMillis(versionTimestamp).toISO({ includeOffset: false })
+    // Persist to session for other uses (banner, read-only mode, etc.)
+    if (sessionDetails) {
+      sessionDetails.assessmentVersion = versionTimestamp
+    }
   }
 
   let assessment = await loadAssessmentQuery(deps, query)
