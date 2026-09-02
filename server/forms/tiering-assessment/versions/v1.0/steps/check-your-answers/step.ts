@@ -6,7 +6,7 @@ import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 import {
   currentOffenceHeadingQuestion,
   currentOffenceSummaryListQuestion,
-} from '../current-offence-and-offending-history/section'
+} from '../current-offence-and-offending-history/fields'
 
 /**
  * Every answer given so far across every section.

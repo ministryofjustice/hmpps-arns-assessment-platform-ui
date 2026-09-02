@@ -1,4 +1,4 @@
-import { Section } from '../constants/section'
+import { Step } from '../constants/page'
 import { CommonOption } from '../constants/commonOption'
 import { Locale } from '../../../i18n'
 
@@ -9,15 +9,12 @@ export const english = {
   change: 'Change',
   summary: '',
   all_answers_heading: 'Tiering Assessment',
-  sectionTitle: {
-    [Section.accommodation.code]: 'Accommodation',
-    [Section.current_offence_and_offending_history.code]: 'Current offence and offending history',
-    [Section.date_of_current_supervision.code]: 'Date of current supervision',
-    [Section.sexual_offending.code]: 'Sexual offending',
-  },
-  // Page titles derive from sectionTitle above, so a section is named in one place.
   pageTitle: {
-    check_your_answers: 'Check your answers',
+    [Step.accommodation.code]: 'Accommodation',
+    [Step.current_offence_and_offending_history.code]: 'Current offence and offending history',
+    [Step.date_of_current_supervision.code]: 'Date of current supervision',
+    [Step.offences_since_supervision.code]: 'Something something',
+    [Step.check_your_answers.code]: 'Check your answers',
   },
   validation: {
     this_is_a_required_field: 'This is a required field.',

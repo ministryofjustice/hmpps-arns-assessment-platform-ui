@@ -18,7 +18,7 @@ export interface TieringAssessmentEffectShape {
   CalculateRiskActuarialScores: () => EffectFunctionExpr
   LoadCaseData: () => EffectFunctionExpr
   TransformRiskData: () => EffectFunctionExpr
-
+  ReadWriteAccess: () => EffectFunctionExpr
 }
 
 export const TieringAssessmentEffectsImplementations = defineEffectFunctions<
@@ -51,7 +51,8 @@ export const TieringAssessmentEffectsImplementations = defineEffectFunctions<
   LoadAssessmentData: (deps: TieringAssessmentEffectsDeps) => async (context: TieringAssessmentEffectContext) => {
     const session = context.getSession()
     const assessmentUuid = session.assessmentUuid
-
+    console.log('----------------------', session)
+    console.log('---------DATA-------------', context.getAllData())
     if (assessmentUuid != null) {
       const assessment = await deps.api.executeQuery({
         type: 'AssessmentVersionQuery',
@@ -132,6 +133,11 @@ export const TieringAssessmentEffectsImplementations = defineEffectFunctions<
   TransformRiskData: (deps: TieringAssessmentEffectsDeps) => async (context: TieringAssessmentEffectContext) => {
     context.setData('riskData', deps.riskActuarialService.createV2AssessmentRiskData(context))
   },
+  ReadWriteAccess: () => async (context: TieringAssessmentEffectContext) => {
+    const session = context.getSession()
+    session.accessMode = 'READ_WRITE'
+    context.setData('accessMode', session.accessMode)
+  },
 })
 
 export const TieringAssessmentEffectsRegistry = new EffectRegistry<TieringAssessmentEffectsDeps>()
@@ -172,5 +178,9 @@ export const TieringAssessmentEffects: TieringAssessmentEffectShape = {
   TransformRiskData: TieringAssessmentEffectsRegistry.register(
     'TransformRiskData',
     TieringAssessmentEffectsImplementations.implementations.TransformRiskData,
+  ),
+  ReadWriteAccess: TieringAssessmentEffectsRegistry.register(
+    'ReadWriteAccess',
+    TieringAssessmentEffectsImplementations.implementations.ReadWriteAccess,
   ),
 }

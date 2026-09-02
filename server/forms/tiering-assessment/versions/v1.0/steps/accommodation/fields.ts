@@ -1,11 +1,11 @@
 import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { Option } from './constants/option'
-import { Step } from './constants/step'
+import { Field } from './constants/field'
 import { commonContentFor } from '../../locales'
 import { CommonOption } from '../../constants/commonOption'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
-import { Section } from '../../constants/section'
+import { Step } from '../../constants/page'
 import {
   checkboxField,
   itemisedSummaryRow,
@@ -38,7 +38,7 @@ const whoAreTheyLivingWithQuestion = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.accommodation.path }),
+    summaryRow: itemisedSummaryRow({ changePath: Field.who_are_they_living_with.path }),
   },
 })
 
@@ -68,12 +68,12 @@ export const suitabilityOfAccommodationQuestion = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.accommodation.path }),
+    summaryRow: itemisedSummaryRow({ changePath: Field.suitability_of_accommodation.path }),
   },
 })
 
-export const accommodationSection = {
-  code: Section.accommodation.code,
+export const accommodationFields = {
+  code: Step.accommodation.code,
   questions: {
     whoAreTheyLivingWithQuestion,
     suitabilityOfAccommodationQuestion,

@@ -1,4 +1,4 @@
-import { redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { redirect, access, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import {
   dateOfCurrentConviction,
@@ -27,7 +27,7 @@ export const startTieringAssessmentStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [TieringAssessmentEffects.InitialiseAssessment(), TieringAssessmentEffects.SaveAssessmentData()],
+        effects: [TieringAssessmentEffects.ReadWriteAccess(), TieringAssessmentEffects.InitialiseAssessment(), TieringAssessmentEffects.SaveAssessmentData()],
         next: [redirect({ goto: 'current-offence-and-offending-history' })],
       },
     }),
