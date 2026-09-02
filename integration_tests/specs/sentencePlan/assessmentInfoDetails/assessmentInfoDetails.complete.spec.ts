@@ -80,7 +80,6 @@ test.describe('Assessment Info Details - Complete Section', () => {
         drugMisuse: {
           drugLinkedToHarm: 'NO',
           drugLinkedToReoffending: 'NO',
-          drugStrengths: 'NO',
           drugOtherWeightedScore: '0',
         },
       },
@@ -195,7 +194,6 @@ test.describe('Assessment Info Details - Complete Section', () => {
           accommodation: {
             accLinkedToHarm: 'NO',
             accLinkedToReoffending: 'YES',
-            accStrengths: 'NO',
           },
         },
       })
@@ -287,7 +285,6 @@ test.describe('Assessment Info Details - Complete Section', () => {
           accommodation: {
             accLinkedToHarm: 'YES',
             accLinkedToReoffending: 'YES',
-            accStrengths: 'NO',
             accOtherWeightedScore: '5', // score 5 out of 6, threshold 1
           },
         },
@@ -328,13 +325,11 @@ test.describe('Assessment Info Details - Complete Section', () => {
           thinkingBehaviourAndAttitudes: {
             thinkLinkedToHarm: 'YES',
             thinkLinkedToReoffending: 'YES',
-            thinkStrengths: 'NO',
             thinkOtherWeightedScore: '4', // main thinking score
           },
           lifestyleAndAssociates: {
             lifestyleLinkedToHarm: 'YES',
             lifestyleLinkedToReoffending: 'NO',
-            lifestyleStrengths: 'NO',
             lifestyleOtherWeightedScore: '3', // sub-area score - threshold 1, so high-scoring
           },
         },

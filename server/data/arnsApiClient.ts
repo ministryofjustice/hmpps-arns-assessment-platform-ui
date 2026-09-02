@@ -11,20 +11,17 @@ export default class ArnsApiClient extends RestClient {
   }
 
   /**
-   * Uses the user's own token (not a system token) so the endpoint's limited-access-offender checks
-   * run against the actual user — a 403 is an expected "cannot view this case" state, not an error.
-   *
-   * excludeIncomplete=false because an OASys assessment only reaches COMPLETE once the whole thing
-   * is signed off, RoSH included.
+   * Called as the user so the endpoint's limited-access-offender checks run against them; a 403 is
+   * an expected "cannot view this case" state, not an error. excludeIncomplete is false because an
+   * OASys assessment only reaches COMPLETE once the whole thing (RoSH included) is signed off.
    */
   async getCriminogenicNeeds(crn: string, token: string): Promise<AssessmentNeedsDto> {
     return this.get({ path: `/needs/crn/${crn}`, query: { excludeIncomplete: false } }, asUser(token))
   }
 
   /**
-   * System/client-credentials call - OASys sessions carry no HMPPS Auth user token, so no
-   * per-request LAO check is possible for this cohort. The CRN passed in must come only
-   * from the handover session, never a route param. Uses the integration endpoint.
+   * Called with a system token because OASys sessions carry no user token; the integration endpoint
+   * runs no per-request LAO check, so the crn must come from the handover session, never a route param.
    */
   async getCriminogenicNeedsDetails(crn: string): Promise<AssessmentNeedsDetailsDto> {
     return this.get({ path: `/needs/${crn}`, query: { excludeIncomplete: false } }, asSystem())

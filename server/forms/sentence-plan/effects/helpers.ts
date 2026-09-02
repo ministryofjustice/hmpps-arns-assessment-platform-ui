@@ -1,8 +1,7 @@
 import { SentencePlanContext } from './types'
 
-// Requires a SAN_SP assessment (SAN_BETA flag), a CRN (the ARNS needs endpoints are keyed by
-// CRN, and ~10% of OASys handovers have none), and either non-MPoP access or MPoP with the
-// assessment-info feature flag enabled.
+// A CRN is required because the ARNS needs endpoints are keyed by it. Mirrors canAccessSanContent
+// in guards.ts.
 export const canAccessSanInfo = (context: SentencePlanContext): boolean => {
   const assessment = context.getData('assessment')
   const session = context.getSession()

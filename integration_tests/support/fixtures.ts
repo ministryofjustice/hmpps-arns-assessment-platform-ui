@@ -30,53 +30,44 @@ const defaultCriminogenicNeedsData: CriminogenicNeedsData = {
   accommodation: {
     accLinkedToHarm: 'YES',
     accLinkedToReoffending: 'YES',
-    accStrengths: 'YES',
     accOtherWeightedScore: '6',
   },
   educationTrainingEmployability: {
     eteLinkedToHarm: 'YES',
     eteLinkedToReoffending: 'YES',
-    eteStrengths: 'YES',
     eteOtherWeightedScore: '4',
   },
   finance: {
     financeLinkedToHarm: 'YES',
     financeLinkedToReoffending: 'YES',
-    financeStrengths: 'YES',
   },
   drugMisuse: {
     drugLinkedToHarm: 'YES',
     drugLinkedToReoffending: 'YES',
-    drugStrengths: 'YES',
     drugOtherWeightedScore: '6',
   },
   alcoholMisuse: {
     alcoholLinkedToHarm: 'YES',
     alcoholLinkedToReoffending: 'YES',
-    alcoholStrengths: 'YES',
     alcoholOtherWeightedScore: '4',
   },
   healthAndWellbeing: {
     emoLinkedToHarm: 'YES',
     emoLinkedToReoffending: 'YES',
-    emoStrengths: 'YES',
   },
   personalRelationshipsAndCommunity: {
     relLinkedToHarm: 'YES',
     relLinkedToReoffending: 'YES',
-    relStrengths: 'YES',
     relOtherWeightedScore: '6',
   },
   thinkingBehaviourAndAttitudes: {
     thinkLinkedToHarm: 'YES',
     thinkLinkedToReoffending: 'YES',
-    thinkStrengths: 'YES',
     thinkOtherWeightedScore: '8',
   },
   lifestyleAndAssociates: {
     lifestyleLinkedToHarm: 'YES',
     lifestyleLinkedToReoffending: 'YES',
-    lifestyleStrengths: 'YES',
     lifestyleOtherWeightedScore: '4',
   },
 }
@@ -304,12 +295,8 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
       const session = await sessionBuilder.save()
 
-      // The app sources criminogenic needs for OASys users from the ARNS integration endpoint
-      // (SP2-2676), not the handover context, so stub it from the same test data. Skipped when
-      // there is no CRN - the app never reaches the ARNS call for that cohort.
-      if (!options.noCrn) {
-        await arnsApi.stubGetCriminogenicNeedsDetails(session.crn, criminogenicNeedsToArnsDetails(criminogenicNeeds))
-      }
+      // OASys users' needs come from the ARNS integration endpoint, so stub it from the same test data.
+      await arnsApi.stubGetCriminogenicNeedsDetails(session.crn, criminogenicNeedsToArnsDetails(criminogenicNeeds))
 
       const clientId = TARGET_SERVICE_CLIENT_IDS[options.targetService]
       const url = new URL(session.handoverLink)

@@ -143,8 +143,8 @@ export class HandoverBuilderInstance {
   }
 
   /**
-   * Send the handover with no subject CRN (~10% of real OASys handovers). The handover
-   * service allows a null CRN but rejects an empty string, so the field is omitted entirely.
+   * Send the handover with no subject CRN. The handover service allows a null CRN but rejects an
+   * empty string, so the field is omitted entirely.
    */
   withoutCrn(): this {
     this.omitCrn = true

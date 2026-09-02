@@ -11,37 +11,31 @@ const defaultCriminogenicNeedsData: CriminogenicNeedsData = {
   accommodation: {
     accLinkedToHarm: 'YES',
     accLinkedToReoffending: 'YES',
-    accStrengths: 'NO',
     accOtherWeightedScore: '4',
   },
   educationTrainingEmployability: {
     eteLinkedToHarm: 'NO',
     eteLinkedToReoffending: 'YES',
-    eteStrengths: 'NO',
     eteOtherWeightedScore: '2',
   },
   drugMisuse: {
     drugLinkedToHarm: 'YES',
     drugLinkedToReoffending: 'YES',
-    drugStrengths: 'NO',
     drugOtherWeightedScore: '3',
   },
   alcoholMisuse: {
     alcoholLinkedToHarm: 'YES',
     alcoholLinkedToReoffending: 'NO',
-    alcoholStrengths: 'NO',
     alcoholOtherWeightedScore: '3',
   },
   personalRelationshipsAndCommunity: {
     relLinkedToHarm: 'NO',
     relLinkedToReoffending: 'NO',
-    relStrengths: 'YES',
     relOtherWeightedScore: '0',
   },
   thinkingBehaviourAndAttitudes: {
     thinkLinkedToHarm: 'YES',
     thinkLinkedToReoffending: 'YES',
-    thinkStrengths: 'NO',
     thinkOtherWeightedScore: '4',
   },
 }

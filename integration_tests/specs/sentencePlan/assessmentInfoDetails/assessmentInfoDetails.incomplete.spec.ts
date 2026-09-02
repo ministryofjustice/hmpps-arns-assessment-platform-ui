@@ -13,7 +13,6 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
         drugMisuse: {
           drugLinkedToHarm: 'NO',
           drugLinkedToReoffending: 'YES',
-          drugStrengths: 'NO',
           drugOtherWeightedScore: '6',
         },
       },
@@ -67,7 +66,6 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
         accommodation: {
           accLinkedToHarm: 'NULL',
           accLinkedToReoffending: 'NULL',
-          accStrengths: 'NULL',
           // No score
         },
       },
@@ -166,7 +164,6 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
         finance: {
           // Harm missing (NULL) - will show in missing items
           financeLinkedToReoffending: 'NO',
-          financeStrengths: 'YES',
         },
       },
     })
@@ -220,7 +217,6 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
           accommodation: {
             accLinkedToHarm: 'YES',
             accLinkedToReoffending: null,
-            accStrengths: null,
             accOtherWeightedScore: '4',
           },
         },

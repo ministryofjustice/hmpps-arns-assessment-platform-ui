@@ -33,8 +33,8 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
     return
   }
 
-  // OASys users' needs come from the ARNS integration endpoint keyed by the handover CRN; the
-  // ~10% with no CRN get no assessment info (the eligibility guard hides the tab for them).
+  // An OASys case with no CRN can't be looked up in ARNS; the eligibility guard already hides
+  // the tab, so this is just a backstop.
   if (!isMpop && !crn) {
     setUnavailableState(context)
     return

@@ -1,5 +1,6 @@
 import { SuperAgentRequest } from 'superagent'
 import type { CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
+import { areasOfNeed, subAreasOfNeed } from '@server/forms/sentence-plan/versions/v1.0/constants'
 import { stubFor } from './wiremock'
 
 export interface AssessmentNeedDetail {
@@ -12,18 +13,18 @@ export interface AssessmentNeedDetail {
   oasysThreshold?: { standard?: number }
 }
 
-// Internal area key -> ARNS SAN section name + the handover field-name prefix for that area.
-const AREA_MAPPINGS = [
-  ['accommodation', 'ACCOMMODATION', 'acc'],
-  ['educationTrainingEmployability', 'EMPLOYMENT_AND_EDUCATION', 'ete'],
-  ['personalRelationshipsAndCommunity', 'PERSONAL_RELATIONSHIPS_AND_COMMUNITY', 'rel'],
-  ['lifestyleAndAssociates', 'LIFESTYLE_AND_ASSOCIATES', 'lifestyle'],
-  ['drugMisuse', 'DRUG_USE', 'drug'],
-  ['alcoholMisuse', 'ALCOHOL_USE', 'alcohol'],
-  ['thinkingBehaviourAndAttitudes', 'THINKING_ATTITUDES_AND_BEHAVIOUR', 'think'],
-  ['finance', 'FINANCE', 'finance'],
-  ['healthAndWellbeing', 'HEALTH_AND_WELLBEING', 'emo'],
-] as const
+// The ARNS SAN section name for each area — the one piece not carried in areasOfNeed.
+const ARNS_SECTION_BY_KEY: Record<string, string> = {
+  accommodation: 'ACCOMMODATION',
+  educationTrainingEmployability: 'EMPLOYMENT_AND_EDUCATION',
+  personalRelationshipsAndCommunity: 'PERSONAL_RELATIONSHIPS_AND_COMMUNITY',
+  lifestyleAndAssociates: 'LIFESTYLE_AND_ASSOCIATES',
+  drugMisuse: 'DRUG_USE',
+  alcoholMisuse: 'ALCOHOL_USE',
+  thinkingBehaviourAndAttitudes: 'THINKING_ATTITUDES_AND_BEHAVIOUR',
+  finance: 'FINANCE',
+  healthAndWellbeing: 'HEALTH_AND_WELLBEING',
+}
 
 const toBool = (value: string | undefined): boolean | null => {
   if (value === 'YES') return true
@@ -33,24 +34,24 @@ const toBool = (value: string | undefined): boolean | null => {
 
 /**
  * Translate the handover-shaped criminogenic-needs test data (accLinkedToHarm: 'YES', etc.) into the
- * ARNS integration DTO's `needs` array. An area omitted from the input produces no entry, so the app
- * treats it as having no assessment data - matching the old handover behaviour.
+ * ARNS integration DTO's `needs` array, using the crimNeedsKey/handoverPrefix pairs from areasOfNeed.
+ * An area omitted from the input produces no entry, so the app treats it as having no data.
  */
 export const criminogenicNeedsToArnsDetails = (data: CriminogenicNeedsData | null): AssessmentNeedDetail[] => {
   if (!data) return []
 
-  return AREA_MAPPINGS.flatMap(([key, section, prefix]) => {
-    const area = data[key] as Record<string, string | undefined> | undefined
+  return [...areasOfNeed, ...subAreasOfNeed].flatMap(({ crimNeedsKey, handoverPrefix }) => {
+    const area = data[crimNeedsKey] as Record<string, string | undefined> | undefined
     if (!area) return []
 
-    const scoreRaw = area[`${prefix}OtherWeightedScore`]
+    const scoreRaw = area[`${handoverPrefix}OtherWeightedScore`]
     const score = scoreRaw != null && scoreRaw !== '' && scoreRaw !== 'N/A' ? Number(scoreRaw) : undefined
 
     return [
       {
-        section,
-        riskOfHarm: toBool(area[`${prefix}LinkedToHarm`]),
-        riskOfReoffending: toBool(area[`${prefix}LinkedToReoffending`]),
+        section: ARNS_SECTION_BY_KEY[crimNeedsKey],
+        riskOfHarm: toBool(area[`${handoverPrefix}LinkedToHarm`]),
+        riskOfReoffending: toBool(area[`${handoverPrefix}LinkedToReoffending`]),
         ...(score != null && !Number.isNaN(score) ? { score } : {}),
       },
     ]
@@ -58,11 +59,6 @@ export const criminogenicNeedsToArnsDetails = (data: CriminogenicNeedsData | nul
 }
 
 export default {
-  /**
-   * Stub the ARNS integration endpoint GET /needs/{crn}, used for OASys users
-   * (AssessmentNeedsDetailsDto). Priority 1 overrides the static default stub in
-   * docker/wiremock/mappings/arns-api/needs-details.json.
-   */
   stubGetCriminogenicNeedsDetails: (
     crn: string,
     needs: AssessmentNeedDetail[],
@@ -81,9 +77,6 @@ export default {
       priority: 1,
     }),
 
-  /**
-   * Stub the ARNS integration endpoint to return an error, for AC5 error-state tests.
-   */
   stubGetCriminogenicNeedsDetailsFailure: (crn: string, status = 500): SuperAgentRequest =>
     stubFor({
       request: {
