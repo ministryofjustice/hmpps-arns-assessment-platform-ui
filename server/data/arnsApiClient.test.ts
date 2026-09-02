@@ -1,7 +1,8 @@
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
-import { asUser } from '@ministryofjustice/hmpps-rest-client'
+import { asSystem, asUser } from '@ministryofjustice/hmpps-rest-client'
 import ArnsApiClient from './arnsApiClient'
 import { AssessmentNeedsDto } from '../interfaces/arns-api/assessmentNeeds'
+import { AssessmentNeedsDetailsDto } from '../interfaces/arns-api/assessmentNeedsDetails'
 
 jest.mock('../config', () => ({
   apis: {
@@ -49,7 +50,27 @@ describe('ArnsApiClient', () => {
       const result = await client.getCriminogenicNeeds(crn, userToken)
 
       expect(result).toEqual(expectedNeeds)
-      expect(mockGet).toHaveBeenCalledWith({ path: `/needs/crn/${crn}` }, asUser(userToken))
+      expect(mockGet).toHaveBeenCalledWith(
+        { path: `/needs/crn/${crn}`, query: { excludeIncomplete: false } },
+        asUser(userToken),
+      )
+    })
+  })
+
+  describe('getCriminogenicNeedsDetails()', () => {
+    it('should fetch criminogenic needs details by CRN with a system token', async () => {
+      const crn = 'X123456'
+      const expectedDetails: AssessmentNeedsDetailsDto = {
+        needs: [],
+        assessmentVersion: 'SAN',
+      }
+
+      mockGet.mockResolvedValue(expectedDetails)
+
+      const result = await client.getCriminogenicNeedsDetails(crn)
+
+      expect(result).toEqual(expectedDetails)
+      expect(mockGet).toHaveBeenCalledWith({ path: `/needs/${crn}`, query: { excludeIncomplete: false } }, asSystem())
     })
   })
 })

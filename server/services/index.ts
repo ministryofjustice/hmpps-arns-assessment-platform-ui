@@ -1,7 +1,9 @@
 import { dataAccess } from '../data'
+import config from '../config'
 import AuditService from './auditService'
 import AssessmentService from './assessmentService'
 import FeatureFlagService from './featureFlagService'
+import DomainEventsService from './domainEventsService'
 
 export const services = () => {
   const {
@@ -12,6 +14,7 @@ export const services = () => {
     gotenbergClient,
     handoverApiClient,
     deliusApiClient,
+    mpopComponents,
     preferencesStore,
   } = dataAccess()
 
@@ -23,10 +26,12 @@ export const services = () => {
     arnsApiClient,
     gotenbergClient,
     handoverApiClient,
+    mpopComponents,
     preferencesStore,
     auditService: new AuditService(applicationInfo.applicationName),
     assessmentService: new AssessmentService(assessmentPlatformApiClient),
     featureFlagService: new FeatureFlagService(),
+    domainEventsService: new DomainEventsService(config.sns),
   }
 }
 

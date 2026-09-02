@@ -60,10 +60,10 @@ export class SessionTimeoutModal extends HTMLElement {
             We will delete any unsaved information if you do not continue in the next <strong class="moj-session-timeout-modal__countdown"></strong>. This is to protect your information.
           </p>
           <div class="moj-session-timeout-modal__actions">
-            <button type="button" class="govuk-button" data-action="continue">
+            <button type="button" class="govuk-button" data-ai-id="session-timeout-modal-continue-button" data-action="continue">
               Continue using sentence plan
             </button>
-            <a href="#" class="govuk-link moj-session-timeout-modal__delete-link" data-action="delete">
+            <a href="#" class="govuk-link moj-session-timeout-modal__delete-link" data-ai-id="session-timeout-modal-delete-link" data-action="delete">
               Delete unsaved information
             </a>
           </div>
