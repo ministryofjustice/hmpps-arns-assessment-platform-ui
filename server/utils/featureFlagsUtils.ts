@@ -17,6 +17,11 @@ export const BooleanFeatureFlags = {
     nunjucksKey: 'printAndShareEnabled',
     fallbackState: false,
   },
+  ENABLE_SUPERVISION_PACKAGE: {
+    fliptKey: 'sp-enable-supervision-package',
+    nunjucksKey: 'supervisionPackageEnabled',
+    fallbackState: false,
+  },
   ENABLE_MPOP_ASSESSMENT_INFO: {
     fliptKey: 'sp-enable-mpop-assessment-info',
     nunjucksKey: 'mpopAssessmentInfoEnabled',

@@ -21,26 +21,18 @@ import {
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 
 import { CaseData } from '../../constants/formVersion'
-import { CharacterLimit } from '../../constants/characterLimit'
 import { CommonOption } from '../../constants/commonOption'
 import {
-  characterCountField,
   checkboxField,
-  checkboxSummaryRow,
-  optionalDetails,
   question,
   QuestionFormat,
   questionTemplate,
   radioDetails,
   radioField,
-  requiredDetails,
   requiredValidationOf,
   revealedQuestion,
-  summaryRow,
   SummaryRow,
-  textSummaryRow,
-  yesNo,
-} from '../../constants/questionContent'
+} from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { SANGenerators } from '../../../../generators'
 import { contentFor, drugValueToText } from './locales'
@@ -48,6 +40,19 @@ import { Question } from './constants/question'
 import { Step } from './constants/step'
 import { Option } from './constants/option'
 import { drugsList, fieldCodeString } from './constants'
+import { Section } from '../../constants/section'
+import { CharacterLimit } from '../../../../constants/characterLimit'
+import {
+  characterCountField,
+  checkboxSummaryRow,
+  createSummaryRowActions,
+  optionalDetails,
+  requiredDetails,
+  summaryRow,
+  textSummaryRow,
+  yesNo,
+} from '../../constants/questionContent'
+import { isEditMode } from '../../guards'
 
 const anyDrugUsedInLastSix = Data('drugsUsedInLastSix').match(Condition.IsRequired())
 const anyDrugUsedMoreThanSix = Data('drugsUsedMoreThanSix').match(Condition.IsRequired())
@@ -100,9 +105,7 @@ export const drugLastUsed = questionTemplate({
       value: {
         text: SANGenerators.getTextFromListDefinition(lastUsedSummaryLabels, Answer(content.code)),
       },
-      actions: {
-        items: [{ href: Step.add_drugs.path, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(Step.add_drugs.path),
     }),
   },
 })
@@ -140,10 +143,8 @@ export const drugHowOftenUsed = questionTemplate({
       value: {
         text: SANGenerators.getTextFromListDefinition(content.options, Answer(content.code)),
       },
-      actions: {
-        items: [{ href: Step.drug_details.path, text: commonContentFor('change') }],
-      },
       visibleWhen: Answer(content.code).match(Condition.IsRequired()),
+      actions: createSummaryRowActions(Step.drug_details.path),
     }),
   },
 })
@@ -174,9 +175,7 @@ export const drugHowOftenUsedDetails = questionTemplate({
         text: Answer(content.code),
       },
       visibleWhen: Answer(content.code).match(Condition.IsRequired()),
-      actions: {
-        items: [{ href: Step.drug_details.path, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(Step.drug_details.path),
     }),
   },
 })
@@ -472,7 +471,7 @@ const receivingTreatment = question({
     field: radioField(),
     summaryRow: summaryRow({
       changeHref: Step.drug_details.path,
-      visibleWhen: Answer(Question.drugs_reasons_for_use).match(Condition.IsRequired()),
+      visibleWhen: and(isEditMode, Answer(Question.drugs_reasons_for_use).match(Condition.IsRequired())),
     }),
   },
 })
@@ -832,7 +831,20 @@ const riskOfReoffending = question({
   },
 })
 
+// `drugHowOftenUsed`/`drugHowOftenUsedDetails` are rendered per drug via
+// `.over()` against the runtime `drugsUsedInLastSix` collection rather than a
+// static option reveal, so `stableQuestionsOf` can't discover their instances
+// by walking reveals. Register one content entry per drug explicitly so they
+// still show up as stable questions (e.g. for FormConfig).
+const drugCollectionQuestions = Object.fromEntries(
+  drugsList.flatMap(drug => [
+    [drugHowOftenUsed.codeOf(drug.value), { content: drugHowOftenUsed.contentOf(drug.value) }],
+    [drugHowOftenUsedDetails.codeOf(drug.value), { content: drugHowOftenUsedDetails.contentOf(drug.value) }],
+  ]),
+)
+
 export const drugUseSection = {
+  code: Section.drug_use.code,
   questions: {
     drugUse,
     selectMisusedDrugs,
@@ -853,4 +865,5 @@ export const drugUseSection = {
     riskOfSeriousHarm,
     riskOfReoffending,
   },
+  collectionQuestions: drugCollectionQuestions,
 }

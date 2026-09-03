@@ -41,7 +41,7 @@ describe('loadAreaAssessmentInfo', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockTransformAssessmentData.mockReturnValue([])
-    mockResolveCriminogenicNeedsData.mockResolvedValue(null)
+    mockResolveCriminogenicNeedsData.mockResolvedValue({})
   })
 
   it('should load area assessment info for MPoP users even without handover criminogenic needs data', async () => {
@@ -62,9 +62,25 @@ describe('loadAreaAssessmentInfo', () => {
     expect(context.setData).toHaveBeenCalledWith('currentAreaAssessmentStatus', 'success')
   })
 
-  it('should set the error state for OASys users when handover criminogenic needs data is missing', async () => {
+  it('should set the unavailable state for OASys users with no CRN', async () => {
     mockCanAccessSanInfo.mockReturnValue(true)
     const getEntityAssessment = jest.fn()
+    const deps = createMockDeps(getEntityAssessment)
+    const context = createMockContext({
+      data: { assessmentUuid: 'assessment-uuid', currentAreaOfNeed: { slug: 'accommodation' } },
+      session: { sessionDetails: { accessType: 'OASYS' }, caseDetails: {} },
+    })
+
+    await loadAreaAssessmentInfo(deps)(context)
+
+    expect(getEntityAssessment).not.toHaveBeenCalled()
+    expect(context.setData).toHaveBeenCalledWith('currentAreaAssessmentStatus', 'unavailable')
+  })
+
+  it('should load area assessment info for OASys users with a CRN', async () => {
+    mockCanAccessSanInfo.mockReturnValue(true)
+    mockTransformAssessmentData.mockReturnValue([{ goalRoute: 'accommodation' }])
+    const getEntityAssessment = jest.fn().mockResolvedValue({ sanAssessmentData: {} })
     const deps = createMockDeps(getEntityAssessment)
     const context = createMockContext({
       data: { assessmentUuid: 'assessment-uuid', currentAreaOfNeed: { slug: 'accommodation' } },
@@ -73,11 +89,12 @@ describe('loadAreaAssessmentInfo', () => {
 
     await loadAreaAssessmentInfo(deps)(context)
 
-    expect(getEntityAssessment).not.toHaveBeenCalled()
-    expect(context.setData).toHaveBeenCalledWith('currentAreaAssessmentStatus', 'error')
+    expect(getEntityAssessment).toHaveBeenCalledWith('assessment-uuid')
+    expect(mockResolveCriminogenicNeedsData).toHaveBeenCalledWith(deps, context, 'X123456')
+    expect(context.setData).toHaveBeenCalledWith('currentAreaAssessmentStatus', 'success')
   })
 
-  it('should set the error state when resolving criminogenic needs fails', async () => {
+  it('should set the error state when resolving criminogenic needs fails for an MPoP user', async () => {
     mockCanAccessSanInfo.mockReturnValue(true)
     mockResolveCriminogenicNeedsData.mockRejectedValue(new Error('ARNS API 403'))
     const getEntityAssessment = jest.fn().mockResolvedValue({ sanAssessmentData: {} })
@@ -89,6 +106,37 @@ describe('loadAreaAssessmentInfo', () => {
 
     await loadAreaAssessmentInfo(deps)(context)
 
+    expect(context.setData).toHaveBeenCalledWith('currentAreaAssessmentStatus', 'error')
+  })
+
+  it('should set the error state when the ARNS call fails for an OASys user', async () => {
+    mockCanAccessSanInfo.mockReturnValue(true)
+    mockResolveCriminogenicNeedsData.mockRejectedValue(new Error('ARNS API 500'))
+    const getEntityAssessment = jest.fn().mockResolvedValue({ sanAssessmentData: {} })
+    const deps = createMockDeps(getEntityAssessment)
+    const context = createMockContext({
+      data: { assessmentUuid: 'assessment-uuid', currentAreaOfNeed: { slug: 'accommodation' } },
+      session: { sessionDetails: { accessType: 'OASYS' }, caseDetails: { crn: 'X123456' } },
+    })
+
+    await loadAreaAssessmentInfo(deps)(context)
+
+    expect(context.setData).toHaveBeenCalledWith('currentAreaAssessmentStatus', 'error')
+  })
+
+  it('should set the error state when the ARNS API returns no needs data', async () => {
+    mockCanAccessSanInfo.mockReturnValue(true)
+    mockResolveCriminogenicNeedsData.mockResolvedValue(null)
+    const getEntityAssessment = jest.fn().mockResolvedValue({ sanAssessmentData: {} })
+    const deps = createMockDeps(getEntityAssessment)
+    const context = createMockContext({
+      data: { assessmentUuid: 'assessment-uuid', currentAreaOfNeed: { slug: 'accommodation' } },
+      session: { sessionDetails: { accessType: 'OASYS' }, caseDetails: { crn: 'X123456' } },
+    })
+
+    await loadAreaAssessmentInfo(deps)(context)
+
+    expect(mockTransformAssessmentData).not.toHaveBeenCalled()
     expect(context.setData).toHaveBeenCalledWith('currentAreaAssessmentStatus', 'error')
   })
 

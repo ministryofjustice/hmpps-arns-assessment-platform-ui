@@ -1,10 +1,21 @@
 import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { personalRelationshipsCommunitySection } from '../../section'
 import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { commonContentFor } from '../../../../locales'
+import { questionsOf } from '../../../../steps/view-all-answers/sections'
+import { Section } from '../../../../constants/section'
+import { anyAnswered } from '../../../../steps/view-all-answers/fields'
 
-export const personalRelationshipsCommunitySummary = GovUKSummaryList({
+export const questions = questionsOf({
+  section: Section.personal_relationships_and_community,
+  config: personalRelationshipsCommunitySection,
+})
+
+export const summary = GovUKSummaryList({
   rows: [
     personalRelationshipsCommunitySection.questions.childrenDetails.displayModes.summaryRow,
     personalRelationshipsCommunitySection.questions.importantPeople.displayModes.summaryRow,
@@ -20,30 +31,40 @@ export const personalRelationshipsCommunitySummary = GovUKSummaryList({
   ],
 })
 
-export const personalRelationshipsCommunitySummaryTab = GovUKTabs({
-  id: 'summaries',
-  items: [
-    {
-      id: 'summary',
-      label: commonContentFor('summary'),
-      panel: {
-        blocks: [
-          personalRelationshipsCommunitySummary,
-          goToPractitionerAnalysisButton(Step.personal_relationships_community_summary.path),
-        ],
-      },
-    },
-    {
-      id: 'practitioner-analysis',
-      label: commonContentFor('practitioner_analysis'),
-      panel: {
-        blocks: [
-          personalRelationshipsCommunitySection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
-          personalRelationshipsCommunitySection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
-          personalRelationshipsCommunitySection.practitionerAnalysis.riskOfReoffending.displayModes.field,
-          markAsCompleteButton,
-        ],
-      },
-    },
+const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.personal_relationships_community_summary.path)]
+
+export const personalRelationshipsCommunitySummaryTab = HtmlBlock({
+  content: [
+    MOJBanner({
+      bannerType: 'information',
+      text: commonContentFor('section_has_not_been_started'),
+      visibleWhen: not(anyAnswered(questions)),
+    }),
+    GovUKTabs({
+      id: 'summaries',
+      items: [
+        {
+          id: 'summary',
+          label: commonContentFor('summary'),
+          panel: {
+            blocks: summaryPanel,
+          },
+        },
+        {
+          id: 'practitioner-analysis',
+          label: commonContentFor('practitioner_analysis'),
+          panel: {
+            blocks: [
+              personalRelationshipsCommunitySection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes
+                .field,
+              personalRelationshipsCommunitySection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
+              personalRelationshipsCommunitySection.practitionerAnalysis.riskOfReoffending.displayModes.field,
+              markAsCompleteButton,
+            ],
+          },
+        },
+      ],
+      visibleWhen: anyAnswered(questions),
+    }),
   ],
 })

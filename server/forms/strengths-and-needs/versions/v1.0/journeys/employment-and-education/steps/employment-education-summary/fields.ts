@@ -1,10 +1,21 @@
 import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { employmentEducationSection } from '../../section'
+import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
 import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
-import { Step } from '../../constants/step'
 import { commonContentFor } from '../../../../locales'
+import { questionsOf } from '../../../../steps/view-all-answers/sections'
+import { Section } from '../../../../constants/section'
+import { anyAnswered } from '../../../../steps/view-all-answers/fields'
+import { Step } from '../../constants/step'
+import { employmentEducationSection } from '../../section'
 
-export const employmentStatusSummary = GovUKSummaryList({
+export const questions = questionsOf({
+  section: Section.employment_and_education,
+  config: employmentEducationSection,
+})
+
+export const summary = GovUKSummaryList({
   rows: [
     employmentEducationSection.questions.currentEmploymentStatus.displayModes.summaryRow,
     employmentEducationSection.questions.employmentSector.displayModes.summaryRow,
@@ -20,27 +31,39 @@ export const employmentStatusSummary = GovUKSummaryList({
   ],
 })
 
-export const employmentStatusSummaryTab = GovUKTabs({
-  id: 'summaries',
-  items: [
-    {
-      id: 'summary',
-      label: commonContentFor('summary'),
-      panel: {
-        blocks: [employmentStatusSummary, goToPractitionerAnalysisButton(Step.employment_education_summary.path)],
-      },
-    },
-    {
-      id: 'practitioner-analysis',
-      label: commonContentFor('practitioner_analysis'),
-      panel: {
-        blocks: [
-          employmentEducationSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
-          employmentEducationSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
-          employmentEducationSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
-          markAsCompleteButton,
-        ],
-      },
-    },
+const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.employment_education_summary.path)]
+
+export const summaryTab = HtmlBlock({
+  content: [
+    MOJBanner({
+      bannerType: 'information',
+      text: commonContentFor('section_has_not_been_started'),
+      visibleWhen: not(anyAnswered(questions)),
+    }),
+    GovUKTabs({
+      id: 'summaries',
+      items: [
+        {
+          id: 'summary',
+          label: commonContentFor('summary'),
+          panel: {
+            blocks: summaryPanel,
+          },
+        },
+        {
+          id: 'practitioner-analysis',
+          label: commonContentFor('practitioner_analysis'),
+          panel: {
+            blocks: [
+              employmentEducationSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
+              employmentEducationSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
+              employmentEducationSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
+              markAsCompleteButton,
+            ],
+          },
+        },
+      ],
+      visibleWhen: anyAnswered(questions),
+    }),
   ],
 })

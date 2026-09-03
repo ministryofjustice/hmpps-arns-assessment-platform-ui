@@ -57,8 +57,21 @@ export const hasAchievedGoal = GovUKRadioInput({
     },
   },
   items: [
-    { value: 'yes', text: 'Yes, mark it as achieved', block: howAchievingGoalHelpedInput },
-    { value: 'no', text: Format("No, go to %1's plan", CaseData.Forename) },
+    {
+      value: 'yes',
+      text: 'Yes, mark it as achieved',
+      block: howAchievingGoalHelpedInput,
+      attributes: {
+        'data-ai-id': 'has-achieved-goal-yes-radio',
+      },
+    },
+    {
+      value: 'no',
+      text: Format("No, go to %1's plan", CaseData.Forename),
+      attributes: {
+        'data-ai-id': 'has-achieved-goal-no-radio',
+      },
+    },
   ],
   validWhen: [
     validation({

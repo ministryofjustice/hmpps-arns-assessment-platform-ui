@@ -2,37 +2,40 @@ import { and, Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 
 import { CaseData } from '../../constants/formVersion'
-import { CharacterLimit } from '../../constants/characterLimit'
 import { CommonOption } from '../../constants/commonOption'
 import {
-  characterCountField,
   checkboxField,
-  itemisedSummaryRow,
-  optionalDetails,
   question,
   QuestionFormat,
   radioDetails,
   radioField,
-  requiredDetails,
   revealedQuestion,
   SummaryRow,
-  textSummaryRow,
-  yesNo,
-} from '../../constants/questionContent'
+
+} from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { getDisplayTextForItems } from '../../../../i18n'
 import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { Step } from './constants/step'
 import { Option } from './constants/option'
+import { Section } from '../../constants/section'
+import { CharacterLimit } from '../../../../constants/characterLimit'
+import {
+  characterCountField,
+  createSummaryRowActions,
+  itemisedSummaryRow,
+  optionalDetails,
+  requiredDetails,
+  textSummaryRow,
+  yesNo,
+} from '../../constants/questionContent'
 
 // The history and experience questions only apply once we know the person has
 // been employed before (or their employment status implies it).
 const hasBeenEmployed = or(
   Answer(Question.employment_status).match(Condition.Equals(Option.employed)),
-  Answer(Question.has_been_employed_not_actively_seeking).match(Condition.Equals(CommonOption.yes)),
-  Answer(Question.has_been_employed_actively_seeking).match(Condition.Equals(CommonOption.yes)),
-  Answer(Question.has_been_employed_unavailable_for_work).match(Condition.Equals(CommonOption.yes)),
+  Answer(Question.has_been_employed).match(Condition.Equals(CommonOption.yes)),
 )
 
 const hasBeenEmployedOrRetired = or(
@@ -64,15 +67,11 @@ const typeOfEmploymentRevealed = revealedQuestion({
   displayModes: { field: radioDetails({ legendClasses: 'govuk-visually-hidden' }) },
 })
 
-/*
-  TODO: this question shares a code in private beta, however looks like we're limited in forge,
-        we'll need to figure out if and how we support this, if not we need to update the migration
-        to handle this change
-*/
-const createPreviousEmploymentRevealed = (code: string) =>
+const createHasBeenEmployedRevealed = (variant: string) =>
   revealedQuestion({
     content: {
-      code,
+      code: Question.has_been_employed,
+      idPrefix: `${Question.has_been_employed}_${variant.toLowerCase()}`,
       format: QuestionFormat.RADIO,
       text: contentFor('question.has_been_employed.text'),
       options: [
@@ -100,17 +99,17 @@ const currentEmploymentStatus = question({
       {
         value: Option.currently_unavailable_for_work,
         text: contentFor('question.employment_status.option.CURRENTLY_UNAVAILABLE_FOR_WORK'),
-        reveals: createPreviousEmploymentRevealed(Question.has_been_employed_unavailable_for_work),
+        reveals: createHasBeenEmployedRevealed(Option.currently_unavailable_for_work),
       },
       {
         value: Option.unemployed_looking_for_work,
         text: contentFor('question.employment_status.option.UNEMPLOYED_LOOKING_FOR_WORK'),
-        reveals: createPreviousEmploymentRevealed(Question.has_been_employed_actively_seeking),
+        reveals: createHasBeenEmployedRevealed(Option.unemployed_looking_for_work),
       },
       {
         value: Option.unemployed_not_looking_for_work,
         text: contentFor('question.employment_status.option.UNEMPLOYED_NOT_LOOKING_FOR_WORK'),
-        reveals: createPreviousEmploymentRevealed(Question.has_been_employed_not_actively_seeking),
+        reveals: createHasBeenEmployedRevealed(Option.unemployed_not_looking_for_work),
       },
     ],
     validationMessage: commonContentFor('select_one_option'),
@@ -129,9 +128,7 @@ const currentEmploymentStatus = question({
           }),
         ],
       },
-      actions: {
-        items: [{ href: Step.current_employment.path, text: commonContentFor('change') }],
-      },
+      actions: createSummaryRowActions(Step.current_employment.path),
     }),
   },
 })
@@ -674,6 +671,7 @@ const riskOfReoffending = question({
 })
 
 export const employmentEducationSection = {
+  code: Section.employment_and_education.code,
   questions: {
     currentEmploymentStatus,
     employmentSector,

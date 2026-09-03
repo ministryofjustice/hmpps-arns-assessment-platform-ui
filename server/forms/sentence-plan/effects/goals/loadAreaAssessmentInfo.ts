@@ -14,7 +14,6 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
   const assessmentUuid = context.getData('assessmentUuid')
   const currentAreaOfNeed = context.getData('currentAreaOfNeed')
   const session = context.getSession()
-  const handoverCriminogenicNeeds = session.handoverContext?.criminogenicNeedsData
   const crn = session.caseDetails?.crn
   const isMpop = session.sessionDetails?.accessType === 'HMPPS_AUTH'
 
@@ -33,13 +32,11 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
     return
   }
 
-  if (!isMpop && !handoverCriminogenicNeeds) {
-    logger.error(
-      { assessmentUuid, crn, areaOfNeed: currentAreaOfNeed.slug },
-      'Cannot load area assessment info: missing handover criminogenic needs data',
-    )
+  // An OASys case with no CRN can't be looked up in ARNS; the eligibility guard already hides
+  // the expander, so this is just a backstop.
+  if (!isMpop && !crn) {
     context.setData('currentAreaAssessment', null)
-    context.setData('currentAreaAssessmentStatus', 'error')
+    context.setData('currentAreaAssessmentStatus', 'unavailable')
     return
   }
 
@@ -48,6 +45,16 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
     const sanAssessmentData = entityAssessment.sanAssessmentData
 
     const criminogenicNeedsData = await resolveCriminogenicNeedsData(deps, context, crn)
+    if (!criminogenicNeedsData) {
+      logger.error(
+        { assessmentUuid, crn, areaOfNeed: currentAreaOfNeed.slug },
+        'Cannot load area assessment info: ARNS API returned no needs data',
+      )
+      context.setData('currentAreaAssessment', null)
+      context.setData('currentAreaAssessmentStatus', 'error')
+      return
+    }
+
     const areas = transformAssessmentData(sanAssessmentData, criminogenicNeedsData)
 
     // goalRoute now matches slug directly in the unified areasOfNeed config
