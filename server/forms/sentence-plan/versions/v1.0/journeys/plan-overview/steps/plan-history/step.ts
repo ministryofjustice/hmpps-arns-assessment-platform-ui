@@ -1,7 +1,12 @@
-import { access, step } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, step, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { subtitleText, agreementHistory } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
-import { isOasysAccess, redirectIfNotPostAgreement, redirectToPrivacyUnlessAccepted } from '../../../../guards'
+import {
+  isOasysAccess,
+  isReadOnlyAccess,
+  redirectIfNotPostAgreement,
+  redirectToPrivacyUnlessAccepted,
+} from '../../../../guards'
 
 export const planHistoryStep = step({
   path: '/plan-history',
@@ -11,6 +16,7 @@ export const planHistoryStep = step({
     locals: {
       headerPageHeading: 'Plan history',
       buttons: {
+        showCreateGoalButton: not(isReadOnlyAccess),
         showReturnToOasysButton: isOasysAccess,
       },
     },
