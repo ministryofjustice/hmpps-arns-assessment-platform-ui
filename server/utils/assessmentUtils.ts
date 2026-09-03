@@ -100,15 +100,23 @@ function processAssessmentArea(
   const sectionCompleteValue = getAssessmentValue(sanAssessmentData, `${assessmentKey}_section_complete`)
   const isAssessmentSectionComplete = sectionCompleteValue === 'YES'
 
-  // Linked indicators come from the needs data (handover for OASys, ARNS for MPoP).
-  const linkedToHarm = toLinkedIndicator(crimNeedsArea?.linkedToHarm)
-  const linkedToReoffending = toLinkedIndicator(crimNeedsArea?.linkedToReoffending)
-  // ARNS (MPoP) returns needs data without a strengths indicator, so when needs data is present but
-  // strengths is absent, fall back to the coordinator's SAN answer (which carries it for both cohorts).
-  // With no needs data at all, indicators stay null as before.
+  // Linked indicators come from the ARNS needs data, which covers risk-of-harm / risk-of-reoffending
+  // for the scored sections only (not the unscored finance / health & wellbeing) and never carries a
+  // strengths indicator. When the needs data is present but an indicator is absent, fall back to the
+  // coordinator's SAN practitioner-analysis answer. With no needs data at all, indicators stay null.
+  const harmFromCoordinator = toLinkedIndicatorFromSanValue(
+    getAssessmentValue(sanAssessmentData, `${assessmentKey}_practitioner_analysis_risk_of_serious_harm`),
+  )
+  const reoffendingFromCoordinator = toLinkedIndicatorFromSanValue(
+    getAssessmentValue(sanAssessmentData, `${assessmentKey}_practitioner_analysis_risk_of_reoffending`),
+  )
   const strengthsFromCoordinator = toLinkedIndicatorFromSanValue(
     getAssessmentValue(sanAssessmentData, `${assessmentKey}_practitioner_analysis_strengths_or_protective_factors`),
   )
+  const linkedToHarm = crimNeedsArea ? (toLinkedIndicator(crimNeedsArea.linkedToHarm) ?? harmFromCoordinator) : null
+  const linkedToReoffending = crimNeedsArea
+    ? (toLinkedIndicator(crimNeedsArea.linkedToReoffending) ?? reoffendingFromCoordinator)
+    : null
   const linkedToStrengthsOrProtectiveFactors = crimNeedsArea
     ? (toLinkedIndicator(crimNeedsArea.linkedToStrengthsOrProtectiveFactors) ?? strengthsFromCoordinator)
     : null

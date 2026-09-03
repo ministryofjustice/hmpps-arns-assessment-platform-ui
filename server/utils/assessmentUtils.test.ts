@@ -138,6 +138,47 @@ describe('assessmentUtils', () => {
       expect(accommodationArea.strengthsOrProtectiveFactorsDetails).toBe('Has stable housing history')
     })
 
+    it('should source harm/reoffending from the coordinator for areas the ARNS needs data omits (MPoP finance/health)', () => {
+      const sanAssessmentData = createSanAssessmentData({
+        finance_section_complete: { value: 'YES' },
+        finance_practitioner_analysis_risk_of_serious_harm: { value: 'YES' },
+        finance_practitioner_analysis_risk_of_reoffending: { value: 'NO' },
+      })
+      const crimNeeds = createCriminogenicNeedsData({
+        finance: {
+          linkedToHarm: null,
+          linkedToReoffending: null,
+          linkedToStrengthsOrProtectiveFactors: null,
+          score: null,
+        },
+      })
+
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const financeArea = result.find(a => a.goalRoute === 'finances')
+
+      expect(financeArea.linkedToHarm).toBe('YES')
+      expect(financeArea.linkedToReoffending).toBe('NO')
+    })
+
+    it('should keep the ARNS harm/reoffending value for scored areas and not override it from the coordinator', () => {
+      // Coordinator says YES for accommodation harm, but the needs data says NO - the needs data wins.
+      const sanAssessmentData = createSanAssessmentData()
+      const crimNeeds = createCriminogenicNeedsData({
+        accommodation: {
+          linkedToHarm: false,
+          linkedToReoffending: false,
+          linkedToStrengthsOrProtectiveFactors: null,
+          score: 4,
+        },
+      })
+
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
+
+      expect(accommodationArea.linkedToHarm).toBe('NO')
+      expect(accommodationArea.linkedToReoffending).toBe('NO')
+    })
+
     it('should handle incomplete sections', () => {
       const sanAssessmentData = createSanAssessmentData({
         accommodation_section_complete: { value: 'NO' },
