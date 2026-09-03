@@ -3,7 +3,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
 
 test.describe('Update Steps', () => {
   test('save action', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -24,7 +24,7 @@ test.describe('Update Steps', () => {
     await updatePage.setStepStatusByIndex(0, 'IN_PROGRESS')
     await updatePage.clickSaveGoalAndSteps()
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_STEP_PROGRESS, {
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_STEP_PROGRESS, {
       additionalFilter: msg => msg.details.action === 'save',
     })
     expectAuditEvent(event, goalUuid)
@@ -48,7 +48,7 @@ test.describe('Update Steps', () => {
     const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
     await updatePage.clickMarkAsAchieved()
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_STEP_PROGRESS, {
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_STEP_PROGRESS, {
       additionalFilter: msg => msg.details.action === 'mark-achieved',
     })
     expectAuditEvent(event, goalUuid)

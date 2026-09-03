@@ -12,7 +12,7 @@ import {
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageLayout } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 import { hasPostAgreementStatus, redirectIfGoalNotFound } from '../../../guards'
 
@@ -53,7 +53,7 @@ export const changeGoalStep = step({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CHANGE_GOAL),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_CHANGE_GOAL),
       ],
     }),
     redirectIfGoalNotFound('../../plan/overview'),
@@ -66,7 +66,7 @@ export const changeGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.updateActiveGoal(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL, {
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_GOAL, {
             planStatus: when(hasPostAgreementStatus)
               .then('POST_AGREE')
               .else('PRE_AGREE'),
@@ -120,7 +120,7 @@ export const changeGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.updateActiveGoal(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL, {
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_GOAL, {
             planStatus: when(hasPostAgreementStatus)
               .then('POST_AGREE')
               .else('PRE_AGREE'),

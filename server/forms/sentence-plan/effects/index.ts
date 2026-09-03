@@ -51,7 +51,8 @@ export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
 export { Nav } from './navigation'
 export type { NavigationReferrer } from './navigation'
-export { AuditEvent } from '../../../services/auditService'
+export { CommonAuditEvent } from '../../shared'
+export { SentencePlanAuditEvent } from '../auditEvents'
 
 /**
  * Sentence Plan Effects

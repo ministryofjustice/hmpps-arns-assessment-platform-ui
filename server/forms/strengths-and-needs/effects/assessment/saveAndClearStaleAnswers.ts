@@ -1,6 +1,8 @@
 import { InternalServerError } from 'http-errors'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { buildAnswerDelta } from './answerDelta'
+import { buildAnswerDelta, buildChangedAnswerCodes } from './answerDelta'
+import { sendFormAuditEvent } from '../../../shared'
+import { SAN_AUDIT_FORM, SanAuditEvent } from '../../auditEvents'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 
 export const saveAndClearStaleAnswers =
@@ -22,7 +24,8 @@ export const saveAndClearStaleAnswers =
       context.clearAnswer(field)
     }
 
-    const delta = buildAnswerDelta(context.getAllAnswerHistories())
+    const histories = context.getAllAnswerHistories()
+    const delta = buildAnswerDelta(histories)
 
     if (!Object.keys(delta.added).length && !delta.removed.length) {
       return
@@ -36,4 +39,13 @@ export const saveAndClearStaleAnswers =
       added: wrapAll(delta.added),
       removed: delta.removed,
     })
+
+    const changedFields = [...new Set([...buildChangedAnswerCodes(histories), ...fieldsToClear])]
+
+    if (changedFields.length) {
+      /* Field codes only, answers do not belong in the audit log. */
+      await sendFormAuditEvent(deps.auditService, context, SAN_AUDIT_FORM, SanAuditEvent.EDIT_ANSWERS, {
+        changedFields,
+      })
+    }
   }

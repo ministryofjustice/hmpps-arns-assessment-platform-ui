@@ -8,6 +8,7 @@ import { CommonOption } from '../../../../constants/commonOption'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { sectionPageTitle } from '../../../../locales'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 const saveButton = GovUKButton({
   text: 'Save and continue',
@@ -25,6 +26,7 @@ export const drugUseStep = step({
     },
   },
   blocks: [drugUseSection.questions.drugUse.displayModes.field, saveButton],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_use)],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -33,6 +35,7 @@ export const drugUseStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use),
         ],
         next: [
           redirect({

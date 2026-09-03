@@ -3,7 +3,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import { currentGoals, mixedGoals, removedGoals } from '../../../builders/sentencePlanFactories'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import { navigateToSentencePlan, sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, achievedGoals, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, achievedGoals, expectAuditEvent } from './helpers'
 
 test.describe('View Plan Overview page', () => {
   test('viewing current goals tab', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -14,7 +14,7 @@ test.describe('View Plan Overview page', () => {
 
     await navigateToSentencePlan(page, handoverLink)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_OVERVIEW, {
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW, {
       additionalFilter: msg => msg.details.tab === 'current',
     })
     expectAuditEvent(event)
@@ -31,7 +31,7 @@ test.describe('View Plan Overview page', () => {
     await planOverviewPage.clickFutureGoalsTab()
     await expect(page).toHaveURL(/goalStatusTab=future/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_OVERVIEW, {
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW, {
       additionalFilter: msg => msg.details.tab === 'future',
     })
     expectAuditEvent(event)
@@ -47,7 +47,7 @@ test.describe('View Plan Overview page', () => {
     await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=achieved`)
     await PlanOverviewPage.verifyOnPage(page)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_OVERVIEW, {
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW, {
       additionalFilter: msg => msg.details.tab === 'achieved',
     })
     expectAuditEvent(event)
@@ -63,7 +63,7 @@ test.describe('View Plan Overview page', () => {
     await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=removed`)
     await PlanOverviewPage.verifyOnPage(page)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_OVERVIEW, {
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW, {
       additionalFilter: msg => msg.details.tab === 'removed',
     })
     expectAuditEvent(event)

@@ -5,6 +5,7 @@ import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { sectionPageTitle } from '../../../../locales'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 export const financeStep = step({
   path: `/${Step.finance.path}`,
@@ -22,6 +23,7 @@ export const financeStep = step({
   view: {
     template: 'strengths-and-needs/views/san-step',
   },
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.finance, Step.finance)],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -30,6 +32,7 @@ export const financeStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.finance, SectionComplete.no),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.finance, Step.finance),
         ],
         next: [
           redirect({

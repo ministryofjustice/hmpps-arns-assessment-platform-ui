@@ -6,7 +6,7 @@ import { drugUseJourney } from './journeys/drug-use'
 import { alcoholUseJourney } from './journeys/alcohol-use'
 import { StrengthsAndNeedsEffects } from '../../effects'
 import { Section } from './constants/section'
-import { basePath, formVersion } from './constants/formVersion'
+import { basePath, formRootPath, formVersion } from './constants/formVersion'
 import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
@@ -62,7 +62,7 @@ export const strengthsAndNeedsV1Journey = journey({
         Data('privacyAccepted').not.match(Condition.Equals(true)),
         Data('sessionDetails.accessMode').not.match(Condition.Equals('READ_ONLY')),
       ),
-      next: [redirect({ goto: '/strengths-and-needs/privacy' })],
+      next: [redirect({ goto: `${formRootPath}/privacy` })],
     }),
   ],
   children: [

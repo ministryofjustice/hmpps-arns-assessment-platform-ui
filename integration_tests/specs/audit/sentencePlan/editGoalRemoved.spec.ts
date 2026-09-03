@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import ConfirmRemoveGoalPage from '../../../pages/sentencePlan/confirmRemoveGoalPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
 
 test.describe('Remove a goal', () => {
   test('confirming goal removal', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -24,7 +24,7 @@ test.describe('Remove a goal', () => {
     await confirmPage.clickConfirm()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_GOAL_REMOVED)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_GOAL_REMOVED)
     expectAuditEvent(event, goalUuid)
   })
 })

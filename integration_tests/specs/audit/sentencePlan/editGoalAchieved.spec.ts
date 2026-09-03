@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import ConfirmAchievedGoalPage from '../../../pages/sentencePlan/confirmAchievedGoalPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
 
 test.describe('Mark Goal as achieved', () => {
   test('confirming goal achieved', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -23,7 +23,7 @@ test.describe('Mark Goal as achieved', () => {
     await confirmPage.clickConfirm()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_GOAL_ACHIEVED)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_GOAL_ACHIEVED)
     expectAuditEvent(event, goalUuid)
   })
 })
