@@ -6,7 +6,6 @@ import {
   or,
   PredicateExpr,
   Self,
-  Transformer,
   validation,
   ValidationExpr,
   when,
@@ -268,7 +267,7 @@ export const dateSummaryRow =
       key: { html: content.text },
       visibleWhen: placement.visibleWhen,
       value: {
-        blocks: [GovUKBody({ text: Answer(content.code).pipe(Transformer.String.FormatDate()) })],
+        blocks: [GovUKBody({ text: SANGenerators.getFormatterDateFromIso(Answer(content.code)) })],
       },
       actions: createSummaryRowActions(placement.changeHref),
     })
@@ -784,7 +783,12 @@ export const stableQuestionsOf = (section: SectionDefinition): QuestionContent[]
   [...Object.values(section.questions)].flatMap(field => withRevealedQuestions(field.content))
 
 export const itemisedSummaryRow =
-  (placement: { changePath: string; visibleWhen?: PredicateExpr; changeVisuallyHiddenText?: boolean }) =>
+  (placement: {
+    changePath: string
+    visibleWhen?: PredicateExpr
+    changeVisuallyHiddenText?: boolean
+    hideRevealedQuestions?: boolean
+  }) =>
   (content: OptionedQuestionContent): SummaryRow =>
     definedPropsOf({
       key: { text: content.text },
@@ -792,7 +796,7 @@ export const itemisedSummaryRow =
       value: {
         blocks: [
           ...getDisplayTextForItems(content.code, summaryItemsOf(content.options)),
-          ...revealedAnswerBlocksOf(content),
+          ...(placement.hideRevealedQuestions ? [] : revealedAnswerBlocksOf(content)),
         ],
       },
       actions: when(isEditMode)
