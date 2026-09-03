@@ -8,15 +8,6 @@ import { offencesSinceSupervisionFields } from './fields'
 export const offencesSinceSupervisionStep = step({
   path: `/${Step.offences_since_community_date.path}`,
   title: stepTitle(Step.offences_since_community_date),
-  // title: Format(
-  //   'Has %1 committed any offences since %2?',
-  //   CaseData.Forename,
-  //   Conditional({
-  //     when: Answer('date_of_current_supervision').match(Condition.Date.IsValid()),
-  //     then: Answer('date_of_current_supervision').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
-  //     else: 'the date of current supervision',
-  //   }),
-  // ),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],

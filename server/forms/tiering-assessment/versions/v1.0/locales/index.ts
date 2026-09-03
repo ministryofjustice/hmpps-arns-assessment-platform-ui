@@ -11,6 +11,6 @@ export const commonContentFor = contentFrom<CommonLocale>(locales)
 export type StepDefinition = (typeof Step)[keyof typeof Step]
 
 /**
- * Page titles derived from the `pageTitle` entry.
+ * Step titles derived from the `stepTitle` entry.
  */
 export const stepTitle = (step: StepDefinition) => commonContentFor(`stepTitle.${step.code}`)
