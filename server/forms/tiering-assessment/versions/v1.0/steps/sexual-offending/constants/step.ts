@@ -1,8 +1,4 @@
-export const Step = {
-  sexual_offending: {
-    code: 'sexual_offending',
-    path: '/sexual-offending',
-  },
+export const Field = {
   current_offence_sexually_motivated: {
     code: 'current_offence_sexually_motivated',
     path: 'current_offence_sexually_motivated',

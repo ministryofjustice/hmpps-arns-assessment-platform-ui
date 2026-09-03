@@ -15,7 +15,7 @@ import {
 import { Question } from './constants/question'
 import { CommonOption } from '../../constants/commonOption'
 import { commonContentFor } from '../../locales'
-import { Step } from './constants/step'
+import { Field } from './constants/step'
 import { Section } from '../../constants/section'
 import { SexualOffendingLocale } from './locales/en-gb'
 import { ContentFormatter } from '../../../../generators/htmlContentFormatters'
@@ -50,7 +50,7 @@ const currentOffenceSexualRadioQuestion = question({
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--s', inputClasses: 'govuk-radios--inline' }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.current_offence_sexually_motivated.path }),
+    summaryRow: itemisedSummaryRow({ changePath: Field.current_offence_sexually_motivated.path }),
   },
 })
 
@@ -114,7 +114,7 @@ const contactSanctionsQuestion = question({
       ],
     }),
     summaryRow: textSummaryRow({
-      changeHref: Step.number_of_contact_sexual_sanctions.path,
+      changeHref: Field.number_of_contact_sexual_sanctions.path,
     }),
   },
 })
@@ -170,7 +170,7 @@ const contactChildSanctionsQuestion = question({
       ],
     }),
     summaryRow: textSummaryRow({
-      changeHref: Step.number_of_contact_child_sexual_sanctions.path,
+      changeHref: Field.number_of_contact_child_sexual_sanctions.path,
     }),
   },
 })
@@ -221,7 +221,7 @@ const victimStrangerQuestion = question({
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--s', inputClasses: 'govuk-radios--inline' }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.victim_stranger.path }),
+    summaryRow: itemisedSummaryRow({ changePath: Field.victim_stranger.path }),
   },
 })
 
@@ -279,7 +279,7 @@ const indecentImagesOfChildrenQuestion = question({
       ],
     }),
     summaryRow: textSummaryRow({
-      changeHref: Step.indecent_child_images.path,
+      changeHref: Field.indecent_child_images.path,
     }),
   },
 })
@@ -335,7 +335,7 @@ const nonContactQuestion = question({
       ],
     }),
     summaryRow: textSummaryRow({
-      changeHref: Step.non_contact.path,
+      changeHref: Field.non_contact.path,
     }),
   },
 })

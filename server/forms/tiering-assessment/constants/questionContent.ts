@@ -24,7 +24,7 @@ import { SANGenerators } from '../generators'
 import { commonContentFor } from '../versions/v1.0/locales'
 import { checkYourAnswersQuery } from '../versions/v1.0/common'
 import { StrengthsAndNeedsTransformers } from '../transformers/transformers'
-import { isEditMode } from '../versions/v1.0/guards'
+import { isEditMode } from '../guards'
 
 /**
  * Content-first question authoring.
@@ -300,6 +300,23 @@ export const dateField =
           isPageHeading: content.isPageHeading ?? false,
         },
       },
+      formatters: [StrengthsAndNeedsTransformers.ToISO()],
+      validWhen: placement.customValidations,
+    })
+
+export const revealedDateField =
+  (placement: FieldPlacement & { legendClasses?: ResolvableString; customValidations?: ValidationExpr[] } = {}) =>
+  (content: QuestionContent, parent: ParentOption) =>
+    GovUKDateInputFull({
+      code: content.code,
+      fieldset: {
+        legend: {
+          text: content.text,
+          classes: placement.legendClasses ?? 'govuk-fieldset__legend--m',
+          isPageHeading: content.isPageHeading ?? false,
+        },
+      },
+      dependentWhen: parent?.selectedWhen,
       formatters: [StrengthsAndNeedsTransformers.ToISO()],
       validWhen: placement.customValidations,
     })

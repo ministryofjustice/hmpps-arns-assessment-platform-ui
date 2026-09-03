@@ -6,8 +6,8 @@ import { Step } from '../../constants/page'
 import { offencesSinceSupervisionFields } from './fields'
 
 export const offencesSinceSupervisionStep = step({
-  path: `/${Step.offences_since_supervision.path}`,
-  title: sectionPageTitle(Step.offences_since_supervision),
+  path: `/${Step.offences_since_community_date.path}`,
+  title: sectionPageTitle(Step.offences_since_community_date),
   // title: Format(
   //   'Has %1 committed any offences since %2?',
   //   CaseData.Forename,

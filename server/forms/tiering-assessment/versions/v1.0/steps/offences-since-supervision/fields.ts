@@ -9,17 +9,16 @@ import {
 import { contentFor } from './locales'
 import { commonContentFor } from '../../locales'
 import {
-  dateField,
   itemisedSummaryRow,
   question,
   QuestionFormat,
   radioField,
+  revealedDateField,
   revealedQuestion,
 } from '../../../../constants/questionContent'
 import { Question } from './constants/question'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 import { CommonOption } from '../../constants/commonOption'
-import { Field } from './constants/field'
 import { Step } from '../../constants/page'
 
 // const mostRecentOffenceDateField = GovUKDateInputFull({
@@ -47,19 +46,11 @@ const mostRecentOffenceDateRevealedQuestion = revealedQuestion({
   content: {
     code: Question.most_recent_offence_date,
     format: QuestionFormat.DATE,
-    text: contentFor(
-      'question.most_recent_offence_date.text',
-      CaseData.Forename,
-      Conditional({
-        when: Answer('date_of_current_supervision').match(Condition.Date.IsValid()),
-        then: Answer('date_of_current_supervision').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
-        else: 'the date of current supervision',
-      }),
-    ),
+    text: contentFor('question.most_recent_offence_date.text', CaseData.ForenamePossessive),
     validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
   displayModes: {
-    field: dateField({
+    field: revealedDateField({
       customValidations: [
         validation({
           condition: Self().match(Condition.Date.IsValid()),
@@ -74,7 +65,15 @@ export const offenceHistoryQuestion = question({
   content: {
     code: Question.has_committed_offence_since_supervision_date,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.has_committed_offence_since_supervision_date.text'),
+    text: contentFor(
+      'question.has_committed_offence_since_supervision_date.text',
+      CaseData.Forename,
+      Conditional({
+        when: Answer('date_of_current_supervision').match(Condition.Date.IsValid()),
+        then: Answer('date_of_current_supervision').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+        else: 'the date of current supervision',
+      }),
+    ),
     validationMessage: commonContentFor('validation.this_is_a_required_field'),
     options: [
       {
@@ -90,7 +89,7 @@ export const offenceHistoryQuestion = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offences_since_supervision.path }),
+    summaryRow: itemisedSummaryRow({ changePath: Step.offences_since_community_date.path }),
   },
 })
 

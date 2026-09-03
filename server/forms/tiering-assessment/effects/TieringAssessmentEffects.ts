@@ -51,8 +51,7 @@ export const TieringAssessmentEffectsImplementations = defineEffectFunctions<
   LoadAssessmentData: (deps: TieringAssessmentEffectsDeps) => async (context: TieringAssessmentEffectContext) => {
     const session = context.getSession()
     const assessmentUuid = session.assessmentUuid
-    console.log('----------------------', session)
-    console.log('---------DATA-------------', context.getAllData())
+
     if (assessmentUuid != null) {
       const assessment = await deps.api.executeQuery({
         type: 'AssessmentVersionQuery',

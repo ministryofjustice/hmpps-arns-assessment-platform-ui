@@ -12,8 +12,9 @@ export const english = {
   pageTitle: {
     [Step.accommodation.code]: 'Accommodation',
     [Step.current_offence_and_offending_history.code]: 'Current offence and offending history',
+    [Step.sexual_offending.code]: 'Sexual offending',
     [Step.date_of_current_supervision.code]: 'Date of current supervision',
-    [Step.offences_since_supervision.code]: 'Something something',
+    [Step.offences_since_community_date.code]: 'Offences since community date',
     [Step.check_your_answers.code]: 'Check your answers',
   },
   validation: {

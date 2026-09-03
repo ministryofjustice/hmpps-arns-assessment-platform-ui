@@ -5,6 +5,6 @@ export const Field = {
   },
   suitability_of_accommodation: {
     code: 'suitability_of_accommodation',
-    path: '#suitability_of_accommodation'
-  }
+    path: '#suitability_of_accommodation',
+  },
 } as const

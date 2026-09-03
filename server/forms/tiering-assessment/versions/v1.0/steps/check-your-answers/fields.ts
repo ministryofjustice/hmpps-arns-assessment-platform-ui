@@ -5,7 +5,6 @@ import { commonContentFor, sectionPageTitle, StepDefinition } from '../../locale
 import { Answerable, questionsOf, checkYourAnswersSections, CheckYourAnswersSection } from './sections'
 import { answerRow, questionsWithin } from '../../../../constants/questionContent'
 
-
 const sectionHeader = (step: StepDefinition) =>
   TemplateWrapper({
     template:

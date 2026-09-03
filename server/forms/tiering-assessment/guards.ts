@@ -1,5 +1,4 @@
-import { Condition, Data, Session, } from '@ministryofjustice/hmpps-forge/core/authoring'
-
+import { Condition, Data } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 /**
  * True when the session is NOT in READ_ONLY mode (i.e. the user can edit).

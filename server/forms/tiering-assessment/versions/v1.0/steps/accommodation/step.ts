@@ -4,7 +4,6 @@ import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentE
 import { accommodationFields } from './fields'
 import { sectionPageTitle } from '../../locales'
 import { Step } from '../../constants/page'
-import { Field } from './constants/field'
 
 export const accommodationStep = step({
   path: `/${Step.accommodation.path}`,

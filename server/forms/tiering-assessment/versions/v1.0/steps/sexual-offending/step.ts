@@ -15,12 +15,11 @@ import {
 } from './fields'
 import { continueButton, redirectToCheckYourAnswers } from '../../common'
 import { sectionPageTitle } from '../../locales'
-import { Section } from '../../constants/section'
-import { Step } from './constants/step'
+import { Step } from '../../constants/page'
 
 export const sexualOffendingStep = step({
   path: `${Step.sexual_offending.path}`,
-  title: sectionPageTitle(Section.sexual_offending),
+  title: sectionPageTitle(Step.sexual_offending),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
@@ -55,7 +54,7 @@ export const sexualOffendingStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirectToCheckYourAnswers, redirect({ goto: 'date-of-current-supervision' })],
+        next: [redirectToCheckYourAnswers, redirect({ goto: Step.date_of_current_supervision.path })],
       },
     }),
   ],
