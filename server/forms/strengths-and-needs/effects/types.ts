@@ -6,6 +6,7 @@ import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessSessionDetails } from '../../access/effects/types'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { AssessmentPlatformApiClient, CoordinatorApiClient } from '../../../data'
+import { PreviousVersionDisplay } from './assessment/loadPreviousVersions'
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers
@@ -17,12 +18,15 @@ export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
  * Populated by the access form before the SAN form loads.
  */
 export interface StrengthsAndNeedsSession {
-  versionOverride?: number
   caseDetails?: CaseDetails
   accessDetails?: AccessSessionDetails
   sessionDetails?: StrengthsAndNeedsSessionDetails
   handoverContext?: HandoverContext
   privacyAccepted?: boolean
+  mode?: 'edit' | 'view'
+  uuid?: string
+  versionUuid?: string
+  previousVersions?: PreviousVersionDisplay[]
 }
 
 /**

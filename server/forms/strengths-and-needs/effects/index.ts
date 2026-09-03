@@ -11,7 +11,8 @@ import { StrengthsAndNeedsEffectsDeps } from './types'
 import { setSectionProgress } from './assessment/setSectionProgress'
 import { saveAndClearStaleAnswers } from './assessment/saveAndClearStaleAnswers'
 import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
-import { selectPreviousVersion } from './assessment/selectPreviousVersion'
+import { extractModeAndVersionUuidFromUrl } from './session/extractModeAndVersionUuidFromUrl'
+import { generateInitialFormUrl } from './session/generateInitialFormUrl'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -25,7 +26,8 @@ export const StrengthsAndNeedsEffects = {
   saveCurrentStepAnswers: sanEffects.register('saveCurrentStepAnswers', saveCurrentStepAnswers),
   saveAndClearStaleAnswers: sanEffects.register('saveAndClearStaleAnswers', saveAndClearStaleAnswers),
   deriveDrugCategories: sanEffects.register('deriveDrugCategories', deriveDrugCategories),
-  selectPreviousVersion: sanEffects.register('selectPreviousVersion', selectPreviousVersion),
   setSectionProgress: sanEffects.register('setSectionProgress', setSectionProgress),
   setRiskOfSexualHarm: sanEffects.register('setRiskOfSexualHarm', setRiskOfSexualHarm),
+  extractModeAndVersionUuidFromUrl: sanEffects.register('extractModeAndVersionUuidFromUrl', extractModeAndVersionUuidFromUrl),
+  generateInitialFormUrl: sanEffects.register('generateInitialFormUrl', generateInitialFormUrl),
 }

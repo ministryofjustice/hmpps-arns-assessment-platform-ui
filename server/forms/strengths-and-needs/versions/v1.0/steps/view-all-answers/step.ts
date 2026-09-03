@@ -1,7 +1,6 @@
 import { access, Data, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../effects'
 import { basePath, CaseData } from '../../constants/formVersion'
-import { Section } from '../../constants/section'
 import { commonContentFor } from '../../locales'
 import { viewAllAnswersBlocks } from './fields'
 
@@ -14,7 +13,7 @@ export const viewAllAnswersStep = step({
   reachability: { entryWhen: true },
   onAccess: [
     access({
-      effects: [StrengthsAndNeedsEffects.setViewAllAnswersBacklink(basePath, Section.accommodation.sideNavHref)],
+      effects: [StrengthsAndNeedsEffects.setViewAllAnswersBacklink(basePath)],
     }),
   ],
   view: {

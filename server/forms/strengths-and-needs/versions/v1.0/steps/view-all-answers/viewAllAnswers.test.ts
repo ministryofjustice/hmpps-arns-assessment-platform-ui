@@ -224,16 +224,19 @@ describe('view all answers', () => {
   })
 
   describe('back link tests', () => {
-    const backlinkFor = async (previousPageUrl?: string) => {
+    const backlinkFor = async (previousPageUrl?: string, fallback = Section.accommodation.sideNavHref) => {
       const context = {
-        data: {} as Record<string, unknown>,
+        data: { viewAllAnswersBacklinkFallback: fallback } as Record<string, unknown>,
         getState: () => previousPageUrl,
+        getData(key: string) {
+          return this.data[key]
+        },
         setData(key: string, value: unknown) {
           this.data[key] = value
         },
       }
 
-      await setViewAllAnswersBacklink()(context as never, basePath, Section.accommodation.sideNavHref)
+      await setViewAllAnswersBacklink()(context as never, basePath)
       return context.data.viewAllAnswersBacklink
     }
 

@@ -1,4 +1,13 @@
-import { access, and, Condition, Data, journey, redirect, when } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  and,
+  Condition,
+  Data,
+  journey,
+  Params,
+  redirect,
+  when,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 import { financeJourney } from './journeys/finance'
@@ -19,6 +28,9 @@ import { previousVersionsStep } from './steps/previous-versions/step'
 import { configStep } from '../configStep'
 import { formConfigsByVersion } from '../../constants/formConfigRegistry'
 import { StrengthsAndNeedsTransformers } from '../../transformers'
+import { SANGenerators } from '../../generators'
+
+const { createRoute } = SANGenerators
 
 const feedbackUrl = config.privateBetaFeedbackUrl
 
@@ -31,7 +43,7 @@ const feedbackUrl = config.privateBetaFeedbackUrl
 export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
   title: commonContentFor('strengths_and_needs'),
-  path: `/${formVersion}`,
+  path: `/${formVersion}/:mode/:uuid`,
   view: {
     template: 'strengths-and-needs/views/san-step',
     locals: {
@@ -44,14 +56,22 @@ export const strengthsAndNeedsV1Journey = journey({
         complete: Data(section.statusKey),
         text: commonContentFor(`sectionTitle.${section.code}`),
         // Override sideNavHref for read-only mode to point to analysis step
-        sideNavHref: when(isEditMode)
-          .then(`${section.sideNavHref}?resume=true`)
-          .else(section.sideNavHref),
+        sideNavHref: when(Params('mode').match(Condition.Equals('edit')))
+          .then(
+            createRoute(
+              [basePath, Params('mode'), Params('uuid'), section.sideNavHref],
+              [{ name: 'resume', value: 'true' }],
+            ),
+          )
+          .else(createRoute([basePath, Params('mode'), Params('uuid'), section.sideNavHref])),
       })),
+      viewPreviousVersionsLink: createRoute([basePath, Params('mode'), Params('uuid'), 'previous-versions']),
+      viewAllAnswersLink: createRoute([basePath, Params('mode'), Params('uuid'), 'view-all-answers']),
       buttons: {
         showReturnToOasysButton: isOasysAccess,
       },
       feedbackUrl,
+      previousVersionDate: Data('previousVersionDate').pipe(StrengthsAndNeedsTransformers.FormatFullDateTime()),
     },
   },
   data: {
@@ -63,6 +83,7 @@ export const strengthsAndNeedsV1Journey = journey({
       effects: [
         StrengthsAndNeedsEffects.initializeSessionFromAccess(),
         StrengthsAndNeedsEffects.loadSessionData(),
+        StrengthsAndNeedsEffects.extractModeAndVersionUuidFromUrl(),
         StrengthsAndNeedsEffects.loadAssessment(),
         StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
