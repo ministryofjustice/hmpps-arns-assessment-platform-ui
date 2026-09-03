@@ -9,7 +9,6 @@ import {
 import { contentFor } from './locales'
 import { commonContentFor } from '../../locales'
 import {
-  itemisedSummaryRow,
   question,
   QuestionFormat,
   radioField,
@@ -20,27 +19,6 @@ import { Question } from './constants/question'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 import { CommonOption } from '../../constants/commonOption'
 import { Step } from '../../constants/page'
-
-// const mostRecentOffenceDateField = GovUKDateInputFull({
-//   code: 'most-recent-offence-date',
-//   fieldset: {
-//     legend: {
-//       text: Format('What is the date of %1 most recent offence?', CaseData.ForenamePossessive),
-//       classes: 'govuk-fieldset__legend--s',
-//     },
-//   },
-//   dependentWhen: Answer('has-committed-offence-since-assessment-date').match(Condition.Equals('true')),
-//   validWhen: [
-//     validation({
-//       condition: Self().match(Condition.IsRequired()),
-//       message: 'This is a required field',
-//     }),
-//     validation({
-//       condition: Self().match(Condition.Date.IsValid()),
-//       message: 'Please enter a valid date',
-//     }),
-//   ],
-// })
 
 const mostRecentOffenceDateRevealedQuestion = revealedQuestion({
   content: {
@@ -96,6 +74,6 @@ export const offencesSinceSupervisionFields = {
   code: Step.date_of_current_supervision.code,
   questions: {
     offenceHistoryQuestion,
-    mostRecentOffenceDateRevealedQuestion
+    mostRecentOffenceDateRevealedQuestion,
   },
 }
