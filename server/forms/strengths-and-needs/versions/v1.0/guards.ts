@@ -9,10 +9,8 @@ import {
   redirect,
   Request,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { basePath } from './constants/formVersion'
-import { SANGenerators } from '../../generators'
-
-const { createRoute } = SANGenerators
+import { createRoute } from '../../generators'
+import { baseSanRoute } from './constants/path'
 
 /**
  * Shared access predicates for strengths-and-needs steps.
@@ -57,12 +55,8 @@ export const redirectToAnalysisIfReadOnly = (sectionPath: string, analysisStepPa
   return access({
     when: and(
       isReadOnlyMode,
-      not(
-        Request.Path().match(
-          Condition.Equals(createRoute([basePath, Params('mode'), Params('uuid'), sectionPath, analysisStepPath])),
-        ),
-      ),
+      not(Request.Path().match(Condition.Equals(createRoute([...baseSanRoute, sectionPath, analysisStepPath])))),
     ),
-    next: [redirect({ goto: createRoute([basePath, Params('mode'), Params('uuid'), sectionPath, analysisStepPath]) })],
+    next: [redirect({ goto: createRoute([...baseSanRoute, sectionPath, analysisStepPath]) })],
   })
 }

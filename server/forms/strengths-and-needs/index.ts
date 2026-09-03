@@ -4,7 +4,6 @@ import {
   Data,
   journey,
   redirect,
-  Session,
   step,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { strengthsAndNeedsV1Journey } from './versions/v1.0'
@@ -16,8 +15,9 @@ import { sanConditions } from './conditions'
 import { commonContentFor } from './versions/v1.0/locales'
 import { createPrivacyScreen } from '../shared'
 import { basePath, CaseData, formRootPath } from './versions/v1.0/constants/formVersion'
-import { SANGenerators, sanGenerators } from './generators'
+import { sanGeneratorRegistry, SANGenerators } from './generators'
 import { Section } from './versions/v1.0/constants/section'
+import { baseSanRoute } from './versions/v1.0/constants/path'
 import { modalComponent } from './components/modal/modalComponent'
 
 const { createRoute } = SANGenerators
@@ -25,12 +25,7 @@ const { createRoute } = SANGenerators
 // Where to send the user after accepting privacy, using the mode/uuid from the
 // handover session so they resume where they left off in the accommodation section.
 const privacyScreenRedirectPath = createRoute(
-  [
-    basePath,
-    Session('mode'),
-    Session('handoverContext.assessmentContext.assessmentId'),
-    Section.accommodation.sideNavHref,
-  ],
+  [...baseSanRoute, Section.accommodation.sideNavHref],
   [{ name: 'resume', value: 'true' }],
 )
 
@@ -80,5 +75,5 @@ export default createForgePackage<StrengthsAndNeedsEffectsDeps>({
   enabled: config.forms.strengthsAndNeeds.enabled,
   journey: strengthsAndNeedsRootJourney,
   components: [modalComponent],
-  functions: [sanEffects, sanGenerators, sanTransformers, sanConditions],
+  functions: [sanEffects, sanGeneratorRegistry, sanTransformers, sanConditions],
 })

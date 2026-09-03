@@ -41,7 +41,10 @@ export const StrengthsAndNeedsEffects = {
   loadItemFromCollection: sanEffects.register('loadItemFromCollection', loadItemFromCollection),
   loadAnswersFromCollection: sanEffects.register('loadAnswersFromCollection', loadAnswersFromCollection),
   setRiskOfSexualHarm: sanEffects.register('setRiskOfSexualHarm', setRiskOfSexualHarm),
-  extractModeAndVersionUuidFromUrl: sanEffects.register('extractModeAndVersionUuidFromUrl', extractModeAndVersionUuidFromUrl),
+  extractModeAndVersionUuidFromUrl: sanEffects.register(
+    'extractModeAndVersionUuidFromUrl',
+    extractModeAndVersionUuidFromUrl,
+  ),
   generateInitialFormUrl: sanEffects.register('generateInitialFormUrl', generateInitialFormUrl),
   sendAuditEvent: sanEffects.register('sendAuditEvent', sendAuditEvent),
 }
