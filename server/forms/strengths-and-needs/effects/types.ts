@@ -22,6 +22,7 @@ export interface StrengthsAndNeedsSession {
   sessionDetails?: StrengthsAndNeedsSessionDetails
   handoverContext?: HandoverContext
   privacyAccepted?: boolean
+  patternDrafts?: Record<string, Record<string, unknown>>
 }
 
 /**
@@ -34,6 +35,7 @@ export interface StrengthsAndNeedsData {
   privacyAccepted?: boolean
   assessment?: AssessmentVersionQueryResult
   assessmentUuid?: string
+  collectionUuids?: Record<string, string>
   [key: string]: unknown
 }
 

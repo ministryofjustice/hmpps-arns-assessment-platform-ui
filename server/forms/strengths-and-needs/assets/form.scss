@@ -2,6 +2,8 @@
 
 @import 'navigation/side-nav';
 
+@import "../components/modal/modal";
+
 .page-sub-heading {
   @include govuk-font($size: 24);
   margin-bottom: -5px;

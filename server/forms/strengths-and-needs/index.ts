@@ -10,6 +10,7 @@ import { commonContentFor } from './versions/v1.0/locales'
 import { createPrivacyScreen } from '../shared'
 import { basePath, CaseData } from './versions/v1.0/constants/formVersion'
 import { sanGenerators } from './generators'
+import { modalComponent } from './components/modal/modalComponent'
 
 const privacyScreenStep = createPrivacyScreen({
   loadEffects: [StrengthsAndNeedsEffects.loadSessionData()],
@@ -52,5 +53,6 @@ export const strengthsAndNeedsRootJourney = journey({
 export default createForgePackage<StrengthsAndNeedsEffectsDeps>({
   enabled: config.forms.strengthsAndNeeds.enabled,
   journey: strengthsAndNeedsRootJourney,
+  components: [modalComponent],
   functions: [sanEffects, sanGenerators, sanTransformers, sanConditions],
 })
