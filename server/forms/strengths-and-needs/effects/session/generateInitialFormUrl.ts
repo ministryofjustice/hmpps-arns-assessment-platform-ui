@@ -18,5 +18,8 @@ export const generateInitialFormUrl = () => (context: StrengthsAndNeedsContext) 
   const mode = 'edit'
 
   // Store the generated URL on context so it can be used by the redirect
-  context.setData('initialFormUrl', `/strengths-and-needs/v1.0/${mode}/${assessmentUuid}/accommodation/current-accommodation?resume=true`)
+  context.setData(
+    'initialFormUrl',
+    `/strengths-and-needs/v1.0/${mode}/${assessmentUuid}/accommodation/current-accommodation?resume=true`,
+  )
 }

@@ -28,9 +28,8 @@ import { previousVersionsStep } from './steps/previous-versions/step'
 import { configStep } from '../configStep'
 import { formConfigsByVersion } from '../../constants/formConfigRegistry'
 import { StrengthsAndNeedsTransformers } from '../../transformers'
-import { SANGenerators } from '../../generators'
-
-const { createRoute } = SANGenerators
+import { createRoute } from '../../generators'
+import { baseSanRoute } from './constants/path'
 
 const feedbackUrl = config.privateBetaFeedbackUrl
 
@@ -57,16 +56,11 @@ export const strengthsAndNeedsV1Journey = journey({
         text: commonContentFor(`sectionTitle.${section.code}`),
         // Override sideNavHref for read-only mode to point to analysis step
         sideNavHref: when(Params('mode').match(Condition.Equals('edit')))
-          .then(
-            createRoute(
-              [basePath, Params('mode'), Params('uuid'), section.sideNavHref],
-              [{ name: 'resume', value: 'true' }],
-            ),
-          )
-          .else(createRoute([basePath, Params('mode'), Params('uuid'), section.sideNavHref])),
+          .then(createRoute([...baseSanRoute, section.sideNavHref], [{ name: 'resume', value: 'true' }]))
+          .else(createRoute([...baseSanRoute, section.sideNavHref])),
       })),
-      viewPreviousVersionsLink: createRoute([basePath, Params('mode'), Params('uuid'), 'previous-versions']),
-      viewAllAnswersLink: createRoute([basePath, Params('mode'), Params('uuid'), 'view-all-answers']),
+      viewPreviousVersionsLink: createRoute([...baseSanRoute, 'previous-versions']),
+      viewAllAnswersLink: createRoute([...baseSanRoute, 'view-all-answers']),
       buttons: {
         showReturnToOasysButton: isOasysAccess,
       },

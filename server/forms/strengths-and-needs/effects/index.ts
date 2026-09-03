@@ -28,6 +28,9 @@ export const StrengthsAndNeedsEffects = {
   deriveDrugCategories: sanEffects.register('deriveDrugCategories', deriveDrugCategories),
   setSectionProgress: sanEffects.register('setSectionProgress', setSectionProgress),
   setRiskOfSexualHarm: sanEffects.register('setRiskOfSexualHarm', setRiskOfSexualHarm),
-  extractModeAndVersionUuidFromUrl: sanEffects.register('extractModeAndVersionUuidFromUrl', extractModeAndVersionUuidFromUrl),
+  extractModeAndVersionUuidFromUrl: sanEffects.register(
+    'extractModeAndVersionUuidFromUrl',
+    extractModeAndVersionUuidFromUrl,
+  ),
   generateInitialFormUrl: sanEffects.register('generateInitialFormUrl', generateInitialFormUrl),
 }

@@ -3,16 +3,17 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { sectionPath } from '../../../../constants/path'
+import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
 import { saveButton } from '../../../../constants/buttons'
+import { createRoute } from '../../../../../../generators'
 
 export const drugUseHistoryStep = step({
   path: `/${Step.drug_use_history.path}`,
   title: sectionPageTitle(Section.drug_use),
   view: {
     locals: {
-      backlink: sectionPath(Section.drug_use) + Step.drug_details.path,
+      backlink: createRoute([...baseSanRoute, Section.drug_use.path, Step.drug_details.path]),
     },
   },
   blocks: [

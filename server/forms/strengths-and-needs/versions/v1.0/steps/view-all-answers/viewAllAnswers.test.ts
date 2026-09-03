@@ -3,7 +3,7 @@ import { ForgeTestHarness, TestRenderResult } from '@ministryofjustice/hmpps-for
 import { GovUKBody, govukComponents, GovUKHeading, GovUKTag } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { sanEffects } from '../../../../effects'
-import { sanGenerators } from '../../../../generators'
+import { sanGeneratorRegistry } from '../../../../generators'
 import { sanTransformers } from '../../../../transformers'
 import { sanConditions } from '../../../../conditions'
 import { setViewAllAnswersBacklink } from '../../../../effects/session/setViewAllAnswersBacklink'
@@ -27,7 +27,7 @@ const renderPage = async (
 
   const client = new ForgeTestHarness()
     .registerGlobalComponents(govukComponents)
-    .registerGlobalFunctions([testEffects, sanEffects, sanGenerators, sanTransformers, sanConditions])
+    .registerGlobalFunctions([testEffects, sanEffects, sanGeneratorRegistry, sanTransformers, sanConditions])
     .registerPackage({
       journey: journey({
         code: 'strengths-and-needs-v1',

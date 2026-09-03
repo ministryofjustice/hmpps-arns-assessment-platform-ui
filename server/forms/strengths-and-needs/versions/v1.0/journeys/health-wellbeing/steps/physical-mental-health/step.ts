@@ -4,15 +4,16 @@ import { healthWellbeingSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { sectionPath } from '../../../../constants/path'
+import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
+import { createRoute } from '../../../../../../generators'
 
 export const physicalMentalHealthStep = step({
   path: `/${Step.physical_mental_health.path}`,
   title: sectionPageTitle(Section.health_and_wellbeing),
   view: {
     locals: {
-      backlink: sectionPath(Section.health_and_wellbeing),
+      backlink: createRoute([...baseSanRoute, Section.health_and_wellbeing.path]),
     },
   },
   blocks: [

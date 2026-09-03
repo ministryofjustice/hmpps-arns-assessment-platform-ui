@@ -5,8 +5,9 @@ import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { contentFor } from '../../locales'
 import { commonContentFor, sectionPageTitle } from '../../../../locales'
-import { sectionPath } from '../../../../constants/path'
+import { baseSanRoute } from '../../../../constants/path'
 import { thinkingBehavioursAttitudesSection } from '../../section'
+import { createRoute } from '../../../../../../generators'
 
 export const thinkingBehavioursSexualHarmStep = step({
   path: `/${Step.thinkingBehavioursSexualHarm.path}`,
@@ -15,7 +16,11 @@ export const thinkingBehavioursSexualHarmStep = step({
     locals: {
       sectionTitle: contentFor('step.thinking_behaviours_sexual_harm'),
       pageSubHeading: commonContentFor('sectionTitle.thinking-behaviours-and-attitudes'),
-      backlink: sectionPath(Section.thinking_behaviours_and_attitudes) + Step.thinkingBehavioursRiskOfSexualHarm.path,
+      backlink: createRoute([
+        ...baseSanRoute,
+        Section.thinking_behaviours_and_attitudes.path,
+        Step.thinkingBehavioursRiskOfSexualHarm.path,
+      ]),
     },
   },
   blocks: [

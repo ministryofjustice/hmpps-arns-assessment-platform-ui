@@ -1,4 +1,4 @@
-import { Resolvable } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 
 interface QueryParam {
   name: string
@@ -32,7 +32,7 @@ interface QueryParam {
  */
 export const createRoute =
   () =>
-  (pathSegments: Resolvable<string>[], queryParams: QueryParam[] = []) => {
+  (pathSegments: ResolvableString[], queryParams: QueryParam[] = []) => {
     const joined = (pathSegments as string[]) // Should be resolved at this point
       .flatMap(segment => segment?.split('/'))
       .filter(segment => segment !== null && segment !== undefined && segment.length > 0)

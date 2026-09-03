@@ -4,9 +4,10 @@ import { sectionPageTitle } from '../../../../locales'
 import { saveButton } from '../../../../constants/buttons'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { sectionPath } from '../../../../constants/path'
+import { baseSanRoute } from '../../../../constants/path'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { personalRelationshipsCommunitySection } from '../../section'
+import { createRoute } from '../../../../../../generators'
 
 export const personalRelationshipsStep = step({
   path: `/${Step.personal_relationships.path}`,
@@ -14,7 +15,7 @@ export const personalRelationshipsStep = step({
   view: {
     locals: {
       sectionTitleClass,
-      backlink: sectionPath(Section.personal_relationships_and_community),
+      backlink: createRoute([...baseSanRoute, Section.personal_relationships_and_community.path]),
     },
   },
   blocks: [personalRelationshipsCommunitySection.questions.importantPeople.displayModes.field, saveButton],

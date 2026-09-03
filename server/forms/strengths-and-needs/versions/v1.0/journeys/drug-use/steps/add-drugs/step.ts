@@ -2,17 +2,18 @@ import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpp
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
-import { sectionPath } from '../../../../constants/path'
+import { baseSanRoute } from '../../../../constants/path'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPageTitle } from '../../../../locales'
 import { saveButton } from '../../../../constants/buttons'
+import { createRoute } from '../../../../../../generators'
 
 export const addDrugsStep = step({
   path: `/${Step.add_drugs.path}`,
   title: sectionPageTitle(Section.drug_use),
   view: {
     locals: {
-      backlink: sectionPath(Section.drug_use),
+      backlink: createRoute([...baseSanRoute, Section.drug_use.path]),
     },
   },
   cleardownFieldCodes: ['^trip_*$'],

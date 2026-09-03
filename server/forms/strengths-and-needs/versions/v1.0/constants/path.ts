@@ -1,5 +1,4 @@
-import { formVersion } from './formVersion'
-import { Section } from './section'
+import { Params } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { basePath } from './formVersion'
 
-export const sectionPath = (section: (typeof Section)[keyof typeof Section]) =>
-  `/strengths-and-needs/${formVersion}${section.path}/`
+export const baseSanRoute = [basePath, Params('mode'), Params('uuid')]
