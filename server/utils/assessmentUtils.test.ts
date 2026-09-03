@@ -179,6 +179,29 @@ describe('assessmentUtils', () => {
       expect(accommodationArea.linkedToReoffending).toBe('NO')
     })
 
+    it('should not fall back to the coordinator for harm/reoffending on a scored area with a null ARNS indicator', () => {
+      // A scored section left unanswered in the needs data (linkedToHarm/Reoffending null) must stay
+      // null - only the unscored finance/health areas take the coordinator fallback.
+      const sanAssessmentData = createSanAssessmentData({
+        accommodation_practitioner_analysis_risk_of_serious_harm: { value: 'YES' },
+        accommodation_practitioner_analysis_risk_of_reoffending: { value: 'YES' },
+      })
+      const crimNeeds = createCriminogenicNeedsData({
+        accommodation: {
+          linkedToHarm: null,
+          linkedToReoffending: null,
+          linkedToStrengthsOrProtectiveFactors: null,
+          score: null,
+        },
+      })
+
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
+
+      expect(accommodationArea.linkedToHarm).toBeNull()
+      expect(accommodationArea.linkedToReoffending).toBeNull()
+    })
+
     it('should handle incomplete sections', () => {
       const sanAssessmentData = createSanAssessmentData({
         accommodation_section_complete: { value: 'NO' },

@@ -101,9 +101,12 @@ function processAssessmentArea(
   const isAssessmentSectionComplete = sectionCompleteValue === 'YES'
 
   // Linked indicators come from the ARNS needs data, which covers risk-of-harm / risk-of-reoffending
-  // for the scored sections only (not the unscored finance / health & wellbeing) and never carries a
-  // strengths indicator. When the needs data is present but an indicator is absent, fall back to the
-  // coordinator's SAN practitioner-analysis answer. With no needs data at all, indicators stay null.
+  // for the scored sections only and never carries a strengths indicator. For the unscored areas
+  // (Finances, Health and wellbeing, identified by a null threshold) the needs data has no harm /
+  // reoffending indicator, so fall back to the coordinator's SAN practitioner-analysis answer there;
+  // the strengths indicator falls back on every area. Scored areas keep whatever the needs data says
+  // (including null for an unanswered section). With no needs data at all, indicators stay null.
+  const isUnscoredArea = threshold === null
   const harmFromCoordinator = toLinkedIndicatorFromSanValue(
     getAssessmentValue(sanAssessmentData, `${assessmentKey}_practitioner_analysis_risk_of_serious_harm`),
   )
@@ -113,9 +116,11 @@ function processAssessmentArea(
   const strengthsFromCoordinator = toLinkedIndicatorFromSanValue(
     getAssessmentValue(sanAssessmentData, `${assessmentKey}_practitioner_analysis_strengths_or_protective_factors`),
   )
-  const linkedToHarm = crimNeedsArea ? (toLinkedIndicator(crimNeedsArea.linkedToHarm) ?? harmFromCoordinator) : null
+  const linkedToHarm = crimNeedsArea
+    ? (toLinkedIndicator(crimNeedsArea.linkedToHarm) ?? (isUnscoredArea ? harmFromCoordinator : null))
+    : null
   const linkedToReoffending = crimNeedsArea
-    ? (toLinkedIndicator(crimNeedsArea.linkedToReoffending) ?? reoffendingFromCoordinator)
+    ? (toLinkedIndicator(crimNeedsArea.linkedToReoffending) ?? (isUnscoredArea ? reoffendingFromCoordinator : null))
     : null
   const linkedToStrengthsOrProtectiveFactors = crimNeedsArea
     ? (toLinkedIndicator(crimNeedsArea.linkedToStrengthsOrProtectiveFactors) ?? strengthsFromCoordinator)
