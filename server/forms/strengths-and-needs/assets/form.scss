@@ -2,6 +2,8 @@
 
 @import 'navigation/side-nav';
 
+@import 'print-cover-page/print-cover-page';
+
 .page-sub-heading {
   @include govuk-font($size: 24);
   margin-bottom: -5px;
@@ -120,3 +122,4 @@
     }
   }
 }
+

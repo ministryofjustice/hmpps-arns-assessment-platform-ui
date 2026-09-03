@@ -429,3 +429,46 @@ test.describe('Accessibility', () => {
     })
   })
 })
+
+test.describe('View all answers print view', () => {
+  test('shows the print cover page and header only when printing', async ({
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+  }) => {
+    const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+    await strengthsAndNeedsBuilder.fresh().save()
+
+    await navigateToStrengthsAndNeeds(page, handoverLink)
+    await page.goto(viewAllAnswersPath)
+
+    const coverPage = page.locator('.pdf-cover-page')
+    const printHeader = page.locator('.pdf-header')
+
+    // The additional report content must not affect the normal in-browser assessment view.
+    await expect(coverPage).toBeHidden()
+    await expect(printHeader).toBeHidden()
+
+    // Unfortunately this is not reflected in the Playwright UI
+    await page.emulateMedia({ media: 'print' })
+
+    // Printing produces a report cover containing the practitioner attribution and
+    // classification header, while retaining the assessment content after the cover.
+    await expect(coverPage).toBeVisible()
+    await expect(coverPage).toContainText("His Majesty's Prison & Probation Service")
+    await expect(coverPage).toContainText('Strengths and needs')
+    await expect(coverPage).toContainText('Prepared by:')
+    await expect(coverPage.locator('strong')).toContainText(/\d{2} \w+ \d{4}/)
+
+    await expect(printHeader).toBeVisible()
+    await expect(printHeader).toContainText('Ministry of Justice')
+    await expect(printHeader).toContainText('Official Sensitive')
+
+    // Navigation controls are deliberately excluded from the printed report.
+    await expect(page.locator('.govuk-back-link')).toBeHidden()
+
+    const firstSection = page.locator('.pdf-avoid-break').first()
+    await expect(firstSection).toHaveCSS('break-inside', 'avoid')
+    await expect(firstSection).toHaveCSS('page-break-inside', 'avoid')
+  })
+})
