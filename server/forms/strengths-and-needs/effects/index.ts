@@ -17,8 +17,9 @@ import { updateItemFromCollection } from './assessment/updateItemFromCollection'
 import { removeItemFromCollection } from './assessment/removeItemFromCollection'
 import { emptyCollection } from './assessment/emptyCollection'
 import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
-import { selectPreviousVersion } from './assessment/selectPreviousVersion'
 import { sendAuditEvent } from './audit/sendAuditEvent'
+import { extractModeAndVersionUuidFromUrl } from './session/extractModeAndVersionUuidFromUrl'
+import { generateInitialFormUrl } from './session/generateInitialFormUrl'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -32,7 +33,6 @@ export const StrengthsAndNeedsEffects = {
   saveCurrentStepAnswers: sanEffects.register('saveCurrentStepAnswers', saveCurrentStepAnswers),
   saveAndClearStaleAnswers: sanEffects.register('saveAndClearStaleAnswers', saveAndClearStaleAnswers),
   deriveDrugCategories: sanEffects.register('deriveDrugCategories', deriveDrugCategories),
-  selectPreviousVersion: sanEffects.register('selectPreviousVersion', selectPreviousVersion),
   setSectionProgress: sanEffects.register('setSectionProgress', setSectionProgress),
   addItemToCollection: sanEffects.register('addItemToCollection', addItemToCollection),
   updateItemFromCollection: sanEffects.register('updateItemFromCollection', updateItemFromCollection),
@@ -41,6 +41,8 @@ export const StrengthsAndNeedsEffects = {
   loadItemFromCollection: sanEffects.register('loadItemFromCollection', loadItemFromCollection),
   loadAnswersFromCollection: sanEffects.register('loadAnswersFromCollection', loadAnswersFromCollection),
   setRiskOfSexualHarm: sanEffects.register('setRiskOfSexualHarm', setRiskOfSexualHarm),
+  extractModeAndVersionUuidFromUrl: sanEffects.register('extractModeAndVersionUuidFromUrl', extractModeAndVersionUuidFromUrl),
+  generateInitialFormUrl: sanEffects.register('generateInitialFormUrl', generateInitialFormUrl),
   sendAuditEvent: sanEffects.register('sendAuditEvent', sendAuditEvent),
 }
 

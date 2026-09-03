@@ -1,9 +1,9 @@
 import { StrengthsAndNeedsContext } from '../types'
 
-export const setViewAllAnswersBacklink =
-  () => async (context: StrengthsAndNeedsContext, basePath: string, fallback: string) => {
-    const previousPage = context.getState('previousPageUrl')
-    const isWithinAssessment = typeof previousPage === 'string' && previousPage.startsWith(basePath)
+export const setViewAllAnswersBacklink = () => async (context: StrengthsAndNeedsContext, basePath: string) => {
+  const previousPage = context.getState('previousPageUrl')
+  const fallback = (context.getData('viewAllAnswersBacklinkFallback') as string) || basePath
+  const isWithinAssessment = typeof previousPage === 'string' && previousPage.startsWith(basePath)
 
-    context.setData('viewAllAnswersBacklink', isWithinAssessment ? previousPage : fallback)
-  }
+  context.setData('viewAllAnswersBacklink', isWithinAssessment ? previousPage : fallback)
+}

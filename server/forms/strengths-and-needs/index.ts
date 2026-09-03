@@ -1,16 +1,38 @@
-import { access, createForgePackage, journey, redirect, step } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  createForgePackage,
+  Data,
+  journey,
+  redirect,
+  Session,
+  step,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { strengthsAndNeedsV1Journey } from './versions/v1.0'
 import { CommonAuditEvent, sanEffects, StrengthsAndNeedsEffects } from './effects'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import config from '../../config'
 import { sanTransformers } from './transformers'
 import { sanConditions } from './conditions'
-import { Section } from './versions/v1.0/constants/section'
 import { commonContentFor } from './versions/v1.0/locales'
 import { createPrivacyScreen } from '../shared'
 import { basePath, CaseData, formRootPath } from './versions/v1.0/constants/formVersion'
-import { sanGenerators } from './generators'
+import { SANGenerators, sanGenerators } from './generators'
+import { Section } from './versions/v1.0/constants/section'
 import { modalComponent } from './components/modal/modalComponent'
+
+const { createRoute } = SANGenerators
+
+// Where to send the user after accepting privacy, using the mode/uuid from the
+// handover session so they resume where they left off in the accommodation section.
+const privacyScreenRedirectPath = createRoute(
+  [
+    basePath,
+    Session('mode'),
+    Session('handoverContext.assessmentContext.assessmentId'),
+    Section.accommodation.sideNavHref,
+  ],
+  [{ name: 'resume', value: 'true' }],
+)
 
 const privacyScreenStep = createPrivacyScreen({
   loadEffects: [StrengthsAndNeedsEffects.loadSessionData()],
@@ -18,11 +40,11 @@ const privacyScreenStep = createPrivacyScreen({
     StrengthsAndNeedsEffects.setPrivacyAccepted(),
     StrengthsAndNeedsEffects.sendAuditEvent(CommonAuditEvent.CONFIRM_PRIVACY_SCREEN),
   ],
-  submitRedirectPath: `${Section.accommodation.sideNavHref}?resume=true`,
-  alreadyAcceptedRedirectPath: `${Section.accommodation.sideNavHref}?resume=true`,
+  submitRedirectPath: privacyScreenRedirectPath,
+  alreadyAcceptedRedirectPath: privacyScreenRedirectPath,
   template: 'strengths-and-needs/views/san-step',
   basePath,
-  headerServiceNameLink: `${Section.accommodation.sideNavHref}?resume=true`,
+  headerServiceNameLink: privacyScreenRedirectPath,
   personForename: CaseData.Forename,
   title: commonContentFor('pageTitle.privacy'),
   feedbackUrl: config.privateBetaFeedbackUrl,
@@ -33,9 +55,10 @@ const versionRedirectStep = step({
   title: commonContentFor('strengths_and_needs'),
   onAccess: [
     access({
+      effects: [StrengthsAndNeedsEffects.generateInitialFormUrl()],
       next: [
         redirect({
-          goto: Section.accommodation.sideNavHref,
+          goto: Data('initialFormUrl'),
         }),
       ],
     }),

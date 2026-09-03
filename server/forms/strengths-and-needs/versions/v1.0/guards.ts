@@ -1,5 +1,18 @@
-import { access, Condition, Data, and, not, or, redirect, Request } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  and,
+  Condition,
+  Data,
+  not,
+  or,
+  Params,
+  redirect,
+  Request,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { basePath } from './constants/formVersion'
+import { SANGenerators } from '../../generators'
+
+const { createRoute } = SANGenerators
 
 /**
  * Shared access predicates for strengths-and-needs steps.
@@ -12,29 +25,27 @@ import { basePath } from './constants/formVersion'
 export const isOasysAccess = Data('sessionDetails.accessType').match(Condition.Equals('OASYS'))
 
 /**
- * True when the session has a locked assessment version.
- * A version is present only when it is a positive unix timestamp
- * (null or 0 mean no version / current assessment).
- */
-export const hasAssessmentVersion = Data('sessionDetails.assessmentVersion').match(Condition.Number.GreaterThan(0))
-
-/**
- * True when the session was opened in READ_ONLY access mode, or when a
- * specific assessment version is being viewed.
+ * True when viewing a previous version (read-only mode based on URL mode parameter).
  * Viewing a historic assessment version is always read-only, regardless of accessMode.
  * Used to conditionally hide editable controls (save buttons, change links)
  * and prevent navigation to editable steps.
  */
-export const isReadOnlyMode = or(
-  Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY')),
-  hasAssessmentVersion,
-)
+export const isViewMode = Params('mode').match(Condition.Equals('view'))
+
+/**
+ * True when the session was opened in READ_ONLY access mode, or when viewing
+ * a specific assessment version (mode === 'view').
+ * Viewing a historic assessment version is always read-only, regardless of accessMode.
+ * Used to conditionally hide editable controls (save buttons, change links)
+ * and prevent navigation to editable steps.
+ */
+export const isReadOnlyMode = or(Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY')), isViewMode)
 
 /**
  * True when the session is NOT in READ_ONLY mode (i.e. the user can edit).
  * Convenience inverse of {@link isReadOnlyMode}.
  */
-export const isEditMode = not(isReadOnlyMode)
+export const isEditMode = and(Data('sessionDetails.accessMode').match(Condition.Equals('READ_WRITE')), not(isViewMode))
 
 /**
  * Redirects read-only users away from editable steps to the analysis step.
@@ -43,9 +54,15 @@ export const isEditMode = not(isReadOnlyMode)
  * @param analysisStepPath - The step part of the path to redirect to (e.g., 'drug-use-analysis')
  */
 export const redirectToAnalysisIfReadOnly = (sectionPath: string, analysisStepPath: string) => {
-  const fullPath = `${basePath}${sectionPath}/${analysisStepPath}`
   return access({
-    when: and(isReadOnlyMode, not(Request.Path().match(Condition.Equals(fullPath)))),
-    next: [redirect({ goto: fullPath })],
+    when: and(
+      isReadOnlyMode,
+      not(
+        Request.Path().match(
+          Condition.Equals(createRoute([basePath, Params('mode'), Params('uuid'), sectionPath, analysisStepPath])),
+        ),
+      ),
+    ),
+    next: [redirect({ goto: createRoute([basePath, Params('mode'), Params('uuid'), sectionPath, analysisStepPath]) })],
   })
 }

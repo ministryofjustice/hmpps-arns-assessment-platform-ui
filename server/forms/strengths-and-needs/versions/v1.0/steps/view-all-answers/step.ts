@@ -1,7 +1,6 @@
-import { access, Data, step, Session } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, Data, Session, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { SanAuditEvent, StrengthsAndNeedsEffects } from '../../../../effects'
 import { basePath } from '../../constants/formVersion'
-import { Section } from '../../constants/section'
 import { commonContentFor } from '../../locales'
 import { viewAllAnswersBlocks } from './fields'
 
@@ -15,7 +14,7 @@ export const viewAllAnswersStep = step({
   onAccess: [
     access({
       effects: [
-        StrengthsAndNeedsEffects.setViewAllAnswersBacklink(basePath, Section.accommodation.sideNavHref),
+        StrengthsAndNeedsEffects.setViewAllAnswersBacklink(basePath),
         StrengthsAndNeedsEffects.sendAuditEvent(SanAuditEvent.VIEW_ALL_ANSWERS),
       ],
     }),
