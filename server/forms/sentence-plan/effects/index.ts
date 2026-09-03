@@ -37,6 +37,7 @@ import { loadPreviousVersions } from './plan/loadPreviousVersions'
 import { loadHistoricPlan } from './plan/loadHistoricPlan'
 import { sendAuditEvent } from './audit/sendAuditEvent'
 import { loadFeatureFlags } from './feature-flags/loadFeatureFlags'
+import { loadSupervisionPackage } from './supervision-package/loadSupervisionPackage'
 import { sendTelemetryEvent } from './telemetry/sendTelemetryEvent'
 import { SentencePlanEffectsDeps } from './types'
 
@@ -118,4 +119,5 @@ export const SentencePlanEffects = {
   sendAuditEvent: sentencePlanEffectRegistry.register(sendAuditEvent),
   sendTelemetryEvent: sentencePlanEffectRegistry.register(sendTelemetryEvent),
   loadFeatureFlags: sentencePlanEffectRegistry.register(loadFeatureFlags),
+  loadSupervisionPackage: sentencePlanEffectRegistry.register(loadSupervisionPackage),
 }

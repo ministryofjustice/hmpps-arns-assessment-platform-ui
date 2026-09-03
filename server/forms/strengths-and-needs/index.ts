@@ -17,11 +17,11 @@ const privacyScreenStep = createPrivacyScreen({
     StrengthsAndNeedsEffects.setPrivacyAccepted(),
     StrengthsAndNeedsEffects.sendAuditEvent(CommonAuditEvent.CONFIRM_PRIVACY_SCREEN),
   ],
-  submitRedirectPath: Section.accommodation.sideNavHref,
-  alreadyAcceptedRedirectPath: Section.accommodation.sideNavHref,
+  submitRedirectPath: `${Section.accommodation.sideNavHref}?resume=true`,
+  alreadyAcceptedRedirectPath: `${Section.accommodation.sideNavHref}?resume=true`,
   template: 'strengths-and-needs/views/san-step',
   basePath,
-  headerServiceNameLink: Section.accommodation.sideNavHref,
+  headerServiceNameLink: `${Section.accommodation.sideNavHref}?resume=true`,
   personForename: CaseData.Forename,
   title: commonContentFor('pageTitle.privacy'),
   feedbackUrl: config.privateBetaFeedbackUrl,
@@ -41,7 +41,7 @@ const versionRedirectStep = step({
   ],
 })
 
-const strengthsAndNeedsRootJourney = journey({
+export const strengthsAndNeedsRootJourney = journey({
   code: 'strengths-and-needs',
   title: commonContentFor('strengths_and_needs'),
   path: formRootPath,

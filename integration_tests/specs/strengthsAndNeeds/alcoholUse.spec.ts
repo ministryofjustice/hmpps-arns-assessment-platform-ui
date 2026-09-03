@@ -226,15 +226,15 @@ test.describe('Alcohol use Page', () => {
       await page.getByRole('button', { name: 'Mark as complete' }).click()
 
       // Lands focused on the read only practitioner analysis tab, not the editable form.
-      await expect(page).toHaveURL(/\/alcohol-use-analysis#practitioner-analysis-summary$/)
-      await expect(page.locator('#practitioner-analysis-summary')).toBeVisible()
+      await expect(page).toHaveURL(/\/alcohol-use-analysis#practitioner-analysis$/)
+      await expect(page.locator('#practitioner-analysis')).toBeVisible()
       await expect(page.getByRole('button', { name: 'Mark as complete' })).toBeHidden()
 
       // The Summary tabs button returns to that same read only view on the same page.
       await page.getByRole('tab', { name: 'Summary' }).click()
       await page.getByRole('button', { name: 'Go to practitioner analysis' }).click()
-      await expect(page.locator('#practitioner-analysis-summary')).toBeVisible()
-      await expect(page).toHaveURL(/\/alcohol-use-analysis#practitioner-analysis-summary$/)
+      await expect(page.locator('#practitioner-analysis')).toBeVisible()
+      await expect(page).toHaveURL(/\/alcohol-use-analysis#practitioner-analysis$/)
     })
 
     test('reveals the details field when a past issue with alcohol is selected', async ({

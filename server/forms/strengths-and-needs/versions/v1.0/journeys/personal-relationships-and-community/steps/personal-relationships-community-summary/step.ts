@@ -34,7 +34,7 @@ export const personalRelationshipsCommunitySummaryStep = step({
             Step.personal_relationships_community_summary,
           ),
         ],
-        next: [redirect({ goto: Step.personal_relationships_community_analysis.path })],
+        next: [redirect({ goto: `${Step.personal_relationships_community_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

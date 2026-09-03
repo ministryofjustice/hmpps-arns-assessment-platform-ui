@@ -33,6 +33,7 @@
     "npm": "^11"
   },
   "dependencies": {
+    "@aws-sdk/client-sns": "3.1097.0",
     "@aws-sdk/client-sqs": "^3.863.0",
     "@faker-js/faker": "10.2.0",
     "@flipt-io/flipt-client-js": "0.4.0",
@@ -44,6 +45,7 @@
     "@ministryofjustice/hmpps-azure-telemetry": "0.0.1-alpha.1",
     "@ministryofjustice/hmpps-forge": "0.4.0",
     "@ministryofjustice/hmpps-monitoring": "^1.0.0",
+    "@ministryofjustice/hmpps-mpop-frontend-components-lib": "0.0.14",
     "@ministryofjustice/hmpps-rest-client": "^1.0.0",
     "accessible-autocomplete": "^3.0.1",
     "body-parser": "^2.2.0",
@@ -75,13 +77,21 @@
   "overrides": {
     "mocha": {
       "serialize-javascript": "^7.0.3",
-      "diff": "^8.0.3"
+      "diff": "^8.0.3",
+      "minimatch": "^10.2.4"
     },
     "@yikes2000/prettier-plugin-merge-extras": {
       "diff": "5.2.2"
     },
-    "minimatch@3.1.5": {
-      "brace-expansion": "1.1.13"
+    "glob@6.0.4": {
+      "minimatch": "^10.2.4"
+    },
+    "glob@10.5.0": {
+      "minimatch": "^10.2.4"
+    },
+    "@opentelemetry/sdk-logs": {
+      "@opentelemetry/core": "2.9.0",
+      "@opentelemetry/resources": "2.9.0"
     },
     "@aws-sdk/xml-builder": {
       "fast-xml-parser": "5.8.0"

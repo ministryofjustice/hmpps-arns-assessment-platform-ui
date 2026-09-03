@@ -21,7 +21,7 @@ export const financeSummaryStep = step({
           StrengthsAndNeedsEffects.setSectionProgress(Section.finance, SectionComplete.yes),
           auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.finance, Step.financeSummary),
         ],
-        next: [redirect({ goto: Step.financeAnalysis.path })],
+        next: [redirect({ goto: `${Step.financeAnalysis.path}#practitioner-analysis` })],
       },
     }),
   ],

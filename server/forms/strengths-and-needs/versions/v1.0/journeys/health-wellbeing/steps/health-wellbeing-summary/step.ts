@@ -27,7 +27,7 @@ export const healthWellbeingSummaryStep = step({
             Step.health_wellbeing_summary,
           ),
         ],
-        next: [redirect({ goto: Step.health_wellbeing_analysis.path })],
+        next: [redirect({ goto: `${Step.health_wellbeing_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

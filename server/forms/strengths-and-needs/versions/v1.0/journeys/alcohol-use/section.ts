@@ -6,21 +6,20 @@ import { CommonOption } from '../../constants/commonOption'
 import { Gender } from '../../../../../shared/constants/gender'
 import {
   checkboxField,
-  itemisedSummaryRow,
-  optionalDetails,
   question,
   QuestionFormat,
   radioField,
-  requiredDetails,
   requiredValidationOf,
   revealedQuestion,
-  yesNo,
-} from '../../constants/questionContent'
+
+} from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { Step } from './constants/step'
 import { Option } from './constants/option'
+import { Section } from '../../constants/section'
+import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../../constants/questionContent'
 
 // Base usage applies whenever they have drunk alcohol; the recency questions
 // (frequency, units, binge drinking) only when they drank in the last 3 months.
@@ -522,6 +521,7 @@ const riskOfReoffending = question({
 })
 
 export const alcoholUseSection = {
+  code: Section.alcohol_use.code,
   questions: {
     alcoholUse,
     frequency,

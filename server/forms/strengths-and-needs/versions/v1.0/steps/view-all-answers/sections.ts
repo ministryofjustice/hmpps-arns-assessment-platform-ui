@@ -1,4 +1,4 @@
-import { QuestionContent, SectionDefinition, SummaryRow } from '../../constants/questionContent'
+import { QuestionContent, SectionDefinition, SummaryRow } from '../../../../constants/questionContent'
 import { Section } from '../../constants/section'
 import { accommodationSection } from '../../journeys/accommodation/section'
 import { alcoholUseSection } from '../../journeys/alcohol-use/section'

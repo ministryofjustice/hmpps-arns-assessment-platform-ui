@@ -2,14 +2,14 @@ import { step, submit, redirect, Post, Condition } from '@ministryofjustice/hmpp
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { Step } from '../../constants/step'
-import { accommodationSummaryTab } from './fields'
+import { summaryTab } from './fields'
 import { summaryPageTitle } from '../../../../locales'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 export const accommodationSummaryStep = step({
   path: `/${Step.accommodation_summary.path}`,
   title: summaryPageTitle(Section.accommodation),
-  blocks: [accommodationSummaryTab],
+  blocks: [summaryTab],
   onAccess: [auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.accommodation, Step.accommodation_summary)],
   onSubmission: [
     submit({
@@ -21,7 +21,7 @@ export const accommodationSummaryStep = step({
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.yes),
           auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.accommodation, Step.accommodation_summary),
         ],
-        next: [redirect({ goto: Step.accommodation_analysis.path })],
+        next: [redirect({ goto: `${Step.accommodation_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

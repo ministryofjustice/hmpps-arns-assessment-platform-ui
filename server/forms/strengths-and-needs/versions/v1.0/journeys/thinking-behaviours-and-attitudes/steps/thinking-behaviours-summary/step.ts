@@ -31,7 +31,7 @@ export const thinkingBehavioursSummaryStep = step({
             Step.thinkingBehavioursSummary,
           ),
         ],
-        next: [redirect({ goto: Step.thinkingBehavioursAnalysis.path })],
+        next: [redirect({ goto: `${Step.thinkingBehavioursAnalysis.path}#practitioner-analysis` })],
       },
     }),
   ],

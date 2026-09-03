@@ -1,6 +1,7 @@
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Section, SectionComplete } from '../../versions/v1.0/constants/section'
+import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
 
 export const setSectionProgress =
   (deps: StrengthsAndNeedsEffectsDeps) =>
@@ -20,5 +21,6 @@ export const setSectionProgress =
       user,
       added: wrapAll({ [section.statusKey]: status }),
       removed: [],
+      hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
     })
   }

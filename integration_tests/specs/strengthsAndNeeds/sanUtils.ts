@@ -84,9 +84,10 @@ export const handlePrivacyScreenIfPresent = async (page: Page): Promise<void> =>
 export const navigateToStrengthsAndNeeds = async (
   page: Page,
   handoverLink: string,
-  url: string = 'current-accommodation',
+  expectedPath = '/strengths-and-needs/v1.0/',
 ): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
-  expect(page.url()).toContain(url)
+  // Wait for the redirect from the handover link to land on the expected page
+  await page.waitForURL(url => url.pathname.includes(expectedPath))
 }

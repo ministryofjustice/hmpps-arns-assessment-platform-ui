@@ -4,6 +4,7 @@ import { buildAnswerDelta, buildChangedAnswerCodes } from './answerDelta'
 import { sendFormAuditEvent } from '../../../shared'
 import { SAN_AUDIT_FORM, SanAuditEvent } from '../../auditEvents'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
 
 export const saveCurrentStepAnswers =
   (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
@@ -31,6 +32,7 @@ export const saveCurrentStepAnswers =
       user,
       added: wrapAll(delta.added),
       removed: delta.removed,
+      hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
     })
 
     const changedFields = buildChangedAnswerCodes(histories)
