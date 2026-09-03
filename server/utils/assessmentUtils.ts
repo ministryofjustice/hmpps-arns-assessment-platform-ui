@@ -100,15 +100,28 @@ function processAssessmentArea(
   const sectionCompleteValue = getAssessmentValue(sanAssessmentData, `${assessmentKey}_section_complete`)
   const isAssessmentSectionComplete = sectionCompleteValue === 'YES'
 
-  // Linked indicators come from the needs data (handover for OASys, ARNS for MPoP).
-  const linkedToHarm = toLinkedIndicator(crimNeedsArea?.linkedToHarm)
-  const linkedToReoffending = toLinkedIndicator(crimNeedsArea?.linkedToReoffending)
-  // ARNS (MPoP) returns needs data without a strengths indicator, so when needs data is present but
-  // strengths is absent, fall back to the coordinator's SAN answer (which carries it for both cohorts).
-  // With no needs data at all, indicators stay null as before.
+  // Linked indicators come from the ARNS needs data, which covers risk-of-harm / risk-of-reoffending
+  // for the scored sections only and never carries a strengths indicator. For the unscored areas
+  // (Finances, Health and wellbeing, identified by a null threshold) the needs data has no harm /
+  // reoffending indicator, so fall back to the coordinator's SAN practitioner-analysis answer there;
+  // the strengths indicator falls back on every area. Scored areas keep whatever the needs data says
+  // (including null for an unanswered section). With no needs data at all, indicators stay null.
+  const isUnscoredArea = threshold === null
+  const harmFromCoordinator = toLinkedIndicatorFromSanValue(
+    getAssessmentValue(sanAssessmentData, `${assessmentKey}_practitioner_analysis_risk_of_serious_harm`),
+  )
+  const reoffendingFromCoordinator = toLinkedIndicatorFromSanValue(
+    getAssessmentValue(sanAssessmentData, `${assessmentKey}_practitioner_analysis_risk_of_reoffending`),
+  )
   const strengthsFromCoordinator = toLinkedIndicatorFromSanValue(
     getAssessmentValue(sanAssessmentData, `${assessmentKey}_practitioner_analysis_strengths_or_protective_factors`),
   )
+  const linkedToHarm = crimNeedsArea
+    ? (toLinkedIndicator(crimNeedsArea.linkedToHarm) ?? (isUnscoredArea ? harmFromCoordinator : null))
+    : null
+  const linkedToReoffending = crimNeedsArea
+    ? (toLinkedIndicator(crimNeedsArea.linkedToReoffending) ?? (isUnscoredArea ? reoffendingFromCoordinator : null))
+    : null
   const linkedToStrengthsOrProtectiveFactors = crimNeedsArea
     ? (toLinkedIndicator(crimNeedsArea.linkedToStrengthsOrProtectiveFactors) ?? strengthsFromCoordinator)
     : null
