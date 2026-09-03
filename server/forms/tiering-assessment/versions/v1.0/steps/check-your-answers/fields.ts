@@ -34,7 +34,7 @@ const groupHeading = (text: ReturnType<typeof commonContentFor>, fields: Answera
   GovUKHeading({ text, size: 'm', level: 3, visibleWhen: anyAnswered(fields) })
 
 const answersFor = (fields: Answerable[]) =>
-  GovUKSummaryList({ rows: fields.map(field => field.displayModes?.answerRow ?? answerRow(field.content)) })
+  GovUKSummaryList({ rows: fields.map(field => field.displayModes?.summaryRow ?? answerRow(field.content)) })
 
 const blocksFor = (entry: CheckYourAnswersSection): BlockDefinition[] => {
   const questions = questionsOf(entry)

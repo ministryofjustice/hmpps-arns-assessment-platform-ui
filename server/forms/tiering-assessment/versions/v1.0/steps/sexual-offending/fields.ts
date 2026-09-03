@@ -5,6 +5,7 @@ import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 import { contentFor } from './locales'
 import {
   dateField,
+  dateSummaryRow,
   itemisedSummaryRow,
   question,
   QuestionFormat,
@@ -15,10 +16,10 @@ import {
 import { Question } from './constants/question'
 import { CommonOption } from '../../constants/commonOption'
 import { commonContentFor } from '../../locales'
-import { Field } from './constants/step'
 import { Section } from '../../constants/section'
 import { SexualOffendingLocale } from './locales/en-gb'
 import { ContentFormatter } from '../../../../generators/htmlContentFormatters'
+import { Step } from '../../constants/page'
 
 const formatter = new ContentFormatter<SexualOffendingLocale>(contentFor)
 
@@ -50,7 +51,7 @@ const currentOffenceSexualRadioQuestion = question({
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--s', inputClasses: 'govuk-radios--inline' }),
-    summaryRow: itemisedSummaryRow({ changePath: Field.current_offence_sexually_motivated.path }),
+    summaryRow: itemisedSummaryRow({ changePath: Step.sexual_offending.path }),
   },
 })
 
@@ -74,6 +75,9 @@ const dateOfMostRecentSexualOffenceQuestion = question({
           message: commonContentFor('validation.valid_date'),
         }),
       ],
+    }),
+    summaryRow: dateSummaryRow({
+      changeHref: Step.sexual_offending.path,
     }),
   },
 })
@@ -114,7 +118,7 @@ const contactSanctionsQuestion = question({
       ],
     }),
     summaryRow: textSummaryRow({
-      changeHref: Field.number_of_contact_sexual_sanctions.path,
+      changeHref: Step.sexual_offending.path,
     }),
   },
 })
@@ -170,7 +174,7 @@ const contactChildSanctionsQuestion = question({
       ],
     }),
     summaryRow: textSummaryRow({
-      changeHref: Field.number_of_contact_child_sexual_sanctions.path,
+      changeHref: Step.sexual_offending.path,
     }),
   },
 })
@@ -221,7 +225,7 @@ const victimStrangerQuestion = question({
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--s', inputClasses: 'govuk-radios--inline' }),
-    summaryRow: itemisedSummaryRow({ changePath: Field.victim_stranger.path }),
+    summaryRow: itemisedSummaryRow({ changePath: Step.sexual_offending.path }),
   },
 })
 
@@ -279,7 +283,7 @@ const indecentImagesOfChildrenQuestion = question({
       ],
     }),
     summaryRow: textSummaryRow({
-      changeHref: Field.indecent_child_images.path,
+      changeHref: Step.sexual_offending.path,
     }),
   },
 })
@@ -335,7 +339,7 @@ const nonContactQuestion = question({
       ],
     }),
     summaryRow: textSummaryRow({
-      changeHref: Field.non_contact.path,
+      changeHref: Step.sexual_offending.path,
     }),
   },
 })

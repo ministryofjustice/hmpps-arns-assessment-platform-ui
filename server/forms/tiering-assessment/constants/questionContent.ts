@@ -6,6 +6,7 @@ import {
   or,
   PredicateExpr,
   Self,
+  Transformer,
   validation,
   ValidationExpr,
   when,
@@ -22,7 +23,6 @@ import {
 import { getDisplayTextForItems, getDisplayTextForSpecificItem } from '../i18n'
 import { SANGenerators } from '../generators'
 import { commonContentFor } from '../versions/v1.0/locales'
-import { checkYourAnswersQuery } from '../versions/v1.0/common'
 import { StrengthsAndNeedsTransformers } from '../transformers/transformers'
 import { isEditMode } from '../guards'
 
@@ -244,9 +244,9 @@ export const requiredValidationOf = (
   return allValidations.length > 0 ? allValidations : undefined
 }
 
-export const createSummaryRowActions = (changeRef: ResolvableString) =>
-  when(checkYourAnswersQuery)
-    .then({ items: [{ href: changeRef, text: commonContentFor('change') }] })
+export const createSummaryRowActions = (changeHref: ResolvableString) =>
+  when(isEditMode)
+    .then({ items: [{ href: changeHref, text: commonContentFor('change') }] })
     .else({})
 
 export const textSummaryRow =
@@ -257,6 +257,18 @@ export const textSummaryRow =
       visibleWhen: placement.visibleWhen,
       value: {
         blocks: [GovUKBody({ text: Answer(content.code) })],
+      },
+      actions: createSummaryRowActions(placement.changeHref),
+    })
+
+export const dateSummaryRow =
+  (placement: SummaryRowPlacement) =>
+  (content: QuestionContent): SummaryRow =>
+    definedPropsOf({
+      key: { html: content.text },
+      visibleWhen: placement.visibleWhen,
+      value: {
+        blocks: [GovUKBody({ text: Answer(content.code).pipe(Transformer.String.FormatDate()) })],
       },
       actions: createSummaryRowActions(placement.changeHref),
     })

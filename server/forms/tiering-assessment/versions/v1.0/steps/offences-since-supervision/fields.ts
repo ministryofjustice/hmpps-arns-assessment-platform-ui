@@ -9,6 +9,7 @@ import {
 import { contentFor } from './locales'
 import { commonContentFor } from '../../locales'
 import {
+  itemisedSummaryRow,
   question,
   QuestionFormat,
   radioField,
@@ -67,6 +68,7 @@ export const offenceHistoryQuestion = question({
   },
   displayModes: {
     field: radioField(),
+    summaryRow: itemisedSummaryRow({ changePath: Step.offences_since_community_date.path }),
   },
 })
 

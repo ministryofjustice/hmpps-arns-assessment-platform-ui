@@ -19,9 +19,9 @@ import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { CommonOption } from '../../constants/commonOption'
 import { commonContentFor } from '../../locales'
-import { Field } from './constants/field'
 import {
   dateField,
+  dateSummaryRow,
   itemisedSummaryRow,
   question,
   QuestionFormat,
@@ -98,6 +98,9 @@ const dateAtFirstSanctionQuestion = question({
         }),
       ],
     }),
+    summaryRow: dateSummaryRow({
+      changeHref: Step.current_offence_and_offending_history.path,
+    }),
   },
 })
 
@@ -127,7 +130,7 @@ const totalSanctionsQuestion = question({
       ],
     }),
     summaryRow: textSummaryRow({
-      changeHref: Field.number_of_sanctions_for_all_offences.path,
+      changeHref: Step.current_offence_and_offending_history.path,
     }),
   },
 })
@@ -158,7 +161,7 @@ const totalViolentSanctionsQuestion = question({
       ],
     }),
     summaryRow: textSummaryRow({
-      changeHref: Field.number_of_violent_sanctions.path,
+      changeHref: Step.current_offence_and_offending_history.path,
     }),
   },
 })
@@ -183,7 +186,7 @@ export const sexualOffenceHistoryQuestion = question({
   },
   displayModes: {
     field: radioField({ inputClasses: 'govuk-radios--inline' }),
-    summaryRow: itemisedSummaryRow({ changePath: Field.has_ever_committed_sexual_offence.path }),
+    summaryRow: itemisedSummaryRow({ changePath: Step.current_offence_and_offending_history.path }),
   },
 })
 

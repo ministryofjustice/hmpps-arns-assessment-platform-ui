@@ -2,7 +2,7 @@ import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core
 import { Step } from '../../constants/page'
 import { contentFor } from './locales'
 import { commonContentFor } from '../../locales'
-import { dateField, question, QuestionFormat } from '../../../../constants/questionContent'
+import { dateField, dateSummaryRow, question, QuestionFormat } from '../../../../constants/questionContent'
 import { Question } from './constants/question'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
@@ -23,6 +23,9 @@ const dateOfCurrentSupervisionQuestion = question({
           message: commonContentFor('validation.valid_date'),
         }),
       ],
+    }),
+    summaryRow: dateSummaryRow({
+      changeHref: Step.date_of_current_supervision.path,
     }),
   },
 })
