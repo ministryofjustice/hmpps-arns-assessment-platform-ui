@@ -23,12 +23,10 @@ test.describe('Plan History - Navigation', () => {
     const viewHistoryLink = page.getByRole('link', { name: /View plan history/i })
     await expect(viewHistoryLink).toBeVisible()
 
-    const createGoalButton = page.getByRole('button', { name: /Create goal/i })
-    await expect(createGoalButton).toBeVisible()
-
     await viewHistoryLink.click()
 
-    await PlanHistoryPage.verifyOnPage(page)
+    const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
+    await expect(planHistoryPage.createGoalButton).toBeVisible()
   })
 
   test('redirects to plan overview when plan has no agreement status', async ({
