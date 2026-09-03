@@ -2,12 +2,12 @@ import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/c
 import { continueButton } from '../../common'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { accommodationFields } from './fields'
-import { sectionPageTitle } from '../../locales'
+import { stepTitle } from '../../locales'
 import { Step } from '../../constants/page'
 
 export const accommodationStep = step({
   path: `/${Step.accommodation.path}`,
-  title: sectionPageTitle(Step.accommodation),
+  title: stepTitle(Step.accommodation),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],

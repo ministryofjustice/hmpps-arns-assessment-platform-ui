@@ -11,7 +11,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { checkYourAnswersQuery, continueButton, returnToAnswersQueryText } from '../../common'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { sectionPageTitle } from '../../locales'
+import { stepTitle } from '../../locales'
 import { Step } from '../../constants/page'
 import {
   currentOffenceAndOffendingHistoryFields,
@@ -28,7 +28,7 @@ const hasSexualOffenceHistory = Answer('has_ever_committed_sexual_offence').matc
 
 export const currentOffenceAndOffendingHistoryStep = step({
   path: `/${Step.current_offence_and_offending_history.path}`,
-  title: sectionPageTitle(Step.current_offence_and_offending_history),
+  title: stepTitle(Step.current_offence_and_offending_history),
   onAccess: [
     access({
       effects: [

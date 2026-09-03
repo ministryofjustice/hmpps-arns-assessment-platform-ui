@@ -1,13 +1,13 @@
 import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { continueButton, redirectToCheckYourAnswers } from '../../common'
-import { sectionPageTitle } from '../../locales'
+import { stepTitle } from '../../locales'
 import { Step } from '../../constants/page'
 import { offencesSinceSupervisionFields } from './fields'
 
 export const offencesSinceSupervisionStep = step({
   path: `/${Step.offences_since_community_date.path}`,
-  title: sectionPageTitle(Step.offences_since_community_date),
+  title: stepTitle(Step.offences_since_community_date),
   // title: Format(
   //   'Has %1 committed any offences since %2?',
   //   CaseData.Forename,

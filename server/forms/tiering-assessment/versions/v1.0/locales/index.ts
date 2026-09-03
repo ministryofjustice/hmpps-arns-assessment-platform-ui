@@ -13,4 +13,4 @@ export type StepDefinition = (typeof Step)[keyof typeof Step]
 /**
  * Page titles derived from the `pageTitle` entry.
  */
-export const sectionPageTitle = (page: StepDefinition) => commonContentFor(`pageTitle.${page.code}`)
+export const stepTitle = (step: StepDefinition) => commonContentFor(`stepTitle.${step.code}`)

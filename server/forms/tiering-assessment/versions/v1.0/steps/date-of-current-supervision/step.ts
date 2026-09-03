@@ -12,12 +12,12 @@ import {
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { continueButton, redirectToCheckYourAnswers } from '../../common'
 import { dateOfCurrentSupervisionFields } from './fields'
-import { sectionPageTitle } from '../../locales'
+import { stepTitle } from '../../locales'
 import { Step } from '../../constants/page'
 
 export const dateOfCurrentSupervisionStep = step({
   path: `/${Step.date_of_current_supervision.path}`,
-  title: sectionPageTitle(Step.date_of_current_supervision),
+  title: stepTitle(Step.date_of_current_supervision),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],

@@ -1,7 +1,7 @@
 import { Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { BlockDefinition, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKHeading, GovUKSummaryList } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { commonContentFor, sectionPageTitle, StepDefinition } from '../../locales'
+import { commonContentFor, stepTitle, StepDefinition } from '../../locales'
 import { Answerable, questionsOf, checkYourAnswersSections, CheckYourAnswersSection } from './sections'
 import { answerRow, questionsWithin } from '../../../../constants/questionContent'
 
@@ -14,7 +14,7 @@ const sectionHeader = (step: StepDefinition) =>
     slots: {
       heading: [
         GovUKHeading({
-          text: sectionPageTitle(step),
+          text: stepTitle(step),
           size: 'l',
           level: 2,
           classes: 'govuk-!-margin-bottom-0',

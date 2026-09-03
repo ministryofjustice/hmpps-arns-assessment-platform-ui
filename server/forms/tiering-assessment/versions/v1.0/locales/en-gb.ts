@@ -9,7 +9,7 @@ export const english = {
   change: 'Change',
   summary: '',
   all_answers_heading: 'Tiering Assessment',
-  pageTitle: {
+  stepTitle: {
     [Step.accommodation.code]: 'Accommodation',
     [Step.current_offence_and_offending_history.code]: 'Current offence and offending history',
     [Step.sexual_offending.code]: 'Sexual offending',

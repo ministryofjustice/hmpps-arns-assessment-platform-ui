@@ -89,7 +89,6 @@ export const offenceHistoryQuestion = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offences_since_community_date.path }),
   },
 })
 
@@ -97,5 +96,6 @@ export const offencesSinceSupervisionFields = {
   code: Step.date_of_current_supervision.code,
   questions: {
     offenceHistoryQuestion,
+    mostRecentOffenceDateRevealedQuestion
   },
 }

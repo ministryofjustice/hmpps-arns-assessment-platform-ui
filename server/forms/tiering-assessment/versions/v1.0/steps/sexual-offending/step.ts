@@ -14,12 +14,12 @@ import {
   victimStrangerDetailsField,
 } from './fields'
 import { continueButton, redirectToCheckYourAnswers } from '../../common'
-import { sectionPageTitle } from '../../locales'
+import { stepTitle } from '../../locales'
 import { Step } from '../../constants/page'
 
 export const sexualOffendingStep = step({
   path: `${Step.sexual_offending.path}`,
-  title: sectionPageTitle(Step.sexual_offending),
+  title: stepTitle(Step.sexual_offending),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
