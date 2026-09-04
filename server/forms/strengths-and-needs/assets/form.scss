@@ -107,7 +107,8 @@
     &__bottom {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
+      align-items: start;
+      min-height: govuk-spacing(9);
 
       &__actions {
         display: flex;

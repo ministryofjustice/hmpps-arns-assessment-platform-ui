@@ -48,7 +48,7 @@ export const countersignedVersionTable = GovUKTable({
                   '<a class="button-as-link" href="%1" target="_blank">%2<span class="govuk-visually-hidden"> %3 %4</span></a>',
                   createRoute([
                     basePath,
-                    'view',
+                    'view-historic',
                     Item().path('assessmentVersionId'),
                     Section.accommodation.sideNavHref,
                   ]),
@@ -134,7 +134,7 @@ export const previousVersionTable = GovUKTable({
                   '<a class="button-as-link" href="%1" target="_blank">%2<span class="govuk-visually-hidden"> %3 %4</span></a>',
                   createRoute([
                     basePath,
-                    'view',
+                    'view-historic',
                     Item().path('assessmentVersionId'),
                     Section.accommodation.sideNavHref,
                   ]),

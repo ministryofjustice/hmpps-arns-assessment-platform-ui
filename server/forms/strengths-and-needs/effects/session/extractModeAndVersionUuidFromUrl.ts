@@ -25,14 +25,14 @@ export const extractModeAndVersionUuidFromUrl = () => (context: StrengthsAndNeed
   }
 
   // Validate mode
-  if (mode !== 'edit' && mode !== 'view') {
-    throw new Error(`Invalid mode parameter: ${mode}. Must be 'edit' or 'view'`)
+  if (mode !== 'edit' && mode !== 'view' && mode !== 'view-historic') {
+    throw new Error(`Invalid mode parameter: ${mode}. Must be 'edit', 'view', or 'view-historic'`)
   }
 
   session.mode = mode
   session.uuid = uuid
 
-  if (mode === 'view') {
+  if (mode === 'view-historic') {
     session.versionUuid = uuid
   }
 }
