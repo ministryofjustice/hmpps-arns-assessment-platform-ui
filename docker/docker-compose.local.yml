@@ -45,12 +45,22 @@ services:
       OASYS_RETURN_URLS: http://localhost:3000
       CLIENT_SP_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/handover/callback
       CLIENT_SP_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in/handover?service=sentence-plan
-      CLIENT_SAN_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/callback
-      CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in
+      CLIENT_SAN_OAUTH_REDIRECT_URI: http://localhost:3000/sign-in/handover/callback
+      CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in/handover?service=strengths-and-needs
 
   postgres:
     ports:
       - '5432:5432'
+
+  aap-api:
+    ports:
+      - '8080:8080'
+    environment:
+      - SPRING_JPA_SHOW_SQL=true
+
+  coordinator-api:
+    ports:
+      - "6060:8080"
 
 volumes:
   node_modules:
