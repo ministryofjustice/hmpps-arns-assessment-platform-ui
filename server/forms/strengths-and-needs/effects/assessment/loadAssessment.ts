@@ -44,7 +44,7 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
 
   // Check if viewing a previous version via URL (uuid and mode are set on the session by an effect)
   if (session.uuid && session.mode === 'view') {
-    const previousVersions = session.previousVersions
+    const previousVersions = [...session.previousVersions, ...session.countersignedVersions]
     const previousVersion = previousVersions.find(it => it.uuid === session.uuid)
     query.timestamp = previousVersion?.updatedAt
     context.setData('previousVersionDate', previousVersion?.date)

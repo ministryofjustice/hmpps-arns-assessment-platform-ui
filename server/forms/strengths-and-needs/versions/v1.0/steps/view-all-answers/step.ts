@@ -21,7 +21,7 @@ export const viewAllAnswersStep = step({
       hideNavigation: true,
       hideNavigationLinks: true,
       sectionTitle: commonContentFor('all_answers_heading', CaseData.ForenamePossessive),
-      backlink: Data('viewAllAnswersBacklink'),
+      backlink: Data('dynamicBacklink'),
     },
   },
   blocks: viewAllAnswersBlocks,

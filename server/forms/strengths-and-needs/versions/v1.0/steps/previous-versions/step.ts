@@ -1,7 +1,7 @@
 import { access, Data, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../effects'
 import { commonContentFor } from '../../locales'
-import { leadingParagraph, previousVersionTable } from './fields'
+import { backToTopLink, countersignedVersionTable, leadingParagraph, previousVersionTable } from './fields'
 import { basePath } from '../../constants/formVersion'
 
 /**
@@ -23,8 +23,8 @@ export const previousVersionsStep = step({
       hideNavigationLinks: true,
       hidePreviousVersionNotification: true,
       sectionTitle: commonContentFor('pageTitle.previous_versions'),
-      backlink: Data('viewAllAnswersBacklink'),
+      backlink: Data('dynamicBacklink'),
     },
   },
-  blocks: [leadingParagraph, previousVersionTable],
+  blocks: [leadingParagraph, countersignedVersionTable, previousVersionTable, backToTopLink],
 })

@@ -26,6 +26,7 @@ export interface StrengthsAndNeedsSession {
   mode?: 'edit' | 'view'
   uuid?: string
   versionUuid?: string
+  countersignedVersions: PreviousVersionDisplay[]
   previousVersions?: PreviousVersionDisplay[]
 }
 
