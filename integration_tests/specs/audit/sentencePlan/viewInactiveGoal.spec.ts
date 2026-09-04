@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import { removedGoals } from '../../../builders/sentencePlanFactories'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, achievedGoals, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, achievedGoals, expectAuditEvent } from './helpers'
 
 test.describe('View Goal Details', () => {
   test('viewing achieved goal details', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -19,7 +19,7 @@ test.describe('View Goal Details', () => {
     await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1UrlBuilders.goalViewInactive(goalUuid))
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_INACTIVE_GOAL)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_INACTIVE_GOAL)
     expectAuditEvent(event, goalUuid)
     expect(event.details.goalStatus).toBe('ACHIEVED')
   })
@@ -38,7 +38,7 @@ test.describe('View Goal Details', () => {
     await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1UrlBuilders.goalViewInactive(goalUuid))
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_INACTIVE_GOAL)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_INACTIVE_GOAL)
     expectAuditEvent(event, goalUuid)
     expect(event.details.goalStatus).toBe('REMOVED')
   })

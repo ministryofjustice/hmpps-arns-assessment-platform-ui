@@ -1,8 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
+import SentencePlanPage from './sentencePlanPage'
 import { ValidationHelper } from '../helpers'
 
-export default class UpdateAgreePlanPage extends AbstractPage {
+export default class UpdateAgreePlanPage extends SentencePlanPage {
   readonly agreementQuestionLegend: Locator
 
   readonly agreeYesRadio: Locator

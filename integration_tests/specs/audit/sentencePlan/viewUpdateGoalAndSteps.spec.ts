@@ -1,7 +1,7 @@
 import { test, TargetService } from '../../../support/fixtures'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
 
 test.describe('View Update Goal and Steps page', () => {
   test('visiting update goal and steps page', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -19,7 +19,7 @@ test.describe('View Update Goal and Steps page', () => {
     await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
     await UpdateGoalAndStepsPage.verifyOnPage(page)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_UPDATE_GOAL_AND_STEPS)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_UPDATE_GOAL_AND_STEPS)
     expectAuditEvent(event, goalUuid)
   })
 })

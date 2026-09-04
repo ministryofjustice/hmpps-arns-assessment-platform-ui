@@ -1,0 +1,50 @@
+import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Step } from '../../constants/step'
+import { saveButton } from '../../../../constants/buttons'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { Section, SectionComplete } from '../../../../constants/section'
+import { sectionTitleClass } from '../../../../constants/formVersion'
+import { personalRelationshipsCommunitySection } from '../../section'
+import { sectionPageTitle } from '../../../../locales'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+
+export const personalRelationshipsChildrenInformationStep = step({
+  path: `/${Step.personal_relationships_children_information.path}`,
+  title: sectionPageTitle(Section.personal_relationships_and_community),
+  reachability: { entryWhen: true },
+  view: {
+    locals: {
+      sectionTitleClass,
+    },
+  },
+  blocks: [personalRelationshipsCommunitySection.questions.childrenDetails.displayModes.field, saveButton],
+  onAccess: [
+    auditPageView(
+      SanAuditEvent.VIEW_QUESTION_PAGE,
+      Section.personal_relationships_and_community,
+      Step.personal_relationships_children_information,
+    ),
+  ],
+  onSubmission: [
+    submit({
+      when: Post('action').match(Condition.Equals('save')),
+      validate: true,
+      onValid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.personal_relationships_and_community,
+            Step.personal_relationships_children_information,
+          ),
+        ],
+        next: [
+          redirect({
+            goto: Step.personal_relationships.path,
+          }),
+        ],
+      },
+    }),
+  ],
+})

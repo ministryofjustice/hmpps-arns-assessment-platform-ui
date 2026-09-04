@@ -7,9 +7,14 @@ interface CommandTimeline {
   data: Record<string, any>
 }
 
+export interface Hook {
+  type: string
+}
+
 export interface Command {
   type: string
   timeline?: CommandTimeline
+  hooks?: Hook[]
   user: User
   assessmentUuid: string
 }
@@ -22,11 +27,6 @@ export interface CreateAssessmentCommand {
   properties?: Properties
   timeline?: CommandTimeline
   user: User
-}
-
-export interface GroupCommand extends Command {
-  type: 'GroupCommand'
-  commands: Commands[]
 }
 
 export interface UpdateAssessmentAnswersCommand extends Command {
@@ -94,7 +94,6 @@ export type Commands =
   | AddCollectionItemCommand
   | CreateAssessmentCommand
   | CreateCollectionCommand
-  | GroupCommand
   | RemoveCollectionItemCommand
   | ReorderCollectionItemCommand
   | RollBackAssessmentAnswersCommand

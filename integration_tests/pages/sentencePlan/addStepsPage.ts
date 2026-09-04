@@ -1,8 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
 import { AssessmentInfoHelper } from '../helpers'
+import SentencePlanPage from './sentencePlanPage'
 
-export default class AddStepsPage extends AbstractPage {
+export default class AddStepsPage extends SentencePlanPage {
   readonly pageHeading: Locator
 
   readonly addStepButton: Locator

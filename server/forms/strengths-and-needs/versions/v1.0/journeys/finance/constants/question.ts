@@ -1,0 +1,48 @@
+export const Question = {
+  finance_income: 'finance_income',
+  finance_income_no_money_details: 'finance_income_no_money_details',
+  finance_income_other_details: 'finance_income_other_details',
+  family_or_friends_details: 'family_or_friends_details',
+  finance_bank_account: 'finance_bank_account',
+  finance_money_management: 'finance_money_management',
+  finance_money_management_good_details: 'finance_money_management_good_details',
+  finance_money_management_fairly_good_details: 'finance_money_management_fairly_good_details',
+  finance_money_management_fairly_bad_details: 'finance_money_management_fairly_bad_details',
+  finance_money_management_bad_details: 'finance_money_management_bad_details',
+  finance_gambling: 'finance_gambling',
+  finance_gambling_yes_their_gambling_details: 'finance_gambling_yes_their_gambling_details',
+  finance_gambling_yes_someone_elses_gambling_details: 'finance_gambling_yes_someone_elses_gambling_details',
+  finance_gambling_unknown_details: 'finance_gambling_unknown_details',
+  finance_debt: 'finance_debt',
+  yes_type_of_debt: 'yes_type_of_debt',
+  yes_someone_elses_type_of_debt: 'yes_someone_elses_type_of_debt',
+  finance_debt_unknown_details: 'finance_debt_unknown_details',
+  yes_type_of_debt_debt_to_others_details: 'yes_type_of_debt_debt_to_others_details',
+  yes_type_of_debt_formal_debt_details: 'yes_type_of_debt_formal_debt_details',
+  yes_someone_elses_type_of_debt_debt_to_others_details: 'yes_someone_elses_type_of_debt_debt_to_others_details',
+  yes_someone_elses_type_of_debt_formal_debt_details: 'yes_someone_elses_type_of_debt_formal_debt_details',
+  finance_changes: 'finance_changes',
+  finance_changes_made_changes_details: 'finance_changes_made_changes_details',
+  finance_changes_making_changes_details: 'finance_changes_making_changes_details',
+  finance_changes_want_to_make_changes_details: 'finance_changes_want_to_make_changes_details',
+  finance_changes_needs_help_to_make_changes_details: 'finance_changes_needs_help_to_make_changes_details',
+  finance_changes_thinking_about_making_changes_details: 'finance_changes_thinking_about_making_changes_details',
+  finance_changes_does_not_want_to_make_changes_details: 'finance_changes_does_not_want_to_make_changes_details',
+  finance_changes_does_not_want_to_answer_details: 'finance_changes_does_not_want_to_answer_details',
+  finance_practitioner_analysis_strengths_or_protective_factors_yes_details:
+    'finance_practitioner_analysis_strengths_or_protective_factors_yes_details',
+  finance_practitioner_analysis_strengths_or_protective_factors_no_details:
+    'finance_practitioner_analysis_strengths_or_protective_factors_no_details',
+  finance_practitioner_analysis_strengths_or_protective_factors:
+    'finance_practitioner_analysis_strengths_or_protective_factors',
+  finance_practitioner_analysis_risk_of_serious_harm: 'finance_practitioner_analysis_risk_of_serious_harm',
+  finance_practitioner_analysis_risk_of_serious_harm_yes_details:
+    'finance_practitioner_analysis_risk_of_serious_harm_yes_details',
+  finance_practitioner_analysis_risk_of_serious_harm_no_details:
+    'finance_practitioner_analysis_risk_of_serious_harm_no_details',
+  finance_practitioner_analysis_risk_of_reoffending: 'finance_practitioner_analysis_risk_of_reoffending',
+  finance_practitioner_analysis_risk_of_reoffending_yes_details:
+    'finance_practitioner_analysis_risk_of_reoffending_yes_details',
+  finance_practitioner_analysis_risk_of_reoffending_no_details:
+    'finance_practitioner_analysis_risk_of_reoffending_no_details',
+} as const

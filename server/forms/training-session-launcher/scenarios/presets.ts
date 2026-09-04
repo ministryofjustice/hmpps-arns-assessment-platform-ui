@@ -85,7 +85,7 @@ export const scenarioPresets: ScenarioPreset[] = [
     name: 'SP Private Beta',
     shortDescription: 'Private Beta scenario',
     description: 'Scenario configured for Sentence Plan with private beta access.',
-    flags: ['SAN_PRIVATE_BETA'],
+    flags: ['SAN_BETA'],
     fixedValues: {
       location: 'COMMUNITY',
       accessMode: 'READ_WRITE',

@@ -3,7 +3,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import { removedGoals } from '../../../builders/sentencePlanFactories'
 import ConfirmReaddGoalPage from '../../../pages/sentencePlan/confirmReaddGoalPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Add a Goal Back to Plan', () => {
   test('confirming goal re-add', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -26,7 +26,7 @@ test.describe('Add a Goal Back to Plan', () => {
     await confirmPage.clickConfirm()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.CREATE_RE_ADD_GOAL)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.CREATE_RE_ADD_GOAL)
     expectAuditEvent(event, goalUuid)
   })
 })

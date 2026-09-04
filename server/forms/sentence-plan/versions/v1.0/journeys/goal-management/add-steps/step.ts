@@ -13,7 +13,7 @@ import {
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageLayout } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 import { redirectIfGoalNotFound } from '../../../guards'
 
@@ -70,7 +70,7 @@ export const addStepsStep = step({
         SentencePlanEffects.setAreaDataFromActiveGoal(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
         SentencePlanEffects.initializeStepEditSession(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ADD_STEPS),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_ADD_STEPS),
       ],
     }),
     redirectIfGoalNotFound('../../plan/overview'),
@@ -105,7 +105,7 @@ export const addStepsStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.saveStepEditSession(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.ADD_STEPS),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.ADD_STEPS),
           SentencePlanEffects.addNotification({
             type: 'success',
 
@@ -134,7 +134,10 @@ export const addStepsStep = step({
       when: Post('action').match(Condition.Equals('saveAndContinue')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.saveStepEditSession(), SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEPS)],
+        effects: [
+          SentencePlanEffects.saveStepEditSession(),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_STEPS),
+        ],
         next: [
           // Prompt to confirm achievement once every step is marked completed, on any agreement status
           redirect({

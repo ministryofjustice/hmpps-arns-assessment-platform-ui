@@ -368,6 +368,15 @@ export class CollectionItemBuilder {
   }
 
   /**
+   * Add an added to this item
+   */
+  withAdded(code: string, value: string | string[]): this {
+    this.definition.properties[code] = Array.isArray(value) ? multi(value) : single(value)
+
+    return this
+  }
+
+  /**
    * Add a property to this item
    */
   withProperty(key: string, value: string | string[]): this {

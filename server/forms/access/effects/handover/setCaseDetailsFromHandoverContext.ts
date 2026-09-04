@@ -1,5 +1,6 @@
 import { InternalServerError } from 'http-errors'
 import { AccessContext } from '../types'
+import { genderFromHandoverCode } from '../../../shared/constants/gender'
 
 /**
  * Set case details from handover context.
@@ -25,6 +26,7 @@ export const setCaseDetailsFromHandoverContext = () => (context: AccessContext) 
     },
     crn: subject.crn,
     pnc: subject.pnc,
+    gender: genderFromHandoverCode(subject.gender),
     dateOfBirth: subject.dateOfBirth,
     nomisId: subject.nomisId,
     location: subject.location,

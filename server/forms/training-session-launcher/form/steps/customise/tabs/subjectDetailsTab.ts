@@ -2,6 +2,7 @@ import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKTextInput, GovUKSelectInput, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { RandomizableField } from '../../../../components'
+import { handoverGenderOptions } from '../../../../../shared/constants/gender'
 
 /**
  * Subject details tab content
@@ -64,12 +65,7 @@ export const subjectDetailsTabContent = [
       label: 'Gender',
       classes: 'govuk-input--width-10',
       defaultValue: Data('scenario.gender'),
-      items: [
-        { value: '0', text: 'Not known' },
-        { value: '1', text: 'Male' },
-        { value: '2', text: 'Female' },
-        { value: '9', text: 'Not specified' },
-      ],
+      items: handoverGenderOptions,
     }),
   }),
 
