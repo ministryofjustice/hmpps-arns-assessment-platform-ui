@@ -2,6 +2,7 @@ import { access, Data, step } from '@ministryofjustice/hmpps-forge/core/authorin
 import { StrengthsAndNeedsEffects } from '../../../../effects'
 import { commonContentFor } from '../../locales'
 import { leadingParagraph, previousVersionTable } from './fields'
+import { basePath } from '../../constants/formVersion'
 
 /**
  * Lists previous assessment versions, letting a user pick a historic version to view in a new tab.
@@ -13,7 +14,7 @@ export const previousVersionsStep = step({
   reachability: { entryWhen: true },
   onAccess: [
     access({
-      effects: [StrengthsAndNeedsEffects.loadPreviousVersions()],
+      effects: [StrengthsAndNeedsEffects.loadPreviousVersions(), StrengthsAndNeedsEffects.setDynamicBacklink(basePath)],
     }),
   ],
   view: {
@@ -22,7 +23,7 @@ export const previousVersionsStep = step({
       hideNavigationLinks: true,
       hidePreviousVersionNotification: true,
       sectionTitle: commonContentFor('pageTitle.previous_versions'),
-      backlink: Data('previousVersionsBacklink'),
+      backlink: Data('viewAllAnswersBacklink'),
     },
   },
   blocks: [leadingParagraph, previousVersionTable],

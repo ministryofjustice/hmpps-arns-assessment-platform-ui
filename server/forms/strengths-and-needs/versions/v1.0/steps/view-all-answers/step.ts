@@ -13,7 +13,7 @@ export const viewAllAnswersStep = step({
   reachability: { entryWhen: true },
   onAccess: [
     access({
-      effects: [StrengthsAndNeedsEffects.setViewAllAnswersBacklink(basePath)],
+      effects: [StrengthsAndNeedsEffects.setDynamicBacklink(basePath)],
     }),
   ],
   view: {

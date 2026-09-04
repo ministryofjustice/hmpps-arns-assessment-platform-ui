@@ -6,7 +6,7 @@ import { sanEffects } from '../../../../effects'
 import { sanGeneratorRegistry } from '../../../../generators'
 import { sanTransformers } from '../../../../transformers'
 import { sanConditions } from '../../../../conditions'
-import { setViewAllAnswersBacklink } from '../../../../effects/session/setViewAllAnswersBacklink'
+import { setDynamicBacklink } from '../../../../effects/session/setDynamicBacklink'
 import { Section, SectionComplete } from '../../constants/section'
 import { basePath } from '../../constants/formVersion'
 import { viewAllAnswersStep } from './step'
@@ -236,7 +236,7 @@ describe('view all answers', () => {
         },
       }
 
-      await setViewAllAnswersBacklink()(context as never, basePath)
+      await setDynamicBacklink()(context as never, basePath)
       return context.data.viewAllAnswersBacklink
     }
 

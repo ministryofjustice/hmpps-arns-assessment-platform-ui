@@ -6,7 +6,7 @@ import { saveCurrentStepAnswers } from './assessment/saveCurrentStepAnswers'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
 import { setPrivacyAccepted } from './session/setPrivacyAccepted'
-import { setViewAllAnswersBacklink } from './session/setViewAllAnswersBacklink'
+import { setDynamicBacklink } from './session/setDynamicBacklink'
 import { StrengthsAndNeedsEffectsDeps } from './types'
 import { setSectionProgress } from './assessment/setSectionProgress'
 import { saveAndClearStaleAnswers } from './assessment/saveAndClearStaleAnswers'
@@ -20,7 +20,7 @@ export const StrengthsAndNeedsEffects = {
   initializeSessionFromAccess: sanEffects.register('initializeSessionFromAccess', initializeSessionFromAccess),
   loadSessionData: sanEffects.register('loadSessionData', loadSessionData),
   setPrivacyAccepted: sanEffects.register('setPrivacyAccepted', setPrivacyAccepted),
-  setViewAllAnswersBacklink: sanEffects.register('setViewAllAnswersBacklink', setViewAllAnswersBacklink),
+  setDynamicBacklink: sanEffects.register('setDynamicBacklink', setDynamicBacklink),
   loadAssessment: sanEffects.register('loadAssessment', loadAssessment),
   loadPreviousVersions: sanEffects.register('loadPreviousVersions', loadPreviousVersions),
   saveCurrentStepAnswers: sanEffects.register('saveCurrentStepAnswers', saveCurrentStepAnswers),
